@@ -22,9 +22,7 @@
   <script src="3.js"></script>
   <script src="2.js"></script>
   <script src="1.js"></script>
-  <script src="TERM.js"></script>
-
-  <style>
+  <script src="t.js"></script> <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
     body { font-family: 'Inter', system-ui, sans-serif; background: #f8f4f0; margin: 0; color: #1e293b; }
     
@@ -108,8 +106,7 @@
         <button onclick="logoutProfile()" class="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2 font-bold text-slate-700 hover:bg-slate-100">👤 <span id="active-profile-name" class="hidden sm:inline">Profil</span></button>
         
         <div class="relative">
-          <select id="niveau-select" onchange="changeNiveau()" class="bg-white border border-slate-300 rounded-2xl px-3 py-2 font-bold" title="Sélectionne ton niveau ou révise les précédents">
-            </select>
+          <select id="niveau-select" onchange="changeNiveau()" class="bg-white border border-slate-300 rounded-2xl px-3 py-2 font-bold" title="Sélectionne ton niveau ou révise les précédents"></select>
         </div>
       </div>
     </header>
@@ -140,7 +137,7 @@
 // ==========================================================
 // CONFIGURATION GOOGLE SHEETS
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "METS_TON_URL_GOOGLE_SCRIPT_ICI"; // ⚠️ A REMPLACER
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwhRhPafn3a2hMH9WEw6E89FdR9QyKappv0OrGUr6OYiL11ScZqMkxG9pEN_G-GnlBnOw/exec";
 
 let state = {
   niveau: "5EME", questView: {}, expanded: {}, revealed: false, currentId: null,
@@ -219,7 +216,7 @@ function updateLevelDropdown(userLevel) {
     opt.text = (i === maxIdx) ? `${LEVEL_NAMES[lvlKey]} (Niveau Actuel)` : `${LEVEL_NAMES[lvlKey]} (Révision)`;
     select.appendChild(opt);
   }
-  select.value = userLevel; // Par défaut sur son niveau
+  select.value = userLevel;
 }
 
 function loginProfile(id) {
@@ -231,7 +228,7 @@ function loginProfile(id) {
   state.activeProfileId = id; state.niveau = p.level; state.results = p.results || {};
   document.getElementById('active-profile-name').textContent = p.name;
   
-  updateLevelDropdown(p.level); // On bloque les niveaux supérieurs !
+  updateLevelDropdown(p.level);
 
   updateHeaderGamification();
   document.getElementById('profile-screen').classList.add('hidden');
@@ -251,21 +248,20 @@ function handleTimerClick(id) { if(state.timer.activeId !== id) { hardStopTimer(
 function runTimer() { clearInterval(state.timer.interval); state.timer.interval = setInterval(() => { state.timer.seconds++; updateTimer(); }, 1000); }
 function hardStopTimer() { clearInterval(state.timer.interval); state.timer.interval = null; state.timer.isPaused = false; }
 function updateTimer() { const el = document.getElementById('exo-timer'); if(!el) return; const m = Math.floor(state.timer.seconds / 60).toString().padStart(2, '0'); const s = (state.timer.seconds % 60).toString().padStart(2, '0'); el.innerText = `⏱️ ${m}:${s}`; }
-https://script.google.com/macros/s/AKfycbwhRhPafn3a2hMH9WEw6E89FdR9QyKappv0OrGUr6OYiL11ScZqMkxG9pEN_G-GnlBnOw/exec
+
 let ctx;
 function toggleDrawingMode(id) { state.isDrawing = !state.isDrawing; const b = document.getElementById(`box-${id}`); const btn = document.getElementById(`btn-draw-${id}`); state.isDrawing ? (b.classList.add('drawing-mode'), btn.classList.add('bg-red-100'), initCanvas()) : (b.classList.remove('drawing-mode'), btn.classList.remove('bg-red-100')); }
 function initCanvas() { const c = document.getElementById('draw-canvas'); if(!c) return; c.width = c.parentElement.clientWidth; c.height = c.parentElement.clientHeight; ctx = c.getContext('2d'); ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)'; ctx.lineWidth = 4; ctx.lineCap = 'round'; let d = false; c.onmousedown = (e) => { d = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); }; c.onmousemove = (e) => { if(d) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } }; c.onmouseup = () => d = false; }
 function showNextHint(id, total) { if(!state.hintStepsRevealed[id]) state.hintStepsRevealed[id] = 0; if(state.hintStepsRevealed[id] < total) { document.getElementById(`hint-${id}-${state.hintStepsRevealed[id]}`).classList.remove('hidden'); state.hintStepsRevealed[id]++; const b = document.getElementById(`btn-hint-${id}`); state.hintStepsRevealed[id] >= total ? b.classList.add('hidden') : b.innerText = `💡 Indice (${state.hintStepsRevealed[id]}/${total}) (-15 XP)`; } }
 function revealFormula(id, el) { el.classList.add('revealed'); state.formulaManuallyTouched[id] = true; }
 
-// Envoi discret des données vers Google Sheets
 function sendDataToSheet(playerName, lvl, category, res, xpAdded) {
-  if(GOOGLE_SCRIPT_URL === "METS_TON_URL_GOOGLE_SCRIPT_ICI") return; // Si pas configuré, on annule silencieusement
+  if(!GOOGLE_SCRIPT_URL) return;
   fetch(GOOGLE_SCRIPT_URL, {
     method: 'POST', mode: 'no-cors',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ eleve: playerName, classe: lvl, categorie: category, resultat: res, xp: xpAdded })
-  }).catch(err => console.log("Sauvegarde silencieuse."));
+  }).catch(err => console.log("Erreur save"));
 }
 
 function renderSection(cat, data, idx, total) {
@@ -337,8 +333,6 @@ function mark(cat, idx, status, total) {
       p.xp = (p.xp || 0) + xpGained;
     }
     saveProfilesData();
-    
-    // ENVOI VERS GOOGLE SHEETS
     sendDataToSheet(p.name, state.niveau, cat, status, xpGained);
   }
   
