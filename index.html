@@ -137,10 +137,10 @@
 
 <script>
 // ==========================================================
-// CONFIGURATION : REMPLACE CETTE URL PAR TON GOOGLE SCRIPT
+// CONFIGURATION : TON GOOGLE SCRIPT EST ICI !
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwhRhPafn3a2hMH9WEw6E89FdR9QyKappv0OrGUr6OYiL11ScZqMkxG9pEN_G-GnlBnOw/exec";
-const ADMIN_PASSWORD = "NICO"; // Mot de passe du coach
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwJPcQqeS5_jSIz-EjJZNJr-CCV-yvOvrbfFgy6vV8i13UD8r-yflcm1UguS7gdgEJ2ZQ/exec";
+const ADMIN_PASSWORD = "NICO"; 
 
 let state = {
   activeProfile: null, niveau: "5EME", results: {}, xp: 0, streak: 0,
@@ -155,7 +155,7 @@ const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME":
 const EMOJIS = ['📘', '🧮', '📐', '🚀', '💡', '🎯', '⚡', '🔥'];
 const LEVELS = {}; Object.keys(LEVEL_NAMES).forEach(k => { LEVELS[k] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[k] }; });
 
-// --- COACH : CRÉATION DE PROFIL (POST vers Google Sheets) ---
+// --- COACH : CRÉATION DE PROFIL ---
 function askAdmin() {
   const pass = prompt("Mot de passe Coach :");
   if (pass === ADMIN_PASSWORD) document.getElementById('admin-modal').classList.remove('hidden');
@@ -191,7 +191,7 @@ async function generateStudentAccess() {
   }
 }
 
-// --- ÉLÈVE : CONNEXION (GET depuis Google Sheets) ---
+// --- ÉLÈVE : CONNEXION ---
 async function loginWithCode() {
   const code = document.getElementById('student-code-input').value.trim().toUpperCase();
   if(!code) return;
@@ -219,12 +219,10 @@ async function loginWithCode() {
 }
 
 function initStudentApp() {
-  // Chargement de la progression locale du navigateur (XP, Exos réussis)
   const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
   if(!localData[state.activeProfile.code]) {
     localData[state.activeProfile.code] = { results: {}, xp: 0, streak: 1, lastLogin: new Date().toISOString().split('T')[0], isNew: true };
   } else {
-    // Calcul de la flamme (streak)
     const p = localData[state.activeProfile.code];
     const today = new Date().toISOString().split('T')[0];
     if (p.lastLogin && p.lastLogin !== today) {
@@ -256,11 +254,6 @@ function initStudentApp() {
   updateHeader();
   render();
 }
-// ==========================================================
-// CONFIGURATION : REMPLACE CETTE URL PAR TON GOOGLE SCRIPT
-// ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwJPcQqeS5_jSIz-EjJZNJr-CCV-yvOvrbfFgy6vV8i13UD8r-yflcm1UguS7gdgEJ2ZQ/exec";
-const ADMIN_PASSWORD = "NICO"; // Mot de passe du coach
 
 function closeOnboarding() { document.getElementById('onboarding-modal').classList.add('hidden'); }
 function logout() { location.reload(); }
@@ -300,7 +293,6 @@ function mark(cat, idx, status, total) {
   sendScoreToSheet(cat, status, xpGained);
   updateHeader();
   
-  // Confetti si 100% terminé
   let completed = 0;
   for(let i=0; i<total; i++) { if(state.results[`${state.niveau}-${cat}-${i}`] === 'EASY' || state.results[`${state.niveau}-${cat}-${i}`] === 'MEDIUM') completed++; }
   if(completed === total) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
@@ -322,13 +314,12 @@ function updateLevelDropdown(userLevel) {
 }
 function updateHeader() { document.getElementById('ui-streak').innerText = state.streak; document.getElementById('ui-xp').innerText = state.xp; }
 
-// Toggle Draft : Gère l'affichage Desktop vs Mobile
 function toggleDraft() {
   state.draftOpen = !state.draftOpen;
   const panel = document.getElementById('draft-panel');
   if(state.draftOpen) {
     panel.classList.remove('hidden');
-    panel.classList.add('flex'); // Pour le mobile (plein écran)
+    panel.classList.add('flex');
     setTimeout(() => { document.getElementById('math-draft').focus(); }, 100);
   } else {
     panel.classList.add('hidden');
@@ -364,7 +355,6 @@ function render() {
     for(let i=0; i<total; i++) { if(state.results[`${state.niveau}-${cat}-${i}`] === 'EASY' || state.results[`${state.niveau}-${cat}-${i}`] === 'MEDIUM') completed++; }
     const pct = total > 0 ? Math.round((completed/total)*100) : 0;
     
-    // Assignation d'un émoji dynamique
     const icon = LEVELS[state.niveau].catIcon[cat] || EMOJIS[emojiIdx % EMOJIS.length];
     emojiIdx++;
 
