@@ -22,99 +22,140 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
     body { font-family: 'Inter', system-ui, sans-serif; background: #f8f4f0; margin: 0; color: #1e293b; }
-    .math-display { font-size: 1.78rem; line-height: 1.55; font-weight: 700; text-align: left; white-space: pre-wrap !important; word-break: break-word; }
-    .main-box { min-height: 410px; box-shadow: 0 25px 60px -15px rgb(37 99 235 / 0.25); transition: all 0.3s ease; position: relative; }
-    .symbol-btn { padding: 0.75rem 1rem; font-size: 1.4rem; background: #e0f2fe; border-radius: 9999px; transition: background 0.2s; }
-    math-field { font-size: 1.5rem; padding: 1rem; border-radius: 1.5rem; background: #f8fafc; border: 3px dashed #cbd5e1; width: 100%; min-height: 250px; outline: none; }
+    .math-display { font-size: 1.5rem; line-height: 1.55; font-weight: 700; text-align: left; white-space: pre-wrap !important; word-break: break-word; }
+    @media (min-width: 1024px) { .math-display { font-size: 1.78rem; } }
+    .main-box { min-height: 350px; box-shadow: 0 25px 60px -15px rgb(37 99 235 / 0.25); transition: all 0.3s ease; position: relative; }
+    .symbol-btn { padding: 0.75rem 0.5rem; font-size: 1.2rem; background: #e0f2fe; border-radius: 9999px; transition: background 0.2s; }
+    math-field { font-size: 1.5rem; padding: 1rem; border-radius: 1.5rem; background: #f8fafc; border: 3px dashed #cbd5e1; width: 100%; min-height: 200px; outline: none; }
     #draw-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; cursor: crosshair; }
     .drawing-mode #draw-canvas { pointer-events: auto; }
     .blurred-formula { filter: blur(8px); transition: filter 0.3s ease; cursor: pointer; user-select: none; }
     .blurred-formula.revealed { filter: blur(0); }
     @keyframes bounce-in { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     .animate-bounce-in { animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    
+    /* Loader Spinner */
+    .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3b82f6; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
 
+<div id="onboarding-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl max-w-lg w-full p-8 text-center shadow-2xl animate-bounce-in">
+    <div class="text-6xl mb-4">🚀</div>
+    <h2 class="text-3xl font-black text-slate-800 mb-2">Bienvenue sur Boost !</h2>
+    <p class="text-slate-600 mb-6">Ton nouvel espace d'entraînement autonome.</p>
+    <div class="space-y-4 text-left mb-8">
+      <div class="flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold shrink-0">1</div><p class="text-slate-700 text-sm mt-1">Utilise le bouton <b>📝 Brouillon</b> en haut pour ouvrir un espace de calcul.</p></div>
+      <div class="flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 font-bold shrink-0">2</div><p class="text-slate-700 text-sm mt-1">Bloqué ? Révèle les <b>indices</b>. Mais cela coûte un peu d'XP.</p></div>
+      <div class="flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold shrink-0">3</div><p class="text-slate-700 text-sm mt-1">Évalue-toi honnêtement. Le rappel de cours s'affichera pour t'aider.</p></div>
+    </div>
+    <button onclick="closeOnboarding()" class="w-full py-4 bg-slate-900 text-white font-black text-xl rounded-2xl">C'est parti !</button>
+  </div>
+</div>
+
 <div id="login-screen" class="fixed inset-0 bg-[#f8f4f0] z-50 flex flex-col items-center justify-center p-6">
+  <button onclick="askAdmin()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 font-bold flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm"><span>⚙️</span> Coach</button>
+  
   <div class="max-w-md w-full text-center">
-    <div onclick="askAdmin()" class="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl flex items-center justify-center text-5xl shadow-inner mx-auto mb-6 cursor-pointer">📐</div>
+    <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl flex items-center justify-center text-5xl shadow-inner mx-auto mb-6">📐</div>
     <h1 class="text-4xl font-black text-slate-800 mb-8 uppercase tracking-tighter">Algèbre <span class="text-blue-700">Boost</span></h1>
     
     <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-200">
       <p class="text-slate-500 font-bold mb-6 uppercase text-sm tracking-widest">Espace Élève</p>
-      <input type="text" id="student-code-input" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-6 py-4 text-2xl font-black text-center focus:outline-none focus:border-blue-600 mb-4" placeholder="TON CODE (EX: LEO4)">
-      <button onclick="loginWithCode()" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-xl rounded-2xl shadow-lg transition">SE CONNECTER</button>
+      <input type="text" id="student-code-input" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-6 py-4 text-2xl font-black text-center focus:outline-none focus:border-blue-600 mb-4" placeholder="CODE (EX: LEO4)">
+      <button id="btn-login" onclick="loginWithCode()" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-xl rounded-2xl shadow-lg transition flex justify-center items-center gap-2">
+        <span>SE CONNECTER</span> <span id="login-loader" class="loader hidden"></span>
+      </button>
     </div>
-    <p class="mt-8 text-slate-400 text-sm font-medium">Pas encore de code ? Demande à ton coach !</p>
   </div>
 </div>
 
-<div id="admin-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[60] flex items-center justify-center p-6">
+<div id="admin-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
   <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl relative">
     <button onclick="closeAdmin()" class="absolute top-4 right-4 text-slate-400 text-2xl">✕</button>
-    <h2 class="text-2xl font-black mb-6">Créer un accès élève</h2>
+    <h2 class="text-2xl font-black mb-6 flex items-center gap-2"><span>⚙️</span> Espace Coach</h2>
+    
     <div class="space-y-4">
+      <p class="text-sm font-bold text-slate-500 uppercase">Créer un nouvel accès</p>
       <input type="text" id="new-student-name" class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3 font-bold" placeholder="Prénom de l'élève">
       <select id="new-student-level" class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3 font-bold">
         <option value="6EME">6ème</option><option value="5EME">5ème</option><option value="4EME" selected>4ème</option>
         <option value="3EME">3ème</option><option value="SECONDE">Seconde</option><option value="PREMIERE">1ère</option><option value="TERMINALE">Terminale</option>
       </select>
-      <button onclick="generateStudentAccess()" class="w-full py-4 bg-indigo-600 text-white font-black rounded-2xl">GÉNÉRER LE CODE</button>
+      <button id="btn-create" onclick="generateStudentAccess()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl flex justify-center items-center gap-2">
+        <span>GÉNÉRER LE CODE</span> <span id="create-loader" class="loader hidden" style="border-top-color: white;"></span>
+      </button>
       
       <div id="generated-result" class="hidden mt-6 p-4 bg-emerald-50 border-2 border-emerald-200 rounded-2xl text-center">
-        <p class="text-emerald-800 font-bold mb-1">Code généré :</p>
+        <p class="text-emerald-800 font-bold mb-1">Code généré avec succès :</p>
         <p id="final-code" class="text-3xl font-black text-emerald-600 tracking-widest"></p>
+        <p class="text-xs text-emerald-600 mt-2">Ce profil a été enregistré dans Google Sheets.</p>
       </div>
     </div>
   </div>
 </div>
 
-<div id="main-app" class="hidden max-w-7xl mx-auto p-6 flex gap-6">
-  <div id="main-content" class="flex-1 transition-all">
-    <header class="flex justify-between items-center mb-8 bg-white rounded-3xl shadow-xl border border-slate-100 p-6">
-      <div class="flex items-center gap-4">
-        <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-2xl text-white font-bold cursor-pointer" onclick="logout()">📐</div>
-        <h1 class="text-2xl font-black text-slate-800">BOOST <span id="active-student-name" class="text-blue-700 ml-2"></span></h1>
+<div id="main-app" class="hidden max-w-7xl mx-auto p-4 lg:p-6 flex gap-6 relative">
+  <div id="main-content" class="flex-1 w-full">
+    <header class="flex flex-col md:flex-row justify-between items-center mb-6 bg-white rounded-3xl shadow-md border border-slate-100 p-4 lg:p-6 gap-4">
+      <div class="flex items-center gap-4 w-full md:w-auto">
+        <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-2xl text-white font-bold cursor-pointer shadow-inner shrink-0" onclick="logout()">📐</div>
+        <h1 class="text-xl lg:text-2xl font-black text-slate-800 truncate">BOOST <span id="active-student-name" class="text-blue-700 ml-1"></span></h1>
       </div>
-      <div class="flex items-center gap-3 font-bold">
-          <div class="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-xl">🔥 <span id="ui-streak">0</span></div>
-          <div class="bg-blue-50 text-blue-700 px-3 py-1.5 rounded-xl">💎 <span id="ui-xp">0</span></div>
-          <button onclick="toggleDraft()" class="bg-indigo-600 text-white rounded-xl px-4 py-2">📝 Brouillon</button>
-          <select id="niveau-select" onchange="changeNiveau()" class="bg-white border rounded-xl px-2 py-2"></select>
+      
+      <div class="flex items-center gap-2 lg:gap-3 font-bold flex-wrap justify-center w-full md:w-auto">
+          <div class="bg-orange-50 text-orange-600 px-3 py-2 rounded-xl text-sm shadow-sm flex items-center gap-1">🔥 <span id="ui-streak">0</span></div>
+          <div class="bg-blue-50 text-blue-700 px-3 py-2 rounded-xl text-sm shadow-sm flex items-center gap-1">💎 <span id="ui-xp">0</span></div>
+          <button onclick="toggleDraft()" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-4 py-2 text-sm shadow-md transition flex items-center gap-2">📝 <span class="hidden sm:inline">Brouillon</span></button>
+          <select id="niveau-select" onchange="changeNiveau()" class="bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-sm max-w-[120px]"></select>
       </div>
     </header>
-    <main id="app-container" class="space-y-6"></main>
+    <main id="app-container" class="space-y-6 pb-20 lg:pb-0"></main>
   </div>
 
-  <div id="draft-panel" class="hidden w-96 bg-white rounded-3xl shadow-xl border p-6 h-fit sticky top-6">
-    <div class="flex justify-between items-center mb-4"><h2 class="text-xl font-black">Brouillon</h2><button onclick="toggleDraft()">✕</button></div>
+  <div id="draft-panel" class="hidden fixed inset-0 z-[70] bg-white/95 backdrop-blur-md p-6 flex-col overflow-y-auto lg:static lg:block lg:w-96 lg:bg-white lg:rounded-3xl lg:shadow-xl lg:border lg:border-slate-100 lg:h-fit lg:sticky lg:top-6 lg:z-10">
+    <div class="flex justify-between items-center mb-4 pb-4 border-b lg:border-none">
+      <div class="flex items-center gap-2"><span class="text-2xl">✍️</span><h2 class="text-xl font-black">Brouillon</h2></div>
+      <div class="flex gap-2">
+        <button onclick="clearMathField()" class="text-slate-400 hover:text-rose-500 font-bold text-sm bg-slate-100 px-3 py-1 rounded-full">Effacer</button>
+        <button onclick="toggleDraft()" class="lg:hidden text-slate-500 font-black text-xl bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center">✕</button>
+      </div>
+    </div>
     <math-field id="math-draft" smart-mode virtual-keyboard-mode="manual"></math-field>
-    <div class="mt-4 grid grid-cols-6 gap-1">
-        <button onclick="insertMath('\\frac{#?}{#?}')" class="symbol-btn text-sm">a/b</button>
-        <button onclick="insertMath('\\sqrt{#?}')" class="symbol-btn text-sm">√</button>
-        <button onclick="insertMath('^2')" class="symbol-btn text-sm">x²</button>
+    <div class="mt-4 grid grid-cols-4 lg:grid-cols-6 gap-2">
+        <button onclick="insertMath('\\frac{#?}{#?}')" class="symbol-btn">a/b</button><button onclick="insertMath('\\div')" class="symbol-btn">÷</button>
+        <button onclick="insertMath('\\times')" class="symbol-btn">×</button><button onclick="insertMath('\\sqrt{#?}')" class="symbol-btn">√</button>
+        <button onclick="insertMath('^2')" class="symbol-btn">x²</button><button onclick="insertMath('^3')" class="symbol-btn">x³</button>
+        <button onclick="insertMath('\\pm')" class="symbol-btn">±</button><button onclick="insertMath('\\leq')" class="symbol-btn">≤</button>
+        <button onclick="insertMath('\\geq')" class="symbol-btn">≥</button><button onclick="insertMath('\\in')" class="symbol-btn">∈</button>
+        <button onclick="insertMath('\\mathbb{R}')" class="symbol-btn">ℝ</button><button onclick="insertMath('\\Delta')" class="symbol-btn">Δ</button>
     </div>
   </div>
 </div>
 
 <script>
+// ==========================================================
+// CONFIGURATION : REMPLACE CETTE URL PAR TON GOOGLE SCRIPT
+// ==========================================================
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwhRhPafn3a2hMH9WEw6E89FdR9QyKappv0OrGUr6OYiL11ScZqMkxG9pEN_G-GnlBnOw/exec";
-const ADMIN_PASSWORD = "NICO"; // Ton mot de passe admin
+const ADMIN_PASSWORD = "NICO"; // Mot de passe du coach
 
 let state = {
   activeProfile: null, niveau: "5EME", results: {}, xp: 0, streak: 0,
   questView: {}, expanded: {}, revealed: false, currentId: null,
   hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
-  timer: { interval: null, seconds: 0, activeId: null }, isDrawing: false, draftOpen: false
+  isDrawing: false, draftOpen: false
 };
 
-const STORAGE_KEY_PROFILES = 'boost_registered_students'; // Liste globale des codes valides
+const STORAGE_KEY_LOCAL = 'boost_local_progress'; 
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
 const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère", "TERMINALE": "Terminale" };
+const EMOJIS = ['📘', '🧮', '📐', '🚀', '💡', '🎯', '⚡', '🔥'];
 const LEVELS = {}; Object.keys(LEVEL_NAMES).forEach(k => { LEVELS[k] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[k] }; });
 
-// --- GESTION ADMIN & CODES ---
+// --- COACH : CRÉATION DE PROFIL (POST vers Google Sheets) ---
 function askAdmin() {
   const pass = prompt("Mot de passe Coach :");
   if (pass === ADMIN_PASSWORD) document.getElementById('admin-modal').classList.remove('hidden');
@@ -122,82 +163,124 @@ function askAdmin() {
 
 function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
 
-function generateStudentAccess() {
+async function generateStudentAccess() {
   const name = document.getElementById('new-student-name').value.trim();
   const level = document.getElementById('new-student-level').value;
-  if (!name) return alert("Nom requis");
+  if (!name) return alert("Prénom requis !");
 
-  // ALGO : 3 premières lettres Prénom + Chiffre classe (ex: 6, 5, 4, 3, 2, 1, T)
+  const loader = document.getElementById('create-loader');
+  const btn = document.getElementById('btn-create');
+  loader.classList.remove('hidden'); btn.classList.add('opacity-80');
+
   let classDigit = level.charAt(0); 
   const code = (name.substring(0, 3).toUpperCase() + classDigit).replace(/\s/g, '');
 
-  const profiles = JSON.parse(localStorage.getItem(STORAGE_KEY_PROFILES)) || {};
-  profiles[code] = { name: name, level: level, xp: 0, streak: 0, results: {} };
-  localStorage.setItem(STORAGE_KEY_PROFILES, JSON.stringify(profiles));
-
-  document.getElementById('final-code').innerText = code;
-  document.getElementById('generated-result').classList.remove('hidden');
+  try {
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: "create_profile", code: code, name: name, level: level })
+    });
+    
+    document.getElementById('final-code').innerText = code;
+    document.getElementById('generated-result').classList.remove('hidden');
+  } catch(e) {
+    alert("Erreur de connexion avec Google Sheets.");
+  } finally {
+    loader.classList.add('hidden'); btn.classList.remove('opacity-80');
+  }
 }
 
-// --- CONNEXION ÉLÈVE ---
-function loginWithCode() {
+// --- ÉLÈVE : CONNEXION (GET depuis Google Sheets) ---
+async function loginWithCode() {
   const code = document.getElementById('student-code-input').value.trim().toUpperCase();
-  const profiles = JSON.parse(localStorage.getItem(STORAGE_KEY_PROFILES)) || {};
+  if(!code) return;
   
-  if (profiles[code]) {
-    state.activeProfile = profiles[code];
-    state.activeProfile.code = code;
-    initStudentApp();
-  } else {
-    alert("Code inconnu. Vérifie avec ton coach !");
+  const loader = document.getElementById('login-loader');
+  const btn = document.getElementById('btn-login');
+  loader.classList.remove('hidden'); btn.classList.add('opacity-80');
+
+  try {
+    const response = await fetch(GOOGLE_SCRIPT_URL + "?action=get_profiles");
+    const profiles = await response.json();
+
+    if (profiles[code]) {
+      state.activeProfile = profiles[code];
+      state.activeProfile.code = code;
+      initStudentApp();
+    } else {
+      alert("Code inconnu. Vérifie avec ton coach !");
+    }
+  } catch(e) {
+    alert("Impossible de vérifier le code pour le moment.");
+  } finally {
+    loader.classList.add('hidden'); btn.classList.remove('opacity-80');
   }
 }
 
 function initStudentApp() {
+  // Chargement de la progression locale du navigateur (XP, Exos réussis)
+  const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
+  if(!localData[state.activeProfile.code]) {
+    localData[state.activeProfile.code] = { results: {}, xp: 0, streak: 1, lastLogin: new Date().toISOString().split('T')[0], isNew: true };
+  } else {
+    // Calcul de la flamme (streak)
+    const p = localData[state.activeProfile.code];
+    const today = new Date().toISOString().split('T')[0];
+    if (p.lastLogin && p.lastLogin !== today) {
+      const diff = Math.ceil(Math.abs(new Date(today) - new Date(p.lastLogin)) / (86400000));
+      p.streak = (diff === 1) ? (p.streak || 0) + 1 : 1;
+    }
+    p.lastLogin = today;
+  }
+  
+  localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
+  const myData = localData[state.activeProfile.code];
+
+  state.niveau = state.activeProfile.level;
+  state.results = myData.results || {};
+  state.xp = myData.xp || 0;
+  state.streak = myData.streak || 1;
+
   document.getElementById('login-screen').classList.add('hidden');
   document.getElementById('main-app').classList.remove('hidden');
   document.getElementById('active-student-name').innerText = state.activeProfile.name;
   
-  state.niveau = state.activeProfile.level;
-  state.results = state.activeProfile.results || {};
-  state.xp = state.activeProfile.xp || 0;
-  
+  if(myData.isNew) {
+    document.getElementById('onboarding-modal').classList.remove('hidden');
+    myData.isNew = false;
+    localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
+  }
+
   updateLevelDropdown(state.niveau);
   updateHeader();
   render();
 }
+// ==========================================================
+// CONFIGURATION : REMPLACE CETTE URL PAR TON GOOGLE SCRIPT
+// ==========================================================
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwJPcQqeS5_jSIz-EjJZNJr-CCV-yvOvrbfFgy6vV8i13UD8r-yflcm1UguS7gdgEJ2ZQ/exec";
+const ADMIN_PASSWORD = "NICO"; // Mot de passe du coach
 
+function closeOnboarding() { document.getElementById('onboarding-modal').classList.add('hidden'); }
 function logout() { location.reload(); }
 
-// --- LOGIQUE APP ---
-function populateLevelsFromDb() { Object.keys(LEVELS).forEach(key => { const raw = window.db ? window.db[`ALGEBRA_${key}`] : null; if (raw) LEVELS[key] = { categories: raw.categories || raw, catDisplay: raw.catDisplay || {}, catIcon: raw.catIcon || {}, name: LEVEL_NAMES[key] }; }); }
-
-function updateLevelDropdown(userLevel) {
-  const select = document.getElementById('niveau-select');
-  select.innerHTML = '';
-  const maxIdx = LEVEL_ORDER.indexOf(userLevel);
-  for(let i = 0; i <= maxIdx; i++) {
-    const lvlKey = LEVEL_ORDER[i];
-    const opt = document.createElement('option');
-    opt.value = lvlKey;
-    opt.text = LEVEL_NAMES[lvlKey];
-    select.appendChild(opt);
-  }
-  select.value = userLevel;
-}
-
-function updateHeader() {
-  document.getElementById('ui-streak').innerText = state.activeProfile.streak || 0;
-  document.getElementById('ui-xp').innerText = state.xp;
-}
-
-function saveProgress() {
-  const profiles = JSON.parse(localStorage.getItem(STORAGE_KEY_PROFILES)) || {};
+// --- LOGIQUE SAUVEGARDE ET SYNC ---
+function saveLocalProgress() {
+  const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
   if (state.activeProfile.code) {
-    profiles[state.activeProfile.code].results = state.results;
-    profiles[state.activeProfile.code].xp = state.xp;
-    localStorage.setItem(STORAGE_KEY_PROFILES, JSON.stringify(profiles));
+    localData[state.activeProfile.code].results = state.results;
+    localData[state.activeProfile.code].xp = state.xp;
+    localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
   }
+}
+
+function sendScoreToSheet(cat, status, xpGained) {
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST', mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: "save_score", code: state.activeProfile.code, name: state.activeProfile.name, level: state.niveau, categorie: cat, resultat: status, xp: xpGained })
+  }).catch(e => console.log("Sauvegarde silencieuse."));
 }
 
 function mark(cat, idx, status, total) {
@@ -205,51 +288,99 @@ function mark(cat, idx, status, total) {
   state.results[id] = status;
   state.formulaRevealed[id] = true;
 
+  let xpGained = 0;
   if(status !== 'HARD') {
-    let gained = 100 - ((state.hintStepsRevealed[id]||0)*15);
-    state.xp += Math.max(10, Math.floor(gained));
+    let gained = 100 - ((state.hintStepsRevealed[id]||0)*15) - (state.formulaManuallyTouched[id]?25:0);
+    if(status === 'EASY') gained *= 1.2;
+    xpGained = Math.max(10, Math.floor(gained));
+    state.xp += xpGained;
   }
   
-  saveProgress();
+  saveLocalProgress();
+  sendScoreToSheet(cat, status, xpGained);
   updateHeader();
   
-  fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ eleve: state.activeProfile.name, classe: state.niveau, categorie: cat, resultat: status, xp: state.xp }) });
+  // Confetti si 100% terminé
+  let completed = 0;
+  for(let i=0; i<total; i++) { if(state.results[`${state.niveau}-${cat}-${i}`] === 'EASY' || state.results[`${state.niveau}-${cat}-${i}`] === 'MEDIUM') completed++; }
+  if(completed === total) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
 
   render();
   setTimeout(() => { nextExercise(cat); }, 1500);
 }
 
-// (Le reste des fonctions renderSection, render, toggleDraft, etc. reste identique à tes versions précédentes)
-function toggleDraft() { state.draftOpen = !state.draftOpen; document.getElementById('draft-panel').classList.toggle('hidden'); }
+// --- UTILITAIRES APP ---
+function populateLevelsFromDb() { Object.keys(LEVELS).forEach(key => { const raw = window.db ? window.db[`ALGEBRA_${key}`] : null; if (raw) LEVELS[key] = { categories: raw.categories || raw, catDisplay: raw.catDisplay || {}, catIcon: raw.catIcon || {}, name: LEVEL_NAMES[key] }; }); }
+function updateLevelDropdown(userLevel) {
+  const select = document.getElementById('niveau-select');
+  select.innerHTML = ''; const maxIdx = LEVEL_ORDER.indexOf(userLevel);
+  for(let i = 0; i <= maxIdx; i++) {
+    const lvlKey = LEVEL_ORDER[i]; const opt = document.createElement('option');
+    opt.value = lvlKey; opt.text = LEVEL_NAMES[lvlKey]; select.appendChild(opt);
+  }
+  select.value = userLevel;
+}
+function updateHeader() { document.getElementById('ui-streak').innerText = state.streak; document.getElementById('ui-xp').innerText = state.xp; }
+
+// Toggle Draft : Gère l'affichage Desktop vs Mobile
+function toggleDraft() {
+  state.draftOpen = !state.draftOpen;
+  const panel = document.getElementById('draft-panel');
+  if(state.draftOpen) {
+    panel.classList.remove('hidden');
+    panel.classList.add('flex'); // Pour le mobile (plein écran)
+    setTimeout(() => { document.getElementById('math-draft').focus(); }, 100);
+  } else {
+    panel.classList.add('hidden');
+    panel.classList.remove('flex');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => { 
+  populateLevelsFromDb(); 
+  const mf = document.getElementById('math-draft');
+  if(mf) { mf.addEventListener('keydown', (ev) => { if(ev.key === 'Enter') { ev.preventDefault(); mf.executeCommand(['insert', '\\\\']); } }); }
+});
+
 function insertMath(l) { document.getElementById('math-draft').insert(l); }
+function clearMathField() { document.getElementById('math-draft').setValue(''); }
 function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; render(); }
 function goToExercise(cat, i) { state.questView[cat] = i; state.revealed = false; render(); }
 function nextExercise(cat) { const idx = state.questView[cat] || 0; const total = LEVELS[state.niveau].categories[cat].length; if(idx < total-1) state.questView[cat]++; state.revealed = false; render(); }
 function verify(cat, idx) { state.revealed = true; state.currentId = `${state.niveau}-${cat}-${idx}`; render(); }
 function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; render(); }
-function showNextHint(id, total) {
-  if(!state.hintStepsRevealed[id]) state.hintStepsRevealed[id] = 0;
-  if(state.hintStepsRevealed[id] < total) {
-    document.getElementById(`hint-${id}-${state.hintStepsRevealed[id]}`).classList.remove('hidden');
-    state.hintStepsRevealed[id]++;
-  }
-}
-function revealFormula(id, el) { el.classList.add('revealed'); }
+function showNextHint(id, total) { if(!state.hintStepsRevealed[id]) state.hintStepsRevealed[id] = 0; if(state.hintStepsRevealed[id] < total) { document.getElementById(`hint-${id}-${state.hintStepsRevealed[id]}`).classList.remove('hidden'); state.hintStepsRevealed[id]++; } }
+function revealFormula(id, el) { el.classList.add('revealed'); state.formulaManuallyTouched[id] = true; }
 
+// --- RENDU VISUEL ---
 function render() {
   const container = document.getElementById('app-container');
   let html = `<div class="space-y-4">`;
   const cats = LEVELS[state.niveau].categories || {};
-  Object.keys(cats).forEach(cat => {
-    const total = cats[cat].length;
-    let completed = 0;
-    for(let i=0; i<total; i++) { if(state.results[`${state.niveau}-${cat}-${i}`] === 'EASY' || state.results[`${state.niveau}-${cat}-${i}`] === 'MEDIUM') completed++; }
-    const pct = Math.round((completed/total)*100);
+  let emojiIdx = 0;
 
-    html += `<div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
-      <div onclick="toggleCategory('${cat}')" class="px-6 py-4 flex justify-between items-center cursor-pointer bg-slate-50">
-        <div><span class="text-xl font-bold">${LEVELS[state.niveau].catDisplay[cat]||cat}</span><div class="text-xs text-slate-500">${pct}% terminé</div></div>
-        <span class="text-xl">${state.expanded[cat]?'▲':'▼'}</span>
+  Object.keys(cats).forEach(cat => {
+    const total = cats[cat].length; let completed = 0;
+    for(let i=0; i<total; i++) { if(state.results[`${state.niveau}-${cat}-${i}`] === 'EASY' || state.results[`${state.niveau}-${cat}-${i}`] === 'MEDIUM') completed++; }
+    const pct = total > 0 ? Math.round((completed/total)*100) : 0;
+    
+    // Assignation d'un émoji dynamique
+    const icon = LEVELS[state.niveau].catIcon[cat] || EMOJIS[emojiIdx % EMOJIS.length];
+    emojiIdx++;
+
+    html += `<div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all">
+      <div onclick="toggleCategory('${cat}')" class="px-5 py-4 flex justify-between items-center cursor-pointer ${completed===total && total>0 ? 'bg-emerald-50' : 'bg-slate-50 hover:bg-slate-100'}">
+        <div class="flex items-center gap-4">
+          <span class="text-3xl">${icon}</span>
+          <div>
+            <span class="text-lg lg:text-xl font-bold ${completed===total && total>0 ? 'text-emerald-800' : 'text-slate-800'}">${LEVELS[state.niveau].catDisplay[cat]||cat} ${completed===total && total>0 ? '🏆' : ''}</span>
+            <div class="w-full flex items-center gap-2 mt-1">
+              <div class="w-24 lg:w-32 bg-slate-200 rounded-full h-1.5"><div class="bg-emerald-500 h-1.5 rounded-full" style="width: ${pct}%"></div></div>
+              <span class="text-xs text-slate-500 font-bold">${pct}%</span>
+            </div>
+          </div>
+        </div>
+        <span class="text-xl text-slate-400 transition-transform ${state.expanded[cat]?'rotate-180':''}"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></span>
       </div>
       ${state.expanded[cat] ? renderSection(cat, cats[cat][state.questView[cat]||0], state.questView[cat]||0, total) : ''}
     </div>`;
@@ -260,42 +391,48 @@ function render() {
 
 function renderSection(cat, data, idx, total) {
   if (!data) return `<div class="p-10 text-center font-bold text-emerald-600">Félicitations ! Catégorie terminée.</div>`;
-  const id = `${state.niveau}-${cat}-${idx}`; 
-  const isRev = state.revealed && state.currentId === id;
+  const id = `${state.niveau}-${cat}-${idx}`; const isRev = state.revealed && state.currentId === id;
   
-  let pills = `<div class="flex flex-wrap gap-1 p-4 justify-center">`;
+  let pills = `<div class="flex flex-wrap gap-1.5 p-4 justify-center">`;
   for(let i=0; i<total; i++) {
     const st = state.results[`${state.niveau}-${cat}-${i}`];
-    let c = "w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center cursor-pointer ";
-    c += (st === 'EASY' || st === 'MEDIUM') ? "bg-emerald-500 text-white" : (st === 'HARD' ? "bg-rose-500 text-white" : "bg-slate-200");
-    if(i===idx) c+=" ring-2 ring-blue-500";
+    let c = "w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center cursor-pointer transition ";
+    c += (st === 'EASY' || st === 'MEDIUM') ? "bg-emerald-500 text-white" : (st === 'HARD' ? "bg-rose-500 text-white" : "bg-slate-200 text-slate-600");
+    if(i===idx) c+=" ring-4 ring-blue-300 scale-110";
     pills += `<button onclick="goToExercise('${cat}', ${i})" class="${c}">${i+1}</button>`;
   } pills += `</div>`;
 
+  const fRevealedClass = (state.formulaRevealed[id] || state.formulaManuallyTouched[id]) ? 'revealed' : '';
+
   return `
-    <div class="p-6 border-t">
+    <div class="p-4 lg:p-6 border-t border-slate-100">
       ${pills}
-      <div class="main-box bg-white border-2 border-blue-100 rounded-2xl p-6 mb-6">
-        <div class="math-display mb-6">${data.q}</div>
-        ${isRev ? `<div class="mt-4 pt-4 border-t-2 border-dashed border-emerald-200 text-3xl font-black text-emerald-600 animate-bounce-in">${data.a}</div>` : ''}
+      <div class="main-box bg-white border-2 border-blue-100 rounded-3xl p-6 lg:p-8 mb-6 mt-4 relative overflow-hidden">
+        <span class="absolute top-4 right-4 bg-blue-100 text-blue-800 text-xs font-black px-3 py-1 rounded-full uppercase">Niv. ${data.lvl || 1}</span>
+        <div class="math-display mt-4 mb-6">${data.q}</div>
+        ${isRev ? `<div class="mt-6 pt-6 border-t-4 border-dashed border-emerald-200 text-3xl lg:text-4xl font-black text-emerald-600 animate-bounce-in text-center">${data.a}</div>` : ''}
       </div>
       <div class="flex gap-2">
-        ${!isRev ? `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl">VÉRIFIER</button>` : `
-          <button onclick="mark('${cat}', ${idx}, 'HARD', ${total})" class="flex-1 py-3 bg-rose-100 text-rose-700 rounded-xl font-bold">FAUX</button>
-          <button onclick="mark('${cat}', ${idx}, 'EASY', ${total})" class="flex-1 py-3 bg-emerald-100 text-emerald-700 rounded-xl font-bold">RÉUSSI</button>
+        ${!isRev ? `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-lg rounded-2xl shadow-xl transition">VÉRIFIER</button>` : `
+          <button onclick="mark('${cat}', ${idx}, 'HARD', ${total})" class="flex-1 py-3 lg:py-4 bg-rose-100 text-rose-700 rounded-2xl font-black border-2 border-rose-200 hover:bg-rose-200 transition">🥵 FAUX</button>
+          <button onclick="mark('${cat}', ${idx}, 'MEDIUM', ${total})" class="flex-1 py-3 lg:py-4 bg-amber-100 text-amber-700 rounded-2xl font-black border-2 border-amber-200 hover:bg-amber-200 transition">🤔 HÉSITÉ</button>
+          <button onclick="mark('${cat}', ${idx}, 'EASY', ${total})" class="flex-1 py-3 lg:py-4 bg-emerald-100 text-emerald-700 rounded-2xl font-black border-2 border-emerald-200 hover:bg-emerald-200 transition">😎 FACILE</button>
         `}
       </div>
-      <div class="mt-4 grid grid-cols-2 gap-4">
-        <button onclick="showNextHint('${id}', ${data.steps ? data.steps.length : 0})" class="text-sm font-bold text-amber-600 bg-amber-50 p-2 rounded-lg">Besoin d'un indice ?</button>
-        <div class="blurred-formula text-xs bg-indigo-50 p-2 rounded-lg" onclick="revealFormula('${id}', this)">${data.f || 'Clique pour la formule'}</div>
-      </div>
-      <div class="mt-2">
-        ${(data.steps||[]).map((s,i) => `<div id="hint-${id}-${i}" class="hidden text-sm p-2 bg-amber-100 rounded mt-1 border-l-4 border-amber-400">${s}</div>`).join('')}
+      <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+          <button onclick="showNextHint('${id}', ${data.steps ? data.steps.length : 0})" class="w-full text-sm font-bold text-amber-600 bg-amber-100 hover:bg-amber-200 p-3 rounded-xl transition">💡 Révéler un indice</button>
+          <div class="mt-3 space-y-2">
+            ${(data.steps||[]).map((s,i) => `<div id="hint-${id}-${i}" class="hidden text-sm p-3 bg-white rounded-xl border border-amber-200 text-amber-900 font-medium">${s}</div>`).join('')}
+          </div>
+        </div>
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex flex-col justify-center">
+          <p class="text-xs font-bold text-slate-400 uppercase text-center mb-2">Rappel de cours</p>
+          <div class="blurred-formula ${fRevealedClass} text-sm lg:text-base bg-indigo-100 text-indigo-900 font-bold p-4 rounded-xl text-center border border-indigo-200" onclick="revealFormula('${id}', this)">${data.f || 'Pas de formule spécifique pour cet exercice.'}</div>
+        </div>
       </div>
     </div>`;
 }
-
-document.addEventListener('DOMContentLoaded', () => { populateLevelsFromDb(); });
 </script>
 </body>
 </html>
