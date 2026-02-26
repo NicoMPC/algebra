@@ -16,11 +16,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   
   <script>
-    tailwind = {
-      config: {
-        darkMode: 'class',
-      }
-    }
+    tailwind = { config: { darkMode: 'class' } }
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   
@@ -31,36 +27,34 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
     body { font-family: 'Inter', system-ui, sans-serif; transition: background-color 0.3s, color 0.3s; }
     
-    /* Optimisation des tailles de police et du débordement des formules */
-    .math-display { font-size: 1.3rem; line-height: 1.3; font-weight: 700; text-align: left; white-space: pre-wrap !important; word-break: break-word; overflow-x: auto; overflow-y: hidden; }
+    .math-display { font-size: 1.3rem; line-height: 1.4; font-weight: 700; text-align: left; white-space: pre-wrap !important; word-break: break-word; overflow-x: auto; overflow-y: hidden; }
     @media (min-width: 1024px) { .math-display { font-size: 1.6rem; } }
     
-    /* Hauteur drastiquement réduite pour la box principale (optimisation mobile) */
     .main-box { min-height: 80px; transition: all 0.3s ease; position: relative; }
     
-    .symbol-btn { padding: 0.75rem 0.5rem; font-size: 1.2rem; background: #e0f2fe; border-radius: 9999px; transition: background 0.2s; color: #0f172a; }
-    html.dark .symbol-btn { background: #1e293b; color: #f8fafc; }
+    .symbol-btn { padding: 0.75rem 0.5rem; font-size: 1.2rem; background: #e0f2fe; border-radius: 9999px; transition: background 0.2s; color: #0f172a; font-weight: bold; }
+    html.dark .symbol-btn { background: #1e293b; color: #e2e8f0; }
+    html.dark .symbol-btn:hover { background: #334155; }
     
-    /* MathLive : Adaptation au Dark Mode */
+    /* Adaptation de MathLive au Dark Mode Total */
     math-field { font-size: 1.5rem; padding: 1rem; border-radius: 1.5rem; background: #f8fafc; border: 3px dashed #cbd5e1; width: 100%; min-height: 200px; outline: none; color: #0f172a; transition: all 0.3s; }
-    html.dark math-field { background: #0f172a; border-color: #334155; color: #f8fafc; }
+    html.dark math-field { background: #0f172a; border-color: #334155; color: #f8fafc; --contains-highlight-backround: #1e293b; --selection-background-color: #3b82f6; }
+    html.dark math-field::part(virtual-keyboard-toggle) { color: #cbd5e1; }
     
     #draw-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; cursor: crosshair; }
     .drawing-mode #draw-canvas { pointer-events: auto; }
     
-    /* Protection contre les longues formules dans le rappel de cours */
     .blurred-formula { filter: blur(8px); transition: filter 0.3s ease, background 0.3s, color 0.3s; cursor: pointer; user-select: none; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
     .blurred-formula.revealed { filter: blur(0); }
     
     @keyframes bounce-in { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     .animate-bounce-in { animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     
-    /* Loader Spinner */
     .loader { border: 4px solid transparent; border-top: 4px solid currentColor; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
-<body class="bg-[#f8f4f0] text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+<body class="bg-[#f8f4f0] text-slate-900 dark:bg-slate-900 dark:text-slate-100 min-h-screen">
 
 <div id="onboarding-modal" class="hidden fixed inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
   <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-lg w-full p-8 text-center shadow-2xl animate-bounce-in border border-transparent dark:border-slate-700">
@@ -76,7 +70,7 @@
   </div>
 </div>
 
-<div id="login-screen" class="fixed inset-0 bg-[#f8f4f0] dark:bg-slate-900 z-50 flex flex-col items-center justify-center p-6">
+<div id="login-screen" class="fixed inset-0 bg-[#f8f4f0] dark:bg-slate-900 z-50 flex flex-col items-center justify-center p-6 transition-colors">
   <div class="absolute top-6 right-6 flex gap-3">
     <button onclick="toggleTheme()" class="text-2xl bg-white dark:bg-slate-800 w-12 h-12 rounded-full shadow-sm flex items-center justify-center border border-transparent dark:border-slate-700 transition hover:scale-105" id="btn-theme-login">🌙</button>
     <button onclick="askAdmin()" class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-full shadow-sm border border-transparent dark:border-slate-700 transition hover:scale-105"><span>⚙️</span> Coach</button>
@@ -126,7 +120,9 @@
     <header class="flex flex-col md:flex-row justify-between items-center mb-6 bg-white dark:bg-slate-800 rounded-3xl shadow-md border border-slate-100 dark:border-slate-700 p-4 lg:p-6 gap-4 transition-colors">
       <div class="flex items-center gap-4 w-full md:w-auto">
         <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-2xl text-white font-bold cursor-pointer shadow-inner shrink-0 hover:scale-105 transition" onclick="logout()" title="Se déconnecter">📐</div>
-        <h1 class="text-xl lg:text-2xl font-black text-slate-800 dark:text-white truncate">BOOST <span id="active-student-name" class="text-blue-700 dark:text-blue-400 ml-1"></span></h1>
+        <div class="flex flex-col">
+            <h1 class="text-xl lg:text-2xl font-black text-slate-800 dark:text-white truncate">BOOST <span id="active-student-name" class="text-blue-700 dark:text-blue-400 ml-1"></span></h1>
+        </div>
       </div>
       
       <div class="flex items-center gap-2 lg:gap-3 font-bold flex-wrap justify-center w-full md:w-auto">
@@ -150,19 +146,18 @@
     </div>
     <math-field id="math-draft" smart-mode virtual-keyboard-mode="manual"></math-field>
     <div class="mt-4 grid grid-cols-4 lg:grid-cols-6 gap-2">
-        <button onclick="insertMath('\\frac{#?}{#?}')" class="symbol-btn">a/b</button><button onclick="insertMath('\\div')" class="symbol-btn">÷</button>
-        <button onclick="insertMath('\\times')" class="symbol-btn">×</button><button onclick="insertMath('\\sqrt{#?}')" class="symbol-btn">√</button>
-        <button onclick="insertMath('^2')" class="symbol-btn">x²</button><button onclick="insertMath('^3')" class="symbol-btn">x³</button>
+        <button onclick="insertMath('\\ ')" class="symbol-btn col-span-2 text-sm uppercase tracking-widest">Espace</button>
+        <button onclick="insertMath('\\frac{#?}{#?}')" class="symbol-btn">a/b</button><button onclick="insertMath('\\times')" class="symbol-btn">×</button>
+        <button onclick="insertMath('\\sqrt{#?}')" class="symbol-btn">√</button><button onclick="insertMath('^2')" class="symbol-btn">x²</button>
         <button onclick="insertMath('\\pm')" class="symbol-btn">±</button><button onclick="insertMath('\\leq')" class="symbol-btn">≤</button>
-        <button onclick="insertMath('\\geq')" class="symbol-btn">≥</button><button onclick="insertMath('\\in')" class="symbol-btn">∈</button>
-        <button onclick="insertMath('\\mathbb{R}')" class="symbol-btn">ℝ</button><button onclick="insertMath('\\Delta')" class="symbol-btn">Δ</button>
+        <button onclick="insertMath('\\in')" class="symbol-btn">∈</button><button onclick="insertMath('\\mathbb{R}')" class="symbol-btn">ℝ</button>
     </div>
   </div>
 </div>
 
 <script>
 // ==========================================================
-// CONFIGURATION : TON GOOGLE SCRIPT EST ICI !
+// CONFIGURATION GOOGLE SCRIPT
 // ==========================================================
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwJPcQqeS5_jSIz-EjJZNJr-CCV-yvOvrbfFgy6vV8i13UD8r-yflcm1UguS7gdgEJ2ZQ/exec";
 const ADMIN_PASSWORD = "NICO"; 
@@ -182,43 +177,31 @@ const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME":
 const EMOJIS = ['📘', '🧮', '📐', '🚀', '💡', '🎯', '⚡', '🔥'];
 const LEVELS = {}; Object.keys(LEVEL_NAMES).forEach(k => { LEVELS[k] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[k] }; });
 
-// --- GESTION DU THÈME SOMBRE (DARK MODE) ---
+// --- GESTION DU THÈME SOMBRE ---
 function initTheme() {
   const savedTheme = localStorage.getItem(THEME_KEY);
   if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    state.darkMode = true;
-    document.documentElement.classList.add('dark');
-    document.getElementById('btn-theme-login').innerText = '☀️';
-    document.getElementById('btn-theme-app').innerText = '☀️';
+    state.darkMode = true; document.documentElement.classList.add('dark');
+    document.getElementById('btn-theme-login').innerText = '☀️'; document.getElementById('btn-theme-app').innerText = '☀️';
   } else {
-    state.darkMode = false;
-    document.documentElement.classList.remove('dark');
-    document.getElementById('btn-theme-login').innerText = '🌙';
-    document.getElementById('btn-theme-app').innerText = '🌙';
+    state.darkMode = false; document.documentElement.classList.remove('dark');
+    document.getElementById('btn-theme-login').innerText = '🌙'; document.getElementById('btn-theme-app').innerText = '🌙';
   }
 }
 
 function toggleTheme() {
   state.darkMode = !state.darkMode;
   if (state.darkMode) {
-    document.documentElement.classList.add('dark');
-    localStorage.setItem(THEME_KEY, 'dark');
-    document.getElementById('btn-theme-login').innerText = '☀️';
-    document.getElementById('btn-theme-app').innerText = '☀️';
+    document.documentElement.classList.add('dark'); localStorage.setItem(THEME_KEY, 'dark');
+    document.getElementById('btn-theme-login').innerText = '☀️'; document.getElementById('btn-theme-app').innerText = '☀️';
   } else {
-    document.documentElement.classList.remove('dark');
-    localStorage.setItem(THEME_KEY, 'light');
-    document.getElementById('btn-theme-login').innerText = '🌙';
-    document.getElementById('btn-theme-app').innerText = '🌙';
+    document.documentElement.classList.remove('dark'); localStorage.setItem(THEME_KEY, 'light');
+    document.getElementById('btn-theme-login').innerText = '🌙'; document.getElementById('btn-theme-app').innerText = '🌙';
   }
 }
 
 // --- COACH : CRÉATION DE PROFIL ---
-function askAdmin() {
-  const pass = prompt("Mot de passe Coach :");
-  if (pass === ADMIN_PASSWORD) document.getElementById('admin-modal').classList.remove('hidden');
-}
-
+function askAdmin() { const pass = prompt("Mot de passe Coach :"); if (pass === ADMIN_PASSWORD) document.getElementById('admin-modal').classList.remove('hidden'); }
 function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
 
 async function generateStudentAccess() {
@@ -226,68 +209,38 @@ async function generateStudentAccess() {
   const level = document.getElementById('new-student-level').value;
   if (!name) return alert("Prénom requis !");
 
-  const loader = document.getElementById('create-loader');
-  const btn = document.getElementById('btn-create');
+  const loader = document.getElementById('create-loader'); const btn = document.getElementById('btn-create');
   loader.classList.remove('hidden'); btn.classList.add('opacity-80');
-
-  let classDigit = level.charAt(0); 
-  const code = (name.substring(0, 3).toUpperCase() + classDigit).replace(/\s/g, '');
+  const code = (name.substring(0, 3).toUpperCase() + level.charAt(0)).replace(/\s/g, '');
 
   try {
-    await fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: "create_profile", code: code, name: name, level: level })
-    });
-    
-    document.getElementById('final-code').innerText = code;
-    document.getElementById('generated-result').classList.remove('hidden');
-  } catch(e) {
-    alert("Erreur de connexion avec Google Sheets.");
-  } finally {
-    loader.classList.add('hidden'); btn.classList.remove('opacity-80');
-  }
+    await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: "create_profile", code: code, name: name, level: level }) });
+    document.getElementById('final-code').innerText = code; document.getElementById('generated-result').classList.remove('hidden');
+  } catch(e) { alert("Erreur Google Sheets."); } finally { loader.classList.add('hidden'); btn.classList.remove('opacity-80'); }
 }
 
-// --- ÉLÈVE : CONNEXION & MAINTIEN DE SESSION ---
+// --- ÉLÈVE : CONNEXION ---
 document.addEventListener('DOMContentLoaded', () => { 
-  initTheme();
-  populateLevelsFromDb(); 
+  initTheme(); populateLevelsFromDb(); 
   const mf = document.getElementById('math-draft');
   if(mf) { mf.addEventListener('keydown', (ev) => { if(ev.key === 'Enter') { ev.preventDefault(); mf.executeCommand(['insert', '\\\\']); } }); }
   
   const savedCode = localStorage.getItem(SESSION_KEY);
   const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
-  if (savedCode && localData[savedCode]) {
-    state.activeProfile = { code: savedCode, name: localData[savedCode].name, level: localData[savedCode].level };
-    initStudentApp();
-  }
+  if (savedCode && localData[savedCode]) { state.activeProfile = { code: savedCode, name: localData[savedCode].name, level: localData[savedCode].level }; initStudentApp(); }
 });
 
 async function loginWithCode() {
   const code = document.getElementById('student-code-input').value.trim().toUpperCase();
   if(!code) return;
-  
-  const loader = document.getElementById('login-loader');
-  const btn = document.getElementById('btn-login');
+  const loader = document.getElementById('login-loader'); const btn = document.getElementById('btn-login');
   loader.classList.remove('hidden'); btn.classList.add('opacity-80');
 
   try {
-    const response = await fetch(GOOGLE_SCRIPT_URL + "?action=get_profiles");
-    const profiles = await response.json();
-
-    if (profiles[code]) {
-      state.activeProfile = profiles[code];
-      localStorage.setItem(SESSION_KEY, code); 
-      initStudentApp();
-    } else {
-      alert("Code inconnu. Vérifie avec ton coach !");
-    }
-  } catch(e) {
-    alert("Impossible de vérifier le code pour le moment.");
-  } finally {
-    loader.classList.add('hidden'); btn.classList.remove('opacity-80');
-  }
+    const response = await fetch(GOOGLE_SCRIPT_URL + "?action=get_profiles"); const profiles = await response.json();
+    if (profiles[code]) { state.activeProfile = profiles[code]; localStorage.setItem(SESSION_KEY, code); initStudentApp(); } 
+    else { alert("Code inconnu. Vérifie avec ton coach !"); }
+  } catch(e) { alert("Erreur réseau."); } finally { loader.classList.add('hidden'); btn.classList.remove('opacity-80'); }
 }
 
 function initStudentApp() {
@@ -295,148 +248,80 @@ function initStudentApp() {
   if(!localData[state.activeProfile.code]) {
     localData[state.activeProfile.code] = { name: state.activeProfile.name, level: state.activeProfile.level, results: {}, xp: 0, streak: 1, lastLogin: new Date().toISOString().split('T')[0], isNew: true };
   } else {
-    localData[state.activeProfile.code].name = state.activeProfile.name;
-    localData[state.activeProfile.code].level = state.activeProfile.level;
-    
-    const p = localData[state.activeProfile.code];
-    const today = new Date().toISOString().split('T')[0];
-    if (p.lastLogin && p.lastLogin !== today) {
-      const diff = Math.ceil(Math.abs(new Date(today) - new Date(p.lastLogin)) / (86400000));
-      p.streak = (diff === 1) ? (p.streak || 0) + 1 : 1;
-    }
+    localData[state.activeProfile.code].name = state.activeProfile.name; localData[state.activeProfile.code].level = state.activeProfile.level;
+    const p = localData[state.activeProfile.code]; const today = new Date().toISOString().split('T')[0];
+    if (p.lastLogin && p.lastLogin !== today) { const diff = Math.ceil(Math.abs(new Date(today) - new Date(p.lastLogin)) / (86400000)); p.streak = (diff === 1) ? (p.streak || 0) + 1 : 1; }
     p.lastLogin = today;
   }
   
-  localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
-  const myData = localData[state.activeProfile.code];
+  localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); const myData = localData[state.activeProfile.code];
+  state.niveau = state.activeProfile.level; state.results = myData.results || {}; state.xp = myData.xp || 0; state.streak = myData.streak || 1;
 
-  state.niveau = state.activeProfile.level;
-  state.results = myData.results || {};
-  state.xp = myData.xp || 0;
-  state.streak = myData.streak || 1;
-
-  document.getElementById('login-screen').classList.add('hidden');
-  document.getElementById('main-app').classList.remove('hidden');
+  document.getElementById('login-screen').classList.add('hidden'); document.getElementById('main-app').classList.remove('hidden');
   document.getElementById('active-student-name').innerText = state.activeProfile.name;
   
-  if(myData.isNew) {
-    document.getElementById('onboarding-modal').classList.remove('hidden');
-    myData.isNew = false;
-    localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
-  }
+  if(myData.isNew) { document.getElementById('onboarding-modal').classList.remove('hidden'); myData.isNew = false; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); }
 
-  updateLevelDropdown(state.niveau);
-  updateHeader();
-  render();
+  updateLevelDropdown(state.niveau); updateHeader(); render();
 }
 
 function closeOnboarding() { document.getElementById('onboarding-modal').classList.add('hidden'); }
-
-function logout() { 
-  localStorage.removeItem(SESSION_KEY);
-  location.reload(); 
-}
+function logout() { localStorage.removeItem(SESSION_KEY); location.reload(); }
 
 // --- LOGIQUE SAUVEGARDE ET SYNC ---
 function saveLocalProgress() {
   const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
-  if (state.activeProfile.code) {
-    localData[state.activeProfile.code].results = state.results;
-    localData[state.activeProfile.code].xp = state.xp;
-    localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
-  }
+  if (state.activeProfile.code) { localData[state.activeProfile.code].results = state.results; localData[state.activeProfile.code].xp = state.xp; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); }
 }
 
 function sendScoreToSheet(cat, status, xpGained) {
-  fetch(GOOGLE_SCRIPT_URL, {
-    method: 'POST', mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: "save_score", code: state.activeProfile.code, name: state.activeProfile.name, level: state.niveau, categorie: cat, resultat: status, xp: xpGained })
-  }).catch(e => console.log("Sauvegarde silencieuse."));
+  fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: "save_score", code: state.activeProfile.code, name: state.activeProfile.name, level: state.niveau, categorie: cat, resultat: status, xp: xpGained }) }).catch(e => console.log("Sauvegarde silencieuse."));
 }
 
 function mark(cat, idx, status, total) {
   const id = `${state.niveau}-${cat}-${idx}`;
-  state.results[id] = status;
-  state.formulaRevealed[id] = true;
-  state.isScored = true; 
+  state.results[id] = status; state.formulaRevealed[id] = true; state.isScored = true;
 
   let xpGained = 0;
+
   if(status !== 'HARD') {
     let gained = 100 - ((state.hintStepsRevealed[id]||0)*15) - (state.formulaManuallyTouched[id]?25:0);
     if(status === 'EASY') gained *= 1.2;
     xpGained = Math.max(10, Math.floor(gained));
     state.xp += xpGained;
   }
-  
-  saveLocalProgress();
-  sendScoreToSheet(cat, status, xpGained);
-  updateHeader();
-  
+
+  saveLocalProgress(); sendScoreToSheet(cat, status, xpGained); updateHeader();
+
   let completed = 0;
   for(let i=0; i<total; i++) { if(state.results[`${state.niveau}-${cat}-${i}`] === 'EASY' || state.results[`${state.niveau}-${cat}-${i}`] === 'MEDIUM') completed++; }
   if(completed === total) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
 
   render();
-  // LE SETTIMEOUT EST SUPPRIME : L'utilisateur doit cliquer sur "Suivant".
 }
 
 // --- UTILITAIRES APP ---
 function populateLevelsFromDb() { Object.keys(LEVELS).forEach(key => { const raw = window.db ? window.db[`ALGEBRA_${key}`] : null; if (raw) LEVELS[key] = { categories: raw.categories || raw, catDisplay: raw.catDisplay || {}, catIcon: raw.catIcon || {}, name: LEVEL_NAMES[key] }; }); }
 function updateLevelDropdown(userLevel) {
-  const select = document.getElementById('niveau-select');
-  select.innerHTML = ''; const maxIdx = LEVEL_ORDER.indexOf(userLevel);
-  for(let i = 0; i <= maxIdx; i++) {
-    const lvlKey = LEVEL_ORDER[i]; const opt = document.createElement('option');
-    opt.value = lvlKey; opt.text = LEVEL_NAMES[lvlKey]; select.appendChild(opt);
-  }
+  const select = document.getElementById('niveau-select'); select.innerHTML = ''; const maxIdx = LEVEL_ORDER.indexOf(userLevel);
+  for(let i = 0; i <= maxIdx; i++) { const lvlKey = LEVEL_ORDER[i]; const opt = document.createElement('option'); opt.value = lvlKey; opt.text = LEVEL_NAMES[lvlKey]; select.appendChild(opt); }
   select.value = userLevel;
 }
 function updateHeader() { document.getElementById('ui-streak').innerText = state.streak; document.getElementById('ui-xp').innerText = state.xp; }
 
 function toggleDraft() {
-  state.draftOpen = !state.draftOpen;
-  const panel = document.getElementById('draft-panel');
-  if(state.draftOpen) {
-    panel.classList.remove('hidden');
-    panel.classList.add('flex');
-    setTimeout(() => { document.getElementById('math-draft').focus(); }, 100);
-  } else {
-    panel.classList.add('hidden');
-    panel.classList.remove('flex');
-  }
+  state.draftOpen = !state.draftOpen; const panel = document.getElementById('draft-panel');
+  if(state.draftOpen) { panel.classList.remove('hidden'); panel.classList.add('flex'); setTimeout(() => { document.getElementById('math-draft').focus(); }, 100); } 
+  else { panel.classList.add('hidden'); panel.classList.remove('flex'); }
 }
 
 function insertMath(l) { document.getElementById('math-draft').insert(l); }
 function clearMathField() { document.getElementById('math-draft').setValue(''); }
 function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; render(); }
 
-function goToExercise(cat, i) { 
-  state.questView[cat] = parseInt(i); 
-  state.revealed = false; 
-  state.isScored = false; 
-  state.currentId = null;
-  render(); 
-}
-
-function nextExercise(cat) { 
-  const idx = parseInt(state.questView[cat] || 0); 
-  const total = LEVELS[state.niveau].categories[cat].length; 
-  if(idx < total-1) {
-    state.questView[cat] = idx + 1; 
-  }
-  state.revealed = false; 
-  state.isScored = false;
-  state.currentId = null;
-  render(); 
-}
-
-function verify(cat, idx) { 
-  state.revealed = true; 
-  state.isScored = false;
-  state.currentId = `${state.niveau}-${cat}-${idx}`; 
-  render(); 
-}
+function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; render(); }
+function nextExercise(cat) { const idx = parseInt(state.questView[cat] || 0); const total = LEVELS[state.niveau].categories[cat].length; if(idx < total-1) { state.questView[cat] = idx + 1; } state.revealed = false; state.isScored = false; state.currentId = null; render(); }
+function verify(cat, idx) { state.revealed = true; state.isScored = false; state.currentId = `${state.niveau}-${cat}-${idx}`; render(); }
 
 function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; render(); }
 function showNextHint(id, total) { if(!state.hintStepsRevealed[id]) state.hintStepsRevealed[id] = 0; if(state.hintStepsRevealed[id] < total) { document.getElementById(`hint-${id}-${state.hintStepsRevealed[id]}`).classList.remove('hidden'); state.hintStepsRevealed[id]++; } }
@@ -449,29 +334,17 @@ function initCanvas() {
   let d = false; c.onmousedown = (e) => { d = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); }; 
   c.onmousemove = (e) => { if(d) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } }; c.onmouseup = () => d = false; 
 }
-
-function toggleDrawingMode(id) { 
-  state.isDrawing = !state.isDrawing; const b = document.getElementById(`box-${id}`); const btn = document.getElementById(`btn-draw-${id}`); 
-  state.isDrawing ? (b.classList.add('drawing-mode'), btn.classList.add('bg-red-100', 'dark:bg-red-900/50'), initCanvas()) : (b.classList.remove('drawing-mode'), btn.classList.remove('bg-red-100', 'dark:bg-red-900/50')); 
-}
+function toggleDrawingMode(id) { state.isDrawing = !state.isDrawing; const b = document.getElementById(`box-${id}`); const btn = document.getElementById(`btn-draw-${id}`); state.isDrawing ? (b.classList.add('drawing-mode'), btn.classList.add('bg-red-100', 'dark:bg-red-900/50'), initCanvas()) : (b.classList.remove('drawing-mode'), btn.classList.remove('bg-red-100', 'dark:bg-red-900/50')); }
 
 // --- RENDU VISUEL ---
 function render() {
-  const container = document.getElementById('app-container');
-  let html = `<div class="space-y-4">`;
-  const cats = LEVELS[state.niveau].categories || {};
-  let emojiIdx = 0;
-
+  const container = document.getElementById('app-container'); let html = `<div class="space-y-4">`; const cats = LEVELS[state.niveau].categories || {}; let emojiIdx = 0;
   Object.keys(cats).forEach(cat => {
     const total = cats[cat].length; let completed = 0;
     for(let i=0; i<total; i++) { if(state.results[`${state.niveau}-${cat}-${i}`] === 'EASY' || state.results[`${state.niveau}-${cat}-${i}`] === 'MEDIUM') completed++; }
-    const pct = total > 0 ? Math.round((completed/total)*100) : 0;
-    const isCompleted = completed === total && total > 0;
-    
-    const icon = LEVELS[state.niveau].catIcon[cat] || EMOJIS[emojiIdx % EMOJIS.length];
-    emojiIdx++;
+    const pct = total > 0 ? Math.round((completed/total)*100) : 0; const isCompleted = completed === total && total > 0;
+    const icon = LEVELS[state.niveau].catIcon[cat] || EMOJIS[emojiIdx % EMOJIS.length]; emojiIdx++;
 
-    // Couleurs dynamiques selon Dark Mode et Complétion
     const bgClass = isCompleted ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700';
     const headerBgClass = isCompleted ? '' : 'hover:bg-slate-50 dark:hover:bg-slate-700';
     const titleColor = isCompleted ? 'text-emerald-800 dark:text-emerald-400' : 'text-slate-800 dark:text-white';
@@ -494,8 +367,7 @@ function render() {
     </div>`;
   });
   container.innerHTML = html + `</div>`;
-  if (window.MathJax?.typesetPromise) MathJax.typesetPromise();
-  if(state.isDrawing) initCanvas();
+  if (window.MathJax?.typesetPromise) MathJax.typesetPromise(); if(state.isDrawing) initCanvas();
 }
 
 function renderSection(cat, data, idx, total) {
@@ -513,10 +385,7 @@ function renderSection(cat, data, idx, total) {
 
   const fRevealedClass = (state.formulaRevealed[id] || state.formulaManuallyTouched[id]) ? 'revealed' : '';
 
-  // Logique des boutons de validation avec gestion de la fin de catégorie
-  let actionButtons = '';
-  const isLastExercise = idx >= total - 1;
-
+  let actionButtons = ''; const isLastExercise = idx >= total - 1;
   if (!isRev) {
     actionButtons = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-500 text-white font-black text-lg rounded-2xl shadow-xl transition-colors">VÉRIFIER</button>`;
   } else if (!state.isScored) {
@@ -527,12 +396,8 @@ function renderSection(cat, data, idx, total) {
         <button onclick="mark('${cat}', ${idx}, 'EASY', ${total})" class="flex-1 py-3 lg:py-4 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 rounded-2xl font-black border-2 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-200 dark:hover:bg-emerald-900/60 transition-colors">😎 FACILE</button>
       </div>`;
   } else {
-    // Si c'est noté, on affiche "Suivant" ou "Terminer"
-    if (isLastExercise) {
-      actionButtons = `<button onclick="toggleCategory('${cat}')" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg rounded-2xl shadow-xl transition-colors animate-bounce-in flex justify-center items-center gap-2">✅ TERMINER LA CATÉGORIE</button>`;
-    } else {
-      actionButtons = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-2xl shadow-xl transition-colors animate-bounce-in flex justify-center items-center gap-2">EXERCICE SUIVANT ➔</button>`;
-    }
+    if (isLastExercise) { actionButtons = `<button onclick="toggleCategory('${cat}')" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg rounded-2xl shadow-xl transition-colors animate-bounce-in flex justify-center items-center gap-2">✅ TERMINER LA CATÉGORIE</button>`; } 
+    else { actionButtons = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-2xl shadow-xl transition-colors animate-bounce-in flex justify-center items-center gap-2">EXERCICE SUIVANT ➔</button>`; }
   }
 
   return `
