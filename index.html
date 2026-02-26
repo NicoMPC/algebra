@@ -22,15 +22,24 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
     body { font-family: 'Inter', system-ui, sans-serif; background: #f8f4f0; margin: 0; color: #1e293b; }
-    .math-display { font-size: 1.5rem; line-height: 1.55; font-weight: 700; text-align: left; white-space: pre-wrap !important; word-break: break-word; }
-    @media (min-width: 1024px) { .math-display { font-size: 1.78rem; } }
-    .main-box { min-height: 350px; box-shadow: 0 25px 60px -15px rgb(37 99 235 / 0.25); transition: all 0.3s ease; position: relative; }
+    
+    /* Optimisation des tailles de police et du débordement des formules */
+    .math-display { font-size: 1.3rem; line-height: 1.4; font-weight: 700; text-align: left; white-space: pre-wrap !important; word-break: break-word; overflow-x: auto; overflow-y: hidden; padding-bottom: 0.5rem; }
+    @media (min-width: 1024px) { .math-display { font-size: 1.6rem; } }
+    
+    /* Hauteur réduite pour la box principale (optimisation mobile) */
+    .main-box { min-height: 150px; box-shadow: 0 10px 40px -10px rgb(37 99 235 / 0.15); transition: all 0.3s ease; position: relative; }
+    
     .symbol-btn { padding: 0.75rem 0.5rem; font-size: 1.2rem; background: #e0f2fe; border-radius: 9999px; transition: background 0.2s; }
     math-field { font-size: 1.5rem; padding: 1rem; border-radius: 1.5rem; background: #f8fafc; border: 3px dashed #cbd5e1; width: 100%; min-height: 200px; outline: none; }
+    
     #draw-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; cursor: crosshair; }
     .drawing-mode #draw-canvas { pointer-events: auto; }
-    .blurred-formula { filter: blur(8px); transition: filter 0.3s ease; cursor: pointer; user-select: none; }
+    
+    /* Protection contre les longues formules dans le rappel de cours */
+    .blurred-formula { filter: blur(8px); transition: filter 0.3s ease; cursor: pointer; user-select: none; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
     .blurred-formula.revealed { filter: blur(0); }
+    
     @keyframes bounce-in { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     .animate-bounce-in { animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     
@@ -101,7 +110,7 @@
   <div id="main-content" class="flex-1 w-full">
     <header class="flex flex-col md:flex-row justify-between items-center mb-6 bg-white rounded-3xl shadow-md border border-slate-100 p-4 lg:p-6 gap-4">
       <div class="flex items-center gap-4 w-full md:w-auto">
-        <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-2xl text-white font-bold cursor-pointer shadow-inner shrink-0" onclick="logout()">📐</div>
+        <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-2xl text-white font-bold cursor-pointer shadow-inner shrink-0" onclick="logout()" title="Se déconnecter">📐</div>
         <h1 class="text-xl lg:text-2xl font-black text-slate-800 truncate">BOOST <span id="active-student-name" class="text-blue-700 ml-1"></span></h1>
       </div>
       
@@ -144,12 +153,13 @@ const ADMIN_PASSWORD = "NICO";
 
 let state = {
   activeProfile: null, niveau: "5EME", results: {}, xp: 0, streak: 0,
-  questView: {}, expanded: {}, revealed: false, currentId: null,
+  questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null,
   hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
   isDrawing: false, draftOpen: false
 };
 
 const STORAGE_KEY_LOCAL = 'boost_local_progress'; 
+const SESSION_KEY = 'boost_active_user'; // Permet de rester connecté après F5
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
 const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère", "TERMINALE": "Terminale" };
 const EMOJIS = ['📘', '🧮', '📐', '🚀', '💡', '🎯', '⚡', '🔥'];
@@ -191,7 +201,21 @@ async function generateStudentAccess() {
   }
 }
 
-// --- ÉLÈVE : CONNEXION ---
+// --- ÉLÈVE : CONNEXION & MAINTIEN DE SESSION ---
+document.addEventListener('DOMContentLoaded', () => { 
+  populateLevelsFromDb(); 
+  const mf = document.getElementById('math-draft');
+  if(mf) { mf.addEventListener('keydown', (ev) => { if(ev.key === 'Enter') { ev.preventDefault(); mf.executeCommand(['insert', '\\\\']); } }); }
+  
+  // Vérification de session active
+  const savedCode = localStorage.getItem(SESSION_KEY);
+  const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
+  if (savedCode && localData[savedCode]) {
+    state.activeProfile = { code: savedCode, name: localData[savedCode].name, level: localData[savedCode].level };
+    initStudentApp();
+  }
+});
+
 async function loginWithCode() {
   const code = document.getElementById('student-code-input').value.trim().toUpperCase();
   if(!code) return;
@@ -206,7 +230,7 @@ async function loginWithCode() {
 
     if (profiles[code]) {
       state.activeProfile = profiles[code];
-      state.activeProfile.code = code;
+      localStorage.setItem(SESSION_KEY, code); // Sauvegarde de la session
       initStudentApp();
     } else {
       alert("Code inconnu. Vérifie avec ton coach !");
@@ -221,8 +245,12 @@ async function loginWithCode() {
 function initStudentApp() {
   const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
   if(!localData[state.activeProfile.code]) {
-    localData[state.activeProfile.code] = { results: {}, xp: 0, streak: 1, lastLogin: new Date().toISOString().split('T')[0], isNew: true };
+    localData[state.activeProfile.code] = { name: state.activeProfile.name, level: state.activeProfile.level, results: {}, xp: 0, streak: 1, lastLogin: new Date().toISOString().split('T')[0], isNew: true };
   } else {
+    // S'assurer que le nom et le niveau sont bien en cache local pour l'auto-login
+    localData[state.activeProfile.code].name = state.activeProfile.name;
+    localData[state.activeProfile.code].level = state.activeProfile.level;
+    
     const p = localData[state.activeProfile.code];
     const today = new Date().toISOString().split('T')[0];
     if (p.lastLogin && p.lastLogin !== today) {
@@ -256,7 +284,11 @@ function initStudentApp() {
 }
 
 function closeOnboarding() { document.getElementById('onboarding-modal').classList.add('hidden'); }
-function logout() { location.reload(); }
+
+function logout() { 
+  localStorage.removeItem(SESSION_KEY);
+  location.reload(); 
+}
 
 // --- LOGIQUE SAUVEGARDE ET SYNC ---
 function saveLocalProgress() {
@@ -280,6 +312,7 @@ function mark(cat, idx, status, total) {
   const id = `${state.niveau}-${cat}-${idx}`;
   state.results[id] = status;
   state.formulaRevealed[id] = true;
+  state.isScored = true; // Empêche de repasser directement, affiche le bouton "Suivant"
 
   let xpGained = 0;
   if(status !== 'HARD') {
@@ -298,7 +331,6 @@ function mark(cat, idx, status, total) {
   if(completed === total) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
 
   render();
-  setTimeout(() => { nextExercise(cat); }, 1500);
 }
 
 // --- UTILITAIRES APP ---
@@ -327,21 +359,51 @@ function toggleDraft() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => { 
-  populateLevelsFromDb(); 
-  const mf = document.getElementById('math-draft');
-  if(mf) { mf.addEventListener('keydown', (ev) => { if(ev.key === 'Enter') { ev.preventDefault(); mf.executeCommand(['insert', '\\\\']); } }); }
-});
-
 function insertMath(l) { document.getElementById('math-draft').insert(l); }
 function clearMathField() { document.getElementById('math-draft').setValue(''); }
 function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; render(); }
-function goToExercise(cat, i) { state.questView[cat] = i; state.revealed = false; render(); }
-function nextExercise(cat) { const idx = state.questView[cat] || 0; const total = LEVELS[state.niveau].categories[cat].length; if(idx < total-1) state.questView[cat]++; state.revealed = false; render(); }
-function verify(cat, idx) { state.revealed = true; state.currentId = `${state.niveau}-${cat}-${idx}`; render(); }
+
+function goToExercise(cat, i) { 
+  state.questView[cat] = i; 
+  state.revealed = false; 
+  state.isScored = false; 
+  state.currentId = null;
+  render(); 
+}
+
+function nextExercise(cat) { 
+  const idx = state.questView[cat] || 0; 
+  const total = LEVELS[state.niveau].categories[cat].length; 
+  if(idx < total-1) state.questView[cat]++; 
+  state.revealed = false; 
+  state.isScored = false;
+  state.currentId = null;
+  render(); 
+}
+
+function verify(cat, idx) { 
+  state.revealed = true; 
+  state.isScored = false;
+  state.currentId = `${state.niveau}-${cat}-${idx}`; 
+  render(); 
+}
+
 function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; render(); }
 function showNextHint(id, total) { if(!state.hintStepsRevealed[id]) state.hintStepsRevealed[id] = 0; if(state.hintStepsRevealed[id] < total) { document.getElementById(`hint-${id}-${state.hintStepsRevealed[id]}`).classList.remove('hidden'); state.hintStepsRevealed[id]++; } }
 function revealFormula(id, el) { el.classList.add('revealed'); state.formulaManuallyTouched[id] = true; }
+
+function initCanvas() { 
+  const c = document.getElementById('draw-canvas'); if(!c) return; 
+  c.width = c.parentElement.clientWidth; c.height = c.parentElement.clientHeight; 
+  let ctx = c.getContext('2d'); ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)'; ctx.lineWidth = 4; ctx.lineCap = 'round'; 
+  let d = false; c.onmousedown = (e) => { d = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); }; 
+  c.onmousemove = (e) => { if(d) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } }; c.onmouseup = () => d = false; 
+}
+
+function toggleDrawingMode(id) { 
+  state.isDrawing = !state.isDrawing; const b = document.getElementById(`box-${id}`); const btn = document.getElementById(`btn-draw-${id}`); 
+  state.isDrawing ? (b.classList.add('drawing-mode'), btn.classList.add('bg-red-100'), initCanvas()) : (b.classList.remove('drawing-mode'), btn.classList.remove('bg-red-100')); 
+}
 
 // --- RENDU VISUEL ---
 function render() {
@@ -377,13 +439,14 @@ function render() {
   });
   container.innerHTML = html + `</div>`;
   if (window.MathJax?.typesetPromise) MathJax.typesetPromise();
+  if(state.isDrawing) initCanvas();
 }
 
 function renderSection(cat, data, idx, total) {
   if (!data) return `<div class="p-10 text-center font-bold text-emerald-600">Félicitations ! Catégorie terminée.</div>`;
   const id = `${state.niveau}-${cat}-${idx}`; const isRev = state.revealed && state.currentId === id;
   
-  let pills = `<div class="flex flex-wrap gap-1.5 p-4 justify-center">`;
+  let pills = `<div class="flex flex-wrap gap-1.5 p-3 lg:p-4 justify-center">`;
   for(let i=0; i<total; i++) {
     const st = state.results[`${state.niveau}-${cat}-${i}`];
     let c = "w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center cursor-pointer transition ";
@@ -394,21 +457,42 @@ function renderSection(cat, data, idx, total) {
 
   const fRevealedClass = (state.formulaRevealed[id] || state.formulaManuallyTouched[id]) ? 'revealed' : '';
 
+  // Logique des boutons de validation
+  let actionButtons = '';
+  if (!isRev) {
+    actionButtons = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-lg rounded-2xl shadow-xl transition">VÉRIFIER</button>`;
+  } else if (!state.isScored) {
+    actionButtons = `
+      <div class="flex gap-2 animate-bounce-in w-full">
+        <button onclick="mark('${cat}', ${idx}, 'HARD', ${total})" class="flex-1 py-3 lg:py-4 bg-rose-100 text-rose-700 rounded-2xl font-black border-2 border-rose-200 hover:bg-rose-200 transition">🥵 FAUX</button>
+        <button onclick="mark('${cat}', ${idx}, 'MEDIUM', ${total})" class="flex-1 py-3 lg:py-4 bg-amber-100 text-amber-700 rounded-2xl font-black border-2 border-amber-200 hover:bg-amber-200 transition">🤔 HÉSITÉ</button>
+        <button onclick="mark('${cat}', ${idx}, 'EASY', ${total})" class="flex-1 py-3 lg:py-4 bg-emerald-100 text-emerald-700 rounded-2xl font-black border-2 border-emerald-200 hover:bg-emerald-200 transition">😎 FACILE</button>
+      </div>`;
+  } else {
+    actionButtons = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-2xl shadow-xl transition animate-bounce-in flex justify-center items-center gap-2">EXERCICE SUIVANT ➔</button>`;
+  }
+
   return `
     <div class="p-4 lg:p-6 border-t border-slate-100">
       ${pills}
-      <div class="main-box bg-white border-2 border-blue-100 rounded-3xl p-6 lg:p-8 mb-6 mt-4 relative overflow-hidden">
-        <span class="absolute top-4 right-4 bg-blue-100 text-blue-800 text-xs font-black px-3 py-1 rounded-full uppercase">Niv. ${data.lvl || 1}</span>
-        <div class="math-display mt-4 mb-6">${data.q}</div>
-        ${isRev ? `<div class="mt-6 pt-6 border-t-4 border-dashed border-emerald-200 text-3xl lg:text-4xl font-black text-emerald-600 animate-bounce-in text-center">${data.a}</div>` : ''}
+      
+      <div class="flex justify-between items-center mt-2 mb-2">
+        <span class="bg-blue-100 text-blue-800 text-xs font-black px-3 py-1 rounded-full uppercase">Niv. ${data.lvl || 1}</span>
+        <button id="btn-draw-${id}" onclick="toggleDrawingMode('${id}')" class="px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg font-bold text-sm">🖍️ Dessin</button>
       </div>
+
+      <div id="box-${id}" class="main-box bg-white border-2 border-blue-100 rounded-3xl p-4 lg:p-8 mb-4 relative overflow-hidden flex flex-col justify-center">
+        <canvas id="draw-canvas"></canvas>
+        <div class="relative z-0">
+          <div class="math-display">${data.q}</div>
+          ${isRev ? `<div class="mt-4 pt-4 border-t-4 border-dashed border-emerald-200 text-3xl lg:text-4xl font-black text-emerald-600 animate-bounce-in text-center break-words">${data.a}</div>` : ''}
+        </div>
+      </div>
+
       <div class="flex gap-2">
-        ${!isRev ? `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-lg rounded-2xl shadow-xl transition">VÉRIFIER</button>` : `
-          <button onclick="mark('${cat}', ${idx}, 'HARD', ${total})" class="flex-1 py-3 lg:py-4 bg-rose-100 text-rose-700 rounded-2xl font-black border-2 border-rose-200 hover:bg-rose-200 transition">🥵 FAUX</button>
-          <button onclick="mark('${cat}', ${idx}, 'MEDIUM', ${total})" class="flex-1 py-3 lg:py-4 bg-amber-100 text-amber-700 rounded-2xl font-black border-2 border-amber-200 hover:bg-amber-200 transition">🤔 HÉSITÉ</button>
-          <button onclick="mark('${cat}', ${idx}, 'EASY', ${total})" class="flex-1 py-3 lg:py-4 bg-emerald-100 text-emerald-700 rounded-2xl font-black border-2 border-emerald-200 hover:bg-emerald-200 transition">😎 FACILE</button>
-        `}
+        ${actionButtons}
       </div>
+
       <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
           <button onclick="showNextHint('${id}', ${data.steps ? data.steps.length : 0})" class="w-full text-sm font-bold text-amber-600 bg-amber-100 hover:bg-amber-200 p-3 rounded-xl transition">💡 Révéler un indice</button>
@@ -418,7 +502,7 @@ function renderSection(cat, data, idx, total) {
         </div>
         <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex flex-col justify-center">
           <p class="text-xs font-bold text-slate-400 uppercase text-center mb-2">Rappel de cours</p>
-          <div class="blurred-formula ${fRevealedClass} text-sm lg:text-base bg-indigo-100 text-indigo-900 font-bold p-4 rounded-xl text-center border border-indigo-200" onclick="revealFormula('${id}', this)">${data.f || 'Pas de formule spécifique pour cet exercice.'}</div>
+          <div class="blurred-formula ${fRevealedClass} text-sm lg:text-base bg-indigo-100 text-indigo-900 font-bold p-3 lg:p-4 rounded-xl text-center border border-indigo-200" onclick="revealFormula('${id}', this)">${data.f || 'Pas de formule spécifique pour cet exercice.'}</div>
         </div>
       </div>
     </div>`;
