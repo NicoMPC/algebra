@@ -99,13 +99,13 @@
   </div>
 </div>
 
-<div id="login-screen" class="fixed inset-0 bg-slate-50 z-50 flex flex-col items-center justify-center p-4 md:p-6 overflow-y-auto">
-  <div class="max-w-4xl w-full flex flex-col items-center mt-8 mb-8 animate-fade-in">
+<div id="login-screen" class="fixed inset-0 bg-slate-50 z-50 flex flex-col items-center p-4 md:p-6 overflow-y-auto">
+  <div class="max-w-4xl w-full flex flex-col items-center mt-12 mb-8 md:mt-20 animate-fade-in">
     
-    <div class="text-center mb-10">
+    <div class="text-center mb-10 w-full">
       <div onclick="askAdmin()" class="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg mx-auto mb-6 cursor-pointer hover:rotate-12 transition-transform" title="Espace Coach">📐</div>
       <h1 class="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tighter">Algèbre <span class="text-blue-600">Boost</span></h1>
-      <p class="text-slate-500 font-semibold text-lg max-w-md mx-auto leading-relaxed">L'appli intelligente qui s'adapte à tes progrès et t'accompagne vers l'autonomie.</p>
+      <p class="text-slate-500 font-semibold text-lg max-w-md mx-auto leading-relaxed px-4">L'appli intelligente qui s'adapte à tes progrès et t'accompagne vers l'autonomie.</p>
     </div>
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 w-full max-w-3xl">
@@ -190,8 +190,7 @@
       <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-2xl text-white font-bold shadow-inner shrink-0">📐</div>
       <div class="flex flex-col">
           <h1 class="text-xl font-black text-slate-800 truncate leading-tight">BOOST <span id="active-student-name" class="text-blue-600 ml-1"></span></h1>
-          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider" id="session-counter-display">Session X</span>
-      </div>
+          </div>
     </div>
     
     <div class="flex items-center gap-2 lg:gap-3 font-bold flex-wrap justify-center w-full md:w-auto">
@@ -399,9 +398,10 @@ function initStudentApp() {
   document.getElementById('main-app').classList.remove('hidden');
   document.getElementById('active-student-name').innerText = state.activeProfile.name;
   
-  const sessDisplay = document.getElementById('session-counter-display');
-  sessDisplay.innerText = `Session ${state.sessionCount}/${MAX_FREE_SESSIONS}`;
-  if(state.sessionCount === MAX_FREE_SESSIONS) sessDisplay.classList.add('text-orange-500', 'bg-orange-50', 'px-2', 'py-1', 'rounded-md');
+  // Compteur masqué pour la phase de test
+  // const sessDisplay = document.getElementById('session-counter-display');
+  // sessDisplay.innerText = `Session ${state.sessionCount}/${MAX_FREE_SESSIONS}`;
+  // if(state.sessionCount === MAX_FREE_SESSIONS) sessDisplay.classList.add('text-orange-500', 'bg-orange-50', 'px-2', 'py-1', 'rounded-md');
   
   if(myData.isNew) { myData.isNew = false; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); }
 
