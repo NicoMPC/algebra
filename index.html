@@ -175,10 +175,10 @@ const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxgLgh7CZRebg
 const ADMIN_PASSWORD = "NICO"; 
 
 let state = {
-  activeProfile: null, niveau: "4EME", results: {}, xp: 0, streak: 0,
+  activeProfile: null, niveau: "PREMIERE", results: {}, xp: 0, streak: 0,
   questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null,
   hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
-  qcmAnswered: {}, // NOUVEAU: Stocke la réponse choisie par l'élève
+  qcmAnswered: {},
   isDrawing: false, draftOpen: false
 };
 
@@ -187,7 +187,8 @@ const SESSION_KEY = 'boost_active_user';
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
 const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère", "TERMINALE": "Terminale" };
 const EMOJIS = ['📘', '🧮', '📐', '🚀', '💡', '🎯', '⚡', '🔥'];
-const LEVELS = {}; Object.keys(LEVEL_NAMES).forEach(k => { LEVELS[k] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[k] }; });
+const LEVELS = {}; 
+Object.keys(LEVEL_NAMES).forEach(k => { LEVELS[k] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[k] }; });
 
 // --- COACH : CRÉATION DE PROFIL MANUELLE ---
 function askAdmin() { const pass = prompt("Mot de passe Coach :"); if (pass === ADMIN_PASSWORD) document.getElementById('admin-modal').classList.remove('hidden'); }
@@ -408,7 +409,22 @@ function mark(cat, idx, status, total) {
 }
 
 // --- UTILITAIRES APP ---
-function populateLevelsFromDb() { Object.keys(LEVELS).forEach(key => { const raw = window.db ? window.db[`ALGEBRA_${key}`] : null; if (raw) LEVELS[key] = { categories: raw.categories || raw, catDisplay: raw.catDisplay || {}, catIcon: raw.catIcon || {}, name: LEVEL_NAMES[key] }; }); }
+function populateLevelsFromDb() { 
+  Object.keys(LEVELS).forEach(key => { 
+    const raw = window.db ? window.db[`ALGEBRA_${key}`] : null; 
+    if (raw) {
+      // Correction cruciale : On prend bien l'objet entier depuis raw.categories s'il existe, sinon raw lui-même
+      const cats = raw.categories || raw;
+      LEVELS[key] = { 
+        categories: cats, 
+        catDisplay: raw.catDisplay || {}, 
+        catIcon: raw.catIcon || {}, 
+        name: LEVEL_NAMES[key] 
+      }; 
+    }
+  }); 
+}
+
 function updateLevelDropdown(userLevel) {
   const select = document.getElementById('niveau-select'); select.innerHTML = ''; const maxIdx = LEVEL_ORDER.indexOf(userLevel);
   for(let i = 0; i <= maxIdx; i++) { const lvlKey = LEVEL_ORDER[i]; const opt = document.createElement('option'); opt.value = lvlKey; opt.text = LEVEL_NAMES[lvlKey]; select.appendChild(opt); }
@@ -429,7 +445,7 @@ function changeNiveau() { state.niveau = document.getElementById('niveau-select'
 function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; render(); }
 function nextExercise(cat) { const idx = parseInt(state.questView[cat] || 0); const total = LEVELS[state.niveau].categories[cat].length; if(idx < total-1) { state.questView[cat] = idx + 1; } state.revealed = false; state.isScored = false; state.currentId = null; render(); }
 
-// Vérification QCM
+// --- LOGIQUE QCM ---
 function checkOption(cat, idx, optIdx) {
   const id = `${state.niveau}-${cat}-${idx}`;
   const data = LEVELS[state.niveau].categories[cat][idx];
@@ -499,7 +515,7 @@ function renderSection(cat, data, idx, total) {
   if (!data) return `<div class="p-10 text-center font-bold text-emerald-600">Félicitations ! Catégorie terminée.</div>`;
   const id = `${state.niveau}-${cat}-${idx}`; 
   const isRev = state.revealed && state.currentId === id;
-  const hasOptions = data.options && data.options.length > 0;
+  const hasOptions = data.options && Array.isArray(data.options) && data.options.length > 0;
   
   let pills = `<div class="flex flex-wrap gap-1.5 p-3 lg:p-4 justify-center border-t border-slate-100">`;
   for(let i=0; i<total; i++) {
@@ -513,7 +529,7 @@ function renderSection(cat, data, idx, total) {
   let actionButtons = ''; 
   const isLastExercise = idx >= total - 1;
 
-  // GÉNÉRATION DES BOUTONS DE CONTRÔLE
+  // GÉNÉRATION DES BOUTONS DE CONTRÔLE (VÉRIFIER OU AUTO-ÉVALUATION)
   if (!isRev) {
     if (!hasOptions) {
       actionButtons = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-lg rounded-2xl shadow-xl transition-colors">VÉRIFIER</button>`;
