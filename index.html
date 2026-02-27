@@ -165,11 +165,11 @@
 // ==========================================================
 // CONFIGURATION GOOGLE SCRIPT
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQVpduoozAYMQArQX380cDW92B7OaMtMpr3M0DVYC2pNSOWpExjgqYRBLIS5iXwvUFHA/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxgLgh7CZRebgz1v5yQZ-jJUvhpobi0xnDKPM6K1c3syRe4gkhLjBP-tANTsvbeDicFQw/exec";
 const ADMIN_PASSWORD = "NICO"; 
 
 let state = {
-  activeProfile: null, niveau: "5EME", results: {}, xp: 0, streak: 0,
+  activeProfile: null, niveau: "4EME", results: {}, xp: 0, streak: 0,
   questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null,
   hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
   isDrawing: false, draftOpen: false
@@ -206,7 +206,7 @@ async function generateStudentAccess() {
     document.getElementById('final-code').innerText = code; 
     document.getElementById('generated-result').classList.remove('hidden');
   } catch(e) { 
-    alert("Erreur Google Sheets."); 
+    alert("Erreur de connexion."); 
   } finally { 
     loader.classList.add('hidden'); 
     btn.classList.remove('opacity-80'); 
@@ -257,10 +257,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if(mf) { mf.addEventListener('keydown', (ev) => { if(ev.key === 'Enter') { ev.preventDefault(); mf.executeCommand(['insert', '\\\\']); } }); }
   
   const savedCode = localStorage.getItem(SESSION_KEY);
-  const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
-  if (savedCode && localData[savedCode]) { 
-    state.activeProfile = { code: savedCode, name: localData[savedCode].name, level: localData[savedCode].level }; 
-    initStudentApp(); 
+  if (savedCode) {
+    silentLogin(savedCode);
   }
 });
 
@@ -288,6 +286,19 @@ async function loginWithCode() {
   } finally { 
     loader.classList.add('hidden'); 
     textBtn.classList.remove('hidden'); 
+  }
+}
+
+async function silentLogin(code) {
+  try {
+    const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_profiles`);
+    const profiles = await response.json();
+    if (profiles[code]) {
+      state.activeProfile = profiles[code];
+      initStudentApp();
+    }
+  } catch(e) { 
+    console.log("Silent login failed"); 
   }
 }
 
