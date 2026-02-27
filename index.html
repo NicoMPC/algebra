@@ -3,16 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Algèbre Boost • Espace Élève</title>
+  <title>Algèbre Boost • L'appli qui s'adapte à tes progrès</title>
 
   <script>
     window.MathJax = {
       tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
-      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code', 'math-field'] }
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
     };
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <script defer src="https://unpkg.com/mathlive"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   
@@ -20,166 +19,241 @@
   <script src="3.js"></script><script src="2.js"></script><script src="1.js"></script><script src="t.js"></script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
-    body { font-family: 'Inter', system-ui, sans-serif; background: #f8f4f0; margin: 0; color: #1e293b; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; background: #f8fafc; margin: 0; color: #0f172a; }
     
-    .math-display { font-size: 1.3rem; line-height: 1.4; font-weight: 700; text-align: left; white-space: pre-wrap !important; word-break: break-word; overflow-x: auto; overflow-y: hidden; }
+    .math-display { font-size: 1.3rem; line-height: 1.5; font-weight: 700; text-align: left; white-space: pre-wrap !important; word-break: break-word; overflow-x: auto; overflow-y: hidden; }
     @media (min-width: 1024px) { .math-display { font-size: 1.6rem; } }
     
     .main-box { min-height: 80px; transition: all 0.3s ease; position: relative; }
     
-    .symbol-btn { padding: 0.75rem 0.5rem; font-size: 1.2rem; background: #e0f2fe; border-radius: 9999px; transition: background 0.2s; color: #0f172a; font-weight: bold; }
-    .symbol-btn:hover { background: #bae6fd; }
+    .symbol-btn { padding: 0.5rem 0.5rem; font-size: 1.1rem; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 0.75rem; transition: all 0.2s; color: #334155; font-weight: 600; }
+    .symbol-btn:hover { background: #e2e8f0; transform: translateY(-1px); }
     
-    math-field { font-size: 1.5rem; padding: 1rem; border-radius: 1.5rem; background: #f8fafc; border: 3px dashed #cbd5e1; width: 100%; min-height: 200px; outline: none; color: #0f172a; transition: all 0.3s; }
+    textarea#text-draft { font-size: 1.1rem; padding: 1rem; border-radius: 1rem; background: #ffffff; border: 2px dashed #cbd5e1; width: 100%; min-height: 250px; outline: none; color: #1e293b; transition: all 0.3s; font-family: monospace; resize: vertical; }
+    textarea#text-draft:focus { border-color: #3b82f6; border-style: solid; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1); }
     
     #draw-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; cursor: crosshair; }
     .drawing-mode #draw-canvas { pointer-events: auto; }
     
-    .blurred-formula { filter: blur(8px); transition: filter 0.3s ease, background 0.3s, color 0.3s; cursor: pointer; user-select: none; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
-    .blurred-formula.revealed { filter: blur(0); }
+    .blurred-formula { filter: blur(6px); transition: all 0.4s ease; cursor: pointer; user-select: none; overflow-x: auto; white-space: pre-wrap; word-break: break-word; opacity: 0.8; }
+    .blurred-formula.revealed { filter: blur(0); opacity: 1; }
     
-    @keyframes bounce-in { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    @keyframes bounce-in { 0% { transform: scale(0.95) translateY(10px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
     .animate-bounce-in { animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     
-    .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3b82f6; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
+    @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+    .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
+    
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    .animate-shake { animation: shake 0.3s ease-in-out; }
+
+    .loader { border: 4px solid #f1f5f9; border-top: 4px solid #3b82f6; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* Styles pour le mode QCM */
-    .option-btn { border: 2px solid #e2e8f0; transition: all 0.2s; text-align: center; padding: 1rem; border-radius: 1rem; font-weight: 700; background: white; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-    .option-btn.cursor-pointer:hover { border-color: #3b82f6; background: #eff6ff; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1); }
-    .option-correct { border-color: #10b981 !important; background: #ecfdf5 !important; color: #065f46; }
-    .option-wrong { border-color: #ef4444 !important; background: #fef2f2 !important; color: #991b1b; }
+    /* QCM Vertical */
+    .option-btn { border: 2px solid #e2e8f0; transition: all 0.2s; text-align: left; padding: 1.2rem 1.5rem; border-radius: 1rem; font-weight: 600; background: white; box-shadow: 0 1px 2px rgba(0,0,0,0.05); width: 100%; display: flex; align-items: center; }
+    .option-btn.cursor-pointer:hover { border-color: #60a5fa; background: #f0fdf4; transform: translateX(4px); box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1); }
+    .option-correct { border-color: #10b981 !important; background: #ecfdf5 !important; color: #065f46; transform: scale(1.02); z-index: 10; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2); }
+    .option-wrong { border-color: #ef4444 !important; background: #fef2f2 !important; color: #991b1b; opacity: 0.8; }
+    .option-neutral { opacity: 0.5; background: #f8fafc; }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
   </style>
 </head>
-<body class="bg-[#f8f4f0] text-slate-900 min-h-screen">
+<body class="bg-[#f8fafc] text-slate-900 min-h-screen">
 
-<div id="onboarding-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-  <div class="bg-white rounded-3xl max-w-lg w-full p-8 text-center shadow-2xl animate-bounce-in">
-    <div class="text-6xl mb-4">🚀</div>
-    <h2 class="text-3xl font-black text-slate-800 mb-2">Bienvenue sur Boost !</h2>
-    <p class="text-slate-600 mb-6">Ton nouvel espace d'entraînement autonome.</p>
-    <div class="space-y-4 text-left mb-8">
-      <div class="flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold shrink-0">1</div><p class="text-slate-700 text-sm mt-1">Utilise le bouton <b>📝 Brouillon</b> en haut pour ouvrir un espace de calcul.</p></div>
-      <div class="flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 font-bold shrink-0">2</div><p class="text-slate-700 text-sm mt-1">Bloqué ? Révèle les <b>indices</b>. Mais cela coûte un peu d'XP.</p></div>
-      <div class="flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold shrink-0">3</div><p class="text-slate-700 text-sm mt-1">Évalue-toi honnêtement. Le rappel de cours s'affichera pour t'aider.</p></div>
-    </div>
-    <button onclick="closeOnboarding()" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-xl rounded-2xl transition">C'est parti !</button>
+<div id="custom-alert" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl animate-bounce-in">
+    <div id="alert-icon" class="text-4xl mb-4">⚠️</div>
+    <h3 id="alert-title" class="text-xl font-bold text-slate-800 mb-2">Attention</h3>
+    <p id="alert-message" class="text-slate-600 mb-6"></p>
+    <button onclick="closeCustomAlert()" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl transition">Compris</button>
   </div>
 </div>
 
-<div id="login-screen" class="fixed inset-0 bg-[#f8f4f0] z-50 flex flex-col items-center justify-center p-6 overflow-y-auto">
-  <div class="max-w-md w-full text-center mt-10 mb-10">
-    <div onclick="askAdmin()" class="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl flex items-center justify-center text-5xl shadow-inner mx-auto mb-6 cursor-pointer hover:scale-105 transition" title="Accès Coach caché">📐</div>
-    <h1 class="text-4xl font-black text-slate-800 mb-8 uppercase tracking-tighter">Algèbre <span class="text-blue-700">Boost</span></h1>
-    
-    <div class="bg-white p-6 lg:p-8 rounded-3xl shadow-xl border border-slate-200 mb-6 relative overflow-hidden">
-      <div class="absolute top-0 left-0 w-full h-2 bg-indigo-500"></div>
-      <p class="text-slate-500 font-bold mb-5 uppercase text-sm tracking-widest">Créer mon profil</p>
-      
-      <div class="space-y-3 mb-5">
-        <input type="text" id="reg-name" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-5 py-3 text-lg font-bold text-center focus:outline-none focus:border-indigo-500 transition" placeholder="Prénom">
-        <select id="reg-level" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-5 py-3 text-lg font-bold text-center focus:outline-none focus:border-indigo-500 transition">
-          <option value="6EME">6ème</option><option value="5EME">5ème</option><option value="4EME" selected>4ème</option>
-          <option value="3EME">3ème</option><option value="SECONDE">Seconde</option><option value="PREMIERE">1ère</option><option value="TERMINALE">Terminale</option>
-        </select>
-        <input type="email" id="reg-email" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-5 py-3 text-lg font-bold text-center focus:outline-none focus:border-indigo-500 transition" placeholder="Email (facultatif)">
-      </div>
-      
-      <button onclick="registerStudent()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xl rounded-2xl shadow-lg transition flex justify-center items-center gap-2">
-        <span id="reg-text">S'INSCRIRE</span> <span id="reg-loader" class="loader hidden" style="border-top-color: white;"></span>
-      </button>
+<div id="onboarding-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl max-w-lg w-full p-8 text-center shadow-2xl animate-bounce-in border border-slate-100">
+    <div class="text-6xl mb-6">🚀</div>
+    <h2 class="text-3xl font-black text-slate-800 mb-2">Bienvenue sur Boost !</h2>
+    <p class="text-slate-500 font-medium mb-8">Ton nouvel espace d'entraînement autonome.</p>
+    <div class="space-y-5 text-left mb-8 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+      <div class="flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold shrink-0">1</div><p class="text-slate-700 text-sm mt-1 leading-relaxed">Utilise le bouton <b>📝 Brouillon</b> en haut pour ouvrir un bloc-notes de calcul rapide.</p></div>
+      <div class="flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 font-bold shrink-0">2</div><p class="text-slate-700 text-sm mt-1 leading-relaxed">Bloqué ? Révèle les <b>indices</b> progressivement pour t'aider à démarrer.</p></div>
+      <div class="flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold shrink-0">3</div><p class="text-slate-700 text-sm mt-1 leading-relaxed">Évalue-toi honnêtement. Le rappel de cours s'affichera pour consolider tes bases.</p></div>
     </div>
+    <button onclick="closeOnboarding()" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-xl rounded-2xl shadow-lg shadow-blue-600/20 transition-all hover:scale-[1.02]">C'est parti !</button>
+  </div>
+</div>
 
-    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-      <p class="text-slate-400 font-bold mb-4 uppercase text-xs tracking-widest">J'ai déjà un code</p>
-      <div class="flex gap-2">
-        <input type="text" id="student-code-input" class="flex-1 bg-slate-50 border-2 border-slate-200 rounded-2xl px-4 py-3 text-xl font-black text-center focus:outline-none focus:border-blue-500 uppercase" placeholder="CODE">
-        <button onclick="loginWithCode()" class="px-6 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl transition flex justify-center items-center">
-          <span id="login-text-btn">GO</span> <span id="login-loader" class="loader hidden" style="border-top-color: white; width: 20px; height: 20px;"></span>
+<div id="paywall-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[120] flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl max-w-md w-full p-8 text-center shadow-2xl animate-bounce-in relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-400 to-orange-500"></div>
+    <div class="text-6xl mb-4 mt-2">✨</div>
+    <h2 class="text-3xl font-black text-slate-800 mb-2 tracking-tight">Fin de l'essai gratuit</h2>
+    <p class="text-slate-500 mb-6 font-medium">Tu as utilisé tes 3 sessions de découverte.</p>
+    
+    <div class="bg-orange-50 border border-orange-100 rounded-2xl p-6 mb-8">
+      <p class="text-orange-800 font-bold text-lg mb-2">L'abonnement arrive bientôt !</p>
+      <p class="text-orange-600/80 text-sm leading-relaxed">L'accès illimité à Algèbre Boost et à tous les nouveaux exercices sera prochainement disponible.</p>
+    </div>
+    
+    <button onclick="logout()" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl transition">Retour à l'accueil</button>
+  </div>
+</div>
+
+<div id="login-screen" class="fixed inset-0 bg-slate-50 z-50 flex flex-col items-center justify-center p-4 md:p-6 overflow-y-auto">
+  <div class="max-w-4xl w-full flex flex-col items-center mt-8 mb-8">
+    
+    <div class="text-center mb-10">
+      <div onclick="askAdmin()" class="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg mx-auto mb-6 cursor-pointer hover:rotate-12 transition-transform" title="Espace Coach">📐</div>
+      <h1 class="text-4xl md:text-5xl font-black text-slate-800 mb-3 tracking-tighter">Algèbre <span class="text-blue-600">Boost</span></h1>
+      <p class="text-slate-500 font-medium text-lg max-w-md mx-auto">L'appli intelligente qui s'adapte à tes progrès et t'accompagne vers l'autonomie.</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 w-full max-w-3xl">
+      
+      <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden flex flex-col h-full">
+        <div class="absolute top-0 left-0 w-full h-1.5 bg-indigo-500"></div>
+        <div class="mb-6">
+          <h2 class="text-xl font-black text-slate-800 mb-1">Nouveau ?</h2>
+          <p class="text-slate-500 text-sm">Crée ton profil en 10 secondes.</p>
+        </div>
+        
+        <div class="space-y-4 mb-8 flex-grow">
+          <div>
+            <label class="text-xs font-bold text-slate-400 uppercase ml-1 mb-1 block">Ton Prénom</label>
+            <input type="text" id="reg-name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-semibold focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition" placeholder="Ex: Lucas">
+          </div>
+          <div>
+            <label class="text-xs font-bold text-slate-400 uppercase ml-1 mb-1 block">Ta Classe</label>
+            <select id="reg-level" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-semibold focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition appearance-none">
+              <option value="6EME">6ème</option><option value="5EME">5ème</option><option value="4EME" selected>4ème</option>
+              <option value="3EME">3ème</option><option value="SECONDE">Seconde</option><option value="PREMIERE">1ère (Spé)</option><option value="TERMINALE">Terminale</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-bold text-slate-400 uppercase ml-1 mb-1 block">Email (Optionnel)</label>
+            <input type="email" id="reg-email" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-semibold focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition" placeholder="Pour récupérer ton compte">
+          </div>
+        </div>
+        
+        <button onclick="registerStudent()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-lg rounded-xl shadow-lg shadow-indigo-200 transition-all flex justify-center items-center gap-2 mt-auto">
+          <span id="reg-text">Générer mon code</span> <span id="reg-loader" class="loader hidden" style="border-top-color: white;"></span>
         </button>
       </div>
+
+      <div class="bg-white p-6 md:p-8 rounded-3xl shadow-md border border-slate-200 flex flex-col h-full">
+        <div class="mb-6">
+          <h2 class="text-xl font-black text-slate-800 mb-1">Déjà membre ?</h2>
+          <p class="text-slate-500 text-sm">Entre ton code personnel pour continuer.</p>
+        </div>
+        
+        <div class="mt-auto mb-8">
+          <label class="text-xs font-bold text-slate-400 uppercase ml-1 mb-2 block text-center">Ton code secret</label>
+          <input type="text" id="student-code-input" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-4 py-5 text-3xl font-black text-center focus:outline-none focus:border-blue-500 uppercase tracking-widest text-slate-700 placeholder-slate-300" placeholder="LUC4...">
+        </div>
+        
+        <button onclick="loginWithCode()" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-xl shadow-lg shadow-blue-200 transition-all flex justify-center items-center mt-auto">
+          <span id="login-text-btn">Se connecter</span> <span id="login-loader" class="loader hidden" style="border-top-color: white;"></span>
+        </button>
+      </div>
+      
     </div>
   </div>
 </div>
 
-<div id="admin-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+<div id="admin-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[150] flex items-center justify-center p-4">
   <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl relative">
-    <button onclick="closeAdmin()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl">✕</button>
-    <h2 class="text-2xl font-black mb-6 flex items-center gap-2"><span>⚙️</span> Espace Coach</h2>
+    <button onclick="closeAdmin()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 transition">✕</button>
+    <h2 class="text-2xl font-black mb-6 flex items-center gap-2 text-slate-800"><span>⚙️</span> Espace Coach</h2>
     
     <div class="space-y-4">
-      <p class="text-sm font-bold text-slate-500 uppercase">Créer un code manuellement</p>
-      <input type="text" id="new-student-name" class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3 font-bold" placeholder="Prénom de l'élève">
-      <select id="new-student-level" class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3 font-bold">
+      <p class="text-sm font-bold text-slate-500 uppercase tracking-wider">Créer un accès manuellement</p>
+      <input type="text" id="new-student-name" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 font-semibold" placeholder="Prénom de l'élève">
+      <select id="new-student-level" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 font-semibold">
         <option value="6EME">6ème</option><option value="5EME">5ème</option><option value="4EME" selected>4ème</option>
         <option value="3EME">3ème</option><option value="SECONDE">Seconde</option><option value="PREMIERE">1ère</option><option value="TERMINALE">Terminale</option>
       </select>
-      <button id="btn-create" onclick="generateStudentAccess()" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-2xl flex justify-center items-center gap-2 transition">
+      <button id="btn-create" onclick="generateStudentAccess()" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl flex justify-center items-center gap-2 transition shadow-lg">
         <span>GÉNÉRER</span> <span id="create-loader" class="loader hidden" style="border-top-color: white;"></span>
       </button>
       
-      <div id="generated-result" class="hidden mt-6 p-4 bg-emerald-50 border-2 border-emerald-200 rounded-2xl text-center">
-        <p class="text-emerald-800 font-bold mb-1">Code généré :</p>
-        <p id="final-code" class="text-3xl font-black text-emerald-600 tracking-widest"></p>
+      <div id="generated-result" class="hidden mt-6 p-5 bg-emerald-50 border-2 border-emerald-100 rounded-2xl text-center animate-bounce-in">
+        <p class="text-emerald-800 font-bold mb-1 text-sm uppercase">Code généré avec succès</p>
+        <p id="final-code" class="text-4xl font-black text-emerald-600 tracking-widest mt-2"></p>
       </div>
     </div>
   </div>
 </div>
 
-<div id="main-app" class="hidden max-w-7xl mx-auto p-4 lg:p-6 flex gap-6 relative">
-  <div id="main-content" class="flex-1 w-full transition-all">
-    <header class="flex flex-col md:flex-row justify-between items-center mb-6 bg-white rounded-3xl shadow-md border border-slate-100 p-4 lg:p-6 gap-4">
+<div id="main-app" class="hidden max-w-7xl mx-auto p-4 lg:p-6 flex flex-col lg:flex-row gap-6 relative min-h-screen">
+  
+  <div id="main-content" class="flex-1 w-full transition-all animate-fade-in">
+    <header class="flex flex-col md:flex-row justify-between items-center mb-6 bg-white rounded-3xl shadow-sm border border-slate-200 p-4 lg:p-5 gap-4">
       <div class="flex items-center gap-4 w-full md:w-auto">
-        <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-2xl text-white font-bold shadow-inner shrink-0">📐</div>
+        <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-2xl text-white font-bold shadow-inner shrink-0">📐</div>
         <div class="flex flex-col">
-            <h1 class="text-xl lg:text-2xl font-black text-slate-800 truncate">BOOST <span id="active-student-name" class="text-blue-700 ml-1"></span></h1>
+            <h1 class="text-xl font-black text-slate-800 truncate leading-tight">BOOST <span id="active-student-name" class="text-blue-600 ml-1"></span></h1>
+            <span class="text-xs font-bold text-slate-400 uppercase" id="session-counter-display">Session X</span>
         </div>
       </div>
       
       <div class="flex items-center gap-2 lg:gap-3 font-bold flex-wrap justify-center w-full md:w-auto">
-          <div class="bg-orange-50 text-orange-600 px-3 py-2 rounded-xl text-sm shadow-sm flex items-center gap-1">🔥 <span id="ui-streak">0</span></div>
-          <div class="bg-blue-50 text-blue-700 px-3 py-2 rounded-xl text-sm shadow-sm flex items-center gap-1">💎 <span id="ui-xp">0</span></div>
-          <button onclick="toggleDraft()" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-4 py-2 text-sm shadow-md transition flex items-center gap-2">📝 <span class="hidden sm:inline">Brouillon</span></button>
-          <select id="niveau-select" onchange="changeNiveau()" class="bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-sm max-w-[120px] outline-none"></select>
-          <button onclick="logout()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl px-3 py-2 text-sm shadow-sm transition flex items-center gap-1">Déconnexion</button>
+          <div class="bg-orange-50 text-orange-600 border border-orange-100 px-3 py-2 rounded-xl text-sm shadow-sm flex items-center gap-1">🔥 <span id="ui-streak">0</span></div>
+          <div class="bg-blue-50 text-blue-700 border border-blue-100 px-3 py-2 rounded-xl text-sm shadow-sm flex items-center gap-1">💎 <span id="ui-xp">0</span></div>
+          <button onclick="toggleDraft()" class="bg-slate-900 hover:bg-slate-800 text-white rounded-xl px-4 py-2 text-sm shadow-md transition flex items-center gap-2">📝 <span class="hidden sm:inline">Brouillon</span></button>
+          <select id="niveau-select" onchange="changeNiveau()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm max-w-[120px] outline-none font-semibold"></select>
+          <button onclick="logout()" class="w-10 h-10 flex items-center justify-center bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl shadow-sm transition" title="Déconnexion">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          </button>
       </div>
     </header>
+    
     <main id="app-container" class="space-y-6 pb-20 lg:pb-0"></main>
   </div>
 
-  <div id="draft-panel" class="hidden fixed inset-0 z-[70] bg-white/95 backdrop-blur-md p-6 flex-col overflow-y-auto lg:static lg:block lg:w-96 lg:bg-white lg:rounded-3xl lg:shadow-xl lg:border lg:border-slate-100 lg:h-fit lg:sticky lg:top-6 lg:z-10">
-    <div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-200 lg:border-none">
-      <div class="flex items-center gap-2"><span class="text-2xl">✍️</span><h2 class="text-xl font-black">Brouillon</h2></div>
-      <div class="flex gap-2">
-        <button onclick="clearMathField()" class="text-slate-400 hover:text-rose-500 font-bold text-sm bg-slate-100 px-3 py-1 rounded-full transition-colors">Effacer</button>
-        <button onclick="toggleDraft()" class="lg:hidden text-slate-500 font-black text-xl bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center">✕</button>
+  <div id="draft-panel" class="hidden fixed inset-0 z-[70] bg-slate-900/40 backdrop-blur-sm p-4 flex-col justify-end lg:static lg:block lg:w-96 lg:bg-transparent lg:p-0 lg:h-fit lg:sticky lg:top-6 lg:z-10 animate-fade-in">
+    <div class="bg-white rounded-t-3xl lg:rounded-3xl shadow-2xl lg:shadow-md border-t lg:border border-slate-200 p-5 w-full h-[70vh] lg:h-auto flex flex-col">
+      <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2"><span class="text-xl">📝</span><h2 class="text-lg font-black text-slate-800">Bloc-notes</h2></div>
+        <div class="flex gap-2">
+          <button onclick="clearDraft()" class="text-slate-500 hover:text-rose-600 bg-slate-100 hover:bg-rose-50 p-2 rounded-lg transition-colors" title="Effacer"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+          <button onclick="toggleDraft()" class="lg:hidden text-slate-500 bg-slate-100 p-2 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+        </div>
       </div>
-    </div>
-    <math-field id="math-draft" smart-mode virtual-keyboard-mode="manual"></math-field>
-    <div class="mt-4 grid grid-cols-4 lg:grid-cols-6 gap-2">
-        <button onclick="insertMath('\\ ')" class="symbol-btn col-span-2 text-sm uppercase tracking-widest">Espace</button>
-        <button onclick="insertMath('\\frac{#?}{#?}')" class="symbol-btn">a/b</button><button onclick="insertMath('\\times')" class="symbol-btn">×</button>
-        <button onclick="insertMath('\\sqrt{#?}')" class="symbol-btn">√</button><button onclick="insertMath('^2')" class="symbol-btn">x²</button>
-        <button onclick="insertMath('\\pm')" class="symbol-btn">±</button><button onclick="insertMath('\\leq')" class="symbol-btn">≤</button>
-        <button onclick="insertMath('\\in')" class="symbol-btn">∈</button><button onclick="insertMath('\\mathbb{R}')" class="symbol-btn">ℝ</button>
+      
+      <div class="flex flex-wrap gap-2 mb-3">
+          <button onclick="insertText('²')" class="symbol-btn flex-1">x²</button>
+          <button onclick="insertText('³')" class="symbol-btn flex-1">x³</button>
+          <button onclick="insertText('√()')" class="symbol-btn flex-1">√</button>
+          <button onclick="insertText(' / ')" class="symbol-btn flex-1">/</button>
+          <button onclick="insertText(' × ')" class="symbol-btn flex-1">×</button>
+      </div>
+
+      <textarea id="text-draft" placeholder="Pose tes calculs ici...&#10;Ex: 2x + 3 = 7&#10;    2x = 4&#10;    x = 2" class="flex-grow"></textarea>
     </div>
   </div>
 </div>
 
 <script>
 // ==========================================================
-// CONFIGURATION GOOGLE SCRIPT
+// CONFIGURATION GOOGLE SCRIPT & CONSTANTES
 // ==========================================================
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxgLgh7CZRebgz1v5yQZ-jJUvhpobi0xnDKPM6K1c3syRe4gkhLjBP-tANTsvbeDicFQw/exec";
 const ADMIN_PASSWORD = "NICO"; 
+const MAX_FREE_SESSIONS = 3; // Limite FOMO
 
 let state = {
-  activeProfile: null, niveau: "PREMIERE", results: {}, xp: 0, streak: 0,
+  activeProfile: null, niveau: "4EME", results: {}, xp: 0, streak: 0,
   questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null,
   hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
   qcmAnswered: {},
-  isDrawing: false, draftOpen: false
+  isDrawing: false, draftOpen: false, sessionCount: 1
 };
 
 const STORAGE_KEY_LOCAL = 'boost_local_progress'; 
@@ -188,21 +262,34 @@ const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TER
 const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère", "TERMINALE": "Terminale" };
 const EMOJIS = ['📘', '🧮', '📐', '🚀', '💡', '🎯', '⚡', '🔥'];
 const LEVELS = {}; 
+
+// Custom Alert System
+function showCustomAlert(title, message, icon = '⚠️') {
+  document.getElementById('alert-icon').innerText = icon;
+  document.getElementById('alert-title').innerText = title;
+  document.getElementById('alert-message').innerText = message;
+  document.getElementById('custom-alert').classList.remove('hidden');
+}
+function closeCustomAlert() { document.getElementById('custom-alert').classList.add('hidden'); }
+
+// Initialisation DB
 Object.keys(LEVEL_NAMES).forEach(k => { LEVELS[k] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[k] }; });
 
-// --- COACH : CRÉATION DE PROFIL MANUELLE ---
-function askAdmin() { const pass = prompt("Mot de passe Coach :"); if (pass === ADMIN_PASSWORD) document.getElementById('admin-modal').classList.remove('hidden'); }
+// --- COACH : CRÉATION ---
+function askAdmin() { 
+  const pass = prompt("Mot de passe Coach (Indice: Ton prénom Maj):"); // Seul prompt natif gardé car accès admin caché
+  if (pass === ADMIN_PASSWORD) document.getElementById('admin-modal').classList.remove('hidden'); 
+}
 function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
 
 async function generateStudentAccess() {
   const name = document.getElementById('new-student-name').value.trim();
   const level = document.getElementById('new-student-level').value;
-  if (!name) return alert("Prénom requis !");
+  if (!name) return showCustomAlert("Erreur", "Le prénom est requis pour générer un accès.");
 
   const loader = document.getElementById('create-loader'); 
   const btn = document.getElementById('btn-create');
-  loader.classList.remove('hidden'); 
-  btn.classList.add('opacity-80');
+  loader.classList.remove('hidden'); btn.classList.add('opacity-80');
   
   const code = (name.substring(0, 3).toUpperCase() + level.charAt(0) + Math.floor(Math.random() * 90 + 10)).replace(/\s/g, '');
 
@@ -214,10 +301,9 @@ async function generateStudentAccess() {
     document.getElementById('final-code').innerText = code; 
     document.getElementById('generated-result').classList.remove('hidden');
   } catch(e) { 
-    alert("Erreur Google Sheets."); 
+    showCustomAlert("Erreur réseau", "Impossible de contacter le serveur Google."); 
   } finally { 
-    loader.classList.add('hidden'); 
-    btn.classList.remove('opacity-80'); 
+    loader.classList.add('hidden'); btn.classList.remove('opacity-80'); 
   }
 }
 
@@ -227,46 +313,54 @@ async function registerStudent() {
   const level = document.getElementById('reg-level').value;
   const email = document.getElementById('reg-email').value.trim();
   
-  if (!name) return alert("Ton prénom est requis !");
+  if (!name) return showCustomAlert("Oops !", "Ton prénom est indispensable pour créer ton profil.", "👋");
 
   const loader = document.getElementById('reg-loader');
   const textBtn = document.getElementById('reg-text');
-  loader.classList.remove('hidden');
-  textBtn.classList.add('hidden');
+  loader.classList.remove('hidden'); textBtn.classList.add('hidden');
 
   const code = (name.substring(0, 3).toUpperCase() + level.charAt(0) + Math.floor(Math.random() * 90 + 10)).replace(/\s/g, '');
 
   try {
     await fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: "create_profile", code: code, name: name, level: level, email: email })
     });
 
     state.activeProfile = { code: code, name: name, level: level, email: email };
     localStorage.setItem(SESSION_KEY, code);
     
-    alert(`🎉 Bienvenue ${name} !\n\nTon code d'accès personnel est : ${code}\nNote-le bien pour pouvoir te reconnecter plus tard.`);
-    initStudentApp();
+    // Fermer l'écran d'accueil visuellement avant de montrer le code
+    document.getElementById('login-screen').classList.add('hidden');
+    showCustomAlert("🎉 Compte créé !", `Bienvenue ${name}.\n\nTon code secret est :\n${code}\n\nNote-le bien, il te servira à te reconnecter !`, "🎓");
+    
+    // Attendre que l'élève ferme l'alerte pour initier l'app
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class" && document.getElementById('custom-alert').classList.contains('hidden')) {
+           initStudentApp(); observer.disconnect();
+        }
+      });
+    });
+    observer.observe(document.getElementById('custom-alert'), { attributes: true });
 
   } catch(e) {
-    alert("Erreur de connexion. Réessaie.");
+    showCustomAlert("Erreur", "Problème de connexion au serveur. Réessaie.", "🔌");
   } finally {
-    loader.classList.add('hidden');
-    textBtn.classList.remove('hidden');
+    loader.classList.add('hidden'); textBtn.classList.remove('hidden');
   }
 }
 
 // --- ÉLÈVE : CONNEXION ---
 document.addEventListener('DOMContentLoaded', () => { 
   populateLevelsFromDb(); 
-  const mf = document.getElementById('math-draft');
-  if(mf) { mf.addEventListener('keydown', (ev) => { if(ev.key === 'Enter') { ev.preventDefault(); mf.executeCommand(['insert', '\\\\']); } }); }
-  
   const savedCode = localStorage.getItem(SESSION_KEY);
-  if (savedCode) {
-    silentLogin(savedCode);
-  }
+  if (savedCode) silentLogin(savedCode);
+  
+  // Raccourci clavier entrée pour connexion
+  document.getElementById('student-code-input').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') loginWithCode();
+  });
 });
 
 async function loginWithCode() {
@@ -275,8 +369,7 @@ async function loginWithCode() {
   
   const loader = document.getElementById('login-loader'); 
   const textBtn = document.getElementById('login-text-btn');
-  loader.classList.remove('hidden'); 
-  textBtn.classList.add('hidden');
+  loader.classList.remove('hidden'); textBtn.classList.add('hidden');
 
   try {
     const response = await fetch(GOOGLE_SCRIPT_URL + "?action=get_profiles"); 
@@ -286,13 +379,14 @@ async function loginWithCode() {
       localStorage.setItem(SESSION_KEY, codeInput); 
       initStudentApp(); 
     } else { 
-      alert("CODE INCONNU : Vérifie bien ton code !"); 
+      document.getElementById('student-code-input').classList.add('animate-shake', 'border-rose-400');
+      setTimeout(() => document.getElementById('student-code-input').classList.remove('animate-shake', 'border-rose-400'), 500);
+      showCustomAlert("Code Inconnu", "Ce code n'existe pas. Vérifie les majuscules et les chiffres.", "🕵️"); 
     }
   } catch(e) { 
-    alert("Erreur réseau. Impossible de vérifier le code."); 
+    showCustomAlert("Erreur Réseau", "Impossible de vérifier ton code pour le moment.", "🌐"); 
   } finally { 
-    loader.classList.add('hidden'); 
-    textBtn.classList.remove('hidden'); 
+    loader.classList.add('hidden'); textBtn.classList.remove('hidden'); 
   }
 }
 
@@ -304,37 +398,54 @@ async function silentLogin(code) {
       state.activeProfile = profiles[code];
       initStudentApp();
     }
-  } catch(e) { 
-    console.log("Silent login failed"); 
-  }
+  } catch(e) { console.log("Silent login failed"); }
 }
 
 function initStudentApp() {
   const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
-  if(!localData[state.activeProfile.code]) {
-    localData[state.activeProfile.code] = { name: state.activeProfile.name, level: state.activeProfile.level, results: {}, xp: 0, streak: 1, lastLogin: new Date().toISOString().split('T')[0], isNew: true };
+  const code = state.activeProfile.code;
+  
+  if(!localData[code]) {
+    localData[code] = { name: state.activeProfile.name, level: state.activeProfile.level, results: {}, xp: 0, streak: 1, lastLogin: new Date().toISOString().split('T')[0], isNew: true, sessions: 1 };
   } else {
-    localData[state.activeProfile.code].name = state.activeProfile.name; 
-    localData[state.activeProfile.code].level = state.activeProfile.level;
-    const p = localData[state.activeProfile.code]; 
+    localData[code].name = state.activeProfile.name; 
+    localData[code].level = state.activeProfile.level;
+    const p = localData[code]; 
     const today = new Date().toISOString().split('T')[0];
-    if (p.lastLogin && p.lastLogin !== today) { 
-      const diff = Math.ceil(Math.abs(new Date(today) - new Date(p.lastLogin)) / (86400000)); 
-      p.streak = (diff === 1) ? (p.streak || 0) + 1 : 1; 
+    
+    // Logique de session (1 session max comptabilisée par jour, ou a chaque vrai login manuel)
+    if (p.lastLogin !== today) {
+       p.sessions = (p.sessions || 1) + 1;
+       const diff = Math.ceil(Math.abs(new Date(today) - new Date(p.lastLogin)) / (86400000)); 
+       p.streak = (diff === 1) ? (p.streak || 0) + 1 : 1; 
     }
     p.lastLogin = today;
   }
   
   localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); 
-  const myData = localData[state.activeProfile.code];
+  const myData = localData[code];
   state.niveau = state.activeProfile.level; 
   state.results = myData.results || {}; 
   state.xp = myData.xp || 0; 
   state.streak = myData.streak || 1;
+  state.sessionCount = myData.sessions || 1;
 
   document.getElementById('login-screen').classList.add('hidden'); 
+  
+  // VERIFICATION FOMO PAYWALL
+  if(state.sessionCount > MAX_FREE_SESSIONS) {
+      document.getElementById('paywall-modal').classList.remove('hidden');
+      return; // Bloque l'accès à l'app
+  }
+
   document.getElementById('main-app').classList.remove('hidden');
+  document.getElementById('main-app').classList.add('flex');
   document.getElementById('active-student-name').innerText = state.activeProfile.name;
+  
+  // Affichage discret de la session
+  const sessDisplay = document.getElementById('session-counter-display');
+  sessDisplay.innerText = `Session ${state.sessionCount}/${MAX_FREE_SESSIONS}`;
+  if(state.sessionCount === MAX_FREE_SESSIONS) sessDisplay.classList.add('text-orange-500');
   
   if(myData.isNew) { 
     document.getElementById('onboarding-modal').classList.remove('hidden'); 
@@ -367,18 +478,7 @@ function sendScoreToSheet(cat, idx, status, xpGained) {
 
   fetch(GOOGLE_SCRIPT_URL, { 
     method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, 
-    body: JSON.stringify({ 
-      action: "save_score", 
-      code: state.activeProfile.code, 
-      name: state.activeProfile.name, 
-      level: state.niveau, 
-      categorie: cat, 
-      exercice_idx: idx + 1, 
-      resultat: status, 
-      indices: indicesVue,
-      formule: formuleVue,
-      xp: xpGained 
-    }) 
+    body: JSON.stringify({ action: "save_score", code: state.activeProfile.code, name: state.activeProfile.name, level: state.niveau, categorie: cat, exercice_idx: idx + 1, resultat: status, indices: indicesVue, formule: formuleVue, xp: xpGained }) 
   }).catch(e => console.log("Sauvegarde silencieuse."));
 }
 
@@ -403,7 +503,7 @@ function mark(cat, idx, status, total) {
 
   let completed = 0;
   for(let i=0; i<total; i++) { if(state.results[`${state.niveau}-${cat}-${i}`] === 'EASY' || state.results[`${state.niveau}-${cat}-${i}`] === 'MEDIUM') completed++; }
-  if(completed === total) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+  if(completed === total) confetti({ particleCount: 200, spread: 90, origin: { y: 0.5 }, colors: ['#10b981', '#3b82f6', '#f59e0b'] });
 
   render();
 }
@@ -413,14 +513,8 @@ function populateLevelsFromDb() {
   Object.keys(LEVELS).forEach(key => { 
     const raw = window.db ? window.db[`ALGEBRA_${key}`] : null; 
     if (raw) {
-      // Correction cruciale : On prend bien l'objet entier depuis raw.categories s'il existe, sinon raw lui-même
       const cats = raw.categories || raw;
-      LEVELS[key] = { 
-        categories: cats, 
-        catDisplay: raw.catDisplay || {}, 
-        catIcon: raw.catIcon || {}, 
-        name: LEVEL_NAMES[key] 
-      }; 
+      LEVELS[key] = { categories: cats, catDisplay: raw.catDisplay || {}, catIcon: raw.catIcon || {}, name: LEVEL_NAMES[key] }; 
     }
   }); 
 }
@@ -434,19 +528,28 @@ function updateHeader() { document.getElementById('ui-streak').innerText = state
 
 function toggleDraft() {
   state.draftOpen = !state.draftOpen; const panel = document.getElementById('draft-panel');
-  if(state.draftOpen) { panel.classList.remove('hidden'); panel.classList.add('flex'); setTimeout(() => { document.getElementById('math-draft').focus(); }, 100); } 
+  if(state.draftOpen) { panel.classList.remove('hidden'); panel.classList.add('flex'); setTimeout(() => { document.getElementById('text-draft').focus(); }, 100); } 
   else { panel.classList.add('hidden'); panel.classList.remove('flex'); }
 }
 
-function insertMath(l) { document.getElementById('math-draft').insert(l); }
-function clearMathField() { document.getElementById('math-draft').setValue(''); }
+function insertText(text) { 
+    const txtArea = document.getElementById('text-draft');
+    const startPos = txtArea.selectionStart;
+    const endPos = txtArea.selectionEnd;
+    txtArea.value = txtArea.value.substring(0, startPos) + text + txtArea.value.substring(endPos, txtArea.value.length);
+    txtArea.focus();
+    txtArea.selectionStart = startPos + text.length;
+    txtArea.selectionEnd = startPos + text.length;
+}
+function clearDraft() { document.getElementById('text-draft').value = ''; document.getElementById('text-draft').focus(); }
+
 function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; render(); }
 
 function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; render(); }
 function nextExercise(cat) { const idx = parseInt(state.questView[cat] || 0); const total = LEVELS[state.niveau].categories[cat].length; if(idx < total-1) { state.questView[cat] = idx + 1; } state.revealed = false; state.isScored = false; state.currentId = null; render(); }
 
 // --- LOGIQUE QCM ---
-function checkOption(cat, idx, optIdx) {
+function checkOption(cat, idx, optIdx, buttonEl) {
   const id = `${state.niveau}-${cat}-${idx}`;
   const data = LEVELS[state.niveau].categories[cat][idx];
   const selectedOpt = data.options[optIdx];
@@ -456,53 +559,57 @@ function checkOption(cat, idx, optIdx) {
   state.currentId = id;
 
   if (selectedOpt === data.a) {
-    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    confetti({ particleCount: 60, spread: 50, origin: { y: 0.7 }, colors: ['#10b981', '#34d399'] });
+  } else {
+    // Petit shake si erreur
+    buttonEl.classList.add('animate-shake');
   }
-  render();
+  
+  // Petit délai pour l'animation avant de re-rendre
+  setTimeout(() => render(), 300);
 }
 
 // Vérification Classique
 function verify(cat, idx) { state.revealed = true; state.isScored = false; state.currentId = `${state.niveau}-${cat}-${idx}`; render(); }
 
 function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; render(); }
-function showNextHint(id, total) { if(!state.hintStepsRevealed[id]) state.hintStepsRevealed[id] = 0; if(state.hintStepsRevealed[id] < total) { document.getElementById(`hint-${id}-${state.hintStepsRevealed[id]}`).classList.remove('hidden'); state.hintStepsRevealed[id]++; } }
+function showNextHint(id, total) { if(!state.hintStepsRevealed[id]) state.hintStepsRevealed[id] = 0; if(state.hintStepsRevealed[id] < total) { document.getElementById(`hint-${id}-${state.hintStepsRevealed[id]}`).classList.remove('hidden'); document.getElementById(`hint-${id}-${state.hintStepsRevealed[id]}`).classList.add('animate-fade-in'); state.hintStepsRevealed[id]++; } }
 function revealFormula(id, el) { el.classList.add('revealed'); state.formulaManuallyTouched[id] = true; }
 
 function initCanvas() { 
   const c = document.getElementById('draw-canvas'); if(!c) return; 
   c.width = c.parentElement.clientWidth; c.height = c.parentElement.clientHeight; 
-  let ctx = c.getContext('2d'); ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)'; ctx.lineWidth = 4; ctx.lineCap = 'round'; 
+  let ctx = c.getContext('2d'); ctx.strokeStyle = 'rgba(239, 68, 68, 0.6)'; ctx.lineWidth = 3; ctx.lineCap = 'round'; 
   let d = false; c.onmousedown = (e) => { d = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); }; 
   c.onmousemove = (e) => { if(d) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } }; c.onmouseup = () => d = false; 
 }
-function toggleDrawingMode(id) { state.isDrawing = !state.isDrawing; const b = document.getElementById(`box-${id}`); const btn = document.getElementById(`btn-draw-${id}`); state.isDrawing ? (b.classList.add('drawing-mode'), btn.classList.add('bg-red-100'), initCanvas()) : (b.classList.remove('drawing-mode'), btn.classList.remove('bg-red-100')); }
+function toggleDrawingMode(id) { state.isDrawing = !state.isDrawing; const b = document.getElementById(`box-${id}`); const btn = document.getElementById(`btn-draw-${id}`); state.isDrawing ? (b.classList.add('drawing-mode'), btn.classList.add('bg-rose-100', 'text-rose-700', 'border-rose-200'), initCanvas()) : (b.classList.remove('drawing-mode'), btn.classList.remove('bg-rose-100', 'text-rose-700', 'border-rose-200')); }
 
 // --- RENDU VISUEL ---
 function render() {
-  const container = document.getElementById('app-container'); let html = `<div class="space-y-4">`; const cats = LEVELS[state.niveau].categories || {}; let emojiIdx = 0;
+  const container = document.getElementById('app-container'); let html = `<div class="space-y-5">`; const cats = LEVELS[state.niveau].categories || {}; let emojiIdx = 0;
   Object.keys(cats).forEach(cat => {
     const total = cats[cat].length; let completed = 0;
     for(let i=0; i<total; i++) { if(state.results[`${state.niveau}-${cat}-${i}`] === 'EASY' || state.results[`${state.niveau}-${cat}-${i}`] === 'MEDIUM') completed++; }
     const pct = total > 0 ? Math.round((completed/total)*100) : 0; const isCompleted = completed === total && total > 0;
     const icon = LEVELS[state.niveau].catIcon[cat] || EMOJIS[emojiIdx % EMOJIS.length]; emojiIdx++;
 
-    const bgClass = isCompleted ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-slate-200';
-    const headerBgClass = isCompleted ? '' : 'hover:bg-slate-50';
+    const bgClass = isCompleted ? 'bg-emerald-50/50 border-emerald-200' : 'bg-white border-slate-200';
     const titleColor = isCompleted ? 'text-emerald-800' : 'text-slate-800';
 
-    html += `<div class="rounded-2xl shadow-sm border overflow-hidden transition-colors ${bgClass}">
-      <div onclick="toggleCategory('${cat}')" class="px-5 py-4 flex justify-between items-center cursor-pointer transition-colors ${headerBgClass}">
+    html += `<div class="rounded-3xl shadow-sm border overflow-hidden transition-all duration-300 ${bgClass}">
+      <div onclick="toggleCategory('${cat}')" class="px-5 py-5 flex justify-between items-center cursor-pointer hover:bg-slate-50/50 transition-colors">
         <div class="flex items-center gap-4 w-full">
-          <span class="text-3xl">${icon}</span>
+          <div class="w-12 h-12 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-2xl shrink-0">${icon}</div>
           <div class="flex-1 pr-4">
-            <span class="text-lg lg:text-xl font-bold ${titleColor}">${LEVELS[state.niveau].catDisplay[cat]||cat} ${isCompleted ? '🏆' : ''}</span>
+            <span class="text-lg font-black ${titleColor}">${LEVELS[state.niveau].catDisplay[cat]||cat} ${isCompleted ? '🏆' : ''}</span>
             <div class="w-full max-w-xs flex items-center gap-3 mt-1.5">
-              <div class="flex-1 bg-slate-200 rounded-full h-1.5 overflow-hidden"><div class="bg-emerald-500 h-1.5 rounded-full transition-all" style="width: ${pct}%"></div></div>
+              <div class="flex-1 bg-slate-200 rounded-full h-1.5 overflow-hidden"><div class="bg-blue-500 h-1.5 rounded-full transition-all duration-500 ease-out" style="width: ${pct}%"></div></div>
               <span class="text-xs text-slate-500 font-bold min-w-[2rem]">${pct}%</span>
             </div>
           </div>
         </div>
-        <span class="text-xl text-slate-400 transition-transform ${state.expanded[cat]?'rotate-180':''}"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></span>
+        <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 transition-transform duration-300 ${state.expanded[cat]?'rotate-180':''}"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg></div>
       </div>
       ${state.expanded[cat] ? renderSection(cat, cats[cat][state.questView[cat]||0], parseInt(state.questView[cat]||0), total) : ''}
     </div>`;
@@ -512,57 +619,60 @@ function render() {
 }
 
 function renderSection(cat, data, idx, total) {
-  if (!data) return `<div class="p-10 text-center font-bold text-emerald-600">Félicitations ! Catégorie terminée.</div>`;
+  if (!data) return `<div class="p-10 text-center font-bold text-emerald-600">Catégorie terminée !</div>`;
   const id = `${state.niveau}-${cat}-${idx}`; 
   const isRev = state.revealed && state.currentId === id;
   const hasOptions = data.options && Array.isArray(data.options) && data.options.length > 0;
   
-  let pills = `<div class="flex flex-wrap gap-1.5 p-3 lg:p-4 justify-center border-t border-slate-100">`;
+  let pills = `<div class="flex flex-wrap gap-2 p-4 justify-center border-t border-slate-100 bg-slate-50/50">`;
   for(let i=0; i<total; i++) {
     const st = state.results[`${state.niveau}-${cat}-${i}`];
-    let c = "w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center cursor-pointer transition-colors ";
-    c += (st === 'EASY' || st === 'MEDIUM') ? "bg-emerald-500 text-white" : (st === 'HARD' ? "bg-rose-500 text-white" : "bg-slate-200 text-slate-600 hover:bg-slate-300");
-    if(i===idx) c+=" ring-4 ring-blue-300 scale-110 z-10";
+    let c = "w-9 h-9 rounded-xl text-sm font-bold flex items-center justify-center cursor-pointer transition-all duration-200 ";
+    c += (st === 'EASY' || st === 'MEDIUM') ? "bg-emerald-500 text-white shadow-sm" : (st === 'HARD' ? "bg-rose-400 text-white shadow-sm" : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-100");
+    if(i===idx) c+=" ring-4 ring-blue-200 scale-110 z-10 font-black";
     pills += `<button onclick="goToExercise('${cat}', ${i})" class="${c}">${i+1}</button>`;
   } pills += `</div>`;
 
   let actionButtons = ''; 
   const isLastExercise = idx >= total - 1;
 
-  // GÉNÉRATION DES BOUTONS DE CONTRÔLE (VÉRIFIER OU AUTO-ÉVALUATION)
   if (!isRev) {
     if (!hasOptions) {
-      actionButtons = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-lg rounded-2xl shadow-xl transition-colors">VÉRIFIER</button>`;
+      actionButtons = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-lg rounded-xl shadow-lg shadow-slate-200 transition-all hover:-translate-y-1">VÉRIFIER</button>`;
     }
   } else if (!state.isScored) {
     actionButtons = `
-      <div class="flex gap-2 animate-bounce-in w-full">
-        <button onclick="mark('${cat}', ${idx}, 'HARD', ${total})" class="flex-1 py-3 lg:py-4 bg-rose-100 text-rose-700 rounded-2xl font-black border-2 border-rose-200 hover:bg-rose-200 transition-colors">🥵 FAUX</button>
-        <button onclick="mark('${cat}', ${idx}, 'MEDIUM', ${total})" class="flex-1 py-3 lg:py-4 bg-amber-100 text-amber-700 rounded-2xl font-black border-2 border-amber-200 hover:bg-amber-200 transition-colors">🤔 HÉSITÉ</button>
-        <button onclick="mark('${cat}', ${idx}, 'EASY', ${total})" class="flex-1 py-3 lg:py-4 bg-emerald-100 text-emerald-700 rounded-2xl font-black border-2 border-emerald-200 hover:bg-emerald-200 transition-colors">😎 FACILE</button>
+      <div class="flex flex-col sm:flex-row gap-3 animate-bounce-in w-full mt-2">
+        <button onclick="mark('${cat}', ${idx}, 'HARD', ${total})" class="flex-1 py-4 bg-rose-50 text-rose-600 rounded-xl font-black border border-rose-200 hover:bg-rose-100 transition-colors">🥵 FAUX</button>
+        <button onclick="mark('${cat}', ${idx}, 'MEDIUM', ${total})" class="flex-1 py-4 bg-amber-50 text-amber-600 rounded-xl font-black border border-amber-200 hover:bg-amber-100 transition-colors">🤔 HÉSITÉ</button>
+        <button onclick="mark('${cat}', ${idx}, 'EASY', ${total})" class="flex-1 py-4 bg-emerald-50 text-emerald-600 rounded-xl font-black border border-emerald-200 hover:bg-emerald-100 transition-colors">😎 FACILE</button>
       </div>`;
   } else {
     if (isLastExercise) { 
-      actionButtons = `<button onclick="toggleCategory('${cat}')" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg rounded-2xl shadow-xl transition-colors animate-bounce-in flex justify-center items-center gap-2">✅ TERMINER LA CATÉGORIE</button>`; 
+      actionButtons = `<button onclick="toggleCategory('${cat}')" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg rounded-xl shadow-lg shadow-emerald-200 transition-all hover:-translate-y-1 mt-2">✅ TERMINER LA CATÉGORIE</button>`; 
     } else { 
-      actionButtons = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-2xl shadow-xl transition-colors animate-bounce-in flex justify-center items-center gap-2">EXERCICE SUIVANT ➔</button>`; 
+      actionButtons = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-xl shadow-lg shadow-blue-200 transition-all hover:-translate-y-1 flex justify-center items-center gap-2 mt-2">EXERCICE SUIVANT <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg></button>`; 
     }
   }
 
-  // GÉNÉRATION DES OPTIONS QCM (SI PRÉSENTES)
+  // QCM Vertical
   let finalButtonsHtml = '';
   if (hasOptions) {
-    let optionsHtml = `<div class="grid grid-cols-1 md:grid-cols-3 gap-3 w-full ${isRev ? 'mb-4' : ''}">`;
+    let optionsHtml = `<div class="flex flex-col gap-3 w-full ${isRev ? 'mb-2' : ''}">`;
     data.options.forEach((opt, oIdx) => {
       let btnClass = "option-btn";
       if (isRev) {
-        btnClass += " cursor-default opacity-80";
+        btnClass += " cursor-default pointer-events-none";
         if (opt === data.a) btnClass += " option-correct";
         else if (opt === state.qcmAnswered[id]) btnClass += " option-wrong";
-        optionsHtml += `<div class="${btnClass}"><span>${opt}</span></div>`;
+        else btnClass += " option-neutral";
+        
+        // Icone de résultat
+        let icon = opt === data.a ? '✅ ' : (opt === state.qcmAnswered[id] ? '❌ ' : '');
+        optionsHtml += `<div class="${btnClass}"><span>${icon}${opt}</span></div>`;
       } else {
         btnClass += " cursor-pointer";
-        optionsHtml += `<button onclick="checkOption('${cat}', ${idx}, ${oIdx})" class="${btnClass}"><span>${opt}</span></button>`;
+        optionsHtml += `<button onclick="checkOption('${cat}', ${idx}, ${oIdx}, this)" class="${btnClass}"><span>${opt}</span></button>`;
       }
     });
     optionsHtml += `</div>`;
@@ -574,38 +684,41 @@ function renderSection(cat, data, idx, total) {
   const fRevealedClass = (state.formulaRevealed[id] || state.formulaManuallyTouched[id]) ? 'revealed' : '';
 
   return `
-    <div class="p-4 lg:p-6 bg-white transition-colors">
+    <div class="bg-white transition-colors animate-fade-in border-t border-slate-100">
       ${pills}
       
-      <div class="flex justify-between items-center mt-4 mb-2">
-        <span class="bg-blue-100 text-blue-800 text-xs font-black px-3 py-1 rounded-full uppercase">Niv. ${data.lvl || 1}</span>
-        <button id="btn-draw-${id}" onclick="toggleDrawingMode('${id}')" class="px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg font-bold text-sm text-slate-700 transition-colors">🖍️ Dessin</button>
-      </div>
-
-      <div id="box-${id}" class="main-box bg-white border-2 border-blue-100 rounded-3xl p-4 lg:p-6 mb-4 relative overflow-hidden flex flex-col justify-center transition-colors">
-        <canvas id="draw-canvas"></canvas>
-        <div class="relative z-0 w-full overflow-hidden">
-          <div class="math-display text-slate-900">${data.q}</div>
-          ${isRev && !hasOptions ? `<div class="mt-3 pt-3 border-t-2 border-dashed border-emerald-200 text-3xl lg:text-4xl font-black text-emerald-600 animate-bounce-in text-center break-words">${data.a}</div>` : ''}
-          ${isRev && hasOptions && state.qcmAnswered[id] !== data.a ? `<div class="mt-3 pt-3 border-t-2 border-dashed border-emerald-200 text-xl font-black text-emerald-600 animate-bounce-in text-center break-words">Correction : ${data.a}</div>` : ''}
-        </div>
-      </div>
-
-      <div class="flex flex-col gap-2">
-        ${finalButtonsHtml}
-      </div>
-
-      <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 transition-colors">
-          <button onclick="showNextHint('${id}', ${data.steps ? data.steps.length : 0})" class="w-full text-sm font-bold text-amber-600 bg-amber-100 hover:bg-amber-200 p-3 rounded-xl transition-colors">💡 Révéler un indice</button>
-          <div class="mt-3 space-y-2">
-            ${(data.steps||[]).map((s,i) => `<div id="hint-${id}-${i}" class="hidden text-sm p-3 bg-white rounded-xl border border-amber-200 text-amber-900 font-medium transition-colors">${s}</div>`).join('')}
+      <div class="p-5 lg:p-8">
+          <div class="flex justify-between items-center mb-4">
+            <span class="bg-blue-50 text-blue-700 text-xs font-black px-3 py-1 rounded-lg uppercase tracking-wider border border-blue-100">Niv. ${data.lvl || 1}</span>
+            <button id="btn-draw-${id}" onclick="toggleDrawingMode('${id}')" class="px-3 py-1 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg font-bold text-sm text-slate-500 transition-colors flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg> Dessin</button>
           </div>
-        </div>
-        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex flex-col justify-center transition-colors">
-          <p class="text-xs font-bold text-slate-400 uppercase text-center mb-2">Rappel de cours</p>
-          <div class="blurred-formula ${fRevealedClass} text-sm lg:text-base bg-indigo-100 text-indigo-900 font-bold p-3 lg:p-4 rounded-xl text-center border border-indigo-200 transition-colors" onclick="revealFormula('${id}', this)">${data.f || 'Pas de formule spécifique pour cet exercice.'}</div>
-        </div>
+
+          <div id="box-${id}" class="main-box bg-slate-50 border border-slate-200 rounded-2xl p-6 lg:p-8 mb-6 relative overflow-hidden flex flex-col justify-center">
+            <canvas id="draw-canvas"></canvas>
+            <div class="relative z-0 w-full overflow-hidden">
+              <div class="math-display text-slate-800">${data.q}</div>
+              ${isRev && !hasOptions ? `<div class="mt-4 pt-4 border-t-2 border-dashed border-emerald-200 text-3xl lg:text-4xl font-black text-emerald-600 animate-bounce-in text-center break-words">${data.a}</div>` : ''}
+              ${isRev && hasOptions && state.qcmAnswered[id] !== data.a ? `<div class="mt-4 pt-4 border-t border-dashed border-slate-300 text-lg font-bold text-slate-500 animate-bounce-in text-center break-words">Correction : ${data.a}</div>` : ''}
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            ${finalButtonsHtml}
+          </div>
+
+          <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <div class="bg-amber-50/50 p-5 rounded-2xl border border-amber-100">
+              <button onclick="showNextHint('${id}', ${data.steps ? data.steps.length : 0})" class="w-full text-sm font-bold text-amber-700 bg-amber-100 hover:bg-amber-200 py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg> Révéler un indice</button>
+              <div class="mt-3 space-y-2">
+                ${(data.steps||[]).map((s,i) => `<div id="hint-${id}-${i}" class="hidden text-sm p-3.5 bg-white rounded-xl border border-amber-200 text-amber-900 font-medium shadow-sm">${s}</div>`).join('')}
+              </div>
+            </div>
+            
+            <div class="bg-indigo-50/50 p-5 rounded-2xl border border-indigo-100 flex flex-col justify-center">
+              <p class="text-xs font-black text-indigo-400 uppercase tracking-widest text-center mb-3">Rappel de cours</p>
+              <div class="blurred-formula ${fRevealedClass} text-sm lg:text-base bg-white text-indigo-900 font-bold p-4 rounded-xl text-center border border-indigo-200 shadow-sm" onclick="revealFormula('${id}', this)">${data.f || 'Pas de formule spécifique.'}</div>
+            </div>
+          </div>
       </div>
     </div>`;
 }
