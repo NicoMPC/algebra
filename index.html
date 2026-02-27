@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="light">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -14,10 +14,6 @@
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script defer src="https://unpkg.com/mathlive"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  
-  <script>
-    tailwind = { config: { darkMode: 'class' } }
-  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   
   <script src="6.js"></script><script src="5.js"></script><script src="4.js"></script>
@@ -25,7 +21,7 @@
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
-    body { font-family: 'Inter', system-ui, sans-serif; transition: background-color 0.3s, color 0.3s; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #f8f4f0; margin: 0; color: #1e293b; }
     
     .math-display { font-size: 1.3rem; line-height: 1.4; font-weight: 700; text-align: left; white-space: pre-wrap !important; word-break: break-word; overflow-x: auto; overflow-y: hidden; }
     @media (min-width: 1024px) { .math-display { font-size: 1.6rem; } }
@@ -33,13 +29,9 @@
     .main-box { min-height: 80px; transition: all 0.3s ease; position: relative; }
     
     .symbol-btn { padding: 0.75rem 0.5rem; font-size: 1.2rem; background: #e0f2fe; border-radius: 9999px; transition: background 0.2s; color: #0f172a; font-weight: bold; }
-    html.dark .symbol-btn { background: #1e293b; color: #e2e8f0; }
-    html.dark .symbol-btn:hover { background: #334155; }
+    .symbol-btn:hover { background: #bae6fd; }
     
-    /* Adaptation de MathLive au Dark Mode Total */
     math-field { font-size: 1.5rem; padding: 1rem; border-radius: 1.5rem; background: #f8fafc; border: 3px dashed #cbd5e1; width: 100%; min-height: 200px; outline: none; color: #0f172a; transition: all 0.3s; }
-    html.dark math-field { background: #0f172a; border-color: #334155; color: #f8fafc; --contains-highlight-backround: #1e293b; --selection-background-color: #3b82f6; }
-    html.dark math-field::part(virtual-keyboard-toggle) { color: #cbd5e1; }
     
     #draw-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; cursor: crosshair; }
     .drawing-mode #draw-canvas { pointer-events: auto; }
@@ -50,66 +42,80 @@
     @keyframes bounce-in { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     .animate-bounce-in { animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     
-    .loader { border: 4px solid transparent; border-top: 4px solid currentColor; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
+    .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3b82f6; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
-<body class="bg-[#f8f4f0] text-slate-900 dark:bg-slate-900 dark:text-slate-100 min-h-screen">
+<body class="bg-[#f8f4f0] text-slate-900 min-h-screen">
 
-<div id="onboarding-modal" class="hidden fixed inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-  <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-lg w-full p-8 text-center shadow-2xl animate-bounce-in border border-transparent dark:border-slate-700">
+<div id="onboarding-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl max-w-lg w-full p-8 text-center shadow-2xl animate-bounce-in">
     <div class="text-6xl mb-4">🚀</div>
-    <h2 class="text-3xl font-black text-slate-800 dark:text-white mb-2">Bienvenue sur Boost !</h2>
-    <p class="text-slate-600 dark:text-slate-300 mb-6">Ton nouvel espace d'entraînement autonome.</p>
+    <h2 class="text-3xl font-black text-slate-800 mb-2">Bienvenue sur Boost !</h2>
+    <p class="text-slate-600 mb-6">Ton nouvel espace d'entraînement autonome.</p>
     <div class="space-y-4 text-left mb-8">
-      <div class="flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold shrink-0">1</div><p class="text-slate-700 dark:text-slate-300 text-sm mt-1">Utilise le bouton <b>📝 Brouillon</b> en haut pour ouvrir un espace de calcul.</p></div>
-      <div class="flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold shrink-0">2</div><p class="text-slate-700 dark:text-slate-300 text-sm mt-1">Bloqué ? Révèle les <b>indices</b>. Mais cela coûte un peu d'XP.</p></div>
-      <div class="flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold shrink-0">3</div><p class="text-slate-700 dark:text-slate-300 text-sm mt-1">Évalue-toi honnêtement. Le rappel de cours s'affichera pour t'aider.</p></div>
+      <div class="flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold shrink-0">1</div><p class="text-slate-700 text-sm mt-1">Utilise le bouton <b>📝 Brouillon</b> en haut pour ouvrir un espace de calcul.</p></div>
+      <div class="flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 font-bold shrink-0">2</div><p class="text-slate-700 text-sm mt-1">Bloqué ? Révèle les <b>indices</b>. Mais cela coûte un peu d'XP.</p></div>
+      <div class="flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold shrink-0">3</div><p class="text-slate-700 text-sm mt-1">Évalue-toi honnêtement. Le rappel de cours s'affichera pour t'aider.</p></div>
     </div>
-    <button onclick="closeOnboarding()" class="w-full py-4 bg-slate-900 dark:bg-blue-600 hover:dark:bg-blue-500 text-white font-black text-xl rounded-2xl transition">C'est parti !</button>
+    <button onclick="closeOnboarding()" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-xl rounded-2xl transition">C'est parti !</button>
   </div>
 </div>
 
-<div id="login-screen" class="fixed inset-0 bg-[#f8f4f0] dark:bg-slate-900 z-50 flex flex-col items-center justify-center p-6 transition-colors">
-  <div class="absolute top-6 right-6 flex gap-3">
-    <button onclick="toggleTheme()" class="text-2xl bg-white dark:bg-slate-800 w-12 h-12 rounded-full shadow-sm flex items-center justify-center border border-transparent dark:border-slate-700 transition hover:scale-105" id="btn-theme-login">🌙</button>
-    <button onclick="askAdmin()" class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-full shadow-sm border border-transparent dark:border-slate-700 transition hover:scale-105"><span>⚙️</span> Coach</button>
-  </div>
-  
-  <div class="max-w-md w-full text-center">
-    <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl flex items-center justify-center text-5xl shadow-inner mx-auto mb-6">📐</div>
-    <h1 class="text-4xl font-black text-slate-800 dark:text-white mb-8 uppercase tracking-tighter">Algèbre <span class="text-blue-700 dark:text-blue-500">Boost</span></h1>
+<div id="login-screen" class="fixed inset-0 bg-[#f8f4f0] z-50 flex flex-col items-center justify-center p-6 overflow-y-auto">
+  <div class="max-w-md w-full text-center mt-10 mb-10">
+    <div onclick="askAdmin()" class="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl flex items-center justify-center text-5xl shadow-inner mx-auto mb-6 cursor-pointer hover:scale-105 transition" title="Espace Coach">📐</div>
+    <h1 class="text-4xl font-black text-slate-800 mb-8 uppercase tracking-tighter">Algèbre <span class="text-blue-700">Boost</span></h1>
     
-    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 transition-colors">
-      <p class="text-slate-500 dark:text-slate-400 font-bold mb-6 uppercase text-sm tracking-widest">Espace Élève</p>
-      <input type="text" id="student-code-input" class="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 text-2xl font-black text-center focus:outline-none focus:border-blue-600 dark:focus:border-blue-500 dark:text-white mb-4 transition-colors" placeholder="CODE (EX: LEO4)">
-      <button id="btn-login" onclick="loginWithCode()" class="w-full py-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-black text-xl rounded-2xl shadow-lg transition flex justify-center items-center gap-2">
-        <span>SE CONNECTER</span> <span id="login-loader" class="loader hidden" style="border-top-color: white;"></span>
+    <div class="bg-white p-6 lg:p-8 rounded-3xl shadow-xl border border-slate-200 mb-6 relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-full h-2 bg-indigo-500"></div>
+      <p class="text-slate-500 font-bold mb-5 uppercase text-sm tracking-widest">Créer mon profil</p>
+      
+      <div class="space-y-3 mb-5">
+        <input type="text" id="reg-name" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-5 py-3 text-lg font-bold text-center focus:outline-none focus:border-indigo-500 transition" placeholder="Prénom">
+        <select id="reg-level" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-5 py-3 text-lg font-bold text-center focus:outline-none focus:border-indigo-500 transition">
+          <option value="6EME">6ème</option><option value="5EME">5ème</option><option value="4EME" selected>4ème</option>
+          <option value="3EME">3ème</option><option value="SECONDE">Seconde</option><option value="PREMIERE">1ère</option><option value="TERMINALE">Terminale</option>
+        </select>
+        <input type="email" id="reg-email" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-5 py-3 text-lg font-bold text-center focus:outline-none focus:border-indigo-500 transition" placeholder="Email (facultatif)">
+      </div>
+      
+      <button onclick="registerStudent()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xl rounded-2xl shadow-lg transition flex justify-center items-center gap-2">
+        <span>S'INSCRIRE</span> <span id="reg-loader" class="loader hidden" style="border-top-color: white;"></span>
       </button>
     </div>
+
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+      <p class="text-slate-400 font-bold mb-4 uppercase text-xs tracking-widest">J'ai déjà un code</p>
+      <div class="flex gap-2">
+        <input type="text" id="student-code-input" class="flex-1 bg-slate-50 border-2 border-slate-200 rounded-2xl px-4 py-3 text-xl font-black text-center focus:outline-none focus:border-blue-500 uppercase" placeholder="CODE">
+        <button onclick="loginWithCode()" class="px-6 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl transition flex justify-center items-center">
+          <span id="login-text">GO</span> <span id="login-loader" class="loader hidden" style="border-top-color: white; width: 20px; height: 20px;"></span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
-<div id="admin-modal" class="hidden fixed inset-0 bg-slate-900/80 dark:bg-black/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-  <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-md w-full p-8 shadow-2xl relative border border-transparent dark:border-slate-700 transition-colors">
-    <button onclick="closeAdmin()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white text-2xl">✕</button>
-    <h2 class="text-2xl font-black mb-6 flex items-center gap-2 dark:text-white"><span>⚙️</span> Espace Coach</h2>
+<div id="admin-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl relative">
+    <button onclick="closeAdmin()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl">✕</button>
+    <h2 class="text-2xl font-black mb-6 flex items-center gap-2"><span>⚙️</span> Espace Coach</h2>
     
     <div class="space-y-4">
-      <p class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase">Créer un nouvel accès</p>
-      <input type="text" id="new-student-name" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-2xl px-5 py-3 font-bold dark:text-white transition-colors" placeholder="Prénom de l'élève">
-      <select id="new-student-level" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-2xl px-5 py-3 font-bold dark:text-white transition-colors">
+      <p class="text-sm font-bold text-slate-500 uppercase">Créer un code manuellement</p>
+      <input type="text" id="new-student-name" class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3 font-bold" placeholder="Prénom de l'élève">
+      <select id="new-student-level" class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3 font-bold">
         <option value="6EME">6ème</option><option value="5EME">5ème</option><option value="4EME" selected>4ème</option>
         <option value="3EME">3ème</option><option value="SECONDE">Seconde</option><option value="PREMIERE">1ère</option><option value="TERMINALE">Terminale</option>
       </select>
-      <button id="btn-create" onclick="generateStudentAccess()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl flex justify-center items-center gap-2 transition">
-        <span>GÉNÉRER LE CODE</span> <span id="create-loader" class="loader hidden" style="border-top-color: white;"></span>
+      <button id="btn-create" onclick="generateStudentAccess()" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-2xl flex justify-center items-center gap-2 transition">
+        <span>GÉNÉRER</span> <span id="create-loader" class="loader hidden" style="border-top-color: white;"></span>
       </button>
       
-      <div id="generated-result" class="hidden mt-6 p-4 bg-emerald-50 dark:bg-emerald-900/30 border-2 border-emerald-200 dark:border-emerald-800 rounded-2xl text-center">
-        <p class="text-emerald-800 dark:text-emerald-300 font-bold mb-1">Code généré avec succès :</p>
-        <p id="final-code" class="text-3xl font-black text-emerald-600 dark:text-emerald-400 tracking-widest"></p>
-        <p class="text-xs text-emerald-600 dark:text-emerald-400 mt-2">Ce profil a été enregistré dans Google Sheets.</p>
+      <div id="generated-result" class="hidden mt-6 p-4 bg-emerald-50 border-2 border-emerald-200 rounded-2xl text-center">
+        <p class="text-emerald-800 font-bold mb-1">Code généré :</p>
+        <p id="final-code" class="text-3xl font-black text-emerald-600 tracking-widest"></p>
       </div>
     </div>
   </div>
@@ -117,31 +123,31 @@
 
 <div id="main-app" class="hidden max-w-7xl mx-auto p-4 lg:p-6 flex gap-6 relative">
   <div id="main-content" class="flex-1 w-full transition-all">
-    <header class="flex flex-col md:flex-row justify-between items-center mb-6 bg-white dark:bg-slate-800 rounded-3xl shadow-md border border-slate-100 dark:border-slate-700 p-4 lg:p-6 gap-4 transition-colors">
+    <header class="flex flex-col md:flex-row justify-between items-center mb-6 bg-white rounded-3xl shadow-md border border-slate-100 p-4 lg:p-6 gap-4">
       <div class="flex items-center gap-4 w-full md:w-auto">
-        <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-2xl text-white font-bold cursor-pointer shadow-inner shrink-0 hover:scale-105 transition" onclick="logout()" title="Se déconnecter">📐</div>
+        <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-2xl text-white font-bold shadow-inner shrink-0">📐</div>
         <div class="flex flex-col">
-            <h1 class="text-xl lg:text-2xl font-black text-slate-800 dark:text-white truncate">BOOST <span id="active-student-name" class="text-blue-700 dark:text-blue-400 ml-1"></span></h1>
+            <h1 class="text-xl lg:text-2xl font-black text-slate-800 truncate">BOOST <span id="active-student-name" class="text-blue-700 ml-1"></span></h1>
         </div>
       </div>
       
       <div class="flex items-center gap-2 lg:gap-3 font-bold flex-wrap justify-center w-full md:w-auto">
-          <div class="bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 px-3 py-2 rounded-xl text-sm shadow-sm flex items-center gap-1 border border-transparent dark:border-orange-800 transition-colors">🔥 <span id="ui-streak">0</span></div>
-          <div class="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-3 py-2 rounded-xl text-sm shadow-sm flex items-center gap-1 border border-transparent dark:border-blue-800 transition-colors">💎 <span id="ui-xp">0</span></div>
-          <button onclick="toggleTheme()" class="text-xl bg-slate-100 dark:bg-slate-700 w-10 h-10 rounded-xl shadow-sm flex items-center justify-center transition-colors" id="btn-theme-app" title="Mode Sombre">🌙</button>
+          <div class="bg-orange-50 text-orange-600 px-3 py-2 rounded-xl text-sm shadow-sm flex items-center gap-1">🔥 <span id="ui-streak">0</span></div>
+          <div class="bg-blue-50 text-blue-700 px-3 py-2 rounded-xl text-sm shadow-sm flex items-center gap-1">💎 <span id="ui-xp">0</span></div>
           <button onclick="toggleDraft()" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-4 py-2 text-sm shadow-md transition flex items-center gap-2">📝 <span class="hidden sm:inline">Brouillon</span></button>
-          <select id="niveau-select" onchange="changeNiveau()" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 dark:text-white rounded-xl px-2 py-2 text-sm max-w-[120px] outline-none transition-colors"></select>
+          <select id="niveau-select" onchange="changeNiveau()" class="bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-sm max-w-[120px] outline-none"></select>
+          <button onclick="logout()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl px-3 py-2 text-sm shadow-sm transition flex items-center gap-1">Déconnexion</button>
       </div>
     </header>
     <main id="app-container" class="space-y-6 pb-20 lg:pb-0"></main>
   </div>
 
-  <div id="draft-panel" class="hidden fixed inset-0 z-[70] bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-6 flex-col overflow-y-auto lg:static lg:block lg:w-96 lg:bg-white lg:dark:bg-slate-800 lg:rounded-3xl lg:shadow-xl lg:border lg:border-slate-100 lg:dark:border-slate-700 lg:h-fit lg:sticky lg:top-6 lg:z-10 transition-colors">
-    <div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-200 dark:border-slate-700 lg:border-none">
-      <div class="flex items-center gap-2"><span class="text-2xl">✍️</span><h2 class="text-xl font-black dark:text-white">Brouillon</h2></div>
+  <div id="draft-panel" class="hidden fixed inset-0 z-[70] bg-white/95 backdrop-blur-md p-6 flex-col overflow-y-auto lg:static lg:block lg:w-96 lg:bg-white lg:rounded-3xl lg:shadow-xl lg:border lg:border-slate-100 lg:h-fit lg:sticky lg:top-6 lg:z-10">
+    <div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-200 lg:border-none">
+      <div class="flex items-center gap-2"><span class="text-2xl">✍️</span><h2 class="text-xl font-black">Brouillon</h2></div>
       <div class="flex gap-2">
-        <button onclick="clearMathField()" class="text-slate-400 hover:text-rose-500 font-bold text-sm bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full transition-colors">Effacer</button>
-        <button onclick="toggleDraft()" class="lg:hidden text-slate-500 dark:text-slate-300 font-black text-xl bg-slate-100 dark:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition-colors">✕</button>
+        <button onclick="clearMathField()" class="text-slate-400 hover:text-rose-500 font-bold text-sm bg-slate-100 px-3 py-1 rounded-full transition-colors">Effacer</button>
+        <button onclick="toggleDraft()" class="lg:hidden text-slate-500 font-black text-xl bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center">✕</button>
       </div>
     </div>
     <math-field id="math-draft" smart-mode virtual-keyboard-mode="manual"></math-field>
@@ -159,48 +165,24 @@
 // ==========================================================
 // CONFIGURATION GOOGLE SCRIPT
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwJPcQqeS5_jSIz-EjJZNJr-CCV-yvOvrbfFgy6vV8i13UD8r-yflcm1UguS7gdgEJ2ZQ/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyP3kbylBygAKhrBKh8D4fhDb_ZCyrsw0yYDxCIENjctD7LRxqzyrZRv1K3S8wA4_omYA/exec";
 const ADMIN_PASSWORD = "NICO"; 
 
 let state = {
   activeProfile: null, niveau: "5EME", results: {}, xp: 0, streak: 0,
   questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null,
   hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
-  isDrawing: false, draftOpen: false, darkMode: false
+  isDrawing: false, draftOpen: false
 };
 
 const STORAGE_KEY_LOCAL = 'boost_local_progress'; 
 const SESSION_KEY = 'boost_active_user'; 
-const THEME_KEY = 'boost_theme';
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
 const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère", "TERMINALE": "Terminale" };
 const EMOJIS = ['📘', '🧮', '📐', '🚀', '💡', '🎯', '⚡', '🔥'];
 const LEVELS = {}; Object.keys(LEVEL_NAMES).forEach(k => { LEVELS[k] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[k] }; });
 
-// --- GESTION DU THÈME SOMBRE ---
-function initTheme() {
-  const savedTheme = localStorage.getItem(THEME_KEY);
-  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    state.darkMode = true; document.documentElement.classList.add('dark');
-    document.getElementById('btn-theme-login').innerText = '☀️'; document.getElementById('btn-theme-app').innerText = '☀️';
-  } else {
-    state.darkMode = false; document.documentElement.classList.remove('dark');
-    document.getElementById('btn-theme-login').innerText = '🌙'; document.getElementById('btn-theme-app').innerText = '🌙';
-  }
-}
-
-function toggleTheme() {
-  state.darkMode = !state.darkMode;
-  if (state.darkMode) {
-    document.documentElement.classList.add('dark'); localStorage.setItem(THEME_KEY, 'dark');
-    document.getElementById('btn-theme-login').innerText = '☀️'; document.getElementById('btn-theme-app').innerText = '☀️';
-  } else {
-    document.documentElement.classList.remove('dark'); localStorage.setItem(THEME_KEY, 'light');
-    document.getElementById('btn-theme-login').innerText = '🌙'; document.getElementById('btn-theme-app').innerText = '🌙';
-  }
-}
-
-// --- COACH : CRÉATION DE PROFIL ---
+// --- COACH : CRÉATION DE PROFIL MANUELLE ---
 function askAdmin() { const pass = prompt("Mot de passe Coach :"); if (pass === ADMIN_PASSWORD) document.getElementById('admin-modal').classList.remove('hidden'); }
 function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
 
@@ -211,7 +193,7 @@ async function generateStudentAccess() {
 
   const loader = document.getElementById('create-loader'); const btn = document.getElementById('btn-create');
   loader.classList.remove('hidden'); btn.classList.add('opacity-80');
-  const code = (name.substring(0, 3).toUpperCase() + level.charAt(0)).replace(/\s/g, '');
+  const code = (name.substring(0, 3).toUpperCase() + level.charAt(0) + Math.floor(Math.random() * 90 + 10)).replace(/\s/g, '');
 
   try {
     await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: "create_profile", code: code, name: name, level: level }) });
@@ -219,9 +201,44 @@ async function generateStudentAccess() {
   } catch(e) { alert("Erreur Google Sheets."); } finally { loader.classList.add('hidden'); btn.classList.remove('opacity-80'); }
 }
 
+// --- ÉLÈVE : INSCRIPTION AUTONOME ---
+async function registerStudent() {
+  const name = document.getElementById('reg-name').value.trim();
+  const level = document.getElementById('reg-level').value;
+  const email = document.getElementById('reg-email').value.trim();
+  
+  if (!name) return alert("Ton prénom est requis !");
+
+  const loader = document.getElementById('reg-loader');
+  loader.classList.remove('hidden');
+
+  // Génération d'un code unique (Ex: LEO482)
+  const code = (name.substring(0, 3).toUpperCase() + level.charAt(0) + Math.floor(Math.random() * 90 + 10)).replace(/\s/g, '');
+
+  try {
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: "create_profile", code: code, name: name, level: level, email: email })
+    });
+
+    // Connexion immédiate
+    state.activeProfile = { code: code, name: name, level: level, email: email };
+    localStorage.setItem(SESSION_KEY, code);
+    
+    alert(`🎉 Bienvenue ${name} !\n\nTon code d'accès personnel est : ${code}\nNote-le bien pour pouvoir te reconnecter plus tard.`);
+    initStudentApp();
+
+  } catch(e) {
+    alert("Erreur de connexion. Réessaie.");
+  } finally {
+    loader.classList.add('hidden');
+  }
+}
+
 // --- ÉLÈVE : CONNEXION ---
 document.addEventListener('DOMContentLoaded', () => { 
-  initTheme(); populateLevelsFromDb(); 
+  populateLevelsFromDb(); 
   const mf = document.getElementById('math-draft');
   if(mf) { mf.addEventListener('keydown', (ev) => { if(ev.key === 'Enter') { ev.preventDefault(); mf.executeCommand(['insert', '\\\\']); } }); }
   
@@ -233,14 +250,14 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loginWithCode() {
   const code = document.getElementById('student-code-input').value.trim().toUpperCase();
   if(!code) return;
-  const loader = document.getElementById('login-loader'); const btn = document.getElementById('btn-login');
-  loader.classList.remove('hidden'); btn.classList.add('opacity-80');
+  const loader = document.getElementById('login-loader'); const text = document.getElementById('login-text');
+  loader.classList.remove('hidden'); text.classList.add('hidden');
 
   try {
     const response = await fetch(GOOGLE_SCRIPT_URL + "?action=get_profiles"); const profiles = await response.json();
     if (profiles[code]) { state.activeProfile = profiles[code]; localStorage.setItem(SESSION_KEY, code); initStudentApp(); } 
-    else { alert("Code inconnu. Vérifie avec ton coach !"); }
-  } catch(e) { alert("Erreur réseau."); } finally { loader.classList.add('hidden'); btn.classList.remove('opacity-80'); }
+    else { alert("Code inconnu. Vérifie ton code !"); }
+  } catch(e) { alert("Erreur réseau."); } finally { loader.classList.add('hidden'); text.classList.remove('hidden'); }
 }
 
 function initStudentApp() {
@@ -274,8 +291,26 @@ function saveLocalProgress() {
   if (state.activeProfile.code) { localData[state.activeProfile.code].results = state.results; localData[state.activeProfile.code].xp = state.xp; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); }
 }
 
-function sendScoreToSheet(cat, status, xpGained) {
-  fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: "save_score", code: state.activeProfile.code, name: state.activeProfile.name, level: state.niveau, categorie: cat, resultat: status, xp: xpGained }) }).catch(e => console.log("Sauvegarde silencieuse."));
+function sendScoreToSheet(cat, idx, status, xpGained) {
+  const id = `${state.niveau}-${cat}-${idx}`;
+  const indicesVue = state.hintStepsRevealed[id] || 0;
+  const formuleVue = !!(state.formulaRevealed[id] || state.formulaManuallyTouched[id]);
+
+  fetch(GOOGLE_SCRIPT_URL, { 
+    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, 
+    body: JSON.stringify({ 
+      action: "save_score", 
+      code: state.activeProfile.code, 
+      name: state.activeProfile.name, 
+      level: state.niveau, 
+      categorie: cat, 
+      exercice_idx: idx + 1, // On enregistre l'exo "1", "2"... plutôt que "0", "1"
+      resultat: status, 
+      indices: indicesVue,
+      formule: formuleVue,
+      xp: xpGained 
+    }) 
+  }).catch(e => console.log("Sauvegarde silencieuse."));
 }
 
 function mark(cat, idx, status, total) {
@@ -291,7 +326,9 @@ function mark(cat, idx, status, total) {
     state.xp += xpGained;
   }
 
-  saveLocalProgress(); sendScoreToSheet(cat, status, xpGained); updateHeader();
+  saveLocalProgress(); 
+  sendScoreToSheet(cat, idx, status, xpGained); 
+  updateHeader();
 
   let completed = 0;
   for(let i=0; i<total; i++) { if(state.results[`${state.niveau}-${cat}-${i}`] === 'EASY' || state.results[`${state.niveau}-${cat}-${i}`] === 'MEDIUM') completed++; }
@@ -334,7 +371,7 @@ function initCanvas() {
   let d = false; c.onmousedown = (e) => { d = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); }; 
   c.onmousemove = (e) => { if(d) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } }; c.onmouseup = () => d = false; 
 }
-function toggleDrawingMode(id) { state.isDrawing = !state.isDrawing; const b = document.getElementById(`box-${id}`); const btn = document.getElementById(`btn-draw-${id}`); state.isDrawing ? (b.classList.add('drawing-mode'), btn.classList.add('bg-red-100', 'dark:bg-red-900/50'), initCanvas()) : (b.classList.remove('drawing-mode'), btn.classList.remove('bg-red-100', 'dark:bg-red-900/50')); }
+function toggleDrawingMode(id) { state.isDrawing = !state.isDrawing; const b = document.getElementById(`box-${id}`); const btn = document.getElementById(`btn-draw-${id}`); state.isDrawing ? (b.classList.add('drawing-mode'), btn.classList.add('bg-red-100'), initCanvas()) : (b.classList.remove('drawing-mode'), btn.classList.remove('bg-red-100')); }
 
 // --- RENDU VISUEL ---
 function render() {
@@ -345,9 +382,9 @@ function render() {
     const pct = total > 0 ? Math.round((completed/total)*100) : 0; const isCompleted = completed === total && total > 0;
     const icon = LEVELS[state.niveau].catIcon[cat] || EMOJIS[emojiIdx % EMOJIS.length]; emojiIdx++;
 
-    const bgClass = isCompleted ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700';
-    const headerBgClass = isCompleted ? '' : 'hover:bg-slate-50 dark:hover:bg-slate-700';
-    const titleColor = isCompleted ? 'text-emerald-800 dark:text-emerald-400' : 'text-slate-800 dark:text-white';
+    const bgClass = isCompleted ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-slate-200';
+    const headerBgClass = isCompleted ? '' : 'hover:bg-slate-50';
+    const titleColor = isCompleted ? 'text-emerald-800' : 'text-slate-800';
 
     html += `<div class="rounded-2xl shadow-sm border overflow-hidden transition-colors ${bgClass}">
       <div onclick="toggleCategory('${cat}')" class="px-5 py-4 flex justify-between items-center cursor-pointer transition-colors ${headerBgClass}">
@@ -356,12 +393,12 @@ function render() {
           <div class="flex-1 pr-4">
             <span class="text-lg lg:text-xl font-bold ${titleColor}">${LEVELS[state.niveau].catDisplay[cat]||cat} ${isCompleted ? '🏆' : ''}</span>
             <div class="w-full max-w-xs flex items-center gap-3 mt-1.5">
-              <div class="flex-1 bg-slate-200 dark:bg-slate-600 rounded-full h-1.5 overflow-hidden"><div class="bg-emerald-500 h-1.5 rounded-full transition-all" style="width: ${pct}%"></div></div>
-              <span class="text-xs text-slate-500 dark:text-slate-400 font-bold min-w-[2rem]">${pct}%</span>
+              <div class="flex-1 bg-slate-200 rounded-full h-1.5 overflow-hidden"><div class="bg-emerald-500 h-1.5 rounded-full transition-all" style="width: ${pct}%"></div></div>
+              <span class="text-xs text-slate-500 font-bold min-w-[2rem]">${pct}%</span>
             </div>
           </div>
         </div>
-        <span class="text-xl text-slate-400 dark:text-slate-500 transition-transform ${state.expanded[cat]?'rotate-180':''}"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></span>
+        <span class="text-xl text-slate-400 transition-transform ${state.expanded[cat]?'rotate-180':''}"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></span>
       </div>
       ${state.expanded[cat] ? renderSection(cat, cats[cat][state.questView[cat]||0], parseInt(state.questView[cat]||0), total) : ''}
     </div>`;
@@ -371,15 +408,15 @@ function render() {
 }
 
 function renderSection(cat, data, idx, total) {
-  if (!data) return `<div class="p-10 text-center font-bold text-emerald-600 dark:text-emerald-400">Félicitations ! Catégorie terminée.</div>`;
+  if (!data) return `<div class="p-10 text-center font-bold text-emerald-600">Félicitations ! Catégorie terminée.</div>`;
   const id = `${state.niveau}-${cat}-${idx}`; const isRev = state.revealed && state.currentId === id;
   
-  let pills = `<div class="flex flex-wrap gap-1.5 p-3 lg:p-4 justify-center border-t border-slate-100 dark:border-slate-700">`;
+  let pills = `<div class="flex flex-wrap gap-1.5 p-3 lg:p-4 justify-center border-t border-slate-100">`;
   for(let i=0; i<total; i++) {
     const st = state.results[`${state.niveau}-${cat}-${i}`];
     let c = "w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center cursor-pointer transition-colors ";
-    c += (st === 'EASY' || st === 'MEDIUM') ? "bg-emerald-500 text-white" : (st === 'HARD' ? "bg-rose-500 text-white" : "bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-500");
-    if(i===idx) c+=" ring-4 ring-blue-300 dark:ring-blue-500 scale-110 z-10";
+    c += (st === 'EASY' || st === 'MEDIUM') ? "bg-emerald-500 text-white" : (st === 'HARD' ? "bg-rose-500 text-white" : "bg-slate-200 text-slate-600 hover:bg-slate-300");
+    if(i===idx) c+=" ring-4 ring-blue-300 scale-110 z-10";
     pills += `<button onclick="goToExercise('${cat}', ${i})" class="${c}">${i+1}</button>`;
   } pills += `</div>`;
 
@@ -387,13 +424,13 @@ function renderSection(cat, data, idx, total) {
 
   let actionButtons = ''; const isLastExercise = idx >= total - 1;
   if (!isRev) {
-    actionButtons = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-500 text-white font-black text-lg rounded-2xl shadow-xl transition-colors">VÉRIFIER</button>`;
+    actionButtons = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-lg rounded-2xl shadow-xl transition-colors">VÉRIFIER</button>`;
   } else if (!state.isScored) {
     actionButtons = `
       <div class="flex gap-2 animate-bounce-in w-full">
-        <button onclick="mark('${cat}', ${idx}, 'HARD', ${total})" class="flex-1 py-3 lg:py-4 bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 rounded-2xl font-black border-2 border-rose-200 dark:border-rose-800 hover:bg-rose-200 dark:hover:bg-rose-900/60 transition-colors">🥵 FAUX</button>
-        <button onclick="mark('${cat}', ${idx}, 'MEDIUM', ${total})" class="flex-1 py-3 lg:py-4 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 rounded-2xl font-black border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-200 dark:hover:bg-amber-900/60 transition-colors">🤔 HÉSITÉ</button>
-        <button onclick="mark('${cat}', ${idx}, 'EASY', ${total})" class="flex-1 py-3 lg:py-4 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 rounded-2xl font-black border-2 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-200 dark:hover:bg-emerald-900/60 transition-colors">😎 FACILE</button>
+        <button onclick="mark('${cat}', ${idx}, 'HARD', ${total})" class="flex-1 py-3 lg:py-4 bg-rose-100 text-rose-700 rounded-2xl font-black border-2 border-rose-200 hover:bg-rose-200 transition-colors">🥵 FAUX</button>
+        <button onclick="mark('${cat}', ${idx}, 'MEDIUM', ${total})" class="flex-1 py-3 lg:py-4 bg-amber-100 text-amber-700 rounded-2xl font-black border-2 border-amber-200 hover:bg-amber-200 transition-colors">🤔 HÉSITÉ</button>
+        <button onclick="mark('${cat}', ${idx}, 'EASY', ${total})" class="flex-1 py-3 lg:py-4 bg-emerald-100 text-emerald-700 rounded-2xl font-black border-2 border-emerald-200 hover:bg-emerald-200 transition-colors">😎 FACILE</button>
       </div>`;
   } else {
     if (isLastExercise) { actionButtons = `<button onclick="toggleCategory('${cat}')" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg rounded-2xl shadow-xl transition-colors animate-bounce-in flex justify-center items-center gap-2">✅ TERMINER LA CATÉGORIE</button>`; } 
@@ -401,19 +438,19 @@ function renderSection(cat, data, idx, total) {
   }
 
   return `
-    <div class="p-4 lg:p-6 bg-white dark:bg-slate-800 transition-colors">
+    <div class="p-4 lg:p-6 bg-white transition-colors">
       ${pills}
       
       <div class="flex justify-between items-center mt-4 mb-2">
-        <span class="bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 text-xs font-black px-3 py-1 rounded-full uppercase">Niv. ${data.lvl || 1}</span>
-        <button id="btn-draw-${id}" onclick="toggleDrawingMode('${id}')" class="px-3 py-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg font-bold text-sm text-slate-700 dark:text-slate-200 transition-colors">🖍️ Dessin</button>
+        <span class="bg-blue-100 text-blue-800 text-xs font-black px-3 py-1 rounded-full uppercase">Niv. ${data.lvl || 1}</span>
+        <button id="btn-draw-${id}" onclick="toggleDrawingMode('${id}')" class="px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg font-bold text-sm text-slate-700 transition-colors">🖍️ Dessin</button>
       </div>
 
-      <div id="box-${id}" class="main-box bg-white dark:bg-slate-900 border-2 border-blue-100 dark:border-slate-700 rounded-3xl p-4 lg:p-6 mb-4 relative overflow-hidden flex flex-col justify-center transition-colors">
+      <div id="box-${id}" class="main-box bg-white border-2 border-blue-100 rounded-3xl p-4 lg:p-6 mb-4 relative overflow-hidden flex flex-col justify-center transition-colors">
         <canvas id="draw-canvas"></canvas>
         <div class="relative z-0 w-full overflow-hidden">
-          <div class="math-display text-slate-900 dark:text-white">${data.q}</div>
-          ${isRev ? `<div class="mt-3 pt-3 border-t-2 border-dashed border-emerald-200 dark:border-emerald-800 text-3xl lg:text-4xl font-black text-emerald-600 dark:text-emerald-400 animate-bounce-in text-center break-words">${data.a}</div>` : ''}
+          <div class="math-display text-slate-900">${data.q}</div>
+          ${isRev ? `<div class="mt-3 pt-3 border-t-2 border-dashed border-emerald-200 text-3xl lg:text-4xl font-black text-emerald-600 animate-bounce-in text-center break-words">${data.a}</div>` : ''}
         </div>
       </div>
 
@@ -422,15 +459,15 @@ function renderSection(cat, data, idx, total) {
       </div>
 
       <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-700 transition-colors">
-          <button onclick="showNextHint('${id}', ${data.steps ? data.steps.length : 0})" class="w-full text-sm font-bold text-amber-600 dark:text-amber-400 bg-amber-100 hover:bg-amber-200 dark:bg-amber-900/30 dark:hover:bg-amber-900/50 p-3 rounded-xl transition-colors">💡 Révéler un indice</button>
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 transition-colors">
+          <button onclick="showNextHint('${id}', ${data.steps ? data.steps.length : 0})" class="w-full text-sm font-bold text-amber-600 bg-amber-100 hover:bg-amber-200 p-3 rounded-xl transition-colors">💡 Révéler un indice</button>
           <div class="mt-3 space-y-2">
-            ${(data.steps||[]).map((s,i) => `<div id="hint-${id}-${i}" class="hidden text-sm p-3 bg-white dark:bg-slate-800 rounded-xl border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 font-medium transition-colors">${s}</div>`).join('')}
+            ${(data.steps||[]).map((s,i) => `<div id="hint-${id}-${i}" class="hidden text-sm p-3 bg-white rounded-xl border border-amber-200 text-amber-900 font-medium transition-colors">${s}</div>`).join('')}
           </div>
         </div>
-        <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-700 flex flex-col justify-center transition-colors">
-          <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase text-center mb-2">Rappel de cours</p>
-          <div class="blurred-formula ${fRevealedClass} text-sm lg:text-base bg-indigo-100 dark:bg-indigo-900/40 text-indigo-900 dark:text-indigo-200 font-bold p-3 lg:p-4 rounded-xl text-center border border-indigo-200 dark:border-indigo-800 transition-colors" onclick="revealFormula('${id}', this)">${data.f || 'Pas de formule spécifique pour cet exercice.'}</div>
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex flex-col justify-center transition-colors">
+          <p class="text-xs font-bold text-slate-400 uppercase text-center mb-2">Rappel de cours</p>
+          <div class="blurred-formula ${fRevealedClass} text-sm lg:text-base bg-indigo-100 text-indigo-900 font-bold p-3 lg:p-4 rounded-xl text-center border border-indigo-200 transition-colors" onclick="revealFormula('${id}', this)">${data.f || 'Pas de formule spécifique pour cet exercice.'}</div>
         </div>
       </div>
     </div>`;
