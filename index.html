@@ -44,6 +44,12 @@
     
     .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3b82f6; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Styles pour le mode QCM */
+    .option-btn { border: 2px solid #e2e8f0; transition: all 0.2s; text-align: center; padding: 1rem; border-radius: 1rem; font-weight: 700; background: white; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    .option-btn.cursor-pointer:hover { border-color: #3b82f6; background: #eff6ff; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1); }
+    .option-correct { border-color: #10b981 !important; background: #ecfdf5 !important; color: #065f46; }
+    .option-wrong { border-color: #ef4444 !important; background: #fef2f2 !important; color: #991b1b; }
   </style>
 </head>
 <body class="bg-[#f8f4f0] text-slate-900 min-h-screen">
@@ -172,6 +178,7 @@ let state = {
   activeProfile: null, niveau: "4EME", results: {}, xp: 0, streak: 0,
   questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null,
   hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
+  qcmAnswered: {}, // NOUVEAU: Stocke la réponse choisie par l'élève
   isDrawing: false, draftOpen: false
 };
 
@@ -206,7 +213,7 @@ async function generateStudentAccess() {
     document.getElementById('final-code').innerText = code; 
     document.getElementById('generated-result').classList.remove('hidden');
   } catch(e) { 
-    alert("Erreur de connexion."); 
+    alert("Erreur Google Sheets."); 
   } finally { 
     loader.classList.add('hidden'); 
     btn.classList.remove('opacity-80'); 
@@ -235,7 +242,6 @@ async function registerStudent() {
       body: JSON.stringify({ action: "create_profile", code: code, name: name, level: level, email: email })
     });
 
-    // Connexion immédiate
     state.activeProfile = { code: code, name: name, level: level, email: email };
     localStorage.setItem(SESSION_KEY, code);
     
@@ -422,6 +428,24 @@ function changeNiveau() { state.niveau = document.getElementById('niveau-select'
 
 function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; render(); }
 function nextExercise(cat) { const idx = parseInt(state.questView[cat] || 0); const total = LEVELS[state.niveau].categories[cat].length; if(idx < total-1) { state.questView[cat] = idx + 1; } state.revealed = false; state.isScored = false; state.currentId = null; render(); }
+
+// Vérification QCM
+function checkOption(cat, idx, optIdx) {
+  const id = `${state.niveau}-${cat}-${idx}`;
+  const data = LEVELS[state.niveau].categories[cat][idx];
+  const selectedOpt = data.options[optIdx];
+  
+  state.qcmAnswered[id] = selectedOpt;
+  state.revealed = true;
+  state.currentId = id;
+
+  if (selectedOpt === data.a) {
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+  }
+  render();
+}
+
+// Vérification Classique
 function verify(cat, idx) { state.revealed = true; state.isScored = false; state.currentId = `${state.niveau}-${cat}-${idx}`; render(); }
 
 function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; render(); }
@@ -473,7 +497,9 @@ function render() {
 
 function renderSection(cat, data, idx, total) {
   if (!data) return `<div class="p-10 text-center font-bold text-emerald-600">Félicitations ! Catégorie terminée.</div>`;
-  const id = `${state.niveau}-${cat}-${idx}`; const isRev = state.revealed && state.currentId === id;
+  const id = `${state.niveau}-${cat}-${idx}`; 
+  const isRev = state.revealed && state.currentId === id;
+  const hasOptions = data.options && data.options.length > 0;
   
   let pills = `<div class="flex flex-wrap gap-1.5 p-3 lg:p-4 justify-center border-t border-slate-100">`;
   for(let i=0; i<total; i++) {
@@ -484,11 +510,14 @@ function renderSection(cat, data, idx, total) {
     pills += `<button onclick="goToExercise('${cat}', ${i})" class="${c}">${i+1}</button>`;
   } pills += `</div>`;
 
-  const fRevealedClass = (state.formulaRevealed[id] || state.formulaManuallyTouched[id]) ? 'revealed' : '';
+  let actionButtons = ''; 
+  const isLastExercise = idx >= total - 1;
 
-  let actionButtons = ''; const isLastExercise = idx >= total - 1;
+  // GÉNÉRATION DES BOUTONS DE CONTRÔLE
   if (!isRev) {
-    actionButtons = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-lg rounded-2xl shadow-xl transition-colors">VÉRIFIER</button>`;
+    if (!hasOptions) {
+      actionButtons = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-lg rounded-2xl shadow-xl transition-colors">VÉRIFIER</button>`;
+    }
   } else if (!state.isScored) {
     actionButtons = `
       <div class="flex gap-2 animate-bounce-in w-full">
@@ -504,6 +533,30 @@ function renderSection(cat, data, idx, total) {
     }
   }
 
+  // GÉNÉRATION DES OPTIONS QCM (SI PRÉSENTES)
+  let finalButtonsHtml = '';
+  if (hasOptions) {
+    let optionsHtml = `<div class="grid grid-cols-1 md:grid-cols-3 gap-3 w-full ${isRev ? 'mb-4' : ''}">`;
+    data.options.forEach((opt, oIdx) => {
+      let btnClass = "option-btn";
+      if (isRev) {
+        btnClass += " cursor-default opacity-80";
+        if (opt === data.a) btnClass += " option-correct";
+        else if (opt === state.qcmAnswered[id]) btnClass += " option-wrong";
+        optionsHtml += `<div class="${btnClass}"><span>${opt}</span></div>`;
+      } else {
+        btnClass += " cursor-pointer";
+        optionsHtml += `<button onclick="checkOption('${cat}', ${idx}, ${oIdx})" class="${btnClass}"><span>${opt}</span></button>`;
+      }
+    });
+    optionsHtml += `</div>`;
+    finalButtonsHtml = optionsHtml + actionButtons;
+  } else {
+    finalButtonsHtml = actionButtons;
+  }
+
+  const fRevealedClass = (state.formulaRevealed[id] || state.formulaManuallyTouched[id]) ? 'revealed' : '';
+
   return `
     <div class="p-4 lg:p-6 bg-white transition-colors">
       ${pills}
@@ -517,12 +570,13 @@ function renderSection(cat, data, idx, total) {
         <canvas id="draw-canvas"></canvas>
         <div class="relative z-0 w-full overflow-hidden">
           <div class="math-display text-slate-900">${data.q}</div>
-          ${isRev ? `<div class="mt-3 pt-3 border-t-2 border-dashed border-emerald-200 text-3xl lg:text-4xl font-black text-emerald-600 animate-bounce-in text-center break-words">${data.a}</div>` : ''}
+          ${isRev && !hasOptions ? `<div class="mt-3 pt-3 border-t-2 border-dashed border-emerald-200 text-3xl lg:text-4xl font-black text-emerald-600 animate-bounce-in text-center break-words">${data.a}</div>` : ''}
+          ${isRev && hasOptions && state.qcmAnswered[id] !== data.a ? `<div class="mt-3 pt-3 border-t-2 border-dashed border-emerald-200 text-xl font-black text-emerald-600 animate-bounce-in text-center break-words">Correction : ${data.a}</div>` : ''}
         </div>
       </div>
 
-      <div class="flex gap-2">
-        ${actionButtons}
+      <div class="flex flex-col gap-2">
+        ${finalButtonsHtml}
       </div>
 
       <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
