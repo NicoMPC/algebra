@@ -32,8 +32,8 @@
     textarea#text-draft { font-size: 1.1rem; padding: 1rem; border-radius: 1rem; background: #ffffff; border: 2px dashed #cbd5e1; width: 100%; min-height: 250px; outline: none; color: #1e293b; transition: all 0.3s; font-family: monospace; resize: vertical; }
     textarea#text-draft:focus { border-color: #3b82f6; border-style: solid; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1); }
     
-    #draw-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; cursor: crosshair; }
-    .drawing-mode #draw-canvas { pointer-events: auto; }
+    #draw-canvas, #draw-canvas-draft { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; cursor: crosshair; }
+    .drawing-mode #draw-canvas, .drawing-mode-draft #draw-canvas-draft { pointer-events: auto; }
     
     .blurred-formula { filter: blur(6px); transition: all 0.4s ease; cursor: pointer; user-select: none; overflow-x: auto; white-space: pre-wrap; word-break: break-word; opacity: 0.8; }
     .blurred-formula.revealed { filter: blur(0); opacity: 1; }
@@ -217,7 +217,7 @@
     </div>
   </div>
   
-  <div class="p-4 bg-slate-50/50 border-b border-slate-100">
+  <div class="p-4 bg-slate-50/50 border-b border-slate-100 flex flex-col gap-2">
     <div class="flex gap-2">
         <button onclick="insertText('²')" class="symbol-btn flex-1">x²</button>
         <button onclick="insertText('³')" class="symbol-btn flex-1">x³</button>
@@ -225,10 +225,12 @@
         <button onclick="insertText(' / ')" class="symbol-btn flex-1">÷</button>
         <button onclick="insertText(' × ')" class="symbol-btn flex-1">×</button>
     </div>
+    <button id="btn-draw-draft" onclick="toggleDraftDrawingMode()" class="w-full px-3 py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg font-bold text-sm text-slate-500 transition-colors flex items-center justify-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg> Mode Dessin</button>
   </div>
 
-  <div class="p-5 flex-grow flex flex-col">
-    <textarea id="text-draft" placeholder="Pose tes calculs ici librement...&#10;&#10;Ex: 2x + 3 = 7&#10;    2x = 4&#10;    x = 2" class="flex-grow"></textarea>
+  <div id="box-draft" class="p-5 flex-grow flex flex-col relative">
+    <textarea id="text-draft" placeholder="Pose tes calculs ici librement...&#10;&#10;Ex: 2x + 3 = 7&#10;    2x = 4&#10;    x = 2" class="flex-grow relative z-0"></textarea>
+    <canvas id="draw-canvas-draft"></canvas>
   </div>
 </div>
 
@@ -393,15 +395,11 @@ function initStudentApp() {
 
   document.getElementById('login-screen').classList.add('hidden'); 
   
-  if(state.sessionCount > MAX_FREE_SESSIONS) { document.getElementById('paywall-modal').classList.remove('hidden'); return; }
+  // Limite retirée
+  // if(state.sessionCount > MAX_FREE_SESSIONS) { document.getElementById('paywall-modal').classList.remove('hidden'); return; }
 
   document.getElementById('main-app').classList.remove('hidden');
   document.getElementById('active-student-name').innerText = state.activeProfile.name;
-  
-  // Compteur masqué pour la phase de test
-  // const sessDisplay = document.getElementById('session-counter-display');
-  // sessDisplay.innerText = `Session ${state.sessionCount}/${MAX_FREE_SESSIONS}`;
-  // if(state.sessionCount === MAX_FREE_SESSIONS) sessDisplay.classList.add('text-orange-500', 'bg-orange-50', 'px-2', 'py-1', 'rounded-md');
   
   if(myData.isNew) { myData.isNew = false; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); }
 
@@ -468,6 +466,33 @@ function updateLevelDropdown(userLevel) {
 }
 function updateHeader() { document.getElementById('ui-streak').innerText = state.streak; document.getElementById('ui-xp').innerText = state.xp; }
 
+let isDraftDrawing = false;
+function initDraftCanvas() {
+  const c = document.getElementById('draw-canvas-draft'); if(!c) return;
+  const rect = c.parentElement.getBoundingClientRect();
+  c.width = rect.width; c.height = rect.height;
+  let ctx = c.getContext('2d'); ctx.strokeStyle = 'rgba(59, 130, 246, 0.6)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+  let d = false;
+  c.onmousedown = (e) => { d = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); };
+  c.onmousemove = (e) => { if(d) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } };
+  c.onmouseup = () => d = false;
+  c.onmouseleave = () => d = false;
+}
+
+function toggleDraftDrawingMode() {
+  isDraftDrawing = !isDraftDrawing;
+  const b = document.getElementById('box-draft');
+  const btn = document.getElementById('btn-draw-draft');
+  if(isDraftDrawing) {
+    b.classList.add('drawing-mode-draft');
+    btn.classList.add('bg-blue-100', 'text-blue-700', 'border-blue-200');
+    initDraftCanvas();
+  } else {
+    b.classList.remove('drawing-mode-draft');
+    btn.classList.remove('bg-blue-100', 'text-blue-700', 'border-blue-200');
+  }
+}
+
 function toggleDraft() {
   state.draftOpen = !state.draftOpen; 
   const drawer = document.getElementById('draft-drawer');
@@ -476,7 +501,7 @@ function toggleDraft() {
       drawer.classList.add('open'); 
       backdrop.classList.remove('hidden');
       setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
-      setTimeout(() => document.getElementById('text-draft').focus(), 300); 
+      setTimeout(() => { document.getElementById('text-draft').focus(); if(isDraftDrawing) initDraftCanvas(); }, 300); 
   } else { 
       drawer.classList.remove('open'); 
       backdrop.classList.add('opacity-0');
@@ -493,7 +518,16 @@ function insertText(text) {
     txtArea.selectionStart = startPos + text.length;
     txtArea.selectionEnd = startPos + text.length;
 }
-function clearDraft() { document.getElementById('text-draft').value = ''; document.getElementById('text-draft').focus(); }
+
+function clearDraft() { 
+  document.getElementById('text-draft').value = ''; 
+  const c = document.getElementById('draw-canvas-draft');
+  if(c) {
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, c.width, c.height);
+  }
+  document.getElementById('text-draft').focus(); 
+}
 
 function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; render(); }
 function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; render(); }
@@ -598,7 +632,7 @@ function renderSection(cat, data, idx, total) {
           <div class="bg-white/10 rounded-xl p-4 border border-white/20">
             <span class="text-2xl block mb-2">📝</span>
             <p class="font-bold text-sm">Le Brouillon (En haut)</p>
-            <p class="text-xs text-blue-200 mt-1">Ouvre ton bloc-notes rétractable pour poser tes calculs.</p>
+            <p class="text-xs text-blue-200 mt-1">Ouvre ton bloc-notes rétractable pour poser tes calculs ou dessiner.</p>
           </div>
           <div class="bg-white/10 rounded-xl p-4 border border-white/20 relative">
              <span class="absolute -top-2 -right-2 flex h-4 w-4"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span><span class="relative inline-flex rounded-full h-4 w-4 bg-amber-500 border-2 border-white"></span></span>
