@@ -32,8 +32,9 @@
     textarea#text-draft { font-size: 1.1rem; padding: 1rem; border-radius: 1rem; background: #ffffff; border: 2px dashed #cbd5e1; width: 100%; min-height: 250px; outline: none; color: #1e293b; transition: all 0.3s; font-family: monospace; resize: vertical; }
     textarea#text-draft:focus { border-color: #3b82f6; border-style: solid; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1); }
     
-    #draw-canvas, #draw-canvas-draft { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; cursor: crosshair; }
-    .drawing-mode #draw-canvas, .drawing-mode-draft #draw-canvas-draft { pointer-events: auto; }
+    #draw-canvas, #draw-canvas-draft, #laser-canvas, #laser-canvas-draft { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; cursor: crosshair; }
+    .drawing-mode #draw-canvas, .drawing-mode-draft #draw-canvas-draft { pointer-events: auto; z-index: 12; }
+    .laser-mode #laser-canvas, .laser-mode-draft #laser-canvas-draft { pointer-events: auto; z-index: 12; }
     
     .blurred-formula { filter: blur(6px); transition: all 0.4s ease; cursor: pointer; user-select: none; overflow-x: auto; white-space: pre-wrap; word-break: break-word; opacity: 0.8; }
     .blurred-formula.revealed { filter: blur(0); opacity: 1; }
@@ -207,7 +208,7 @@
   <main id="app-container" class="space-y-6 pb-20"></main>
 </div>
 
-<div id="draft-backdrop" class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-[90] hidden transition-opacity duration-300 opacity-0" onclick="toggleDraft()"></div>
+<div id="draft-backdrop" class="fixed inset-0 bg-slate-900/20 backdrop-blur-[1px] z-[90] hidden transition-opacity duration-300 opacity-0" onclick="toggleDraft()"></div>
 <div id="draft-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white shadow-[0_0_40px_rgba(0,0,0,0.1)] border-l border-slate-200 z-[100] flex flex-col">
   <div class="flex justify-between items-center p-5 border-b border-slate-100 bg-slate-50/50">
     <div class="flex items-center gap-2"><span class="text-2xl">📝</span><h2 class="text-lg font-black text-slate-800">Bloc-notes</h2></div>
@@ -225,12 +226,16 @@
         <button onclick="insertText(' / ')" class="symbol-btn flex-1">÷</button>
         <button onclick="insertText(' × ')" class="symbol-btn flex-1">×</button>
     </div>
-    <button id="btn-draw-draft" onclick="toggleDraftDrawingMode()" class="w-full px-3 py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg font-bold text-sm text-slate-500 transition-colors flex items-center justify-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg> Mode Dessin</button>
+    <div class="flex gap-2 w-full">
+        <button id="btn-draw-draft" onclick="toggleDraftDrawingMode()" class="flex-1 px-3 py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg font-bold text-sm text-slate-500 transition-colors flex items-center justify-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg> Dessin</button>
+        <button id="btn-laser-draft" onclick="toggleDraftLaserMode()" class="flex-1 px-3 py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg font-bold text-sm text-slate-500 transition-colors flex items-center justify-center gap-1">🔴 Laser</button>
+    </div>
   </div>
 
   <div id="box-draft" class="p-5 flex-grow flex flex-col relative">
     <textarea id="text-draft" placeholder="Pose tes calculs ici librement...&#10;&#10;Ex: 2x + 3 = 7&#10;    2x = 4&#10;    x = 2" class="flex-grow relative z-0"></textarea>
     <canvas id="draw-canvas-draft"></canvas>
+    <canvas id="laser-canvas-draft"></canvas>
   </div>
 </div>
 
@@ -247,7 +252,7 @@ let state = {
   questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null,
   hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
   qcmAnswered: {},
-  isDrawing: false, draftOpen: false, sessionCount: 1, tutorialDone: false
+  isDrawing: false, isLaser: false, draftOpen: false, sessionCount: 1, tutorialDone: false
 };
 
 const STORAGE_KEY_LOCAL = 'boost_local_progress'; 
@@ -394,9 +399,6 @@ function initStudentApp() {
   state.tutorialDone = myData.tutorialDone === undefined ? false : myData.tutorialDone;
 
   document.getElementById('login-screen').classList.add('hidden'); 
-  
-  // Limite retirée
-  // if(state.sessionCount > MAX_FREE_SESSIONS) { document.getElementById('paywall-modal').classList.remove('hidden'); return; }
 
   document.getElementById('main-app').classList.remove('hidden');
   document.getElementById('active-student-name').innerText = state.activeProfile.name;
@@ -466,33 +468,6 @@ function updateLevelDropdown(userLevel) {
 }
 function updateHeader() { document.getElementById('ui-streak').innerText = state.streak; document.getElementById('ui-xp').innerText = state.xp; }
 
-let isDraftDrawing = false;
-function initDraftCanvas() {
-  const c = document.getElementById('draw-canvas-draft'); if(!c) return;
-  const rect = c.parentElement.getBoundingClientRect();
-  c.width = rect.width; c.height = rect.height;
-  let ctx = c.getContext('2d'); ctx.strokeStyle = 'rgba(59, 130, 246, 0.6)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
-  let d = false;
-  c.onmousedown = (e) => { d = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); };
-  c.onmousemove = (e) => { if(d) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } };
-  c.onmouseup = () => d = false;
-  c.onmouseleave = () => d = false;
-}
-
-function toggleDraftDrawingMode() {
-  isDraftDrawing = !isDraftDrawing;
-  const b = document.getElementById('box-draft');
-  const btn = document.getElementById('btn-draw-draft');
-  if(isDraftDrawing) {
-    b.classList.add('drawing-mode-draft');
-    btn.classList.add('bg-blue-100', 'text-blue-700', 'border-blue-200');
-    initDraftCanvas();
-  } else {
-    b.classList.remove('drawing-mode-draft');
-    btn.classList.remove('bg-blue-100', 'text-blue-700', 'border-blue-200');
-  }
-}
-
 function toggleDraft() {
   state.draftOpen = !state.draftOpen; 
   const drawer = document.getElementById('draft-drawer');
@@ -501,7 +476,11 @@ function toggleDraft() {
       drawer.classList.add('open'); 
       backdrop.classList.remove('hidden');
       setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
-      setTimeout(() => { document.getElementById('text-draft').focus(); if(isDraftDrawing) initDraftCanvas(); }, 300); 
+      setTimeout(() => { 
+          document.getElementById('text-draft').focus(); 
+          if(isDraftDrawing) initDraftCanvas(); 
+          if(isDraftLaser) initDraftLaser();
+      }, 300); 
   } else { 
       drawer.classList.remove('open'); 
       backdrop.classList.add('opacity-0');
@@ -530,10 +509,10 @@ function clearDraft() {
 }
 
 function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; render(); }
-function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; render(); }
-function nextExercise(cat) { const idx = parseInt(state.questView[cat] || 0); const total = LEVELS[state.niveau].categories[cat].length; if(idx < total-1) { state.questView[cat] = idx + 1; } state.revealed = false; state.isScored = false; state.currentId = null; render(); }
+function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; state.isDrawing = false; state.isLaser = false; render(); }
+function nextExercise(cat) { const idx = parseInt(state.questView[cat] || 0); const total = LEVELS[state.niveau].categories[cat].length; if(idx < total-1) { state.questView[cat] = idx + 1; } state.revealed = false; state.isScored = false; state.currentId = null; state.isDrawing = false; state.isLaser = false; render(); }
 
-// --- LOGIQUE QCM (Avec validation classe élégante) ---
+// --- LOGIQUE QCM ---
 function checkOption(cat, idx, optIdx, buttonEl) {
   const id = `${state.niveau}-${cat}-${idx}`;
   const data = LEVELS[state.niveau].categories[cat][idx];
@@ -543,7 +522,6 @@ function checkOption(cat, idx, optIdx, buttonEl) {
   state.revealed = true;
   state.currentId = id;
 
-  // Feedback Visuel Immédiat
   const parent = buttonEl.parentElement;
   Array.from(parent.children).forEach(child => { child.className = "option-btn option-neutral cursor-default"; });
 
@@ -554,7 +532,6 @@ function checkOption(cat, idx, optIdx, buttonEl) {
     buttonEl.className = "option-btn option-wrong animate-shake cursor-default";
     buttonEl.innerHTML = `<span><span class="text-rose-500 mr-2">❌</span>${selectedOpt}</span>`;
     
-    // Mettre en évidence la bonne réponse
     const correctIdx = data.options.indexOf(data.a);
     if(correctIdx !== -1 && parent.children[correctIdx]) {
         parent.children[correctIdx].className = "option-btn option-correct cursor-default";
@@ -562,24 +539,217 @@ function checkOption(cat, idx, optIdx, buttonEl) {
     }
   }
   
-  // Petit délai pour admirer le résultat avant de générer le reste (boutons d'évaluation)
   setTimeout(() => render(), 800);
 }
 
 function verify(cat, idx) { state.revealed = true; state.isScored = false; state.currentId = `${state.niveau}-${cat}-${idx}`; render(); }
-
 function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; render(); }
 function showNextHint(id, total) { if(!state.hintStepsRevealed[id]) state.hintStepsRevealed[id] = 0; if(state.hintStepsRevealed[id] < total) { document.getElementById(`hint-${id}-${state.hintStepsRevealed[id]}`).classList.remove('hidden'); document.getElementById(`hint-${id}-${state.hintStepsRevealed[id]}`).classList.add('animate-fade-in'); state.hintStepsRevealed[id]++; } }
 function revealFormula(id, el) { el.classList.add('revealed'); state.formulaManuallyTouched[id] = true; }
 
-function initCanvas() { 
-  const c = document.getElementById('draw-canvas'); if(!c) return; 
-  c.width = c.parentElement.clientWidth; c.height = c.parentElement.clientHeight; 
-  let ctx = c.getContext('2d'); ctx.strokeStyle = 'rgba(239, 68, 68, 0.6)'; ctx.lineWidth = 3; ctx.lineCap = 'round'; 
-  let d = false; c.onmousedown = (e) => { d = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); }; 
-  c.onmousemove = (e) => { if(d) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } }; c.onmouseup = () => d = false; 
+// ==========================================================
+// SYSTEME DE DESSIN ET LASER (Amélioré avec Touch)
+// ==========================================================
+
+function setupCanvasDrawing(c, isRose) {
+    const rect = c.parentElement.getBoundingClientRect();
+    c.width = rect.width; c.height = rect.height;
+    let ctx = c.getContext('2d'); 
+    ctx.strokeStyle = isRose ? 'rgba(239, 68, 68, 0.6)' : 'rgba(59, 130, 246, 0.6)'; 
+    ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    let d = false;
+    
+    const start = (x, y) => { d = true; ctx.beginPath(); ctx.moveTo(x, y); };
+    const move = (x, y) => { if(d) { ctx.lineTo(x, y); ctx.stroke(); } };
+    const end = () => d = false;
+
+    c.onmousedown = (e) => start(e.offsetX, e.offsetY);
+    c.onmousemove = (e) => move(e.offsetX, e.offsetY);
+    c.onmouseup = end;
+    c.onmouseleave = end;
+
+    c.ontouchstart = (e) => { 
+        const r = c.getBoundingClientRect(); 
+        start(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); 
+        e.preventDefault(); 
+    };
+    c.ontouchmove = (e) => { 
+        if(!d) return;
+        const r = c.getBoundingClientRect(); 
+        move(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); 
+        e.preventDefault(); 
+    };
+    c.ontouchend = end;
 }
-function toggleDrawingMode(id) { state.isDrawing = !state.isDrawing; const b = document.getElementById(`box-${id}`); const btn = document.getElementById(`btn-draw-${id}`); state.isDrawing ? (b.classList.add('drawing-mode'), btn.classList.add('bg-rose-100', 'text-rose-700', 'border-rose-200'), initCanvas()) : (b.classList.remove('drawing-mode'), btn.classList.remove('bg-rose-100', 'text-rose-700', 'border-rose-200')); }
+
+function initCanvas() { const c = document.getElementById('draw-canvas'); if(c) setupCanvasDrawing(c, true); }
+function initDraftCanvas() { const c = document.getElementById('draw-canvas-draft'); if(c) setupCanvasDrawing(c, false); }
+
+let activeLaserCanvas = null;
+let activeLaserCtx = null;
+let laserPoints = [];
+let laserRafId = null;
+
+function startLaserLoop(canvasId) {
+    if(laserRafId) cancelAnimationFrame(laserRafId);
+    const c = document.getElementById(canvasId);
+    if(!c) return;
+    
+    const rect = c.parentElement.getBoundingClientRect();
+    c.width = rect.width; 
+    c.height = rect.height;
+    
+    activeLaserCanvas = c;
+    activeLaserCtx = c.getContext('2d');
+    laserPoints = [];
+    
+    let isPointerDown = false;
+    const addPoint = (x, y) => { laserPoints.push({x, y, time: Date.now()}); };
+
+    c.onmousedown = (e) => { isPointerDown = true; addPoint(e.offsetX, e.offsetY); };
+    c.onmousemove = (e) => { if(isPointerDown) addPoint(e.offsetX, e.offsetY); };
+    c.onmouseup = () => { isPointerDown = false; };
+    c.onmouseleave = () => { isPointerDown = false; };
+    
+    c.ontouchstart = (e) => { 
+        isPointerDown = true; 
+        const r = c.getBoundingClientRect();
+        addPoint(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); 
+        e.preventDefault();
+    };
+    c.ontouchmove = (e) => { 
+        if(!isPointerDown) return;
+        const r = c.getBoundingClientRect();
+        addPoint(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); 
+        e.preventDefault();
+    };
+    c.ontouchend = () => { isPointerDown = false; };
+
+    laserLoop();
+}
+
+function laserLoop() {
+    if(!activeLaserCtx) return;
+    const ctx = activeLaserCtx;
+    const canvas = activeLaserCanvas;
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    const now = Date.now();
+    laserPoints = laserPoints.filter(p => now - p.time < 350); 
+    
+    if(laserPoints.length > 0) {
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 5;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = 'red';
+        
+        for (let i = 0; i < laserPoints.length; i++) {
+            const p = laserPoints[i];
+            const alpha = 1 - ((now - p.time) / 350);
+            ctx.strokeStyle = `rgba(255, 0, 0, ${alpha})`;
+            
+            ctx.beginPath();
+            if(i === 0) {
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(p.x, p.y);
+            } else {
+                const prev = laserPoints[i-1];
+                ctx.moveTo(prev.x, prev.y);
+                ctx.lineTo(p.x, p.y);
+            }
+            ctx.stroke();
+        }
+        
+        const last = laserPoints[laserPoints.length - 1];
+        ctx.beginPath();
+        ctx.arc(last.x, last.y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+    }
+    
+    laserRafId = requestAnimationFrame(laserLoop);
+}
+
+function stopLaserLoop() {
+    if(laserRafId) cancelAnimationFrame(laserRafId);
+    if(activeLaserCtx && activeLaserCanvas) activeLaserCtx.clearRect(0, 0, activeLaserCanvas.width, activeLaserCanvas.height);
+    activeLaserCtx = null;
+    activeLaserCanvas = null;
+}
+
+function initDraftLaser() { startLaserLoop('laser-canvas-draft'); }
+function initMainLaser() { startLaserLoop('laser-canvas'); }
+
+let isDraftDrawing = false;
+let isDraftLaser = false;
+
+function toggleDraftDrawingMode() {
+  isDraftDrawing = !isDraftDrawing;
+  if(isDraftDrawing) isDraftLaser = false;
+  updateDraftModes();
+}
+
+function toggleDraftLaserMode() {
+  isDraftLaser = !isDraftLaser;
+  if(isDraftLaser) isDraftDrawing = false;
+  updateDraftModes();
+}
+
+function updateDraftModes() {
+  const b = document.getElementById('box-draft');
+  const btnDraw = document.getElementById('btn-draw-draft');
+  const btnLaser = document.getElementById('btn-laser-draft');
+  
+  b.classList.remove('drawing-mode-draft', 'laser-mode-draft');
+  btnDraw.classList.remove('bg-blue-100', 'text-blue-700', 'border-blue-200');
+  btnLaser.classList.remove('bg-red-100', 'text-red-700', 'border-red-200');
+  stopLaserLoop();
+
+  if(isDraftDrawing) {
+    b.classList.add('drawing-mode-draft');
+    btnDraw.classList.add('bg-blue-100', 'text-blue-700', 'border-blue-200');
+    initDraftCanvas();
+  } else if(isDraftLaser) {
+    b.classList.add('laser-mode-draft');
+    btnLaser.classList.add('bg-red-100', 'text-red-700', 'border-red-200');
+    initDraftLaser();
+  }
+}
+
+function toggleDrawingMode(id) {
+    state.isDrawing = !state.isDrawing;
+    if(state.isDrawing) state.isLaser = false;
+    updateMainModes(id);
+}
+
+function toggleLaserMode(id) {
+    state.isLaser = !state.isLaser;
+    if(state.isLaser) state.isDrawing = false;
+    updateMainModes(id);
+}
+
+function updateMainModes(id) {
+    const b = document.getElementById(`box-${id}`); 
+    const btnDraw = document.getElementById(`btn-draw-${id}`); 
+    const btnLaser = document.getElementById(`btn-laser-${id}`);
+    
+    b.classList.remove('drawing-mode', 'laser-mode');
+    if(btnDraw) btnDraw.classList.remove('bg-rose-100', 'text-rose-700', 'border-rose-200');
+    if(btnLaser) btnLaser.classList.remove('bg-red-100', 'text-red-700', 'border-red-200');
+    stopLaserLoop();
+
+    if(state.isDrawing) {
+        b.classList.add('drawing-mode');
+        if(btnDraw) btnDraw.classList.add('bg-rose-100', 'text-rose-700', 'border-rose-200');
+        initCanvas();
+    } else if(state.isLaser) {
+        b.classList.add('laser-mode');
+        if(btnLaser) btnLaser.classList.add('bg-red-100', 'text-red-700', 'border-red-200');
+        initMainLaser();
+    }
+}
 
 // --- RENDU VISUEL ---
 function render() {
@@ -611,7 +781,10 @@ function render() {
     </div>`;
   });
   container.innerHTML = html + `</div>`;
-  if (window.MathJax?.typesetPromise) MathJax.typesetPromise(); if(state.isDrawing) initCanvas();
+  if (window.MathJax?.typesetPromise) MathJax.typesetPromise(); 
+  
+  if(state.isDrawing) initCanvas();
+  else if(state.isLaser) initMainLaser();
 }
 
 function renderSection(cat, data, idx, total) {
@@ -681,7 +854,6 @@ function renderSection(cat, data, idx, total) {
     }
   }
 
-  // QCM Vertical
   let finalButtonsHtml = '';
   if (hasOptions) {
     let optionsHtml = `<div class="flex flex-col gap-3 w-full ${isRev ? 'mb-2' : ''}">`;
@@ -712,6 +884,9 @@ function renderSection(cat, data, idx, total) {
   }
 
   const fRevealedClass = (state.formulaRevealed[id] || state.formulaManuallyTouched[id]) ? 'revealed' : '';
+  const isDrawActive = state.isDrawing ? 'bg-rose-100 text-rose-700 border-rose-200' : 'bg-slate-50 hover:bg-slate-100 text-slate-500 border-slate-200';
+  const isLaserActive = state.isLaser ? 'bg-red-100 text-red-700 border-red-200' : 'bg-slate-50 hover:bg-slate-100 text-slate-500 border-slate-200';
+  const boxModes = `${state.isDrawing ? 'drawing-mode' : ''} ${state.isLaser ? 'laser-mode' : ''}`;
 
   return `
     <div class="bg-white transition-colors animate-fade-in border-t border-slate-100">
@@ -719,13 +894,17 @@ function renderSection(cat, data, idx, total) {
       ${tutorialHtml}
       
       <div class="p-5 lg:p-8">
-          <div class="flex justify-between items-center mb-4">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
             <span class="bg-blue-50 text-blue-700 text-xs font-black px-3 py-1 rounded-lg uppercase tracking-wider border border-blue-100">Niv. ${data.lvl || 1}</span>
-            <button id="btn-draw-${id}" onclick="toggleDrawingMode('${id}')" class="px-3 py-1 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg font-bold text-sm text-slate-500 transition-colors flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg> Dessin</button>
+            <div class="flex gap-2 w-full sm:w-auto">
+                <button id="btn-draw-${id}" onclick="toggleDrawingMode('${id}')" class="flex-1 sm:flex-none px-3 py-1 ${isDrawActive} rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg> Dessin</button>
+                <button id="btn-laser-${id}" onclick="toggleLaserMode('${id}')" class="flex-1 sm:flex-none px-3 py-1 ${isLaserActive} rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-1">🔴 Laser</button>
+            </div>
           </div>
 
-          <div id="box-${id}" class="main-box bg-slate-50 border border-slate-200 rounded-3xl p-6 lg:p-8 mb-6 relative overflow-hidden flex flex-col justify-center shadow-inner">
+          <div id="box-${id}" class="main-box ${boxModes} bg-slate-50 border border-slate-200 rounded-3xl p-6 lg:p-8 mb-6 relative overflow-hidden flex flex-col justify-center shadow-inner">
             <canvas id="draw-canvas"></canvas>
+            <canvas id="laser-canvas"></canvas>
             <div class="relative z-0 w-full overflow-hidden">
               <div class="math-display text-slate-800">${data.q}</div>
               ${isRev && !hasOptions ? `<div class="mt-4 pt-4 border-t-2 border-dashed border-emerald-200 text-3xl lg:text-4xl font-black text-emerald-600 animate-bounce-in text-center break-words">${data.a}</div>` : ''}
