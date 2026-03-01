@@ -217,7 +217,8 @@ let state = {
   activeProfile: null, niveau: "4EME", results: {}, xp: 0, streak: 0,
   questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null,
   hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
-  qcmAnswered: {}, currentShuffle: {}, // Stockage de l'ordre QCM aléatoire
+  qcmAnswered: {}, currentShuffle: {}, 
+  startTimes: {}, // Chronomètre (nouveau)
   isDrawing: false, isLaser: false, draftOpen: false, sessionCount: 1, tutorialDone: false
 };
 
@@ -375,7 +376,6 @@ function generateBoostDuJour() {
     const cats = LEVELS[state.niveau].categories;
     if (!cats) return;
 
-    // Reset : On retire le BOOST existant pour recalculer proprement
     let newCats = {};
     Object.keys(cats).forEach(k => { if(k !== "BOOST") newCats[k] = cats[k]; });
     LEVELS[state.niveau].categories = newCats;
@@ -411,7 +411,6 @@ function generateBoostDuJour() {
     for(let i=0; i<Math.min(newCount, toDiscover.length); i++) boostExos.push(toDiscover[i]);
 
     if (boostExos.length > 0) {
-        // IMPORTANT: On sauvegarde l'origine pour que le Sheet enregistre bien la vraie catégorie (pas "BOOST")
         const formattedBoostExos = boostExos.map(item => {
             return { ...item.exo, originalCat: item.catName, originalIdx: item.originalIdx };
         });
@@ -436,24 +435,29 @@ function resolveRealExercise(cat, idx) {
     return { realCat: cat, realIdx: idx };
 }
 
-function sendScoreToSheet(realCat, realIdx, status, xpGained) {
+function sendScoreToSheet(realCat, realIdx, status, xpGained, timeSpent) {
   const id = `${state.niveau}-${realCat}-${realIdx}`;
   const indicesVue = state.hintStepsRevealed[id] || 0;
   const formuleVue = !!(state.formulaRevealed[id] || state.formulaManuallyTouched[id]);
 
+  // timeSpent (temps en secondes) ajouté au payload !
   fetch(GOOGLE_SCRIPT_URL, { 
     method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, 
-    body: JSON.stringify({ action: "save_score", code: state.activeProfile.code, name: state.activeProfile.name, level: state.niveau, categorie: realCat, exercice_idx: realIdx + 1, resultat: status, indices: indicesVue, formule: formuleVue, xp: xpGained }) 
+    body: JSON.stringify({ action: "save_score", code: state.activeProfile.code, name: state.activeProfile.name, level: state.niveau, categorie: realCat, exercice_idx: realIdx + 1, resultat: status, indices: indicesVue, formule: formuleVue, xp: xpGained, temps: timeSpent }) 
   }).catch(e => console.log("Sauvegarde silencieuse."));
 }
 
 function mark(cat, idx, status, total) {
   const { realCat, realIdx } = resolveRealExercise(cat, idx);
   const realId = `${state.niveau}-${realCat}-${realIdx}`;
+  const data = LEVELS[state.niveau].categories[realCat][realIdx];
   
   state.results[realId] = status; 
   state.formulaRevealed[realId] = true; 
   state.isScored = true;
+
+  // Calcul du temps passé (Chronomètre)
+  let timeSpent = Math.round((Date.now() - (state.startTimes[realId] || Date.now())) / 1000);
 
   let xpGained = 0;
   if(status !== 'HARD') {
@@ -461,9 +465,12 @@ function mark(cat, idx, status, total) {
     if(status === 'EASY') gained *= 1.2;
     xpGained = Math.max(10, Math.floor(gained));
     state.xp += xpGained;
+  } else {
+    // CORRECTION PAS-A-PAS : Révélation de tous les indices en cas d'erreur
+    state.hintStepsRevealed[realId] = data.steps ? data.steps.length : 0;
   }
 
-  sendScoreToSheet(realCat, realIdx, status, xpGained); 
+  sendScoreToSheet(realCat, realIdx, status, xpGained, timeSpent); 
   updateHeader(); 
   render();
 }
@@ -568,11 +575,12 @@ function updateMainModes(id) {
 }
 
 // ==========================================================
-// QCM LOGIC (AVEC RANDOMISATION)
+// QCM LOGIC (AVEC ANTI-TRICHE & RANDOMISATION)
 // ==========================================================
 function checkOption(cat, idx, originalOptIdx, buttonEl) {
   const { realCat, realIdx } = resolveRealExercise(cat, idx);
   const realId = `${state.niveau}-${realCat}-${realIdx}`;
+  const total = LEVELS[state.niveau].categories[cat].length;
   
   const data = LEVELS[state.niveau].categories[cat][idx]; 
   const selectedOpt = data.options[originalOptIdx];
@@ -587,19 +595,24 @@ function checkOption(cat, idx, originalOptIdx, buttonEl) {
   if (selectedOpt === data.a) {
     buttonEl.className = "option-btn option-correct animate-success-pop cursor-default";
     buttonEl.innerHTML = `<span><span class="text-emerald-500 mr-2">✅</span>${selectedOpt}</span>`;
+    setTimeout(() => render(), 800);
   } else {
     buttonEl.className = "option-btn option-wrong animate-shake cursor-default";
     buttonEl.innerHTML = `<span><span class="text-rose-500 mr-2">❌</span>${selectedOpt}</span>`;
     
-    // Trouver le bouton avec la bonne réponse parmi les enfants
+    // Révèle la bonne réponse visuellement
     Array.from(parent.children).forEach(child => {
         if(child.innerText.includes(data.a)) {
             child.className = "option-btn option-correct cursor-default";
             child.innerHTML = `<span><span class="text-emerald-500 mr-2">✅</span>${data.a}</span>`;
         }
     });
+
+    // ANTI-TRICHE : Auto-sanction et révélation des indices au bout d'1 seconde
+    setTimeout(() => {
+        mark(cat, idx, 'HARD', total);
+    }, 1000);
   }
-  setTimeout(() => render(), 800);
 }
 
 function verify(cat, idx) { 
@@ -610,9 +623,11 @@ function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; rende
 function showNextHint(cat, idx, total) { 
   const { realCat, realIdx } = resolveRealExercise(cat, idx);
   const realId = `${state.niveau}-${realCat}-${realIdx}`;
-  const uiId = `${state.niveau}-${cat}-${idx}`; // ID UI pour l'animation
   if(!state.hintStepsRevealed[realId]) state.hintStepsRevealed[realId] = 0; 
-  if(state.hintStepsRevealed[realId] < total) { document.getElementById(`hint-${uiId}-${state.hintStepsRevealed[realId]}`).classList.remove('hidden'); document.getElementById(`hint-${uiId}-${state.hintStepsRevealed[realId]}`).classList.add('animate-fade-in'); state.hintStepsRevealed[realId]++; } 
+  if(state.hintStepsRevealed[realId] < total) { 
+      state.hintStepsRevealed[realId]++;
+      render(); // On re-rend l'écran pour afficher le nouvel indice
+  } 
 }
 function revealFormula(cat, idx, el) { 
   const { realCat, realIdx } = resolveRealExercise(cat, idx);
@@ -663,56 +678,55 @@ function render() {
 function renderSection(cat, data, idx, total) {
   if (!data) return `<div class="p-10 text-center font-bold text-emerald-600">Catégorie terminée !</div>`;
   
-  // Résolution de l'ID Réel (Crucial pour le Boost)
   const uiId = `${state.niveau}-${cat}-${idx}`; 
   const { realCat, realIdx } = resolveRealExercise(cat, idx);
   const realId = `${state.niveau}-${realCat}-${realIdx}`;
 
+  // INITIALISATION DU CHRONOMÈTRE
+  if (!state.startTimes[realId] && !state.results[realId]) {
+      state.startTimes[realId] = Date.now();
+  }
+
   const isRev = state.revealed && state.currentId === realId;
   const hasOptions = data.options && Array.isArray(data.options) && data.options.length > 0;
 
-  // Pills de navigation
+  // Pills de navigation (COULEUR VALORISATION ERREUR: Indigo au lieu de Rose)
   let pills = `<div class="flex flex-wrap gap-2 p-4 justify-center border-t border-slate-100 bg-slate-50/50">`;
   for(let i=0; i<total; i++) {
     const rExo = resolveRealExercise(cat, i);
     const st = state.results[`${state.niveau}-${rExo.realCat}-${rExo.realIdx}`];
     let c = "w-9 h-9 rounded-xl text-sm font-bold flex items-center justify-center cursor-pointer transition-all duration-200 ";
-    c += (st === 'EASY' || st === 'MEDIUM') ? "bg-emerald-500 text-white shadow-sm" : (st === 'HARD' ? "bg-rose-400 text-white shadow-sm" : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-100");
+    c += (st === 'EASY' || st === 'MEDIUM') ? "bg-emerald-500 text-white shadow-sm" : (st === 'HARD' ? "bg-indigo-400 text-white shadow-sm" : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-100");
     if(i===idx) c+=" ring-4 ring-blue-200 scale-110 z-10 font-black";
     pills += `<button onclick="goToExercise('${cat}', ${i})" class="${c}">${i+1}</button>`;
   } pills += `</div>`;
 
-  // Boutons d'Action (VÉRIFIER, FACILE/DIFFICILE, SUIVANT)
+  // BOUTONS D'ACTION (AVEC VERROUILLAGE ANTI-TRICHE)
   let actionButtons = ''; 
   const isLastExercise = idx >= total - 1;
 
   if (!isRev) {
     if (!hasOptions) { actionButtons = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-lg rounded-xl shadow-lg shadow-slate-200 transition-all hover:-translate-y-1">VÉRIFIER</button>`; }
   } else if (!state.isScored) {
+    // L'élève a cliqué sur "Vérifier" mais n'a pas encore noté, on le force.
     actionButtons = `
       <div class="flex flex-col sm:flex-row gap-3 animate-bounce-in w-full mt-2">
-        <button onclick="mark('${cat}', ${idx}, 'HARD', ${total})" class="flex-1 py-4 bg-rose-50 text-rose-600 rounded-xl font-black border border-rose-200 hover:bg-rose-100 transition-colors">🥵 FAUX</button>
+        <button onclick="mark('${cat}', ${idx}, 'HARD', ${total})" class="flex-1 py-4 bg-indigo-50 text-indigo-600 rounded-xl font-black border border-indigo-200 hover:bg-indigo-100 transition-colors">🔄 À RETRAVAILLER</button>
         <button onclick="mark('${cat}', ${idx}, 'MEDIUM', ${total})" class="flex-1 py-4 bg-amber-50 text-amber-600 rounded-xl font-black border border-amber-200 hover:bg-amber-100 transition-colors">🤔 HÉSITÉ</button>
         <button onclick="mark('${cat}', ${idx}, 'EASY', ${total})" class="flex-1 py-4 bg-emerald-50 text-emerald-600 rounded-xl font-black border border-emerald-200 hover:bg-emerald-100 transition-colors">😎 FACILE</button>
       </div>`;
   } else {
+    // Navigation libérée une fois noté
     if (isLastExercise) { actionButtons = `<button onclick="toggleCategory('${cat}')" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg rounded-xl shadow-lg shadow-emerald-200 transition-all hover:-translate-y-1 mt-2">✅ TERMINER LA CATÉGORIE</button>`; } 
     else { actionButtons = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-xl shadow-lg shadow-blue-200 transition-all hover:-translate-y-1 flex justify-center items-center gap-2 mt-2">EXERCICE SUIVANT</button>`; }
   }
 
-  // MÉLANGEUR QCM (Dispatch Aléatoire CORRIGÉ)
+  // MÉLANGEUR QCM
   let finalButtonsHtml = '';
   if (hasOptions) {
     const shuffleKey = uiId;
-    
-    // Initialisation du mélange SEULEMENT si ce n'est pas encore fait pour cet exercice
     if (!isRev && !state.currentShuffle[shuffleKey]) {
-      // On crée un tableau d'OBJETS pour lier la valeur à son index original
-      let mappedOptions = data.options.map((opt, originalIndex) => {
-        return { text: opt, originalIdx: originalIndex };
-      });
-
-      // Mélange (Fisher-Yates) sur ce tableau d'objets
+      let mappedOptions = data.options.map((opt, originalIndex) => { return { text: opt, originalIdx: originalIndex }; });
       for (let i = mappedOptions.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [mappedOptions[i], mappedOptions[j]] = [mappedOptions[j], mappedOptions[i]];
@@ -720,39 +734,24 @@ function renderSection(cat, data, idx, total) {
       state.currentShuffle[shuffleKey] = mappedOptions; 
     }
     
-    // Récupération des options à afficher
     let displayOptions = state.currentShuffle[shuffleKey] || data.options.map((opt, i) => ({text: opt, originalIdx: i}));
-
     let optionsHtml = `<div class="flex flex-col gap-3 w-full ${isRev ? 'mb-2' : ''}">`;
     
-    // Boucle d'affichage
     displayOptions.forEach((optObj) => {
-      let btnClass = "option-btn"; 
-      let innerText = `<span>${optObj.text}</span>`;
-      
+      let btnClass = "option-btn"; let innerText = `<span>${optObj.text}</span>`;
       if (isRev) { 
           btnClass += " cursor-default pointer-events-none"; 
-          if (optObj.text === data.a) { 
-              btnClass += " option-correct"; 
-              innerText = `<span><span class="text-emerald-500 mr-2">✅</span>${optObj.text}</span>`; 
-          } 
-          else if (optObj.text === state.qcmAnswered[realId]) { 
-              btnClass += " option-wrong"; 
-              innerText = `<span><span class="text-rose-500 mr-2">❌</span>${optObj.text}</span>`; 
-          } 
-          else { 
-              btnClass += " option-neutral"; 
-          } 
-      } else { 
-          btnClass += " cursor-pointer"; 
-      }
+          if (optObj.text === data.a) { btnClass += " option-correct"; innerText = `<span><span class="text-emerald-500 mr-2">✅</span>${optObj.text}</span>`; } 
+          else if (optObj.text === state.qcmAnswered[realId]) { btnClass += " option-wrong"; innerText = `<span><span class="text-rose-500 mr-2">❌</span>${optObj.text}</span>`; } 
+          else { btnClass += " option-neutral"; } 
+      } else { btnClass += " cursor-pointer"; }
       
-      // LA CORRECTION EST LÀ : on passe optObj.originalIdx, pas l'index de la boucle !
       optionsHtml += `<button ${!isRev ? `onclick="checkOption('${cat}', ${idx}, ${optObj.originalIdx}, this)"` : ''} class="${btnClass}">${innerText}</button>`;
     }); 
     
     optionsHtml += `</div>`; 
-    finalButtonsHtml = optionsHtml + actionButtons;
+    // Pour les QCM, si auto-sanctionné (Faux), on cache les boutons d'évaluation et on affiche "Suivant" direct
+    finalButtonsHtml = optionsHtml + (state.isScored && state.results[realId] === 'HARD' && hasOptions ? (isLastExercise ? `<button onclick="toggleCategory('${cat}')" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg rounded-xl mt-2">✅ TERMINER LA CATÉGORIE</button>` : `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-xl mt-2">EXERCICE SUIVANT</button>`) : actionButtons);
   } else { 
     finalButtonsHtml = actionButtons; 
   }
@@ -792,7 +791,7 @@ function renderSection(cat, data, idx, total) {
             <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100">
               <button onclick="showNextHint('${cat}', ${idx}, ${data.steps ? data.steps.length : 0})" class="w-full text-sm font-bold text-amber-700 bg-amber-100 hover:bg-amber-200 py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg> Révéler un indice</button>
               <div class="mt-3 space-y-2">
-                ${(data.steps||[]).map((s,i) => `<div id="hint-${uiId}-${i}" class="hidden text-sm p-3.5 bg-white rounded-xl border border-amber-200 text-amber-900 font-semibold shadow-sm">${s}</div>`).join('')}
+                ${(data.steps||[]).map((s,i) => `<div id="hint-${uiId}-${i}" class="${i < (state.hintStepsRevealed[realId]||0) ? '' : 'hidden'} mt-2 text-sm p-3.5 bg-white rounded-xl border border-amber-200 text-amber-900 font-semibold shadow-sm">${s}</div>`).join('')}
               </div>
             </div>
             
