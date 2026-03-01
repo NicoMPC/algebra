@@ -217,7 +217,7 @@ let state = {
   activeProfile: null, niveau: "4EME", results: {}, xp: 0, streak: 0,
   questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null,
   hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
-  qcmAnswered: {}, currentShuffle: {}, // <-- Nouveau: Stockage de l'ordre QCM aléatoire
+  qcmAnswered: {}, currentShuffle: {}, // Stockage de l'ordre QCM aléatoire
   isDrawing: false, isLaser: false, draftOpen: false, sessionCount: 1, tutorialDone: false
 };
 
@@ -700,35 +700,62 @@ function renderSection(cat, data, idx, total) {
     else { actionButtons = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-xl shadow-lg shadow-blue-200 transition-all hover:-translate-y-1 flex justify-center items-center gap-2 mt-2">EXERCICE SUIVANT</button>`; }
   }
 
-  // MÉLANGEUR QCM (Dispatch Aléatoire)
+  // MÉLANGEUR QCM (Dispatch Aléatoire CORRIGÉ)
   let finalButtonsHtml = '';
   if (hasOptions) {
     const shuffleKey = uiId;
+    
+    // Initialisation du mélange SEULEMENT si ce n'est pas encore fait pour cet exercice
     if (!isRev && !state.currentShuffle[shuffleKey]) {
-      let shuffled = data.options.map(opt => opt);
-      for (let i = shuffled.length - 1; i > 0; i--) {
+      // On crée un tableau d'OBJETS pour lier la valeur à son index original
+      let mappedOptions = data.options.map((opt, originalIndex) => {
+        return { text: opt, originalIdx: originalIndex };
+      });
+
+      // Mélange (Fisher-Yates) sur ce tableau d'objets
+      for (let i = mappedOptions.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        [mappedOptions[i], mappedOptions[j]] = [mappedOptions[j], mappedOptions[i]];
       }
-      state.currentShuffle[shuffleKey] = shuffled; 
+      state.currentShuffle[shuffleKey] = mappedOptions; 
     }
     
-    let displayOptions = state.currentShuffle[shuffleKey] || data.options;
+    // Récupération des options à afficher
+    let displayOptions = state.currentShuffle[shuffleKey] || data.options.map((opt, i) => ({text: opt, originalIdx: i}));
 
     let optionsHtml = `<div class="flex flex-col gap-3 w-full ${isRev ? 'mb-2' : ''}">`;
-    displayOptions.forEach((opt) => {
-      let btnClass = "option-btn"; let innerText = `<span>${opt}</span>`;
+    
+    // Boucle d'affichage
+    displayOptions.forEach((optObj) => {
+      let btnClass = "option-btn"; 
+      let innerText = `<span>${optObj.text}</span>`;
+      
       if (isRev) { 
           btnClass += " cursor-default pointer-events-none"; 
-          if (opt === data.a) { btnClass += " option-correct"; innerText = `<span><span class="text-emerald-500 mr-2">✅</span>${opt}</span>`; } 
-          else if (opt === state.qcmAnswered[realId]) { btnClass += " option-wrong"; innerText = `<span><span class="text-rose-500 mr-2">❌</span>${opt}</span>`; } 
-          else { btnClass += " option-neutral"; } 
-      } else { btnClass += " cursor-pointer"; }
+          if (optObj.text === data.a) { 
+              btnClass += " option-correct"; 
+              innerText = `<span><span class="text-emerald-500 mr-2">✅</span>${optObj.text}</span>`; 
+          } 
+          else if (optObj.text === state.qcmAnswered[realId]) { 
+              btnClass += " option-wrong"; 
+              innerText = `<span><span class="text-rose-500 mr-2">❌</span>${optObj.text}</span>`; 
+          } 
+          else { 
+              btnClass += " option-neutral"; 
+          } 
+      } else { 
+          btnClass += " cursor-pointer"; 
+      }
       
-      const originalIdx = data.options.indexOf(opt);
-      optionsHtml += `<button ${!isRev ? `onclick="checkOption('${cat}', ${idx}, ${originalIdx}, this)"` : ''} class="${btnClass}">${innerText}</button>`;
-    }); optionsHtml += `</div>`; finalButtonsHtml = optionsHtml + actionButtons;
-  } else { finalButtonsHtml = actionButtons; }
+      // LA CORRECTION EST LÀ : on passe optObj.originalIdx, pas l'index de la boucle !
+      optionsHtml += `<button ${!isRev ? `onclick="checkOption('${cat}', ${idx}, ${optObj.originalIdx}, this)"` : ''} class="${btnClass}">${innerText}</button>`;
+    }); 
+    
+    optionsHtml += `</div>`; 
+    finalButtonsHtml = optionsHtml + actionButtons;
+  } else { 
+    finalButtonsHtml = actionButtons; 
+  }
 
   const fRevealedClass = (state.formulaRevealed[realId] || state.formulaManuallyTouched[realId]) ? 'revealed' : '';
   const isDrawActive = state.isDrawing ? 'bg-rose-100 text-rose-700 border-rose-200' : 'bg-slate-50 hover:bg-slate-100 text-slate-500 border-slate-200';
