@@ -83,6 +83,30 @@
   </div>
 </div>
 
+<div id="admin-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[150] flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl relative">
+    <button onclick="closeAdmin()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 transition font-bold">✕</button>
+    <h2 class="text-2xl font-black mb-6 flex items-center gap-2 text-slate-800"><span>⚙️</span> Espace Coach</h2>
+    
+    <div class="space-y-4">
+      <p class="text-sm font-bold text-slate-500 uppercase tracking-wider">Créer un accès manuellement</p>
+      <input type="text" id="new-student-name" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 font-semibold focus:outline-none focus:border-blue-500" placeholder="Prénom de l'élève">
+      <select id="new-student-level" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 font-semibold focus:outline-none focus:border-blue-500">
+        <option value="6EME">6ème</option><option value="5EME">5ème</option><option value="4EME" selected>4ème</option>
+        <option value="3EME">3ème</option><option value="SECONDE">Seconde</option><option value="PREMIERE">1ère</option><option value="TERMINALE">Terminale</option>
+      </select>
+      <button id="btn-create" onclick="generateStudentAccess()" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl flex justify-center items-center gap-2 transition shadow-lg">
+        <span>GÉNÉRER</span> <span id="create-loader" class="loader hidden" style="border-top-color: white;"></span>
+      </button>
+      
+      <div id="generated-result" class="hidden mt-6 p-5 bg-emerald-50 border-2 border-emerald-100 rounded-2xl text-center animate-bounce-in">
+        <p class="text-emerald-800 font-bold mb-1 text-sm uppercase">Code généré avec succès</p>
+        <p id="final-code" class="text-4xl font-black text-emerald-600 tracking-widest mt-2"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="login-screen" class="fixed inset-0 bg-slate-50 z-50 flex flex-col items-center p-4 md:p-6 overflow-y-auto">
   <div class="max-w-4xl w-full flex flex-col items-center mt-12 mb-8 md:mt-20 animate-fade-in">
     <div class="text-center mb-10 w-full">
@@ -98,6 +122,7 @@
           <h2 class="text-2xl font-black text-slate-800 mb-1">Nouveau ?</h2>
           <p class="text-slate-500 font-medium text-sm">Crée ton profil en 10 secondes.</p>
         </div>
+        
         <div class="space-y-4 mb-8 flex-grow">
           <div><input type="text" id="reg-name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-semibold focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition" placeholder="Ton Prénom (Ex: Lucas)"></div>
           <div>
@@ -138,8 +163,8 @@
       </div>
     </div>
     <div class="flex items-center gap-2 lg:gap-3 font-bold flex-wrap justify-center w-full md:w-auto">
-        <div class="bg-orange-50 text-orange-600 border border-orange-100 px-3 py-2 rounded-xl text-sm shadow-sm flex items-center gap-1" title="Série de jours">🔥 <span id="ui-streak">0</span></div>
-        <div class="bg-blue-50 text-blue-700 border border-blue-100 px-3 py-2 rounded-xl text-sm shadow-sm flex items-center gap-1" title="Points d'XP">💎 <span id="ui-xp">0</span></div>
+        <div class="bg-orange-50 text-orange-600 border border-orange-100 px-3 py-2 rounded-xl text-sm shadow-sm flex items-center gap-1" title="Jours consécutifs">🔥 <span id="ui-streak">0</span></div>
+        <div class="bg-blue-50 text-blue-700 border border-blue-100 px-3 py-2 rounded-xl text-sm shadow-sm flex items-center gap-1" title="Points Expérience">💎 <span id="ui-xp">0</span></div>
         <button onclick="toggleDraft()" class="bg-slate-900 hover:bg-slate-800 text-white rounded-xl px-4 py-2 text-sm shadow-md transition-all hover:scale-[1.03] flex items-center gap-2">📝 <span class="hidden sm:inline">Brouillon</span></button>
         <select id="niveau-select" onchange="changeNiveau()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm max-w-[120px] outline-none font-semibold cursor-pointer"></select>
         <button onclick="logout()" class="w-10 h-10 flex items-center justify-center bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl shadow-sm transition-colors" title="Déconnexion">
@@ -159,6 +184,7 @@
       <button onclick="toggleDraft()" class="text-slate-500 hover:text-slate-800 bg-white border border-slate-200 shadow-sm p-2 rounded-lg transition-all hover:bg-slate-100" title="Fermer"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg></button>
     </div>
   </div>
+  
   <div class="p-4 bg-slate-50/50 border-b border-slate-100 flex flex-col gap-2">
     <div class="flex gap-2">
         <button onclick="insertText('²')" class="symbol-btn flex-1">x²</button>
@@ -172,8 +198,9 @@
         <button id="btn-laser-draft" onclick="toggleDraftLaserMode()" class="flex-1 px-3 py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg font-bold text-sm text-slate-500 transition-colors flex items-center justify-center gap-1">🔴 Laser</button>
     </div>
   </div>
+
   <div id="box-draft" class="p-5 flex-grow flex flex-col relative">
-    <textarea id="text-draft" placeholder="Pose tes calculs ici librement..." class="flex-grow relative z-0"></textarea>
+    <textarea id="text-draft" placeholder="Pose tes calculs ici librement...&#10;&#10;Ex: 2x + 3 = 7&#10;    2x = 4&#10;    x = 2" class="flex-grow relative z-0"></textarea>
     <canvas id="draw-canvas-draft"></canvas>
     <canvas id="laser-canvas-draft"></canvas>
   </div>
@@ -183,7 +210,6 @@
 // ==========================================================
 // CONFIGURATION GOOGLE SCRIPT & CONSTANTES
 // ==========================================================
-// TA NOUVELLE URL AVEC LA RÉCUPÉRATION DE DONNÉES CLOUD :
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjZDHosS4Ga9nl_i88mH-zvpTkwcTlCm069whhvGlO0y5U-XXLbVxzJuRkFqpaOc3I1w/exec";
 const ADMIN_PASSWORD = "NICO"; 
 
@@ -191,7 +217,7 @@ let state = {
   activeProfile: null, niveau: "4EME", results: {}, xp: 0, streak: 0,
   questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null,
   hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
-  qcmAnswered: {},
+  qcmAnswered: {}, currentShuffle: {}, // <-- Nouveau: Stockage de l'ordre QCM aléatoire
   isDrawing: false, isLaser: false, draftOpen: false, sessionCount: 1, tutorialDone: false
 };
 
@@ -202,23 +228,44 @@ const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME":
 const EMOJIS = ['📘', '🧮', '📐', '🚀', '💡', '🎯', '⚡', '🔥'];
 const LEVELS = {}; 
 
-function showCustomAlert(title, message, icon = '⚠️') {
-  document.getElementById('alert-icon').innerText = icon;
-  document.getElementById('alert-title').innerText = title;
-  document.getElementById('alert-message').innerText = message;
-  document.getElementById('custom-alert').classList.remove('hidden');
-}
+// Helpers Custom Alert
+function showCustomAlert(title, message, icon = '⚠️') { document.getElementById('alert-icon').innerText = icon; document.getElementById('alert-title').innerText = title; document.getElementById('alert-message').innerText = message; document.getElementById('custom-alert').classList.remove('hidden'); }
 function closeCustomAlert() { document.getElementById('custom-alert').classList.add('hidden'); }
 
 // Init DB
 Object.keys(LEVEL_NAMES).forEach(k => { LEVELS[k] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[k] }; });
 
-// --- ÉLÈVE : INSCRIPTION ---
+// ==========================================================
+// ADMIN / COACH
+// ==========================================================
+function askAdmin() { const pass = prompt("Mot de passe Coach (Indice: Ton prénom Maj) :"); if (pass === ADMIN_PASSWORD) document.getElementById('admin-modal').classList.remove('hidden'); }
+function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
+
+async function generateStudentAccess() {
+  const name = document.getElementById('new-student-name').value.trim();
+  const level = document.getElementById('new-student-level').value;
+  if (!name) return showCustomAlert("Erreur", "Le prénom est requis pour générer un accès.");
+
+  const loader = document.getElementById('create-loader'); const btn = document.getElementById('btn-create');
+  loader.classList.remove('hidden'); btn.classList.add('opacity-80');
+  
+  const code = (name.substring(0, 3).toUpperCase() + level.charAt(0) + Math.floor(Math.random() * 90 + 10)).replace(/\s/g, '');
+
+  try {
+    await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: "create_profile", code: code, name: name, level: level }) });
+    document.getElementById('final-code').innerText = code; document.getElementById('generated-result').classList.remove('hidden');
+  } catch(e) { showCustomAlert("Erreur réseau", "Impossible de contacter le serveur Google."); } finally { loader.classList.add('hidden'); btn.classList.remove('opacity-80'); }
+}
+
+// ==========================================================
+// AUTHENTIFICATION & SYNCHRONISATION
+// ==========================================================
 async function registerStudent() {
   const name = document.getElementById('reg-name').value.trim();
   const level = document.getElementById('reg-level').value;
   const email = document.getElementById('reg-email').value.trim();
-  if (!name) return showCustomAlert("Oops !", "Ton prénom est indispensable.", "👋");
+  
+  if (!name) return showCustomAlert("Oops !", "Ton prénom est indispensable pour créer ton profil.", "👋");
 
   const loader = document.getElementById('reg-loader'); const textBtn = document.getElementById('reg-text');
   loader.classList.remove('hidden'); textBtn.classList.add('hidden');
@@ -231,12 +278,11 @@ async function registerStudent() {
     localStorage.setItem(SESSION_KEY, code);
     
     document.getElementById('login-screen').classList.add('hidden');
-    showCustomAlert("🎉 Compte créé !", `Bienvenue ${name}.\n\nTon code secret est :\n${code}\n\nNote-le bien !`, "🎓");
+    showCustomAlert("🎉 Compte créé !", `Bienvenue ${name}.\n\nTon code secret est :\n${code}\n\nNote-le bien, il te servira à te reconnecter !`, "🎓");
     initStudentApp();
-  } catch(e) { showCustomAlert("Erreur", "Problème de connexion au serveur.", "🔌"); } finally { loader.classList.add('hidden'); textBtn.classList.remove('hidden'); }
+  } catch(e) { showCustomAlert("Erreur", "Problème de connexion au serveur. Réessaie.", "🔌"); } finally { loader.classList.add('hidden'); textBtn.classList.remove('hidden'); }
 }
 
-// --- ÉLÈVE : CONNEXION & SYNCHRONISATION CLOUD ---
 document.addEventListener('DOMContentLoaded', () => { 
   populateLevelsFromDb(); 
   const savedCode = localStorage.getItem(SESSION_KEY);
@@ -252,44 +298,35 @@ async function loginWithCode() {
   loader.classList.remove('hidden'); textBtn.classList.add('hidden');
 
   try {
-    // ON TÉLÉCHARGE LES DONNÉES DU CLOUD !
     const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_user_data&code=${codeInput}`); 
     const data = await response.json();
-    
     if (data.status === "success" && data.profile) { 
       state.activeProfile = data.profile; 
       localStorage.setItem(SESSION_KEY, codeInput); 
-      rebuildStateFromHistory(data.history); // Reconstruction de l'historique !
+      rebuildStateFromHistory(data.history); 
       initStudentApp(); 
     } else { 
       document.getElementById('student-code-input').classList.add('animate-shake', 'border-rose-400');
       setTimeout(() => document.getElementById('student-code-input').classList.remove('animate-shake', 'border-rose-400'), 500);
-      showCustomAlert("Code Inconnu", "Ce code n'existe pas.", "🕵️"); 
+      showCustomAlert("Code Inconnu", "Ce code n'existe pas. Vérifie les majuscules et les chiffres.", "🕵️"); 
     }
-  } catch(e) { showCustomAlert("Erreur", "Impossible de contacter le serveur.", "🌐"); } finally { loader.classList.add('hidden'); textBtn.classList.remove('hidden'); }
+  } catch(e) { showCustomAlert("Erreur Réseau", "Impossible de contacter le serveur.", "🌐"); } finally { loader.classList.add('hidden'); textBtn.classList.remove('hidden'); }
 }
 
 async function silentLogin(code) {
   try {
     const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_user_data&code=${code}`);
     const data = await response.json();
-    if (data.status === "success" && data.profile) { 
-      state.activeProfile = data.profile; 
-      rebuildStateFromHistory(data.history); 
-      initStudentApp(); 
-    }
+    if (data.status === "success" && data.profile) { state.activeProfile = data.profile; rebuildStateFromHistory(data.history); initStudentApp(); }
   } catch(e) { console.log("Silent login failed"); }
 }
 
 function rebuildStateFromHistory(history) {
     state.results = {}; state.xp = 0; state.hintStepsRevealed = {}; state.formulaRevealed = {};
     if(!history) return;
-    
     history.forEach(row => {
-        // L'indice d'exercice venant de Google Sheet est +1 par rapport au JS
         const jsIdx = parseInt(row.exercice_idx) - 1; 
         const id = `${row.niveau}-${row.categorie}-${jsIdx}`;
-        
         state.results[id] = row.resultat;
         if (row.indices > 0) state.hintStepsRevealed[id] = row.indices;
         if (row.formule) state.formulaRevealed[id] = true;
@@ -299,11 +336,12 @@ function rebuildStateFromHistory(history) {
 
 function initStudentApp() {
   state.niveau = state.activeProfile.level; 
-  // Gérer le Streak localement
+  
+  // Streak Local Management
   const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
   const code = state.activeProfile.code;
   if(!localData[code]) localData[code] = { streak: 1, lastLogin: new Date().toISOString().split('T')[0], tutorialDone: false };
-  const p = localData[code];
+  const p = localData[code]; 
   const today = new Date().toISOString().split('T')[0];
   
   if (!sessionStorage.getItem('session_counted')) {
@@ -315,7 +353,6 @@ function initStudentApp() {
        p.lastLogin = today;
        localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
   }
-  
   state.streak = p.streak || 1;
   state.tutorialDone = p.tutorialDone === undefined ? false : p.tutorialDone;
 
@@ -324,76 +361,30 @@ function initStudentApp() {
   document.getElementById('active-student-name').innerText = state.activeProfile.name;
   
   updateLevelDropdown(state.niveau); 
-  generateBoostDuJour(); // LE COACH VIRTUEL SE LANCE
+  generateBoostDuJour(); 
   updateHeader(); 
   render();
 }
 
 function logout() { sessionStorage.removeItem('session_counted'); localStorage.removeItem(SESSION_KEY); location.reload(); }
 
-function finishTutorial() {
-    state.tutorialDone = true;
-    const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
-    if(localData[state.activeProfile.code]) localData[state.activeProfile.code].tutorialDone = true;
-    localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
-    render();
-}
-
-function sendScoreToSheet(cat, idx, status, xpGained) {
-  const id = `${state.niveau}-${cat}-${idx}`;
-  const indicesVue = state.hintStepsRevealed[id] || 0;
-  const formuleVue = !!(state.formulaRevealed[id] || state.formulaManuallyTouched[id]);
-
-  fetch(GOOGLE_SCRIPT_URL, { 
-    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, 
-    body: JSON.stringify({ action: "save_score", code: state.activeProfile.code, name: state.activeProfile.name, level: state.niveau, categorie: cat, exercice_idx: idx + 1, resultat: status, indices: indicesVue, formule: formuleVue, xp: xpGained }) 
-  }).catch(e => console.log("Sauvegarde silencieuse."));
-}
-
-function mark(cat, idx, status, total) {
-  const id = `${state.niveau}-${cat}-${idx}`;
-  state.results[id] = status; state.formulaRevealed[id] = true; state.isScored = true;
-
-  let xpGained = 0;
-  if(status !== 'HARD') {
-    let gained = 100 - ((state.hintStepsRevealed[id]||0)*15) - (state.formulaManuallyTouched[id]?25:0);
-    if(status === 'EASY') gained *= 1.2;
-    xpGained = Math.max(10, Math.floor(gained));
-    state.xp += xpGained;
-  }
-
-  sendScoreToSheet(cat, idx, status, xpGained); updateHeader(); render();
-}
-
-// --- LE GARDE DU CORPS & LE COACH VIRTUEL ---
-
-function updateLevelDropdown(userLevel) {
-  const select = document.getElementById('niveau-select'); 
-  select.innerHTML = ''; 
-  const maxIdx = LEVEL_ORDER.indexOf(userLevel);
-  // RESTRICTION : On n'affiche que le niveau actuel et le niveau précédent
-  const startIdx = Math.max(0, maxIdx - 1); 
-  
-  for(let i = startIdx; i <= maxIdx; i++) { 
-      const lvlKey = LEVEL_ORDER[i]; 
-      const opt = document.createElement('option'); 
-      opt.value = lvlKey; 
-      opt.text = LEVEL_NAMES[lvlKey]; 
-      select.appendChild(opt); 
-  }
-  select.value = userLevel;
-}
-
+// ==========================================================
+// MOTEUR "BOOST DU JOUR" (Le Coach)
+// ==========================================================
 function generateBoostDuJour() {
     const cats = LEVELS[state.niveau].categories;
     if (!cats) return;
 
+    // Reset : On retire le BOOST existant pour recalculer proprement
+    let newCats = {};
+    Object.keys(cats).forEach(k => { if(k !== "BOOST") newCats[k] = cats[k]; });
+    LEVELS[state.niveau].categories = newCats;
+
     let toReview = [];
     let toDiscover = [];
 
-    Object.keys(cats).forEach(catName => {
-        if (catName === "BOOST") return; // Éviter la boucle infinie
-        cats[catName].forEach((exo, idx) => {
+    Object.keys(newCats).forEach(catName => {
+        newCats[catName].forEach((exo, idx) => {
             const id = `${state.niveau}-${catName}-${idx}`;
             const res = state.results[id];
             const hints = state.hintStepsRevealed[id] || 0;
@@ -402,40 +393,84 @@ function generateBoostDuJour() {
             if (res === 'HARD') weight = 10;
             else if (res === 'MEDIUM') weight = 5;
             else if (hints > 0 && res !== 'EASY') weight = 2;
-            else if (!res) weight = 1; // Pas encore fait
+            else if (!res) weight = 1;
 
-            if (weight > 1) toReview.push({ exo, weight });
-            else if (weight === 1) toDiscover.push({ exo });
+            if (weight > 1) toReview.push({ exo, catName, originalIdx: idx, weight });
+            else if (weight === 1) toDiscover.push({ exo, catName, originalIdx: idx });
         });
     });
 
     toReview.sort((a, b) => b.weight - a.weight);
-    toDiscover.sort(() => 0.5 - Math.random()); // Mélange aléatoire des nouveaux
+    toDiscover.sort(() => 0.5 - Math.random());
 
     let boostExos = [];
-    let reviewCount = Math.min(3, toReview.length); // Max 3 révisions
-    for(let i=0; i<reviewCount; i++) boostExos.push(toReview[i].exo);
+    let reviewCount = Math.min(3, toReview.length); 
+    for(let i=0; i<reviewCount; i++) boostExos.push(toReview[i]);
     
-    let newCount = 5 - boostExos.length; // Le reste en nouveautés
-    for(let i=0; i<Math.min(newCount, toDiscover.length); i++) boostExos.push(toDiscover[i].exo);
+    let newCount = 5 - boostExos.length; 
+    for(let i=0; i<Math.min(newCount, toDiscover.length); i++) boostExos.push(toDiscover[i]);
 
     if (boostExos.length > 0) {
-        // Injection de la catégorie BOOST en tête de liste
-        const newCats = { "BOOST": boostExos };
-        Object.keys(cats).forEach(k => { if(k !== "BOOST") newCats[k] = cats[k]; });
-        LEVELS[state.niveau].categories = newCats;
+        // IMPORTANT: On sauvegarde l'origine pour que le Sheet enregistre bien la vraie catégorie (pas "BOOST")
+        const formattedBoostExos = boostExos.map(item => {
+            return { ...item.exo, originalCat: item.catName, originalIdx: item.originalIdx };
+        });
+
+        const finalCats = { "BOOST": formattedBoostExos };
+        Object.keys(newCats).forEach(k => { finalCats[k] = newCats[k]; });
+        
+        LEVELS[state.niveau].categories = finalCats;
         LEVELS[state.niveau].catDisplay["BOOST"] = "🔥 Ton Boost Quotidien";
         LEVELS[state.niveau].catIcon["BOOST"] = "🎯";
     }
 }
 
-function changeNiveau() { 
-    state.niveau = document.getElementById('niveau-select').value; 
-    generateBoostDuJour(); 
-    render(); 
+// ==========================================================
+// SAUVEGARDE ET SCORES
+// ==========================================================
+function resolveRealExercise(cat, idx) {
+    if (cat === "BOOST") {
+        const exo = LEVELS[state.niveau].categories["BOOST"][idx];
+        return { realCat: exo.originalCat, realIdx: exo.originalIdx };
+    }
+    return { realCat: cat, realIdx: idx };
 }
 
-// --- UTILITAIRES APP ---
+function sendScoreToSheet(realCat, realIdx, status, xpGained) {
+  const id = `${state.niveau}-${realCat}-${realIdx}`;
+  const indicesVue = state.hintStepsRevealed[id] || 0;
+  const formuleVue = !!(state.formulaRevealed[id] || state.formulaManuallyTouched[id]);
+
+  fetch(GOOGLE_SCRIPT_URL, { 
+    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, 
+    body: JSON.stringify({ action: "save_score", code: state.activeProfile.code, name: state.activeProfile.name, level: state.niveau, categorie: realCat, exercice_idx: realIdx + 1, resultat: status, indices: indicesVue, formule: formuleVue, xp: xpGained }) 
+  }).catch(e => console.log("Sauvegarde silencieuse."));
+}
+
+function mark(cat, idx, status, total) {
+  const { realCat, realIdx } = resolveRealExercise(cat, idx);
+  const realId = `${state.niveau}-${realCat}-${realIdx}`;
+  
+  state.results[realId] = status; 
+  state.formulaRevealed[realId] = true; 
+  state.isScored = true;
+
+  let xpGained = 0;
+  if(status !== 'HARD') {
+    let gained = 100 - ((state.hintStepsRevealed[realId]||0)*15) - (state.formulaManuallyTouched[realId]?25:0);
+    if(status === 'EASY') gained *= 1.2;
+    xpGained = Math.max(10, Math.floor(gained));
+    state.xp += xpGained;
+  }
+
+  sendScoreToSheet(realCat, realIdx, status, xpGained); 
+  updateHeader(); 
+  render();
+}
+
+// ==========================================================
+// UI HELPERS & RESTRICTIONS CLASSE
+// ==========================================================
 function populateLevelsFromDb() { 
   Object.keys(LEVELS).forEach(key => { 
     const raw = window.db ? window.db[`ALGEBRA_${key}`] : null; 
@@ -443,41 +478,162 @@ function populateLevelsFromDb() {
   }); 
 }
 
+function updateLevelDropdown(userLevel) {
+  const select = document.getElementById('niveau-select'); select.innerHTML = ''; 
+  const maxIdx = LEVEL_ORDER.indexOf(userLevel);
+  const startIdx = Math.max(0, maxIdx - 1); // LE GARDE DU CORPS: Classe actuelle + N-1 max
+  
+  for(let i = startIdx; i <= maxIdx; i++) { 
+      const lvlKey = LEVEL_ORDER[i]; const opt = document.createElement('option'); 
+      opt.value = lvlKey; opt.text = LEVEL_NAMES[lvlKey]; select.appendChild(opt); 
+  }
+  select.value = userLevel;
+}
+
 function updateHeader() { document.getElementById('ui-streak').innerText = state.streak; document.getElementById('ui-xp').innerText = state.xp; }
-function toggleDraft() { /* (Même code que la V1 pour le brouillon) */ state.draftOpen = !state.draftOpen; const drawer = document.getElementById('draft-drawer'); const backdrop = document.getElementById('draft-backdrop'); if(state.draftOpen) { drawer.classList.add('open'); backdrop.classList.remove('hidden'); setTimeout(() => backdrop.classList.remove('opacity-0'), 10); setTimeout(() => { document.getElementById('text-draft').focus(); }, 300); } else { drawer.classList.remove('open'); backdrop.classList.add('opacity-0'); setTimeout(() => backdrop.classList.add('hidden'), 300); } }
-function clearDraft() { document.getElementById('text-draft').value = ''; const c = document.getElementById('draw-canvas-draft'); if(c) { const ctx = c.getContext('2d'); ctx.clearRect(0, 0, c.width, c.height); } }
+function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; generateBoostDuJour(); render(); }
+function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; state.isDrawing = false; state.isLaser = false; render(); }
+function nextExercise(cat) { const idx = parseInt(state.questView[cat] || 0); const total = LEVELS[state.niveau].categories[cat].length; if(idx < total-1) { state.questView[cat] = idx + 1; } state.revealed = false; state.isScored = false; state.currentId = null; state.isDrawing = false; state.isLaser = false; render(); }
+
+// ==========================================================
+// OUTILS DE DESSIN ET BROUILLON
+// ==========================================================
+function toggleDraft() {
+  state.draftOpen = !state.draftOpen; 
+  const drawer = document.getElementById('draft-drawer'); const backdrop = document.getElementById('draft-backdrop');
+  if(state.draftOpen) { 
+      drawer.classList.add('open'); backdrop.classList.remove('hidden'); setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+      setTimeout(() => { document.getElementById('text-draft').focus(); if(isDraftDrawing) initDraftCanvas(); if(isDraftLaser) initDraftLaser(); }, 300); 
+  } else { drawer.classList.remove('open'); backdrop.classList.add('opacity-0'); setTimeout(() => backdrop.classList.add('hidden'), 300); }
+}
+
+function clearDraft() { document.getElementById('text-draft').value = ''; const c = document.getElementById('draw-canvas-draft'); if(c) { const ctx = c.getContext('2d'); ctx.clearRect(0, 0, c.width, c.height); } document.getElementById('text-draft').focus(); }
 function insertText(text) { const txtArea = document.getElementById('text-draft'); const startPos = txtArea.selectionStart; const endPos = txtArea.selectionEnd; txtArea.value = txtArea.value.substring(0, startPos) + text + txtArea.value.substring(endPos, txtArea.value.length); txtArea.focus(); txtArea.selectionStart = startPos + text.length; txtArea.selectionEnd = startPos + text.length; }
 
-function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; render(); }
-function nextExercise(cat) { const idx = parseInt(state.questView[cat] || 0); const total = LEVELS[state.niveau].categories[cat].length; if(idx < total-1) { state.questView[cat] = idx + 1; } state.revealed = false; state.isScored = false; state.currentId = null; render(); }
+function setupCanvasDrawing(c, isRose) {
+    const rect = c.parentElement.getBoundingClientRect(); c.width = rect.width; c.height = rect.height;
+    let ctx = c.getContext('2d'); ctx.strokeStyle = isRose ? 'rgba(239, 68, 68, 0.6)' : 'rgba(59, 130, 246, 0.6)'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    let d = false;
+    const start = (x, y) => { d = true; ctx.beginPath(); ctx.moveTo(x, y); }; const move = (x, y) => { if(d) { ctx.lineTo(x, y); ctx.stroke(); } }; const end = () => d = false;
+    c.onmousedown = (e) => start(e.offsetX, e.offsetY); c.onmousemove = (e) => move(e.offsetX, e.offsetY); c.onmouseup = end; c.onmouseleave = end;
+    c.ontouchstart = (e) => { const r = c.getBoundingClientRect(); start(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); };
+    c.ontouchmove = (e) => { if(!d) return; const r = c.getBoundingClientRect(); move(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }; c.ontouchend = end;
+}
 
-function checkOption(cat, idx, optIdx, buttonEl) {
-  const id = `${state.niveau}-${cat}-${idx}`; const data = LEVELS[state.niveau].categories[cat][idx]; const selectedOpt = data.options[optIdx];
-  state.qcmAnswered[id] = selectedOpt; state.revealed = true; state.currentId = id;
+function initCanvas() { const c = document.getElementById('draw-canvas'); if(c) setupCanvasDrawing(c, true); }
+function initDraftCanvas() { const c = document.getElementById('draw-canvas-draft'); if(c) setupCanvasDrawing(c, false); }
+
+let activeLaserCanvas = null; let activeLaserCtx = null; let laserPoints = []; let laserRafId = null;
+function startLaserLoop(canvasId) {
+    if(laserRafId) cancelAnimationFrame(laserRafId);
+    const c = document.getElementById(canvasId); if(!c) return;
+    const rect = c.parentElement.getBoundingClientRect(); c.width = rect.width; c.height = rect.height;
+    activeLaserCanvas = c; activeLaserCtx = c.getContext('2d'); laserPoints = [];
+    let isPointerDown = false; const addPoint = (x, y) => { laserPoints.push({x, y, time: Date.now()}); };
+    c.onmousedown = (e) => { isPointerDown = true; addPoint(e.offsetX, e.offsetY); }; c.onmousemove = (e) => { if(isPointerDown) addPoint(e.offsetX, e.offsetY); }; c.onmouseup = () => { isPointerDown = false; }; c.onmouseleave = () => { isPointerDown = false; };
+    c.ontouchstart = (e) => { isPointerDown = true; const r = c.getBoundingClientRect(); addPoint(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); };
+    c.ontouchmove = (e) => { if(!isPointerDown) return; const r = c.getBoundingClientRect(); addPoint(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }; c.ontouchend = () => { isPointerDown = false; };
+    laserLoop();
+}
+
+function laserLoop() {
+    if(!activeLaserCtx) return; const ctx = activeLaserCtx; const canvas = activeLaserCanvas;
+    ctx.clearRect(0, 0, canvas.width, canvas.height); const now = Date.now(); laserPoints = laserPoints.filter(p => now - p.time < 350); 
+    if(laserPoints.length > 0) {
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 5; ctx.shadowBlur = 8; ctx.shadowColor = 'red';
+        for (let i = 0; i < laserPoints.length; i++) { const p = laserPoints[i]; const alpha = 1 - ((now - p.time) / 350); ctx.strokeStyle = `rgba(255, 0, 0, ${alpha})`; ctx.beginPath(); if(i === 0) { ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y); } else { const prev = laserPoints[i-1]; ctx.moveTo(prev.x, prev.y); ctx.lineTo(p.x, p.y); } ctx.stroke(); }
+        const last = laserPoints[laserPoints.length - 1]; ctx.beginPath(); ctx.arc(last.x, last.y, 4, 0, Math.PI * 2); ctx.fillStyle = 'white'; ctx.fill();
+    }
+    laserRafId = requestAnimationFrame(laserLoop);
+}
+
+function stopLaserLoop() { if(laserRafId) cancelAnimationFrame(laserRafId); if(activeLaserCtx && activeLaserCanvas) activeLaserCtx.clearRect(0, 0, activeLaserCanvas.width, activeLaserCanvas.height); activeLaserCtx = null; activeLaserCanvas = null; }
+function initDraftLaser() { startLaserLoop('laser-canvas-draft'); } function initMainLaser() { startLaserLoop('laser-canvas'); }
+
+let isDraftDrawing = false; let isDraftLaser = false;
+function toggleDraftDrawingMode() { isDraftDrawing = !isDraftDrawing; if(isDraftDrawing) isDraftLaser = false; updateDraftModes(); }
+function toggleDraftLaserMode() { isDraftLaser = !isDraftLaser; if(isDraftLaser) isDraftDrawing = false; updateDraftModes(); }
+function updateDraftModes() {
+  const b = document.getElementById('box-draft'); const btnDraw = document.getElementById('btn-draw-draft'); const btnLaser = document.getElementById('btn-laser-draft');
+  b.classList.remove('drawing-mode-draft', 'laser-mode-draft'); btnDraw.classList.remove('bg-blue-100', 'text-blue-700', 'border-blue-200'); btnLaser.classList.remove('bg-red-100', 'text-red-700', 'border-red-200'); stopLaserLoop();
+  if(isDraftDrawing) { b.classList.add('drawing-mode-draft'); btnDraw.classList.add('bg-blue-100', 'text-blue-700', 'border-blue-200'); initDraftCanvas(); } else if(isDraftLaser) { b.classList.add('laser-mode-draft'); btnLaser.classList.add('bg-red-100', 'text-red-700', 'border-red-200'); initDraftLaser(); }
+}
+
+function toggleDrawingMode(id) { state.isDrawing = !state.isDrawing; if(state.isDrawing) state.isLaser = false; updateMainModes(id); }
+function toggleLaserMode(id) { state.isLaser = !state.isLaser; if(state.isLaser) state.isDrawing = false; updateMainModes(id); }
+function updateMainModes(id) {
+    const b = document.getElementById(`box-${id}`); const btnDraw = document.getElementById(`btn-draw-${id}`); const btnLaser = document.getElementById(`btn-laser-${id}`);
+    b.classList.remove('drawing-mode', 'laser-mode'); if(btnDraw) btnDraw.classList.remove('bg-rose-100', 'text-rose-700', 'border-rose-200'); if(btnLaser) btnLaser.classList.remove('bg-red-100', 'text-red-700', 'border-red-200'); stopLaserLoop();
+    if(state.isDrawing) { b.classList.add('drawing-mode'); if(btnDraw) btnDraw.classList.add('bg-rose-100', 'text-rose-700', 'border-rose-200'); initCanvas(); } else if(state.isLaser) { b.classList.add('laser-mode'); if(btnLaser) btnLaser.classList.add('bg-red-100', 'text-red-700', 'border-red-200'); initMainLaser(); }
+}
+
+// ==========================================================
+// QCM LOGIC (AVEC RANDOMISATION)
+// ==========================================================
+function checkOption(cat, idx, originalOptIdx, buttonEl) {
+  const { realCat, realIdx } = resolveRealExercise(cat, idx);
+  const realId = `${state.niveau}-${realCat}-${realIdx}`;
+  
+  const data = LEVELS[state.niveau].categories[cat][idx]; 
+  const selectedOpt = data.options[originalOptIdx];
+  
+  state.qcmAnswered[realId] = selectedOpt; 
+  state.revealed = true; 
+  state.currentId = realId;
+
   const parent = buttonEl.parentElement;
   Array.from(parent.children).forEach(child => { child.className = "option-btn option-neutral cursor-default"; });
-  if (selectedOpt === data.a) { buttonEl.className = "option-btn option-correct animate-success-pop cursor-default"; buttonEl.innerHTML = `<span><span class="text-emerald-500 mr-2">✅</span>${selectedOpt}</span>`; } else { buttonEl.className = "option-btn option-wrong animate-shake cursor-default"; buttonEl.innerHTML = `<span><span class="text-rose-500 mr-2">❌</span>${selectedOpt}</span>`; const correctIdx = data.options.indexOf(data.a); if(correctIdx !== -1 && parent.children[correctIdx]) { parent.children[correctIdx].className = "option-btn option-correct cursor-default"; parent.children[correctIdx].innerHTML = `<span><span class="text-emerald-500 mr-2">✅</span>${data.a}</span>`; } }
+
+  if (selectedOpt === data.a) {
+    buttonEl.className = "option-btn option-correct animate-success-pop cursor-default";
+    buttonEl.innerHTML = `<span><span class="text-emerald-500 mr-2">✅</span>${selectedOpt}</span>`;
+  } else {
+    buttonEl.className = "option-btn option-wrong animate-shake cursor-default";
+    buttonEl.innerHTML = `<span><span class="text-rose-500 mr-2">❌</span>${selectedOpt}</span>`;
+    
+    // Trouver le bouton avec la bonne réponse parmi les enfants
+    Array.from(parent.children).forEach(child => {
+        if(child.innerText.includes(data.a)) {
+            child.className = "option-btn option-correct cursor-default";
+            child.innerHTML = `<span><span class="text-emerald-500 mr-2">✅</span>${data.a}</span>`;
+        }
+    });
+  }
   setTimeout(() => render(), 800);
 }
 
-function verify(cat, idx) { state.revealed = true; state.isScored = false; state.currentId = `${state.niveau}-${cat}-${idx}`; render(); }
+function verify(cat, idx) { 
+  const { realCat, realIdx } = resolveRealExercise(cat, idx);
+  state.revealed = true; state.isScored = false; state.currentId = `${state.niveau}-${realCat}-${realIdx}`; render(); 
+}
 function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; render(); }
-function showNextHint(id, total) { if(!state.hintStepsRevealed[id]) state.hintStepsRevealed[id] = 0; if(state.hintStepsRevealed[id] < total) { document.getElementById(`hint-${id}-${state.hintStepsRevealed[id]}`).classList.remove('hidden'); document.getElementById(`hint-${id}-${state.hintStepsRevealed[id]}`).classList.add('animate-fade-in'); state.hintStepsRevealed[id]++; } }
-function revealFormula(id, el) { el.classList.add('revealed'); state.formulaManuallyTouched[id] = true; }
+function showNextHint(cat, idx, total) { 
+  const { realCat, realIdx } = resolveRealExercise(cat, idx);
+  const realId = `${state.niveau}-${realCat}-${realIdx}`;
+  const uiId = `${state.niveau}-${cat}-${idx}`; // ID UI pour l'animation
+  if(!state.hintStepsRevealed[realId]) state.hintStepsRevealed[realId] = 0; 
+  if(state.hintStepsRevealed[realId] < total) { document.getElementById(`hint-${uiId}-${state.hintStepsRevealed[realId]}`).classList.remove('hidden'); document.getElementById(`hint-${uiId}-${state.hintStepsRevealed[realId]}`).classList.add('animate-fade-in'); state.hintStepsRevealed[realId]++; } 
+}
+function revealFormula(cat, idx, el) { 
+  const { realCat, realIdx } = resolveRealExercise(cat, idx);
+  const realId = `${state.niveau}-${realCat}-${realIdx}`;
+  el.classList.add('revealed'); state.formulaManuallyTouched[realId] = true; 
+}
 
-// DESSIN ET LASER SIMPLIFIÉS
-function toggleDraftDrawingMode() {} function toggleDraftLaserMode() {} function toggleDrawingMode(id) {} function toggleLaserMode(id) {}
-
-// --- RENDU VISUEL ---
+// ==========================================================
+// RENDU VISUEL PRINCIPAL
+// ==========================================================
 function render() {
   const container = document.getElementById('app-container'); let html = `<div class="space-y-5">`; const cats = LEVELS[state.niveau].categories || {}; let emojiIdx = 0;
   Object.keys(cats).forEach(cat => {
     const total = cats[cat].length; let completed = 0;
-    for(let i=0; i<total; i++) { if(state.results[`${state.niveau}-${cat}-${i}`] === 'EASY' || state.results[`${state.niveau}-${cat}-${i}`] === 'MEDIUM') completed++; }
+    for(let i=0; i<total; i++) { 
+        const { realCat, realIdx } = resolveRealExercise(cat, i);
+        if(state.results[`${state.niveau}-${realCat}-${realIdx}`] === 'EASY' || state.results[`${state.niveau}-${realCat}-${realIdx}`] === 'MEDIUM') completed++; 
+    }
     const pct = total > 0 ? Math.round((completed/total)*100) : 0; const isCompleted = completed === total && total > 0;
     const icon = LEVELS[state.niveau].catIcon[cat] || EMOJIS[emojiIdx % EMOJIS.length]; emojiIdx++;
-    
-    // Le "BOOST" a une couleur spéciale
+
     const isBoost = cat === "BOOST";
     const bgClass = isCompleted ? 'bg-emerald-50/50 border-emerald-200' : (isBoost ? 'bg-orange-50/30 border-orange-200 shadow-orange-100/50 shadow-lg' : 'bg-white border-slate-200');
     const titleColor = isCompleted ? 'text-emerald-800' : (isBoost ? 'text-orange-600' : 'text-slate-800');
@@ -501,23 +657,32 @@ function render() {
   });
   container.innerHTML = html + `</div>`;
   if (window.MathJax?.typesetPromise) MathJax.typesetPromise(); 
+  if(state.isDrawing) initCanvas(); else if(state.isLaser) initMainLaser();
 }
 
 function renderSection(cat, data, idx, total) {
   if (!data) return `<div class="p-10 text-center font-bold text-emerald-600">Catégorie terminée !</div>`;
-  const id = `${state.niveau}-${cat}-${idx}`; 
-  const isRev = state.revealed && state.currentId === id;
+  
+  // Résolution de l'ID Réel (Crucial pour le Boost)
+  const uiId = `${state.niveau}-${cat}-${idx}`; 
+  const { realCat, realIdx } = resolveRealExercise(cat, idx);
+  const realId = `${state.niveau}-${realCat}-${realIdx}`;
+
+  const isRev = state.revealed && state.currentId === realId;
   const hasOptions = data.options && Array.isArray(data.options) && data.options.length > 0;
 
+  // Pills de navigation
   let pills = `<div class="flex flex-wrap gap-2 p-4 justify-center border-t border-slate-100 bg-slate-50/50">`;
   for(let i=0; i<total; i++) {
-    const st = state.results[`${state.niveau}-${cat}-${i}`];
+    const rExo = resolveRealExercise(cat, i);
+    const st = state.results[`${state.niveau}-${rExo.realCat}-${rExo.realIdx}`];
     let c = "w-9 h-9 rounded-xl text-sm font-bold flex items-center justify-center cursor-pointer transition-all duration-200 ";
     c += (st === 'EASY' || st === 'MEDIUM') ? "bg-emerald-500 text-white shadow-sm" : (st === 'HARD' ? "bg-rose-400 text-white shadow-sm" : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-100");
     if(i===idx) c+=" ring-4 ring-blue-200 scale-110 z-10 font-black";
     pills += `<button onclick="goToExercise('${cat}', ${i})" class="${c}">${i+1}</button>`;
   } pills += `</div>`;
 
+  // Boutons d'Action (VÉRIFIER, FACILE/DIFFICILE, SUIVANT)
   let actionButtons = ''; 
   const isLastExercise = idx >= total - 1;
 
@@ -531,21 +696,44 @@ function renderSection(cat, data, idx, total) {
         <button onclick="mark('${cat}', ${idx}, 'EASY', ${total})" class="flex-1 py-4 bg-emerald-50 text-emerald-600 rounded-xl font-black border border-emerald-200 hover:bg-emerald-100 transition-colors">😎 FACILE</button>
       </div>`;
   } else {
-    if (isLastExercise) { actionButtons = `<button onclick="toggleCategory('${cat}')" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg rounded-xl shadow-lg shadow-emerald-200 transition-all hover:-translate-y-1 mt-2">✅ TERMINER</button>`; } 
+    if (isLastExercise) { actionButtons = `<button onclick="toggleCategory('${cat}')" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg rounded-xl shadow-lg shadow-emerald-200 transition-all hover:-translate-y-1 mt-2">✅ TERMINER LA CATÉGORIE</button>`; } 
     else { actionButtons = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-xl shadow-lg shadow-blue-200 transition-all hover:-translate-y-1 flex justify-center items-center gap-2 mt-2">EXERCICE SUIVANT</button>`; }
   }
 
+  // MÉLANGEUR QCM (Dispatch Aléatoire)
   let finalButtonsHtml = '';
   if (hasOptions) {
+    const shuffleKey = uiId;
+    if (!isRev && !state.currentShuffle[shuffleKey]) {
+      let shuffled = data.options.map(opt => opt);
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      state.currentShuffle[shuffleKey] = shuffled; 
+    }
+    
+    let displayOptions = state.currentShuffle[shuffleKey] || data.options;
+
     let optionsHtml = `<div class="flex flex-col gap-3 w-full ${isRev ? 'mb-2' : ''}">`;
-    data.options.forEach((opt, oIdx) => {
+    displayOptions.forEach((opt) => {
       let btnClass = "option-btn"; let innerText = `<span>${opt}</span>`;
-      if (isRev) { btnClass += " cursor-default pointer-events-none"; if (opt === data.a) { btnClass += " option-correct"; innerText = `<span><span class="text-emerald-500 mr-2">✅</span>${opt}</span>`; } else if (opt === state.qcmAnswered[id]) { btnClass += " option-wrong"; innerText = `<span><span class="text-rose-500 mr-2">❌</span>${opt}</span>`; } else { btnClass += " option-neutral"; } } else { btnClass += " cursor-pointer"; }
-      optionsHtml += `<button ${!isRev ? `onclick="checkOption('${cat}', ${idx}, ${oIdx}, this)"` : ''} class="${btnClass}">${innerText}</button>`;
+      if (isRev) { 
+          btnClass += " cursor-default pointer-events-none"; 
+          if (opt === data.a) { btnClass += " option-correct"; innerText = `<span><span class="text-emerald-500 mr-2">✅</span>${opt}</span>`; } 
+          else if (opt === state.qcmAnswered[realId]) { btnClass += " option-wrong"; innerText = `<span><span class="text-rose-500 mr-2">❌</span>${opt}</span>`; } 
+          else { btnClass += " option-neutral"; } 
+      } else { btnClass += " cursor-pointer"; }
+      
+      const originalIdx = data.options.indexOf(opt);
+      optionsHtml += `<button ${!isRev ? `onclick="checkOption('${cat}', ${idx}, ${originalIdx}, this)"` : ''} class="${btnClass}">${innerText}</button>`;
     }); optionsHtml += `</div>`; finalButtonsHtml = optionsHtml + actionButtons;
   } else { finalButtonsHtml = actionButtons; }
 
-  const fRevealedClass = (state.formulaRevealed[id] || state.formulaManuallyTouched[id]) ? 'revealed' : '';
+  const fRevealedClass = (state.formulaRevealed[realId] || state.formulaManuallyTouched[realId]) ? 'revealed' : '';
+  const isDrawActive = state.isDrawing ? 'bg-rose-100 text-rose-700 border-rose-200' : 'bg-slate-50 hover:bg-slate-100 text-slate-500 border-slate-200';
+  const isLaserActive = state.isLaser ? 'bg-red-100 text-red-700 border-red-200' : 'bg-slate-50 hover:bg-slate-100 text-slate-500 border-slate-200';
+  const boxModes = `${state.isDrawing ? 'drawing-mode' : ''} ${state.isLaser ? 'laser-mode' : ''}`;
 
   return `
     <div class="bg-white transition-colors animate-fade-in border-t border-slate-100">
@@ -553,13 +741,19 @@ function renderSection(cat, data, idx, total) {
       <div class="p-5 lg:p-8">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
             <span class="bg-blue-50 text-blue-700 text-xs font-black px-3 py-1 rounded-lg uppercase tracking-wider border border-blue-100">Niv. ${data.lvl || 1}</span>
+            <div class="flex gap-2 w-full sm:w-auto">
+                <button id="btn-draw-${uiId}" onclick="toggleDrawingMode('${uiId}')" class="flex-1 sm:flex-none px-3 py-1 ${isDrawActive} rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg> Dessin</button>
+                <button id="btn-laser-${uiId}" onclick="toggleLaserMode('${uiId}')" class="flex-1 sm:flex-none px-3 py-1 ${isLaserActive} rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-1">🔴 Laser</button>
+            </div>
           </div>
 
-          <div id="box-${id}" class="main-box bg-slate-50 border border-slate-200 rounded-3xl p-6 lg:p-8 mb-6 relative overflow-hidden flex flex-col justify-center shadow-inner">
+          <div id="box-${uiId}" class="main-box ${boxModes} bg-slate-50 border border-slate-200 rounded-3xl p-6 lg:p-8 mb-6 relative overflow-hidden flex flex-col justify-center shadow-inner">
+            <canvas id="draw-canvas"></canvas>
+            <canvas id="laser-canvas"></canvas>
             <div class="relative z-0 w-full overflow-hidden">
               <div class="math-display text-slate-800">${data.q}</div>
               ${isRev && !hasOptions ? `<div class="mt-4 pt-4 border-t-2 border-dashed border-emerald-200 text-3xl lg:text-4xl font-black text-emerald-600 animate-bounce-in text-center break-words">${data.a}</div>` : ''}
-              ${isRev && hasOptions && state.qcmAnswered[id] !== data.a ? `<div class="mt-4 pt-4 border-t border-dashed border-slate-300 text-lg font-bold text-slate-500 animate-bounce-in text-center break-words">Correction : ${data.a}</div>` : ''}
+              ${isRev && hasOptions && state.qcmAnswered[realId] !== data.a ? `<div class="mt-4 pt-4 border-t border-dashed border-slate-300 text-lg font-bold text-slate-500 animate-bounce-in text-center break-words">Correction : ${data.a}</div>` : ''}
             </div>
           </div>
 
@@ -569,15 +763,15 @@ function renderSection(cat, data, idx, total) {
 
           <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-5">
             <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100">
-              <button onclick="showNextHint('${id}', ${data.steps ? data.steps.length : 0})" class="w-full text-sm font-bold text-amber-700 bg-amber-100 hover:bg-amber-200 py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2">💡 Révéler un indice</button>
+              <button onclick="showNextHint('${cat}', ${idx}, ${data.steps ? data.steps.length : 0})" class="w-full text-sm font-bold text-amber-700 bg-amber-100 hover:bg-amber-200 py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg> Révéler un indice</button>
               <div class="mt-3 space-y-2">
-                ${(data.steps||[]).map((s,i) => `<div id="hint-${id}-${i}" class="hidden text-sm p-3.5 bg-white rounded-xl border border-amber-200 text-amber-900 font-semibold shadow-sm">${s}</div>`).join('')}
+                ${(data.steps||[]).map((s,i) => `<div id="hint-${uiId}-${i}" class="hidden text-sm p-3.5 bg-white rounded-xl border border-amber-200 text-amber-900 font-semibold shadow-sm">${s}</div>`).join('')}
               </div>
             </div>
             
             <div class="bg-indigo-50/50 p-5 rounded-3xl border border-indigo-100 flex flex-col justify-center">
               <p class="text-xs font-black text-indigo-400 uppercase tracking-widest text-center mb-3">Rappel de cours</p>
-              <div class="blurred-formula ${fRevealedClass} text-sm lg:text-base bg-white text-indigo-900 font-bold p-4 rounded-xl text-center border border-indigo-200 shadow-sm" onclick="revealFormula('${id}', this)">${data.f || 'Pas de formule spécifique.'}</div>
+              <div class="blurred-formula ${fRevealedClass} text-sm lg:text-base bg-white text-indigo-900 font-bold p-4 rounded-xl text-center border border-indigo-200 shadow-sm" onclick="revealFormula('${cat}', ${idx}, this)">${data.f || 'Pas de formule spécifique.'}</div>
             </div>
           </div>
       </div>
