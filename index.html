@@ -7,7 +7,11 @@
 
   <script>
     window.MathJax = {
-      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      tex: { 
+          inlineMath: [['$', '$'], ['\\(', '\\)']], 
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          macros: { Fract: ["\\frac{#1}{#2}", 2] }
+      },
       options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] },
       startup: {
         pageReady: () => { return MathJax.startup.defaultPageReady(); }
@@ -45,9 +49,10 @@
     
     .opt-neutral { opacity: 0.5; pointer-events: none; background: #f8fafc; border-color: #e2e8f0 !important; }
 
-    .chap-card { border: 2px solid #e2e8f0; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; overflow: hidden; background: white; }
+    /* Correction Padding pour la Coche */
+    .chap-card { border: 2px solid #e2e8f0; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; overflow: hidden; background: white; padding-right: 3.5rem; }
     .chap-checkbox:checked + .chap-card { border-color: #4f46e5; background: #eef2ff; transform: scale(1.02); box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.2); }
-    .chap-checkbox:checked + .chap-card::after { content: '✅'; position: absolute; right: 1.2rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    .chap-checkbox:checked + .chap-card::after { content: '✅'; position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 
     #draw-canvas-draft, .main-draw-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; cursor: crosshair; }
     .drawing-mode .main-draw-canvas, .drawing-mode-draft #draw-canvas-draft { pointer-events: auto; z-index: 12; }
@@ -211,6 +216,12 @@ let state = {
 };
 const LEVELS = {};
 
+// TRADUCTEUR SECRET POUR LE LATEX "FRACT"
+function formatLatex(str) {
+    if (!str) return '';
+    return str.replace(/Fract\(([^)]+)\)\(([^)]+)\)/g, '\\frac{$1}{$2}');
+}
+
 // Utilitaires
 function showCustomAlert(title, message, icon = '⚠️') { document.getElementById('alert-icon').innerText = icon; document.getElementById('alert-title').innerText = title; document.getElementById('alert-message').innerText = message; document.getElementById('custom-alert').classList.remove('hidden'); }
 function closeCustomAlert() { document.getElementById('custom-alert').classList.add('hidden'); }
@@ -356,7 +367,7 @@ function changeNiveau() { state.niveau = document.getElementById('niveau-select'
 // ==========================================================
 function startCalibrage() {
     const cbs = document.querySelectorAll('.chap-checkbox:checked');
-    if(cbs.length === 0) return showCustomAlert("Oups", "Sélectionne au moins un chapitre que tu as déjà étudié pour aider l'IA à cibler ton niveau !", "🎯");
+    if(cbs.length === 0) return showCustomAlert("Oups", "Sélectionne au moins un chapitre pour lancer le Diagnostic !", "🎯");
     
     let selectedCats = Array.from(cbs).map(cb => cb.value);
     state.calibrageState = 'loading'; render();
@@ -365,19 +376,21 @@ function startCalibrage() {
         let pool = [];
         const diagSource = (window.dbDiag && window.dbDiag[`ALGEBRA_${state.niveau}`]) ? window.dbDiag[`ALGEBRA_${state.niveau}`] : LEVELS[state.niveau].categories;
         
+        // 1. On prend dans les chapitres sélectionnés
         selectedCats.forEach(cat => {
             if(diagSource[cat]) diagSource[cat].forEach((exo, idx) => pool.push({...exo, originalCat: cat, originalIdx: idx}));
         });
         
-        // Si l'élève a coché très peu de choses, on complète avec d'autres notions pour avoir 8 questions
+        // 2. Si moins de 8 questions, on pioche dans le reste
         if (pool.length < 8) {
-            Object.keys(LEVELS[state.niveau].categories).forEach(cat => {
+            Object.keys(diagSource).forEach(cat => {
                 if (!selectedCats.includes(cat) && diagSource[cat]) {
                     diagSource[cat].forEach((exo, idx) => pool.push({...exo, originalCat: cat, originalIdx: idx}));
                 }
             });
         }
 
+        // On mélange et on garde strictement 8
         pool.sort(() => 0.5 - Math.random());
         state.calibrageExos = pool.slice(0, 8); 
         
@@ -455,14 +468,14 @@ function mark(cat, idx, status) {
     state.xp += xpGained;
     sendScoreToSheet(realCat, realIdx, status, xpGained, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000));
     updateHeader();
-    render(); // Affiche la correction et le bouton suivant
+    render(); 
 }
 
 function markPasVu(cat, idx) {
     const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`;
     state.results[realId] = 'PAS_VU'; state.isScored = true;
     sendScoreToSheet(realCat, realIdx, 'PAS_VU', 0, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000));
-    render(); // Affiche la correction et le bouton suivant
+    render();
 }
 
 window.checkOption = function(cat, idx, originalOptIdx, btnEl) {
@@ -552,7 +565,7 @@ function render() {
             <p class="font-medium text-indigo-100 relative z-10 text-lg mb-8 max-w-2xl">Aide l'IA à te connaître en sélectionnant les chapitres que tu as déjà étudiés :</p>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10 mb-8 max-h-[420px] overflow-y-auto pr-2">${chapHtml}</div>
             <div class="flex flex-col relative z-10">
-                <button onclick="startCalibrage()" class="w-full py-5 bg-white text-indigo-700 font-black text-xl rounded-2xl shadow-lg transition-transform hover:scale-[1.02]">Lancer le Diagnostic Ciblé</button>
+                <button onclick="startCalibrage()" class="w-full py-5 bg-white text-indigo-700 font-black text-xl rounded-2xl shadow-lg transition-transform hover:scale-[1.02]">Lancer mon Diagnostic IA</button>
             </div>
         </div>`;
         return;
@@ -560,7 +573,7 @@ function render() {
 
     // ÉCRAN 2 : CHARGEMENT DIAGNOSTIC
     if (state.isFirstDay && state.calibrageState === 'loading') {
-        container.innerHTML = `<div class="flex flex-col items-center justify-center py-20 animate-fade-in"><div class="loader loader-lg mb-6" style="border-top-color:#4f46e5;"></div><h2 class="text-2xl font-black text-slate-800">L'IA compile ton Diagnostic...</h2><p class="text-slate-500 mt-2 font-medium">Préparation des questions clés.</p></div>`; return;
+        container.innerHTML = `<div class="flex flex-col items-center justify-center py-20 animate-fade-in"><div class="loader loader-lg mb-6" style="border-top-color:#4f46e5;"></div><h2 class="text-2xl font-black text-slate-800">L'IA compile ton Diagnostic...</h2><p class="text-slate-500 mt-2 font-medium">Préparation des 8 questions clés.</p></div>`; return;
     }
     
     // ÉCRAN 3 : LE MOMENT WAOUH
@@ -641,7 +654,7 @@ function renderSection(cat, data, idx, total, isCatDone) {
     } else if(isRev && !state.isScored && !hasOpt) {
         actions = `<div class="flex gap-2 w-full mt-2"><button onclick="mark('${cat}', ${idx}, 'HARD')" class="flex-1 py-4 bg-rose-50 text-rose-600 border border-rose-200 rounded-xl font-black transition-colors hover:bg-rose-100">À RETRAVAILLER</button><button onclick="mark('${cat}', ${idx}, 'EASY')" class="flex-1 py-4 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl font-black transition-colors hover:bg-emerald-100">FACILE</button></div>`;
     } else if(state.isScored) {
-        if (!isCatDone) {
+        if (!isCatDone && !(cat === 'CALIBRAGE' && idx === state.calibrageExos.length - 1)) {
             actions = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl mt-3 transition-transform hover:-translate-y-1 shadow-lg">EXERCICE SUIVANT</button>`;
         } else if (cat === 'CALIBRAGE') {
             actions = `<button onclick="finishCalibrage()" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-black rounded-xl mt-3 transition-transform hover:-translate-y-1 shadow-lg text-lg animate-pulse-ring">VOIR MON BILAN IA 🚀</button>`;
@@ -654,7 +667,7 @@ function renderSection(cat, data, idx, total, isCatDone) {
         let opts = state.currentShuffle[uiId] || data.options.map((t,i)=>({text:t, originalIdx:i}));
         optsHtml = `<div class="flex flex-col gap-3 w-full">` + opts.map(o => {
             let cl = "opt-btn " + (isRev ? "opt-disabled pointer-events-none " + (o.text===data.a?"opt-correct":(o.text===state.qcmAnswered[realId]?"opt-wrong":"opt-neutral")) : "");
-            return `<button data-opt="${o.originalIdx}" ${!isRev?`onclick="checkOption('${cat}', ${idx}, ${o.originalIdx}, this)"`:''} class="${cl}"><span class="math-content">${o.text}</span></button>`;
+            return `<button data-opt="${o.originalIdx}" ${!isRev?`onclick="checkOption('${cat}', ${idx}, ${o.originalIdx}, this)"`:''} class="${cl}"><span class="math-content">${formatLatex(o.text)}</span></button>`;
         }).join('') + `</div>`;
     }
 
@@ -672,18 +685,18 @@ function renderSection(cat, data, idx, total, isCatDone) {
         <div class="flex justify-between items-center mb-4"><span class="bg-blue-50 text-blue-700 text-xs font-black px-3 py-1.5 rounded-lg border border-blue-100">Niv. ${data.lvl || 1}</span><button id="btn-draw-${uiId}" onclick="toggleDrawingMode('${uiId}')" class="px-3 py-1.5 rounded-lg font-bold text-sm ${state.isDrawing?'bg-rose-100 text-rose-700 border-rose-200':'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'} border transition-colors shadow-sm">🖍️ Dessin</button></div>
         <div id="box-${uiId}" class="bg-slate-50 border border-slate-200 rounded-3xl p-6 lg:p-8 mb-6 relative overflow-hidden ${state.isDrawing?'drawing-mode':''}">
             <canvas id="canvas-${uiId}" class="main-draw-canvas"></canvas>
-            <div class="relative z-0 math-content"><div class="math-display text-slate-900">${data.q}</div>${isRev&&!hasOpt?`<div class="mt-4 pt-4 border-t-2 border-dashed border-emerald-200 text-3xl font-black text-emerald-600 text-center animate-bounce-in">${data.a}</div>`:''}</div>
+            <div class="relative z-0 math-content"><div class="math-display text-slate-900">${formatLatex(data.q)}</div>${isRev&&!hasOpt?`<div class="mt-4 pt-4 border-t-2 border-dashed border-emerald-200 text-3xl font-black text-emerald-600 text-center animate-bounce-in">${formatLatex(data.a)}</div>`:''}</div>
         </div>
         ${optsHtml} ${pasVuBtn} ${actions}
         
         <div class="mt-8 grid md:grid-cols-2 gap-4 ${hideHelp}">
             <div class="bg-amber-50/50 p-5 rounded-2xl border border-amber-100">
                 <button onclick="showNextHint('${cat}', ${idx}, ${maxHints})" class="${hintBtnHidden} w-full text-sm font-bold text-amber-700 bg-amber-100 py-3 rounded-xl mb-3 hover:bg-amber-200 transition-colors">💡 Révéler la méthode pas à pas</button>
-                <div class="space-y-2">${(data.steps||[]).map((s,i) => `<div class="${i < hintsToShow ? 'block' : 'hidden'} math-content text-sm p-3 bg-white rounded-xl border border-amber-200 text-amber-900 font-semibold animate-fade-in">${s}</div>`).join('')}</div>
+                <div class="space-y-2">${(data.steps||[]).map((s,i) => `<div class="${i < hintsToShow ? 'block' : 'hidden'} math-content text-sm p-3 bg-white rounded-xl border border-amber-200 text-amber-900 font-semibold animate-fade-in">${formatLatex(s)}</div>`).join('')}</div>
             </div>
             <div class="bg-indigo-50/50 p-5 rounded-2xl border border-indigo-100 flex flex-col justify-center">
                 <p class="text-xs font-black text-indigo-400 uppercase text-center mb-3 tracking-widest">Rappel de cours</p>
-                <div onclick="revealFormula('${cat}', ${idx})" class="math-content text-sm bg-white text-indigo-900 font-bold p-4 rounded-xl border border-indigo-200 blurred-formula shadow-sm ${fRev?'revealed':''}">${data.f||'Aucune formule spécifique.'}</div>
+                <div onclick="revealFormula('${cat}', ${idx})" class="math-content text-sm bg-white text-indigo-900 font-bold p-4 rounded-xl border border-indigo-200 blurred-formula shadow-sm ${fRev?'revealed':''}">${formatLatex(data.f)||'Aucune formule spécifique.'}</div>
             </div>
         </div>
       </div>
