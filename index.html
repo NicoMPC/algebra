@@ -329,7 +329,6 @@ function initApp() {
     document.getElementById('landing-screen').classList.add('hidden');
     document.getElementById('auth-screen').classList.add('hidden'); 
     
-    // Animation de transition douce
     const mainApp = document.getElementById('main-app');
     mainApp.classList.remove('hidden');
     mainApp.style.opacity = '0';
@@ -357,15 +356,27 @@ function changeNiveau() { state.niveau = document.getElementById('niveau-select'
 // ==========================================================
 function startCalibrage() {
     const cbs = document.querySelectorAll('.chap-checkbox:checked');
-    let selectedCats = cbs.length === 0 ? Object.keys(LEVELS[state.niveau].categories) : Array.from(cbs).map(cb => cb.value);
+    if(cbs.length === 0) return showCustomAlert("Oups", "Sélectionne au moins un chapitre que tu as déjà étudié pour aider l'IA à cibler ton niveau !", "🎯");
     
+    let selectedCats = Array.from(cbs).map(cb => cb.value);
     state.calibrageState = 'loading'; render();
     
     setTimeout(() => {
         let pool = [];
         const diagSource = (window.dbDiag && window.dbDiag[`ALGEBRA_${state.niveau}`]) ? window.dbDiag[`ALGEBRA_${state.niveau}`] : LEVELS[state.niveau].categories;
-        selectedCats.forEach(cat => { if(diagSource[cat]) diagSource[cat].forEach((exo, idx) => pool.push({...exo, originalCat: cat, originalIdx: idx})); });
-        if(pool.length === 0) { Object.keys(LEVELS[state.niveau].categories).forEach(cat => { LEVELS[state.niveau].categories[cat].forEach((exo, idx) => pool.push({...exo, originalCat: cat, originalIdx: idx})); }); }
+        
+        selectedCats.forEach(cat => {
+            if(diagSource[cat]) diagSource[cat].forEach((exo, idx) => pool.push({...exo, originalCat: cat, originalIdx: idx}));
+        });
+        
+        // Si l'élève a coché très peu de choses, on complète avec d'autres notions pour avoir 8 questions
+        if (pool.length < 8) {
+            Object.keys(LEVELS[state.niveau].categories).forEach(cat => {
+                if (!selectedCats.includes(cat) && diagSource[cat]) {
+                    diagSource[cat].forEach((exo, idx) => pool.push({...exo, originalCat: cat, originalIdx: idx}));
+                }
+            });
+        }
 
         pool.sort(() => 0.5 - Math.random());
         state.calibrageExos = pool.slice(0, 8); 
@@ -380,6 +391,11 @@ function startCalibrage() {
     }, 1500);
 }
 
+function finishCalibrage() {
+    state.calibrageState = 'results';
+    render();
+}
+
 function unlockDashboard() {
     state.isFirstDay = false; state.calibrageState = null; 
     delete LEVELS[state.niveau].categories['CALIBRAGE'];
@@ -389,7 +405,7 @@ function unlockDashboard() {
     localData[code].tutoDraftViewed = true;
     localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
     
-    generateBoostIA(); render(); // L'ordre est bon
+    generateBoostIA(); render();
 }
 
 function generateBoostIA() {
@@ -439,20 +455,14 @@ function mark(cat, idx, status) {
     state.xp += xpGained;
     sendScoreToSheet(realCat, realIdx, status, xpGained, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000));
     updateHeader();
-    if(cat === "CALIBRAGE") {
-        let done = 0; for(let i=0; i<state.calibrageExos.length; i++) { const r = resolveRealExercise(cat, i); if(state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) done++; }
-        if(done === state.calibrageExos.length) { state.calibrageState = 'results'; } else { nextExercise(cat); } 
-    }
-    render();
+    render(); // Affiche la correction et le bouton suivant
 }
 
 function markPasVu(cat, idx) {
     const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`;
     state.results[realId] = 'PAS_VU'; state.isScored = true;
     sendScoreToSheet(realCat, realIdx, 'PAS_VU', 0, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000));
-    let done = 0; for(let i=0; i<state.calibrageExos.length; i++) { const r = resolveRealExercise(cat, i); if(state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) done++; }
-    if(done === state.calibrageExos.length) { state.calibrageState = 'results'; } else { nextExercise(cat); }
-    render();
+    render(); // Affiche la correction et le bouton suivant
 }
 
 window.checkOption = function(cat, idx, originalOptIdx, btnEl) {
@@ -479,7 +489,7 @@ function verify(cat, idx) { state.revealed = true; state.isScored = false; state
 function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; render(); }
 function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; state.isDrawing = false; render(); }
 function nextExercise(cat) { 
-    state.revealed = false; state.isScored = false; // Fix de sécurité
+    state.revealed = false; state.isScored = false; 
     let nIdx=0; for(let i=0; i<LEVELS[state.niveau].categories[cat].length; i++) { const r = resolveRealExercise(cat, i); if(!state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) { nIdx = i; break; } } 
     goToExercise(cat, nIdx); 
 }
@@ -496,7 +506,6 @@ function toggleDraft() {
         if(isDraftDrawing) initCanvas('draw-canvas-draft'); 
     } else { 
         d.classList.remove('open'); b.classList.add('opacity-0'); setTimeout(() => b.classList.add('hidden'), 300);
-        // Fix pointeur canvas principal après fermeture
         document.querySelectorAll('.main-draw-canvas').forEach(c => c.style.pointerEvents='none');
     } 
 }
@@ -521,7 +530,6 @@ function initCanvas(id) {
 function render() {
     const container = document.getElementById('app-container');
     
-    // Sécurité de refresh pendant le test
     if (state.calibrageState === 'testing' && (!LEVELS[state.niveau].categories || !LEVELS[state.niveau].categories["CALIBRAGE"])) {
         state.calibrageState = 'select';
     }
@@ -544,7 +552,7 @@ function render() {
             <p class="font-medium text-indigo-100 relative z-10 text-lg mb-8 max-w-2xl">Aide l'IA à te connaître en sélectionnant les chapitres que tu as déjà étudiés :</p>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10 mb-8 max-h-[420px] overflow-y-auto pr-2">${chapHtml}</div>
             <div class="flex flex-col relative z-10">
-                <button onclick="startCalibrage()" class="w-full py-5 bg-white text-indigo-700 font-black text-xl rounded-2xl shadow-lg transition-transform hover:scale-[1.02]">Lancer le Diagnostic (Je choisis après)</button>
+                <button onclick="startCalibrage()" class="w-full py-5 bg-white text-indigo-700 font-black text-xl rounded-2xl shadow-lg transition-transform hover:scale-[1.02]">Lancer le Diagnostic Ciblé</button>
             </div>
         </div>`;
         return;
@@ -555,7 +563,7 @@ function render() {
         container.innerHTML = `<div class="flex flex-col items-center justify-center py-20 animate-fade-in"><div class="loader loader-lg mb-6" style="border-top-color:#4f46e5;"></div><h2 class="text-2xl font-black text-slate-800">L'IA compile ton Diagnostic...</h2><p class="text-slate-500 mt-2 font-medium">Préparation des questions clés.</p></div>`; return;
     }
     
-    // ÉCRAN 3 : LE MOMENT WAOUH (HOOK VIRAL)
+    // ÉCRAN 3 : LE MOMENT WAOUH
     if (state.isFirstDay && state.calibrageState === 'results') {
         let hard = 0, easy = 0, pasVu = 0; 
         state.calibrageExos.forEach(e => { 
@@ -564,7 +572,7 @@ function render() {
         });
         
         let activeExos = state.calibrageExos.length - pasVu;
-        let scoreToDisplay = activeExos > 0 ? Math.min(100, Math.round((easy / activeExos)*100) + 15) : 87; // Formule magique flatteuse
+        let scoreToDisplay = activeExos > 0 ? Math.min(100, Math.round((easy / activeExos)*100) + 15) : 87; 
         
         container.innerHTML = `
         <div class="bg-white rounded-3xl p-8 lg:p-12 border border-slate-200 shadow-2xl animate-bounce-in max-w-2xl mx-auto">
@@ -577,7 +585,7 @@ function render() {
             <button onclick="shareWaouh()" class="mt-8 w-full py-5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black text-xl rounded-2xl shadow-xl hover:scale-[1.02] transition-transform">📱 Partager mon score</button>
             <button onclick="unlockDashboard()" class="mt-4 w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-lg rounded-xl transition-colors">🚀 Déverrouiller mon Espace d'Entraînement</button>
         </div>`;
-        confettiBurst(); // On lance l'animation au chargement !
+        confettiBurst(); 
         return;
     }
 
@@ -585,7 +593,6 @@ function render() {
     let html = `<div class="space-y-5">`;
     const catsToRender = (state.isFirstDay && state.calibrageState === 'testing') ? { "CALIBRAGE": LEVELS[state.niveau].categories["CALIBRAGE"] } : LEVELS[state.niveau].categories;
     
-    // Forcer le Boost en 1er
     let catKeys = Object.keys(catsToRender);
     if(catKeys.includes("BOOST")) { catKeys = ["BOOST", ...catKeys.filter(k => k !== "BOOST")]; }
 
@@ -633,8 +640,12 @@ function renderSection(cat, data, idx, total, isCatDone) {
         actions = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl hover:-translate-y-1 transition-transform shadow-lg">VÉRIFIER</button>`;
     } else if(isRev && !state.isScored && !hasOpt) {
         actions = `<div class="flex gap-2 w-full mt-2"><button onclick="mark('${cat}', ${idx}, 'HARD')" class="flex-1 py-4 bg-rose-50 text-rose-600 border border-rose-200 rounded-xl font-black transition-colors hover:bg-rose-100">À RETRAVAILLER</button><button onclick="mark('${cat}', ${idx}, 'EASY')" class="flex-1 py-4 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl font-black transition-colors hover:bg-emerald-100">FACILE</button></div>`;
-    } else if(state.isScored && !isCatDone) {
-        actions = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl mt-3 transition-transform hover:-translate-y-1 shadow-lg">EXERCICE SUIVANT</button>`;
+    } else if(state.isScored) {
+        if (!isCatDone) {
+            actions = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl mt-3 transition-transform hover:-translate-y-1 shadow-lg">EXERCICE SUIVANT</button>`;
+        } else if (cat === 'CALIBRAGE') {
+            actions = `<button onclick="finishCalibrage()" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-black rounded-xl mt-3 transition-transform hover:-translate-y-1 shadow-lg text-lg animate-pulse-ring">VOIR MON BILAN IA 🚀</button>`;
+        }
     }
 
     let optsHtml = '';
