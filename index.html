@@ -254,9 +254,8 @@
 
 <script>
 // ==========================================================
-// CONFIGURATION & LOGS (SaaS Level)
+// CONFIGURATION & LOGS
 // ==========================================================
-// NOUVELLE URL GAS
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1CgYCGCFLJ--vnk0FVPxJ-XJ6Ddr9v_3Zy63P1y8VklfEB0WgMHqceQ-zLnRLtLs8cQ/exec";
 
 const LOG = (type, msg) => console.log(`${type} ${new Date().toLocaleTimeString()} - ${msg}`);
@@ -337,7 +336,7 @@ async function registerStudent() {
             LOG('✅ [AUTH]', `Compte créé pour ${email}.`);
             state.activeProfile = data.profile;
             state.isFirstDay = data.isFirstDay;
-            if(state.isFirstDay) state.calibrageState = 'select'; // Initialise le flux de calibrage
+            if(state.isFirstDay) state.calibrageState = 'select'; 
             localStorage.setItem(SESSION_KEY, JSON.stringify({email: email, password: pwd}));
             initStudentApp(); 
         } else {
@@ -461,10 +460,10 @@ function initStudentApp() {
 function logout() { sessionStorage.removeItem('session_counted'); localStorage.removeItem(SESSION_KEY); location.reload(); }
 
 // ==========================================================
-// MOTEUR "BOOST DU JOUR" (IA ou Local)
+// MOTEUR "BOOST DU JOUR"
 // ==========================================================
 function generateBoostDuJour() {
-    if (state.isFirstDay) return; // Pas de boost normal si on est en Calibrage IA
+    if (state.isFirstDay) return; 
 
     const cats = LEVELS[state.niveau].categories;
     if (!cats) return;
@@ -520,7 +519,7 @@ function generateBoostDuJour() {
 }
 
 // ==========================================================
-// CALIBRAGE IA (ONBOARDING)
+// BILAN IA (ONBOARDING)
 // ==========================================================
 function startCalibrage() {
     const checkboxes = document.querySelectorAll('.chap-checkbox:checked');
@@ -538,19 +537,17 @@ function startCalibrage() {
             }
         });
         pool.sort(() => 0.5 - Math.random());
-        // On prend jusqu'à 15 exos max pour le diagnostic
         state.calibrageExos = pool.slice(0, 15).map(item => ({...item.exo, originalCat: item.cat, originalIdx: item.idx}));
         
-        // On injecte virtuellement la catégorie CALIBRAGE
         LEVELS[state.niveau].categories["CALIBRAGE"] = state.calibrageExos;
-        LEVELS[state.niveau].catDisplay["CALIBRAGE"] = "🎯 Test de Calibrage IA";
+        LEVELS[state.niveau].catDisplay["CALIBRAGE"] = "🎯 Ton Bilan IA";
         LEVELS[state.niveau].catIcon["CALIBRAGE"] = "🤖";
         
         state.calibrageState = 'testing';
         state.questView['CALIBRAGE'] = 0;
         state.expanded['CALIBRAGE'] = true;
         render();
-    }, 2000); // Faux chargement immersif
+    }, 2000); 
 }
 
 function finishCalibrage() {
@@ -561,7 +558,7 @@ function finishCalibrage() {
     document.getElementById('app-container').innerHTML = `
         <div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-10 text-center shadow-lg animate-bounce-in mt-10">
             <div class="text-6xl mb-6">🎉</div>
-            <h2 class="text-3xl font-black text-emerald-800 mb-4">Calibrage Terminé !</h2>
+            <h2 class="text-3xl font-black text-emerald-800 mb-4">Bilan IA Terminé !</h2>
             <p class="text-emerald-600 font-medium mb-8 text-lg">L'IA te connaît désormais parfaitement. Ton espace complet est déverrouillé.</p>
             <button onclick="generateBoostDuJour(); render();" class="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl transition-all shadow-md hover:scale-105">Accéder à mon espace</button>
         </div>
@@ -609,7 +606,7 @@ function closeSocrateModal() { document.getElementById('socrate-modal').classLis
 function generateAITest() { showCustomAlert("🧠 Mode Challenge", "La génération infinie de tests pour ce chapitre arrive très bientôt !", "⚙️"); }
 
 // ==========================================================
-// SAUVEGARDE ET SCORES (Auto-Reveal XP)
+// SCORING & INTERACTION LOGIC
 // ==========================================================
 function resolveRealExercise(cat, idx) {
     if (cat === "BOOST" || cat === "CALIBRAGE") {
@@ -653,7 +650,6 @@ function mark(cat, idx, status, total) {
   sendScoreToSheet(realCat, realIdx, status, xpGained, timeSpent); 
   updateHeader(); 
   
-  // Si on est en calibrage et qu'on vient de finir le dernier
   if(cat === "CALIBRAGE") {
       let done = 0;
       for(let i=0; i<state.calibrageExos.length; i++) {
@@ -665,6 +661,66 @@ function mark(cat, idx, status, total) {
 
   render();
 }
+
+function checkOption(cat, idx, originalOptIdx, buttonEl) {
+  const { realCat, realIdx } = resolveRealExercise(cat, idx);
+  const realId = `${state.niveau}-${realCat}-${realIdx}`;
+  const total = LEVELS[state.niveau].categories[cat].length;
+  
+  let data;
+  if (cat === "CALIBRAGE") data = state.calibrageExos[idx];
+  else if (cat === "BOOST" && realCat === "AI_BOOST") data = state.dailyBoost[realIdx];
+  else data = LEVELS[state.niveau].categories[realCat][realIdx];
+
+  const selectedOpt = data.options[originalOptIdx];
+  
+  state.qcmAnswered[realId] = selectedOpt; state.revealed = true; state.currentId = realId;
+  const parent = buttonEl.parentElement;
+  Array.from(parent.children).forEach(child => { child.className = "option-btn option-neutral cursor-default"; });
+
+  if (selectedOpt === data.a) {
+    buttonEl.className = "option-btn option-correct animate-success-pop cursor-default";
+    buttonEl.innerHTML = `<span><span class="text-emerald-500 mr-2">✅</span>${selectedOpt}</span>`;
+    setTimeout(() => render(), 800);
+  } else {
+    buttonEl.className = "option-btn option-wrong animate-shake cursor-default";
+    buttonEl.innerHTML = `<span><span class="text-rose-500 mr-2">❌</span>${selectedOpt}</span>`;
+    Array.from(parent.children).forEach(child => { if(child.innerText.includes(data.a)) { child.className = "option-btn option-correct cursor-default"; child.innerHTML = `<span><span class="text-emerald-500 mr-2">✅</span>${data.a}</span>`; } });
+    setTimeout(() => { mark(cat, idx, 'HARD', total); }, 1000);
+  }
+}
+
+function verify(cat, idx) { const { realCat, realIdx } = resolveRealExercise(cat, idx); state.revealed = true; state.isScored = false; state.currentId = `${state.niveau}-${realCat}-${realIdx}`; render(); }
+function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; render(); }
+function showNextHint(cat, idx, total) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; if(!state.hintStepsRevealed[realId]) state.hintStepsRevealed[realId] = 0; if(state.hintStepsRevealed[realId] < total) { state.hintStepsRevealed[realId]++; render(); } }
+function revealFormula(cat, idx, el) { const { realCat, realIdx } = resolveRealExercise(cat, idx); el.classList.add('revealed'); state.formulaManuallyTouched[`${state.niveau}-${realCat}-${realIdx}`] = true; }
+function updateLevelDropdown(userLevel) { const select = document.getElementById('niveau-select'); select.innerHTML = ''; const maxIdx = LEVEL_ORDER.indexOf(userLevel); const startIdx = Math.max(0, maxIdx - 1); for(let i = startIdx; i <= maxIdx; i++) { const lvlKey = LEVEL_ORDER[i]; const opt = document.createElement('option'); opt.value = lvlKey; opt.text = LEVEL_NAMES[lvlKey]; select.appendChild(opt); } select.value = userLevel; }
+function updateHeader() { document.getElementById('ui-streak').innerText = state.streak; document.getElementById('ui-xp').innerText = state.xp; }
+function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; generateBoostDuJour(); render(); }
+function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; state.isDrawing = false; state.isLaser = false; render(); }
+function nextExercise(cat) { const total = LEVELS[state.niveau].categories[cat].length; let nextIdx = 0; for(let i=0; i<total; i++) { const { realCat, realIdx } = resolveRealExercise(cat, i); if(!state.results[`${state.niveau}-${realCat}-${realIdx}`]) { nextIdx = i; break; } } state.questView[cat] = nextIdx; state.revealed = false; state.isScored = false; state.currentId = null; state.isDrawing = false; state.isLaser = false; render(); }
+
+// ==========================================================
+// BROUILLON & DESSIN
+// ==========================================================
+function toggleDraft() { document.getElementById('draft-tooltip')?.classList.add('hidden'); state.draftOpen = !state.draftOpen; const drawer = document.getElementById('draft-drawer'); const backdrop = document.getElementById('draft-backdrop'); if(state.draftOpen) { drawer.classList.add('open'); backdrop.classList.remove('hidden'); setTimeout(() => backdrop.classList.remove('opacity-0'), 10); setTimeout(() => { document.getElementById('text-draft').focus(); if(isDraftDrawing) initDraftCanvas(); if(isDraftLaser) initDraftLaser(); }, 300); } else { drawer.classList.remove('open'); backdrop.classList.add('opacity-0'); setTimeout(() => backdrop.classList.add('hidden'), 300); } }
+function clearDraft() { document.getElementById('text-draft').value = ''; const c = document.getElementById('draw-canvas-draft'); if(c) { const ctx = c.getContext('2d'); ctx.clearRect(0, 0, c.width, c.height); } }
+function insertText(text) { const txtArea = document.getElementById('text-draft'); const startPos = txtArea.selectionStart; txtArea.value = txtArea.value.substring(0, startPos) + text + txtArea.value.substring(txtArea.selectionEnd); txtArea.selectionStart = txtArea.selectionEnd = startPos + text.length; txtArea.focus(); }
+function setupCanvasDrawing(c, isRose) { const rect = c.parentElement.getBoundingClientRect(); c.width = rect.width; c.height = rect.height; let ctx = c.getContext('2d'); ctx.strokeStyle = isRose ? 'rgba(239, 68, 68, 0.6)' : 'rgba(59, 130, 246, 0.6)'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; let d = false; const start = (x, y) => { d = true; ctx.beginPath(); ctx.moveTo(x, y); }; const move = (x, y) => { if(d) { ctx.lineTo(x, y); ctx.stroke(); } }; const end = () => d = false; c.onmousedown = (e) => start(e.offsetX, e.offsetY); c.onmousemove = (e) => move(e.offsetX, e.offsetY); c.onmouseup = end; c.onmouseleave = end; c.ontouchstart = (e) => { const r = c.getBoundingClientRect(); start(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }; c.ontouchmove = (e) => { if(!d) return; const r = c.getBoundingClientRect(); move(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }; c.ontouchend = end; }
+function initCanvas() { const c = document.getElementById('draw-canvas'); if(c) setupCanvasDrawing(c, true); }
+function initDraftCanvas() { const c = document.getElementById('draw-canvas-draft'); if(c) setupCanvasDrawing(c, false); }
+let activeLaserCanvas = null, activeLaserCtx = null, laserPoints = [], laserRafId = null;
+function startLaserLoop(canvasId) { if(laserRafId) cancelAnimationFrame(laserRafId); const c = document.getElementById(canvasId); if(!c) return; const rect = c.parentElement.getBoundingClientRect(); c.width = rect.width; c.height = rect.height; activeLaserCanvas = c; activeLaserCtx = c.getContext('2d'); laserPoints = []; let isPointerDown = false; const addPoint = (x, y) => { laserPoints.push({x, y, time: Date.now()}); }; c.onmousedown = (e) => { isPointerDown = true; addPoint(e.offsetX, e.offsetY); }; c.onmousemove = (e) => { if(isPointerDown) addPoint(e.offsetX, e.offsetY); }; c.onmouseup = () => isPointerDown = false; c.onmouseleave = () => isPointerDown = false; c.ontouchstart = (e) => { isPointerDown = true; const r = c.getBoundingClientRect(); addPoint(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }; c.ontouchmove = (e) => { if(!isPointerDown) return; const r = c.getBoundingClientRect(); addPoint(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }; c.ontouchend = () => isPointerDown = false; laserLoop(); }
+function laserLoop() { if(!activeLaserCtx) return; const ctx = activeLaserCtx, canvas = activeLaserCanvas, now = Date.now(); laserPoints = laserPoints.filter(p => now - p.time < 350); ctx.clearRect(0, 0, canvas.width, canvas.height); if(laserPoints.length > 0) { ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 5; ctx.shadowBlur = 8; ctx.shadowColor = 'red'; for (let i = 0; i < laserPoints.length; i++) { const p = laserPoints[i], alpha = 1 - ((now - p.time) / 350); ctx.strokeStyle = `rgba(255, 0, 0, ${alpha})`; ctx.beginPath(); if(i === 0) { ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y); } else { const prev = laserPoints[i-1]; ctx.moveTo(prev.x, prev.y); ctx.lineTo(p.x, p.y); } ctx.stroke(); } const last = laserPoints[laserPoints.length - 1]; ctx.beginPath(); ctx.arc(last.x, last.y, 4, 0, Math.PI * 2); ctx.fillStyle = 'white'; ctx.fill(); } laserRafId = requestAnimationFrame(laserLoop); }
+function stopLaserLoop() { if(laserRafId) cancelAnimationFrame(laserRafId); if(activeLaserCtx && activeLaserCanvas) activeLaserCtx.clearRect(0, 0, activeLaserCanvas.width, activeLaserCanvas.height); activeLaserCtx = activeLaserCanvas = null; }
+function initDraftLaser() { startLaserLoop('laser-canvas-draft'); } function initMainLaser() { startLaserLoop('laser-canvas'); }
+let isDraftDrawing = false, isDraftLaser = false;
+function toggleDraftDrawingMode() { isDraftDrawing = !isDraftDrawing; if(isDraftDrawing) isDraftLaser = false; updateDraftModes(); }
+function toggleDraftLaserMode() { isDraftLaser = !isDraftLaser; if(isDraftLaser) isDraftDrawing = false; updateDraftModes(); }
+function updateDraftModes() { const b = document.getElementById('box-draft'), btnDraw = document.getElementById('btn-draw-draft'), btnLaser = document.getElementById('btn-laser-draft'); b.classList.remove('drawing-mode-draft', 'laser-mode-draft'); btnDraw.classList.remove('bg-blue-100', 'text-blue-700', 'border-blue-200'); btnLaser.classList.remove('bg-red-100', 'text-red-700', 'border-red-200'); stopLaserLoop(); if(isDraftDrawing) { b.classList.add('drawing-mode-draft'); btnDraw.classList.add('bg-blue-100', 'text-blue-700', 'border-blue-200'); initDraftCanvas(); } else if(isDraftLaser) { b.classList.add('laser-mode-draft'); btnLaser.classList.add('bg-red-100', 'text-red-700', 'border-red-200'); initDraftLaser(); } }
+function toggleDrawingMode(id) { state.isDrawing = !state.isDrawing; if(state.isDrawing) state.isLaser = false; updateMainModes(id); }
+function toggleLaserMode(id) { state.isLaser = !state.isLaser; if(state.isLaser) state.isDrawing = false; updateMainModes(id); }
+function updateMainModes(id) { const b = document.getElementById(`box-${id}`), btnDraw = document.getElementById(`btn-draw-${id}`), btnLaser = document.getElementById(`btn-laser-${id}`); b.classList.remove('drawing-mode', 'laser-mode'); if(btnDraw) btnDraw.classList.remove('bg-rose-100', 'text-rose-700', 'border-rose-200'); if(btnLaser) btnLaser.classList.remove('bg-red-100', 'text-red-700', 'border-red-200'); stopLaserLoop(); if(state.isDrawing) { b.classList.add('drawing-mode'); if(btnDraw) btnDraw.classList.add('bg-rose-100', 'text-rose-700', 'border-rose-200'); initCanvas(); } else if(state.isLaser) { b.classList.add('laser-mode'); if(btnLaser) btnLaser.classList.add('bg-red-100', 'text-red-700', 'border-red-200'); initMainLaser(); } }
 
 // ==========================================================
 // RENDU MATHJAX FOUC FIX
@@ -682,48 +738,59 @@ function renderMath() {
 // ==========================================================
 function render() {
   const container = document.getElementById('app-container'); 
-  let html = `<div class="space-y-5">`; 
   const cats = LEVELS[state.niveau].categories || {}; 
   
-  // === Rendu Spécifique: ONBOARDING CALIBRAGE IA ===
+  // === Rendu Spécifique: ONBOARDING BILAN IA ===
   if (state.isFirstDay) {
       if (state.calibrageState === 'select' || !state.calibrageState) {
           let chapHtml = "";
           Object.keys(cats).forEach(cat => {
+              const icon = LEVELS[state.niveau].catIcon[cat] || '📘';
+              const name = LEVELS[state.niveau].catDisplay[cat] || cat;
               chapHtml += `<label class="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-xl cursor-pointer hover:bg-indigo-50 hover:border-indigo-200 transition-colors">
                               <input type="checkbox" value="${cat}" class="chap-checkbox w-5 h-5 accent-indigo-600 rounded">
-                              <span class="font-bold text-slate-700">${LEVELS[state.niveau].catDisplay[cat] || cat}</span>
+                              <span class="text-2xl">${icon}</span>
+                              <span class="font-bold text-slate-700">${name}</span>
                            </label>`;
           });
           container.innerHTML = `
             <div class="bg-indigo-600 rounded-3xl p-8 text-white shadow-xl animate-bounce-in relative overflow-hidden">
                 <div class="absolute -right-4 -top-4 text-9xl opacity-10 rotate-12">🎯</div>
                 <h2 class="text-3xl font-black mb-2 relative z-10">Salut ${state.activeProfile.name} !</h2>
-                <p class="font-medium text-indigo-100 relative z-10 text-lg mb-8 max-w-xl">Pour que l'IA puisse générer ton programme sur-mesure demain, sélectionne les chapitres que tu as déjà abordés en classe.</p>
+                <p class="font-medium text-indigo-100 relative z-10 text-lg mb-8 max-w-xl">Avant de te créer un programme sur-mesure, j'ai besoin de savoir où tu en es. <br/><br/><strong>Coche ci-dessous les chapitres que tu as déjà étudiés :</strong></p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10 mb-8">${chapHtml}</div>
-                <button onclick="startCalibrage()" class="w-full md:w-auto px-8 py-4 bg-white text-indigo-700 font-black rounded-xl shadow-lg transition-all hover:scale-105 relative z-10">Générer mon diagnostic</button>
+                <button onclick="startCalibrage()" class="w-full md:w-auto px-8 py-4 bg-white text-indigo-700 font-black rounded-xl shadow-lg transition-all hover:scale-105 relative z-10 flex items-center justify-center gap-2">Générer mon Bilan IA</button>
             </div>`;
-          return;
+          return; // ON S'ARRÊTE LÀ. On ne dessine pas les autres catégories.
       } 
       else if (state.calibrageState === 'loading') {
           container.innerHTML = `
             <div class="flex flex-col items-center justify-center py-20 animate-fade-in">
                 <div class="loader loader-lg mb-6" style="border-top-color: #4f46e5;"></div>
-                <h2 class="text-2xl font-black text-slate-800">L'IA génère ton diagnostic...</h2>
-                <p class="text-slate-500 font-medium mt-2">Analyse des chapitres sélectionnés</p>
+                <h2 class="text-2xl font-black text-slate-800">L'IA prépare ton Bilan...</h2>
+                <p class="text-slate-500 font-medium mt-2">Analyse des chapitres sélectionnés en cours</p>
             </div>`;
-          return;
+          return; // ON S'ARRÊTE LÀ.
       }
-      // state.calibrageState === 'testing' géré en dessous comme une catégorie normale "CALIBRAGE"
+      
+      // Si state.calibrageState === 'testing', on veut dessiner la catégorie CALIBRAGE.
+      // On FORCE le tableau cats à ne contenir QUE le Bilan IA.
+      let singleCat = { "CALIBRAGE": LEVELS[state.niveau].categories["CALIBRAGE"] };
+      renderCategories(singleCat, container);
+      return;
   }
 
   // === Rendu Normal Dashboard ===
-  let emojiIdx = 0;
-  Object.keys(cats).forEach(cat => {
-    // En mode normal, on ne veut pas afficher la catégorie virtuelle CALIBRAGE si elle traîne
-    if(cat === "CALIBRAGE" && !state.isFirstDay) return;
+  renderCategories(cats, container);
+}
 
-    const total = cats[cat].length; 
+// Séparation logique pour ne pas dupliquer le code de rendu des blocs
+function renderCategories(catsToRender, container) {
+  let html = `<div class="space-y-5">`; 
+  let emojiIdx = 0;
+
+  Object.keys(catsToRender).forEach(cat => {
+    const total = catsToRender[cat].length; 
     let doneCount = 0;
     for(let i=0; i<total; i++) { 
         const { realCat, realIdx } = resolveRealExercise(cat, i);
@@ -776,17 +843,17 @@ function render() {
         </div>
         <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 transition-transform duration-300 ${state.expanded[cat]?'rotate-180':''}"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg></div>
       </div>
-      ${state.expanded[cat] ? renderSection(cat, cats[cat][state.questView[cat]||0], parseInt(state.questView[cat]||0), total, isCompleted) : ''}
+      ${state.expanded[cat] ? renderSection(cat, catsToRender[cat][state.questView[cat]||0], parseInt(state.questView[cat]||0), total, isCompleted) : ''}
     </div>`;
   });
   
   container.innerHTML = html + `</div>`;
-  renderMath(); // Application MathJax avec fix FOUC
+  renderMath();
   if(state.isDrawing) initCanvas(); else if(state.isLaser) initMainLaser();
 }
 
 function renderSection(cat, data, idx, total, isCategoryCompleted) {
-  if (!data) return `<div class="p-10 text-center font-bold text-emerald-600">Catégorie terminée !</div>`;
+  if (!data) return `<div class="p-10 text-center font-bold text-emerald-600">Exercices terminés !</div>`;
   
   const uiId = `${state.niveau}-${cat}-${idx}`; 
   const { realCat, realIdx } = resolveRealExercise(cat, idx);
@@ -906,57 +973,6 @@ function renderSection(cat, data, idx, total, isCategoryCompleted) {
       </div>
     </div>`;
 }
-
-// ==========================================================
-// UI HELPERS
-// ==========================================================
-function updateLevelDropdown(userLevel) {
-  const select = document.getElementById('niveau-select'); select.innerHTML = ''; 
-  const maxIdx = LEVEL_ORDER.indexOf(userLevel);
-  const startIdx = Math.max(0, maxIdx - 1); 
-  for(let i = startIdx; i <= maxIdx; i++) { 
-      const lvlKey = LEVEL_ORDER[i]; const opt = document.createElement('option'); 
-      opt.value = lvlKey; opt.text = LEVEL_NAMES[lvlKey]; select.appendChild(opt); 
-  }
-  select.value = userLevel;
-}
-function updateHeader() { document.getElementById('ui-streak').innerText = state.streak; document.getElementById('ui-xp').innerText = state.xp; }
-function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; generateBoostDuJour(); render(); }
-function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; state.isDrawing = false; state.isLaser = false; render(); }
-function nextExercise(cat) { 
-    const total = LEVELS[state.niveau].categories[cat].length; 
-    let nextIdx = 0;
-    for(let i=0; i<total; i++) {
-        const { realCat, realIdx } = resolveRealExercise(cat, i);
-        if(!state.results[`${state.niveau}-${realCat}-${realIdx}`]) { nextIdx = i; break; }
-    }
-    state.questView[cat] = nextIdx; 
-    state.revealed = false; state.isScored = false; state.currentId = null; state.isDrawing = false; state.isLaser = false; 
-    render(); 
-}
-function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; render(); }
-
-// ==========================================================
-// BROUILLON & DESSIN (Miniaturisé)
-// ==========================================================
-function toggleDraft() { document.getElementById('draft-tooltip')?.classList.add('hidden'); state.draftOpen = !state.draftOpen; const drawer = document.getElementById('draft-drawer'); const backdrop = document.getElementById('draft-backdrop'); if(state.draftOpen) { drawer.classList.add('open'); backdrop.classList.remove('hidden'); setTimeout(() => backdrop.classList.remove('opacity-0'), 10); setTimeout(() => { document.getElementById('text-draft').focus(); if(isDraftDrawing) initDraftCanvas(); if(isDraftLaser) initDraftLaser(); }, 300); } else { drawer.classList.remove('open'); backdrop.classList.add('opacity-0'); setTimeout(() => backdrop.classList.add('hidden'), 300); } }
-function clearDraft() { document.getElementById('text-draft').value = ''; const c = document.getElementById('draw-canvas-draft'); if(c) { const ctx = c.getContext('2d'); ctx.clearRect(0, 0, c.width, c.height); } }
-function insertText(text) { const txtArea = document.getElementById('text-draft'); const startPos = txtArea.selectionStart; txtArea.value = txtArea.value.substring(0, startPos) + text + txtArea.value.substring(txtArea.selectionEnd); txtArea.selectionStart = txtArea.selectionEnd = startPos + text.length; txtArea.focus(); }
-function setupCanvasDrawing(c, isRose) { const rect = c.parentElement.getBoundingClientRect(); c.width = rect.width; c.height = rect.height; let ctx = c.getContext('2d'); ctx.strokeStyle = isRose ? 'rgba(239, 68, 68, 0.6)' : 'rgba(59, 130, 246, 0.6)'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; let d = false; const start = (x, y) => { d = true; ctx.beginPath(); ctx.moveTo(x, y); }; const move = (x, y) => { if(d) { ctx.lineTo(x, y); ctx.stroke(); } }; const end = () => d = false; c.onmousedown = (e) => start(e.offsetX, e.offsetY); c.onmousemove = (e) => move(e.offsetX, e.offsetY); c.onmouseup = end; c.onmouseleave = end; c.ontouchstart = (e) => { const r = c.getBoundingClientRect(); start(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }; c.ontouchmove = (e) => { if(!d) return; const r = c.getBoundingClientRect(); move(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }; c.ontouchend = end; }
-function initCanvas() { const c = document.getElementById('draw-canvas'); if(c) setupCanvasDrawing(c, true); }
-function initDraftCanvas() { const c = document.getElementById('draw-canvas-draft'); if(c) setupCanvasDrawing(c, false); }
-let activeLaserCanvas = null, activeLaserCtx = null, laserPoints = [], laserRafId = null;
-function startLaserLoop(canvasId) { if(laserRafId) cancelAnimationFrame(laserRafId); const c = document.getElementById(canvasId); if(!c) return; const rect = c.parentElement.getBoundingClientRect(); c.width = rect.width; c.height = rect.height; activeLaserCanvas = c; activeLaserCtx = c.getContext('2d'); laserPoints = []; let isPointerDown = false; const addPoint = (x, y) => { laserPoints.push({x, y, time: Date.now()}); }; c.onmousedown = (e) => { isPointerDown = true; addPoint(e.offsetX, e.offsetY); }; c.onmousemove = (e) => { if(isPointerDown) addPoint(e.offsetX, e.offsetY); }; c.onmouseup = () => isPointerDown = false; c.onmouseleave = () => isPointerDown = false; c.ontouchstart = (e) => { isPointerDown = true; const r = c.getBoundingClientRect(); addPoint(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }; c.ontouchmove = (e) => { if(!isPointerDown) return; const r = c.getBoundingClientRect(); addPoint(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }; c.ontouchend = () => isPointerDown = false; laserLoop(); }
-function laserLoop() { if(!activeLaserCtx) return; const ctx = activeLaserCtx, canvas = activeLaserCanvas, now = Date.now(); laserPoints = laserPoints.filter(p => now - p.time < 350); ctx.clearRect(0, 0, canvas.width, canvas.height); if(laserPoints.length > 0) { ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 5; ctx.shadowBlur = 8; ctx.shadowColor = 'red'; for (let i = 0; i < laserPoints.length; i++) { const p = laserPoints[i], alpha = 1 - ((now - p.time) / 350); ctx.strokeStyle = `rgba(255, 0, 0, ${alpha})`; ctx.beginPath(); if(i === 0) { ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y); } else { const prev = laserPoints[i-1]; ctx.moveTo(prev.x, prev.y); ctx.lineTo(p.x, p.y); } ctx.stroke(); } const last = laserPoints[laserPoints.length - 1]; ctx.beginPath(); ctx.arc(last.x, last.y, 4, 0, Math.PI * 2); ctx.fillStyle = 'white'; ctx.fill(); } laserRafId = requestAnimationFrame(laserLoop); }
-function stopLaserLoop() { if(laserRafId) cancelAnimationFrame(laserRafId); if(activeLaserCtx && activeLaserCanvas) activeLaserCtx.clearRect(0, 0, activeLaserCanvas.width, activeLaserCanvas.height); activeLaserCtx = activeLaserCanvas = null; }
-function initDraftLaser() { startLaserLoop('laser-canvas-draft'); } function initMainLaser() { startLaserLoop('laser-canvas'); }
-let isDraftDrawing = false, isDraftLaser = false;
-function toggleDraftDrawingMode() { isDraftDrawing = !isDraftDrawing; if(isDraftDrawing) isDraftLaser = false; updateDraftModes(); }
-function toggleDraftLaserMode() { isDraftLaser = !isDraftLaser; if(isDraftLaser) isDraftDrawing = false; updateDraftModes(); }
-function updateDraftModes() { const b = document.getElementById('box-draft'), btnDraw = document.getElementById('btn-draw-draft'), btnLaser = document.getElementById('btn-laser-draft'); b.classList.remove('drawing-mode-draft', 'laser-mode-draft'); btnDraw.classList.remove('bg-blue-100', 'text-blue-700', 'border-blue-200'); btnLaser.classList.remove('bg-red-100', 'text-red-700', 'border-red-200'); stopLaserLoop(); if(isDraftDrawing) { b.classList.add('drawing-mode-draft'); btnDraw.classList.add('bg-blue-100', 'text-blue-700', 'border-blue-200'); initDraftCanvas(); } else if(isDraftLaser) { b.classList.add('laser-mode-draft'); btnLaser.classList.add('bg-red-100', 'text-red-700', 'border-red-200'); initDraftLaser(); } }
-function toggleDrawingMode(id) { state.isDrawing = !state.isDrawing; if(state.isDrawing) state.isLaser = false; updateMainModes(id); }
-function toggleLaserMode(id) { state.isLaser = !state.isLaser; if(state.isLaser) state.isDrawing = false; updateMainModes(id); }
-function updateMainModes(id) { const b = document.getElementById(`box-${id}`), btnDraw = document.getElementById(`btn-draw-${id}`), btnLaser = document.getElementById(`btn-laser-${id}`); b.classList.remove('drawing-mode', 'laser-mode'); if(btnDraw) btnDraw.classList.remove('bg-rose-100', 'text-rose-700', 'border-rose-200'); if(btnLaser) btnLaser.classList.remove('bg-red-100', 'text-red-700', 'border-red-200'); stopLaserLoop(); if(state.isDrawing) { b.classList.add('drawing-mode'); if(btnDraw) btnDraw.classList.add('bg-rose-100', 'text-rose-700', 'border-rose-200'); initCanvas(); } else if(state.isLaser) { b.classList.add('laser-mode'); if(btnLaser) btnLaser.classList.add('bg-red-100', 'text-red-700', 'border-red-200'); initMainLaser(); } }
 </script>
 </body>
 </html>
