@@ -12,6 +12,7 @@
     };
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
   <script src="https://cdn.tailwindcss.com"></script>
   
   <script src="6.js"></script><script src="5.js"></script><script src="4.js"></script>
@@ -38,7 +39,7 @@
     .blurred-formula { filter: blur(6px); transition: all 0.4s ease; cursor: pointer; user-select: none; overflow-x: auto; white-space: pre-wrap; word-break: break-word; opacity: 0.8; }
     .blurred-formula.revealed { filter: blur(0); opacity: 1; }
     
-    /* ANIMATIONS */
+    /* ANIMATIONS CSS */
     @keyframes bounce-in { 0% { transform: scale(0.95) translateY(10px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
     .animate-bounce-in { animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
@@ -57,12 +58,14 @@
     .loader { border: 4px solid #f1f5f9; border-top: 4px solid #3b82f6; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+    /* QCM Vertical exclusif */
     .option-btn { border: 2px solid #e2e8f0; transition: all 0.2s; text-align: left; padding: 1.2rem 1.5rem; border-radius: 1rem; font-weight: 600; background: white; box-shadow: 0 1px 2px rgba(0,0,0,0.05); width: 100%; display: flex; align-items: center; justify-content: space-between; }
     .option-btn.cursor-pointer:hover { border-color: #60a5fa; background: #f0fdf4; transform: translateX(4px); box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1); }
     .option-correct { border-color: #10b981 !important; background: #ecfdf5 !important; color: #065f46; z-index: 10; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2); }
     .option-wrong { border-color: #ef4444 !important; background: #fef2f2 !important; color: #991b1b; opacity: 0.8; }
     .option-neutral { opacity: 0.5; background: #f8fafc; pointer-events: none; border-color: #e2e8f0 !important; }
 
+    /* Tiroir Brouillon */
     #draft-drawer { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
     #draft-drawer.open { transform: translateX(0); }
     
@@ -170,8 +173,8 @@
 
         <div id="form-login" class="space-y-5 animate-fade-in block">
             <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Ton Prénom</label>
-                <input type="text" id="login-name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-semibold focus:outline-none focus:border-blue-500 transition" placeholder="Ex: Amjad">
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Ton Email</label>
+                <input type="email" id="login-email" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-semibold focus:outline-none focus:border-blue-500 transition" placeholder="Ex: amjad@email.com">
             </div>
             <div>
                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Mot de passe</label>
@@ -182,26 +185,30 @@
             </button>
         </div>
 
-        <div id="form-register" class="space-y-5 animate-fade-in hidden">
+        <div id="form-register" class="space-y-4 animate-fade-in hidden">
             <div>
                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Ton Prénom</label>
-                <input type="text" id="reg-name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-semibold focus:outline-none focus:border-indigo-500 transition" placeholder="Ex: Amjad">
+                <input type="text" id="reg-name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-semibold focus:outline-none focus:border-indigo-500 transition" placeholder="Ex: Amjad">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Ton Email</label>
+                <input type="email" id="reg-email" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-semibold focus:outline-none focus:border-indigo-500 transition" placeholder="Pour te reconnecter">
             </div>
             <div>
                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Classe Actuelle</label>
-                <select id="reg-level" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-semibold focus:outline-none focus:border-indigo-500 transition appearance-none cursor-pointer">
+                <select id="reg-level" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-semibold focus:outline-none focus:border-indigo-500 transition appearance-none cursor-pointer">
                     <option value="6EME">6ème</option><option value="5EME">5ème</option><option value="4EME" selected>4ème</option>
                     <option value="3EME">3ème</option><option value="SECONDE">Seconde</option><option value="PREMIERE">1ère (Spé Maths)</option><option value="TERMINALE">Terminale</option>
                 </select>
             </div>
             <div>
                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Créer un mot de passe</label>
-                <input type="password" id="reg-pwd" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-semibold focus:outline-none focus:border-indigo-500 transition" placeholder="Facile à retenir">
+                <input type="password" id="reg-pwd" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-semibold focus:outline-none focus:border-indigo-500 transition" placeholder="Au moins 6 caractères">
             </div>
-            <button onclick="registerStudent()" class="w-full py-4 mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-lg rounded-xl shadow-lg shadow-indigo-200 transition-all flex justify-center items-center gap-2">
+            <button onclick="registerStudent()" class="w-full py-4 mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-lg rounded-xl shadow-lg shadow-indigo-200 transition-all flex justify-center items-center gap-2">
                 <span id="reg-text">Démarrer mon entraînement</span> <span id="reg-loader" class="loader hidden" style="border-top-color: white;"></span>
             </button>
-            <p class="text-center text-xs text-slate-400 mt-2">🔒 Aucune carte bancaire requise.</p>
+            <p class="text-center text-xs text-slate-400">🔒 Aucune carte bancaire requise pour la Bêta.</p>
         </div>
     </div>
 </div>
@@ -270,9 +277,10 @@
 // ==========================================================
 // CONFIGURATION & LOGS (SaaS Level)
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMHikP_lBPHbQ5mSVaCSlKmlraM2S6kXr5DcoHn9MntHH-SfFv2RMvW6gDztzqL2hs9w/exec";
+// TA NOUVELLE URL GAS
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxXthVNSpjpD4Ep8SZ_4HfvId9xLWEe1EZzHFLFlbD-COPKxL2neU1A1RjeDQK59g3Nwg/exec";
 
-// Utilitaire de Logging
+// Fonction utilitaire de log propre
 const LOG = (type, msg) => console.log(`${type} ${new Date().toLocaleTimeString()} - ${msg}`);
 
 let state = {
@@ -285,7 +293,7 @@ let state = {
 };
 
 const STORAGE_KEY_LOCAL = 'boost_local_progress'; 
-const SESSION_KEY = 'boost_active_user_v3'; 
+const SESSION_KEY = 'boost_active_user_v4'; // V4 session key pour éviter les conflits d'anciens caches
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
 const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère (Spé Maths)", "TERMINALE": "Terminale" };
 const EMOJIS = ['📘', '🧮', '📐', '🚀', '💡', '🎯', '⚡', '🔥'];
@@ -337,10 +345,11 @@ function switchTab(tab) {
 
 async function registerStudent() {
     const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
     const level = document.getElementById('reg-level').value;
     const pwd = document.getElementById('reg-pwd').value.trim();
 
-    if(!name || !pwd) return showCustomAlert("Oups !", "Ton prénom et un mot de passe sont obligatoires.", "👋");
+    if(!name || !email || !pwd) return showCustomAlert("Oups !", "Tous les champs sont obligatoires.", "👋");
 
     const loader = document.getElementById('reg-loader'); const btnText = document.getElementById('reg-text');
     loader.classList.remove('hidden'); btnText.classList.add('hidden');
@@ -348,16 +357,16 @@ async function registerStudent() {
 
     try {
         const response = await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST', body: JSON.stringify({ action: "register", name, level, password: pwd }),
+            method: 'POST', body: JSON.stringify({ action: "register", name, email, level, password: pwd }),
             headers: { 'Content-Type': 'text/plain;charset=utf-8' }
         });
         const data = await response.json();
         
         if (data.status === "success") {
-            LOG('✅ [AUTH]', `Compte créé pour ${name}. Auto-login déclenché.`);
+            LOG('✅ [AUTH]', `Compte créé pour ${email}. Auto-login déclenché.`);
             state.activeProfile = data.profile;
             state.isFirstDay = data.isFirstDay;
-            localStorage.setItem(SESSION_KEY, JSON.stringify({name: name, password: pwd}));
+            localStorage.setItem(SESSION_KEY, JSON.stringify({email: email, password: pwd}));
             initStudentApp(); 
         } else {
             showCustomAlert("Erreur", data.message, "🚫");
@@ -367,17 +376,17 @@ async function registerStudent() {
 }
 
 async function loginStudent() {
-    const name = document.getElementById('login-name').value.trim();
+    const email = document.getElementById('login-email').value.trim();
     const pwd = document.getElementById('login-pwd').value.trim();
-    if(!name || !pwd) return;
+    if(!email || !pwd) return;
 
     const loader = document.getElementById('login-loader'); const textBtn = document.getElementById('login-text');
     loader.classList.remove('hidden'); textBtn.classList.add('hidden');
-    LOG('⚙️ [API]', `Tentative de connexion pour ${name}...`);
+    LOG('⚙️ [API]', `Tentative de connexion pour ${email}...`);
 
     try {
         const response = await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST', body: JSON.stringify({ action: "login", name: name, password: pwd }),
+            method: 'POST', body: JSON.stringify({ action: "login", email: email, password: pwd }),
             headers: { 'Content-Type': 'text/plain;charset=utf-8' } 
         });
         const data = await response.json();
@@ -387,7 +396,7 @@ async function loginStudent() {
             state.activeProfile = data.profile; 
             state.dailyBoost = data.dailyBoost; 
             state.isFirstDay = data.isFirstDay;
-            localStorage.setItem(SESSION_KEY, JSON.stringify({name: name, password: pwd})); 
+            localStorage.setItem(SESSION_KEY, JSON.stringify({email: email, password: pwd})); 
             rebuildStateFromHistory(data.history); 
             initStudentApp(); 
         } else { 
@@ -398,14 +407,17 @@ async function loginStudent() {
 }
 
 document.addEventListener('DOMContentLoaded', () => { 
+  // Prépare les objets locaux
+  Object.keys(LEVEL_NAMES).forEach(key => { LEVELS[key] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[key] }; });
   populateLevelsFromDb(); 
+  
   const savedCreds = localStorage.getItem(SESSION_KEY);
   if (savedCreds) {
       try {
           const creds = JSON.parse(savedCreds);
-          document.getElementById('login-name').value = creds.name;
-          document.getElementById('login-pwd').value = creds.password;
-          loginStudent(); 
+          document.getElementById('login-email').value = creds.email || '';
+          document.getElementById('login-pwd').value = creds.password || '';
+          if(creds.email && creds.password) loginStudent(); 
       } catch(e) {}
   }
 });
@@ -423,8 +435,24 @@ function rebuildStateFromHistory(history) {
     });
 }
 
+// CORRECTION BUG CATEGORIES UNDEFINED : On s'assure que la DB locale est bien chargée avant d'utiliser les variables
+function populateLevelsFromDb() { 
+  Object.keys(LEVEL_NAMES).forEach(key => { 
+    const raw = window.db ? window.db[`ALGEBRA_${key}`] : null; 
+    if (raw) { 
+        LEVELS[key].categories = raw.categories || {}; 
+        LEVELS[key].catDisplay = raw.catDisplay || {}; 
+        LEVELS[key].catIcon = raw.catIcon || {}; 
+    }
+  }); 
+}
+
 function initStudentApp() {
+  populateLevelsFromDb(); // Re-validation de la base au cas où le JS ait mis du temps
+  
   state.niveau = state.activeProfile.level; 
+  // Fallback de sécurité si le niveau du profil n'existe pas
+  if(!LEVELS[state.niveau]) state.niveau = "4EME";
   
   const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
   const code = state.activeProfile.code;
@@ -448,7 +476,7 @@ function initStudentApp() {
   document.getElementById('main-app').classList.remove('hidden');
   document.getElementById('active-student-name').innerText = state.activeProfile.name;
   
-  // TUTO ONE SHOT
+  // TUTO ONE SHOT BROUILLON
   if(!p.tutoDraftViewed) {
       setTimeout(() => document.getElementById('draft-tooltip').classList.remove('hidden'), 2000);
       p.tutoDraftViewed = true;
@@ -474,7 +502,7 @@ function generateBoostDuJour() {
     Object.keys(cats).forEach(k => { if(k !== "BOOST") newCats[k] = cats[k]; });
     LEVELS[state.niveau].categories = newCats;
 
-    // CAS 1: C'est son Jour 1, on ne lance pas l'IA. On fait un "Calibrage"
+    // CAS 1: Jour 1 (Calibrage IA)
     if (state.isFirstDay) {
         LOG('ℹ️ [LOGIC]', "Jour 1 détecté. Création du Boost de Calibrage.");
         let allExos = [];
@@ -491,7 +519,7 @@ function generateBoostDuJour() {
         return;
     }
 
-    // CAS 2: Boost IA fournit par le serveur
+    // CAS 2: Boost IA serveur
     if (state.dailyBoost && Array.isArray(state.dailyBoost) && state.dailyBoost.length > 0) {
         LOG('ℹ️ [LOGIC]', "Boost IA chargé depuis le serveur.");
         const formattedBoostExos = state.dailyBoost.map((exo, idx) => {
@@ -505,7 +533,7 @@ function generateBoostDuJour() {
         return; 
     }
 
-    // CAS 3: Fallback Local si pas d'IA
+    // CAS 3: Fallback Local
     let toReview = [], toDiscover = [];
     Object.keys(newCats).forEach(catName => {
         newCats[catName].forEach((exo, idx) => {
@@ -553,7 +581,6 @@ function openCourseModal(cat, idx) {
 }
 function closeCourseModal() { document.getElementById('course-modal').classList.add('hidden'); }
 
-// Fallback Socrate si exo local
 function getSocrateData(data) {
     if(data.socrate) return data.socrate;
     return {
@@ -593,7 +620,7 @@ function showSocrateFeedback(btn, conseil) {
 
 function closeSocrateModal() { document.getElementById('socrate-modal').classList.add('hidden'); }
 
-function generateAITest() { showCustomAlert("🧠 Mode Challenge", "Cette fonction générera un test 100% sur-mesure pour ce chapitre très bientôt !", "⚙️"); }
+function generateAITest() { showCustomAlert("🧠 Mode Challenge", "La génération infinie de tests pour ce chapitre arrive très bientôt !", "⚙️"); }
 
 // ==========================================================
 // SAUVEGARDE ET SCORES (Refonte XP & Auto-Reveal)
@@ -614,7 +641,7 @@ function sendScoreToSheet(realCat, realIdx, status, xpGained, timeSpent) {
   fetch(GOOGLE_SCRIPT_URL, { 
     method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
     body: JSON.stringify({ action: "save_score", code: state.activeProfile.code, name: state.activeProfile.name, level: state.niveau, categorie: realCat, exercice_idx: realIdx + 1, resultat: status, indices: indicesVue, formule: formuleVue, xp: xpGained, temps: timeSpent }) 
-  }).then(()=> LOG('💾 [DB]', `Score saved: ${realCat}-${realIdx} (${status})`))
+  }).then(()=> LOG('💾 [DB]', `Score sauvegardé: ${realCat}-${realIdx} (${status})`))
     .catch(e => LOG('🔴 [DB_ERROR]', e.message));
 }
 
@@ -628,15 +655,15 @@ function mark(cat, idx, status, total) {
 
   let timeSpent = Math.round((Date.now() - (state.startTimes[realId] || Date.now())) / 1000);
   
-  // NOUVEAU SYSTEME XP
+  // REFONTE XP
   let xpGained = 0;
   if(status === 'EASY') xpGained = 100;
   else if(status === 'MEDIUM') xpGained = 50;
-  else if(status === 'HARD') xpGained = 10;
+  else if(status === 'HARD') xpGained = 10; // Récompense l'effort
   
   state.xp += xpGained;
 
-  // AUTO-REVEAL SI HARD
+  // AUTO-REVEAL EN CAS D'ERREUR
   if (status === 'HARD') {
       state.hintStepsRevealed[realId] = data.steps ? data.steps.length : 0;
       state.formulaRevealed[realId] = true;
@@ -652,13 +679,6 @@ function mark(cat, idx, status, total) {
 // ==========================================================
 // UI HELPERS & RESTRICTIONS CLASSE
 // ==========================================================
-function populateLevelsFromDb() { 
-  Object.keys(LEVELS).forEach(key => { 
-    const raw = window.db ? window.db[`ALGEBRA_${key}`] : null; 
-    if (raw) { const cats = raw.categories || raw; LEVELS[key] = { categories: cats, catDisplay: raw.catDisplay || {}, catIcon: raw.catIcon || {}, name: LEVEL_NAMES[key] }; }
-  }); 
-}
-
 function updateLevelDropdown(userLevel) {
   const select = document.getElementById('niveau-select'); select.innerHTML = ''; 
   const maxIdx = LEVEL_ORDER.indexOf(userLevel);
@@ -687,7 +707,7 @@ function nextExercise(cat) {
 }
 
 // ==========================================================
-// BROUILLON & DESSIN (Raccourci)
+// BROUILLON & DESSIN (Miniaturisé)
 // ==========================================================
 function toggleDraft() { document.getElementById('draft-tooltip')?.classList.add('hidden'); state.draftOpen = !state.draftOpen; const drawer = document.getElementById('draft-drawer'); const backdrop = document.getElementById('draft-backdrop'); if(state.draftOpen) { drawer.classList.add('open'); backdrop.classList.remove('hidden'); setTimeout(() => backdrop.classList.remove('opacity-0'), 10); setTimeout(() => { document.getElementById('text-draft').focus(); if(isDraftDrawing) initDraftCanvas(); if(isDraftLaser) initDraftLaser(); }, 300); } else { drawer.classList.remove('open'); backdrop.classList.add('opacity-0'); setTimeout(() => backdrop.classList.add('hidden'), 300); } }
 function clearDraft() { document.getElementById('text-draft').value = ''; const c = document.getElementById('draw-canvas-draft'); if(c) { const ctx = c.getContext('2d'); ctx.clearRect(0, 0, c.width, c.height); } }
@@ -730,7 +750,7 @@ function checkOption(cat, idx, originalOptIdx, buttonEl) {
     buttonEl.className = "option-btn option-wrong animate-shake cursor-default";
     buttonEl.innerHTML = `<span><span class="text-rose-500 mr-2">❌</span>${selectedOpt}</span>`;
     Array.from(parent.children).forEach(child => { if(child.innerText.includes(data.a)) { child.className = "option-btn option-correct cursor-default"; child.innerHTML = `<span><span class="text-emerald-500 mr-2">✅</span>${data.a}</span>`; } });
-    setTimeout(() => { mark(cat, idx, 'HARD', total); }, 1000);
+    setTimeout(() => { mark(cat, idx, 'HARD', total); }, 1000); // HARD automatique pour erreur QCM
   }
 }
 
@@ -746,7 +766,7 @@ function render() {
   const container = document.getElementById('app-container'); let html = `<div class="space-y-5">`; const cats = LEVELS[state.niveau].categories || {}; let emojiIdx = 0;
   
   // Bannière Jour 1
-  if (state.isFirstDay && cats["BOOST"]) {
+  if (state.isFirstDay && Object.keys(cats).includes("BOOST")) {
       html += `<div class="bg-indigo-600 rounded-3xl p-6 text-white shadow-lg animate-fade-in relative overflow-hidden">
                   <div class="absolute -right-4 -top-4 text-7xl opacity-20 rotate-12">🎯</div>
                   <h3 class="text-xl font-black mb-2 relative z-10">Salut ${state.activeProfile.name} !</h3>
@@ -829,7 +849,7 @@ function renderSection(cat, data, idx, total, isCategoryCompleted) {
   const isRev = state.revealed && state.currentId === realId;
   const hasOptions = data.options && Array.isArray(data.options) && data.options.length > 0;
 
-  // Pills
+  // Navigation Pills
   let pills = `<div class="flex flex-wrap gap-2 p-4 justify-center border-t border-slate-100 bg-slate-50/50">`;
   for(let i=0; i<total; i++) {
     const rExo = resolveRealExercise(cat, i);
