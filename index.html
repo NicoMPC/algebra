@@ -34,9 +34,7 @@
     .blurred-formula { filter: blur(6px); transition: all 0.4s; cursor: pointer; user-select: none; background: #ebf4ff; border-radius: 12px; padding: 12px; border: 2px dashed #bfdbfe; text-align: center; }
     .blurred-formula.revealed { filter: blur(0); cursor: default; background: white; border-style: solid; border-color: #3b82f6; }
     
-    /* ========================================================== */
-    /* FIX QCM MATHJAX : Injection CSS pure des émojis            */
-    /* ========================================================== */
+    /* Boutons QCM : Injection CSS pure des émojis */
     .opt-btn { position: relative; padding: 1.2rem 1.5rem 1.2rem 3rem; text-align: left; transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 1rem; background: white; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; cursor: pointer; font-weight: 600; }
     .opt-btn:hover:not(.opt-disabled) { border-color: #3b82f6; background: #f0f9ff; transform: translateX(4px); }
     .opt-btn::before { content: ''; position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.2rem; height: 1.2rem; border: 2px solid #cbd5e1; border-radius: 50%; background: white; transition: all 0.2s; }
@@ -49,9 +47,7 @@
     
     .opt-neutral { opacity: 0.5; pointer-events: none; background: #f8fafc; border-color: #e2e8f0 !important; }
 
-    /* ========================================================== */
-    /* Checkbox Cards Onboarding (Surbriallance améliorée)        */
-    /* ========================================================== */
+    /* Checkbox Cards Onboarding */
     .chap-card { border: 2px solid #e2e8f0; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; overflow: hidden; background: white; }
     .chap-checkbox:checked + .chap-card { border-color: #4f46e5; background: #eef2ff; transform: scale(1.02); box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.2); }
     .chap-checkbox:checked + .chap-card::after { content: '✅'; position: absolute; right: 1.2rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
@@ -206,8 +202,8 @@
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1CgYCGCFLJ--vnk0FVPxJ-XJ6Ddr9v_3Zy63P1y8VklfEB0WgMHqceQ-zLnRLtLs8cQ/exec";
 const LOG = (type, msg) => console.log(`${type} ${new Date().toLocaleTimeString()} - ${msg}`);
 
-const SESSION_KEY = 'boost_user_v6_boss'; 
-const STORAGE_KEY_LOCAL = 'boost_local_boss';
+const SESSION_KEY = 'boost_user_v6_final'; 
+const STORAGE_KEY_LOCAL = 'boost_local_final';
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
 const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère (Spé Maths)", "TERMINALE": "Terminale" };
 const EMOJIS = ['📘', '🧮', '📐', '🚀', '💡', '🎯', '⚡', '🔥'];
@@ -309,7 +305,6 @@ function populateDB() {
 function initApp() {
     populateDB(); state.niveau = state.activeProfile.level; if(!LEVELS[state.niveau]) state.niveau = "4EME";
     
-    // Initialisation sécurisée du localStorage par user code
     let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
     const code = state.activeProfile.code;
     if(!localData[code]) {
@@ -332,7 +327,6 @@ function initApp() {
     document.getElementById('main-app').classList.remove('hidden');
     document.getElementById('active-student-name').innerText = state.activeProfile.name;
     
-    // Affichage tuto brouillon si pas vu
     if(!localData[code].tutoDraftViewed && !state.isFirstDay) {
         setTimeout(() => document.getElementById('draft-tooltip').classList.remove('hidden'), 3000);
         localData[code].tutoDraftViewed = true; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
@@ -390,7 +384,6 @@ function unlockDashboard() {
     state.isFirstDay = false; state.calibrageState = null; 
     delete LEVELS[state.niveau].categories['CALIBRAGE'];
     
-    // Sécurité: réinitialisation propre du flag TutoDraft
     let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
     const code = state.activeProfile.code;
     if(!localData[code]) localData[code] = { streak: 1, lastLogin: new Date().toISOString().split('T')[0] };
@@ -416,12 +409,11 @@ function generateBoostIA() {
             const res = state.results[`${state.niveau}-${cat}-${idx}`]; 
             const hints = state.hintStepsRevealed[`${state.niveau}-${cat}-${idx}`] || 0;
             
-            // Logique de ciblage stratégique
             let w = 0; 
-            if(res === 'HARD') w = 10; // Urgence
-            else if(res === 'MEDIUM') w = 5; // À consolider
-            else if(hints > 0 && res !== 'EASY') w = 2; // Fragilité de méthode
-            else if(!res) w = 1; // Découverte pure
+            if(res === 'HARD') w = 10;
+            else if(res === 'MEDIUM') w = 5;
+            else if(hints > 0 && res !== 'EASY') w = 2;
+            else if(!res) w = 1;
             
             if(w > 1) toRev.push({ exo, cat, idx, w }); else if(w === 1) toDisc.push({ exo, cat, idx });
         });
@@ -430,7 +422,6 @@ function generateBoostIA() {
     toRev.sort((a, b) => b.w - a.w); toDisc.sort(() => 0.5 - Math.random());
     
     let boostExos = [];
-    // On pioche max 5 exos à retravailler, puis on complète avec de la découverte (total 10 MAX)
     for(let i=0; i<Math.min(5, toRev.length); i++) boostExos.push(toRev[i]);
     for(let i=0; i<Math.min(10 - boostExos.length, toDisc.length); i++) boostExos.push(toDisc[i]);
 
@@ -493,19 +484,19 @@ window.checkOption = function(cat, idx, originalOptIdx, btnEl) {
     
     state.qcmAnswered[realId] = selectedOpt; state.revealed = true; state.currentId = realId;
     
-    // Injection CSS pure, SANS toucher au contenu MathJax interne !
     const correctOptIdx = data.options.indexOf(data.a);
     Array.from(btnEl.parentElement.children).forEach(c => {
-        c.className = "opt-btn opt-neutral"; // Base
+        c.className = "opt-btn opt-neutral"; 
         if (parseInt(c.getAttribute('data-opt')) === correctOptIdx) { c.className = "opt-btn opt-correct"; }
     });
 
     if (selectedOpt === data.a) {
         btnEl.className = "opt-btn opt-correct animate-success-pop";
-        if (cat === "CALIBRAGE") { setTimeout(() => mark(cat, idx, 'EASY'), 800); } else { setTimeout(() => render(), 800); }
+        // On marque et débloque le bouton "Suivant" + Méthode
+        setTimeout(() => mark(cat, idx, 'EASY'), 800);
     } else {
         btnEl.className = "opt-btn opt-wrong animate-shake";
-        if (cat === "CALIBRAGE") { setTimeout(() => mark(cat, idx, 'HARD'), 1200); } else { setTimeout(() => mark(cat, idx, 'HARD'), 1200); }
+        setTimeout(() => mark(cat, idx, 'HARD'), 1200);
     }
 };
 
@@ -513,8 +504,6 @@ function verify(cat, idx) { state.revealed = true; state.isScored = false; state
 function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; render(); }
 function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; state.isDrawing = false; render(); }
 function nextExercise(cat) { let nIdx=0; for(let i=0; i<LEVELS[state.niveau].categories[cat].length; i++) { const r = resolveRealExercise(cat, i); if(!state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) { nIdx = i; break; } } goToExercise(cat, nIdx); }
-function showNextHint(cat, idx, max) { const id = `${state.niveau}-${resolveRealExercise(cat, idx).realCat}-${resolveRealExercise(cat, idx).realIdx}`; state.hintStepsRevealed[id] = (state.hintStepsRevealed[id]||0) + 1; render(); }
-function revealFormula(cat, idx) { state.formulaManuallyTouched[`${state.niveau}-${resolveRealExercise(cat, idx).realCat}-${resolveRealExercise(cat, idx).realIdx}`] = true; render(); }
 
 // ==========================================================
 // BROUILLON & DESSIN SIMPLIFIÉ
@@ -608,7 +597,11 @@ function render() {
     let html = `<div class="space-y-5">`;
     const catsToRender = (state.isFirstDay && state.calibrageState === 'testing') ? { "CALIBRAGE": LEVELS[state.niveau].categories["CALIBRAGE"] } : LEVELS[state.niveau].categories;
     
-    Object.keys(catsToRender).forEach(cat => {
+    // Forcer le Boost en 1er
+    let catKeys = Object.keys(catsToRender);
+    if(catKeys.includes("BOOST")) { catKeys = ["BOOST", ...catKeys.filter(k => k !== "BOOST")]; }
+
+    catKeys.forEach(cat => {
         const total = catsToRender[cat].length; let doneCount = 0;
         for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); if(state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) doneCount++; }
         
@@ -648,9 +641,13 @@ function renderSection(cat, data, idx, total, isCatDone) {
     for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); const s = state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]; pills += `<button onclick="goToExercise('${cat}', ${i})" class="w-9 h-9 rounded-xl text-sm font-bold flex items-center justify-center ${s==='EASY'||s==='MEDIUM'?'bg-emerald-500 text-white':(s==='HARD'?'bg-rose-400 text-white':(s==='PAS_VU'?'bg-slate-300 text-slate-600':'bg-white border text-slate-600'))} ${i===idx?'ring-4 ring-blue-200 scale-110 z-10':''}">${i+1}</button>`; } pills += `</div>`;
 
     let actions = '';
-    if(!isRev && !hasOpt) actions = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl hover:-translate-y-1 transition-transform">VÉRIFIER</button>`;
-    else if(isRev && !state.isScored) actions = `<div class="flex gap-2 w-full mt-2"><button onclick="mark('${cat}', ${idx}, 'HARD')" class="flex-1 py-4 bg-rose-50 text-rose-600 border border-rose-200 rounded-xl font-black transition-colors hover:bg-rose-100">À RETRAVAILLER</button><button onclick="mark('${cat}', ${idx}, 'EASY')" class="flex-1 py-4 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl font-black transition-colors hover:bg-emerald-100">FACILE</button></div>`;
-    else if(state.isScored && !isCatDone) actions = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl mt-2 transition-transform hover:-translate-y-1">EXERCICE SUIVANT</button>`;
+    if(!isRev && !hasOpt) {
+        actions = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl hover:-translate-y-1 transition-transform shadow-lg">VÉRIFIER</button>`;
+    } else if(isRev && !state.isScored && !hasOpt) {
+        actions = `<div class="flex gap-2 w-full mt-2"><button onclick="mark('${cat}', ${idx}, 'HARD')" class="flex-1 py-4 bg-rose-50 text-rose-600 border border-rose-200 rounded-xl font-black transition-colors hover:bg-rose-100">À RETRAVAILLER</button><button onclick="mark('${cat}', ${idx}, 'EASY')" class="flex-1 py-4 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl font-black transition-colors hover:bg-emerald-100">FACILE</button></div>`;
+    } else if(state.isScored && !isCatDone) {
+        actions = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl mt-3 transition-transform hover:-translate-y-1 shadow-lg">EXERCICE SUIVANT</button>`;
+    }
 
     let optsHtml = '';
     if(hasOpt) {
@@ -663,7 +660,12 @@ function renderSection(cat, data, idx, total, isCatDone) {
     }
 
     const pasVuBtn = (cat === 'CALIBRAGE' && !state.isScored) ? `<button onclick="markPasVu('${cat}', ${idx})" class="w-full py-3 mt-3 bg-slate-100 text-slate-500 font-bold rounded-xl border border-slate-200 hover:bg-slate-200 transition-colors">🤷‍♂️ Je n'ai pas encore étudié ça</button>` : '';
-    const fRev = (state.formulaRevealed[realId] || state.formulaManuallyTouched[realId]);
+    
+    // Défloutage et affichage automatique post-réponse
+    const fRev = state.isScored || state.formulaRevealed[realId] || state.formulaManuallyTouched[realId];
+    const maxHints = data.steps?.length || 0;
+    const hintsToShow = state.isScored ? maxHints : (state.hintStepsRevealed[realId] || 0);
+    const hintBtnHidden = (hintsToShow >= maxHints) ? 'hidden' : '';
     const hideHelp = (cat === 'CALIBRAGE') ? 'hidden' : '';
 
     return `
@@ -674,12 +676,12 @@ function renderSection(cat, data, idx, total, isCatDone) {
             <canvas id="canvas-${uiId}" class="main-draw-canvas"></canvas>
             <div class="relative z-0 math-content"><div class="math-display text-slate-900">${data.q}</div>${isRev&&!hasOpt?`<div class="mt-4 pt-4 border-t-2 border-dashed border-emerald-200 text-3xl font-black text-emerald-600 text-center animate-bounce-in">${data.a}</div>`:''}</div>
         </div>
-        ${optsHtml} ${pasVuBtn} ${!hasOpt || (state.isScored && st==='HARD' && !isCatDone) ? actions : ''}
+        ${optsHtml} ${pasVuBtn} ${actions}
         
         <div class="mt-8 grid md:grid-cols-2 gap-4 ${hideHelp}">
             <div class="bg-amber-50/50 p-5 rounded-2xl border border-amber-100">
-                <button onclick="showNextHint('${cat}', ${idx}, ${data.steps?.length||0})" class="w-full text-sm font-bold text-amber-700 bg-amber-100 py-3 rounded-xl mb-3 hover:bg-amber-200 transition-colors">💡 Révéler la méthode pas à pas</button>
-                <div class="space-y-2">${(data.steps||[]).map((s,i) => `<div class="${i < (state.hintStepsRevealed[realId]||0) ? 'block' : 'hidden'} math-content text-sm p-3 bg-white rounded-xl border border-amber-200 text-amber-900 font-semibold animate-fade-in">${s}</div>`).join('')}</div>
+                <button onclick="showNextHint('${cat}', ${idx}, ${maxHints})" class="${hintBtnHidden} w-full text-sm font-bold text-amber-700 bg-amber-100 py-3 rounded-xl mb-3 hover:bg-amber-200 transition-colors">💡 Révéler la méthode pas à pas</button>
+                <div class="space-y-2">${(data.steps||[]).map((s,i) => `<div class="${i < hintsToShow ? 'block' : 'hidden'} math-content text-sm p-3 bg-white rounded-xl border border-amber-200 text-amber-900 font-semibold animate-fade-in">${s}</div>`).join('')}</div>
             </div>
             <div class="bg-indigo-50/50 p-5 rounded-2xl border border-indigo-100 flex flex-col justify-center">
                 <p class="text-xs font-black text-indigo-400 uppercase text-center mb-3 tracking-widest">Rappel de cours</p>
