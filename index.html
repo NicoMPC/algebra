@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Algèbre Boost • Ton Coach IA</title>
+  <title>Algèbre Boost • L'IA Stratégique</title>
 
   <script>
     window.MathJax = {
       tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
-      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] },
+      startup: {
+        pageReady: () => { return MathJax.startup.defaultPageReady(); }
+      }
     };
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,22 +34,26 @@
     .blurred-formula { filter: blur(6px); transition: all 0.4s; cursor: pointer; user-select: none; background: #ebf4ff; border-radius: 12px; padding: 12px; border: 2px dashed #bfdbfe; text-align: center; }
     .blurred-formula.revealed { filter: blur(0); cursor: default; background: white; border-style: solid; border-color: #3b82f6; }
     
-    /* Boutons QCM (Corrigé pour éviter le bug d'affichage MathJax) */
-    .option-btn { border: 2px solid #e2e8f0; padding: 1.2rem 1.5rem; border-radius: 1rem; font-weight: 600; background: white; transition: all 0.2s; width: 100%; text-align: left; display: flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-    .option-btn:hover:not(.disabled) { border-color: #3b82f6; background: #f0f9ff; transform: translateX(4px); }
+    /* ========================================================== */
+    /* FIX QCM MATHJAX : Injection CSS pure des émojis            */
+    /* ========================================================== */
+    .opt-btn { position: relative; padding: 1.2rem 1.5rem 1.2rem 3rem; text-align: left; transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 1rem; background: white; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+    .opt-btn:hover:not(.opt-disabled) { border-color: #3b82f6; background: #f0f9ff; transform: translateX(4px); }
+    .opt-btn::before { content: ''; position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.2rem; height: 1.2rem; border: 2px solid #cbd5e1; border-radius: 50%; background: white; transition: all 0.2s; }
     
-    /* Injection CSS pure des emojis pour ne pas altérer le DOM MathJax */
-    .option-correct { border-color: #10b981 !important; background: #ecfdf5 !important; color: #065f46; box-shadow: 0 4px 6px rgba(16,185,129,0.1); }
-    .option-correct span::before { content: '✅ '; margin-right: 8px; }
+    .opt-correct { border-color: #10b981 !important; background: #f0fdf4 !important; pointer-events: none; box-shadow: 0 4px 6px rgba(16,185,129,0.1); }
+    .opt-correct::before { background: #10b981 !important; border-color: #10b981 !important; content: '✓'; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
     
-    .option-wrong { border-color: #ef4444 !important; background: #fef2f2 !important; color: #991b1b; opacity: 0.8; }
-    .option-wrong span::before { content: '❌ '; margin-right: 8px; }
+    .opt-wrong { border-color: #ef4444 !important; background: #fef2f2 !important; pointer-events: none; opacity: 0.8; }
+    .opt-wrong::before { background: #ef4444 !important; border-color: #ef4444 !important; content: '✕'; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
     
-    .option-neutral { opacity: 0.5; pointer-events: none; background: #f8fafc; border-color: #e2e8f0 !important; }
+    .opt-neutral { opacity: 0.5; pointer-events: none; background: #f8fafc; border-color: #e2e8f0 !important; }
 
-    /* Checkbox Cards Onboarding (Surbriallance améliorée) */
-    .chap-card { border: 3px solid transparent; outline: 2px solid #e2e8f0; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; overflow: hidden; }
-    .chap-checkbox:checked + .chap-card { outline-color: transparent; border-color: #4f46e5; background: #eef2ff; transform: scale(1.03); box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.2); }
+    /* ========================================================== */
+    /* Checkbox Cards Onboarding (Surbriallance améliorée)        */
+    /* ========================================================== */
+    .chap-card { border: 2px solid #e2e8f0; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; overflow: hidden; background: white; }
+    .chap-checkbox:checked + .chap-card { border-color: #4f46e5; background: #eef2ff; transform: scale(1.02); box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.2); }
     .chap-checkbox:checked + .chap-card::after { content: '✅'; position: absolute; right: 1.2rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 
     /* Canvas Drawing */
@@ -62,8 +69,6 @@
     @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
     .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
     @keyframes pop { 0% { transform: scale(0.5) translateY(-50%); opacity: 0; } 100% { transform: scale(1) translateY(-50%); opacity: 1; } }
-    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
-    .animate-shake { animation: shake 0.3s ease-in-out; }
     @keyframes pulse-ring { 0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
     .animate-pulse-ring { animation: pulse-ring 2s infinite; }
 
@@ -80,25 +85,6 @@
     <p id="alert-message" class="text-slate-500 font-medium mb-6"></p>
     <button onclick="closeCustomAlert()" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl transition-all">Compris</button>
   </div>
-</div>
-
-<div id="socrate-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[150] flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative overflow-hidden animate-bounce-in">
-        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
-        <button onclick="closeSocrateModal()" class="absolute top-4 right-4 text-slate-400 font-bold hover:text-slate-700">✕</button>
-        <div class="flex items-center gap-4 mb-5">
-            <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-2xl">🦉</div>
-            <div>
-                <h3 class="text-lg font-black text-slate-800">Le Tuteur IA</h3>
-                <p class="text-xs font-bold text-indigo-500 uppercase tracking-widest">Déblocage ciblé</p>
-            </div>
-        </div>
-        <div id="socrate-content" class="space-y-4"></div>
-        <div id="socrate-feedback" class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-2xl animate-fade-in">
-            <p class="text-sm font-bold text-emerald-800 mb-4" id="socrate-feedback-text"></p>
-            <button onclick="closeSocrateModal()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl transition-colors">J'ai compris, je réessaie !</button>
-        </div>
-    </div>
 </div>
 
 <div id="landing-screen" class="fixed inset-0 bg-white z-50 flex flex-col overflow-y-auto">
@@ -118,7 +104,7 @@
             Arrête de bloquer <br class="hidden md:block"/> en <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Mathématiques.</span>
         </h1>
         <p class="text-lg lg:text-xl text-slate-500 mb-10 max-w-2xl font-medium">
-            L'IA analyse ton cerveau, trouve tes failles et te crée un parcours d'entraînement chirurgical pour faire décoller ta moyenne.
+            L'algorithme analyse tes failles et te crée un parcours d'entraînement chirurgical pour faire décoller ta moyenne.
         </p>
         <button onclick="showAuth('register')" class="px-10 py-5 bg-slate-900 text-white font-black text-xl rounded-2xl shadow-xl hover:-translate-y-1 transition-all">
             Faire mon Diagnostic IA (Gratuit)
@@ -323,9 +309,12 @@ function populateDB() {
 function initApp() {
     populateDB(); state.niveau = state.activeProfile.level; if(!LEVELS[state.niveau]) state.niveau = "4EME";
     
-    const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
+    // Initialisation sécurisée du localStorage par user code
+    let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
     const code = state.activeProfile.code;
-    if(!localData[code]) localData[code] = { streak: 1, lastLogin: new Date().toISOString().split('T')[0], tutoDraftViewed: false };
+    if(!localData[code]) {
+        localData[code] = { streak: 1, lastLogin: new Date().toISOString().split('T')[0], tutoDraftViewed: false };
+    }
     
     const today = new Date().toISOString().split('T')[0];
     if (!sessionStorage.getItem('session_counted')) {
@@ -343,20 +332,21 @@ function initApp() {
     document.getElementById('main-app').classList.remove('hidden');
     document.getElementById('active-student-name').innerText = state.activeProfile.name;
     
+    // Affichage tuto brouillon si pas vu
     if(!localData[code].tutoDraftViewed && !state.isFirstDay) {
         setTimeout(() => document.getElementById('draft-tooltip').classList.remove('hidden'), 3000);
         localData[code].tutoDraftViewed = true; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
     }
 
     updateLevelDropdown(state.niveau); updateHeader();
-    if (!state.isFirstDay) generateBoost();
+    if (!state.isFirstDay) generateBoostIA();
     render();
 }
 
 function logout() { localStorage.removeItem(SESSION_KEY); location.reload(); }
 function updateLevelDropdown(userLvl) { const sel = document.getElementById('niveau-select'); sel.innerHTML = ''; const mIdx = LEVEL_ORDER.indexOf(userLvl); const sIdx = Math.max(0, mIdx - 1); for(let i = sIdx; i <= mIdx; i++) { const opt = document.createElement('option'); opt.value = LEVEL_ORDER[i]; opt.text = LEVEL_NAMES[LEVEL_ORDER[i]]; sel.appendChild(opt); } sel.value = userLvl; }
 function updateHeader() { document.getElementById('ui-streak').innerText = state.streak; document.getElementById('ui-xp').innerText = state.xp; }
-function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; if(!state.isFirstDay) generateBoost(); render(); }
+function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; if(!state.isFirstDay) generateBoostIA(); render(); }
 
 // ==========================================================
 // ONBOARDING EXPRESS (SELECTION + DIAGNOSTIC)
@@ -399,18 +389,21 @@ function startCalibrage(scanEverything = false) {
 function unlockDashboard() {
     state.isFirstDay = false; state.calibrageState = null; 
     delete LEVELS[state.niveau].categories['CALIBRAGE'];
-    const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
+    
+    // Sécurité: réinitialisation propre du flag TutoDraft
+    let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
     const code = state.activeProfile.code;
     if(!localData[code]) localData[code] = { streak: 1, lastLogin: new Date().toISOString().split('T')[0] };
     localData[code].tutoDraftViewed = true;
     localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
-    generateBoost(); render();
+    
+    generateBoostIA(); render();
 }
 
 // ==========================================================
-// MOTEUR BOOST DU JOUR (LOCAL)
+// MOTEUR STRATÉGIQUE IA ("BOOST IA")
 // ==========================================================
-function generateBoost() {
+function generateBoostIA() {
     if (state.isFirstDay) return; 
     const cats = LEVELS[state.niveau].categories; if (!cats) return;
 
@@ -420,20 +413,30 @@ function generateBoost() {
     let toRev = [], toDisc = [];
     Object.keys(newCats).forEach(cat => {
         newCats[cat].forEach((exo, idx) => {
-            const res = state.results[`${state.niveau}-${cat}-${idx}`]; const hints = state.hintStepsRevealed[`${state.niveau}-${cat}-${idx}`] || 0;
-            let w = 0; if(res === 'HARD') w = 10; else if(res === 'MEDIUM') w = 5; else if(hints > 0 && res !== 'EASY') w = 2; else if(!res) w = 1;
+            const res = state.results[`${state.niveau}-${cat}-${idx}`]; 
+            const hints = state.hintStepsRevealed[`${state.niveau}-${cat}-${idx}`] || 0;
+            
+            // Logique de ciblage stratégique
+            let w = 0; 
+            if(res === 'HARD') w = 10; // Urgence
+            else if(res === 'MEDIUM') w = 5; // À consolider
+            else if(hints > 0 && res !== 'EASY') w = 2; // Fragilité de méthode
+            else if(!res) w = 1; // Découverte pure
+            
             if(w > 1) toRev.push({ exo, cat, idx, w }); else if(w === 1) toDisc.push({ exo, cat, idx });
         });
     });
 
     toRev.sort((a, b) => b.w - a.w); toDisc.sort(() => 0.5 - Math.random());
+    
     let boostExos = [];
-    for(let i=0; i<Math.min(3, toRev.length); i++) boostExos.push(toRev[i]);
-    for(let i=0; i<Math.min(5 - boostExos.length, toDisc.length); i++) boostExos.push(toDisc[i]);
+    // On pioche max 5 exos à retravailler, puis on complète avec de la découverte (total 10 MAX)
+    for(let i=0; i<Math.min(5, toRev.length); i++) boostExos.push(toRev[i]);
+    for(let i=0; i<Math.min(10 - boostExos.length, toDisc.length); i++) boostExos.push(toDisc[i]);
 
     if (boostExos.length > 0) {
         LEVELS[state.niveau].categories["BOOST"] = boostExos.map(item => ({ ...item.exo, originalCat: item.cat, originalIdx: item.idx }));
-        LEVELS[state.niveau].catDisplay["BOOST"] = "🎯 Objectif de progression";
+        LEVELS[state.niveau].catDisplay["BOOST"] = "🤖 Ta Séquence d'Entraînement IA";
         LEVELS[state.niveau].catIcon["BOOST"] = "⚡";
     }
 }
@@ -482,7 +485,7 @@ function markPasVu(cat, idx) {
 }
 
 // ==========================================================
-// INTERACTIONS UTILISATEUR & FIX FOUC MATHJAX
+// INTERACTIONS UTILISATEUR & FIX QCM MATHJAX
 // ==========================================================
 window.checkOption = function(cat, idx, originalOptIdx, btnEl) {
     const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`;
@@ -490,18 +493,18 @@ window.checkOption = function(cat, idx, originalOptIdx, btnEl) {
     
     state.qcmAnswered[realId] = selectedOpt; state.revealed = true; state.currentId = realId;
     
-    // Au lieu de détruire le DOM, on applique juste les classes CSS pures pour conserver le MathJax !
+    // Injection CSS pure, SANS toucher au contenu MathJax interne !
     const correctOptIdx = data.options.indexOf(data.a);
     Array.from(btnEl.parentElement.children).forEach(c => {
-        c.className = "option-btn option-neutral cursor-default";
-        if (parseInt(c.getAttribute('data-opt')) === correctOptIdx) { c.className = "option-btn option-correct cursor-default"; }
+        c.className = "opt-btn opt-neutral"; // Base
+        if (parseInt(c.getAttribute('data-opt')) === correctOptIdx) { c.className = "opt-btn opt-correct"; }
     });
 
     if (selectedOpt === data.a) {
-        btnEl.className = "option-btn option-correct animate-success-pop cursor-default";
+        btnEl.className = "opt-btn opt-correct animate-success-pop";
         if (cat === "CALIBRAGE") { setTimeout(() => mark(cat, idx, 'EASY'), 800); } else { setTimeout(() => render(), 800); }
     } else {
-        btnEl.className = "option-btn option-wrong animate-shake cursor-default";
+        btnEl.className = "opt-btn opt-wrong animate-shake";
         if (cat === "CALIBRAGE") { setTimeout(() => mark(cat, idx, 'HARD'), 1200); } else { setTimeout(() => mark(cat, idx, 'HARD'), 1200); }
     }
 };
@@ -512,17 +515,6 @@ function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.reveal
 function nextExercise(cat) { let nIdx=0; for(let i=0; i<LEVELS[state.niveau].categories[cat].length; i++) { const r = resolveRealExercise(cat, i); if(!state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) { nIdx = i; break; } } goToExercise(cat, nIdx); }
 function showNextHint(cat, idx, max) { const id = `${state.niveau}-${resolveRealExercise(cat, idx).realCat}-${resolveRealExercise(cat, idx).realIdx}`; state.hintStepsRevealed[id] = (state.hintStepsRevealed[id]||0) + 1; render(); }
 function revealFormula(cat, idx) { state.formulaManuallyTouched[`${state.niveau}-${resolveRealExercise(cat, idx).realCat}-${resolveRealExercise(cat, idx).realIdx}`] = true; render(); }
-
-// SOCRATE IA MODAL
-function openSocrateModal(cat, idx) {
-    let data = LEVELS[state.niveau].categories[cat][idx];
-    let socrate = data.socrate || { question: "Qu'est-ce qui te bloque exactement ?", choix: [ { texte: "Un problème de signe (+ / -)", conseil: "Revois la règle des signes. Un moins devant une parenthèse inverse tout !" }, { texte: "Une erreur de calcul pur", conseil: "Pose ton calcul sur le brouillon en bas à droite." }, { texte: "Je ne connais pas la méthode", conseil: "N'oublie pas de cliquer sur le cours flouté sous l'exercice !" } ] };
-    let html = `<p class="font-bold text-slate-800 text-lg mb-4">${socrate.question}</p><div class="space-y-3">`;
-    socrate.choix.forEach(c => { html += `<button onclick="showSocrateFeedback(this, \`${c.conseil}\`)" class="w-full text-left p-4 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 font-semibold transition-colors shadow-sm">${c.texte}</button>`; });
-    document.getElementById('socrate-content').innerHTML = html + `</div>`; document.getElementById('socrate-feedback').classList.add('hidden'); document.getElementById('socrate-modal').classList.remove('hidden');
-}
-function showSocrateFeedback(btn, conseil) { Array.from(btn.parentElement.children).forEach(c => c.classList.add('opacity-50', 'pointer-events-none')); btn.classList.remove('opacity-50', 'bg-indigo-50'); btn.classList.add('bg-indigo-200', 'border-indigo-400'); document.getElementById('socrate-feedback-text').innerText = conseil; document.getElementById('socrate-feedback').classList.remove('hidden'); }
-function closeSocrateModal() { document.getElementById('socrate-modal').classList.add('hidden'); }
 
 // ==========================================================
 // BROUILLON & DESSIN SIMPLIFIÉ
@@ -555,7 +547,7 @@ function render() {
         Object.keys(LEVELS[state.niveau].categories).forEach(cat => {
             const icon = LEVELS[state.niveau].catIcon[cat] || EMOJIS[emojiIdx % EMOJIS.length]; emojiIdx++;
             const name = LEVELS[state.niveau].catDisplay[cat] || cat;
-            chapHtml += `<div class="relative"><input type="checkbox" value="${cat}" id="cb-${cat}" class="chap-checkbox absolute opacity-0 w-0 h-0"><label for="cb-${cat}" class="chap-card flex items-center gap-4 p-5 bg-white rounded-2xl w-full shadow-sm">
+            chapHtml += `<div class="relative"><input type="checkbox" value="${cat}" id="cb-${cat}" class="chap-checkbox absolute opacity-0 w-0 h-0"><label for="cb-${cat}" class="chap-card flex items-center gap-4 p-5 rounded-2xl w-full shadow-sm">
                             <span class="text-3xl">${icon}</span><span class="font-black text-slate-700 text-lg">${name}</span>
                          </label></div>`;
         });
@@ -576,7 +568,7 @@ function render() {
 
     // ÉCRAN 2 : CHARGEMENT DIAGNOSTIC
     if (state.isFirstDay && state.calibrageState === 'loading') {
-        container.innerHTML = `<div class="flex flex-col items-center justify-center py-20 animate-fade-in"><div class="loader loader-lg mb-6" style="border-top-color:#4f46e5;"></div><h2 class="text-2xl font-black text-slate-800">L'IA compile ton Diagnostic...</h2><p class="text-slate-500 mt-2 font-medium">Préparation des 8 questions clés.</p></div>`; return;
+        container.innerHTML = `<div class="flex flex-col items-center justify-center py-20 animate-fade-in"><div class="loader loader-lg mb-6" style="border-top-color:#4f46e5;"></div><h2 class="text-2xl font-black text-slate-800">L'IA compile ton Diagnostic...</h2><p class="text-slate-500 mt-2 font-medium">Préparation des questions clés.</p></div>`; return;
     }
     
     // ÉCRAN 3 : LE MOMENT WAOUH (RÉSULTATS DIAGNOSTIC)
@@ -607,7 +599,7 @@ function render() {
             
             <div class="flex flex-col sm:flex-row gap-4">
                 <button onclick="unlockDashboard()" class="flex-[2] py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-lg rounded-xl shadow-xl transition-transform hover:-translate-y-1">🚀 Déverrouiller mon Espace</button>
-                <button onclick="showCustomAlert('C\\'est noté !', 'Le partage de ton bilan avec tes parents ou amis arrive très vite !', '📲')" class="flex-1 py-4 bg-white border-2 border-slate-200 text-slate-700 font-bold text-lg rounded-xl transition-colors hover:bg-slate-50 flex items-center justify-center gap-2">📱 Partager</button>
+                <button onclick="showCustomAlert('C\\'est noté !', 'Le partage de ton bilan arrive très vite !', '📲')" class="flex-1 py-4 bg-white border-2 border-slate-200 text-slate-700 font-bold text-lg rounded-xl transition-colors hover:bg-slate-50 flex items-center justify-center gap-2">📱 Partager</button>
             </div>
         </div>`; return;
     }
@@ -622,10 +614,10 @@ function render() {
         
         const isCompleted = doneCount === total && total > 0;
         if(cat === "BOOST" && isCompleted) {
-            html += `<div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-6 text-center animate-fade-in"><div class="text-4xl mb-2">✅</div><h3 class="font-black text-emerald-800">Objectif du jour validé !</h3></div>`; return;
+            html += `<div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-6 text-center animate-fade-in"><div class="text-4xl mb-2">✅</div><h3 class="font-black text-emerald-800">Séquence IA validée pour aujourd'hui !</h3></div>`; return;
         }
 
-        let bgClass = cat === "CALIBRAGE" ? "bg-gradient-to-r from-indigo-50 to-blue-50 border-blue-200 ring-2 ring-indigo-400" : (cat === "BOOST" ? "bg-gradient-to-r from-amber-50 to-orange-50 border-orange-200" : (isCompleted ? "bg-emerald-50/50 border-emerald-100" : "bg-white border-slate-200"));
+        let bgClass = cat === "CALIBRAGE" ? "bg-gradient-to-r from-indigo-50 to-blue-50 border-blue-200 ring-2 ring-indigo-400" : (cat === "BOOST" ? "bg-gradient-to-r from-indigo-50 to-purple-50 border-purple-200 shadow-md ring-1 ring-purple-300" : (isCompleted ? "bg-emerald-50/50 border-emerald-100" : "bg-white border-slate-200"));
         let titleColor = cat === "CALIBRAGE" || cat === "BOOST" ? "text-slate-900" : (isCompleted ? "text-emerald-700" : "text-slate-800");
 
         html += `
@@ -653,11 +645,11 @@ function renderSection(cat, data, idx, total, isCatDone) {
     const isRev = state.revealed && state.currentId === realId; const hasOpt = data.options && data.options.length > 0;
 
     let pills = `<div class="flex flex-wrap gap-2 p-4 justify-center border-t border-slate-100 bg-slate-50/50">`;
-    for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); const s = state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]; pills += `<button onclick="goToExercise('${cat}', ${i})" class="w-9 h-9 rounded-xl text-sm font-bold flex items-center justify-center ${s==='EASY'||s==='MEDIUM'?'bg-emerald-500 text-white':(s==='HARD'?'bg-indigo-400 text-white':(s==='PAS_VU'?'bg-slate-300 text-slate-600':'bg-white border text-slate-600'))} ${i===idx?'ring-4 ring-blue-200 scale-110 z-10':''}">${i+1}</button>`; } pills += `</div>`;
+    for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); const s = state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]; pills += `<button onclick="goToExercise('${cat}', ${i})" class="w-9 h-9 rounded-xl text-sm font-bold flex items-center justify-center ${s==='EASY'||s==='MEDIUM'?'bg-emerald-500 text-white':(s==='HARD'?'bg-rose-400 text-white':(s==='PAS_VU'?'bg-slate-300 text-slate-600':'bg-white border text-slate-600'))} ${i===idx?'ring-4 ring-blue-200 scale-110 z-10':''}">${i+1}</button>`; } pills += `</div>`;
 
     let actions = '';
     if(!isRev && !hasOpt) actions = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl hover:-translate-y-1 transition-transform">VÉRIFIER</button>`;
-    else if(isRev && !state.isScored) actions = `<div class="flex gap-2 w-full mt-2"><button onclick="mark('${cat}', ${idx}, 'HARD')" class="flex-1 py-4 bg-indigo-50 text-indigo-600 border border-indigo-200 rounded-xl font-black transition-colors hover:bg-indigo-100">À RETRAVAILLER</button><button onclick="mark('${cat}', ${idx}, 'EASY')" class="flex-1 py-4 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl font-black transition-colors hover:bg-emerald-100">FACILE</button></div>`;
+    else if(isRev && !state.isScored) actions = `<div class="flex gap-2 w-full mt-2"><button onclick="mark('${cat}', ${idx}, 'HARD')" class="flex-1 py-4 bg-rose-50 text-rose-600 border border-rose-200 rounded-xl font-black transition-colors hover:bg-rose-100">À RETRAVAILLER</button><button onclick="mark('${cat}', ${idx}, 'EASY')" class="flex-1 py-4 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl font-black transition-colors hover:bg-emerald-100">FACILE</button></div>`;
     else if(state.isScored && !isCatDone) actions = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl mt-2 transition-transform hover:-translate-y-1">EXERCICE SUIVANT</button>`;
 
     let optsHtml = '';
@@ -665,13 +657,12 @@ function renderSection(cat, data, idx, total, isCatDone) {
         if(!isRev && !state.currentShuffle[uiId]) { let arr = data.options.map((t,i)=>({text:t, originalIdx:i})); for(let i=arr.length-1; i>0; i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];} state.currentShuffle[uiId]=arr; }
         let opts = state.currentShuffle[uiId] || data.options.map((t,i)=>({text:t, originalIdx:i}));
         optsHtml = `<div class="flex flex-col gap-3 w-full">` + opts.map(o => {
-            let cl = "option-btn " + (isRev ? "cursor-default pointer-events-none " + (o.text===data.a?"option-correct":(o.text===state.qcmAnswered[realId]?"option-wrong":"option-neutral")) : "cursor-pointer");
-            return `<button data-opt="${o.originalIdx}" ${!isRev?`onclick="checkOption('${cat}', ${idx}, ${o.originalIdx}, this)"`:''} class="${cl}"><span>${o.text}</span></button>`;
+            let cl = "opt-btn " + (isRev ? "opt-disabled pointer-events-none " + (o.text===data.a?"opt-correct":(o.text===state.qcmAnswered[realId]?"opt-wrong":"opt-neutral")) : "");
+            return `<button data-opt="${o.originalIdx}" ${!isRev?`onclick="checkOption('${cat}', ${idx}, ${o.originalIdx}, this)"`:''} class="${cl}"><span class="math-content">${o.text}</span></button>`;
         }).join('') + `</div>`;
     }
 
     const pasVuBtn = (cat === 'CALIBRAGE' && !state.isScored) ? `<button onclick="markPasVu('${cat}', ${idx})" class="w-full py-3 mt-3 bg-slate-100 text-slate-500 font-bold rounded-xl border border-slate-200 hover:bg-slate-200 transition-colors">🤷‍♂️ Je n'ai pas encore étudié ça</button>` : '';
-    const socrateBtn = (state.isScored && st === 'HARD') ? `<button onclick="openSocrateModal('${cat}', ${idx})" class="w-full mt-3 py-4 bg-indigo-50 text-indigo-700 font-black rounded-xl border border-indigo-200 hover:bg-indigo-100 transition-colors shadow-sm animate-pop">🦉 Demander de l'aide au Tuteur IA</button>` : '';
     const fRev = (state.formulaRevealed[realId] || state.formulaManuallyTouched[realId]);
     const hideHelp = (cat === 'CALIBRAGE') ? 'hidden' : '';
 
@@ -683,11 +674,11 @@ function renderSection(cat, data, idx, total, isCatDone) {
             <canvas id="canvas-${uiId}" class="main-draw-canvas"></canvas>
             <div class="relative z-0 math-content"><div class="math-display text-slate-900">${data.q}</div>${isRev&&!hasOpt?`<div class="mt-4 pt-4 border-t-2 border-dashed border-emerald-200 text-3xl font-black text-emerald-600 text-center animate-bounce-in">${data.a}</div>`:''}</div>
         </div>
-        ${optsHtml} ${pasVuBtn} ${!hasOpt || (state.isScored && st==='HARD' && !isCatDone) ? actions : ''} ${socrateBtn}
+        ${optsHtml} ${pasVuBtn} ${!hasOpt || (state.isScored && st==='HARD' && !isCatDone) ? actions : ''}
         
         <div class="mt-8 grid md:grid-cols-2 gap-4 ${hideHelp}">
             <div class="bg-amber-50/50 p-5 rounded-2xl border border-amber-100">
-                <button onclick="showNextHint('${cat}', ${idx}, ${data.steps?.length||0})" class="w-full text-sm font-bold text-amber-700 bg-amber-100 py-3 rounded-xl mb-3 hover:bg-amber-200 transition-colors">💡 Révéler un indice</button>
+                <button onclick="showNextHint('${cat}', ${idx}, ${data.steps?.length||0})" class="w-full text-sm font-bold text-amber-700 bg-amber-100 py-3 rounded-xl mb-3 hover:bg-amber-200 transition-colors">💡 Révéler la méthode pas à pas</button>
                 <div class="space-y-2">${(data.steps||[]).map((s,i) => `<div class="${i < (state.hintStepsRevealed[realId]||0) ? 'block' : 'hidden'} math-content text-sm p-3 bg-white rounded-xl border border-amber-200 text-amber-900 font-semibold animate-fade-in">${s}</div>`).join('')}</div>
             </div>
             <div class="bg-indigo-50/50 p-5 rounded-2xl border border-indigo-100 flex flex-col justify-center">
