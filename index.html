@@ -31,16 +31,23 @@
     .blurred-formula { filter: blur(6px); transition: all 0.4s; cursor: pointer; user-select: none; background: #ebf4ff; border-radius: 12px; padding: 12px; border: 2px dashed #bfdbfe; text-align: center; }
     .blurred-formula.revealed { filter: blur(0); cursor: default; background: white; border-style: solid; border-color: #3b82f6; }
     
-    /* Boutons QCM */
-    .option-btn { border: 2px solid #e2e8f0; padding: 1.2rem 1.5rem; border-radius: 1rem; font-weight: 600; background: white; transition: all 0.2s; width: 100%; text-align: left; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    /* Boutons QCM (Corrigé pour éviter le bug d'affichage MathJax) */
+    .option-btn { border: 2px solid #e2e8f0; padding: 1.2rem 1.5rem; border-radius: 1rem; font-weight: 600; background: white; transition: all 0.2s; width: 100%; text-align: left; display: flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
     .option-btn:hover:not(.disabled) { border-color: #3b82f6; background: #f0f9ff; transform: translateX(4px); }
+    
+    /* Injection CSS pure des emojis pour ne pas altérer le DOM MathJax */
     .option-correct { border-color: #10b981 !important; background: #ecfdf5 !important; color: #065f46; box-shadow: 0 4px 6px rgba(16,185,129,0.1); }
+    .option-correct span::before { content: '✅ '; margin-right: 8px; }
+    
     .option-wrong { border-color: #ef4444 !important; background: #fef2f2 !important; color: #991b1b; opacity: 0.8; }
+    .option-wrong span::before { content: '❌ '; margin-right: 8px; }
+    
     .option-neutral { opacity: 0.5; pointer-events: none; background: #f8fafc; border-color: #e2e8f0 !important; }
 
-    /* Checkbox Cards Onboarding */
-    .chap-card { border: 2px solid #e2e8f0; transition: all 0.2s; cursor: pointer; }
-    .chap-checkbox:checked + .chap-card { border-color: #4f46e5; background: #eef2ff; transform: scale(1.02); }
+    /* Checkbox Cards Onboarding (Surbriallance améliorée) */
+    .chap-card { border: 3px solid transparent; outline: 2px solid #e2e8f0; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; overflow: hidden; }
+    .chap-checkbox:checked + .chap-card { outline-color: transparent; border-color: #4f46e5; background: #eef2ff; transform: scale(1.03); box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.2); }
+    .chap-checkbox:checked + .chap-card::after { content: '✅'; position: absolute; right: 1.2rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 
     /* Canvas Drawing */
     #draw-canvas-draft, .main-draw-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; cursor: crosshair; }
@@ -54,6 +61,7 @@
     .animate-bounce-in { animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
     .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
+    @keyframes pop { 0% { transform: scale(0.5) translateY(-50%); opacity: 0; } 100% { transform: scale(1) translateY(-50%); opacity: 1; } }
     @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
     .animate-shake { animation: shake 0.3s ease-in-out; }
     @keyframes pulse-ring { 0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
@@ -144,6 +152,7 @@
                 <option value="3EME">3ème</option><option value="SECONDE">Seconde</option><option value="PREMIERE">1ère (Spé)</option><option value="TERMINALE">Terminale</option>
             </select>
             <input type="password" id="reg-pwd" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-blue-500" placeholder="Créer un mot de passe">
+            <input type="password" id="reg-pwd-confirm" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-blue-500" placeholder="Confirmer le mot de passe">
             <button onclick="registerStudent()" class="w-full py-4 mt-2 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl transition-all shadow-lg shadow-blue-200 flex justify-center items-center gap-2">
                 <span id="reg-text">Configurer mon profil</span> <span id="reg-loader" class="loader hidden" style="border-top-color: white;"></span>
             </button>
@@ -233,7 +242,7 @@ function closeCustomAlert() { document.getElementById('custom-alert').classList.
 function toggleLoader(idPrefix, isLoading) { document.getElementById(`${idPrefix}-loader`).classList.toggle('hidden', !isLoading); document.getElementById(`${idPrefix}-text`).classList.toggle('hidden', isLoading); }
 
 // ==========================================================
-// AUTHENTIFICATION
+// AUTHENTIFICATION & SÉCURITÉ
 // ==========================================================
 function showAuth(tab) { document.getElementById('landing-screen').classList.add('hidden'); document.getElementById('auth-screen').classList.remove('hidden'); switchTab(tab); }
 function closeAuth() { document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('landing-screen').classList.remove('hidden'); }
@@ -264,8 +273,11 @@ async function loginStudent() {
 
 async function registerStudent() {
     const name = document.getElementById('reg-name').value.trim(); const email = document.getElementById('reg-email').value.trim();
-    const level = document.getElementById('reg-level').value; const pwd = document.getElementById('reg-pwd').value.trim();
-    if(!name || !email || !pwd) return showCustomAlert("Attention", "Tous les champs sont requis.", "⚠️");
+    const level = document.getElementById('reg-level').value; 
+    const pwd = document.getElementById('reg-pwd').value.trim(); const pwdConf = document.getElementById('reg-pwd-confirm').value.trim();
+    
+    if(!name || !email || !pwd || !pwdConf) return showCustomAlert("Attention", "Tous les champs sont requis.", "⚠️");
+    if(pwd !== pwdConf) return showCustomAlert("Erreur de frappe", "Les mots de passe ne correspondent pas.", "🔒");
     toggleLoader('reg', true);
 
     try {
@@ -359,14 +371,12 @@ function startCalibrage(scanEverything = false) {
     
     setTimeout(() => {
         let pool = [];
-        // Fallback sécurisé : si diagnostic.js n'existe pas encore, on prend la DB normale
         const diagSource = (window.dbDiag && window.dbDiag[`ALGEBRA_${state.niveau}`]) ? window.dbDiag[`ALGEBRA_${state.niveau}`] : LEVELS[state.niveau].categories;
         
         selectedCats.forEach(cat => {
             if(diagSource[cat]) diagSource[cat].forEach((exo, idx) => pool.push({...exo, originalCat: cat, originalIdx: idx}));
         });
         
-        // Si la pool est vide (ex: chapitres non trouvés dans diag), on force un remplissage de secours
         if(pool.length === 0) {
             Object.keys(LEVELS[state.niveau].categories).forEach(cat => {
                  LEVELS[state.niveau].categories[cat].forEach((exo, idx) => pool.push({...exo, originalCat: cat, originalIdx: idx}));
@@ -374,7 +384,7 @@ function startCalibrage(scanEverything = false) {
         }
 
         pool.sort(() => 0.5 - Math.random());
-        state.calibrageExos = pool.slice(0, 8); // 8 Questions MAX
+        state.calibrageExos = pool.slice(0, 8); 
         
         LEVELS[state.niveau].categories["CALIBRAGE"] = state.calibrageExos;
         LEVELS[state.niveau].catDisplay["CALIBRAGE"] = "🎯 Ton Diagnostic IA";
@@ -390,7 +400,9 @@ function unlockDashboard() {
     state.isFirstDay = false; state.calibrageState = null; 
     delete LEVELS[state.niveau].categories['CALIBRAGE'];
     const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
-    localData[state.activeProfile.code].tutoDraftViewed = true; // On considère qu'il l'a vu
+    const code = state.activeProfile.code;
+    if(!localData[code]) localData[code] = { streak: 1, lastLogin: new Date().toISOString().split('T')[0] };
+    localData[code].tutoDraftViewed = true;
     localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
     generateBoost(); render();
 }
@@ -458,11 +470,9 @@ function mark(cat, idx, status) {
     render();
 }
 
-// Fonction spéciale pour le bouton "Pas vu" pendant le Bilan
 function markPasVu(cat, idx) {
     const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`;
-    state.results[realId] = 'PAS_VU'; // Nouveau statut silencieux
-    state.isScored = true;
+    state.results[realId] = 'PAS_VU'; state.isScored = true;
     sendScoreToSheet(realCat, realIdx, 'PAS_VU', 0, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000));
     
     let done = 0; for(let i=0; i<state.calibrageExos.length; i++) { const r = resolveRealExercise(cat, i); if(state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) done++; }
@@ -472,22 +482,27 @@ function markPasVu(cat, idx) {
 }
 
 // ==========================================================
-// INTERACTIONS UTILISATEUR
+// INTERACTIONS UTILISATEUR & FIX FOUC MATHJAX
 // ==========================================================
 window.checkOption = function(cat, idx, originalOptIdx, btnEl) {
     const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`;
     let data = LEVELS[state.niveau].categories[cat][idx]; const selectedOpt = data.options[originalOptIdx];
     
     state.qcmAnswered[realId] = selectedOpt; state.revealed = true; state.currentId = realId;
-    Array.from(btnEl.parentElement.children).forEach(c => c.className = "option-btn option-neutral cursor-default");
+    
+    // Au lieu de détruire le DOM, on applique juste les classes CSS pures pour conserver le MathJax !
+    const correctOptIdx = data.options.indexOf(data.a);
+    Array.from(btnEl.parentElement.children).forEach(c => {
+        c.className = "option-btn option-neutral cursor-default";
+        if (parseInt(c.getAttribute('data-opt')) === correctOptIdx) { c.className = "option-btn option-correct cursor-default"; }
+    });
 
     if (selectedOpt === data.a) {
-        btnEl.className = "option-btn option-correct animate-success-pop cursor-default"; btnEl.innerHTML = `<span><span class="text-emerald-500 mr-2">✅</span>${selectedOpt}</span>`;
-        if (cat === "CALIBRAGE") { setTimeout(() => mark(cat, idx, 'EASY'), 600); } else { setTimeout(() => render(), 600); }
+        btnEl.className = "option-btn option-correct animate-success-pop cursor-default";
+        if (cat === "CALIBRAGE") { setTimeout(() => mark(cat, idx, 'EASY'), 800); } else { setTimeout(() => render(), 800); }
     } else {
-        btnEl.className = "option-btn option-wrong animate-shake cursor-default"; btnEl.innerHTML = `<span><span class="text-rose-500 mr-2">❌</span>${selectedOpt}</span>`;
-        Array.from(btnEl.parentElement.children).forEach(c => { if(c.innerText.includes(data.a)) { c.className = "option-btn option-correct cursor-default"; c.innerHTML = `<span><span class="text-emerald-500 mr-2">✅</span>${data.a}</span>`; } });
-        if (cat === "CALIBRAGE") { setTimeout(() => mark(cat, idx, 'HARD'), 1000); } else { setTimeout(() => mark(cat, idx, 'HARD'), 1000); }
+        btnEl.className = "option-btn option-wrong animate-shake cursor-default";
+        if (cat === "CALIBRAGE") { setTimeout(() => mark(cat, idx, 'HARD'), 1200); } else { setTimeout(() => mark(cat, idx, 'HARD'), 1200); }
     }
 };
 
@@ -534,12 +549,9 @@ function initCanvas(id) {
 function render() {
     const container = document.getElementById('app-container');
     
-    // ==========================================================
     // ÉCRAN 1 : SELECTION CHAPITRES (ONBOARDING)
-    // ==========================================================
     if (state.isFirstDay && state.calibrageState === 'select') {
-        let chapHtml = "";
-        let emojiIdx = 0;
+        let chapHtml = ""; let emojiIdx = 0;
         Object.keys(LEVELS[state.niveau].categories).forEach(cat => {
             const icon = LEVELS[state.niveau].catIcon[cat] || EMOJIS[emojiIdx % EMOJIS.length]; emojiIdx++;
             const name = LEVELS[state.niveau].catDisplay[cat] || cat;
@@ -562,16 +574,12 @@ function render() {
         return;
     }
 
-    // ==========================================================
     // ÉCRAN 2 : CHARGEMENT DIAGNOSTIC
-    // ==========================================================
     if (state.isFirstDay && state.calibrageState === 'loading') {
         container.innerHTML = `<div class="flex flex-col items-center justify-center py-20 animate-fade-in"><div class="loader loader-lg mb-6" style="border-top-color:#4f46e5;"></div><h2 class="text-2xl font-black text-slate-800">L'IA compile ton Diagnostic...</h2><p class="text-slate-500 mt-2 font-medium">Préparation des 8 questions clés.</p></div>`; return;
     }
     
-    // ==========================================================
     // ÉCRAN 3 : LE MOMENT WAOUH (RÉSULTATS DIAGNOSTIC)
-    // ==========================================================
     if (state.isFirstDay && state.calibrageState === 'results') {
         let hard = 0, easy = 0, pasVu = 0; 
         state.calibrageExos.forEach(e => { 
@@ -581,7 +589,7 @@ function render() {
         
         let activeExos = state.calibrageExos.length - pasVu;
         let acc = activeExos > 0 ? Math.round((easy / activeExos) * 100) : 0;
-        let logique = activeExos > 0 ? Math.min(100, acc + 15 + (hard * 2)) : 0; // Fake metric flatteuse
+        let logique = activeExos > 0 ? Math.min(100, acc + 15 + (hard * 2)) : 0;
         
         container.innerHTML = `
         <div class="bg-white rounded-3xl p-8 lg:p-12 border border-slate-200 shadow-xl animate-bounce-in max-w-3xl mx-auto">
@@ -604,9 +612,7 @@ function render() {
         </div>`; return;
     }
 
-    // ==========================================================
-    // ÉCRAN 4 : DASHBOARD NORMAL (ou en cours de Diagnostic)
-    // ==========================================================
+    // ÉCRAN 4 : DASHBOARD NORMAL
     let html = `<div class="space-y-5">`;
     const catsToRender = (state.isFirstDay && state.calibrageState === 'testing') ? { "CALIBRAGE": LEVELS[state.niveau].categories["CALIBRAGE"] } : LEVELS[state.niveau].categories;
     
@@ -660,18 +666,13 @@ function renderSection(cat, data, idx, total, isCatDone) {
         let opts = state.currentShuffle[uiId] || data.options.map((t,i)=>({text:t, originalIdx:i}));
         optsHtml = `<div class="flex flex-col gap-3 w-full">` + opts.map(o => {
             let cl = "option-btn " + (isRev ? "cursor-default pointer-events-none " + (o.text===data.a?"option-correct":(o.text===state.qcmAnswered[realId]?"option-wrong":"option-neutral")) : "cursor-pointer");
-            let txt = isRev ? (o.text===data.a?`✅ ${o.text}`:(o.text===state.qcmAnswered[realId]?`❌ ${o.text}`:o.text)) : o.text;
-            return `<button ${!isRev?`onclick="checkOption('${cat}', ${idx}, ${o.originalIdx}, this)"`:''} class="${cl}"><span>${txt}</span></button>`;
+            return `<button data-opt="${o.originalIdx}" ${!isRev?`onclick="checkOption('${cat}', ${idx}, ${o.originalIdx}, this)"`:''} class="${cl}"><span>${o.text}</span></button>`;
         }).join('') + `</div>`;
     }
 
-    // Le bouton magique "Pas encore vu" (Affiché que pendant le test CALIBRAGE)
     const pasVuBtn = (cat === 'CALIBRAGE' && !state.isScored) ? `<button onclick="markPasVu('${cat}', ${idx})" class="w-full py-3 mt-3 bg-slate-100 text-slate-500 font-bold rounded-xl border border-slate-200 hover:bg-slate-200 transition-colors">🤷‍♂️ Je n'ai pas encore étudié ça</button>` : '';
-
     const socrateBtn = (state.isScored && st === 'HARD') ? `<button onclick="openSocrateModal('${cat}', ${idx})" class="w-full mt-3 py-4 bg-indigo-50 text-indigo-700 font-black rounded-xl border border-indigo-200 hover:bg-indigo-100 transition-colors shadow-sm animate-pop">🦉 Demander de l'aide au Tuteur IA</button>` : '';
     const fRev = (state.formulaRevealed[realId] || state.formulaManuallyTouched[realId]);
-
-    // On cache les indices pendant le Calibrage pour ne pas fausser le test
     const hideHelp = (cat === 'CALIBRAGE') ? 'hidden' : '';
 
     return `
