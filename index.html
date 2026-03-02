@@ -210,7 +210,8 @@
 // ==========================================================
 // CONFIGURATION GOOGLE SCRIPT & CONSTANTES
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjZDHosS4Ga9nl_i88mH-zvpTkwcTlCm069whhvGlO0y5U-XXLbVxzJuRkFqpaOc3I1w/exec";
+// URL MISE A JOUR AVEC TON NOUVEAU SCRIPT
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbychBrK-P8Ap10IaqJatEV6DJ0VRRN0iyNVcJleuXZY9o1RtMv_harrpOYdP3jTznfd-w/exec";
 const ADMIN_PASSWORD = "NICO"; 
 
 let state = {
@@ -218,7 +219,8 @@ let state = {
   questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null,
   hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
   qcmAnswered: {}, currentShuffle: {}, 
-  startTimes: {}, // Chronomètre (nouveau)
+  startTimes: {}, 
+  dailyBoost: null, // NOUVEAU: Stocke les exercices IA du serveur
   isDrawing: false, isLaser: false, draftOpen: false, sessionCount: 1, tutorialDone: false
 };
 
@@ -235,6 +237,23 @@ function closeCustomAlert() { document.getElementById('custom-alert').classList.
 
 // Init DB
 Object.keys(LEVEL_NAMES).forEach(k => { LEVELS[k] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[k] }; });
+
+// ==========================================================
+// GESTION DU TIMER GLOBAL
+// ==========================================================
+setInterval(() => {
+    const el = document.getElementById('boost-timer');
+    if (el) {
+        const now = new Date();
+        const tomorrow = new Date(now);
+        tomorrow.setHours(24, 0, 0, 0); // Minuit ce soir
+        const diff = tomorrow - now;
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        el.innerText = `${h}h ${m}m ${s}s`;
+    }
+}, 1000);
 
 // ==========================================================
 // ADMIN / COACH
@@ -303,6 +322,7 @@ async function loginWithCode() {
     const data = await response.json();
     if (data.status === "success" && data.profile) { 
       state.activeProfile = data.profile; 
+      state.dailyBoost = data.dailyBoost; // RÉCUPÉRATION DU BOOST IA
       localStorage.setItem(SESSION_KEY, codeInput); 
       rebuildStateFromHistory(data.history); 
       initStudentApp(); 
@@ -318,7 +338,12 @@ async function silentLogin(code) {
   try {
     const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_user_data&code=${code}`);
     const data = await response.json();
-    if (data.status === "success" && data.profile) { state.activeProfile = data.profile; rebuildStateFromHistory(data.history); initStudentApp(); }
+    if (data.status === "success" && data.profile) { 
+        state.activeProfile = data.profile; 
+        state.dailyBoost = data.dailyBoost; // RÉCUPÉRATION DU BOOST IA
+        rebuildStateFromHistory(data.history); 
+        initStudentApp(); 
+    }
   } catch(e) { console.log("Silent login failed"); }
 }
 
@@ -338,7 +363,6 @@ function rebuildStateFromHistory(history) {
 function initStudentApp() {
   state.niveau = state.activeProfile.level; 
   
-  // Streak Local Management
   const localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
   const code = state.activeProfile.code;
   if(!localData[code]) localData[code] = { streak: 1, lastLogin: new Date().toISOString().split('T')[0], tutorialDone: false };
@@ -370,16 +394,33 @@ function initStudentApp() {
 function logout() { sessionStorage.removeItem('session_counted'); localStorage.removeItem(SESSION_KEY); location.reload(); }
 
 // ==========================================================
-// MOTEUR "BOOST DU JOUR" (Le Coach)
+// MOTEUR "BOOST DU JOUR" (IA + FALLBACK LOCAL)
 // ==========================================================
 function generateBoostDuJour() {
     const cats = LEVELS[state.niveau].categories;
     if (!cats) return;
 
+    // Réinitialisation de l'affichage
     let newCats = {};
     Object.keys(cats).forEach(k => { if(k !== "BOOST") newCats[k] = cats[k]; });
     LEVELS[state.niveau].categories = newCats;
 
+    // 1. INJECTION DU BOOST IA SI LE SERVEUR L'A FOURNI
+    if (state.dailyBoost && Array.isArray(state.dailyBoost) && state.dailyBoost.length > 0) {
+        const formattedBoostExos = state.dailyBoost.map((exo, idx) => {
+            return { ...exo, originalCat: "AI_BOOST", originalIdx: idx, lvl: 'IA' };
+        });
+
+        const finalCats = { "BOOST": formattedBoostExos };
+        Object.keys(newCats).forEach(k => { finalCats[k] = newCats[k]; });
+        
+        LEVELS[state.niveau].categories = finalCats;
+        LEVELS[state.niveau].catDisplay["BOOST"] = "🔥 Ton Boost Quotidien (IA)";
+        LEVELS[state.niveau].catIcon["BOOST"] = "🧠";
+        return; // Fin, l'IA gère.
+    }
+
+    // 2. FALLBACK (Sécurité) : Si l'IA n'a pas répondu, on génère le Boost localement
     let toReview = [];
     let toDiscover = [];
 
@@ -440,7 +481,6 @@ function sendScoreToSheet(realCat, realIdx, status, xpGained, timeSpent) {
   const indicesVue = state.hintStepsRevealed[id] || 0;
   const formuleVue = !!(state.formulaRevealed[id] || state.formulaManuallyTouched[id]);
 
-  // timeSpent (temps en secondes) ajouté au payload !
   fetch(GOOGLE_SCRIPT_URL, { 
     method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, 
     body: JSON.stringify({ action: "save_score", code: state.activeProfile.code, name: state.activeProfile.name, level: state.niveau, categorie: realCat, exercice_idx: realIdx + 1, resultat: status, indices: indicesVue, formule: formuleVue, xp: xpGained, temps: timeSpent }) 
@@ -450,13 +490,19 @@ function sendScoreToSheet(realCat, realIdx, status, xpGained, timeSpent) {
 function mark(cat, idx, status, total) {
   const { realCat, realIdx } = resolveRealExercise(cat, idx);
   const realId = `${state.niveau}-${realCat}-${realIdx}`;
-  const data = LEVELS[state.niveau].categories[realCat][realIdx];
+  
+  // Gestion correcte des données si IA ou Local
+  let data = null;
+  if(realCat === "AI_BOOST") {
+      data = state.dailyBoost[realIdx];
+  } else {
+      data = LEVELS[state.niveau].categories[realCat][realIdx];
+  }
   
   state.results[realId] = status; 
   state.formulaRevealed[realId] = true; 
   state.isScored = true;
 
-  // Calcul du temps passé (Chronomètre)
   let timeSpent = Math.round((Date.now() - (state.startTimes[realId] || Date.now())) / 1000);
 
   let xpGained = 0;
@@ -466,7 +512,6 @@ function mark(cat, idx, status, total) {
     xpGained = Math.max(10, Math.floor(gained));
     state.xp += xpGained;
   } else {
-    // CORRECTION PAS-A-PAS : Révélation de tous les indices en cas d'erreur
     state.hintStepsRevealed[realId] = data.steps ? data.steps.length : 0;
   }
 
@@ -488,7 +533,7 @@ function populateLevelsFromDb() {
 function updateLevelDropdown(userLevel) {
   const select = document.getElementById('niveau-select'); select.innerHTML = ''; 
   const maxIdx = LEVEL_ORDER.indexOf(userLevel);
-  const startIdx = Math.max(0, maxIdx - 1); // LE GARDE DU CORPS: Classe actuelle + N-1 max
+  const startIdx = Math.max(0, maxIdx - 1); 
   
   for(let i = startIdx; i <= maxIdx; i++) { 
       const lvlKey = LEVEL_ORDER[i]; const opt = document.createElement('option'); 
@@ -582,7 +627,10 @@ function checkOption(cat, idx, originalOptIdx, buttonEl) {
   const realId = `${state.niveau}-${realCat}-${realIdx}`;
   const total = LEVELS[state.niveau].categories[cat].length;
   
-  const data = LEVELS[state.niveau].categories[cat][idx]; 
+  let data = null;
+  if(realCat === "AI_BOOST") data = state.dailyBoost[realIdx];
+  else data = LEVELS[state.niveau].categories[cat][idx]; 
+  
   const selectedOpt = data.options[originalOptIdx];
   
   state.qcmAnswered[realId] = selectedOpt; 
@@ -600,7 +648,6 @@ function checkOption(cat, idx, originalOptIdx, buttonEl) {
     buttonEl.className = "option-btn option-wrong animate-shake cursor-default";
     buttonEl.innerHTML = `<span><span class="text-rose-500 mr-2">❌</span>${selectedOpt}</span>`;
     
-    // Révèle la bonne réponse visuellement
     Array.from(parent.children).forEach(child => {
         if(child.innerText.includes(data.a)) {
             child.className = "option-btn option-correct cursor-default";
@@ -608,10 +655,7 @@ function checkOption(cat, idx, originalOptIdx, buttonEl) {
         }
     });
 
-    // ANTI-TRICHE : Auto-sanction et révélation des indices au bout d'1 seconde
-    setTimeout(() => {
-        mark(cat, idx, 'HARD', total);
-    }, 1000);
+    setTimeout(() => { mark(cat, idx, 'HARD', total); }, 1000);
   }
 }
 
@@ -626,7 +670,7 @@ function showNextHint(cat, idx, total) {
   if(!state.hintStepsRevealed[realId]) state.hintStepsRevealed[realId] = 0; 
   if(state.hintStepsRevealed[realId] < total) { 
       state.hintStepsRevealed[realId]++;
-      render(); // On re-rend l'écran pour afficher le nouvel indice
+      render(); 
   } 
 }
 function revealFormula(cat, idx, el) { 
@@ -640,16 +684,46 @@ function revealFormula(cat, idx, el) {
 // ==========================================================
 function render() {
   const container = document.getElementById('app-container'); let html = `<div class="space-y-5">`; const cats = LEVELS[state.niveau].categories || {}; let emojiIdx = 0;
+  
   Object.keys(cats).forEach(cat => {
     const total = cats[cat].length; let completed = 0;
+    
+    // Détection de fin de catégorie
+    let isBoostFinished = false;
+    let doneCount = 0;
+
     for(let i=0; i<total; i++) { 
         const { realCat, realIdx } = resolveRealExercise(cat, i);
-        if(state.results[`${state.niveau}-${realCat}-${realIdx}`] === 'EASY' || state.results[`${state.niveau}-${realCat}-${realIdx}`] === 'MEDIUM') completed++; 
+        const st = state.results[`${state.niveau}-${realCat}-${realIdx}`];
+        if(st === 'EASY' || st === 'MEDIUM') completed++; 
+        if(st) doneCount++; // Compte n'importe quel résultat (Même HARD)
     }
-    const pct = total > 0 ? Math.round((completed/total)*100) : 0; const isCompleted = completed === total && total > 0;
+
+    const pct = total > 0 ? Math.round((completed/total)*100) : 0; 
+    const isCompleted = completed === total && total > 0;
+    const isBoost = cat === "BOOST";
+
+    // Si c'est le Boost et que tous les exos ont été répondus
+    if (isBoost && total > 0 && doneCount === total) {
+        isBoostFinished = true;
+    }
+
     const icon = LEVELS[state.niveau].catIcon[cat] || EMOJIS[emojiIdx % EMOJIS.length]; emojiIdx++;
 
-    const isBoost = cat === "BOOST";
+    // VERROUILLAGE VISUEL DU TIMER
+    if (isBoostFinished) {
+        html += `<div class="bg-indigo-50 border border-indigo-200 rounded-3xl p-8 text-center shadow-inner animate-fade-in mt-2 mb-8">
+                    <div class="text-5xl mb-4">🌙</div>
+                    <h3 class="text-xl font-black text-indigo-900 mb-2">Entraînement Terminé !</h3>
+                    <p class="text-indigo-600 font-medium mb-6">Ton coach IA prépare ton prochain programme sur-mesure pour demain.</p>
+                    <div class="inline-block bg-white px-6 py-4 rounded-2xl shadow-sm border border-indigo-100">
+                        <span class="text-sm font-bold text-indigo-400 uppercase tracking-widest block mb-1">Prochain Boost dans</span>
+                        <span id="boost-timer" class="text-3xl font-black text-indigo-700 tracking-wider">--h --m --s</span>
+                    </div>
+                 </div>`;
+        return; // On passe à la catégorie suivante (on ne dessine pas le bouton d'ouverture)
+    }
+
     const bgClass = isCompleted ? 'bg-emerald-50/50 border-emerald-200' : (isBoost ? 'bg-orange-50/30 border-orange-200 shadow-orange-100/50 shadow-lg' : 'bg-white border-slate-200');
     const titleColor = isCompleted ? 'text-emerald-800' : (isBoost ? 'text-orange-600' : 'text-slate-800');
 
@@ -670,6 +744,7 @@ function render() {
       ${state.expanded[cat] ? renderSection(cat, cats[cat][state.questView[cat]||0], parseInt(state.questView[cat]||0), total) : ''}
     </div>`;
   });
+  
   container.innerHTML = html + `</div>`;
   if (window.MathJax?.typesetPromise) MathJax.typesetPromise(); 
   if(state.isDrawing) initCanvas(); else if(state.isLaser) initMainLaser();
@@ -682,7 +757,6 @@ function renderSection(cat, data, idx, total) {
   const { realCat, realIdx } = resolveRealExercise(cat, idx);
   const realId = `${state.niveau}-${realCat}-${realIdx}`;
 
-  // INITIALISATION DU CHRONOMÈTRE
   if (!state.startTimes[realId] && !state.results[realId]) {
       state.startTimes[realId] = Date.now();
   }
@@ -690,7 +764,6 @@ function renderSection(cat, data, idx, total) {
   const isRev = state.revealed && state.currentId === realId;
   const hasOptions = data.options && Array.isArray(data.options) && data.options.length > 0;
 
-  // Pills de navigation (COULEUR VALORISATION ERREUR: Indigo au lieu de Rose)
   let pills = `<div class="flex flex-wrap gap-2 p-4 justify-center border-t border-slate-100 bg-slate-50/50">`;
   for(let i=0; i<total; i++) {
     const rExo = resolveRealExercise(cat, i);
@@ -701,14 +774,12 @@ function renderSection(cat, data, idx, total) {
     pills += `<button onclick="goToExercise('${cat}', ${i})" class="${c}">${i+1}</button>`;
   } pills += `</div>`;
 
-  // BOUTONS D'ACTION (AVEC VERROUILLAGE ANTI-TRICHE)
   let actionButtons = ''; 
   const isLastExercise = idx >= total - 1;
 
   if (!isRev) {
     if (!hasOptions) { actionButtons = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-lg rounded-xl shadow-lg shadow-slate-200 transition-all hover:-translate-y-1">VÉRIFIER</button>`; }
   } else if (!state.isScored) {
-    // L'élève a cliqué sur "Vérifier" mais n'a pas encore noté, on le force.
     actionButtons = `
       <div class="flex flex-col sm:flex-row gap-3 animate-bounce-in w-full mt-2">
         <button onclick="mark('${cat}', ${idx}, 'HARD', ${total})" class="flex-1 py-4 bg-indigo-50 text-indigo-600 rounded-xl font-black border border-indigo-200 hover:bg-indigo-100 transition-colors">🔄 À RETRAVAILLER</button>
@@ -716,12 +787,10 @@ function renderSection(cat, data, idx, total) {
         <button onclick="mark('${cat}', ${idx}, 'EASY', ${total})" class="flex-1 py-4 bg-emerald-50 text-emerald-600 rounded-xl font-black border border-emerald-200 hover:bg-emerald-100 transition-colors">😎 FACILE</button>
       </div>`;
   } else {
-    // Navigation libérée une fois noté
     if (isLastExercise) { actionButtons = `<button onclick="toggleCategory('${cat}')" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg rounded-xl shadow-lg shadow-emerald-200 transition-all hover:-translate-y-1 mt-2">✅ TERMINER LA CATÉGORIE</button>`; } 
     else { actionButtons = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-xl shadow-lg shadow-blue-200 transition-all hover:-translate-y-1 flex justify-center items-center gap-2 mt-2">EXERCICE SUIVANT</button>`; }
   }
 
-  // MÉLANGEUR QCM
   let finalButtonsHtml = '';
   if (hasOptions) {
     const shuffleKey = uiId;
@@ -750,7 +819,6 @@ function renderSection(cat, data, idx, total) {
     }); 
     
     optionsHtml += `</div>`; 
-    // Pour les QCM, si auto-sanctionné (Faux), on cache les boutons d'évaluation et on affiche "Suivant" direct
     finalButtonsHtml = optionsHtml + (state.isScored && state.results[realId] === 'HARD' && hasOptions ? (isLastExercise ? `<button onclick="toggleCategory('${cat}')" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg rounded-xl mt-2">✅ TERMINER LA CATÉGORIE</button>` : `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-xl mt-2">EXERCICE SUIVANT</button>`) : actionButtons);
   } else { 
     finalButtonsHtml = actionButtons; 
