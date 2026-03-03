@@ -70,7 +70,6 @@
     .loader { border: 4px solid #f1f5f9; border-top: 4px solid #4f46e5; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; }
     .loader-lg { border-width: 6px; width: 50px; height: 50px; }
     
-    /* Dégradés pour la landing page */
     .bg-grid-pattern { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 24px 24px; }
   </style>
 </head>
@@ -223,7 +222,8 @@
 // ==========================================================
 // CONFIGURATION GLOBALE
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxt0QODNjvSgP01LTAK5uWgT-2g0XLcnMQqmtc0tezaJmxkojKJ482mYJdRhL7oES3ByQ/exec";  // Nouvelle URL déployée
+// Remplacer l'URL par la tienne lors du déploiement
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxt0QODNjvSgP01LTAK5uWgT-2g0XLcnMQqmtc0tezaJmxkojKJ482mYJdRhL7oES3ByQ/exec";  
 const SESSION_KEY = 'boost_user_v6_final'; 
 const STORAGE_KEY_LOCAL = 'boost_local_final';
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
@@ -235,12 +235,11 @@ let state = {
   questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null,
   hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
   qcmAnswered: {}, currentShuffle: {}, startTimes: {},
-  dailyBoost: null, boostCompletedToday: false, isFirstDay: true, calibrageState: null, calibrageExos: [],  // Ajouté boostCompletedToday
+  dailyBoost: null, boostCompletedToday: false, isFirstDay: true, calibrageState: null, calibrageExos: [],  
   isDrawing: false, draftOpen: false
 };
 const LEVELS = {};
 
-// QW2: TRADUCTEUR ROBUSTE POUR LE LATEX "FRACT"
 function formatLatex(str) {
     if (!str) return '';
     return str
@@ -253,7 +252,6 @@ function showCustomAlert(title, message, icon = '⚠️') { document.getElementB
 function closeCustomAlert() { document.getElementById('custom-alert').classList.add('hidden'); }
 function toggleLoader(idPrefix, isLoading) { document.getElementById(`${idPrefix}-loader`).classList.toggle('hidden', !isLoading); document.getElementById(`${idPrefix}-text`).classList.toggle('hidden', isLoading); }
 
-// CF3: Animations Virales (Thread safe pour mobile)
 function confettiBurst() {
   const count = (window.innerWidth < 640 || /Mobi|Android/i.test(navigator.userAgent)) ? 40 : 80;
   for(let i=0; i<count; i++) setTimeout(()=>{
@@ -294,13 +292,12 @@ async function loginStudent() {
         if (data.status === "success") { 
             state.activeProfile = data.profile; 
             state.dailyBoost = data.dailyBoost; 
-            state.boostCompletedToday = data.boostCompletedToday;  // Nouveau : Récupérer le flag completed du serveur
+            state.boostCompletedToday = data.boostCompletedToday;  
             state.isFirstDay = data.isFirstDay;
             localStorage.setItem(SESSION_KEY, JSON.stringify({email, password: pwd}));
             
             rebuildState(data.history); 
             
-            // CF2: Synchronisation État (Court-circuit garanti du diag si data existe)
             if ((data.history && data.history.length > 0) || !state.isFirstDay) {
                 state.isFirstDay = false;
                 state.calibrageState = null;
@@ -365,7 +362,6 @@ function initApp() {
     let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
     const code = state.activeProfile.code;
     
-    // QW5: Nettoyage localData tests multi-comptes
     if (localData.lastCode && localData.lastCode !== code) {
         localData = {}; 
     }
@@ -396,7 +392,6 @@ function initApp() {
     
     document.getElementById('active-student-name').innerText = state.activeProfile.name;
     
-    // QW3: Draft tooltip plus visible mobile
     if(!localData[code].tutoDraftViewed && !state.isFirstDay) {
         setTimeout(() => document.getElementById('draft-tooltip').classList.remove('hidden'), window.innerWidth < 640 ? 1800 : 3000);
         localData[code].tutoDraftViewed = true; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
@@ -404,12 +399,11 @@ function initApp() {
 
     updateLevelDropdown(state.niveau); updateHeader();
     
-    // Nouveau : Gestion stable du BOOST du jour
     if (!state.isFirstDay) {
         if (state.dailyBoost && !state.boostCompletedToday) {
-            loadExistingBoost();  // Charge le boost fixe du serveur
+            loadExistingBoost();  
         } else if (!state.dailyBoost) {
-            generateBoostIA();  // Génère seulement si rien n'existe aujourd'hui
+            generateBoostIA();  
         }
     }
     render();
@@ -420,13 +414,12 @@ function updateLevelDropdown(userLvl) { const sel = document.getElementById('niv
 function updateHeader() { document.getElementById('ui-streak').innerText = state.streak; document.getElementById('ui-xp').innerText = state.xp; }
 function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; if(!state.isFirstDay) generateBoostIA(); render(); }
 
-// Nouvelle fonction : Charger le BOOST existant du serveur (fixe toute la journée)
 function loadExistingBoost() {
     if (!state.dailyBoost || !state.dailyBoost.exos) return;
     
     let boostExos = state.dailyBoost.exos.map((exo, idx) => ({
         ...exo, 
-        originalCat: 'BOOST',  // Marque comme venant du boost
+        originalCat: 'BOOST',  
         originalIdx: idx
     }));
     
@@ -434,6 +427,27 @@ function loadExistingBoost() {
     LEVELS[state.niveau].catDisplay["BOOST"] = "🤖 Ta Séquence d'Entraînement IA";
     LEVELS[state.niveau].catIcon["BOOST"] = "⚡";
 }
+
+// ==========================================================
+// ACTIONS D'EXERCICES (INDICES, FORMULES)
+// ==========================================================
+
+window.showNextHint = function(cat, idx, maxHints) {
+    const { realCat, realIdx } = resolveRealExercise(cat, idx);
+    const realId = `${state.niveau}-${realCat}-${realIdx}`;
+    if (!state.hintStepsRevealed[realId]) state.hintStepsRevealed[realId] = 0;
+    if (state.hintStepsRevealed[realId] < maxHints) {
+        state.hintStepsRevealed[realId]++;
+        render();
+    }
+};
+
+window.revealFormula = function(cat, idx) {
+    const { realCat, realIdx } = resolveRealExercise(cat, idx);
+    const realId = `${state.niveau}-${realCat}-${realIdx}`;
+    state.formulaManuallyTouched[realId] = true;
+    render();
+};
 
 // ==========================================================
 // ONBOARDING EXPRESS (DIAGNOSTIC DYNAMIQUE)
@@ -480,7 +494,6 @@ function unlockDashboard() {
     localData[code].tutoDraftViewed = true;
     localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
     
-    // Nouveau : Après diagnostic, on génère le premier BOOST (mais seulement si pas déjà fait)
     if (!state.dailyBoost) generateBoostIA(); 
     render();
 }
@@ -512,14 +525,13 @@ function generateBoostIA() {
     }
 }
 
-// Nouvelle fonction : Envoyer au serveur que le BOOST est terminé
 async function completeBoost() {
     try {
         await fetch(GOOGLE_SCRIPT_URL, { 
             method: 'POST', 
             body: JSON.stringify({ action: "complete_boost", code: state.activeProfile.code })
         });
-    } catch(e) {}  // Silencieux si erreur
+    } catch(e) {} 
 }
 
 // ==========================================================
@@ -543,7 +555,6 @@ function mark(cat, idx, status) {
     sendScoreToSheet(realCat, realIdx, status, xpGained, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000));
     updateHeader();
 
-    // Nouveau : Détecter si c'est le dernier exo du BOOST
     if (cat === 'BOOST') {
         let doneCount = 0;
         const total = LEVELS[state.niveau].categories['BOOST'].length;
@@ -553,7 +564,7 @@ function mark(cat, idx, status) {
         }
         if (doneCount === total) {
             state.boostCompletedToday = true;
-            completeBoost();  // Persister sur le serveur
+            completeBoost();  
         }
     }
     
@@ -563,13 +574,11 @@ function mark(cat, idx, status) {
 function markPasVu(cat, idx) {
     const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`;
     
-    // QW4: Tracer précisément les notions non vues pour l'IA
     if(cat === 'CALIBRAGE') state.calibrageExos[idx].pasVu = true; 
     
     state.results[realId] = 'PAS_VU'; state.isScored = true;
     sendScoreToSheet(realCat, realIdx, 'PAS_VU', 0, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000));
 
-    // Même détection pour BOOST
     if (cat === 'BOOST') {
         let doneCount = 0;
         const total = LEVELS[state.niveau].categories['BOOST'].length;
@@ -684,7 +693,7 @@ function render() {
         container.innerHTML = `<div class="flex flex-col items-center justify-center py-20 animate-fade-in"><div class="loader loader-lg mb-6"></div><h2 class="text-2xl font-black text-slate-800">L'IA compile ton Diagnostic...</h2><p class="text-slate-500 mt-2 font-medium">Préparation des questions ciblées.</p></div>`; return;
     }
     
-    // ÉCRAN 3 : LE MOMENT WAOUH (QW1, QW4 appliqués)
+    // ÉCRAN 3 : LE MOMENT WAOUH
     if (state.isFirstDay && state.calibrageState === 'results') {
         let hard = 0, easy = 0, pasVu = 0; 
         state.calibrageExos.forEach(e => { 
@@ -693,7 +702,6 @@ function render() {
         });
         
         let activeExos = state.calibrageExos.length - pasVu;
-        // QW1: Calcul dynamique valorisant
         let scoreToDisplay = activeExos > 0 ? Math.round((easy / activeExos)*100) + (activeExos >= 5 ? 12 : 20) : 87; 
         if (scoreToDisplay > 100) scoreToDisplay = 100;
         
@@ -723,13 +731,12 @@ function render() {
     let catKeys = Object.keys(catsToRender);
     if(catKeys.includes("BOOST")) { catKeys = ["BOOST", ...catKeys.filter(k => k !== "BOOST")]; }
 
-    // Nouveau : Si BOOST complété, forcer le message sans ajouter la catégorie
     if (state.boostCompletedToday && catKeys.includes("BOOST")) {
         html += `<div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-6 text-center animate-fade-in"><div class="text-4xl mb-2">✅</div><h3 class="font-black text-emerald-800">Séquence IA validée pour aujourd'hui !</h3></div>`;
     }
 
     catKeys.forEach(cat => {
-        if (cat === 'BOOST' && state.boostCompletedToday) return;  // Skip si complété
+        if (cat === 'BOOST' && state.boostCompletedToday) return;  
         
         const total = catsToRender[cat].length; let doneCount = 0;
         for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); if(state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) doneCount++; }
@@ -775,7 +782,6 @@ function renderSection(cat, data, idx, total, isCatDone) {
     } else if(isRev && !state.isScored && !hasOpt) {
         actions = `<div class="flex gap-2 w-full mt-2"><button onclick="mark('${cat}', ${idx}, 'HARD')" class="flex-1 py-4 bg-rose-50 text-rose-600 border border-rose-200 rounded-xl font-black transition-colors hover:bg-rose-100">À RETRAVAILLER</button><button onclick="mark('${cat}', ${idx}, 'EASY')" class="flex-1 py-4 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl font-black transition-colors hover:bg-emerald-100">FACILE</button></div>`;
     } else if(state.isScored) {
-        // CF1: Diagnostic Dynamique (Bouton Bilan protégé)
         if (cat === 'CALIBRAGE' && isCatDone) {
             actions = `<button onclick="finishCalibrage()" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-black rounded-xl mt-3 transition-transform hover:-translate-y-1 shadow-lg text-lg animate-pulse-ring">VOIR MON BILAN IA 🚀</button>`;
         } else if (!isCatDone) {
