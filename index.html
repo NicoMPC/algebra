@@ -9,7 +9,8 @@
     window.MathJax = {
       tex: { 
           inlineMath: [['$', '$'], ['\\(', '\\)']], 
-          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          macros: { Fract: ["\\frac{#1}{#2}", 2] }
       },
       options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] },
       startup: {
@@ -218,10 +219,15 @@ let state = {
 };
 const LEVELS = {};
 
-// FIX LATEX (Frac, Fract, majuscules, minuscules, espaces)
+// TRADUCTEUR LATEX INTELLIGENT (Fix affichage 4ème et Terminale)
 function formatLatex(str) {
     if (!str) return '';
-    return str.replace(/\\?(?:frac|fract)\s*\(\s*([^)]+?)\s*\)\s*\(\s*([^)]+?)\s*\)/ig, '\\frac{$1}{$2}');
+    let s = str.replace(/\\?(?:frac|fract)\s*\(\s*([^)]+?)\s*\)\s*\(\s*([^)]+?)\s*\)/ig, '\\frac{$1}{$2}');
+    // Si ça ressemble à des maths (contient \, ^, =, ou chiffres seuls) mais sans les $, on les rajoute.
+    if (!s.includes('$') && (s.includes('\\') || s.includes('^') || s.includes('=') || /^[0-9xX\+\-\*\/\s,]+$/.test(s))) {
+        return '$' + s + '$';
+    }
+    return s;
 }
 
 // Utilitaires
@@ -349,7 +355,7 @@ function initApp() {
         localData[code].streak = (diff === 1) ? (localData[code].streak || 0) + 1 : 1; 
     }
     
-    // SÉCURITÉ : VÉRIFICATION LOCALE DU BOOST TERMINÉ
+    // VERROU : On respecte la sauvegarde locale aussi pour bloquer le boost
     if (localData[code].boostDoneDate === today) {
         state.boostCompletedToday = true;
     }
@@ -377,7 +383,7 @@ function initApp() {
     
     if (!state.isFirstDay) {
         if (state.boostCompletedToday) {
-            // VERROU : On ne charge rien, c'est fini pour aujourd'hui !
+            // FINI POUR AUJOURD'HUI.
         } else if (state.dailyBoost && state.dailyBoost.exos) {
             loadExistingBoost();  
         } else {
@@ -392,7 +398,6 @@ function updateLevelDropdown(userLvl) { const sel = document.getElementById('niv
 function updateHeader() { document.getElementById('ui-streak').innerText = state.streak; document.getElementById('ui-xp').innerText = state.xp; }
 function changeNiveau() { 
     state.niveau = document.getElementById('niveau-select').value; 
-    // Au changement de niveau, on nettoie le boost du niveau précédent pour ne pas les mélanger
     const cats = LEVELS[state.niveau].categories;
     if(cats && cats['BOOST']) delete cats['BOOST']; 
     if(!state.isFirstDay && !state.boostCompletedToday) generateBoostIA(); 
@@ -438,8 +443,27 @@ function startCalibrage() {
     
     setTimeout(() => {
         let pool = [];
-        const diagSource = (window.dbDiag && window.dbDiag[`ALGEBRA_${state.niveau}`]) ? window.dbDiag[`ALGEBRA_${state.niveau}`] : LEVELS[state.niveau].categories;
-        selectedCats.forEach(cat => { if(diagSource[cat]) diagSource[cat].forEach((exo, idx) => pool.push({...exo, originalCat: cat, originalIdx: idx})); });
+        const diagSource = (window.dbDiag && window.dbDiag[`ALGEBRA_${state.niveau}`]) ? window.dbDiag[`ALGEBRA_${state.niveau}`] : {};
+        
+        selectedCats.forEach(cat => {
+            let added = 0;
+            if (diagSource[cat]) {
+                diagSource[cat].forEach((exo, idx) => {
+                    // ID ISOLÉ : On rajoute 1000 pour que le diagnostic n'entame pas les exercices du Dashboard normal !
+                    pool.push({...exo, originalCat: cat, originalIdx: 1000 + idx}); 
+                    added++;
+                });
+            }
+            // FALLBACK : Si le diag est incomplet (ex: nom de catégorie différent), on prend des exos dans la DB normale.
+            if (added < 2 && LEVELS[state.niveau].categories[cat]) {
+                let normalExos = [...LEVELS[state.niveau].categories[cat]].sort(() => 0.5 - Math.random());
+                for(let i=0; i < normalExos.length && added < 2; i++) {
+                    pool.push({...normalExos[i], originalCat: cat, originalIdx: 1000 + added});
+                    added++;
+                }
+            }
+        });
+        
         pool.sort(() => 0.5 - Math.random());
         state.calibrageExos = pool; 
         
@@ -474,19 +498,42 @@ function generateBoostIA() {
     let newCats = {}; Object.keys(cats).forEach(k => { if(k !== "BOOST" && k !== "CALIBRAGE") newCats[k] = cats[k]; });
     LEVELS[state.niveau].categories = newCats;
 
-    let toRev = [], toDisc = [];
-    Object.keys(newCats).forEach(cat => {
-        newCats[cat].forEach((exo, idx) => {
-            const res = state.results[`${state.niveau}-${cat}-${idx}`]; const hints = state.hintStepsRevealed[`${state.niveau}-${cat}-${idx}`] || 0;
-            let w = 0; if(res === 'HARD') w = 10; else if(res === 'MEDIUM') w = 5; else if(hints > 0 && res !== 'EASY') w = 2; else if(!res) w = 1;
-            if(w > 1) toRev.push({ exo, cat, idx, w }); else if(w === 1) toDisc.push({ exo, cat, idx });
-        });
+    // 1. Calculer les faiblesses depuis TOUT l'historique (y compris le diagnostic)
+    let catWeakness = {};
+    Object.keys(newCats).forEach(cat => catWeakness[cat] = 0);
+    Object.keys(state.results).forEach(key => {
+        let parts = key.split('-'); // ex: 4EME-FRACTIONS-1000
+        if(parts.length >= 3 && parts[0] === state.niveau) {
+            let cat = parts[1]; let res = state.results[key];
+            if(catWeakness[cat] !== undefined) {
+                if(res === 'HARD') catWeakness[cat] += 10;
+                else if(res === 'MEDIUM') catWeakness[cat] += 5;
+                else if(res === 'EASY') catWeakness[cat] -= 2; 
+            }
+        }
     });
 
-    toRev.sort((a, b) => b.w - a.w); toDisc.sort(() => 0.5 - Math.random());
+    // 2. Classer les chapitres du plus faible au plus fort
+    let sortedCats = Object.keys(catWeakness).sort((a, b) => catWeakness[b] - catWeakness[a]);
+
+    // 3. Piocher uniquement des exercices que l'élève N'A JAMAIS FAITS (vierges)
+    let toRev = [];
+    sortedCats.forEach(cat => {
+        if(newCats[cat]) {
+            newCats[cat].forEach((exo, idx) => {
+                const res = state.results[`${state.niveau}-${cat}-${idx}`];
+                if (!res) { toRev.push({ exo, cat, idx, w: catWeakness[cat] }); }
+            });
+        }
+    });
+
+    if (toRev.length === 0) { // Si tout a été fini, on révise au hasard
+         Object.keys(newCats).forEach(cat => { newCats[cat].forEach((exo, idx) => { toRev.push({ exo, cat, idx, w: Math.random() }); }); });
+    }
+
+    toRev.sort((a, b) => b.w - a.w); 
     let boostExos = [];
     for(let i=0; i<Math.min(5, toRev.length); i++) boostExos.push(toRev[i]);
-    for(let i=0; i<Math.min(10 - boostExos.length, toDisc.length); i++) boostExos.push(toDisc[i]);
 
     if (boostExos.length > 0) {
         LEVELS[state.niveau].categories["BOOST"] = boostExos.map(item => ({ ...item.exo, originalCat: item.cat, originalIdx: item.idx }));
@@ -676,13 +723,12 @@ function render() {
     let catKeys = Object.keys(catsToRender);
     if(catKeys.includes("BOOST")) { catKeys = ["BOOST", ...catKeys.filter(k => k !== "BOOST")]; }
 
-    // On affiche le bloc vert SEULEMENT si on n'est pas en calibrage, et que le boost est terminé
     if (state.boostCompletedToday && !state.isFirstDay && state.calibrageState !== 'testing') {
         html += `<div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-6 text-center animate-fade-in"><div class="text-4xl mb-2">✅</div><h3 class="font-black text-emerald-800">Séquence IA validée pour aujourd'hui !</h3></div>`;
     }
 
     catKeys.forEach(cat => {
-        if (cat === 'BOOST' && state.boostCompletedToday) return; // On saute la catégorie BOOST si complétée
+        if (cat === 'BOOST' && state.boostCompletedToday) return; 
         
         const total = catsToRender[cat].length; let doneCount = 0;
         for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); if(state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) doneCount++; }
