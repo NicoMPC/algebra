@@ -49,7 +49,6 @@
     
     .opt-neutral { opacity: 0.5; pointer-events: none; background: #f8fafc; border-color: #e2e8f0 !important; }
 
-    /* Correction Padding pour la Coche */
     .chap-card { border: 2px solid #e2e8f0; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; overflow: hidden; background: white; padding-right: 3.5rem; }
     .chap-checkbox:checked + .chap-card { border-color: #4f46e5; background: #eef2ff; transform: scale(1.02); box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.2); }
     .chap-checkbox:checked + .chap-card::after { content: '✅'; position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
@@ -211,7 +210,7 @@ let state = {
   questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null,
   hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
   qcmAnswered: {}, currentShuffle: {}, startTimes: {},
-  dailyBoost: null, isFirstDay: false, calibrageState: null, calibrageExos: [],
+  dailyBoost: null, isFirstDay: true, calibrageState: null, calibrageExos: [],
   isDrawing: false, draftOpen: false
 };
 const LEVELS = {};
@@ -265,10 +264,19 @@ async function loginStudent() {
         const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "login", email, password: pwd }) });
         const data = await res.json();
         if (data.status === "success") { 
-            state.activeProfile = data.profile; state.dailyBoost = data.dailyBoost; state.isFirstDay = data.isFirstDay;
-            if(state.isFirstDay) state.calibrageState = 'select';
+            state.activeProfile = data.profile; 
+            state.dailyBoost = data.dailyBoost; 
+            state.isFirstDay = data.isFirstDay;
             localStorage.setItem(SESSION_KEY, JSON.stringify({email, password: pwd}));
-            rebuildState(data.history); initApp(); 
+            
+            rebuildState(data.history); // Cette fonction écrase isFirstDay si historique trouvé
+            
+            if(state.isFirstDay) {
+                state.calibrageState = 'select';
+            } else {
+                state.calibrageState = null; // On force la suppression du diagnostic
+            }
+            initApp(); 
         } else { showCustomAlert("Accès refusé", data.message, "🚫"); }
     } catch(e) { showCustomAlert("Erreur", "Problème de connexion.", "🔌"); } finally { toggleLoader('login', false); }
 }
@@ -292,7 +300,7 @@ async function registerStudent() {
 }
 
 // ==========================================================
-// INITIALISATION
+// INITIALISATION & GESTION DE L'ÉTAT
 // ==========================================================
 document.addEventListener('DOMContentLoaded', () => { 
   Object.keys(LEVEL_NAMES).forEach(key => { LEVELS[key] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[key] }; });
@@ -304,13 +312,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function rebuildState(history) {
     state.results = {}; state.xp = 0; state.hintStepsRevealed = {}; state.formulaRevealed = {};
-    if(!history) return;
+    let hasHistory = false;
+    
+    if(!history || history.length === 0) return;
+    
     history.forEach(row => {
+        hasHistory = true;
         const id = `${row.niveau}-${row.categorie}-${parseInt(row.exercice_idx) - 1}`;
         state.results[id] = row.resultat; state.xp += parseInt(row.xp) || 0;
         if(row.indices > 0) state.hintStepsRevealed[id] = row.indices;
         if(row.formule) state.formulaRevealed[id] = true;
     });
+
+    // SÉCURITÉ : Si l'élève a le moindre historique, ce n'est plus son premier jour.
+    if (hasHistory) {
+        state.isFirstDay = false;
+        state.calibrageState = null;
+    }
 }
 
 function populateDB() {
@@ -324,17 +342,27 @@ function initApp() {
     populateDB(); state.niveau = state.activeProfile.level; if(!LEVELS[state.niveau]) state.niveau = "4EME";
     let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
     const code = state.activeProfile.code;
-    if(!localData[code]) localData[code] = { streak: 1, lastLogin: new Date().toISOString().split('T')[0], tutoDraftViewed: false };
+    
+    if(!localData[code]) {
+        localData[code] = { streak: 1, lastLogin: new Date().toISOString().split('T')[0], tutoDraftViewed: false };
+    }
     
     const today = new Date().toISOString().split('T')[0];
-    if (!sessionStorage.getItem('session_counted')) {
-       sessionStorage.setItem('session_counted', 'true');
-       if (localData[code].lastLogin && localData[code].lastLogin !== today) { 
-           const diff = Math.ceil(Math.abs(new Date(today) - new Date(localData[code].lastLogin)) / (86400000)); 
-           localData[code].streak = (diff === 1) ? (localData[code].streak || 0) + 1 : 1; 
-       }
-       localData[code].lastLogin = today; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
+    
+    // GESTION DU LENDEMAIN (Reset Quotidien)
+    if (localData[code].lastLogin && localData[code].lastLogin !== today) { 
+        const diff = Math.ceil(Math.abs(new Date(today) - new Date(localData[code].lastLogin)) / (86400000)); 
+        localData[code].streak = (diff === 1) ? (localData[code].streak || 0) + 1 : 1; 
+        
+        // Si c'est un nouveau jour, on force la génération d'un nouveau Boost IA
+        if (!state.isFirstDay) {
+            generateBoostIA();
+        }
     }
+    
+    localData[code].lastLogin = today; 
+    localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
+    
     state.streak = localData[code].streak || 1;
 
     document.getElementById('landing-screen').classList.add('hidden');
@@ -363,7 +391,7 @@ function updateHeader() { document.getElementById('ui-streak').innerText = state
 function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; if(!state.isFirstDay) generateBoostIA(); render(); }
 
 // ==========================================================
-// ONBOARDING EXPRESS
+// ONBOARDING EXPRESS (DIAGNOSTIC DYNAMIQUE)
 // ==========================================================
 function startCalibrage() {
     const cbs = document.querySelectorAll('.chap-checkbox:checked');
@@ -376,23 +404,14 @@ function startCalibrage() {
         let pool = [];
         const diagSource = (window.dbDiag && window.dbDiag[`ALGEBRA_${state.niveau}`]) ? window.dbDiag[`ALGEBRA_${state.niveau}`] : LEVELS[state.niveau].categories;
         
-        // 1. On prend dans les chapitres sélectionnés
+        // On prend UNIQUEMENT dans les chapitres sélectionnés (Diagnostic Adaptatif)
         selectedCats.forEach(cat => {
             if(diagSource[cat]) diagSource[cat].forEach((exo, idx) => pool.push({...exo, originalCat: cat, originalIdx: idx}));
         });
         
-        // 2. Si moins de 8 questions, on pioche dans le reste
-        if (pool.length < 8) {
-            Object.keys(diagSource).forEach(cat => {
-                if (!selectedCats.includes(cat) && diagSource[cat]) {
-                    diagSource[cat].forEach((exo, idx) => pool.push({...exo, originalCat: cat, originalIdx: idx}));
-                }
-            });
-        }
-
-        // On mélange et on garde strictement 8
+        // On mélange
         pool.sort(() => 0.5 - Math.random());
-        state.calibrageExos = pool.slice(0, 8); 
+        state.calibrageExos = pool; // La taille s'adapte automatiquement (ex: 4 ou 6 questions)
         
         LEVELS[state.niveau].categories["CALIBRAGE"] = state.calibrageExos;
         LEVELS[state.niveau].catDisplay["CALIBRAGE"] = "🎯 Ton Diagnostic IA";
@@ -573,7 +592,7 @@ function render() {
 
     // ÉCRAN 2 : CHARGEMENT DIAGNOSTIC
     if (state.isFirstDay && state.calibrageState === 'loading') {
-        container.innerHTML = `<div class="flex flex-col items-center justify-center py-20 animate-fade-in"><div class="loader loader-lg mb-6" style="border-top-color:#4f46e5;"></div><h2 class="text-2xl font-black text-slate-800">L'IA compile ton Diagnostic...</h2><p class="text-slate-500 mt-2 font-medium">Préparation des 8 questions clés.</p></div>`; return;
+        container.innerHTML = `<div class="flex flex-col items-center justify-center py-20 animate-fade-in"><div class="loader loader-lg mb-6" style="border-top-color:#4f46e5;"></div><h2 class="text-2xl font-black text-slate-800">L'IA compile ton Diagnostic...</h2><p class="text-slate-500 mt-2 font-medium">Préparation des questions ciblées.</p></div>`; return;
     }
     
     // ÉCRAN 3 : LE MOMENT WAOUH
@@ -654,10 +673,11 @@ function renderSection(cat, data, idx, total, isCatDone) {
     } else if(isRev && !state.isScored && !hasOpt) {
         actions = `<div class="flex gap-2 w-full mt-2"><button onclick="mark('${cat}', ${idx}, 'HARD')" class="flex-1 py-4 bg-rose-50 text-rose-600 border border-rose-200 rounded-xl font-black transition-colors hover:bg-rose-100">À RETRAVAILLER</button><button onclick="mark('${cat}', ${idx}, 'EASY')" class="flex-1 py-4 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl font-black transition-colors hover:bg-emerald-100">FACILE</button></div>`;
     } else if(state.isScored) {
-        if (!isCatDone && !(cat === 'CALIBRAGE' && idx === state.calibrageExos.length - 1)) {
-            actions = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl mt-3 transition-transform hover:-translate-y-1 shadow-lg">EXERCICE SUIVANT</button>`;
-        } else if (cat === 'CALIBRAGE') {
+        // La condition clé pour afficher le bouton Bilan uniquement à la fin du tableau dynamique
+        if (cat === 'CALIBRAGE' && idx === state.calibrageExos.length - 1) {
             actions = `<button onclick="finishCalibrage()" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-black rounded-xl mt-3 transition-transform hover:-translate-y-1 shadow-lg text-lg animate-pulse-ring">VOIR MON BILAN IA 🚀</button>`;
+        } else if (!isCatDone) {
+            actions = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl mt-3 transition-transform hover:-translate-y-1 shadow-lg">EXERCICE SUIVANT</button>`;
         }
     }
 
