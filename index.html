@@ -64,14 +64,17 @@
     @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
     .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
     @keyframes pop { 0% { transform: scale(0.5) translateY(-50%); opacity: 0; } 100% { transform: scale(1) translateY(-50%); opacity: 1; } }
-    @keyframes pulse-ring { 0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+    @keyframes pulse-ring { 0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(79, 70, 229, 0); } 100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); } }
     .animate-pulse-ring { animation: pulse-ring 2s infinite; }
 
-    .loader { border: 4px solid #f1f5f9; border-top: 4px solid #3b82f6; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; }
+    .loader { border: 4px solid #f1f5f9; border-top: 4px solid #4f46e5; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; }
     .loader-lg { border-width: 6px; width: 50px; height: 50px; }
+    
+    /* Dégradés pour la landing page */
+    .bg-grid-pattern { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 24px 24px; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col relative">
 
 <div id="custom-alert" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
   <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl animate-bounce-in">
@@ -82,60 +85,82 @@
   </div>
 </div>
 
-<div id="landing-screen" class="fixed inset-0 bg-white z-50 flex flex-col overflow-y-auto">
-    <header class="flex justify-between items-center p-6 max-w-7xl mx-auto w-full">
+<div id="landing-screen" class="fixed inset-0 bg-white z-50 flex flex-col overflow-y-auto bg-grid-pattern relative">
+    <div class="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-indigo-50/80 to-transparent z-0 pointer-events-none"></div>
+    
+    <header class="flex justify-between items-center p-6 max-w-7xl mx-auto w-full relative z-10">
         <div class="flex items-center gap-2">
-            <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-xl text-white font-bold shadow-md">📐</div>
-            <span class="text-xl font-black tracking-tight">Algèbre <span class="text-blue-600">Boost</span></span>
+            <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-xl flex items-center justify-center text-xl text-white font-bold shadow-md shadow-indigo-200">📐</div>
+            <span class="text-xl font-black tracking-tight text-slate-800">Algèbre <span class="text-indigo-600">Boost</span></span>
         </div>
-        <button onclick="showAuth('login')" class="font-bold text-slate-600 hover:text-slate-900">Se connecter</button>
+        <button onclick="showAuth('login')" class="font-bold text-slate-600 hover:text-indigo-600 bg-white px-5 py-2 rounded-full shadow-sm border border-slate-200 transition-colors">Connexion</button>
     </header>
 
-    <div class="flex-1 flex flex-col items-center justify-center p-6 text-center max-w-4xl mx-auto">
-        <div class="inline-block bg-blue-50 border border-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm font-bold mb-8">
-            🚀 Bêta Privée - Ton coach IA personnel
+    <div class="flex-1 flex flex-col items-center justify-center p-6 text-center max-w-4xl mx-auto relative z-10 pb-20">
+        <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-sm font-bold mb-8 border border-emerald-200 shadow-sm animate-fade-in">
+            <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
+            Bêta Privée Ouverte — Teste ton niveau
         </div>
-        <h1 class="text-5xl lg:text-7xl font-black mb-6 leading-tight tracking-tighter">
-            Arrête de bloquer <br class="hidden md:block"/> en <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Mathématiques.</span>
+        
+        <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.1] tracking-tighter text-slate-900">
+            Fais exploser ta moyenne en <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">Mathématiques.</span>
         </h1>
-        <p class="text-lg lg:text-xl text-slate-500 mb-10 max-w-2xl font-medium">
-            L'algorithme analyse tes failles et te crée un parcours d'entraînement chirurgical pour faire décoller ta moyenne.
+        
+        <p class="text-lg md:text-xl text-slate-500 mb-10 max-w-2xl font-medium leading-relaxed">
+            Passe notre diagnostic de 3 minutes. L'IA analyse tes failles invisibles et génère un programme d'entraînement chirurgical pour te faire gagner des points au prochain contrôle.
         </p>
-        <button onclick="showAuth('register')" class="px-10 py-5 bg-slate-900 text-white font-black text-xl rounded-2xl shadow-xl hover:-translate-y-1 transition-all">
-            Faire mon Diagnostic IA (Gratuit)
-        </button>
-        <p class="mt-4 text-sm font-bold text-slate-400">🎁 Accès Premium offert pour les 100 premiers testeurs.</p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <button onclick="showAuth('register')" class="px-8 py-5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-black text-xl rounded-2xl shadow-[0_10px_40px_-10px_rgba(79,70,229,0.5)] hover:-translate-y-1 transition-all flex items-center justify-center gap-3">
+                Lancer mon Diagnostic IA <span class="text-2xl">🚀</span>
+            </button>
+        </div>
+        
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-left max-w-3xl w-full">
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-start gap-4">
+                <div class="text-3xl bg-indigo-50 p-2 rounded-xl">🎯</div>
+                <div><h3 class="font-bold text-slate-800">Ciblé</h3><p class="text-sm text-slate-500 mt-1">L'IA détecte précisément ce qui te bloque.</p></div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-start gap-4">
+                <div class="text-3xl bg-blue-50 p-2 rounded-xl">⚡</div>
+                <div><h3 class="font-bold text-slate-800">Rapide</h3><p class="text-sm text-slate-500 mt-1">Séquences de 5 à 10 minutes par jour max.</p></div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-start gap-4">
+                <div class="text-3xl bg-emerald-50 p-2 rounded-xl">📈</div>
+                <div><h3 class="font-bold text-slate-800">Efficace</h3><p class="text-sm text-slate-500 mt-1">Progression visible dès le premier contrôle.</p></div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div id="auth-screen" class="hidden fixed inset-0 bg-slate-50 z-[60] flex items-center justify-center p-4 backdrop-blur-sm bg-white/90">
+<div id="auth-screen" class="hidden fixed inset-0 bg-slate-50/80 z-[60] flex items-center justify-center p-4 backdrop-blur-md">
     <div class="bg-white p-8 rounded-3xl shadow-2xl border border-slate-100 w-full max-w-md relative animate-bounce-in">
-        <button onclick="closeAuth()" class="absolute top-4 right-4 text-slate-400 font-bold hover:text-slate-800 text-xl">✕</button>
+        <button onclick="closeAuth()" class="absolute top-4 right-4 text-slate-400 font-bold hover:text-slate-800 text-xl bg-slate-50 w-8 h-8 rounded-full flex items-center justify-center">✕</button>
         
-        <div class="flex bg-slate-100 rounded-xl p-1 mb-6">
-            <button onclick="switchTab('login')" id="tab-login" class="flex-1 py-2 font-bold text-sm rounded-lg bg-white shadow-sm transition-all text-slate-900">Connexion</button>
-            <button onclick="switchTab('register')" id="tab-register" class="flex-1 py-2 font-bold text-sm rounded-lg text-slate-500 transition-all hover:bg-slate-200/50">Inscription</button>
+        <div class="flex bg-slate-100 rounded-xl p-1 mb-8 mt-2">
+            <button onclick="switchTab('register')" id="tab-register" class="flex-1 py-2 font-bold text-sm rounded-lg bg-white shadow-sm transition-all text-slate-900">Nouveau profil</button>
+            <button onclick="switchTab('login')" id="tab-login" class="flex-1 py-2 font-bold text-sm rounded-lg text-slate-500 transition-all hover:bg-slate-200/50">Déjà inscrit</button>
         </div>
 
-        <div id="form-login" class="space-y-4">
-            <input type="email" id="login-email" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-blue-500" placeholder="Ton Email">
-            <input type="password" id="login-pwd" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-blue-500" placeholder="Ton Mot de passe">
-            <button onclick="loginStudent()" class="w-full py-4 mt-2 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl transition-colors flex justify-center items-center gap-2">
-                <span id="login-text">Entrer dans l'arène</span> <span id="login-loader" class="loader hidden" style="border-top-color: white;"></span>
-            </button>
-        </div>
-
-        <div id="form-register" class="hidden space-y-4">
-            <input type="text" id="reg-name" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-blue-500" placeholder="Ton Prénom">
-            <input type="email" id="reg-email" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-blue-500" placeholder="Ton Email">
-            <select id="reg-level" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-blue-500 cursor-pointer">
+        <div id="form-register" class="space-y-4">
+            <input type="text" id="reg-name" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold text-slate-800 rounded-xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all" placeholder="Ton Prénom">
+            <input type="email" id="reg-email" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold text-slate-800 rounded-xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all" placeholder="Ton Email">
+            <select id="reg-level" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold text-slate-800 rounded-xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all cursor-pointer">
                 <option value="6EME">6ème</option><option value="5EME">5ème</option><option value="4EME" selected>4ème</option>
                 <option value="3EME">3ème</option><option value="SECONDE">Seconde</option><option value="PREMIERE">1ère (Spé)</option><option value="TERMINALE">Terminale</option>
             </select>
-            <input type="password" id="reg-pwd" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-blue-500" placeholder="Créer un mot de passe">
-            <input type="password" id="reg-pwd-confirm" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-blue-500" placeholder="Confirmer le mot de passe">
-            <button onclick="registerStudent()" class="w-full py-4 mt-2 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl transition-all shadow-lg shadow-blue-200 flex justify-center items-center gap-2">
-                <span id="reg-text">Configurer mon profil</span> <span id="reg-loader" class="loader hidden" style="border-top-color: white;"></span>
+            <input type="password" id="reg-pwd" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold text-slate-800 rounded-xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all" placeholder="Créer un mot de passe">
+            <input type="password" id="reg-pwd-confirm" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold text-slate-800 rounded-xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all" placeholder="Confirmer le mot de passe">
+            <button onclick="registerStudent()" class="w-full py-4 mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-lg rounded-xl transition-all shadow-lg shadow-indigo-200 flex justify-center items-center gap-2">
+                <span id="reg-text">C'est parti ! 🚀</span> <span id="reg-loader" class="loader hidden" style="border-top-color: white;"></span>
+            </button>
+        </div>
+
+        <div id="form-login" class="hidden space-y-4">
+            <input type="email" id="login-email" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold text-slate-800 rounded-xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all" placeholder="Ton Email">
+            <input type="password" id="login-pwd" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold text-slate-800 rounded-xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all" placeholder="Ton Mot de passe">
+            <button onclick="loginStudent()" class="w-full py-4 mt-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-lg rounded-xl transition-colors flex justify-center items-center gap-2 shadow-lg">
+                <span id="login-text">Entrer dans l'arène</span> <span id="login-loader" class="loader hidden" style="border-top-color: white;"></span>
             </button>
         </div>
     </div>
@@ -154,16 +179,16 @@
 <div id="main-app" class="hidden flex-1 w-full max-w-5xl mx-auto p-4 md:p-6 relative z-10 transition-opacity duration-300">
     <header class="flex flex-col md:flex-row justify-between items-center mb-6 bg-white rounded-3xl shadow-sm border border-slate-200 p-4 lg:p-5 gap-4">
         <div class="flex items-center gap-4 w-full md:w-auto">
-            <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-inner">📐</div>
+            <div class="w-12 h-12 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-inner">📐</div>
             <div>
-                <h1 class="text-xl font-black text-slate-800 leading-tight">Espace de <span id="active-student-name" class="text-blue-600"></span></h1>
+                <h1 class="text-xl font-black text-slate-800 leading-tight">Espace de <span id="active-student-name" class="text-indigo-600"></span></h1>
                 <span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">Premium Bêta</span>
             </div>
         </div>
         <div class="flex items-center gap-2 font-bold flex-wrap justify-center w-full md:w-auto">
             <div class="bg-orange-50 text-orange-600 px-3 py-2 rounded-xl border border-orange-100 text-sm shadow-sm">🔥 <span id="ui-streak">0</span></div>
             <div class="bg-blue-50 text-blue-700 px-3 py-2 rounded-xl border border-blue-100 text-sm shadow-sm">💎 <span id="ui-xp">0</span></div>
-            <select id="niveau-select" onchange="changeNiveau()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm max-w-[120px] outline-none font-semibold cursor-pointer"></select>
+            <select id="niveau-select" onchange="changeNiveau()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm max-w-[120px] outline-none font-semibold cursor-pointer text-slate-700"></select>
             <button onclick="logout()" class="p-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl border border-rose-100 transition-colors" title="Déconnexion">✕</button>
         </div>
     </header>
@@ -180,16 +205,16 @@
     
     <div class="p-4 flex flex-col gap-2 border-b border-slate-100 bg-slate-50/50">
         <div class="flex gap-2">
-            <button onclick="insertText('²')" class="bg-white border border-slate-200 p-2 rounded-lg flex-1 font-bold shadow-sm hover:bg-slate-50">x²</button>
-            <button onclick="insertText('³')" class="bg-white border border-slate-200 p-2 rounded-lg flex-1 font-bold shadow-sm hover:bg-slate-50">x³</button>
-            <button onclick="insertText('√()')" class="bg-white border border-slate-200 p-2 rounded-lg flex-1 font-bold shadow-sm hover:bg-slate-50">√</button>
+            <button onclick="insertText('²')" class="bg-white border border-slate-200 p-2 rounded-lg flex-1 font-bold shadow-sm hover:bg-slate-50 text-slate-700">x²</button>
+            <button onclick="insertText('³')" class="bg-white border border-slate-200 p-2 rounded-lg flex-1 font-bold shadow-sm hover:bg-slate-50 text-slate-700">x³</button>
+            <button onclick="insertText('√()')" class="bg-white border border-slate-200 p-2 rounded-lg flex-1 font-bold shadow-sm hover:bg-slate-50 text-slate-700">√</button>
             <button onclick="clearDraft()" class="bg-rose-50 border border-rose-100 text-rose-600 p-2 rounded-lg flex-1 font-bold shadow-sm hover:bg-rose-100">Vider</button>
         </div>
         <button id="btn-draw-draft" onclick="toggleDraftDrawingMode()" class="w-full py-2 bg-white border border-slate-200 rounded-lg font-bold text-sm text-slate-600 shadow-sm transition-colors">🖍️ Mode Dessin Manuel</button>
     </div>
     
     <div id="box-draft" class="flex-grow p-4 relative">
-        <textarea id="text-draft" class="w-full h-full p-4 border-2 border-dashed border-slate-300 rounded-2xl outline-none focus:border-blue-500 font-mono text-lg bg-white resize-none" placeholder="Pose tes calculs ici..."></textarea>
+        <textarea id="text-draft" class="w-full h-full p-4 border-2 border-dashed border-slate-300 rounded-2xl outline-none focus:border-indigo-500 font-mono text-lg bg-white resize-none text-slate-800" placeholder="Pose tes calculs ici..."></textarea>
         <canvas id="draw-canvas-draft"></canvas>
     </div>
 </div>
@@ -215,10 +240,12 @@ let state = {
 };
 const LEVELS = {};
 
-// TRADUCTEUR SECRET POUR LE LATEX "FRACT"
+// QW2: TRADUCTEUR ROBUSTE POUR LE LATEX "FRACT"
 function formatLatex(str) {
     if (!str) return '';
-    return str.replace(/Fract\(([^)]+)\)\(([^)]+)\)/g, '\\frac{$1}{$2}');
+    return str
+        .replace(/Fract\s*\(\s*([^)]+?)\s*\)\s*\(\s*([^)]+?)\s*\)/g, '\\frac{$1}{$2}')
+        .replace(/Fract\(([^)]+)\)\(([^)]+)\)/g, '\\frac{$1}{$2}');
 }
 
 // Utilitaires
@@ -226,9 +253,10 @@ function showCustomAlert(title, message, icon = '⚠️') { document.getElementB
 function closeCustomAlert() { document.getElementById('custom-alert').classList.add('hidden'); }
 function toggleLoader(idPrefix, isLoading) { document.getElementById(`${idPrefix}-loader`).classList.toggle('hidden', !isLoading); document.getElementById(`${idPrefix}-text`).classList.toggle('hidden', isLoading); }
 
-// Animations Virales (Le Hook)
+// CF3: Animations Virales (Thread safe pour mobile)
 function confettiBurst() {
-  for(let i=0;i<80;i++) setTimeout(()=>{
+  const count = (window.innerWidth < 640 || /Mobi|Android/i.test(navigator.userAgent)) ? 40 : 80;
+  for(let i=0; i<count; i++) setTimeout(()=>{
     const c=document.createElement('div');
     c.style.cssText=`position:fixed;left:${Math.random()*100}vw;top:-20px;font-size:30px;transform:rotate(${Math.random()*360}deg);z-index:9999;`;
     c.textContent=['🎉','🚀','🔥','💎'][Math.floor(Math.random()*4)];
@@ -250,10 +278,10 @@ function shareWaouh() {
 function showAuth(tab) { document.getElementById('landing-screen').classList.add('hidden'); document.getElementById('auth-screen').classList.remove('hidden'); switchTab(tab); }
 function closeAuth() { document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('landing-screen').classList.remove('hidden'); }
 function switchTab(tab) {
-    document.getElementById('form-login').classList.toggle('hidden', tab === 'register');
     document.getElementById('form-register').classList.toggle('hidden', tab === 'login');
-    document.getElementById('tab-login').className = tab === 'login' ? "flex-1 py-2 font-bold text-sm rounded-lg bg-white shadow-sm transition-all text-slate-900" : "flex-1 py-2 font-bold text-sm rounded-lg text-slate-500 transition-all hover:bg-slate-200/50";
+    document.getElementById('form-login').classList.toggle('hidden', tab === 'register');
     document.getElementById('tab-register').className = tab === 'register' ? "flex-1 py-2 font-bold text-sm rounded-lg bg-white shadow-sm transition-all text-slate-900" : "flex-1 py-2 font-bold text-sm rounded-lg text-slate-500 transition-all hover:bg-slate-200/50";
+    document.getElementById('tab-login').className = tab === 'login' ? "flex-1 py-2 font-bold text-sm rounded-lg bg-white shadow-sm transition-all text-slate-900" : "flex-1 py-2 font-bold text-sm rounded-lg text-slate-500 transition-all hover:bg-slate-200/50";
 }
 
 async function loginStudent() {
@@ -269,12 +297,14 @@ async function loginStudent() {
             state.isFirstDay = data.isFirstDay;
             localStorage.setItem(SESSION_KEY, JSON.stringify({email, password: pwd}));
             
-            rebuildState(data.history); // Cette fonction écrase isFirstDay si historique trouvé
+            rebuildState(data.history); 
             
-            if(state.isFirstDay) {
+            // CF2: Synchronisation État (Court-circuit garanti du diag si data existe)
+            if ((data.history && data.history.length > 0) || !state.isFirstDay) {
+                state.isFirstDay = false;
+                state.calibrageState = null;
+            } else if(state.isFirstDay) {
                 state.calibrageState = 'select';
-            } else {
-                state.calibrageState = null; // On force la suppression du diagnostic
             }
             initApp(); 
         } else { showCustomAlert("Accès refusé", data.message, "🚫"); }
@@ -306,29 +336,20 @@ document.addEventListener('DOMContentLoaded', () => {
   Object.keys(LEVEL_NAMES).forEach(key => { LEVELS[key] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[key] }; });
   const savedCreds = localStorage.getItem(SESSION_KEY);
   if (savedCreds) {
-      try { const creds = JSON.parse(savedCreds); document.getElementById('login-email').value = creds.email || ''; document.getElementById('login-pwd').value = creds.password || ''; if(creds.email && creds.password) loginStudent(); } catch(e) {}
+      try { const creds = JSON.parse(savedCreds); document.getElementById('login-email').value = creds.email || ''; document.getElementById('login-pwd').value = creds.password || ''; if(creds.email && creds.password) showAuth('login'); } catch(e) {}
   }
 });
 
 function rebuildState(history) {
     state.results = {}; state.xp = 0; state.hintStepsRevealed = {}; state.formulaRevealed = {};
-    let hasHistory = false;
-    
     if(!history || history.length === 0) return;
     
     history.forEach(row => {
-        hasHistory = true;
         const id = `${row.niveau}-${row.categorie}-${parseInt(row.exercice_idx) - 1}`;
         state.results[id] = row.resultat; state.xp += parseInt(row.xp) || 0;
         if(row.indices > 0) state.hintStepsRevealed[id] = row.indices;
         if(row.formule) state.formulaRevealed[id] = true;
     });
-
-    // SÉCURITÉ : Si l'élève a le moindre historique, ce n'est plus son premier jour.
-    if (hasHistory) {
-        state.isFirstDay = false;
-        state.calibrageState = null;
-    }
 }
 
 function populateDB() {
@@ -343,21 +364,22 @@ function initApp() {
     let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {};
     const code = state.activeProfile.code;
     
+    // QW5: Nettoyage localData tests multi-comptes
+    if (localData.lastCode && localData.lastCode !== code) {
+        localData = {}; 
+    }
     if(!localData[code]) {
         localData[code] = { streak: 1, lastLogin: new Date().toISOString().split('T')[0], tutoDraftViewed: false };
     }
+    localData.lastCode = code;
     
     const today = new Date().toISOString().split('T')[0];
     
-    // GESTION DU LENDEMAIN (Reset Quotidien)
     if (localData[code].lastLogin && localData[code].lastLogin !== today) { 
         const diff = Math.ceil(Math.abs(new Date(today) - new Date(localData[code].lastLogin)) / (86400000)); 
         localData[code].streak = (diff === 1) ? (localData[code].streak || 0) + 1 : 1; 
         
-        // Si c'est un nouveau jour, on force la génération d'un nouveau Boost IA
-        if (!state.isFirstDay) {
-            generateBoostIA();
-        }
+        if (!state.isFirstDay) generateBoostIA();
     }
     
     localData[code].lastLogin = today; 
@@ -375,8 +397,9 @@ function initApp() {
     
     document.getElementById('active-student-name').innerText = state.activeProfile.name;
     
+    // QW3: Draft tooltip plus visible mobile
     if(!localData[code].tutoDraftViewed && !state.isFirstDay) {
-        setTimeout(() => document.getElementById('draft-tooltip').classList.remove('hidden'), 3000);
+        setTimeout(() => document.getElementById('draft-tooltip').classList.remove('hidden'), window.innerWidth < 640 ? 1800 : 3000);
         localData[code].tutoDraftViewed = true; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
     }
 
@@ -404,14 +427,12 @@ function startCalibrage() {
         let pool = [];
         const diagSource = (window.dbDiag && window.dbDiag[`ALGEBRA_${state.niveau}`]) ? window.dbDiag[`ALGEBRA_${state.niveau}`] : LEVELS[state.niveau].categories;
         
-        // On prend UNIQUEMENT dans les chapitres sélectionnés (Diagnostic Adaptatif)
         selectedCats.forEach(cat => {
             if(diagSource[cat]) diagSource[cat].forEach((exo, idx) => pool.push({...exo, originalCat: cat, originalIdx: idx}));
         });
         
-        // On mélange
         pool.sort(() => 0.5 - Math.random());
-        state.calibrageExos = pool; // La taille s'adapte automatiquement (ex: 4 ou 6 questions)
+        state.calibrageExos = pool; 
         
         LEVELS[state.niveau].categories["CALIBRAGE"] = state.calibrageExos;
         LEVELS[state.niveau].catDisplay["CALIBRAGE"] = "🎯 Ton Diagnostic IA";
@@ -492,6 +513,10 @@ function mark(cat, idx, status) {
 
 function markPasVu(cat, idx) {
     const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`;
+    
+    // QW4: Tracer précisément les notions non vues pour l'IA
+    if(cat === 'CALIBRAGE') state.calibrageExos[idx].pasVu = true; 
+    
     state.results[realId] = 'PAS_VU'; state.isScored = true;
     sendScoreToSheet(realCat, realIdx, 'PAS_VU', 0, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000));
     render();
@@ -549,7 +574,7 @@ function toggleDrawingMode(id) { state.isDrawing = !state.isDrawing; const b = d
 function initCanvas(id) {
     const c = document.getElementById(id); if(!c) return;
     const rect = c.parentElement.getBoundingClientRect(); c.width = rect.width; c.height = rect.height;
-    let ctx = c.getContext('2d'); ctx.strokeStyle = id.includes('draft') ? 'rgba(59,130,246,0.6)' : 'rgba(239,68,68,0.6)'; ctx.lineWidth = 3; ctx.lineCap = ctx.lineJoin = 'round';
+    let ctx = c.getContext('2d'); ctx.strokeStyle = id.includes('draft') ? 'rgba(79,70,229,0.6)' : 'rgba(239,68,68,0.6)'; ctx.lineWidth = 3; ctx.lineCap = ctx.lineJoin = 'round';
     let d = false; const start = (x,y) => { d=true; ctx.beginPath(); ctx.moveTo(x,y); }; const move = (x,y) => { if(d) { ctx.lineTo(x,y); ctx.stroke(); } }; const end = () => d=false;
     c.onmousedown = e => start(e.offsetX, e.offsetY); c.onmousemove = e => move(e.offsetX, e.offsetY); c.onmouseup = c.onmouseleave = end;
     c.ontouchstart = e => { const r = c.getBoundingClientRect(); start(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); };
@@ -584,7 +609,7 @@ function render() {
             <p class="font-medium text-indigo-100 relative z-10 text-lg mb-8 max-w-2xl">Aide l'IA à te connaître en sélectionnant les chapitres que tu as déjà étudiés :</p>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10 mb-8 max-h-[420px] overflow-y-auto pr-2">${chapHtml}</div>
             <div class="flex flex-col relative z-10">
-                <button onclick="startCalibrage()" class="w-full py-5 bg-white text-indigo-700 font-black text-xl rounded-2xl shadow-lg transition-transform hover:scale-[1.02]">Lancer mon Diagnostic IA</button>
+                <button onclick="startCalibrage()" class="w-full py-5 bg-white text-indigo-700 font-black text-xl rounded-2xl shadow-[0_10px_25px_rgba(0,0,0,0.15)] transition-transform hover:scale-[1.02]">Lancer mon Diagnostic IA</button>
             </div>
         </div>`;
         return;
@@ -592,29 +617,35 @@ function render() {
 
     // ÉCRAN 2 : CHARGEMENT DIAGNOSTIC
     if (state.isFirstDay && state.calibrageState === 'loading') {
-        container.innerHTML = `<div class="flex flex-col items-center justify-center py-20 animate-fade-in"><div class="loader loader-lg mb-6" style="border-top-color:#4f46e5;"></div><h2 class="text-2xl font-black text-slate-800">L'IA compile ton Diagnostic...</h2><p class="text-slate-500 mt-2 font-medium">Préparation des questions ciblées.</p></div>`; return;
+        container.innerHTML = `<div class="flex flex-col items-center justify-center py-20 animate-fade-in"><div class="loader loader-lg mb-6"></div><h2 class="text-2xl font-black text-slate-800">L'IA compile ton Diagnostic...</h2><p class="text-slate-500 mt-2 font-medium">Préparation des questions ciblées.</p></div>`; return;
     }
     
-    // ÉCRAN 3 : LE MOMENT WAOUH
+    // ÉCRAN 3 : LE MOMENT WAOUH (QW1, QW4 appliqués)
     if (state.isFirstDay && state.calibrageState === 'results') {
         let hard = 0, easy = 0, pasVu = 0; 
         state.calibrageExos.forEach(e => { 
             const st = state.results[`${state.niveau}-${e.originalCat}-${e.originalIdx}`]; 
-            if(st==='HARD') hard++; else if(st==='EASY') easy++; else if(st==='PAS_VU') pasVu++; 
+            if(st==='HARD') hard++; else if(st==='EASY') easy++; else if(e.pasVu || st==='PAS_VU') pasVu++; 
         });
         
         let activeExos = state.calibrageExos.length - pasVu;
-        let scoreToDisplay = activeExos > 0 ? Math.min(100, Math.round((easy / activeExos)*100) + 15) : 87; 
+        // QW1: Calcul dynamique valorisant
+        let scoreToDisplay = activeExos > 0 ? Math.round((easy / activeExos)*100) + (activeExos >= 5 ? 12 : 20) : 87; 
+        if (scoreToDisplay > 100) scoreToDisplay = 100;
         
+        let pasVuHtml = pasVu > 0 ? `<p class="text-sm font-bold text-rose-500 mt-3">L'IA a mis de côté ${pasVu} notion(s) non étudiée(s).</p>` : '';
+
         container.innerHTML = `
         <div class="bg-white rounded-3xl p-8 lg:p-12 border border-slate-200 shadow-2xl animate-bounce-in max-w-2xl mx-auto">
             <div onclick="confettiBurst()" class="text-center cursor-pointer">
                 <div id="fireworks" class="text-8xl mb-4 animate-bounce">🎉</div>
-                <div class="text-7xl font-black text-center mb-2 transition-all text-slate-900" id="score-big">${scoreToDisplay}<span class="text-4xl text-slate-400">%</span></div>
-                <h2 class="text-3xl font-black bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">de maîtrise détectée !</h2>
-                <p class="text-xl mt-6 font-bold text-emerald-600 bg-emerald-50 py-3 rounded-xl border border-emerald-100">L'IA a terminé ton profil. Tu vas gagner 2 points à ton prochain contrôle.</p>
+                <div class="text-7xl md:text-8xl font-black text-center transition-all text-slate-900" id="score-big">${scoreToDisplay}<span class="text-4xl md:text-5xl text-slate-400">%</span></div>
+                <p class="text-sm font-bold text-emerald-600 mt-2 mb-2">+ Analyse IA terminée</p>
+                <h2 class="text-3xl font-black bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent mt-2">de maîtrise détectée !</h2>
+                <p class="text-xl mt-6 font-bold text-emerald-700 bg-emerald-50 p-4 rounded-xl border border-emerald-100">L'IA a terminé ton profil. Tu vas gagner des points à ton prochain contrôle.</p>
+                ${pasVuHtml}
             </div>
-            <button onclick="shareWaouh()" class="mt-8 w-full py-5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black text-xl rounded-2xl shadow-xl hover:scale-[1.02] transition-transform">📱 Partager mon score</button>
+            <button onclick="shareWaouh()" class="mt-8 w-full py-5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black text-xl rounded-2xl shadow-xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">📱 Partager mon score</button>
             <button onclick="unlockDashboard()" class="mt-4 w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-lg rounded-xl transition-colors">🚀 Déverrouiller mon Espace d'Entraînement</button>
         </div>`;
         confettiBurst(); 
@@ -665,7 +696,7 @@ function renderSection(cat, data, idx, total, isCatDone) {
     const isRev = state.revealed && state.currentId === realId; const hasOpt = data.options && data.options.length > 0;
 
     let pills = `<div class="flex flex-wrap gap-2 p-4 justify-center border-t border-slate-100 bg-slate-50/50">`;
-    for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); const s = state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]; pills += `<button onclick="goToExercise('${cat}', ${i})" class="w-9 h-9 rounded-xl text-sm font-bold flex items-center justify-center ${s==='EASY'||s==='MEDIUM'?'bg-emerald-500 text-white':(s==='HARD'?'bg-rose-400 text-white':(s==='PAS_VU'?'bg-slate-300 text-slate-600':'bg-white border text-slate-600'))} ${i===idx?'ring-4 ring-blue-200 scale-110 z-10':''}">${i+1}</button>`; } pills += `</div>`;
+    for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); const s = state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]; pills += `<button onclick="goToExercise('${cat}', ${i})" class="w-9 h-9 rounded-xl text-sm font-bold flex items-center justify-center ${s==='EASY'||s==='MEDIUM'?'bg-emerald-500 text-white':(s==='HARD'?'bg-rose-400 text-white':(s==='PAS_VU'?'bg-slate-300 text-slate-600':'bg-white border text-slate-600'))} ${i===idx?'ring-4 ring-indigo-200 scale-110 z-10':''}">${i+1}</button>`; } pills += `</div>`;
 
     let actions = '';
     if(!isRev && !hasOpt) {
@@ -673,8 +704,8 @@ function renderSection(cat, data, idx, total, isCatDone) {
     } else if(isRev && !state.isScored && !hasOpt) {
         actions = `<div class="flex gap-2 w-full mt-2"><button onclick="mark('${cat}', ${idx}, 'HARD')" class="flex-1 py-4 bg-rose-50 text-rose-600 border border-rose-200 rounded-xl font-black transition-colors hover:bg-rose-100">À RETRAVAILLER</button><button onclick="mark('${cat}', ${idx}, 'EASY')" class="flex-1 py-4 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl font-black transition-colors hover:bg-emerald-100">FACILE</button></div>`;
     } else if(state.isScored) {
-        // La condition clé pour afficher le bouton Bilan uniquement à la fin du tableau dynamique
-        if (cat === 'CALIBRAGE' && idx === state.calibrageExos.length - 1) {
+        // CF1: Diagnostic Dynamique (Bouton Bilan protégé)
+        if (cat === 'CALIBRAGE' && isCatDone) {
             actions = `<button onclick="finishCalibrage()" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-black rounded-xl mt-3 transition-transform hover:-translate-y-1 shadow-lg text-lg animate-pulse-ring">VOIR MON BILAN IA 🚀</button>`;
         } else if (!isCatDone) {
             actions = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl mt-3 transition-transform hover:-translate-y-1 shadow-lg">EXERCICE SUIVANT</button>`;
