@@ -20,30 +20,30 @@ window.db.ALGEBRA_3EME = {
     // =========================================================================
     ARITHMETIQUE: [
       // NIVEAU 1 (10 exos) - Bases des nombres premiers et diviseurs
-      { lvl: 1, q: "Donner la décomposition en facteurs premiers de $12$", a: "$2^2 \\times 3$", steps: ["$12$ est pair : $12 = 2 \\times 6$.", "$6 = 2 \\times 3$."], f: "Décomposition" },
-      { lvl: 1, q: "Donner la décomposition en facteurs premiers de $18$", a: "$2 \\times 3^2$", steps: ["$18 = 2 \\times 9$.", "$9 = 3 \\times 3$."], f: "Décomposition" },
-      { lvl: 1, q: "Le nombre $15$ est-il un nombre premier ?", a: "\\text{Non}", steps: ["Un nombre premier n'est divisible que par 1 et lui-même.", "$15$ est divisible par $3$ et $5$."], f: "Définition Nombre Premier" },
-      { lvl: 1, q: "Le nombre $17$ est-il un nombre premier ?", a: "\\text{Oui}", steps: ["Il n'est dans aucune table de multiplication (sauf la sienne)."], f: "Définition Nombre Premier" },
-      { lvl: 1, q: "Donner la décomposition en facteurs premiers de $20$", a: "$2^2 \\times 5$", steps: ["$20 = 2 \\times 10 = 2 \\times 2 \\times 5$."], f: "Décomposition" },
-      { lvl: 1, q: "Simplifier la fraction $\\frac{12}{18}$", a: "$\\frac{2}{3}$", steps: ["Divise en haut et en bas par leur plus grand diviseur commun (6).", "Ou utilise les décompositions : $\\frac{2 \\times 2 \\times 3}{2 \\times 3 \\times 3}$."], f: "Fraction irréductible" },
-      { lvl: 1, q: "Donner la liste des diviseurs de $10$", a: "$1, 2, 5, 10$", steps: ["Cherche les paires : $1 \\times 10$ et $2 \\times 5$."], f: "Liste des diviseurs" },
-      { lvl: 1, q: "Décomposer $30$ en facteurs premiers", a: "$2 \\times 3 \\times 5$", steps: ["$30 = 3 \\times 10$ et $10 = 2 \\times 5$."], f: "Décomposition" },
-      { lvl: 1, q: "Simplifier $\\frac{20}{30}$", a: "$\\frac{2}{3}$", steps: ["Divise directement par $10$ en haut et en bas."], f: "Simplification" },
-      { lvl: 1, q: "Le nombre $51$ est-il premier ?", a: "\\text{Non}", steps: ["Astuce : $5 + 1 = 6$. Donc $51$ est divisible par $3$.", "$51 = 3 \\times 17$."], f: "Critère de divisibilité par 3" },
+      { lvl: 1, q: "Donner la décomposition en facteurs premiers de $12$", a: "$2^2 \\times 3$", steps: ["Cherche les diviseurs premiers : $2, 3, 5, 7\\dots$", "$12$ est pair, divise-le par $2$. Puis continue la décomposition avec le résultat !"], f: "Décomposition" },
+      { lvl: 1, q: "Donner la décomposition en facteurs premiers de $18$", a: "$2 \\times 3^2$", steps: ["$18$ est pair, divise par $2$. Il reste $9$.", "Dans quelle table de nombres premiers se trouve le $9$ ?"], f: "Décomposition" },
+      { lvl: 1, q: "Le nombre $15$ est-il un nombre premier ?", a: "$\\text{Non}$", steps: ["Un nombre premier n'est divisible que par $1$ et lui-même.", "Le nombre $15$ se termine par $5$. Que peux-tu en déduire ?"], f: "Définition Nombre Premier" },
+      { lvl: 1, q: "Le nombre $17$ est-il un nombre premier ?", a: "$\\text{Oui}$", steps: ["Connais-tu une table de multiplication (autre que $1$ et $17$) qui donne $17$ comme résultat ?"], f: "Définition Nombre Premier" },
+      { lvl: 1, q: "Donner la décomposition en facteurs premiers de $20$", a: "$2^2 \\times 5$", steps: ["Tu sais que $20 = 2 \\times 10$.", "Décompose maintenant le nombre $10$ en deux nombres premiers !"], f: "Décomposition" },
+      { lvl: 1, q: "Simplifier la fraction $\\frac{12}{18}$", a: "$\\frac{2}{3}$", steps: ["Trouve la plus grande table de multiplication commune à $12$ et $18$.", "Ou alors, divise par $2$ en haut et en bas, puis regarde si tu peux encore diviser !"], f: "Fraction irréductible" },
+      { lvl: 1, q: "Donner la liste des diviseurs de $10$", a: "$1, 2, 5, 10$", steps: ["Cherche les nombres qui vont par paires pour fabriquer $10$.", "Par exemple $1 \\times 10 = 10$. Quelle est l'autre paire ?"], f: "Liste des diviseurs" },
+      { lvl: 1, q: "Décomposer $30$ en facteurs premiers", a: "$2 \\times 3 \\times 5$", steps: ["$30$ se termine par $0$, c'est donc $3 \\times 10$.", "Le $3$ est déjà premier. Décompose le $10$."], f: "Décomposition" },
+      { lvl: 1, q: "Simplifier $\\frac{20}{30}$", a: "$\\frac{2}{3}$", steps: ["Quand des nombres se terminent par zéro, par quoi peux-tu les diviser instantanément ?"], f: "Simplification rapide" },
+      { lvl: 1, q: "Le nombre $51$ est-il premier ?", a: "$\\text{Non}$", steps: ["Rappelle-toi le critère de divisibilité par $3$ : additionne les chiffres du nombre ($5 + 1$).", "Le résultat est-il dans la table de $3$ ?"], f: "Critère de divisibilité par $3$" },
 
       // NIVEAU 2 (7 exos) - Décompositions plus poussées et PGCD
-      { lvl: 2, q: "Décomposer $60$ en facteurs premiers", a: "$2^2 \\times 3 \\times 5$", steps: ["$60 = 6 \\times 10 = (2 \\times 3) \\times (2 \\times 5)$."], f: "Décomposition" },
-      { lvl: 2, q: "Décomposer $84$ en facteurs premiers", a: "$2^2 \\times 3 \\times 7$", steps: ["$84 = 2 \\times 42 = 2 \\times 2 \\times 21 = 2 \\times 2 \\times 3 \\times 7$."], f: "Division successive" },
-      { lvl: 2, q: "Rendre irréductible $\\frac{60}{84}$", a: "$\\frac{5}{7}$", steps: ["Utilise les décompositions trouvées avant.", "Élimine les facteurs communs : les deux $2$ et le $3$."], f: "Simplification par décomposition" },
-      { lvl: 2, q: "Décomposer $100$ en facteurs premiers", a: "$2^2 \\times 5^2$", steps: ["$100 = 10 \\times 10 = (2 \\times 5) \\times (2 \\times 5)$."], f: "Décomposition" },
-      { lvl: 2, q: "Quel est le PGCD (Plus Grand Commun Diviseur) de $12$ et $18$ ?", a: "$6$", steps: ["Les diviseurs communs sont 1, 2, 3, 6.", "Le plus grand est 6."], f: "Recherche de PGCD" },
-      { lvl: 2, q: "Rendre irréductible $\\frac{45}{60}$", a: "$\\frac{3}{4}$", steps: ["Divise par $5$ : $\\frac{9}{12}$.", "Puis divise par $3$ : $\\frac{3}{4}$."], f: "Divisions successives" },
-      { lvl: 2, q: "Décomposer $144$ en facteurs premiers", a: "$2^4 \\times 3^2$", steps: ["$144 = 12 \\times 12 = (2^2 \\times 3) \\times (2^2 \\times 3)$."], f: "Décomposition d'un carré" },
+      { lvl: 2, q: "Décomposer $60$ en facteurs premiers", a: "$2^2 \\times 3 \\times 5$", steps: ["Astuce : $60 = 6 \\times 10$.", "Décompose le $6$ d'un côté et le $10$ de l'autre, puis rassemble tout."], f: "Décomposition" },
+      { lvl: 2, q: "Décomposer $84$ en facteurs premiers", a: "$2^2 \\times 3 \\times 7$", steps: ["$84$ est pair. La moitié de $84$ est $42$.", "La moitié de $42$ est $21$. Continue la décomposition avec le $21$ !"], f: "Division successive" },
+      { lvl: 2, q: "Rendre irréductible $\\frac{60}{84}$", a: "$\\frac{5}{7}$", steps: ["Tu as les décompositions des exercices précédents.", "Barre tous les facteurs communs en haut et en bas (les deux $2$ et le $3$). Que reste-t-il ?"], f: "Simplification par décomposition" },
+      { lvl: 2, q: "Décomposer $100$ en facteurs premiers", a: "$2^2 \\times 5^2$", steps: ["Tu sais que $100 = 10 \\times 10$.", "Remplace chaque $10$ par ses facteurs premiers et regroupe avec des puissances."], f: "Décomposition d'un carré" },
+      { lvl: 2, q: "Quel est le PGCD (Plus Grand Commun Diviseur) de $12$ et $18$ ?", a: "$6$", steps: ["Fais la liste des diviseurs de $12$ et la liste des diviseurs de $18$.", "Lequel est le nombre le plus grand qui apparaît dans les deux listes ?"], f: "Recherche de PGCD" },
+      { lvl: 2, q: "Rendre irréductible $\\frac{45}{60}$", a: "$\\frac{3}{4}$", steps: ["Les deux nombres se terminent par $5$ ou $0$, divise donc par $5$ en haut et en bas.", "Regarde le résultat. Peux-tu encore le diviser par une autre table ?"], f: "Divisions successives" },
+      { lvl: 2, q: "Décomposer $144$ en facteurs premiers", a: "$2^4 \\times 3^2$", steps: ["Tu sais que $144$ est le carré de $12$ ($144 = 12 \\times 12$).", "Décompose $12$ en facteurs premiers, puis double tous les exposants !"], f: "Décomposition d'un carré" },
 
       // NIVEAU 3 (3 exos) - Problèmes d'arithmétique
-      { lvl: 3, q: "PGCD de $120$ et $84$", a: "$12$", steps: ["Décomposition de $120$ : $2^3 \\times 3 \\times 5$.", "Décomposition de $84$ : $2^2 \\times 3 \\times 7$.", "Facteurs communs au minimum : $2^2 \\times 3 = 12$."], f: "PGCD par facteurs premiers" },
-      { lvl: 3, q: "Rendre irréductible $\\frac{84}{120}$", a: "$\\frac{7}{10}$", steps: ["Divise par leur PGCD qui est $12$.", "Ou supprime les facteurs communs des décompositions."], f: "Fraction irréductible" },
-      { lvl: 3, q: "Décomposer $1024$ en facteurs premiers", a: "$2^{10}$", steps: ["C'est une puissance de 2 classique en informatique.", "$1024 = 2 \\times 512 = 2 \\times 2 \\times 256$ etc."], f: "Puissance de 2" }
+      { lvl: 3, q: "Trouver le PGCD de $120$ et $84$", a: "$12$", steps: ["Décompose $120$ et $84$ en produit de facteurs premiers.", "Pour le PGCD, la règle est de ne garder QUE les facteurs qui sont en commun, avec leur plus PETIT exposant.", "Fais la multiplication finale de ces facteurs."], f: "PGCD par facteurs premiers" },
+      { lvl: 3, q: "Rendre irréductible $\\frac{84}{120}$", a: "$\\frac{7}{10}$", steps: ["Le PGCD est le nombre parfait pour simplifier une fraction en une seule étape.", "Divise $84$ et $120$ par leur PGCD (qui est $12$)."], f: "Fraction irréductible" },
+      { lvl: 3, q: "Décomposer $1024$ en facteurs premiers", a: "$2^{10}$", steps: ["C'est un nombre magique en informatique.", "Il n'est divisible que par $2$. Divise par $2$ autant de fois que nécessaire : $512$, $256$, $128\\dots$"], f: "Puissance de $2$" }
     ],
 
     // =========================================================================
@@ -51,30 +51,30 @@ window.db.ALGEBRA_3EME = {
     // =========================================================================
     LITTERAL: [
       // NIVEAU 1 (10 exos) - Simple & Double distributivité
-      { lvl: 1, q: "Développer $3(2x + 5)$", a: "$6x + 15$", steps: ["Distribue le 3 : $3 \\times 2x + 3 \\times 5$."], f: "$k(a+b) = ka + kb$" },
-      { lvl: 1, q: "Développer $-2(x - 4)$", a: "$-2x + 8$", steps: ["Attention au signe : $(-2) \\times (-4) = +8$."], f: "Distributivité avec signe moins" },
-      { lvl: 1, q: "Développer $x(x + 3)$", a: "$x^2 + 3x$", steps: ["$x \\times x = x^2$."], f: "$x \\times x = x^2$" },
-      { lvl: 1, q: "Développer $(x + 2)(x + 4)$", a: "$x^2 + 6x + 8$", steps: ["Double distributivité : $x^2 + 4x + 2x + 8$."], f: "$(a+b)(c+d) = ac+ad+bc+bd$" },
-      { lvl: 1, q: "Développer $(x - 1)(x + 5)$", a: "$x^2 + 4x - 5$", steps: ["$x^2 + 5x - x - 5$."], f: "Double distributivité" },
-      { lvl: 1, q: "Factoriser $5x + 15$", a: "$5(x + 3)$", steps: ["Le facteur commun est $5$ car $15 = 5 \\times 3$."], f: "$ka + kb = k(a+b)$" },
-      { lvl: 1, q: "Factoriser $x^2 + 4x$", a: "$x(x + 4)$", steps: ["Le facteur commun est $x$."], f: "$x^2 = x \\times x$" },
-      { lvl: 1, q: "Développer $(x + 3)^2$", a: "$x^2 + 6x + 9$", steps: ["Identité remarquable : Carré du premier + Double produit + Carré du second."], f: "$(a+b)^2 = a^2 + 2ab + b^2$" },
-      { lvl: 1, q: "Développer $(x - 5)^2$", a: "$x^2 - 10x + 25$", steps: ["Le double produit est négatif : $-2 \\times 5 \\times x = -10x$."], f: "$(a-b)^2 = a^2 - 2ab + b^2$" },
-      { lvl: 1, q: "Développer $(x - 2)(x + 2)$", a: "$x^2 - 4$", steps: ["C'est la 3ème identité remarquable. Les termes en $x$ s'annulent."], f: "$(a-b)(a+b) = a^2 - b^2$" },
+      { lvl: 1, q: "Développer $3(2x + 5)$", a: "$6x + 15$", steps: ["Distribue le nombre $3$ à chaque terme à l'intérieur de la parenthèse.", "Multiplie $3$ par $2x$, puis multiplie $3$ par $5$."], f: "$k(a+b) = ka + kb$" },
+      { lvl: 1, q: "Développer $-2(x - 4)$", a: "$-2x + 8$", steps: ["Attention, tu distribues un nombre négatif ($-2$).", "Moins par moins donne plus. Que donne $(-2) \\times (-4)$ ?"], f: "Distributivité avec un négatif" },
+      { lvl: 1, q: "Développer $x(x + 3)$", a: "$x^2 + 3x$", steps: ["Ici on distribue une lettre au lieu d'un chiffre.", "Que donne $x \\times x$ ? Que donne $x \\times 3$ ?"], f: "$x \\times x = x^2$" },
+      { lvl: 1, q: "Développer $(x + 2)(x + 4)$", a: "$x^2 + 6x + 8$", steps: ["Double distributivité ! Distribue le $x$ de la 1ère parenthèse, puis distribue le $2$.", "Tu obtiens $4$ termes. Rassemble les deux termes du milieu (la famille des $x$)."], f: "$(a+b)(c+d)$" },
+      { lvl: 1, q: "Développer $(x - 1)(x + 5)$", a: "$x^2 + 4x - 5$", steps: ["Même chose : $x \\times x$, puis $x \\times 5$, puis $-1 \\times x$, puis $-1 \\times 5$.", "Réduis la famille des $x$."], f: "Double distributivité" },
+      { lvl: 1, q: "Factoriser $5x + 15$", a: "$5(x + 3)$", steps: ["La factorisation est l'inverse du développement. Trouve la table commune à $5$ et $15$ (c'est $5$).", "Mets le $5$ devant une parenthèse : $5(\\dots + \\dots)$ et remplis l'intérieur."], f: "$ka + kb = k(a+b)$" },
+      { lvl: 1, q: "Factoriser $x^2 + 4x$", a: "$x(x + 4)$", steps: ["Quel est l'élément (la lettre) qui apparaît dans $x^2$ ET dans $4x$ ?", "C'est $x$. Mets-le devant une parenthèse en facteur commun."], f: "$x^2 = x \\times x$" },
+      { lvl: 1, q: "Développer $(x + 3)^2$", a: "$x^2 + 6x + 9$", steps: ["C'est la première identité remarquable.", "Formule : le carré du 1er ($x^2$) + le double du produit ($2 \\times x \\times 3$) + le carré du 2ème ($3^2$)."], f: "$(a+b)^2 = a^2 + 2ab + b^2$" },
+      { lvl: 1, q: "Développer $(x - 5)^2$", a: "$x^2 - 10x + 25$", steps: ["C'est la deuxième identité remarquable. Le signe moins est au milieu.", "Carré du 1er, MOINS le double produit, PLUS le carré du 2ème."], f: "$(a-b)^2 = a^2 - 2ab + b^2$" },
+      { lvl: 1, q: "Développer $(x - 2)(x + 2)$", a: "$x^2 - 4$", steps: ["C'est la troisième identité remarquable ! Elle est magique, les termes du milieu s'annulent.", "Il te suffit de faire le carré du 1er moins le carré du 2ème."], f: "$(a-b)(a+b) = a^2 - b^2$" },
 
       // NIVEAU 2 (7 exos) - Factorisations Brevet (Différence de carrés et Blocs)
-      { lvl: 2, q: "Factoriser $x^2 - 16$", a: "$(x - 4)(x + 4)$", steps: ["C'est une différence de deux carrés : $A^2 - B^2$.", "Ici $A=x$ et $B=4$ (car $4^2 = 16$)."], f: "$A^2 - B^2 = (A-B)(A+B)$" },
-      { lvl: 2, q: "Factoriser $9x^2 - 25$", a: "$(3x - 5)(3x + 5)$", steps: ["Trouve les racines carrées : $9x^2$ est le carré de $3x$, et $25$ est le carré de $5$."], f: "$A^2 - B^2 = (A-B)(A+B)$" },
-      { lvl: 2, q: "Factoriser $(x + 1)(x + 2) + 5(x + 1)$", a: "$(x + 1)(x + 7)$", steps: ["Le facteur commun est le bloc $(x + 1)$.", "Mets-le en facteur : $(x + 1) [ (x + 2) + 5 ]$."], f: "$kA + bA = A(k+b)$" },
-      { lvl: 2, q: "Factoriser $(2x - 3)^2 + (2x - 3)(x + 1)$", a: "$(2x - 3)(3x - 2)$", steps: ["Le facteur est $(2x - 3)$.", "Crochet : $[(2x - 3) + (x + 1)] = 3x - 2$."], f: "Mise en facteur d'une parenthèse" },
-      { lvl: 2, q: "Développer $(2x + 1)^2 - (x - 3)$", a: "$4x^2 + 3x + 4$", steps: ["Développe le carré : $4x^2 + 4x + 1$.", "Enlève la parenthèse (change les signes) : $-x + 3$."], f: "Priorités opératoires" },
-      { lvl: 2, q: "Développer $(3x - 2)^2$", a: "$9x^2 - 12x + 4$", steps: ["Attention au carré du premier terme : $(3x)^2 = 9x^2$.", "Double produit : $2 \\times 3x \\times (-2) = -12x$."], f: "$(a-b)^2 = a^2 - 2ab + b^2$" },
-      { lvl: 2, q: "Factoriser $x^2 + 8x + 16$", a: "$(x + 4)^2$", steps: ["C'est une identité remarquable à l'envers.", "$A^2 = x^2$ et $B^2 = 16$. Vérifie le double produit."], f: "$a^2 + 2ab + b^2 = (a+b)^2$" },
+      { lvl: 2, q: "Factoriser $x^2 - 16$", a: "$(x - 4)(x + 4)$", steps: ["Reconnais la structure $a^2 - b^2$, c'est l'identité remarquable à l'envers.", "Ici le $a$ est $x$, et le $b$ est le nombre dont le carré vaut $16$. Quel est ce nombre ?"], f: "$a^2 - b^2 = (a-b)(a+b)$" },
+      { lvl: 2, q: "Factoriser $9x^2 - 25$", a: "$(3x - 5)(3x + 5)$", steps: ["Toujours la structure $a^2 - b^2$.", "Trouve la racine carrée de $9x^2$ pour avoir la valeur de $a$, et la racine de $25$ pour avoir $b$."], f: "$a^2 - b^2 = (a-b)(a+b)$" },
+      { lvl: 2, q: "Factoriser $(x + 1)(x + 2) + 5(x + 1)$", a: "$(x + 1)(x + 7)$", steps: ["Ici, le facteur commun n'est pas un nombre, c'est tout un bloc (une parenthèse entière) ! Lequel se répète ?", "Mets le bloc $(x+1)$ devant de grands crochets et recopie ce qu'il reste à l'intérieur."], f: "Mise en facteur d'une parenthèse" },
+      { lvl: 2, q: "Factoriser $(2x - 3)^2 + (2x - 3)(x + 1)$", a: "$(2x - 3)(3x - 2)$", steps: ["Rappel : $(2x - 3)^2$ signifie que le bloc $(2x - 3)$ est multiplié par lui-même.", "Mets $(2x - 3)$ en facteur. Dans le crochet, regroupe ce qu'il reste et réduis !"], f: "Mise en facteur complexe" },
+      { lvl: 2, q: "Développer $(2x + 1)^2 - (x - 3)$", a: "$4x^2 + 3x + 4$", steps: ["Étape 1 : Développe l'identité remarquable (attention à bien élever TOUT le $2x$ au carré).", "Étape 2 : Le signe moins devant la parenthèse finale change les signes. Le $- (x - 3)$ devient... ?"], f: "Priorités et Identités" },
+      { lvl: 2, q: "Développer $(3x - 2)^2$", a: "$9x^2 - 12x + 4$", steps: ["C'est la deuxième identité remarquable.", "Le carré du premier terme $(3x)$ est $9x^2$. Ne l'oublie pas !", "Calcule le double produit central : $2 \\times 3x \\times 2$."], f: "$(a-b)^2 = a^2 - 2ab + b^2$" },
+      { lvl: 2, q: "Factoriser $x^2 + 8x + 16$", a: "$(x + 4)^2$", steps: ["C'est une identité remarquable à l'envers.", "Le premier terme est le carré de $x$. Le dernier terme ($16$) est le carré de $4$.", "Vérifie si le terme du milieu correspond bien à $2 \\times x \\times 4$ !"], f: "$a^2 + 2ab + b^2 = (a+b)^2$" },
 
       // NIVEAU 3 (3 exos) - Sujet type Brevet
-      { lvl: 3, q: "Développer et réduire $(x - 3)(x + 3) - (x - 1)^2$", a: "$2x - 10$", steps: ["1. Identité 3 : $(x - 3)(x + 3) = x^2 - 9$.", "2. Identité 2 : $(x - 1)^2 = x^2 - 2x + 1$.", "3. Soustrais : $(x^2 - 9) - (x^2 - 2x + 1) = x^2 - 9 - x^2 + 2x - 1$."], f: "Soustraction de développement" },
-      { lvl: 3, q: "Factoriser $(2x + 5)^2 - 9$", a: "$(2x + 2)(2x + 8)$", steps: ["C'est $A^2 - B^2$ avec $A = (2x+5)$ et $B = 3$.", "Donne : $((2x+5) - 3) \\times ((2x+5) + 3)$."], f: "$A^2 - B^2 = (A-B)(A+B)$" },
-      { lvl: 3, q: "Factoriser $(x - 4)(2x + 1) - (x - 4)(x - 5)$", a: "$(x - 4)(x + 6)$", steps: ["Facteur commun : $(x - 4)$.", "Attention au signe MOINS devant la 2ème parenthèse : $[(2x + 1) - (x - 5)] = 2x + 1 - x + 5$."], f: "Soustraction dans le crochet" }
+      { lvl: 3, q: "Développer et réduire $(x - 3)(x + 3) - (x - 1)^2$", a: "$2x - 10$", steps: ["Coupe l'exercice en deux. Développe le premier bloc avec la 3ème identité remarquable.", "Développe le deuxième bloc, mais garde-le bien entre de grandes parenthèses car il y a un MOINS devant !", "Applique le signe moins à tout le deuxième bloc et regroupe les termes."], f: "Soustraction de développements" },
+      { lvl: 3, q: "Factoriser $(2x + 5)^2 - 9$", a: "$(2x + 2)(2x + 8)$", steps: ["C'est l'identité $a^2 - b^2$ ! Le bloc $a$ est $(2x+5)$, et le nombre $b$ est $3$.", "Écris $(a - b)(a + b)$ en remplaçant $a$ et $b$ par leurs valeurs.", "Simplifie l'intérieur des deux grandes parenthèses finales."], f: "$a^2 - b^2$ (Niveau Expert)" },
+      { lvl: 3, q: "Factoriser $(x - 4)(2x + 1) - (x - 4)(x - 5)$", a: "$(x - 4)(x + 6)$", steps: ["Identifie le facteur commun évident : c'est $(x - 4)$.", "Mets-le devant un grand crochet : $(x - 4)[(2x + 1) - (x - 5)]$.", "Simplifie le crochet. Attention au signe moins redoutable devant le $(x - 5)$ !"], f: "Factorisation type Brevet" }
     ],
 
     // =========================================================================
@@ -82,30 +82,30 @@ window.db.ALGEBRA_3EME = {
     // =========================================================================
     EQUATIONS: [
       // NIVEAU 1 (10 exos) - Équations 1er degré
-      { lvl: 1, q: "Résoudre $x + 7 = 12$", a: "$x = 5$", steps: ["Soustrait 7 de chaque côté."], f: "$x = 12 - 7$" },
-      { lvl: 1, q: "Résoudre $4x = 20$", a: "$x = 5$", steps: ["Divise par 4."], f: "$x = \\frac{20}{4}$" },
-      { lvl: 1, q: "Résoudre $2x + 3 = 11$", a: "$x = 4$", steps: ["Retire 3 : $2x = 8$.", "Divise par 2."], f: "Opérations inverses" },
-      { lvl: 1, q: "Résoudre $5x - 2 = 13$", a: "$x = 3$", steps: ["Ajoute 2 : $5x = 15$."], f: "Opérations inverses" },
-      { lvl: 1, q: "Résoudre $-3x = 18$", a: "$x = -6$", steps: ["Divise $18$ par $-3$."], f: "Règle des signes" },
-      { lvl: 1, q: "Résoudre $3x = x + 8$", a: "$x = 4$", steps: ["Retire $x$ des deux côtés : $2x = 8$."], f: "Regroupement des $x$" },
-      { lvl: 1, q: "Résoudre $(x - 2)(x + 5) = 0$", a: "$x = 2 \\text{ ou } x = -5$", steps: ["Un produit est nul si au moins l'un de ses facteurs est nul.", "Donc $x - 2 = 0$ ou $x + 5 = 0$."], f: "Équation produit nul" },
-      { lvl: 1, q: "Résoudre $x(x - 4) = 0$", a: "$x = 0 \\text{ ou } x = 4$", steps: ["Le premier facteur est $x$."], f: "Équation produit nul" },
-      { lvl: 1, q: "Résoudre $2x < 10$", a: "$x < 5$", steps: ["Divise par 2. L'inégalité ne change pas de sens."], f: "Inéquation basique" },
-      { lvl: 1, q: "Résoudre $x - 4 \\geq 1$", a: "$x \\geq 5$", steps: ["Ajoute 4."], f: "Inéquation basique" },
+      { lvl: 1, q: "Résoudre $x + 7 = 12$", a: "$x = 5$", steps: ["La méthode de la balance : pour isoler $x$, retire $7$ de chaque côté."], f: "Opération inverse" },
+      { lvl: 1, q: "Résoudre $4x = 20$", a: "$x = 5$", steps: ["L'opération inverse de la multiplication est la division.", "Divise des deux côtés par $4$."], f: "$ax = b \\Rightarrow x = \\frac{b}{a}$" },
+      { lvl: 1, q: "Résoudre $2x + 3 = 11$", a: "$x = 4$", steps: ["Retire d'abord $3$ de chaque côté pour isoler le terme en $x$.", "Divise ensuite le tout par $2$."], f: "Opérations en cascade" },
+      { lvl: 1, q: "Résoudre $5x - 2 = 13$", a: "$x = 3$", steps: ["Annule le $-2$ en ajoutant $2$ de chaque côté de la balance.", "Que te reste-t-il à faire pour trouver la valeur de $1x$ ?"], f: "Opérations en cascade" },
+      { lvl: 1, q: "Résoudre $-3x = 18$", a: "$x = -6$", steps: ["Divise des deux côtés par le nombre attaché à $x$ ($-3$).", "Attention à la règle des signes lors de la division !"], f: "Division par un nombre négatif" },
+      { lvl: 1, q: "Résoudre $3x = x + 8$", a: "$x = 4$", steps: ["Rassemble tous les $x$ du côté gauche.", "Soustrait un $x$ de chaque côté de la balance."], f: "Regroupement des $x$" },
+      { lvl: 1, q: "Résoudre $(x - 2)(x + 5) = 0$", a: "$x = 2 \\text{ ou } x = -5$", steps: ["C'est une \"équation produit nul\".", "Un produit fait zéro uniquement si l'une de ses parenthèses fait zéro.", "Pose : $x - 2 = 0$ ou $x + 5 = 0$ et trouve les deux valeurs."], f: "Équation produit nul" },
+      { lvl: 1, q: "Résoudre $x(x - 4) = 0$", a: "$x = 0 \\text{ ou } x = 4$", steps: ["Même principe, c'est un produit nul.", "Le premier \"bloc\" est simplement $x$. Quelle est donc la première solution évidente ?"], f: "Équation produit nul" },
+      { lvl: 1, q: "Résoudre $2x < 10$", a: "$x < 5$", steps: ["Une inéquation se résout de la même manière qu'une équation.", "Divise par $2$. L'inégalité ne change pas de sens car $2$ est positif."], f: "Inéquation basique" },
+      { lvl: 1, q: "Résoudre $x - 4 \\geq 1$", a: "$x \\geq 5$", steps: ["Isole le $x$ en ajoutant $4$ de chaque côté de l'inégalité."], f: "Inéquation basique" },
 
       // NIVEAU 2 (7 exos) - Des x des deux côtés & Inéquations avec changement de sens
-      { lvl: 2, q: "Résoudre $5x - 3 = 2x + 9$", a: "$x = 4$", steps: ["Retire $2x$ : $3x - 3 = 9$.", "Ajoute $3$ : $3x = 12$."], f: "Équation du 1er degré" },
-      { lvl: 2, q: "Résoudre $4(x - 1) = 2x + 6$", a: "$x = 5$", steps: ["Développe d'abord : $4x - 4 = 2x + 6$."], f: "Développement puis résolution" },
-      { lvl: 2, q: "Résoudre $(2x - 1)(x + 3) = 0$", a: "$x = 0.5 \\text{ ou } x = -3$", steps: ["$2x - 1 = 0 \\Rightarrow 2x = 1 \\Rightarrow x = 0.5$."], f: "Équation produit nul" },
-      { lvl: 2, q: "Résoudre $x^2 = 25$", a: "$x = 5 \\text{ ou } x = -5$", steps: ["Attention ! Un carré a toujours DEUX solutions (une positive, une négative)."], f: "$x^2 = a \\Rightarrow x = \\pm \\sqrt{a}$" },
-      { lvl: 2, q: "Résoudre $-2x > 8$", a: "$x < -4$", steps: ["PIÈGE ! Quand on divise par un nombre négatif, on INVERSE le signe de l'inégalité !"], f: "Changement de sens" },
-      { lvl: 2, q: "Résoudre $3x + 1 \\leq x - 5$", a: "$x \\leq -3$", steps: ["Regroupe : $2x + 1 \\leq -5$.", "Puis : $2x \\leq -6$."], f: "Inéquation complète" },
-      { lvl: 2, q: "Résoudre $1 - 3x < 10$", a: "$x > -3$", steps: ["Soustrait 1 : $-3x < 9$.", "Divise par $-3$ et inverse le signe !"], f: "Changement de sens" },
+      { lvl: 2, q: "Résoudre $5x - 3 = 2x + 9$", a: "$x = 4$", steps: ["Regroupe les $x$ à gauche : retire $2x$ des deux côtés.", "Regroupe les nombres à droite : ajoute $3$ des deux côtés.", "Termine par une division."], f: "Équation du 1er degré" },
+      { lvl: 2, q: "Résoudre $4(x - 1) = 2x + 6$", a: "$x = 5$", steps: ["La règle : on démarre toujours en développant les parenthèses.", "Développe le $4$, puis regroupe les $x$ d'un côté et les nombres de l'autre."], f: "Développement puis résolution" },
+      { lvl: 2, q: "Résoudre $(2x - 1)(x + 3) = 0$", a: "$x = 0,5 \\text{ ou } x = -3$", steps: ["Équation produit nul : l'une des parenthèses vaut $0$.", "La première parenthèse donne l'équation $2x - 1 = 0$. Résous-la avec soin !"], f: "Équation produit nul" },
+      { lvl: 2, q: "Résoudre $x^2 = 25$", a: "$x = 5 \\text{ ou } x = -5$", steps: ["Attention ! Un nombre au carré qui donne $25$, il y en a DEUX !", "Pense au nombre positif, mais n'oublie jamais son jumeau négatif (car moins par moins fait plus)."], f: "$x^2 = a \\Rightarrow x = \\pm \\sqrt{a}$" },
+      { lvl: 2, q: "Résoudre $-2x > 8$", a: "$x < -4$", steps: ["⚠️ PIÈGE MORTEL ! Quand on divise une inéquation par un nombre NÉGATIF, la sanction est immédiate.", "Il faut INVERSER le sens du chevron. Divise $8$ par $-2$ et retourne le signe !"], f: "Changement de sens d'inégalité" },
+      { lvl: 2, q: "Résoudre $3x + 1 \\leq x - 5$", a: "$x \\leq -3$", steps: ["Regroupe les $x$ à gauche : $3x - x = 2x$.", "Regroupe les nombres à droite : $-5 - 1 = -6$.", "Divise par $2$. As-tu besoin de retourner le signe ici ? (Non, car $2$ est un nombre positif)."], f: "Inéquation complète" },
+      { lvl: 2, q: "Résoudre $1 - 3x < 10$", a: "$x > -3$", steps: ["Retire le $1$ de chaque côté : l'inéquation devient $-3x < 9$.", "Pour isoler $x$, tu vas devoir diviser par un nombre négatif... Quel est le piège à éviter ?"], f: "Changement de sens" },
 
       // NIVEAU 3 (3 exos) - Mises en équation complexes
-      { lvl: 3, q: "Résoudre $x^2 - 36 = 0$", a: "$x = 6 \\text{ ou } x = -6$", steps: ["Factorise : $(x - 6)(x + 6) = 0$.", "Ou isole : $x^2 = 36$."], f: "$A^2 - B^2 = 0$" },
-      { lvl: 3, q: "Résoudre $(x + 2)^2 = 9$", a: "$x = 1 \\text{ ou } x = -5$", steps: ["Soit $x+2 = 3$, soit $x+2 = -3$.", "N'oublie pas la racine négative !"], f: "$X^2 = 9$" },
-      { lvl: 3, q: "Résoudre $\\frac{x}{3} - 1 = \\frac{x}{2}$", a: "$x = -6$", steps: ["Mets tout sur le dénominateur 6.", "$\\frac{2x}{6} - \\frac{6}{6} = \\frac{3x}{6}$, donc $2x - 6 = 3x$."], f: "Équation avec fractions" }
+      { lvl: 3, q: "Résoudre $x^2 - 36 = 0$", a: "$x = 6 \\text{ ou } x = -6$", steps: ["Méthode 1 : Isole le $x^2$ de l'autre côté de l'égalité ($x^2 = 36$).", "Méthode 2 : Factorise avec la 3ème identité remarquable pour créer un produit nul.", "Dans les deux cas, n'oublie pas qu'il y a DEUX solutions."], f: "$a^2 - b^2 = 0$" },
+      { lvl: 3, q: "Résoudre $(x + 2)^2 = 9$", a: "$x = 1 \\text{ ou } x = -5$", steps: ["Quels sont les deux nombres dans l'univers dont le carré vaut $9$ ? Ce sont $3$ et $-3$.", "Il te faut donc résoudre deux petites équations : l'intérieur de la parenthèse ($x + 2$) vaut $3$, OU il vaut $-3$."], f: "$(X)^2 = c$" },
+      { lvl: 3, q: "Résoudre $\\frac{x}{3} - 1 = \\frac{x}{2}$", a: "$x = -6$", steps: ["Pour faire sauter les fractions, l'astuce ultime est de tout mettre sur un même dénominateur (ici $6$).", "L'équation devient $\\frac{2x}{6} - \\frac{6}{6} = \\frac{3x}{6}$.", "Tu peux maintenant effacer les dénominateurs (en multipliant tout par $6$). Rapatrie les $x$ et conclus !"], f: "Équation avec fractions" }
     ],
 
     // =========================================================================
@@ -113,30 +113,30 @@ window.db.ALGEBRA_3EME = {
     // =========================================================================
     FONCTIONS: [
       // NIVEAU 1 (10 exos) - Calcul d'image directe
-      { lvl: 1, q: "Soit $f(x) = 2x + 3$. Calculer $f(4)$", a: "$11$", steps: ["Remplace $x$ par $4$ dans la formule.", "$f(4) = 2 \\times 4 + 3 = 8 + 3$."], f: "Calcul d'image" },
-      { lvl: 1, q: "Soit $g(x) = x^2 - 1$. Calculer $g(3)$", a: "$8$", steps: ["$g(3) = 3^2 - 1 = 9 - 1$."], f: "Calcul d'image" },
-      { lvl: 1, q: "Soit $h(x) = -3x$. Calculer $h(-2)$", a: "$6$", steps: ["$-3 \\times (-2) = 6$."], f: "Règle des signes" },
-      { lvl: 1, q: "Soit $f(x) = 5 - x$. Calculer l'image de $7$", a: "$-2$", steps: ["L'image de $7$ se note $f(7)$.", "$5 - 7 = -2$."], f: "Vocabulaire : Image" },
-      { lvl: 1, q: "Soit $f(x) = 2x - 4$. Trouver l'antécédent de $10$", a: "$x = 7$", steps: ["L'antécédent, c'est le $x$ de départ.", "Résous l'équation : $2x - 4 = 10$."], f: "Vocabulaire : Antécédent" },
-      { lvl: 1, q: "Soit $g(x) = 3x$. Quel est l'antécédent de $15$ ?", a: "$x = 5$", steps: ["Résous $3x = 15$."], f: "Calcul d'antécédent" },
-      { lvl: 1, q: "Soit $f(x) = x^2$. Calculer $f(-4)$", a: "$16$", steps: ["Attention : le carré s'applique à tout le nombre.", "$(-4) \\times (-4) = 16$."], f: "Carré d'un négatif" },
-      { lvl: 1, q: "Soit $h(x) = \\frac{x}{2} + 1$. Calculer $h(10)$", a: "$6$", steps: ["$\\frac{10}{2} + 1 = 5 + 1$."], f: "Calcul d'image" },
-      { lvl: 1, q: "Soit $f(x) = 10 - 2x$. Résoudre $f(x) = 0$", a: "$x = 5$", steps: ["Cela revient à chercher l'antécédent de 0.", "$10 - 2x = 0$."], f: "Équation $f(x) = 0$" },
-      { lvl: 1, q: "Soit $g(x) = (x+1)(x-2)$. Calculer $g(2)$", a: "$0$", steps: ["$(2+1)(2-2) = 3 \\times 0 = 0$."], f: "Annulation de produit" },
+      { lvl: 1, q: "Soit $f(x) = 2x + 3$. Calculer $f(4)$", a: "$11$", steps: ["L'expression $f(4)$ signifie que tu dois remplacer la lettre $x$ par le nombre $4$ dans la formule.", "Calcule $2 \\times 4 + 3$."], f: "Calcul d'image" },
+      { lvl: 1, q: "Soit $g(x) = x^2 - 1$. Calculer $g(3)$", a: "$8$", steps: ["Remplace $x$ par $3$ dans l'expression.", "Calcule d'abord le carré de $3$, puis enlève $1$."], f: "Calcul d'image" },
+      { lvl: 1, q: "Soit $h(x) = -3x$. Calculer $h(-2)$", a: "$6$", steps: ["Remplace $x$ par $-2$.", "Le calcul est $-3 \\times (-2)$. Attention à la règle des signes !"], f: "Règle des signes" },
+      { lvl: 1, q: "Soit $f(x) = 5 - x$. Calculer l'image de $7$", a: "$-2$", steps: ["Calculer l'image de $7$, c'est exactement la même chose que calculer $f(7)$.", "Remplace le $x$ de la formule par $7$ : $5 - 7$."], f: "Vocabulaire : Image" },
+      { lvl: 1, q: "Soit $f(x) = 2x - 4$. Trouver l'antécédent de $10$", a: "$x = 7$", steps: ["Attention au vocabulaire : l'antécédent, c'est le nombre de DÉPART ($x$). Ici, on te donne le résultat final ($10$).", "Il faut donc résoudre l'équation : $2x - 4 = 10$."], f: "Vocabulaire : Antécédent" },
+      { lvl: 1, q: "Soit $g(x) = 3x$. Quel est l'antécédent de $15$ ?", a: "$x = 5$", steps: ["Traduire en français : tu cherches quel nombre de départ, multiplié par $3$, donne un résultat de $15$."], f: "Calcul d'antécédent" },
+      { lvl: 1, q: "Soit $f(x) = x^2$. Calculer $f(-4)$", a: "$16$", steps: ["Tu dois calculer l'image de $-4$, donc le carré de $-4$.", "Attention, le carré s'applique à tout le nombre, signe compris : $(-4) \\times (-4)$."], f: "Carré d'un négatif" },
+      { lvl: 1, q: "Soit $h(x) = \\frac{x}{2} + 1$. Calculer $h(10)$", a: "$6$", steps: ["Remplace $x$ par $10$.", "Prends la moitié de $10$, puis ajoute $1$."], f: "Calcul d'image" },
+      { lvl: 1, q: "Soit $f(x) = 10 - 2x$. Résoudre $f(x) = 0$", a: "$x = 5$", steps: ["Résoudre $f(x) = 0$ revient exactement à chercher l'antécédent de zéro.", "Pose la petite équation $10 - 2x = 0$ et trouve $x$."], f: "Équation $f(x) = 0$" },
+      { lvl: 1, q: "Soit $g(x) = (x+1)(x-2)$. Calculer $g(2)$", a: "$0$", steps: ["Remplace tous les $x$ de la formule par le nombre $2$.", "Regarde bien ce qu'il se passe dans la deuxième parenthèse : $(2 - 2)$. Quel sera le résultat de la multiplication entière ?"], f: "Annulation de produit" },
 
       // NIVEAU 2 (7 exos) - Images complexes et équations
-      { lvl: 2, q: "Soit $f(x) = x^2 - 3x$. Calculer $f(-2)$", a: "$10$", steps: ["$f(-2) = (-2)^2 - 3(-2)$.", "$= 4 + 6 = 10$."], f: "Calcul avec négatifs" },
-      { lvl: 2, q: "Soit $g(x) = 2x + 7$. Trouver l'antécédent de $-5$", a: "$x = -6$", steps: ["Résous $2x + 7 = -5$.", "$2x = -12$."], f: "Calcul d'antécédent" },
-      { lvl: 2, q: "Soit $f(x) = -x + 4$. Pour quel $x$ a-t-on $f(x) = 8$ ?", a: "$x = -4$", steps: ["$-x + 4 = 8 \\Rightarrow -x = 4$."], f: "Calcul d'antécédent" },
-      { lvl: 2, q: "Soit $h(x) = (x-3)^2$. Trouver le(s) antécédent(s) de $0$", a: "$x = 3$", steps: ["$(x-3)^2 = 0 \\Rightarrow x-3 = 0$."], f: "Antécédent d'un carré" },
-      { lvl: 2, q: "Soit $f(x) = 5x - 1$ et $g(x) = 2x + 8$. Trouver $x$ tel que $f(x) = g(x)$", a: "$x = 3$", steps: ["Résous l'équation : $5x - 1 = 2x + 8$.", "$3x = 9$."], f: "Égalité de fonctions" },
-      { lvl: 2, q: "Soit $f(x) = \\frac{12}{x}$. Calculer l'antécédent de $3$", a: "$x = 4$", steps: ["$\\frac{12}{x} = 3 \\Rightarrow 3x = 12$."], f: "Fonction inverse" },
-      { lvl: 2, q: "Soit $f(x) = x^2 + 1$. $f(-3)$ est-il égal à $f(3)$ ?", a: "\\text{Oui (ils valent 10)}", steps: ["$(-3)^2 + 1 = 9 + 1 = 10$.", "La fonction carré est paire."], f: "Symétrie" },
+      { lvl: 2, q: "Soit $f(x) = x^2 - 3x$. Calculer $f(-2)$", a: "$10$", steps: ["C'est l'erreur classique du Brevet. Remplace bien CHAQUE $x$ par $(-2)$ avec ses parenthèses.", "Le calcul complet est : $(-2)^2 - 3 \\times (-2)$.", "Calcule le carré d'un côté, la multiplication de l'autre, puis additionne le tout !"], f: "Calcul avec des relatifs" },
+      { lvl: 2, q: "Soit $g(x) = 2x + 7$. Trouver l'antécédent de $-5$", a: "$x = -6$", steps: ["C'est un calcul à l'envers. Pose l'équation $2x + 7 = -5$.", "Enlève le $7$ des deux côtés (attention à l'accumulation des dettes !) puis divise par $2$."], f: "Calcul d'antécédent" },
+      { lvl: 2, q: "Soit $f(x) = -x + 4$. Pour quel $x$ a-t-on $f(x) = 8$ ?", a: "$x = -4$", steps: ["La phrase \"Pour quel $x$...\" est une autre façon de demander l'antécédent.", "Résous $-x + 4 = 8$. Tu trouveras $-x = 4$. Comment rendre le $x$ positif ?"], f: "Équation du 1er degré" },
+      { lvl: 2, q: "Soit $h(x) = (x-3)^2$. Trouver le(s) antécédent(s) de $0$", a: "$x = 3$", steps: ["Pose $(x-3)^2 = 0$.", "Dans l'univers des nombres, seul $0^2$ donne zéro. L'intérieur de ta parenthèse doit donc valoir zéro !"], f: "Antécédent d'un carré nul" },
+      { lvl: 2, q: "Soit $f(x) = 5x - 1$ et $g(x) = 2x + 8$. Trouver le nombre $x$ tel que $f(x) = g(x)$", a: "$x = 3$", steps: ["Crée une équation en mettant les deux formules de la fonction face à face : $5x - 1 = 2x + 8$.", "C'est une équation classique : regroupe les $x$ d'un côté et les nombres de l'autre."], f: "Égalité de deux fonctions" },
+      { lvl: 2, q: "Soit $f(x) = \\frac{12}{x}$. Calculer l'antécédent de $3$", a: "$x = 4$", steps: ["Pose l'équation : $\\frac{12}{x} = 3$.", "Pense en français : $12$ divisé par quel nombre mystère donne $3$ comme résultat ?"], f: "Fonction inverse" },
+      { lvl: 2, q: "Soit $f(x) = x^2 + 1$. Le résultat $f(-3)$ est-il égal à $f(3)$ ?", a: "$\\text{Oui (ils valent 10)}$", steps: ["Calcule $f(3)$ d'une part (le carré de $3$ plus $1$).", "Calcule $f(-3)$ d'autre part (le carré de $-3$ plus $1$).", "Le carré efface les signes négatifs ! La fonction est dite \"paire\"."], f: "Parité de la fonction carré" },
 
       // NIVEAU 3 (3 exos) - Résolution avancée
-      { lvl: 3, q: "Soit $f(x) = x^2 - 4$. Trouver les antécédents de $5$", a: "$x = 3 \\text{ ou } x = -3$", steps: ["Résous $x^2 - 4 = 5$.", "$x^2 = 9$. Attention, il y a deux solutions !"], f: "Antécédents multiples" },
-      { lvl: 3, q: "Soit $g(x) = (2x-1)^2$. Calculer $g(\\frac{1}{2})$", a: "$0$", steps: ["Remplace $x$ par $\\frac{1}{2}$.", "$2 \\times \\frac{1}{2} = 1$. L'intérieur fait $1 - 1 = 0$."], f: "Image d'une fraction" },
-      { lvl: 3, q: "Trouver l'antécédent de $0$ pour la fonction affine $f(x) = ax + b$", a: "$x = -\\frac{b}{a}$", steps: ["C'est la formule générale.", "$ax + b = 0 \\Rightarrow ax = -b$."], f: "Racine d'une fonction affine" }
+      { lvl: 3, q: "Soit $f(x) = x^2 - 4$. Trouver les antécédents de $5$", a: "$x = 3 \\text{ ou } x = -3$", steps: ["Pose l'équation du problème : $x^2 - 4 = 5$.", "Isole le $x^2$. Tu obtiens $x^2 = 9$.", "Souviens-toi de la règle d'or : une équation au carré ($X^2 = 9$) possède toujours DEUX solutions !"], f: "Antécédents multiples" },
+      { lvl: 3, q: "Soit $g(x) = (2x-1)^2$. Calculer l'image $g(\\frac{1}{2})$", a: "$0$", steps: ["Remplace la lettre $x$ par la fraction $\\frac{1}{2}$.", "Commence par calculer la multiplication à l'intérieur : $2 \\times \\frac{1}{2}$. C'est comme prendre le double d'un demi.", "Regarde ce que devient la parenthèse avant même de calculer le carré !"], f: "Image d'une fraction" },
+      { lvl: 3, q: "Trouver l'antécédent de $0$ pour la fonction affine $f(x) = ax + b$", a: "$x = -\\frac{b}{a}$", steps: ["C'est l'abstraction suprême ! Fais comme d'habitude mais uniquement avec des lettres.", "Pose $ax + b = 0$.", "Fais basculer le $+b$ de l'autre côté du signe égal, puis isole le $x$ en divisant par $a$."], f: "Racine générale d'une fonction affine" }
     ]
   }
 };

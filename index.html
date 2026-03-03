@@ -223,7 +223,7 @@
 // ==========================================================
 // CONFIGURATION GLOBALE
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1CgYCGCFLJ--vnk0FVPxJ-XJ6Ddr9v_3Zy63P1y8VklfEB0WgMHqceQ-zLnRLtLs8cQ/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxt0QODNjvSgP01LTAK5uWgT-2g0XLcnMQqmtc0tezaJmxkojKJ482mYJdRhL7oES3ByQ/exec";  // Nouvelle URL déployée
 const SESSION_KEY = 'boost_user_v6_final'; 
 const STORAGE_KEY_LOCAL = 'boost_local_final';
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
@@ -235,7 +235,7 @@ let state = {
   questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null,
   hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
   qcmAnswered: {}, currentShuffle: {}, startTimes: {},
-  dailyBoost: null, isFirstDay: true, calibrageState: null, calibrageExos: [],
+  dailyBoost: null, boostCompletedToday: false, isFirstDay: true, calibrageState: null, calibrageExos: [],  // Ajouté boostCompletedToday
   isDrawing: false, draftOpen: false
 };
 const LEVELS = {};
@@ -294,6 +294,7 @@ async function loginStudent() {
         if (data.status === "success") { 
             state.activeProfile = data.profile; 
             state.dailyBoost = data.dailyBoost; 
+            state.boostCompletedToday = data.boostCompletedToday;  // Nouveau : Récupérer le flag completed du serveur
             state.isFirstDay = data.isFirstDay;
             localStorage.setItem(SESSION_KEY, JSON.stringify({email, password: pwd}));
             
@@ -378,8 +379,6 @@ function initApp() {
     if (localData[code].lastLogin && localData[code].lastLogin !== today) { 
         const diff = Math.ceil(Math.abs(new Date(today) - new Date(localData[code].lastLogin)) / (86400000)); 
         localData[code].streak = (diff === 1) ? (localData[code].streak || 0) + 1 : 1; 
-        
-        if (!state.isFirstDay) generateBoostIA();
     }
     
     localData[code].lastLogin = today; 
@@ -404,7 +403,15 @@ function initApp() {
     }
 
     updateLevelDropdown(state.niveau); updateHeader();
-    if (!state.isFirstDay) generateBoostIA();
+    
+    // Nouveau : Gestion stable du BOOST du jour
+    if (!state.isFirstDay) {
+        if (state.dailyBoost && !state.boostCompletedToday) {
+            loadExistingBoost();  // Charge le boost fixe du serveur
+        } else if (!state.dailyBoost) {
+            generateBoostIA();  // Génère seulement si rien n'existe aujourd'hui
+        }
+    }
     render();
 }
 
@@ -412,6 +419,21 @@ function logout() { localStorage.removeItem(SESSION_KEY); location.reload(); }
 function updateLevelDropdown(userLvl) { const sel = document.getElementById('niveau-select'); sel.innerHTML = ''; const mIdx = LEVEL_ORDER.indexOf(userLvl); const sIdx = Math.max(0, mIdx - 1); for(let i = sIdx; i <= mIdx; i++) { const opt = document.createElement('option'); opt.value = LEVEL_ORDER[i]; opt.text = LEVEL_NAMES[LEVEL_ORDER[i]]; sel.appendChild(opt); } sel.value = userLvl; }
 function updateHeader() { document.getElementById('ui-streak').innerText = state.streak; document.getElementById('ui-xp').innerText = state.xp; }
 function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; if(!state.isFirstDay) generateBoostIA(); render(); }
+
+// Nouvelle fonction : Charger le BOOST existant du serveur (fixe toute la journée)
+function loadExistingBoost() {
+    if (!state.dailyBoost || !state.dailyBoost.exos) return;
+    
+    let boostExos = state.dailyBoost.exos.map((exo, idx) => ({
+        ...exo, 
+        originalCat: 'BOOST',  // Marque comme venant du boost
+        originalIdx: idx
+    }));
+    
+    LEVELS[state.niveau].categories["BOOST"] = boostExos;
+    LEVELS[state.niveau].catDisplay["BOOST"] = "🤖 Ta Séquence d'Entraînement IA";
+    LEVELS[state.niveau].catIcon["BOOST"] = "⚡";
+}
 
 // ==========================================================
 // ONBOARDING EXPRESS (DIAGNOSTIC DYNAMIQUE)
@@ -458,7 +480,9 @@ function unlockDashboard() {
     localData[code].tutoDraftViewed = true;
     localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
     
-    generateBoostIA(); render();
+    // Nouveau : Après diagnostic, on génère le premier BOOST (mais seulement si pas déjà fait)
+    if (!state.dailyBoost) generateBoostIA(); 
+    render();
 }
 
 function generateBoostIA() {
@@ -488,6 +512,16 @@ function generateBoostIA() {
     }
 }
 
+// Nouvelle fonction : Envoyer au serveur que le BOOST est terminé
+async function completeBoost() {
+    try {
+        await fetch(GOOGLE_SCRIPT_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ action: "complete_boost", code: state.activeProfile.code })
+        });
+    } catch(e) {}  // Silencieux si erreur
+}
+
 // ==========================================================
 // LOGIQUE DE SCORING
 // ==========================================================
@@ -508,6 +542,21 @@ function mark(cat, idx, status) {
     state.xp += xpGained;
     sendScoreToSheet(realCat, realIdx, status, xpGained, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000));
     updateHeader();
+
+    // Nouveau : Détecter si c'est le dernier exo du BOOST
+    if (cat === 'BOOST') {
+        let doneCount = 0;
+        const total = LEVELS[state.niveau].categories['BOOST'].length;
+        for (let i = 0; i < total; i++) {
+            const r = resolveRealExercise('BOOST', i);
+            if (state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) doneCount++;
+        }
+        if (doneCount === total) {
+            state.boostCompletedToday = true;
+            completeBoost();  // Persister sur le serveur
+        }
+    }
+    
     render(); 
 }
 
@@ -519,6 +568,21 @@ function markPasVu(cat, idx) {
     
     state.results[realId] = 'PAS_VU'; state.isScored = true;
     sendScoreToSheet(realCat, realIdx, 'PAS_VU', 0, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000));
+
+    // Même détection pour BOOST
+    if (cat === 'BOOST') {
+        let doneCount = 0;
+        const total = LEVELS[state.niveau].categories['BOOST'].length;
+        for (let i = 0; i < total; i++) {
+            const r = resolveRealExercise('BOOST', i);
+            if (state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) doneCount++;
+        }
+        if (doneCount === total) {
+            state.boostCompletedToday = true;
+            completeBoost();
+        }
+    }
+    
     render();
 }
 
@@ -659,7 +723,14 @@ function render() {
     let catKeys = Object.keys(catsToRender);
     if(catKeys.includes("BOOST")) { catKeys = ["BOOST", ...catKeys.filter(k => k !== "BOOST")]; }
 
+    // Nouveau : Si BOOST complété, forcer le message sans ajouter la catégorie
+    if (state.boostCompletedToday && catKeys.includes("BOOST")) {
+        html += `<div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-6 text-center animate-fade-in"><div class="text-4xl mb-2">✅</div><h3 class="font-black text-emerald-800">Séquence IA validée pour aujourd'hui !</h3></div>`;
+    }
+
     catKeys.forEach(cat => {
+        if (cat === 'BOOST' && state.boostCompletedToday) return;  // Skip si complété
+        
         const total = catsToRender[cat].length; let doneCount = 0;
         for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); if(state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) doneCount++; }
         
