@@ -218,7 +218,7 @@
 // ==========================================================
 // CONFIGURATION GLOBALE
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyn0GnZy5In-E38YKs-6RYLjSA9D6c-ce_G2xe732BMH0lX2qIEGLWcQq0L_PvrynFoYA/exec";  
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxw9Dt5Bk8hl4r05Z4b4Qr5lNSmtnLox5H_fZ6-RV2Nw1lItUwSgmG_qd3Pz-mLVwsgA/exec";  
 const SESSION_KEY = 'boost_user_v6_final'; 
 const STORAGE_KEY_LOCAL = 'boost_local_final';
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
@@ -235,6 +235,18 @@ let state = {
 };
 const LEVELS = {};
 
+// ==========================================================
+// OUTILS & DATES LOCALES
+// ==========================================================
+// Calcul robuste de la date (Format AAAA-MM-JJ) côté Frontend
+function getTodayString() {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 // TRADUCTEUR LATEX INTELLIGENT
 function formatLatex(str) {
     if (!str) return '';
@@ -245,7 +257,6 @@ function formatLatex(str) {
     return s;
 }
 
-// Utilitaires
 function showCustomAlert(title, message, icon = '⚠️') { document.getElementById('alert-icon').innerText = icon; document.getElementById('alert-title').innerText = title; document.getElementById('alert-message').innerText = message; document.getElementById('custom-alert').classList.remove('hidden'); }
 function closeCustomAlert() { document.getElementById('custom-alert').classList.add('hidden'); }
 function toggleLoader(idPrefix, isLoading) { document.getElementById(`${idPrefix}-loader`).classList.toggle('hidden', !isLoading); document.getElementById(`${idPrefix}-text`).classList.toggle('hidden', isLoading); }
@@ -332,12 +343,24 @@ function populateDB() { Object.keys(LEVEL_NAMES).forEach(key => { const raw = wi
 function initApp() {
     populateDB(); state.niveau = state.activeProfile.level; if(!LEVELS[state.niveau]) state.niveau = "4EME";
     let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {}; const code = state.activeProfile.code;
+    
     if (localData.lastCode && localData.lastCode !== code) { localData = {}; }
-    if(!localData[code]) { localData[code] = { streak: 1, lastLogin: new Date().toISOString().split('T')[0], tutoDraftViewed: false }; }
-    localData.lastCode = code; const today = new Date().toISOString().split('T')[0];
-    if (localData[code].lastLogin && localData[code].lastLogin !== today) { const diff = Math.ceil(Math.abs(new Date(today) - new Date(localData[code].lastLogin)) / (86400000)); localData[code].streak = (diff === 1) ? (localData[code].streak || 0) + 1 : 1; }
+    if(!localData[code]) { localData[code] = { streak: 1, lastLogin: getTodayString(), tutoDraftViewed: false }; }
+    localData.lastCode = code; 
+    
+    const today = getTodayString();
+    if (localData[code].lastLogin && localData[code].lastLogin !== today) { 
+        // Calcul grossier du nombre de jours de différence
+        const diff = Math.ceil(Math.abs(new Date(today) - new Date(localData[code].lastLogin)) / (86400000)); 
+        localData[code].streak = (diff === 1) ? (localData[code].streak || 0) + 1 : 1; 
+    }
+    
+    // Si la sauvegarde locale ou le backend confirme que c'est fait
     if (localData[code].boostDoneDate === today) state.boostCompletedToday = true;
-    localData[code].lastLogin = today; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); state.streak = localData[code].streak || 1;
+    
+    localData[code].lastLogin = today; 
+    localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); 
+    state.streak = localData[code].streak || 1;
 
     document.getElementById('landing-screen').classList.add('hidden'); document.getElementById('auth-screen').classList.add('hidden'); 
     const mainApp = document.getElementById('main-app'); mainApp.classList.remove('hidden'); mainApp.style.opacity = '0'; setTimeout(() => { mainApp.style.opacity = '1'; }, 50);
@@ -346,7 +369,16 @@ function initApp() {
     if(!localData[code].tutoDraftViewed && !state.isFirstDay) { setTimeout(() => document.getElementById('draft-tooltip').classList.remove('hidden'), window.innerWidth < 640 ? 1800 : 3000); localData[code].tutoDraftViewed = true; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); }
 
     updateLevelDropdown(state.niveau); updateHeader();
-    if (!state.isFirstDay) { if (state.boostCompletedToday) {} else if (state.dailyBoost && state.dailyBoost.exos) { loadExistingBoost(); } else { generateBoostIA(); } }
+    
+    if (!state.isFirstDay) { 
+        if (state.boostCompletedToday) {
+            // Terminé pour aujourd'hui
+        } else if (state.dailyBoost && state.dailyBoost.exos) { 
+            loadExistingBoost(); 
+        } else { 
+            generateBoostIA(); 
+        } 
+    }
     render();
 }
 
@@ -391,7 +423,7 @@ function startCalibrage() {
 function finishCalibrage() { state.calibrageState = 'results'; render(); }
 function unlockDashboard() {
     state.isFirstDay = false; state.calibrageState = null; delete LEVELS[state.niveau].categories['CALIBRAGE'];
-    let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {}; const code = state.activeProfile.code; if(!localData[code]) localData[code] = { streak: 1, lastLogin: new Date().toISOString().split('T')[0] }; localData[code].tutoDraftViewed = true; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
+    let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {}; const code = state.activeProfile.code; if(!localData[code]) localData[code] = { streak: 1, lastLogin: getTodayString() }; localData[code].tutoDraftViewed = true; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
     if (!state.boostCompletedToday) generateBoostIA(); render();
 }
 
@@ -416,7 +448,19 @@ function resolveRealExercise(cat, idx) { if (cat === "BOOST" || cat === "CALIBRA
 
 function sendScoreToSheet(rCat, rIdx, status, xp, time) { const code = state.activeProfile.code; const id = `${state.niveau}-${rCat}-${rIdx}`; fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: "save_score", code, name: state.activeProfile.name, level: state.niveau, categorie: rCat, exercice_idx: rIdx + 1, resultat: status, indices: state.hintStepsRevealed[id] || 0, formule: !!state.formulaManuallyTouched[id], xp, temps: time }) }).catch(()=>{}); }
 
-function checkBoostCompletion() { let doneCount = 0; const total = LEVELS[state.niveau].categories['BOOST'].length; for (let i = 0; i < total; i++) { const r = resolveRealExercise('BOOST', i); if (state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) doneCount++; } if (doneCount === total) { state.boostCompletedToday = true; let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {}; if(localData[state.activeProfile.code]) { localData[state.activeProfile.code].boostDoneDate = new Date().toISOString().split('T')[0]; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); } completeBoost(); } }
+function checkBoostCompletion() { 
+    let doneCount = 0; const total = LEVELS[state.niveau].categories['BOOST'].length; 
+    for (let i = 0; i < total; i++) { const r = resolveRealExercise('BOOST', i); if (state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) doneCount++; } 
+    if (doneCount === total) { 
+        state.boostCompletedToday = true; 
+        let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {}; 
+        if(localData[state.activeProfile.code]) { 
+            localData[state.activeProfile.code].boostDoneDate = getTodayString(); 
+            localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); 
+        } 
+        completeBoost(); 
+    } 
+}
 
 function mark(cat, idx, status) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; state.results[realId] = status; state.isScored = true; let xpGained = 0; if (status === 'EASY') xpGained = 100; else if (status === 'MEDIUM') xpGained = 50; else if (status === 'HARD') xpGained = 10; state.xp += xpGained; sendScoreToSheet(realCat, realIdx, status, xpGained, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000)); updateHeader(); if (cat === 'BOOST') checkBoostCompletion(); render(); }
 function markPasVu(cat, idx) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; if(cat === 'CALIBRAGE') state.calibrageExos[idx].pasVu = true; state.results[realId] = 'PAS_VU'; state.isScored = true; sendScoreToSheet(realCat, realIdx, 'PAS_VU', 0, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000)); if (cat === 'BOOST') checkBoostCompletion(); render(); }
