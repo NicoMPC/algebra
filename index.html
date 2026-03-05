@@ -466,6 +466,13 @@ function loadExistingBoost() { if (!state.dailyBoost || !state.dailyBoost.exos) 
 // ==========================================================
 // SCORING ET LOGIQUE DE CHAPITRE
 // ==========================================================
+
+window.showNextHint = function(cat, idx, maxHints) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; if (!state.hintStepsRevealed[realId]) state.hintStepsRevealed[realId] = 0; if (state.hintStepsRevealed[realId] < maxHints) { state.hintStepsRevealed[realId]++; render(); setTimeout(scrollActivePillIntoView, 50); } };
+window.revealFormula = function(cat, idx) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; state.formulaManuallyTouched[realId] = true; render(); setTimeout(scrollActivePillIntoView, 50); };
+
+function resolveRealExercise(cat, idx) { if (cat === "BOOST" || cat === "CALIBRAGE") return { realCat: LEVELS[state.niveau].categories[cat][idx].originalCat, realIdx: LEVELS[state.niveau].categories[cat][idx].originalIdx }; return { realCat: cat, realIdx: idx }; }
+function sendScoreToSheet(rCat, rIdx, status, xp, time) { const code = state.activeProfile.code; const id = `${state.niveau}-${rCat}-${rIdx}`; fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: "save_score", code, name: state.activeProfile.name, level: state.niveau, categorie: rCat, exercice_idx: rIdx + 1, resultat: status, indices: state.hintStepsRevealed[id] || 0, formule: !!state.formulaManuallyTouched[id], xp, temps: time }) }).catch(()=>{}); }
+
 function checkCategoryCompletion(cat) {
     if(cat === 'CALIBRAGE' || cat === 'BOOST') return;
     const total = LEVELS[state.niveau].categories[cat].length;
@@ -523,7 +530,7 @@ function nextExercise(cat) { state.revealed = false; state.isScored = false; let
 async function completeBoost() { try { await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "complete_boost", code: state.activeProfile.code }) }); } catch(e) {} }
 
 // ==========================================================
-// ONBOARDING (DIAGNOSTIC) - RESTAURÉ
+// ONBOARDING (DIAGNOSTIC)
 // ==========================================================
 function startCalibrage() {
     const cbs = document.querySelectorAll('.chap-checkbox:checked');
@@ -637,6 +644,7 @@ function render() {
     const catsToRender = (state.isFirstDay && state.calibrageState === 'testing') ? { "CALIBRAGE": LEVELS[state.niveau].categories["CALIBRAGE"] } : LEVELS[state.niveau].categories;
     let catKeys = Object.keys(catsToRender);
     
+    // On met le Boost en premier, suivi des chapitres normaux.
     if(catKeys.includes("BOOST")) { catKeys = ["BOOST", ...catKeys.filter(k => k !== "BOOST")]; }
 
     if (state.boostCompletedToday && !state.isFirstDay && state.calibrageState !== 'testing') {
