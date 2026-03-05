@@ -229,8 +229,9 @@
 // ==========================================================
 // CONFIGURATION GLOBALE
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyrvYbyhLo-VAfGbBtg5KQ1KpT3uMworA-gPbeaqZcldZIKRGdk0irZBHQjeRSITI9b3w/exec"
-const STORAGE_KEY_LOCAL = 'boost_local_v10';
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyrvYbyhLo-VAfGbBtg5KQ1KpT3uMworA-gPbeaqZcldZIKRGdk0irZBHQjeRSITI9b3w/exec";  
+const SESSION_KEY = 'boost_user_v11'; 
+const STORAGE_KEY_LOCAL = 'boost_local_v11';
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
 const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère (Spé Maths)", "TERMINALE": "Terminale" };
 const EMOJIS = ['📘', '🧮', '📐', '🚀', '💡', '🎯', '⚡', '🔥'];
@@ -289,14 +290,15 @@ async function generateBoostIA() {
             state.dailyBoost = data.boost;
             loadExistingBoost();
             render();
-            // Scroll en haut pour bien voir le nouveau Boost
             setTimeout(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, 300);
         } else {
-            showCustomAlert("Oups", "Erreur lors de la création du Boost. Réessaie !", "❌");
+            showCustomAlert("Oups", "Erreur lors de la création du Boost : " + (data.message || "Inconnue"), "❌");
+            console.error(data);
         }
     } catch (e) {
         closeBoostLoaderModal();
         showCustomAlert("Erreur", "Problème de connexion avec le serveur IA.", "🔌");
+        console.error(e);
     }
 }
 
@@ -324,7 +326,6 @@ function showChapterModal(cat, title, subtitle, errorsList, isPerfect) {
     document.getElementById('cm-title').innerText = title;
     document.getElementById('cm-subtitle').innerText = subtitle;
     document.getElementById('cm-icon').innerText = isPerfect ? '🏆' : '🎯';
-    
     document.getElementById('cm-action-box').classList.remove('hidden');
     document.getElementById('cm-loader-box').classList.add('hidden');
     
@@ -415,8 +416,8 @@ function showAuth(tab) { document.getElementById('landing-screen').classList.add
 function closeAuth() { document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('landing-screen').classList.remove('hidden'); }
 function switchTab(tab) {
     document.getElementById('form-register').classList.toggle('hidden', tab === 'login'); document.getElementById('form-login').classList.toggle('hidden', tab === 'register');
-    document.getElementById('tab-register').className = tab === 'register' ? "flex-1 py-2.5 font-bold text-sm rounded-lg bg-white shadow-sm transition-all text-slate-900" : "flex-1 py-2.5 font-bold text-sm rounded-lg text-slate-500 transition-all active:bg-slate-200/50";
-    document.getElementById('tab-login').className = tab === 'login' ? "flex-1 py-2.5 font-bold text-sm rounded-lg bg-white shadow-sm transition-all text-slate-900" : "flex-1 py-2.5 font-bold text-sm rounded-lg text-slate-500 transition-all active:bg-slate-200/50";
+    document.getElementById('tab-register').className = tab === 'register' ? "flex-1 py-2.5 font-bold text-sm rounded-lg bg-white shadow-sm text-slate-900 transition-all" : "flex-1 py-2.5 font-bold text-sm rounded-lg text-slate-500 transition-all active:bg-slate-200/50";
+    document.getElementById('tab-login').className = tab === 'login' ? "flex-1 py-2.5 font-bold text-sm rounded-lg bg-white shadow-sm text-slate-900 transition-all" : "flex-1 py-2.5 font-bold text-sm rounded-lg text-slate-500 transition-all active:bg-slate-200/50";
 }
 
 async function loginStudent() {
