@@ -21,7 +21,7 @@
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-    body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; overflow-x: hidden; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     
@@ -56,19 +56,41 @@
     .animate-pulse-ring { animation: pulse-ring 2s infinite; }
     @keyframes pulse-ring { 0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(168, 85, 247, 0); } 100% { transform: scale(0.8); } }
     .loader { border: 4px solid #f1f5f9; border-top: 4px solid #4f46e5; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; }
+    .loader-lg { width: 40px; height: 40px; border-width: 5px; border-top-width: 5px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .bg-grid-pattern { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 24px 24px; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col relative text-base">
 
-<div id="custom-alert" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+<div id="custom-alert" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4 transition-opacity">
   <div class="bg-white rounded-3xl w-full max-w-sm p-6 text-center shadow-2xl animate-bounce-in">
     <div id="alert-icon" class="text-5xl mb-4">⚠️</div>
     <h3 id="alert-title" class="text-xl font-black text-slate-800 mb-2">Attention</h3>
     <p id="alert-message" class="text-slate-500 font-medium mb-6"></p>
     <button onclick="closeCustomAlert()" class="w-full py-4 bg-slate-900 active:bg-slate-800 text-white font-bold rounded-xl transition-all text-lg">Compris</button>
   </div>
+</div>
+
+<div id="chapter-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-md p-8 text-center shadow-2xl animate-bounce-in relative overflow-hidden">
+        <div id="cm-icon" class="text-6xl mb-4">🎯</div>
+        <h3 id="cm-title" class="text-2xl font-black text-slate-800 mb-2">Chapitre Terminé !</h3>
+        <p id="cm-subtitle" class="text-slate-500 font-medium mb-8"></p>
+        
+        <div id="cm-action-box">
+            <button id="cm-btn" class="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 active:scale-95 text-white font-black rounded-xl text-lg shadow-lg transition-transform flex justify-center items-center gap-2">
+                Forger la suite avec l'IA ⚡
+            </button>
+            <button onclick="closeChapterModal()" class="w-full mt-3 py-3 text-slate-400 font-bold hover:text-slate-600 text-sm">Plus tard</button>
+        </div>
+        
+        <div id="cm-loader-box" class="hidden flex flex-col items-center py-4">
+            <div class="loader loader-lg mb-6" style="border-top-color: #8b5cf6;"></div>
+            <p id="cm-loader-text" class="text-purple-600 font-bold animate-pulse text-lg">L'IA analyse tes schémas de pensée...</p>
+            <p class="text-xs text-slate-400 mt-2">Création de ton entraînement sur-mesure (≈ 8s)</p>
+        </div>
+    </div>
 </div>
 
 <div id="landing-screen" class="fixed inset-0 bg-white z-50 flex flex-col overflow-y-auto bg-grid-pattern relative">
@@ -84,7 +106,7 @@
     <div class="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 text-center w-full max-w-lg mx-auto relative z-10 pb-20">
         <div class="inline-flex items-center gap-2 bg-purple-50 text-purple-700 px-3 py-1.5 rounded-full text-xs font-bold mb-6 border border-purple-200 shadow-sm animate-fade-in">
             <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span></span>
-            Générateur IA Intégré (V8)
+            Générateur IA Intégré (V9)
         </div>
         <h1 class="text-4xl sm:text-5xl md:text-6xl font-black mb-5 leading-tight tracking-tighter text-slate-900 px-2">
             Fais exploser ta moyenne en <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">Mathématiques.</span>
@@ -153,7 +175,7 @@
                 <div onclick="handleLogoClick()" class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-xl flex items-center justify-center text-white text-xl sm:text-2xl font-bold shadow-inner shrink-0 cursor-pointer select-none">📐</div>
                 <div class="min-w-0">
                     <h1 class="text-base sm:text-lg font-black text-slate-800 leading-tight truncate">Espace de <span id="active-student-name" class="text-indigo-600"></span></h1>
-                    <span class="text-[10px] font-bold text-purple-500 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-100 inline-block mt-0.5">Moteur IA v8 Activé</span>
+                    <span class="text-[10px] font-bold text-purple-500 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-100 inline-block mt-0.5">Moteur IA Actif</span>
                 </div>
             </div>
             <button onclick="logout()" class="p-2 sm:p-2.5 bg-rose-50 active:bg-rose-100 text-rose-600 rounded-xl border border-rose-100 transition-colors shrink-0 flex items-center justify-center w-10 h-10">
@@ -197,9 +219,9 @@
 // ==========================================================
 // CONFIGURATION GLOBALE
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2WutkQ_pgc8PI-F-bGyjuKy69M3gW0TX7yXzYGZ4cozrmT1U22ZcZCIhQAWSCK5nuHA/exec";  
-const SESSION_KEY = 'boost_user_v8'; 
-const STORAGE_KEY_LOCAL = 'boost_local_v8';
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPCTbWQ4xzyFDtHuHQCD84tICchzo1YxcwMgFhUUjzITP3YPd5UjNvwxTUEQObt7Wi8A/exec";  
+const SESSION_KEY = 'boost_user_v9'; 
+const STORAGE_KEY_LOCAL = 'boost_local_v9';
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
 const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère (Spé Maths)", "TERMINALE": "Terminale" };
 const EMOJIS = ['📘', '🧮', '📐', '🚀', '💡', '🎯', '⚡', '🔥'];
@@ -215,23 +237,60 @@ let state = {
 const LEVELS = {};
 
 // ==========================================================
-// OUTILS & DATES LOCALES
+// OUTILS
 // ==========================================================
-function getTodayString() {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-function formatLatex(str) {
-    if (!str) return '';
-    let s = str.replace(/\\?(?:frac|fract)\s*\(\s*([^)]+?)\s*\)\s*\(\s*([^)]+?)\s*\)/ig, '\\frac{$1}{$2}');
-    if (!s.includes('$') && (s.includes('\\') || s.includes('^') || s.includes('=') || /^[0-9xX\+\-\*\/\s,]+$/.test(s))) return '$' + s + '$';
-    return s;
-}
-
+function getTodayString() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+function formatLatex(str) { if (!str) return ''; let s = str.replace(/\\?(?:frac|fract)\s*\(\s*([^)]+?)\s*\)\s*\(\s*([^)]+?)\s*\)/ig, '\\frac{$1}{$2}'); if (!s.includes('$') && (s.includes('\\') || s.includes('^') || s.includes('=') || /^[0-9xX\+\-\*\/\s,]+$/.test(s))) return '$' + s + '$'; return s; }
 function showCustomAlert(title, message, icon = '⚠️') { document.getElementById('alert-icon').innerText = icon; document.getElementById('alert-title').innerText = title; document.getElementById('alert-message').innerText = message; document.getElementById('custom-alert').classList.remove('hidden'); }
 function closeCustomAlert() { document.getElementById('custom-alert').classList.add('hidden'); }
 function toggleLoader(idPrefix, isLoading) { document.getElementById(`${idPrefix}-loader`).classList.toggle('hidden', !isLoading); document.getElementById(`${idPrefix}-text`).classList.toggle('hidden', isLoading); }
+function scrollActivePillIntoView() { const activePill = document.querySelector('.snap-center.ring-4'); if (activePill) { activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } }
+
+// ==========================================================
+// MODAL DE FIN DE CHAPITRE
+// ==========================================================
+function showChapterModal(cat, title, subtitle, errorsList, isPerfect) {
+    document.getElementById('cm-title').innerText = title;
+    document.getElementById('cm-subtitle').innerText = subtitle;
+    document.getElementById('cm-icon').innerText = isPerfect ? '🏆' : '🎯';
+    
+    document.getElementById('cm-action-box').classList.remove('hidden');
+    document.getElementById('cm-loader-box').classList.add('hidden');
+    
+    const btn = document.getElementById('cm-btn');
+    btn.onclick = () => triggerAIGenerationFromModal(cat, errorsList, isPerfect);
+    
+    document.getElementById('chapter-modal').classList.remove('hidden');
+}
+
+function closeChapterModal() { document.getElementById('chapter-modal').classList.add('hidden'); }
+
+async function triggerAIGenerationFromModal(cat, errors, isPerfect) {
+    document.getElementById('cm-action-box').classList.add('hidden');
+    document.getElementById('cm-loader-box').classList.remove('hidden');
+    document.getElementById('cm-loader-text').innerText = isPerfect ? "L'IA prépare le mode Boss (Pièges & Défis)..." : "L'IA analyse tes schémas de pensée...";
+    
+    const baseCat = cat.replace(/_V\d+$/, '');
+    try {
+        const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "generate_remediation", code: state.activeProfile.code, category: baseCat, level: state.niveau, errors: errors.slice(0, 3) }) });
+        const data = await res.json();
+        closeChapterModal();
+        if(data.status === 'success') {
+            const catName = `${baseCat}_V${data.version}`;
+            LEVELS[state.niveau].categories[catName] = data.exos.map((exo, i) => ({...exo, originalCat: catName, originalIdx: i}));
+            LEVELS[state.niveau].catDisplay[catName] = `${LEVELS[state.niveau].catDisplay[baseCat] || baseCat} (V${data.version})`;
+            LEVELS[state.niveau].catIcon[catName] = "🤖";
+            state.insights[catName] = data.insight;
+            state.isNew[catName] = true;
+            render();
+            setTimeout(() => { document.getElementById(`cat-header-${catName}`).scrollIntoView({behavior: 'smooth', block: 'center'}); }, 300);
+        } else if (data.status === 'limit_reached') {
+            showCustomAlert("Bravo !", "Tu as atteint le niveau de maîtrise maximal disponible pour ce chapitre.", "🎓");
+        } else {
+            showCustomAlert("Oups", "Erreur lors de la génération. On réessaiera plus tard.", "❌");
+        }
+    } catch(e) { closeChapterModal(); showCustomAlert("Erreur", "Problème de connexion avec l'IA.", "🔌"); }
+}
 
 // ==========================================================
 // ACCES COACH (EASTER EGG)
@@ -245,17 +304,14 @@ function handleLogoClick() {
 async function checkCoachAccess() {
     const user = prompt("Identifiant Coach:"); if(user !== "Nicolas") return;
     const pwd = prompt("Mot de passe:"); if(pwd !== "Nicolas17!") return;
-    document.getElementById('main-app').classList.add('hidden');
-    document.getElementById('landing-screen').classList.add('hidden');
-    document.getElementById('auth-screen').classList.add('hidden');
+    document.getElementById('main-app').classList.add('hidden'); document.getElementById('landing-screen').classList.add('hidden'); document.getElementById('auth-screen').classList.add('hidden');
     document.getElementById('coach-screen').classList.remove('hidden');
     document.getElementById('coach-content').innerHTML = `<div class="flex items-center gap-3 text-purple-400 font-bold"><div class="loader" style="border-top-color: white;"></div> Récupération des données...</div>`;
     
     try {
         const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({action: 'get_coach_data'}) });
         const data = await res.json();
-        if(data.status === 'success') renderCoachDashboard(data.students);
-        else document.getElementById('coach-content').innerHTML = `<p class="text-rose-400">Erreur : ${data.message}</p>`;
+        if(data.status === 'success') renderCoachDashboard(data.students); else document.getElementById('coach-content').innerHTML = `<p class="text-rose-400">Erreur : ${data.message}</p>`;
     } catch(e) { document.getElementById('coach-content').innerHTML = `<p class="text-rose-400">Erreur de connexion.</p>`; }
 }
 function renderCoachDashboard(students) {
@@ -303,7 +359,6 @@ async function loginStudent() {
             state.activeProfile = data.profile; state.dailyBoost = data.dailyBoost; state.boostCompletedToday = data.boostCompletedToday; state.isFirstDay = data.isFirstDay;
             localStorage.setItem(SESSION_KEY, JSON.stringify({email, password: pwd}));
             rebuildState(data.history); 
-            // Gestion des chapitres dynamiques générés par l'IA
             if (data.dynamicChapters) {
                 data.dynamicChapters.forEach(dc => {
                     const catName = `${dc.originalCat}_V${dc.version}`;
@@ -312,9 +367,7 @@ async function loginStudent() {
                     LEVELS[state.niveau].catDisplay[catName] = `${LEVELS[state.niveau].catDisplay[dc.originalCat] || dc.originalCat} (V${dc.version})`;
                     LEVELS[state.niveau].catIcon[catName] = "🤖";
                     state.insights[catName] = dc.insight;
-                    // Est-ce un nouveau chapitre non commencé ?
-                    let hasScored = false;
-                    for(let i=0; i<dc.exos.length; i++) { if(state.results[`${state.niveau}-${catName}-${i}`]) hasScored = true; }
+                    let hasScored = false; for(let i=0; i<dc.exos.length; i++) { if(state.results[`${state.niveau}-${catName}-${i}`]) hasScored = true; }
                     state.isNew[catName] = !hasScored;
                 });
             }
@@ -342,7 +395,7 @@ async function registerStudent() {
 // ==========================================================
 document.addEventListener('DOMContentLoaded', () => { 
   Object.keys(LEVEL_NAMES).forEach(key => { LEVELS[key] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[key] }; });
-  populateDB(); // Charge la base statique d'abord
+  populateDB();
   const savedCreds = localStorage.getItem(SESSION_KEY);
   if (savedCreds) { try { const creds = JSON.parse(savedCreds); document.getElementById('login-email').value = creds.email || ''; document.getElementById('login-pwd').value = creds.password || ''; if(creds.email && creds.password) showAuth('login'); } catch(e) {} }
 });
@@ -387,62 +440,58 @@ function changeNiveau() { state.niveau = document.getElementById('niveau-select'
 function loadExistingBoost() { if (!state.dailyBoost || !state.dailyBoost.exos) return; let boostExos = state.dailyBoost.exos.map((exo, idx) => ({ ...exo, originalCat: 'BOOST', originalIdx: idx })); LEVELS[state.niveau].categories["BOOST"] = boostExos; LEVELS[state.niveau].catDisplay["BOOST"] = "🤖 Ta Séquence d'Entraînement IA"; LEVELS[state.niveau].catIcon["BOOST"] = "⚡"; }
 
 // ==========================================================
-// ACTIONS IA & SCORING
+// SCORING ET LOGIQUE DE CHAPITRE
 // ==========================================================
-window.showNextHint = function(cat, idx, maxHints) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; if (!state.hintStepsRevealed[realId]) state.hintStepsRevealed[realId] = 0; if (state.hintStepsRevealed[realId] < maxHints) { state.hintStepsRevealed[realId]++; render(); } };
-window.revealFormula = function(cat, idx) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; state.formulaManuallyTouched[realId] = true; render(); };
+window.showNextHint = function(cat, idx, maxHints) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; if (!state.hintStepsRevealed[realId]) state.hintStepsRevealed[realId] = 0; if (state.hintStepsRevealed[realId] < maxHints) { state.hintStepsRevealed[realId]++; render(); setTimeout(scrollActivePillIntoView, 50); } };
+window.revealFormula = function(cat, idx) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; state.formulaManuallyTouched[realId] = true; render(); setTimeout(scrollActivePillIntoView, 50); };
 
 function resolveRealExercise(cat, idx) { if (cat === "BOOST" || cat === "CALIBRAGE") return { realCat: LEVELS[state.niveau].categories[cat][idx].originalCat, realIdx: LEVELS[state.niveau].categories[cat][idx].originalIdx }; return { realCat: cat, realIdx: idx }; }
-
 function sendScoreToSheet(rCat, rIdx, status, xp, time) { const code = state.activeProfile.code; const id = `${state.niveau}-${rCat}-${rIdx}`; fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: "save_score", code, name: state.activeProfile.name, level: state.niveau, categorie: rCat, exercice_idx: rIdx + 1, resultat: status, indices: state.hintStepsRevealed[id] || 0, formule: !!state.formulaManuallyTouched[id], xp, temps: time }) }).catch(()=>{}); }
-
-async function triggerAIGeneration(cat, errors) {
-    const baseCat = cat.replace(/_V\d+$/, '');
-    showCustomAlert("Analyse en cours 🧠", "L'IA forge ton prochain entraînement sur mesure en fonction de tes erreurs...", "⚡");
-    try {
-        const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "generate_remediation", code: state.activeProfile.code, category: baseCat, level: state.niveau, errors: errors.slice(0, 3) }) });
-        const data = await res.json();
-        closeCustomAlert();
-        if(data.status === 'success') {
-            const catName = `${baseCat}_V${data.version}`;
-            LEVELS[state.niveau].categories[catName] = data.exos.map((exo, i) => ({...exo, originalCat: catName, originalIdx: i}));
-            LEVELS[state.niveau].catDisplay[catName] = `${LEVELS[state.niveau].catDisplay[baseCat] || baseCat} (V${data.version})`;
-            LEVELS[state.niveau].catIcon[catName] = "🤖";
-            state.insights[catName] = data.insight;
-            state.isNew[catName] = true;
-            showCustomAlert("Nouveau Chapitre ! 🎉", "Ton entraînement personnalisé est prêt.", "🚀");
-            render();
-        }
-    } catch(e) { closeCustomAlert(); }
-}
 
 function checkCategoryCompletion(cat) {
     if(cat === 'CALIBRAGE' || cat === 'BOOST') return;
     const total = LEVELS[state.niveau].categories[cat].length;
-    let doneCount = 0; let errors = [];
+    let doneCount = 0; let easyCount = 0; let errors = [];
+    
     for(let i=0; i<total; i++) {
         const r = resolveRealExercise(cat, i); const res = state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`];
         if(res) doneCount++;
         if(res === 'HARD') errors.push(LEVELS[state.niveau].categories[cat][i].q);
+        if(res === 'EASY') easyCount++;
     }
+    
     if(doneCount === total && total > 0) {
-        state.expanded[cat] = false; // Auto-réduction
-        if(errors.length > 0) {
-            const baseCat = cat.replace(/_V\d+$/, '');
-            const currentVMatch = cat.match(/_V(\d+)$/); const currentV = currentVMatch ? parseInt(currentVMatch[1]) : 1;
-            const nextCatName = `${baseCat}_V${currentV + 1}`;
-            if(!LEVELS[state.niveau].categories[nextCatName] && !state.remediationRequested[cat]) {
-                state.remediationRequested[cat] = true;
-                triggerAIGeneration(cat, errors);
-            }
+        state.expanded[cat] = false; // Auto-réduction du chapitre
+        
+        const currentVMatch = cat.match(/_V(\d+)$/);
+        const currentV = currentVMatch ? parseInt(currentVMatch[1]) : 1;
+        
+        if (currentV >= 3) {
+            showCustomAlert("🎉 Chapitre Maîtrisé !", "Tu es arrivé au bout des versions pour ce chapitre. Super !", "🏆");
+            return;
+        }
+
+        const baseCat = cat.replace(/_V\d+$/, '');
+        const nextCatName = `${baseCat}_V${currentV + 1}`;
+        
+        if(!LEVELS[state.niveau].categories[nextCatName] && !state.remediationRequested[cat]) {
+            state.remediationRequested[cat] = true;
+            
+            const isPerfect = errors.length === 0;
+            const pct = Math.round((easyCount / total) * 100);
+            const title = isPerfect ? "SANS FAUTE ! 🏆" : "Chapitre Terminé ! 🎯";
+            const subtitle = isPerfect ? "Prêt pour le mode Boss ?" : `Tu as ${pct}% de réussite (Facile).`;
+            
+            // Affiche la grande fenêtre modale au lieu de tout faire en silence
+            showChapterModal(cat, title, subtitle, errors, isPerfect);
         }
     }
 }
 
 function checkBoostCompletion() { let doneCount = 0; const total = LEVELS[state.niveau].categories['BOOST'].length; for (let i = 0; i < total; i++) { const r = resolveRealExercise('BOOST', i); if (state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) doneCount++; } if (doneCount === total) { state.boostCompletedToday = true; let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {}; if(localData[state.activeProfile.code]) { localData[state.activeProfile.code].boostDoneDate = getTodayString(); localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); } completeBoost(); } }
 
-function mark(cat, idx, status) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; state.results[realId] = status; state.isScored = true; let xpGained = 0; if (status === 'EASY') xpGained = 100; else if (status === 'MEDIUM') xpGained = 50; else if (status === 'HARD') xpGained = 10; state.xp += xpGained; sendScoreToSheet(realCat, realIdx, status, xpGained, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000)); updateHeader(); if (cat === 'BOOST') checkBoostCompletion(); else checkCategoryCompletion(cat); render(); }
-function markPasVu(cat, idx) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; if(cat === 'CALIBRAGE') state.calibrageExos[idx].pasVu = true; state.results[realId] = 'PAS_VU'; state.isScored = true; sendScoreToSheet(realCat, realIdx, 'PAS_VU', 0, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000)); if (cat === 'BOOST') checkBoostCompletion(); render(); }
+function mark(cat, idx, status) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; state.results[realId] = status; state.isScored = true; let xpGained = 0; if (status === 'EASY') xpGained = 100; else if (status === 'MEDIUM') xpGained = 50; else if (status === 'HARD') xpGained = 10; state.xp += xpGained; sendScoreToSheet(realCat, realIdx, status, xpGained, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000)); updateHeader(); if (cat === 'BOOST') checkBoostCompletion(); else checkCategoryCompletion(cat); render(); setTimeout(scrollActivePillIntoView, 50); }
+function markPasVu(cat, idx) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; if(cat === 'CALIBRAGE') state.calibrageExos[idx].pasVu = true; state.results[realId] = 'PAS_VU'; state.isScored = true; sendScoreToSheet(realCat, realIdx, 'PAS_VU', 0, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000)); if (cat === 'BOOST') checkBoostCompletion(); render(); setTimeout(scrollActivePillIntoView, 50); }
 
 window.checkOption = function(cat, idx, originalOptIdx, btnEl) {
     const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; let data = LEVELS[state.niveau].categories[cat][idx]; const selectedOpt = data.options[originalOptIdx]; state.qcmAnswered[realId] = selectedOpt; state.revealed = true; state.currentId = realId; const correctOptIdx = data.options.indexOf(data.a);
@@ -450,9 +499,9 @@ window.checkOption = function(cat, idx, originalOptIdx, btnEl) {
     if (selectedOpt === data.a) { btnEl.className = "opt-btn opt-correct animate-success-pop"; setTimeout(() => mark(cat, idx, 'EASY'), 800); } else { btnEl.className = "opt-btn opt-wrong animate-shake"; setTimeout(() => mark(cat, idx, 'HARD'), 1200); }
 };
 
-function verify(cat, idx) { state.revealed = true; state.isScored = false; state.currentId = `${state.niveau}-${resolveRealExercise(cat, idx).realCat}-${resolveRealExercise(cat, idx).realIdx}`; render(); }
-function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; if(state.isNew[cat]) state.isNew[cat] = false; render(); }
-function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; state.isDrawing = false; render(); }
+function verify(cat, idx) { state.revealed = true; state.isScored = false; state.currentId = `${state.niveau}-${resolveRealExercise(cat, idx).realCat}-${resolveRealExercise(cat, idx).realIdx}`; render(); setTimeout(scrollActivePillIntoView, 50); }
+function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; if(state.isNew[cat]) state.isNew[cat] = false; render(); setTimeout(scrollActivePillIntoView, 50); }
+function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; state.isDrawing = false; render(); setTimeout(scrollActivePillIntoView, 50); }
 function nextExercise(cat) { state.revealed = false; state.isScored = false; let nIdx=0; for(let i=0; i<LEVELS[state.niveau].categories[cat].length; i++) { const r = resolveRealExercise(cat, i); if(!state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) { nIdx = i; break; } } goToExercise(cat, nIdx); }
 async function completeBoost() { try { await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "complete_boost", code: state.activeProfile.code }) }); } catch(e) {} }
 
@@ -483,6 +532,8 @@ function render() {
     let html = `<div class="flex flex-col gap-4 w-full">`;
     const catsToRender = LEVELS[state.niveau].categories;
     let catKeys = Object.keys(catsToRender);
+    
+    // On met le Boost en premier, suivi des chapitres normaux.
     if(catKeys.includes("BOOST")) { catKeys = ["BOOST", ...catKeys.filter(k => k !== "BOOST")]; }
 
     if (state.boostCompletedToday && !state.isFirstDay) {
@@ -497,20 +548,30 @@ function render() {
         const isCompleted = doneCount === total && total > 0;
 
         let bgClass = "bg-white border-slate-200";
-        if (cat === "BOOST") bgClass = "bg-gradient-to-r from-indigo-50 to-purple-50 border-purple-200 shadow-md ring-1 ring-purple-300";
-        else if (state.isNew[cat]) bgClass = "bg-purple-50 border-purple-300 animate-pulse-ring";
-        else if (isCompleted) bgClass = "bg-emerald-50/50 border-emerald-100 opacity-80";
+        let badge = "";
+
+        if (cat === "BOOST") {
+            bgClass = "bg-gradient-to-r from-indigo-50 to-purple-50 border-purple-200 shadow-md ring-1 ring-purple-300";
+            badge = `<span class="text-[10px] ml-2 font-bold text-purple-700 bg-purple-100 border border-purple-200 px-2 py-0.5 rounded-full align-middle">Routine Quotidienne</span>`;
+        } else if (state.isNew[cat]) {
+            bgClass = "bg-purple-50 border-purple-300 animate-pulse-ring";
+            badge = `<span class="text-[10px] ml-2 font-bold text-white bg-purple-500 px-2 py-0.5 rounded-full align-middle">CRÉÉ PAR L'IA</span>`;
+        } else if (isCompleted) {
+            bgClass = "bg-emerald-50/50 border-emerald-100 opacity-80";
+        } else {
+            badge = `<span class="text-[10px] ml-2 font-bold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full align-middle">Entraînement Libre</span>`;
+        }
 
         let titleColor = isCompleted ? "text-emerald-700" : "text-slate-800";
 
         html += `
-        <div class="rounded-3xl shadow-sm border transition-all ${bgClass} w-full overflow-hidden">
+        <div id="cat-header-${cat}" class="rounded-3xl shadow-sm border transition-all ${bgClass} w-full overflow-hidden">
             <div onclick="toggleCategory('${cat}')" class="px-4 py-4 sm:px-5 sm:py-5 flex items-center cursor-pointer relative z-10 w-full">
                 <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-xl sm:text-2xl mr-3 sm:mr-4 shrink-0 shadow-sm">${LEVELS[state.niveau].catIcon[cat] || '📘'}</div>
                 <div class="flex-1 min-w-0">
                     <div class="text-base sm:text-lg font-black ${titleColor} truncate pr-2">
                         ${LEVELS[state.niveau].catDisplay[cat]||cat} 
-                        ${state.isNew[cat] ? '<span class="text-[10px] ml-2 font-bold text-white bg-purple-500 px-2 py-0.5 rounded-full align-middle">NOUVEAU</span>' : ''}
+                        ${badge}
                         ${isCompleted ? '🏆' : ''}
                     </div>
                     <div class="flex items-center gap-2 mt-1.5 w-full max-w-[200px]"><div class="flex-1 bg-slate-200 rounded-full h-1.5 overflow-hidden"><div class="bg-${cat==='BOOST'||state.isNew[cat]?'purple':'blue'}-500 h-1.5 rounded-full transition-all duration-500" style="width: ${(doneCount/total)*100}%"></div></div><span class="text-[10px] sm:text-xs text-slate-500 font-bold shrink-0">${Math.round((doneCount/total)*100)}%</span></div>
@@ -534,7 +595,11 @@ function renderSection(cat, data, idx, total, isCatDone) {
     let insightHtml = state.insights[cat] ? `<div class="px-4 py-3 bg-purple-100 text-purple-900 font-semibold text-sm border-y border-purple-200 border-dashed animate-fade-in flex items-start gap-3"><span class="text-xl">🤖</span><p>${state.insights[cat]}</p></div>` : '';
 
     let pills = `<div class="flex overflow-x-auto gap-2 p-3 sm:p-4 border-t border-slate-100 bg-slate-50/50 no-scrollbar snap-x">`;
-    for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); const s = state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]; pills += `<button onclick="goToExercise('${cat}', ${i})" class="shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-sm font-bold flex items-center justify-center snap-center ${s==='EASY'||s==='MEDIUM'?'bg-emerald-500 text-white':(s==='HARD'?'bg-rose-400 text-white':'bg-white border text-slate-600')} ${i===idx?'ring-4 ring-indigo-200 scale-110 z-10':''}">${i+1}</button>`; } pills += `</div>`;
+    for(let i=0; i<total; i++) { 
+        const r = resolveRealExercise(cat, i); const s = state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]; 
+        pills += `<button onclick="goToExercise('${cat}', ${i})" class="shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-sm font-bold flex items-center justify-center snap-center ${s==='EASY'||s==='MEDIUM'?'bg-emerald-500 text-white':(s==='HARD'?'bg-rose-400 text-white':'bg-white border text-slate-600')} ${i===idx?'ring-4 ring-indigo-300 scale-110 z-10':''}">${i+1}</button>`; 
+    } 
+    pills += `</div>`;
 
     let actions = '';
     if(!isRev && !hasOpt) { actions = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl active:scale-95 transition-transform shadow-lg text-base">VÉRIFIER</button>`; } 
