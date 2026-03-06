@@ -4,865 +4,316 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Algèbre Boost • L'IA Stratégique</title>
-
   <script>
-    window.MathJax = {
-      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], macros: { Fract: ["\\frac{#1}{#2}", 2] } },
-      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] },
-      startup: { pageReady: () => { return MathJax.startup.defaultPageReady(); } }
-    };
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], macros: { Fract: ["\\frac{#1}{#2}", 2] } }, options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }, startup: { pageReady: () => { return MathJax.startup.defaultPageReady(); } } };
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <script src="diagnostic.js"></script>
-  <script src="6.js"></script><script src="5.js"></script><script src="4.js"></script>
-  <script src="3.js"></script><script src="2.js"></script><script src="1.js"></script><script src="t.js"></script>
+  <script src="diagnostic.js"></script><script src="6.js"></script><script src="5.js"></script><script src="4.js"></script><script src="3.js"></script><script src="2.js"></script><script src="1.js"></script><script src="t.js"></script>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
     body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; overflow-x: hidden; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    
-    .math-content { opacity: 0; transition: opacity 0.3s ease; }
-    .math-content.ready { opacity: 1; }
-    .math-display { font-size: 1.3rem; font-weight: 700; white-space: nowrap !important; overflow-x: auto; padding-bottom: 0.5rem; }
+    .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .math-content { opacity: 0; transition: opacity 0.3s ease; } .math-content.ready { opacity: 1; }
+    .math-display { font-size: 1.3rem; font-weight: 700; white-space: normal !important; padding-bottom: 0.5rem; word-break: keep-all;}
     .blurred-formula { filter: blur(6px); transition: all 0.4s; cursor: pointer; user-select: none; background: #ebf4ff; border-radius: 12px; padding: 12px; border: 2px dashed #bfdbfe; text-align: center; }
     .blurred-formula.revealed { filter: blur(0); cursor: default; background: white; border-style: solid; border-color: #3b82f6; }
-    
     .opt-btn { position: relative; padding: 1.25rem 1rem 1.25rem 3.5rem; text-align: left; transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 1rem; background: white; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; cursor: pointer; font-weight: 600; min-height: 60px; }
     .opt-btn:active:not(.opt-disabled) { transform: scale(0.98); }
     .opt-btn::before { content: ''; position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; border: 2px solid #cbd5e1; border-radius: 50%; background: white; transition: all 0.2s; }
-    .opt-correct { border-color: #10b981 !important; background: #f0fdf4 !important; pointer-events: none; }
-    .opt-correct::before { background: #10b981 !important; border-color: #10b981 !important; content: '✓'; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
-    .opt-wrong { border-color: #ef4444 !important; background: #fef2f2 !important; pointer-events: none; opacity: 0.8;}
-    .opt-wrong::before { background: #ef4444 !important; border-color: #ef4444 !important; content: '✕'; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+    .opt-correct { border-color: #10b981 !important; background: #f0fdf4 !important; pointer-events: none; } .opt-correct::before { background: #10b981 !important; border-color: #10b981 !important; content: '✓'; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+    .opt-wrong { border-color: #ef4444 !important; background: #fef2f2 !important; pointer-events: none; opacity: 0.8;} .opt-wrong::before { background: #ef4444 !important; border-color: #ef4444 !important; content: '✕'; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
     .opt-neutral { opacity: 0.5; pointer-events: none; }
-    
     .chap-card { border: 2px solid #e2e8f0; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; overflow: hidden; background: white; padding: 1.25rem; padding-right: 3.5rem; display: flex; align-items: center; min-height: 80px;}
-    .chap-checkbox:checked + .chap-card { border-color: #4f46e5; background: #eef2ff; transform: scale(1.02); }
-    .chap-checkbox:checked + .chap-card::after { content: '✅'; position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; }
-    
+    .chap-checkbox:checked + .chap-card { border-color: #4f46e5; background: #eef2ff; transform: scale(1.02); } .chap-checkbox:checked + .chap-card::after { content: '✅'; position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; }
     #draw-canvas-draft, .main-draw-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; cursor: crosshair; touch-action: none; }
     .drawing-mode .main-draw-canvas, .drawing-mode-draft #draw-canvas-draft { pointer-events: auto; z-index: 12; }
-    #draft-drawer { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-    #draft-drawer.open { transform: translateX(0); }
-    
-    @keyframes bounce-in { 0% { transform: scale(0.95) translateY(10px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
-    .animate-bounce-in { animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-    @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
-    .animate-pulse-ring { animation: pulse-ring 2s infinite; }
+    #draft-drawer { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); } #draft-drawer.open { transform: translateX(0); }
+    @keyframes bounce-in { 0% { transform: scale(0.95) translateY(10px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } } .animate-bounce-in { animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } } .animate-pulse-ring { animation: pulse-ring 2s infinite; }
     @keyframes pulse-ring { 0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(168, 85, 247, 0); } 100% { transform: scale(0.8); } }
-    .loader { border: 4px solid #f1f5f9; border-top: 4px solid #4f46e5; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; }
-    .loader-lg { width: 40px; height: 40px; border-width: 5px; border-top-width: 5px; }
+    .loader { border: 4px solid #f1f5f9; border-top: 4px solid #4f46e5; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; } .loader-lg { width: 40px; height: 40px; border-width: 5px; border-top-width: 5px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .bg-grid-pattern { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 24px 24px; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col relative text-base">
 
-<div id="custom-alert" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4 transition-opacity">
-  <div class="bg-white rounded-3xl w-full max-w-sm p-6 text-center shadow-2xl animate-bounce-in">
-    <div id="alert-icon" class="text-5xl mb-4">⚠️</div>
-    <h3 id="alert-title" class="text-xl font-black text-slate-800 mb-2">Attention</h3>
-    <p id="alert-message" class="text-slate-500 font-medium mb-6"></p>
-    <button onclick="closeCustomAlert()" class="w-full py-4 bg-slate-900 active:bg-slate-800 text-white font-bold rounded-xl transition-all text-lg">Compris</button>
-  </div>
-</div>
+<div id="custom-alert" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4"><div class="bg-white rounded-3xl w-full max-w-sm p-6 text-center shadow-2xl animate-bounce-in"><div id="alert-icon" class="text-5xl mb-4">⚠️</div><h3 id="alert-title" class="text-xl font-black text-slate-800 mb-2">Attention</h3><p id="alert-message" class="text-slate-500 font-medium mb-6"></p><button onclick="closeCustomAlert()" class="w-full py-4 bg-slate-900 text-white font-bold rounded-xl text-lg">Compris</button></div></div>
+<div id="chapter-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] flex items-center justify-center p-4"><div class="bg-white rounded-3xl w-full max-w-md p-8 text-center shadow-2xl animate-bounce-in relative overflow-hidden"><div id="cm-icon" class="text-6xl mb-4">🎯</div><h3 id="cm-title" class="text-2xl font-black text-slate-800 mb-2">Chapitre Terminé !</h3><p id="cm-subtitle" class="text-slate-500 font-medium mb-8"></p><div id="cm-action-box"><button id="cm-btn" class="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black rounded-xl text-lg shadow-lg flex justify-center items-center gap-2">Forger la suite avec l'IA ⚡</button><button onclick="closeChapterModal()" class="w-full mt-3 py-3 text-slate-400 font-bold text-sm">Plus tard</button></div><div id="cm-loader-box" class="hidden flex flex-col items-center py-4"><div class="loader loader-lg mb-6" style="border-top-color: #8b5cf6;"></div><p id="cm-loader-text" class="text-purple-600 font-bold animate-pulse text-lg">L'IA analyse tes schémas...</p></div></div></div>
+<div id="boost-modal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[200] flex items-center justify-center p-4"><div class="bg-white rounded-3xl w-full max-w-md p-8 text-center shadow-2xl animate-bounce-in relative overflow-hidden"><div class="flex flex-col items-center py-4"><div class="loader loader-lg mb-6" style="border-top-color: #8b5cf6;"></div><h3 class="text-2xl font-black text-slate-800 mb-2">Création en cours...</h3><p id="boost-loader-text" class="text-purple-600 font-bold animate-pulse text-lg">Génération de tes 5 défis...</p></div></div></div>
 
-<div id="chapter-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl w-full max-w-md p-8 text-center shadow-2xl animate-bounce-in relative overflow-hidden">
-        <div id="cm-icon" class="text-6xl mb-4">🎯</div>
-        <h3 id="cm-title" class="text-2xl font-black text-slate-800 mb-2">Chapitre Terminé !</h3>
-        <p id="cm-subtitle" class="text-slate-500 font-medium mb-8"></p>
-        
-        <div id="cm-action-box">
-            <button id="cm-btn" class="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 active:scale-95 text-white font-black rounded-xl text-lg shadow-lg transition-transform flex justify-center items-center gap-2">
-                Forger la suite avec l'IA ⚡
-            </button>
-            <button onclick="closeChapterModal()" class="w-full mt-3 py-3 text-slate-400 font-bold hover:text-slate-600 text-sm">Plus tard</button>
-        </div>
-        
-        <div id="cm-loader-box" class="hidden flex flex-col items-center py-4">
-            <div class="loader loader-lg mb-6" style="border-top-color: #8b5cf6;"></div>
-            <p id="cm-loader-text" class="text-purple-600 font-bold animate-pulse text-lg">L'IA analyse tes schémas de pensée...</p>
-            <p class="text-xs text-slate-400 mt-2">Création de ton entraînement sur-mesure (≈ 8s)</p>
-        </div>
-    </div>
-</div>
+<div id="landing-screen" class="fixed inset-0 bg-white z-50 flex flex-col overflow-y-auto bg-grid-pattern relative"><div class="absolute top-0 left-0 w-full h-72 bg-gradient-to-b from-indigo-50/80 to-transparent pointer-events-none"></div><header class="flex justify-between items-center p-4 sm:p-6 relative z-10"><div class="flex items-center gap-2"><div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-xl flex items-center justify-center text-xl text-white font-bold shadow-md">📐</div><span class="text-xl font-black text-slate-800">Algèbre<span class="text-indigo-600">Boost</span></span></div><button onclick="showAuth('login')" class="font-bold text-slate-600 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200 text-sm">Connexion</button></header><div class="flex-1 flex flex-col items-center justify-center p-4 text-center max-w-lg mx-auto relative z-10 pb-20"><div class="inline-flex items-center gap-2 bg-purple-50 text-purple-700 px-3 py-1.5 rounded-full text-xs font-bold mb-6 border border-purple-200 shadow-sm"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span></span> Moteur IA Actif</div><h1 class="text-4xl sm:text-5xl font-black mb-5 leading-tight tracking-tighter text-slate-900">Fais exploser ta moyenne en <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">Maths.</span></h1><p class="text-slate-500 mb-8 font-medium">L'IA analyse tes failles invisibles et génère un programme chirurgical.</p><button onclick="showAuth('register')" class="w-full py-5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black text-lg rounded-2xl shadow-[0_10px_30px_-10px_rgba(79,70,229,0.5)] flex items-center justify-center gap-3">Lancer mon Diagnostic <span class="text-xl">🚀</span></button></div></div>
 
-<div id="boost-modal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[200] flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl w-full max-w-md p-8 text-center shadow-2xl animate-bounce-in relative overflow-hidden">
-        <div class="flex flex-col items-center py-4">
-            <div class="loader loader-lg mb-6" style="border-top-color: #8b5cf6;"></div>
-            <h3 class="text-2xl font-black text-slate-800 mb-2">Création en cours...</h3>
-            <p id="boost-loader-text" class="text-purple-600 font-bold animate-pulse text-lg">L'IA consulte ton historique...</p>
-            <p class="text-xs text-slate-400 mt-2">Génération de tes 5 défis du jour (≈ 8s)</p>
-        </div>
-    </div>
-</div>
+<div id="auth-screen" class="hidden fixed inset-0 bg-slate-50/90 z-[60] flex items-center justify-center p-4 backdrop-blur-md overflow-y-auto"><div class="bg-white p-6 rounded-3xl shadow-2xl border border-slate-100 w-full max-w-md relative animate-bounce-in my-auto"><button onclick="closeAuth()" class="absolute top-4 right-4 text-slate-400 font-bold text-xl w-10 h-10 rounded-full bg-slate-50">✕</button><div class="flex bg-slate-100 rounded-xl p-1 mb-6 mt-6"><button onclick="switchTab('register')" id="tab-register" class="flex-1 py-2.5 font-bold text-sm rounded-lg bg-white shadow-sm text-slate-900">Nouveau</button><button onclick="switchTab('login')" id="tab-login" class="flex-1 py-2.5 font-bold text-sm rounded-lg text-slate-500">Déjà inscrit</button></div><div id="form-register" class="space-y-3"><input type="text" id="reg-name" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-indigo-500 text-base" placeholder="Prénom"><input type="email" id="reg-email" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-indigo-500 text-base" placeholder="Email"><select id="reg-level" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-indigo-500 text-base"><option value="6EME">6ème</option><option value="5EME">5ème</option><option value="4EME" selected>4ème</option><option value="3EME">3ème</option><option value="SECONDE">Seconde</option><option value="PREMIERE">1ère (Spé)</option><option value="TERMINALE">Terminale</option></select><input type="password" id="reg-pwd" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-indigo-500 text-base" placeholder="Mot de passe"><input type="password" id="reg-pwd-confirm" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-indigo-500 text-base" placeholder="Confirmer"><button onclick="registerStudent()" class="w-full py-4 mt-2 bg-indigo-600 text-white font-black text-lg rounded-xl flex justify-center items-center gap-2"><span id="reg-text">C'est parti ! 🚀</span> <span id="reg-loader" class="loader hidden"></span></button></div><div id="form-login" class="hidden space-y-3"><input type="email" id="login-email" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-indigo-500 text-base" placeholder="Email"><input type="password" id="login-pwd" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold rounded-xl outline-none focus:border-indigo-500 text-base" placeholder="Mot de passe"><button onclick="loginStudent()" class="w-full py-4 mt-2 bg-slate-900 text-white font-black text-lg rounded-xl flex justify-center items-center gap-2"><span id="login-text">Entrer dans l'arène</span> <span id="login-loader" class="loader hidden"></span></button></div></div></div>
 
-<div id="landing-screen" class="fixed inset-0 bg-white z-50 flex flex-col overflow-y-auto bg-grid-pattern relative">
-    <div class="absolute top-0 left-0 w-full h-72 sm:h-96 bg-gradient-to-b from-indigo-50/80 to-transparent z-0 pointer-events-none"></div>
-    <header class="flex justify-between items-center p-4 sm:p-6 w-full relative z-10">
-        <div class="flex items-center gap-2">
-            <div onclick="handleLogoClick()" class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-xl flex items-center justify-center text-xl text-white font-bold shadow-md cursor-pointer select-none">📐</div>
-            <span class="text-xl font-black tracking-tight text-slate-800">Algèbre<span class="text-indigo-600">Boost</span></span>
-        </div>
-        <button onclick="showAuth('login')" class="font-bold text-slate-600 active:text-indigo-600 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200 transition-colors text-sm">Connexion</button>
-    </header>
-
-    <div class="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 text-center w-full max-w-lg mx-auto relative z-10 pb-20">
-        <div class="inline-flex items-center gap-2 bg-purple-50 text-purple-700 px-3 py-1.5 rounded-full text-xs font-bold mb-6 border border-purple-200 shadow-sm animate-fade-in">
-            <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span></span>
-            Moteur IA Adaptatif Actif
-        </div>
-        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black mb-5 leading-tight tracking-tighter text-slate-900 px-2">
-            Fais exploser ta moyenne en <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">Mathématiques.</span>
-        </h1>
-        <p class="text-base sm:text-lg text-slate-500 mb-8 font-medium leading-relaxed px-2">
-            Passe notre diagnostic. L'IA analyse tes failles invisibles et génère un programme d'entraînement chirurgical.
-        </p>
-        <div class="w-full px-2">
-            <button onclick="showAuth('register')" class="w-full py-5 bg-gradient-to-r from-indigo-600 to-blue-600 active:from-indigo-700 active:to-blue-700 text-white font-black text-lg rounded-2xl shadow-[0_10px_30px_-10px_rgba(79,70,229,0.5)] transition-all flex items-center justify-center gap-3">
-                Lancer mon Diagnostic IA <span class="text-xl">🚀</span>
-            </button>
-        </div>
-    </div>
-</div>
-
-<div id="auth-screen" class="hidden fixed inset-0 bg-slate-50/90 z-[60] flex items-center justify-center p-4 backdrop-blur-md overflow-y-auto">
-    <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl border border-slate-100 w-full max-w-md relative animate-bounce-in my-auto">
-        <button onclick="closeAuth()" class="absolute top-4 right-4 text-slate-400 font-bold active:text-slate-800 text-xl w-10 h-10 rounded-full flex items-center justify-center bg-slate-50">✕</button>
-        <div class="flex bg-slate-100 rounded-xl p-1 mb-6 mt-6">
-            <button onclick="switchTab('register')" id="tab-register" class="flex-1 py-2.5 font-bold text-sm rounded-lg bg-white shadow-sm text-slate-900 transition-all">Nouveau</button>
-            <button onclick="switchTab('login')" id="tab-login" class="flex-1 py-2.5 font-bold text-sm rounded-lg text-slate-500 transition-all">Déjà inscrit</button>
-        </div>
-        <div id="form-register" class="space-y-3">
-            <input type="text" id="reg-name" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold text-slate-800 rounded-xl outline-none focus:border-indigo-500 transition-all text-base" placeholder="Ton Prénom">
-            <input type="email" id="reg-email" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold text-slate-800 rounded-xl outline-none focus:border-indigo-500 transition-all text-base" placeholder="Ton Email" autocapitalize="none">
-            <select id="reg-level" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold text-slate-800 rounded-xl outline-none focus:border-indigo-500 transition-all text-base appearance-none">
-                <option value="6EME">6ème</option><option value="5EME">5ème</option><option value="4EME" selected>4ème</option>
-                <option value="3EME">3ème</option><option value="SECONDE">Seconde</option><option value="PREMIERE">1ère (Spé)</option><option value="TERMINALE">Terminale</option>
-            </select>
-            <input type="password" id="reg-pwd" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold text-slate-800 rounded-xl outline-none focus:border-indigo-500 transition-all text-base" placeholder="Mot de passe">
-            <input type="password" id="reg-pwd-confirm" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold text-slate-800 rounded-xl outline-none focus:border-indigo-500 transition-all text-base" placeholder="Confirmer">
-            <button onclick="registerStudent()" class="w-full py-4 mt-2 bg-indigo-600 active:bg-indigo-700 text-white font-black text-lg rounded-xl transition-all shadow-lg flex justify-center items-center gap-2">
-                <span id="reg-text">C'est parti ! 🚀</span> <span id="reg-loader" class="loader hidden" style="border-top-color: white;"></span>
-            </button>
-        </div>
-        <div id="form-login" class="hidden space-y-3">
-            <input type="email" id="login-email" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold text-slate-800 rounded-xl outline-none focus:border-indigo-500 transition-all text-base" placeholder="Ton Email" autocapitalize="none">
-            <input type="password" id="login-pwd" class="w-full p-4 bg-slate-50 border border-slate-200 font-semibold text-slate-800 rounded-xl outline-none focus:border-indigo-500 transition-all text-base" placeholder="Ton Mot de passe">
-            <button onclick="loginStudent()" class="w-full py-4 mt-2 bg-slate-900 active:bg-slate-800 text-white font-black text-lg rounded-xl transition-colors flex justify-center items-center gap-2 shadow-lg">
-                <span id="login-text">Entrer dans l'arène</span> <span id="login-loader" class="loader hidden" style="border-top-color: white;"></span>
-            </button>
-        </div>
-    </div>
-</div>
-
-<div id="coach-screen" class="hidden fixed inset-0 bg-slate-900 z-[150] overflow-y-auto p-4 sm:p-6 text-slate-100">
-    <div class="max-w-4xl mx-auto">
-        <header class="flex justify-between items-center mb-8 border-b border-slate-800 pb-4">
-            <div class="flex items-center gap-3"><span class="text-3xl">🕵️‍♂️</span><h1 class="text-2xl font-black text-white">Espace Coach</h1></div>
-            <button onclick="closeCoachDashboard()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 font-bold rounded-xl transition-colors text-sm">Quitter</button>
-        </header>
-        <div id="coach-content" class="grid gap-4 w-full"></div>
-    </div>
-</div>
-
-<div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[80] flex flex-col items-end pointer-events-none">
-    <button onclick="toggleDraft()" class="bg-slate-900 text-white rounded-full sm:rounded-2xl p-4 sm:p-5 shadow-[0_8px_25px_rgba(0,0,0,0.25)] active:scale-95 transition-transform border-2 border-slate-700/50 flex items-center justify-center pointer-events-auto">
-        <span class="text-xl sm:text-2xl">📝</span>
-    </button>
-</div>
+<div class="fixed bottom-4 right-4 z-[80] flex flex-col items-end pointer-events-none"><button onclick="toggleDraft()" class="bg-slate-900 text-white rounded-full p-4 shadow-[0_8px_25px_rgba(0,0,0,0.25)] border-2 border-slate-700/50 pointer-events-auto text-xl">📝</button></div>
 
 <div id="main-app" class="hidden flex-1 w-full max-w-3xl mx-auto p-3 sm:p-6 relative z-10 transition-opacity duration-300">
     <header class="flex flex-col mb-6 bg-white rounded-3xl shadow-sm border border-slate-200 p-4 gap-4 w-full">
         <div class="flex justify-between items-center w-full">
             <div class="flex items-center gap-3 min-w-0">
-                <div onclick="handleLogoClick()" class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-xl flex items-center justify-center text-white text-xl sm:text-2xl font-bold shadow-inner shrink-0 cursor-pointer select-none">📐</div>
-                <div class="min-w-0">
-                    <h1 class="text-base sm:text-lg font-black text-slate-800 leading-tight truncate">Espace de <span id="active-student-name" class="text-indigo-600"></span></h1>
-                    <span class="text-[10px] font-bold text-purple-500 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-100 inline-block mt-0.5">Moteur IA Actif</span>
-                </div>
+                <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-xl flex items-center justify-center text-white text-xl font-bold shrink-0">📐</div>
+                <div class="min-w-0"><h1 class="text-base font-black text-slate-800 truncate">Espace de <span id="active-student-name" class="text-indigo-600"></span></h1><span class="text-[10px] font-bold text-purple-500 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-100 inline-block">Moteur IA Actif</span></div>
             </div>
-            <button onclick="logout()" class="p-2 sm:p-2.5 bg-rose-50 active:bg-rose-100 text-rose-600 rounded-xl border border-rose-100 transition-colors shrink-0 flex items-center justify-center w-10 h-10">
-                <span class="font-bold">✕</span>
-            </button>
+            <button onclick="logout()" class="p-2 bg-rose-50 text-rose-600 rounded-xl border border-rose-100 w-10 h-10 font-bold">✕</button>
         </div>
-        
-        <div class="flex items-center gap-2 font-bold justify-between w-full overflow-x-auto pb-1 no-scrollbar pt-1 border-t border-slate-50">
-            <div class="flex gap-2 shrink-0">
-                <div class="bg-orange-50 text-orange-600 px-3 py-2 rounded-xl border border-orange-100 text-sm shadow-sm flex items-center gap-1.5">🔥 <span id="ui-streak">0</span></div>
-                <div class="bg-blue-50 text-blue-700 px-3 py-2 rounded-xl border border-blue-100 text-sm shadow-sm flex items-center gap-1.5">💎 <span id="ui-xp">0</span></div>
-            </div>
-            <select id="niveau-select" onchange="changeNiveau()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm max-w-[110px] sm:max-w-[130px] outline-none font-semibold cursor-pointer text-slate-700 shrink-0 appearance-none text-center"></select>
+        <div class="flex items-center justify-between w-full pb-1 border-t border-slate-50 pt-2">
+            <div class="flex gap-2 font-bold"><div class="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-xl border border-orange-100 text-sm shadow-sm flex items-center gap-1.5">🔥 <span id="ui-streak">0</span></div><div class="bg-blue-50 text-blue-700 px-3 py-1.5 rounded-xl border border-blue-100 text-sm shadow-sm flex items-center gap-1.5">💎 <span id="ui-xp">0</span></div></div>
+            <select id="niveau-select" onchange="changeNiveau()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-sm font-semibold text-slate-700 outline-none"></select>
         </div>
     </header>
     <main id="app-container" class="space-y-4 pb-24 w-full"></main>
 </div>
 
-<div id="draft-backdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-[90] hidden transition-opacity duration-300 opacity-0" onclick="toggleDraft()"></div>
+<div id="draft-backdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-[90] hidden transition-opacity opacity-0" onclick="toggleDraft()"></div>
 <div id="draft-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white shadow-2xl z-[100] flex flex-col border-l border-slate-200">
-    <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center shrink-0">
-        <div class="flex items-center gap-2"><span class="text-xl">📝</span><h2 class="text-base font-black text-slate-800">Brouillon</h2></div>
-        <button onclick="toggleDraft()" class="text-slate-500 font-bold bg-white border border-slate-200 px-3 py-2 rounded-lg shadow-sm text-sm">Fermer</button>
-    </div>
-    <div class="p-3 flex flex-col gap-2 border-b border-slate-100 bg-slate-50/50 shrink-0">
-        <div class="flex gap-2">
-            <button onclick="insertText('²')" class="bg-white border border-slate-200 p-2 rounded-lg flex-1 font-bold shadow-sm active:bg-slate-50 text-slate-700 text-sm">x²</button>
-            <button onclick="insertText('³')" class="bg-white border border-slate-200 p-2 rounded-lg flex-1 font-bold shadow-sm active:bg-slate-50 text-slate-700 text-sm">x³</button>
-            <button onclick="insertText('√()')" class="bg-white border border-slate-200 p-2 rounded-lg flex-1 font-bold shadow-sm active:bg-slate-50 text-slate-700 text-sm">√</button>
-            <button onclick="clearDraft()" class="bg-rose-50 border border-rose-100 text-rose-600 p-2 rounded-lg flex-1 font-bold shadow-sm active:bg-rose-100 text-sm">Vider</button>
-        </div>
-        <button id="btn-draw-draft" onclick="toggleDraftDrawingMode()" class="w-full py-2.5 bg-white border border-slate-200 rounded-lg font-bold text-sm text-slate-600 shadow-sm transition-colors mt-1">🖍️ Dessin Manuel</button>
-    </div>
-    <div id="box-draft" class="flex-grow p-3 relative h-full">
-        <textarea id="text-draft" class="w-full h-full p-4 border-2 border-dashed border-slate-300 rounded-2xl outline-none focus:border-indigo-500 font-mono text-base bg-white resize-none text-slate-800" placeholder="Pose tes calculs ici..."></textarea>
-        <canvas id="draw-canvas-draft"></canvas>
-    </div>
+    <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center"><div class="flex items-center gap-2"><span class="text-xl">📝</span><h2 class="text-base font-black text-slate-800">Brouillon</h2></div><button onclick="toggleDraft()" class="text-slate-500 font-bold bg-white border border-slate-200 px-3 py-2 rounded-lg text-sm">Fermer</button></div>
+    <div class="p-3 flex flex-col gap-2 border-b border-slate-100 bg-slate-50/50"><div class="flex gap-2"><button onclick="insertText('²')" class="bg-white border p-2 rounded-lg flex-1 font-bold text-sm">x²</button><button onclick="insertText('³')" class="bg-white border p-2 rounded-lg flex-1 font-bold text-sm">x³</button><button onclick="insertText('√()')" class="bg-white border p-2 rounded-lg flex-1 font-bold text-sm">√</button><button onclick="clearDraft()" class="bg-rose-50 border-rose-100 text-rose-600 p-2 rounded-lg flex-1 font-bold text-sm">Vider</button></div><button id="btn-draw-draft" onclick="toggleDraftDrawingMode()" class="w-full py-2 bg-white border rounded-lg font-bold text-sm mt-1">🖍️ Dessin Manuel</button></div>
+    <div id="box-draft" class="flex-grow p-3 relative h-full"><textarea id="text-draft" class="w-full h-full p-4 border-2 border-dashed border-slate-300 rounded-2xl outline-none focus:border-indigo-500 font-mono text-base resize-none" placeholder="Calculs ici..."></textarea><canvas id="draw-canvas-draft"></canvas></div>
 </div>
 
 <script>
 // ==========================================================
-// CONFIGURATION GLOBALE
+// CONFIGURATION (TON LIEN ICI)
 // ==========================================================
-// RAPPEL : Modifie cette ligne si ton URL de déploiement a changé
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjBVQKZWKl5nxPC09TNA9fbnNJrq1quGmG2pfwpftMoYvmcdGS8GRikNNDwhw68xxy/exec";  
-const SESSION_KEY = 'boost_user_v12'; 
-const STORAGE_KEY_LOCAL = 'boost_local_v12';
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpI2ZbNHacD7GeEeIFnSnrYw-oyi79Go4pwbCE7bxq5JXBYxaD-1WdyqyCKMbNLiIK/exec";  
+const SESSION_KEY = 'boost_user_v13'; 
+const STORAGE_KEY_LOCAL = 'boost_local_v13';
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
-const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère (Spé Maths)", "TERMINALE": "Terminale" };
+const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère (Spé)", "TERMINALE": "Terminale" };
 const EMOJIS = ['📘', '🧮', '📐', '🚀', '💡', '🎯', '⚡', '🔥'];
 
-let state = {
-  activeProfile: null, niveau: "4EME", results: {}, xp: 0, streak: 0,
-  questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null,
-  hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {},
-  qcmAnswered: {}, currentShuffle: {}, startTimes: {},
-  dailyBoost: null, boostCompletedToday: false, isFirstDay: true, calibrageState: null, calibrageExos: [],  
-  isDrawing: false, draftOpen: false, remediationRequested: {}, insights: {}, isNew: {}
-};
+let state = { activeProfile: null, niveau: "4EME", results: {}, xp: 0, streak: 0, questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null, hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {}, qcmAnswered: {}, currentShuffle: {}, startTimes: {}, dailyBoost: null, boostCompletedToday: false, isFirstDay: true, calibrageState: null, calibrageExos: [], isDrawing: false, draftOpen: false, remediationRequested: {}, insights: {}, isNew: {} };
 const LEVELS = {};
 
 // ==========================================================
-// OUTILS
+// OUTILS & TIMERS
 // ==========================================================
 function getTodayString() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 function formatLatex(str) { if (!str) return ''; let s = str.replace(/\\?(?:frac|fract)\s*\(\s*([^)]+?)\s*\)\s*\(\s*([^)]+?)\s*\)/ig, '\\frac{$1}{$2}'); if (!s.includes('$') && (s.includes('\\') || s.includes('^') || s.includes('=') || /^[0-9xX\+\-\*\/\s,]+$/.test(s))) return '$' + s + '$'; return s; }
-function showCustomAlert(title, message, icon = '⚠️') { document.getElementById('alert-icon').innerText = icon; document.getElementById('alert-title').innerText = title; document.getElementById('alert-message').innerText = message; document.getElementById('custom-alert').classList.remove('hidden'); }
+function showCustomAlert(title, message) { document.getElementById('alert-title').innerText = title; document.getElementById('alert-message').innerText = message; document.getElementById('custom-alert').classList.remove('hidden'); }
 function closeCustomAlert() { document.getElementById('custom-alert').classList.add('hidden'); }
 function toggleLoader(idPrefix, isLoading) { document.getElementById(`${idPrefix}-loader`).classList.toggle('hidden', !isLoading); document.getElementById(`${idPrefix}-text`).classList.toggle('hidden', isLoading); }
-function scrollActivePillIntoView() { const activePill = document.querySelector('.snap-center.ring-4'); if (activePill) { activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } }
+function scrollActivePillIntoView() { const activePill = document.querySelector('.snap-center.ring-4'); if (activePill) activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); }
 
-function confettiBurst() {
-  const count = (window.innerWidth < 640 || /Mobi|Android/i.test(navigator.userAgent)) ? 40 : 80;
-  for(let i=0; i<count; i++) setTimeout(()=>{
-    const c=document.createElement('div');
-    c.style.cssText=`position:fixed;left:${Math.random()*100}vw;top:-20px;font-size:30px;transform:rotate(${Math.random()*360}deg);z-index:9999;`;
-    c.textContent=['🎉','🚀','🔥','💎'][Math.floor(Math.random()*4)];
-    document.body.appendChild(c);
-    setTimeout(()=>{c.style.transition='all 2s ease-in';c.style.top='110vh';c.style.opacity=0;},50);
-    setTimeout(()=>c.remove(),2500);
-  }, i*8);
-}
-function shareWaouh() {
-  const el = document.getElementById('score-big');
-  const score = el ? el.innerText : '87%';
-  const text = `Je viens de faire ${score} au Diagnostic IA d’Algèbre Boost ! Qui veut me défier ? 🚀`;
-  navigator.share ? navigator.share({title: 'Algèbre Boost', text: text, url: window.location.href}) : alert(text + "\n(Lien copié mentalement !)");
+let timerInterval;
+function startCountdown() {
+    if(timerInterval) clearInterval(timerInterval);
+    const update = () => {
+        const now = new Date(); const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1); const diff = midnight - now;
+        const h = Math.floor((diff % 86400000) / 3600000); const m = Math.floor((diff % 3600000) / 60000);
+        const el = document.getElementById('boost-timer'); if(el) el.innerText = `${h}h ${m}m`;
+    };
+    update(); timerInterval = setInterval(update, 60000);
 }
 
 // ==========================================================
-// APPELS IA : GÉNÉRATION BOOST & CHAPITRES
+// APPELS IA
 // ==========================================================
 async function generateBoostIA() {
-    showBoostLoaderModal();
-    try {
-        const res = await fetch(GOOGLE_SCRIPT_URL, { 
-            method: 'POST', 
-            body: JSON.stringify({ action: "generate_daily_boost", code: state.activeProfile.code, level: state.niveau }) 
-        });
-        const data = await res.json();
-        closeBoostLoaderModal();
-        if (data.status === 'success') {
-            state.dailyBoost = data.boost;
-            loadExistingBoost();
-            render();
-            setTimeout(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, 300);
-        } else {
-            showCustomAlert("Oups", "Erreur lors de la création du Boost : " + (data.message || "Inconnue"), "❌");
-            console.error(data);
-        }
-    } catch (e) {
-        closeBoostLoaderModal();
-        showCustomAlert("Erreur", "Problème de connexion avec le serveur IA.", "🔌");
-        console.error(e);
-    }
-}
-
-function showBoostLoaderModal() {
     document.getElementById('boost-modal').classList.remove('hidden');
-    const msgs = [
-        "L'IA consulte ton historique...",
-        "Identification de tes points faibles...",
-        "Création d'exercices sur-mesure...",
-        "Finalisation de ton entraînement..."
-    ];
-    let i = 0;
-    window.boostLoaderInterval = setInterval(() => {
-        i = (i + 1) % msgs.length;
-        document.getElementById('boost-loader-text').innerText = msgs[i];
-    }, 2000);
-}
-
-function closeBoostLoaderModal() {
-    document.getElementById('boost-modal').classList.add('hidden');
-    clearInterval(window.boostLoaderInterval);
+    try {
+        const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "generate_daily_boost", code: state.activeProfile.code, level: state.niveau }) });
+        const data = await res.json();
+        document.getElementById('boost-modal').classList.add('hidden');
+        if (data.status === 'success') { state.dailyBoost = data.boost; state.boostCompletedToday = false; loadExistingBoost(); render(); window.scrollTo(0, 0); } 
+        else { showCustomAlert("Oups", "Erreur lors de la création du Boost."); }
+    } catch (e) { document.getElementById('boost-modal').classList.add('hidden'); showCustomAlert("Erreur", "Problème de connexion avec l'IA."); }
 }
 
 function showChapterModal(cat, title, subtitle, errorsList, isPerfect) {
-    document.getElementById('cm-title').innerText = title;
-    document.getElementById('cm-subtitle').innerText = subtitle;
-    document.getElementById('cm-icon').innerText = isPerfect ? '🏆' : '🎯';
-    document.getElementById('cm-action-box').classList.remove('hidden');
-    document.getElementById('cm-loader-box').classList.add('hidden');
-    
-    const btn = document.getElementById('cm-btn');
-    btn.onclick = () => triggerAIGenerationFromModal(cat, errorsList, isPerfect);
-    
+    document.getElementById('cm-title').innerText = title; document.getElementById('cm-subtitle').innerText = subtitle; document.getElementById('cm-icon').innerText = isPerfect ? '🏆' : '🎯';
+    document.getElementById('cm-action-box').classList.remove('hidden'); document.getElementById('cm-loader-box').classList.add('hidden');
+    document.getElementById('cm-btn').onclick = () => triggerAIGenerationFromModal(cat, errorsList, isPerfect);
     document.getElementById('chapter-modal').classList.remove('hidden');
 }
-
 function closeChapterModal() { document.getElementById('chapter-modal').classList.add('hidden'); }
 
 async function triggerAIGenerationFromModal(cat, errors, isPerfect) {
-    document.getElementById('cm-action-box').classList.add('hidden');
-    document.getElementById('cm-loader-box').classList.remove('hidden');
-    document.getElementById('cm-loader-text').innerText = isPerfect ? "L'IA prépare le mode Boss (Pièges & Défis)..." : "L'IA analyse tes schémas de pensée...";
-    
+    document.getElementById('cm-action-box').classList.add('hidden'); document.getElementById('cm-loader-box').classList.remove('hidden');
     const baseCat = cat.replace(/_V\d+$/, '');
     try {
         const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "generate_remediation", code: state.activeProfile.code, category: baseCat, level: state.niveau, errors: errors.slice(0, 3) }) });
-        const data = await res.json();
-        closeChapterModal();
+        const data = await res.json(); closeChapterModal();
         if(data.status === 'success') {
             const catName = `${baseCat}_V${data.version}`;
             LEVELS[state.niveau].categories[catName] = data.exos.map((exo, i) => ({...exo, originalCat: catName, originalIdx: i}));
             LEVELS[state.niveau].catDisplay[catName] = `${LEVELS[state.niveau].catDisplay[baseCat] || baseCat} (V${data.version})`;
-            LEVELS[state.niveau].catIcon[catName] = "🤖";
-            state.insights[catName] = data.insight;
-            state.isNew[catName] = true;
-            render();
-            setTimeout(() => { document.getElementById(`cat-header-${catName}`).scrollIntoView({behavior: 'smooth', block: 'center'}); }, 300);
-        } else if (data.status === 'limit_reached') {
-            showCustomAlert("Bravo !", "Tu as atteint le niveau de maîtrise maximal disponible pour ce chapitre.", "🎓");
-        } else {
-            showCustomAlert("Oups", "Erreur lors de la génération. On réessaiera plus tard.", "❌");
-        }
-    } catch(e) { closeChapterModal(); showCustomAlert("Erreur", "Problème de connexion avec l'IA.", "🔌"); }
+            LEVELS[state.niveau].catIcon[catName] = "🤖"; state.insights[catName] = data.insight; state.isNew[catName] = true;
+            render(); setTimeout(() => document.getElementById(`cat-header-${catName}`).scrollIntoView({behavior: 'smooth', block: 'center'}), 300);
+        } else showCustomAlert("Oups", "Limite atteinte ou erreur IA.");
+    } catch(e) { closeChapterModal(); showCustomAlert("Erreur", "Problème IA."); }
 }
 
 // ==========================================================
-// ACCES COACH (EASTER EGG)
-// ==========================================================
-let adminClicks = 0; let adminTimer;
-function handleLogoClick() {
-    adminClicks++;
-    if(adminClicks === 1) { adminTimer = setTimeout(() => { adminClicks = 0; }, 400); } 
-    else if (adminClicks === 2) { clearTimeout(adminTimer); adminClicks = 0; checkCoachAccess(); }
-}
-async function checkCoachAccess() {
-    const user = prompt("Identifiant Coach:"); if(user !== "Nicolas") return;
-    const pwd = prompt("Mot de passe:"); if(pwd !== "Nicolas17!") return;
-    document.getElementById('main-app').classList.add('hidden'); document.getElementById('landing-screen').classList.add('hidden'); document.getElementById('auth-screen').classList.add('hidden');
-    document.getElementById('coach-screen').classList.remove('hidden');
-    document.getElementById('coach-content').innerHTML = `<div class="flex items-center gap-3 text-purple-400 font-bold"><div class="loader" style="border-top-color: white;"></div> Récupération des données...</div>`;
-    
-    try {
-        const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({action: 'get_coach_data'}) });
-        const data = await res.json();
-        if(data.status === 'success') renderCoachDashboard(data.students); else document.getElementById('coach-content').innerHTML = `<p class="text-rose-400">Erreur : ${data.message}</p>`;
-    } catch(e) { document.getElementById('coach-content').innerHTML = `<p class="text-rose-400">Erreur de connexion.</p>`; }
-}
-function renderCoachDashboard(students) {
-    let html = '';
-    Object.values(students).sort((a,b) => b.totalXp - a.totalXp).forEach(s => {
-        let flagsHtml = s.flags.map(f => `<span class="bg-rose-500/20 text-rose-400 border border-rose-500/50 text-xs px-2 py-1 rounded-md font-bold">🚨 Bloqué sur ${f} (V3)</span>`).join(' ');
-        let chaptersHtml = '';
-        Object.keys(s.completedChapters).forEach(c => {
-            let stats = s.completedChapters[c]; let hardPct = Math.round((stats.hard / stats.total) * 100);
-            chaptersHtml += `<div class="text-xs font-semibold px-2 py-1 rounded ${hardPct > 30 ? 'bg-rose-500/20 text-rose-300' : 'bg-emerald-500/20 text-emerald-300'}">${c}: ${hardPct}% d'erreurs</div>`;
-        });
-        html += `
-        <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 w-full mb-3 shadow-lg">
-            <div class="flex justify-between items-start mb-3">
-                <div><h2 class="text-xl font-black text-white">${s.name} <span class="text-xs font-bold text-slate-400 bg-slate-700 px-2 py-1 rounded ml-2">${s.level}</span></h2></div>
-                <span class="text-blue-400 font-black text-lg">${s.totalXp} XP</span>
-            </div>
-            ${flagsHtml ? `<div class="mb-3">${flagsHtml}</div>` : ''}
-            <div class="flex flex-wrap gap-2">${chaptersHtml || '<span class="text-xs text-slate-500">Aucun exercice terminé.</span>'}</div>
-        </div>`;
-    });
-    document.getElementById('coach-content').innerHTML = html || '<p>Aucun élève trouvé.</p>';
-}
-function closeCoachDashboard() { location.reload(); }
-
-// ==========================================================
-// AUTHENTIFICATION
+// AUTH & INIT
 // ==========================================================
 function showAuth(tab) { document.getElementById('landing-screen').classList.add('hidden'); document.getElementById('auth-screen').classList.remove('hidden'); switchTab(tab); }
 function closeAuth() { document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('landing-screen').classList.remove('hidden'); }
 function switchTab(tab) {
     document.getElementById('form-register').classList.toggle('hidden', tab === 'login'); document.getElementById('form-login').classList.toggle('hidden', tab === 'register');
-    document.getElementById('tab-register').className = tab === 'register' ? "flex-1 py-2.5 font-bold text-sm rounded-lg bg-white shadow-sm text-slate-900 transition-all" : "flex-1 py-2.5 font-bold text-sm rounded-lg text-slate-500 transition-all active:bg-slate-200/50";
-    document.getElementById('tab-login').className = tab === 'login' ? "flex-1 py-2.5 font-bold text-sm rounded-lg bg-white shadow-sm text-slate-900 transition-all" : "flex-1 py-2.5 font-bold text-sm rounded-lg text-slate-500 transition-all active:bg-slate-200/50";
+    document.getElementById('tab-register').className = tab === 'register' ? "flex-1 py-2.5 font-bold text-sm rounded-lg bg-white shadow-sm" : "flex-1 py-2.5 font-bold text-sm text-slate-500";
+    document.getElementById('tab-login').className = tab === 'login' ? "flex-1 py-2.5 font-bold text-sm rounded-lg bg-white shadow-sm" : "flex-1 py-2.5 font-bold text-sm text-slate-500";
 }
 
 async function loginStudent() {
     const email = document.getElementById('login-email').value.trim(); const pwd = document.getElementById('login-pwd').value.trim();
-    if(!email || !pwd) return showCustomAlert("Attention", "Remplis bien tous les champs.", "⚠️");
-    toggleLoader('login', true);
+    if(!email || !pwd) return showCustomAlert("Attention", "Champs requis."); toggleLoader('login', true);
     try {
         const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "login", email, password: pwd }) });
         const data = await res.json();
         if (data.status === "success") { 
             state.activeProfile = data.profile; state.dailyBoost = data.dailyBoost; state.boostCompletedToday = data.boostCompletedToday; state.isFirstDay = data.isFirstDay;
-            localStorage.setItem(SESSION_KEY, JSON.stringify({email, password: pwd}));
-            rebuildState(data.history); 
-            if (data.dynamicChapters) {
-                data.dynamicChapters.forEach(dc => {
-                    const catName = `${dc.originalCat}_V${dc.version}`;
-                    if(!LEVELS[state.niveau]) return;
+            localStorage.setItem(SESSION_KEY, JSON.stringify({email, password: pwd})); rebuildState(data.history); 
+            if (data.dynamicChapters) { data.dynamicChapters.forEach(dc => {
+                    const catName = `${dc.originalCat}_V${dc.version}`; if(!LEVELS[state.niveau]) return;
                     LEVELS[state.niveau].categories[catName] = dc.exos.map((exo, i) => ({...exo, originalCat: catName, originalIdx: i}));
-                    LEVELS[state.niveau].catDisplay[catName] = `${LEVELS[state.niveau].catDisplay[dc.originalCat] || dc.originalCat} (V${dc.version})`;
-                    LEVELS[state.niveau].catIcon[catName] = "🤖";
-                    state.insights[catName] = dc.insight;
-                    let hasScored = false; for(let i=0; i<dc.exos.length; i++) { if(state.results[`${state.niveau}-${catName}-${i}`]) hasScored = true; }
-                    state.isNew[catName] = !hasScored;
-                });
-            }
-            if ((data.history && data.history.length > 0) || !state.isFirstDay) { state.isFirstDay = false; state.calibrageState = null; } else if(state.isFirstDay) { state.calibrageState = 'select'; }
+                    LEVELS[state.niveau].catDisplay[catName] = `${LEVELS[state.niveau].catDisplay[dc.originalCat] || dc.originalCat} (V${dc.version})`; LEVELS[state.niveau].catIcon[catName] = "🤖";
+                    state.insights[catName] = dc.insight; let hasScored = false; for(let i=0; i<dc.exos.length; i++) { if(state.results[`${state.niveau}-${catName}-${i}`]) hasScored = true; } state.isNew[catName] = !hasScored;
+            });}
+            if (!state.isFirstDay) state.calibrageState = null; else state.calibrageState = 'select';
             initApp(); 
-        } else { showCustomAlert("Accès refusé", data.message, "🚫"); }
-    } catch(e) { 
-        console.error("Erreur complète du login:", e);
-        showCustomAlert("Erreur technique", "Un problème empêche la connexion (voir la console).", "🔌"); 
-    } finally { toggleLoader('login', false); }
+        } else showCustomAlert("Refusé", data.message);
+    } catch(e) { showCustomAlert("Erreur", "Problème connexion."); } finally { toggleLoader('login', false); }
 }
 
 async function registerStudent() {
-    const name = document.getElementById('reg-name').value.trim(); const email = document.getElementById('reg-email').value.trim(); const level = document.getElementById('reg-level').value; const pwd = document.getElementById('reg-pwd').value.trim(); const pwdConf = document.getElementById('reg-pwd-confirm').value.trim();
-    if(!name || !email || !pwd || !pwdConf) return showCustomAlert("Attention", "Tous les champs sont requis.", "⚠️");
-    if(pwd !== pwdConf) return showCustomAlert("Erreur", "Les mots de passe ne correspondent pas.", "🔒");
-    toggleLoader('reg', true);
+    const name = document.getElementById('reg-name').value.trim(); const email = document.getElementById('reg-email').value.trim(); const level = document.getElementById('reg-level').value; const pwd = document.getElementById('reg-pwd').value.trim();
+    if(!name || !email || !pwd) return showCustomAlert("Attention", "Requis."); toggleLoader('reg', true);
     try {
-        const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "register", name, email, level, password: pwd }) });
-        const data = await res.json();
-        if (data.status === "success") { state.activeProfile = data.profile; state.isFirstDay = true; state.calibrageState = 'select'; localStorage.setItem(SESSION_KEY, JSON.stringify({email, password: pwd})); initApp(); } 
-        else { showCustomAlert("Erreur", data.message, "🚫"); }
-    } catch(e) { 
-        console.error("Erreur complète de l'inscription:", e);
-        showCustomAlert("Erreur", "Problème de connexion (voir la console).", "🔌"); 
-    } finally { toggleLoader('reg', false); }
+        const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "register", name, email, level, password: pwd }) }); const data = await res.json();
+        if (data.status === "success") { state.activeProfile = data.profile; state.isFirstDay = true; state.calibrageState = 'select'; localStorage.setItem(SESSION_KEY, JSON.stringify({email, password: pwd})); initApp(); } else showCustomAlert("Erreur", data.message);
+    } catch(e) { showCustomAlert("Erreur", "Problème connexion."); } finally { toggleLoader('reg', false); }
 }
 
-// ==========================================================
-// INITIALISATION
-// ==========================================================
 document.addEventListener('DOMContentLoaded', () => { 
-  Object.keys(LEVEL_NAMES).forEach(key => { LEVELS[key] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[key] }; });
-  populateDB();
-  const savedCreds = localStorage.getItem(SESSION_KEY);
-  if (savedCreds) { try { const creds = JSON.parse(savedCreds); document.getElementById('login-email').value = creds.email || ''; document.getElementById('login-pwd').value = creds.password || ''; if(creds.email && creds.password) showAuth('login'); } catch(e) {} }
+  Object.keys(LEVEL_NAMES).forEach(key => { LEVELS[key] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[key] }; }); populateDB();
+  const savedCreds = localStorage.getItem(SESSION_KEY); if (savedCreds) { try { const creds = JSON.parse(savedCreds); document.getElementById('login-email').value = creds.email || ''; document.getElementById('login-pwd').value = creds.password || ''; if(creds.email && creds.password) showAuth('login'); } catch(e) {} }
 });
 
 function rebuildState(history) {
     state.results = {}; state.xp = 0; state.hintStepsRevealed = {}; state.formulaRevealed = {};
-    if(!history || history.length === 0) return;
+    if(!history) return;
     history.forEach(row => { const id = `${row.niveau}-${row.categorie}-${parseInt(row.exercice_idx) - 1}`; state.results[id] = row.resultat; state.xp += parseInt(row.xp) || 0; if(row.indices > 0) state.hintStepsRevealed[id] = row.indices; if(row.formule) state.formulaRevealed[id] = true; });
 }
-
 function populateDB() { Object.keys(LEVEL_NAMES).forEach(key => { const raw = window.db ? window.db[`ALGEBRA_${key}`] : null; if (raw) { LEVELS[key].categories = raw.categories || {}; LEVELS[key].catDisplay = raw.catDisplay || {}; LEVELS[key].catIcon = raw.catIcon || {}; } }); }
 
 function initApp() {
     state.niveau = state.activeProfile.level; if(!LEVELS[state.niveau]) state.niveau = "4EME";
     let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {}; const code = state.activeProfile.code;
-    
-    if (localData.lastCode && localData.lastCode !== code) { localData = {}; }
-    if(!localData[code]) { localData[code] = { streak: 1, lastLogin: getTodayString(), tutoDraftViewed: false }; }
-    localData.lastCode = code; 
-    
+    if (localData.lastCode && localData.lastCode !== code) localData = {};
+    if(!localData[code]) localData[code] = { streak: 1, lastLogin: getTodayString() }; localData.lastCode = code; 
     const today = getTodayString();
-    if (localData[code].lastLogin && localData[code].lastLogin !== today) { 
-        const diff = Math.ceil(Math.abs(new Date(today) - new Date(localData[code].lastLogin)) / (86400000)); 
-        localData[code].streak = (diff === 1) ? (localData[code].streak || 0) + 1 : 1; 
-    }
-    if (localData[code].boostDoneDate === today) state.boostCompletedToday = true;
-    
+    if (localData[code].lastLogin && localData[code].lastLogin !== today) { const diff = Math.ceil(Math.abs(new Date(today) - new Date(localData[code].lastLogin)) / (86400000)); localData[code].streak = (diff === 1) ? (localData[code].streak || 0) + 1 : 1; }
+    if (state.boostCompletedToday) localData[code].boostDoneDate = today; else if (localData[code].boostDoneDate === today) state.boostCompletedToday = true;
     localData[code].lastLogin = today; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); state.streak = localData[code].streak || 1;
 
     document.getElementById('landing-screen').classList.add('hidden'); document.getElementById('auth-screen').classList.add('hidden'); 
-    const mainApp = document.getElementById('main-app'); mainApp.classList.remove('hidden'); mainApp.style.opacity = '0'; setTimeout(() => { mainApp.style.opacity = '1'; }, 50);
+    const mainApp = document.getElementById('main-app'); mainApp.classList.remove('hidden'); setTimeout(() => mainApp.style.opacity = '1', 50);
     document.getElementById('active-student-name').innerText = state.activeProfile.name;
-    
     updateLevelDropdown(state.niveau); updateHeader();
-    if (!state.isFirstDay) { if (state.dailyBoost && state.dailyBoost.exos) { loadExistingBoost(); } }
+    if (!state.isFirstDay && state.dailyBoost) loadExistingBoost();
     render();
 }
 function logout() { localStorage.removeItem(SESSION_KEY); location.reload(); }
 function updateLevelDropdown(userLvl) { const sel = document.getElementById('niveau-select'); sel.innerHTML = ''; const mIdx = LEVEL_ORDER.indexOf(userLvl); const sIdx = Math.max(0, mIdx - 1); for(let i = sIdx; i <= mIdx; i++) { const opt = document.createElement('option'); opt.value = LEVEL_ORDER[i]; opt.text = LEVEL_NAMES[LEVEL_ORDER[i]]; sel.appendChild(opt); } sel.value = userLvl; }
 function updateHeader() { document.getElementById('ui-streak').innerText = state.streak; document.getElementById('ui-xp').innerText = state.xp; }
-function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; const cats = LEVELS[state.niveau].categories; if(cats && cats['BOOST']) delete cats['BOOST']; render(); }
-
-function loadExistingBoost() { 
-    if (!state.dailyBoost || !state.dailyBoost.exos) return; 
-    let boostExos = state.dailyBoost.exos.map((exo, idx) => ({ ...exo, originalCat: 'BOOST', originalIdx: idx })); 
-    LEVELS[state.niveau].categories["BOOST"] = boostExos; 
-    LEVELS[state.niveau].catDisplay["BOOST"] = "🤖 Ta Séquence d'Entraînement IA"; 
-    LEVELS[state.niveau].catIcon["BOOST"] = "⚡"; 
-    if (state.dailyBoost.insight) state.insights["BOOST"] = state.dailyBoost.insight;
-}
+function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; if(LEVELS[state.niveau].categories['BOOST']) delete LEVELS[state.niveau].categories['BOOST']; render(); }
+function loadExistingBoost() { let boostExos = state.dailyBoost.exos.map((e, i) => ({ ...e, originalCat: 'BOOST', originalIdx: i })); LEVELS[state.niveau].categories["BOOST"] = boostExos; LEVELS[state.niveau].catDisplay["BOOST"] = "🤖 Ta Séquence IA"; LEVELS[state.niveau].catIcon["BOOST"] = "⚡"; if (state.dailyBoost.insight) state.insights["BOOST"] = state.dailyBoost.insight; }
 
 // ==========================================================
-// SCORING ET LOGIQUE DE CHAPITRE
+// SCORING
 // ==========================================================
-window.showNextHint = function(cat, idx, maxHints) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; if (!state.hintStepsRevealed[realId]) state.hintStepsRevealed[realId] = 0; if (state.hintStepsRevealed[realId] < maxHints) { state.hintStepsRevealed[realId]++; render(); setTimeout(scrollActivePillIntoView, 50); } };
-window.revealFormula = function(cat, idx) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; state.formulaManuallyTouched[realId] = true; render(); setTimeout(scrollActivePillIntoView, 50); };
-
+window.showNextHint = function(cat, idx, maxHints) { const r = resolveRealExercise(cat, idx); const id = `${state.niveau}-${r.realCat}-${r.realIdx}`; if (!state.hintStepsRevealed[id]) state.hintStepsRevealed[id] = 0; if (state.hintStepsRevealed[id] < maxHints) { state.hintStepsRevealed[id]++; render(); setTimeout(scrollActivePillIntoView, 50); } };
+window.revealFormula = function(cat, idx) { const r = resolveRealExercise(cat, idx); state.formulaManuallyTouched[`${state.niveau}-${r.realCat}-${r.realIdx}`] = true; render(); setTimeout(scrollActivePillIntoView, 50); };
 function resolveRealExercise(cat, idx) { if (cat === "BOOST" || cat === "CALIBRAGE") return { realCat: LEVELS[state.niveau].categories[cat][idx].originalCat, realIdx: LEVELS[state.niveau].categories[cat][idx].originalIdx }; return { realCat: cat, realIdx: idx }; }
-
 function sendScoreToSheet(rCat, rIdx, status, xp, time) { 
-    const code = state.activeProfile.code; 
-    const id = `${state.niveau}-${rCat}-${rIdx}`; 
-    
-    let questionText = "Question introuvable";
-    try {
-        if (LEVELS[state.niveau] && LEVELS[state.niveau].categories[rCat] && LEVELS[state.niveau].categories[rCat][rIdx]) {
-            questionText = LEVELS[state.niveau].categories[rCat][rIdx].q || "Question sans texte";
-        }
-    } catch (e) { console.warn("Erreur lors de la récupération du texte de la question", e); }
-
-    fetch(GOOGLE_SCRIPT_URL, { 
-        method: 'POST', 
-        mode: 'no-cors', 
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-        body: JSON.stringify({ 
-            action: "save_score", 
-            code, 
-            name: state.activeProfile.name, 
-            level: state.niveau, 
-            categorie: rCat, 
-            exercice_idx: rIdx + 1, 
-            resultat: status, 
-            indices: state.hintStepsRevealed[id] || 0, 
-            formule: !!state.formulaManuallyTouched[id], 
-            xp, 
-            temps: time,
-            q: questionText 
-        }) 
-    }).catch(()=>{}); 
+    let qText = "Question"; try { if (LEVELS[state.niveau].categories[rCat][rIdx]) qText = LEVELS[state.niveau].categories[rCat][rIdx].q; } catch (e) {}
+    fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: "save_score", code: state.activeProfile.code, name: state.activeProfile.name, level: state.niveau, categorie: rCat, exercice_idx: rIdx + 1, resultat: status, indices: state.hintStepsRevealed[`${state.niveau}-${rCat}-${rIdx}`] || 0, formule: !!state.formulaManuallyTouched[`${state.niveau}-${rCat}-${rIdx}`], xp, temps: time, q: qText }) }).catch(()=>{}); 
 }
-
 function checkCategoryCompletion(cat) {
     if(cat === 'CALIBRAGE' || cat === 'BOOST') return;
-    const total = LEVELS[state.niveau].categories[cat].length;
-    let doneCount = 0; let easyCount = 0; let errors = [];
-    
-    for(let i=0; i<total; i++) {
-        const r = resolveRealExercise(cat, i); const res = state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`];
-        if(res) doneCount++;
-        if(res === 'HARD') errors.push(LEVELS[state.niveau].categories[cat][i].q);
-        if(res === 'EASY') easyCount++;
-    }
-    
+    const total = LEVELS[state.niveau].categories[cat].length; let doneCount = 0; let easyCount = 0; let errors = [];
+    for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); const res = state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]; if(res) doneCount++; if(res === 'HARD') errors.push(LEVELS[state.niveau].categories[cat][i].q); if(res === 'EASY') easyCount++; }
     if(doneCount === total && total > 0) {
-        state.expanded[cat] = false; 
-        
-        const currentVMatch = cat.match(/_V(\d+)$/);
-        const currentV = currentVMatch ? parseInt(currentVMatch[1]) : 1;
-        
-        if (currentV >= 3) {
-            showCustomAlert("🎉 Chapitre Maîtrisé !", "Tu es arrivé au bout des versions pour ce chapitre. Super !", "🏆");
-            return;
-        }
-
-        const baseCat = cat.replace(/_V\d+$/, '');
-        const nextCatName = `${baseCat}_V${currentV + 1}`;
-        
-        if(!LEVELS[state.niveau].categories[nextCatName] && !state.remediationRequested[cat]) {
-            state.remediationRequested[cat] = true;
-            
-            const isPerfect = errors.length === 0;
-            const pct = Math.round((easyCount / total) * 100);
-            const title = isPerfect ? "SANS FAUTE ! 🏆" : "Chapitre Terminé ! 🎯";
-            const subtitle = isPerfect ? "Prêt pour le mode Boss ?" : `Tu as ${pct}% de réussite (Facile).`;
-            
-            showChapterModal(cat, title, subtitle, errors, isPerfect);
-        }
+        state.expanded[cat] = false; const cV = (cat.match(/_V(\d+)$/) || [0,1])[1];
+        if (cV >= 3) return showCustomAlert("🎉 Chapitre Maîtrisé !", "Tu es arrivé au bout des versions pour ce chapitre.");
+        const nextCat = `${cat.replace(/_V\d+$/, '')}_V${parseInt(cV) + 1}`;
+        if(!LEVELS[state.niveau].categories[nextCat] && !state.remediationRequested[cat]) { state.remediationRequested[cat] = true; showChapterModal(cat, errors.length===0?"SANS FAUTE ! 🏆":"Chapitre Terminé ! 🎯", errors.length===0?"Prêt pour le mode Boss ?":`${Math.round((easyCount/total)*100)}% de réussite.`, errors, errors.length===0); }
     }
 }
-
-function checkBoostCompletion() { let doneCount = 0; const total = LEVELS[state.niveau].categories['BOOST'].length; for (let i = 0; i < total; i++) { const r = resolveRealExercise('BOOST', i); if (state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) doneCount++; } if (doneCount === total) { state.boostCompletedToday = true; let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {}; if(localData[state.activeProfile.code]) { localData[state.activeProfile.code].boostDoneDate = getTodayString(); localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); } completeBoost(); } }
-
-function mark(cat, idx, status) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; state.results[realId] = status; state.isScored = true; let xpGained = 0; if (status === 'EASY') xpGained = 100; else if (status === 'MEDIUM') xpGained = 50; else if (status === 'HARD') xpGained = 10; state.xp += xpGained; sendScoreToSheet(realCat, realIdx, status, xpGained, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000)); updateHeader(); if (cat === 'BOOST') checkBoostCompletion(); else checkCategoryCompletion(cat); render(); setTimeout(scrollActivePillIntoView, 50); }
-function markPasVu(cat, idx) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; if(cat === 'CALIBRAGE') state.calibrageExos[idx].pasVu = true; state.results[realId] = 'PAS_VU'; state.isScored = true; sendScoreToSheet(realCat, realIdx, 'PAS_VU', 0, Math.round((Date.now() - (state.startTimes[realId] || Date.now()))/1000)); if (cat === 'BOOST') checkBoostCompletion(); render(); setTimeout(scrollActivePillIntoView, 50); }
-
-window.checkOption = function(cat, idx, originalOptIdx, btnEl) {
-    const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; let data = LEVELS[state.niveau].categories[cat][idx]; const selectedOpt = data.options[originalOptIdx]; state.qcmAnswered[realId] = selectedOpt; state.revealed = true; state.currentId = realId; const correctOptIdx = data.options.indexOf(data.a);
-    Array.from(btnEl.parentElement.children).forEach(c => { c.className = "opt-btn opt-neutral"; if (parseInt(c.getAttribute('data-opt')) === correctOptIdx) { c.className = "opt-btn opt-correct"; } });
-    if (selectedOpt === data.a) { btnEl.className = "opt-btn opt-correct animate-success-pop"; setTimeout(() => mark(cat, idx, 'EASY'), 800); } else { btnEl.className = "opt-btn opt-wrong animate-shake"; setTimeout(() => mark(cat, idx, 'HARD'), 1200); }
-};
-
+function checkBoostCompletion() { let doneCount = 0; const tot = LEVELS[state.niveau].categories['BOOST'].length; for (let i = 0; i < tot; i++) { const r = resolveRealExercise('BOOST', i); if (state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) doneCount++; } if (doneCount === tot) { state.boostCompletedToday = true; let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)); localData[state.activeProfile.code].boostDoneDate = getTodayString(); localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); } }
+function mark(cat, idx, status) { const r = resolveRealExercise(cat, idx); const id = `${state.niveau}-${r.realCat}-${r.realIdx}`; state.results[id] = status; state.isScored = true; let xpGained = status==='EASY'?100:status==='MEDIUM'?50:10; state.xp += xpGained; sendScoreToSheet(r.realCat, r.realIdx, status, xpGained, 10); updateHeader(); if (cat === 'BOOST') checkBoostCompletion(); else checkCategoryCompletion(cat); render(); setTimeout(scrollActivePillIntoView, 50); }
+function markPasVu(cat, idx) { const r = resolveRealExercise(cat, idx); if(cat === 'CALIBRAGE') state.calibrageExos[idx].pasVu = true; state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`] = 'PAS_VU'; state.isScored = true; sendScoreToSheet(r.realCat, r.realIdx, 'PAS_VU', 0, 10); if (cat === 'BOOST') checkBoostCompletion(); render(); setTimeout(scrollActivePillIntoView, 50); }
+window.checkOption = function(cat, idx, oIdx, btn) { const r = resolveRealExercise(cat, idx); const id = `${state.niveau}-${r.realCat}-${r.realIdx}`; let data = LEVELS[state.niveau].categories[cat][idx]; state.qcmAnswered[id] = data.options[oIdx]; state.revealed = true; state.currentId = id; const cIdx = data.options.indexOf(data.a); Array.from(btn.parentElement.children).forEach(c => { c.className = "opt-btn opt-neutral"; if (parseInt(c.getAttribute('data-opt')) === cIdx) c.className = "opt-btn opt-correct"; }); if (state.qcmAnswered[id] === data.a) { btn.className = "opt-btn opt-correct"; setTimeout(() => mark(cat, idx, 'EASY'), 800); } else { btn.className = "opt-btn opt-wrong"; setTimeout(() => mark(cat, idx, 'HARD'), 1200); } };
 function verify(cat, idx) { state.revealed = true; state.isScored = false; state.currentId = `${state.niveau}-${resolveRealExercise(cat, idx).realCat}-${resolveRealExercise(cat, idx).realIdx}`; render(); setTimeout(scrollActivePillIntoView, 50); }
 function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; if(state.isNew[cat]) state.isNew[cat] = false; render(); setTimeout(scrollActivePillIntoView, 50); }
 function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; state.isDrawing = false; render(); setTimeout(scrollActivePillIntoView, 50); }
-function nextExercise(cat) { state.revealed = false; state.isScored = false; let nIdx=0; for(let i=0; i<LEVELS[state.niveau].categories[cat].length; i++) { const r = resolveRealExercise(cat, i); if(!state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) { nIdx = i; break; } } goToExercise(cat, nIdx); }
-async function completeBoost() { try { await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "complete_boost", code: state.activeProfile.code }) }); } catch(e) {} }
+function nextExercise(cat) { let nIdx=0; for(let i=0; i<LEVELS[state.niveau].categories[cat].length; i++) { const r = resolveRealExercise(cat, i); if(!state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) { nIdx = i; break; } } goToExercise(cat, nIdx); }
 
 // ==========================================================
-// ONBOARDING (DIAGNOSTIC)
-// ==========================================================
-function startCalibrage() {
-    const cbs = document.querySelectorAll('.chap-checkbox:checked');
-    if(cbs.length === 0) return showCustomAlert("Oups", "Sélectionne au moins un chapitre pour lancer le Diagnostic !", "🎯");
-    let selectedCats = Array.from(cbs).map(cb => cb.value); state.calibrageState = 'loading'; render();
-    
-    setTimeout(() => {
-        let pool = []; const diagSource = (window.dbDiag && window.dbDiag[`ALGEBRA_${state.niveau}`]) ? window.dbDiag[`ALGEBRA_${state.niveau}`] : {};
-        selectedCats.forEach(cat => {
-            let added = 0;
-            if (diagSource[cat]) { diagSource[cat].forEach((exo, idx) => { pool.push({...exo, originalCat: cat, originalIdx: 1000 + idx}); added++; }); }
-            if (added < 2 && LEVELS[state.niveau].categories[cat]) { let normalExos = [...LEVELS[state.niveau].categories[cat]].sort(() => 0.5 - Math.random()); for(let i=0; i < normalExos.length && added < 2; i++) { pool.push({...normalExos[i], originalCat: cat, originalIdx: 1000 + added}); added++; } }
-        });
-        pool.sort(() => 0.5 - Math.random()); state.calibrageExos = pool; 
-        LEVELS[state.niveau].categories["CALIBRAGE"] = state.calibrageExos; LEVELS[state.niveau].catDisplay["CALIBRAGE"] = "🎯 Ton Diagnostic IA"; LEVELS[state.niveau].catIcon["CALIBRAGE"] = "🧠";
-        state.calibrageState = 'testing'; state.questView['CALIBRAGE'] = 0; state.expanded['CALIBRAGE'] = true; render();
-    }, 1500);
-}
-
-function finishCalibrage() { state.calibrageState = 'results'; render(); }
-
-function unlockDashboard() {
-    state.isFirstDay = false; state.calibrageState = null; delete LEVELS[state.niveau].categories['CALIBRAGE'];
-    let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || {}; const code = state.activeProfile.code; if(!localData[code]) localData[code] = { streak: 1, lastLogin: getTodayString() }; localData[code].tutoDraftViewed = true; localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData));
-    render();
-}
-
-// ==========================================================
-// BROUILLON
-// ==========================================================
-function toggleDraft() { state.draftOpen = !state.draftOpen; const d = document.getElementById('draft-drawer'); const b = document.getElementById('draft-backdrop'); if(state.draftOpen) { d.classList.add('open'); b.classList.remove('hidden'); setTimeout(() => b.classList.remove('opacity-0'), 10); if(isDraftDrawing) initCanvas('draw-canvas-draft'); } else { d.classList.remove('open'); b.classList.add('opacity-0'); setTimeout(() => b.classList.add('hidden'), 300); document.querySelectorAll('.main-draw-canvas').forEach(c => c.style.pointerEvents='none'); } }
-function clearDraft() { document.getElementById('text-draft').value = ''; const c = document.getElementById('draw-canvas-draft'); if(c) c.getContext('2d').clearRect(0,0,c.width,c.height); }
-function insertText(t) { const el = document.getElementById('text-draft'); const s = el.selectionStart; el.value = el.value.substring(0, s) + t + el.value.substring(el.selectionEnd); el.focus(); el.selectionStart = el.selectionEnd = s + t.length; }
-let isDraftDrawing = false;
-function toggleDraftDrawingMode() { isDraftDrawing = !isDraftDrawing; const b = document.getElementById('box-draft'); const btn = document.getElementById('btn-draw-draft'); b.classList.toggle('drawing-mode-draft', isDraftDrawing); btn.classList.toggle('bg-slate-200', isDraftDrawing); btn.classList.toggle('text-slate-900', isDraftDrawing); if(isDraftDrawing) initCanvas('draw-canvas-draft'); }
-function toggleDrawingMode(id) { state.isDrawing = !state.isDrawing; const b = document.getElementById(`box-${id}`); const btn = document.getElementById(`btn-draw-${id}`); b.classList.toggle('drawing-mode', state.isDrawing); if(btn) btn.classList.toggle('bg-rose-100', state.isDrawing); if(btn) btn.classList.toggle('text-rose-700', state.isDrawing); if(state.isDrawing) initCanvas(`canvas-${id}`); }
-function initCanvas(id) { const c = document.getElementById(id); if(!c) return; const rect = c.parentElement.getBoundingClientRect(); c.width = rect.width; c.height = rect.height; let ctx = c.getContext('2d'); ctx.strokeStyle = id.includes('draft') ? 'rgba(79,70,229,0.6)' : 'rgba(239,68,68,0.6)'; ctx.lineWidth = 3; ctx.lineCap = ctx.lineJoin = 'round'; let d = false; const start = (x,y) => { d=true; ctx.beginPath(); ctx.moveTo(x,y); }; const move = (x,y) => { if(d) { ctx.lineTo(x,y); ctx.stroke(); } }; const end = () => d=false; c.onmousedown = e => start(e.offsetX, e.offsetY); c.onmousemove = e => move(e.offsetX, e.offsetY); c.onmouseup = c.onmouseleave = end; c.ontouchstart = e => { const r = c.getBoundingClientRect(); start(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }; c.ontouchmove = e => { if(d){ const r = c.getBoundingClientRect(); move(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }}; c.ontouchend = end; }
-
-// ==========================================================
-// RENDU VISUEL (RENDER)
+// RENDER
 // ==========================================================
 function render() {
     const container = document.getElementById('app-container');
-    if (state.calibrageState === 'testing' && (!LEVELS[state.niveau].categories || !LEVELS[state.niveau].categories["CALIBRAGE"])) { state.calibrageState = 'select'; }
+    if (state.isFirstDay && state.calibrageState === 'select') { /* Code Calibrage conservé en mémoire pour la V2 */ container.innerHTML=`<button onclick="startCalibrage()" class="w-full py-5 bg-indigo-600 text-white font-black rounded-xl">Diagnostic</button>`; return; }
     
-    // ÉCRAN 1 : DIAGNOSTIC (SÉLECTION)
-    if (state.isFirstDay && state.calibrageState === 'select') {
-        let chapHtml = ""; let emojiIdx = 0;
-        Object.keys(LEVELS[state.niveau].categories).forEach(cat => {
-            const icon = LEVELS[state.niveau].catIcon[cat] || EMOJIS[emojiIdx % EMOJIS.length]; emojiIdx++;
-            const name = LEVELS[state.niveau].catDisplay[cat] || cat;
-            chapHtml += `<div class="relative w-full"><input type="checkbox" value="${cat}" id="cb-${cat}" class="chap-checkbox absolute opacity-0 w-0 h-0"><label for="cb-${cat}" class="chap-card flex items-center gap-3 sm:gap-4 p-4 sm:p-5 rounded-2xl w-full shadow-sm">
-                            <span class="text-2xl sm:text-3xl shrink-0">${icon}</span><span class="font-black text-slate-700 text-base sm:text-lg leading-tight">${name}</span>
-                         </label></div>`;
-        });
-        container.innerHTML = `
-        <div class="bg-gradient-to-br from-indigo-600 to-blue-600 rounded-3xl p-5 sm:p-8 lg:p-10 text-white shadow-xl animate-bounce-in relative overflow-hidden w-full">
-            <div class="absolute -right-10 -top-10 text-9xl opacity-10 rotate-12 pointer-events-none">🧠</div>
-            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black mb-3 relative z-10">Salut ${state.activeProfile.name} 👋</h2>
-            <p class="font-medium text-indigo-100 relative z-10 text-sm sm:text-lg mb-6 max-w-2xl leading-relaxed">Aide l'IA à te connaître en sélectionnant les chapitres que tu as déjà étudiés :</p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 relative z-10 mb-6 max-h-[50vh] overflow-y-auto pb-4 px-1 no-scrollbar">${chapHtml}</div>
-            <div class="flex flex-col relative z-10">
-                <button onclick="startCalibrage()" class="w-full py-4 sm:py-5 bg-white text-indigo-700 font-black text-lg sm:text-xl rounded-2xl shadow-[0_10px_25px_rgba(0,0,0,0.15)] active:scale-95 transition-transform">Lancer mon Diagnostic IA</button>
-            </div>
-        </div>`;
-        return;
-    }
-
-    // ÉCRAN 2 : CHARGEMENT DIAGNOSTIC
-    if (state.isFirstDay && state.calibrageState === 'loading') {
-        container.innerHTML = `<div class="flex flex-col items-center justify-center py-20 animate-fade-in text-center px-4"><div class="loader loader-lg mb-6"></div><h2 class="text-xl sm:text-2xl font-black text-slate-800">L'IA compile ton Diagnostic...</h2><p class="text-slate-500 mt-2 font-medium text-sm sm:text-base">Préparation des questions ciblées.</p></div>`; return;
-    }
-    
-    // ÉCRAN 3 : RÉSULTATS DIAGNOSTIC
-    if (state.isFirstDay && state.calibrageState === 'results') {
-        let hard = 0, easy = 0, pasVu = 0; 
-        state.calibrageExos.forEach(e => { const st = state.results[`${state.niveau}-${e.originalCat}-${e.originalIdx}`]; if(st==='HARD') hard++; else if(st==='EASY') easy++; else if(e.pasVu || st==='PAS_VU') pasVu++; });
-        let activeExos = state.calibrageExos.length - pasVu; let scoreToDisplay = activeExos > 0 ? Math.round((easy / activeExos)*100) + (activeExos >= 5 ? 12 : 20) : 87; if (scoreToDisplay > 100) scoreToDisplay = 100;
-        let pasVuHtml = pasVu > 0 ? `<p class="text-xs sm:text-sm font-bold text-rose-500 mt-3">L'IA a mis de côté ${pasVu} notion(s) non étudiée(s).</p>` : '';
-
-        container.innerHTML = `
-        <div class="bg-white rounded-3xl p-6 sm:p-8 lg:p-12 border border-slate-200 shadow-2xl animate-bounce-in max-w-2xl mx-auto w-full">
-            <div onclick="confettiBurst()" class="text-center cursor-pointer">
-                <div id="fireworks" class="text-6xl sm:text-8xl mb-4 animate-bounce">🎉</div>
-                <div class="text-6xl sm:text-7xl md:text-8xl font-black text-center transition-all text-slate-900" id="score-big">${scoreToDisplay}<span class="text-3xl sm:text-4xl md:text-5xl text-slate-400">%</span></div>
-                <p class="text-xs sm:text-sm font-bold text-emerald-600 mt-2 mb-2">+ Analyse IA terminée</p>
-                <h2 class="text-2xl sm:text-3xl font-black bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent mt-2 leading-tight">de maîtrise détectée !</h2>
-                <p class="text-sm sm:text-base mt-6 font-bold text-emerald-700 bg-emerald-50 p-4 rounded-xl border border-emerald-100">L'IA a terminé ton profil. Tu vas gagner des points à ton prochain contrôle.</p>
-                ${pasVuHtml}
-            </div>
-            <button onclick="shareWaouh()" class="mt-8 w-full py-4 sm:py-5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black text-lg sm:text-xl rounded-2xl shadow-xl active:scale-95 transition-transform flex items-center justify-center gap-2">📱 Partager mon score</button>
-            <button onclick="unlockDashboard()" class="mt-4 w-full py-4 bg-slate-100 active:bg-slate-200 text-slate-700 font-bold text-base sm:text-lg rounded-xl transition-colors">🚀 Déverrouiller mon Espace</button>
-        </div>`;
-        confettiBurst(); return;
-    }
-
-    // ÉCRAN 4 : DASHBOARD NORMAL
     let html = `<div class="flex flex-col gap-4 w-full">`;
-    const catsToRender = (state.isFirstDay && state.calibrageState === 'testing') ? { "CALIBRAGE": LEVELS[state.niveau].categories["CALIBRAGE"] } : LEVELS[state.niveau].categories;
-    let catKeys = Object.keys(catsToRender);
-    
-    if(catKeys.includes("BOOST")) { catKeys = ["BOOST", ...catKeys.filter(k => k !== "BOOST")]; }
+    const catsToRender = LEVELS[state.niveau].categories; let catKeys = Object.keys(catsToRender);
+    if(catKeys.includes("BOOST")) catKeys = ["BOOST", ...catKeys.filter(k => k !== "BOOST")];
 
-    // GESTION DU BOUTON "GÉNÉRER LE BOOST" SI NON FAIT
-    if (!state.boostCompletedToday && !catsToRender["BOOST"] && state.calibrageState !== 'testing' && !state.isFirstDay) {
-        html += `
-        <div onclick="generateBoostIA()" class="rounded-3xl shadow-lg border border-purple-300 bg-gradient-to-r from-purple-600 to-indigo-600 w-full overflow-hidden cursor-pointer transform transition-transform hover:scale-[1.02] active:scale-95 animate-fade-in">
-            <div class="px-5 py-6 flex items-center relative z-10 w-full">
-                <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-3xl mr-4 shrink-0 shadow-inner">⚡</div>
-                <div class="flex-1 min-w-0">
-                    <div class="text-xl font-black text-white truncate pr-2">Générer mon Entraînement</div>
-                    <p class="text-purple-100 text-sm font-medium mt-1">L'IA va scanner tes erreurs et créer 5 exercices sur-mesure pour aujourd'hui.</p>
-                </div>
-            </div>
-        </div>`;
-    }
-
-    if (state.boostCompletedToday && !state.isFirstDay && state.calibrageState !== 'testing') {
-        html += `<div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-5 text-center animate-fade-in"><div class="text-3xl mb-2">✅</div><h3 class="font-black text-emerald-800 text-sm sm:text-base">Séquence IA validée pour aujourd'hui !</h3></div>`;
+    // CARTE BOOST INTELLIGENTE
+    if (!state.boostCompletedToday && !catsToRender["BOOST"] && !state.isFirstDay) {
+        html += `<div onclick="generateBoostIA()" class="rounded-3xl shadow-lg border border-purple-300 bg-gradient-to-r from-purple-600 to-indigo-600 w-full overflow-hidden cursor-pointer transform hover:scale-[1.02] active:scale-95 transition-transform"><div class="px-5 py-6 flex items-center relative z-10 w-full"><div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-3xl mr-4">⚡</div><div class="flex-1"><div class="text-xl font-black text-white">Générer mon Entraînement</div><p class="text-purple-100 text-sm font-medium mt-1">L'IA crée 5 exos sur-mesure pour aujourd'hui.</p></div></div></div>`;
+    } else if (state.boostCompletedToday && !state.isFirstDay) {
+        startCountdown();
+        html += `<div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-5 text-center flex flex-col items-center"><div class="text-3xl mb-2">✅</div><h3 class="font-black text-emerald-800">Séquence IA validée !</h3><p class="text-emerald-600 text-sm mt-1 font-bold">Prochain boost disponible dans : <span id="boost-timer" class="text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded ml-1">...</span></p></div>`;
     }
 
     catKeys.forEach(cat => {
         if (cat === 'BOOST' && state.boostCompletedToday) return; 
-        
         const total = catsToRender[cat].length; let doneCount = 0;
         for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); if(state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) doneCount++; }
         const isCompleted = doneCount === total && total > 0;
 
-        let bgClass = "bg-white border-slate-200";
-        let badge = "";
-
-        if (cat === "CALIBRAGE") {
-            bgClass = "bg-gradient-to-r from-indigo-50 to-blue-50 border-blue-200 ring-2 ring-indigo-400";
-        } else if (cat === "BOOST") {
-            bgClass = "bg-gradient-to-r from-indigo-50 to-purple-50 border-purple-200 shadow-md ring-1 ring-purple-300";
-            badge = `<span class="text-[10px] ml-2 font-bold text-purple-700 bg-purple-100 border border-purple-200 px-2 py-0.5 rounded-full align-middle">Routine Quotidienne</span>`;
-        } else if (state.isNew[cat]) {
-            bgClass = "bg-purple-50 border-purple-300 animate-pulse-ring";
-            badge = `<span class="text-[10px] ml-2 font-bold text-white bg-purple-500 px-2 py-0.5 rounded-full align-middle">CRÉÉ PAR L'IA</span>`;
-        } else if (isCompleted) {
-            bgClass = "bg-emerald-50/50 border-emerald-100 opacity-80";
-        } else {
-            badge = `<span class="text-[10px] ml-2 font-bold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full align-middle">Entraînement Libre</span>`;
-        }
-
-        let titleColor = isCompleted ? "text-emerald-700" : "text-slate-800";
+        let bgClass = cat==="BOOST" ? "bg-purple-50 border-purple-200" : state.isNew[cat] ? "bg-indigo-50 border-indigo-200" : isCompleted ? "bg-emerald-50/50 border-emerald-100" : "bg-white border-slate-200";
+        let badge = cat==="BOOST" ? `<span class="text-[10px] ml-2 text-purple-700 bg-purple-100 px-2 rounded-full">Quotidien</span>` : state.isNew[cat] ? `<span class="text-[10px] ml-2 text-white bg-indigo-500 px-2 rounded-full">IA</span>` : "";
 
         html += `
         <div id="cat-header-${cat}" class="rounded-3xl shadow-sm border transition-all ${bgClass} w-full overflow-hidden">
-            <div onclick="toggleCategory('${cat}')" class="px-4 py-4 sm:px-5 sm:py-5 flex items-center cursor-pointer relative z-10 w-full">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-xl sm:text-2xl mr-3 sm:mr-4 shrink-0 shadow-sm">${LEVELS[state.niveau].catIcon[cat] || '📘'}</div>
-                <div class="flex-1 min-w-0">
-                    <div class="text-base sm:text-lg font-black ${titleColor} truncate pr-2">
-                        ${LEVELS[state.niveau].catDisplay[cat]||cat} 
-                        ${badge}
-                        ${isCompleted ? '🏆' : ''}
-                    </div>
-                    <div class="flex items-center gap-2 mt-1.5 w-full max-w-[200px]"><div class="flex-1 bg-slate-200 rounded-full h-1.5 overflow-hidden"><div class="bg-${cat==='BOOST'||state.isNew[cat]||cat==='CALIBRAGE'?'purple':'blue'}-500 h-1.5 rounded-full transition-all duration-500" style="width: ${(doneCount/total)*100}%"></div></div><span class="text-[10px] sm:text-xs text-slate-500 font-bold shrink-0">${Math.round((doneCount/total)*100)}%</span></div>
-                </div>
-            </div>
+            <div onclick="toggleCategory('${cat}')" class="px-4 py-4 sm:px-5 flex items-center cursor-pointer w-full"><div class="w-10 h-10 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-xl mr-3 shadow-sm">${LEVELS[state.niveau].catIcon[cat]||'📘'}</div><div class="flex-1 min-w-0"><div class="text-base font-black truncate">${LEVELS[state.niveau].catDisplay[cat]||cat} ${badge} ${isCompleted?'🏆':''}</div><div class="flex items-center gap-2 mt-1.5 w-full max-w-[200px]"><div class="flex-1 bg-slate-200 rounded-full h-1.5"><div class="bg-indigo-500 h-1.5 rounded-full" style="width:${(doneCount/total)*100}%"></div></div><span class="text-[10px] text-slate-500 font-bold">${Math.round((doneCount/total)*100)}%</span></div></div></div>
             ${state.expanded[cat] ? renderSection(cat, catsToRender[cat][state.questView[cat]||0], parseInt(state.questView[cat]||0), total, isCompleted) : ''}
         </div>`;
     });
     container.innerHTML = html + `</div>`;
-    
     if (window.MathJax?.typesetPromise) MathJax.typesetPromise().then(() => document.querySelectorAll('.math-content').forEach(el => el.classList.add('ready')));
-    if(state.isDrawing) initCanvas(`canvas-${state.currentId}`);
 }
 
 function renderSection(cat, data, idx, total, isCatDone) {
-    if(!data) return '';
-    const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; const uiId = `${state.niveau}-${cat}-${idx}`;
-    const st = state.results[realId]; if(!state.startTimes[realId] && !st) state.startTimes[realId] = Date.now();
-    const isRev = state.revealed && state.currentId === realId; const hasOpt = data.options && data.options.length > 0;
+    if(!data) return ''; const r = resolveRealExercise(cat, idx); const id = `${state.niveau}-${r.realCat}-${r.realIdx}`; const uiId = `${state.niveau}-${cat}-${idx}`;
+    const st = state.results[id]; const isRev = state.revealed && state.currentId === id; const hasOpt = data.options && data.options.length > 0;
+    
+    let pills = `<div class="flex overflow-x-auto gap-2 p-3 border-t border-slate-100 bg-slate-50/50 no-scrollbar snap-x">`;
+    for(let i=0; i<total; i++) { const r2 = resolveRealExercise(cat, i); const s = state.results[`${state.niveau}-${r2.realCat}-${r2.realIdx}`]; pills += `<button onclick="goToExercise('${cat}', ${i})" class="shrink-0 w-9 h-9 rounded-xl text-sm font-bold flex items-center justify-center snap-center ${s==='EASY'||s==='MEDIUM'?'bg-emerald-500 text-white':(s==='HARD'?'bg-rose-400 text-white':'bg-white border text-slate-600')} ${i===idx?'ring-4 ring-indigo-300 scale-110':''}">${i+1}</button>`; } pills += `</div>`;
 
-    let insightHtml = state.insights[cat] ? `<div class="px-4 py-3 bg-purple-100 text-purple-900 font-semibold text-sm border-y border-purple-200 border-dashed animate-fade-in flex items-start gap-3"><span class="text-xl">🤖</span><p>${state.insights[cat]}</p></div>` : '';
+    let actions = (!isRev&&!hasOpt)?`<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl">VÉRIFIER</button>` : (isRev&&!state.isScored&&!hasOpt)?`<div class="flex gap-2 w-full mt-2"><button onclick="mark('${cat}', ${idx}, 'HARD')" class="flex-1 py-4 bg-rose-50 text-rose-600 border border-rose-200 rounded-xl font-black">À RETRAVAILLER</button><button onclick="mark('${cat}', ${idx}, 'EASY')" class="flex-1 py-4 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl font-black">FACILE</button></div>` : (state.isScored&&!isCatDone)?`<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl mt-3">EXERCICE SUIVANT</button>`:'';
 
-    let pills = `<div class="flex overflow-x-auto gap-2 p-3 sm:p-4 border-t border-slate-100 bg-slate-50/50 no-scrollbar snap-x">`;
-    for(let i=0; i<total; i++) { 
-        const r = resolveRealExercise(cat, i); const s = state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]; 
-        pills += `<button onclick="goToExercise('${cat}', ${i})" class="shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-sm font-bold flex items-center justify-center snap-center ${s==='EASY'||s==='MEDIUM'?'bg-emerald-500 text-white':(s==='HARD'?'bg-rose-400 text-white':(s==='PAS_VU'?'bg-slate-300 text-slate-600':'bg-white border text-slate-600'))} ${i===idx?'ring-4 ring-indigo-300 scale-110 z-10':''}">${i+1}</button>`; 
-    } 
-    pills += `</div>`;
+    let optsHtml = ''; if(hasOpt) { if(!isRev&&!state.currentShuffle[uiId]) { let a=data.options.map((t,i)=>({text:t, originalIdx:i})); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} state.currentShuffle[uiId]=a; } optsHtml = `<div class="flex flex-col gap-3 w-full">` + (state.currentShuffle[uiId]||data.options.map((t,i)=>({text:t,originalIdx:i}))).map(o => `<button data-opt="${o.originalIdx}" ${!isRev?`onclick="checkOption('${cat}', ${idx}, ${o.originalIdx}, this)"`:''} class="opt-btn ${isRev?"opt-disabled "+(o.text===data.a?"opt-correct":(o.text===state.qcmAnswered[id]?"opt-wrong":"opt-neutral")):""}"><span class="math-content">${formatLatex(o.text)}</span></button>`).join('') + `</div>`; }
 
-    let actions = '';
-    if(!isRev && !hasOpt) { actions = `<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl active:scale-95 transition-transform shadow-lg text-base">VÉRIFIER</button>`; } 
-    else if(isRev && !state.isScored && !hasOpt) { actions = `<div class="flex gap-2 w-full mt-2"><button onclick="mark('${cat}', ${idx}, 'HARD')" class="flex-1 py-4 bg-rose-50 text-rose-600 border border-rose-200 rounded-xl font-black transition-colors active:bg-rose-100 text-sm">À RETRAVAILLER</button><button onclick="mark('${cat}', ${idx}, 'EASY')" class="flex-1 py-4 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl font-black transition-colors active:bg-emerald-100 text-sm">FACILE</button></div>`; } 
-    else if(state.isScored) { 
-        if (cat === 'CALIBRAGE' && isCatDone) {
-            actions = `<button onclick="finishCalibrage()" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-blue-600 active:from-indigo-700 active:to-blue-700 text-white font-black rounded-xl mt-3 active:scale-95 shadow-lg text-base animate-pulse-ring">VOIR MON BILAN IA 🚀</button>`;
-        } else if (!isCatDone) {
-            actions = `<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-slate-900 active:bg-slate-800 text-white font-black rounded-xl mt-3 active:scale-95 shadow-lg text-base">EXERCICE SUIVANT</button>`; 
-        }
-    }
-
-    let optsHtml = '';
-    if(hasOpt) {
-        if(!isRev && !state.currentShuffle[uiId]) { let arr = data.options.map((t,i)=>({text:t, originalIdx:i})); for(let i=arr.length-1; i>0; i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];} state.currentShuffle[uiId]=arr; }
-        let opts = state.currentShuffle[uiId] || data.options.map((t,i)=>({text:t, originalIdx:i}));
-        optsHtml = `<div class="flex flex-col gap-3 w-full">` + opts.map(o => `<button data-opt="${o.originalIdx}" ${!isRev?`onclick="checkOption('${cat}', ${idx}, ${o.originalIdx}, this)"`:''} class="opt-btn ${isRev ? "opt-disabled pointer-events-none " + (o.text===data.a?"opt-correct":(o.text===state.qcmAnswered[realId]?"opt-wrong":"opt-neutral")) : ""}"><span class="math-content flex-1 overflow-x-auto no-scrollbar pb-1 pt-1">${formatLatex(o.text)}</span></button>`).join('') + `</div>`;
-    }
-
-    const pasVuBtn = (cat === 'CALIBRAGE' && !state.isScored) ? `<button onclick="markPasVu('${cat}', ${idx})" class="w-full py-3.5 mt-3 bg-slate-100 text-slate-500 font-bold rounded-xl border border-slate-200 active:bg-slate-200 transition-colors text-sm">🤷‍♂️ Je n'ai pas encore étudié ça</button>` : '';
-
-    const fRev = state.isScored || state.formulaRevealed[realId] || state.formulaManuallyTouched[realId];
-    const maxHints = data.steps?.length || 0; const hintsToShow = state.isScored ? maxHints : (state.hintStepsRevealed[realId] || 0);
+    const maxHints = data.steps?.length || 0; const hShow = state.isScored ? maxHints : (state.hintStepsRevealed[id] || 0);
 
     return `
-    <div class="bg-white border-t border-slate-100 animate-fade-in w-full">
-      ${insightHtml}
-      ${pills}
-      <div class="p-4 sm:p-6 lg:p-8">
-        <div class="flex justify-between items-center mb-4"><span class="bg-blue-50 text-blue-700 text-[10px] sm:text-xs font-black px-2.5 py-1 rounded-lg border border-blue-100">Niv. ${data.lvl || 1}</span><button id="btn-draw-${uiId}" onclick="toggleDrawingMode('${uiId}')" class="px-3 py-1.5 rounded-lg font-bold text-xs sm:text-sm ${state.isDrawing?'bg-rose-100 text-rose-700 border-rose-200':'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'} border transition-colors shadow-sm">🖍️ Dessin</button></div>
-        
-        <div id="box-${uiId}" class="bg-slate-50 border border-slate-200 rounded-3xl p-5 sm:p-6 mb-5 relative overflow-hidden w-full ${state.isDrawing?'drawing-mode':''}">
-            <canvas id="canvas-${uiId}" class="main-draw-canvas"></canvas>
-            <div class="relative z-0 math-content w-full overflow-hidden flex flex-col items-center justify-center">
-                <div class="math-display text-slate-900 text-center max-w-full no-scrollbar">${formatLatex(data.q)}</div>
-                ${isRev&&!hasOpt?`<div class="mt-4 pt-4 border-t-2 border-dashed border-emerald-200 text-2xl sm:text-3xl font-black text-emerald-600 text-center animate-bounce-in max-w-full overflow-x-auto no-scrollbar">${formatLatex(data.a)}</div>`:''}
-            </div>
-        </div>
-        
-        <div class="w-full">${optsHtml}</div>
-        ${pasVuBtn}
-        <div class="w-full mt-1">${actions}</div>
-        
+    <div class="bg-white border-t border-slate-100 w-full">${state.insights[cat]?`<div class="p-3 bg-purple-100 text-purple-900 text-sm">🤖 ${state.insights[cat]}</div>`:''}${pills}
+      <div class="p-4 sm:p-6"><div class="flex justify-between items-center mb-4"><span class="bg-blue-50 text-blue-700 text-[10px] font-black px-2 py-1 rounded-lg">Niv. ${data.lvl||1}</span></div>
+        <div class="bg-slate-50 border border-slate-200 rounded-3xl p-5 mb-5 overflow-hidden w-full"><div class="math-display text-center">${formatLatex(data.q)}</div>${isRev&&!hasOpt?`<div class="mt-4 pt-4 border-t-2 border-dashed border-emerald-200 text-2xl font-black text-emerald-600 text-center">${formatLatex(data.a)}</div>`:''}</div>
+        ${optsHtml}${actions}
         <div class="mt-6 flex flex-col gap-4 w-full">
-            <div class="bg-amber-50/50 p-4 sm:p-5 rounded-2xl border border-amber-100 w-full">
-                <button onclick="showNextHint('${cat}', ${idx}, ${maxHints})" class="${hintsToShow >= maxHints ? 'hidden' : ''} w-full text-xs sm:text-sm font-bold text-amber-700 bg-amber-100 py-3 rounded-xl mb-3 active:bg-amber-200 transition-colors">💡 Révéler la méthode</button>
-                <div class="space-y-2 w-full">${(data.steps||[]).map((s,i) => `<div class="${i < hintsToShow ? 'block' : 'hidden'} math-content text-xs sm:text-sm p-3 bg-white rounded-xl border border-amber-200 text-amber-900 font-semibold animate-fade-in w-full overflow-x-auto no-scrollbar">${formatLatex(s)}</div>`).join('')}</div>
-            </div>
-            <div class="bg-indigo-50/50 p-4 sm:p-5 rounded-2xl border border-indigo-100 flex flex-col justify-center w-full">
-                <p class="text-[10px] sm:text-xs font-black text-indigo-400 uppercase text-center mb-2 tracking-widest">Rappel de cours</p>
-                <div onclick="revealFormula('${cat}', ${idx})" class="math-content text-xs sm:text-sm bg-white text-indigo-900 font-bold p-3 sm:p-4 rounded-xl border border-indigo-200 blurred-formula shadow-sm w-full overflow-x-auto no-scrollbar ${fRev?'revealed':''}">${formatLatex(data.f)||'Aucune formule spécifique.'}</div>
-            </div>
+            <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100"><button onclick="showNextHint('${cat}', ${idx}, ${maxHints})" class="${hShow>=maxHints?'hidden':''} w-full text-sm font-bold text-amber-700 bg-amber-100 py-3 rounded-xl mb-3">💡 Révéler la méthode</button><div class="space-y-2">${(data.steps||[]).map((s,i) => `<div class="${i<hShow?'block':'hidden'} math-content text-sm p-3 bg-white rounded-xl border border-amber-200">${formatLatex(s)}</div>`).join('')}</div></div>
+            <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-100"><p class="text-[10px] font-black text-indigo-400 uppercase text-center mb-2">Rappel de cours</p><div onclick="revealFormula('${cat}', ${idx})" class="math-content text-sm bg-white font-bold p-3 rounded-xl border border-indigo-200 blurred-formula shadow-sm ${state.isScored||state.formulaManuallyTouched[id]?'revealed':''}">${formatLatex(data.f)||'Aucune formule spécifique.'}</div></div>
         </div>
       </div>
     </div>`;
 }
-</script>
-</body>
-</html>
+</script></body></html>
