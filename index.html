@@ -35,7 +35,6 @@
     .drawing-mode .main-draw-canvas, .drawing-mode-draft #draw-canvas-draft { pointer-events: auto; z-index: 12; }
     #draft-drawer { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); } #draft-drawer.open { transform: translateX(0); }
     
-    /* ANIMATIONS */
     @keyframes bounce-in { 0% { transform: scale(0.95) translateY(10px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } } 
     .animate-bounce-in { animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     @keyframes floating { 0% { transform: translateY(0px); } 50% { transform: translateY(-4px); } 100% { transform: translateY(0px); } }
@@ -45,12 +44,19 @@
     .loader { border: 4px solid #f1f5f9; border-top: 4px solid #4f46e5; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; } .loader-lg { width: 40px; height: 40px; border-width: 5px; border-top-width: 5px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .bg-grid-pattern { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 24px 24px; }
+    
+    #toast { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
   </style>
 </head>
 <body class="min-h-screen flex flex-col relative text-base">
 
+<div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white font-bold px-6 py-3 rounded-full shadow-2xl z-[300] translate-y-[calc(-100%-2rem)] flex items-center gap-3 text-sm whitespace-nowrap">
+    <div class="loader" style="width:16px; height:16px; border-width:3px; border-top-color: white;"></div>
+    <span id="toast-msg">L'IA analyse tes erreurs...</span>
+</div>
+
 <div id="custom-alert" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4"><div class="bg-white rounded-3xl w-full max-w-sm p-6 text-center shadow-2xl animate-bounce-in"><div id="alert-icon" class="text-5xl mb-4">⚠️</div><h3 id="alert-title" class="text-xl font-black text-slate-800 mb-2">Attention</h3><p id="alert-message" class="text-slate-500 font-medium mb-6"></p><button onclick="closeCustomAlert()" class="w-full py-4 bg-slate-900 text-white font-bold rounded-xl text-lg">Compris</button></div></div>
-<div id="chapter-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] flex items-center justify-center p-4"><div class="bg-white rounded-3xl w-full max-w-md p-8 text-center shadow-2xl animate-bounce-in relative overflow-hidden"><div id="cm-icon" class="text-6xl mb-4">🎯</div><h3 id="cm-title" class="text-2xl font-black text-slate-800 mb-2">Chapitre Terminé !</h3><p id="cm-subtitle" class="text-slate-500 font-medium mb-8"></p><div id="cm-action-box"><button id="cm-btn" class="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black rounded-xl text-lg shadow-lg flex justify-center items-center gap-2">Forger la suite avec l'IA ⚡</button><button onclick="closeChapterModal()" class="w-full mt-3 py-3 text-slate-400 font-bold text-sm">Plus tard</button></div><div id="cm-loader-box" class="hidden flex flex-col items-center py-4"><div class="loader loader-lg mb-6" style="border-top-color: #8b5cf6;"></div><p id="cm-loader-text" class="text-purple-600 font-bold animate-pulse text-lg">L'IA analyse tes schémas...</p></div></div></div>
+<div id="chapter-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] flex items-center justify-center p-4"><div class="bg-white rounded-3xl w-full max-w-md p-8 text-center shadow-2xl animate-bounce-in relative overflow-hidden"><div id="cm-icon" class="text-6xl mb-4">🚀</div><h3 id="cm-title" class="text-2xl font-black text-slate-800 mb-2">Nouvelle série prête !</h3><p id="cm-subtitle" class="text-slate-500 font-medium mb-8">L'IA a généré un entraînement sur-mesure pour corriger tes failles.</p><div id="cm-action-box"><button id="cm-btn" class="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black rounded-xl text-lg shadow-lg flex justify-center items-center gap-2">Découvrir mon mode Boss ⚡</button><button onclick="closeChapterModal()" class="w-full mt-3 py-3 text-slate-400 font-bold text-sm">Plus tard</button></div></div></div>
 <div id="boost-modal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[200] flex items-center justify-center p-4"><div class="bg-white rounded-3xl w-full max-w-md p-8 text-center shadow-2xl animate-bounce-in relative overflow-hidden"><div class="flex flex-col items-center py-4"><div class="loader loader-lg mb-6" style="border-top-color: #8b5cf6;"></div><h3 class="text-2xl font-black text-slate-800 mb-2">Création en cours...</h3><p id="boost-loader-text" class="text-purple-600 font-bold animate-pulse text-lg">Génération de tes défis...</p></div></div></div>
 
 <div id="landing-screen" class="fixed inset-0 bg-white z-50 flex flex-col overflow-y-auto bg-grid-pattern relative"><div class="absolute top-0 left-0 w-full h-72 bg-gradient-to-b from-indigo-50/80 to-transparent pointer-events-none"></div><header class="flex justify-between items-center p-4 sm:p-6 relative z-10"><div class="flex items-center gap-2"><div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-xl flex items-center justify-center text-xl text-white font-bold shadow-md">📐</div><span class="text-xl font-black text-slate-800">Algèbre<span class="text-indigo-600">Boost</span></span></div><button onclick="showAuth('login')" class="font-bold text-slate-600 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200 text-sm">Connexion</button></header><div class="flex-1 flex flex-col items-center justify-center p-4 text-center max-w-lg mx-auto relative z-10 pb-20"><div class="inline-flex items-center gap-2 bg-purple-50 text-purple-700 px-3 py-1.5 rounded-full text-xs font-bold mb-6 border border-purple-200 shadow-sm"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span></span> Moteur IA Actif</div><h1 class="text-4xl sm:text-5xl font-black mb-5 leading-tight tracking-tighter text-slate-900">Fais exploser ta moyenne en <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">Maths.</span></h1><p class="text-slate-500 mb-8 font-medium">L'IA analyse tes failles invisibles et génère un programme chirurgical.</p><button onclick="showAuth('register')" class="w-full py-5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black text-lg rounded-2xl shadow-[0_10px_30px_-10px_rgba(79,70,229,0.5)] flex items-center justify-center gap-3">Lancer mon Diagnostic <span class="text-xl">🚀</span></button></div></div>
@@ -85,20 +91,19 @@
 
 <script>
 // ==========================================================
-// CONFIGURATION (TON URL DE DEPLOIEMENT ICI)
+// CONFIGURATION (TON URL ICI)
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbybFlEwK_aytLKpZiVQK-J0r5QVZOgfwwl_azUQNuhxv5LoqeqQLHfshRARhxGFIBbj/exec";  
-const SESSION_KEY = 'boost_user_v14_2'; 
-const STORAGE_KEY_LOCAL = 'boost_local_v14_2';
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycQVtptA9MjyZW_bUtPvb658W7ZMg4OJCa_aMf9FMcakJc9SFFgYoH0eIxtvg78nFo/exec";  
+const SESSION_KEY = 'boost_user_v15'; 
+const STORAGE_KEY_LOCAL = 'boost_local_v15';
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
 const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère (Spé)", "TERMINALE": "Terminale" };
 
-// L'ETAT EST DEVENU DETERMINISTE : boostExistsInDB
 let state = { activeProfile: null, niveau: "4EME", results: {}, xp: 0, streak: 0, questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null, hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {}, qcmAnswered: {}, currentShuffle: {}, startTimes: {}, dailyBoost: null, boostExistsInDB: false, isFetchingBoost: false, isFirstDay: true, calibrageState: null, calibrageExos: [], isDrawing: false, draftOpen: false, remediationRequested: {}, insights: {}, isNew: {} };
 const LEVELS = {};
 
 // ==========================================================
-// OUTILS
+// OUTILS & TOAST
 // ==========================================================
 function getTodayString() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 function formatLatex(str) { if (!str) return ''; let s = str.replace(/\\?(?:frac|fract)\s*\(\s*([^)]+?)\s*\)\s*\(\s*([^)]+?)\s*\)/ig, '\\frac{$1}{$2}'); if (!s.includes('$') && (s.includes('\\') || s.includes('^') || s.includes('=') || /^[0-9xX\+\-\*\/\s,]+$/.test(s))) return '$' + s + '$'; return s; }
@@ -107,8 +112,16 @@ function closeCustomAlert() { document.getElementById('custom-alert').classList.
 function toggleLoader(idPrefix, isLoading) { document.getElementById(`${idPrefix}-loader`).classList.toggle('hidden', !isLoading); document.getElementById(`${idPrefix}-text`).classList.toggle('hidden', isLoading); }
 function scrollActivePillIntoView() { const activePill = document.querySelector('.snap-center.ring-4'); if (activePill) activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); }
 
+function showToast(msg, duration = 4000) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').innerText = msg;
+    t.classList.remove('translate-y-[calc(-100%-2rem)]');
+    if(duration > 0) setTimeout(() => t.classList.add('translate-y-[calc(-100%-2rem)]'), duration);
+}
+function hideToast() { document.getElementById('toast').classList.add('translate-y-[calc(-100%-2rem)]'); }
+
 // ==========================================================
-// APPELS IA & SILENT FETCH
+// APPELS IA 
 // ==========================================================
 async function preloadBoostIA() {
     if (state.boostExistsInDB || state.isFetchingBoost || state.isFirstDay) return;
@@ -116,64 +129,55 @@ async function preloadBoostIA() {
     try {
         const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "generate_daily_boost", code: state.activeProfile.code, level: state.niveau }) });
         const data = await res.json();
-        if (data.status === 'success') { 
-            state.dailyBoost = data.boost; 
-            state.boostExistsInDB = true;
-            loadExistingBoost(); render(); 
-        }
-    } catch(e) { console.warn("Preload IA Failed"); } finally { state.isFetchingBoost = false; }
+        if (data.status === 'success') { state.dailyBoost = data.boost; state.boostExistsInDB = true; loadExistingBoost(); render(); }
+    } catch(e) {} finally { state.isFetchingBoost = false; }
 }
 
 async function handleBoostClick() {
     document.getElementById('boost-modal').classList.remove('hidden');
-    
     if (state.dailyBoost && state.boostExistsInDB) {
         setTimeout(() => { document.getElementById('boost-modal').classList.add('hidden'); loadExistingBoost(); render(); window.scrollTo(0, 0); }, 1200);
-    } 
-    else if (state.isFetchingBoost) {
+    } else if (state.isFetchingBoost) {
         let checkInt = setInterval(() => {
             if (!state.isFetchingBoost) {
                 clearInterval(checkInt); document.getElementById('boost-modal').classList.add('hidden');
                 if(state.dailyBoost) { loadExistingBoost(); render(); window.scrollTo(0, 0); } else showCustomAlert("Erreur", "L'IA est fatiguée, réessaie.");
             }
         }, 500);
-    } 
-    else {
+    } else {
         try {
             const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "generate_daily_boost", code: state.activeProfile.code, level: state.niveau }) });
             const data = await res.json(); document.getElementById('boost-modal').classList.add('hidden');
-            if (data.status === 'success') { 
-                state.dailyBoost = data.boost; 
-                state.boostExistsInDB = true; // On verrouille
-                loadExistingBoost(); render(); window.scrollTo(0, 0); 
-            } else showCustomAlert("Oups", "Erreur lors de la création.");
-        } catch (e) { document.getElementById('boost-modal').classList.add('hidden'); showCustomAlert("Erreur", "Problème de connexion IA."); }
+            if (data.status === 'success') { state.dailyBoost = data.boost; state.boostExistsInDB = true; loadExistingBoost(); render(); window.scrollTo(0, 0); } 
+            else showCustomAlert("Oups", "Erreur lors de la création.");
+        } catch (e) { document.getElementById('boost-modal').classList.add('hidden'); showCustomAlert("Erreur", "Problème IA."); }
     }
 }
 
-function showChapterModal(cat, title, subtitle, errorsList, isPerfect) {
-    document.getElementById('cm-title').innerText = title; document.getElementById('cm-subtitle').innerText = subtitle; document.getElementById('cm-icon').innerText = isPerfect ? '🏆' : '🎯';
-    document.getElementById('cm-action-box').classList.remove('hidden'); document.getElementById('cm-loader-box').classList.add('hidden');
-    document.getElementById('cm-btn').onclick = () => triggerAIGenerationFromModal(cat, errorsList, isPerfect);
-    document.getElementById('chapter-modal').classList.remove('hidden');
-}
-function closeChapterModal() { document.getElementById('chapter-modal').classList.add('hidden'); }
-
-async function triggerAIGenerationFromModal(cat, errors, isPerfect) {
-    document.getElementById('cm-action-box').classList.add('hidden'); document.getElementById('cm-loader-box').classList.remove('hidden');
+// GENERATION SOUS-MARINE (MODE BOSS)
+function triggerBackgroundRemediation(cat, errors) {
+    state.remediationRequested[cat] = true;
+    showToast("🎯 Chapitre terminé ! L'IA prépare la suite...", 0); // Toast persistant
+    
     const baseCat = cat.replace(/_V\d+$/, '');
-    try {
-        const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "generate_remediation", code: state.activeProfile.code, category: baseCat, level: state.niveau, errors: errors.slice(0, 3) }) });
-        const data = await res.json(); closeChapterModal();
+    fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "generate_remediation", code: state.activeProfile.code, category: baseCat, level: state.niveau, errors: errors.slice(0, 3) }) })
+    .then(r => r.json())
+    .then(data => {
+        hideToast();
         if(data.status === 'success') {
             const catName = `${baseCat}_V${data.version}`;
             LEVELS[state.niveau].categories[catName] = data.exos.map((exo, i) => ({...exo, originalCat: catName, originalIdx: i}));
             LEVELS[state.niveau].catDisplay[catName] = `${LEVELS[state.niveau].catDisplay[baseCat] || baseCat} (V${data.version})`;
             LEVELS[state.niveau].catIcon[catName] = "🤖"; state.insights[catName] = data.insight; state.isNew[catName] = true;
-            render(); setTimeout(() => document.getElementById(`cat-header-${catName}`).scrollIntoView({behavior: 'smooth', block: 'center'}), 300);
-        } else showCustomAlert("Oups", "Limite atteinte ou erreur IA.");
-    } catch(e) { closeChapterModal(); showCustomAlert("Erreur", "Problème IA."); }
+            
+            // Pop up pour prévenir que c'est prêt !
+            document.getElementById('cm-btn').onclick = () => { closeChapterModal(); render(); setTimeout(() => document.getElementById(`cat-header-${catName}`).scrollIntoView({behavior: 'smooth', block: 'center'}), 300); };
+            document.getElementById('chapter-modal').classList.remove('hidden');
+            render();
+        }
+    }).catch(e => { hideToast(); console.warn("Erreur background IA"); });
 }
+function closeChapterModal() { document.getElementById('chapter-modal').classList.add('hidden'); }
 
 // ==========================================================
 // AUTH & INIT
@@ -193,10 +197,7 @@ async function loginStudent() {
         const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "login", email, password: pwd }) });
         const data = await res.json();
         if (data.status === "success") { 
-            state.activeProfile = data.profile; 
-            state.dailyBoost = data.dailyBoost; 
-            state.boostExistsInDB = data.boostExistsInDB; // <--- LA SOURCE DE VERITE
-            state.isFirstDay = data.isFirstDay;
+            state.activeProfile = data.profile; state.dailyBoost = data.dailyBoost; state.boostExistsInDB = data.boostExistsInDB; state.isFirstDay = data.isFirstDay;
             localStorage.setItem(SESSION_KEY, JSON.stringify({email, password: pwd})); rebuildState(data.history); 
             if (data.dynamicChapters) { data.dynamicChapters.forEach(dc => {
                     const catName = `${dc.originalCat}_V${dc.version}`; if(!LEVELS[state.niveau]) return;
@@ -205,8 +206,7 @@ async function loginStudent() {
                     state.insights[catName] = dc.insight; let hasScored = false; for(let i=0; i<dc.exos.length; i++) { if(state.results[`${state.niveau}-${catName}-${i}`]) hasScored = true; } state.isNew[catName] = !hasScored;
             });}
             if (!state.isFirstDay) state.calibrageState = null; else state.calibrageState = 'select';
-            initApp(); 
-            preloadBoostIA(); 
+            initApp(); preloadBoostIA(); 
         } else showCustomAlert("Refusé", data.message);
     } catch(e) { showCustomAlert("Erreur", "Problème connexion."); } finally { toggleLoader('login', false); }
 }
@@ -265,17 +265,24 @@ function sendScoreToSheet(rCat, rIdx, status, xp, time) {
     let qText = "Question"; try { if (LEVELS[state.niveau].categories[rCat][rIdx]) qText = LEVELS[state.niveau].categories[rCat][rIdx].q; } catch (e) {}
     fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: "save_score", code: state.activeProfile.code, name: state.activeProfile.name, level: state.niveau, categorie: rCat, exercice_idx: rIdx + 1, resultat: status, indices: state.hintStepsRevealed[`${state.niveau}-${rCat}-${rIdx}`] || 0, formule: !!state.formulaManuallyTouched[`${state.niveau}-${rCat}-${rIdx}`], xp, temps: time, q: qText }) }).catch(()=>{}); 
 }
+
 function checkCategoryCompletion(cat) {
     if(cat === 'CALIBRAGE' || cat === 'BOOST') return;
-    const total = LEVELS[state.niveau].categories[cat].length; let doneCount = 0; let easyCount = 0; let errors = [];
-    for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); const res = state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]; if(res) doneCount++; if(res === 'HARD') errors.push(LEVELS[state.niveau].categories[cat][i].q); if(res === 'EASY') easyCount++; }
+    const total = LEVELS[state.niveau].categories[cat].length; let doneCount = 0; let errors = [];
+    for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); const res = state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]; if(res) doneCount++; if(res === 'HARD') errors.push(LEVELS[state.niveau].categories[cat][i].q); }
+    
+    // DECLENCHEMENT SOUS-MARIN DE L'IA QUAND LE CHAPITRE EST FINI
     if(doneCount === total && total > 0) {
         state.expanded[cat] = false; const cV = (cat.match(/_V(\d+)$/) || [0,1])[1];
-        if (cV >= 3) return showCustomAlert("🎉 Chapitre Maîtrisé !", "Tu es arrivé au bout des versions pour ce chapitre.");
+        if (cV >= 3) { showToast("🎉 Chapitre maîtrisé au maximum !"); return; }
+        
         const nextCat = `${cat.replace(/_V\d+$/, '')}_V${parseInt(cV) + 1}`;
-        if(!LEVELS[state.niveau].categories[nextCat] && !state.remediationRequested[cat]) { state.remediationRequested[cat] = true; showChapterModal(cat, errors.length===0?"SANS FAUTE ! 🏆":"Chapitre Terminé ! 🎯", errors.length===0?"Prêt pour le mode Boss ?":`${Math.round((easyCount/total)*100)}% de réussite.`, errors, errors.length===0); }
+        if(!LEVELS[state.niveau].categories[nextCat] && !state.remediationRequested[cat]) {
+            triggerBackgroundRemediation(cat, errors); 
+        }
     }
 }
+
 function mark(cat, idx, status) { const r = resolveRealExercise(cat, idx); const id = `${state.niveau}-${r.realCat}-${r.realIdx}`; state.results[id] = status; state.isScored = true; let xpGained = status==='EASY'?100:status==='MEDIUM'?50:10; state.xp += xpGained; sendScoreToSheet(r.realCat, r.realIdx, status, xpGained, 10); updateHeader(); if (cat !== 'BOOST') checkCategoryCompletion(cat); render(); setTimeout(scrollActivePillIntoView, 50); }
 function markPasVu(cat, idx) { const r = resolveRealExercise(cat, idx); if(cat === 'CALIBRAGE') state.calibrageExos[idx].pasVu = true; state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`] = 'PAS_VU'; state.isScored = true; sendScoreToSheet(r.realCat, r.realIdx, 'PAS_VU', 0, 10); render(); setTimeout(scrollActivePillIntoView, 50); }
 window.checkOption = function(cat, idx, oIdx, btn) { const r = resolveRealExercise(cat, idx); const id = `${state.niveau}-${r.realCat}-${r.realIdx}`; let data = LEVELS[state.niveau].categories[cat][idx]; state.qcmAnswered[id] = data.options[oIdx]; state.revealed = true; state.currentId = id; const cIdx = data.options.indexOf(data.a); Array.from(btn.parentElement.children).forEach(c => { c.className = "opt-btn opt-neutral"; if (parseInt(c.getAttribute('data-opt')) === cIdx) c.className = "opt-btn opt-correct"; }); if (state.qcmAnswered[id] === data.a) { btn.className = "opt-btn opt-correct animate-pulse-ring"; setTimeout(() => mark(cat, idx, 'EASY'), 800); } else { btn.className = "opt-btn opt-wrong"; setTimeout(() => mark(cat, idx, 'HARD'), 1200); } };
@@ -296,7 +303,7 @@ function toggleDrawingMode(id) { state.isDrawing = !state.isDrawing; const b = d
 function initCanvas(id) { const c = document.getElementById(id); if(!c) return; const rect = c.parentElement.getBoundingClientRect(); c.width = rect.width; c.height = rect.height; let ctx = c.getContext('2d'); ctx.strokeStyle = id.includes('draft') ? 'rgba(79,70,229,0.6)' : 'rgba(239,68,68,0.6)'; ctx.lineWidth = 3; ctx.lineCap = ctx.lineJoin = 'round'; let d = false; const start = (x,y) => { d=true; ctx.beginPath(); ctx.moveTo(x,y); }; const move = (x,y) => { if(d) { ctx.lineTo(x,y); ctx.stroke(); } }; const end = () => d=false; c.onmousedown = e => start(e.offsetX, e.offsetY); c.onmousemove = e => move(e.offsetX, e.offsetY); c.onmouseup = c.onmouseleave = end; c.ontouchstart = e => { const r = c.getBoundingClientRect(); start(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }; c.ontouchmove = e => { if(d){ const r = c.getBoundingClientRect(); move(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }}; c.ontouchend = end; }
 
 // ==========================================================
-// RENDER (DASHBOARD & EXERCICES) DETERMINISTE
+// RENDER 
 // ==========================================================
 function render() {
     const container = document.getElementById('app-container');
@@ -307,25 +314,20 @@ function render() {
     let catKeys = Object.keys(catsToRender);
     if(catKeys.includes("BOOST")) catKeys = ["BOOST", ...catKeys.filter(k => k !== "BOOST")];
 
-    // LOGIQUE DETERMINISTE DU BOOST
     let isBoostDone = false;
     if (state.boostExistsInDB && catsToRender["BOOST"]) {
-        const tot = catsToRender["BOOST"].length;
-        let doneCount = 0;
+        const tot = catsToRender["BOOST"].length; let doneCount = 0;
         for(let i=0; i<tot; i++) if(state.results[`${state.niveau}-BOOST-${i}`]) doneCount++;
         if(doneCount === tot && tot > 0) isBoostDone = true;
     }
 
     if (!state.boostExistsInDB && !state.isFirstDay) {
-        // Le Boost n'existe pas en BDD -> On affiche le bouton
         html += `<div onclick="handleBoostClick()" class="rounded-3xl shadow-lg border border-purple-300 bg-gradient-to-r from-purple-600 to-indigo-600 w-full overflow-hidden cursor-pointer transform hover:scale-[1.02] active:scale-95 transition-transform"><div class="px-5 py-6 flex items-center relative z-10 w-full"><div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-3xl mr-4 animate-floating">⚡</div><div class="flex-1"><div class="text-xl font-black text-white">Générer mon Entraînement</div><p class="text-purple-100 text-sm font-medium mt-1">L'IA prépare tes 5 exos du jour.</p></div></div></div>`;
     } else if (state.boostExistsInDB && isBoostDone && !state.isFirstDay) {
-        // Le Boost existe et est terminé -> Message de félicitations
         html += `<div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-5 text-center flex flex-col items-center animate-fade-in-up"><div class="text-3xl mb-2">✅</div><h3 class="font-black text-emerald-800 text-lg">Séquence IA validée !</h3><p class="text-emerald-600 font-bold mt-2 bg-emerald-100 px-3 py-1 rounded-full text-sm shadow-sm">🚀 Reviens demain pour ton nouveau boost !</p></div>`;
     }
 
     catKeys.forEach(cat => {
-        // Si c'est le Boost et qu'il est fini, on ne l'affiche plus
         if (cat === 'BOOST' && isBoostDone) return; 
         
         const total = catsToRender[cat].length; let doneCount = 0;
