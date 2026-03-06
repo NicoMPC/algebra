@@ -16,23 +16,32 @@
     body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; overflow-x: hidden; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
     .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .math-content { opacity: 0; transition: opacity 0.3s ease; } .math-content.ready { opacity: 1; }
-    .math-display { font-size: 1.3rem; font-weight: 700; white-space: normal !important; padding-bottom: 0.5rem; word-break: keep-all;}
-    .blurred-formula { filter: blur(6px); transition: all 0.4s; cursor: pointer; user-select: none; background: #ebf4ff; border-radius: 12px; padding: 12px; border: 2px dashed #bfdbfe; text-align: center; }
-    .blurred-formula.revealed { filter: blur(0); cursor: default; background: white; border-style: solid; border-color: #3b82f6; }
-    .opt-btn { position: relative; padding: 1.25rem 1rem 1.25rem 3.5rem; text-align: left; transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 1rem; background: white; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; cursor: pointer; font-weight: 600; min-height: 60px; }
+    .math-display { font-size: 1.3rem; font-weight: 700; white-space: normal !important; padding-bottom: 0.5rem; word-break: keep-all; line-height: 1.6;}
+    
+    .blurred-formula { filter: blur(5px); transition: all 0.3s ease; cursor: pointer; user-select: none; background: #e0e7ff; border-radius: 8px; padding: 10px; text-align: center; }
+    .blurred-formula.revealed { filter: blur(0); cursor: default; background: white; border: 1px solid #c7d2fe; box-shadow: 0 1px 2px rgba(0,0,0,0.05);}
+    
+    .opt-btn { position: relative; padding: 1rem 1rem 1rem 3rem; text-align: left; transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 1rem; background: white; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; cursor: pointer; font-weight: 600; min-height: 56px; }
     .opt-btn:active:not(.opt-disabled) { transform: scale(0.98); }
-    .opt-btn::before { content: ''; position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; border: 2px solid #cbd5e1; border-radius: 50%; background: white; transition: all 0.2s; }
+    .opt-btn::before { content: ''; position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; border: 2px solid #cbd5e1; border-radius: 50%; background: white; transition: all 0.2s; }
     .opt-correct { border-color: #10b981 !important; background: #f0fdf4 !important; pointer-events: none; } .opt-correct::before { background: #10b981 !important; border-color: #10b981 !important; content: '✓'; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
     .opt-wrong { border-color: #ef4444 !important; background: #fef2f2 !important; pointer-events: none; opacity: 0.8;} .opt-wrong::before { background: #ef4444 !important; border-color: #ef4444 !important; content: '✕'; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
     .opt-neutral { opacity: 0.5; pointer-events: none; }
+    
     .chap-card { border: 2px solid #e2e8f0; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; overflow: hidden; background: white; padding: 1.25rem; padding-right: 3.5rem; display: flex; align-items: center; min-height: 80px;}
     .chap-checkbox:checked + .chap-card { border-color: #4f46e5; background: #eef2ff; transform: scale(1.02); } .chap-checkbox:checked + .chap-card::after { content: '✅'; position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; }
+    
     #draw-canvas-draft, .main-draw-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; cursor: crosshair; touch-action: none; }
     .drawing-mode .main-draw-canvas, .drawing-mode-draft #draw-canvas-draft { pointer-events: auto; z-index: 12; }
     #draft-drawer { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); } #draft-drawer.open { transform: translateX(0); }
-    @keyframes bounce-in { 0% { transform: scale(0.95) translateY(10px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } } .animate-bounce-in { animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-    @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } } .animate-pulse-ring { animation: pulse-ring 2s infinite; }
-    @keyframes pulse-ring { 0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(168, 85, 247, 0); } 100% { transform: scale(0.8); } }
+    
+    /* ANIMATIONS */
+    @keyframes bounce-in { 0% { transform: scale(0.95) translateY(10px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } } 
+    .animate-bounce-in { animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    @keyframes floating { 0% { transform: translateY(0px); } 50% { transform: translateY(-4px); } 100% { transform: translateY(0px); } }
+    .animate-floating { animation: floating 2.5s ease-in-out infinite; }
+    .animate-fade-in-up { animation: bounce-in 0.3s ease-out forwards; }
+    
     .loader { border: 4px solid #f1f5f9; border-top: 4px solid #4f46e5; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; } .loader-lg { width: 40px; height: 40px; border-width: 5px; border-top-width: 5px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .bg-grid-pattern { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 24px 24px; }
@@ -76,20 +85,20 @@
 
 <script>
 // ==========================================================
-// CONFIGURATION (TON LIEN ICI)
+// CONFIGURATION 
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpI2ZbNHacD7GeEeIFnSnrYw-oyi79Go4pwbCE7bxq5JXBYxaD-1WdyqyCKMbNLiIK/exec";  
-const SESSION_KEY = 'boost_user_v13'; 
-const STORAGE_KEY_LOCAL = 'boost_local_v13';
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyE4y_cBFshr61HKpt3oIY0V3gjQEh7u0gWPWQNb6_fwRtBfY9aAnKYktLsJ8C5wr1e/exec";  
+const SESSION_KEY = 'boost_user_v14'; 
+const STORAGE_KEY_LOCAL = 'boost_local_v14';
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
 const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère (Spé)", "TERMINALE": "Terminale" };
 const EMOJIS = ['📘', '🧮', '📐', '🚀', '💡', '🎯', '⚡', '🔥'];
 
-let state = { activeProfile: null, niveau: "4EME", results: {}, xp: 0, streak: 0, questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null, hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {}, qcmAnswered: {}, currentShuffle: {}, startTimes: {}, dailyBoost: null, boostCompletedToday: false, isFirstDay: true, calibrageState: null, calibrageExos: [], isDrawing: false, draftOpen: false, remediationRequested: {}, insights: {}, isNew: {} };
+let state = { activeProfile: null, niveau: "4EME", results: {}, xp: 0, streak: 0, questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null, hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {}, qcmAnswered: {}, currentShuffle: {}, startTimes: {}, dailyBoost: null, boostCompletedToday: false, isFetchingBoost: false, isFirstDay: true, calibrageState: null, calibrageExos: [], isDrawing: false, draftOpen: false, remediationRequested: {}, insights: {}, isNew: {} };
 const LEVELS = {};
 
 // ==========================================================
-// OUTILS & TIMERS
+// OUTILS
 // ==========================================================
 function getTodayString() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 function formatLatex(str) { if (!str) return ''; let s = str.replace(/\\?(?:frac|fract)\s*\(\s*([^)]+?)\s*\)\s*\(\s*([^)]+?)\s*\)/ig, '\\frac{$1}{$2}'); if (!s.includes('$') && (s.includes('\\') || s.includes('^') || s.includes('=') || /^[0-9xX\+\-\*\/\s,]+$/.test(s))) return '$' + s + '$'; return s; }
@@ -98,29 +107,48 @@ function closeCustomAlert() { document.getElementById('custom-alert').classList.
 function toggleLoader(idPrefix, isLoading) { document.getElementById(`${idPrefix}-loader`).classList.toggle('hidden', !isLoading); document.getElementById(`${idPrefix}-text`).classList.toggle('hidden', isLoading); }
 function scrollActivePillIntoView() { const activePill = document.querySelector('.snap-center.ring-4'); if (activePill) activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); }
 
-let timerInterval;
-function startCountdown() {
-    if(timerInterval) clearInterval(timerInterval);
-    const update = () => {
-        const now = new Date(); const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1); const diff = midnight - now;
-        const h = Math.floor((diff % 86400000) / 3600000); const m = Math.floor((diff % 3600000) / 60000);
-        const el = document.getElementById('boost-timer'); if(el) el.innerText = `${h}h ${m}m`;
-    };
-    update(); timerInterval = setInterval(update, 60000);
-}
-
 // ==========================================================
-// APPELS IA
+// APPELS IA & SILENT FETCH
 // ==========================================================
-async function generateBoostIA() {
-    document.getElementById('boost-modal').classList.remove('hidden');
+async function preloadBoostIA() {
+    if (state.boostCompletedToday || state.dailyBoost || state.isFetchingBoost || state.isFirstDay) return;
+    state.isFetchingBoost = true;
     try {
         const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "generate_daily_boost", code: state.activeProfile.code, level: state.niveau }) });
         const data = await res.json();
-        document.getElementById('boost-modal').classList.add('hidden');
-        if (data.status === 'success') { state.dailyBoost = data.boost; state.boostCompletedToday = false; loadExistingBoost(); render(); window.scrollTo(0, 0); } 
-        else { showCustomAlert("Oups", "Erreur lors de la création du Boost."); }
-    } catch (e) { document.getElementById('boost-modal').classList.add('hidden'); showCustomAlert("Erreur", "Problème de connexion avec l'IA."); }
+        if (data.status === 'success') state.dailyBoost = data.boost;
+    } catch(e) { console.warn("Preload IA Failed", e); } finally { state.isFetchingBoost = false; }
+}
+
+async function handleBoostClick() {
+    document.getElementById('boost-modal').classList.remove('hidden');
+    
+    // Cas 1 : Pré-chargé en silence avec succès
+    if (state.dailyBoost) {
+        setTimeout(() => { // Petit délai psychologique pour valoriser le "travail" de l'IA
+            document.getElementById('boost-modal').classList.add('hidden');
+            state.boostCompletedToday = false; loadExistingBoost(); render(); window.scrollTo(0, 0);
+        }, 1200);
+    } 
+    // Cas 2 : En cours de pré-chargement (le gars a cliqué trop vite)
+    else if (state.isFetchingBoost) {
+        let checkInt = setInterval(() => {
+            if (!state.isFetchingBoost) {
+                clearInterval(checkInt); document.getElementById('boost-modal').classList.add('hidden');
+                if(state.dailyBoost) { state.boostCompletedToday = false; loadExistingBoost(); render(); window.scrollTo(0, 0); }
+                else showCustomAlert("Erreur", "L'IA est fatiguée, réessaie.");
+            }
+        }, 500);
+    } 
+    // Cas 3 : Fallback classique
+    else {
+        try {
+            const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "generate_daily_boost", code: state.activeProfile.code, level: state.niveau }) });
+            const data = await res.json(); document.getElementById('boost-modal').classList.add('hidden');
+            if (data.status === 'success') { state.dailyBoost = data.boost; state.boostCompletedToday = false; loadExistingBoost(); render(); window.scrollTo(0, 0); } 
+            else showCustomAlert("Oups", "Erreur lors de la création.");
+        } catch (e) { document.getElementById('boost-modal').classList.add('hidden'); showCustomAlert("Erreur", "Problème de connexion IA."); }
+    }
 }
 
 function showChapterModal(cat, title, subtitle, errorsList, isPerfect) {
@@ -174,7 +202,7 @@ async function loginStudent() {
                     state.insights[catName] = dc.insight; let hasScored = false; for(let i=0; i<dc.exos.length; i++) { if(state.results[`${state.niveau}-${catName}-${i}`]) hasScored = true; } state.isNew[catName] = !hasScored;
             });}
             if (!state.isFirstDay) state.calibrageState = null; else state.calibrageState = 'select';
-            initApp(); 
+            initApp(); preloadBoostIA(); // <-- SILENT FETCH ICI
         } else showCustomAlert("Refusé", data.message);
     } catch(e) { showCustomAlert("Erreur", "Problème connexion."); } finally { toggleLoader('login', false); }
 }
@@ -214,8 +242,8 @@ function initApp() {
     const mainApp = document.getElementById('main-app'); mainApp.classList.remove('hidden'); setTimeout(() => mainApp.style.opacity = '1', 50);
     document.getElementById('active-student-name').innerText = state.activeProfile.name;
     updateLevelDropdown(state.niveau); updateHeader();
-    if (!state.isFirstDay && state.dailyBoost) loadExistingBoost();
-    render();
+    if (!state.isFirstDay && state.dailyBoost && !state.boostCompletedToday) loadExistingBoost();
+    render(); preloadBoostIA(); // SILENT FETCH
 }
 function logout() { localStorage.removeItem(SESSION_KEY); location.reload(); }
 function updateLevelDropdown(userLvl) { const sel = document.getElementById('niveau-select'); sel.innerHTML = ''; const mIdx = LEVEL_ORDER.indexOf(userLvl); const sIdx = Math.max(0, mIdx - 1); for(let i = sIdx; i <= mIdx; i++) { const opt = document.createElement('option'); opt.value = LEVEL_ORDER[i]; opt.text = LEVEL_NAMES[LEVEL_ORDER[i]]; sel.appendChild(opt); } sel.value = userLvl; }
@@ -247,29 +275,38 @@ function checkCategoryCompletion(cat) {
 function checkBoostCompletion() { let doneCount = 0; const tot = LEVELS[state.niveau].categories['BOOST'].length; for (let i = 0; i < tot; i++) { const r = resolveRealExercise('BOOST', i); if (state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) doneCount++; } if (doneCount === tot) { state.boostCompletedToday = true; let localData = JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)); localData[state.activeProfile.code].boostDoneDate = getTodayString(); localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(localData)); } }
 function mark(cat, idx, status) { const r = resolveRealExercise(cat, idx); const id = `${state.niveau}-${r.realCat}-${r.realIdx}`; state.results[id] = status; state.isScored = true; let xpGained = status==='EASY'?100:status==='MEDIUM'?50:10; state.xp += xpGained; sendScoreToSheet(r.realCat, r.realIdx, status, xpGained, 10); updateHeader(); if (cat === 'BOOST') checkBoostCompletion(); else checkCategoryCompletion(cat); render(); setTimeout(scrollActivePillIntoView, 50); }
 function markPasVu(cat, idx) { const r = resolveRealExercise(cat, idx); if(cat === 'CALIBRAGE') state.calibrageExos[idx].pasVu = true; state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`] = 'PAS_VU'; state.isScored = true; sendScoreToSheet(r.realCat, r.realIdx, 'PAS_VU', 0, 10); if (cat === 'BOOST') checkBoostCompletion(); render(); setTimeout(scrollActivePillIntoView, 50); }
-window.checkOption = function(cat, idx, oIdx, btn) { const r = resolveRealExercise(cat, idx); const id = `${state.niveau}-${r.realCat}-${r.realIdx}`; let data = LEVELS[state.niveau].categories[cat][idx]; state.qcmAnswered[id] = data.options[oIdx]; state.revealed = true; state.currentId = id; const cIdx = data.options.indexOf(data.a); Array.from(btn.parentElement.children).forEach(c => { c.className = "opt-btn opt-neutral"; if (parseInt(c.getAttribute('data-opt')) === cIdx) c.className = "opt-btn opt-correct"; }); if (state.qcmAnswered[id] === data.a) { btn.className = "opt-btn opt-correct"; setTimeout(() => mark(cat, idx, 'EASY'), 800); } else { btn.className = "opt-btn opt-wrong"; setTimeout(() => mark(cat, idx, 'HARD'), 1200); } };
+window.checkOption = function(cat, idx, oIdx, btn) { const r = resolveRealExercise(cat, idx); const id = `${state.niveau}-${r.realCat}-${r.realIdx}`; let data = LEVELS[state.niveau].categories[cat][idx]; state.qcmAnswered[id] = data.options[oIdx]; state.revealed = true; state.currentId = id; const cIdx = data.options.indexOf(data.a); Array.from(btn.parentElement.children).forEach(c => { c.className = "opt-btn opt-neutral"; if (parseInt(c.getAttribute('data-opt')) === cIdx) c.className = "opt-btn opt-correct"; }); if (state.qcmAnswered[id] === data.a) { btn.className = "opt-btn opt-correct animate-pulse-ring"; setTimeout(() => mark(cat, idx, 'EASY'), 800); } else { btn.className = "opt-btn opt-wrong"; setTimeout(() => mark(cat, idx, 'HARD'), 1200); } };
 function verify(cat, idx) { state.revealed = true; state.isScored = false; state.currentId = `${state.niveau}-${resolveRealExercise(cat, idx).realCat}-${resolveRealExercise(cat, idx).realIdx}`; render(); setTimeout(scrollActivePillIntoView, 50); }
 function toggleCategory(cat) { state.expanded[cat] = !state.expanded[cat]; if(state.isNew[cat]) state.isNew[cat] = false; render(); setTimeout(scrollActivePillIntoView, 50); }
 function goToExercise(cat, i) { state.questView[cat] = parseInt(i); state.revealed = false; state.isScored = false; state.currentId = null; state.isDrawing = false; render(); setTimeout(scrollActivePillIntoView, 50); }
 function nextExercise(cat) { let nIdx=0; for(let i=0; i<LEVELS[state.niveau].categories[cat].length; i++) { const r = resolveRealExercise(cat, i); if(!state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) { nIdx = i; break; } } goToExercise(cat, nIdx); }
 
 // ==========================================================
-// RENDER
+// BROUILLON
+// ==========================================================
+function toggleDraft() { state.draftOpen = !state.draftOpen; const d = document.getElementById('draft-drawer'); const b = document.getElementById('draft-backdrop'); if(state.draftOpen) { d.classList.add('open'); b.classList.remove('hidden'); setTimeout(() => b.classList.remove('opacity-0'), 10); if(isDraftDrawing) initCanvas('draw-canvas-draft'); } else { d.classList.remove('open'); b.classList.add('opacity-0'); setTimeout(() => b.classList.add('hidden'), 300); document.querySelectorAll('.main-draw-canvas').forEach(c => c.style.pointerEvents='none'); } }
+function clearDraft() { document.getElementById('text-draft').value = ''; const c = document.getElementById('draw-canvas-draft'); if(c) c.getContext('2d').clearRect(0,0,c.width,c.height); }
+function insertText(t) { const el = document.getElementById('text-draft'); const s = el.selectionStart; el.value = el.value.substring(0, s) + t + el.value.substring(el.selectionEnd); el.focus(); el.selectionStart = el.selectionEnd = s + t.length; }
+let isDraftDrawing = false;
+function toggleDraftDrawingMode() { isDraftDrawing = !isDraftDrawing; const b = document.getElementById('box-draft'); const btn = document.getElementById('btn-draw-draft'); b.classList.toggle('drawing-mode-draft', isDraftDrawing); btn.classList.toggle('bg-slate-200', isDraftDrawing); btn.classList.toggle('text-slate-900', isDraftDrawing); if(isDraftDrawing) initCanvas('draw-canvas-draft'); }
+function toggleDrawingMode(id) { state.isDrawing = !state.isDrawing; const b = document.getElementById(`box-${id}`); const btn = document.getElementById(`btn-draw-${id}`); b.classList.toggle('drawing-mode', state.isDrawing); if(btn) btn.classList.toggle('bg-rose-100', state.isDrawing); if(btn) btn.classList.toggle('text-rose-700', state.isDrawing); if(state.isDrawing) initCanvas(`canvas-${id}`); }
+function initCanvas(id) { const c = document.getElementById(id); if(!c) return; const rect = c.parentElement.getBoundingClientRect(); c.width = rect.width; c.height = rect.height; let ctx = c.getContext('2d'); ctx.strokeStyle = id.includes('draft') ? 'rgba(79,70,229,0.6)' : 'rgba(239,68,68,0.6)'; ctx.lineWidth = 3; ctx.lineCap = ctx.lineJoin = 'round'; let d = false; const start = (x,y) => { d=true; ctx.beginPath(); ctx.moveTo(x,y); }; const move = (x,y) => { if(d) { ctx.lineTo(x,y); ctx.stroke(); } }; const end = () => d=false; c.onmousedown = e => start(e.offsetX, e.offsetY); c.onmousemove = e => move(e.offsetX, e.offsetY); c.onmouseup = c.onmouseleave = end; c.ontouchstart = e => { const r = c.getBoundingClientRect(); start(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }; c.ontouchmove = e => { if(d){ const r = c.getBoundingClientRect(); move(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); e.preventDefault(); }}; c.ontouchend = end; }
+
+// ==========================================================
+// RENDER (DASHBOARD & EXERCICES)
 // ==========================================================
 function render() {
     const container = document.getElementById('app-container');
-    if (state.isFirstDay && state.calibrageState === 'select') { /* Code Calibrage conservé en mémoire pour la V2 */ container.innerHTML=`<button onclick="startCalibrage()" class="w-full py-5 bg-indigo-600 text-white font-black rounded-xl">Diagnostic</button>`; return; }
+    if (state.isFirstDay && state.calibrageState === 'select') { container.innerHTML=`<button onclick="startCalibrage()" class="w-full py-5 bg-indigo-600 text-white font-black rounded-xl">Diagnostic</button>`; return; }
     
     let html = `<div class="flex flex-col gap-4 w-full">`;
     const catsToRender = LEVELS[state.niveau].categories; let catKeys = Object.keys(catsToRender);
     if(catKeys.includes("BOOST")) catKeys = ["BOOST", ...catKeys.filter(k => k !== "BOOST")];
 
-    // CARTE BOOST INTELLIGENTE
     if (!state.boostCompletedToday && !catsToRender["BOOST"] && !state.isFirstDay) {
-        html += `<div onclick="generateBoostIA()" class="rounded-3xl shadow-lg border border-purple-300 bg-gradient-to-r from-purple-600 to-indigo-600 w-full overflow-hidden cursor-pointer transform hover:scale-[1.02] active:scale-95 transition-transform"><div class="px-5 py-6 flex items-center relative z-10 w-full"><div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-3xl mr-4">⚡</div><div class="flex-1"><div class="text-xl font-black text-white">Générer mon Entraînement</div><p class="text-purple-100 text-sm font-medium mt-1">L'IA crée 5 exos sur-mesure pour aujourd'hui.</p></div></div></div>`;
+        html += `<div onclick="handleBoostClick()" class="rounded-3xl shadow-lg border border-purple-300 bg-gradient-to-r from-purple-600 to-indigo-600 w-full overflow-hidden cursor-pointer transform hover:scale-[1.02] active:scale-95 transition-transform"><div class="px-5 py-6 flex items-center relative z-10 w-full"><div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-3xl mr-4 animate-floating">⚡</div><div class="flex-1"><div class="text-xl font-black text-white">Générer mon Entraînement</div><p class="text-purple-100 text-sm font-medium mt-1">L'IA prépare tes 5 exos du jour.</p></div></div></div>`;
     } else if (state.boostCompletedToday && !state.isFirstDay) {
-        startCountdown();
-        html += `<div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-5 text-center flex flex-col items-center"><div class="text-3xl mb-2">✅</div><h3 class="font-black text-emerald-800">Séquence IA validée !</h3><p class="text-emerald-600 text-sm mt-1 font-bold">Prochain boost disponible dans : <span id="boost-timer" class="text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded ml-1">...</span></p></div>`;
+        html += `<div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-5 text-center flex flex-col items-center animate-fade-in-up"><div class="text-3xl mb-2">✅</div><h3 class="font-black text-emerald-800 text-lg">Séquence IA validée !</h3><p class="text-emerald-600 font-bold mt-2 bg-emerald-100 px-3 py-1 rounded-full text-sm shadow-sm">🚀 Reviens demain pour ton nouveau boost !</p></div>`;
     }
 
     catKeys.forEach(cat => {
@@ -279,10 +316,10 @@ function render() {
         const isCompleted = doneCount === total && total > 0;
 
         let bgClass = cat==="BOOST" ? "bg-purple-50 border-purple-200" : state.isNew[cat] ? "bg-indigo-50 border-indigo-200" : isCompleted ? "bg-emerald-50/50 border-emerald-100" : "bg-white border-slate-200";
-        let badge = cat==="BOOST" ? `<span class="text-[10px] ml-2 text-purple-700 bg-purple-100 px-2 rounded-full">Quotidien</span>` : state.isNew[cat] ? `<span class="text-[10px] ml-2 text-white bg-indigo-500 px-2 rounded-full">IA</span>` : "";
+        let badge = cat==="BOOST" ? `<span class="text-[10px] ml-2 text-purple-700 bg-purple-100 px-2 rounded-full font-bold">Quotidien</span>` : state.isNew[cat] ? `<span class="text-[10px] ml-2 text-white bg-indigo-500 px-2 rounded-full font-bold animate-pulse">IA</span>` : "";
 
         html += `
-        <div id="cat-header-${cat}" class="rounded-3xl shadow-sm border transition-all ${bgClass} w-full overflow-hidden">
+        <div id="cat-header-${cat}" class="rounded-3xl shadow-sm border transition-all ${bgClass} w-full overflow-hidden animate-fade-in-up">
             <div onclick="toggleCategory('${cat}')" class="px-4 py-4 sm:px-5 flex items-center cursor-pointer w-full"><div class="w-10 h-10 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-xl mr-3 shadow-sm">${LEVELS[state.niveau].catIcon[cat]||'📘'}</div><div class="flex-1 min-w-0"><div class="text-base font-black truncate">${LEVELS[state.niveau].catDisplay[cat]||cat} ${badge} ${isCompleted?'🏆':''}</div><div class="flex items-center gap-2 mt-1.5 w-full max-w-[200px]"><div class="flex-1 bg-slate-200 rounded-full h-1.5"><div class="bg-indigo-500 h-1.5 rounded-full" style="width:${(doneCount/total)*100}%"></div></div><span class="text-[10px] text-slate-500 font-bold">${Math.round((doneCount/total)*100)}%</span></div></div></div>
             ${state.expanded[cat] ? renderSection(cat, catsToRender[cat][state.questView[cat]||0], parseInt(state.questView[cat]||0), total, isCompleted) : ''}
         </div>`;
@@ -298,21 +335,34 @@ function renderSection(cat, data, idx, total, isCatDone) {
     let pills = `<div class="flex overflow-x-auto gap-2 p-3 border-t border-slate-100 bg-slate-50/50 no-scrollbar snap-x">`;
     for(let i=0; i<total; i++) { const r2 = resolveRealExercise(cat, i); const s = state.results[`${state.niveau}-${r2.realCat}-${r2.realIdx}`]; pills += `<button onclick="goToExercise('${cat}', ${i})" class="shrink-0 w-9 h-9 rounded-xl text-sm font-bold flex items-center justify-center snap-center ${s==='EASY'||s==='MEDIUM'?'bg-emerald-500 text-white':(s==='HARD'?'bg-rose-400 text-white':'bg-white border text-slate-600')} ${i===idx?'ring-4 ring-indigo-300 scale-110':''}">${i+1}</button>`; } pills += `</div>`;
 
-    let actions = (!isRev&&!hasOpt)?`<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl">VÉRIFIER</button>` : (isRev&&!state.isScored&&!hasOpt)?`<div class="flex gap-2 w-full mt-2"><button onclick="mark('${cat}', ${idx}, 'HARD')" class="flex-1 py-4 bg-rose-50 text-rose-600 border border-rose-200 rounded-xl font-black">À RETRAVAILLER</button><button onclick="mark('${cat}', ${idx}, 'EASY')" class="flex-1 py-4 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl font-black">FACILE</button></div>` : (state.isScored&&!isCatDone)?`<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl mt-3">EXERCICE SUIVANT</button>`:'';
+    let actions = (!isRev&&!hasOpt)?`<button onclick="verify('${cat}', ${idx})" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl active:scale-95 transition-transform shadow-lg">VÉRIFIER</button>` : (isRev&&!state.isScored&&!hasOpt)?`<div class="flex gap-2 w-full mt-2"><button onclick="mark('${cat}', ${idx}, 'HARD')" class="flex-1 py-4 bg-rose-50 text-rose-600 border border-rose-200 rounded-xl font-black">À RETRAVAILLER</button><button onclick="mark('${cat}', ${idx}, 'EASY')" class="flex-1 py-4 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl font-black">FACILE</button></div>` : (state.isScored&&!isCatDone)?`<button onclick="nextExercise('${cat}')" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl mt-3 shadow-lg">EXERCICE SUIVANT</button>`:'';
 
-    let optsHtml = ''; if(hasOpt) { if(!isRev&&!state.currentShuffle[uiId]) { let a=data.options.map((t,i)=>({text:t, originalIdx:i})); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} state.currentShuffle[uiId]=a; } optsHtml = `<div class="flex flex-col gap-3 w-full">` + (state.currentShuffle[uiId]||data.options.map((t,i)=>({text:t,originalIdx:i}))).map(o => `<button data-opt="${o.originalIdx}" ${!isRev?`onclick="checkOption('${cat}', ${idx}, ${o.originalIdx}, this)"`:''} class="opt-btn ${isRev?"opt-disabled "+(o.text===data.a?"opt-correct":(o.text===state.qcmAnswered[id]?"opt-wrong":"opt-neutral")):""}"><span class="math-content">${formatLatex(o.text)}</span></button>`).join('') + `</div>`; }
+    let optsHtml = ''; if(hasOpt) { if(!isRev&&!state.currentShuffle[uiId]) { let a=data.options.map((t,i)=>({text:t, originalIdx:i})); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} state.currentShuffle[uiId]=a; } optsHtml = `<div class="flex flex-col gap-3 w-full">` + (state.currentShuffle[uiId]||data.options.map((t,i)=>({text:t,originalIdx:i}))).map(o => `<button data-opt="${o.originalIdx}" ${!isRev?`onclick="checkOption('${cat}', ${idx}, ${o.originalIdx}, this)"`:''} class="opt-btn ${isRev?"opt-disabled "+(o.text===data.a?"opt-correct":(o.text===state.qcmAnswered[id]?"opt-wrong":"opt-neutral")):""}"><span class="math-content flex-1 no-scrollbar overflow-x-auto pb-1 pt-1">${formatLatex(o.text)}</span></button>`).join('') + `</div>`; }
 
     const maxHints = data.steps?.length || 0; const hShow = state.isScored ? maxHints : (state.hintStepsRevealed[id] || 0);
+    const hasHintsToReveal = hShow < maxHints;
+
+    // UI COMPACTE POUR LES INDICES ET FORMULES
+    let helperUI = `
+    <div class="mt-6 flex flex-col sm:flex-row gap-3 w-full animate-fade-in-up">
+        <div class="flex-1 bg-amber-50 rounded-2xl border border-amber-100 p-4">
+            ${hasHintsToReveal ? `<button onclick="showNextHint('${cat}', ${idx}, ${maxHints})" class="w-full flex items-center justify-center gap-2 text-sm font-bold text-amber-700 bg-amber-100 hover:bg-amber-200 transition-colors py-2 rounded-xl border border-amber-200 animate-floating"><span>💡 Débloquer un indice</span></button>` : `<div class="text-[10px] font-black text-amber-500 uppercase text-center mb-2 tracking-widest">Méthode</div>`}
+            <div class="space-y-2 ${hasHintsToReveal ? 'mt-3' : ''}">
+                ${(data.steps||[]).map((s,i) => `<div class="${i<hShow?'block':'hidden'} math-content text-sm p-3 bg-white rounded-xl border border-amber-200 text-amber-900">${formatLatex(s)}</div>`).join('')}
+            </div>
+        </div>
+        
+        <div class="flex-1 bg-indigo-50 rounded-2xl border border-indigo-100 p-4 flex flex-col justify-center">
+            <p class="text-[10px] font-black text-indigo-400 uppercase text-center mb-2 tracking-widest">Leçon</p>
+            <div onclick="revealFormula('${cat}', ${idx})" class="math-content text-sm bg-white font-bold p-3 rounded-xl border border-indigo-200 blurred-formula shadow-sm ${state.isScored||state.formulaManuallyTouched[id]?'revealed':''}">${formatLatex(data.f)||'Pas de formule.'}</div>
+        </div>
+    </div>`;
 
     return `
-    <div class="bg-white border-t border-slate-100 w-full">${state.insights[cat]?`<div class="p-3 bg-purple-100 text-purple-900 text-sm">🤖 ${state.insights[cat]}</div>`:''}${pills}
-      <div class="p-4 sm:p-6"><div class="flex justify-between items-center mb-4"><span class="bg-blue-50 text-blue-700 text-[10px] font-black px-2 py-1 rounded-lg">Niv. ${data.lvl||1}</span></div>
-        <div class="bg-slate-50 border border-slate-200 rounded-3xl p-5 mb-5 overflow-hidden w-full"><div class="math-display text-center">${formatLatex(data.q)}</div>${isRev&&!hasOpt?`<div class="mt-4 pt-4 border-t-2 border-dashed border-emerald-200 text-2xl font-black text-emerald-600 text-center">${formatLatex(data.a)}</div>`:''}</div>
-        ${optsHtml}${actions}
-        <div class="mt-6 flex flex-col gap-4 w-full">
-            <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100"><button onclick="showNextHint('${cat}', ${idx}, ${maxHints})" class="${hShow>=maxHints?'hidden':''} w-full text-sm font-bold text-amber-700 bg-amber-100 py-3 rounded-xl mb-3">💡 Révéler la méthode</button><div class="space-y-2">${(data.steps||[]).map((s,i) => `<div class="${i<hShow?'block':'hidden'} math-content text-sm p-3 bg-white rounded-xl border border-amber-200">${formatLatex(s)}</div>`).join('')}</div></div>
-            <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-100"><p class="text-[10px] font-black text-indigo-400 uppercase text-center mb-2">Rappel de cours</p><div onclick="revealFormula('${cat}', ${idx})" class="math-content text-sm bg-white font-bold p-3 rounded-xl border border-indigo-200 blurred-formula shadow-sm ${state.isScored||state.formulaManuallyTouched[id]?'revealed':''}">${formatLatex(data.f)||'Aucune formule spécifique.'}</div></div>
-        </div>
+    <div class="bg-white border-t border-slate-100 w-full">${state.insights[cat]?`<div class="p-3 bg-purple-100 text-purple-900 text-sm font-medium">🤖 ${state.insights[cat]}</div>`:''}${pills}
+      <div class="p-4 sm:p-6"><div class="flex justify-between items-center mb-4"><span class="bg-blue-50 text-blue-700 text-[10px] font-black px-2 py-1 rounded-lg">Niv. ${data.lvl||1}</span><button onclick="toggleDrawingMode('${uiId}')" class="px-3 py-1.5 rounded-lg font-bold text-xs ${state.isDrawing?'bg-rose-100 text-rose-700':'bg-slate-50 text-slate-600 border'} shadow-sm">🖍️ Dessin</button></div>
+        <div id="box-${uiId}" class="bg-slate-50 border border-slate-200 rounded-3xl p-5 mb-5 relative overflow-hidden w-full ${state.isDrawing?'drawing-mode':''}"><canvas id="canvas-${uiId}" class="main-draw-canvas"></canvas><div class="relative z-0 math-content text-center"><div class="math-display">${formatLatex(data.q)}</div>${isRev&&!hasOpt?`<div class="mt-4 pt-4 border-t-2 border-emerald-200 text-2xl font-black text-emerald-600">${formatLatex(data.a)}</div>`:''}</div></div>
+        ${optsHtml}${actions}${helperUI}
       </div>
     </div>`;
 }
