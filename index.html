@@ -229,7 +229,7 @@
 // ==========================================================
 // CONFIGURATION GLOBALE
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxIQNYNg6nolwOOSkGIzwdT61bmGnYB-KPFMDZrF0d05x3IBzC4n7cxWHfKVak2Zsa_/exec";  
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPWzWFUH3Lf2Rl2p4bjUP8NELszbyVPFPvpPj7jd4RJfX0TORG6mKBz9-RNHBtkQz4/exec";  
 const SESSION_KEY = 'boost_user_v11'; 
 const STORAGE_KEY_LOCAL = 'boost_local_v11';
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
@@ -532,7 +532,39 @@ window.showNextHint = function(cat, idx, maxHints) { const { realCat, realIdx } 
 window.revealFormula = function(cat, idx) { const { realCat, realIdx } = resolveRealExercise(cat, idx); const realId = `${state.niveau}-${realCat}-${realIdx}`; state.formulaManuallyTouched[realId] = true; render(); setTimeout(scrollActivePillIntoView, 50); };
 
 function resolveRealExercise(cat, idx) { if (cat === "BOOST" || cat === "CALIBRAGE") return { realCat: LEVELS[state.niveau].categories[cat][idx].originalCat, realIdx: LEVELS[state.niveau].categories[cat][idx].originalIdx }; return { realCat: cat, realIdx: idx }; }
-function sendScoreToSheet(rCat, rIdx, status, xp, time) { const code = state.activeProfile.code; const id = `${state.niveau}-${rCat}-${rIdx}`; fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: "save_score", code, name: state.activeProfile.name, level: state.niveau, categorie: rCat, exercice_idx: rIdx + 1, resultat: status, indices: state.hintStepsRevealed[id] || 0, formule: !!state.formulaManuallyTouched[id], xp, temps: time }) }).catch(()=>{}); }
+
+// NOUVEAU: On récupère l'intitulé exact de la question pour l'envoyer au backend et alimenter la répétition espacée.
+function sendScoreToSheet(rCat, rIdx, status, xp, time) { 
+    const code = state.activeProfile.code; 
+    const id = `${state.niveau}-${rCat}-${rIdx}`; 
+    
+    let questionText = "Question introuvable";
+    try {
+        if (LEVELS[state.niveau] && LEVELS[state.niveau].categories[rCat] && LEVELS[state.niveau].categories[rCat][rIdx]) {
+            questionText = LEVELS[state.niveau].categories[rCat][rIdx].q || "Question sans texte";
+        }
+    } catch (e) { console.warn("Erreur lors de la récupération du texte de la question", e); }
+
+    fetch(GOOGLE_SCRIPT_URL, { 
+        method: 'POST', 
+        mode: 'no-cors', 
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+        body: JSON.stringify({ 
+            action: "save_score", 
+            code, 
+            name: state.activeProfile.name, 
+            level: state.niveau, 
+            categorie: rCat, 
+            exercice_idx: rIdx + 1, 
+            resultat: status, 
+            indices: state.hintStepsRevealed[id] || 0, 
+            formule: !!state.formulaManuallyTouched[id], 
+            xp, 
+            temps: time,
+            q: questionText 
+        }) 
+    }).catch(()=>{}); 
+}
 
 function checkCategoryCompletion(cat) {
     if(cat === 'CALIBRAGE' || cat === 'BOOST') return;
