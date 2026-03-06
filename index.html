@@ -11,32 +11,23 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-    body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; overflow-x: hidden; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .math-content { opacity: 0; transition: opacity 0.3s ease; } .math-content.ready { opacity: 1; }
-    .math-display { font-size: 1.3rem; font-weight: 700; line-height: 1.6;}
-    
-    /* ANIMATIONS (Audit Grok/Claude) */
-    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
-    .animate-shake { animation: shake 0.2s ease-in-out 0s 2; }
-    @keyframes confetti { 0% { transform: translateY(0) rotate(0); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-    .confetti { position: fixed; width: 10px; height: 10px; z-index: 400; animation: confetti 3s ease-out forwards; }
-    
+    body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
     .opt-btn { position: relative; padding: 1rem 1rem 1rem 3.5rem; text-align: left; transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 1.25rem; background: white; width: 100%; font-weight: 600; cursor: pointer; min-height: 56px; }
-    .opt-selected { border-color: #4f46e5; ring: 3px; ring-color: #c7d2fe; }
+    .opt-selected { border-color: #4f46e5; outline: 3px solid #c7d2fe; }
     .opt-correct { border-color: #10b981 !important; background: #f0fdf4 !important; }
     .opt-wrong { border-color: #ef4444 !important; background: #fef2f2 !important; }
-    
-    .blurred-formula { filter: blur(5px); transition: all 0.3s ease; cursor: pointer; background: #e0e7ff; border-radius: 8px; padding: 10px; text-align: center; }
-    .blurred-formula.revealed { filter: blur(0); background: white; border: 1px solid #c7d2fe; }
-    
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+    .animate-shake { animation: shake 0.2s ease-in-out 0s 2; }
+    .math-content { opacity: 0; transition: opacity 0.3s ease; } .math-content.ready { opacity: 1; }
+    .drawing-mode .main-draw-canvas { pointer-events: auto; }
+    .main-draw-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; touch-action: none; }
     #draft-drawer { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); } #draft-drawer.open { transform: translateX(0); }
     .bg-grid-pattern { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 24px 24px; }
     .loader { border: 3px solid #f1f5f9; border-top: 3px solid #4f46e5; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
-<body class="min-h-screen flex flex-col relative text-base pb-10">
+<body class="min-h-screen flex flex-col relative pb-10">
 
 <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white font-bold px-6 py-3 rounded-full shadow-2xl z-[300] -translate-y-24 transition-transform duration-500 flex items-center gap-3 text-sm">
     <div class="loader" style="border-top-color: white;"></div>
@@ -46,22 +37,29 @@
 <div id="landing-screen" class="fixed inset-0 bg-white z-50 flex flex-col overflow-y-auto bg-grid-pattern relative">
     <header class="flex justify-between items-center p-6 relative z-10">
         <div class="flex items-center gap-2"><div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-bold">📐</div><span class="text-xl font-black">Algèbre<span class="text-indigo-600">Boost</span></span></div>
-        <button onclick="showAuth('login')" class="font-bold text-slate-600 border px-5 py-2.5 rounded-full shadow-sm text-sm">Connexion</button>
+        <button onclick="showAuth('login')" class="font-bold text-slate-600 border px-5 py-2.5 rounded-full shadow-sm text-sm bg-white">Connexion</button>
     </header>
     <div class="flex-1 flex flex-col items-center justify-center p-6 text-center max-w-xl mx-auto relative z-10 pb-20">
-        <div class="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-full text-xs font-bold mb-8 border border-indigo-100 shadow-sm">🚀 Plus qu'une app, un coach de haute précision</div>
+        <div class="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-full text-xs font-bold mb-8 border border-indigo-100">🚀 La précision chirurgicale au service de tes notes</div>
         <h1 class="text-4xl sm:text-6xl font-black mb-6 leading-tight tracking-tight">Ne travaille plus dans le vide. Maîtrise les maths, <span class="text-indigo-600">point par point.</span></h1>
-        <p class="text-slate-500 text-lg mb-10 font-medium">L'IA qui détecte tes angles morts et transforme tes erreurs en réflexes. 15 min par jour pour changer ta trajectoire.</p>
         <button onclick="showAuth('register')" class="w-full py-5 bg-slate-900 text-white font-black text-xl rounded-2xl shadow-2xl hover:scale-[1.02] transition-transform">Démarrer le Diagnostic Gratuit</button>
-        <div class="mt-8 flex justify-center gap-8 text-xs font-bold text-slate-400"><span>🔒 Sécurisé</span><span>📈 Suivi Parent</span><span>🎓 Programme Officiel</span></div>
     </div>
 </div>
 
 <div id="auth-screen" class="hidden fixed inset-0 bg-slate-50/90 z-[60] flex items-center justify-center p-4 backdrop-blur-md">
     <div class="bg-white p-6 rounded-3xl shadow-2xl border w-full max-w-md animate-bounce-in">
         <button onclick="closeAuth()" class="float-right text-slate-400 font-bold text-xl">✕</button>
-        <div class="flex bg-slate-100 rounded-xl p-1 mb-6 mt-6"><button id="tab-register" onclick="switchTab('register')" class="flex-1 py-2 font-bold text-sm rounded-lg bg-white shadow-sm">Nouveau</button><button id="tab-login" onclick="switchTab('login')" class="flex-1 py-2 font-bold text-sm text-slate-500">Déjà inscrit</button></div>
+        <div class="flex bg-slate-100 rounded-xl p-1 mb-6 mt-6">
+            <button id="tab-register" onclick="switchTab('register')" class="flex-1 py-2 font-bold text-sm rounded-lg bg-white shadow-sm">Nouveau</button>
+            <button id="tab-login" onclick="switchTab('login')" class="flex-1 py-2 font-bold text-sm text-slate-500">Déjà inscrit</button>
+        </div>
         <div id="form-content" class="space-y-3">
+            <div id="reg-fields" class="space-y-3">
+                <input type="text" id="reg-name" class="w-full p-4 bg-slate-50 border rounded-xl font-semibold" placeholder="Prénom">
+                <select id="reg-level" class="w-full p-4 bg-slate-50 border rounded-xl font-semibold">
+                    <option value="6EME">6ème</option><option value="5EME">5ème</option><option value="4EME" selected>4ème</option><option value="3EME">3ème</option><option value="SECONDE">Seconde</option><option value="PREMIERE">1ère</option><option value="TERMINALE">Terminale</option>
+                </select>
+            </div>
             <input type="email" id="auth-email" class="w-full p-4 bg-slate-50 border rounded-xl font-semibold" placeholder="Email">
             <input type="password" id="auth-pwd" class="w-full p-4 bg-slate-50 border rounded-xl font-semibold" placeholder="Mot de passe">
             <button id="auth-btn" onclick="submitAuth()" class="w-full py-4 bg-indigo-600 text-white font-black text-lg rounded-xl flex justify-center items-center gap-2">
@@ -71,40 +69,56 @@
     </div>
 </div>
 
-<div class="fixed bottom-4 right-4 z-[80]"><button onclick="toggleDraft()" class="bg-slate-900 text-white rounded-full p-4 shadow-xl text-xl">📝</button></div>
-
 <div id="main-app" class="hidden max-w-2xl mx-auto p-4 transition-opacity duration-300">
     <header class="flex flex-col mb-6 bg-white rounded-3xl border p-4 gap-4 shadow-sm">
-        <div class="flex justify-between items-center"><div class="flex items-center gap-3"><div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-bold">📐</div><div><h1 class="text-base font-black">Espace <span id="student-name"></span></h1><span class="text-[10px] font-bold text-indigo-50 px-2 py-0.5 bg-indigo-500 rounded-md">Coach IA Connecté</span></div></div><button onclick="logout()" class="text-rose-500 font-bold p-2">✕</button></div>
-        <div class="flex justify-between border-t pt-3"><div class="flex gap-2"><div class="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-xl border text-sm font-bold shadow-sm">🔥 <span id="ui-streak">0</span></div><div class="bg-blue-50 text-blue-700 px-3 py-1.5 rounded-xl border text-sm font-bold shadow-sm">💎 <span id="ui-xp">0</span></div></div><select id="niveau-select" onchange="changeNiveau()" class="bg-slate-50 border rounded-xl px-3 py-1.5 text-sm font-bold"></select></div>
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-3"><div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-bold">📐</div><div><h1 class="text-base font-black">Espace <span id="student-name"></span></h1><span class="text-[10px] font-bold text-indigo-600 px-2 py-0.5 bg-indigo-50 rounded-md">Coach IA Actif</span></div></div>
+            <button onclick="logout()" class="text-rose-500 font-bold p-2">✕</button>
+        </div>
+        <div class="flex justify-between border-t pt-3">
+            <div class="flex gap-2"><div class="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-xl border text-sm font-bold">🔥 <span id="ui-streak">1</span></div><div class="bg-blue-50 text-blue-700 px-3 py-1.5 rounded-xl border text-sm font-bold">💎 <span id="ui-xp">0</span></div></div>
+            <select id="niveau-select" onchange="changeNiveau()" class="bg-slate-50 border rounded-xl px-3 py-1.5 text-sm font-bold"></select>
+        </div>
     </header>
     <main id="app-container" class="space-y-4"></main>
 </div>
 
-<div id="draft-backdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-[90] hidden" onclick="toggleDraft()"></div>
-<div id="draft-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white shadow-2xl z-[100] flex flex-col border-l">
-    <div class="p-4 border-b flex justify-between items-center bg-slate-50"><div class="flex items-center gap-2"><span>📝</span><h2 class="text-base font-black">Brouillon</h2></div><button onclick="toggleDraft()" class="text-slate-500 font-bold border px-3 py-1 rounded-lg text-sm">Fermer</button></div>
-    <div class="flex-grow relative p-4"><textarea id="text-draft" class="w-full h-full p-4 border-2 border-dashed rounded-2xl outline-none font-mono text-base resize-none" placeholder="Zone libre..."></textarea><canvas id="draw-canvas-draft" class="absolute inset-0 pointer-events-none"></canvas></div>
-    <div class="p-4 bg-slate-50 border-t flex gap-2"><button id="btn-draw-draft" onclick="toggleDraftDrawing()" class="bg-white border p-2 rounded-lg flex-1 font-bold">🖍️ Dessin</button><button onclick="clearDraft()" class="bg-rose-50 text-rose-600 p-2 rounded-lg flex-1 font-bold">Vider</button></div>
-</div>
-
 <script>
-// ==========================================================
-// CONFIGURATION URL DE TON SCRIPT GOOGLE
-// ==========================================================
+// VARIABLES GLOBALES INDISPENSABLES
 const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbxZUsMl5jxCM_0yoQ5Ew7J2_HVVvQlNxde-zbT-7i-mX7OzvmJAYUHmQdeCbdD75jU7/exec"; 
+const SESSION_KEY = 'boost_session_v19';
+const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
+const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère", "TERMINALE": "Terminale" };
 
 let state = { 
     activeProfile: null, niveau: "4EME", results: {}, xp: 0, 
     questView: {}, expanded: {}, revealed: false, currentId: null, 
     selectedOption: null, canvasCache: {}, scoreQueue: JSON.parse(localStorage.getItem('score_queue')||'[]'),
-    isFirstDay: true, calibrageState: null, boostExists: false, dailyBoost: null
+    isFirstDay: true, calibrageState: null, boostExists: false, dailyBoost: null, isDrawing: false
 };
 
 const LEVELS = {};
 LEVEL_ORDER.forEach(k => { LEVELS[k] = { categories: {}, catDisplay: {}, catIcon: {} }; });
 
-// SÉCURITÉ SHA-256 AVEC SEL (Audit CTO)
+// FONCTIONS UI DE BASE
+function showAuth(tab) { 
+    document.getElementById('landing-screen').classList.add('hidden'); 
+    document.getElementById('auth-screen').classList.remove('hidden'); 
+    switchTab(tab); 
+}
+function closeAuth() { 
+    document.getElementById('auth-screen').classList.add('hidden'); 
+    document.getElementById('landing-screen').classList.remove('hidden'); 
+}
+function switchTab(t) {
+    currentTab = t;
+    document.getElementById('tab-register').className = t === 'register' ? "flex-1 py-2 font-bold text-sm rounded-lg bg-white shadow-sm" : "flex-1 py-2 font-bold text-sm text-slate-500";
+    document.getElementById('tab-login').className = t === 'login' ? "flex-1 py-2 font-bold text-sm rounded-lg bg-white shadow-sm" : "flex-1 py-2 font-bold text-sm text-slate-500";
+    document.getElementById('reg-fields').classList.toggle('hidden', t === 'login');
+    document.getElementById('auth-text').innerText = t === 'register' ? "C'est parti ! 🚀" : "Entrer dans l'arène";
+}
+
+// SÉCURITÉ & AUTH
 async function hashPwd(password, email) {
     const salt = email.toLowerCase() + "::AlgebreBoost::2026";
     const buffer = new TextEncoder().encode(salt + password);
@@ -112,86 +126,52 @@ async function hashPwd(password, email) {
     return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// RÉSILENCE SCORES (Audit CTO)
-async function flushQueue() {
-    if (state.scoreQueue.length === 0) return;
-    const item = state.scoreQueue[0];
-    try {
-        await fetch(GOOGLE_URL, { method: 'POST', body: JSON.stringify(item) });
-        state.scoreQueue.shift();
-        localStorage.setItem('score_queue', JSON.stringify(state.scoreQueue));
-        flushQueue();
-    } catch(e) { console.warn("Retry plus tard..."); }
-}
-
-function showToast(msg, dur = 4000) {
-    const t = document.getElementById('toast');
-    document.getElementById('toast-msg').innerText = msg;
-    t.classList.remove('-translate-y-24');
-    if(dur > 0) setTimeout(() => t.classList.add('-translate-y-24'), dur);
-}
-
-function launchConfetti() {
-    for (let i = 0; i < 30; i++) {
-        const c = document.createElement('div');
-        c.className = 'confetti';
-        c.style.left = Math.random() * 100 + 'vw';
-        c.style.backgroundColor = ['#4f46e5', '#10b981', '#fbbf24'][Math.floor(Math.random()*3)];
-        c.style.width = c.style.height = (Math.random()*8+4)+'px';
-        document.body.appendChild(c);
-        setTimeout(() => c.remove(), 3000);
-    }
-}
-
-// AUTH LOGIQUE
-let currentTab = 'register';
-function switchTab(t) {
-    currentTab = t;
-    document.getElementById('tab-register').className = t === 'register' ? "flex-1 py-2 font-bold text-sm rounded-lg bg-white shadow-sm" : "flex-1 py-2 font-bold text-sm text-slate-500";
-    document.getElementById('tab-login').className = t === 'login' ? "flex-1 py-2 font-bold text-sm rounded-lg bg-white shadow-sm" : "flex-1 py-2 font-bold text-sm text-slate-500";
-    document.getElementById('auth-text').innerText = t === 'register' ? "C'est parti ! 🚀" : "Entrer dans l'arène";
-}
-
 async function submitAuth() {
     const email = document.getElementById('auth-email').value.trim();
     const pwd = document.getElementById('auth-pwd').value.trim();
     if(!email || !pwd) return;
+    
     toggleLoader('auth', true);
     const hashed = await hashPwd(pwd, email);
     
-    if(currentTab === 'register') {
-        const level = document.getElementById('reg-level')?.value || "4EME";
-        const name = document.getElementById('reg-name')?.value || "Élève";
-        const res = await fetch(GOOGLE_URL, { method: 'POST', body: JSON.stringify({ action: 'register', name, email, level, password: hashed }) });
+    const payload = {
+        action: currentTab,
+        email: email,
+        password: hashed,
+        name: document.getElementById('reg-name').value,
+        level: document.getElementById('reg-level').value
+    };
+
+    try {
+        const res = await fetch(GOOGLE_URL, { method: 'POST', body: JSON.stringify(payload) });
         const d = await res.json();
-        if(d.status === 'success') loginExec(email, hashed); else { showToast(d.message); toggleLoader('auth', false); }
-    } else {
-        loginExec(email, hashed);
-    }
+        if(d.status === 'success') {
+            if(currentTab === 'register') { loginExec(email, hashed); }
+            else { initApp(d); }
+        } else { alert(d.message); toggleLoader('auth', false); }
+    } catch(e) { alert("Erreur de connexion au serveur"); toggleLoader('auth', false); }
 }
 
 async function loginExec(email, hash) {
-    try {
-        const res = await fetch(GOOGLE_URL, { method: 'POST', body: JSON.stringify({ action: 'login', email, password: hash }) });
-        const d = await res.json();
-        if(d.status === 'success') {
-            state.activeProfile = d.profile; state.isFirstDay = d.isFirstDay;
-            state.boostExists = d.boostExistsInDB; state.dailyBoost = d.dailyBoost;
-            localStorage.setItem(SESSION_KEY, JSON.stringify({email, password: hash}));
-            initApp(d);
-        } else { showToast(d.message); toggleLoader('auth', false); }
-    } catch(e) { toggleLoader('auth', false); }
+    const res = await fetch(GOOGLE_URL, { method: 'POST', body: JSON.stringify({ action: 'login', email, password: hash }) });
+    const d = await res.json();
+    if(d.status === 'success') initApp(d);
 }
 
 function initApp(data) {
-    state.niveau = state.activeProfile.level;
-    document.getElementById('student-name').innerText = state.activeProfile.name;
+    state.activeProfile = data.profile;
+    state.isFirstDay = data.isFirstDay;
+    state.boostExists = data.boostExistsInDB;
+    state.dailyBoost = data.dailyBoost;
+    state.niveau = data.profile.level;
+    
+    document.getElementById('student-name').innerText = data.profile.name;
     document.getElementById('landing-screen').classList.add('hidden');
     document.getElementById('auth-screen').classList.add('hidden');
     document.getElementById('main-app').classList.remove('hidden');
     document.getElementById('main-app').style.opacity = '1';
     
-    // Inject Curriculum
+    // Curriculum
     if(data.curriculumOfficiel) {
         data.curriculumOfficiel.forEach(c => {
             if(c.categorie === "DIAGNOSTIC") state.calibrageExos = c.exos;
@@ -202,106 +182,99 @@ function initApp(data) {
             }
         });
     }
-    
-    // Rebuild Stats
-    state.xp = 0; state.results = {};
-    if(data.history) {
-        data.history.forEach(h => {
-            const id = `${state.niveau}-${h.categorie}-${h.exercice_idx-1}`;
-            state.results[id] = h.resultat; state.xp += parseInt(h.xp)||0;
-        });
-    }
-    
-    updateHeader();
-    if(state.boostExists) loadBoost();
+    updateLevelDropdown(state.niveau);
     render();
-    flushQueue();
 }
 
-function loadBoost() {
-    if(!state.dailyBoost) return;
-    LEVELS[state.niveau].categories["BOOST"] = state.dailyBoost.exos.map((e,i)=>({...e, originalCat:"BOOST", originalIdx:i}));
-    LEVELS[state.niveau].catDisplay["BOOST"] = "Mon Entraînement IA";
-    LEVELS[state.niveau].catIcon["BOOST"] = "⚡";
+function updateLevelDropdown(userLvl) {
+    const sel = document.getElementById('niveau-select');
+    sel.innerHTML = '';
+    LEVEL_ORDER.forEach(lvl => {
+        const opt = document.createElement('option');
+        opt.value = lvl; opt.text = LEVEL_NAMES[lvl];
+        sel.appendChild(opt);
+    });
+    sel.value = userLvl;
+}
+
+// LOGIQUE EXERCICES
+function formatLatex(str) { 
+    if (!str) return ''; 
+    let s = str.replace(/\\?(?:frac|fract)\s*\(\s*([^)]+?)\s*\)\s*\(\s*([^)]+?)\s*\)/ig, '\\frac{$1}{$2}');
+    return s;
 }
 
 function render() {
     const container = document.getElementById('app-container');
     if(state.isFirstDay && !state.calibrageState) {
-        container.innerHTML = `<div class="p-8 bg-white border-2 border-indigo-100 rounded-[2.5rem] text-center shadow-xl animate-bounce-in"><div class="text-6xl mb-6">🎯</div><h2 class="text-2xl font-black mb-3">Diagnostic Initial</h2><p class="text-slate-500 font-medium mb-8">On évalue tes bases pour ton Coach IA.</p><button onclick="startCalibrage()" class="w-full py-5 bg-slate-900 text-white font-black rounded-2xl text-lg shadow-xl">Démarrer</button></div>`;
+        container.innerHTML = `<div class="p-8 bg-white border rounded-[2rem] text-center shadow-xl"><div class="text-5xl mb-4">🎯</div><h2 class="text-xl font-bold mb-4">Diagnostic Initial</h2><button onclick="startCalibrage()" class="w-full py-4 bg-slate-900 text-white rounded-xl font-bold">Démarrer</button></div>`;
         return;
     }
     
     if(state.calibrageState === 'testing') {
         const exs = state.calibrageExos; const idx = state.questView['CALIBRAGE']||0;
-        container.innerHTML = `<div class="rounded-3xl shadow-sm border-2 border-indigo-500 bg-white overflow-hidden animate-fade-in-up"><div class="px-5 py-4 bg-indigo-50 flex items-center justify-between"><span class="font-black text-indigo-900">Diagnostic</span><span class="text-xs font-bold text-indigo-400 bg-white px-2 py-1 rounded-lg border">${idx+1}/${exs.length}</span></div>${renderSection('CALIBRAGE', exs[idx], idx, exs.length)}</div>`;
-        MathJax.typesetPromise(); return;
+        container.innerHTML = `<div class="bg-white border rounded-3xl overflow-hidden shadow-sm"><div class="p-4 bg-slate-50 border-b font-bold">Question ${idx+1}/${exs.length}</div>${renderSection('CALIBRAGE', exs[idx], idx, exs.length)}</div>`;
+        MathJax.typesetPromise();
+        return;
     }
 
-    let html = `<div class="flex flex-col gap-4 w-full">`;
-    if(!state.boostExists && !state.isFirstDay) {
-        html += `<div class="rounded-3xl border-2 border-slate-200 bg-white p-6 flex items-center"><div class="text-3xl mr-4">🤖</div><div><div class="text-lg font-black text-slate-800">Coach IA en analyse...</div><p class="text-slate-500 text-sm font-medium">Tes données sont prêtes. Ton Boost arrive demain à 8h.</p></div></div>`;
-    }
-
+    // Affichage des chapitres
+    let html = `<div class="space-y-4">`;
     const cats = LEVELS[state.niveau].categories;
     Object.keys(cats).forEach(cat => {
-        const tot = cats[cat].length; let done = 0;
-        for(let i=0; i<tot; i++){ if(state.results[`${state.niveau}-${cat}-${i}`]) done++; }
-        const isComp = (done === tot && tot > 0);
-        html += `<div class="rounded-3xl shadow-sm border bg-white overflow-hidden"><div onclick="toggleCat('${cat}')" class="px-5 py-5 flex items-center cursor-pointer"><div class="w-10 h-10 rounded-2xl bg-slate-50 border flex items-center justify-center text-xl mr-3 shadow-sm">${LEVELS[state.niveau].catIcon[cat]||'📘'}</div><div class="flex-1 min-w-0"><div class="text-base font-black truncate">${LEVELS[state.niveau].catDisplay[cat]||cat} ${isComp?'🏆':''}</div><div class="bg-slate-200 rounded-full h-1 mt-2 w-full max-w-[150px]"><div class="bg-indigo-500 h-1 rounded-full" style="width:${(done/tot)*100}%"></div></div></div></div>${state.expanded[cat] ? renderSection(cat, cats[cat][state.questView[cat]||0], state.questView[cat]||0, tot) : ''}</div>`;
+        html += `<div onclick="toggleCat('${cat}')" class="p-5 bg-white border rounded-3xl flex items-center justify-between cursor-pointer shadow-sm">
+            <div class="flex items-center gap-3"><span>${LEVELS[state.niveau].catIcon[cat] || '📘'}</span><span class="font-bold">${LEVELS[state.niveau].catDisplay[cat] || cat}</span></div>
+            <div class="text-slate-400">➔</div>
+        </div>`;
+        if(state.expanded[cat]) {
+            html += `<div class="p-4 bg-slate-50 border-x border-b rounded-b-3xl -mt-4 mb-4">${renderSection(cat, cats[cat][state.questView[cat]||0], state.questView[cat]||0, cats[cat].length)}</div>`;
+        }
     });
     container.innerHTML = html + `</div>`;
     MathJax.typesetPromise();
 }
 
 function renderSection(cat, data, idx, total) {
-    const id = `${state.niveau}-${cat}-${idx}`; const isRev = state.revealed && state.currentId === id;
-    let pills = `<div class="flex gap-2 p-3 bg-slate-50/50 overflow-x-auto">`;
-    for(let i=0; i<total; i++) { const s = state.results[`${state.niveau}-${cat}-${i}`]; pills += `<button onclick="goToEx('${cat}',${i})" class="w-8 h-8 rounded-lg text-xs font-bold shrink-0 ${s?'bg-indigo-500 text-white':'bg-white border'} ${i===idx?'ring-2 ring-indigo-300':''}">${i+1}</button>`; } pills += `</div>`;
+    const id = `${state.niveau}-${cat}-${idx}`;
+    const isRev = state.revealed && state.currentId === id;
     
-    let opts = ''; if(data.options) {
-        opts = `<div class="flex flex-col gap-3 mt-4">` + data.options.map((o,i) => `<button onclick="handleOptionClick('${cat}',${idx},${i},this)" class="opt-btn ${isRev?(o===data.a?'opt-correct':(state.qcmAnswered[id]===o?'opt-wrong':'opacity-50')):''}"><span class="math-content flex-1">${formatLatex(o)}</span></button>`).join('') + `</div>`;
+    let opts = '';
+    if(data.options) {
+        opts = `<div class="space-y-3 mt-4">` + data.options.map((o,i) => `
+            <button onclick="handleOptionClick('${cat}',${idx},${i},this)" class="opt-btn ${isRev ? (o === data.a ? 'opt-correct' : 'opacity-50') : ''}">
+                <span class="math-content flex-1">${formatLatex(o)}</span>
+            </button>`).join('') + `</div>`;
     }
     
-    let acts = (!isRev&&!data.options)?`<button onclick="verify('${cat}',${idx})" class="w-full py-4 bg-slate-900 text-white font-black rounded-2xl mt-6">RÉVÉLER</button>` : (isRev&&!state.results[id])?`<div class="mt-4 text-2xl font-black text-center text-indigo-600">${formatLatex(data.a)}</div><div class="flex gap-3 mt-6"><button onclick="mark('${cat}',${idx},'HARD')" class="flex-1 py-4 bg-rose-50 text-rose-600 border border-rose-200 rounded-xl font-bold">REVOIR</button><button onclick="mark('${cat}',${idx},'EASY')" class="flex-1 py-4 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl font-bold">ACQUIS</button></div>` : (state.results[id])?`<button onclick="nextEx('${cat}')" class="w-full py-4 bg-slate-900 text-white font-black rounded-2xl mt-6">SUIVANT</button>` : '';
-
-    return `<div class="bg-white border-t w-full">${pills}<div class="p-4 sm:p-6"><div class="flex justify-between items-center mb-4"><span class="bg-slate-100 text-[10px] font-bold px-2 py-1 rounded">EXO ${idx+1}</span><button onclick="toggleDrawingMode('${id}')" class="text-xs border px-3 py-1 rounded-lg">🖍️ Dessin</button></div><div id="box-${id}" class="bg-slate-50 border rounded-2xl p-6 mb-6 relative overflow-hidden ${state.isDrawing?'ring-2 ring-rose-400':''}"><canvas id="canvas-${id}" class="main-draw-canvas"></canvas><div class="relative z-0 math-content text-center font-bold text-lg">${formatLatex(data.q)}</div></div>${opts}${acts}</div></div>`;
+    return `<div class="p-4"><div id="box-${id}" class="bg-slate-50 border rounded-2xl p-6 text-center font-bold text-lg">${formatLatex(data.q)}</div>${opts}</div>`;
 }
 
-// INTERACTIONS
-window.handleOptionClick = function(cat, idx, oIdx, btn) {
-    if(state.revealed) return;
-    const data = (cat==='CALIBRAGE'?state.calibrageExos:LEVELS[state.niveau].categories[cat])[idx];
-    state.revealed = true; state.currentId = `${state.niveau}-${cat}-${idx}`; state.qcmAnswered[state.currentId] = data.options[oIdx];
-    if(data.options[oIdx] === data.a) { btn.classList.add('opt-correct'); setTimeout(()=>mark(cat,idx,'EASY'), 800); }
-    else { btn.classList.add('opt-wrong'); document.getElementById(`box-${state.currentId}`).classList.add('animate-shake'); setTimeout(()=>mark(cat,idx,'HARD'), 1200); }
-};
-
-function mark(cat, idx, res) {
-    const id = `${state.niveau}-${cat}-${idx}`; state.results[id] = res;
-    let xp = res==='EASY'?100:10; state.xp += xp; updateHeader();
-    const data = (cat==='CALIBRAGE'?state.calibrageExos:LEVELS[state.niveau].categories[cat])[idx];
-    const scoreItem = { action: 'save_score', code: state.activeProfile.code, name: state.activeProfile.name, level: state.niveau, categorie: cat, exercice_idx: idx+1, resultat: res, xp, q: data.q };
-    state.scoreQueue.push(scoreItem); localStorage.setItem('score_queue', JSON.stringify(state.scoreQueue));
-    flushQueue();
-    if(res === 'EASY') nextEx(cat); else render();
-}
-
-function nextEx(cat) { 
-    const exs = (cat==='CALIBRAGE'?state.calibrageExos:LEVELS[state.niveau].categories[cat]);
-    let next = 0; for(let i=0; i<exs.length; i++){ if(!state.results[`${state.niveau}-${cat}-${i}`]){ next = i; break; } }
-    if(next === 0 && state.results[`${state.niveau}-${cat}-${exs.length-1}`]) { 
-        launchConfetti();
-        if(cat==='CALIBRAGE'){ state.calibrageState=null; state.isFirstDay=false; render(); }
-    } else { goToEx(cat, next); }
-}
-
-function goToEx(cat, i) { state.questView[cat] = i; state.revealed = false; state.isDrawing = false; render(); }
-function toggleCat(cat) { state.expanded[cat] = !state.expanded[cat]; render(); }
+// HELPERS
+let currentTab = 'register';
 function startCalibrage() { state.calibrageState = 'testing'; render(); }
+function toggleCat(cat) { state.expanded[cat] = !state.expanded[cat]; render(); }
+function toggleLoader(p, show) { document.getElementById('auth-loader').classList.toggle('hidden', !show); document.getElementById('auth-text').classList.toggle('hidden', show); }
 function logout() { localStorage.clear(); location.reload(); }
 function updateHeader() { document.getElementById('ui-xp').innerText = state.xp; }
-function toggleLoader(p, show) { document.getElementById(p+'-loader').classList.toggle('hidden', !show); document.getElementById(p+'-text').classList.toggle('hidden', show); }
+
+window.handleOptionClick = function(cat, idx, oIdx, btn) {
+    const exs = (cat==='CALIBRAGE' ? state.calibrageExos : LEVELS[state.niveau].categories[cat]);
+    const data = exs[idx];
+    state.revealed = true; state.currentId = `${state.niveau}-${cat}-${idx}`;
+    if(data.options[oIdx] === data.a) {
+        btn.classList.add('opt-correct');
+        state.xp += 100; updateHeader();
+        setTimeout(() => {
+            state.revealed = false;
+            if(idx + 1 < exs.length) { state.questView[cat] = idx + 1; render(); }
+            else { alert("Bravo ! Série terminée."); if(cat==='CALIBRAGE') { state.calibrageState = null; state.isFirstDay = false; render(); } }
+        }, 800);
+    } else {
+        btn.classList.add('opt-wrong');
+        document.getElementById(`box-${state.currentId}`).classList.add('animate-shake');
+        setTimeout(() => { btn.classList.remove('opt-wrong'); state.revealed = false; render(); }, 1200);
+    }
+};
 </script>
 </body>
 </html>
