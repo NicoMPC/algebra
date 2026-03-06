@@ -9,8 +9,6 @@
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="diagnostic.js"></script><script src="6.js"></script><script src="5.js"></script><script src="4.js"></script><script src="3.js"></script><script src="2.js"></script><script src="1.js"></script><script src="t.js"></script>
-
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
     body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; overflow-x: hidden; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
@@ -91,16 +89,21 @@
 
 <script>
 // ==========================================================
-// CONFIGURATION (TON URL ICI)
+// CONFIGURATION URL DE TON GOOGLE APPS SCRIPT
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycQVtptA9MjyZW_bUtPvb658W7ZMg4OJCa_aMf9FMcakJc9SFFgYoH0eIxtvg78nFo/exec";  
-const SESSION_KEY = 'boost_user_v15'; 
-const STORAGE_KEY_LOCAL = 'boost_local_v15';
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwpWplSZsnoNPvNPJqXdSplsJ0R-peGKXZVRcHZ6gvUPXSGt0ayWT0xYWnED99KgV8l/exec";  
+const SESSION_KEY = 'boost_user_v16'; 
+const STORAGE_KEY_LOCAL = 'boost_local_v16';
+
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
 const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère (Spé)", "TERMINALE": "Terminale" };
 
+// ETAT GLOBAL
 let state = { activeProfile: null, niveau: "4EME", results: {}, xp: 0, streak: 0, questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null, hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {}, qcmAnswered: {}, currentShuffle: {}, startTimes: {}, dailyBoost: null, boostExistsInDB: false, isFetchingBoost: false, isFirstDay: true, calibrageState: null, calibrageExos: [], isDrawing: false, draftOpen: false, remediationRequested: {}, insights: {}, isNew: {} };
 const LEVELS = {};
+
+// On initialise les niveaux vides
+Object.keys(LEVEL_NAMES).forEach(key => { LEVELS[key] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[key] }; });
 
 // ==========================================================
 // OUTILS & TOAST
@@ -119,6 +122,18 @@ function showToast(msg, duration = 4000) {
     if(duration > 0) setTimeout(() => t.classList.add('translate-y-[calc(-100%-2rem)]'), duration);
 }
 function hideToast() { document.getElementById('toast').classList.add('translate-y-[calc(-100%-2rem)]'); }
+
+// ==========================================================
+// LOGIQUE DIAGNOSTIC (MIGRÉ)
+// ==========================================================
+function startCalibrage() {
+    state.calibrageState = 'testing';
+    state.questView['CALIBRAGE'] = 0;
+    LEVELS[state.niveau].categories['CALIBRAGE'] = state.calibrageExos.map((e,i) => ({...e, originalCat: 'CALIBRAGE', originalIdx: i}));
+    LEVELS[state.niveau].catDisplay['CALIBRAGE'] = "Test de Positionnement";
+    LEVELS[state.niveau].catIcon['CALIBRAGE'] = "🎯";
+    render();
+}
 
 // ==========================================================
 // APPELS IA 
@@ -154,11 +169,9 @@ async function handleBoostClick() {
     }
 }
 
-// GENERATION SOUS-MARINE (MODE BOSS)
 function triggerBackgroundRemediation(cat, errors) {
     state.remediationRequested[cat] = true;
-    showToast("🎯 Chapitre terminé ! L'IA prépare la suite...", 0); // Toast persistant
-    
+    showToast("🎯 Chapitre terminé ! L'IA prépare la suite...", 0); 
     const baseCat = cat.replace(/_V\d+$/, '');
     fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "generate_remediation", code: state.activeProfile.code, category: baseCat, level: state.niveau, errors: errors.slice(0, 3) }) })
     .then(r => r.json())
@@ -169,8 +182,6 @@ function triggerBackgroundRemediation(cat, errors) {
             LEVELS[state.niveau].categories[catName] = data.exos.map((exo, i) => ({...exo, originalCat: catName, originalIdx: i}));
             LEVELS[state.niveau].catDisplay[catName] = `${LEVELS[state.niveau].catDisplay[baseCat] || baseCat} (V${data.version})`;
             LEVELS[state.niveau].catIcon[catName] = "🤖"; state.insights[catName] = data.insight; state.isNew[catName] = true;
-            
-            // Pop up pour prévenir que c'est prêt !
             document.getElementById('cm-btn').onclick = () => { closeChapterModal(); render(); setTimeout(() => document.getElementById(`cat-header-${catName}`).scrollIntoView({behavior: 'smooth', block: 'center'}), 300); };
             document.getElementById('chapter-modal').classList.remove('hidden');
             render();
@@ -180,7 +191,7 @@ function triggerBackgroundRemediation(cat, errors) {
 function closeChapterModal() { document.getElementById('chapter-modal').classList.add('hidden'); }
 
 // ==========================================================
-// AUTH & INIT
+// AUTH & INIT (FULL DATA-DRIVEN)
 // ==========================================================
 function showAuth(tab) { document.getElementById('landing-screen').classList.add('hidden'); document.getElementById('auth-screen').classList.remove('hidden'); switchTab(tab); }
 function closeAuth() { document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('landing-screen').classList.remove('hidden'); }
@@ -196,15 +207,45 @@ async function loginStudent() {
     try {
         const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "login", email, password: pwd }) });
         const data = await res.json();
+        
         if (data.status === "success") { 
-            state.activeProfile = data.profile; state.dailyBoost = data.dailyBoost; state.boostExistsInDB = data.boostExistsInDB; state.isFirstDay = data.isFirstDay;
-            localStorage.setItem(SESSION_KEY, JSON.stringify({email, password: pwd})); rebuildState(data.history); 
-            if (data.dynamicChapters) { data.dynamicChapters.forEach(dc => {
-                    const catName = `${dc.originalCat}_V${dc.version}`; if(!LEVELS[state.niveau]) return;
-                    LEVELS[state.niveau].categories[catName] = dc.exos.map((exo, i) => ({...exo, originalCat: catName, originalIdx: i}));
-                    LEVELS[state.niveau].catDisplay[catName] = `${LEVELS[state.niveau].catDisplay[dc.originalCat] || dc.originalCat} (V${dc.version})`; LEVELS[state.niveau].catIcon[catName] = "🤖";
-                    state.insights[catName] = dc.insight; let hasScored = false; for(let i=0; i<dc.exos.length; i++) { if(state.results[`${state.niveau}-${catName}-${i}`]) hasScored = true; } state.isNew[catName] = !hasScored;
-            });}
+            state.activeProfile = data.profile; 
+            state.dailyBoost = data.dailyBoost; 
+            state.boostExistsInDB = data.boostExistsInDB; 
+            state.isFirstDay = data.isFirstDay;
+            localStorage.setItem(SESSION_KEY, JSON.stringify({email, password: pwd})); 
+            
+            // ON VIDE LES NIVEAUX AVANT DE LES REMPLIR DEPUIS LA BDD
+            LEVELS[state.activeProfile.level].categories = {};
+            
+            // INJECTION OFFICIELLE
+            if (data.curriculumOfficiel) {
+                data.curriculumOfficiel.forEach(chap => {
+                    if (chap.categorie === "DIAGNOSTIC") {
+                        state.calibrageExos = chap.exos;
+                    } else {
+                        LEVELS[state.activeProfile.level].categories[chap.categorie] = chap.exos.map((e, i) => ({...e, originalCat: chap.categorie, originalIdx: i}));
+                        LEVELS[state.activeProfile.level].catDisplay[chap.categorie] = chap.titre;
+                        LEVELS[state.activeProfile.level].catIcon[chap.categorie] = chap.icone;
+                    }
+                });
+            }
+
+            // INJECTION IA (CHAPITRES DYNAMIQUES)
+            if (data.dynamicChapters) { 
+                data.dynamicChapters.forEach(dc => {
+                    const catName = `${dc.originalCat}_V${dc.version}`;
+                    LEVELS[state.activeProfile.level].categories[catName] = dc.exos.map((exo, i) => ({...exo, originalCat: catName, originalIdx: i}));
+                    LEVELS[state.activeProfile.level].catDisplay[catName] = `${LEVELS[state.activeProfile.level].catDisplay[dc.originalCat] || dc.originalCat} (V${dc.version})`; 
+                    LEVELS[state.activeProfile.level].catIcon[catName] = "🤖";
+                    state.insights[catName] = dc.insight; 
+                    let hasScored = false; 
+                    for(let i=0; i<dc.exos.length; i++) { if(data.history.find(h => h.categorie === dc.originalCat && h.exercice_idx === (i+1))) hasScored = true; } 
+                    state.isNew[catName] = !hasScored;
+                });
+            }
+
+            rebuildState(data.history); 
             if (!state.isFirstDay) state.calibrageState = null; else state.calibrageState = 'select';
             initApp(); preloadBoostIA(); 
         } else showCustomAlert("Refusé", data.message);
@@ -221,7 +262,6 @@ async function registerStudent() {
 }
 
 document.addEventListener('DOMContentLoaded', () => { 
-  Object.keys(LEVEL_NAMES).forEach(key => { LEVELS[key] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[key] }; }); populateDB();
   const savedCreds = localStorage.getItem(SESSION_KEY); if (savedCreds) { try { const creds = JSON.parse(savedCreds); document.getElementById('login-email').value = creds.email || ''; document.getElementById('login-pwd').value = creds.password || ''; if(creds.email && creds.password) showAuth('login'); } catch(e) {} }
 });
 
@@ -230,7 +270,6 @@ function rebuildState(history) {
     if(!history) return;
     history.forEach(row => { const id = `${row.niveau}-${row.categorie}-${parseInt(row.exercice_idx) - 1}`; state.results[id] = row.resultat; state.xp += parseInt(row.xp) || 0; if(row.indices > 0) state.hintStepsRevealed[id] = row.indices; if(row.formule) state.formulaRevealed[id] = true; });
 }
-function populateDB() { Object.keys(LEVEL_NAMES).forEach(key => { const raw = window.db ? window.db[`ALGEBRA_${key}`] : null; if (raw) { LEVELS[key].categories = raw.categories || {}; LEVELS[key].catDisplay = raw.catDisplay || {}; LEVELS[key].catIcon = raw.catIcon || {}; } }); }
 
 function initApp() {
     state.niveau = state.activeProfile.level; if(!LEVELS[state.niveau]) state.niveau = "4EME";
@@ -267,15 +306,20 @@ function sendScoreToSheet(rCat, rIdx, status, xp, time) {
 }
 
 function checkCategoryCompletion(cat) {
-    if(cat === 'CALIBRAGE' || cat === 'BOOST') return;
+    if(cat === 'CALIBRAGE') {
+        const total = LEVELS[state.niveau].categories[cat].length; let doneCount = 0;
+        for(let i=0; i<total; i++) { if(state.results[`${state.niveau}-CALIBRAGE-${i}`]) doneCount++; }
+        if(doneCount === total && total > 0) { state.calibrageState = null; state.isFirstDay = false; showToast("🎯 Diagnostic Terminé !"); render(); }
+        return;
+    }
+    if (cat === 'BOOST') return;
+
     const total = LEVELS[state.niveau].categories[cat].length; let doneCount = 0; let errors = [];
     for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); const res = state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]; if(res) doneCount++; if(res === 'HARD') errors.push(LEVELS[state.niveau].categories[cat][i].q); }
     
-    // DECLENCHEMENT SOUS-MARIN DE L'IA QUAND LE CHAPITRE EST FINI
     if(doneCount === total && total > 0) {
         state.expanded[cat] = false; const cV = (cat.match(/_V(\d+)$/) || [0,1])[1];
         if (cV >= 3) { showToast("🎉 Chapitre maîtrisé au maximum !"); return; }
-        
         const nextCat = `${cat.replace(/_V\d+$/, '')}_V${parseInt(cV) + 1}`;
         if(!LEVELS[state.niveau].categories[nextCat] && !state.remediationRequested[cat]) {
             triggerBackgroundRemediation(cat, errors); 
@@ -307,11 +351,20 @@ function initCanvas(id) { const c = document.getElementById(id); if(!c) return; 
 // ==========================================================
 function render() {
     const container = document.getElementById('app-container');
-    if (state.isFirstDay && state.calibrageState === 'select') { container.innerHTML=`<button onclick="startCalibrage()" class="w-full py-5 bg-indigo-600 text-white font-black rounded-xl">Diagnostic</button>`; return; }
+    
+    // CAS DIAGNOSTIC
+    if (state.isFirstDay && state.calibrageState === 'select') { 
+        container.innerHTML=`<div class="p-6 bg-indigo-50 border border-indigo-200 rounded-3xl text-center"><h2 class="text-2xl font-black text-indigo-900 mb-2">Bienvenue ${state.activeProfile.name} !</h2><p class="text-indigo-700 font-medium mb-6">Avant de commencer, faisons un point rapide sur ton niveau.</p><button onclick="startCalibrage()" class="w-full py-5 bg-gradient-to-r from-indigo-600 to-blue-600 shadow-lg text-white font-black rounded-xl text-lg hover:scale-[1.02] active:scale-95 transition-transform">Lancer le Diagnostic 🎯</button></div>`; 
+        return; 
+    }
     
     let html = `<div class="flex flex-col gap-4 w-full">`;
     const catsToRender = LEVELS[state.niveau].categories; 
     let catKeys = Object.keys(catsToRender);
+    
+    // On cache le CALIBRAGE de la liste principale une fois fini
+    catKeys = catKeys.filter(k => k !== 'CALIBRAGE');
+    
     if(catKeys.includes("BOOST")) catKeys = ["BOOST", ...catKeys.filter(k => k !== "BOOST")];
 
     let isBoostDone = false;
@@ -322,27 +375,38 @@ function render() {
     }
 
     if (!state.boostExistsInDB && !state.isFirstDay) {
-        html += `<div onclick="handleBoostClick()" class="rounded-3xl shadow-lg border border-purple-300 bg-gradient-to-r from-purple-600 to-indigo-600 w-full overflow-hidden cursor-pointer transform hover:scale-[1.02] active:scale-95 transition-transform"><div class="px-5 py-6 flex items-center relative z-10 w-full"><div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-3xl mr-4 animate-floating">⚡</div><div class="flex-1"><div class="text-xl font-black text-white">Générer mon Entraînement</div><p class="text-purple-100 text-sm font-medium mt-1">L'IA prépare tes 5 exos du jour.</p></div></div></div>`;
+        html += `<div onclick="handleBoostClick()" class="rounded-3xl shadow-lg border border-purple-300 bg-gradient-to-r from-purple-600 to-indigo-600 w-full overflow-hidden cursor-pointer transform hover:scale-[1.02] active:scale-95 transition-transform"><div class="px-5 py-6 flex items-center relative z-10 w-full"><div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-3xl mr-4 animate-floating">⚡</div><div class="flex-1"><div class="text-xl font-black text-white">Générer mon Entraînement</div><p class="text-purple-100 text-sm font-medium mt-1">L'IA prépare tes défis du jour.</p></div></div></div>`;
     } else if (state.boostExistsInDB && isBoostDone && !state.isFirstDay) {
         html += `<div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-5 text-center flex flex-col items-center animate-fade-in-up"><div class="text-3xl mb-2">✅</div><h3 class="font-black text-emerald-800 text-lg">Séquence IA validée !</h3><p class="text-emerald-600 font-bold mt-2 bg-emerald-100 px-3 py-1 rounded-full text-sm shadow-sm">🚀 Reviens demain pour ton nouveau boost !</p></div>`;
     }
 
-    catKeys.forEach(cat => {
-        if (cat === 'BOOST' && isBoostDone) return; 
-        
-        const total = catsToRender[cat].length; let doneCount = 0;
-        for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); if(state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) doneCount++; }
-        const isCompleted = doneCount === total && total > 0;
-
-        let bgClass = cat==="BOOST" ? "bg-purple-50 border-purple-200" : state.isNew[cat] ? "bg-indigo-50 border-indigo-200" : isCompleted ? "bg-emerald-50/50 border-emerald-100" : "bg-white border-slate-200";
-        let badge = cat==="BOOST" ? `<span class="text-[10px] ml-2 text-purple-700 bg-purple-100 px-2 rounded-full font-bold">Quotidien</span>` : state.isNew[cat] ? `<span class="text-[10px] ml-2 text-white bg-indigo-500 px-2 rounded-full font-bold animate-pulse">IA</span>` : "";
-
+    // SI L'ELÈVE EST EN TRAIN DE FAIRE LE DIAGNOSTIC
+    if (state.calibrageState === 'testing' && LEVELS[state.niveau].categories['CALIBRAGE']) {
         html += `
-        <div id="cat-header-${cat}" class="rounded-3xl shadow-sm border transition-all ${bgClass} w-full overflow-hidden animate-fade-in-up">
-            <div onclick="toggleCategory('${cat}')" class="px-4 py-4 sm:px-5 flex items-center cursor-pointer w-full"><div class="w-10 h-10 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-xl mr-3 shadow-sm">${LEVELS[state.niveau].catIcon[cat]||'📘'}</div><div class="flex-1 min-w-0"><div class="text-base font-black truncate">${LEVELS[state.niveau].catDisplay[cat]||cat} ${badge} ${isCompleted?'🏆':''}</div><div class="flex items-center gap-2 mt-1.5 w-full max-w-[200px]"><div class="flex-1 bg-slate-200 rounded-full h-1.5"><div class="bg-indigo-500 h-1.5 rounded-full" style="width:${(doneCount/total)*100}%"></div></div><span class="text-[10px] text-slate-500 font-bold">${Math.round((doneCount/total)*100)}%</span></div></div></div>
-            ${state.expanded[cat] ? renderSection(cat, catsToRender[cat][state.questView[cat]||0], parseInt(state.questView[cat]||0), total, isCompleted) : ''}
+        <div id="cat-header-CALIBRAGE" class="rounded-3xl shadow-sm border border-indigo-200 bg-indigo-50 w-full overflow-hidden animate-fade-in-up">
+            <div class="px-4 py-4 sm:px-5 flex items-center w-full"><div class="w-10 h-10 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-xl mr-3 shadow-sm">🎯</div><div class="flex-1 min-w-0"><div class="text-base font-black truncate">Diagnostic en cours...</div></div></div>
+            ${renderSection('CALIBRAGE', LEVELS[state.niveau].categories['CALIBRAGE'][state.questView['CALIBRAGE']||0], parseInt(state.questView['CALIBRAGE']||0), LEVELS[state.niveau].categories['CALIBRAGE'].length, false)}
         </div>`;
-    });
+    } else {
+        // AFFICHAGE CLASSIQUE DES CHAPITRES
+        catKeys.forEach(cat => {
+            if (cat === 'BOOST' && isBoostDone) return; 
+            
+            const total = catsToRender[cat].length; let doneCount = 0;
+            for(let i=0; i<total; i++) { const r = resolveRealExercise(cat, i); if(state.results[`${state.niveau}-${r.realCat}-${r.realIdx}`]) doneCount++; }
+            const isCompleted = doneCount === total && total > 0;
+
+            let bgClass = cat==="BOOST" ? "bg-purple-50 border-purple-200" : state.isNew[cat] ? "bg-indigo-50 border-indigo-200" : isCompleted ? "bg-emerald-50/50 border-emerald-100" : "bg-white border-slate-200";
+            let badge = cat==="BOOST" ? `<span class="text-[10px] ml-2 text-purple-700 bg-purple-100 px-2 rounded-full font-bold">Quotidien</span>` : state.isNew[cat] ? `<span class="text-[10px] ml-2 text-white bg-indigo-500 px-2 rounded-full font-bold animate-pulse">IA</span>` : "";
+
+            html += `
+            <div id="cat-header-${cat}" class="rounded-3xl shadow-sm border transition-all ${bgClass} w-full overflow-hidden animate-fade-in-up">
+                <div onclick="toggleCategory('${cat}')" class="px-4 py-4 sm:px-5 flex items-center cursor-pointer w-full"><div class="w-10 h-10 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-xl mr-3 shadow-sm">${LEVELS[state.niveau].catIcon[cat]||'📘'}</div><div class="flex-1 min-w-0"><div class="text-base font-black truncate">${LEVELS[state.niveau].catDisplay[cat]||cat} ${badge} ${isCompleted?'🏆':''}</div><div class="flex items-center gap-2 mt-1.5 w-full max-w-[200px]"><div class="flex-1 bg-slate-200 rounded-full h-1.5"><div class="bg-indigo-500 h-1.5 rounded-full" style="width:${(doneCount/total)*100}%"></div></div><span class="text-[10px] text-slate-500 font-bold">${Math.round((doneCount/total)*100)}%</span></div></div></div>
+                ${state.expanded[cat] ? renderSection(cat, catsToRender[cat][state.questView[cat]||0], parseInt(state.questView[cat]||0), total, isCompleted) : ''}
+            </div>`;
+        });
+    }
+
     container.innerHTML = html + `</div>`;
     if (window.MathJax?.typesetPromise) MathJax.typesetPromise().then(() => document.querySelectorAll('.math-content').forEach(el => el.classList.add('ready')));
 }
@@ -369,7 +433,6 @@ function renderSection(cat, data, idx, total, isCatDone) {
                 ${(data.steps||[]).map((s,i) => `<div class="${i<hShow?'block':'hidden'} math-content text-sm p-3 bg-white rounded-xl border border-amber-200 text-amber-900">${formatLatex(s)}</div>`).join('')}
             </div>
         </div>
-        
         <div class="flex-1 bg-indigo-50 rounded-2xl border border-indigo-100 p-4 flex flex-col justify-center">
             <p class="text-[10px] font-black text-indigo-400 uppercase text-center mb-2 tracking-widest">Leçon</p>
             <div onclick="revealFormula('${cat}', ${idx})" class="math-content text-sm bg-white font-bold p-3 rounded-xl border border-indigo-200 blurred-formula shadow-sm ${state.isScored||state.formulaManuallyTouched[id]?'revealed':''}">${formatLatex(data.f)||'Pas de formule.'}</div>
@@ -384,4 +447,6 @@ function renderSection(cat, data, idx, total, isCatDone) {
       </div>
     </div>`;
 }
-</script></body></html>
+</script>
+</body>
+</html>
