@@ -12,16 +12,15 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
     body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
-    .opt-btn { position: relative; padding: 1rem 1rem 1rem 3.5rem; text-align: left; transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 1.25rem; background: white; width: 100%; font-weight: 600; cursor: pointer; min-height: 56px; }
+    .opt-btn { position: relative; padding: 1rem 1rem 1rem 3.5rem; text-align: left; transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 1.25rem; background: white; width: 100%; font-weight: 600; cursor: pointer; min-height: 56px; display: flex; align-items: center; }
     .opt-selected { border-color: #4f46e5; outline: 3px solid #c7d2fe; }
     .opt-correct { border-color: #10b981 !important; background: #f0fdf4 !important; }
     .opt-wrong { border-color: #ef4444 !important; background: #fef2f2 !important; }
     @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
     .animate-shake { animation: shake 0.2s ease-in-out 0s 2; }
     .math-content { opacity: 0; transition: opacity 0.3s ease; } .math-content.ready { opacity: 1; }
-    .drawing-mode .main-draw-canvas { pointer-events: auto; }
-    .main-draw-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; touch-action: none; }
-    #draft-drawer { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); } #draft-drawer.open { transform: translateX(0); }
+    .blurred-formula { filter: blur(5px); transition: all 0.3s ease; cursor: pointer; background: #e0e7ff; border-radius: 8px; padding: 10px; text-align: center; }
+    .blurred-formula.revealed { filter: blur(0); background: white; border: 1px solid #c7d2fe; }
     .bg-grid-pattern { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 24px 24px; }
     .loader { border: 3px solid #f1f5f9; border-top: 3px solid #4f46e5; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -40,9 +39,8 @@
         <button onclick="showAuth('login')" class="font-bold text-slate-600 border px-5 py-2.5 rounded-full shadow-sm text-sm bg-white">Connexion</button>
     </header>
     <div class="flex-1 flex flex-col items-center justify-center p-6 text-center max-w-xl mx-auto relative z-10 pb-20">
-        <div class="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-full text-xs font-bold mb-8 border border-indigo-100">🚀 La précision chirurgicale au service de tes notes</div>
-        <h1 class="text-4xl sm:text-6xl font-black mb-6 leading-tight tracking-tight">Ne travaille plus dans le vide. Maîtrise les maths, <span class="text-indigo-600">point par point.</span></h1>
-        <button onclick="showAuth('register')" class="w-full py-5 bg-slate-900 text-white font-black text-xl rounded-2xl shadow-2xl hover:scale-[1.02] transition-transform">Démarrer le Diagnostic Gratuit</button>
+        <h1 class="text-4xl sm:text-6xl font-black mb-6 leading-tight tracking-tight">Ne travaille plus dans le vide. Maîtrise les maths.</h1>
+        <button onclick="showAuth('register')" class="w-full py-5 bg-slate-900 text-white font-black text-xl rounded-2xl shadow-2xl">Démarrer le Diagnostic Gratuit</button>
     </div>
 </div>
 
@@ -72,7 +70,7 @@
 <div id="main-app" class="hidden max-w-2xl mx-auto p-4 transition-opacity duration-300">
     <header class="flex flex-col mb-6 bg-white rounded-3xl border p-4 gap-4 shadow-sm">
         <div class="flex justify-between items-center">
-            <div class="flex items-center gap-3"><div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-bold">📐</div><div><h1 class="text-base font-black">Espace <span id="student-name"></span></h1><span class="text-[10px] font-bold text-indigo-600 px-2 py-0.5 bg-indigo-50 rounded-md">Coach IA Actif</span></div></div>
+            <div class="flex items-center gap-3"><div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-bold">📐</div><div><h1 class="text-base font-black">Espace <span id="student-name"></span></h1><span class="text-[10px] font-bold text-indigo-600 px-2 py-0.5 bg-indigo-50 rounded-md">Coach IA Connecté</span></div></div>
             <button onclick="logout()" class="text-rose-500 font-bold p-2">✕</button>
         </div>
         <div class="flex justify-between border-t pt-3">
@@ -84,41 +82,35 @@
 </div>
 
 <script>
-// VARIABLES GLOBALES INDISPENSABLES
 const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbxZUsMl5jxCM_0yoQ5Ew7J2_HVVvQlNxde-zbT-7i-mX7OzvmJAYUHmQdeCbdD75jU7/exec"; 
-const SESSION_KEY = 'boost_session_v19';
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
 const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère", "TERMINALE": "Terminale" };
 
 let state = { 
     activeProfile: null, niveau: "4EME", results: {}, xp: 0, 
     questView: {}, expanded: {}, revealed: false, currentId: null, 
-    selectedOption: null, canvasCache: {}, scoreQueue: JSON.parse(localStorage.getItem('score_queue')||'[]'),
-    isFirstDay: true, calibrageState: null, boostExists: false, dailyBoost: null, isDrawing: false
+    hintStepsRevealed: {}, formulaManuallyTouched: {}, qcmAnswered: {},
+    isFirstDay: true, calibrageState: null, boostExists: false, calibrageExos: []
 };
 
 const LEVELS = {};
 LEVEL_ORDER.forEach(k => { LEVELS[k] = { categories: {}, catDisplay: {}, catIcon: {} }; });
 
-// FONCTIONS UI DE BASE
-function showAuth(tab) { 
-    document.getElementById('landing-screen').classList.add('hidden'); 
-    document.getElementById('auth-screen').classList.remove('hidden'); 
-    switchTab(tab); 
+// CORE FUNCTIONS
+function formatLatex(str) { 
+    if (!str) return ''; 
+    return str.replace(/\\?(?:frac|fract)\s*\(\s*([^)]+?)\s*\)\s*\(\s*([^)]+?)\s*\)/ig, '\\frac{$1}{$2}');
 }
-function closeAuth() { 
-    document.getElementById('auth-screen').classList.add('hidden'); 
-    document.getElementById('landing-screen').classList.remove('hidden'); 
-}
+
+function showAuth(tab) { document.getElementById('landing-screen').classList.add('hidden'); document.getElementById('auth-screen').classList.remove('hidden'); switchTab(tab); }
+function closeAuth() { document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('landing-screen').classList.remove('hidden'); }
 function switchTab(t) {
     currentTab = t;
     document.getElementById('tab-register').className = t === 'register' ? "flex-1 py-2 font-bold text-sm rounded-lg bg-white shadow-sm" : "flex-1 py-2 font-bold text-sm text-slate-500";
     document.getElementById('tab-login').className = t === 'login' ? "flex-1 py-2 font-bold text-sm rounded-lg bg-white shadow-sm" : "flex-1 py-2 font-bold text-sm text-slate-500";
     document.getElementById('reg-fields').classList.toggle('hidden', t === 'login');
-    document.getElementById('auth-text').innerText = t === 'register' ? "C'est parti ! 🚀" : "Entrer dans l'arène";
 }
 
-// SÉCURITÉ & AUTH
 async function hashPwd(password, email) {
     const salt = email.toLowerCase() + "::AlgebreBoost::2026";
     const buffer = new TextEncoder().encode(salt + password);
@@ -130,48 +122,29 @@ async function submitAuth() {
     const email = document.getElementById('auth-email').value.trim();
     const pwd = document.getElementById('auth-pwd').value.trim();
     if(!email || !pwd) return;
-    
-    toggleLoader('auth', true);
+    document.getElementById('auth-loader').classList.remove('hidden');
     const hashed = await hashPwd(pwd, email);
-    
-    const payload = {
-        action: currentTab,
-        email: email,
-        password: hashed,
-        name: document.getElementById('reg-name').value,
-        level: document.getElementById('reg-level').value
-    };
-
     try {
-        const res = await fetch(GOOGLE_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const res = await fetch(GOOGLE_URL, { method: 'POST', body: JSON.stringify({ action: currentTab, email, password: hashed, name: document.getElementById('reg-name').value, level: document.getElementById('reg-level').value }) });
         const d = await res.json();
         if(d.status === 'success') {
-            if(currentTab === 'register') { loginExec(email, hashed); }
-            else { initApp(d); }
-        } else { alert(d.message); toggleLoader('auth', false); }
-    } catch(e) { alert("Erreur de connexion au serveur"); toggleLoader('auth', false); }
-}
-
-async function loginExec(email, hash) {
-    const res = await fetch(GOOGLE_URL, { method: 'POST', body: JSON.stringify({ action: 'login', email, password: hash }) });
-    const d = await res.json();
-    if(d.status === 'success') initApp(d);
+            if(currentTab === 'register') { 
+                const loginRes = await fetch(GOOGLE_URL, { method: 'POST', body: JSON.stringify({ action: 'login', email, password: hashed }) });
+                initApp(await loginRes.json());
+            } else initApp(d);
+        } else alert(d.message);
+    } catch(e) { alert("Erreur serveur"); }
+    document.getElementById('auth-loader').classList.add('hidden');
 }
 
 function initApp(data) {
-    state.activeProfile = data.profile;
-    state.isFirstDay = data.isFirstDay;
-    state.boostExists = data.boostExistsInDB;
-    state.dailyBoost = data.dailyBoost;
-    state.niveau = data.profile.level;
-    
+    state.activeProfile = data.profile; state.isFirstDay = data.isFirstDay; state.niveau = data.profile.level;
     document.getElementById('student-name').innerText = data.profile.name;
     document.getElementById('landing-screen').classList.add('hidden');
     document.getElementById('auth-screen').classList.add('hidden');
     document.getElementById('main-app').classList.remove('hidden');
     document.getElementById('main-app').style.opacity = '1';
     
-    // Curriculum
     if(data.curriculumOfficiel) {
         data.curriculumOfficiel.forEach(c => {
             if(c.categorie === "DIAGNOSTIC") state.calibrageExos = c.exos;
@@ -182,99 +155,91 @@ function initApp(data) {
             }
         });
     }
-    updateLevelDropdown(state.niveau);
+    const sel = document.getElementById('niveau-select'); sel.innerHTML = '';
+    LEVEL_ORDER.forEach(lvl => { const opt = document.createElement('option'); opt.value = lvl; opt.text = LEVEL_NAMES[lvl]; sel.appendChild(opt); });
+    sel.value = state.niveau;
     render();
-}
-
-function updateLevelDropdown(userLvl) {
-    const sel = document.getElementById('niveau-select');
-    sel.innerHTML = '';
-    LEVEL_ORDER.forEach(lvl => {
-        const opt = document.createElement('option');
-        opt.value = lvl; opt.text = LEVEL_NAMES[lvl];
-        sel.appendChild(opt);
-    });
-    sel.value = userLvl;
-}
-
-// LOGIQUE EXERCICES
-function formatLatex(str) { 
-    if (!str) return ''; 
-    let s = str.replace(/\\?(?:frac|fract)\s*\(\s*([^)]+?)\s*\)\s*\(\s*([^)]+?)\s*\)/ig, '\\frac{$1}{$2}');
-    return s;
 }
 
 function render() {
     const container = document.getElementById('app-container');
     if(state.isFirstDay && !state.calibrageState) {
-        container.innerHTML = `<div class="p-8 bg-white border rounded-[2rem] text-center shadow-xl"><div class="text-5xl mb-4">🎯</div><h2 class="text-xl font-bold mb-4">Diagnostic Initial</h2><button onclick="startCalibrage()" class="w-full py-4 bg-slate-900 text-white rounded-xl font-bold">Démarrer</button></div>`;
+        container.innerHTML = `<div class="p-8 bg-white border rounded-[2rem] text-center shadow-xl animate-bounce-in"><div class="text-5xl mb-4">🎯</div><h2 class="text-xl font-bold mb-4">Prêt pour ton diagnostic ?</h2><button onclick="state.calibrageState='testing';render()" class="w-full py-4 bg-slate-900 text-white rounded-xl font-bold">Démarrer</button></div>`;
         return;
     }
     
     if(state.calibrageState === 'testing') {
         const exs = state.calibrageExos; const idx = state.questView['CALIBRAGE']||0;
-        container.innerHTML = `<div class="bg-white border rounded-3xl overflow-hidden shadow-sm"><div class="p-4 bg-slate-50 border-b font-bold">Question ${idx+1}/${exs.length}</div>${renderSection('CALIBRAGE', exs[idx], idx, exs.length)}</div>`;
-        MathJax.typesetPromise();
+        container.innerHTML = `<div class="bg-white border rounded-3xl overflow-hidden shadow-sm">${renderSection('CALIBRAGE', exs[idx], idx, exs.length)}</div>`;
+        MathJax.typesetPromise().then(() => document.querySelectorAll('.math-content').forEach(el => el.classList.add('ready')));
         return;
     }
 
-    // Affichage des chapitres
     let html = `<div class="space-y-4">`;
     const cats = LEVELS[state.niveau].categories;
     Object.keys(cats).forEach(cat => {
-        html += `<div onclick="toggleCat('${cat}')" class="p-5 bg-white border rounded-3xl flex items-center justify-between cursor-pointer shadow-sm">
+        html += `<div onclick="state.expanded['${cat}']=!state.expanded['${cat}'];render()" class="p-5 bg-white border rounded-3xl flex items-center justify-between cursor-pointer shadow-sm">
             <div class="flex items-center gap-3"><span>${LEVELS[state.niveau].catIcon[cat] || '📘'}</span><span class="font-bold">${LEVELS[state.niveau].catDisplay[cat] || cat}</span></div>
-            <div class="text-slate-400">➔</div>
         </div>`;
-        if(state.expanded[cat]) {
-            html += `<div class="p-4 bg-slate-50 border-x border-b rounded-b-3xl -mt-4 mb-4">${renderSection(cat, cats[cat][state.questView[cat]||0], state.questView[cat]||0, cats[cat].length)}</div>`;
-        }
+        if(state.expanded[cat]) html += `<div class="p-2 border-x border-b rounded-b-3xl -mt-4 bg-slate-50/30">${renderSection(cat, cats[cat][state.questView[cat]||0], state.questView[cat]||0, cats[cat].length)}</div>`;
     });
     container.innerHTML = html + `</div>`;
-    MathJax.typesetPromise();
+    MathJax.typesetPromise().then(() => document.querySelectorAll('.math-content').forEach(el => el.classList.add('ready')));
 }
 
 function renderSection(cat, data, idx, total) {
+    if(!data) return 'Erreur de données';
     const id = `${state.niveau}-${cat}-${idx}`;
     const isRev = state.revealed && state.currentId === id;
-    
+    const hShow = state.results[id] ? (data.steps?.length || 0) : (state.hintStepsRevealed[id] || 0);
+
+    let pills = `<div class="flex gap-2 p-3 bg-slate-50/50 overflow-x-auto no-scrollbar">`;
+    for(let i=0; i<total; i++) {
+        const s = state.results[`${state.niveau}-${cat}-${i}`];
+        pills += `<button onclick="state.questView['${cat}']=${i};state.revealed=false;render()" class="shrink-0 w-8 h-8 rounded-lg text-xs font-bold ${s?'bg-indigo-500 text-white':'bg-white border'} ${i===idx?'ring-2 ring-indigo-300':''}">${i+1}</button>`;
+    }
+    pills += `</div>`;
+
     let opts = '';
     if(data.options) {
         opts = `<div class="space-y-3 mt-4">` + data.options.map((o,i) => `
-            <button onclick="handleOptionClick('${cat}',${idx},${i},this)" class="opt-btn ${isRev ? (o === data.a ? 'opt-correct' : 'opacity-50') : ''}">
+            <button onclick="handleOptionClick('${cat}',${idx},${i},this)" class="opt-btn ${isRev ? (o === data.a ? 'opt-correct' : (state.qcmAnswered[id]===o?'opt-wrong':'opacity-50')) : ''}">
                 <span class="math-content flex-1">${formatLatex(o)}</span>
             </button>`).join('') + `</div>`;
     }
-    
-    return `<div class="p-4"><div id="box-${id}" class="bg-slate-50 border rounded-2xl p-6 text-center font-bold text-lg">${formatLatex(data.q)}</div>${opts}</div>`;
+
+    let acts = (!isRev && !data.options) ? `<button onclick="state.revealed=true;state.currentId='${id}';render()" class="w-full py-4 bg-slate-900 text-white rounded-xl font-bold mt-6">VÉRIFIER</button>` : 
+               (isRev && !state.results[id]) ? `<div class="mt-4 text-center font-bold text-indigo-600 text-xl">${formatLatex(data.a)}</div><div class="flex gap-2 mt-4"><button onclick="mark('${cat}',${idx},'HARD')" class="flex-1 py-3 bg-rose-50 text-rose-600 rounded-xl font-bold">REVOIR</button><button onclick="mark('${cat}',${idx},'EASY')" class="flex-1 py-3 bg-emerald-50 text-emerald-600 rounded-xl font-bold">ACQUIS</button></div>` :
+               (state.results[id]) ? `<button onclick="nextEx('${cat}',${idx},${total})" class="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold mt-6">SUIVANT</button>` : '';
+
+    let hints = `<div class="mt-6 space-y-3"><div class="bg-amber-50 p-4 rounded-2xl border border-amber-100">
+        ${hShow < (data.steps?.length||0) ? `<button onclick="state.hintStepsRevealed['${id}']=(state.hintStepsRevealed['${id}']||0)+1;render()" class="text-xs font-bold text-amber-700 bg-amber-200 px-3 py-1 rounded-lg">💡 Indice</button>` : ''}
+        <div class="mt-2 space-y-2">${(data.steps||[]).slice(0, hShow).map(s => `<div class="math-content text-sm text-amber-900 bg-white p-2 rounded-lg border border-amber-100">${formatLatex(s)}</div>`).join('')}</div>
+    </div><div class="blurred-formula ${state.results[id]?'revealed':''} math-content text-sm p-4">${formatLatex(data.f)}</div></div>`;
+
+    return `${pills}<div class="p-6"><div id="box-${id}" class="bg-slate-50 border rounded-2xl p-8 text-center font-bold text-xl math-content">${formatLatex(data.q)}</div>${opts}${acts}${hints}</div>`;
 }
 
-// HELPERS
-let currentTab = 'register';
-function startCalibrage() { state.calibrageState = 'testing'; render(); }
-function toggleCat(cat) { state.expanded[cat] = !state.expanded[cat]; render(); }
-function toggleLoader(p, show) { document.getElementById('auth-loader').classList.toggle('hidden', !show); document.getElementById('auth-text').classList.toggle('hidden', show); }
-function logout() { localStorage.clear(); location.reload(); }
-function updateHeader() { document.getElementById('ui-xp').innerText = state.xp; }
-
 window.handleOptionClick = function(cat, idx, oIdx, btn) {
-    const exs = (cat==='CALIBRAGE' ? state.calibrageExos : LEVELS[state.niveau].categories[cat]);
-    const data = exs[idx];
-    state.revealed = true; state.currentId = `${state.niveau}-${cat}-${idx}`;
-    if(data.options[oIdx] === data.a) {
-        btn.classList.add('opt-correct');
-        state.xp += 100; updateHeader();
-        setTimeout(() => {
-            state.revealed = false;
-            if(idx + 1 < exs.length) { state.questView[cat] = idx + 1; render(); }
-            else { alert("Bravo ! Série terminée."); if(cat==='CALIBRAGE') { state.calibrageState = null; state.isFirstDay = false; render(); } }
-        }, 800);
-    } else {
-        btn.classList.add('opt-wrong');
-        document.getElementById(`box-${state.currentId}`).classList.add('animate-shake');
-        setTimeout(() => { btn.classList.remove('opt-wrong'); state.revealed = false; render(); }, 1200);
-    }
+    const data = (cat==='CALIBRAGE'?state.calibrageExos:LEVELS[state.niveau].categories[cat])[idx];
+    state.revealed = true; state.currentId = `${state.niveau}-${cat}-${idx}`; state.qcmAnswered[state.currentId] = data.options[oIdx];
+    if(data.options[oIdx] === data.a) { btn.classList.add('opt-correct'); mark(cat, idx, 'EASY'); }
+    else { btn.classList.add('opt-wrong'); document.getElementById(`box-${state.currentId}`).classList.add('animate-shake'); mark(cat, idx, 'HARD'); }
 };
+
+function mark(cat, idx, res) {
+    state.results[`${state.niveau}-${cat}-${idx}`] = res;
+    if(res==='EASY') state.xp += 100; document.getElementById('ui-xp').innerText = state.xp;
+    render();
+}
+
+function nextEx(cat, idx, total) {
+    if(idx + 1 < total) { state.questView[cat] = idx + 1; state.revealed = false; render(); }
+    else { alert("Bravo ! Série terminée."); if(cat==='CALIBRAGE'){state.isFirstDay=false; state.calibrageState=null;} render(); }
+}
+
+function logout() { localStorage.clear(); location.reload(); }
+function changeNiveau() { state.niveau = document.getElementById('niveau-select').value; render(); }
 </script>
 </body>
 </html>
