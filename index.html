@@ -87,26 +87,31 @@
     <div id="box-draft" class="flex-grow p-3 relative h-full"><textarea id="text-draft" class="w-full h-full p-4 border-2 border-dashed border-slate-300 rounded-2xl outline-none focus:border-indigo-500 font-mono text-base resize-none" placeholder="Calculs ici..."></textarea><canvas id="draw-canvas-draft"></canvas></div>
 </div>
 
+<div class="fixed bottom-24 left-4 z-[90]">
+    <button onclick="forcerAgentNocturne()" class="bg-red-600/90 text-white text-xs font-black px-4 py-3 rounded-2xl shadow-lg border border-red-800 flex items-center gap-2 hover:scale-105 transition-transform backdrop-blur-sm">
+        <span id="admin-icon">🤖</span> <span id="admin-text">Forcer l'Agent IA</span>
+    </button>
+</div>
+
 <script>
 // ==========================================================
-// CONFIGURATION URL DE TON GOOGLE APPS SCRIPT
+// CONFIGURATION DE L'URL DÉPLOYÉE
 // ==========================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwpWplSZsnoNPvNPJqXdSplsJ0R-peGKXZVRcHZ6gvUPXSGt0ayWT0xYWnED99KgV8l/exec";  
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyr2fYYRFZS2Aeku9Ji8cZ3IISEXM8uaqPzvsH6pJZJEXYUAFjxrvemT7G-awuWDIGo/exec";  
 const SESSION_KEY = 'boost_user_v16'; 
 const STORAGE_KEY_LOCAL = 'boost_local_v16';
 
 const LEVEL_ORDER = ["6EME", "5EME", "4EME", "3EME", "SECONDE", "PREMIERE", "TERMINALE"];
 const LEVEL_NAMES = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "SECONDE": "Seconde", "PREMIERE": "1ère (Spé)", "TERMINALE": "Terminale" };
 
-// ETAT GLOBAL
 let state = { activeProfile: null, niveau: "4EME", results: {}, xp: 0, streak: 0, questView: {}, expanded: {}, revealed: false, isScored: false, currentId: null, hintStepsRevealed: {}, formulaRevealed: {}, formulaManuallyTouched: {}, qcmAnswered: {}, currentShuffle: {}, startTimes: {}, dailyBoost: null, boostExistsInDB: false, isFetchingBoost: false, isFirstDay: true, calibrageState: null, calibrageExos: [], isDrawing: false, draftOpen: false, remediationRequested: {}, insights: {}, isNew: {} };
 const LEVELS = {};
 
-// On initialise les niveaux vides
+// Initialisation vide
 Object.keys(LEVEL_NAMES).forEach(key => { LEVELS[key] = { categories: {}, catDisplay: {}, catIcon: {}, name: LEVEL_NAMES[key] }; });
 
 // ==========================================================
-// OUTILS & TOAST
+// UTILITAIRES
 // ==========================================================
 function getTodayString() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 function formatLatex(str) { if (!str) return ''; let s = str.replace(/\\?(?:frac|fract)\s*\(\s*([^)]+?)\s*\)\s*\(\s*([^)]+?)\s*\)/ig, '\\frac{$1}{$2}'); if (!s.includes('$') && (s.includes('\\') || s.includes('^') || s.includes('=') || /^[0-9xX\+\-\*\/\s,]+$/.test(s))) return '$' + s + '$'; return s; }
@@ -114,18 +119,9 @@ function showCustomAlert(title, message) { document.getElementById('alert-title'
 function closeCustomAlert() { document.getElementById('custom-alert').classList.add('hidden'); }
 function toggleLoader(idPrefix, isLoading) { document.getElementById(`${idPrefix}-loader`).classList.toggle('hidden', !isLoading); document.getElementById(`${idPrefix}-text`).classList.toggle('hidden', isLoading); }
 function scrollActivePillIntoView() { const activePill = document.querySelector('.snap-center.ring-4'); if (activePill) activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); }
-
-function showToast(msg, duration = 4000) {
-    const t = document.getElementById('toast');
-    document.getElementById('toast-msg').innerText = msg;
-    t.classList.remove('translate-y-[calc(-100%-2rem)]');
-    if(duration > 0) setTimeout(() => t.classList.add('translate-y-[calc(-100%-2rem)]'), duration);
-}
+function showToast(msg, duration = 4000) { const t = document.getElementById('toast'); document.getElementById('toast-msg').innerText = msg; t.classList.remove('translate-y-[calc(-100%-2rem)]'); if(duration > 0) setTimeout(() => t.classList.add('translate-y-[calc(-100%-2rem)]'), duration); }
 function hideToast() { document.getElementById('toast').classList.add('translate-y-[calc(-100%-2rem)]'); }
 
-// ==========================================================
-// LOGIQUE DIAGNOSTIC (MIGRÉ)
-// ==========================================================
 function startCalibrage() {
     state.calibrageState = 'testing';
     state.questView['CALIBRAGE'] = 0;
@@ -136,7 +132,7 @@ function startCalibrage() {
 }
 
 // ==========================================================
-// APPELS IA 
+// API & IA 
 // ==========================================================
 async function preloadBoostIA() {
     if (state.boostExistsInDB || state.isFetchingBoost || state.isFirstDay) return;
@@ -191,7 +187,29 @@ function triggerBackgroundRemediation(cat, errors) {
 function closeChapterModal() { document.getElementById('chapter-modal').classList.add('hidden'); }
 
 // ==========================================================
-// AUTH & INIT (FULL DATA-DRIVEN)
+// FONCTION ADMIN POUR FORCER L'AGENT
+// ==========================================================
+async function forcerAgentNocturne() {
+    if(!confirm("Lancer l'Agent sur TOUS les élèves sans Boost aujourd'hui ? Ça peut prendre quelques secondes.")) return;
+    document.getElementById('admin-icon').classList.add('animate-spin');
+    document.getElementById('admin-text').innerText = "Agent en cours...";
+    try {
+        const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "admin_run_agent", adminKey: "BOOST_SECRET_2026" }) });
+        const data = await res.json();
+        document.getElementById('admin-icon').classList.remove('animate-spin');
+        if(data.status === 'success') {
+            document.getElementById('admin-text').innerText = "Mission Accomplie !";
+            setTimeout(() => { document.getElementById('admin-text').innerText = "Forcer l'Agent IA"; }, 3000);
+            alert("L'Agent a terminé. Va vérifier ton onglet DailyBoosts dans Google Sheets !");
+        } else { alert("Erreur : " + data.message); document.getElementById('admin-text').innerText = "Erreur"; }
+    } catch(e) { 
+        alert("Erreur réseau. Le script a peut-être pris trop de temps (timeout), mais l'Agent tourne sûrement encore en fond."); 
+        document.getElementById('admin-icon').classList.remove('animate-spin'); document.getElementById('admin-text').innerText = "Forcer l'Agent IA";
+    }
+}
+
+// ==========================================================
+// AUTHENTIFICATION
 // ==========================================================
 function showAuth(tab) { document.getElementById('landing-screen').classList.add('hidden'); document.getElementById('auth-screen').classList.remove('hidden'); switchTab(tab); }
 function closeAuth() { document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('landing-screen').classList.remove('hidden'); }
@@ -209,36 +227,24 @@ async function loginStudent() {
         const data = await res.json();
         
         if (data.status === "success") { 
-            state.activeProfile = data.profile; 
-            state.dailyBoost = data.dailyBoost; 
-            state.boostExistsInDB = data.boostExistsInDB; 
-            state.isFirstDay = data.isFirstDay;
+            state.activeProfile = data.profile; state.dailyBoost = data.dailyBoost; state.boostExistsInDB = data.boostExistsInDB; state.isFirstDay = data.isFirstDay;
             localStorage.setItem(SESSION_KEY, JSON.stringify({email, password: pwd})); 
             
-            // ON VIDE LES NIVEAUX AVANT DE LES REMPLIR DEPUIS LA BDD
             LEVELS[state.activeProfile.level].categories = {};
             
-            // INJECTION OFFICIELLE
             if (data.curriculumOfficiel) {
                 data.curriculumOfficiel.forEach(chap => {
-                    if (chap.categorie === "DIAGNOSTIC") {
-                        state.calibrageExos = chap.exos;
-                    } else {
-                        LEVELS[state.activeProfile.level].categories[chap.categorie] = chap.exos.map((e, i) => ({...e, originalCat: chap.categorie, originalIdx: i}));
-                        LEVELS[state.activeProfile.level].catDisplay[chap.categorie] = chap.titre;
-                        LEVELS[state.activeProfile.level].catIcon[chap.categorie] = chap.icone;
-                    }
+                    if (chap.categorie === "DIAGNOSTIC") { state.calibrageExos = chap.exos; } 
+                    else { LEVELS[state.activeProfile.level].categories[chap.categorie] = chap.exos.map((e, i) => ({...e, originalCat: chap.categorie, originalIdx: i})); LEVELS[state.activeProfile.level].catDisplay[chap.categorie] = chap.titre; LEVELS[state.activeProfile.level].catIcon[chap.categorie] = chap.icone; }
                 });
             }
 
-            // INJECTION IA (CHAPITRES DYNAMIQUES)
             if (data.dynamicChapters) { 
                 data.dynamicChapters.forEach(dc => {
                     const catName = `${dc.originalCat}_V${dc.version}`;
                     LEVELS[state.activeProfile.level].categories[catName] = dc.exos.map((exo, i) => ({...exo, originalCat: catName, originalIdx: i}));
                     LEVELS[state.activeProfile.level].catDisplay[catName] = `${LEVELS[state.activeProfile.level].catDisplay[dc.originalCat] || dc.originalCat} (V${dc.version})`; 
-                    LEVELS[state.activeProfile.level].catIcon[catName] = "🤖";
-                    state.insights[catName] = dc.insight; 
+                    LEVELS[state.activeProfile.level].catIcon[catName] = "🤖"; state.insights[catName] = dc.insight; 
                     let hasScored = false; 
                     for(let i=0; i<dc.exos.length; i++) { if(data.history.find(h => h.categorie === dc.originalCat && h.exercice_idx === (i+1))) hasScored = true; } 
                     state.isNew[catName] = !hasScored;
@@ -362,7 +368,6 @@ function render() {
     const catsToRender = LEVELS[state.niveau].categories; 
     let catKeys = Object.keys(catsToRender);
     
-    // On cache le CALIBRAGE de la liste principale une fois fini
     catKeys = catKeys.filter(k => k !== 'CALIBRAGE');
     
     if(catKeys.includes("BOOST")) catKeys = ["BOOST", ...catKeys.filter(k => k !== "BOOST")];
@@ -380,7 +385,6 @@ function render() {
         html += `<div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-5 text-center flex flex-col items-center animate-fade-in-up"><div class="text-3xl mb-2">✅</div><h3 class="font-black text-emerald-800 text-lg">Séquence IA validée !</h3><p class="text-emerald-600 font-bold mt-2 bg-emerald-100 px-3 py-1 rounded-full text-sm shadow-sm">🚀 Reviens demain pour ton nouveau boost !</p></div>`;
     }
 
-    // SI L'ELÈVE EST EN TRAIN DE FAIRE LE DIAGNOSTIC
     if (state.calibrageState === 'testing' && LEVELS[state.niveau].categories['CALIBRAGE']) {
         html += `
         <div id="cat-header-CALIBRAGE" class="rounded-3xl shadow-sm border border-indigo-200 bg-indigo-50 w-full overflow-hidden animate-fade-in-up">
@@ -388,7 +392,6 @@ function render() {
             ${renderSection('CALIBRAGE', LEVELS[state.niveau].categories['CALIBRAGE'][state.questView['CALIBRAGE']||0], parseInt(state.questView['CALIBRAGE']||0), LEVELS[state.niveau].categories['CALIBRAGE'].length, false)}
         </div>`;
     } else {
-        // AFFICHAGE CLASSIQUE DES CHAPITRES
         catKeys.forEach(cat => {
             if (cat === 'BOOST' && isBoostDone) return; 
             
