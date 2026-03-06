@@ -17,9 +17,7 @@
     body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;-webkit-tap-highlight-color:transparent;min-height:100vh}
     h1,h2,h3,.syne{font-family:'Syne',sans-serif}
     .no-sb::-webkit-scrollbar{display:none}.no-sb{-ms-overflow-style:none;scrollbar-width:none}
-    /* MathJax */
     .mc{opacity:0;transition:opacity .25s ease}.mc.rdy{opacity:1}
-    /* Animations */
     @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
     @keyframes bIn{from{opacity:0;transform:scale(.9) translateY(12px)}to{opacity:1;transform:none}}
     @keyframes spin{to{transform:rotate(360deg)}}
@@ -31,16 +29,12 @@
     .afu{animation:fadeUp .35s ease both}
     .abi{animation:bIn .4s cubic-bezier(.175,.885,.32,1.275) both}
     .s1{animation:s1 .6s .1s ease both}.s2{animation:s1 .6s .25s ease both}.s3{animation:s1 .6s .4s ease both}.s4{animation:s1 .6s .55s ease both}
-    /* Loader */
     .ld{width:20px;height:20px;border:3px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .75s linear infinite;display:inline-block;flex-shrink:0}
     .ld-p{border-color:var(--pl);border-top-color:var(--p)}
-    /* Skeleton */
     .sk{background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:400px 100%;animation:shimmer 1.4s ease infinite;border-radius:12px}
-    /* Input */
     .inp{width:100%;padding:.875rem 1rem;background:#f8fafc;border:1.5px solid var(--brd);border-radius:var(--r);font-size:1rem;font-weight:500;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:border-color .15s,background .15s}
     .inp:focus{border-color:var(--p);background:#fff}
     .inp::placeholder{color:#94a3b8}
-    /* Buttons */
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;border-radius:var(--r);transition:all .15s;position:relative;overflow:hidden;text-decoration:none}
     .btn:active{transform:scale(.97)}
     .btn-dk{background:var(--ink);color:#fff;padding:.9rem 1.5rem;font-size:.9rem}
@@ -53,7 +47,6 @@
     .btn-ok{background:var(--grnl);color:#065f46;border:1.5px solid #a7f3d0;font-family:'DM Sans',sans-serif;font-weight:700;padding:.75rem 1rem;border-radius:var(--r)}
     .btn-ng{background:var(--rosl);color:#9f1239;border:1.5px solid #fda4af;font-family:'DM Sans',sans-serif;font-weight:700;padding:.75rem 1rem;border-radius:var(--r)}
     .btn-wn{background:var(--ambl);color:#92400e;border:1.5px solid #fcd34d;font-family:'DM Sans',sans-serif;font-weight:700;padding:.75rem 1rem;border-radius:var(--r)}
-    /* QCM */
     .opt{position:relative;padding:.875rem 1rem .875rem 3rem;border:2px solid var(--brd);border-radius:var(--r);background:#fff;width:100%;display:flex;align-items:center;cursor:pointer;font-weight:500;font-size:.9rem;min-height:52px;transition:all .15s;font-family:'DM Sans',sans-serif;color:var(--ink)}
     .opt::before{content:'';position:absolute;left:1rem;top:50%;transform:translateY(-50%);width:1.2rem;height:1.2rem;border:2px solid #cbd5e1;border-radius:50%;background:#fff;transition:all .15s;flex-shrink:0}
     .opt:hover:not(.oc):not(.ow):not(.on){border-color:var(--p);background:var(--pl)}
@@ -62,42 +55,33 @@
     .ow{border-color:var(--ros)!important;background:var(--rosl)!important;pointer-events:none;opacity:.8;color:#9f1239}
     .ow::before{background:var(--ros)!important;border-color:var(--ros)!important;content:'✕';color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800}
     .on{opacity:.35;pointer-events:none}
-    /* Canvas */
     .dcanv,.dcanvd{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;touch-action:none}
     .draw-mode .dcanv{pointer-events:auto;z-index:12;cursor:crosshair}
     .draw-mode-d .dcanvd{pointer-events:auto;z-index:12;cursor:crosshair}
     .draw-mode{outline:2px dashed rgba(225,29,72,.5);outline-offset:-2px}
-    /* Drawer */
     #draft-drawer{transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
     #draft-drawer.open{transform:translateX(0)}
-    /* Formula */
     .fwrap{background:var(--pl);border-radius:var(--r);padding:.75rem 1rem;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;border:1.5px solid transparent}
     .finner{filter:blur(5px);transition:filter .3s;pointer-events:none;user-select:none}
     .fwrap.frev{background:#fff;border-color:#c7d2fe;cursor:default}
     .fwrap.frev .finner{filter:blur(0)}
     .fhint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:var(--p);gap:.3rem;transition:opacity .3s}
     .fwrap.frev .fhint{opacity:0;pointer-events:none}
-    /* Pill nav */
     .pill{width:2.1rem;height:2.1rem;border-radius:8px;font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;cursor:pointer;border:2px solid transparent;font-family:'Syne',sans-serif}
-    /* Progress */
     .pbar{height:4px;background:var(--brd);border-radius:99px;overflow:hidden}
     .pfill{height:100%;border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1)}
     .pfp{background:linear-gradient(90deg,var(--p),#818cf8)}
     .pfg{background:linear-gradient(90deg,var(--grn),#34d399)}
-    /* XP float */
     .xpf{position:fixed;font-family:'Syne',sans-serif;font-weight:900;font-size:1.5rem;color:var(--amb);pointer-events:none;z-index:999;animation:xpPop .9s ease forwards;text-shadow:0 2px 12px rgba(0,0,0,.15)}
-    /* Mastery ring */
     .mring{width:72px;height:72px;position:relative;flex-shrink:0}
     .mring svg{transform:rotate(-90deg)}
     .rbg{fill:none;stroke:#e2e8f0;stroke-width:6}
     .rfill{fill:none;stroke:var(--p);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)}
     .rpct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:900;font-size:.95rem;color:var(--ink)}
-    /* Remediation preparing */
     .rem-prep{animation:remPulse 2s ease infinite}
     .dot-b{animation:pDot 1.2s ease infinite}
     .dot-b:nth-child(2){animation-delay:.2s}
     .dot-b:nth-child(3){animation-delay:.4s}
-    /* Landing */
     .lhero{background:var(--ink);position:relative;overflow:hidden}
     .lhero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 50%,rgba(99,102,241,.22) 0%,transparent 70%)}
     .grid-ov{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
@@ -109,7 +93,6 @@
     .chk{display:flex;align-items:flex-start;gap:.6rem;font-size:.9rem;font-weight:500;line-height:1.5}
     .hstep{display:flex;gap:1rem;align-items:flex-start}
     .hnum{width:2.5rem;height:2.5rem;border-radius:12px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:900;font-size:1rem;flex-shrink:0;margin-top:.1rem}
-    /* Toast */
     #toast{position:fixed;top:1rem;left:50%;transform:translate(-50%,calc(-100% - 1.5rem));z-index:500;display:flex;align-items:center;gap:.6rem;background:var(--ink);color:#fff;font-weight:600;padding:.7rem 1.1rem;border-radius:99px;box-shadow:0 8px 32px rgba(0,0,0,.3);font-size:.875rem;white-space:nowrap;transition:transform .3s cubic-bezier(.4,0,.2,1)}
     #toast.show{transform:translate(-50%,0)}
     ::-webkit-scrollbar{width:4px;height:4px}
@@ -143,7 +126,6 @@
 
 <!-- ═══ LANDING ═══ -->
 <div id="landing-screen" class="fixed inset-0 z-50 overflow-y-auto bg-white">
-  <!-- Nav -->
   <nav class="lhero sticky top-0 z-20 flex justify-between items-center px-5 py-4 border-b border-white/10">
     <div class="flex items-center gap-2.5">
       <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-sm shadow-md">📐</div>
@@ -151,7 +133,6 @@
     </div>
     <button onclick="showAuth('login')" class="text-white/70 hover:text-white text-sm font-semibold border border-white/20 px-4 py-2 rounded-xl hover:bg-white/10 transition-colors">Connexion</button>
   </nav>
-  <!-- Hero -->
   <div class="lhero px-5 pt-14 pb-16 relative">
     <div class="grid-ov"></div>
     <div class="max-w-lg mx-auto relative z-10 text-center">
@@ -170,7 +151,6 @@
       <div class="stc text-center"><div class="syne text-2xl font-black text-white mb-1">+3pts</div><div class="text-white/50 text-xs font-medium leading-tight">de progression moyenne constatée</div></div>
     </div>
   </div>
-  <!-- Problem -->
   <div class="bg-white px-5 py-14">
     <div class="max-w-lg mx-auto">
       <div class="stag mb-6">Le vrai problème</div>
@@ -197,7 +177,6 @@
       </div>
     </div>
   </div>
-  <!-- How it works -->
   <div class="bg-slate-50 px-5 py-14 border-y border-slate-100">
     <div class="max-w-lg mx-auto">
       <div class="stag mb-6">Comment ça marche</div>
@@ -209,7 +188,6 @@
       </div>
     </div>
   </div>
-  <!-- Science -->
   <div class="bg-white px-5 py-14">
     <div class="max-w-lg mx-auto">
       <div class="stag mb-6">La science derrière</div>
@@ -228,7 +206,6 @@
       </div>
     </div>
   </div>
-  <!-- Final CTA -->
   <div class="lhero px-5 py-16 relative">
     <div class="grid-ov"></div>
     <div class="max-w-lg mx-auto text-center relative z-10">
@@ -330,386 +307,864 @@
 
 <script>
 // ── CONFIG ────────────────────────────────────────────────
-const SU='https://script.google.com/macros/s/AKfycby37VJ4H7aFsAZKvDwjkUDdPbOEghubOCMu4b0cwC7GCBKIQkukLLiTfUrnY85sa7es/exec';
-const SK='boost_v18'; const LK='boost_loc_v18';
-const LO=["6EME","5EME","4EME","3EME","SECONDE","PREMIERE","TERMINALE"];
-const LN={"6EME":"6ème","5EME":"5ème","4EME":"4ème","3EME":"3ème","SECONDE":"Seconde","PREMIERE":"1ère","TERMINALE":"Terminale"};
-const TS=["🧠 Analyse de tes erreurs...","🔍 Ciblage des lacunes...","⚙️ Calibrage du niveau...","🎯 Génération des défis...","✨ Finalisation en cours..."];
+const SU = 'https://script.google.com/macros/s/AKfycbxZUsMl5jxCM_0yoQ5Ew7J2_HVVvQlNxde-zbT-7i-mX7OzvmJAYUHmQdeCbdD75jU7/exec';
+const SK = 'boost_v18';
+const LK = 'boost_loc_v18';
+const LO = ["6EME","5EME","4EME","3EME","SECONDE","PREMIERE","TERMINALE"];
+const LN = {"6EME":"6ème","5EME":"5ème","4EME":"4ème","3EME":"3ème","SECONDE":"Seconde","PREMIERE":"1ère","TERMINALE":"Terminale"};
+const TS = ["🧠 Analyse de tes erreurs...","🔍 Ciblage des lacunes...","⚙️ Calibrage du niveau...","🎯 Génération des défis...","✨ Finalisation en cours..."];
 
 // ── STATE ─────────────────────────────────────────────────
-let S={prof:null,niv:"4EME",res:{},xp:0,stk:0,qv:{},exp:{},rev:false,cid:null,hints:{},ftch:{},qans:{},shuf:{},isDraw:false,dOpen:false,calState:null,calExos:[],remReq:{},insights:{},isNew:{},cc:{},boostEx:false,boost:null,boostGen:false,sent:new Set()};
-const LVL={};LO.forEach(k=>{LVL[k]={cats:{},names:{},icons:{}};  }
-});
+let S = {
+  prof: null, niv: "4EME", res: {}, xp: 0, stk: 0,
+  qv: {}, exp: {}, rev: false, cid: null,
+  hints: {}, ftch: {}, qans: {}, shuf: {},
+  isDraw: false, dOpen: false,
+  calState: null, calExos: [],
+  remReq: {}, insights: {}, isNew: {}, cc: {},
+  boostEx: false, boost: null, boostGen: false,
+  sent: new Set()
+};
+
+// Initialise LVL pour chaque niveau
+const LVL = {};
+LO.forEach(function(k) { LVL[k] = {cats: {}, names: {}, icons: {}}; });
 
 // ── UTILS ─────────────────────────────────────────────────
-function tod(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
-async function h256(pw,em){const s=(em||'').toLowerCase()+'::'+pw+'::AB25';const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}
-function fmtL(s){if(!s)return'';if(s.includes('$')||s.includes('\\('))return s;if(s.includes('\\')||/[_\^{}]/.test(s))return`$${s}$`;return s;}
-let _tt=null;
-function showT(msg,dur=3500,ic='🧠'){const t=document.getElementById('toast');document.getElementById('tm').innerText=msg;document.getElementById('ti').innerText=ic;t.classList.add('show');if(_tt)clearTimeout(_tt);if(dur>0)_tt=setTimeout(()=>t.classList.remove('show'),dur);}
-function hideT(){document.getElementById('toast').classList.remove('show');if(_tt)clearTimeout(_tt);}
-function alert2(t,m,ic='⚠️'){document.getElementById('ai').innerText=ic;document.getElementById('at').innerText=t;document.getElementById('am').innerText=m;document.getElementById('m-alert').classList.remove('hidden');}
-function closeAlert(){document.getElementById('m-alert').classList.add('hidden');}
-function showXP(a,x,y){const e=document.createElement('div');e.className='xpf';e.innerText=`+${a}`;e.style.cssText=`left:${x}px;top:${y}px`;document.body.appendChild(e);setTimeout(()=>e.remove(),1000);}
+function tod() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
 
-// ── MATHJAX FIX ───────────────────────────────────────────
-function rMath(){
-  const c=document.getElementById('app-c');if(!c)return;
-  const fb=setTimeout(()=>document.querySelectorAll('.mc:not(.rdy)').forEach(e=>e.classList.add('rdy')),2500);
-  if(!window.MathJax?.typesetPromise){clearTimeout(fb);document.querySelectorAll('.mc').forEach(e=>e.classList.add('rdy'));return;}
-  try{
-    if(MathJax.typesetClear)MathJax.typesetClear([c]);
-    MathJax.typesetPromise([c]).then(()=>{clearTimeout(fb);document.querySelectorAll('.mc').forEach(e=>e.classList.add('rdy'));if(S.isDraw){const a=document.querySelector('.dcanv');if(a)iCanv(a.id,a.id.replace('canv-',''));}}).catch(()=>{clearTimeout(fb);document.querySelectorAll('.mc').forEach(e=>e.classList.add('rdy'));  }
-});
-  }catch(e){clearTimeout(fb);document.querySelectorAll('.mc').forEach(e=>e.classList.add('rdy'));}
+async function h256(pw, em) {
+  var s = (em || '').toLowerCase() + '::' + pw + '::AB25';
+  var b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(b)).map(function(x) { return x.toString(16).padStart(2,'0'); }).join('');
+}
+
+function fmtL(s) {
+  if (!s) return '';
+  if (s.includes('$') || s.includes('\\(')) return s;
+  if (s.includes('\\') || /[_\^{}]/.test(s)) return '$' + s + '$';
+  return s;
+}
+
+var _tt = null;
+function showT(msg, dur, ic) {
+  dur = dur === undefined ? 3500 : dur;
+  ic = ic || '🧠';
+  var t = document.getElementById('toast');
+  document.getElementById('tm').innerText = msg;
+  document.getElementById('ti').innerText = ic;
+  t.classList.add('show');
+  if (_tt) clearTimeout(_tt);
+  if (dur > 0) _tt = setTimeout(function() { t.classList.remove('show'); }, dur);
+}
+
+function hideT() {
+  document.getElementById('toast').classList.remove('show');
+  if (_tt) clearTimeout(_tt);
+}
+
+function alert2(t, m, ic) {
+  ic = ic || '⚠️';
+  document.getElementById('ai').innerText = ic;
+  document.getElementById('at').innerText = t;
+  document.getElementById('am').innerText = m;
+  document.getElementById('m-alert').classList.remove('hidden');
+}
+
+function closeAlert() {
+  document.getElementById('m-alert').classList.add('hidden');
+}
+
+function showXP(a, x, y) {
+  var e = document.createElement('div');
+  e.className = 'xpf';
+  e.innerText = '+' + a;
+  e.style.cssText = 'left:' + x + 'px;top:' + y + 'px';
+  document.body.appendChild(e);
+  setTimeout(function() { e.remove(); }, 1000);
+}
+
+// ── MATHJAX ───────────────────────────────────────────────
+function rMath() {
+  var c = document.getElementById('app-c');
+  if (!c) return;
+  var fb = setTimeout(function() {
+    document.querySelectorAll('.mc:not(.rdy)').forEach(function(e) { e.classList.add('rdy'); });
+  }, 2500);
+  if (!window.MathJax || !window.MathJax.typesetPromise) {
+    clearTimeout(fb);
+    document.querySelectorAll('.mc').forEach(function(e) { e.classList.add('rdy'); });
+    return;
+  }
+  try {
+    if (MathJax.typesetClear) MathJax.typesetClear([c]);
+    MathJax.typesetPromise([c]).then(function() {
+      clearTimeout(fb);
+      document.querySelectorAll('.mc').forEach(function(e) { e.classList.add('rdy'); });
+      if (S.isDraw) {
+        var a = document.querySelector('.dcanv');
+        if (a) iCanv(a.id, a.id.replace('canv-', ''));
+      }
+    }).catch(function() {
+      clearTimeout(fb);
+      document.querySelectorAll('.mc').forEach(function(e) { e.classList.add('rdy'); });
+    });
+  } catch(e) {
+    clearTimeout(fb);
+    document.querySelectorAll('.mc').forEach(function(el) { el.classList.add('rdy'); });
+  }
 }
 
 // ── SCORE QUEUE ───────────────────────────────────────────
-function sendScore(cat,idx,status,xp,q){
-  const k=`${S.prof.code}-${cat}-${idx}`;if(S.sent.has(k))return;S.sent.add(k);
-  const p={action:"save_score",code:S.prof.code,name:S.prof.name,level:S.niv,categorie:cat,exercice_idx:idx+1,resultat:status,indices:S.hints[`${S.niv}-${cat}-${idx}`]||0,formule:!!S.ftch[`${S.niv}-${cat}-${idx}`],xp,q:q||''};
-  try{const q2=JSON.parse(localStorage.getItem('sq')||'[]');q2.push({...p,ts:Date.now()});localStorage.setItem('sq',JSON.stringify(q2));}catch(e){}
+function sendScore(cat, idx, status, xp, q) {
+  var k = S.prof.code + '-' + cat + '-' + idx;
+  if (S.sent.has(k)) return;
+  S.sent.add(k);
+  var p = {
+    action: "save_score",
+    code: S.prof.code,
+    name: S.prof.name,
+    level: S.niv,
+    categorie: cat,
+    exercice_idx: idx + 1,
+    resultat: status,
+    indices: S.hints[S.niv + '-' + cat + '-' + idx] || 0,
+    formule: !!S.ftch[S.niv + '-' + cat + '-' + idx],
+    xp: xp,
+    q: q || ''
+  };
+  try {
+    var q2 = JSON.parse(localStorage.getItem('sq') || '[]');
+    q2.push(Object.assign({}, p, {ts: Date.now()}));
+    localStorage.setItem('sq', JSON.stringify(q2));
+  } catch(e) {}
   flushQ();
 }
-async function flushQ(){const q=JSON.parse(localStorage.getItem('sq')||'[]');if(!q.length)return;try{await fetch(SU,{method:'POST',body:JSON.stringify(q[0])});q.shift();localStorage.setItem('sq',JSON.stringify(q));if(q.length)setTimeout(flushQ,400);}catch(e){}}
+
+async function flushQ() {
+  var q = JSON.parse(localStorage.getItem('sq') || '[]');
+  if (!q.length) return;
+  try {
+    await fetch(SU, {method: 'POST', body: JSON.stringify(q[0])});
+    q.shift();
+    localStorage.setItem('sq', JSON.stringify(q));
+    if (q.length) setTimeout(flushQ, 400);
+  } catch(e) {}
+}
 
 // ── AUTH ──────────────────────────────────────────────────
-function showAuth(tab){document.getElementById('landing-screen').classList.add('hidden');document.getElementById('auth-screen').classList.remove('hidden');switchTab(tab);}
-function closeAuth(){document.getElementById('auth-screen').classList.add('hidden');document.getElementById('landing-screen').classList.remove('hidden');}
-function switchTab(tab){
-  document.getElementById('form-r').classList.toggle('hidden',tab==='login');
-  document.getElementById('form-l').classList.toggle('hidden',tab==='register');
-  const b='flex-1 py-2.5 font-bold text-sm rounded-lg transition-all syne';
-  document.getElementById('tab-r').className=b+(tab==='register'?' bg-white shadow-sm text-slate-900':' text-slate-400');
-  document.getElementById('tab-l').className=b+(tab==='login'?' bg-white shadow-sm text-slate-900':' text-slate-400');
+function showAuth(tab) {
+  document.getElementById('landing-screen').classList.add('hidden');
+  document.getElementById('auth-screen').classList.remove('hidden');
+  switchTab(tab);
 }
-function togLd(pre,on){document.getElementById(pre+'-ld').classList.toggle('hidden',!on);document.getElementById(pre+'-text').classList.toggle('hidden',on);}
 
-async function loginStudent(){
-  const e=document.getElementById('le').value.trim(),p=document.getElementById('lp').value.trim();
-  if(!e||!p)return;togLd('login',true);
-  loginExec(e,await h256(p,e));
+function closeAuth() {
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('landing-screen').classList.remove('hidden');
 }
-async function regStudent(){
-  const n=document.getElementById('rn').value.trim(),e=document.getElementById('re').value.trim(),l=document.getElementById('rl').value,p=document.getElementById('rp').value.trim();
-  if(!n||!e||!p){alert2("Champs manquants","Remplis tous les champs.");return;}
-  togLd('reg',true);const h=await h256(p,e);
-  try{const r=await fetch(SU,{method:'POST',body:JSON.stringify({action:"register",name:n,email:e,level:l,password:h})});const d=await r.json();if(d.status==='success')loginExec(e,h);else{alert2("Erreur",d.message);togLd('reg',false);}}
-  catch(err){alert2("Erreur réseau","Vérifie ta connexion.","📡");togLd('reg',false);}
+
+function switchTab(tab) {
+  document.getElementById('form-r').classList.toggle('hidden', tab === 'login');
+  document.getElementById('form-l').classList.toggle('hidden', tab === 'register');
+  var base = 'flex-1 py-2.5 font-bold text-sm rounded-lg transition-all syne';
+  document.getElementById('tab-r').className = base + (tab === 'register' ? ' bg-white shadow-sm text-slate-900' : ' text-slate-400');
+  document.getElementById('tab-l').className = base + (tab === 'login' ? ' bg-white shadow-sm text-slate-900' : ' text-slate-400');
 }
-async function loginExec(email,hash){
-  try{
-    const r=await fetch(SU,{method:'POST',body:JSON.stringify({action:"login",email,password:hash})  }
-});
-    const d=await r.json();
-    if(d.status!=='success'){alert2("Refusé",d.message);return;}
-    S.prof=d.profile;S.boost=d.dailyBoost;S.boostEx=d.boostExistsInDB;
-    const loc=JSON.parse(localStorage.getItem(LK)||'{}');
-    const ul=loc[d.profile.code]||{};
-    S.calState=ul.calDone?null:(d.history.length===0?'sel':null);
-    LVL[d.profile.level].cats={};
-    if(d.curriculumOfficiel)d.curriculumOfficiel.forEach(c=>{
-      if(c.categorie==="DIAGNOSTIC")S.calExos=c.exos;
-      else{LVL[d.profile.level].cats[c.categorie]=c.exos.map((e,i)=>({...e,oC:c.categorie,oI:i}));LVL[d.profile.level].names[c.categorie]=c.titre;LVL[d.profile.level].icons[c.categorie]=c.icone;}
-      }
-});
-    if(d.dynamicChapters)d.dynamicChapters.forEach(dc=>{
-      const k=`${dc.originalCat}_V${dc.version}`;
-      LVL[d.profile.level].cats[k]=dc.exos.map((e,i)=>({...e,oC:k,oI:i}));
-      LVL[d.profile.level].names[k]=(LVL[d.profile.level].names[dc.originalCat]||dc.originalCat)+' · Remédiation';
-      LVL[d.profile.level].icons[k]='🤖';S.insights[k]=dc.insight;
-      S.isNew[k]=!d.history.find(h=>h.categorie===dc.originalCat&&h.exercice_idx===1);
-      }
-});
-    localStorage.setItem(SK,JSON.stringify({email,password:hash}));
+
+function togLd(pre, on) {
+  document.getElementById(pre + '-ld').classList.toggle('hidden', !on);
+  document.getElementById(pre + '-text').classList.toggle('hidden', on);
+}
+
+async function loginStudent() {
+  var e = document.getElementById('le').value.trim();
+  var p = document.getElementById('lp').value.trim();
+  if (!e || !p) return;
+  togLd('login', true);
+  loginExec(e, await h256(p, e));
+}
+
+async function regStudent() {
+  var n = document.getElementById('rn').value.trim();
+  var e = document.getElementById('re').value.trim();
+  var l = document.getElementById('rl').value;
+  var p = document.getElementById('rp').value.trim();
+  if (!n || !e || !p) { alert2("Champs manquants", "Remplis tous les champs."); return; }
+  togLd('reg', true);
+  var h = await h256(p, e);
+  try {
+    var r = await fetch(SU, {method: 'POST', body: JSON.stringify({action: "register", name: n, email: e, level: l, password: h})});
+    var d = await r.json();
+    if (d.status === 'success') {
+      loginExec(e, h);
+    } else {
+      alert2("Erreur", d.message);
+      togLd('reg', false);
+    }
+  } catch(err) {
+    alert2("Erreur réseau", "Vérifie ta connexion.", "📡");
+    togLd('reg', false);
+  }
+}
+
+async function loginExec(email, hash) {
+  try {
+    var r = await fetch(SU, {method: 'POST', body: JSON.stringify({action: "login", email: email, password: hash})});
+    var d = await r.json();
+    if (d.status !== 'success') {
+      alert2("Refusé", d.message);
+      togLd('login', false);
+      return;
+    }
+    S.prof = d.profile;
+    S.boost = d.dailyBoost;
+    S.boostEx = d.boostExistsInDB;
+
+    var loc = JSON.parse(localStorage.getItem(LK) || '{}');
+    var ul = loc[d.profile.code] || {};
+    S.calState = ul.calDone ? null : (d.history.length === 0 ? 'sel' : null);
+
+    // Reset level data
+    LVL[d.profile.level] = {cats: {}, names: {}, icons: {}};
+
+    // Load curriculum
+    if (d.curriculumOfficiel) {
+      d.curriculumOfficiel.forEach(function(c) {
+        if (c.categorie === "DIAGNOSTIC") {
+          S.calExos = c.exos;
+        } else {
+          LVL[d.profile.level].cats[c.categorie] = c.exos.map(function(e, i) {
+            return Object.assign({}, e, {oC: c.categorie, oI: i});
+          });
+          LVL[d.profile.level].names[c.categorie] = c.titre;
+          LVL[d.profile.level].icons[c.categorie] = c.icone;
+        }
+      });
+    }
+
+    // Load dynamic chapters
+    if (d.dynamicChapters) {
+      d.dynamicChapters.forEach(function(dc) {
+        var k = dc.originalCat + '_V' + dc.version;
+        LVL[d.profile.level].cats[k] = dc.exos.map(function(e, i) {
+          return Object.assign({}, e, {oC: k, oI: i});
+        });
+        LVL[d.profile.level].names[k] = (LVL[d.profile.level].names[dc.originalCat] || dc.originalCat) + ' · Remédiation';
+        LVL[d.profile.level].icons[k] = '🤖';
+        S.insights[k] = dc.insight;
+        S.isNew[k] = !d.history.find(function(h) {
+          return h.categorie === dc.originalCat && h.exercice_idx === 1;
+        });
+      });
+    }
+
+    localStorage.setItem(SK, JSON.stringify({email: email, password: hash}));
     rebuildState(d.history);
-    if(S.boostEx&&S.boost)loadBoost();
-    initApp();flushQ();
-    if(!S.calState&&!S.boostEx)preBoost();
-  }catch(e){alert2("Erreur réseau","Impossible de se connecter.","📡");}
-  finally{togLd('login',false);}
+    if (S.boostEx && S.boost) loadBoost();
+    initApp();
+    flushQ();
+    if (!S.calState && !S.boostEx) preBoost();
+
+  } catch(e) {
+    alert2("Erreur réseau", "Impossible de se connecter.", "📡");
+  } finally {
+    togLd('login', false);
+  }
 }
-document.addEventListener('DOMContentLoaded',()=>{const s=localStorage.getItem(SK);if(s){try{const{email,password}=JSON.parse(s);if(email&&password){showAuth('login');loginExec(email,password);}}catch(e){}  }
+
+// Auto-login on load
+document.addEventListener('DOMContentLoaded', function() {
+  var s = localStorage.getItem(SK);
+  if (s) {
+    try {
+      var creds = JSON.parse(s);
+      if (creds.email && creds.password) {
+        showAuth('login');
+        loginExec(creds.email, creds.password);
+      }
+    } catch(e) {}
+  }
 });
 
 // ── APP INIT ──────────────────────────────────────────────
-function rebuildState(h){S.res={};S.xp=0;S.sent=new Set();if(!h)return;h.forEach(r=>{const id=`${r.niveau}-${r.categorie}-${parseInt(r.exercice_idx)-1}`;S.res[id]=r.resultat;S.xp+=parseInt(r.xp)||0;S.sent.add(`${S.prof?.code||''}-${r.categorie}-${parseInt(r.exercice_idx)-1}`);});}
-function initApp(){
-  S.niv=S.prof.level;
-  const loc=JSON.parse(localStorage.getItem(LK)||'{}');
-  if(!loc[S.prof.code])loc[S.prof.code]={stk:1,last:tod()};
-  S.stk=loc[S.prof.code].stk||1;localStorage.setItem(LK,JSON.stringify(loc));
-  ['landing-screen','auth-screen'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+function rebuildState(h) {
+  S.res = {};
+  S.xp = 0;
+  S.sent = new Set();
+  if (!h) return;
+  h.forEach(function(r) {
+    var id = r.niveau + '-' + r.categorie + '-' + (parseInt(r.exercice_idx) - 1);
+    S.res[id] = r.resultat;
+    S.xp += parseInt(r.xp) || 0;
+    S.sent.add((S.prof ? S.prof.code : '') + '-' + r.categorie + '-' + (parseInt(r.exercice_idx) - 1));
+  });
+}
+
+function initApp() {
+  S.niv = S.prof.level;
+  var loc = JSON.parse(localStorage.getItem(LK) || '{}');
+  if (!loc[S.prof.code]) loc[S.prof.code] = {stk: 1, last: tod()};
+  S.stk = loc[S.prof.code].stk || 1;
+  localStorage.setItem(LK, JSON.stringify(loc));
+  ['landing-screen', 'auth-screen'].forEach(function(id) {
+    document.getElementById(id).classList.add('hidden');
+  });
   document.getElementById('main-app').classList.remove('hidden');
-  document.getElementById('aname').innerText=S.prof.name;
-  buildSel();updH();render();
+  document.getElementById('aname').innerText = S.prof.name;
+  buildSel();
+  updH();
+  render();
 }
-function logout(){localStorage.removeItem(SK);location.reload();}
-function buildSel(){const sel=document.getElementById('lvl-sel');sel.innerHTML='';const mi=LO.indexOf(S.prof.level);for(let i=Math.max(0,mi-1);i<=mi;i++){const o=document.createElement('option');o.value=LO[i];o.text=LN[LO[i]];sel.appendChild(o);}sel.value=S.niv;}
-function updH(){
-  document.getElementById('ui-stk').innerText=S.stk;
-  const el=document.getElementById('ui-xp');const start=parseInt(el.innerText)||0;const end=S.xp;
-  if(start===end){el.innerText=end;return;}
-  let cur=start;const step=Math.max(1,Math.ceil(Math.abs(end-start)/20));
-  const iv=setInterval(()=>{cur=end>cur?Math.min(cur+step,end):Math.max(cur-step,end);el.innerText=cur;if(cur===end)clearInterval(iv);},30);
-  if(S.stk>=3)document.getElementById('stk-box').style.animation='remPulse 2s ease infinite';
+
+function logout() {
+  localStorage.removeItem(SK);
+  location.reload();
 }
-function changeLvl(){S.niv=document.getElementById('lvl-sel').value;S.exp={};S.qv={};render();}
-function loadBoost(){if(!S.boost)return;LVL[S.niv].cats["BOOST"]=S.boost.exos.map((e,i)=>({...e,oC:'BOOST',oI:i}));LVL[S.niv].names["BOOST"]="Entraînement IA du jour";LVL[S.niv].icons["BOOST"]="⚡";S.insights["BOOST"]=S.boost.insight;}
+
+function buildSel() {
+  var sel = document.getElementById('lvl-sel');
+  sel.innerHTML = '';
+  var mi = LO.indexOf(S.prof.level);
+  for (var i = Math.max(0, mi - 1); i <= mi; i++) {
+    var o = document.createElement('option');
+    o.value = LO[i];
+    o.text = LN[LO[i]];
+    sel.appendChild(o);
+  }
+  sel.value = S.niv;
+}
+
+function updH() {
+  document.getElementById('ui-stk').innerText = S.stk;
+  var el = document.getElementById('ui-xp');
+  var start = parseInt(el.innerText) || 0;
+  var end = S.xp;
+  if (start === end) { el.innerText = end; return; }
+  var cur = start;
+  var step = Math.max(1, Math.ceil(Math.abs(end - start) / 20));
+  var iv = setInterval(function() {
+    cur = end > cur ? Math.min(cur + step, end) : Math.max(cur - step, end);
+    el.innerText = cur;
+    if (cur === end) clearInterval(iv);
+  }, 30);
+  if (S.stk >= 3) document.getElementById('stk-box').style.animation = 'remPulse 2s ease infinite';
+}
+
+function changeLvl() {
+  S.niv = document.getElementById('lvl-sel').value;
+  S.exp = {};
+  S.qv = {};
+  render();
+}
+
+function loadBoost() {
+  if (!S.boost) return;
+  LVL[S.niv].cats["BOOST"] = S.boost.exos.map(function(e, i) {
+    return Object.assign({}, e, {oC: 'BOOST', oI: i});
+  });
+  LVL[S.niv].names["BOOST"] = "Entraînement IA du jour";
+  LVL[S.niv].icons["BOOST"] = "⚡";
+  S.insights["BOOST"] = S.boost.insight;
+}
 
 // ── BOOST ─────────────────────────────────────────────────
-async function preBoost(){if(S.boostEx||S.boostGen)return;S.boostGen=true;try{const r=await fetch(SU,{method:'POST',body:JSON.stringify({action:"generate_daily_boost",code:S.prof.code,level:S.niv})});const d=await r.json();if(d.status==='success'){S.boost=d.boost;S.boostEx=true;loadBoost();render();}}catch(e){}finally{S.boostGen=false;}}
-async function handleBoost(){
-  if(S.boostGen)return;S.boostGen=true;
-  document.getElementById('m-boost').classList.remove('hidden');startTs();
-  try{const r=await fetch(SU,{method:'POST',body:JSON.stringify({action:"generate_daily_boost",code:S.prof.code,level:S.niv})});const d=await r.json();document.getElementById('m-boost').classList.add('hidden');
-    if(d.status==='success'){S.boost=d.boost;S.boostEx=true;loadBoost();render();window.scrollTo({top:0,behavior:'smooth'});}
-    else alert2("Oups","L'IA n'a pas pu générer le boost.","🤖");
-  }catch(e){document.getElementById('m-boost').classList.add('hidden');}finally{S.boostGen=false;}
+async function preBoost() {
+  if (S.boostEx || S.boostGen) return;
+  S.boostGen = true;
+  try {
+    var r = await fetch(SU, {method: 'POST', body: JSON.stringify({action: "generate_daily_boost", code: S.prof.code, level: S.niv})});
+    var d = await r.json();
+    if (d.status === 'success') {
+      S.boost = d.boost;
+      S.boostEx = true;
+      loadBoost();
+      render();
+    }
+  } catch(e) {}
+  finally { S.boostGen = false; }
 }
-async function boostFromDiag(errs){
-  showT("L'IA analyse ton diagnostic...",0,"🧠");startTs();
-  try{const r=await fetch(SU,{method:'POST',body:JSON.stringify({action:"generate_daily_boost",code:S.prof.code,level:S.niv,errors:errs})});const d=await r.json();if(d.status==='success'){S.boost=d.boost;S.boostEx=true;loadBoost();showT("⚡ Ton entraînement personnalisé est prêt !",4000,"⚡");render();}else hideT();}catch(e){hideT();}
+
+async function handleBoost() {
+  if (S.boostGen) return;
+  S.boostGen = true;
+  document.getElementById('m-boost').classList.remove('hidden');
+  startTs();
+  try {
+    var r = await fetch(SU, {method: 'POST', body: JSON.stringify({action: "generate_daily_boost", code: S.prof.code, level: S.niv})});
+    var d = await r.json();
+    document.getElementById('m-boost').classList.add('hidden');
+    if (d.status === 'success') {
+      S.boost = d.boost;
+      S.boostEx = true;
+      loadBoost();
+      render();
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    } else {
+      alert2("Oups", "L'IA n'a pas pu générer le boost.", "🤖");
+    }
+  } catch(e) {
+    document.getElementById('m-boost').classList.add('hidden');
+  } finally {
+    S.boostGen = false;
+  }
 }
-let _tsIv=null;
-function startTs(){let i=0;clearInterval(_tsIv);const bt=document.getElementById('bt');if(bt)bt.innerText=TS[0];_tsIv=setInterval(()=>{i=(i+1)%TS.length;const e=document.getElementById('bt');const t=document.getElementById('tm');if(e)e.innerText=TS[i];if(t)t.innerText=TS[i];},1400);setTimeout(()=>clearInterval(_tsIv),10000);}
+
+async function boostFromDiag(errs) {
+  showT("L'IA analyse ton diagnostic...", 0, "🧠");
+  startTs();
+  try {
+    var r = await fetch(SU, {method: 'POST', body: JSON.stringify({action: "generate_daily_boost", code: S.prof.code, level: S.niv, errors: errs})});
+    var d = await r.json();
+    if (d.status === 'success') {
+      S.boost = d.boost;
+      S.boostEx = true;
+      loadBoost();
+      showT("⚡ Ton entraînement personnalisé est prêt !", 4000, "⚡");
+      render();
+    } else {
+      hideT();
+    }
+  } catch(e) { hideT(); }
+}
+
+var _tsIv = null;
+function startTs() {
+  var i = 0;
+  clearInterval(_tsIv);
+  var bt = document.getElementById('bt');
+  if (bt) bt.innerText = TS[0];
+  _tsIv = setInterval(function() {
+    i = (i + 1) % TS.length;
+    var ebt = document.getElementById('bt');
+    var etm = document.getElementById('tm');
+    if (ebt) ebt.innerText = TS[i];
+    if (etm) etm.innerText = TS[i];
+  }, 1400);
+  setTimeout(function() { clearInterval(_tsIv); }, 10000);
+}
 
 // ── CALIBRAGE ─────────────────────────────────────────────
-function startCal(){S.calState='test';S.qv['CALIBRAGE']=0;LVL[S.niv].cats['CALIBRAGE']=(S.calExos||[]).map((e,i)=>({...e,oC:'CALIBRAGE',oI:i}));LVL[S.niv].names['CALIBRAGE']='Diagnostic';LVL[S.niv].icons['CALIBRAGE']='🎯';render();}
+function startCal() {
+  S.calState = 'test';
+  S.qv['CALIBRAGE'] = 0;
+  LVL[S.niv].cats['CALIBRAGE'] = (S.calExos || []).map(function(e, i) {
+    return Object.assign({}, e, {oC: 'CALIBRAGE', oI: i});
+  });
+  LVL[S.niv].names['CALIBRAGE'] = 'Diagnostic';
+  LVL[S.niv].icons['CALIBRAGE'] = '🎯';
+  render();
+}
 
 // ── SCORING ───────────────────────────────────────────────
-function res2(cat,idx){if(cat==="BOOST"||cat==="CALIBRAGE"){const ex=LVL[S.niv].cats[cat][idx];return{rC:ex.oC,rI:ex.oI};}return{rC:cat,rI:idx};}
-window.showHint=function(cat,idx,max){const r=res2(cat,idx);const id=`${S.niv}-${r.rC}-${r.rI}`;S.hints[id]=(S.hints[id]||0);if(S.hints[id]<max){S.hints[id]++;render();}};
-window.revF=function(cat,idx){const r=res2(cat,idx);S.ftch[`${S.niv}-${r.rC}-${r.rI}`]=true;render();};
-window.checkOpt=function(cat,idx,oI,btn){
-  const r=res2(cat,idx);const id=`${S.niv}-${r.rC}-${r.rI}`;const exo=LVL[S.niv].cats[cat][idx];
-  S.qans[id]=exo.options[oI];S.rev=true;S.cid=id;
-  const cI=exo.options.indexOf(exo.a);
-  Array.from(btn.parentElement.children).forEach(c=>{c.className='opt '+(parseInt(c.getAttribute('data-oi'))===cI?'oc':'on');  }
-});
-  if(exo.options[oI]===exo.a){btn.className='opt oc';const br=btn.getBoundingClientRect();showXP(100,br.left+br.width/2,br.top);setTimeout(()=>mark(cat,idx,'EASY'),700);}
-  else{btn.className='opt ow';setTimeout(()=>mark(cat,idx,'HARD'),1000);}
-};
-function verify(cat,idx){const r=res2(cat,idx);S.rev=true;S.cid=`${S.niv}-${r.rC}-${r.rI}`;render();}
-function mark(cat,idx,status){
-  const r=res2(cat,idx);const id=`${S.niv}-${r.rC}-${r.rI}`;const exo=LVL[S.niv].cats[cat][idx];
-  S.res[id]=status;const xp=status==='EASY'?100:status==='MEDIUM'?50:10;
-  S.xp+=xp;sendScore(r.rC,r.rI,status,xp,exo.q);updH();chkComp(cat);
-  if(status==='EASY')setTimeout(()=>nextEx(cat),600);else render();
+function res2(cat, idx) {
+  if (cat === "BOOST" || cat === "CALIBRAGE") {
+    var ex = LVL[S.niv].cats[cat][idx];
+    return {rC: ex.oC, rI: ex.oI};
+  }
+  return {rC: cat, rI: idx};
 }
-function togCat(cat){const was=!!S.exp[cat];Object.keys(S.exp).forEach(k=>S.exp[k]=false);S.exp[cat]=!was;if(S.isNew[cat])S.isNew[cat]=false;render();}
-function goEx(cat,i){S.qv[cat]=parseInt(i);S.rev=false;S.isDraw=false;S.cid=null;delete S.shuf[`${S.niv}-${cat}-${i}`];render();}
-function nextEx(cat){const exs=LVL[S.niv].cats[cat];for(let i=0;i<exs.length;i++){const r=res2(cat,i);if(!S.res[`${S.niv}-${r.rC}-${r.rI}`]){goEx(cat,i);return;}}goEx(cat,0);}
-function chkComp(cat){
-  const exs=LVL[S.niv].cats[cat];const tot=exs.length;let done=0,errs=[];
-  for(let i=0;i<tot;i++){const r=res2(cat,i);const rs=S.res[`${S.niv}-${r.rC}-${r.rI}`];if(rs)done++;if(rs==='HARD')errs.push(exs[i].q);}
-  if(done!==tot||tot===0)return;
-  if(cat==='CALIBRAGE'){const loc=JSON.parse(localStorage.getItem(LK)||'{}');if(!loc[S.prof.code])loc[S.prof.code]={};loc[S.prof.code].calDone=true;localStorage.setItem(LK,JSON.stringify(loc));S.calState=null;boostFromDiag(errs.slice(0,4));render();return;}
-  const base=cat.replace(/_V\d+$/,'');const v=parseInt((cat.match(/_V(\d+)$/)||[0,1])[1]);
-  if(v<3&&!S.remReq[cat]){S.remReq[cat]=true;render();showT("L'IA analyse tes erreurs...",0,"🤖");fetch(SU,{method:'POST',body:JSON.stringify({action:"generate_remediation",code:S.prof.code,category:base,level:S.niv,errors:errs.slice(0,3)})}).then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();}).catch(()=>hideT());}
+
+window.showHint = function(cat, idx, max) {
+  var r = res2(cat, idx);
+  var id = S.niv + '-' + r.rC + '-' + r.rI;
+  S.hints[id] = S.hints[id] || 0;
+  if (S.hints[id] < max) { S.hints[id]++; render(); }
+};
+
+window.revF = function(cat, idx) {
+  var r = res2(cat, idx);
+  S.ftch[S.niv + '-' + r.rC + '-' + r.rI] = true;
+  render();
+};
+
+window.checkOpt = function(cat, idx, oI, btn) {
+  var r = res2(cat, idx);
+  var id = S.niv + '-' + r.rC + '-' + r.rI;
+  var exo = LVL[S.niv].cats[cat][idx];
+  S.qans[id] = exo.options[oI];
+  S.rev = true;
+  S.cid = id;
+  var cI = exo.options.indexOf(exo.a);
+  Array.from(btn.parentElement.children).forEach(function(c) {
+    c.className = 'opt ' + (parseInt(c.getAttribute('data-oi')) === cI ? 'oc' : 'on');
+  });
+  if (exo.options[oI] === exo.a) {
+    btn.className = 'opt oc';
+    var br = btn.getBoundingClientRect();
+    showXP(100, br.left + br.width / 2, br.top);
+    setTimeout(function() { mark(cat, idx, 'EASY'); }, 700);
+  } else {
+    btn.className = 'opt ow';
+    setTimeout(function() { mark(cat, idx, 'HARD'); }, 1000);
+  }
+};
+
+function verify(cat, idx) {
+  var r = res2(cat, idx);
+  S.rev = true;
+  S.cid = S.niv + '-' + r.rC + '-' + r.rI;
+  render();
+}
+
+function mark(cat, idx, status) {
+  var r = res2(cat, idx);
+  var id = S.niv + '-' + r.rC + '-' + r.rI;
+  var exo = LVL[S.niv].cats[cat][idx];
+  S.res[id] = status;
+  var xp = status === 'EASY' ? 100 : status === 'MEDIUM' ? 50 : 10;
+  S.xp += xp;
+  sendScore(r.rC, r.rI, status, xp, exo.q);
+  updH();
+  chkComp(cat);
+  if (status === 'EASY') setTimeout(function() { nextEx(cat); }, 600);
+  else render();
+}
+
+function togCat(cat) {
+  var was = !!S.exp[cat];
+  Object.keys(S.exp).forEach(function(k) { S.exp[k] = false; });
+  S.exp[cat] = !was;
+  if (S.isNew[cat]) S.isNew[cat] = false;
+  render();
+}
+
+function goEx(cat, i) {
+  S.qv[cat] = parseInt(i);
+  S.rev = false;
+  S.isDraw = false;
+  S.cid = null;
+  delete S.shuf[S.niv + '-' + cat + '-' + i];
+  render();
+}
+
+function nextEx(cat) {
+  var exs = LVL[S.niv].cats[cat];
+  for (var i = 0; i < exs.length; i++) {
+    var r = res2(cat, i);
+    if (!S.res[S.niv + '-' + r.rC + '-' + r.rI]) { goEx(cat, i); return; }
+  }
+  goEx(cat, 0);
+}
+
+function chkComp(cat) {
+  var exs = LVL[S.niv].cats[cat];
+  var tot = exs.length;
+  var done = 0;
+  var errs = [];
+  for (var i = 0; i < tot; i++) {
+    var r = res2(cat, i);
+    var rs = S.res[S.niv + '-' + r.rC + '-' + r.rI];
+    if (rs) done++;
+    if (rs === 'HARD') errs.push(exs[i].q);
+  }
+  if (done !== tot || tot === 0) return;
+  if (cat === 'CALIBRAGE') {
+    var loc = JSON.parse(localStorage.getItem(LK) || '{}');
+    if (!loc[S.prof.code]) loc[S.prof.code] = {};
+    loc[S.prof.code].calDone = true;
+    localStorage.setItem(LK, JSON.stringify(loc));
+    S.calState = null;
+    boostFromDiag(errs.slice(0, 4));
+    render();
+    return;
+  }
+  var base = cat.replace(/_V\d+$/, '');
+  var vm = cat.match(/_V(\d+)$/);
+  var v = vm ? parseInt(vm[1]) : 1;
+  if (v < 3 && !S.remReq[cat]) {
+    S.remReq[cat] = true;
+    render();
+    showT("L'IA analyse tes erreurs...", 0, "🤖");
+    fetch(SU, {method: 'POST', body: JSON.stringify({action: "generate_remediation", code: S.prof.code, category: base, level: S.niv, errors: errs.slice(0, 3)})})
+      .then(function(r) { return r.json(); })
+      .then(function(d) { if (d.status === 'success') location.reload(); })
+      .catch(function() { hideT(); });
+  }
 }
 
 // ── MASTERY WIDGET ────────────────────────────────────────
-function rMastery(){
-  const cats=LVL[S.niv].cats;const keys=Object.keys(cats).filter(k=>k!=='CALIBRAGE');
-  let tot=0,master=0;
-  keys.forEach(cat=>{const exs=cats[cat];exs.forEach((e,i)=>{const r=res2(cat,i);const rs=S.res[`${S.niv}-${r.rC}-${r.rI}`];tot++;if(rs==='EASY')master++;});  }
-});
-  const pct=tot>0?Math.round((master/tot)*100):0;
-  const circ=2*Math.PI*32;const off=circ-(pct/100)*circ;
-  const w=document.getElementById('mastery-w');if(!keys.length){w.innerHTML='';return;}
-  w.innerHTML=`
-    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
-      <div class="flex items-center gap-4">
-        <div class="mring">
-          <svg viewBox="0 0 72 72" width="72" height="72"><circle class="rbg" cx="36" cy="36" r="32"/><circle class="rfill" cx="36" cy="36" r="32" stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"/></svg>
-          <div class="rpct">${pct}%</div>
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="syne font-black text-slate-900 text-sm mb-0.5">Maîtrise globale</div>
-          <div class="text-slate-500 text-xs font-medium mb-2">${master} notion${master>1?'s':''} acquise${master>1?'s':''} sur ${tot}</div>
-          <div class="pbar"><div class="pfill ${pct===100?'pfg':'pfp'}" style="width:${pct}%"></div></div>
-        </div>
-      </div>
-      ${S.stk>=3?`<div class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2 text-xs font-semibold text-amber-700"><span>🔥</span><span>${S.stk} jours consécutifs — continue comme ça !</span></div>`:''}
-    </div>`;
+function rMastery() {
+  var cats = LVL[S.niv].cats;
+  var keys = Object.keys(cats).filter(function(k) { return k !== 'CALIBRAGE'; });
+  var tot = 0, master = 0;
+  keys.forEach(function(cat) {
+    var exs = cats[cat];
+    exs.forEach(function(e, i) {
+      var r = res2(cat, i);
+      var rs = S.res[S.niv + '-' + r.rC + '-' + r.rI];
+      tot++;
+      if (rs === 'EASY') master++;
+    });
+  });
+  var pct = tot > 0 ? Math.round((master / tot) * 100) : 0;
+  var circ = 2 * Math.PI * 32;
+  var off = circ - (pct / 100) * circ;
+  var w = document.getElementById('mastery-w');
+  if (!keys.length) { w.innerHTML = ''; return; }
+  w.innerHTML = '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4"><div class="flex items-center gap-4"><div class="mring"><svg viewBox="0 0 72 72" width="72" height="72"><circle class="rbg" cx="36" cy="36" r="32"/><circle class="rfill" cx="36" cy="36" r="32" stroke-dasharray="' + circ.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '"/></svg><div class="rpct">' + pct + '%</div></div><div class="flex-1 min-w-0"><div class="syne font-black text-slate-900 text-sm mb-0.5">Maîtrise globale</div><div class="text-slate-500 text-xs font-medium mb-2">' + master + ' notion' + (master > 1 ? 's' : '') + ' acquise' + (master > 1 ? 's' : '') + ' sur ' + tot + '</div><div class="pbar"><div class="pfill ' + (pct === 100 ? 'pfg' : 'pfp') + '" style="width:' + pct + '%"></div></div></div></div>' + (S.stk >= 3 ? '<div class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2 text-xs font-semibold text-amber-700"><span>🔥</span><span>' + S.stk + ' jours consécutifs — continue comme ça !</span></div>' : '') + '</div>';
 }
 
 // ── RENDER ────────────────────────────────────────────────
-function render(){
-  const c=document.getElementById('app-c');
-  if(!S.prof){c.innerHTML=`<div class="space-y-3">${[1,2,3].map(()=>`<div class="sk h-20 w-full"></div>`).join('')}</div>`;return;}
+function render() {
+  var c = document.getElementById('app-c');
+  if (!S.prof) {
+    c.innerHTML = '<div class="space-y-3">' + [1,2,3].map(function() { return '<div class="sk h-20 w-full"></div>'; }).join('') + '</div>';
+    return;
+  }
   rMastery();
 
-  // Diagnostic select
-  if(S.calState==='sel'){
-    c.innerHTML=`
-      <div class="bg-white rounded-3xl p-8 text-center shadow-sm border border-slate-100 afu">
-        <div class="w-20 h-20 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-5 shadow-lg">🎯</div>
-        <h2 class="syne text-2xl font-black text-slate-900 mb-2">Prêt, ${S.prof.name} ?</h2>
-        <p class="text-slate-500 font-medium mb-1 text-sm leading-relaxed">On cartographie tes lacunes en quelques questions.</p>
-        <p class="text-slate-400 text-xs mb-7">5 minutes · Résultats immédiats · Parcours généré sur-mesure</p>
-        <button onclick="startCal()" class="btn btn-ac btn-fw py-4">Lancer le diagnostic →</button>
-      </div>`;return;
+  // Diagnostic select screen
+  if (S.calState === 'sel') {
+    c.innerHTML = '<div class="bg-white rounded-3xl p-8 text-center shadow-sm border border-slate-100 afu"><div class="w-20 h-20 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-5 shadow-lg">🎯</div><h2 class="syne text-2xl font-black text-slate-900 mb-2">Prêt, ' + S.prof.name + ' ?</h2><p class="text-slate-500 font-medium mb-1 text-sm leading-relaxed">On cartographie tes lacunes en quelques questions.</p><p class="text-slate-400 text-xs mb-7">5 minutes · Résultats immédiats · Parcours généré sur-mesure</p><button onclick="startCal()" class="btn btn-ac btn-fw py-4">Lancer le diagnostic →</button></div>';
+    return;
   }
 
-  // Diagnostic testing
-  if(S.calState==='test'){
-    const exs=LVL[S.niv].cats['CALIBRAGE']||[];const idx=S.qv['CALIBRAGE']||0;const pct=Math.round((idx/exs.length)*100);
-    c.innerHTML=`
-      <div class="bg-white rounded-3xl shadow-sm border-2 border-indigo-200 overflow-hidden afu">
-        <div class="px-5 py-4 bg-indigo-50 border-b border-indigo-100">
-          <div class="flex justify-between items-center mb-2.5">
-            <div class="flex items-center gap-2"><span>🎯</span><span class="syne font-black text-indigo-900 text-sm">Diagnostic de niveau</span></div>
-            <span class="text-xs font-bold text-indigo-500 bg-white px-2 py-1 rounded-lg border border-indigo-100">${idx+1} / ${exs.length}</span>
-          </div>
-          <div class="pbar"><div class="pfill pfp" style="width:${pct}%"></div></div>
-        </div>
-        ${rSection('CALIBRAGE',exs[idx],idx,exs.length,false)}
-      </div>`;
-    rMath();return;
+  // Diagnostic testing screen
+  if (S.calState === 'test') {
+    var exs = LVL[S.niv].cats['CALIBRAGE'] || [];
+    var idx = S.qv['CALIBRAGE'] || 0;
+    var pct = exs.length > 0 ? Math.round((idx / exs.length) * 100) : 0;
+    c.innerHTML = '<div class="bg-white rounded-3xl shadow-sm border-2 border-indigo-200 overflow-hidden afu"><div class="px-5 py-4 bg-indigo-50 border-b border-indigo-100"><div class="flex justify-between items-center mb-2.5"><div class="flex items-center gap-2"><span>🎯</span><span class="syne font-black text-indigo-900 text-sm">Diagnostic de niveau</span></div><span class="text-xs font-bold text-indigo-500 bg-white px-2 py-1 rounded-lg border border-indigo-100">' + (idx+1) + ' / ' + exs.length + '</span></div><div class="pbar"><div class="pfill pfp" style="width:' + pct + '%"></div></div></div>' + (exs[idx] ? rSection('CALIBRAGE', exs[idx], idx, exs.length, false) : '') + '</div>';
+    rMath();
+    return;
   }
 
-  // Main
-  const cats=LVL[S.niv].cats;
-  let keys=Object.keys(cats).filter(k=>k!=='CALIBRAGE');
-  if(keys.includes('BOOST'))keys=['BOOST',...keys.filter(k=>k!=='BOOST')];
-  let bDone=false;
-  if(cats['BOOST']){let d=0;for(let i=0;i<cats['BOOST'].length;i++){const r=res2('BOOST',i);if(S.res[`${S.niv}-${r.rC}-${r.rI}`])d++;}bDone=d===cats['BOOST'].length&&cats['BOOST'].length>0;}
-  let html='';
+  // Main app
+  var cats = LVL[S.niv].cats;
+  var keys = Object.keys(cats).filter(function(k) { return k !== 'CALIBRAGE'; });
+  if (keys.includes('BOOST')) keys = ['BOOST'].concat(keys.filter(function(k) { return k !== 'BOOST'; }));
 
-  if(!S.boostEx&&!S.calState){
-    html+=`<div onclick="handleBoost()" class="rounded-2xl p-5 flex items-center gap-4 cursor-pointer active:scale-[.98] transition-transform shadow-lg" style="background:linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)">
-      <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/20">⚡</div>
-      <div class="flex-1 min-w-0"><div class="syne text-base font-black text-white mb-0.5">Mon entraînement IA</div><p class="text-indigo-200 text-sm font-medium">Exercices ciblés sur tes lacunes</p></div>
-      <div class="text-white/50 text-xl">›</div></div>`;
-  }else if(bDone){
-    html+=`<div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-4">
-      <div class="w-11 h-11 bg-emerald-100 rounded-xl flex items-center justify-center text-xl flex-shrink-0">✅</div>
-      <div><div class="syne font-black text-emerald-800 text-sm">Entraînement du jour complété !</div><div class="text-emerald-600 text-xs font-medium mt-0.5">L'agent IA prépare déjà tes défis pour demain</div></div></div>`;
-  }
-
-  keys.forEach(cat=>{
-    if(cat==='BOOST'&&bDone)return;
-    const exs=cats[cat];const tot=exs.length;
-    let done=0;for(let i=0;i<tot;i++){const r=res2(cat,i);if(S.res[`${S.niv}-${r.rC}-${r.rI}`])done++;}
-    const comp=done===tot&&tot>0;const pct=tot>0?Math.round((done/tot)*100):0;
-    const isBoost=cat==='BOOST';const isNew=S.isNew[cat];const isOpen=!!S.exp[cat];
-    const remPrep=S.remReq[cat]&&comp;
-
-    let cs='';
-    if(isBoost)cs='background:linear-gradient(135deg,#312e81,#4338ca);border:none';
-    else if(comp&&!remPrep)cs='background:#f0fdf4;border-color:#a7f3d0';
-    else cs='background:#fff';
-
-    html+=`
-      <div class="rounded-2xl border border-slate-200 overflow-hidden shadow-sm afu" style="${cs}">
-        <div onclick="togCat('${cat}')" class="px-4 py-4 flex items-center gap-3 cursor-pointer">
-          <div class="w-11 h-11 ${isBoost?'bg-white/20':'bg-slate-100'} rounded-xl flex items-center justify-center text-lg flex-shrink-0">${LVL[S.niv].icons[cat]||'📘'}</div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2 mb-1.5">
-              <span class="syne font-black text-sm ${isBoost?'text-white':'text-slate-900'} truncate">${LVL[S.niv].names[cat]||cat}</span>
-              ${comp&&!remPrep?'<span class="text-base">🏆</span>':''}
-              ${isNew?'<span class="text-[9px] syne font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-md">NEW</span>':''}
-            </div>
-            <div class="flex items-center gap-2">
-              <div class="pbar flex-1" style="max-width:100px"><div class="pfill ${comp?'pfg':'pfp'}" style="width:${pct}%"></div></div>
-              <span class="text-[11px] font-bold ${isBoost?'text-white/60':'text-slate-400'}">${done}/${tot}</span>
-            </div>
-          </div>
-          <div class="${isBoost?'text-white/40':'text-slate-300'} text-xl font-light" style="transition:transform .2s;transform:rotate(${isOpen?90:0}deg)">›</div>
-        </div>
-        ${remPrep?`
-          <div class="mx-4 mb-4 bg-purple-50 border border-purple-200 rounded-xl p-4 rem-prep">
-            <div class="flex items-center gap-3 mb-2">
-              <div class="w-9 h-9 bg-purple-100 rounded-xl flex items-center justify-center text-base flex-shrink-0">🤖</div>
-              <div class="flex-1"><div class="syne font-black text-purple-900 text-sm">Remédiation en préparation</div><div class="text-purple-600 text-xs font-medium">L'IA génère tes exercices personnalisés</div></div>
-              <div class="flex gap-1 flex-shrink-0"><span class="dot-b w-2 h-2 bg-purple-400 rounded-full inline-block"></span><span class="dot-b w-2 h-2 bg-purple-400 rounded-full inline-block"></span><span class="dot-b w-2 h-2 bg-purple-400 rounded-full inline-block"></span></div>
-            </div>
-            <p class="text-purple-500 text-xs font-medium">Quelques secondes... La page se rechargera automatiquement avec tes nouveaux défis.</p>
-          </div>`:(isOpen?rSection(cat,exs[S.qv[cat]||0],S.qv[cat]||0,tot,comp):'')}
-        ${S.insights[cat]&&isOpen&&!remPrep?`<div class="mx-4 mb-4 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs font-medium text-blue-700 leading-relaxed">💡 ${S.insights[cat]}</div>`:''}
-      </div>`;
+  var bDone = false;
+  if (cats['BOOST']) {
+    var bDoneCount = 0;
+    for (var bi = 0; bi < cats['BOOST'].length; bi++) {
+      var br2 = res2('BOOST', bi);
+      if (S.res[S.niv + '-' + br2.rC + '-' + br2.rI]) bDoneCount++;
     }
-});
+    bDone = bDoneCount === cats['BOOST'].length && cats['BOOST'].length > 0;
+  }
 
-  c.innerHTML=html||`<div class="text-center text-slate-400 font-semibold py-12 text-sm">Aucun exercice disponible pour ce niveau.</div>`;
+  var html = '';
+
+  if (!S.boostEx && !S.calState) {
+    html += '<div onclick="handleBoost()" class="rounded-2xl p-5 flex items-center gap-4 cursor-pointer active:scale-[.98] transition-transform shadow-lg" style="background:linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)"><div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/20">⚡</div><div class="flex-1 min-w-0"><div class="syne text-base font-black text-white mb-0.5">Mon entraînement IA</div><p class="text-indigo-200 text-sm font-medium">Exercices ciblés sur tes lacunes</p></div><div class="text-white/50 text-xl">›</div></div>';
+  } else if (bDone) {
+    html += '<div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-4"><div class="w-11 h-11 bg-emerald-100 rounded-xl flex items-center justify-center text-xl flex-shrink-0">✅</div><div><div class="syne font-black text-emerald-800 text-sm">Entraînement du jour complété !</div><div class="text-emerald-600 text-xs font-medium mt-0.5">L\'agent IA prépare déjà tes défis pour demain</div></div></div>';
+  }
+
+  keys.forEach(function(cat) {
+    if (cat === 'BOOST' && bDone) return;
+    var exs = cats[cat];
+    var tot = exs.length;
+    var done = 0;
+    for (var i = 0; i < tot; i++) {
+      var rr = res2(cat, i);
+      if (S.res[S.niv + '-' + rr.rC + '-' + rr.rI]) done++;
+    }
+    var comp = done === tot && tot > 0;
+    var pct2 = tot > 0 ? Math.round((done / tot) * 100) : 0;
+    var isBoost = cat === 'BOOST';
+    var isNew = S.isNew[cat];
+    var isOpen = !!S.exp[cat];
+    var remPrep = S.remReq[cat] && comp;
+    var curIdx = S.qv[cat] || 0;
+
+    var cs = isBoost
+      ? 'background:linear-gradient(135deg,#312e81,#4338ca);border:none'
+      : (comp && !remPrep ? 'background:#f0fdf4;border-color:#a7f3d0' : 'background:#fff');
+
+    html += '<div class="rounded-2xl border border-slate-200 overflow-hidden shadow-sm afu" style="' + cs + '">';
+    html += '<div onclick="togCat(\'' + cat + '\')" class="px-4 py-4 flex items-center gap-3 cursor-pointer">';
+    html += '<div class="w-11 h-11 ' + (isBoost ? 'bg-white/20' : 'bg-slate-100') + ' rounded-xl flex items-center justify-center text-lg flex-shrink-0">' + (LVL[S.niv].icons[cat] || '📘') + '</div>';
+    html += '<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1.5"><span class="syne font-black text-sm ' + (isBoost ? 'text-white' : 'text-slate-900') + ' truncate">' + (LVL[S.niv].names[cat] || cat) + '</span>';
+    if (comp && !remPrep) html += '<span class="text-base">🏆</span>';
+    if (isNew) html += '<span class="text-[9px] syne font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-md">NEW</span>';
+    html += '</div><div class="flex items-center gap-2"><div class="pbar flex-1" style="max-width:100px"><div class="pfill ' + (comp ? 'pfg' : 'pfp') + '" style="width:' + pct2 + '%"></div></div><span class="text-[11px] font-bold ' + (isBoost ? 'text-white/60' : 'text-slate-400') + '">' + done + '/' + tot + '</span></div></div>';
+    html += '<div class="' + (isBoost ? 'text-white/40' : 'text-slate-300') + ' text-xl font-light" style="transition:transform .2s;transform:rotate(' + (isOpen ? 90 : 0) + 'deg)">›</div></div>';
+
+    if (remPrep) {
+      html += '<div class="mx-4 mb-4 bg-purple-50 border border-purple-200 rounded-xl p-4 rem-prep"><div class="flex items-center gap-3 mb-2"><div class="w-9 h-9 bg-purple-100 rounded-xl flex items-center justify-center text-base flex-shrink-0">🤖</div><div class="flex-1"><div class="syne font-black text-purple-900 text-sm">Remédiation en préparation</div><div class="text-purple-600 text-xs font-medium">L\'IA génère tes exercices personnalisés</div></div><div class="flex gap-1 flex-shrink-0"><span class="dot-b w-2 h-2 bg-purple-400 rounded-full inline-block"></span><span class="dot-b w-2 h-2 bg-purple-400 rounded-full inline-block"></span><span class="dot-b w-2 h-2 bg-purple-400 rounded-full inline-block"></span></div></div><p class="text-purple-500 text-xs font-medium">Quelques secondes... La page se rechargera automatiquement avec tes nouveaux défis.</p></div>';
+    } else if (isOpen && exs[curIdx]) {
+      html += rSection(cat, exs[curIdx], curIdx, tot, comp);
+    }
+
+    if (S.insights[cat] && isOpen && !remPrep) {
+      html += '<div class="mx-4 mb-4 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs font-medium text-blue-700 leading-relaxed">💡 ' + S.insights[cat] + '</div>';
+    }
+    html += '</div>';
+  });
+
+  c.innerHTML = html || '<div class="text-center text-slate-400 font-semibold py-12 text-sm">Aucun exercice disponible pour ce niveau.</div>';
   rMath();
 }
 
 // ── RENDER SECTION ────────────────────────────────────────
-function rSection(cat,data,idx,total,catDone){
-  if(!data)return'';
-  const r=res2(cat,idx);const id=`${S.niv}-${r.rC}-${r.rI}`;const ui=`${S.niv}-${cat}-${idx}`;
-  const isRev=S.rev&&S.cid===id;const scored=S.res[id];const hasOpt=data.options&&data.options.length>0;
+function rSection(cat, data, idx, total, catDone) {
+  if (!data) return '';
+  var r = res2(cat, idx);
+  var id = S.niv + '-' + r.rC + '-' + r.rI;
+  var ui = S.niv + '-' + cat + '-' + idx;
+  var isRev = S.rev && S.cid === id;
+  var scored = S.res[id];
+  var hasOpt = data.options && data.options.length > 0;
 
-  let pills=`<div class="flex overflow-x-auto gap-1.5 px-4 py-3 border-t border-slate-100 bg-slate-50/60 no-sb">`;
-  for(let i=0;i<total;i++){
-    const r2=res2(cat,i);const s=S.res[`${S.niv}-${r2.rC}-${r2.rI}`];const act=i===idx;
-    let cls='pill ';if(s==='EASY'||s==='MEDIUM')cls+='bg-emerald-500 text-white';else if(s==='HARD')cls+='bg-rose-400 text-white';else cls+='bg-white border-2 border-slate-200 text-slate-500';
-    if(act)cls+=' ring-2 ring-indigo-400 ring-offset-1';
-    pills+=`<button onclick="goEx('${cat}',${i})" class="${cls}">${i+1}</button>`;
+  // Pills nav
+  var pills = '<div class="flex overflow-x-auto gap-1.5 px-4 py-3 border-t border-slate-100 bg-slate-50/60 no-sb">';
+  for (var i = 0; i < total; i++) {
+    var r2 = res2(cat, i);
+    var s2 = S.res[S.niv + '-' + r2.rC + '-' + r2.rI];
+    var act = i === idx;
+    var cls = 'pill ';
+    if (s2 === 'EASY' || s2 === 'MEDIUM') cls += 'bg-emerald-500 text-white';
+    else if (s2 === 'HARD') cls += 'bg-rose-400 text-white';
+    else cls += 'bg-white border-2 border-slate-200 text-slate-500';
+    if (act) cls += ' ring-2 ring-indigo-400 ring-offset-1';
+    pills += '<button onclick="goEx(\'' + cat + '\',' + i + ')" class="' + cls + '">' + (i + 1) + '</button>';
   }
-  pills+=`</div>`;
+  pills += '</div>';
 
-  let acts='';
-  if(!isRev&&!hasOpt)acts=`<button onclick="verify('${cat}',${idx})" class="btn btn-dk btn-fw py-4">Révéler la réponse</button>`;
-  else if(isRev&&!scored&&!hasOpt)acts=`
-    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4 text-center">
-      <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Réponse</div>
-      <div class="mc text-base font-black text-slate-900">${fmtL(data.a)}</div>
-    </div>
-    <div class="grid grid-cols-3 gap-2">
-      <button onclick="mark('${cat}',${idx},'HARD')" class="btn-ng btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">😤</span>À revoir</button>
-      <button onclick="mark('${cat}',${idx},'MEDIUM')" class="btn-wn btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">🤔</span>Je doute</button>
-      <button onclick="mark('${cat}',${idx},'EASY')" class="btn-ok btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">✅</span>Acquis</button>
-    </div>`;
-  else if(scored&&!catDone)acts=`<button onclick="nextEx('${cat}')" class="btn btn-dk btn-fw py-4 mt-2">Suivant →</button>`;
-
-  let opts='';
-  if(hasOpt){
-    const uk=ui;
-    if(!isRev&&!S.shuf[uk]){let arr=data.options.map((t,i)=>({t,i}));for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}S.shuf[uk]=arr;}
-    const sh=S.shuf[uk]||data.options.map((t,i)=>({t,i}));const cI=data.options.indexOf(data.a);const ans=S.qans[id];
-    opts=`<div class="flex flex-col gap-2 mb-4">`+sh.map(o=>{
-      let cls='opt ';if(isRev){cls+=o.i===cI?'oc ':o.t===ans?'ow ':'on ';}
-      const h=!isRev?`onclick="checkOpt('${cat}',${idx},${o.i},this)"`:'';
-      return`<button data-oi="${o.i}" ${h} class="${cls}"><span class="mc flex-1">${fmtL(o.t)}</span></button>`;
-    }).join('')+`</div>`;
+  // Action buttons
+  var acts = '';
+  if (!isRev && !hasOpt) {
+    acts = '<button onclick="verify(\'' + cat + '\',' + idx + ')" class="btn btn-dk btn-fw py-4">Révéler la réponse</button>';
+  } else if (isRev && !scored && !hasOpt) {
+    acts = '<div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4 text-center"><div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Réponse</div><div class="mc text-base font-black text-slate-900">' + fmtL(data.a) + '</div></div><div class="grid grid-cols-3 gap-2"><button onclick="mark(\'' + cat + '\',' + idx + ',\'HARD\')" class="btn-ng btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">😤</span>À revoir</button><button onclick="mark(\'' + cat + '\',' + idx + ',\'MEDIUM\')" class="btn-wn btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">🤔</span>Je doute</button><button onclick="mark(\'' + cat + '\',' + idx + ',\'EASY\')" class="btn-ok btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">✅</span>Acquis</button></div>';
+  } else if (scored && !catDone) {
+    acts = '<button onclick="nextEx(\'' + cat + '\')" class="btn btn-dk btn-fw py-4 mt-2">Suivant →</button>';
   }
 
-  const maxH=data.steps?.length||0;const shown=scored?maxH:(S.hints[id]||0);
-  const hints=`<div class="bg-amber-50 border border-amber-100 rounded-xl p-3"><div class="flex justify-between items-center mb-2"><span class="text-[10px] syne font-black text-amber-700 uppercase tracking-wider">💡 Indices</span>${shown<maxH?`<button onclick="showHint('${cat}',${idx},${maxH})" class="text-xs font-bold text-amber-600 bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-lg">Voir +1</button>`:''}</div>${maxH>0?`<div class="space-y-1.5">${(data.steps||[]).map((s,i)=>`<div class="${i<shown?'block':'hidden'} mc text-xs text-amber-800 bg-white/80 rounded-lg px-3 py-2 border border-amber-100">${fmtL(s)}</div>`).join('')}</div>`:`<p class="text-amber-400 text-xs">Aucun indice.</p>`}</div>`;
+  // QCM Options
+  var opts = '';
+  if (hasOpt) {
+    if (!isRev && !S.shuf[ui]) {
+      var arr = data.options.map(function(t, i) { return {t: t, i: i}; });
+      for (var si = arr.length - 1; si > 0; si--) {
+        var sj = Math.floor(Math.random() * (si + 1));
+        var tmp = arr[si]; arr[si] = arr[sj]; arr[sj] = tmp;
+      }
+      S.shuf[ui] = arr;
+    }
+    var sh = S.shuf[ui] || data.options.map(function(t, i) { return {t: t, i: i}; });
+    var cI = data.options.indexOf(data.a);
+    var ans = S.qans[id];
+    opts = '<div class="flex flex-col gap-2 mb-4">';
+    sh.forEach(function(o) {
+      var ocls = 'opt ';
+      if (isRev) { ocls += o.i === cI ? 'oc ' : (o.t === ans ? 'ow ' : 'on '); }
+      var handler = !isRev ? 'onclick="checkOpt(\'' + cat + '\',' + idx + ',' + o.i + ',this)"' : '';
+      opts += '<button data-oi="' + o.i + '" ' + handler + ' class="' + ocls.trim() + '"><span class="mc flex-1">' + fmtL(o.t) + '</span></button>';
+    });
+    opts += '</div>';
+  }
 
-  const fR=scored||!!S.ftch[id];
-  const formula=`<div onclick="${!fR?`revF('${cat}',${idx})`:''}"><div class="fwrap ${fR?'frev':''}"><div class="finner mc text-xs font-bold text-slate-700 text-center min-h-[1.5rem]">${fmtL(data.f)||'<span class="text-slate-400 text-xs">Pas de formule.</span>'}</div>${!fR?'<div class="fhint">👁 Formule clé</div>':''}</div></div>`;
+  // Hints
+  var maxH = (data.steps && data.steps.length) || 0;
+  var shown = scored ? maxH : (S.hints[id] || 0);
+  var hSteps = '';
+  if (maxH > 0) {
+    (data.steps || []).forEach(function(s, i) {
+      hSteps += '<div class="' + (i < shown ? 'block' : 'hidden') + ' mc text-xs text-amber-800 bg-white/80 rounded-lg px-3 py-2 border border-amber-100">' + fmtL(s) + '</div>';
+    });
+  }
+  var hints = '<div class="bg-amber-50 border border-amber-100 rounded-xl p-3"><div class="flex justify-between items-center mb-2"><span class="text-[10px] syne font-black text-amber-700 uppercase tracking-wider">💡 Indices</span>' + (shown < maxH ? '<button onclick="showHint(\'' + cat + '\',' + idx + ',' + maxH + ')" class="text-xs font-bold text-amber-600 bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-lg">Voir +1</button>' : '') + '</div>' + (maxH > 0 ? '<div class="space-y-1.5">' + hSteps + '</div>' : '<p class="text-amber-400 text-xs">Aucun indice.</p>') + '</div>';
 
-  return`
-    <div class="border-t border-slate-100">
-      ${pills}
-      <div class="p-4 sm:p-5">
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Niveau ${data.lvl||1}</span>
-          <button onclick="togDraw('${ui}')" class="text-[11px] font-bold px-2.5 py-1.5 rounded-lg border transition-colors ${S.isDraw?'bg-rose-50 border-rose-200 text-rose-600':'bg-slate-50 border-slate-200 text-slate-500'}">🖍️ ${S.isDraw?'Arrêter':'Dessiner'}</button>
-        </div>
-        <div id="box-${ui}" class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-4 relative overflow-hidden min-h-[80px] flex items-center justify-center ${S.isDraw?'draw-mode':''}">
-          <canvas id="canv-${ui}" class="dcanv"></canvas>
-          <div class="relative z-0 mc text-center font-bold text-base leading-relaxed w-full">${fmtL(data.q)}</div>
-        </div>
-        ${opts}${acts}
-        <div class="grid grid-cols-2 gap-3 mt-4">${hints}${formula}</div>
-      </div>
-    </div>`;
+  // Formula
+  var fR = scored || !!S.ftch[id];
+  var fContent = fmtL(data.f) || '<span class="text-slate-400 text-xs">Pas de formule.</span>';
+  var formula = '<div onclick="' + (!fR ? 'revF(\'' + cat + '\',' + idx + ')' : '') + '"><div class="fwrap ' + (fR ? 'frev' : '') + '"><div class="finner mc text-xs font-bold text-slate-700 text-center min-h-[1.5rem]">' + fContent + '</div>' + (!fR ? '<div class="fhint">👁 Formule clé</div>' : '') + '</div></div>';
+
+  return '<div class="border-t border-slate-100">' + pills + '<div class="p-4 sm:p-5"><div class="flex justify-between items-center mb-3"><span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Niveau ' + (data.lvl || 1) + '</span><button onclick="togDraw(\'' + ui + '\')" class="text-[11px] font-bold px-2.5 py-1.5 rounded-lg border transition-colors ' + (S.isDraw ? 'bg-rose-50 border-rose-200 text-rose-600' : 'bg-slate-50 border-slate-200 text-slate-500') + '">🖍️ ' + (S.isDraw ? 'Arrêter' : 'Dessiner') + '</button></div><div id="box-' + ui + '" class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-4 relative overflow-hidden min-h-[80px] flex items-center justify-center ' + (S.isDraw ? 'draw-mode' : '') + '"><canvas id="canv-' + ui + '" class="dcanv"></canvas><div class="relative z-0 mc text-center font-bold text-base leading-relaxed w-full">' + fmtL(data.q) + '</div></div>' + opts + acts + '<div class="grid grid-cols-2 gap-3 mt-4">' + hints + formula + '</div></div></div>';
 }
 
 // ── DRAWING ───────────────────────────────────────────────
-function toggleDraft(){S.dOpen=!S.dOpen;const d=document.getElementById('draft-drawer'),b=document.getElementById('draft-bd');if(S.dOpen){d.classList.add('open');b.classList.remove('hidden');setTimeout(()=>b.classList.remove('opacity-0'),10);if(_dDraw)iCanv('canv-draft');}else{d.classList.remove('open');b.classList.add('opacity-0');setTimeout(()=>b.classList.add('hidden'),300);}}
-function clrD(){document.getElementById('text-draft').value='';const c=document.getElementById('canv-draft');if(c)c.getContext('2d').clearRect(0,0,c.width,c.height);}
-function insT(t){const el=document.getElementById('text-draft');const s=el.selectionStart;el.value=el.value.substring(0,s)+t+el.value.substring(el.selectionEnd);el.focus();el.selectionStart=el.selectionEnd=s+t.length;}
-let _dDraw=false;
-function togDraftDraw(){_dDraw=!_dDraw;document.getElementById('text-draft').style.display=_dDraw?'none':'';document.getElementById('box-draft').classList.toggle('draw-mode-d',_dDraw);const btn=document.getElementById('btn-dd');btn.className=_dDraw?'mx-3 mt-2.5 py-2 bg-rose-50 border border-rose-200 text-rose-600 rounded-xl font-bold text-sm syne':'mx-3 mt-2.5 py-2 bg-white border rounded-xl font-bold text-sm text-slate-700 syne';btn.innerText=_dDraw?'✏️ Mode texte':'🖍️ Mode dessin';if(_dDraw)iCanv('canv-draft');}
-function togDraw(ui){S.isDraw=!S.isDraw;if(S.isDraw)iCanv(`canv-${ui}`,ui);else render();}
-function iCanv(id,ui=null){const c=document.getElementById(id);if(!c)return;const rect=c.parentElement.getBoundingClientRect();c.width=rect.width;c.height=rect.height;const ctx=c.getContext('2d');if(ui&&S.cc[ui]){const img=new Image();img.onload=()=>ctx.drawImage(img,0,0);img.src=S.cc[ui];}ctx.strokeStyle=id.includes('draft')?'rgba(79,70,229,.7)':'rgba(225,29,72,.7)';ctx.lineWidth=3;ctx.lineCap=ctx.lineJoin='round';let drawing=false;const gp=(e,t)=>{const r=c.getBoundingClientRect();return t?{x:e.touches[0].clientX-r.left,y:e.touches[0].clientY-r.top}:{x:e.offsetX,y:e.offsetY};};const sp=(x,y)=>{drawing=true;ctx.beginPath();ctx.moveTo(x,y);};const mv=(x,y)=>{if(!drawing)return;ctx.lineTo(x,y);ctx.stroke();};const end=()=>{drawing=false;if(ui)S.cc[ui]=c.toDataURL();};c.onmousedown=e=>{const p=gp(e);sp(p.x,p.y);};c.onmousemove=e=>{const p=gp(e);mv(p.x,p.y);};c.onmouseup=c.onmouseleave=end;c.ontouchstart=e=>{const p=gp(e,1);sp(p.x,p.y);e.preventDefault();};c.ontouchmove=e=>{if(drawing){const p=gp(e,1);mv(p.x,p.y);e.preventDefault();}};c.ontouchend=end;}
+function toggleDraft() {
+  S.dOpen = !S.dOpen;
+  var d = document.getElementById('draft-drawer');
+  var b = document.getElementById('draft-bd');
+  if (S.dOpen) {
+    d.classList.add('open');
+    b.classList.remove('hidden');
+    setTimeout(function() { b.classList.remove('opacity-0'); }, 10);
+    if (_dDraw) iCanv('canv-draft');
+  } else {
+    d.classList.remove('open');
+    b.classList.add('opacity-0');
+    setTimeout(function() { b.classList.add('hidden'); }, 300);
+  }
+}
+
+function clrD() {
+  document.getElementById('text-draft').value = '';
+  var c = document.getElementById('canv-draft');
+  if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height);
+}
+
+function insT(t) {
+  var el = document.getElementById('text-draft');
+  var s = el.selectionStart;
+  el.value = el.value.substring(0, s) + t + el.value.substring(el.selectionEnd);
+  el.focus();
+  el.selectionStart = el.selectionEnd = s + t.length;
+}
+
+var _dDraw = false;
+function togDraftDraw() {
+  _dDraw = !_dDraw;
+  document.getElementById('text-draft').style.display = _dDraw ? 'none' : '';
+  document.getElementById('box-draft').classList.toggle('draw-mode-d', _dDraw);
+  var btn = document.getElementById('btn-dd');
+  btn.className = _dDraw
+    ? 'mx-3 mt-2.5 py-2 bg-rose-50 border border-rose-200 text-rose-600 rounded-xl font-bold text-sm syne'
+    : 'mx-3 mt-2.5 py-2 bg-white border rounded-xl font-bold text-sm text-slate-700 syne';
+  btn.innerText = _dDraw ? '✏️ Mode texte' : '🖍️ Mode dessin';
+  if (_dDraw) iCanv('canv-draft');
+}
+
+function togDraw(ui) {
+  S.isDraw = !S.isDraw;
+  if (S.isDraw) iCanv('canv-' + ui, ui);
+  else render();
+}
+
+function iCanv(id, ui) {
+  var c = document.getElementById(id);
+  if (!c) return;
+  var rect = c.parentElement.getBoundingClientRect();
+  c.width = rect.width;
+  c.height = rect.height;
+  var ctx = c.getContext('2d');
+  if (ui && S.cc[ui]) {
+    var img = new Image();
+    img.onload = function() { ctx.drawImage(img, 0, 0); };
+    img.src = S.cc[ui];
+  }
+  ctx.strokeStyle = id.includes('draft') ? 'rgba(79,70,229,.7)' : 'rgba(225,29,72,.7)';
+  ctx.lineWidth = 3;
+  ctx.lineCap = ctx.lineJoin = 'round';
+  var drawing = false;
+
+  function getPos(e, touch) {
+    var r = c.getBoundingClientRect();
+    if (touch) return {x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top};
+    return {x: e.offsetX, y: e.offsetY};
+  }
+
+  function startDraw(x, y) { drawing = true; ctx.beginPath(); ctx.moveTo(x, y); }
+  function moveDraw(x, y) { if (!drawing) return; ctx.lineTo(x, y); ctx.stroke(); }
+  function endDraw() { drawing = false; if (ui) S.cc[ui] = c.toDataURL(); }
+
+  c.onmousedown = function(e) { var p = getPos(e); startDraw(p.x, p.y); };
+  c.onmousemove = function(e) { var p = getPos(e); moveDraw(p.x, p.y); };
+  c.onmouseup = endDraw;
+  c.onmouseleave = endDraw;
+  c.ontouchstart = function(e) { var p = getPos(e, true); startDraw(p.x, p.y); e.preventDefault(); };
+  c.ontouchmove = function(e) { if (drawing) { var p = getPos(e, true); moveDraw(p.x, p.y); e.preventDefault(); } };
+  c.ontouchend = endDraw;
+}
 </script>
 </body>
 </html>
