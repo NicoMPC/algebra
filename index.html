@@ -138,15 +138,21 @@
     <div class="max-w-lg mx-auto relative z-10 text-center">
       <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white/80 px-3 py-1.5 rounded-full text-xs font-semibold mb-7 s1">
         <span class="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
-        Conforme programme officiel · 6ème → Terminale
+        Essai gratuit 7 jours · Sans engagement · Sans CB
       </div>
       <h1 class="syne text-4xl sm:text-5xl font-black text-white leading-[1.1] tracking-tight mb-5 s2">Il travaille.<br>Mais pas<br><span style="color:#818cf8">les bonnes choses.</span></h1>
       <p class="text-white/65 text-base font-medium leading-relaxed mb-9 max-w-sm mx-auto s3">AlgèbreBoost détecte en 5 minutes les lacunes qui font chuter les notes, et programme les révisions <em>exactement</em> avant qu'elles s'oublient.</p>
-      <button onclick="showAuth('register')" class="btn btn-ac btn-fw s4" style="max-width:380px;font-size:1rem;padding:1.1rem">Démarrer le diagnostic gratuit →</button>
-      <p class="text-white/35 text-xs font-medium mt-4 s4">Aucune carte requise · Résultats en 5 minutes</p>
+      <button onclick="showAuth('register')" class="btn btn-ac btn-fw s4" style="max-width:380px;font-size:1rem;padding:1.1rem">Démarrer mon essai gratuit →</button>
+      <div class="flex items-center justify-center gap-4 mt-4 s4">
+        <span class="flex items-center gap-1.5 text-white/45 text-xs font-medium"><span class="text-green-400">✓</span>7 jours offerts</span>
+        <span class="w-px h-3 bg-white/20"></span>
+        <span class="flex items-center gap-1.5 text-white/45 text-xs font-medium"><span class="text-green-400">✓</span>Sans carte bancaire</span>
+        <span class="w-px h-3 bg-white/20"></span>
+        <span class="flex items-center gap-1.5 text-white/45 text-xs font-medium"><span class="text-green-400">✓</span>Sans engagement</span>
+      </div>
     </div>
     <div class="max-w-lg mx-auto grid grid-cols-3 gap-3 mt-12 s4">
-      <div class="stc text-center"><div class="syne text-2xl font-black text-white mb-1">70%</div><div class="text-white/50 text-xs font-medium leading-tight">du cours oublié sans révision espacée</div></div>
+      <div class="stc text-center"><div class="syne text-2xl font-black text-white mb-1">7j</div><div class="text-white/50 text-xs font-medium leading-tight">d'essai gratuit sans CB ni engagement</div></div>
       <div class="stc text-center"><div class="syne text-2xl font-black text-white mb-1">15min</div><div class="text-white/50 text-xs font-medium leading-tight">par jour suffisent avec la bonne méthode</div></div>
       <div class="stc text-center"><div class="syne text-2xl font-black text-white mb-1">+3pts</div><div class="text-white/50 text-xs font-medium leading-tight">de progression moyenne constatée</div></div>
     </div>
@@ -210,8 +216,15 @@
     <div class="grid-ov"></div>
     <div class="max-w-lg mx-auto text-center relative z-10">
       <h2 class="syne text-3xl font-black text-white mb-3">Prêt à voir la différence ?</h2>
-      <p class="text-white/60 mb-8 font-medium text-sm">5 minutes de diagnostic. Gratuit. Sans engagement.</p>
-      <button onclick="showAuth('register')" class="btn btn-ac btn-fw" style="max-width:380px;font-size:1rem;padding:1.1rem">Démarrer le diagnostic →</button>
+      <p class="text-white/60 mb-8 font-medium text-sm">7 jours gratuits pour constater les progrès. Sans carte, sans engagement.</p>
+      <button onclick="showAuth('register')" class="btn btn-ac btn-fw" style="max-width:380px;font-size:1rem;padding:1.1rem">Démarrer mon essai gratuit →</button>
+      <div class="flex items-center justify-center gap-4 mt-5">
+        <span class="flex items-center gap-1.5 text-white/40 text-xs font-medium"><span class="text-green-400">✓</span>7 jours offerts</span>
+        <span class="w-px h-3 bg-white/20"></span>
+        <span class="flex items-center gap-1.5 text-white/40 text-xs font-medium"><span class="text-green-400">✓</span>Sans CB</span>
+        <span class="w-px h-3 bg-white/20"></span>
+        <span class="flex items-center gap-1.5 text-white/40 text-xs font-medium"><span class="text-green-400">✓</span>Annulation en 1 clic</span>
+      </div>
     </div>
   </div>
   <div class="bg-slate-50 py-5 text-center border-t border-slate-100">
@@ -322,7 +335,7 @@ let S = {
   isDraw: false, dOpen: false,
   calState: null, calExos: [],
   remReq: {}, insights: {}, isNew: {}, cc: {},
-  boostEx: false, boost: null, boostGen: false,
+  boostEx: false, boost: null, boostGen: false, boostPreping: false,
   sent: new Set()
 };
 
@@ -393,10 +406,12 @@ function rMath() {
   if (!c) return;
   var fb = setTimeout(function() {
     document.querySelectorAll('.mc:not(.rdy)').forEach(function(e) { e.classList.add('rdy'); });
+    if (_pendingDraw) { iCanv(_pendingDraw.id, _pendingDraw.ui); _pendingDraw = null; }
   }, 2500);
   if (!window.MathJax || !window.MathJax.typesetPromise) {
     clearTimeout(fb);
     document.querySelectorAll('.mc').forEach(function(e) { e.classList.add('rdy'); });
+    if (_pendingDraw) { iCanv(_pendingDraw.id, _pendingDraw.ui); _pendingDraw = null; }
     return;
   }
   try {
@@ -404,17 +419,20 @@ function rMath() {
     MathJax.typesetPromise([c]).then(function() {
       clearTimeout(fb);
       document.querySelectorAll('.mc').forEach(function(e) { e.classList.add('rdy'); });
-      if (S.isDraw) {
-        var a = document.querySelector('.dcanv');
-        if (a) iCanv(a.id, a.id.replace('canv-', ''));
+      // Activer le canvas APRÈS que le DOM est finalisé et pointer-events:auto actif
+      if (_pendingDraw) {
+        iCanv(_pendingDraw.id, _pendingDraw.ui);
+        _pendingDraw = null;
       }
     }).catch(function() {
       clearTimeout(fb);
       document.querySelectorAll('.mc').forEach(function(e) { e.classList.add('rdy'); });
+      if (_pendingDraw) { iCanv(_pendingDraw.id, _pendingDraw.ui); _pendingDraw = null; }
     });
   } catch(e) {
     clearTimeout(fb);
     document.querySelectorAll('.mc').forEach(function(el) { el.classList.add('rdy'); });
+    if (_pendingDraw) { iCanv(_pendingDraw.id, _pendingDraw.ui); _pendingDraw = null; }
   }
 }
 
@@ -675,6 +693,8 @@ function loadBoost() {
 async function preBoost() {
   if (S.boostEx || S.boostGen) return;
   S.boostGen = true;
+  S.boostPreping = true;
+  render(); // Affiche la carte en état "préparation" immédiatement
   try {
     var r = await fetch(SU, {method: 'POST', body: JSON.stringify({action: "generate_daily_boost", code: S.prof.code, level: S.niv})});
     var d = await r.json();
@@ -682,13 +702,29 @@ async function preBoost() {
       S.boost = d.boost;
       S.boostEx = true;
       loadBoost();
-      render();
     }
   } catch(e) {}
-  finally { S.boostGen = false; }
+  finally {
+    S.boostGen = false;
+    S.boostPreping = false;
+    render();
+  }
 }
 
 async function handleBoost() {
+  // Si preBoost tourne déjà en arrière-plan, on affiche juste le modal et on attend
+  if (S.boostPreping) {
+    document.getElementById('m-boost').classList.remove('hidden');
+    startTs();
+    var waitInterval = setInterval(function() {
+      if (!S.boostPreping) {
+        clearInterval(waitInterval);
+        document.getElementById('m-boost').classList.add('hidden');
+        render();
+      }
+    }, 300);
+    return;
+  }
   if (S.boostGen) return;
   S.boostGen = true;
   document.getElementById('m-boost').classList.remove('hidden');
@@ -951,7 +987,12 @@ function render() {
   var html = '';
 
   if (!S.boostEx && !S.calState) {
-    html += '<div onclick="handleBoost()" class="rounded-2xl p-5 flex items-center gap-4 cursor-pointer active:scale-[.98] transition-transform shadow-lg" style="background:linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)"><div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/20">⚡</div><div class="flex-1 min-w-0"><div class="syne text-base font-black text-white mb-0.5">Mon entraînement IA</div><p class="text-indigo-200 text-sm font-medium">Exercices ciblés sur tes lacunes</p></div><div class="text-white/50 text-xl">›</div></div>';
+    if (S.boostPreping) {
+      // Carte en état "préparation en cours"
+      html += '<div class="rounded-2xl p-5 flex items-center gap-4 shadow-lg" style="background:linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)"><div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/20"><div class="ld"></div></div><div class="flex-1 min-w-0"><div class="syne text-base font-black text-white mb-0.5">Entraînement IA en préparation</div><p class="text-indigo-200 text-sm font-medium">L\'IA analyse tes lacunes et calibre tes défis...</p></div></div>';
+    } else {
+      html += '<div onclick="handleBoost()" class="rounded-2xl p-5 flex items-center gap-4 cursor-pointer active:scale-[.98] transition-transform shadow-lg" style="background:linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)"><div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/20">⚡</div><div class="flex-1 min-w-0"><div class="syne text-base font-black text-white mb-0.5">Mon entraînement IA</div><p class="text-indigo-200 text-sm font-medium">Exercices ciblés sur tes lacunes</p></div><div class="text-white/50 text-xl">›</div></div>';
+    }
   } else if (bDone) {
     html += '<div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-4"><div class="w-11 h-11 bg-emerald-100 rounded-xl flex items-center justify-center text-xl flex-shrink-0">✅</div><div><div class="syne font-black text-emerald-800 text-sm">Entraînement du jour complété !</div><div class="text-emerald-600 text-xs font-medium mt-0.5">L\'agent IA prépare déjà tes défis pour demain</div></div></div>';
   }
@@ -1124,10 +1165,14 @@ function togDraftDraw() {
   if (_dDraw) iCanv('canv-draft');
 }
 
+var _pendingDraw = null;
+
 function togDraw(ui) {
   S.isDraw = !S.isDraw;
-  if (S.isDraw) iCanv('canv-' + ui, ui);
-  else render();
+  // Toujours render() d'abord pour appliquer/retirer la classe draw-mode
+  // Le canvas reçoit pointer-events:auto APRÈS le re-render
+  if (S.isDraw) _pendingDraw = {id: 'canv-' + ui, ui: ui};
+  render();
 }
 
 function iCanv(id, ui) {
