@@ -19,16 +19,17 @@
     .no-sb::-webkit-scrollbar{display:none}.no-sb{-ms-overflow-style:none;scrollbar-width:none}
     .mc{opacity:0;transition:opacity .25s ease}.mc.rdy{opacity:1}
     @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-    @keyframes bIn{from{opacity:0;transform:scale(.9) translateY(12px)}to{opacity:1;transform:none}}
+    @keyframes bIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:none}}
     @keyframes spin{to{transform:rotate(360deg)}}
     @keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
     @keyframes xpPop{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-52px) scale(1.3)}}
     @keyframes s1{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
     @keyframes pulseLight{0%,100%{opacity:1;filter:brightness(1)}50%{opacity:.85;filter:brightness(1.3)}}
     @keyframes remPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.75;transform:scale(.99)}}
+    @keyframes confettiFall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
     .animate-pulse-light{animation:pulseLight 2.5s cubic-bezier(.4,0,.6,1) infinite}
     .afu{animation:fadeUp .35s ease both}
-    .abi{animation:bIn .4s cubic-bezier(.175,.885,.32,1.275) both}
+    .abi{animation:bIn .3s cubic-bezier(.25,.46,.45,.94) both}
     .s1{animation:s1 .6s .1s ease both}.s2{animation:s1 .6s .25s ease both}.s3{animation:s1 .6s .4s ease both}.s4{animation:s1 .6s .55s ease both}
     .ld{width:20px;height:20px;border:3px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .75s linear infinite;display:inline-block;flex-shrink:0}
     .ld-p{border-color:var(--pl);border-top-color:var(--p)}
@@ -52,30 +53,32 @@
     .ow{border-color:var(--ros)!important;background:var(--rosl)!important;pointer-events:none;opacity:.9;color:#9f1239}
     .ow::before{background:var(--ros)!important;border-color:var(--ros)!important;content:'✕';color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800}
     .on{opacity:.35;pointer-events:none}
-    .dcanv,.dcanvd{position:absolute;inset:0;pointer-events:none;z-index:10;touch-action:none}
-    .draw-mode .dcanv{pointer-events:auto;z-index:12;cursor:crosshair}
-    .draw-mode-d .dcanvd{pointer-events:auto;z-index:12;cursor:crosshair}
-    #draft-drawer{position:fixed;bottom:0;left:0;right:0;height:55vh;background:white;border-radius:24px 24px 0 0;transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);z-index:1000;box-shadow:0 -10px 40px rgba(0,0,0,.15);display:flex;flex-direction:column;border-top:1px solid #e2e8f0}
+    /* TABLEAU BLANC BOTTOM SHEET */
+    #draft-drawer{position:fixed;bottom:0;left:0;right:0;height:62vh;background:white;border-radius:24px 24px 0 0;transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);z-index:1000;box-shadow:0 -10px 40px rgba(0,0,0,.18);display:flex;flex-direction:column;will-change:transform}
     #draft-drawer.open{transform:translateY(0)}
-    #draft-bd{position:fixed;inset:0;background:rgba(15,23,42,.2);backdrop-filter:blur(2px);z-index:990;opacity:0;transition:opacity .3s;pointer-events:none}
+    #draft-bd{position:fixed;inset:0;background:rgba(15,23,42,.25);z-index:990;opacity:0;transition:opacity .3s;pointer-events:none}
     #draft-bd.show{opacity:1;pointer-events:auto}
+    /* FORMULE FLOUE */
     .fwrap{background:var(--pl);border-radius:var(--r);padding:.75rem 1rem;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;border:1.5px solid transparent}
     .finner{filter:blur(5px);transition:filter .3s;pointer-events:none;user-select:none}
     .fwrap.frev{background:#fff;border-color:#c7d2fe;cursor:default}
     .fwrap.frev .finner{filter:blur(0)}
     .fhint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:var(--p);gap:.3rem;transition:opacity .3s}
     .fwrap.frev .fhint{opacity:0;pointer-events:none}
+    /* PILLS */
     .pill{width:2.1rem;height:2.1rem;border-radius:8px;font-size:.75rem;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;cursor:pointer;border:2px solid transparent;font-family:'Syne',sans-serif}
     .pbar{height:6px;background:var(--brd);border-radius:99px;overflow:hidden;width:100%}
     .pfill{height:100%;border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1)}
     .pfp{background:linear-gradient(90deg,var(--p),#818cf8)}
     .pfg{background:linear-gradient(90deg,var(--grn),#34d399)}
+    /* MASTERY RING */
     .mring{width:72px;height:72px;position:relative;flex-shrink:0}
     .mring svg{transform:rotate(-90deg)}
     .rbg{fill:none;stroke:#e2e8f0;stroke-width:6}
     .rfill{fill:none;stroke:var(--p);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)}
     .rpct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:900;font-size:.95rem;color:var(--ink)}
     .rem-prep{animation:remPulse 2s ease infinite}
+    /* LANDING */
     .lhero{background:var(--ink);position:relative;overflow:hidden}
     .grid-ov{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
     .stag{display:inline-flex;align-items:center;gap:.4rem;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--p);background:var(--pl);padding:.35rem .75rem;border-radius:99px;border:1px solid #c7d2fe}
@@ -83,25 +86,36 @@
     .ccard.bad::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ros)}
     .ccard.good::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grn)}
     .chk{display:flex;align-items:flex-start;gap:.6rem;font-size:.9rem;font-weight:500;line-height:1.5}
-    #toast{position:fixed;top:1rem;left:50%;transform:translate(-50%,calc(-100% - 1.5rem));z-index:500;display:flex;align-items:center;gap:.6rem;background:var(--ink);color:#fff;font-weight:600;padding:.7rem 1.1rem;border-radius:99px;box-shadow:0 8px 32px rgba(0,0,0,.3);font-size:.875rem;white-space:nowrap;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+    /* TOAST */
+    #toast{position:fixed;top:1rem;left:50%;transform:translate(-50%,calc(-100% - 1.5rem));z-index:5000;display:flex;align-items:center;gap:.6rem;background:var(--ink);color:#fff;font-weight:600;padding:.7rem 1.1rem;border-radius:99px;box-shadow:0 8px 32px rgba(0,0,0,.3);font-size:.875rem;white-space:nowrap;transition:transform .3s cubic-bezier(.4,0,.2,1)}
     #toast.show{transform:translate(-50%,0)}
     ::-webkit-scrollbar{width:4px;height:4px}
     ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:99px}
     .xpf{position:fixed;font-family:'Syne',sans-serif;font-weight:900;font-size:1.5rem;color:var(--amb);pointer-events:none;z-index:999;animation:xpPop .9s ease forwards;text-shadow:0 2px 12px rgba(0,0,0,.15)}
-    .chap-card{border:2px solid var(--brd);border-radius:12px;padding:12px;text-align:center;cursor:pointer;transition:all .2s;background:white;user-select:none;font-weight:bold;color:var(--mut)}
-    .chap-card:hover{border-color:#a5b4fc}
-    .chap-card.selected{border-color:var(--p);background:var(--pl);color:var(--p);transform:scale(1.02);box-shadow:0 4px 12px rgba(67,56,202,.1)}
-    #admin-panel{position:fixed;bottom:80px;right:20px;width:320px;background:#1e293b;color:white;border-radius:16px;padding:16px;z-index:9999;box-shadow:0 10px 40px rgba(0,0,0,.5);font-family:monospace;font-size:12px}
+    /* CHAP CARDS ONBOARDING */
+    .chap-card{border:2px solid var(--brd);border-radius:12px;padding:11px 8px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s,transform .15s;background:white;user-select:none;font-weight:700;color:var(--mut);font-size:.8rem;line-height:1.3;-webkit-tap-highlight-color:transparent}
+    .chap-card.selected{border-color:var(--p);background:var(--pl);color:var(--p);transform:scale(1.03)}
+    /* ADMIN */
+    #admin-panel{position:fixed;bottom:80px;right:20px;width:300px;background:#1e293b;color:white;border-radius:16px;padding:16px;z-index:9999;box-shadow:0 10px 40px rgba(0,0,0,.5);font-family:monospace;font-size:12px}
+    /* CONFETTI */
     .confetti{position:fixed;top:-10px;border-radius:2px;animation:confettiFall 3s linear forwards;pointer-events:none;z-index:9998}
-    @keyframes confettiFall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+    /* SYMBOLES TABLEAU BLANC */
+    .sym-btn{background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:8px;padding:6px 10px;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .1s;color:var(--ink);font-family:'DM Sans',monospace;white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+    .sym-btn:active{background:#e2e8f0;transform:scale(.95)}
+    /* TEXTAREA BROUILLON */
+    #draft-text{width:100%;resize:none;border:1.5px solid var(--brd);border-radius:12px;padding:.75rem 1rem;font-size:1rem;font-family:'DM Sans',monospace;color:var(--ink);background:#f8fafc;outline:none;line-height:1.6;transition:border-color .15s}
+    #draft-text:focus{border-color:var(--p);background:#fff}
+    /* CANVAS DRAW */
+    #canv-draft{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair;touch-action:none;display:block}
   </style>
 </head>
 <body>
 
+<!-- TOAST -->
 <div id="toast"><span id="ti">🧠</span><span id="tm">...</span></div>
 
 <!-- MODAL ALERTE -->
-<div id="m-alert" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2000] flex items-center justify-center p-4">
+<div id="m-alert" class="hidden fixed inset-0 z-[2000] flex items-center justify-center p-4" style="background:rgba(15,23,42,.6)">
   <div class="bg-white rounded-3xl w-full max-w-sm p-7 text-center shadow-2xl abi">
     <div id="ai" class="text-5xl mb-4">⚠️</div>
     <h3 id="at" class="text-xl font-black text-slate-800 mb-2 syne">Attention</h3>
@@ -110,8 +124,8 @@
   </div>
 </div>
 
-<!-- MODAL BOOST -->
-<div id="m-boost" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[2000] flex items-center justify-center p-4">
+<!-- MODAL BOOST LOADING -->
+<div id="m-boost" class="hidden fixed inset-0 z-[2000] flex items-center justify-center p-4" style="background:rgba(15,23,42,.8)">
   <div class="bg-white rounded-3xl w-full max-w-sm p-8 text-center shadow-2xl abi">
     <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-3xl mx-auto mb-5 shadow-lg animate-pulse-light">⚡</div>
     <h3 class="text-lg font-black text-slate-800 mb-1 syne">L'IA prépare tes défis</h3>
@@ -137,7 +151,7 @@
         Assistant Mathématique IA
       </div>
       <h1 class="syne text-4xl sm:text-5xl font-black text-white leading-[1.1] mb-5 s2">Arrêtez de chercher <em>pourquoi</em> il bloque.<br><span style="color:#818cf8">L'IA s'en charge.</span></h1>
-      <p class="text-white/65 text-base font-medium leading-relaxed mb-9 max-w-sm mx-auto s3">Des heures de travail dans le vide ? AlgèbreBoost diagnostique les failles cachées et crée le seul parcours de révision dont votre enfant a besoin. 15 minutes par jour.</p>
+      <p class="text-white/65 text-base font-medium leading-relaxed mb-9 max-w-sm mx-auto s3">Des heures de travail dans le vide ? AlgèbreBoost diagnostique les failles cachées et crée le seul parcours dont votre enfant a besoin. 15 minutes par jour.</p>
       <button onclick="showAuth('register')" class="btn btn-ac btn-fw s4 shadow-xl" style="max-width:380px;font-size:1rem;padding:1.1rem">Démarrer le diagnostic gratuit →</button>
       <div class="flex items-center justify-center gap-4 mt-5 s4">
         <span class="flex items-center gap-1.5 text-white/45 text-xs font-medium"><span class="text-green-400">✓</span>7 jours offerts</span>
@@ -162,9 +176,9 @@
         <div class="ccard good">
           <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-4">Avec AlgèbreBoost</div>
           <div class="space-y-3">
-            <div class="chk text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Diagnostic précis</div>
-            <div class="chk text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>L'IA cible les erreurs</div>
-            <div class="chk text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Tableau de bord parent</div>
+            <div class="chk text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Diagnostic précis par niveau</div>
+            <div class="chk text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>L'IA cible les vraies erreurs</div>
+            <div class="chk text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Remédiation automatique</div>
           </div>
         </div>
       </div>
@@ -176,14 +190,16 @@
 </div>
 
 <!-- AUTH SCREEN -->
-<div id="auth-screen" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[60] flex items-end sm:items-center justify-center">
-  <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl abi overflow-hidden flex flex-col max-h-[90vh]">
+<div id="auth-screen" class="hidden fixed inset-0 z-[60] flex items-end sm:items-center justify-center" style="background:rgba(15,23,42,.65)">
+  <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl abi overflow-hidden flex flex-col" style="max-height:92vh">
     <div class="flex justify-center pt-3 pb-1 sm:hidden"><div class="w-10 h-1.5 bg-slate-200 rounded-full"></div></div>
-    <div class="p-6 overflow-y-auto no-sb">
+    <div class="p-6 overflow-y-auto no-sb flex-1">
       <div class="flex justify-between items-center mb-5">
         <h2 id="auth-title" class="syne text-xl font-black text-slate-900">Rejoins l'arène</h2>
-        <button onclick="closeAuth()" class="w-9 h-9 bg-slate-100 rounded-full font-bold text-slate-500 flex items-center justify-center text-lg">✕</button>
+        <button onclick="closeAuth()" class="w-9 h-9 bg-slate-100 rounded-full font-bold text-slate-500 flex items-center justify-center text-lg leading-none">✕</button>
       </div>
+
+      <!-- STEP 1 : FORMULAIRE -->
       <div id="auth-step-1">
         <div class="flex bg-slate-100 rounded-xl p-1 mb-5">
           <button onclick="switchTab('register')" id="tab-r" class="flex-1 py-2.5 font-bold text-sm rounded-lg transition-all syne">Nouveau</button>
@@ -191,29 +207,34 @@
         </div>
         <div id="form-r" class="space-y-3">
           <input type="text" id="rn" class="inp" placeholder="Prénom de l'élève" autocomplete="given-name">
-          <select id="rl" class="inp font-bold text-indigo-700">
+          <select id="rl" class="inp font-bold text-indigo-700" onchange="updateLevelChapters()">
             <option value="6EME">Classe : 6ème</option>
             <option value="5EME">Classe : 5ème</option>
             <option value="4EME" selected>Classe : 4ème</option>
             <option value="3EME">Classe : 3ème</option>
             <option value="SECONDE">Classe : Seconde</option>
-            <option value="PREMIERE">Classe : 1ère
-            </option value="TERMINALE">Classe : Terminale</option>
+            <option value="PREMIERE">Classe : 1ère</option>
+            <option value="TERMINALE">Classe : Terminale</option>
           </select>
         </div>
         <div class="space-y-3 mt-3">
           <input type="email" id="le" class="inp" placeholder="Email (parent ou élève)" autocomplete="email">
           <input type="password" id="lp" class="inp" placeholder="Mot de passe" autocomplete="current-password">
           <button onclick="submitAuth()" class="btn btn-ac btn-fw py-4 mt-1">
-            <span id="auth-text">Continuer 🚀</span><span id="auth-ld" class="ld hidden"></span>
+            <span id="auth-text">Continuer 🚀</span>
+            <span id="auth-ld" class="ld hidden"></span>
           </button>
         </div>
       </div>
+
+      <!-- STEP 2 : SÉLECTION CHAPITRES (dynamique selon niveau) -->
       <div id="auth-step-2" class="hidden">
-        <p class="text-slate-500 font-medium mb-4 text-sm leading-relaxed">Pour que l'IA ne te pose pas de questions sur des choses que tu n'as pas encore vues, sélectionne les chapitres que tu as <strong>déjà étudiés cette année</strong> :</p>
-        <div class="grid grid-cols-2 gap-3 mb-6" id="onboarding-chaps"></div>
+        <p class="text-slate-500 font-medium mb-4 text-sm leading-relaxed">
+          Pour que l'IA ne te pose pas de questions sur des notions pas encore vues, sélectionne les chapitres que tu as <strong>déjà étudiés cette année</strong> :
+        </p>
+        <div class="grid grid-cols-2 gap-2.5 mb-6" id="onboarding-chaps"></div>
         <button onclick="finalizeOnboarding()" id="btn-onboard" class="btn btn-dk btn-fw py-4">
-          <span id="onboard-text">Lancer mon Diagnostic IA</span>
+          <span id="onboard-text">Lancer mon Diagnostic IA 🎯</span>
           <span id="onboard-ld" class="ld hidden"></span>
         </button>
       </div>
@@ -225,10 +246,13 @@
   <header class="bg-white rounded-2xl shadow-sm border border-slate-100 mb-4 overflow-hidden">
     <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-sm shadow-md text-white">📐</div>
+        <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-sm shadow-md">📐</div>
         <div>
           <div class="syne font-black text-slate-900 text-sm">Espace de <span id="aname" class="text-indigo-600"></span></div>
-          <div class="flex items-center gap-1 mt-0.5"><span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span><span class="text-[10px] font-semibold text-green-600">IA Active</span></div>
+          <div class="flex items-center gap-1 mt-0.5">
+            <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+            <span class="text-[10px] font-semibold text-green-600">IA Active</span>
+          </div>
         </div>
       </div>
       <button onclick="logout()" class="w-9 h-9 bg-rose-50 border border-rose-100 text-rose-400 rounded-xl flex items-center justify-center text-base hover:bg-rose-100 transition-colors">✕</button>
@@ -248,25 +272,66 @@
 </div>
 
 <!-- BOUTON TABLEAU BLANC -->
-<button onclick="toggleDraft()" class="fixed bottom-5 right-4 z-[80] w-14 h-14 bg-slate-900 text-white rounded-full shadow-2xl flex items-center justify-center text-xl transition-transform active:scale-90 border-2 border-slate-700">📝</button>
+<button onclick="toggleDraft()" class="fixed bottom-5 right-4 z-[80] w-14 h-14 bg-slate-900 text-white rounded-full shadow-2xl flex items-center justify-center text-xl transition-transform active:scale-90 border-2 border-slate-700" title="Ouvrir le tableau blanc">✏️</button>
 
-<!-- FOND TABLEAU BLANC -->
+<!-- FOND OBSCUR TABLEAU BLANC -->
 <div id="draft-bd" onclick="toggleDraft()"></div>
 
-<!-- TIROIR TABLEAU BLANC -->
+<!-- TIROIR TABLEAU BLANC REDESIGNÉ -->
 <div id="draft-drawer">
-  <div class="px-5 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 rounded-t-[24px]">
-    <div class="flex items-center gap-2 syne font-black text-slate-800 text-lg">📝 Tableau Blanc</div>
-    <button onclick="toggleDraft()" class="text-slate-500 font-bold border border-slate-300 px-4 py-1.5 rounded-xl text-sm bg-white hover:bg-slate-50 transition-colors">Baisser</button>
+  <!-- Header -->
+  <div class="px-4 py-3 border-b border-slate-200 flex justify-between items-center bg-slate-50 rounded-t-[24px] flex-shrink-0">
+    <div class="syne font-black text-slate-800 text-base flex items-center gap-2">✏️ Tableau de brouillon</div>
+    <button onclick="toggleDraft()" class="text-slate-500 font-semibold border border-slate-300 px-3 py-1.5 rounded-xl text-sm bg-white hover:bg-slate-50 transition-colors">Baisser ↓</button>
   </div>
-  <div class="px-4 py-3 border-b border-slate-100 flex gap-3 bg-white">
-    <button onclick="insT('²')" class="bg-slate-50 border border-slate-200 text-slate-700 rounded-xl flex-1 py-2 font-bold syne hover:bg-slate-100 transition-colors">x²</button>
-    <button onclick="insT('³')" class="bg-slate-50 border border-slate-200 text-slate-700 rounded-xl flex-1 py-2 font-bold syne hover:bg-slate-100 transition-colors">x³</button>
-    <button onclick="insT('√()')" class="bg-slate-50 border border-slate-200 text-slate-700 rounded-xl flex-1 py-2 font-bold syne hover:bg-slate-100 transition-colors">√</button>
-    <button onclick="clrD()" class="bg-rose-50 border border-rose-200 text-rose-600 rounded-xl flex-1 py-2 font-bold syne hover:bg-rose-100 transition-colors">Effacer</button>
+
+  <!-- Barre de symboles mathématiques (toujours visible) -->
+  <div class="px-3 py-2 border-b border-slate-100 bg-white flex-shrink-0">
+    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 px-1">Symboles → insérés dans le texte</div>
+    <div class="flex gap-1.5 overflow-x-auto no-sb pb-1">
+      <button class="sym-btn" onclick="insSymbol('²')">x²</button>
+      <button class="sym-btn" onclick="insSymbol('³')">x³</button>
+      <button class="sym-btn" onclick="insSymbol('√')">√</button>
+      <button class="sym-btn" onclick="insSymbol('×')">×</button>
+      <button class="sym-btn" onclick="insSymbol('÷')">÷</button>
+      <button class="sym-btn" onclick="insSymbol('π')">π</button>
+      <button class="sym-btn" onclick="insSymbol('≠')">≠</button>
+      <button class="sym-btn" onclick="insSymbol('≤')">≤</button>
+      <button class="sym-btn" onclick="insSymbol('≥')">≥</button>
+      <button class="sym-btn" onclick="insSymbol('∞')">∞</button>
+      <button class="sym-btn" onclick="insSymbol('°')">°</button>
+      <button class="sym-btn" onclick="insSymbol('⁻¹')">⁻¹</button>
+      <button class="sym-btn" onclick="insSymbol('(')">( )</button>
+      <button class="sym-btn" onclick="insSymbol('[')">[  ]</button>
+    </div>
   </div>
-  <div class="flex-grow relative bg-slate-50/50">
-    <canvas id="canv-draft" class="dcanvd"></canvas>
+
+  <!-- Zone texte -->
+  <div class="px-3 pt-3 pb-2 bg-white flex-shrink-0">
+    <div class="flex justify-between items-center mb-1.5">
+      <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">✏️ Zone texte / calculs</span>
+      <button onclick="clrText()" class="text-xs font-bold text-rose-400 hover:text-rose-600 transition-colors">Effacer texte</button>
+    </div>
+    <textarea id="draft-text" rows="3" placeholder="Écris tes calculs ici, utilise les symboles ci-dessus..."></textarea>
+  </div>
+
+  <!-- Séparateur zone dessin -->
+  <div class="px-3 py-1.5 bg-slate-50 border-t border-b border-slate-100 flex justify-between items-center flex-shrink-0">
+    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">🖊️ Zone dessin libre</span>
+    <div class="flex items-center gap-2">
+      <div class="flex gap-1" id="pen-colors">
+        <button onclick="setPenColor('#4f46e5')" class="w-5 h-5 rounded-full border-2 border-indigo-400 cursor-pointer" style="background:#4f46e5" title="Indigo"></button>
+        <button onclick="setPenColor('#111827')" class="w-5 h-5 rounded-full border-2 border-slate-300 cursor-pointer" style="background:#111827" title="Noir"></button>
+        <button onclick="setPenColor('#e11d48')" class="w-5 h-5 rounded-full border-2 border-rose-300 cursor-pointer" style="background:#e11d48" title="Rouge"></button>
+        <button onclick="setPenColor('#059669')" class="w-5 h-5 rounded-full border-2 border-emerald-300 cursor-pointer" style="background:#059669" title="Vert"></button>
+      </div>
+      <button onclick="clrD()" class="text-xs font-bold text-rose-400 hover:text-rose-600 transition-colors">Effacer dessin</button>
+    </div>
+  </div>
+
+  <!-- Canvas dessin (flex-1 = prend tout l'espace restant) -->
+  <div class="flex-1 relative bg-slate-50 overflow-hidden">
+    <canvas id="canv-draft"></canvas>
   </div>
 </div>
 
@@ -274,33 +339,49 @@
 <div id="admin-panel" class="hidden">
   <div class="flex justify-between items-center mb-3 border-b border-slate-600 pb-2">
     <strong class="text-indigo-400 text-sm syne">🛠️ DEV TOOLS</strong>
-    <button onclick="document.getElementById('admin-panel').classList.add('hidden')" class="text-rose-400 font-bold">Fermer</button>
+    <button onclick="document.getElementById('admin-panel').classList.add('hidden')" class="text-rose-400 font-bold text-sm">Fermer</button>
   </div>
   <div class="space-y-2">
-    <button onclick="simTime(2)" class="w-full bg-slate-700 p-2.5 rounded-lg text-left hover:bg-slate-600 font-bold">⏩ Forcer temps à J+2</button>
-    <button onclick="forceFailChap()" class="w-full bg-slate-700 p-2.5 rounded-lg text-left hover:bg-slate-600 font-bold">💥 Forcer prochain = HARD</button>
-    <div class="bg-slate-800 p-2 rounded-lg mt-2 text-[10px] overflow-x-auto text-green-400" id="admin-log">Status: OK</div>
+    <button onclick="simTime(2)" class="w-full bg-slate-700 p-2.5 rounded-lg text-left hover:bg-slate-600 font-bold text-xs">⏩ Forcer temps à J+2</button>
+    <button onclick="forceFailChap()" class="w-full bg-slate-700 p-2.5 rounded-lg text-left hover:bg-slate-600 font-bold text-xs">💥 Forcer prochain = HARD</button>
+    <div class="bg-slate-800 p-2 rounded-lg mt-2 text-[10px] overflow-x-auto text-green-400 break-all" id="admin-log">Status: OK</div>
   </div>
 </div>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────
-const SU = 'https://script.google.com/macros/s/AKfycbybKrXIE6MaiWAHd17HRwFXdFrqWyrt0LdybyX-iEWvUQV6L495O947eRaPYelH0FZw/exec';
+// ══════════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════════
+const SU = 'https://script.google.com/macros/s/AKfycbybRiq_YDbzJscwr26FsV2MPVuzsk0exMpV2RxohEmnI0LMHxqP_TD__asj3jBD5TKa/exec';
 const SK = 'boost_v22';
 const LK = 'boost_loc_v22';
 const LO = ["6EME","5EME","4EME","3EME","SECONDE","PREMIERE","TERMINALE"];
 const LN = {"6EME":"6ème","5EME":"5ème","4EME":"4ème","3EME":"3ème","SECONDE":"Seconde","PREMIERE":"1ère","TERMINALE":"Terminale"};
 const TS = ["🧠 Analyse de tes erreurs...","🔍 Ciblage des lacunes...","⚙️ Calibrage du niveau...","🎯 Génération des défis...","✨ Finalisation en cours..."];
 
-// ── STATE ─────────────────────────────────────────────────
+// Chapitres par niveau (pour l'onboarding)
+const CHAPS_BY_LEVEL = {
+  "6EME":["Nombres entiers 🔢","Fractions 🍕","Proportionnalité ⚖️","Géométrie 📐","Périmètres & Aires 🟦","Angles 📏"],
+  "5EME":["Fractions 🍕","Nombres relatifs ➕","Proportionnalité ⚖️","Puissances ⚡","Pythagore 📐","Calcul Littéral 📝"],
+  "4EME":["Fractions 🍕","Puissances ⚡","Calcul Littéral 📝","Équations 🎯","Pythagore 📐","Proportionnalité ⚖️"],
+  "3EME":["Calcul Littéral 📝","Équations 🎯","Fonctions 📈","Théorème de Thalès 📐","Trigonométrie 📐","Statistiques 📊"],
+  "SECONDE":["Fonctions 📈","Équations & Inéquations 🎯","Géométrie repérée 📐","Statistiques 📊","Probabilités 🎲","Vecteurs ➡️"],
+  "PREMIERE":["Dérivation 📈","Suites numériques 🔢","Trigonométrie ⭕","Fonctions 📈","Probabilités 🎲","Géométrie dans l'espace 📐"],
+  "TERMINALE":["Limites 📈","Dérivation avancée 📈","Intégrales ∫","Logarithmes 🔢","Probabilités 🎲","Suites numériques 🔢"]
+};
+
+// ══════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════
 let currentTab = 'register';
+let penColor = '#4f46e5';
 let S = {
   prof: null, niv: "4EME", res: {}, xp: 0, stk: 0,
   qv: {}, exp: {}, rev: false, cid: null,
   hints: {}, ftch: {}, qans: {}, shuf: {},
-  isDraw: false, dOpen: false,
+  dOpen: false,
   calState: null, calExos: [],
-  remReq: {}, insights: {}, isNew: {}, cc: {},
+  remReq: {}, insights: {}, isNew: {}, chapDone: {},
   boostEx: false, boost: null, boostGen: false, boostPreping: false,
   isFirstDay: false,
   sent: new Set(),
@@ -312,30 +393,33 @@ let S = {
 const LVL = {};
 LO.forEach(function(k) { LVL[k] = { cats: {}, names: {}, icons: {} }; });
 
-// ── UTILS & ADMIN ─────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════════════
 function tod() {
   var d = new Date();
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
 
-let clickCount = 0;
+let clickCount = 0, clickTimer = null;
 function triggerAdmin() {
   clickCount++;
+  clearTimeout(clickTimer);
+  clickTimer = setTimeout(function() { clickCount = 0; }, 1200);
   if (clickCount >= 3) {
     clickCount = 0; S.adminMode = true;
     document.getElementById('admin-panel').classList.remove('hidden');
     logAdmin("Mode Dev activé.");
   }
-  setTimeout(() => clickCount = 0, 1000);
 }
 function logAdmin(msg) { if (S.adminMode) document.getElementById('admin-log').innerText = msg; }
-function simTime(days) { S.timeOffset += days; logAdmin(`Temps simulé: +${S.timeOffset}j`); alert(`Virtuellement à J+${S.timeOffset}.`); }
-function forceFailChap() { S.forceFail = true; logAdmin("Le prochain clic 'Acquis' enregistrera un 'HARD'"); alert("Simulera des erreurs pour forcer la remédiation."); }
+function simTime(days) { S.timeOffset += days; logAdmin('Temps simulé: +' + S.timeOffset + 'j'); alert('Virtuellement à J+' + S.timeOffset + '.'); }
+function forceFailChap() { S.forceFail = true; logAdmin("Prochain 'Acquis' = HARD."); alert("Le prochain clic Acquis sera enregistré en HARD."); }
 
 async function h256(pw, em) {
   var s = (em || '').toLowerCase() + '::' + pw + '::AB22';
   var b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(b)).map(function(x) { return x.toString(16).padStart(2, '0'); }).join('');
+  return Array.from(new Uint8Array(b)).map(function(x) { return x.toString(16).padStart(2,'0'); }).join('');
 }
 
 function fmtL(s) {
@@ -347,14 +431,12 @@ function fmtL(s) {
 
 var _tt = null;
 function showT(msg, dur, ic) {
-  dur = (dur === undefined) ? 3500 : dur;
-  ic = ic || '🧠';
-  var t = document.getElementById('toast');
+  dur = (dur === undefined) ? 3500 : dur; ic = ic || '🧠';
   document.getElementById('tm').innerText = msg;
   document.getElementById('ti').innerText = ic;
-  t.classList.add('show');
+  document.getElementById('toast').classList.add('show');
   if (_tt) clearTimeout(_tt);
-  if (dur > 0) _tt = setTimeout(function() { t.classList.remove('show'); }, dur);
+  if (dur > 0) _tt = setTimeout(function() { document.getElementById('toast').classList.remove('show'); }, dur);
 }
 function hideT() { document.getElementById('toast').classList.remove('show'); if (_tt) clearTimeout(_tt); }
 
@@ -371,28 +453,30 @@ function showXP(a) {
   var e = document.createElement('div');
   e.className = 'xpf';
   e.innerText = '+' + a;
-  e.style.left = '50%';
-  e.style.top = '40%';
-  e.style.transform = 'translate(-50%, -50%)';
+  e.style.cssText = 'left:50%;top:40%;transform:translate(-50%,-50%)';
   document.body.appendChild(e);
   setTimeout(function() { e.remove(); }, 1000);
 }
 
 function launchConfetti() {
-  for (let i = 0; i < 40; i++) {
-    const c = document.createElement('div');
+  for (var i = 0; i < 45; i++) {
+    var c = document.createElement('div');
     c.className = 'confetti';
     c.style.left = Math.random() * 100 + 'vw';
-    c.style.backgroundColor = ['#4f46e5', '#10b981', '#fbbf24', '#f43f5e'][Math.floor(Math.random() * 4)];
-    c.style.width = c.style.height = (Math.random() * 8 + 6) + 'px';
-    c.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    c.style.backgroundColor = ['#4f46e5','#10b981','#fbbf24','#f43f5e','#8b5cf6'][Math.floor(Math.random()*5)];
+    var sz = (Math.random() * 8 + 5) + 'px';
+    c.style.width = sz; c.style.height = sz;
+    c.style.borderRadius = Math.random() > .5 ? '50%' : '2px';
     c.style.animationDuration = (Math.random() * 2 + 2) + 's';
+    c.style.animationDelay = (Math.random() * .5) + 's';
     document.body.appendChild(c);
-    setTimeout(() => c.remove(), 4000);
+    setTimeout(function() { c.remove(); }, 4000);
   }
 }
 
-// ── MATHJAX ───────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// MATHJAX
+// ══════════════════════════════════════════════════════════════
 function rMath() {
   var c = document.getElementById('app-c');
   if (!c) return;
@@ -413,13 +497,15 @@ function rMath() {
       clearTimeout(fb);
       document.querySelectorAll('.mc').forEach(function(e) { e.classList.add('rdy'); });
     });
-  } catch (e) {
+  } catch(e) {
     clearTimeout(fb);
     document.querySelectorAll('.mc').forEach(function(el) { el.classList.add('rdy'); });
   }
 }
 
-// ── SCORE QUEUE ───────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// SCORE QUEUE (résilience réseau)
+// ══════════════════════════════════════════════════════════════
 function sendScore(cat, idx, status, xp, q) {
   var k = S.prof.code + '-' + cat + '-' + idx;
   if (S.sent.has(k) && !S.adminMode) return;
@@ -433,11 +519,10 @@ function sendScore(cat, idx, status, xp, q) {
     xp: xp, q: q || ''
   };
   if (S.timeOffset > 0) {
-    let d = new Date();
-    d.setDate(d.getDate() + S.timeOffset);
-    p.overrideDate = d.toISOString().split('T')[0];
+    var dd = new Date(); dd.setDate(dd.getDate() + S.timeOffset);
+    p.overrideDate = dd.toISOString().split('T')[0];
   }
-  try { S.scoreQueue.push(p); localStorage.setItem('sq', JSON.stringify(S.scoreQueue)); } catch (e) {}
+  try { S.scoreQueue.push(p); localStorage.setItem('sq', JSON.stringify(S.scoreQueue)); } catch(e) {}
   flushQ();
 }
 
@@ -448,36 +533,35 @@ async function flushQ() {
     S.scoreQueue.shift();
     localStorage.setItem('sq', JSON.stringify(S.scoreQueue));
     if (S.scoreQueue.length) setTimeout(flushQ, 400);
-  } catch (e) {}
+  } catch(e) {}
 }
 
-// ── TIMER 15 MINUTES ──────────────────────────────────────
-let timerInterval = null;
+// ══════════════════════════════════════════════════════════════
+// TIMER 15 MINUTES
+// ══════════════════════════════════════════════════════════════
+var timerInterval = null;
 function initDailyTimer() {
   if (!S.prof) return;
-  const code = S.prof.code;
-  const today = tod();
-  let tData = JSON.parse(localStorage.getItem('daily_timer') || '{}');
+  var code = S.prof.code;
+  var today = tod();
+  var tData = JSON.parse(localStorage.getItem('daily_timer') || '{}');
   if (!tData[code] || tData[code].date !== today) {
     tData[code] = { date: today, secondsLeft: 15 * 60 };
   }
-  const updateDisp = (secs) => {
-    const el = document.getElementById('ui-timer');
+  function updateDisp(secs) {
+    var el = document.getElementById('ui-timer');
     if (!el) return;
     if (secs <= 0) {
       el.innerText = "Objectif ✅";
-      el.parentElement.classList.replace('bg-sky-50', 'bg-emerald-50');
-      el.parentElement.classList.replace('text-sky-700', 'text-emerald-700');
-      el.parentElement.classList.replace('border-sky-100', 'border-emerald-200');
+      el.parentElement.style.cssText = 'background:#ecfdf5;border-color:#a7f3d0;color:#065f46';
       return;
     }
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    el.innerText = `${m}:${s.toString().padStart(2, '0')}`;
-  };
+    var m = Math.floor(secs / 60); var s = secs % 60;
+    el.innerText = m + ':' + String(s).padStart(2, '0');
+  }
   updateDisp(tData[code].secondsLeft);
   clearInterval(timerInterval);
-  timerInterval = setInterval(() => {
+  timerInterval = setInterval(function() {
     if (tData[code].secondsLeft > 0) {
       tData[code].secondsLeft--;
       localStorage.setItem('daily_timer', JSON.stringify(tData));
@@ -490,24 +574,23 @@ function initDailyTimer() {
   }, 1000);
 }
 
-// ── GESTURE SWIPE ─────────────────────────────────────────
-let touchStartX = 0, touchEndX = 0, touchStartY = 0, touchEndY = 0;
-document.addEventListener('touchstart', e => {
-  touchStartX = e.changedTouches[0].screenX;
-  touchStartY = e.changedTouches[0].screenY;
-});
-document.addEventListener('touchend', e => {
-  touchEndX = e.changedTouches[0].screenX;
-  touchEndY = e.changedTouches[0].screenY;
-  if (touchStartX - touchEndX > 70 && Math.abs(touchStartY - touchEndY) < 50) {
-    if (S.cid && S.res[S.cid]) {
-      const parts = S.cid.split('-');
-      if (parts.length >= 3) nextEx(parts[1]);
-    }
+// ══════════════════════════════════════════════════════════════
+// SWIPE GAUCHE → EXERCICE SUIVANT
+// ══════════════════════════════════════════════════════════════
+var touchSX = 0, touchSY = 0;
+document.addEventListener('touchstart', function(e) { touchSX = e.changedTouches[0].screenX; touchSY = e.changedTouches[0].screenY; }, { passive: true });
+document.addEventListener('touchend', function(e) {
+  var dx = touchSX - e.changedTouches[0].screenX;
+  var dy = Math.abs(touchSY - e.changedTouches[0].screenY);
+  if (dx > 70 && dy < 50 && S.cid && S.res[S.cid]) {
+    var parts = S.cid.split('-');
+    if (parts.length >= 3) nextEx(parts[1]);
   }
-});
+}, { passive: true });
 
-// ── AUTH & ONBOARDING ─────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════════════════════
 function showAuth(tab) {
   document.getElementById('landing-screen').classList.add('hidden');
   document.getElementById('auth-screen').classList.remove('hidden');
@@ -526,6 +609,19 @@ function switchTab(tab) {
   document.getElementById('auth-text').innerText = tab === 'register' ? "Continuer 🚀" : "Entrer dans l'arène ⚡";
 }
 
+// Met à jour les chapitres quand le niveau change dans le select
+function updateLevelChapters() {
+  var level = document.getElementById('rl').value;
+  var chaps = CHAPS_BY_LEVEL[level] || CHAPS_BY_LEVEL["4EME"];
+  var grid = document.getElementById('onboarding-chaps');
+  if (grid) {
+    grid.innerHTML = chaps.map(function(c) {
+      var key = c.replace(/ [^\w]/g, '').replace(/\s+/g, '_');
+      return '<div onclick="this.classList.toggle(\'selected\')" class="chap-card syne" data-chap="' + key + '">' + c + '</div>';
+    }).join('');
+  }
+}
+
 function togLd(on) {
   document.getElementById('auth-ld').classList.toggle('hidden', !on);
   document.getElementById('auth-text').classList.toggle('hidden', on);
@@ -534,37 +630,35 @@ function togLd(on) {
 async function submitAuth() {
   var e = document.getElementById('le').value.trim();
   var p = document.getElementById('lp').value.trim();
-  if (!e || !p) return;
+  if (!e || !p) { alert2("Champs manquants", "Email et mot de passe requis."); return; }
   togLd(true);
   var h = await h256(p, e);
 
   if (currentTab === 'register') {
     var n = document.getElementById('rn').value.trim();
     var l = document.getElementById('rl').value;
-    if (!n) { alert2("Oops", "Prénom manquant"); togLd(false); return; }
+    if (!n) { alert2("Oops", "Le prénom de l'élève est requis."); togLd(false); return; }
     try {
       var r = await fetch(SU, { method: 'POST', body: JSON.stringify({ action: "register", name: n, email: e, level: l, password: h }) });
       var d = await r.json();
       if (d.status === 'success') {
-        S.prof = d.profile;
-        S.niv = d.profile.level;
-        S.tmpEmail = e;
-        S.tmpHash = h;
+        S.prof = d.profile; S.niv = d.profile.level;
+        S.tmpEmail = e; S.tmpHash = h;
         document.getElementById('auth-step-1').classList.add('hidden');
         document.getElementById('auth-step-2').classList.remove('hidden');
-        document.getElementById('auth-title').innerText = "Ton Programme";
-        const chaps = ["Fractions 🍕", "Pythagore 📐", "Puissances ⚡", "Calcul Littéral 📝", "Proportionnalité ⚖️", "Équations 🎯"];
-        document.getElementById('onboarding-chaps').innerHTML = chaps.map(c =>
-          `<div onclick="this.classList.toggle('selected');" class="chap-card syne text-sm text-slate-700" data-chap="${c.replace(/ [^a-zA-ZÀ-ÿ]/g, '')}">${c}</div>`
-        ).join('');
+        document.getElementById('auth-title').innerText = "Tes chapitres 📚";
+        // Chapitres dynamiques selon le niveau sélectionné
+        var chaps = CHAPS_BY_LEVEL[l] || CHAPS_BY_LEVEL["4EME"];
+        document.getElementById('onboarding-chaps').innerHTML = chaps.map(function(c) {
+          var key = c.replace(/ [^\w]/g, '').replace(/\s+/g, '_');
+          return '<div onclick="this.classList.toggle(\'selected\')" class="chap-card syne" data-chap="' + key + '">' + c + '</div>';
+        }).join('');
       } else {
         alert2("Erreur", d.message);
       }
-    } catch (err) {
-      alert2("Erreur réseau", "Vérifie ta connexion.", "📡");
-    } finally {
-      togLd(false);
-    }
+    } catch(err) { alert2("Erreur réseau", "Vérifie ta connexion.", "📡"); }
+    finally { togLd(false); }
+
   } else {
     try {
       var r = await fetch(SU, { method: 'POST', body: JSON.stringify({ action: "login", email: e, password: h }) });
@@ -572,53 +666,39 @@ async function submitAuth() {
       if (d.status === 'success') {
         if (d.profile.isAdmin) triggerAdmin();
         localStorage.setItem(SK, JSON.stringify({ email: e, password: h }));
-        initApp(d);
+        initApp(d, false);
       } else {
         alert2("Refusé", d.message);
       }
-    } catch (err) {
-      alert2("Erreur réseau", "Vérifie ta connexion.", "📡");
-    } finally {
-      togLd(false);
-    }
+    } catch(err) { alert2("Erreur réseau", "Vérifie ta connexion.", "📡"); }
+    finally { togLd(false); }
   }
 }
-
-// ── FINALISATION ONBOARDING (CORRIGÉ) ────────────────────
+// ══════════════════════════════════════════════════════════════
+// ONBOARDING FINALIZATION (CORRIGÉ)
+// ══════════════════════════════════════════════════════════════
 async function finalizeOnboarding() {
-  const selChaps = Array.from(document.querySelectorAll('.chap-card.selected')).map(el => el.getAttribute('data-chap'));
-
-  // Spinner sur le bouton
+  var selChaps = Array.from(document.querySelectorAll('.chap-card.selected')).map(function(el) { return el.getAttribute('data-chap'); });
   document.getElementById('onboard-text').classList.add('hidden');
   document.getElementById('onboard-ld').classList.remove('hidden');
-
-  showT("Génération du diagnostic personnalisé...", 0, "🧠");
+  showT("Génération du diagnostic...", 0, "🎯");
 
   try {
     // ÉTAPE 1 : Générer les exos du diagnostic
-    const diagR = await fetch(SU, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'generate_diagnostic', code: S.prof.code, level: S.niv, selectedChapters: selChaps })
-    });
-    const diagD = await diagR.json();
-
+    var diagR = await fetch(SU, { method: 'POST', body: JSON.stringify({ action: 'generate_diagnostic', code: S.prof.code, level: S.niv, selectedChapters: selChaps }) });
+    var diagD = await diagR.json();
     if (diagD.status !== 'success') {
-      hideT();
-      alert2("Erreur", "La génération du diagnostic a échoué. Réessaie.");
+      hideT(); alert2("Erreur", "Génération du diagnostic échouée. Réessaie.");
       document.getElementById('onboard-text').classList.remove('hidden');
       document.getElementById('onboard-ld').classList.add('hidden');
       return;
     }
+    var calExosFromAPI = diagD.exos;
 
-    const calExosFromAPI = diagD.exos;
-
-    // ÉTAPE 2 : Login complet pour charger le curriculum officiel
+    // ÉTAPE 2 : Login complet pour récupérer le curriculum officiel
     showT("Chargement du programme...", 0, "📚");
-    const loginR = await fetch(SU, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'login', email: S.tmpEmail, password: S.tmpHash })
-    });
-    const loginD = await loginR.json();
+    var loginR = await fetch(SU, { method: 'POST', body: JSON.stringify({ action: 'login', email: S.tmpEmail, password: S.tmpHash }) });
+    var loginD = await loginR.json();
     hideT();
 
     if (loginD.status !== 'success') {
@@ -628,59 +708,58 @@ async function finalizeOnboarding() {
       return;
     }
 
-    // Sauvegarder les identifiants
     localStorage.setItem(SK, JSON.stringify({ email: S.tmpEmail, password: S.tmpHash }));
-
-    // Forcer isFirstDay = true (nouveau compte)
     loginD.isFirstDay = true;
 
-    // Masquer l'auth, montrer l'app
+    // Pré-positionner calState à 'test' AVANT initApp pour éviter le flash "Prêt ?"
+    S.calState = 'test';
+
     document.getElementById('auth-screen').classList.add('hidden');
     document.getElementById('main-app').classList.remove('hidden');
 
-    // Initialiser l'app avec les données complètes (curriculum + history vide)
-    initApp(loginD);
+    // skipRender=true : on ne rend pas avant d'avoir les exos du diagnostic
+    initApp(loginD, true);
 
-    // ÉTAPE 3 : Démarrer le diagnostic immédiatement (pas d'écran "Prêt ?")
+    // ÉTAPE 3 : Injecter les exos et démarrer le diagnostic
     S.calExos = calExosFromAPI;
-    startCal();
+    startCal(); // rend le diagnostic
     initDailyTimer();
 
-  } catch (err) {
-    hideT();
-    alert2("Erreur réseau", "Vérifie ta connexion.", "📡");
+  } catch(err) {
+    hideT(); alert2("Erreur réseau", "Vérifie ta connexion.", "📡");
     document.getElementById('onboard-text').classList.remove('hidden');
     document.getElementById('onboard-ld').classList.add('hidden');
   }
 }
 
-// ── AUTO-LOGIN AU DEMARRAGE ───────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// AUTO-LOGIN AU DÉMARRAGE
+// ══════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
   var s = localStorage.getItem(SK);
-  if (s) {
-    try {
-      var creds = JSON.parse(s);
-      if (creds.email && creds.password) {
-        showAuth('login');
-        document.getElementById('le').value = creds.email;
-        document.getElementById('lp').value = "********";
-        fetch(SU, { method: 'POST', body: JSON.stringify({ action: "login", email: creds.email, password: creds.password }) })
-          .then(r => r.json())
-          .then(d => {
-            if (d.status === 'success') {
-              if (d.profile.isAdmin) triggerAdmin();
-              initApp(d);
-            } else {
-              closeAuth();
-            }
-          })
-          .catch(() => closeAuth());
-      }
-    } catch (e) {}
-  }
+  if (!s) return;
+  try {
+    var creds = JSON.parse(s);
+    if (!creds.email || !creds.password) return;
+    showAuth('login');
+    document.getElementById('le').value = creds.email;
+    document.getElementById('lp').value = '••••••••';
+    fetch(SU, { method: 'POST', body: JSON.stringify({ action: "login", email: creds.email, password: creds.password }) })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.status === 'success') {
+          if (d.profile.isAdmin) triggerAdmin();
+          initApp(d, false);
+        } else { closeAuth(); }
+      })
+      .catch(function() { closeAuth(); });
+  } catch(e) {}
 });
-// ── APP INIT ──────────────────────────────────────────────
-function initApp(d) {
+
+// ══════════════════════════════════════════════════════════════
+// APP INIT
+// ══════════════════════════════════════════════════════════════
+function initApp(d, skipRender) {
   S.prof = d.profile;
   S.niv = d.profile.level;
   S.boost = d.dailyBoost;
@@ -690,32 +769,26 @@ function initApp(d) {
   var loc = JSON.parse(localStorage.getItem(LK) || '{}');
   var ul = loc[d.profile.code] || {};
 
-  // Réinitialiser les chapitres du niveau
   LVL[S.niv] = { cats: {}, names: {}, icons: {} };
 
-  // Charger le curriculum officiel
+  // Curriculum officiel
   if (d.curriculumOfficiel && d.curriculumOfficiel.length > 0) {
     d.curriculumOfficiel.forEach(function(c) {
       if (c.categorie === "DIAGNOSTIC") {
-        // Stocker les exos de calibrage si non encore définis
         if (!S.calExos || S.calExos.length === 0) S.calExos = c.exos;
       } else {
-        LVL[S.niv].cats[c.categorie] = c.exos.map(function(e, i) {
-          return Object.assign({}, e, { oC: c.categorie, oI: i });
-        });
+        LVL[S.niv].cats[c.categorie] = c.exos.map(function(e, i) { return Object.assign({}, e, { oC: c.categorie, oI: i }); });
         LVL[S.niv].names[c.categorie] = c.titre;
         LVL[S.niv].icons[c.categorie] = c.icone;
       }
     });
   }
 
-  // Charger les chapitres dynamiques (remédiations)
+  // Chapitres dynamiques (remédiation)
   if (d.dynamicChapters) {
     d.dynamicChapters.forEach(function(dc) {
       var k = dc.originalCat + '_V' + dc.version;
-      LVL[S.niv].cats[k] = dc.exos.map(function(e, i) {
-        return Object.assign({}, e, { oC: k, oI: i });
-      });
+      LVL[S.niv].cats[k] = dc.exos.map(function(e, i) { return Object.assign({}, e, { oC: k, oI: i }); });
       LVL[S.niv].names[k] = (LVL[S.niv].names[dc.originalCat] || dc.originalCat) + ' · Remédiation';
       LVL[S.niv].icons[k] = '🤖';
       S.insights[k] = dc.insight;
@@ -723,14 +796,14 @@ function initApp(d) {
     });
   }
 
-  // Charger l'historique des résultats
+  // Historique
   S.res = {}; S.xp = 0; S.sent = new Set();
   if (d.history) {
     d.history.forEach(function(r) {
-      var key = `${r.niveau}-${r.categorie}-${parseInt(r.exercice_idx) - 1}`;
+      var key = r.niveau + '-' + r.categorie + '-' + (parseInt(r.exercice_idx) - 1);
       S.res[key] = r.resultat;
       S.xp += parseInt(r.xp) || 0;
-      S.sent.add(`${S.prof.code}-${r.categorie}-${parseInt(r.exercice_idx) - 1}`);
+      S.sent.add(S.prof.code + '-' + r.categorie + '-' + (parseInt(r.exercice_idx) - 1));
     });
   }
 
@@ -739,63 +812,46 @@ function initApp(d) {
   S.stk = loc[S.prof.code].stk || 1;
   localStorage.setItem(LK, JSON.stringify(loc));
 
-  // Affichage
   document.getElementById('landing-screen').classList.add('hidden');
   document.getElementById('auth-screen').classList.add('hidden');
   document.getElementById('main-app').classList.remove('hidden');
   document.getElementById('aname').innerText = S.prof.name;
 
-  // Déterminer l'état du calibrage
-  // (seulement si on n'est pas déjà en train de faire le diagnostic via finalizeOnboarding)
+  // calState : seulement si on n'est pas déjà en mode test
   if (S.calState !== 'test') {
     S.calState = ul.calDone ? null : (d.history.length === 0 ? 'sel' : null);
   }
 
-  buildSel();
-  updH();
   if (S.boostEx && S.boost) loadBoost();
-  render();
-  flushQ();
+  updH();
+
+  if (!skipRender) {
+    render();
+    flushQ();
+  }
 }
 
 function logout() { localStorage.removeItem(SK); location.reload(); }
 
-function buildSel() {
-  // On n'affiche plus de select de niveau dans le header (supprimé), mais on garde la fonction au cas où
-}
-
 function updH() {
   document.getElementById('ui-stk').innerText = S.stk;
   document.getElementById('ui-xp').innerText = S.xp;
-  if (S.stk >= 3) {
-    document.getElementById('stk-box').style.animation = 'remPulse 2s ease infinite';
-  }
+  if (S.stk >= 3) document.getElementById('stk-box').style.animation = 'remPulse 2s ease infinite';
 }
 
 function loadBoost() {
   if (!S.boost) return;
-  LVL[S.niv].cats["BOOST"] = S.boost.exos.map(function(e, i) {
-    return Object.assign({}, e, { oC: 'BOOST', oI: i });
-  });
-  LVL[S.niv].names["BOOST"] = "Entraînement IA";
+  LVL[S.niv].cats["BOOST"] = S.boost.exos.map(function(e, i) { return Object.assign({}, e, { oC: 'BOOST', oI: i }); });
+  LVL[S.niv].names["BOOST"] = "Entraînement IA du jour";
   LVL[S.niv].icons["BOOST"] = "⚡";
   S.insights["BOOST"] = S.boost.insight;
 }
 
+// ══════════════════════════════════════════════════════════════
+// BOOST
+// ══════════════════════════════════════════════════════════════
 async function handleBoost() {
-  if (S.boostPreping) {
-    document.getElementById('m-boost').classList.remove('hidden');
-    startTs();
-    var waitInterval = setInterval(function() {
-      if (!S.boostPreping) {
-        clearInterval(waitInterval);
-        document.getElementById('m-boost').classList.add('hidden');
-        render();
-      }
-    }, 300);
-    return;
-  }
-  if (S.boostGen) return;
+  if (S.boostPreping || S.boostGen) return;
   S.boostGen = true;
   document.getElementById('m-boost').classList.remove('hidden');
   startTs();
@@ -804,75 +860,60 @@ async function handleBoost() {
     var d = await r.json();
     document.getElementById('m-boost').classList.add('hidden');
     if (d.status === 'success') {
-      S.boost = d.boost;
-      S.boostEx = true;
-      loadBoost();
-      render();
+      S.boost = d.boost; S.boostEx = true;
+      loadBoost(); render();
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      alert2("Oups", "L'IA n'a pas pu générer le boost.");
-    }
-  } catch (e) {
-    document.getElementById('m-boost').classList.add('hidden');
-  } finally {
-    S.boostGen = false;
-  }
+    } else { alert2("Oups", "L'IA n'a pas pu générer le boost."); }
+  } catch(e) { document.getElementById('m-boost').classList.add('hidden'); }
+  finally { S.boostGen = false; }
 }
 
-// CORRIGÉ : boostPreping géré correctement
+// BOOST DEPUIS DIAGNOSTIC (avec boostPreping géré)
 async function boostFromDiag(errs) {
   S.boostPreping = true;
+  render(); // Affiche le spinner "IA en préparation"
   showT("L'IA analyse ton diagnostic...", 0, "🧠");
   startTs();
   try {
-    var r = await fetch(SU, {
-      method: 'POST',
-      body: JSON.stringify({ action: "generate_daily_boost", code: S.prof.code, level: S.niv, errors: errs })
-    });
+    var r = await fetch(SU, { method: 'POST', body: JSON.stringify({ action: "generate_daily_boost", code: S.prof.code, level: S.niv, errors: errs }) });
     var d = await r.json();
     if (d.status === 'success') {
-      S.boost = d.boost;
-      S.boostEx = true;
+      S.boost = d.boost; S.boostEx = true;
       loadBoost();
       showT("⚡ Ton entraînement personnalisé est prêt !", 4000, "⚡");
-      render();
-    } else {
-      hideT();
-    }
-  } catch (e) {
-    hideT();
-  } finally {
-    S.boostPreping = false;
-  }
+    } else { hideT(); }
+  } catch(e) { hideT(); }
+  finally { S.boostPreping = false; render(); }
 }
 
 var _tsIv = null;
 function startTs() {
-  var i = 0;
-  clearInterval(_tsIv);
+  var i = 0; clearInterval(_tsIv);
   var bt = document.getElementById('bt');
   if (bt) bt.innerText = TS[0];
   _tsIv = setInterval(function() {
     i = (i + 1) % TS.length;
-    var ebt = document.getElementById('bt');
-    var etm = document.getElementById('tm');
-    if (ebt) ebt.innerText = TS[i];
-    if (etm) etm.innerText = TS[i];
+    var ebt = document.getElementById('bt'); var etm = document.getElementById('tm');
+    if (ebt) ebt.innerText = TS[i]; if (etm) etm.innerText = TS[i];
   }, 1400);
-  setTimeout(function() { clearInterval(_tsIv); }, 10000);
+  setTimeout(function() { clearInterval(_tsIv); }, 12000);
 }
 
+// ══════════════════════════════════════════════════════════════
+// CALIBRAGE / DIAGNOSTIC
+// ══════════════════════════════════════════════════════════════
 function startCal() {
   S.calState = 'test';
   S.qv['CALIBRAGE'] = 0;
-  LVL[S.niv].cats['CALIBRAGE'] = (S.calExos || []).map(function(e, i) {
-    return Object.assign({}, e, { oC: 'CALIBRAGE', oI: i });
-  });
-  LVL[S.niv].names['CALIBRAGE'] = 'Diagnostic';
+  LVL[S.niv].cats['CALIBRAGE'] = (S.calExos || []).map(function(e, i) { return Object.assign({}, e, { oC: 'CALIBRAGE', oI: i }); });
+  LVL[S.niv].names['CALIBRAGE'] = 'Diagnostic de niveau';
   LVL[S.niv].icons['CALIBRAGE'] = '🎯';
   render();
 }
 
+// ══════════════════════════════════════════════════════════════
+// HELPERS EXERCICES
+// ══════════════════════════════════════════════════════════════
 function res2(cat, idx) {
   if (cat === "BOOST" || cat === "CALIBRAGE") {
     var ex = LVL[S.niv].cats[cat][idx];
@@ -882,8 +923,7 @@ function res2(cat, idx) {
 }
 
 window.showHint = function(cat, idx, max) {
-  var r = res2(cat, idx);
-  var id = S.niv + '-' + r.rC + '-' + r.rI;
+  var r = res2(cat, idx); var id = S.niv + '-' + r.rC + '-' + r.rI;
   S.hints[id] = S.hints[id] || 0;
   if (S.hints[id] < max) { S.hints[id]++; render(); }
 };
@@ -895,12 +935,10 @@ window.revF = function(cat, idx) {
 };
 
 window.checkOpt = function(cat, idx, oI, btn) {
-  var r = res2(cat, idx);
-  var id = S.niv + '-' + r.rC + '-' + r.rI;
+  var r = res2(cat, idx); var id = S.niv + '-' + r.rC + '-' + r.rI;
   var exo = LVL[S.niv].cats[cat][idx];
   S.qans[id] = exo.options[oI];
-  S.rev = true;
-  S.cid = id;
+  S.rev = true; S.cid = id;
   var cI = exo.options.indexOf(exo.a);
   Array.from(btn.parentElement.children).forEach(function(c) {
     c.className = 'opt ' + (parseInt(c.getAttribute('data-oi')) === cI ? 'oc' : 'on');
@@ -911,30 +949,36 @@ window.checkOpt = function(cat, idx, oI, btn) {
     setTimeout(function() { mark(cat, idx, 'EASY'); }, 700);
   } else {
     btn.className = 'opt ow';
-    setTimeout(function() { mark(cat, idx, 'HARD'); }, 1000);
+    setTimeout(function() { mark(cat, idx, 'HARD'); }, 900);
   }
 };
 
 function verify(cat, idx) {
   var r = res2(cat, idx);
-  S.rev = true;
-  S.cid = S.niv + '-' + r.rC + '-' + r.rI;
+  S.rev = true; S.cid = S.niv + '-' + r.rC + '-' + r.rI;
   render();
 }
 
+// MARK : ne pas auto-avancer si c'est le dernier exercice
 function mark(cat, idx, status) {
-  if (S.adminMode && S.forceFail) { status = 'HARD'; S.forceFail = false; logAdmin(`Forcé HARD sur ${cat} exo ${idx}`); }
-  var r = res2(cat, idx);
-  var id = S.niv + '-' + r.rC + '-' + r.rI;
+  if (S.adminMode && S.forceFail) { status = 'HARD'; S.forceFail = false; logAdmin('Forcé HARD sur ' + cat + ' exo ' + idx); }
+  var r = res2(cat, idx); var id = S.niv + '-' + r.rC + '-' + r.rI;
   var exo = LVL[S.niv].cats[cat][idx];
   S.res[id] = status;
+  S.cid = id; S.rev = true;
   var xp = status === 'EASY' ? 100 : status === 'MEDIUM' ? 50 : 10;
   S.xp += xp;
   sendScore(r.rC, r.rI, status, xp, exo.q);
   updH();
-  chkComp(cat);
-  if (status === 'EASY') setTimeout(function() { nextEx(cat); }, 600);
-  else render();
+  var chapComplete = chkComp(cat); // retourne true si chapitre fini
+  if (!chapComplete) {
+    if (status === 'EASY') {
+      setTimeout(function() { nextEx(cat); }, 600);
+    } else {
+      render();
+    }
+  }
+  // Si chapComplete, chkComp a déjà appelé render()
 }
 
 function togCat(cat) {
@@ -945,11 +989,17 @@ function togCat(cat) {
   render();
 }
 
+// GOEX : préserve l'état réponse si déjà répondu
 function goEx(cat, i) {
   S.qv[cat] = parseInt(i);
-  S.rev = false;
-  S.cid = null;
-  delete S.shuf[S.niv + '-' + cat + '-' + i];
+  var r = res2(cat, i); var id = S.niv + '-' + r.rC + '-' + r.rI;
+  var alreadyAnswered = !!S.res[id] || !!S.qans[id];
+  if (alreadyAnswered) {
+    S.rev = true; S.cid = id;
+  } else {
+    S.rev = false; S.cid = null;
+    delete S.shuf[S.niv + '-' + cat + '-' + i];
+  }
   render();
 }
 
@@ -959,20 +1009,25 @@ function nextEx(cat) {
     var r = res2(cat, i);
     if (!S.res[S.niv + '-' + r.rC + '-' + r.rI]) { goEx(cat, i); return; }
   }
+  // Tous faits : afficher le premier avec son résultat
   goEx(cat, 0);
 }
 
+// CHKCOMP : retourne true si chapitre terminé, gère chapDone
 function chkComp(cat) {
   var exs = LVL[S.niv].cats[cat];
-  var tot = exs.length; var done = 0; var errs = [];
+  var tot = exs.length; var done = 0;
+  var easy = 0, medium = 0, hard = 0; var errs = [];
   for (var i = 0; i < tot; i++) {
-    var r = res2(cat, i);
-    var rs = S.res[S.niv + '-' + r.rC + '-' + r.rI];
+    var r = res2(cat, i); var rs = S.res[S.niv + '-' + r.rC + '-' + r.rI];
     if (rs) done++;
-    if (rs === 'HARD') errs.push(exs[i].q);
+    if (rs === 'EASY') easy++;
+    else if (rs === 'MEDIUM') medium++;
+    else if (rs === 'HARD') { hard++; errs.push(exs[i].q); }
   }
-  if (done !== tot || tot === 0) return;
+  if (done !== tot || tot === 0) return false;
 
+  // CAS CALIBRAGE : auto → génère le boost
   if (cat === 'CALIBRAGE') {
     var loc = JSON.parse(localStorage.getItem(LK) || '{}');
     if (!loc[S.prof.code]) loc[S.prof.code] = {};
@@ -981,84 +1036,87 @@ function chkComp(cat) {
     S.calState = null;
     boostFromDiag(errs.slice(0, 4));
     render();
-    return;
+    return true;
   }
 
-  var base = cat.replace(/_V\d+$/, '');
-  var vm = cat.match(/_V(\d+)$/);
-  var v = vm ? parseInt(vm[1]) : 1;
-  if (v < 3 && !S.remReq[cat] && errs.length > 0) {
-    S.remReq[cat] = true;
-    render();
-    let timeLeft = 15;
-    const timInt = setInterval(() => {
-      timeLeft--;
-      showT(`⏳ IA au travail (~${timeLeft}s)`, 0, "🤖");
-      if (timeLeft <= 0) clearInterval(timInt);
-    }, 1000);
-    fetch(SU, { method: 'POST', body: JSON.stringify({ action: "generate_remediation", code: S.prof.code, category: base, level: S.niv, errors: errs.slice(0, 3) }) })
-      .then(function(r) { return r.json(); })
-      .then(function(d) { clearInterval(timInt); if (d.status === 'success') location.reload(); })
-      .catch(function() { clearInterval(timInt); hideT(); });
+  // CAS CHAPITRE NORMAL : afficher panneau de complétion
+  if (!S.chapDone[cat]) {
+    S.chapDone[cat] = { errs: errs, tot: tot, easy: easy, medium: medium, hard: hard };
   }
+  render();
+  return true;
 }
 
-// ── RENDER MASTERY ────────────────────────────────────────
+// REMEDIATION DÉCLENCHÉE PAR L'UTILISATEUR
+function requestRemediation(cat) {
+  if (S.remReq[cat]) return;
+  var chapData = S.chapDone[cat];
+  if (!chapData) return;
+  S.remReq[cat] = true;
+  render();
+  var base = cat.replace(/_V\d+$/, '');
+  var timeLeft = 18;
+  var timInt = setInterval(function() { timeLeft--; showT('⏳ IA au travail (~' + timeLeft + 's)', 0, "🤖"); if (timeLeft <= 0) clearInterval(timInt); }, 1000);
+  fetch(SU, { method: 'POST', body: JSON.stringify({ action: "generate_remediation", code: S.prof.code, category: base, level: S.niv, errors: chapData.errs.slice(0, 3) }) })
+    .then(function(r) { return r.json(); })
+    .then(function(d) { clearInterval(timInt); if (d.status === 'success') location.reload(); else { hideT(); S.remReq[cat] = false; render(); } })
+    .catch(function() { clearInterval(timInt); hideT(); S.remReq[cat] = false; render(); });
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER MASTERY RING
+// ══════════════════════════════════════════════════════════════
 function rMastery() {
   var cats = LVL[S.niv].cats;
   var keys = Object.keys(cats).filter(function(k) { return k !== 'CALIBRAGE'; });
   var tot = 0, master = 0;
   keys.forEach(function(cat) {
-    var exs = cats[cat];
-    exs.forEach(function(e, i) {
-      var r = res2(cat, i);
-      var rs = S.res[S.niv + '-' + r.rC + '-' + r.rI];
-      tot++;
-      if (rs === 'EASY') master++;
+    cats[cat].forEach(function(e, i) {
+      var r = res2(cat, i); tot++;
+      if (S.res[S.niv + '-' + r.rC + '-' + r.rI] === 'EASY') master++;
     });
   });
   var pct = tot > 0 ? Math.round((master / tot) * 100) : 0;
-  var circ = 2 * Math.PI * 32;
-  var off = circ - (pct / 100) * circ;
+  var circ = 2 * Math.PI * 32; var off = circ - (pct / 100) * circ;
   var w = document.getElementById('mastery-w');
   if (!keys.length) { w.innerHTML = ''; return; }
-  w.innerHTML = `<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
-    <div class="flex items-center gap-4">
-      <div class="mring">
-        <svg viewBox="0 0 72 72" width="72" height="72">
-          <circle class="rbg" cx="36" cy="36" r="32"/>
-          <circle class="rfill" cx="36" cy="36" r="32" stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"/>
-        </svg>
-        <div class="rpct">${pct}%</div>
-      </div>
-      <div class="flex-1 min-w-0">
-        <div class="syne font-black text-slate-900 text-sm mb-0.5">Maîtrise globale</div>
-        <div class="text-slate-500 text-xs font-medium mb-2">${master} notion${master > 1 ? 's' : ''} acquise${master > 1 ? 's' : ''} sur ${tot}</div>
-        <div class="pbar"><div class="pfill ${pct === 100 ? 'pfg' : 'pfp'}" style="width:${pct}%"></div></div>
-      </div>
-    </div>
-    ${S.stk >= 3 ? `<div class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2 text-xs font-semibold text-amber-700"><span>🔥</span><span>${S.stk} jours consécutifs — continue comme ça !</span></div>` : ''}
-  </div>`;
+  w.innerHTML = '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4"><div class="flex items-center gap-4"><div class="mring"><svg viewBox="0 0 72 72" width="72" height="72"><circle class="rbg" cx="36" cy="36" r="32"/><circle class="rfill" cx="36" cy="36" r="32" stroke-dasharray="' + circ.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '"/></svg><div class="rpct">' + pct + '%</div></div><div class="flex-1 min-w-0"><div class="syne font-black text-slate-900 text-sm mb-0.5">Maîtrise globale</div><div class="text-slate-500 text-xs font-medium mb-2">' + master + ' notion' + (master > 1 ? 's' : '') + ' acquise' + (master > 1 ? 's' : '') + ' sur ' + tot + '</div><div class="pbar"><div class="pfill ' + (pct === 100 ? 'pfg' : 'pfp') + '" style="width:' + pct + '%"></div></div></div></div>' + (S.stk >= 3 ? '<div class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2 text-xs font-semibold text-amber-700"><span>🔥</span><span>' + S.stk + ' jours consécutifs — continue comme ça !</span></div>' : '') + '</div>';
 }
 
-// ── RENDER PRINCIPAL ──────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// RENDER PANNEAU COMPLÉTION CHAPITRE
+// ══════════════════════════════════════════════════════════════
+function renderChapComplete(cat, data) {
+  var score = Math.round((data.easy / data.tot) * 100);
+  var hasErrors = data.errs.length > 0;
+  var vm = cat.match(/_V(\d+)$/); var v = vm ? parseInt(vm[1]) : 1;
+  var canRemediate = hasErrors && v < 3 && !S.remReq[cat];
+  var emoji = score === 100 ? '🏆' : score >= 60 ? '👍' : '💪';
+  return '<div class="mx-4 mb-4 bg-indigo-50 border border-indigo-200 rounded-2xl p-5 afu">' +
+    '<div class="text-center mb-3"><div class="text-3xl mb-1">' + emoji + '</div>' +
+    '<div class="syne font-black text-indigo-900 text-base">Chapitre terminé !</div>' +
+    '<div class="text-indigo-600 text-sm font-semibold mt-1">' + data.easy + ' acquis · ' + data.medium + ' à revoir · ' + data.hard + ' difficile' + (data.hard > 1 ? 's' : '') + '</div></div>' +
+    '<div class="pbar mb-4"><div class="pfill ' + (score === 100 ? 'pfg' : 'pfp') + '" style="width:' + score + '%"></div></div>' +
+    (canRemediate ? '<button onclick="requestRemediation(\'' + cat + '\')" class="btn btn-ac btn-fw py-3 text-sm">🤖 Générer ma remédiation IA</button>' : '') +
+    (S.remReq[cat] ? '<div class="bg-purple-50 border border-purple-200 rounded-xl p-3 text-center text-sm font-semibold text-purple-700 rem-prep">⏳ L\'IA génère tes exercices personnalisés...</div>' : '') +
+    (!hasErrors ? '<div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-center text-sm font-semibold text-emerald-700">✨ Parfait ! Zéro erreur, continue comme ça !</div>' : '') +
+    '</div>';
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER PRINCIPAL
+// ══════════════════════════════════════════════════════════════
 function render() {
   var c = document.getElementById('app-c');
   if (!S.prof) {
-    c.innerHTML = '<div class="space-y-3">' + [1, 2, 3].map(function() { return '<div class="sk h-20 w-full"></div>'; }).join('') + '</div>';
+    c.innerHTML = '<div class="space-y-3">' + [1,2,3].map(function() { return '<div class="sk h-20 w-full"></div>'; }).join('') + '</div>';
     return;
   }
   rMastery();
 
-  // ÉCRAN DE BIENVENUE (premier diagnostic)
+  // ÉCRAN "Prêt ?" (seulement si calState = 'sel')
   if (S.calState === 'sel') {
-    c.innerHTML = `<div class="bg-white rounded-3xl p-8 text-center shadow-sm border border-slate-100 afu">
-      <div class="w-20 h-20 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-5 shadow-lg">🎯</div>
-      <h2 class="syne text-2xl font-black text-slate-900 mb-2">Prêt, ${S.prof.name} ?</h2>
-      <p class="text-slate-500 font-medium mb-1 text-sm leading-relaxed">On cartographie tes lacunes en quelques questions.</p>
-      <p class="text-slate-400 text-xs mb-7">5 minutes · Résultats immédiats</p>
-      <button onclick="startCal()" class="btn btn-ac btn-fw py-4">Lancer le diagnostic →</button>
-    </div>`;
+    c.innerHTML = '<div class="bg-white rounded-3xl p-8 text-center shadow-sm border border-slate-100 afu"><div class="w-20 h-20 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-5 shadow-lg">🎯</div><h2 class="syne text-2xl font-black text-slate-900 mb-2">Prêt, ' + S.prof.name + ' ?</h2><p class="text-slate-500 font-medium mb-1 text-sm leading-relaxed">On cartographie tes lacunes en quelques questions.</p><p class="text-slate-400 text-xs mb-7">5 minutes · Résultats immédiats · Adapté à ton niveau</p><button onclick="startCal()" class="btn btn-ac btn-fw py-4">Lancer le diagnostic →</button></div>';
     return;
   }
 
@@ -1066,174 +1124,111 @@ function render() {
   if (S.calState === 'test') {
     var exs = LVL[S.niv].cats['CALIBRAGE'] || [];
     var idx = S.qv['CALIBRAGE'] || 0;
-    var pct = exs.length > 0 ? Math.round((idx / exs.length) * 100) : 0;
-    c.innerHTML = `<div class="bg-white rounded-3xl shadow-sm border-2 border-indigo-200 overflow-hidden afu">
-      <div class="px-5 py-4 bg-indigo-50 border-b border-indigo-100">
-        <div class="flex justify-between items-center mb-2.5">
-          <div class="flex items-center gap-2"><span>🎯</span><span class="syne font-black text-indigo-900 text-sm">Diagnostic de niveau</span></div>
-          <span class="text-xs font-bold text-indigo-500 bg-white px-2 py-1 rounded-lg border border-indigo-100">${idx + 1} / ${exs.length}</span>
-        </div>
-        <div class="pbar"><div class="pfill pfp" style="width:${pct}%"></div></div>
-      </div>
-      ${exs[idx] ? rSection('CALIBRAGE', exs[idx], idx, exs.length, false) : '<div class="p-8 text-center text-slate-400">Chargement...</div>'}
-    </div>`;
-    rMath();
-    return;
+    var pct = exs.length > 0 ? Math.round(((idx) / exs.length) * 100) : 0;
+    c.innerHTML = '<div class="bg-white rounded-3xl shadow-sm border-2 border-indigo-200 overflow-hidden afu"><div class="px-5 py-4 bg-indigo-50 border-b border-indigo-100"><div class="flex justify-between items-center mb-2.5"><div class="flex items-center gap-2"><span>🎯</span><span class="syne font-black text-indigo-900 text-sm">Diagnostic de niveau — ' + LN[S.niv] + '</span></div><span class="text-xs font-bold text-indigo-500 bg-white px-2 py-1 rounded-lg border border-indigo-100">' + (idx + 1) + ' / ' + exs.length + '</span></div><div class="pbar"><div class="pfill pfp" style="width:' + pct + '%"></div></div></div>' + (exs[idx] ? rSection('CALIBRAGE', exs[idx], idx, exs.length, false) : '<div class="p-8 text-center text-slate-400 text-sm">Chargement des exercices...</div>') + '</div>';
+    rMath(); return;
   }
 
-  // ÉCRAN PRINCIPAL : chapitres
+  // ÉCRAN PRINCIPAL
   var cats = LVL[S.niv].cats;
   var keys = Object.keys(cats).filter(function(k) { return k !== 'CALIBRAGE'; });
   if (keys.includes('BOOST')) keys = ['BOOST'].concat(keys.filter(function(k) { return k !== 'BOOST'; }));
 
-  // Vérifier si le boost est complété
   var bDone = false;
   if (cats['BOOST'] && cats['BOOST'].length > 0) {
     var bDoneCount = 0;
-    for (var bi = 0; bi < cats['BOOST'].length; bi++) {
-      var br2 = res2('BOOST', bi);
-      if (S.res[S.niv + '-' + br2.rC + '-' + br2.rI]) bDoneCount++;
-    }
+    for (var bi = 0; bi < cats['BOOST'].length; bi++) { var br2 = res2('BOOST', bi); if (S.res[S.niv + '-' + br2.rC + '-' + br2.rI]) bDoneCount++; }
     bDone = bDoneCount === cats['BOOST'].length;
   }
 
   var html = '';
 
-  // Bandeau de statut du boost
+  // BANDEAU BOOST STATUS
   if (S.boostPreping) {
-    // L'IA génère le boost en temps réel (après diagnostic)
-    html += `<div class="rounded-2xl p-5 flex items-center gap-4 shadow-lg mb-4" style="background:linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)">
-      <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/20"><div class="ld"></div></div>
-      <div class="flex-1 min-w-0">
-        <div class="syne text-base font-black text-white mb-0.5">Entraînement IA en préparation</div>
-        <p class="text-indigo-200 text-sm font-medium">L'IA analyse tes lacunes...</p>
-      </div>
-    </div>`;
+    html += '<div class="rounded-2xl p-5 flex items-center gap-4 shadow-lg mb-4" style="background:linear-gradient(135deg,#312e81,#4338ca)"><div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0"><div class="ld"></div></div><div><div class="syne text-base font-black text-white mb-0.5">Entraînement IA en cours...</div><p class="text-indigo-200 text-sm">L\'IA analyse ton diagnostic et crée tes exercices</p></div></div>';
   } else if (!S.boostEx && !S.calState) {
     if (S.isFirstDay) {
-      // Premier jour : proposer de générer le boost maintenant
-      html += `<div onclick="handleBoost()" class="rounded-2xl p-5 flex items-center gap-4 cursor-pointer active:scale-[.98] transition-transform shadow-lg mb-4" style="background:linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)">
-        <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/20 animate-pulse-light">⚡</div>
-        <div class="flex-1 min-w-0">
-          <div class="syne text-base font-black text-white mb-0.5">Mon entraînement IA</div>
-          <p class="text-indigo-200 text-sm font-medium">Exercices ciblés sur tes lacunes</p>
-        </div>
-        <div class="text-white/50 text-xl">›</div>
-      </div>`;
+      html += '<div onclick="handleBoost()" class="rounded-2xl p-5 flex items-center gap-4 cursor-pointer active:scale-[.98] transition-transform shadow-lg mb-4" style="background:linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)"><div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/20 animate-pulse-light">⚡</div><div class="flex-1 min-w-0"><div class="syne text-base font-black text-white mb-0.5">Mon entraînement IA</div><p class="text-indigo-200 text-sm font-medium">Exercices ciblés sur mes lacunes</p></div><div class="text-white/50 text-2xl font-light">›</div></div>';
     } else {
-      // Pas premier jour, pas de boost encore : IA prépare pour demain
-      html += `<div class="rounded-2xl border border-slate-200 bg-white p-6 flex items-center gap-4 shadow-sm mb-4">
-        <div class="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0 border border-indigo-100 animate-pulse-light">🤖</div>
-        <div class="flex-1 min-w-0">
-          <div class="syne text-base font-black text-slate-800 mb-0.5">IA en analyse...</div>
-          <p class="text-slate-500 text-sm font-medium">Ton programme ciblé sera prêt demain à 8h.</p>
-        </div>
-      </div>`;
+      html += '<div class="rounded-2xl border border-slate-200 bg-white p-5 flex items-center gap-4 shadow-sm mb-4"><div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 border border-indigo-100 animate-pulse-light">🤖</div><div><div class="syne font-black text-slate-800 text-sm mb-0.5">IA en analyse...</div><p class="text-slate-500 text-sm">Ton programme sera prêt demain à 8h.</p></div></div>';
     }
   } else if (bDone) {
-    html += `<div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-4 mb-4">
-      <div class="w-11 h-11 bg-emerald-100 rounded-xl flex items-center justify-center text-xl flex-shrink-0">✅</div>
-      <div>
-        <div class="syne font-black text-emerald-800 text-sm">Entraînement du jour complété !</div>
-        <div class="text-emerald-600 text-xs font-medium mt-0.5">L'agent IA prépare déjà tes défis pour demain</div>
-      </div>
-    </div>`;
+    html += '<div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-3 mb-4"><div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0">✅</div><div><div class="syne font-black text-emerald-800 text-sm">Entraînement du jour complété !</div><div class="text-emerald-600 text-xs mt-0.5">L\'agent IA prépare déjà tes défis pour demain</div></div></div>';
   }
 
-  // Rendu des chapitres
+  // CHAPITRES
   keys.forEach(function(cat) {
     if (cat === 'BOOST' && bDone) return;
-    var exs = cats[cat];
-    var tot = exs.length; var done = 0;
-    for (var i = 0; i < tot; i++) {
-      var rr = res2(cat, i);
-      if (S.res[S.niv + '-' + rr.rC + '-' + rr.rI]) done++;
-    }
+    var exs = cats[cat]; var tot = exs.length; var done = 0;
+    for (var i = 0; i < tot; i++) { var rr = res2(cat, i); if (S.res[S.niv + '-' + rr.rC + '-' + rr.rI]) done++; }
     var comp = done === tot && tot > 0;
     var pct2 = tot > 0 ? Math.round((done / tot) * 100) : 0;
-    var isBoost = cat === 'BOOST';
-    var isNew = S.isNew[cat];
-    var isOpen = !!S.exp[cat];
-    var remPrep = S.remReq[cat] && comp;
-    var curIdx = S.qv[cat] || 0;
+    var isBoost = cat === 'BOOST'; var isNew = S.isNew[cat]; var isOpen = !!S.exp[cat];
     var iconPulse = isBoost && !comp ? 'animate-pulse-light' : '';
-    var cs = isBoost ? 'background:linear-gradient(135deg,#312e81,#4338ca);border:none' : (comp && !remPrep ? 'background:#f0fdf4;border-color:#a7f3d0' : 'background:#fff');
+    var cs = isBoost ? 'background:linear-gradient(135deg,#312e81,#4338ca);border:none' : (comp ? 'background:#f0fdf4;border-color:#a7f3d0' : 'background:#fff');
 
-    html += `<div class="rounded-2xl border border-slate-200 overflow-hidden shadow-sm afu mb-3" style="${cs}">`;
-    html += `<div onclick="togCat('${cat}')" class="px-4 py-4 flex items-center gap-3 cursor-pointer">`;
-    html += `<div class="w-11 h-11 ${isBoost ? 'bg-white/20' : 'bg-slate-100'} rounded-xl flex items-center justify-center text-lg flex-shrink-0 ${iconPulse}">${LVL[S.niv].icons[cat] || '📘'}</div>`;
-    html += `<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1.5">
-      <span class="syne font-black text-sm ${isBoost ? 'text-white' : 'text-slate-900'} truncate">${LVL[S.niv].names[cat] || cat}</span>`;
-    if (comp && !remPrep) html += `<span class="text-base">🏆</span>`;
-    if (isNew) html += `<span class="text-[9px] syne font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-md">NEW</span>`;
-    html += `</div><div class="flex items-center gap-2">
-      <div class="pbar flex-1" style="max-width:100px"><div class="pfill ${comp ? 'pfg' : 'pfp'}" style="width:${pct2}%"></div></div>
-      <span class="text-[11px] font-bold ${isBoost ? 'text-white/60' : 'text-slate-400'}">${done}/${tot}</span>
-    </div></div>`;
-    html += `<div class="${isBoost ? 'text-white/40' : 'text-slate-300'} text-xl font-light" style="transition:transform .2s;transform:rotate(${isOpen ? 90 : 0}deg)">›</div></div>`;
+    html += '<div class="rounded-2xl border border-slate-200 overflow-hidden shadow-sm afu mb-3" style="' + cs + '">';
+    html += '<div onclick="togCat(\'' + cat + '\')" class="px-4 py-4 flex items-center gap-3 cursor-pointer select-none">';
+    html += '<div class="w-11 h-11 ' + (isBoost ? 'bg-white/20' : 'bg-slate-100') + ' rounded-xl flex items-center justify-center text-lg flex-shrink-0 ' + iconPulse + '">' + (LVL[S.niv].icons[cat] || '📘') + '</div>';
+    html += '<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1.5"><span class="syne font-black text-sm ' + (isBoost ? 'text-white' : 'text-slate-900') + ' truncate">' + (LVL[S.niv].names[cat] || cat) + '</span>';
+    if (comp) html += '<span class="text-base">🏆</span>';
+    if (isNew) html += '<span class="text-[9px] syne font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-md">NEW</span>';
+    html += '</div><div class="flex items-center gap-2"><div class="pbar flex-1" style="max-width:100px"><div class="pfill ' + (comp ? 'pfg' : 'pfp') + '" style="width:' + pct2 + '%"></div></div><span class="text-[11px] font-bold ' + (isBoost ? 'text-white/60' : 'text-slate-400') + '">' + done + '/' + tot + '</span></div></div>';
+    html += '<div class="' + (isBoost ? 'text-white/40' : 'text-slate-300') + ' text-xl font-light select-none" style="transition:transform .2s;transform:rotate(' + (isOpen ? 90 : 0) + 'deg)">›</div></div>';
 
-    if (remPrep) {
-      html += `<div class="mx-4 mb-4 bg-purple-50 border border-purple-200 rounded-xl p-4 rem-prep">
-        <div class="flex items-center gap-3 mb-2">
-          <div class="w-9 h-9 bg-purple-100 rounded-xl flex items-center justify-center text-base flex-shrink-0">🤖</div>
-          <div class="flex-1"><div class="syne font-black text-purple-900 text-sm">Remédiation en préparation</div><div class="text-purple-600 text-xs font-medium">L'IA génère tes exercices...</div></div>
-        </div>
-      </div>`;
-    } else if (isOpen && exs[curIdx]) {
-      html += rSection(cat, exs[curIdx], curIdx, tot, comp);
+    if (isOpen) {
+      var curIdx = S.qv[cat] || 0;
+      if (exs[curIdx]) html += rSection(cat, exs[curIdx], curIdx, tot, comp);
+      // Panneau de complétion (visible APRÈS le dernier exercice)
+      if (S.chapDone[cat]) html += renderChapComplete(cat, S.chapDone[cat]);
     }
 
-    if (S.insights[cat] && isOpen && !remPrep) {
-      html += `<div class="mx-4 mb-4 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs font-medium text-blue-700 leading-relaxed">💡 ${S.insights[cat]}</div>`;
+    if (S.insights[cat] && isOpen) {
+      html += '<div class="mx-4 mb-4 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs font-medium text-blue-700 leading-relaxed">💡 ' + S.insights[cat] + '</div>';
     }
-    html += `</div>`;
+    html += '</div>';
   });
 
   c.innerHTML = html || '<div class="text-center text-slate-400 font-semibold py-12 text-sm">Aucun exercice disponible pour ce niveau.</div>';
   rMath();
 }
 
-// ── RENDU D'UN EXERCICE ───────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// RENDER SECTION EXERCICE
+// ══════════════════════════════════════════════════════════════
 function rSection(cat, data, idx, total, catDone) {
   if (!data) return '';
-  var r = res2(cat, idx);
-  var id = S.niv + '-' + r.rC + '-' + r.rI;
+  var r = res2(cat, idx); var id = S.niv + '-' + r.rC + '-' + r.rI;
   var ui = S.niv + '-' + cat + '-' + idx;
   var isRev = S.rev && S.cid === id;
   var scored = S.res[id];
   var hasOpt = data.options && data.options.length > 0;
 
-  // Pills navigation
+  // Navigation pills
   var pills = '<div class="flex overflow-x-auto gap-1.5 px-4 py-3 border-t border-slate-100 bg-slate-50/60 no-sb">';
   for (var i = 0; i < total; i++) {
-    var r2 = res2(cat, i);
-    var s2 = S.res[S.niv + '-' + r2.rC + '-' + r2.rI];
-    var act = i === idx;
-    var cls = 'pill ';
+    var r2 = res2(cat, i); var s2 = S.res[S.niv + '-' + r2.rC + '-' + r2.rI];
+    var act = i === idx; var cls = 'pill ';
     if (s2 === 'EASY' || s2 === 'MEDIUM') cls += 'bg-emerald-500 text-white';
     else if (s2 === 'HARD') cls += 'bg-rose-400 text-white';
     else cls += 'bg-white border-2 border-slate-200 text-slate-500';
     if (act) cls += ' ring-2 ring-indigo-400 ring-offset-1';
-    pills += `<button onclick="goEx('${cat}',${i})" class="${cls}">${i + 1}</button>`;
+    pills += '<button onclick="goEx(\'' + cat + '\',' + i + ')" class="' + cls + '">' + (i + 1) + '</button>';
   }
   pills += '</div>';
 
   // Actions
   var acts = '';
   if (!isRev && !hasOpt) {
-    acts = `<button onclick="verify('${cat}',${idx})" class="btn btn-dk btn-fw py-4 mt-4">Révéler la réponse</button>`;
+    acts = '<button onclick="verify(\'' + cat + '\',' + idx + ')" class="btn btn-dk btn-fw py-4 mt-4">Révéler la réponse</button>';
   } else if (isRev && !scored && !hasOpt) {
-    acts = `<div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4 text-center mt-4">
-      <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Réponse</div>
-      <div class="mc text-base font-black text-slate-900">${fmtL(data.a)}</div>
-    </div>
-    <div class="grid grid-cols-3 gap-2">
-      <button onclick="mark('${cat}',${idx},'HARD')" class="btn-ng btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">😤</span>À revoir</button>
-      <button onclick="mark('${cat}',${idx},'MEDIUM')" class="btn-wn btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">🤔</span>Je doute</button>
-      <button onclick="mark('${cat}',${idx},'EASY')" class="btn-ok btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">✅</span>Acquis</button>
-    </div>`;
+    acts = '<div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4 text-center mt-4"><div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Réponse</div><div class="mc text-base font-black text-slate-900">' + fmtL(data.a) + '</div></div>' +
+      '<div class="grid grid-cols-3 gap-2">' +
+      '<button onclick="mark(\'' + cat + '\',' + idx + ',\'HARD\')" class="btn-ng btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">😤</span>À revoir</button>' +
+      '<button onclick="mark(\'' + cat + '\',' + idx + ',\'MEDIUM\')" class="btn-wn btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">🤔</span>Je doute</button>' +
+      '<button onclick="mark(\'' + cat + '\',' + idx + ',\'EASY\')" class="btn-ok btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">✅</span>Acquis</button></div>';
   } else if (scored && !catDone) {
-    acts = `<button onclick="nextEx('${cat}')" class="btn btn-dk btn-fw py-4 mt-4 flex items-center justify-center gap-2">SUIVANT <span class="text-slate-400 font-normal text-xs">(ou swipe ←)</span></button>`;
+    acts = '<button onclick="nextEx(\'' + cat + '\')" class="btn btn-dk btn-fw py-4 mt-4 flex items-center justify-center gap-2">SUIVANT <span class="text-slate-400 font-normal text-xs">(ou swipe ←)</span></button>';
   }
 
   // Options QCM
@@ -1241,21 +1236,17 @@ function rSection(cat, data, idx, total, catDone) {
   if (hasOpt) {
     if (!isRev && !S.shuf[ui]) {
       var arr = data.options.map(function(t, i) { return { t: t, i: i }; });
-      for (var si = arr.length - 1; si > 0; si--) {
-        var sj = Math.floor(Math.random() * (si + 1));
-        var tmp = arr[si]; arr[si] = arr[sj]; arr[sj] = tmp;
-      }
+      for (var si = arr.length - 1; si > 0; si--) { var sj = Math.floor(Math.random() * (si + 1)); var tmp = arr[si]; arr[si] = arr[sj]; arr[sj] = tmp; }
       S.shuf[ui] = arr;
     }
     var sh = S.shuf[ui] || data.options.map(function(t, i) { return { t: t, i: i }; });
-    var cI = data.options.indexOf(data.a);
-    var ans = S.qans[id];
+    var cI = data.options.indexOf(data.a); var ans = S.qans[id];
     opts = '<div class="flex flex-col gap-2 mt-4">';
     sh.forEach(function(o) {
       var ocls = 'opt ';
       if (isRev) { ocls += o.i === cI ? 'oc ' : (o.t === ans ? 'ow ' : 'on '); }
-      var handler = !isRev ? `onclick="checkOpt('${cat}',${idx},${o.i},this)"` : '';
-      opts += `<button data-oi="${o.i}" ${handler} class="${ocls.trim()}"><span class="mc flex-1">${fmtL(o.t)}</span></button>`;
+      var handler = !isRev ? 'onclick="checkOpt(\'' + cat + '\',' + idx + ',' + o.i + ',this)"' : '';
+      opts += '<button data-oi="' + o.i + '" ' + handler + ' class="' + ocls.trim() + '"><span class="mc flex-1">' + fmtL(o.t) + '</span></button>';
     });
     opts += '</div>';
   }
@@ -1266,43 +1257,28 @@ function rSection(cat, data, idx, total, catDone) {
   var hSteps = '';
   if (maxH > 0) {
     (data.steps || []).forEach(function(s, i) {
-      hSteps += `<div class="${i < shown ? 'block' : 'hidden'} mc text-xs text-amber-800 bg-white/80 rounded-lg px-3 py-2 border border-amber-100">${fmtL(s)}</div>`;
+      hSteps += '<div class="' + (i < shown ? 'block' : 'hidden') + ' mc text-xs text-amber-800 bg-white/80 rounded-lg px-3 py-2 border border-amber-100">' + fmtL(s) + '</div>';
     });
   }
-  var hints = `<div class="bg-amber-50 border border-amber-100 rounded-xl p-3">
-    <div class="flex justify-between items-center mb-2">
-      <span class="text-[10px] syne font-black text-amber-700 uppercase tracking-wider">💡 Indices</span>
-      ${shown < maxH ? `<button onclick="showHint('${cat}',${idx},${maxH})" class="text-xs font-bold text-amber-600 bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-lg">Voir +1</button>` : ''}
-    </div>
-    ${maxH > 0 ? `<div class="space-y-1.5">${hSteps}</div>` : '<p class="text-amber-400 text-xs">Aucun indice disponible.</p>'}
-  </div>`;
+  var hints = '<div class="bg-amber-50 border border-amber-100 rounded-xl p-3"><div class="flex justify-between items-center mb-2"><span class="text-[10px] syne font-black text-amber-700 uppercase tracking-wider">💡 Indices</span>' + (shown < maxH ? '<button onclick="showHint(\'' + cat + '\',' + idx + ',' + maxH + ')" class="text-xs font-bold text-amber-600 bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-lg">Voir +1</button>' : '') + '</div>' + (maxH > 0 ? '<div class="space-y-1.5">' + hSteps + '</div>' : '<p class="text-amber-400 text-xs">Aucun indice disponible.</p>') + '</div>';
 
   // Formule
   var fR = scored || !!S.ftch[id];
   var fContent = fmtL(data.f) || '<span class="text-slate-400 text-xs">Pas de formule.</span>';
-  var formula = `<div onclick="${!fR ? `revF('${cat}',${idx})` : ''}">
-    <div class="fwrap ${fR ? 'frev' : ''}">
-      <div class="finner mc text-xs font-bold text-slate-700 text-center min-h-[1.5rem]">${fContent}</div>
-      ${!fR ? '<div class="fhint">👁 Formule clé</div>' : ''}
-    </div>
-  </div>`;
+  var formula = '<div onclick="' + (!fR ? 'revF(\'' + cat + '\',' + idx + ')' : '') + '"><div class="fwrap ' + (fR ? 'frev' : '') + '"><div class="finner mc text-xs font-bold text-slate-700 text-center min-h-[1.5rem]">' + fContent + '</div>' + (!fR ? '<div class="fhint">👁 Formule clé</div>' : '') + '</div></div>';
 
-  return `<div class="border-t border-slate-100">
-    ${pills}
-    <div class="p-4 sm:p-5">
-      <div class="flex justify-between items-center mb-3">
-        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Niveau ${data.lvl || 1}</span>
-      </div>
-      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-4 relative overflow-hidden min-h-[80px] flex items-center justify-center">
-        <div class="relative z-0 mc text-center font-bold text-base leading-relaxed w-full">${fmtL(data.q)}</div>
-      </div>
-      ${opts}${acts}
-      <div class="grid grid-cols-2 gap-3 mt-4">${hints}${formula}</div>
-    </div>
-  </div>`;
+  return '<div class="border-t border-slate-100">' + pills +
+    '<div class="p-4 sm:p-5">' +
+    '<div class="flex justify-between items-center mb-3"><span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Niveau ' + (data.lvl || 1) + '</span></div>' +
+    '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-4 min-h-[80px] flex items-center justify-center"><div class="mc text-center font-bold text-base leading-relaxed w-full">' + fmtL(data.q) + '</div></div>' +
+    opts + acts +
+    '<div class="grid grid-cols-2 gap-3 mt-4">' + hints + formula + '</div>' +
+    '</div></div>';
 }
 
-// ── TABLEAU BLANC (BOTTOM SHEET) ──────────────────────────
+// ══════════════════════════════════════════════════════════════
+// TABLEAU BLANC — CANVAS FIXÉ
+// ══════════════════════════════════════════════════════════════
 function toggleDraft() {
   S.dOpen = !S.dOpen;
   var d = document.getElementById('draft-drawer');
@@ -1310,11 +1286,76 @@ function toggleDraft() {
   if (S.dOpen) {
     d.classList.add('open');
     b.classList.add('show');
-    setTimeout(function() { iCanv('canv-draft'); }, 320);
+    setTimeout(function() { initCanvas(); }, 350);
   } else {
     d.classList.remove('open');
     b.classList.remove('show');
   }
+}
+
+var _canvasReady = false;
+function initCanvas() {
+  var c = document.getElementById('canv-draft');
+  if (!c) return;
+  var parent = c.parentElement;
+  var rect = parent.getBoundingClientRect();
+  if (rect.width === 0 || rect.height === 0) {
+    setTimeout(initCanvas, 100); return;
+  }
+  // Préserver le dessin existant si déjà initialisé
+  var imgData = null;
+  if (_canvasReady && c.width > 0 && c.height > 0) {
+    try { imgData = c.getContext('2d').getImageData(0, 0, c.width, c.height); } catch(e) {}
+  }
+  c.width = rect.width;
+  c.height = rect.height;
+  _canvasReady = true;
+
+  var ctx = c.getContext('2d');
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 3;
+  ctx.strokeStyle = penColor;
+  if (imgData) { try { ctx.putImageData(imgData, 0, 0); } catch(e) {} }
+
+  var drawing = false;
+  var lastX = 0, lastY = 0;
+
+  function getPos(e, touch) {
+    var r = c.getBoundingClientRect();
+    if (touch && e.touches && e.touches.length > 0) return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
+    return { x: e.offsetX, y: e.offsetY };
+  }
+  function startDraw(x, y) {
+    drawing = true; lastX = x; lastY = y;
+    ctx.strokeStyle = penColor;
+    ctx.beginPath(); ctx.moveTo(x, y);
+  }
+  function moveDraw(x, y) {
+    if (!drawing) return;
+    ctx.strokeStyle = penColor;
+    ctx.lineTo(x, y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x, y);
+    lastX = x; lastY = y;
+  }
+  function endDraw() { drawing = false; }
+
+  // Remplacer les handlers à chaque ouverture
+  c.onmousedown = function(e) { var p = getPos(e); startDraw(p.x, p.y); };
+  c.onmousemove = function(e) { var p = getPos(e); moveDraw(p.x, p.y); };
+  c.onmouseup = endDraw;
+  c.onmouseleave = endDraw;
+  c.ontouchstart = function(e) { e.preventDefault(); var p = getPos(e, true); startDraw(p.x, p.y); };
+  c.ontouchmove = function(e) { e.preventDefault(); if (drawing) { var p = getPos(e, true); moveDraw(p.x, p.y); } };
+  c.ontouchend = function(e) { e.preventDefault(); endDraw(); };
+}
+
+function setPenColor(color) {
+  penColor = color;
+  var c = document.getElementById('canv-draft');
+  if (c) c.getContext('2d').strokeStyle = color;
+  // Feedback visuel sur les boutons couleur
+  document.querySelectorAll('#pen-colors button').forEach(function(btn) {
+    btn.style.outline = btn.style.background === color ? '2px solid white' : 'none';
+  });
 }
 
 function clrD() {
@@ -1322,37 +1363,18 @@ function clrD() {
   if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height);
 }
 
-function insT(t) { /* Réservé pour usage futur */ }
+function clrText() {
+  var ta = document.getElementById('draft-text');
+  if (ta) { ta.value = ''; ta.focus(); }
+}
 
-function iCanv(id) {
-  var c = document.getElementById(id);
-  if (!c) return;
-  var rect = c.parentElement.getBoundingClientRect();
-  c.width = rect.width;
-  c.height = rect.height;
-  var ctx = c.getContext('2d');
-  ctx.strokeStyle = '#4f46e5';
-  ctx.lineWidth = 3;
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  var drawing = false;
-
-  function getPos(e, touch) {
-    var r = c.getBoundingClientRect();
-    if (touch) return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
-    return { x: e.offsetX, y: e.offsetY };
-  }
-  function startDraw(x, y) { drawing = true; ctx.beginPath(); ctx.moveTo(x, y); }
-  function moveDraw(x, y) { if (!drawing) return; ctx.lineTo(x, y); ctx.stroke(); }
-  function endDraw() { drawing = false; }
-
-  c.onmousedown = function(e) { var p = getPos(e); startDraw(p.x, p.y); };
-  c.onmousemove = function(e) { var p = getPos(e); moveDraw(p.x, p.y); };
-  c.onmouseup = endDraw;
-  c.onmouseleave = endDraw;
-  c.ontouchstart = function(e) { var p = getPos(e, true); startDraw(p.x, p.y); e.preventDefault(); };
-  c.ontouchmove = function(e) { if (drawing) { var p = getPos(e, true); moveDraw(p.x, p.y); e.preventDefault(); } };
-  c.ontouchend = endDraw;
+function insSymbol(s) {
+  var ta = document.getElementById('draft-text');
+  if (!ta) return;
+  var start = ta.selectionStart; var end = ta.selectionEnd;
+  ta.value = ta.value.substring(0, start) + s + ta.value.substring(end);
+  ta.selectionStart = ta.selectionEnd = start + s.length;
+  ta.focus();
 }
 </script>
 </body>
