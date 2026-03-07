@@ -352,19 +352,19 @@
 // ══════════════════════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════════════════════
-const SU = 'https://script.google.com/macros/s/AKfycbybRiq_YDbzJscwr26FsV2MPVuzsk0exMpV2RxohEmnI0LMHxqP_TD__asj3jBD5TKa/exec';
+const SU = 'https://script.google.com/macros/s/AKfycbwB9PgA5wBYbgk4fqrB4_CNsJnoxg56M-0qsfZiIcuAuwXLUHK4SyY4t1zWGImHLsEx/exec';
 const SK = 'boost_v22';
 const LK = 'boost_loc_v22';
 const LO = ["6EME","5EME","4EME","3EME","SECONDE","PREMIERE","TERMINALE"];
 const LN = {"6EME":"6ème","5EME":"5ème","4EME":"4ème","3EME":"3ème","SECONDE":"Seconde","PREMIERE":"1ère","TERMINALE":"Terminale"};
 const TS = ["🧠 Analyse de tes erreurs...","🔍 Ciblage des lacunes...","⚙️ Calibrage du niveau...","🎯 Génération des défis...","✨ Finalisation en cours..."];
 
-// Chapitres par niveau (pour l'onboarding)
+// Chapitres par niveau pour l'onboarding
 const CHAPS_BY_LEVEL = {
-  "6EME":["Nombres entiers 🔢","Fractions 🍕","Proportionnalité ⚖️","Géométrie 📐","Périmètres & Aires 🟦","Angles 📏"],
-  "5EME":["Fractions 🍕","Nombres relatifs ➕","Proportionnalité ⚖️","Puissances ⚡","Pythagore 📐","Calcul Littéral 📝"],
-  "4EME":["Fractions 🍕","Puissances ⚡","Calcul Littéral 📝","Équations 🎯","Pythagore 📐","Proportionnalité ⚖️"],
-  "3EME":["Calcul Littéral 📝","Équations 🎯","Fonctions 📈","Théorème de Thalès 📐","Trigonométrie 📐","Statistiques 📊"],
+  "6EME":  ["Nombres entiers 🔢","Fractions 🍕","Proportionnalité ⚖️","Géométrie 📐","Périmètres & Aires 🟦","Angles 📏"],
+  "5EME":  ["Fractions 🍕","Nombres relatifs ➕","Proportionnalité ⚖️","Puissances ⚡","Pythagore 📐","Calcul Littéral 📝"],
+  "4EME":  ["Fractions 🍕","Puissances ⚡","Calcul Littéral 📝","Équations 🎯","Pythagore 📐","Proportionnalité ⚖️"],
+  "3EME":  ["Calcul Littéral 📝","Équations 🎯","Fonctions 📈","Théorème de Thalès 📐","Trigonométrie 📐","Statistiques 📊"],
   "SECONDE":["Fonctions 📈","Équations & Inéquations 🎯","Géométrie repérée 📐","Statistiques 📊","Probabilités 🎲","Vecteurs ➡️"],
   "PREMIERE":["Dérivation 📈","Suites numériques 🔢","Trigonométrie ⭕","Fonctions 📈","Probabilités 🎲","Géométrie dans l'espace 📐"],
   "TERMINALE":["Limites 📈","Dérivation avancée 📈","Intégrales ∫","Logarithmes 🔢","Probabilités 🎲","Suites numériques 🔢"]
@@ -384,6 +384,7 @@ let S = {
   remReq: {}, insights: {}, isNew: {}, chapDone: {},
   boostEx: false, boost: null, boostGen: false, boostPreping: false,
   isFirstDay: false,
+  drafts: {},
   sent: new Set(),
   scoreQueue: JSON.parse(localStorage.getItem('sq') || '[]'),
   adminMode: false, timeOffset: 0, forceFail: false,
@@ -407,7 +408,8 @@ function triggerAdmin() {
   clearTimeout(clickTimer);
   clickTimer = setTimeout(function() { clickCount = 0; }, 1200);
   if (clickCount >= 3) {
-    clickCount = 0; S.adminMode = true;
+    clickCount = 0;
+    S.adminMode = true;
     document.getElementById('admin-panel').classList.remove('hidden');
     logAdmin("Mode Dev activé.");
   }
@@ -431,14 +433,18 @@ function fmtL(s) {
 
 var _tt = null;
 function showT(msg, dur, ic) {
-  dur = (dur === undefined) ? 3500 : dur; ic = ic || '🧠';
+  dur = (dur === undefined) ? 3500 : dur;
+  ic = ic || '🧠';
   document.getElementById('tm').innerText = msg;
   document.getElementById('ti').innerText = ic;
   document.getElementById('toast').classList.add('show');
   if (_tt) clearTimeout(_tt);
   if (dur > 0) _tt = setTimeout(function() { document.getElementById('toast').classList.remove('show'); }, dur);
 }
-function hideT() { document.getElementById('toast').classList.remove('show'); if (_tt) clearTimeout(_tt); }
+function hideT() {
+  document.getElementById('toast').classList.remove('show');
+  if (_tt) clearTimeout(_tt);
+}
 
 function alert2(t, m, ic) {
   ic = ic || '⚠️';
@@ -519,7 +525,8 @@ function sendScore(cat, idx, status, xp, q) {
     xp: xp, q: q || ''
   };
   if (S.timeOffset > 0) {
-    var dd = new Date(); dd.setDate(dd.getDate() + S.timeOffset);
+    var dd = new Date();
+    dd.setDate(dd.getDate() + S.timeOffset);
     p.overrideDate = dd.toISOString().split('T')[0];
   }
   try { S.scoreQueue.push(p); localStorage.setItem('sq', JSON.stringify(S.scoreQueue)); } catch(e) {}
@@ -556,7 +563,8 @@ function initDailyTimer() {
       el.parentElement.style.cssText = 'background:#ecfdf5;border-color:#a7f3d0;color:#065f46';
       return;
     }
-    var m = Math.floor(secs / 60); var s = secs % 60;
+    var m = Math.floor(secs / 60);
+    var s = secs % 60;
     el.innerText = m + ':' + String(s).padStart(2, '0');
   }
   updateDisp(tData[code].secondsLeft);
@@ -578,7 +586,10 @@ function initDailyTimer() {
 // SWIPE GAUCHE → EXERCICE SUIVANT
 // ══════════════════════════════════════════════════════════════
 var touchSX = 0, touchSY = 0;
-document.addEventListener('touchstart', function(e) { touchSX = e.changedTouches[0].screenX; touchSY = e.changedTouches[0].screenY; }, { passive: true });
+document.addEventListener('touchstart', function(e) {
+  touchSX = e.changedTouches[0].screenX;
+  touchSY = e.changedTouches[0].screenY;
+}, { passive: true });
 document.addEventListener('touchend', function(e) {
   var dx = touchSX - e.changedTouches[0].screenX;
   var dy = Math.abs(touchSY - e.changedTouches[0].screenY);
@@ -609,7 +620,6 @@ function switchTab(tab) {
   document.getElementById('auth-text').innerText = tab === 'register' ? "Continuer 🚀" : "Entrer dans l'arène ⚡";
 }
 
-// Met à jour les chapitres quand le niveau change dans le select
 function updateLevelChapters() {
   var level = document.getElementById('rl').value;
   var chaps = CHAPS_BY_LEVEL[level] || CHAPS_BY_LEVEL["4EME"];
@@ -642,12 +652,13 @@ async function submitAuth() {
       var r = await fetch(SU, { method: 'POST', body: JSON.stringify({ action: "register", name: n, email: e, level: l, password: h }) });
       var d = await r.json();
       if (d.status === 'success') {
-        S.prof = d.profile; S.niv = d.profile.level;
-        S.tmpEmail = e; S.tmpHash = h;
+        S.prof = d.profile;
+        S.niv = d.profile.level;
+        S.tmpEmail = e;
+        S.tmpHash = h;
         document.getElementById('auth-step-1').classList.add('hidden');
         document.getElementById('auth-step-2').classList.remove('hidden');
         document.getElementById('auth-title').innerText = "Tes chapitres 📚";
-        // Chapitres dynamiques selon le niveau sélectionné
         var chaps = CHAPS_BY_LEVEL[l] || CHAPS_BY_LEVEL["4EME"];
         document.getElementById('onboarding-chaps').innerHTML = chaps.map(function(c) {
           var key = c.replace(/ [^\w]/g, '').replace(/\s+/g, '_');
@@ -656,8 +667,11 @@ async function submitAuth() {
       } else {
         alert2("Erreur", d.message);
       }
-    } catch(err) { alert2("Erreur réseau", "Vérifie ta connexion.", "📡"); }
-    finally { togLd(false); }
+    } catch(err) {
+      alert2("Erreur réseau", "Vérifie ta connexion.", "📡");
+    } finally {
+      togLd(false);
+    }
 
   } else {
     try {
@@ -670,34 +684,45 @@ async function submitAuth() {
       } else {
         alert2("Refusé", d.message);
       }
-    } catch(err) { alert2("Erreur réseau", "Vérifie ta connexion.", "📡"); }
-    finally { togLd(false); }
+    } catch(err) {
+      alert2("Erreur réseau", "Vérifie ta connexion.", "📡");
+    } finally {
+      togLd(false);
+    }
   }
 }
+
 // ══════════════════════════════════════════════════════════════
-// ONBOARDING FINALIZATION (CORRIGÉ)
+// ONBOARDING FINALIZATION
 // ══════════════════════════════════════════════════════════════
 async function finalizeOnboarding() {
-  var selChaps = Array.from(document.querySelectorAll('.chap-card.selected')).map(function(el) { return el.getAttribute('data-chap'); });
+  var selChaps = Array.from(document.querySelectorAll('.chap-card.selected')).map(function(el) {
+    return el.getAttribute('data-chap');
+  });
   document.getElementById('onboard-text').classList.add('hidden');
   document.getElementById('onboard-ld').classList.remove('hidden');
   showT("Génération du diagnostic...", 0, "🎯");
 
   try {
-    // ÉTAPE 1 : Générer les exos du diagnostic
-    var diagR = await fetch(SU, { method: 'POST', body: JSON.stringify({ action: 'generate_diagnostic', code: S.prof.code, level: S.niv, selectedChapters: selChaps }) });
+    var diagR = await fetch(SU, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'generate_diagnostic', code: S.prof.code, level: S.niv, selectedChapters: selChaps })
+    });
     var diagD = await diagR.json();
     if (diagD.status !== 'success') {
-      hideT(); alert2("Erreur", "Génération du diagnostic échouée. Réessaie.");
+      hideT();
+      alert2("Erreur", "Génération du diagnostic échouée. Réessaie.");
       document.getElementById('onboard-text').classList.remove('hidden');
       document.getElementById('onboard-ld').classList.add('hidden');
       return;
     }
     var calExosFromAPI = diagD.exos;
 
-    // ÉTAPE 2 : Login complet pour récupérer le curriculum officiel
     showT("Chargement du programme...", 0, "📚");
-    var loginR = await fetch(SU, { method: 'POST', body: JSON.stringify({ action: 'login', email: S.tmpEmail, password: S.tmpHash }) });
+    var loginR = await fetch(SU, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'login', email: S.tmpEmail, password: S.tmpHash })
+    });
     var loginD = await loginR.json();
     hideT();
 
@@ -710,23 +735,19 @@ async function finalizeOnboarding() {
 
     localStorage.setItem(SK, JSON.stringify({ email: S.tmpEmail, password: S.tmpHash }));
     loginD.isFirstDay = true;
-
-    // Pré-positionner calState à 'test' AVANT initApp pour éviter le flash "Prêt ?"
     S.calState = 'test';
 
     document.getElementById('auth-screen').classList.add('hidden');
     document.getElementById('main-app').classList.remove('hidden');
 
-    // skipRender=true : on ne rend pas avant d'avoir les exos du diagnostic
     initApp(loginD, true);
-
-    // ÉTAPE 3 : Injecter les exos et démarrer le diagnostic
     S.calExos = calExosFromAPI;
-    startCal(); // rend le diagnostic
+    startCal();
     initDailyTimer();
 
   } catch(err) {
-    hideT(); alert2("Erreur réseau", "Vérifie ta connexion.", "📡");
+    hideT();
+    alert2("Erreur réseau", "Vérifie ta connexion.", "📡");
     document.getElementById('onboard-text').classList.remove('hidden');
     document.getElementById('onboard-ld').classList.add('hidden');
   }
@@ -771,24 +792,26 @@ function initApp(d, skipRender) {
 
   LVL[S.niv] = { cats: {}, names: {}, icons: {} };
 
-  // Curriculum officiel
   if (d.curriculumOfficiel && d.curriculumOfficiel.length > 0) {
     d.curriculumOfficiel.forEach(function(c) {
       if (c.categorie === "DIAGNOSTIC") {
         if (!S.calExos || S.calExos.length === 0) S.calExos = c.exos;
       } else {
-        LVL[S.niv].cats[c.categorie] = c.exos.map(function(e, i) { return Object.assign({}, e, { oC: c.categorie, oI: i }); });
+        LVL[S.niv].cats[c.categorie] = c.exos.map(function(e, i) {
+          return Object.assign({}, e, { oC: c.categorie, oI: i });
+        });
         LVL[S.niv].names[c.categorie] = c.titre;
         LVL[S.niv].icons[c.categorie] = c.icone;
       }
     });
   }
 
-  // Chapitres dynamiques (remédiation)
   if (d.dynamicChapters) {
     d.dynamicChapters.forEach(function(dc) {
       var k = dc.originalCat + '_V' + dc.version;
-      LVL[S.niv].cats[k] = dc.exos.map(function(e, i) { return Object.assign({}, e, { oC: k, oI: i }); });
+      LVL[S.niv].cats[k] = dc.exos.map(function(e, i) {
+        return Object.assign({}, e, { oC: k, oI: i });
+      });
       LVL[S.niv].names[k] = (LVL[S.niv].names[dc.originalCat] || dc.originalCat) + ' · Remédiation';
       LVL[S.niv].icons[k] = '🤖';
       S.insights[k] = dc.insight;
@@ -796,7 +819,6 @@ function initApp(d, skipRender) {
     });
   }
 
-  // Historique
   S.res = {}; S.xp = 0; S.sent = new Set();
   if (d.history) {
     d.history.forEach(function(r) {
@@ -807,7 +829,6 @@ function initApp(d, skipRender) {
     });
   }
 
-  // Streak
   if (!loc[S.prof.code]) loc[S.prof.code] = { stk: 1, last: tod() };
   S.stk = loc[S.prof.code].stk || 1;
   localStorage.setItem(LK, JSON.stringify(loc));
@@ -817,7 +838,6 @@ function initApp(d, skipRender) {
   document.getElementById('main-app').classList.remove('hidden');
   document.getElementById('aname').innerText = S.prof.name;
 
-  // calState : seulement si on n'est pas déjà en mode test
   if (S.calState !== 'test') {
     S.calState = ul.calDone ? null : (d.history.length === 0 ? 'sel' : null);
   }
@@ -841,7 +861,9 @@ function updH() {
 
 function loadBoost() {
   if (!S.boost) return;
-  LVL[S.niv].cats["BOOST"] = S.boost.exos.map(function(e, i) { return Object.assign({}, e, { oC: 'BOOST', oI: i }); });
+  LVL[S.niv].cats["BOOST"] = S.boost.exos.map(function(e, i) {
+    return Object.assign({}, e, { oC: 'BOOST', oI: i });
+  });
   LVL[S.niv].names["BOOST"] = "Entraînement IA du jour";
   LVL[S.niv].icons["BOOST"] = "⚡";
   S.insights["BOOST"] = S.boost.insight;
@@ -860,41 +882,60 @@ async function handleBoost() {
     var d = await r.json();
     document.getElementById('m-boost').classList.add('hidden');
     if (d.status === 'success') {
-      S.boost = d.boost; S.boostEx = true;
-      loadBoost(); render();
+      S.boost = d.boost;
+      S.boostEx = true;
+      loadBoost();
+      render();
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else { alert2("Oups", "L'IA n'a pas pu générer le boost."); }
-  } catch(e) { document.getElementById('m-boost').classList.add('hidden'); }
-  finally { S.boostGen = false; }
+    } else {
+      alert2("Oups", "L'IA n'a pas pu générer le boost.");
+    }
+  } catch(e) {
+    document.getElementById('m-boost').classList.add('hidden');
+  } finally {
+    S.boostGen = false;
+  }
 }
 
-// BOOST DEPUIS DIAGNOSTIC (avec boostPreping géré)
 async function boostFromDiag(errs) {
   S.boostPreping = true;
-  render(); // Affiche le spinner "IA en préparation"
+  render();
   showT("L'IA analyse ton diagnostic...", 0, "🧠");
   startTs();
   try {
-    var r = await fetch(SU, { method: 'POST', body: JSON.stringify({ action: "generate_daily_boost", code: S.prof.code, level: S.niv, errors: errs }) });
+    var r = await fetch(SU, {
+      method: 'POST',
+      body: JSON.stringify({ action: "generate_daily_boost", code: S.prof.code, level: S.niv, errors: errs })
+    });
     var d = await r.json();
     if (d.status === 'success') {
-      S.boost = d.boost; S.boostEx = true;
+      S.boost = d.boost;
+      S.boostEx = true;
       loadBoost();
       showT("⚡ Ton entraînement personnalisé est prêt !", 4000, "⚡");
-    } else { hideT(); }
-  } catch(e) { hideT(); }
-  finally { S.boostPreping = false; render(); }
+    } else {
+      hideT();
+    }
+  } catch(e) {
+    hideT();
+  } finally {
+    S.boostPreping = false;
+    render();
+  }
 }
 
 var _tsIv = null;
 function startTs() {
-  var i = 0; clearInterval(_tsIv);
+  var i = 0;
+  clearInterval(_tsIv);
   var bt = document.getElementById('bt');
   if (bt) bt.innerText = TS[0];
   _tsIv = setInterval(function() {
     i = (i + 1) % TS.length;
-    var ebt = document.getElementById('bt'); var etm = document.getElementById('tm');
-    if (ebt) ebt.innerText = TS[i]; if (etm) etm.innerText = TS[i];
+    var ebt = document.getElementById('bt');
+    var etm = document.getElementById('tm');
+    if (ebt) ebt.innerText = TS[i];
+    if (etm) etm.innerText = TS[i];
   }, 1400);
   setTimeout(function() { clearInterval(_tsIv); }, 12000);
 }
@@ -905,7 +946,9 @@ function startTs() {
 function startCal() {
   S.calState = 'test';
   S.qv['CALIBRAGE'] = 0;
-  LVL[S.niv].cats['CALIBRAGE'] = (S.calExos || []).map(function(e, i) { return Object.assign({}, e, { oC: 'CALIBRAGE', oI: i }); });
+  LVL[S.niv].cats['CALIBRAGE'] = (S.calExos || []).map(function(e, i) {
+    return Object.assign({}, e, { oC: 'CALIBRAGE', oI: i });
+  });
   LVL[S.niv].names['CALIBRAGE'] = 'Diagnostic de niveau';
   LVL[S.niv].icons['CALIBRAGE'] = '🎯';
   render();
@@ -923,7 +966,8 @@ function res2(cat, idx) {
 }
 
 window.showHint = function(cat, idx, max) {
-  var r = res2(cat, idx); var id = S.niv + '-' + r.rC + '-' + r.rI;
+  var r = res2(cat, idx);
+  var id = S.niv + '-' + r.rC + '-' + r.rI;
   S.hints[id] = S.hints[id] || 0;
   if (S.hints[id] < max) { S.hints[id]++; render(); }
 };
@@ -935,10 +979,12 @@ window.revF = function(cat, idx) {
 };
 
 window.checkOpt = function(cat, idx, oI, btn) {
-  var r = res2(cat, idx); var id = S.niv + '-' + r.rC + '-' + r.rI;
+  var r = res2(cat, idx);
+  var id = S.niv + '-' + r.rC + '-' + r.rI;
   var exo = LVL[S.niv].cats[cat][idx];
   S.qans[id] = exo.options[oI];
-  S.rev = true; S.cid = id;
+  S.rev = true;
+  S.cid = id;
   var cI = exo.options.indexOf(exo.a);
   Array.from(btn.parentElement.children).forEach(function(c) {
     c.className = 'opt ' + (parseInt(c.getAttribute('data-oi')) === cI ? 'oc' : 'on');
@@ -955,22 +1001,28 @@ window.checkOpt = function(cat, idx, oI, btn) {
 
 function verify(cat, idx) {
   var r = res2(cat, idx);
-  S.rev = true; S.cid = S.niv + '-' + r.rC + '-' + r.rI;
+  S.rev = true;
+  S.cid = S.niv + '-' + r.rC + '-' + r.rI;
   render();
 }
 
-// MARK : ne pas auto-avancer si c'est le dernier exercice
 function mark(cat, idx, status) {
-  if (S.adminMode && S.forceFail) { status = 'HARD'; S.forceFail = false; logAdmin('Forcé HARD sur ' + cat + ' exo ' + idx); }
-  var r = res2(cat, idx); var id = S.niv + '-' + r.rC + '-' + r.rI;
+  if (S.adminMode && S.forceFail) {
+    status = 'HARD';
+    S.forceFail = false;
+    logAdmin('Forcé HARD sur ' + cat + ' exo ' + idx);
+  }
+  var r = res2(cat, idx);
+  var id = S.niv + '-' + r.rC + '-' + r.rI;
   var exo = LVL[S.niv].cats[cat][idx];
   S.res[id] = status;
-  S.cid = id; S.rev = true;
+  S.cid = id;
+  S.rev = true;
   var xp = status === 'EASY' ? 100 : status === 'MEDIUM' ? 50 : 10;
   S.xp += xp;
   sendScore(r.rC, r.rI, status, xp, exo.q);
   updH();
-  var chapComplete = chkComp(cat); // retourne true si chapitre fini
+  var chapComplete = chkComp(cat);
   if (!chapComplete) {
     if (status === 'EASY') {
       setTimeout(function() { nextEx(cat); }, 600);
@@ -978,7 +1030,6 @@ function mark(cat, idx, status) {
       render();
     }
   }
-  // Si chapComplete, chkComp a déjà appelé render()
 }
 
 function togCat(cat) {
@@ -989,15 +1040,29 @@ function togCat(cat) {
   render();
 }
 
-// GOEX : préserve l'état réponse si déjà répondu
+// GOEX : préserve la réponse si déjà répondu + sauvegarde le brouillon
 function goEx(cat, i) {
+  // ── Sauvegarde du brouillon de l'exercice actif avant de changer ──
+  var _canvas = document.getElementById('canv-draft');
+  var _textarea = document.getElementById('draft-text');
+  if (S.cid && _canvas && _canvas.width > 0) {
+    S.drafts[S.cid] = {
+      img: _canvas.toDataURL(),
+      txt: _textarea ? _textarea.value : ''
+    };
+  }
+  // ─────────────────────────────────────────────────────────────────
+
   S.qv[cat] = parseInt(i);
-  var r = res2(cat, i); var id = S.niv + '-' + r.rC + '-' + r.rI;
+  var r = res2(cat, i);
+  var id = S.niv + '-' + r.rC + '-' + r.rI;
   var alreadyAnswered = !!S.res[id] || !!S.qans[id];
   if (alreadyAnswered) {
-    S.rev = true; S.cid = id;
+    S.rev = true;
+    S.cid = id;
   } else {
-    S.rev = false; S.cid = null;
+    S.rev = false;
+    S.cid = null;
     delete S.shuf[S.niv + '-' + cat + '-' + i];
   }
   render();
@@ -1009,17 +1074,16 @@ function nextEx(cat) {
     var r = res2(cat, i);
     if (!S.res[S.niv + '-' + r.rC + '-' + r.rI]) { goEx(cat, i); return; }
   }
-  // Tous faits : afficher le premier avec son résultat
   goEx(cat, 0);
 }
 
-// CHKCOMP : retourne true si chapitre terminé, gère chapDone
 function chkComp(cat) {
   var exs = LVL[S.niv].cats[cat];
   var tot = exs.length; var done = 0;
   var easy = 0, medium = 0, hard = 0; var errs = [];
   for (var i = 0; i < tot; i++) {
-    var r = res2(cat, i); var rs = S.res[S.niv + '-' + r.rC + '-' + r.rI];
+    var r = res2(cat, i);
+    var rs = S.res[S.niv + '-' + r.rC + '-' + r.rI];
     if (rs) done++;
     if (rs === 'EASY') easy++;
     else if (rs === 'MEDIUM') medium++;
@@ -1027,7 +1091,6 @@ function chkComp(cat) {
   }
   if (done !== tot || tot === 0) return false;
 
-  // CAS CALIBRAGE : auto → génère le boost
   if (cat === 'CALIBRAGE') {
     var loc = JSON.parse(localStorage.getItem(LK) || '{}');
     if (!loc[S.prof.code]) loc[S.prof.code] = {};
@@ -1039,7 +1102,6 @@ function chkComp(cat) {
     return true;
   }
 
-  // CAS CHAPITRE NORMAL : afficher panneau de complétion
   if (!S.chapDone[cat]) {
     S.chapDone[cat] = { errs: errs, tot: tot, easy: easy, medium: medium, hard: hard };
   }
@@ -1047,7 +1109,6 @@ function chkComp(cat) {
   return true;
 }
 
-// REMEDIATION DÉCLENCHÉE PAR L'UTILISATEUR
 function requestRemediation(cat) {
   if (S.remReq[cat]) return;
   var chapData = S.chapDone[cat];
@@ -1056,10 +1117,21 @@ function requestRemediation(cat) {
   render();
   var base = cat.replace(/_V\d+$/, '');
   var timeLeft = 18;
-  var timInt = setInterval(function() { timeLeft--; showT('⏳ IA au travail (~' + timeLeft + 's)', 0, "🤖"); if (timeLeft <= 0) clearInterval(timInt); }, 1000);
-  fetch(SU, { method: 'POST', body: JSON.stringify({ action: "generate_remediation", code: S.prof.code, category: base, level: S.niv, errors: chapData.errs.slice(0, 3) }) })
+  var timInt = setInterval(function() {
+    timeLeft--;
+    showT('⏳ IA au travail (~' + timeLeft + 's)', 0, "🤖");
+    if (timeLeft <= 0) clearInterval(timInt);
+  }, 1000);
+  fetch(SU, {
+    method: 'POST',
+    body: JSON.stringify({ action: "generate_remediation", code: S.prof.code, category: base, level: S.niv, errors: chapData.errs.slice(0, 3) })
+  })
     .then(function(r) { return r.json(); })
-    .then(function(d) { clearInterval(timInt); if (d.status === 'success') location.reload(); else { hideT(); S.remReq[cat] = false; render(); } })
+    .then(function(d) {
+      clearInterval(timInt);
+      if (d.status === 'success') location.reload();
+      else { hideT(); S.remReq[cat] = false; render(); }
+    })
     .catch(function() { clearInterval(timInt); hideT(); S.remReq[cat] = false; render(); });
 }
 
@@ -1077,10 +1149,24 @@ function rMastery() {
     });
   });
   var pct = tot > 0 ? Math.round((master / tot) * 100) : 0;
-  var circ = 2 * Math.PI * 32; var off = circ - (pct / 100) * circ;
+  var circ = 2 * Math.PI * 32;
+  var off = circ - (pct / 100) * circ;
   var w = document.getElementById('mastery-w');
   if (!keys.length) { w.innerHTML = ''; return; }
-  w.innerHTML = '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4"><div class="flex items-center gap-4"><div class="mring"><svg viewBox="0 0 72 72" width="72" height="72"><circle class="rbg" cx="36" cy="36" r="32"/><circle class="rfill" cx="36" cy="36" r="32" stroke-dasharray="' + circ.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '"/></svg><div class="rpct">' + pct + '%</div></div><div class="flex-1 min-w-0"><div class="syne font-black text-slate-900 text-sm mb-0.5">Maîtrise globale</div><div class="text-slate-500 text-xs font-medium mb-2">' + master + ' notion' + (master > 1 ? 's' : '') + ' acquise' + (master > 1 ? 's' : '') + ' sur ' + tot + '</div><div class="pbar"><div class="pfill ' + (pct === 100 ? 'pfg' : 'pfp') + '" style="width:' + pct + '%"></div></div></div></div>' + (S.stk >= 3 ? '<div class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2 text-xs font-semibold text-amber-700"><span>🔥</span><span>' + S.stk + ' jours consécutifs — continue comme ça !</span></div>' : '') + '</div>';
+  w.innerHTML =
+    '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">' +
+    '<div class="flex items-center gap-4">' +
+    '<div class="mring"><svg viewBox="0 0 72 72" width="72" height="72">' +
+    '<circle class="rbg" cx="36" cy="36" r="32"/>' +
+    '<circle class="rfill" cx="36" cy="36" r="32" stroke-dasharray="' + circ.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '"/>' +
+    '</svg><div class="rpct">' + pct + '%</div></div>' +
+    '<div class="flex-1 min-w-0">' +
+    '<div class="syne font-black text-slate-900 text-sm mb-0.5">Maîtrise globale</div>' +
+    '<div class="text-slate-500 text-xs font-medium mb-2">' + master + ' notion' + (master > 1 ? 's' : '') + ' acquise' + (master > 1 ? 's' : '') + ' sur ' + tot + '</div>' +
+    '<div class="pbar"><div class="pfill ' + (pct === 100 ? 'pfg' : 'pfp') + '" style="width:' + pct + '%"></div></div>' +
+    '</div></div>' +
+    (S.stk >= 3 ? '<div class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2 text-xs font-semibold text-amber-700"><span>🔥</span><span>' + S.stk + ' jours consécutifs — continue comme ça !</span></div>' : '') +
+    '</div>';
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1093,11 +1179,13 @@ function renderChapComplete(cat, data) {
   var canRemediate = hasErrors && v < 3 && !S.remReq[cat];
   var emoji = score === 100 ? '🏆' : score >= 60 ? '👍' : '💪';
   return '<div class="mx-4 mb-4 bg-indigo-50 border border-indigo-200 rounded-2xl p-5 afu">' +
-    '<div class="text-center mb-3"><div class="text-3xl mb-1">' + emoji + '</div>' +
+    '<div class="text-center mb-3">' +
+    '<div class="text-3xl mb-1">' + emoji + '</div>' +
     '<div class="syne font-black text-indigo-900 text-base">Chapitre terminé !</div>' +
-    '<div class="text-indigo-600 text-sm font-semibold mt-1">' + data.easy + ' acquis · ' + data.medium + ' à revoir · ' + data.hard + ' difficile' + (data.hard > 1 ? 's' : '') + '</div></div>' +
+    '<div class="text-indigo-600 text-sm font-semibold mt-1">' + data.easy + ' acquis · ' + data.medium + ' à revoir · ' + data.hard + ' difficile' + (data.hard > 1 ? 's' : '') + '</div>' +
+    '</div>' +
     '<div class="pbar mb-4"><div class="pfill ' + (score === 100 ? 'pfg' : 'pfp') + '" style="width:' + score + '%"></div></div>' +
-    (canRemediate ? '<button onclick="requestRemediation(\'' + cat + '\')" class="btn btn-ac btn-fw py-3 text-sm">🤖 Générer ma remédiation IA</button>' : '') +
+    (canRemediate ? '<button onclick="requestRemediation(\'' + cat + '\')" class="btn btn-ac btn-fw py-3 text-sm mb-2">🤖 Générer ma remédiation IA</button>' : '') +
     (S.remReq[cat] ? '<div class="bg-purple-50 border border-purple-200 rounded-xl p-3 text-center text-sm font-semibold text-purple-700 rem-prep">⏳ L\'IA génère tes exercices personnalisés...</div>' : '') +
     (!hasErrors ? '<div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-center text-sm font-semibold text-emerald-700">✨ Parfait ! Zéro erreur, continue comme ça !</div>' : '') +
     '</div>';
@@ -1114,22 +1202,37 @@ function render() {
   }
   rMastery();
 
-  // ÉCRAN "Prêt ?" (seulement si calState = 'sel')
   if (S.calState === 'sel') {
-    c.innerHTML = '<div class="bg-white rounded-3xl p-8 text-center shadow-sm border border-slate-100 afu"><div class="w-20 h-20 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-5 shadow-lg">🎯</div><h2 class="syne text-2xl font-black text-slate-900 mb-2">Prêt, ' + S.prof.name + ' ?</h2><p class="text-slate-500 font-medium mb-1 text-sm leading-relaxed">On cartographie tes lacunes en quelques questions.</p><p class="text-slate-400 text-xs mb-7">5 minutes · Résultats immédiats · Adapté à ton niveau</p><button onclick="startCal()" class="btn btn-ac btn-fw py-4">Lancer le diagnostic →</button></div>';
+    c.innerHTML =
+      '<div class="bg-white rounded-3xl p-8 text-center shadow-sm border border-slate-100 afu">' +
+      '<div class="w-20 h-20 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-5 shadow-lg">🎯</div>' +
+      '<h2 class="syne text-2xl font-black text-slate-900 mb-2">Prêt, ' + S.prof.name + ' ?</h2>' +
+      '<p class="text-slate-500 font-medium mb-1 text-sm leading-relaxed">On cartographie tes lacunes en quelques questions.</p>' +
+      '<p class="text-slate-400 text-xs mb-7">5 minutes · Résultats immédiats · Adapté à ton niveau</p>' +
+      '<button onclick="startCal()" class="btn btn-ac btn-fw py-4">Lancer le diagnostic →</button>' +
+      '</div>';
     return;
   }
 
-  // ÉCRAN DIAGNOSTIC EN COURS
   if (S.calState === 'test') {
     var exs = LVL[S.niv].cats['CALIBRAGE'] || [];
     var idx = S.qv['CALIBRAGE'] || 0;
-    var pct = exs.length > 0 ? Math.round(((idx) / exs.length) * 100) : 0;
-    c.innerHTML = '<div class="bg-white rounded-3xl shadow-sm border-2 border-indigo-200 overflow-hidden afu"><div class="px-5 py-4 bg-indigo-50 border-b border-indigo-100"><div class="flex justify-between items-center mb-2.5"><div class="flex items-center gap-2"><span>🎯</span><span class="syne font-black text-indigo-900 text-sm">Diagnostic de niveau — ' + LN[S.niv] + '</span></div><span class="text-xs font-bold text-indigo-500 bg-white px-2 py-1 rounded-lg border border-indigo-100">' + (idx + 1) + ' / ' + exs.length + '</span></div><div class="pbar"><div class="pfill pfp" style="width:' + pct + '%"></div></div></div>' + (exs[idx] ? rSection('CALIBRAGE', exs[idx], idx, exs.length, false) : '<div class="p-8 text-center text-slate-400 text-sm">Chargement des exercices...</div>') + '</div>';
-    rMath(); return;
+    var pct = exs.length > 0 ? Math.round((idx / exs.length) * 100) : 0;
+    c.innerHTML =
+      '<div class="bg-white rounded-3xl shadow-sm border-2 border-indigo-200 overflow-hidden afu">' +
+      '<div class="px-5 py-4 bg-indigo-50 border-b border-indigo-100">' +
+      '<div class="flex justify-between items-center mb-2.5">' +
+      '<div class="flex items-center gap-2"><span>🎯</span><span class="syne font-black text-indigo-900 text-sm">Diagnostic — ' + LN[S.niv] + '</span></div>' +
+      '<span class="text-xs font-bold text-indigo-500 bg-white px-2 py-1 rounded-lg border border-indigo-100">' + (idx + 1) + ' / ' + exs.length + '</span>' +
+      '</div>' +
+      '<div class="pbar"><div class="pfill pfp" style="width:' + pct + '%"></div></div>' +
+      '</div>' +
+      (exs[idx] ? rSection('CALIBRAGE', exs[idx], idx, exs.length, false) : '<div class="p-8 text-center text-slate-400 text-sm">Chargement...</div>') +
+      '</div>';
+    rMath();
+    return;
   }
 
-  // ÉCRAN PRINCIPAL
   var cats = LVL[S.niv].cats;
   var keys = Object.keys(cats).filter(function(k) { return k !== 'CALIBRAGE'; });
   if (keys.includes('BOOST')) keys = ['BOOST'].concat(keys.filter(function(k) { return k !== 'BOOST'; }));
@@ -1137,35 +1240,56 @@ function render() {
   var bDone = false;
   if (cats['BOOST'] && cats['BOOST'].length > 0) {
     var bDoneCount = 0;
-    for (var bi = 0; bi < cats['BOOST'].length; bi++) { var br2 = res2('BOOST', bi); if (S.res[S.niv + '-' + br2.rC + '-' + br2.rI]) bDoneCount++; }
+    for (var bi = 0; bi < cats['BOOST'].length; bi++) {
+      var br2 = res2('BOOST', bi);
+      if (S.res[S.niv + '-' + br2.rC + '-' + br2.rI]) bDoneCount++;
+    }
     bDone = bDoneCount === cats['BOOST'].length;
   }
 
   var html = '';
 
-  // BANDEAU BOOST STATUS
   if (S.boostPreping) {
-    html += '<div class="rounded-2xl p-5 flex items-center gap-4 shadow-lg mb-4" style="background:linear-gradient(135deg,#312e81,#4338ca)"><div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0"><div class="ld"></div></div><div><div class="syne text-base font-black text-white mb-0.5">Entraînement IA en cours...</div><p class="text-indigo-200 text-sm">L\'IA analyse ton diagnostic et crée tes exercices</p></div></div>';
+    html += '<div class="rounded-2xl p-5 flex items-center gap-4 shadow-lg mb-4" style="background:linear-gradient(135deg,#312e81,#4338ca)">' +
+      '<div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0"><div class="ld"></div></div>' +
+      '<div><div class="syne text-base font-black text-white mb-0.5">Entraînement IA en cours...</div>' +
+      '<p class="text-indigo-200 text-sm">L\'IA analyse ton diagnostic et crée tes exercices</p></div></div>';
   } else if (!S.boostEx && !S.calState) {
     if (S.isFirstDay) {
-      html += '<div onclick="handleBoost()" class="rounded-2xl p-5 flex items-center gap-4 cursor-pointer active:scale-[.98] transition-transform shadow-lg mb-4" style="background:linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)"><div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/20 animate-pulse-light">⚡</div><div class="flex-1 min-w-0"><div class="syne text-base font-black text-white mb-0.5">Mon entraînement IA</div><p class="text-indigo-200 text-sm font-medium">Exercices ciblés sur mes lacunes</p></div><div class="text-white/50 text-2xl font-light">›</div></div>';
+      html += '<div onclick="handleBoost()" class="rounded-2xl p-5 flex items-center gap-4 cursor-pointer active:scale-[.98] transition-transform shadow-lg mb-4" style="background:linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)">' +
+        '<div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/20 animate-pulse-light">⚡</div>' +
+        '<div class="flex-1 min-w-0"><div class="syne text-base font-black text-white mb-0.5">Mon entraînement IA</div>' +
+        '<p class="text-indigo-200 text-sm font-medium">Exercices ciblés sur mes lacunes</p></div>' +
+        '<div class="text-white/50 text-2xl font-light">›</div></div>';
     } else {
-      html += '<div class="rounded-2xl border border-slate-200 bg-white p-5 flex items-center gap-4 shadow-sm mb-4"><div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 border border-indigo-100 animate-pulse-light">🤖</div><div><div class="syne font-black text-slate-800 text-sm mb-0.5">IA en analyse...</div><p class="text-slate-500 text-sm">Ton programme sera prêt demain à 8h.</p></div></div>';
+      html += '<div class="rounded-2xl border border-slate-200 bg-white p-5 flex items-center gap-4 shadow-sm mb-4">' +
+        '<div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 border border-indigo-100 animate-pulse-light">🤖</div>' +
+        '<div><div class="syne font-black text-slate-800 text-sm mb-0.5">IA en analyse...</div>' +
+        '<p class="text-slate-500 text-sm">Ton programme sera prêt demain à 8h.</p></div></div>';
     }
   } else if (bDone) {
-    html += '<div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-3 mb-4"><div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0">✅</div><div><div class="syne font-black text-emerald-800 text-sm">Entraînement du jour complété !</div><div class="text-emerald-600 text-xs mt-0.5">L\'agent IA prépare déjà tes défis pour demain</div></div></div>';
+    html += '<div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-3 mb-4">' +
+      '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0">✅</div>' +
+      '<div><div class="syne font-black text-emerald-800 text-sm">Entraînement du jour complété !</div>' +
+      '<div class="text-emerald-600 text-xs mt-0.5">L\'agent IA prépare déjà tes défis pour demain</div></div></div>';
   }
 
-  // CHAPITRES
   keys.forEach(function(cat) {
     if (cat === 'BOOST' && bDone) return;
     var exs = cats[cat]; var tot = exs.length; var done = 0;
-    for (var i = 0; i < tot; i++) { var rr = res2(cat, i); if (S.res[S.niv + '-' + rr.rC + '-' + rr.rI]) done++; }
+    for (var i = 0; i < tot; i++) {
+      var rr = res2(cat, i);
+      if (S.res[S.niv + '-' + rr.rC + '-' + rr.rI]) done++;
+    }
     var comp = done === tot && tot > 0;
     var pct2 = tot > 0 ? Math.round((done / tot) * 100) : 0;
-    var isBoost = cat === 'BOOST'; var isNew = S.isNew[cat]; var isOpen = !!S.exp[cat];
+    var isBoost = cat === 'BOOST';
+    var isNew = S.isNew[cat];
+    var isOpen = !!S.exp[cat];
     var iconPulse = isBoost && !comp ? 'animate-pulse-light' : '';
-    var cs = isBoost ? 'background:linear-gradient(135deg,#312e81,#4338ca);border:none' : (comp ? 'background:#f0fdf4;border-color:#a7f3d0' : 'background:#fff');
+    var cs = isBoost
+      ? 'background:linear-gradient(135deg,#312e81,#4338ca);border:none'
+      : (comp ? 'background:#f0fdf4;border-color:#a7f3d0' : 'background:#fff');
 
     html += '<div class="rounded-2xl border border-slate-200 overflow-hidden shadow-sm afu mb-3" style="' + cs + '">';
     html += '<div onclick="togCat(\'' + cat + '\')" class="px-4 py-4 flex items-center gap-3 cursor-pointer select-none">';
@@ -1173,16 +1297,15 @@ function render() {
     html += '<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1.5"><span class="syne font-black text-sm ' + (isBoost ? 'text-white' : 'text-slate-900') + ' truncate">' + (LVL[S.niv].names[cat] || cat) + '</span>';
     if (comp) html += '<span class="text-base">🏆</span>';
     if (isNew) html += '<span class="text-[9px] syne font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-md">NEW</span>';
-    html += '</div><div class="flex items-center gap-2"><div class="pbar flex-1" style="max-width:100px"><div class="pfill ' + (comp ? 'pfg' : 'pfp') + '" style="width:' + pct2 + '%"></div></div><span class="text-[11px] font-bold ' + (isBoost ? 'text-white/60' : 'text-slate-400') + '">' + done + '/' + tot + '</span></div></div>';
+    html += '</div><div class="flex items-center gap-2"><div class="pbar flex-1" style="max-width:100px"><div class="pfill ' + (comp ? 'pfg' : 'pfp') + '" style="width:' + pct2 + '%"></div></div>';
+    html += '<span class="text-[11px] font-bold ' + (isBoost ? 'text-white/60' : 'text-slate-400') + '">' + done + '/' + tot + '</span></div></div>';
     html += '<div class="' + (isBoost ? 'text-white/40' : 'text-slate-300') + ' text-xl font-light select-none" style="transition:transform .2s;transform:rotate(' + (isOpen ? 90 : 0) + 'deg)">›</div></div>';
 
     if (isOpen) {
       var curIdx = S.qv[cat] || 0;
       if (exs[curIdx]) html += rSection(cat, exs[curIdx], curIdx, tot, comp);
-      // Panneau de complétion (visible APRÈS le dernier exercice)
       if (S.chapDone[cat]) html += renderChapComplete(cat, S.chapDone[cat]);
     }
-
     if (S.insights[cat] && isOpen) {
       html += '<div class="mx-4 mb-4 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs font-medium text-blue-700 leading-relaxed">💡 ' + S.insights[cat] + '</div>';
     }
@@ -1191,6 +1314,12 @@ function render() {
 
   c.innerHTML = html || '<div class="text-center text-slate-400 font-semibold py-12 text-sm">Aucun exercice disponible pour ce niveau.</div>';
   rMath();
+
+  // ── Pills : scroll vers la pill active ──────────────────
+  setTimeout(function() {
+    var ap = document.querySelector('.pill.ring-2');
+    if (ap) ap.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }, 60);
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1198,17 +1327,19 @@ function render() {
 // ══════════════════════════════════════════════════════════════
 function rSection(cat, data, idx, total, catDone) {
   if (!data) return '';
-  var r = res2(cat, idx); var id = S.niv + '-' + r.rC + '-' + r.rI;
+  var r = res2(cat, idx);
+  var id = S.niv + '-' + r.rC + '-' + r.rI;
   var ui = S.niv + '-' + cat + '-' + idx;
   var isRev = S.rev && S.cid === id;
   var scored = S.res[id];
   var hasOpt = data.options && data.options.length > 0;
 
-  // Navigation pills
   var pills = '<div class="flex overflow-x-auto gap-1.5 px-4 py-3 border-t border-slate-100 bg-slate-50/60 no-sb">';
   for (var i = 0; i < total; i++) {
-    var r2 = res2(cat, i); var s2 = S.res[S.niv + '-' + r2.rC + '-' + r2.rI];
-    var act = i === idx; var cls = 'pill ';
+    var r2 = res2(cat, i);
+    var s2 = S.res[S.niv + '-' + r2.rC + '-' + r2.rI];
+    var act = i === idx;
+    var cls = 'pill ';
     if (s2 === 'EASY' || s2 === 'MEDIUM') cls += 'bg-emerald-500 text-white';
     else if (s2 === 'HARD') cls += 'bg-rose-400 text-white';
     else cls += 'bg-white border-2 border-slate-200 text-slate-500';
@@ -1217,12 +1348,14 @@ function rSection(cat, data, idx, total, catDone) {
   }
   pills += '</div>';
 
-  // Actions
   var acts = '';
   if (!isRev && !hasOpt) {
     acts = '<button onclick="verify(\'' + cat + '\',' + idx + ')" class="btn btn-dk btn-fw py-4 mt-4">Révéler la réponse</button>';
   } else if (isRev && !scored && !hasOpt) {
-    acts = '<div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4 text-center mt-4"><div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Réponse</div><div class="mc text-base font-black text-slate-900">' + fmtL(data.a) + '</div></div>' +
+    acts =
+      '<div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4 text-center mt-4">' +
+      '<div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Réponse</div>' +
+      '<div class="mc text-base font-black text-slate-900">' + fmtL(data.a) + '</div></div>' +
       '<div class="grid grid-cols-3 gap-2">' +
       '<button onclick="mark(\'' + cat + '\',' + idx + ',\'HARD\')" class="btn-ng btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">😤</span>À revoir</button>' +
       '<button onclick="mark(\'' + cat + '\',' + idx + ',\'MEDIUM\')" class="btn-wn btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">🤔</span>Je doute</button>' +
@@ -1231,16 +1364,19 @@ function rSection(cat, data, idx, total, catDone) {
     acts = '<button onclick="nextEx(\'' + cat + '\')" class="btn btn-dk btn-fw py-4 mt-4 flex items-center justify-center gap-2">SUIVANT <span class="text-slate-400 font-normal text-xs">(ou swipe ←)</span></button>';
   }
 
-  // Options QCM
   var opts = '';
   if (hasOpt) {
     if (!isRev && !S.shuf[ui]) {
       var arr = data.options.map(function(t, i) { return { t: t, i: i }; });
-      for (var si = arr.length - 1; si > 0; si--) { var sj = Math.floor(Math.random() * (si + 1)); var tmp = arr[si]; arr[si] = arr[sj]; arr[sj] = tmp; }
+      for (var si = arr.length - 1; si > 0; si--) {
+        var sj = Math.floor(Math.random() * (si + 1));
+        var tmp = arr[si]; arr[si] = arr[sj]; arr[sj] = tmp;
+      }
       S.shuf[ui] = arr;
     }
     var sh = S.shuf[ui] || data.options.map(function(t, i) { return { t: t, i: i }; });
-    var cI = data.options.indexOf(data.a); var ans = S.qans[id];
+    var cI = data.options.indexOf(data.a);
+    var ans = S.qans[id];
     opts = '<div class="flex flex-col gap-2 mt-4">';
     sh.forEach(function(o) {
       var ocls = 'opt ';
@@ -1251,7 +1387,6 @@ function rSection(cat, data, idx, total, catDone) {
     opts += '</div>';
   }
 
-  // Indices
   var maxH = (data.steps && data.steps.length) || 0;
   var shown = scored ? maxH : (S.hints[id] || 0);
   var hSteps = '';
@@ -1260,24 +1395,36 @@ function rSection(cat, data, idx, total, catDone) {
       hSteps += '<div class="' + (i < shown ? 'block' : 'hidden') + ' mc text-xs text-amber-800 bg-white/80 rounded-lg px-3 py-2 border border-amber-100">' + fmtL(s) + '</div>';
     });
   }
-  var hints = '<div class="bg-amber-50 border border-amber-100 rounded-xl p-3"><div class="flex justify-between items-center mb-2"><span class="text-[10px] syne font-black text-amber-700 uppercase tracking-wider">💡 Indices</span>' + (shown < maxH ? '<button onclick="showHint(\'' + cat + '\',' + idx + ',' + maxH + ')" class="text-xs font-bold text-amber-600 bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-lg">Voir +1</button>' : '') + '</div>' + (maxH > 0 ? '<div class="space-y-1.5">' + hSteps + '</div>' : '<p class="text-amber-400 text-xs">Aucun indice disponible.</p>') + '</div>';
+  var hints =
+    '<div class="bg-amber-50 border border-amber-100 rounded-xl p-3">' +
+    '<div class="flex justify-between items-center mb-2">' +
+    '<span class="text-[10px] syne font-black text-amber-700 uppercase tracking-wider">💡 Indices</span>' +
+    (shown < maxH ? '<button onclick="showHint(\'' + cat + '\',' + idx + ',' + maxH + ')" class="text-xs font-bold text-amber-600 bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-lg">Voir +1</button>' : '') +
+    '</div>' +
+    (maxH > 0 ? '<div class="space-y-1.5">' + hSteps + '</div>' : '<p class="text-amber-400 text-xs">Aucun indice disponible.</p>') +
+    '</div>';
 
-  // Formule
   var fR = scored || !!S.ftch[id];
   var fContent = fmtL(data.f) || '<span class="text-slate-400 text-xs">Pas de formule.</span>';
-  var formula = '<div onclick="' + (!fR ? 'revF(\'' + cat + '\',' + idx + ')' : '') + '"><div class="fwrap ' + (fR ? 'frev' : '') + '"><div class="finner mc text-xs font-bold text-slate-700 text-center min-h-[1.5rem]">' + fContent + '</div>' + (!fR ? '<div class="fhint">👁 Formule clé</div>' : '') + '</div></div>';
+  var formula =
+    '<div onclick="' + (!fR ? 'revF(\'' + cat + '\',' + idx + ')' : '') + '">' +
+    '<div class="fwrap ' + (fR ? 'frev' : '') + '">' +
+    '<div class="finner mc text-xs font-bold text-slate-700 text-center min-h-[1.5rem]">' + fContent + '</div>' +
+    (!fR ? '<div class="fhint">👁 Formule clé</div>' : '') +
+    '</div></div>';
 
   return '<div class="border-t border-slate-100">' + pills +
     '<div class="p-4 sm:p-5">' +
     '<div class="flex justify-between items-center mb-3"><span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Niveau ' + (data.lvl || 1) + '</span></div>' +
-    '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-4 min-h-[80px] flex items-center justify-center"><div class="mc text-center font-bold text-base leading-relaxed w-full">' + fmtL(data.q) + '</div></div>' +
+    '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-4 min-h-[80px] flex items-center justify-center">' +
+    '<div class="mc text-center font-bold text-base leading-relaxed w-full">' + fmtL(data.q) + '</div></div>' +
     opts + acts +
     '<div class="grid grid-cols-2 gap-3 mt-4">' + hints + formula + '</div>' +
     '</div></div>';
 }
 
 // ══════════════════════════════════════════════════════════════
-// TABLEAU BLANC — CANVAS FIXÉ
+// TABLEAU BLANC — BOTTOM SHEET
 // ══════════════════════════════════════════════════════════════
 function toggleDraft() {
   S.dOpen = !S.dOpen;
@@ -1299,46 +1446,60 @@ function initCanvas() {
   if (!c) return;
   var parent = c.parentElement;
   var rect = parent.getBoundingClientRect();
-  if (rect.width === 0 || rect.height === 0) {
-    setTimeout(initCanvas, 100); return;
-  }
-  // Préserver le dessin existant si déjà initialisé
-  var imgData = null;
-  if (_canvasReady && c.width > 0 && c.height > 0) {
-    try { imgData = c.getContext('2d').getImageData(0, 0, c.width, c.height); } catch(e) {}
-  }
+  if (rect.width === 0 || rect.height === 0) { setTimeout(initCanvas, 100); return; }
+
   c.width = rect.width;
   c.height = rect.height;
   _canvasReady = true;
 
   var ctx = c.getContext('2d');
-  ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = 3;
   ctx.strokeStyle = penColor;
-  if (imgData) { try { ctx.putImageData(imgData, 0, 0); } catch(e) {} }
+
+  // ── Restauration du brouillon de l'exercice actif ──────
+  var _savedId = S.cid;
+  var _savedDraft = _savedId ? S.drafts[_savedId] : null;
+  var _ta = document.getElementById('draft-text');
+  if (_savedDraft) {
+    if (_ta) _ta.value = _savedDraft.txt || '';
+    if (_savedDraft.img && _savedDraft.img !== 'data:,' && _savedDraft.img.length > 6) {
+      var _img = new Image();
+      _img.onload = function() { ctx.drawImage(_img, 0, 0); };
+      _img.src = _savedDraft.img;
+    }
+  } else {
+    if (_ta) _ta.value = '';
+    ctx.clearRect(0, 0, c.width, c.height);
+  }
+  // ───────────────────────────────────────────────────────
 
   var drawing = false;
-  var lastX = 0, lastY = 0;
 
   function getPos(e, touch) {
     var r = c.getBoundingClientRect();
-    if (touch && e.touches && e.touches.length > 0) return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
+    if (touch && e.touches && e.touches.length > 0) {
+      return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
+    }
     return { x: e.offsetX, y: e.offsetY };
   }
   function startDraw(x, y) {
-    drawing = true; lastX = x; lastY = y;
+    drawing = true;
     ctx.strokeStyle = penColor;
-    ctx.beginPath(); ctx.moveTo(x, y);
+    ctx.beginPath();
+    ctx.moveTo(x, y);
   }
   function moveDraw(x, y) {
     if (!drawing) return;
     ctx.strokeStyle = penColor;
-    ctx.lineTo(x, y); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x, y);
-    lastX = x; lastY = y;
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, y);
   }
   function endDraw() { drawing = false; }
 
-  // Remplacer les handlers à chaque ouverture
   c.onmousedown = function(e) { var p = getPos(e); startDraw(p.x, p.y); };
   c.onmousemove = function(e) { var p = getPos(e); moveDraw(p.x, p.y); };
   c.onmouseup = endDraw;
@@ -1350,12 +1511,6 @@ function initCanvas() {
 
 function setPenColor(color) {
   penColor = color;
-  var c = document.getElementById('canv-draft');
-  if (c) c.getContext('2d').strokeStyle = color;
-  // Feedback visuel sur les boutons couleur
-  document.querySelectorAll('#pen-colors button').forEach(function(btn) {
-    btn.style.outline = btn.style.background === color ? '2px solid white' : 'none';
-  });
 }
 
 function clrD() {
@@ -1371,7 +1526,8 @@ function clrText() {
 function insSymbol(s) {
   var ta = document.getElementById('draft-text');
   if (!ta) return;
-  var start = ta.selectionStart; var end = ta.selectionEnd;
+  var start = ta.selectionStart;
+  var end = ta.selectionEnd;
   ta.value = ta.value.substring(0, start) + s + ta.value.substring(end);
   ta.selectionStart = ta.selectionEnd = start + s.length;
   ta.focus();
