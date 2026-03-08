@@ -1324,6 +1324,7 @@ window.checkOpt = function(cat, idx, oI, btn) {
   var r   = res2(cat, idx);
   var id  = S.niv + '-' + r.rC + '-' + r.rI;
   var exo = LVL[S.niv].cats[cat][idx];
+  clearNudge(id);
   S.qans[id] = exo.options[oI];
   S.rev  = true;
   S.cid  = id;
@@ -1403,6 +1404,7 @@ function goEx(cat, i) {
   // 2. Démarre le chrono uniquement pour les exercices non encore répondus
   if (!alreadyAnswered && !S.exoStartTime[id]) {
     S.exoStartTime[id] = Date.now();
+    setTimeout(function() { startNudge(id); }, 0);
   }
 
   if (alreadyAnswered) { S.rev = true; S.cid = id; }
@@ -1768,7 +1770,13 @@ function rSection(cat, data, idx, total, catDone) {
     '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-4 min-h-[80px] flex items-center justify-center">' +
     '<div class="mc text-center font-bold text-base leading-relaxed w-full">'+fmtL(data.q)+'</div></div>' +
     opts + acts +
-    '<div class="grid grid-cols-2 gap-3 mt-4">'+hints+formula+'</div>' +
+    '<div class="flex gap-2 mt-4">' +
+      '<button id="pill-hint-'+id+'" onclick="showHintInline(\''+cat+'\','+idx+','+maxH+')" class="help-pill pill-hint">💡 Indice</button>' +
+      '<button id="pill-form-'+id+'" onclick="revFInline(\''+cat+'\','+idx+')" class="help-pill pill-formula '+(fR?'opacity-40 pointer-events-none':'')+'">' +
+        (fR ? '✓ Formule vue' : '👁 Formule') +
+      '</button>' +
+    '</div>' +
+    '<div class="inline-help mc" id="help-inline-'+id+'"></div>' +
     '</div></div>';
 }
 
@@ -1795,66 +1803,72 @@ function toggleDraft() {
     b.classList.remove('show');
   }
 }
-
-var _canvasReady = false;
-function initCanvas() {
-  var c = document.getElementById('canv-draft');
-  if (!c) return;
-  var parent = c.parentElement;
-  var rect   = parent.getBoundingClientRect();
-  if (rect.width === 0 || rect.height === 0) { setTimeout(initCanvas, 100); return; }
-
-  c.width  = rect.width;
-  c.height = rect.height;
-  _canvasReady = true;
-
-  var ctx = c.getContext('2d');
-  ctx.lineCap   = 'round';
-  ctx.lineJoin  = 'round';
-  ctx.lineWidth = 3;
-  ctx.strokeStyle = penColor;
-
-  // Restauration du brouillon de l'exercice actif
-  var savedDraft = S.cid ? S.drafts[S.cid] : null;
-  var _ta = document.getElementById('draft-text');
-  if (savedDraft) {
-    if (_ta) _ta.value = savedDraft.txt || '';
-    if (savedDraft.img && savedDraft.img !== 'data:,' && savedDraft.img.length > 6) {
-      var _img = new Image();
-      _img.onload = function(){ ctx.drawImage(_img, 0, 0); };
-      _img.src = savedDraft.img;
-    }
-  } else {
-    if (_ta) _ta.value = '';
-    ctx.clearRect(0, 0, c.width, c.height);
+// ══════════════════════════════════════════════════════════════
+// TYPEWRITER + PILLS AIDE INLINE + NUDGE
+// ══════════════════════════════════════════════════════════════
+function typewriter(el, text, callback) {
+  el.innerHTML = '';
+  var i = 0;
+  function tick() {
+    if (i < text.length) { el.innerHTML += text.charAt(i); i++; setTimeout(tick, 22); }
+    else if (callback) callback();
   }
-
-  // Gestion dessin souris + tactile
-  var drawing = false;
-  function getPos(e, touch) {
-    var r = c.getBoundingClientRect();
-    if (touch && e.touches && e.touches.length > 0)
-      return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
-    return { x: e.offsetX, y: e.offsetY };
-  }
-  function startDraw(x, y) { drawing = true; ctx.strokeStyle = penColor; ctx.beginPath(); ctx.moveTo(x,y); }
-  function moveDraw(x, y)  { if (!drawing) return; ctx.strokeStyle = penColor; ctx.lineTo(x,y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x,y); }
-  function endDraw()        { drawing = false; }
-
-  c.onmousedown  = function(e){ var p = getPos(e);       startDraw(p.x, p.y); };
-  c.onmousemove  = function(e){ var p = getPos(e);       moveDraw(p.x, p.y);  };
-  c.onmouseup    = endDraw;
-  c.onmouseleave = endDraw;
-  c.ontouchstart = function(e){ e.preventDefault(); var p = getPos(e,true); startDraw(p.x, p.y); };
-  c.ontouchmove  = function(e){ e.preventDefault(); if (drawing) { var p = getPos(e,true); moveDraw(p.x, p.y); } };
-  c.ontouchend   = function(e){ e.preventDefault(); endDraw(); };
+  tick();
 }
 
-function setPenColor(color) { penColor = color; }
+window.showHintInline = function(cat, idx, max) {
+  var r  = res2(cat, idx);
+  var id = S.niv+'-'+r.rC+'-'+r.rI;
+  S.hints[id] = S.hints[id] || 0;
+  if (S.hints[id] >= max) return;
+  S.hints[id]++;
+  clearNudge(id);
+  var exo  = LVL[S.niv].cats[cat][idx];
+  var text = (exo.steps && exo.steps[S.hints[id]-1]) || '';
+  var area = document.getElementById('help-inline-'+id);
+  if (!area) return;
+  var label = '<span style="font-size:.7rem;font-weight:800;color:#d97706;text-transform:uppercase;letter-spacing:.05em">Indice '+S.hints[id]+' : </span>';
+  if (area.innerHTML) area.innerHTML += '<br>';
+  area.innerHTML += label;
+  var span = document.createElement('span');
+  area.appendChild(span);
+  typewriter(span, text, function() { if (window.MathJax) MathJax.typesetPromise([area]); });
+};
 
-function clrD() {
-  var c = document.getElementById('canv-draft');
-  if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height);
+window.revFInline = function(cat, idx) {
+  var r  = res2(cat, idx);
+  var id = S.niv+'-'+r.rC+'-'+r.rI;
+  if (S.ftch[id]) return;
+  S.ftch[id] = true;
+  clearNudge(id);
+  var exo  = LVL[S.niv].cats[cat][idx];
+  var area = document.getElementById('help-inline-'+id);
+  var btn  = document.getElementById('pill-form-'+id);
+  if (btn) { btn.innerHTML = '✓ Formule vue'; btn.classList.add('opacity-40','pointer-events-none'); }
+  if (!area) return;
+  if (area.innerHTML) area.innerHTML += '<br>';
+  area.innerHTML += '<span style="font-size:.7rem;font-weight:800;color:#4338ca;text-transform:uppercase;letter-spacing:.05em">Formule : </span>';
+  var span = document.createElement('span');
+  area.appendChild(span);
+  typewriter(span, exo.f || '', function() { if (window.MathJax) MathJax.typesetPromise([area]); });
+};
+
+var _nudgeTimers = {};
+function startNudge(id) {
+  clearNudge(id);
+  _nudgeTimers[id] = setTimeout(function() {
+    var ph = document.getElementById('pill-hint-'+id);
+    var pf = document.getElementById('pill-form-'+id);
+    if (ph) ph.classList.add('pill-nudge');
+    if (pf && !pf.classList.contains('pointer-events-none')) pf.classList.add('pill-nudge');
+  }, 20000);
+}
+function clearNudge(id) {
+  clearTimeout(_nudgeTimers[id]);
+  var ph = document.getElementById('pill-hint-'+id);
+  var pf = document.getElementById('pill-form-'+id);
+  if (ph) ph.classList.remove('pill-nudge');
+  if (pf) pf.classList.remove('pill-nudge');
 }
 
 function clrText() {
