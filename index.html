@@ -343,10 +343,36 @@
     }
     #draft-text:focus { border-color:var(--p); background:#fff; }
 
-    /* ── CANVAS DESSIN ───────────────────────────────────── */
-    #canv-draft {
-      position:absolute; inset:0; width:100%; height:100%;
-      cursor:crosshair; touch-action:none; display:block;
+    /* ── PILLS INDICES & FORMULE ─────────────────────────── */
+    .help-pill {
+      display:inline-flex; align-items:center; gap:.35rem;
+      padding:.4rem .85rem; border-radius:99px; font-size:.75rem;
+      font-weight:700; cursor:pointer; border:1.5px solid;
+      transition:all .2s; font-family:'Syne',sans-serif;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .pill-hint    { background:#fffbeb; color:#92400e; border-color:#fcd34d; }
+    .pill-formula { background:#eef2ff; color:#4338ca; border-color:#c7d2fe; }
+    .pill-hint:active, .pill-formula:active { transform:scale(.95); }
+
+    @keyframes pillBounce {
+      0%,100%{ transform:translateY(0); }
+      30%    { transform:translateY(-5px); }
+      60%    { transform:translateY(-2px); }
+    }
+    .pill-nudge {
+      animation: pillBounce .6s ease infinite;
+      box-shadow: 0 0 0 4px rgba(245,158,11,.25);
+    }
+    .pill-nudge.pill-formula {
+      box-shadow: 0 0 0 4px rgba(99,102,241,.2);
+    }
+
+    /* ── ZONE AIDE INLINE (sous l'énoncé) ───────────────── */
+    .inline-help {
+      border-top:1px solid #e2e8f0; margin-top:.75rem;
+      padding-top:.75rem; font-size:.85rem; font-weight:500;
+      color:#475569; line-height:1.6; min-height:1rem;
     }
   </style>
 </head>
@@ -629,45 +655,36 @@
       <button class="sym-btn" onclick="insSymbol('Δ')">Δ</button>
       <button class="sym-btn" onclick="insSymbol('θ')">θ</button>
       <button class="sym-btn" onclick="insSymbol('≈')">≈</button>
-      <button class="sym-btn" onclick="insSymbol('≠')">≠</button>
+      <button class="sym-btn" onclick="insSymbol('∈')">∈</button>
+      <button class="sym-btn" onclick="insSymbol('∉')">∉</button>
+      <button class="sym-btn" onclick="insSymbol('∩')">∩</button>
+      <button class="sym-btn" onclick="insSymbol('∪')">∪</button>
+      <button class="sym-btn" onclick="insSymbol('→')">→</button>
       <button class="sym-btn" onclick="insSymbol('≤')">≤</button>
       <button class="sym-btn" onclick="insSymbol('≥')">≥</button>
-      <button class="sym-btn" onclick="insSymbol('∞')">∞</button>
-      <button class="sym-btn" onclick="insSymbol('°')">°</button>
-      <button class="sym-btn" onclick="insSymbol('⁻¹')">⁻¹</button>
+      <button class="sym-btn" onclick="insSymbol('≠')">≠</button>
+      <button class="sym-btn" onclick="insSymbol('⁰')">⁰</button>
+      <button class="sym-btn" onclick="insSymbol('¹')">¹</button>
+      <button class="sym-btn" onclick="insSymbol('²')">²</button>
+      <button class="sym-btn" onclick="insSymbol('³')">³</button>
+      <button class="sym-btn" onclick="insSymbol('⁴')">⁴</button>
+      <button class="sym-btn" onclick="insSymbol('₀')">₀</button>
+      <button class="sym-btn" onclick="insSymbol('₁')">₁</button>
+      <button class="sym-btn" onclick="insSymbol('₂')">₂</button>
       <button class="sym-btn" onclick="insSymbol('(')">( )</button>
       <button class="sym-btn" onclick="insSymbol('[')">[ ]</button>
+      <button class="sym-btn" onclick="insSymbol('{')">{ }</button>
     </div>
   </div>
 
-  <!-- Zone texte / calculs -->
-  <div class="px-3 pt-3 pb-2 bg-white flex-shrink-0">
-    <div class="flex justify-between items-center mb-1.5">
-      <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">✏️ Zone texte / calculs</span>
-      <button onclick="clrText()" class="text-xs font-bold text-rose-400 hover:text-rose-600 transition-colors">Effacer texte</button>
+  <!-- Zone texte / calculs (pleine hauteur) -->
+  <div class="flex-1 flex flex-col px-3 pt-3 pb-3 bg-white overflow-hidden">
+    <div class="flex justify-between items-center mb-1.5 flex-shrink-0">
+      <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">✏️ Tes calculs</span>
+      <button onclick="clrText()" class="text-xs font-bold text-rose-400 hover:text-rose-600 transition-colors">Effacer</button>
     </div>
-    <textarea id="draft-text" rows="3"
+    <textarea id="draft-text" style="flex:1;resize:none;min-height:120px"
               placeholder="Écris tes calculs ici, utilise les symboles ci-dessus..."></textarea>
-  </div>
-
-  <!-- Séparateur zone dessin -->
-  <div class="px-3 py-1.5 bg-slate-50 border-t border-b border-slate-100 flex justify-between items-center flex-shrink-0">
-    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">🖊️ Zone dessin libre</span>
-    <div class="flex items-center gap-2">
-      <!-- Sélecteur couleur stylo -->
-      <div class="flex gap-1" id="pen-colors">
-        <button onclick="setPenColor('#4f46e5')" class="w-5 h-5 rounded-full border-2 border-indigo-400 cursor-pointer" style="background:#4f46e5" title="Indigo"></button>
-        <button onclick="setPenColor('#111827')" class="w-5 h-5 rounded-full border-2 border-slate-300 cursor-pointer" style="background:#111827" title="Noir"></button>
-        <button onclick="setPenColor('#e11d48')" class="w-5 h-5 rounded-full border-2 border-rose-300 cursor-pointer"   style="background:#e11d48" title="Rouge"></button>
-        <button onclick="setPenColor('#059669')" class="w-5 h-5 rounded-full border-2 border-emerald-300 cursor-pointer" style="background:#059669" title="Vert"></button>
-      </div>
-      <button onclick="clrD()" class="text-xs font-bold text-rose-400 hover:text-rose-600 transition-colors">Effacer dessin</button>
-    </div>
-  </div>
-
-  <!-- Canvas dessin libre (flex-1 = remplit l'espace restant) -->
-  <div class="flex-1 relative bg-slate-50 overflow-hidden">
-    <canvas id="canv-draft"></canvas>
   </div>
 
 </div><!-- /draft-drawer -->
@@ -705,7 +722,7 @@
 // ══════════════════════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════════════════════
-const SU = 'https://script.google.com/macros/s/AKfycbzcoxYKkH2XpdjoTzpnB25jKwNjrHMgCj43Xe8pmEZHpKA6VQ3eQz6XX0_XKZgwhX_I/exec';
+const SU = 'https://script.google.com/macros/s/AKfycbxHJ4jdAKVmsBYKW0w25DJLxsKMsBu_ehLxYBP_xjfBpEK9Ndp5IsNQNnyM-q7JHxvp/exec';
 const SK  = 'boost_v23';
 const LK  = 'boost_loc_v23';
 const LO  = ["6EME","5EME","4EME","3EME","SECONDE","PREMIERE","TERMINALE"];
@@ -944,6 +961,8 @@ function initDailyTimer() {
 
   updateDisp(tData[code].secondsLeft);
   clearInterval(timerInterval);
+
+   if (tData[code].secondsLeft <= 0) return;
 
   timerInterval = setInterval(function() {
     if (tData[code].secondsLeft > 0) {
@@ -1763,16 +1782,14 @@ function toggleDraft() {
   if (S.dOpen) {
     d.classList.add('open');
     b.classList.add('show');
-    setTimeout(function(){ initCanvas(); }, 350);
+    var ta = document.getElementById('draft-text');
+    if (ta && S.cid) ta.value = localStorage.getItem('draft_' + S.cid) || '';
   } else {
     // Sauvegarde avant fermeture
-    var _canvas   = document.getElementById('canv-draft');
-    var _textarea = document.getElementById('draft-text');
-    if (S.cid && _canvas && _canvas.width > 0) {
-      S.drafts[S.cid] = {
-        img: _canvas.toDataURL(),
-        txt: _textarea ? _textarea.value : ''
-      };
+       var ta = document.getElementById('draft-text');
+    if (ta && S.cid) {
+      S.drafts[S.cid] = { txt: ta.value };
+      localStorage.setItem('draft_' + S.cid, ta.value);
     }
     d.classList.remove('open');
     b.classList.remove('show');
