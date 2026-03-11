@@ -466,6 +466,20 @@ Règles prioritaires (ordre strict, plusieurs peuvent s'appliquer → afficher t
 
 ---
 
+### ✅ SESSION 12 mars — suite (UX admin + élève, commit 9421ef6)
+
+#### Admin modal élève
+- Moyennes retirées (`avgTime`, `avgIndices`, `pctFormula`) — trop de bruit
+- Accordéon `<details>` par chapitre si > 3 exos — ouvert par défaut si erreurs
+- Box "Publier chapitre" grisée + message ambre si boost terminé sans nouveau boost pending (`boostNeedsPrep`)
+
+#### Élève chapitres
+- Génération boost bloquée (sauf `isFirstDay`) → carte `📅 Prochain boost disponible demain matin 🔥`
+- `renderProgress()` : `nbExos = max(server, local)` — fix affichage 0 exo quand données locales non synchro
+- Chapitre archivé → carte pointillés `📅 Prochain chapitre · Disponible demain 🔥` (masquée si nouveau chapitre injecté)
+
+---
+
 ### ✅ SESSION 12 mars — UX élève + admin JSON boost (TERMINÉ)
 
 #### Git repo reconstruit
