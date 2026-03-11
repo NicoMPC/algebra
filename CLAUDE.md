@@ -152,6 +152,10 @@ S: 📧 Rapport envoyé / Chap5+  [T: Code masquée]
 - [x] LocalStorage : auth uniquement, données toujours depuis GAS ✅
 - [x] Backend pills priorité ⚡>✅>🔴>👍 + boostPending + chapTermine ✅
 - [x] Bouton "Copier le dernier boost JSON" dans modal admin ✅
+- [x] Smart question count : `_pickDiagExos()` — 1ch→4q, 2ch→6q, 3ch→8q, 4+→10q, ≥1/chap ✅
+- [x] Fix "Diagnostic - 6ème" après flow guest : calDone=true + S.calState=null avant initApp ✅
+- [x] Onboarding guest adapté : slide "Résultats sauvegardés ⚡", puis render() chapitres ✅
+- [x] boostFromDiag() déclenché en background pendant onboarding guest ✅
 - [ ] Validation inputs côté GAS (format email, longueur champs)
 - [ ] Rate limiting basique dans doPost
 
@@ -212,7 +216,8 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 - Auto-indices sur erreur : `autoShowHelp()` injecte HTML direct (pas de typewriter)
 - Badges niveau colorés + compteur animé dans `rSection()`
 - Essai 7j : badge J-X, overlay bloquant, onboarding 3 slides
-- Flow landing : diagnostic GAS guest → register overlay → save_score masse → queue 24h
+- Flow landing : diagnostic GAS guest → register overlay → save_score masse → onboarding adapté → chapitres
+- `_pickDiagExos(exos, chapCount)` : smart count (1ch→4q … 4+→10q), ≥1 par chapitre
 - Messages ton ado : EASY×7 HARD×3 + abandon/chapitre/boost/nudge/MotProf
 - Modal admin : DIAG/CH séparés, chapitres triés, boost lock intelligent, copyBoostJSON
 - `relDate`/`relDateAdmin` robuste : formats FR/ISO/timestamp, plafond "2 ans"
@@ -270,6 +275,7 @@ sh.append_row("Scores", [...])
 | 11 mars après-midi | @28 | Fix chapLocked actif uniquement, section archivés modal, cap 20 exos chapitresDetail, essai 7j complet | ab58d6d 72d200d |
 | 11 mars soir | @30 | CORS fix, landing CALIBRAGE+flow guest, admin modal DIAG/CH, pills prioritaires, landing vendeuse, essai 7j onboarding | 80a247f 50c7bdb 0da6a26 a2ee071 4e1a30e 6564c30 ab58d6d 72d200d a66879c 61b2924 f917a29 7e63b0f 372ac76 d7be47f |
 | 12 mars | @24→23 | Git reconstruit (12a61e7), UX admin/élève, boostJSON copie, rebuild_sheet.py synchronisé, fix auto-login, boostConsumed | 12a61e7 c22f471 2a808d3 9421ef6 b96f9d8 |
+| 12 mars (soir) | @30 | Smart question count, fix Diagnostic-6ème guest, onboarding adapté, boost auto guest | 9524e3a ac046e4 |
 
 ---
 
