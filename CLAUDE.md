@@ -194,7 +194,9 @@ Notes techniques B1 :
 - [x] **Modal élève** : tous les exos (plus de cap), accordion intitulés, badge DIAG/BOOST, copyAdminPrompt complet ✅ **[11 mars]**
 - [ ] Validation inputs côté GAS (format email, longueur champs)
 - [ ] Rate limiting basique dans doPost
-- [ ] Colonne `Premium` + `TrialStart` dans Users (pour le futur Stripe)
+- [x] Colonne `Premium` + `TrialStart` dans Users ✅ (GAS @25 — checkTrialStatus, badge J-X, overlay, onboarding)
+- [x] Essai 7 jours full droits sans carte ✅ (GAS @25 — checkTrialStatus, badge J-X, overlay, onboarding)
+- [x] Messages & encouragements ultra-ado Game Boy Chill ✅ (EASY×7 + HARD×3 + tous feedbacks)
 
 ### BLOC 3 — Juridique & paiement 🟡
 - [ ] Mentions légales (données mineurs → RGPD renforcé)
@@ -791,6 +793,32 @@ Password test : `test123` (hash SHA-256 de `email::test123::AB22`)
 - [x] `generateDailyBoost()` : priorise chapitres faibles (score<50%), exclut exos vus, fallback Prerequisites si tout épuisé
 - [x] `generateRemediation()` : priorise HARD > jamais vus > EASY, fallback chapitre prérequis connexe
 - Fichiers : backend.js `generateDailyBoost()` + `generateRemediation()`
+
+---
+
+---
+
+### ✅ SESSION 11 mars — Essai 7j + Polish UX (TERMINÉ)
+
+#### Backend (GAS @25)
+- `checkTrialStatus(code)` → { trialActive, daysLeft, isPremium }
+- `register()` → TrialStart = TODAY
+- `login()` → retourne `trial: { trialActive, daysLeft, isPremium }`
+- `case 'check_trial_status'` dans doPost()
+
+#### index.html
+- `S.trial` stocké au login/register
+- `renderTrialBadge()` : pill "🔥 J-X · Essai gratuit" (ambre si ≤2j, cachée si premium/admin)
+- `showTrialExpired()` : overlay bloquant + bouton "Prolonger" (toast bientôt) + lien progression
+- `showOnboarding(cb)` : 3 slides post-inscription
+- CTA hero : "Essayer 7 jours gratuits — sans carte bancaire →"
+- Animations : pulseHint (pills), toastIn (bounce), popIn (CTA)
+- Messages ton ado : EASY×7 + HARD×3 + chapitre/boost/abandon/MotProf/nudge/isFirstDay
+
+#### À faire (prochaine session)
+- Stripe → webhook → Premium → désactiver overlay
+- BLOC 3 Juridique (CGU, RGPD, case consentement parental)
+- git push origin main (token PAT requis)
 
 ---
 
