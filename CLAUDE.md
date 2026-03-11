@@ -82,6 +82,16 @@ Outil pédagogique adaptatif maths collège (6ème→3ème), diagnostic de lacun
 - **[11 mars]** Refonte admin dashboard : ExosDone DailyBoosts, boostHistory[], règles ACTION revues (🔴/⚡/✅/👍), box boost accordéon + verrouillage, box chapitre verrouillée si en cours, fix relDate "304 mois"
 - **[11 mars]** Modal élève : tous les exos (plus de cap 12), intitulés accordion si >60 chars, badge DIAG/BOOST, copyAdminPrompt copie TOUS les exos avec ⏱💡📐
 - **[11 mars]** Données test : 20 scénarios couvrant tous les cas (boost pending/en cours/terminé/absent × chapitre terminé/en cours/absent), vraies questions LaTeX
+- **[11 mars]** Flow landing + diagnostic unique complet : DEMO_QS remplacé par generate_diagnostic GAS guest, _flowDiagDone flag, save_score masse post-register, queue guestDiag 24h, bandeau reprise, cap 2 chapitres, switch silencieux register→login si mail existant — Commit 61b2924
+
+#### Fix landing diagnostic complet (11 mars)
+- Étape 3 flow landing : DEMO_QS remplacé par generate_diagnostic GAS (guest, sans code)
+- `_flowDiagDone` flag → flowRegister saute le re-diagnostic, save_score en masse après register
+- Queue guestDiag localStorage TTL 24h → bandeau reprise si abandon
+- Cap 2 chapitres max → toast informatif
+- Switch silencieux register→login si mail existant
+- Phase 3 polish : champs save_score corrigés (name/level/exercice_idx/q), code mort _flowRenderQ/flowDemoAnswer supprimé, messages ton ado ajoutés dans _flowCheckOpt
+- Commit 61b2924
 
 ---
 
@@ -197,6 +207,7 @@ Notes techniques B1 :
 - [x] Colonne `Premium` + `TrialStart` dans Users ✅ (GAS @25 — checkTrialStatus, badge J-X, overlay, onboarding)
 - [x] Essai 7 jours full droits sans carte ✅ (GAS @25 — checkTrialStatus, badge J-X, overlay, onboarding)
 - [x] Messages & encouragements ultra-ado Game Boy Chill ✅ (EASY×7 + HARD×3 + tous feedbacks)
+- [x] Flow landing + diagnostic unique et complet ✅ (generate_diagnostic GAS guest, queue 24h, auto-login, skip doublon)
 
 ### BLOC 3 — Juridique & paiement 🟡
 - [ ] Mentions légales (données mineurs → RGPD renforcé)

@@ -1476,45 +1476,6 @@ function flowToStep3() {
   _flowStartDiag();
 }
 
-function _flowRenderQ() {
-  var qs  = DEMO_QS[_flowLevel] || DEMO_QS['4EME'];
-  var q   = qs[_flowQIdx];
-  var num = document.getElementById('flow-q-num');
-  if (num) num.textContent = (_flowQIdx + 1) + ' / ' + qs.length;
-  var card = document.getElementById('flow-q-card');
-  if (!card) return;
-  var shuffled = q.opts.slice().sort(function(){ return Math.random() - .5; });
-  card.innerHTML =
-    '<p class="text-white font-semibold text-base mb-5 leading-relaxed">' + q.q + '</p>' +
-    '<div class="space-y-2.5">' +
-    shuffled.map(function(o) {
-      return '<button onclick="flowDemoAnswer(this,\''+o.replace(/'/g,'&#39;')+'\',\''+q.a.replace(/'/g,'&#39;')+'\')" class="flow-opt">'+o+'</button>';
-    }).join('') + '</div>';
-}
-
-function flowDemoAnswer(btn, chosen, correct) {
-  var qs   = DEMO_QS[_flowLevel] || DEMO_QS['4EME'];
-  var isOk = chosen === correct;
-  if (isOk) { btn.classList.add('foc'); _flowScore++; }
-  else {
-    btn.classList.add('fow');
-    var card = document.getElementById('flow-q-card');
-    if (card) {
-      var btns = card.querySelectorAll('.flow-opt');
-      btns.forEach(function(b){ if (b.textContent.trim() === correct) b.classList.add('foc'); });
-    }
-  }
-  // Rendre toutes les options non-cliquables
-  var allBtns = document.getElementById('flow-q-card').querySelectorAll('.flow-opt');
-  allBtns.forEach(function(b){ b.style.pointerEvents='none'; });
-
-  setTimeout(function() {
-    _flowQIdx++;
-    if (_flowQIdx < qs.length) { _flowRenderQ(); }
-    else { _flowSetStep(4); }
-  }, 900);
-}
-
 // ── DIAGNOSTIC GAS DANS LE FLOW ──────────────────────────────
 function _flowStartDiag() {
   // Convertir les clés normalisées en noms propres pour l'API
@@ -1625,6 +1586,11 @@ function _flowCheckOpt(chosen, correct) {
   var elapsed = Math.round((Date.now() - _flowStartTs) / 1000);
   _flowResults.push({ idx: _flowExoIdx, correct: isOk, time: elapsed });
 
+  // Feedback toast ton ado
+  var _OK = ["Carton plein 🎯","T'as géré ça 💪","Dans le mille ⚡","Propre. Vraiment 🔥","GG c'est dans la boîte 👌"];
+  var _KO = ["Presque ! Regarde bien 👀","Ça arrive, c'est comme ça qu'on apprend 💡","Pas grave — la prochaine tu l'as 🎯"];
+  showT(isOk ? _OK[Math.floor(Math.random()*_OK.length)] : _KO[Math.floor(Math.random()*_KO.length)], 1000, isOk ? '⭐' : '💡');
+
   // Feedback visuel sur le bouton cliqué
   var container = document.getElementById('flow-s3');
   if (container) {
@@ -1726,19 +1692,19 @@ async function flowRegister() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            action:        'save_score',
-            code:          newCode,
-            prenom:        newPrenom,
-            niveau:        _flowLevel,
-            categorie:     exo.categorie || (_flowChaps[0] || 'Diagnostic').replace(/_+$/, '').trim(),
-            numExo:        res.idx,
-            enonce:        exo.q || '',
-            resultat:      res.correct ? 'EASY' : 'HARD',
-            temps:         res.time || 0,
-            nbIndices:     0,
-            formuleVue:    0,
-            mauvaiseOption:'',
-            action_type:   'calibrage'
+            action:       'save_score',
+            code:         newCode,
+            name:         newPrenom,
+            level:        _flowLevel,
+            categorie:    exo.categorie || (_flowChaps[0] || 'Diagnostic').replace(/_+$/, '').trim(),
+            exercice_idx: res.idx,
+            q:            exo.q || '',
+            resultat:     res.correct ? 'EASY' : 'HARD',
+            time:         res.time || 0,
+            indices:      0,
+            formule:      false,
+            wrongOpt:     '',
+            source:       'CALIBRAGE'
           })
         }).catch(function() {});
       });
