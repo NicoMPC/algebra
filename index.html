@@ -596,15 +596,8 @@
         <button onclick="flowToStep3()" class="btn btn-ac btn-fw py-4">Voir le diagnostic →</button>
       </div>
 
-      <!-- STEP 3 — Questions démo -->
-      <div id="flow-s3" class="flow-step hidden">
-        <div class="flex items-center justify-between mb-5">
-          <span class="text-white/40 text-xs font-semibold uppercase tracking-wider">Aperçu du diagnostic</span>
-          <span id="flow-q-num" class="text-white/60 text-xs font-bold">1 / 2</span>
-        </div>
-        <div id="flow-q-card" class="bg-white/10 border border-white/15 rounded-2xl p-5"></div>
-        <p class="text-center text-white/35 text-xs mt-4">Ces questions illustrent le vrai diagnostic — tes réponses sont retenues</p>
-      </div>
+      <!-- STEP 3 — Diagnostic GAS -->
+      <div id="flow-s3" class="flow-step hidden"></div>
 
       <!-- STEP 4 — Inscription -->
       <div id="flow-s4" class="flow-step hidden">
@@ -1383,12 +1376,61 @@ var _flowLevel = '4EME';
 var _flowChaps = [];
 var _flowQIdx  = 0;
 var _flowScore = 0;
+var _flowExos      = [];      // exos GAS retournés
+var _flowResults   = [];      // { exoIdx, correct, time } par exo
+var _flowExoIdx    = 0;       // index exo courant
+var _flowStartTs   = 0;       // timestamp début exo (ms)
+var _flowDiagDone  = false;   // diagnostic terminé avant inscription
 
 function startTrialFlow() {
   document.getElementById('trial-flow').classList.remove('hidden');
   document.getElementById('cta-hero').classList.add('hidden');
   _flowSetStep(1);
   document.getElementById('trial-flow').scrollIntoView({ behavior:'smooth', block:'start' });
+  // Vérifier s'il y a un diagnostic abandonné à reprendre
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem('guestDiag') || 'null'); } catch(e) {}
+  if (saved && saved.ts && (Date.now() - saved.ts) < 86400000 && saved.exos && saved.exos.length > 0 && !saved.complete) {
+    _showResumeBanner(saved);
+  }
+}
+
+function _showResumeBanner(saved) {
+  // Afficher bandeau discret sous le flow-step-1
+  var existing = document.getElementById('flow-resume-banner');
+  if (existing) existing.remove();
+  var banner = document.createElement('div');
+  banner.id = 'flow-resume-banner';
+  banner.style.cssText = 'margin-top:1rem;background:rgba(99,102,241,.18);border:1.5px solid rgba(129,140,248,.35);border-radius:14px;padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:.75rem;animation:flowIn .28s ease-out';
+  banner.innerHTML =
+    '<span style="color:rgba(255,255,255,.75);font-size:.8rem;font-weight:600">Tu t\'étais arrêté là ⚡</span>' +
+    '<div style="display:flex;gap:.5rem">' +
+    '<button onclick="_flowResumeFromSaved()" style="background:#818cf8;color:#fff;border:none;border-radius:8px;padding:.4rem .8rem;font-size:.75rem;font-weight:700;cursor:pointer;font-family:Syne,sans-serif">Continuer</button>' +
+    '<button onclick="localStorage.removeItem(\'guestDiag\');document.getElementById(\'flow-resume-banner\').remove();" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.5);border:none;border-radius:8px;padding:.4rem .8rem;font-size:.75rem;font-weight:600;cursor:pointer">Recommencer</button>' +
+    '</div>';
+  var flowContainer = document.querySelector('#trial-flow .max-w-lg');
+  if (flowContainer) flowContainer.appendChild(banner);
+}
+
+function _flowResumeFromSaved() {
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem('guestDiag') || 'null'); } catch(e) {}
+  if (!saved || !saved.exos || !saved.exos.length) return;
+  var banner = document.getElementById('flow-resume-banner');
+  if (banner) banner.remove();
+  _flowExos    = saved.exos;
+  _flowResults = saved.results || [];
+  _flowExoIdx  = saved.step || 0;
+  _flowLevel   = saved.niveau || _flowLevel;
+  _flowChaps   = saved.chapitres || _flowChaps;
+  _flowDiagDone = false;
+  _flowSetStep(3);
+  if (_flowExoIdx < _flowExos.length) {
+    _flowRenderDiagExo();
+  } else {
+    _flowDiagDone = true;
+    _flowShowResults();
+  }
 }
 
 function _flowSetStep(n) {
@@ -1417,6 +1459,11 @@ function flowSelectLevel(lv) {
 }
 
 function flowToggleChap(el, key) {
+  // Cap à 2 chapitres max
+  if (!el.classList.contains('sel') && _flowChaps.length >= 2) {
+    showT('2 chapitres max pour le diagnostic — c\'est déjà bien 🎯', 2500, '⚠️');
+    return;
+  }
   el.classList.toggle('sel');
   if (el.classList.contains('sel')) { if (!_flowChaps.includes(key)) _flowChaps.push(key); }
   else { _flowChaps = _flowChaps.filter(function(k){ return k !== key; }); }
@@ -1426,7 +1473,7 @@ function flowToStep3() {
   if (_flowChaps.length < 2) { showT('Sélectionne au moins 2 chapitres 😊', 2500, '⚠️'); return; }
   _flowQIdx = 0; _flowScore = 0;
   _flowSetStep(3);
-  _flowRenderQ();
+  _flowStartDiag();
 }
 
 function _flowRenderQ() {
@@ -1468,6 +1515,185 @@ function flowDemoAnswer(btn, chosen, correct) {
   }, 900);
 }
 
+// ── DIAGNOSTIC GAS DANS LE FLOW ──────────────────────────────
+function _flowStartDiag() {
+  // Convertir les clés normalisées en noms propres pour l'API
+  // flowToggleChap normalise "Fractions 🍕" → "Fractions_"
+  // L'API attend "Fractions" (sans underscore de fin ni emoji)
+  var chaps = _flowChaps.map(function(c) { return c.replace(/_+$/, '').trim(); });
+
+  // Afficher spinner dans le container step 3
+  var container = document.getElementById('flow-s3');
+  if (container) {
+    container.innerHTML =
+      '<div class="text-center py-8">' +
+      '<div style="font-size:2.5rem;animation:spin .75s linear infinite;display:inline-block">⚡</div>' +
+      '<p class="mt-3 text-white/60 text-sm font-medium">Préparation de ton diagnostic...</p>' +
+      '</div>';
+  }
+
+  // Appel GAS generate_diagnostic sans code (guest)
+  fetch(SU, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'generate_diagnostic', level: _flowLevel, selectedChapters: chaps })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d.status === 'success' && d.exos && d.exos.length > 0) {
+      _flowExos    = d.exos;
+      _flowResults = [];
+      _flowExoIdx  = 0;
+      _flowDiagDone = false;
+      // Sauvegarder en localStorage — queue 24h pour abandon
+      try {
+        localStorage.setItem('guestDiag', JSON.stringify({
+          exos: _flowExos, results: [], niveau: _flowLevel, chapitres: chaps,
+          ts: Date.now(), step: 0
+        }));
+      } catch(e) {}
+      _flowRenderDiagExo();
+    } else {
+      if (container) container.innerHTML =
+        '<div class="text-center py-6">' +
+        '<p class="text-red-400 text-sm">Oups, problème de connexion — <button onclick="_flowStartDiag()" class="underline text-indigo-300 font-semibold">Réessayer</button></p>' +
+        '</div>';
+    }
+  })
+  .catch(function() {
+    var c2 = document.getElementById('flow-s3');
+    if (c2) c2.innerHTML =
+      '<div class="text-center py-6">' +
+      '<p class="text-red-400 text-sm">Oups, problème de connexion — <button onclick="_flowStartDiag()" class="underline text-indigo-300 font-semibold">Réessayer</button></p>' +
+      '</div>';
+  });
+}
+
+function _flowRenderDiagExo() {
+  var exo   = _flowExos[_flowExoIdx];
+  var total = _flowExos.length;
+  var idx   = _flowExoIdx;
+  _flowStartTs = Date.now();
+  var pct = Math.round((idx / total) * 100);
+
+  var opts = exo.options || exo.opts || [];
+  // Mélanger les options
+  var shuffled = opts.slice().sort(function() { return Math.random() - 0.5; });
+
+  var html = '<div class="space-y-4">';
+  // Progress bar
+  html += '<div class="flex items-center gap-2 mb-2">' +
+    '<span class="text-xs text-white/50">' + (idx + 1) + ' / ' + total + '</span>' +
+    '<div class="flex-1 bg-white/15 rounded-full" style="height:4px">' +
+    '<div class="bg-indigo-400 rounded-full transition-all" style="height:4px;width:' + pct + '%"></div>' +
+    '</div></div>';
+  // Question
+  html += '<p class="font-semibold text-white text-base leading-relaxed flow-diag-q">' + exo.q + '</p>';
+  // Options QCM
+  if (shuffled.length) {
+    html += '<div class="space-y-2">';
+    var aidx = _flowExoIdx; // capturer l'index courant pour l'onclick
+    shuffled.forEach(function(opt, oi) {
+      // Stocker opt et a dans data-attributes pour éviter les problèmes d'échappement
+      var optEnc = encodeURIComponent(opt + '');
+      var aEnc   = encodeURIComponent(exo.a + '');
+      html += '<button onclick="_flowCheckOptEnc(\'' + optEnc + '\',\'' + aEnc + '\')" ' +
+        'class="flow-opt flow-diag-btn">' + opt + '</button>';
+    });
+    html += '</div>';
+  }
+  html += '</div>';
+
+  var container = document.getElementById('flow-s3');
+  if (container) {
+    container.innerHTML = html;
+    // MathJax
+    if (window.MathJax && window.MathJax.typeset) {
+      try { window.MathJax.typeset([container]); } catch(e) {}
+    }
+  }
+}
+
+function _flowCheckOptEnc(chosenEnc, correctEnc) {
+  try {
+    _flowCheckOpt(decodeURIComponent(chosenEnc), decodeURIComponent(correctEnc));
+  } catch(e) { _flowCheckOpt(chosenEnc, correctEnc); }
+}
+
+function _flowCheckOpt(chosen, correct) {
+  var isOk    = chosen === correct;
+  var elapsed = Math.round((Date.now() - _flowStartTs) / 1000);
+  _flowResults.push({ idx: _flowExoIdx, correct: isOk, time: elapsed });
+
+  // Feedback visuel sur le bouton cliqué
+  var container = document.getElementById('flow-s3');
+  if (container) {
+    var btns = container.querySelectorAll('.flow-diag-btn');
+    btns.forEach(function(b) {
+      if (b.textContent.trim() === chosen) {
+        b.classList.add(isOk ? 'foc' : 'fow');
+      }
+      if (!isOk && b.textContent.trim() === correct) {
+        b.classList.add('foc');
+      }
+      b.style.pointerEvents = 'none';
+    });
+  }
+
+  // Mettre à jour la queue localStorage
+  try {
+    var saved = JSON.parse(localStorage.getItem('guestDiag') || '{}');
+    saved.results = _flowResults;
+    saved.step    = _flowExoIdx;
+    localStorage.setItem('guestDiag', JSON.stringify(saved));
+  } catch(e) {}
+
+  // Après 600ms → exo suivant ou fin
+  setTimeout(function() {
+    _flowExoIdx++;
+    if (_flowExoIdx < _flowExos.length) {
+      _flowRenderDiagExo();
+    } else {
+      _flowDiagDone = true;
+      _flowShowResults();
+    }
+  }, 600);
+}
+
+function _flowShowResults() {
+  var ok    = _flowResults.filter(function(r) { return r.correct; }).length;
+  var total = _flowResults.length;
+  var pct   = total > 0 ? Math.round((ok / total) * 100) : 0;
+
+  var insight = pct >= 80
+    ? "T'es au niveau 💪 On va pousser encore plus loin."
+    : pct >= 50
+    ? "Bon début ! On a repéré tes points faibles — on s'en occupe."
+    : "On a trouvé exactement où ça coince. C'est justement ça qui va changer.";
+
+  var stars = pct >= 80 ? '🔥🔥🔥' : pct >= 50 ? '⚡⚡' : '⚡';
+
+  var html =
+    '<div class="text-center py-4 space-y-4">' +
+    '<div style="font-size:2.5rem">' + stars + '</div>' +
+    '<div>' +
+    '<div class="syne text-white font-black text-3xl">' + ok + ' / ' + total + '</div>' +
+    '<div class="text-white/50 text-sm mt-1">bonnes réponses</div>' +
+    '</div>' +
+    '<p class="text-white/70 text-sm leading-relaxed max-w-xs mx-auto">' + insight + '</p>' +
+    '<button onclick="_flowSetStep(4)" class="btn btn-ac btn-fw py-4 mt-2" style="max-width:320px;margin:0 auto;display:block">' +
+    'Sauvegarde tes résultats →</button>' +
+    '<p class="text-white/30 text-xs">✓ 7 jours gratuits · ✓ Aucune carte bancaire</p>' +
+    '</div>';
+
+  var container = document.getElementById('flow-s3');
+  if (container) container.innerHTML = html;
+
+  // Confetti si pct >= 60
+  if (pct >= 60) { try { launchConfetti(); } catch(e) {} }
+}
+// ─────────────────────────────────────────────────────────────
+
 async function flowRegister() {
   var name  = (document.getElementById('fl-name')  || {}).value.trim();
   var email = (document.getElementById('fl-email') || {}).value.trim();
@@ -1479,29 +1705,132 @@ async function flowRegister() {
   document.getElementById('fl-btn-txt').classList.add('hidden');
   document.getElementById('fl-btn-ld').classList.remove('hidden');
   if (btn) btn.disabled = true;
+
+  // Fonction interne : finaliser le login après register OU switch silencieux
+  async function _doLoginAndLaunch(email, h, loginD) {
+    localStorage.setItem(SK, JSON.stringify({ email: email, password: h }));
+    loginD.isFirstDay = true;
+    S.calState = 'test';
+    document.getElementById('landing-screen').classList.add('hidden');
+    document.getElementById('main-app').classList.remove('hidden');
+    initApp(loginD, true);
+
+    // Si diagnostic déjà fait dans le flow → sauver les résultats en masse (fire-and-forget)
+    if (_flowDiagDone && _flowResults.length > 0 && _flowExos.length > 0) {
+      var newCode   = S.prof.code;
+      var newPrenom = S.prof.name || name;
+      _flowResults.forEach(function(res) {
+        var exo = _flowExos[res.idx] || _flowExos[0];
+        if (!exo) return;
+        fetch(SU, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action:        'save_score',
+            code:          newCode,
+            prenom:        newPrenom,
+            niveau:        _flowLevel,
+            categorie:     exo.categorie || (_flowChaps[0] || 'Diagnostic').replace(/_+$/, '').trim(),
+            numExo:        res.idx,
+            enonce:        exo.q || '',
+            resultat:      res.correct ? 'EASY' : 'HARD',
+            temps:         res.time || 0,
+            nbIndices:     0,
+            formuleVue:    0,
+            mauvaiseOption:'',
+            action_type:   'calibrage'
+          })
+        }).catch(function() {});
+      });
+      // Marquer la queue guestDiag comme complète
+      try {
+        var gd = JSON.parse(localStorage.getItem('guestDiag') || '{}');
+        gd.complete = true;
+        localStorage.setItem('guestDiag', JSON.stringify(gd));
+      } catch(e) {}
+    }
+
+    // showOnboarding : skipper le slide "diagnostic" si déjà fait dans le flow
+    if (_flowDiagDone) {
+      // Modifier temporairement les slides pour retirer le slide diagnostic
+      var savedSlides = _onbSlides;
+      _onbSlides = _onbSlides.filter(function(sl) { return sl.emoji !== '⚡'; });
+      showOnboarding(function() {
+        _onbSlides = savedSlides;
+        startCal();
+      });
+    } else {
+      showOnboarding(function() { startCal(); });
+    }
+  }
+
   try {
     var h    = await h256(pass, email);
     var regR = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'register', name:name, email:email, level:_flowLevel, password:h }) });
     var regD = await regR.json();
+
     if (regD.status !== 'success') {
+      // Détecter mail existant → switch login silencieux
+      var msg = regD.message || '';
+      if (msg.toLowerCase().indexOf('exist') !== -1 || msg.toLowerCase().indexOf('déjà') !== -1 || msg.toLowerCase().indexOf('compte') !== -1) {
+        showT('Tentative de connexion à ton compte existant...', 0, '🔑');
+        try {
+          var silentR = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'login', email:email, password:h }) });
+          var silentD = await silentR.json();
+          if (silentD.status === 'success') {
+            S.prof = silentD.profile; S.niv = silentD.profile.level || _flowLevel;
+            S.tmpEmail = email; S.tmpHash = h;
+            hideT();
+            await _doLoginAndLaunch(email, h, silentD);
+            // Toast "T'as déjà un compte" après initApp
+            setTimeout(function() { showT("T'as déjà un compte — on t'a retrouvé 🔥", 4000, '🔥'); }, 800);
+            return;
+          } else {
+            // Mauvais mot de passe
+            hideT();
+            showT('Compte existant — vérifie ton mot de passe 🔑', 4000, '⚠️');
+            document.getElementById('fl-btn-txt').classList.remove('hidden');
+            document.getElementById('fl-btn-ld').classList.add('hidden');
+            if (btn) btn.disabled = false;
+            return;
+          }
+        } catch(e2) {
+          hideT();
+          showT('Erreur réseau — vérifie ta connexion 📡', 3500, '❌');
+          document.getElementById('fl-btn-txt').classList.remove('hidden');
+          document.getElementById('fl-btn-ld').classList.add('hidden');
+          if (btn) btn.disabled = false;
+          return;
+        }
+      }
       showT('❌ ' + (regD.message || 'Erreur inscription'), 4000, '❌');
       document.getElementById('fl-btn-txt').classList.remove('hidden');
       document.getElementById('fl-btn-ld').classList.add('hidden');
       if (btn) btn.disabled = false;
       return;
     }
+
     S.prof = regD.profile; S.niv = _flowLevel;
     S.tmpEmail = email; S.tmpHash = h;
-    showT('Génération du diagnostic...', 0, '🎯');
-    var diagR = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'generate_diagnostic', code:S.prof.code, level:_flowLevel, selectedChapters:_flowChaps }) });
-    var diagD = await diagR.json();
-    if (diagD.status !== 'success') {
-      hideT(); showT('Diagnostic indisponible, on réessaie dans 10s...', 3000, '⏳');
-      document.getElementById('fl-btn-txt').classList.remove('hidden');
-      document.getElementById('fl-btn-ld').classList.add('hidden');
-      if (btn) btn.disabled = false;
-      return;
+
+    // Si diagnostic déjà fait dans le flow → skip generate_diagnostic API
+    var diagExos;
+    if (_flowDiagDone && _flowExos.length > 0) {
+      diagExos = _flowExos;
+    } else {
+      showT('Génération du diagnostic...', 0, '🎯');
+      var diagR = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'generate_diagnostic', code:S.prof.code, level:_flowLevel, selectedChapters:_flowChaps }) });
+      var diagD = await diagR.json();
+      if (diagD.status !== 'success') {
+        hideT(); showT('Diagnostic indisponible, on réessaie dans 10s...', 3000, '⏳');
+        document.getElementById('fl-btn-txt').classList.remove('hidden');
+        document.getElementById('fl-btn-ld').classList.add('hidden');
+        if (btn) btn.disabled = false;
+        return;
+      }
+      diagExos = diagD.exos;
     }
+
     showT('Chargement de ton espace...', 0, '📚');
     var loginR = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'login', email:email, password:h }) });
     var loginD = await loginR.json();
@@ -1509,14 +1838,8 @@ async function flowRegister() {
     if (loginD.status !== 'success') {
       showT('❌ Connexion impossible. Réessaie.', 4000, '❌'); return;
     }
-    localStorage.setItem(SK, JSON.stringify({ email:email, password:h }));
-    loginD.isFirstDay = true;
-    S.calState = 'test';
-    document.getElementById('landing-screen').classList.add('hidden');
-    document.getElementById('main-app').classList.remove('hidden');
-    initApp(loginD, true);
-    S.calExos = diagD.exos;
-    showOnboarding(function(){ startCal(); });
+    S.calExos = diagExos;
+    await _doLoginAndLaunch(email, h, loginD);
   } catch(err) {
     hideT(); showT('Erreur réseau — vérifie ta connexion 📡', 3500, '❌');
     document.getElementById('fl-btn-txt').classList.remove('hidden');
@@ -1638,8 +1961,11 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch(SU, { method:'POST', body:JSON.stringify({ action:"login", email:creds.email, password:creds.password }) })
       .then(function(r){ return r.json(); })
       .then(function(d){
-        if (d.status === 'success') { initApp(d, false); }
-        else {
+        if (d.status === 'success') {
+          initApp(d, false);
+          // Toast "Bon retour" après initApp
+          setTimeout(function() { showT('Bon retour ! 🔥', 3000, '👋'); }, 600);
+        } else {
           showAuth('login');
           document.getElementById('le').value = creds.email;
         }
