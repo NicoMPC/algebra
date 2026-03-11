@@ -2984,6 +2984,15 @@ function checkTrialStatus(p) {
   }
   if (!userRow) return { status: 'error', message: 'Utilisateur introuvable.' };
 
+  // Admin toujours actif
+  var iAdmin = headers.indexOf('IsAdmin');
+  if (iAdmin !== -1) {
+    var adminVal = userRow[iAdmin];
+    if (adminVal === 'TRUE' || adminVal === true || adminVal === '1' || adminVal === 1) {
+      return { status: 'success', trialActive: true, daysLeft: 999, isPremium: true };
+    }
+  }
+
   var premium    = userRow[iPremium];
   var isPremium  = (premium === true || premium === 1 || premium === 'TRUE' || premium === 'true');
 
@@ -2992,15 +3001,20 @@ function checkTrialStatus(p) {
 
   if (iTrialStart !== -1) {
     var trialStart = userRow[iTrialStart];
-    if (trialStart) {
-      var startDate = new Date(trialStart);
-      startDate.setHours(0, 0, 0, 0);
-      var now_ = new Date();
-      now_.setHours(0, 0, 0, 0);
-      var diffDays = Math.round((now_ - startDate) / (1000 * 60 * 60 * 24));
-      trialActive  = diffDays < 8;
-      daysLeft     = Math.max(0, 7 - diffDays);
+    if (!trialStart || trialStart === '') {
+      // Compte existant sans TrialStart → actif depuis aujourd'hui
+      return { status: 'success', trialActive: true, daysLeft: 7, isPremium: isPremium };
     }
+    var startDate = new Date(trialStart);
+    startDate.setHours(0, 0, 0, 0);
+    var now_ = new Date();
+    now_.setHours(0, 0, 0, 0);
+    var diffDays = Math.round((now_ - startDate) / (1000 * 60 * 60 * 24));
+    trialActive  = diffDays < 8;
+    daysLeft     = Math.max(0, 7 - diffDays);
+  } else {
+    // Colonne TrialStart absente du sheet → compte existant, actif par défaut
+    return { status: 'success', trialActive: true, daysLeft: 7, isPremium: isPremium };
   }
 
   return { status: 'success', trialActive: trialActive, daysLeft: daysLeft, isPremium: isPremium };

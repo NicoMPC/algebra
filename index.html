@@ -1604,6 +1604,8 @@ function renderTrialBadge() {
 }
 
 function showTrialExpired() {
+  if (S.prof && S.prof.isAdmin) return; // admin jamais bloqué
+  if (S.trial && S.trial.isPremium) return; // premium jamais bloqué
   // Ne pas empiler deux overlays
   if (document.getElementById('trial-expired-overlay')) return;
   var ov = document.createElement('div');
