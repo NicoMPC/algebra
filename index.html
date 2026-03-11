@@ -88,6 +88,22 @@
     @keyframes counterPop { from{opacity:0;transform:scale(.7)} to{opacity:1;transform:none} }
     @keyframes pulseGentle { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(245,158,11,0)} 50%{opacity:.88;box-shadow:0 0 0 4px rgba(245,158,11,.14)} }
     .pulse-gentle { animation: pulseGentle 3s ease-in-out infinite; }
+    @keyframes pulseHint {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.05); }
+    }
+    .pulse-hint { animation: pulseHint 2.5s ease-in-out infinite; }
+    @keyframes toastIn {
+      0%   { transform: translateX(-50%) translateY(20px) scale(0.95); opacity: 0; }
+      70%  { transform: translateX(-50%) translateY(-4px) scale(1.02); }
+      100% { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+    }
+    @keyframes popIn {
+      0%   { transform: scale(0.95); }
+      60%  { transform: scale(1.04); }
+      100% { transform: scale(1); }
+    }
+    .pop-in { animation: popIn 0.25s ease; }
     @keyframes confettiFall {
       0%   { transform:translateY(-10px) rotate(0deg);   opacity:1; }
       100% { transform:translateY(110vh)  rotate(720deg); opacity:0; }
@@ -287,7 +303,10 @@
       font-size:.875rem; white-space:nowrap;
       transition:transform .3s cubic-bezier(.4,0,.2,1);
     }
-    #toast.show { transform:translate(-50%,0); }
+    #toast.show {
+      transform:translate(-50%,0);
+      animation: toastIn 0.3s ease both;
+    }
 
     /* ── XP POP ──────────────────────────────────────────── */
     .xpf {
@@ -1453,6 +1472,15 @@ async function finalizeOnboarding() {
 // AUTO-LOGIN AU DÉMARRAGE
 // ══════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
+  // Pop-in sur le bouton CTA hero après son animation d'entrée (s4 = 0.55s délai + 0.6s = 1.15s)
+  setTimeout(function() {
+    var cta = document.getElementById('cta-hero');
+    if (cta && !cta.classList.contains('hidden')) {
+      cta.classList.add('pop-in');
+      cta.addEventListener('animationend', function h() { cta.classList.remove('pop-in'); cta.removeEventListener('animationend', h); });
+    }
+  }, 1200);
+
   var s = localStorage.getItem(SK);
   if (!s) return;
   try {
@@ -1509,7 +1537,7 @@ function showOnboarding(cb) {
   ov.id = 'onb-overlay';
   ov.style.cssText =
     'position:fixed;inset:0;z-index:3500;display:flex;align-items:center;justify-content:center;' +
-    'padding:1.5rem;background:rgba(7,9,15,.88)';
+    'padding:1.5rem;background:rgba(7,9,15,.88);overflow-y:auto';
   document.body.appendChild(ov);
   _onbRender();
 }
@@ -1534,7 +1562,7 @@ function _onbRender() {
     '<div style="padding:1.5rem;text-align:center">' +
     '<div style="display:flex;align-items:center;justify-content:center;gap:.4rem;margin-bottom:1.25rem">' + dots + '</div>' +
     (isLast
-      ? '<button onclick="_onbNext()" style="width:100%;padding:1rem;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer">C\'est parti →</button>'
+      ? '<button onclick="_onbNext()" class="pop-in" style="width:100%;padding:1rem;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer">C\'est parti →</button>'
       : '<button onclick="_onbNext()" style="width:100%;padding:1rem;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer">Suivant →</button>') +
     '</div></div>';
 }
@@ -2332,20 +2360,6 @@ function renderProgress() {
 // ══════════════════════════════════════════════════════════════
 // RENDER — PANNEAU COMPLÉTION CHAPITRE
 // ══════════════════════════════════════════════════════════════
-function renderChapComplete(cat, data) {
-  var score = Math.round((data.easy / data.tot) * 100);
-  var hasErrors = data.errs && data.errs.length > 0;
-  var emoji = score === 100 ? '🏆' : score >= 60 ? '👍' : '💪';
-  return '<div class="mx-4 mb-4 bg-indigo-50 border border-indigo-200 rounded-2xl p-5 afu">' +
-    '<div class="text-center mb-3">' +
-    '<div class="text-3xl mb-1">' + emoji + '</div>' +
-    '<div class="syne font-black text-indigo-900 text-base">✅ Chapitre terminé !</div>' +
-    '<div class="text-indigo-700 text-sm font-semibold mt-1">Tu as réussi ' + data.easy + ' exercice' + (data.easy > 1 ? 's' : '') + ' sur ' + data.tot + '.</div>' +
-    '</div>' +
-    '<div class="bg-indigo-100 border border-indigo-200 rounded-xl p-3 text-center text-sm font-semibold text-indigo-700">Chapitre bouclé 🎉 Reviens demain — ton prof prépare la suite sur mesure.</div>' +
-    '</div>';
-}
-
 // ══════════════════════════════════════════════════════════════
 // ARCHIVAGE : historique exercices d'un chapitre/boost terminé
 // ══════════════════════════════════════════════════════════════
@@ -2823,10 +2837,10 @@ function rSection(cat, data, idx, total, catDone) {
     '<div class="mc text-center font-bold text-base leading-relaxed w-full min-w-0">'+fmtL(data.q)+'</div></div>' +
     opts + acts +
     '<div class="flex gap-2 mt-4">' +
-      '<button id="pill-hint-'+id+'" onclick="showHintInline(\''+cat+'\','+idx+','+maxH+')" class="help-pill pill-hint'+(!scored && shown < maxH ? ' pulse-gentle' : '')+'">' +
+      '<button id="pill-hint-'+id+'" onclick="showHintInline(\''+cat+'\','+idx+','+maxH+')" class="help-pill pill-hint'+(!scored && shown < maxH ? ' pulse-hint' : '')+'">' +
         (shown >= maxH && maxH > 0 && !scored ? '✓ Indices vus' : '💡 Indice') +
       '</button>' +
-      '<button id="pill-form-'+id+'" onclick="revFInline(\''+cat+'\','+idx+')" class="help-pill pill-formula'+(!fR ? ' pulse-gentle' : ' opacity-40 pointer-events-none')+'">' +
+      '<button id="pill-form-'+id+'" onclick="revFInline(\''+cat+'\','+idx+')" class="help-pill pill-formula'+(!fR ? ' pulse-hint' : ' opacity-40 pointer-events-none')+'">' +
         (fR ? '✓ Formule vue' : '👁 Formule') +
       '</button>' +
     '</div>' +
@@ -2890,7 +2904,7 @@ function autoShowHelp(cat, idx) {
     });
     S.hints[id] = steps.length;
     var ph = document.getElementById('pill-hint-'+id);
-    if (ph) ph.classList.add('opacity-40','pointer-events-none');
+    if (ph) { ph.classList.remove('pulse-hint'); ph.classList.add('opacity-40','pointer-events-none'); }
   }
 
   if (exo.f && !S.ftch[id]) {
@@ -2900,7 +2914,7 @@ function autoShowHelp(cat, idx) {
       + (exo.f||'')
       + '</div>';
     var pf = document.getElementById('pill-form-'+id);
-    if (pf) { pf.innerHTML = '✓ Formule vue'; pf.classList.add('opacity-40','pointer-events-none'); }
+    if (pf) { pf.innerHTML = '✓ Formule vue'; pf.classList.remove('pulse-hint'); pf.classList.add('opacity-40','pointer-events-none'); }
   }
 
   area.innerHTML = html;
@@ -2931,7 +2945,7 @@ window.showHintInline = function(cat, idx, max) {
   // Si tous les indices vus → stopper pulsation + changer label
   if (S.hints[id] >= max) {
     var ph = document.getElementById('pill-hint-'+id);
-    if (ph) { ph.classList.remove('pulse-gentle'); ph.innerHTML = '✓ Indices vus'; }
+    if (ph) { ph.classList.remove('pulse-hint'); ph.innerHTML = '✓ Indices vus'; }
   }
 };
 
@@ -2944,7 +2958,7 @@ window.revFInline = function(cat, idx) {
   var exo  = LVL[S.niv].cats[cat][idx];
   var area = document.getElementById('help-inline-'+id);
   var btn  = document.getElementById('pill-form-'+id);
-  if (btn) { btn.innerHTML = '✓ Formule vue'; btn.classList.add('opacity-40','pointer-events-none'); btn.classList.remove('pulse-gentle'); }
+  if (btn) { btn.innerHTML = '✓ Formule vue'; btn.classList.add('opacity-40','pointer-events-none'); btn.classList.remove('pulse-hint'); }
   if (!area) return;
   if (area.innerHTML) area.innerHTML += '<br>';
   area.innerHTML += '<span style="font-size:.7rem;font-weight:800;color:#4338ca;text-transform:uppercase;letter-spacing:.05em">Formule : </span>';
