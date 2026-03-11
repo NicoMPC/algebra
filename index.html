@@ -1461,10 +1461,32 @@ function flowToggleChap(el, key) {
 }
 
 function flowToStep3() {
-  if (_flowChaps.length < 2) { showT('Sélectionne au moins 2 chapitres 😊', 2500, '⚠️'); return; }
+  if (_flowChaps.length < 1) { showT('Sélectionne au moins 1 chapitre 😊', 2500, '⚠️'); return; }
   _flowQIdx = 0; _flowScore = 0;
   _flowSetStep(3);
   _flowStartDiag();
+}
+
+// ── COMPTAGE INTELLIGENT QUESTIONS DIAGNOSTIC ────────────────
+// 1 chap→4q, 2 chap→6q, 3 chap→8q, 4+→10q — au moins 1 par chapitre
+function _pickDiagExos(exos, chapCount) {
+  var target = chapCount <= 1 ? 4 : chapCount === 2 ? 6 : chapCount === 3 ? 8 : 10;
+  if (exos.length <= target) return exos;
+  var groups = {}, keys = [];
+  exos.forEach(function(e) {
+    var k = e.oC || e.categorie || '';
+    if (!groups[k]) { groups[k] = []; keys.push(k); }
+    groups[k].push(e);
+  });
+  var result = [];
+  keys.forEach(function(k) { result.push(groups[k][0]); }); // au moins 1 par chap
+  var remaining = target - result.length;
+  if (remaining > 0) {
+    var pool = [];
+    keys.forEach(function(k) { pool = pool.concat(groups[k].slice(1)); });
+    result = result.concat(pool.slice(0, remaining));
+  }
+  return result.slice(0, target);
 }
 
 // ── DIAGNOSTIC GAS DANS LE FLOW ──────────────────────────────
@@ -1490,7 +1512,7 @@ function _flowStartDiag() {
   .then(function(r) { return r.json(); })
   .then(function(d) {
     if (d.status === 'success' && d.exos && d.exos.length > 0) {
-      _flowExos    = d.exos;
+      _flowExos    = _pickDiagExos(d.exos, _flowChaps.length);
       _flowResults = [];
       _flowExoIdx  = 0;
       _flowDiagDone = false;
@@ -1708,8 +1730,38 @@ async function _flowGuestRegister() {
   if (overlay) overlay.remove();
 
   if (loginR.status === 'success') {
-    loginR.isFirstDay = false; // diagnostic déjà fait dans le flow guest — ne pas relancer startCal()
-    initApp(loginR);
+    loginR.isFirstDay = false;
+
+    // Marquer calDone=true pour ce code → évite l'écran 'sel' (invitation diagnostic) à la prochaine connexion
+    try {
+      var _loc2 = JSON.parse(localStorage.getItem(LK) || '{}');
+      var _c2 = loginR.profile ? loginR.profile.code : '';
+      if (_c2) {
+        if (!_loc2[_c2]) _loc2[_c2] = {};
+        _loc2[_c2].calDone = true;
+        localStorage.setItem(LK, JSON.stringify(_loc2));
+      }
+    } catch(e) {}
+
+    // Reset calState avant initApp pour passer le if(calState !== 'test') → calDone=true → null
+    S.calState = null;
+    initApp(loginR, true); // skipRender — on contrôle l'affichage
+    if (LVL[S.niv] && LVL[S.niv].cats) delete LVL[S.niv].cats['CALIBRAGE'];
+
+    // Onboarding adapté : pas de slide "diagnostic" (déjà fait), slide "résultats sauvés"
+    var _guestSlides = [
+      _onbSlides[0],  // "7 jours gratuits, sans carte"
+      { emoji: '⚡', title: 'Résultats sauvegardés !',
+        body: 'On a analysé tes réponses. Ton prof prépare tes exercices personnalisés — reviens demain pour ton boost du jour 🔥',
+        color: 'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)' },
+      _onbSlides[2]   // "Ton prof prépare la suite"
+    ];
+    var _savedSlides = _onbSlides;
+    _onbSlides = _guestSlides;
+    showOnboarding(function() {
+      _onbSlides = _savedSlides;
+      render(); // → vue chapitres, sans diagnostic
+    });
   } else {
     showT('Connecte-toi depuis le menu 😊', 2500, '💡');
     setView('chapters');
@@ -1859,7 +1911,7 @@ async function flowRegister() {
     if (loginD.status !== 'success') {
       showT('❌ Connexion impossible. Réessaie.', 4000, '❌'); return;
     }
-    S.calExos = diagExos;
+    S.calExos = _pickDiagExos(diagExos, _flowChaps.length);
     await _doLoginAndLaunch(email, h, loginD);
   } catch(err) {
     hideT(); showT('Erreur réseau — vérifie ta connexion 📡', 3500, '❌');
