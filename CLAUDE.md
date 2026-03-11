@@ -21,7 +21,7 @@ Outil pédagogique adaptatif maths collège (6ème→3ème), diagnostic de lacun
 
 | Composant | Détail |
 |---|---|
-| `index.html` | SPA ~3700 lignes. CSS vars + Tailwind CDN + JS vanilla |
+| `index.html` | SPA ~4700 lignes. CSS vars + Tailwind CDN + JS vanilla |
 | GAS backend | `backend.js` — Web App déployée via clasp |
 | Sheet ID | `1zLBajKVL8FUzy7aV2Myi9gYFEFJjnALkLAg0hbicuDk` |
 | API URL | `const SU` dans index.html |
@@ -41,7 +41,7 @@ clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sx
 - ⚠️ `clasp deploy` seul sans `--deploymentId` crée des URLs inaccessibles → toujours passer l'ID
 - `deploy.sh` ne fait que push — toujours lancer les 2 commandes séparément
 
-## 📦 Actions GAS — état réel (@30)
+## 📦 Actions GAS — état réel (@31)
 | Action | Statut |
 |---|---|
 | `register` | ✅ Fonctionne — TrialStart = TODAY |
@@ -55,7 +55,10 @@ clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sx
 | `detect_fragile_prereqs` | ✅ Fonctionne (onglet Prerequisites archivé → fragile:false) |
 | `get_prerequisites` | ✅ Fonctionne |
 | `enqueue` | ✅ Fonctionne (onglet Queue archivé → erreur propre) |
-| `generate_exam_prep` | ✅ Fonctionne |
+| `generate_exam_prep` | ✅ Fonctionne — per-chapter, 10 questions (7 lvl2 + 3 lvl1 non acquis) |
+| `generate_brevet` | ✅ NOUVEAU — multi-chapitres niveau, ~15q style Brevet |
+| `generate_revision` | ✅ NOUVEAU — révision niveau inférieur sur chapitres faibles |
+| `submit_feedback` | ✅ NOUVEAU — écrit dans onglet Insights (créé auto si absent) |
 | `generateMorningReport` | ✅ Fonctionne — génération IA désactivée |
 | `get_admin_overview` | ✅ Fonctionne — boostHistory[], source exos, chapitresDetail cap 20 |
 | `publish_admin_boost` | ✅ Fonctionne — écrit →Nouveau Boost (col 18), rebuildSuivi |
@@ -196,21 +199,28 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 - [ ] Email bienvenue automatique (GAS + Gmail API ou Brevo)
 - [ ] Séquence J+3, J+7 pour conversion freemium→payant
 - [ ] Témoignages vrais élèves sur la landing
-- [ ] Page pricing claire
+- [x] Page pricing comparative (cours particulier vs Matheux vs autres applis) ✅
+- [x] Section fondateur Nicolas sur landing ✅
+- [x] Carousel testimonials mobile snap-scroll ✅
 
 ### BLOC 5 — Automatisation & scale 🔵
 - [x] clasp push automatique (`./watch_deploy.sh`) ✅
 - [ ] Agent analyse lacunes quotidien automatique
 - [ ] Agent génération boost automatique
 - [ ] Agent rapport parents (email hebdo)
-- [ ] Mode "Préparation Brevet"
+- [x] Mode "Préparation Brevet" (GAS generate_brevet + UI 3 screens + nav tab) ✅
+- [x] Mode Révision niveau inférieur (GAS generate_revision + card Progression) ✅
+- [x] Système feedback élève (submit_feedback GAS + modal + onglet Insights) ✅
 - [ ] Migration Sheets → vraie BDD si >50 users simultanés
 
 ---
 
 ## ✅ Ce qui fonctionne bien (ne pas toucher sans raison)
 - CSS/UI complet, mobile-first, animations propres (pulseGentle, toastIn, popIn)
-- Landing page vendeuse : hero émotionnel, 4 cartes, témoignages, CTA sans carte
+- Landing page vendeuse : hero émotionnel, 4 cartes, témoignages, CTA sans carte + pricing comparaison + Nicolas fondateur
+- Mode Brevet : nav tab + launch/active/done screens + GAS generate_brevet multi-chapitres
+- Mode Révision : GAS generate_revision (niveau inférieur, chapitres faibles) + launchRevision() + card Progression
+- Feedback non-intrusif : bouton "Signaler" post-réponse + modal 3 types + GAS submit_feedback → onglet Insights
 - Auth register + login + auto-login silencieux
 - Scores enrichis : temps, wrongOpt, indices, formule (v23)
 - Swipe gauche → exercice suivant
@@ -257,6 +267,9 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 | Fichier | Contenu |
 |---|---|
 | `rapport.md` | Rapport session 11 mars nuit |
+| `rapport-13-mars.md` | Rapport session 13 mars — 6 phases, 7 bugs fixés, tests 97% |
+| `notice-utilisation.md` | Guide complet site pour Nicolas (élèves, Sheet, admin, tech) |
+| `programme-français-verif.md` | Couverture Eduscol 66%, 12 notions manquantes identifiées |
 | `audit_complet.md` | Audit test_complet.py 77/81 (95%) |
 | `juridique-checklist.md` | RGPD mineurs, templates légaux, case consentement HTML+JS |
 | `landing-page-brief.md` | Brief landing 9 sections + copywriting |
@@ -272,6 +285,14 @@ sh.write_rows("DiagnosticExos", rows)
 sh.append_row("Scores", [...])
 ```
 - `rebuild_sheet.py` : reconstruit 👁 Suivi et 📋 Historique depuis données réelles — règles ACTION synchronisées avec GAS
+- `audit_formats.py` : audit conformité exercices Curriculum_Officiel + DiagnosticExos
+- `push_new_chapters.py` : push 4 nouveaux chapitres (Probabilités 3EME, Racines carrées 3EME, Nombres décimaux 6EME, Fonctions linéaires 4EME) → données dans `/tmp/exos_data.json`
+- `test_workflows.py` : 38 tests GAS (groupes A+B), 37/38 PASS après deploy @31
+
+## ⚠️ Action manuelle requise après session 13 mars
+- Sheet Users → colonne `IsAdmin` → mettre `true` pour `contact@matheux.fr` (A13 WARN)
+- Lancer `python3 push_new_chapters.py` pour pousser les 4 nouveaux chapitres dans le Sheet
+- Lancer `python3 audit_formats.py` pour vérifier conformité exercices en prod
 
 ---
 
@@ -292,6 +313,7 @@ sh.append_row("Scores", [...])
 | 12 mars (soir) | @30 | Smart question count, fix Diagnostic-6ème guest, onboarding adapté, boost auto guest | 9524e3a ac046e4 |
 | 12 mars (nuit) | @30 | Quiz inline landing (step 3 card blanche), tutorial Q1, fix onbRender bg, cohérence messages | 544a112 |
 | 12 mars (nuit 2) | @30 | Simulation 20 profils/5j, messages parent/ado refondus, BLOC 3 juridique complet (5 pages + footer + consentement) | — |
+| 13 mars | @31 | BLOCS 4-5 : landing pricing+fondateur+carousel, programme-français-verif.md (66% couv.), audit_formats.py, Mode Brevet (GAS+UI 3 screens), Mode Révision (GAS+card), Feedback (modal+Insights tab), 7 bugs fixes (showT/SHEET_ID/Array.find/chkComp/togCat/res2/sendScore), test_workflows.py 37/38 PASS (97%) | — |
 
 ---
 

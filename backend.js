@@ -78,6 +78,9 @@ function doPost(e) {
       case 'enqueue':                    res = enqueueTask(p);              break;
       case 'process_queue':              res = processQueue();              break;
       case 'generate_exam_prep':         res = generateExamPrep(p);        break;
+      case 'generate_brevet':            res = generateBrevet(p);          break;
+      case 'generate_revision':          res = generateRevision(p);        break;
+      case 'submit_feedback':            res = submitFeedback(p);          break;
       case 'debug_progress':             res = debugProgress(p);           break;
       case 'get_admin_overview':         res = getAdminOverview(p);        break;
       case 'publish_admin_boost':        res = publishAdminBoost(p);       break;
@@ -1783,6 +1786,220 @@ function generateExamPrep(p) {
     'Concentre-toi sur les exercices de niveau 2 — ce sont ceux qui tombent en contrôle.';
 
   return { status: 'success', exos: pool.slice(0, 10), insight: insight };
+}
+
+// ════════════════════════════════════════════════════════════
+//  12a. GENERATE_REVISION
+//  Payload : { code, niveau }
+//  Retourne les exercices de révision : chapitres du niveau INFÉRIEUR
+//  sur lesquels l'élève a des lacunes (score Progress < 60 ou absent).
+//  Si l'élève est en 6EME (pas de niveau inférieur), cible les chapitres
+//  du niveau courant avec les pires scores.
+//  Réponse : { status, exos[], insight, chapitres_revises[] }
+// ════════════════════════════════════════════════════════════
+
+function generateRevision(p) {
+  var code   = String(p.code   || '');
+  var niveau = (p.niveau || '').toUpperCase();
+
+  if (!isValidLevel(niveau)) {
+    return { status: 'error', message: 'Niveau invalide.' };
+  }
+
+  // Niveau inférieur
+  var niveauOrder = ['6EME', '5EME', '4EME', '3EME'];
+  var idx = niveauOrder.indexOf(niveau);
+  var revNiveau = idx > 0 ? niveauOrder[idx - 1] : niveau;
+  var isSameLevel = revNiveau === niveau;
+
+  // Scores actuels de l'élève dans Progress
+  var progRows = getRows(SH.PROGRESS).filter(function(r) {
+    return r['Code'] && String(r['Code']) === code &&
+           r['Niveau'] && String(r['Niveau']).toUpperCase() === revNiveau;
+  });
+
+  // Identifie les chapitres faibles (score < 60 ou pas encore vu)
+  var chapScores = {};
+  progRows.forEach(function(r) {
+    var chap  = String(r['Chapitre'] || '');
+    var score = parseInt(r['Score']  || 0);
+    if (chap) chapScores[chap] = score;
+  });
+
+  // Curriculum du niveau de révision
+  var currRows = getRows(SH.CURRICULUM).filter(function(r) {
+    return r['Niveau'] && r['Niveau'].toString().toUpperCase() === revNiveau;
+  });
+
+  if (currRows.length === 0) {
+    return { status: 'error', message: 'Aucun chapitre dans Curriculum_Officiel pour ' + revNiveau + '.' };
+  }
+
+  // Trie : chapitres faibles en premier (score bas ou absent)
+  currRows.sort(function(a, b) {
+    var sA = chapScores[String(a['Categorie'] || '')] || -1;
+    var sB = chapScores[String(b['Categorie'] || '')] || -1;
+    return sA - sB; // score plus bas → en premier
+  });
+
+  var finalExos = [];
+  var chapRevises = [];
+
+  // Prend les 3 chapitres les plus faibles, 3 exercices chacun (mix lvl1+lvl2)
+  currRows.slice(0, 3).forEach(function(row) {
+    var chap  = String(row['Categorie'] || '');
+    var titre = String(row['Titre']     || chap);
+    var exos  = parseJSON(row['ExosJSON']);
+    var score = chapScores[chap] || -1;
+
+    // 2 lvl1 + 1 lvl2 (révision = re-base les fondamentaux)
+    var lvl1 = shuffle(exos.filter(function(e){ return (e.lvl||1)===1; })).slice(0, 2);
+    var lvl2 = shuffle(exos.filter(function(e){ return (e.lvl||1)===2; })).slice(0, 1);
+    var picked = lvl1.concat(lvl2);
+    if (picked.length === 0) picked = shuffle(exos).slice(0, 3);
+
+    picked.forEach(function(ex) {
+      finalExos.push(Object.assign({}, ex, { oC:'REVISION', oI:finalExos.length, _chap:chap, _titre:titre, _score:score }));
+    });
+    chapRevises.push(titre || chap);
+  });
+
+  if (finalExos.length === 0) {
+    return { status: 'error', message: 'Impossible de générer une révision.' };
+  }
+
+  var insight = isSameLevel
+    ? 'Révision ciblée — tes points faibles en ' + (niveau.replace('EME','ème')) + '.'
+    : 'Révision des bases ' + (revNiveau.replace('EME','ème')) + ' pour consolider ton niveau ' + (niveau.replace('EME','ème')) + '. Chapitres : ' + chapRevises.join(', ') + '.';
+
+  return {
+    status:            'success',
+    exos:              finalExos,
+    insight:           insight,
+    chapitres_revises: chapRevises,
+    niveau_revise:     revNiveau
+  };
+}
+
+// ════════════════════════════════════════════════════════════
+//  12b. GENERATE_BREVET
+//  Payload : { code, niveau }
+//  Retourne un examen blanc multi-chapitres style Brevet.
+//  - 3EME : 6 chapitres × 2-3 exos = ~15 questions (tous lvl2)
+//  - Autres niveaux : chapitres du niveau + prérequis niveau inférieur
+//  Réponse : { status, exos[], insight, chapitres_couverts[] }
+// ════════════════════════════════════════════════════════════
+
+function generateBrevet(p) {
+  var code   = String(p.code   || '');
+  var niveau = (p.niveau || '3EME').toUpperCase();
+
+  if (!isValidLevel(niveau)) {
+    return { status: 'error', message: 'Niveau invalide.' };
+  }
+
+  // Chapitres brevet prioritaires par niveau
+  var brevetChaps = {
+    '3EME': ['Calcul_Littéral', 'Équations', 'Fonctions', 'Théorème_de_Thalès', 'Trigonométrie', 'Statistiques'],
+    '4EME': ['Calcul_Littéral', 'Équations', 'Pythagore', 'Proportionnalité', 'Puissances', 'Fractions'],
+    '5EME': ['Fractions', 'Nombres_relatifs', 'Proportionnalité', 'Pythagore', 'Puissances', 'Calcul_Littéral'],
+    '6EME': ['Nombres_entiers', 'Fractions', 'Proportionnalité', 'PérimètresAires', 'Géométrie', 'Angles']
+  };
+
+  var targetChaps = brevetChaps[niveau] || brevetChaps['3EME'];
+
+  // Récupère les exos déjà réussis pour cet élève (anti-redondance)
+  var easyKeys = {};
+  if (code) {
+    getRows(SH.SCORES)
+      .filter(function(r) { return r['Code'] && String(r['Code']) === code && String(r['Résultat']) === 'EASY'; })
+      .forEach(function(r) { easyKeys[String(r['Chapitre']) + '::' + String(r['NumExo'])] = true; });
+  }
+
+  var allCurrRows = getRows(SH.CURRICULUM).filter(function(r) {
+    return r['Niveau'] && r['Niveau'].toString().toUpperCase() === niveau;
+  });
+
+  var finalExos = [];
+  var chapitresCoverts = [];
+
+  targetChaps.forEach(function(chap) {
+    var row = allCurrRows.filter(function(r) { return String(r['Categorie'] || '') === chap; })[0];
+    if (!row) return;
+
+    var exos = parseJSON(row['ExosJSON']);
+    var titre = String(row['Titre'] || chap);
+
+    // Priorité : lvl2 non encore réussis
+    var lvl2 = exos.filter(function(ex, idx) {
+      return (ex.lvl || 1) === 2 && !easyKeys[chap + '::' + (idx + 1)];
+    });
+    var lvl1 = exos.filter(function(ex, idx) {
+      return (ex.lvl || 1) === 1 && !easyKeys[chap + '::' + (idx + 1)];
+    });
+
+    // 2-3 exos par chapitre (2 lvl2 + 1 lvl1 si dispo)
+    var picked = shuffle(lvl2).slice(0, 2);
+    if (picked.length < 2) picked = picked.concat(shuffle(lvl1).slice(0, 2 - picked.length));
+    if (picked.length < 2) picked = shuffle(exos).slice(0, 2);
+
+    // Tag chaque exo avec son chapitre source
+    picked.forEach(function(ex) {
+      finalExos.push(Object.assign({}, ex, { _chap: chap, _titre: titre }));
+    });
+
+    if (picked.length > 0) chapitresCoverts.push(titre || chap);
+  });
+
+  if (finalExos.length === 0) {
+    return { status: 'error', message: 'Aucun exercice brevet trouvé pour le niveau ' + niveau + '.' };
+  }
+
+  var insight = 'Examen blanc Brevet — ' + chapitresCoverts.length + ' chapitres couverts. ' +
+    'Conditions réelles : résous chaque question sans aide. ' +
+    'Chapitres : ' + chapitresCoverts.join(', ') + '.';
+
+  return {
+    status:             'success',
+    exos:               shuffle(finalExos),
+    insight:            insight,
+    chapitres_couverts: chapitresCoverts,
+    niveau:             niveau
+  };
+}
+
+// ════════════════════════════════════════════════════════════
+//  12c. SUBMIT_FEEDBACK
+//  Payload : { code, name, niveau, type, message, exo_q (optionnel), rating (1-5) }
+//  Écrit dans l'onglet "Insights" (créé si absent)
+//  Réponse : { status }
+// ════════════════════════════════════════════════════════════
+
+function submitFeedback(p) {
+  var code    = String(p.code    || '');
+  var name    = String(p.name    || '');
+  var niveau  = String(p.niveau  || '');
+  var type    = String(p.type    || 'general');   // 'trop_dur', 'erreur', 'super', 'general'
+  var message = String(p.message || '');
+  var exoQ    = String(p.exo_q   || '');
+  var rating  = parseInt(p.rating || 0);
+
+  if (!message && !type) {
+    return { status: 'error', message: 'message ou type requis' };
+  }
+
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var tab = ss.getSheetByName('Insights');
+  if (!tab) {
+    tab = ss.insertSheet('Insights');
+    tab.appendRow(['Date', 'Code', 'Prénom', 'Niveau', 'Type', 'Message', 'Énoncé exo', 'Note (1-5)']);
+    tab.getRange(1, 1, 1, 8).setFontWeight('bold').setBackground('#e0e7ff');
+  }
+
+  var today = Utilities.formatDate(new Date(), 'Europe/Paris', 'yyyy-MM-dd HH:mm');
+  tab.appendRow([today, code, name, niveau, type, message, exoQ.substring(0, 80), rating || '']);
+
+  return { status: 'success' };
 }
 
 // ════════════════════════════════════════════════════════════

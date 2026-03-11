@@ -724,6 +724,57 @@
     </div>
   </div>
 
+  <!-- ── SECTION PRICING COMPARAISON ──────────────────────────── -->
+  <div class="bg-white px-5 py-14">
+    <div class="max-w-2xl mx-auto">
+      <div class="text-center mb-10">
+        <div class="stag mb-4">Le bon investissement</div>
+        <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900 leading-tight">L'efficacité d'un suivi personnalisé.<br>Le prix d'un café par semaine.</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <!-- Cours particulier -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center relative overflow-hidden">
+          <div class="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-3">Cours particulier</div>
+          <div class="syne text-3xl font-black text-slate-500 mb-1">30 €</div>
+          <div class="text-slate-400 text-xs mb-4">par heure</div>
+          <ul class="text-left space-y-2 text-sm text-slate-500">
+            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>1h par semaine</li>
+            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>Disponibilité limitée</li>
+            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>~120€/mois</li>
+            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>Programme général</li>
+          </ul>
+        </div>
+        <!-- Matheux — carte mise en avant -->
+        <div style="background:linear-gradient(135deg,#4338ca,#6366f1);border:2px solid #818cf8" class="rounded-2xl p-6 text-center relative shadow-xl ring-2 ring-indigo-400">
+          <div style="background:#facc15;color:#1e1b4b" class="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-black px-4 py-1 rounded-full syne whitespace-nowrap">LE MEILLEUR RAPPORT QUALITE/PRIX</div>
+          <div class="text-indigo-200 text-xs font-semibold uppercase tracking-widest mb-3 mt-2">Matheux</div>
+          <div class="syne text-3xl font-black text-white mb-1">9,99 €</div>
+          <div class="text-indigo-200 text-xs mb-4">par mois</div>
+          <ul class="text-left space-y-2 text-sm text-white/90">
+            <li class="flex items-start gap-2"><span class="text-green-300 mt-0.5">✓</span>Chaque jour, 10-15 min</li>
+            <li class="flex items-start gap-2"><span class="text-green-300 mt-0.5">✓</span>Disponible 24h/24</li>
+            <li class="flex items-start gap-2"><span class="text-green-300 mt-0.5">✓</span>2,50€/semaine</li>
+            <li class="flex items-start gap-2"><span class="text-green-300 mt-0.5">✓</span>Adapté à VOTRE enfant</li>
+          </ul>
+          <div class="mt-5 bg-white/15 rounded-xl px-3 py-2 text-white text-xs font-bold">7 jours offerts — aucune carte</div>
+        </div>
+        <!-- Applis génériques -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center relative overflow-hidden">
+          <div class="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-3">Applis classiques</div>
+          <div class="syne text-3xl font-black text-slate-500 mb-1">5–15 €</div>
+          <div class="text-slate-400 text-xs mb-4">par mois</div>
+          <ul class="text-left space-y-2 text-sm text-slate-500">
+            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>Programme figé</li>
+            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>Pas de diagnostic</li>
+            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>Même exos pour tous</li>
+            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>Peu d'adaptation</li>
+          </ul>
+        </div>
+      </div>
+      <p class="text-center text-slate-500 text-sm">Essayez 7 jours sans engagement — si votre enfant ne progresse pas, vous ne payez rien.</p>
+    </div>
+  </div>
+
   <!-- ── SECTION PREUVE DE PERSONNALISATION ──────────────────── -->
   <div class="bg-white px-5 py-14">
     <div class="max-w-2xl mx-auto">
@@ -758,9 +809,10 @@
         <div class="stag mb-4">Ce qu'ils en disent</div>
         <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900 leading-tight">Ils ont vu la différence.</h2>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Carousel mobile (snap) / grille desktop -->
+      <div style="display:flex;gap:1rem;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:.75rem;scrollbar-width:none" class="md:grid md:grid-cols-3 md:overflow-visible">
         <!-- Témoignage 1 -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+        <div style="min-width:80vw;scroll-snap-align:start" class="md:min-w-0 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex-shrink-0">
           <div class="text-amber-400 text-sm mb-3">★★★★★</div>
           <p class="text-slate-700 text-sm leading-relaxed italic mb-4">"Ma fille n'aimait pas les maths. Deux semaines après, elle me demandait à faire ses exercices du soir. Je n'y croyais pas."</p>
           <div class="flex items-center gap-3">
@@ -772,7 +824,7 @@
           </div>
         </div>
         <!-- Témoignage 2 -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+        <div style="min-width:80vw;scroll-snap-align:start" class="md:min-w-0 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex-shrink-0">
           <div class="text-amber-400 text-sm mb-3">★★★★★</div>
           <p class="text-slate-700 text-sm leading-relaxed italic mb-4">"Ce qui m'a bluffé, c'est la précision. Matheux avait cerné exactement les fractions et les équations — là où mon fils pêchait depuis 2 ans."</p>
           <div class="flex items-center gap-3">
@@ -784,7 +836,7 @@
           </div>
         </div>
         <!-- Témoignage 3 -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+        <div style="min-width:80vw;scroll-snap-align:start" class="md:min-w-0 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex-shrink-0">
           <div class="text-amber-400 text-sm mb-3">★★★★★</div>
           <p class="text-slate-700 text-sm leading-relaxed italic mb-4">"C'est pas comme les autres applis. Les exos sont faits pour moi. Je comprends mieux parce que c'est mes erreurs à moi qu'on travaille."</p>
           <div class="flex items-center gap-3">
@@ -794,6 +846,33 @@
               <div class="text-slate-400 text-xs">Élève, 4ème</div>
             </div>
           </div>
+        </div>
+      </div>
+      <!-- Indicateur scroll mobile -->
+      <p class="text-center text-slate-400 text-xs mt-3 md:hidden">← Faites glisser pour voir plus →</p>
+    </div>
+  </div>
+
+  <!-- ── SECTION FONDATEUR ─────────────────────────────────────── -->
+  <div class="bg-white px-5 py-14 border-t border-slate-100">
+    <div class="max-w-2xl mx-auto">
+      <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
+        <!-- Avatar + identité -->
+        <div class="flex-shrink-0 text-center md:text-left">
+          <div style="width:96px;height:96px;background:linear-gradient(135deg,#4338ca,#818cf8);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem" class="md:mx-0">
+            <span class="syne font-black text-white text-2xl">N</span>
+          </div>
+          <div class="font-bold text-slate-900 text-base syne">Nicolas</div>
+          <div class="text-slate-500 text-xs mt-0.5">Professeur de maths</div>
+          <div class="text-indigo-600 text-xs font-semibold mt-0.5">Créateur de Matheux</div>
+        </div>
+        <!-- Message -->
+        <div class="flex-1">
+          <div class="stag mb-4 inline-block">Le mot du fondateur</div>
+          <blockquote class="text-slate-700 text-base leading-relaxed mb-4">
+            "J'enseigne les maths au collège depuis des années. J'ai vu des centaines d'élèves bloquer — pas parce qu'ils manquent d'intelligence, mais parce que personne n'avait repéré LA petite lacune qui bloque tout le reste. Les fractions mal comprises en 5ème cassent les équations en 4ème. Matheux fait exactement ce que j'ai toujours voulu faire : trouver ce qui coince, précisément, et travailler dessus chaque jour."
+          </blockquote>
+          <p class="text-slate-500 text-sm">Je réponds personnellement à chaque question des parents. <a href="mailto:contact@matheux.fr" style="color:#4338ca;font-weight:600">contact@matheux.fr</a></p>
         </div>
       </div>
     </div>
@@ -970,6 +1049,10 @@
       <button id="nav-prog" onclick="setView('progress')"
               class="flex-1 py-2 rounded-xl text-xs font-black syne transition-colors bg-slate-100 text-slate-500">
         📊 Progression
+      </button>
+      <button id="nav-brev" onclick="setView('brevet')"
+              class="flex-1 py-2 rounded-xl text-xs font-black syne transition-colors bg-slate-100 text-slate-500">
+        🎓 Brevet
       </button>
     </div>
   </header>
@@ -1175,10 +1258,13 @@ let S = {
   adminStudents: [],
   tmpEmail: '', tmpHash: '',
   exoStartTime: {},    // { exoId → timestamp ms } — NOUVEAU v23
-  view: 'chapters',   // 'chapters' | 'progress'
+  view: 'chapters',   // 'chapters' | 'progress' | 'brevet'
   progress: null,     // null=non chargé, []=vide, [...]=données Progress sheet
   progressLoading: false,
   prereqBanner: {},   // { cat → null|{chapitre,niveau} }  — B3
+  brevetMode: false,  // false | 'loading' | 'active' | 'done'
+  brevetExos: [],
+  brevetChaps: [],
 };
 
 const LVL = {};
@@ -1307,6 +1393,8 @@ function rMath() {
 // exploité par l'Agent Superviseur Ebbinghaus/Sweller)
 // ══════════════════════════════════════════════════════════════
 function sendScore(cat, idx, status, xp, q, wrongOpt, sourceCat) {
+  // REVISION : exercices temporaires de révision — pas de tracking serveur
+  if (cat === 'REVISION') return;
   var k = S.prof.code + '-' + cat + '-' + idx;
   if (S.sent.has(k) && !S.adminMode) return;
   S.sent.add(k);
@@ -2503,7 +2591,7 @@ function startCal() {
 // HELPERS EXERCICES
 // ══════════════════════════════════════════════════════════════
 function res2(cat, idx) {
-  if (cat === "BOOST" || cat === "CALIBRAGE") {
+  if (cat === "BOOST" || cat === "CALIBRAGE" || cat === "BREVET" || cat === "REVISION") {
     var ex = LVL[S.niv].cats[cat][idx];
     return { rC: ex.oC, rI: ex.oI };
   }
@@ -2607,7 +2695,7 @@ async function togCat(cat) {
   if (S.exp[cat] && S.motProfChap[cat]) S._motProfScreen = cat;
   render();
   // B3 — vérifie les prérequis fragiles à la première ouverture du chapitre
-  if (S.exp[cat] && !(cat in S.prereqBanner) && cat !== 'BOOST' && cat !== 'CALIBRAGE') {
+  if (S.exp[cat] && !(cat in S.prereqBanner) && cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') {
     S.prereqBanner[cat] = undefined; // en cours
     try {
       var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'detect_fragile_prereqs', code:S.prof.code, chapitre:cat, niveau:S.niv }) });
@@ -2726,6 +2814,15 @@ function chkComp(cat) {
         ds4[S.prof.code].boostConsumed = true;
         localStorage.setItem(DK, JSON.stringify(ds4));
       } catch (e) {}
+    } else if (cat === 'BREVET') {
+      // Brevet terminé → écran score dédié
+      if (easy >= Math.ceil(tot * 0.6)) launchConfetti();
+      S.brevetMode = 'done';
+      renderBrevet(); return true;
+    } else if (cat === 'REVISION') {
+      // Révision terminée → toast simple, pas de localStorage
+      if (easy >= Math.ceil(tot * 0.7)) launchConfetti();
+      showT('Révision terminée ! ' + easy + '/' + tot + ' réussis 🔁', 3500, '✅');
     } else {
       if (easy >= Math.ceil(tot * 0.7)) launchConfetti();
       // Persister chapitre terminé dans localStorage
@@ -2747,7 +2844,7 @@ function chkComp(cat) {
 // ══════════════════════════════════════════════════════════════
 function rMastery() {
   var cats = LVL[S.niv].cats;
-  var keys = Object.keys(cats).filter(function(k){ return k !== 'CALIBRAGE'; });
+  var keys = Object.keys(cats).filter(function(k){ return k !== 'CALIBRAGE' && k !== 'BOOST' && k !== 'BREVET' && k !== 'REVISION'; });
   var tot = 0, master = 0;
   keys.forEach(function(cat){
     var catExs = cats[cat];
@@ -2799,6 +2896,8 @@ function updNav() {
   var OFF = 'flex-1 py-2 rounded-xl text-xs font-black syne transition-colors bg-slate-100 text-slate-500';
   btnC.className = S.view === 'chapters' ? ON : OFF;
   btnP.className = S.view === 'progress' ? ON : OFF;
+  var btnB = document.getElementById('nav-brev');
+  if (btnB) btnB.className = S.view === 'brevet' ? ON : OFF;
 }
 
 function setView(v) {
@@ -2809,11 +2908,153 @@ function setView(v) {
     renderAdminDashboard();
   } else if (v === 'progress' && !S.progressLoading) {
     loadProgress();
+  } else if (v === 'brevet') {
+    renderBrevet();
   } else {
     render();
   }
 }
 
+
+// ══════════════════════════════════════════════════════════════
+// VUE BREVET
+// ══════════════════════════════════════════════════════════════
+async function loadBrevet() {
+  S.brevetMode = 'loading';
+  renderBrevet();
+  try {
+    var r = await fetch(SU, { method:'POST', body: JSON.stringify({
+      action: 'generate_brevet',
+      code:   S.prof.code,
+      niveau: S.niv
+    })});
+    var d = await r.json();
+    if (d.status === 'success' && d.exos && d.exos.length > 0) {
+      S.brevetExos  = d.exos.map(function(e, i){ return Object.assign({}, e, { oC:'BREVET', oI:i }); });
+      S.brevetChaps = d.chapitres_couverts || [];
+      S.qv['BREVET'] = 0;
+      LVL[S.niv].cats['BREVET']  = S.brevetExos;
+      LVL[S.niv].names['BREVET'] = 'Examen blanc Brevet';
+      LVL[S.niv].icons['BREVET'] = '🎓';
+      S.brevetMode = 'active';
+    } else {
+      S.brevetMode = false;
+      showT('Impossible de charger le Brevet : ' + (d.message || 'erreur GAS'), 3000, '❌');
+    }
+  } catch(e) {
+    S.brevetMode = false;
+    showT('Erreur réseau — réessaie', 3000, '❌');
+  }
+  renderBrevet();
+}
+
+function renderBrevet() {
+  var c = document.getElementById('app-c');
+  if (!c) return;
+
+  // Écran de lancement
+  if (!S.brevetMode || S.brevetMode === false) {
+    c.innerHTML =
+      '<div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 afu">' +
+      '<div class="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-5 shadow-lg" style="background:linear-gradient(135deg,#1e1b4b,#4338ca)">🎓</div>' +
+      '<h2 class="syne text-2xl font-black text-slate-900 mb-2 text-center">Mode Brevet</h2>' +
+      '<p class="text-slate-500 text-sm text-center mb-2 leading-relaxed">Un examen blanc complet. Tous les chapitres du programme, dans les conditions réelles du Brevet.</p>' +
+      '<ul class="text-sm text-slate-600 mb-7 space-y-2">' +
+      '<li class="flex items-center gap-2"><span class="text-indigo-500 font-bold">✓</span>~15 questions multi-chapitres</li>' +
+      '<li class="flex items-center gap-2"><span class="text-indigo-500 font-bold">✓</span>Questions de niveau 2 (comme au Brevet)</li>' +
+      '<li class="flex items-center gap-2"><span class="text-indigo-500 font-bold">✓</span>Score final par chapitre</li>' +
+      '</ul>' +
+      '<button onclick="loadBrevet()" class="btn btn-ac btn-fw py-4">Lancer l\'examen blanc →</button>' +
+      '</div>';
+    return;
+  }
+
+  // Loading
+  if (S.brevetMode === 'loading') {
+    c.innerHTML =
+      '<div class="bg-white rounded-3xl p-10 shadow-sm border border-indigo-200 text-center afu">' +
+      '<div class="ld mx-auto mb-5" style="width:2.5rem;height:2.5rem"></div>' +
+      '<div class="syne font-black text-indigo-900 text-base mb-2">Préparation de l\'examen blanc...</div>' +
+      '<p class="text-slate-400 text-sm">Sélection des meilleures questions pour ' + (LN[S.niv]||S.niv) + '</p>' +
+      '</div>';
+    return;
+  }
+
+  // Examen terminé
+  if (S.brevetMode === 'done') {
+    var exos = S.brevetExos || [];
+    var correct = 0, total = exos.length;
+    exos.forEach(function(ex, i) {
+      var rv = S.res[S.niv + '-BREVET-' + i];
+      if (rv && rv.r === 'EASY') correct++;
+    });
+    var pct = total > 0 ? Math.round((correct/total)*100) : 0;
+    var grade = pct >= 80 ? '🏆 Très bien' : pct >= 60 ? '👍 Bien' : pct >= 40 ? '📈 En progression' : '💪 À retravailler';
+    c.innerHTML =
+      '<div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 afu text-center">' +
+      '<div class="text-5xl mb-4">' + (pct >= 60 ? '🎉' : '💪') + '</div>' +
+      '<h2 class="syne text-2xl font-black text-slate-900 mb-2">Examen blanc terminé</h2>' +
+      '<div class="text-5xl font-black my-6" style="color:' + (pct>=60?'#4338ca':'#f59e0b') + '">' + pct + '<span class="text-2xl">%</span></div>' +
+      '<div class="text-slate-600 font-semibold mb-1">' + correct + ' / ' + total + ' réponses correctes</div>' +
+      '<div class="text-indigo-600 font-bold text-sm mb-8">' + grade + '</div>' +
+      '<div class="text-left text-xs text-slate-500 mb-6 bg-slate-50 rounded-xl p-4">Chapitres couverts : ' + (S.brevetChaps.join(' · ') || '—') + '</div>' +
+      '<button onclick="(function(){Object.keys(S.res).filter(function(k){return k.indexOf(\'-BREVET-\')!==-1;}).forEach(function(k){delete S.res[k];});S.brevetMode=false;S.brevetExos=[];S.qv[\'BREVET\']=0;renderBrevet();})()" class="btn btn-ac btn-fw py-3 mb-3">Refaire un examen blanc</button>' +
+      '<button onclick="setView(\'chapters\')" class="btn btn-fw py-3 bg-slate-100 text-slate-700 font-bold rounded-xl">Retour aux chapitres</button>' +
+      '</div>';
+    rMath(); return;
+  }
+
+  // Examen en cours
+  if (S.brevetMode === 'active') {
+    var exos = S.brevetExos || [];
+    var idx = S.qv['BREVET'] || 0;
+    if (idx >= exos.length) {
+      S.brevetMode = 'done';
+      renderBrevet(); return;
+    }
+    var pct2 = exos.length > 0 ? Math.round((idx/exos.length)*100) : 0;
+    c.innerHTML =
+      '<div class="bg-white rounded-3xl shadow-sm border-2 border-indigo-200 overflow-hidden afu">' +
+      '<div class="px-5 py-4 bg-indigo-50 border-b border-indigo-100">' +
+      '<div class="flex justify-between items-center mb-2.5">' +
+      '<div class="flex items-center gap-2"><span>🎓</span><span class="syne font-black text-indigo-900 text-sm">Examen blanc Brevet</span></div>' +
+      '<span class="text-xs font-bold text-indigo-500 bg-white px-2 py-1 rounded-lg border border-indigo-100">' + (idx+1) + ' / ' + exos.length + '</span>' +
+      '</div>' +
+      '<div class="pbar"><div class="pfill pfp" style="width:'+pct2+'%"></div></div>' +
+      (exos[idx]._titre ? '<div class="text-indigo-400 text-xs mt-1.5 font-medium">'+exos[idx]._titre+'</div>' : '') +
+      '</div>' +
+      (exos[idx] ? rSection('BREVET', exos[idx], idx, exos.length, false) : '<div class="p-8 text-center text-slate-400 text-sm">Chargement...</div>') +
+      '</div>';
+    rMath(); return;
+  }
+}
+
+async function launchRevision() {
+  var c = document.getElementById('app-c');
+  c.innerHTML = '<div class="bg-white rounded-3xl p-8 text-center shadow-sm border border-green-100"><div class="ld mx-auto mb-4"></div><div class="syne font-black text-green-800 text-sm">Chargement de la révision...</div></div>';
+  try {
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({
+      action: 'generate_revision', code: S.prof.code, niveau: S.niv
+    })});
+    var d = await r.json();
+    if (d.status === 'success' && d.exos && d.exos.length > 0) {
+      var revExos = d.exos.map(function(e, i){ return Object.assign({}, e, { oC:'REVISION', oI:i }); });
+      LVL[S.niv].cats['REVISION']  = revExos;
+      LVL[S.niv].names['REVISION'] = 'Révision — ' + (d.niveau_revise||'').replace('EME','ème');
+      LVL[S.niv].icons['REVISION'] = '🔁';
+      S.qv['REVISION'] = 0;
+      S.exp['REVISION'] = true;
+      setView('chapters');
+      showT('Révision prête ! ' + (d.chapitres_revises||[]).join(', '), 3000, '🔁');
+    } else {
+      showT(d.message || 'Impossible de générer la révision', 3000, '❌');
+      setView('progress');
+    }
+  } catch(e) {
+    showT('Erreur réseau', 3000, '❌');
+    setView('progress');
+  }
+}
 
 // ══════════════════════════════════════════════════════════════
 // VUE PROGRESSION — B2
@@ -2879,7 +3120,7 @@ function openFromProgress(cat) {
 
 function renderProgress() {
   var cats = LVL[S.niv] ? LVL[S.niv].cats : {};
-  var keys = Object.keys(cats).filter(function(k){ return k !== 'CALIBRAGE' && k !== 'BOOST'; });
+  var keys = Object.keys(cats).filter(function(k){ return k !== 'CALIBRAGE' && k !== 'BOOST' && k !== 'BREVET' && k !== 'REVISION'; });
   var c    = document.getElementById('app-c');
 
   if (!keys.length) {
@@ -2912,6 +3153,18 @@ function renderProgress() {
   html += '<div class="flex-1 bg-indigo-50 border border-indigo-100 rounded-xl p-3 text-center"><div class="syne font-black text-xl text-indigo-700">'+started+'</div><div class="text-[11px] text-indigo-600 font-semibold mt-0.5">Commencés</div></div>';
   html += '<div class="flex-1 bg-slate-50 border border-slate-100 rounded-xl p-3 text-center"><div class="syne font-black text-xl text-slate-700">'+keys.length+'</div><div class="text-[11px] text-slate-500 font-semibold mt-0.5">Chapitres</div></div>';
   html += '</div></div>';
+
+  // Carte Mode Révision
+  var niveaux = ['6EME','5EME','4EME','3EME'];
+  var curNivIdx = niveaux.indexOf(S.niv);
+  var revLabel = curNivIdx > 0 ? 'Révision ' + niveaux[curNivIdx-1].replace('EME','ème') : 'Révision niveau';
+  html += '<div onclick="launchRevision()" style="cursor:pointer;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac" ' +
+    'class="rounded-2xl p-4 mb-3 flex items-center gap-3">' +
+    '<div style="width:2.5rem;height:2.5rem;background:#22c55e;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0" class="text-white text-lg">🔁</div>' +
+    '<div class="flex-1"><div class="syne font-black text-emerald-900 text-sm">' + revLabel + '</div>' +
+    '<div class="text-emerald-600 text-xs mt-0.5">Consolide les bases pour progresser plus vite</div></div>' +
+    '<span class="text-emerald-500 text-lg font-bold">→</span>' +
+    '</div>';
 
   // Liste des chapitres
   keys.forEach(function(cat){
@@ -3151,6 +3404,7 @@ function render() {
 
   if (S.calState !== 'sel' && S.calState !== 'test') {
     if (S.view === 'progress') { renderProgress(); return; }
+    if (S.view === 'brevet')   { renderBrevet();   return; }
     if (S.diagInsight)    { renderDiagInsight();  return; }
     if (S.boostInsight)  { renderBoostInsight(); return; }
     if (S._motProfScreen){ renderMotProf();      return; }
@@ -3190,8 +3444,9 @@ function render() {
 
   // Vue principale
   var cats = LVL[S.niv].cats;
-  var keys = Object.keys(cats).filter(function(k){ return k !== 'CALIBRAGE'; });
+  var keys = Object.keys(cats).filter(function(k){ return k !== 'CALIBRAGE' && k !== 'BREVET'; });
   if (keys.includes('BOOST')) keys = ['BOOST'].concat(keys.filter(function(k){ return k !== 'BOOST'; }));
+  if (cats['REVISION'] && cats['REVISION'].length > 0) keys = ['REVISION'].concat(keys.filter(function(k){ return k !== 'REVISION'; }));
 
   // Calcul boost terminé
   var bDone = false;
@@ -3402,7 +3657,8 @@ function rSection(cat, data, idx, total, catDone) {
       '<button onclick="mark(\''+cat+'\','+idx+',\'EASY\',null)" class="btn-ok btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">✅</span>Acquis</button></div>';
   } else if (scored && !catDone) {
     // Exercice répondu : bouton suivant
-    acts = '<button onclick="nextEx(\''+cat+'\')" class="btn btn-dk btn-fw py-4 mt-4 flex items-center justify-center gap-2">SUIVANT <span class="text-slate-400 font-normal text-xs">(ou swipe ←)</span></button>';
+    acts = '<button onclick="nextEx(\''+cat+'\')" class="btn btn-dk btn-fw py-4 mt-4 flex items-center justify-center gap-2">SUIVANT <span class="text-slate-400 font-normal text-xs">(ou swipe ←)</span></button>' +
+      '<div class="text-center mt-2"><button onclick="openFeedback(\''+cat+'\','+idx+')" class="text-[10px] text-slate-300 hover:text-slate-500 transition-colors underline">📢 Signaler une erreur dans cet exercice</button></div>';
   }
 
   // ── Options QCM ──────────────────────────────────────
@@ -4431,6 +4687,65 @@ async function publishChapter(code) {
     if (btn) { btn.innerHTML = '📚 Publier ce chapitre'; btn.disabled = false; }
   }
 }
+
+// ══════════════════════════════════════════════════════════════
+// FEEDBACK MODAL — Phase 5
+// ══════════════════════════════════════════════════════════════
+window._feedbackCtx = null;
+
+window.openFeedback = function(cat, idx) {
+  var exo = (LVL[S.niv] && LVL[S.niv].cats[cat]) ? LVL[S.niv].cats[cat][idx] : null;
+  window._feedbackCtx = { cat:cat, idx:idx, q: exo ? (exo.q||'') : '' };
+  var ov = document.getElementById('feedback-overlay');
+  if (!ov) return;
+  ov.style.display = 'flex';
+};
+
+window.closeFeedback = function() {
+  var ov = document.getElementById('feedback-overlay');
+  if (ov) ov.style.display = 'none';
+  window._feedbackCtx = null;
+};
+
+window.sendFeedback = async function(type) {
+  var ctx = window._feedbackCtx || {};
+  var msg = (document.getElementById('fb-msg') || {}).value || '';
+  closeFeedback();
+  if (!S.prof) return;
+  try {
+    await fetch(SU, { method:'POST', body:JSON.stringify({
+      action: 'submit_feedback',
+      code: S.prof.code, name: S.prof.name, niveau: S.niv,
+      type: type, message: msg, exo_q: ctx.q,
+      rating: type === 'super' ? 5 : type === 'ok' ? 3 : 1
+    })});
+    showT('Merci pour ton retour 🙏', 2000, '✅');
+  } catch(e) {}
+};
 </script>
+
+<!-- ── MODALE FEEDBACK ──────────────────────────────────────── -->
+<div id="feedback-overlay"
+     style="display:none;position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.55);
+            align-items:center;justify-content:center;padding:1.25rem"
+     onclick="if(event.target===this)closeFeedback()">
+  <div style="background:#fff;border-radius:24px;padding:1.75rem;max-width:360px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.25)">
+    <h3 style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:#1e1b4b;margin-bottom:.25rem">Signaler un problème</h3>
+    <p style="font-size:.82rem;color:#64748b;margin-bottom:1.25rem">Sur cet exercice — erreur dans l'énoncé, réponse incorrecte, explication manquante ?</p>
+    <div style="display:flex;gap:.6rem;margin-bottom:1.1rem">
+      <button onclick="sendFeedback('erreur')" style="flex:1;background:#fef2f2;border:1.5px solid #fca5a5;border-radius:12px;padding:.65rem;font-size:.8rem;font-weight:700;color:#dc2626;cursor:pointer">🐛 Erreur</button>
+      <button onclick="sendFeedback('flou')"  style="flex:1;background:#fef9c3;border:1.5px solid #fcd34d;border-radius:12px;padding:.65rem;font-size:.8rem;font-weight:700;color:#d97706;cursor:pointer">❓ Pas clair</button>
+      <button onclick="sendFeedback('super')" style="flex:1;background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:.65rem;font-size:.8rem;font-weight:700;color:#16a34a;cursor:pointer">👍 Utile</button>
+    </div>
+    <textarea id="fb-msg" placeholder="Détails (facultatif)..."
+              style="width:100%;border:1.5px solid #e2e8f0;border-radius:12px;padding:.65rem;font-size:.82rem;
+                     color:#334155;resize:none;height:72px;font-family:'DM Sans',sans-serif;outline:none"></textarea>
+    <div style="display:flex;gap:.6rem;margin-top:1rem">
+      <button onclick="closeFeedback()" style="flex:1;background:#f1f5f9;border:none;border-radius:12px;padding:.75rem;font-size:.82rem;font-weight:700;color:#64748b;cursor:pointer">Annuler</button>
+      <button onclick="sendFeedback('general')" style="flex:1;background:#4338ca;border:none;border-radius:12px;padding:.75rem;font-size:.82rem;font-weight:700;color:#fff;cursor:pointer">Envoyer →</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
