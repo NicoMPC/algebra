@@ -1,0 +1,3291 @@
+<!DOCTYPE html>
+<!-- MATHEUX — SPA vanilla JS — BUILD 2026-03-10 -->
+<html lang="fr">
+<head>
+  <!-- Redirect HTTP → HTTPS (crypto.subtle requiert un contexte sécurisé) -->
+  <script>if(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'){location.replace('https:'+location.href.slice(location.protocol.length));}</script>
+
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Matheux — Révisions maths collège personnalisées par IA</title>
+  <meta name="description" content="Matheux diagnostique les lacunes en maths collège (6e, 5e, 4e, 3e) et génère des exercices personnalisés adaptés à votre enfant. 7 jours offerts, sans carte bancaire."/>
+  <link rel="canonical" href="https://matheux.fr/"/>
+  <meta property="og:title"       content="Matheux — Révisions maths collège personnalisées par IA"/>
+  <meta property="og:description" content="Diagnostic IA, exercices ciblés, suivi du prof. 7 jours offerts, sans carte bancaire."/>
+  <meta property="og:type"        content="website"/>
+  <meta property="og:url"         content="https://matheux.fr/"/>
+  <meta name="twitter:card"       content="summary"/>
+  <meta name="twitter:title"      content="Matheux — Révisions maths collège par IA"/>
+
+  <!-- MathJax config avant chargement -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'],['\\(','\\)']],
+        displayMath: [['$$','$$'],['\\[','\\]']]
+      },
+      options: {
+        skipHtmlTags: ['script','noscript','style','textarea','pre','code']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── VARIABLES & RESET ───────────────────────────────── */
+    :root {
+      --ink:  #07090f;
+      --ink2: #1a1f2e;
+      --mut:  #64748b;
+      --brd:  #e2e8f0;
+      --bg:   #f7f8fc;
+      --wht:  #fff;
+      --p:    #4338ca;
+      --pl:   #eef2ff;
+      --pd:   #312e81;
+      --amb:  #f59e0b;
+      --ambl: #fef3c7;
+      --grn:  #059669;
+      --grnl: #d1fae5;
+      --ros:  #e11d48;
+      --rosl: #fff1f2;
+      --r:    14px;
+      --rl:   22px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 100vh;
+      letter-spacing: .015em;
+      line-height: 1.6;
+    }
+    h1, h2, h3, .syne { font-family: 'Syne', sans-serif; }
+
+    /* ── SCROLLBAR ───────────────────────────────────────── */
+    .no-sb::-webkit-scrollbar { display: none; }
+    .no-sb { -ms-overflow-style: none; scrollbar-width: none; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+
+    /* ── ANIMATIONS ──────────────────────────────────────── */
+    @keyframes fadeUp    { from { opacity:0; transform:translateY(14px) } to { opacity:1; transform:none } }
+    @keyframes bIn       { from { opacity:0; transform:scale(.95) translateY(10px) } to { opacity:1; transform:none } }
+    @keyframes spin      { to { transform:rotate(360deg) } }
+    @keyframes shimmer   { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+    @keyframes xpPop     { 0%{opacity:1;transform:translateY(0) scale(1)} 100%{opacity:0;transform:translateY(-52px) scale(1.3)} }
+    @keyframes s1        { from { opacity:0; transform:translateY(20px) } to { opacity:1; transform:none } }
+    @keyframes pulseLight{ 0%,100%{opacity:1;filter:brightness(1)} 50%{opacity:.85;filter:brightness(1.3)} }
+    @keyframes remPulse  { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.75;transform:scale(.99)} }
+    @keyframes shake      { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+    @keyframes counterPop { from{opacity:0;transform:scale(.7)} to{opacity:1;transform:none} }
+    @keyframes confettiFall {
+      0%   { transform:translateY(-10px) rotate(0deg);   opacity:1; }
+      100% { transform:translateY(110vh)  rotate(720deg); opacity:0; }
+    }
+
+    .animate-pulse-light { animation: pulseLight 2.5s cubic-bezier(.4,0,.6,1) infinite; }
+    .afu { animation: fadeUp .35s ease both; }
+    .abi { animation: bIn .3s cubic-bezier(.25,.46,.45,.94) both; }
+    .s1  { animation: s1 .6s .10s ease both; }
+    .s2  { animation: s1 .6s .25s ease both; }
+    .s3  { animation: s1 .6s .40s ease both; }
+    .s4  { animation: s1 .6s .55s ease both; }
+
+    /* Fade-in pour les blocs MathJax */
+    .mc       { opacity:0; transition:opacity .25s ease; }
+    .mc.rdy   { opacity:1; }
+
+    /* ── COMPOSANTS DE BASE ───────────────────────────────── */
+    .ld {
+      width:20px; height:20px;
+      border:3px solid rgba(255,255,255,.25);
+      border-top-color:#fff;
+      border-radius:50%;
+      animation:spin .75s linear infinite;
+      display:inline-block; flex-shrink:0;
+    }
+    .ld-p { border-color:var(--pl); border-top-color:var(--p); }
+
+    .sk {
+      background: linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s ease infinite;
+      border-radius: 12px;
+    }
+
+    /* ── INPUTS ──────────────────────────────────────────── */
+    .inp {
+      width:100%; padding:.875rem 1rem;
+      background:#f8fafc; border:1.5px solid var(--brd);
+      border-radius:var(--r);
+      font-size:1rem; font-weight:500;
+      font-family:'DM Sans',sans-serif; color:var(--ink);
+      outline:none; transition:border-color .15s,background .15s;
+    }
+    .inp:focus          { border-color:var(--p); background:#fff; }
+    .inp::placeholder   { color:#94a3b8; }
+
+    /* ── BOUTONS ─────────────────────────────────────────── */
+    .btn {
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:.5rem; border:none; cursor:pointer;
+      font-family:'Syne',sans-serif; font-weight:700;
+      border-radius:var(--r); transition:all .15s;
+      position:relative; overflow:hidden; text-decoration:none;
+    }
+    .btn:active { transform:scale(.97); }
+    .btn-dk { background:var(--ink); color:#fff; padding:.9rem 1.5rem; font-size:.9rem; }
+    .btn-ac {
+      background:linear-gradient(135deg,var(--p) 0%,#6366f1 100%);
+      color:#fff; padding:.9rem 1.5rem; font-size:.9rem;
+      box-shadow:0 4px 20px rgba(67,56,202,.35);
+    }
+    .btn-fw   { width:100%; padding:1rem; }
+    .btn-ok   { background:var(--grnl); color:#065f46; border:1.5px solid #a7f3d0; font-family:'DM Sans',sans-serif; font-weight:700; padding:.75rem 1rem; border-radius:var(--r); }
+    .btn-ng   { background:var(--rosl); color:#9f1239; border:1.5px solid #fda4af; font-family:'DM Sans',sans-serif; font-weight:700; padding:.75rem 1rem; border-radius:var(--r); }
+    .btn-wn   { background:var(--ambl); color:#92400e; border:1.5px solid #fcd34d; font-family:'DM Sans',sans-serif; font-weight:700; padding:.75rem 1rem; border-radius:var(--r); }
+
+    /* ── OPTIONS QCM ─────────────────────────────────────── */
+    .opt {
+      position:relative; padding:.875rem 1rem .875rem 3rem;
+      border:2px solid var(--brd); border-radius:var(--r);
+      background:#fff; width:100%; display:flex; align-items:center;
+      cursor:pointer; font-weight:600; font-size:.9rem; min-height:56px;
+      transition:all .15s;
+    }
+    .opt::before {
+      content:''; position:absolute; left:1rem; top:50%;
+      transform:translateY(-50%); width:1.2rem; height:1.2rem;
+      border:2px solid #cbd5e1; border-radius:50%; background:#fff;
+      transition:all .15s; flex-shrink:0;
+    }
+    .opt:hover:not(.oc):not(.ow):not(.on) { border-color:var(--p); background:var(--pl); }
+    .oc {
+      border-color:var(--grn)!important; background:var(--grnl)!important;
+      pointer-events:none; color:#065f46;
+    }
+    .oc::before {
+      background:var(--grn)!important; border-color:var(--grn)!important;
+      content:'✓'; color:#fff;
+      display:flex; align-items:center; justify-content:center;
+      font-size:.7rem; font-weight:800;
+    }
+    .ow {
+      border-color:var(--ros)!important; background:var(--rosl)!important;
+      pointer-events:none; opacity:.9; color:#9f1239;
+    }
+    .ow::before {
+      background:var(--ros)!important; border-color:var(--ros)!important;
+      content:'✕'; color:#fff;
+      display:flex; align-items:center; justify-content:center;
+      font-size:.7rem; font-weight:800;
+    }
+    .on { opacity:.35; pointer-events:none; }
+
+    /* ── TABLEAU BLANC — BOTTOM SHEET ────────────────────── */
+    #draft-drawer {
+      position:fixed; bottom:0; left:0; right:0; height:62vh;
+      background:white; border-radius:24px 24px 0 0;
+      transform:translateY(100%);
+      transition:transform .35s cubic-bezier(.4,0,.2,1);
+      z-index:1000; box-shadow:0 -10px 40px rgba(0,0,0,.18);
+      display:flex; flex-direction:column; will-change:transform;
+    }
+    #draft-drawer.open { transform:translateY(0); }
+    #draft-bd {
+      position:fixed; inset:0; background:rgba(15,23,42,.25);
+      z-index:990; opacity:0; transition:opacity .3s; pointer-events:none;
+    }
+    #draft-bd.show { opacity:1; pointer-events:auto; }
+
+    /* ── FORMULE FLOUE (reveal on tap) ───────────────────── */
+    .fwrap {
+      background:var(--pl); border-radius:var(--r);
+      padding:.75rem 1rem; cursor:pointer;
+      transition:all .3s; position:relative; overflow:hidden;
+      border:1.5px solid transparent;
+    }
+    .finner {
+      filter:blur(5px); transition:filter .3s;
+      pointer-events:none; user-select:none;
+    }
+    .fwrap.frev { background:#fff; border-color:#c7d2fe; cursor:default; }
+    .fwrap.frev .finner { filter:blur(0); }
+    .fhint {
+      position:absolute; inset:0; display:flex;
+      align-items:center; justify-content:center;
+      font-size:.7rem; font-weight:700; color:var(--p); gap:.3rem;
+      transition:opacity .3s;
+    }
+    .fwrap.frev .fhint { opacity:0; pointer-events:none; }
+
+    /* ── PILLS NAVIGATION ────────────────────────────────── */
+    .pill {
+      width:2.1rem; height:2.1rem; border-radius:8px; font-size:.75rem;
+      font-weight:800; display:flex; align-items:center; justify-content:center;
+      transition:all .15s; flex-shrink:0; cursor:pointer;
+      border:2px solid transparent; font-family:'Syne',sans-serif;
+    }
+
+    /* ── BARRE DE PROGRESSION ────────────────────────────── */
+    .pbar   { height:6px; background:var(--brd); border-radius:99px; overflow:hidden; width:100%; }
+    .pfill  { height:100%; border-radius:99px; transition:width .5s cubic-bezier(.4,0,.2,1); }
+    .pfp    { background:linear-gradient(90deg,var(--p),#818cf8); }
+    .pfg    { background:linear-gradient(90deg,var(--grn),#34d399); }
+
+    /* ── MASTERY RING ─────────────────────────────────────── */
+    .mring        { width:72px; height:72px; position:relative; flex-shrink:0; }
+    .mring svg    { transform:rotate(-90deg); }
+    .rbg          { fill:none; stroke:#e2e8f0; stroke-width:6; }
+    .rfill        { fill:none; stroke:var(--p); stroke-width:6; stroke-linecap:round; transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1); }
+    .rpct         { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:900; font-size:.95rem; color:var(--ink); }
+    .rem-prep     { animation:remPulse 2s ease infinite; }
+
+    /* ── LANDING ─────────────────────────────────────────── */
+    .lhero   { background:var(--ink); position:relative; overflow:hidden; }
+    .grid-ov {
+      position:absolute; inset:0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+      background-size:48px 48px; pointer-events:none;
+    }
+    .stag {
+      display:inline-flex; align-items:center; gap:.4rem;
+      font-size:.7rem; font-weight:700; letter-spacing:.08em;
+      text-transform:uppercase; color:var(--p);
+      background:var(--pl); padding:.35rem .75rem;
+      border-radius:99px; border:1px solid #c7d2fe;
+    }
+    .ccard {
+      background:#fff; border:1.5px solid var(--brd);
+      border-radius:var(--rl); padding:1.75rem;
+      position:relative; overflow:hidden;
+    }
+    .ccard.bad::before  { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--ros); }
+    .ccard.good::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--grn); }
+    .chk { display:flex; align-items:flex-start; gap:.6rem; font-size:.9rem; font-weight:500; line-height:1.5; }
+
+    /* ── TOAST ───────────────────────────────────────────── */
+    #toast {
+      position:fixed; top:1rem; left:50%;
+      transform:translate(-50%,calc(-100% - 1.5rem));
+      z-index:5000; display:flex; align-items:center; gap:.6rem;
+      background:var(--ink); color:#fff; font-weight:600;
+      padding:.7rem 1.1rem; border-radius:99px;
+      box-shadow:0 8px 32px rgba(0,0,0,.3);
+      font-size:.875rem; white-space:nowrap;
+      transition:transform .3s cubic-bezier(.4,0,.2,1);
+    }
+    #toast.show { transform:translate(-50%,0); }
+
+    /* ── XP POP ──────────────────────────────────────────── */
+    .xpf {
+      position:fixed; font-family:'Syne',sans-serif; font-weight:900;
+      font-size:1.5rem; color:var(--amb); pointer-events:none;
+      z-index:999; animation:xpPop .9s ease forwards;
+      text-shadow:0 2px 12px rgba(0,0,0,.15);
+    }
+
+    /* ── CONFETTI ────────────────────────────────────────── */
+    .confetti {
+      position:fixed; top:-10px; border-radius:2px;
+      animation:confettiFall 3s linear forwards;
+      pointer-events:none; z-index:9998;
+    }
+
+    /* ── CHAPITRE CARDS ONBOARDING ───────────────────────── */
+    .chap-card {
+      border:2px solid var(--brd); border-radius:12px;
+      padding:11px 8px; text-align:center; cursor:pointer;
+      transition:border-color .15s,background .15s,transform .15s;
+      background:white; user-select:none;
+      font-weight:700; color:var(--mut); font-size:.8rem; line-height:1.3;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .chap-card.selected {
+      border-color:var(--p); background:var(--pl);
+      color:var(--p); transform:scale(1.03);
+    }
+
+    /* ── TRIAL FLOW INLINE ───────────────────────────────── */
+    @keyframes flowIn { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none} }
+    .flow-step { animation:flowIn .28s ease-out; }
+    .flow-dot  { width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);transition:all .2s; }
+    .flow-dot.on { background:#818cf8;transform:scale(1.25); }
+    .lvl-btn {
+      background:rgba(255,255,255,.07); border:2px solid rgba(129,140,248,.25);
+      border-radius:16px; padding:1.1rem .5rem; color:rgba(255,255,255,.75);
+      font-family:'Syne',sans-serif; font-weight:800; font-size:1.05rem;
+      cursor:pointer; transition:all .15s; text-align:center;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .lvl-btn:hover,.lvl-btn.sel { background:rgba(99,102,241,.35);border-color:#818cf8;color:#fff;transform:scale(1.04); }
+    .flow-chap {
+      background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.15);
+      border-radius:12px; padding:.7rem .6rem; color:rgba(255,255,255,.7);
+      font-size:.78rem; font-weight:600; cursor:pointer; transition:all .15s;
+      text-align:center; -webkit-tap-highlight-color:transparent; user-select:none;
+    }
+    .flow-chap.sel { background:rgba(99,102,241,.3);border-color:#818cf8;color:#fff; }
+    .flow-opt {
+      background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.15);
+      border-radius:12px; padding:.85rem 1rem; color:rgba(255,255,255,.85);
+      font-size:.92rem; font-weight:500; cursor:pointer; transition:all .15s;
+      text-align:left; width:100%; display:block;
+    }
+    .flow-opt:hover:not(.foc):not(.fow) { background:rgba(99,102,241,.2);border-color:#818cf8; }
+    .flow-opt.foc { background:rgba(5,150,105,.25);border-color:#34d399;color:#a7f3d0;pointer-events:none; }
+    .flow-opt.fow { background:rgba(225,29,72,.2);border-color:#fb7185;color:#fda4af;pointer-events:none; }
+    .flow-inp {
+      width:100%; padding:.9rem 1rem; background:rgba(255,255,255,.1);
+      border:1.5px solid rgba(255,255,255,.2); border-radius:var(--r);
+      font-size:1rem; font-weight:500; font-family:'DM Sans',sans-serif;
+      color:#fff; outline:none; transition:border-color .15s;
+    }
+    .flow-inp::placeholder { color:rgba(255,255,255,.35); }
+    .flow-inp:focus { border-color:#818cf8;background:rgba(255,255,255,.13); }
+    /* ── SOCIAL PROOF ────────────────────────────────────── */
+    .sp-quote { background:#fff;border-radius:var(--rl);padding:1.5rem;border:1.5px solid var(--brd); }
+
+    /* ── ADMIN PANEL (DEV TOOLS) ─────────────────────────── */
+    #admin-panel {
+      position:fixed; bottom:80px; right:20px; width:300px;
+      background:#1e293b; color:white; border-radius:16px;
+      padding:16px; z-index:9999;
+      box-shadow:0 10px 40px rgba(0,0,0,.5);
+      font-family:monospace; font-size:12px;
+    }
+
+    /* ── ADMIN DASHBOARD ─────────────────────────────────── */
+    .adm-card {
+      background:#fff; border:1.5px solid var(--brd);
+      border-radius:var(--rl); padding:1rem 1.1rem;
+      cursor:pointer; transition:all .15s; position:relative;
+      overflow:hidden;
+    }
+    .adm-card:active { transform:scale(.99); }
+    .adm-card.needs-action { border-color:#c7d2fe; box-shadow:0 2px 12px rgba(67,56,202,.1); }
+    .adm-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; border-radius:4px 0 0 4px; }
+    .adm-card.ac-diag::before { background:var(--ros); }
+    .adm-card.ac-boost::before { background:var(--amb); }
+    .adm-card.ac-chap::before { background:var(--grn); }
+    .adm-card.ac-ras::before { background:#e2e8f0; }
+
+    /* ── ADMIN MODAL ─────────────────────────────────────── */
+    #admin-modal { display:none; }
+    #admin-modal.open { display:flex; }
+    .adm-textarea {
+      width:100%; border:1.5px solid var(--brd); border-radius:12px;
+      padding:.75rem 1rem; font-size:.75rem; font-family:'DM Sans',monospace;
+      color:var(--ink); background:#f8fafc; outline:none;
+      line-height:1.6; resize:vertical; transition:border-color .15s;
+    }
+    .adm-textarea:focus { border-color:var(--p); background:#fff; }
+    .adm-textarea::placeholder { color:#94a3b8; }
+    .adm-chap-block { background:#f8fafc; border:1.5px solid var(--brd); border-radius:16px; padding:1rem; margin-bottom:.75rem; }
+    .adm-chap-block.has-errors { border-color:#fecaca; background:#fff9f9; }
+    .adm-bar-bg { background:#e2e8f0; border-radius:99px; height:6px; overflow:hidden; }
+    .adm-bar-fill { height:100%; border-radius:99px; transition:width .4s; }
+    .adm-exo-row { display:flex; align-items:flex-start; gap:.5rem; padding:.35rem 0; border-bottom:1px solid #f1f5f9; font-size:.72rem; }
+    .adm-exo-row:last-child { border-bottom:none; }
+    .adm-pill { display:inline-flex; align-items:center; border-radius:6px; padding:1px 5px; font-size:.65rem; font-weight:700; flex-shrink:0; }
+    .adm-copy-btn { display:flex; align-items:center; gap:.4rem; background:linear-gradient(135deg,#4f46e5,#7c3aed); color:#fff; border:none; border-radius:10px; padding:.5rem 1rem; font-size:.75rem; font-weight:700; cursor:pointer; transition:all .15s; width:100%; justify-content:center; margin-top:.6rem; }
+    .adm-copy-btn:active { transform:scale(.97); opacity:.9; }
+
+    /* ── SYMBOLES TABLEAU BLANC ──────────────────────────── */
+    .sym-btn {
+      background:#f1f5f9; border:1.5px solid #e2e8f0; border-radius:8px;
+      padding:6px 10px; font-size:.85rem; font-weight:700; cursor:pointer;
+      transition:all .1s; color:var(--ink); font-family:'DM Sans',monospace;
+      white-space:nowrap; flex-shrink:0; -webkit-tap-highlight-color:transparent;
+    }
+    .sym-btn:active { background:#e2e8f0; transform:scale(.95); }
+
+    /* ── TEXTAREA BROUILLON ──────────────────────────────── */
+    #draft-text {
+      width:100%; resize:none;
+      border:1.5px solid var(--brd); border-radius:12px;
+      padding:.75rem 1rem; font-size:1rem;
+      font-family:'DM Sans',monospace; color:var(--ink);
+      background:#f8fafc; outline:none; line-height:1.6;
+      transition:border-color .15s;
+    }
+    #draft-text:focus { border-color:var(--p); background:#fff; }
+
+    /* ── PILLS INDICES & FORMULE ─────────────────────────── */
+    .help-pill {
+      display:inline-flex; align-items:center; gap:.35rem;
+      padding:.4rem .85rem; border-radius:99px; font-size:.75rem;
+      font-weight:700; cursor:pointer; border:1.5px solid;
+      transition:all .2s; font-family:'Syne',sans-serif;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .pill-hint    { background:#fffbeb; color:#92400e; border-color:#fcd34d; }
+    .pill-formula { background:#eef2ff; color:#4338ca; border-color:#c7d2fe; }
+    .pill-hint:active, .pill-formula:active { transform:scale(.95); }
+
+    @keyframes pillBounce {
+      0%,100%{ transform:translateY(0); }
+      30%    { transform:translateY(-5px); }
+      60%    { transform:translateY(-2px); }
+    }
+    .pill-nudge {
+      animation: pillBounce .6s ease infinite;
+      box-shadow: 0 0 0 4px rgba(245,158,11,.25);
+    }
+    .pill-nudge.pill-formula {
+      box-shadow: 0 0 0 4px rgba(99,102,241,.2);
+    }
+
+    /* ── ZONE AIDE INLINE (sous l'énoncé) ───────────────── */
+    .inline-help {
+      border-top:1px solid #e2e8f0; margin-top:.75rem;
+      padding-top:.75rem; font-size:.85rem; font-weight:500;
+      color:#475569; line-height:1.6; min-height:1rem;
+    }
+  </style>
+</head>
+<!--
+  ╔══════════════════════════════════════════════════════════╗
+  ║  MATHEUX — V23 GOLD MASTER                               ║
+  ║  PARTIE 2 / 3 : HTML BODY (sans <script>)               ║
+  ╚══════════════════════════════════════════════════════════╝
+-->
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TOAST GLOBAL
+════════════════════════════════════════════════════════════ -->
+<div id="toast">
+  <span id="ti">🧠</span>
+  <span id="tm">...</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL ALERTE GÉNÉRIQUE
+════════════════════════════════════════════════════════════ -->
+<div id="m-alert" class="hidden fixed inset-0 z-[2000] flex items-center justify-center p-4"
+     style="background:rgba(15,23,42,.6)">
+  <div class="bg-white rounded-3xl w-full max-w-sm p-7 text-center shadow-2xl abi">
+    <div id="ai" class="text-5xl mb-4">⚠️</div>
+    <h3 id="at" class="text-xl font-black text-slate-800 mb-2 syne">Attention</h3>
+    <p  id="am" class="text-slate-500 font-medium mb-6 leading-relaxed text-sm"></p>
+    <button onclick="closeAlert()" class="btn btn-dk btn-fw">Compris</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL BOOST LOADING
+════════════════════════════════════════════════════════════ -->
+<div id="m-boost" class="hidden fixed inset-0 z-[2000] flex items-center justify-center p-4"
+     style="background:rgba(15,23,42,.8)">
+  <div class="bg-white rounded-3xl w-full max-w-sm p-8 text-center shadow-2xl abi">
+    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600
+                flex items-center justify-center text-3xl mx-auto mb-5 shadow-lg animate-pulse-light">⚡</div>
+    <h3 class="text-lg font-black text-slate-800 mb-1 syne">L'IA prépare tes défis</h3>
+    <p id="bt" class="text-indigo-500 font-semibold text-sm mb-5">Analyse de tes lacunes...</p>
+    <div class="flex justify-center"><div class="ld ld-p"></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     LANDING PAGE
+════════════════════════════════════════════════════════════ -->
+<div id="landing-screen" class="fixed inset-0 z-50 overflow-y-auto bg-white">
+
+  <!-- Nav -->
+  <nav class="lhero sticky top-0 z-20 flex justify-between items-center px-5 py-4 border-b border-white/10">
+    <div class="flex items-center gap-2.5" onclick="triggerAdmin()">
+      <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-sm shadow-md">📐</div>
+      <span class="syne font-black text-white" style="font-size:1.1rem">Math<span style="color:#818cf8">eux</span></span>
+    </div>
+    <button onclick="showAuth('login')"
+            class="text-white/70 hover:text-white text-sm font-semibold border border-white/20 px-4 py-2 rounded-xl hover:bg-white/10 transition-colors">
+      Connexion
+    </button>
+  </nav>
+
+  <!-- Hero -->
+  <div class="lhero px-5 pt-14 pb-16 relative">
+    <div class="grid-ov"></div>
+    <div class="max-w-lg mx-auto relative z-10 text-center">
+      <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white/80 px-3 py-1.5 rounded-full text-xs font-semibold mb-7 s1">
+        <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse-light"></span>
+        Assistant Mathématique IA
+      </div>
+      <h1 class="syne text-4xl sm:text-5xl font-black text-white leading-[1.1] mb-5 s2">
+        Maths collège — enfin des révisions<br>
+        <span style="color:#818cf8">qui ciblent les vraies lacunes.</span>
+      </h1>
+      <p class="text-white/65 text-base font-medium leading-relaxed mb-9 max-w-sm mx-auto s3">
+        En 15 minutes, l'IA diagnostique ce que votre enfant ne comprend vraiment pas et construit un parcours sur mesure. Pas de devinette, pas de temps perdu.
+      </p>
+      <button onclick="startTrialFlow()"
+              class="btn btn-ac btn-fw s4 shadow-xl" id="cta-hero" style="max-width:380px;font-size:1.05rem;padding:1.15rem">
+        Essayer gratuitement 7 jours →
+      </button>
+      <div class="flex items-center justify-center gap-4 mt-5 s4">
+        <span class="flex items-center gap-1.5 text-white/45 text-xs font-medium"><span class="text-green-400">✓</span>7 jours offerts</span>
+        <span class="w-px h-3 bg-white/20"></span>
+        <span class="flex items-center gap-1.5 text-white/45 text-xs font-medium"><span class="text-green-400">✓</span>Aucune carte bancaire</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TRIAL FLOW INLINE ────────────────────────────────── -->
+  <div id="trial-flow" class="hidden lhero px-5 pb-14 -mt-2">
+    <div class="max-w-lg mx-auto">
+      <!-- Dots progress -->
+      <div class="flex items-center justify-center gap-2.5 pt-2 pb-7">
+        <div class="flow-dot on" id="fdot-1"></div>
+        <div class="flow-dot" id="fdot-2"></div>
+        <div class="flow-dot" id="fdot-3"></div>
+        <div class="flow-dot" id="fdot-4"></div>
+      </div>
+
+      <!-- STEP 1 — Classe -->
+      <div id="flow-s1" class="flow-step">
+        <h2 class="syne text-2xl font-black text-white text-center mb-2">Quelle classe ?</h2>
+        <p class="text-white/50 text-sm text-center mb-7">Le programme s'adapte au niveau de ton enfant</p>
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="flowSelectLevel('6EME')" class="lvl-btn" id="lvl-6EME">6<sup>ème</sup></button>
+          <button onclick="flowSelectLevel('5EME')" class="lvl-btn" id="lvl-5EME">5<sup>ème</sup></button>
+          <button onclick="flowSelectLevel('4EME')" class="lvl-btn" id="lvl-4EME">4<sup>ème</sup></button>
+          <button onclick="flowSelectLevel('3EME')" class="lvl-btn" id="lvl-3EME">3<sup>ème</sup></button>
+        </div>
+      </div>
+
+      <!-- STEP 2 — Chapitres -->
+      <div id="flow-s2" class="flow-step hidden">
+        <h2 class="syne text-2xl font-black text-white text-center mb-2">Chapitres déjà vus ?</h2>
+        <p class="text-white/50 text-sm text-center mb-5">Coche ce qui a été étudié cette année (2 minimum)</p>
+        <div id="flow-chaps-grid" class="grid grid-cols-2 gap-2.5 mb-6"></div>
+        <button onclick="flowToStep3()" class="btn btn-ac btn-fw py-4">Voir le diagnostic →</button>
+      </div>
+
+      <!-- STEP 3 — Questions démo -->
+      <div id="flow-s3" class="flow-step hidden">
+        <div class="flex items-center justify-between mb-5">
+          <span class="text-white/40 text-xs font-semibold uppercase tracking-wider">Aperçu du diagnostic</span>
+          <span id="flow-q-num" class="text-white/60 text-xs font-bold">1 / 2</span>
+        </div>
+        <div id="flow-q-card" class="bg-white/10 border border-white/15 rounded-2xl p-5"></div>
+        <p class="text-center text-white/35 text-xs mt-4">Ces questions illustrent le vrai diagnostic — tes réponses sont retenues</p>
+      </div>
+
+      <!-- STEP 4 — Inscription -->
+      <div id="flow-s4" class="flow-step hidden">
+        <div class="bg-white/10 border border-white/15 rounded-2xl p-6">
+          <div class="w-14 h-14 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4">🎯</div>
+          <h2 class="syne text-xl font-black text-white text-center mb-1">Diagnostic prêt !</h2>
+          <p class="text-white/55 text-sm text-center mb-6">Crée ton espace gratuit pour lancer le diagnostic complet et voir les résultats</p>
+          <div class="space-y-3">
+            <input type="text"     id="fl-name"  class="flow-inp" placeholder="Prénom de l'élève" autocomplete="given-name">
+            <input type="email"    id="fl-email" class="flow-inp" placeholder="Email (parent ou élève)" autocomplete="email">
+            <input type="password" id="fl-pass"  class="flow-inp" placeholder="Mot de passe (min. 6 caractères)" autocomplete="new-password">
+          </div>
+          <button onclick="flowRegister()" id="fl-btn" class="btn btn-ac btn-fw py-4 mt-5">
+            <span id="fl-btn-txt">Lancer mon diagnostic gratuit 🎯</span>
+            <span id="fl-btn-ld" class="ld hidden"></span>
+          </button>
+          <p class="text-center text-white/35 text-xs mt-3">✓ 7 jours gratuits · ✓ Aucune carte bancaire</p>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /trial-flow -->
+
+  <!-- ── SOCIAL PROOF ───────────────────────────────────────── -->
+  <div class="bg-white px-5 py-10">
+    <div class="max-w-lg mx-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+        <!-- Stat -->
+        <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 text-center">
+          <div class="syne text-4xl font-black text-indigo-600 mb-1">94%</div>
+          <div class="text-slate-600 text-sm font-medium">des élèves progressent dès la 1ère semaine</div>
+        </div>
+        <!-- Quote -->
+        <div class="sp-quote">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-white font-black text-sm syne">ML</div>
+            <div>
+              <div class="font-bold text-slate-800 text-sm">Marie-Laure</div>
+              <div class="text-slate-400 text-xs">Maman de Lucas, 5ème</div>
+            </div>
+          </div>
+          <p class="text-slate-600 text-sm leading-relaxed italic">"En 3 semaines, il est passé de 7 à 13 en maths. Je ne pensais pas que c'était possible aussi vite."</p>
+        </div>
+      </div>
+      <!-- H2 SEO -->
+      <h2 class="syne text-2xl font-black text-slate-900 mb-4 leading-tight">
+        Cours de maths collège adaptés,<br>exercices personnalisés par niveau
+      </h2>
+      <p class="text-slate-500 text-sm font-medium leading-relaxed">
+        De la 6ème à la 3ème, Matheux identifie les lacunes cachées en <strong>révisions 6ème, 5ème, 4ème et 3ème</strong> puis programme les exercices exactement là où ça coince. Pas de programme générique.
+      </p>
+    </div>
+  </div>
+
+  <!-- Section "Le vrai problème" -->
+  <div class="bg-white px-5 py-14" style="padding-top:0">
+    <div class="max-w-lg mx-auto">
+      <div class="stag mb-6">Le vrai problème</div>
+      <h2 class="syne text-3xl font-black text-slate-900 mb-6 leading-tight">
+        Ce n'est pas un problème<br>de travail. C'est un problème<br>de <span style="color:var(--p)">direction.</span>
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="ccard bad">
+          <div class="text-xs font-bold text-rose-500 uppercase tracking-wider mb-4">Sans Matheux</div>
+          <div class="space-y-3">
+            <div class="chk text-slate-500"><span class="text-rose-400 mt-0.5">✕</span>Révise ce qu'il sait déjà</div>
+            <div class="chk text-slate-500"><span class="text-rose-400 mt-0.5">✕</span>Oublie avant l'exam</div>
+            <div class="chk text-slate-500"><span class="text-rose-400 mt-0.5">✕</span>Lacunes qui s'accumulent</div>
+          </div>
+        </div>
+        <div class="ccard good">
+          <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-4">Avec Matheux</div>
+          <div class="space-y-3">
+            <div class="chk text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Diagnostic précis par niveau</div>
+            <div class="chk text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>L'IA cible les vraies erreurs</div>
+            <div class="chk text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Remédiation automatique</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer landing -->
+  <div class="bg-slate-50 py-5 text-center border-t border-slate-100">
+    <p class="text-slate-400 text-xs font-medium">
+      © 2026 Matheux ·
+      <button onclick="showAuth('login')" class="underline hover:text-slate-600 transition-colors">Connexion</button>
+    </p>
+  </div>
+</div><!-- /landing-screen -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     AUTH SCREEN (bottom sheet)
+════════════════════════════════════════════════════════════ -->
+<div id="auth-screen"
+     class="hidden fixed inset-0 z-[60] flex items-end sm:items-center justify-center"
+     style="background:rgba(15,23,42,.65)">
+  <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl abi overflow-hidden flex flex-col"
+       style="max-height:92vh">
+    <div class="flex justify-center pt-3 pb-1 sm:hidden">
+      <div class="w-10 h-1.5 bg-slate-200 rounded-full"></div>
+    </div>
+    <div class="p-6 overflow-y-auto no-sb flex-1">
+      <div class="flex justify-between items-center mb-5">
+        <h2 id="auth-title" class="syne text-xl font-black text-slate-900">Rejoins l'arène</h2>
+        <button onclick="closeAuth()" class="w-9 h-9 bg-slate-100 rounded-full font-bold text-slate-500 flex items-center justify-center text-lg leading-none">✕</button>
+      </div>
+
+      <!-- STEP 1 : FORMULAIRE CONNEXION / INSCRIPTION -->
+      <div id="auth-step-1">
+        <div class="flex bg-slate-100 rounded-xl p-1 mb-5">
+          <button onclick="switchTab('register')" id="tab-r"
+                  class="flex-1 py-2.5 font-bold text-sm rounded-lg transition-all syne">Nouveau</button>
+          <button onclick="switchTab('login')"    id="tab-l"
+                  class="flex-1 py-2.5 font-bold text-sm rounded-lg transition-all syne text-slate-400">Déjà inscrit</button>
+        </div>
+
+        <!-- Champs inscription uniquement -->
+        <div id="form-r" class="space-y-3">
+          <input type="text"  id="rn" class="inp" placeholder="Prénom de l'élève" autocomplete="given-name">
+          <select id="rl" class="inp font-bold text-indigo-700" onchange="updateLevelChapters()">
+            <option value="6EME">Classe : 6ème</option>
+            <option value="5EME">Classe : 5ème</option>
+            <option value="4EME" selected>Classe : 4ème</option>
+            <option value="3EME">Classe : 3ème</option>
+          </select>
+        </div>
+
+        <!-- Email + MDP (communs) -->
+        <div class="space-y-3 mt-3">
+          <input type="email"    id="le" class="inp" placeholder="Email (parent ou élève)" autocomplete="email">
+          <input type="password" id="lp" class="inp" placeholder="Mot de passe"            autocomplete="current-password">
+          <button onclick="submitAuth()" class="btn btn-ac btn-fw py-4 mt-1">
+            <span id="auth-text">Continuer 🚀</span>
+            <span id="auth-ld"   class="ld hidden"></span>
+          </button>
+        </div>
+      </div><!-- /auth-step-1 -->
+
+      <!-- STEP 2 : SÉLECTION CHAPITRES ONBOARDING -->
+      <div id="auth-step-2" class="hidden">
+        <p class="text-slate-500 font-medium mb-4 text-sm leading-relaxed">
+          Pour que l'IA ne te pose pas de questions sur des notions pas encore vues, sélectionne les chapitres que tu as
+          <strong>déjà étudiés cette année</strong> :
+        </p>
+        <div class="grid grid-cols-2 gap-2.5 mb-6" id="onboarding-chaps"></div>
+        <button onclick="finalizeOnboarding()" id="btn-onboard" class="btn btn-dk btn-fw py-4">
+          <span id="onboard-text">Lancer mon Diagnostic IA 🎯</span>
+          <span id="onboard-ld" class="ld hidden"></span>
+        </button>
+      </div><!-- /auth-step-2 -->
+
+    </div>
+  </div>
+</div><!-- /auth-screen -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN APP
+════════════════════════════════════════════════════════════ -->
+<div id="main-app" class="hidden w-full max-w-2xl mx-auto px-3 sm:px-4 pt-3 pb-28">
+
+  <!-- Header sticky avec stats -->
+  <header class="bg-white rounded-2xl shadow-sm border border-slate-100 mb-4 overflow-hidden">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-sm shadow-md flex-shrink-0">📐</div>
+        <div class="min-w-0">
+          <div class="syne font-black text-slate-900 text-sm truncate">
+            Espace de <span id="aname" class="text-indigo-600"></span>
+          </div>
+          <div class="flex items-center gap-1 mt-0.5">
+            <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+            <span class="text-[10px] font-semibold text-green-600">IA Active</span>
+          </div>
+        </div>
+      </div>
+      <button onclick="logout()"
+              class="w-9 h-9 bg-rose-50 border border-rose-100 text-rose-400 rounded-xl flex items-center justify-center text-base hover:bg-rose-100 transition-colors">✕</button>
+    </div>
+    <div class="flex items-center justify-between px-4 py-2.5 gap-3">
+      <div class="flex gap-2">
+        <div id="stk-box" class="flex items-center gap-1.5 bg-amber-50 border border-amber-100 text-amber-700 font-black text-sm px-2.5 py-1.5 rounded-xl syne">
+          🔥 <span id="ui-stk">0</span>
+        </div>
+        <div class="flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 font-black text-sm px-2.5 py-1.5 rounded-xl syne">
+          💎 <span id="ui-xp">0</span>
+        </div>
+      </div>
+    </div>
+    <!-- Nav 2 vues — B2 -->
+    <div id="main-nav" class="hidden px-4 pb-3 pt-1 border-t border-slate-100 flex gap-1.5">
+      <button id="nav-chap" onclick="setView('chapters')"
+              class="flex-1 py-2 rounded-xl text-xs font-black syne transition-colors bg-indigo-600 text-white">
+        📚 Chapitres
+      </button>
+      <button id="nav-prog" onclick="setView('progress')"
+              class="flex-1 py-2 rounded-xl text-xs font-black syne transition-colors bg-slate-100 text-slate-500">
+        📊 Progression
+      </button>
+    </div>
+  </header>
+
+  <!-- Mastery ring widget (injecté dynamiquement) -->
+  <div id="mastery-w" class="mb-4"></div>
+
+  <!-- Contenu principal (injecté dynamiquement) -->
+  <main id="app-c" class="space-y-3"></main>
+
+</div><!-- /main-app -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     BOUTON TABLEAU BLANC (FAB)
+════════════════════════════════════════════════════════════ -->
+<button id="fab-draft" onclick="toggleDraft()"
+        class="hidden fixed bottom-5 right-4 z-[80] w-14 h-14 bg-slate-900 text-white rounded-full shadow-2xl
+               flex items-center justify-center text-xl transition-transform active:scale-90
+               border-2 border-slate-700"
+        title="Ouvrir le tableau blanc">✏️</button>
+
+<!-- Fond obscur du drawer -->
+<div id="draft-bd" onclick="toggleDraft()"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TIROIR TABLEAU BLANC (BOTTOM SHEET)
+════════════════════════════════════════════════════════════ -->
+<div id="draft-drawer">
+
+  <!-- Header du tiroir -->
+  <div class="px-4 py-3 border-b border-slate-200 flex justify-between items-center bg-slate-50 rounded-t-[24px] flex-shrink-0">
+    <div class="syne font-black text-slate-800 text-base flex items-center gap-2">✏️ Tableau de brouillon</div>
+    <button onclick="toggleDraft()"
+            class="text-slate-500 font-semibold border border-slate-300 px-3 py-1.5 rounded-xl text-sm bg-white hover:bg-slate-50 transition-colors">
+      Baisser ↓
+    </button>
+  </div>
+
+  <!-- Barre de symboles mathématiques (scrollable, sticky) -->
+  <div class="px-3 py-2 border-b border-slate-100 bg-white flex-shrink-0">
+    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 px-1">
+      Symboles → insérés dans le texte
+    </div>
+    <div class="flex gap-1.5 overflow-x-auto no-sb pb-1">
+      <button class="sym-btn" onclick="insSymbol('²')">x²</button>
+      <button class="sym-btn" onclick="insSymbol('³')">x³</button>
+      <button class="sym-btn" onclick="insSymbol('√')">√</button>
+      <button class="sym-btn" onclick="insSymbol('×')">×</button>
+      <button class="sym-btn" onclick="insSymbol('÷')">÷</button>
+      <button class="sym-btn" onclick="insSymbol('π')">π</button>
+      <button class="sym-btn" onclick="insSymbol('Δ')">Δ</button>
+      <button class="sym-btn" onclick="insSymbol('θ')">θ</button>
+      <button class="sym-btn" onclick="insSymbol('≈')">≈</button>
+      <button class="sym-btn" onclick="insSymbol('∈')">∈</button>
+      <button class="sym-btn" onclick="insSymbol('∉')">∉</button>
+      <button class="sym-btn" onclick="insSymbol('∩')">∩</button>
+      <button class="sym-btn" onclick="insSymbol('∪')">∪</button>
+      <button class="sym-btn" onclick="insSymbol('→')">→</button>
+      <button class="sym-btn" onclick="insSymbol('≤')">≤</button>
+      <button class="sym-btn" onclick="insSymbol('≥')">≥</button>
+      <button class="sym-btn" onclick="insSymbol('≠')">≠</button>
+      <button class="sym-btn" onclick="insSymbol('⁰')">⁰</button>
+      <button class="sym-btn" onclick="insSymbol('¹')">¹</button>
+      <button class="sym-btn" onclick="insSymbol('²')">²</button>
+      <button class="sym-btn" onclick="insSymbol('³')">³</button>
+      <button class="sym-btn" onclick="insSymbol('⁴')">⁴</button>
+      <button class="sym-btn" onclick="insSymbol('₀')">₀</button>
+      <button class="sym-btn" onclick="insSymbol('₁')">₁</button>
+      <button class="sym-btn" onclick="insSymbol('₂')">₂</button>
+      <button class="sym-btn" onclick="insSymbol('(')">( )</button>
+      <button class="sym-btn" onclick="insSymbol('[')">[ ]</button>
+      <button class="sym-btn" onclick="insSymbol('{')">{ }</button>
+    </div>
+  </div>
+
+  <!-- Zone texte / calculs (pleine hauteur) -->
+  <div class="flex-1 flex flex-col px-3 pt-3 pb-3 bg-white overflow-hidden">
+    <div class="flex justify-between items-center mb-1.5 flex-shrink-0">
+      <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">✏️ Tes calculs</span>
+      <button onclick="clrText()" class="text-xs font-bold text-rose-400 hover:text-rose-600 transition-colors">Effacer</button>
+    </div>
+    <textarea id="draft-text" style="flex:1;resize:none;min-height:120px"
+              placeholder="Écris tes calculs ici, utilise les symboles ci-dessus..."></textarea>
+  </div>
+
+</div><!-- /draft-drawer -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL ÉLÈVE ADMIN
+════════════════════════════════════════════════════════════ -->
+<div id="admin-modal"
+     class="fixed inset-0 z-[3000] items-end sm:items-center justify-center"
+     style="background:rgba(15,23,42,.72)">
+  <div id="admin-modal-inner"
+       class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl abi overflow-hidden flex flex-col"
+       style="max-height:92vh">
+    <!-- contenu injecté dynamiquement -->
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PANNEAU ADMIN (DEV MODE — activé par triple-clic logo)
+════════════════════════════════════════════════════════════ -->
+<div id="admin-panel" class="hidden">
+  <div class="flex justify-between items-center mb-3 border-b border-slate-600 pb-2">
+    <strong class="text-indigo-400 text-sm syne">🛠️ DEV TOOLS</strong>
+    <button onclick="document.getElementById('admin-panel').classList.add('hidden')"
+            class="text-rose-400 font-bold text-sm">Fermer</button>
+  </div>
+  <div class="space-y-2">
+    <button onclick="simTime(2)"       class="w-full bg-slate-700 p-2.5 rounded-lg text-left hover:bg-slate-600 font-bold text-xs">⏩ Forcer temps à J+2</button>
+    <button onclick="forceFailChap()"  class="w-full bg-slate-700 p-2.5 rounded-lg text-left hover:bg-slate-600 font-bold text-xs">💥 Forcer prochain = HARD</button>
+    <div class="bg-slate-800 p-2 rounded-lg mt-2 text-[10px] overflow-x-auto text-green-400 break-all" id="admin-log">Status: OK</div>
+  </div>
+</div>
+<!--
+  ╔══════════════════════════════════════════════════════════╗
+  ║  MATHEUX — V23 GOLD MASTER                               ║
+  ║  PARTIE 3 / 3 : SCRIPT COMPLET + FERMETURE HTML         ║
+  ║                                                          ║
+  ║  Changements v22 → v23 :                                 ║
+  ║  • exoStartTime : chrono par exercice (→ time dans GAS)  ║
+  ║  • sendScore enrichi : time + wrongOpt + draft           ║
+  ║  • checkOpt : passe wrongOpt sur erreur QCM              ║
+  ║  • mark(cat, idx, status, wrongOpt) : nouveau paramètre  ║
+  ╚══════════════════════════════════════════════════════════╝
+-->
+<script>
+// ══════════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════════
+const SU = 'https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec';
+const SK  = 'boost_v23';
+const LK  = 'boost_loc_v23';
+const DK  = 'done_v23';      // { [code]: { chapDone: {[cat]: {errs,tot,easy,medium,hard}}, boostConsumed: true } }
+const LO  = ["6EME","5EME","4EME","3EME"];
+const LN  = {"6EME":"6ème","5EME":"5ème","4EME":"4ème","3EME":"3ème"};
+const TS  = ["🧠 Analyse de tes erreurs...","🔍 Ciblage des lacunes...","⚙️ Calibrage du niveau...","🎯 Génération des défis...","✨ Finalisation en cours..."];
+
+const DEMO_QS = {
+  "6EME": [
+    { q:"2/3 + 1/3 = ?",                                   a:"1",      opts:["1","3/6","2/3"] },
+    { q:"Périmètre d'un carré de côté 5 cm ?",             a:"20 cm",  opts:["20 cm","25 cm","10 cm"] }
+  ],
+  "5EME": [
+    { q:"L'opposé de −7 est ?",                            a:"7",      opts:["7","−7","1/7"] },
+    { q:"2³ = ?",                                          a:"8",      opts:["8","6","9"] }
+  ],
+  "4EME": [
+    { q:"Si 2x + 4 = 10, alors x = ?",                    a:"3",      opts:["3","7","2"] },
+    { q:"2² × 2³ = ?",                                    a:"32",     opts:["32","8","64"] }
+  ],
+  "3EME": [
+    { q:"Si f(x) = 2x + 1, alors f(3) = ?",               a:"7",      opts:["7","5","9"] },
+    { q:"Dans un triangle rectangle de côtés 3 et 4, l'hypoténuse vaut ?", a:"5", opts:["5","7","√7"] }
+  ]
+};
+
+const CHAPS_BY_LEVEL = {
+  "6EME":     ["Nombres entiers 🔢","Fractions 🍕","Proportionnalité ⚖️","Géométrie 📐","Périmètres & Aires 🟦","Angles 📏"],
+  "5EME":     ["Fractions 🍕","Nombres relatifs ➕","Proportionnalité ⚖️","Puissances ⚡","Pythagore 📐","Calcul Littéral 📝"],
+  "4EME":     ["Fractions 🍕","Puissances ⚡","Calcul Littéral 📝","Équations 🎯","Pythagore 📐","Proportionnalité ⚖️"],
+  "3EME":     ["Calcul Littéral 📝","Équations 🎯","Fonctions 📈","Théorème de Thalès 📐","Trigonométrie 📐","Statistiques 📊"],
+};
+
+
+// ══════════════════════════════════════════════════════════════
+// STATE GLOBAL
+// ══════════════════════════════════════════════════════════════
+let currentTab = 'register';
+let penColor   = '#4f46e5';
+
+let S = {
+  prof: null, niv: "4EME", res: {}, xp: 0, stk: 0,
+  qv: {}, exp: {}, rev: false, cid: null,
+  hints: {}, ftch: {}, qans: {}, shuf: {},
+  dOpen: false,
+  calState: null, calExos: [],
+  remReq: {}, insights: {}, isNew: {}, chapDone: {},
+  boostEx: false, boost: null, boostGen: false, boostPreping: false, boostConsumed: false,
+  nextBoostTopic: null,
+  pendingManual: null,
+  motProfBoost: null, motProfChap: {}, _motProfScreen: null,
+  diagInsight: null,      // { totalEasy, total } — écran post-diagnostic
+  boostInsight: null,     // { easy, total, boostCat } — écran post-boost
+  diagChapResults: {},    // { cat → { easy, total, name } } pour comparaison boost
+  isFirstDay: false,
+  drafts: {},          // { exoId → { img, txt } }
+  sent: new Set(),
+  scoreQueue: JSON.parse(localStorage.getItem('sq') || '[]'),
+  adminMode: false, timeOffset: 0, forceFail: false,
+  adminStudents: [],
+  tmpEmail: '', tmpHash: '',
+  exoStartTime: {},    // { exoId → timestamp ms } — NOUVEAU v23
+  view: 'chapters',   // 'chapters' | 'progress'
+  progress: null,     // null=non chargé, []=vide, [...]=données Progress sheet
+  progressLoading: false,
+  prereqBanner: {},   // { cat → null|{chapitre,niveau} }  — B3
+};
+
+const LVL = {};
+LO.forEach(function(k) { LVL[k] = { cats: {}, names: {}, icons: {} }; });
+
+// ══════════════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════════════
+function tod() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+// Admin : triple-clic sur le logo
+var clickCount = 0, clickTimer = null;
+function triggerAdmin() {
+  clickCount++;
+  clearTimeout(clickTimer);
+  clickTimer = setTimeout(function() { clickCount = 0; }, 1200);
+  if (clickCount >= 3) {
+    clickCount = 0;
+    S.adminMode = true;
+    document.getElementById('admin-panel').classList.remove('hidden');
+    logAdmin("Mode Dev activé.");
+  }
+}
+function logAdmin(msg) { if (S.adminMode) document.getElementById('admin-log').innerText = msg; }
+function simTime(days) { S.timeOffset += days; logAdmin('Temps simulé: +' + S.timeOffset + 'j'); alert('Virtuellement à J+' + S.timeOffset + '.'); }
+function forceFailChap() { S.forceFail = true; logAdmin("Prochain 'Acquis' = HARD."); alert("Le prochain clic Acquis sera enregistré en HARD."); }
+
+async function h256(pw, em) {
+  if (!window.crypto || !window.crypto.subtle) {
+    alert2('Connexion impossible 🔒', 'Ouvre le site en HTTPS (cadenas dans la barre d\'adresse) : https://matheux.fr');
+    throw new Error('crypto.subtle indisponible — HTTPS requis');
+  }
+  var s = (em || '').toLowerCase() + '::' + pw + '::AB22';
+  var b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(b)).map(function(x){ return x.toString(16).padStart(2,'0'); }).join('');
+}
+
+function fmtL(s) {
+  if (!s) return '';
+  if (s.includes('$') || s.includes('\\(')) return s;
+  if (s.includes('\\') || /[_\^{}]/.test(s)) return '$' + s + '$';
+  return s;
+}
+
+var _tt = null;
+function showT(msg, dur, ic) {
+  dur = (dur === undefined) ? 3500 : dur;
+  ic  = ic || '🧠';
+  document.getElementById('tm').innerText = msg;
+  document.getElementById('ti').innerText = ic;
+  document.getElementById('toast').classList.add('show');
+  if (_tt) clearTimeout(_tt);
+  if (dur > 0) _tt = setTimeout(function(){ document.getElementById('toast').classList.remove('show'); }, dur);
+}
+function hideT() {
+  document.getElementById('toast').classList.remove('show');
+  if (_tt) clearTimeout(_tt);
+}
+
+function alert2(t, m, ic) {
+  ic = ic || '⚠️';
+  document.getElementById('ai').innerText = ic;
+  document.getElementById('at').innerText = t;
+  document.getElementById('am').innerText = m;
+  document.getElementById('m-alert').classList.remove('hidden');
+}
+function closeAlert() { document.getElementById('m-alert').classList.add('hidden'); }
+
+function showXP(a) {
+  var e = document.createElement('div');
+  e.className = 'xpf';
+  e.innerText = '+' + a;
+  e.style.cssText = 'left:50%;top:40%;transform:translate(-50%,-50%)';
+  document.body.appendChild(e);
+  setTimeout(function(){ e.remove(); }, 1000);
+}
+
+function launchConfetti() {
+  for (var i = 0; i < 45; i++) {
+    var c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.backgroundColor = ['#4f46e5','#10b981','#fbbf24','#f43f5e','#8b5cf6'][Math.floor(Math.random()*5)];
+    var sz = (Math.random()*8+5) + 'px';
+    c.style.width = sz; c.style.height = sz;
+    c.style.borderRadius = Math.random() > .5 ? '50%' : '2px';
+    c.style.animationDuration = (Math.random()*2+2) + 's';
+    c.style.animationDelay    = (Math.random()*.5)  + 's';
+    document.body.appendChild(c);
+    setTimeout(function(){ c.remove(); }, 4000);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// MATHJAX — rendu différé + fallback 2.5s
+// ══════════════════════════════════════════════════════════════
+function rMath() {
+  var c = document.getElementById('app-c');
+  if (!c) return;
+  var fb = setTimeout(function(){
+    document.querySelectorAll('.mc:not(.rdy)').forEach(function(e){ e.classList.add('rdy'); });
+  }, 2500);
+  if (!window.MathJax || !window.MathJax.typesetPromise) {
+    clearTimeout(fb);
+    document.querySelectorAll('.mc').forEach(function(e){ e.classList.add('rdy'); });
+    return;
+  }
+  try {
+    if (MathJax.typesetClear) MathJax.typesetClear([c]);
+    MathJax.typesetPromise([c])
+      .then(function(){ clearTimeout(fb); document.querySelectorAll('.mc').forEach(function(e){ e.classList.add('rdy'); }); })
+      .catch(function(){ clearTimeout(fb); document.querySelectorAll('.mc').forEach(function(e){ e.classList.add('rdy'); }); });
+  } catch(e) {
+    clearTimeout(fb);
+    document.querySelectorAll('.mc').forEach(function(el){ el.classList.add('rdy'); });
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// SCORE QUEUE — résilience réseau
+// NOUVEAU v23 : payload enrichi avec time, wrongOpt, draft
+// MasteryScore calculé côté GAS (invisible pour l'élève,
+// exploité par l'Agent Superviseur Ebbinghaus/Sweller)
+// ══════════════════════════════════════════════════════════════
+function sendScore(cat, idx, status, xp, q, wrongOpt, sourceCat) {
+  var k = S.prof.code + '-' + cat + '-' + idx;
+  if (S.sent.has(k) && !S.adminMode) return;
+  S.sent.add(k);
+
+  var id       = S.niv + '-' + cat + '-' + idx;
+  var duration = S.exoStartTime[id]
+    ? Math.round((Date.now() - S.exoStartTime[id]) / 1000)
+    : 0;
+  var draftData = S.drafts[id] || {};
+
+  var p = {
+    action:       "save_score",
+    code:         S.prof.code,
+    name:         S.prof.name,
+    level:        S.niv,
+    categorie:    cat,
+    exercice_idx: idx + 1,
+    resultat:     status,
+    indices:      S.hints[id] || 0,
+    formule:      !!S.ftch[id],
+    xp:           xp,
+    q:            q || '',
+    time:         duration,         // secondes — pour calcul MasteryScore GAS
+    wrongOpt:     wrongOpt || null, // option erronée — pour détection misconceptions
+    draft:        draftData.txt || '', // texte brouillon — stocké onglet Drafts
+    source:       sourceCat || cat  // contexte réel (BOOST/CALIBRAGE/chapitre)
+  };
+
+  if (S.timeOffset > 0) {
+    var dd = new Date();
+    dd.setDate(dd.getDate() + S.timeOffset);
+    p.overrideDate = dd.toISOString().split('T')[0];
+  }
+
+  try { S.scoreQueue.push(p); localStorage.setItem('sq', JSON.stringify(S.scoreQueue)); } catch(e) {}
+  flushQ();
+}
+
+async function flushQ() {
+  if (!S.scoreQueue.length) return;
+  try {
+    await fetch(SU, { method:'POST', body:JSON.stringify(S.scoreQueue[0]) });
+    S.scoreQueue.shift();
+    localStorage.setItem('sq', JSON.stringify(S.scoreQueue));
+    if (S.scoreQueue.length) setTimeout(flushQ, 400);
+  } catch(e) {}
+}
+
+
+// ══════════════════════════════════════════════════════════════
+// SWIPE GAUCHE → EXERCICE SUIVANT
+// ══════════════════════════════════════════════════════════════
+var touchSX = 0, touchSY = 0;
+document.addEventListener('touchstart', function(e){
+  touchSX = e.changedTouches[0].screenX;
+  touchSY = e.changedTouches[0].screenY;
+}, { passive:true });
+document.addEventListener('touchend', function(e){
+  var dx = touchSX - e.changedTouches[0].screenX;
+  var dy = Math.abs(touchSY - e.changedTouches[0].screenY);
+  if (dx > 70 && dy < 50 && S.cid && S.res[S.cid]) {
+    var parts = S.cid.split('-');
+    if (parts.length >= 3) nextEx(parts[1]);
+  }
+}, { passive:true });
+
+// ══════════════════════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════════════════════
+function showAuth(tab) {
+  document.getElementById('landing-screen').classList.add('hidden');
+  document.getElementById('auth-screen').classList.remove('hidden');
+  switchTab(tab);
+}
+function closeAuth() {
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('landing-screen').classList.remove('hidden');
+}
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('form-r').classList.toggle('hidden', tab === 'login');
+  var base = 'flex-1 py-2.5 font-bold text-sm rounded-lg transition-all syne';
+  document.getElementById('tab-r').className = base + (tab==='register' ? ' bg-white shadow-sm text-slate-900' : ' text-slate-400');
+  document.getElementById('tab-l').className = base + (tab==='login'    ? ' bg-white shadow-sm text-slate-900' : ' text-slate-400');
+  document.getElementById('auth-text').innerText = tab==='register' ? "Continuer 🚀" : "Entrer dans l'arène ⚡";
+}
+function updateLevelChapters() {
+  var level = document.getElementById('rl').value;
+  var chaps = CHAPS_BY_LEVEL[level] || CHAPS_BY_LEVEL["4EME"];
+  var grid  = document.getElementById('onboarding-chaps');
+  if (grid) grid.innerHTML = chaps.map(function(c){
+    var key = c.replace(/[^\w\sÀ-ÿ]/g,'').trim().replace(/\s+/g,'_');
+    return '<div onclick="this.classList.toggle(\'selected\')" class="chap-card syne" data-chap="'+key+'">'+c+'</div>';
+  }).join('');
+}
+// ══════════════════════════════════════════════════════════════
+// TRIAL FLOW INLINE (landing → register sans modal)
+// ══════════════════════════════════════════════════════════════
+var _flowLevel = '4EME';
+var _flowChaps = [];
+var _flowQIdx  = 0;
+var _flowScore = 0;
+
+function startTrialFlow() {
+  document.getElementById('trial-flow').classList.remove('hidden');
+  document.getElementById('cta-hero').classList.add('hidden');
+  _flowSetStep(1);
+  document.getElementById('trial-flow').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function _flowSetStep(n) {
+  for (var i = 1; i <= 4; i++) {
+    document.getElementById('flow-s' + i).classList.toggle('hidden', i !== n);
+    document.getElementById('fdot-' + i).classList.toggle('on', i === n);
+  }
+}
+
+function flowSelectLevel(lv) {
+  _flowLevel = lv;
+  ['6EME','5EME','4EME','3EME'].forEach(function(l){
+    var btn = document.getElementById('lvl-' + l);
+    if (btn) btn.classList.toggle('sel', l === lv);
+  });
+  setTimeout(function() {
+    var chaps = CHAPS_BY_LEVEL[lv] || CHAPS_BY_LEVEL['4EME'];
+    var grid  = document.getElementById('flow-chaps-grid');
+    grid.innerHTML = chaps.map(function(c) {
+      var key = c.replace(/[^\w\sÀ-ÿ]/g,'').trim().replace(/\s+/g,'_');
+      return '<div onclick="flowToggleChap(this,\''+key+'\')" class="flow-chap" data-key="'+key+'">'+c+'</div>';
+    }).join('');
+    _flowChaps = [];
+    _flowSetStep(2);
+  }, 180);
+}
+
+function flowToggleChap(el, key) {
+  el.classList.toggle('sel');
+  if (el.classList.contains('sel')) { if (!_flowChaps.includes(key)) _flowChaps.push(key); }
+  else { _flowChaps = _flowChaps.filter(function(k){ return k !== key; }); }
+}
+
+function flowToStep3() {
+  if (_flowChaps.length < 2) { showT('Sélectionne au moins 2 chapitres 😊', 2500, '⚠️'); return; }
+  _flowQIdx = 0; _flowScore = 0;
+  _flowSetStep(3);
+  _flowRenderQ();
+}
+
+function _flowRenderQ() {
+  var qs  = DEMO_QS[_flowLevel] || DEMO_QS['4EME'];
+  var q   = qs[_flowQIdx];
+  var num = document.getElementById('flow-q-num');
+  if (num) num.textContent = (_flowQIdx + 1) + ' / ' + qs.length;
+  var card = document.getElementById('flow-q-card');
+  if (!card) return;
+  var shuffled = q.opts.slice().sort(function(){ return Math.random() - .5; });
+  card.innerHTML =
+    '<p class="text-white font-semibold text-base mb-5 leading-relaxed">' + q.q + '</p>' +
+    '<div class="space-y-2.5">' +
+    shuffled.map(function(o) {
+      return '<button onclick="flowDemoAnswer(this,\''+o.replace(/'/g,'&#39;')+'\',\''+q.a.replace(/'/g,'&#39;')+'\')" class="flow-opt">'+o+'</button>';
+    }).join('') + '</div>';
+}
+
+function flowDemoAnswer(btn, chosen, correct) {
+  var qs   = DEMO_QS[_flowLevel] || DEMO_QS['4EME'];
+  var isOk = chosen === correct;
+  if (isOk) { btn.classList.add('foc'); _flowScore++; }
+  else {
+    btn.classList.add('fow');
+    var card = document.getElementById('flow-q-card');
+    if (card) {
+      var btns = card.querySelectorAll('.flow-opt');
+      btns.forEach(function(b){ if (b.textContent.trim() === correct) b.classList.add('foc'); });
+    }
+  }
+  // Rendre toutes les options non-cliquables
+  var allBtns = document.getElementById('flow-q-card').querySelectorAll('.flow-opt');
+  allBtns.forEach(function(b){ b.style.pointerEvents='none'; });
+
+  setTimeout(function() {
+    _flowQIdx++;
+    if (_flowQIdx < qs.length) { _flowRenderQ(); }
+    else { _flowSetStep(4); }
+  }, 900);
+}
+
+async function flowRegister() {
+  var name  = (document.getElementById('fl-name')  || {}).value.trim();
+  var email = (document.getElementById('fl-email') || {}).value.trim();
+  var pass  = (document.getElementById('fl-pass')  || {}).value.trim();
+  if (!name)  { showT('Le prénom est requis 😊', 2500, '⚠️'); return; }
+  if (!email) { showT('L\'email est requis 😊', 2500, '⚠️'); return; }
+  if (pass.length < 6) { showT('Mot de passe : 6 caractères minimum', 2500, '⚠️'); return; }
+  var btn = document.getElementById('fl-btn');
+  document.getElementById('fl-btn-txt').classList.add('hidden');
+  document.getElementById('fl-btn-ld').classList.remove('hidden');
+  if (btn) btn.disabled = true;
+  try {
+    var h    = await h256(pass, email);
+    var regR = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'register', name:name, email:email, level:_flowLevel, password:h }) });
+    var regD = await regR.json();
+    if (regD.status !== 'success') {
+      showT('❌ ' + (regD.message || 'Erreur inscription'), 4000, '❌');
+      document.getElementById('fl-btn-txt').classList.remove('hidden');
+      document.getElementById('fl-btn-ld').classList.add('hidden');
+      if (btn) btn.disabled = false;
+      return;
+    }
+    S.prof = regD.profile; S.niv = _flowLevel;
+    S.tmpEmail = email; S.tmpHash = h;
+    showT('Génération du diagnostic...', 0, '🎯');
+    var diagR = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'generate_diagnostic', code:S.prof.code, level:_flowLevel, selectedChapters:_flowChaps }) });
+    var diagD = await diagR.json();
+    if (diagD.status !== 'success') {
+      hideT(); showT('Diagnostic indisponible, on réessaie dans 10s...', 3000, '⏳');
+      document.getElementById('fl-btn-txt').classList.remove('hidden');
+      document.getElementById('fl-btn-ld').classList.add('hidden');
+      if (btn) btn.disabled = false;
+      return;
+    }
+    showT('Chargement de ton espace...', 0, '📚');
+    var loginR = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'login', email:email, password:h }) });
+    var loginD = await loginR.json();
+    hideT();
+    if (loginD.status !== 'success') {
+      showT('❌ Connexion impossible. Réessaie.', 4000, '❌'); return;
+    }
+    localStorage.setItem(SK, JSON.stringify({ email:email, password:h }));
+    loginD.isFirstDay = true;
+    S.calState = 'test';
+    document.getElementById('landing-screen').classList.add('hidden');
+    document.getElementById('main-app').classList.remove('hidden');
+    initApp(loginD, true);
+    S.calExos = diagD.exos;
+    startCal();
+  } catch(err) {
+    hideT(); showT('Erreur réseau — vérifie ta connexion 📡', 3500, '❌');
+    document.getElementById('fl-btn-txt').classList.remove('hidden');
+    document.getElementById('fl-btn-ld').classList.add('hidden');
+    if (btn) btn.disabled = false;
+  }
+}
+
+function togLd(on) {
+  document.getElementById('auth-ld').classList.toggle('hidden', !on);
+  document.getElementById('auth-text').classList.toggle('hidden', on);
+}
+
+async function submitAuth() {
+  var e = document.getElementById('le').value.trim();
+  var p = document.getElementById('lp').value.trim();
+  if (!e || !p) { alert2("Champs manquants","Email et mot de passe requis."); return; }
+  togLd(true);
+  var h = await h256(p, e);
+
+  if (currentTab === 'register') {
+    var n = document.getElementById('rn').value.trim();
+    var l = document.getElementById('rl').value;
+    if (!n) { alert2("Oops","Le prénom de l'élève est requis."); togLd(false); return; }
+    try {
+      var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:"register", name:n, email:e, level:l, password:h }) });
+      var d = await r.json();
+      if (d.status === 'success') {
+        S.prof = d.profile; S.niv = d.profile.level;
+        S.tmpEmail = e; S.tmpHash = h;
+        document.getElementById('auth-step-1').classList.add('hidden');
+        document.getElementById('auth-step-2').classList.remove('hidden');
+        document.getElementById('auth-title').innerText = "Tes chapitres 📚";
+        var chaps = CHAPS_BY_LEVEL[l] || CHAPS_BY_LEVEL["4EME"];
+        document.getElementById('onboarding-chaps').innerHTML = chaps.map(function(c){
+          var key = c.replace(/[^\w\sÀ-ÿ]/g,'').trim().replace(/\s+/g,'_');
+          return '<div onclick="this.classList.toggle(\'selected\')" class="chap-card syne" data-chap="'+key+'">'+c+'</div>';
+        }).join('');
+      } else { alert2("Erreur", d.message); }
+    } catch(err) { alert2("Erreur réseau","Vérifie ta connexion.","📡"); }
+    finally { togLd(false); }
+
+  } else {
+    try {
+      var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:"login", email:e, password:h }) });
+      var d = await r.json();
+      if (d.status === 'success') {
+        localStorage.setItem(SK, JSON.stringify({ email:e, password:h }));
+        initApp(d, false);
+      } else { alert2("Refusé", d.message); }
+    } catch(err) { alert2("Erreur réseau","Vérifie ta connexion.","📡"); }
+    finally { togLd(false); }
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// ONBOARDING FINALISATION
+// ══════════════════════════════════════════════════════════════
+async function finalizeOnboarding() {
+  var selChaps = Array.from(document.querySelectorAll('.chap-card.selected')).map(function(el){
+    return el.getAttribute('data-chap');
+  });
+  document.getElementById('onboard-text').classList.add('hidden');
+  document.getElementById('onboard-ld').classList.remove('hidden');
+  showT("Génération du diagnostic...", 0, "🎯");
+  try {
+    var diagR = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'generate_diagnostic', code:S.prof.code, level:S.niv, selectedChapters:selChaps }) });
+    var diagD = await diagR.json();
+    if (diagD.status !== 'success') {
+      hideT(); alert2("Erreur","Génération du diagnostic échouée. Réessaie.");
+      document.getElementById('onboard-text').classList.remove('hidden');
+      document.getElementById('onboard-ld').classList.add('hidden');
+      return;
+    }
+    var calExosFromAPI = diagD.exos;
+    showT("Chargement du programme...", 0, "📚");
+    var loginR = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'login', email:S.tmpEmail, password:S.tmpHash }) });
+    var loginD = await loginR.json();
+    hideT();
+    if (loginD.status !== 'success') {
+      alert2("Erreur","Connexion impossible après inscription.");
+      document.getElementById('onboard-text').classList.remove('hidden');
+      document.getElementById('onboard-ld').classList.add('hidden');
+      return;
+    }
+    localStorage.setItem(SK, JSON.stringify({ email:S.tmpEmail, password:S.tmpHash }));
+    loginD.isFirstDay = true;
+    S.calState = 'test';
+    document.getElementById('auth-screen').classList.add('hidden');
+    document.getElementById('main-app').classList.remove('hidden');
+    initApp(loginD, true);
+    S.calExos = calExosFromAPI;
+    startCal();
+  } catch(err) {
+    hideT(); alert2("Erreur réseau","Vérifie ta connexion.","📡");
+    document.getElementById('onboard-text').classList.remove('hidden');
+    document.getElementById('onboard-ld').classList.add('hidden');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// AUTO-LOGIN AU DÉMARRAGE
+// ══════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  var s = localStorage.getItem(SK);
+  if (!s) return;
+  try {
+    var creds = JSON.parse(s);
+    if (!creds.email || !creds.password) return;
+    showAuth('login');
+    document.getElementById('le').value = creds.email;
+    document.getElementById('lp').value = '••••••••';
+    fetch(SU, { method:'POST', body:JSON.stringify({ action:"login", email:creds.email, password:creds.password }) })
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if (d.status === 'success') { initApp(d, false); }
+        else { closeAuth(); }
+      })
+      .catch(function(){ closeAuth(); });
+  } catch(e) {}
+});
+
+// ══════════════════════════════════════════════════════════════
+// APP INIT
+// ══════════════════════════════════════════════════════════════
+function initApp(d, skipRender) {
+  S.prof       = d.profile;
+  S.niv        = d.profile.level;
+  S.boost      = d.dailyBoost;
+  S.boostEx    = d.boostExistsInDB;
+  S.isFirstDay = d.isFirstDay || false;
+
+  var loc = JSON.parse(localStorage.getItem(LK) || '{}');
+  var ul  = loc[d.profile.code] || {};
+
+  LVL[S.niv] = { cats:{}, names:{}, icons:{} };
+
+  if (d.curriculumOfficiel && d.curriculumOfficiel.length > 0) {
+    d.curriculumOfficiel.forEach(function(c){
+      if (c.categorie === "DIAGNOSTIC") {
+        if (!S.calExos || S.calExos.length === 0) S.calExos = c.exos;
+      } else {
+        LVL[S.niv].cats[c.categorie]  = c.exos.map(function(e,i){ return Object.assign({},e,{oC:c.categorie,oI:i}); });
+        LVL[S.niv].names[c.categorie] = c.titre;
+        LVL[S.niv].icons[c.categorie] = c.icone;
+      }
+    });
+  }
+
+  if (d.dynamicChapters) {
+    d.dynamicChapters.forEach(function(dc){
+      var k = dc.originalCat + '_V' + dc.version;
+      LVL[S.niv].cats[k]  = dc.exos.map(function(e,i){ return Object.assign({},e,{oC:k,oI:i}); });
+      LVL[S.niv].names[k] = (LVL[S.niv].names[dc.originalCat] || dc.originalCat) + ' · Remédiation';
+      LVL[S.niv].icons[k] = '🤖';
+      S.insights[k] = dc.insight;
+      S.isNew[k] = !d.history.find(function(h){ return h.categorie === dc.originalCat && h.exercice_idx === 1; });
+    });
+  }
+
+  // ── Injection colonnes Nicolas (👁 Suivi) ──────────────
+  var injectedCats = new Set();  // chapitres injectés — skip history pour eux
+
+  if (d.nextChapter) {
+    if (typeof d.nextChapter === 'object' && d.nextChapter.categorie === 'PENDING_MANUAL') {
+      // Prof prépare le contenu — afficher message doux, pas de crash
+      S.pendingManual = d.nextChapter.insight || 'Ton prof prépare ton prochain chapitre personnalisé… reviens demain !';
+    } else if (typeof d.nextChapter === 'object' && d.nextChapter.categorie && d.nextChapter.exos && d.nextChapter.exos.length > 0) {
+      // JSON complet valide : remplace le contenu du chapitre
+      var nc = d.nextChapter;
+      var ncKey = nc.categorie;
+      var ncLow2 = ncKey.toLowerCase();
+      Object.keys(LVL[S.niv].cats || {}).forEach(function(k) {
+        if (k.toLowerCase() === ncLow2) ncKey = k;
+      });
+      LVL[S.niv].cats[ncKey] = nc.exos.map(function(e, i) {
+        return Object.assign({}, e, { oC: ncKey, oI: i });
+      });
+      injectedCats.add(ncKey);
+      S.isNew[ncKey] = true;
+      if (nc.motProf) S.motProfChap[ncKey] = nc.motProf;
+      delete S.chapDone[ncKey];
+      try {
+        var doneStore2 = JSON.parse(localStorage.getItem(DK) || '{}');
+        if (doneStore2[S.prof.code] && doneStore2[S.prof.code].chapDone) {
+          delete doneStore2[S.prof.code].chapDone[ncKey];
+          localStorage.setItem(DK, JSON.stringify(doneStore2));
+        }
+      } catch (e) {}
+    } else if (typeof d.nextChapter === 'string') {
+      // Fallback : juste un badge NEW
+      var ncLow = d.nextChapter.toLowerCase();
+      Object.keys(LVL[S.niv].cats || {}).forEach(function(k) {
+        if (k.toLowerCase() === ncLow) S.isNew[k] = true;
+      });
+    }
+  }
+
+  if (d.nextBoost && d.nextBoost.exos && d.nextBoost.exos.length > 0) {
+    // Remplace le boost actuel par le nouveau contenu
+    S.boost   = d.nextBoost;
+    S.boostEx = true;
+    if (d.nextBoost.motProf) S.motProfBoost = d.nextBoost.motProf;
+    injectedCats.add('BOOST');
+    // Vider done state boost
+    S.boostConsumed = false;
+    try {
+      var doneStore3 = JSON.parse(localStorage.getItem(DK) || '{}');
+      if (doneStore3[S.prof.code]) {
+        delete doneStore3[S.prof.code].boostConsumed;
+        localStorage.setItem(DK, JSON.stringify(doneStore3));
+      }
+    } catch (e) {}
+  }
+
+  S.nextBoostTopic = null;  // plus utilisé (remplacé par nextBoost)
+
+  // ── Charger les done states persistés ──────────────────
+  try {
+    var doneStore = JSON.parse(localStorage.getItem(DK) || '{}');
+    var doneUser  = doneStore[d.profile.code] || {};
+    if (doneUser.chapDone) {
+      Object.keys(doneUser.chapDone).forEach(function(cat) {
+        if (!injectedCats.has(cat)) S.chapDone[cat] = doneUser.chapDone[cat];
+      });
+    }
+    if (doneUser.boostConsumed && !injectedCats.has('BOOST') && d.boostExistsInDB) {
+      S.boostConsumed = true;
+    }
+  } catch (e) {}
+
+  S.res = {}; S.xp = 0; S.sent = new Set();
+  if (d.history) {
+    d.history.forEach(function(r){
+      if (injectedCats.has(r.categorie)) return;  // skip chapitres injectés
+      var key = r.niveau + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1);
+      S.res[key] = r.resultat;
+      S.xp += parseInt(r.xp) || 0;
+      S.sent.add(S.prof.code + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1));
+    });
+  }
+
+  if (!loc[S.prof.code]) loc[S.prof.code] = { stk:1, last:tod() };
+  S.stk = loc[S.prof.code].stk || 1;
+  localStorage.setItem(LK, JSON.stringify(loc));
+
+  document.getElementById('landing-screen').classList.add('hidden');
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('main-app').classList.remove('hidden');
+  document.getElementById('aname').innerText = S.prof.name;
+
+  // ── Mode admin : vue dédiée, pas de FAB ni de chapitres ──
+  if (S.prof.isAdmin) {
+    document.getElementById('fab-draft').classList.add('hidden');
+    document.getElementById('mastery-w').innerHTML = '';
+    S.view = 'admin';
+    renderAdminDashboard();
+    return;
+  }
+
+  document.getElementById('fab-draft').classList.remove('hidden');
+
+  if (S.calState !== 'test') {
+    S.calState = ul.calDone ? null : (d.history.length === 0 ? 'sel' : null);
+  }
+
+  if (S.boostEx && S.boost) loadBoost();
+  updH();
+  if (!skipRender) { render(); flushQ(); }
+}
+
+function logout() { localStorage.removeItem(SK); location.reload(); }
+
+function updH() {
+  document.getElementById('ui-stk').innerText = S.stk;
+  document.getElementById('ui-xp').innerText  = S.xp;
+  if (S.stk >= 3) document.getElementById('stk-box').style.animation = 'remPulse 2s ease infinite';
+}
+
+function loadBoost() {
+  if (!S.boost) return;
+  LVL[S.niv].cats["BOOST"]  = S.boost.exos.map(function(e,i){ return Object.assign({},e,{oC:'BOOST',oI:i}); });
+  LVL[S.niv].names["BOOST"] = "Entraînement IA du jour";
+  LVL[S.niv].icons["BOOST"] = "⚡";
+  S.insights["BOOST"]        = S.boost.insight;
+}
+
+// ══════════════════════════════════════════════════════════════
+// BOOST
+// ══════════════════════════════════════════════════════════════
+async function handleBoost() {
+  if (S.boostPreping || S.boostGen) return;
+  S.boostGen = true;
+  document.getElementById('m-boost').classList.remove('hidden');
+  startTs();
+  try {
+    var boostPayload = { action:"generate_daily_boost", code:S.prof.code, level:S.niv };
+    if (S.nextBoostTopic) { boostPayload.forcedTopic = S.nextBoostTopic; S.nextBoostTopic = null; }
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify(boostPayload) });
+    var d = await r.json();
+    document.getElementById('m-boost').classList.add('hidden');
+    if (d.status === 'success') {
+      S.boost = d.boost; S.boostEx = true;
+      if (S.motProfBoost) S._motProfScreen = 'boost';
+      loadBoost(); render();
+      window.scrollTo({ top:0, behavior:'smooth' });
+    } else { alert2("Oups","L'IA n'a pas pu générer le boost."); }
+  } catch(e) { document.getElementById('m-boost').classList.add('hidden'); }
+  finally { S.boostGen = false; }
+}
+
+async function boostFromDiag(errs) {
+  S.boostPreping = true; render();
+  showT("L'IA analyse ton diagnostic...", 0, "🧠");
+  startTs();
+  try {
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:"generate_daily_boost", code:S.prof.code, level:S.niv, errors:errs }) });
+    var d = await r.json();
+    if (d.status === 'success') {
+      S.boost = d.boost; S.boostEx = true; loadBoost();
+      showT("⚡ Ton entraînement personnalisé est prêt !", 4000, "⚡");
+    } else { hideT(); }
+  } catch(e) { hideT(); }
+  finally { S.boostPreping = false; render(); }
+}
+
+var _tsIv = null;
+function startTs() {
+  var i = 0; clearInterval(_tsIv);
+  var bt = document.getElementById('bt');
+  if (bt) bt.innerText = TS[0];
+  _tsIv = setInterval(function(){
+    i = (i+1) % TS.length;
+    var ebt = document.getElementById('bt');
+    var etm = document.getElementById('tm');
+    if (ebt) ebt.innerText = TS[i];
+    if (etm) etm.innerText = TS[i];
+  }, 1400);
+  setTimeout(function(){ clearInterval(_tsIv); }, 12000);
+}
+
+// ══════════════════════════════════════════════════════════════
+// CALIBRAGE / DIAGNOSTIC
+// ══════════════════════════════════════════════════════════════
+function startCal() {
+  S.calState = 'test';
+  S.qv['CALIBRAGE'] = 0;
+  LVL[S.niv].cats['CALIBRAGE']  = (S.calExos||[]).map(function(e,i){ return Object.assign({},e,{oC:'CALIBRAGE',oI:i}); });
+  LVL[S.niv].names['CALIBRAGE'] = 'Diagnostic de niveau';
+  LVL[S.niv].icons['CALIBRAGE'] = '🎯';
+  render();
+}
+
+// ══════════════════════════════════════════════════════════════
+// HELPERS EXERCICES
+// ══════════════════════════════════════════════════════════════
+function res2(cat, idx) {
+  if (cat === "BOOST" || cat === "CALIBRAGE") {
+    var ex = LVL[S.niv].cats[cat][idx];
+    return { rC: ex.oC, rI: ex.oI };
+  }
+  return { rC: cat, rI: idx };
+}
+
+window.showHint = function(cat, idx, max) {
+  var r  = res2(cat, idx);
+  var id = S.niv + '-' + r.rC + '-' + r.rI;
+  S.hints[id] = S.hints[id] || 0;
+  if (S.hints[id] < max) { S.hints[id]++; render(); }
+};
+
+window.revF = function(cat, idx) {
+  var r = res2(cat, idx);
+  S.ftch[S.niv + '-' + r.rC + '-' + r.rI] = true;
+  render();
+};
+
+// ─── RÉPONSE QCM ────────────────────────────────────────────
+// NOUVEAU v23 : auto-EASY/HARD sur QCM. wrongOpt transmis à mark()
+// pour stockage et analyse misconceptions par l'Agent Superviseur.
+window.checkOpt = function(cat, idx, oI, btn) {
+  var r   = res2(cat, idx);
+  var id  = S.niv + '-' + r.rC + '-' + r.rI;
+  var exo = LVL[S.niv].cats[cat][idx];
+  clearNudge(id);
+  S.qans[id] = exo.options[oI];
+  S.rev  = true;
+  S.cid  = id;
+  var cI = exo.options.indexOf(exo.a);
+
+  Array.from(btn.parentElement.children).forEach(function(c){
+    c.className = 'opt ' + (parseInt(c.getAttribute('data-oi')) === cI ? 'oc' : 'on');
+  });
+
+  var _OK = ['🔥 Parfait !','✅ Maîtrisé !','💪 Excellent !','⚡ Top niveau !','🎯 En plein dans le mille !','🚀 Continue comme ça !','👏 Bravo !'];
+  var _KO = ['💡 Regarde l\'explication, tu vas comprendre.','📚 Pas de panique — l\'erreur fait partie du chemin.','🧠 Retiens bien la méthode, c\'est ce qui compte.'];
+  if (exo.options[oI] === exo.a) {
+    btn.className = 'opt oc';
+    showXP(100);
+    showT(_OK[Math.floor(Math.random()*_OK.length)], '⭐', 1200);
+    setTimeout(function(){ mark(cat, idx, 'EASY', null); }, 700);
+  } else {
+    btn.className = 'opt ow';
+    showT(_KO[Math.floor(Math.random()*_KO.length)], '💡', 2200);
+    // Passe l'option erronée choisie + déploie aide automatiquement (pédagogique)
+    setTimeout(function(){
+      mark(cat, idx, 'HARD', exo.options[oI]);
+      autoShowHelp(cat, idx);
+    }, 900);
+  }
+};
+
+function verify(cat, idx) {
+  var r = res2(cat, idx);
+  S.rev = true;
+  S.cid = S.niv + '-' + r.rC + '-' + r.rI;
+  render();
+}
+
+// NOUVEAU v23 : paramètre wrongOpt ajouté
+function mark(cat, idx, status, wrongOpt) {
+  if (S.adminMode && S.forceFail) {
+    status = 'HARD'; S.forceFail = false;
+    logAdmin('Forcé HARD sur ' + cat + ' exo ' + idx);
+  }
+  var r   = res2(cat, idx);
+  var id  = S.niv + '-' + r.rC + '-' + r.rI;
+  var exo = LVL[S.niv].cats[cat][idx];
+  S.res[id] = status;
+  S.cid = id; S.rev = true;
+  var xp = status === 'EASY' ? 100 : status === 'MEDIUM' ? 50 : 10;
+  S.xp += xp;
+  sendScore(r.rC, r.rI, status, xp, exo.q, wrongOpt || null, cat);
+  updH();
+  var done = chkComp(cat);
+  if (!done) {
+    if (status === 'EASY') { setTimeout(function(){ nextEx(cat); }, 600); }
+    else { render(); }
+  }
+}
+
+async function togCat(cat) {
+  var was = !!S.exp[cat];
+  Object.keys(S.exp).forEach(function(k){ S.exp[k] = false; });
+  S.exp[cat] = !was;
+  if (S.isNew[cat]) S.isNew[cat] = false;
+  if (S.exp[cat] && S.motProfChap[cat]) S._motProfScreen = cat;
+  render();
+  // B3 — vérifie les prérequis fragiles à la première ouverture du chapitre
+  if (S.exp[cat] && !(cat in S.prereqBanner) && cat !== 'BOOST' && cat !== 'CALIBRAGE') {
+    S.prereqBanner[cat] = undefined; // en cours
+    try {
+      var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'detect_fragile_prereqs', code:S.prof.code, chapitre:cat, niveau:S.niv }) });
+      var d = await r.json();
+      S.prereqBanner[cat] = (d.status === 'success' && d.fragile && d.prereq) ? d.prereq : null;
+    } catch(e) {
+      S.prereqBanner[cat] = null;
+    }
+    if (S.exp[cat]) render();
+  }
+}
+
+function dismissPrereq(cat) {
+  S.prereqBanner[cat] = null;
+  render();
+}
+
+// NOUVEAU v23 :
+//  1. Sauvegarde le brouillon de l'exercice actif avant changement
+//  2. Démarre exoStartTime sur les exercices non répondus
+function goEx(cat, i) {
+  // 1. Sauvegarde brouillon exercice actif
+  var _canvas   = document.getElementById('canv-draft');
+  var _textarea = document.getElementById('draft-text');
+  if (S.cid && _canvas && _canvas.width > 0) {
+    S.drafts[S.cid] = {
+      img: _canvas.toDataURL(),
+      txt: _textarea ? _textarea.value : ''
+    };
+  }
+
+  S.qv[cat] = parseInt(i);
+  var r     = res2(cat, i);
+  var id    = S.niv + '-' + r.rC + '-' + r.rI;
+  var alreadyAnswered = !!S.res[id] || !!S.qans[id];
+
+  // 2. Démarre le chrono uniquement pour les exercices non encore répondus
+  if (!alreadyAnswered && !S.exoStartTime[id]) {
+    S.exoStartTime[id] = Date.now();
+    setTimeout(function() { startNudge(id); }, 0);
+  }
+
+  if (alreadyAnswered) { S.rev = true; S.cid = id; }
+  else { S.rev = false; S.cid = null; delete S.shuf[S.niv+'-'+cat+'-'+i]; }
+  render();
+}
+
+function nextEx(cat) {
+  var exs = LVL[S.niv].cats[cat];
+  for (var i = 0; i < exs.length; i++) {
+    var r = res2(cat, i);
+    if (!S.res[S.niv+'-'+r.rC+'-'+r.rI]) { goEx(cat, i); return; }
+  }
+  goEx(cat, 0);
+}
+
+function chkComp(cat) {
+  var exs = LVL[S.niv].cats[cat];
+  var tot = exs.length; var done = 0;
+  var easy = 0, medium = 0, hard = 0; var errs = [];
+  for (var i = 0; i < tot; i++) {
+    var r  = res2(cat, i);
+    var rs = S.res[S.niv+'-'+r.rC+'-'+r.rI];
+    if (rs) done++;
+    if (rs === 'EASY') easy++;
+    else if (rs === 'MEDIUM') medium++;
+    else if (rs === 'HARD') { hard++; errs.push(exs[i].q); }
+  }
+  if (done !== tot || tot === 0) return false;
+
+  if (cat === 'CALIBRAGE') {
+    var loc = JSON.parse(localStorage.getItem(LK) || '{}');
+    if (!loc[S.prof.code]) loc[S.prof.code] = {};
+    loc[S.prof.code].calDone = true;
+    localStorage.setItem(LK, JSON.stringify(loc));
+    S.calState = null;
+
+    // Calcule les résultats par chapitre pour l'écran insight
+    var calExos2 = LVL[S.niv].cats['CALIBRAGE'] || [];
+    var byChap = {};
+    calExos2.forEach(function(ex, i) {
+      var r2 = res2('CALIBRAGE', i);
+      var rs2 = S.res[S.niv+'-'+r2.rC+'-'+r2.rI];
+      if (!byChap[ex.oC]) byChap[ex.oC] = { easy:0, total:0, name: LVL[S.niv].names[ex.oC] || ex.oC.replace(/_/g,' ') };
+      if (rs2) { byChap[ex.oC].total++; if (rs2 === 'EASY') byChap[ex.oC].easy++; }
+    });
+    S.diagChapResults = byChap;
+    S.diagInsight = { totalEasy: easy, total: tot };
+
+    boostFromDiag(errs.slice(0,4));
+    render(); return true;
+  }
+
+  if (!S.chapDone[cat]) {
+    S.chapDone[cat] = { errs: errs, tot: tot, easy: easy, medium: medium, hard: hard };
+    // Enqueue silencieux si erreurs (remédiation générée en arrière-plan)
+    if (errs.length > 0 && !S.remReq[cat]) {
+      S.remReq[cat] = true;
+      var base = cat.replace(/_V\d+$/, '');
+      fetch(SU, { method:'POST', body:JSON.stringify({ action:'enqueue', code:S.prof.code, type:'remediation', category:base, level:S.niv }) })
+        .catch(function(){});
+    }
+    // Écran insight post-boost
+    if (cat === 'BOOST') {
+      if (easy >= Math.ceil(tot * 0.6)) launchConfetti();
+      var boostExsList = LVL[S.niv].cats['BOOST'] || [];
+      var catCounts = {};
+      boostExsList.forEach(function(ex) { var bc = ex._cat||''; if (bc) catCounts[bc]=(catCounts[bc]||0)+1; });
+      var mainBoostCat = Object.keys(catCounts).sort(function(a,b){ return catCounts[b]-catCounts[a]; })[0] || '';
+      S.boostInsight = { easy:easy, total:tot, boostCat:mainBoostCat };
+      // Persister boost consommé dans localStorage
+      S.boostConsumed = true;
+      try {
+        var ds4 = JSON.parse(localStorage.getItem(DK) || '{}');
+        if (!ds4[S.prof.code]) ds4[S.prof.code] = {};
+        ds4[S.prof.code].boostConsumed = true;
+        localStorage.setItem(DK, JSON.stringify(ds4));
+      } catch (e) {}
+    } else {
+      if (easy >= Math.ceil(tot * 0.7)) launchConfetti();
+      // Persister chapitre terminé dans localStorage
+      try {
+        var ds5 = JSON.parse(localStorage.getItem(DK) || '{}');
+        if (!ds5[S.prof.code]) ds5[S.prof.code] = {};
+        if (!ds5[S.prof.code].chapDone) ds5[S.prof.code].chapDone = {};
+        ds5[S.prof.code].chapDone[cat] = { errs: errs, tot: tot, easy: easy, medium: medium, hard: hard };
+        localStorage.setItem(DK, JSON.stringify(ds5));
+      } catch (e) {}
+    }
+  }
+  render(); return true;
+}
+
+
+// ══════════════════════════════════════════════════════════════
+// RENDER — MASTERY RING
+// ══════════════════════════════════════════════════════════════
+function rMastery() {
+  var cats = LVL[S.niv].cats;
+  var keys = Object.keys(cats).filter(function(k){ return k !== 'CALIBRAGE'; });
+  var tot = 0, master = 0;
+  keys.forEach(function(cat){
+    cats[cat].forEach(function(e,i){
+      var r = res2(cat,i); tot++;
+      if (S.res[S.niv+'-'+r.rC+'-'+r.rI] === 'EASY') master++;
+    });
+  });
+  var pct  = tot > 0 ? Math.round((master/tot)*100) : 0;
+  var circ = 2 * Math.PI * 32;
+  var off  = circ - (pct/100)*circ;
+  var w    = document.getElementById('mastery-w');
+  if (!keys.length) { w.innerHTML = ''; return; }
+  w.innerHTML =
+    '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">' +
+    '<div class="flex items-center gap-4">' +
+    '<div class="mring"><svg viewBox="0 0 72 72" width="72" height="72">' +
+    '<circle class="rbg" cx="36" cy="36" r="32"/>' +
+    '<circle class="rfill" cx="36" cy="36" r="32" stroke-dasharray="'+circ.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'"/>' +
+    '</svg><div class="rpct">'+pct+'%</div></div>' +
+    '<div class="flex-1 min-w-0">' +
+    '<div class="syne font-black text-slate-900 text-sm mb-0.5">Maîtrise globale</div>' +
+    '<div class="text-slate-500 text-xs font-medium mb-2">'+master+' notion'+(master>1?'s':'')+' acquise'+(master>1?'s':'')+' sur '+tot+'</div>' +
+    '<div class="pbar"><div class="pfill '+(pct===100?'pfg':'pfp')+'" style="width:'+pct+'%"></div></div>' +
+    '</div></div>' +
+    (S.stk >= 3 ? '<div class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2 text-xs font-semibold text-amber-700"><span>🔥</span><span>'+S.stk+' jours consécutifs — continue comme ça !</span></div>' : '') +
+    '</div>';
+}
+
+// ══════════════════════════════════════════════════════════════
+// NAV VUES — B2
+// ══════════════════════════════════════════════════════════════
+function updNav() {
+  var nav  = document.getElementById('main-nav');
+  var btnC = document.getElementById('nav-chap');
+  var btnP = document.getElementById('nav-prog');
+  if (!nav || !btnC || !btnP) return;
+  if (S.prof && S.prof.isAdmin) { nav.classList.add('hidden'); return; }
+  var inDiag = S.calState === 'sel' || S.calState === 'test';
+  nav.classList.toggle('hidden', inDiag);
+  var ON = 'flex-1 py-2 rounded-xl text-xs font-black syne transition-colors bg-indigo-600 text-white';
+  var OFF = 'flex-1 py-2 rounded-xl text-xs font-black syne transition-colors bg-slate-100 text-slate-500';
+  btnC.className = S.view === 'chapters' ? ON : OFF;
+  btnP.className = S.view === 'progress' ? ON : OFF;
+}
+
+function setView(v) {
+  S.view = v;
+  updNav();
+  if (v === 'admin') {
+    renderAdminDashboard();
+  } else if (v === 'progress' && !S.progressLoading) {
+    loadProgress();
+  } else {
+    render();
+  }
+}
+
+
+// ══════════════════════════════════════════════════════════════
+// VUE PROGRESSION — B2
+// ══════════════════════════════════════════════════════════════
+async function loadProgress() {
+  S.progressLoading = true;
+  var c = document.getElementById('app-c');
+  c.innerHTML = '<div class="space-y-3">'+[1,2,3].map(function(){ return '<div class="sk h-24 w-full"></div>'; }).join('')+'</div>';
+  try {
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'get_progress', code:S.prof.code }) });
+    var d = await r.json();
+    S.progress = (d.status === 'success') ? d.progress : [];
+  } catch(e) {
+    S.progress = [];
+  }
+  S.progressLoading = false;
+  render();
+}
+
+function relDate(dateStr) {
+  if (!dateStr) return '';
+  try {
+    var s = String(dateStr).trim();
+    var d;
+    // Format FR : JJ/MM/AAAA ou JJ/MM/AAAA HH:MM
+    var frMatch = s.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+    if (frMatch) {
+      d = new Date(frMatch[3] + '-' + frMatch[2] + '-' + frMatch[1]);
+    } else {
+      // ISO 8601 ou tout autre format natif (prendre seulement les 10 premiers chars si date seule)
+      var isoStr = s.length > 10 ? s : s.substring(0, 10);
+      d = new Date(isoStr);
+    }
+    if (isNaN(d.getTime())) return dateStr;
+    var diff = Math.floor((Date.now() - d) / 86400000);
+    if (diff < 0)  return 'Aujourd\'hui';
+    if (diff === 0) return 'Aujourd\'hui';
+    if (diff === 1) return 'Hier';
+    if (diff < 7)  return 'Il y a ' + diff + ' jours';
+    if (diff < 14) return 'Il y a 1 semaine';
+    if (diff < 30) return 'Il y a ' + Math.floor(diff/7) + ' semaines';
+    var months = Math.floor(diff/30);
+    if (months > 24) return 'Il y a plus de 2 ans';
+    return 'Il y a ' + months + ' mois';
+  } catch(e) { return String(dateStr).substring(0, 10) || ''; }
+}
+
+function getChapProgress(cat) {
+  if (!S.progress) return null;
+  return S.progress.find(function(p){ return p.chapitre === cat; }) || null;
+}
+
+function openFromProgress(cat) {
+  S.view = 'chapters';
+  Object.keys(S.exp).forEach(function(k){ S.exp[k] = false; });
+  S.exp[cat] = true;
+  render();
+  setTimeout(function(){
+    var el = document.querySelector('[data-cat="'+cat+'"]');
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+  }, 80);
+}
+
+function renderProgress() {
+  var cats = LVL[S.niv] ? LVL[S.niv].cats : {};
+  var keys = Object.keys(cats).filter(function(k){ return k !== 'CALIBRAGE' && k !== 'BOOST'; });
+  var c    = document.getElementById('app-c');
+
+  if (!keys.length) {
+    c.innerHTML = '<div class="text-center text-slate-400 font-semibold py-12 text-sm">Aucun chapitre disponible.</div>';
+    return;
+  }
+
+  // Compteurs résumé
+  var mastered = 0, started = 0;
+  keys.forEach(function(cat){
+    var p = getChapProgress(cat);
+    if (p && p.nbExos > 0) {
+      started++;
+      if (p.statut === 'maitrise' || p.score >= 80) mastered++;
+    }
+  });
+
+  var html = '';
+
+  // Résumé global
+  html += '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 mb-3">';
+  html += '<div class="syne font-black text-slate-900 text-sm mb-3">Progression · '+LN[S.niv]+'</div>';
+  html += '<div class="flex gap-2">';
+  html += '<div class="flex-1 bg-emerald-50 border border-emerald-100 rounded-xl p-3 text-center"><div class="syne font-black text-xl text-emerald-700">'+mastered+'</div><div class="text-[11px] text-emerald-600 font-semibold mt-0.5">Maîtrisés</div></div>';
+  html += '<div class="flex-1 bg-indigo-50 border border-indigo-100 rounded-xl p-3 text-center"><div class="syne font-black text-xl text-indigo-700">'+started+'</div><div class="text-[11px] text-indigo-600 font-semibold mt-0.5">Commencés</div></div>';
+  html += '<div class="flex-1 bg-slate-50 border border-slate-100 rounded-xl p-3 text-center"><div class="syne font-black text-xl text-slate-700">'+keys.length+'</div><div class="text-[11px] text-slate-500 font-semibold mt-0.5">Chapitres</div></div>';
+  html += '</div></div>';
+
+  // Liste des chapitres
+  keys.forEach(function(cat){
+    var p        = getChapProgress(cat);
+    var name     = LVL[S.niv].names[cat] || cat;
+    var icon     = LVL[S.niv].icons[cat] || '📘';
+    var score    = p ? Math.round(p.score) : 0;
+    var nbExos   = p ? (p.nbExos || 0) : 0;
+    var isMast   = p && (p.statut === 'maitrise' || p.score >= 80);
+    var isStart  = nbExos > 0;
+    var dateStr  = p ? relDate(p.dernierePratique) : '';
+    var barColor = isMast ? 'pfg' : 'pfp';
+    var cardBg   = isMast ? 'bg-emerald-50 border-emerald-200' : (isStart ? 'bg-white border-slate-200' : 'bg-slate-50 border-slate-100');
+
+    html += '<div data-cat="'+cat+'" onclick="openFromProgress(\''+cat+'\')" ';
+    html += 'class="rounded-2xl border '+cardBg+' shadow-sm p-4 mb-3 cursor-pointer active:scale-[.98] transition-transform">';
+
+    // Ligne titre
+    html += '<div class="flex items-center gap-3 mb-2.5">';
+    html += '<div class="w-10 h-10 '+(isMast?'bg-emerald-100':'bg-slate-100')+' rounded-xl flex items-center justify-center text-lg flex-shrink-0">'+icon+'</div>';
+    html += '<div class="flex-1 min-w-0">';
+    html += '<div class="flex items-center gap-1.5 mb-0.5">';
+    html += '<span class="syne font-black text-sm text-slate-900 truncate">'+name+'</span>';
+    if (isMast) html += '<span class="text-sm leading-none">✅</span>';
+    html += '</div>';
+    if (dateStr) html += '<div class="text-[11px] text-slate-400 font-medium">'+dateStr+'</div>';
+    html += '</div>';
+    // Score
+    html += '<div class="text-right flex-shrink-0">';
+    html += '<div class="syne font-black text-lg leading-none '+(isMast?'text-emerald-600':isStart?'text-indigo-600':'text-slate-300')+'">'+score+'%</div>';
+    html += '</div></div>';
+
+    // Barre + infos
+    if (isStart) {
+      html += '<div class="pbar mb-1.5"><div class="pfill '+barColor+'" style="width:'+score+'%"></div></div>';
+      html += '<div class="flex justify-between">';
+      html += '<span class="text-[11px] text-slate-400 font-medium">'+nbExos+' exo'+(nbExos>1?'s':'')+' fait'+(nbExos>1?'s':'')+'</span>';
+      if (isMast) html += '<span class="text-[11px] font-black text-emerald-600">Maîtrisé ✅</span>';
+      html += '</div>';
+    } else {
+      html += '<div class="text-[11px] text-slate-400 font-semibold text-center py-0.5">Non commencé · Tap pour commencer →</div>';
+    }
+    html += '</div>';
+  });
+
+  if (!S.progress || S.progress.length === 0) {
+    html += '<div class="text-center text-slate-400 text-xs font-medium py-2">Les données se synchronisent après chaque exercice.</div>';
+  }
+
+  c.innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER — PANNEAU COMPLÉTION CHAPITRE
+// ══════════════════════════════════════════════════════════════
+function renderChapComplete(cat, data) {
+  var score = Math.round((data.easy / data.tot) * 100);
+  var hasErrors = data.errs && data.errs.length > 0;
+  var emoji = score === 100 ? '🏆' : score >= 60 ? '👍' : '💪';
+  return '<div class="mx-4 mb-4 bg-indigo-50 border border-indigo-200 rounded-2xl p-5 afu">' +
+    '<div class="text-center mb-3">' +
+    '<div class="text-3xl mb-1">' + emoji + '</div>' +
+    '<div class="syne font-black text-indigo-900 text-base">✅ Chapitre terminé !</div>' +
+    '<div class="text-indigo-700 text-sm font-semibold mt-1">Tu as réussi ' + data.easy + ' exercice' + (data.easy > 1 ? 's' : '') + ' sur ' + data.tot + '.</div>' +
+    '</div>' +
+    '<div class="bg-indigo-100 border border-indigo-200 rounded-xl p-3 text-center text-sm font-semibold text-indigo-700">Ton prof prépare ton prochain chapitre personnalisé. Reviens demain matin pour la suite 🔥</div>' +
+    '</div>';
+}
+
+// ══════════════════════════════════════════════════════════════
+// INSIGHT POST-DIAGNOSTIC
+// ══════════════════════════════════════════════════════════════
+function renderDiagInsight() {
+  var c    = document.getElementById('app-c');
+  var d    = S.diagInsight;
+  var name = S.prof ? S.prof.name : '';
+  var pct  = d.total > 0 ? Math.round(d.totalEasy / d.total * 100) : 0;
+
+  var headline, emoji;
+  if (pct >= 75)      { headline = 'Excellent départ ' + name + '&nbsp;! Tu as de solides bases.'; emoji = '💪'; }
+  else if (pct >= 50) { headline = 'Bon début ' + name + '. On va vite combler les lacunes.';       emoji = '📈'; }
+  else                { headline = 'On sait maintenant exactement où travailler ' + name + '. C\'est parti.'; emoji = '🎯'; }
+
+  var chapHtml = '';
+  Object.keys(S.diagChapResults).forEach(function(chap) {
+    var cr = S.diagChapResults[chap];
+    var chapName = cr.name || chap.replace(/_/g,' ');
+    var ok = cr.total > 0 && (cr.easy / cr.total) >= 0.5;
+    chapHtml += ok
+      ? '<div class="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 text-sm font-semibold text-emerald-700">✅ ' + chapName + ' — tu maîtrises bien</div>'
+      : '<div class="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm font-semibold text-red-700">🔴 ' + chapName + ' — priorité dans ton boost</div>';
+  });
+
+  c.innerHTML =
+    '<div class="space-y-4 afu">' +
+    '<div class="rounded-3xl p-6 text-center text-white" style="background:linear-gradient(135deg,#1e1b4b 0%,#3730a3 60%,#4f46e5 100%)">' +
+      '<div class="text-5xl mb-3">' + emoji + '</div>' +
+      '<div class="syne font-black text-lg leading-tight mb-3">' + headline + '</div>' +
+      '<div class="inline-flex items-baseline gap-1 bg-white/20 rounded-2xl px-5 py-2">' +
+        '<span class="syne font-black text-3xl">' + pct + '%</span>' +
+        '<span class="text-white/70 text-sm">de réussite</span>' +
+      '</div>' +
+    '</div>' +
+    '<div class="space-y-2">' + chapHtml + '</div>' +
+    '<div class="bg-indigo-50 border border-indigo-200 rounded-2xl px-4 py-3 text-sm font-semibold text-indigo-700 text-center">' +
+      '⚡ Ton premier boost du jour est prêt — 5 exercices ciblés sur tes points faibles' +
+    '</div>' +
+    '<button onclick="dismissDiagInsight()" class="btn btn-ac btn-fw py-4 text-base">Commencer mes chapitres 📚</button>' +
+    '</div>';
+}
+
+window.dismissDiagInsight = function() { S.diagInsight = null; render(); };
+
+// ══════════════════════════════════════════════════════════════
+// INSIGHT POST-BOOST
+// ══════════════════════════════════════════════════════════════
+function renderBoostInsight() {
+  var c      = document.getElementById('app-c');
+  var d      = S.boostInsight;
+  var name   = S.prof ? S.prof.name : '';
+  var streak = S.stk || 1;
+
+  var headline, emoji;
+  if (d.easy === d.total && d.total > 0) {
+    headline = 'Parfait ' + name + '&nbsp;! Tu progresses vite.'; emoji = '🔥';
+  } else if (d.easy >= 3) {
+    headline = 'Bon boost ' + name + '. ' + d.easy + ' exercice' + (d.easy > 1 ? 's' : '') + ' maîtrisé' + (d.easy > 1 ? 's' : '') + ' aujourd\'hui. Reviens demain pour continuer.'; emoji = '💪';
+  } else {
+    headline = 'Ces notions résistent encore ' + name + '. Ton prochain boost sera encore plus ciblé.'; emoji = '🎯';
+  }
+
+  // Comparaison avec le diagnostic sur le même chapitre
+  var progressHtml = '';
+  if (d.boostCat && S.diagChapResults[d.boostCat]) {
+    var cr      = S.diagChapResults[d.boostCat];
+    var diagPct = cr.total > 0 ? cr.easy / cr.total : 0;
+    var boostPct = d.total > 0 ? d.easy / d.total : 0;
+    if (boostPct > diagPct + 0.1) {
+      var chapDisp = (LVL[S.niv] && LVL[S.niv].names[d.boostCat] ? LVL[S.niv].names[d.boostCat] : d.boostCat.replace(/_/g,' '));
+      progressHtml = '<div class="bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-3 text-sm font-semibold text-emerald-700 text-center">📈 Tu progresses sur ' + chapDisp + ' — continue comme ça&nbsp;!</div>';
+    }
+  }
+
+  c.innerHTML =
+    '<div class="space-y-4 afu">' +
+    '<div class="rounded-3xl p-6 text-center text-white" style="background:linear-gradient(135deg,#1e1b4b 0%,#3730a3 60%,#4f46e5 100%)">' +
+      '<div class="text-5xl mb-3">' + emoji + '</div>' +
+      '<div class="syne font-black text-lg leading-tight mb-3">' + headline + '</div>' +
+      '<div class="inline-flex items-baseline gap-1 bg-white/20 rounded-2xl px-5 py-2">' +
+        '<span class="syne font-black text-3xl">' + d.easy + '/' + d.total + '</span>' +
+        '<span class="text-white/70 text-sm ml-1">réussis</span>' +
+      '</div>' +
+    '</div>' +
+    (progressHtml ? progressHtml : '') +
+    '<div class="bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 text-sm font-semibold text-amber-800 text-center">' +
+      '🔥 Streak&nbsp;: ' + streak + ' jour' + (streak > 1 ? 's' : '') + ' consécutif' + (streak > 1 ? 's' : '') + ' — reviens demain pour ne pas la perdre&nbsp;!' +
+    '</div>' +
+    '<button onclick="dismissBoostInsight()" class="btn btn-ac btn-fw py-4 text-base">À demain 👋</button>' +
+    '</div>';
+}
+
+window.dismissBoostInsight = function() { S.boostInsight = null; render(); };
+
+function renderMotProf() {
+  var isBoost = S._motProfScreen === 'boost';
+  var msg     = isBoost ? S.motProfBoost : (S.motProfChap[S._motProfScreen] || '');
+  var label   = isBoost ? '⚡ Ton boost du jour' : '📚 ' + (S._motProfScreen || '').replace(/_/g,' ');
+  var c = document.getElementById('main-content');
+  if (!c) return;
+  c.innerHTML =
+    '<div class="afu">' +
+    '<div class="bg-white rounded-3xl p-8 shadow-sm border border-indigo-100 text-center mb-4">' +
+    '<div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5" style="background:linear-gradient(135deg,#e0e7ff,#ede9fe)">💬</div>' +
+    '<div class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-3">Un mot de ton prof</div>' +
+    '<p class="text-slate-800 font-medium text-base leading-relaxed mb-4">' + msg.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>') + '</p>' +
+    '<div class="text-xs text-slate-400 mb-6">' + label + '</div>' +
+    '<button onclick="dismissMotProf()" class="btn btn-ac btn-fw py-4 text-base">C\'est parti ! →</button>' +
+    '</div></div>';
+}
+window.dismissMotProf = function() {
+  var scr = S._motProfScreen;
+  if (scr === 'boost') S.motProfBoost = null;
+  else if (scr)        S.motProfChap[scr] = null;
+  S._motProfScreen = null;
+  render();
+};
+
+// ══════════════════════════════════════════════════════════════
+// RENDER PRINCIPAL
+// ══════════════════════════════════════════════════════════════
+function render() {
+  var c = document.getElementById('app-c');
+  if (!S.prof) {
+    c.innerHTML = '<div class="space-y-3">'+[1,2,3].map(function(){ return '<div class="sk h-20 w-full"></div>'; }).join('')+'</div>';
+    return;
+  }
+  rMastery();
+  updNav();
+
+  if (S.calState !== 'sel' && S.calState !== 'test') {
+    if (S.view === 'progress') { renderProgress(); return; }
+    if (S.diagInsight)    { renderDiagInsight();  return; }
+    if (S.boostInsight)  { renderBoostInsight(); return; }
+    if (S._motProfScreen){ renderMotProf();      return; }
+  }
+
+  // Écran d'accueil avant diagnostic
+  if (S.calState === 'sel') {
+    c.innerHTML =
+      '<div class="bg-white rounded-3xl p-8 text-center shadow-sm border border-slate-100 afu">' +
+      '<div class="w-20 h-20 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-5 shadow-lg">🎯</div>' +
+      '<h2 class="syne text-2xl font-black text-slate-900 mb-2">Prêt, '+S.prof.name+' ?</h2>' +
+      '<p class="text-slate-500 font-medium mb-1 text-sm leading-relaxed">On cartographie tes lacunes en quelques questions.</p>' +
+      '<p class="text-slate-400 text-xs mb-7">5 minutes · Résultats immédiats · Adapté à ton niveau</p>' +
+      '<button onclick="startCal()" class="btn btn-ac btn-fw py-4">Lancer le diagnostic →</button>' +
+      '</div>';
+    return;
+  }
+
+  // Diagnostic en cours
+  if (S.calState === 'test') {
+    var exs = LVL[S.niv].cats['CALIBRAGE'] || [];
+    var idx = S.qv['CALIBRAGE'] || 0;
+    var pct = exs.length > 0 ? Math.round((idx/exs.length)*100) : 0;
+    c.innerHTML =
+      '<div class="bg-white rounded-3xl shadow-sm border-2 border-indigo-200 overflow-hidden afu">' +
+      '<div class="px-5 py-4 bg-indigo-50 border-b border-indigo-100">' +
+      '<div class="flex justify-between items-center mb-2.5">' +
+      '<div class="flex items-center gap-2"><span>🎯</span><span class="syne font-black text-indigo-900 text-sm">Diagnostic — '+LN[S.niv]+'</span></div>' +
+      '<span class="text-xs font-bold text-indigo-500 bg-white px-2 py-1 rounded-lg border border-indigo-100">'+(idx+1)+' / '+exs.length+'</span>' +
+      '</div>' +
+      '<div class="pbar"><div class="pfill pfp" style="width:'+pct+'%"></div></div>' +
+      '</div>' +
+      (exs[idx] ? rSection('CALIBRAGE', exs[idx], idx, exs.length, false) : '<div class="p-8 text-center text-slate-400 text-sm">Chargement...</div>') +
+      '</div>';
+    rMath(); return;
+  }
+
+  // Vue principale
+  var cats = LVL[S.niv].cats;
+  var keys = Object.keys(cats).filter(function(k){ return k !== 'CALIBRAGE'; });
+  if (keys.includes('BOOST')) keys = ['BOOST'].concat(keys.filter(function(k){ return k !== 'BOOST'; }));
+
+  // Calcul boost terminé
+  var bDone = false;
+  if (cats['BOOST'] && cats['BOOST'].length > 0) {
+    var bDoneCount = 0;
+    for (var bi = 0; bi < cats['BOOST'].length; bi++) {
+      var br2 = res2('BOOST', bi);
+      if (S.res[S.niv+'-'+br2.rC+'-'+br2.rI]) bDoneCount++;
+    }
+    bDone = bDoneCount === cats['BOOST'].length;
+  }
+
+  var html = '';
+
+  // ── Bandeau PENDING_MANUAL (prof prépare le contenu) ──
+  if (S.pendingManual) {
+    html += '<div class="rounded-2xl border border-amber-200 bg-amber-50 p-4 flex items-center gap-3 mb-4">' +
+      '<div class="text-2xl flex-shrink-0">⏳</div>' +
+      '<div><div class="syne font-black text-amber-800 text-sm">' + S.pendingManual + '</div></div></div>';
+  }
+
+  // ── Bandeau état Boost ────────────────────────────────
+  if (S.boostPreping) {
+    html += '<div class="rounded-2xl p-5 flex items-center gap-4 shadow-lg mb-4" style="background:linear-gradient(135deg,#312e81,#4338ca)">' +
+      '<div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0"><div class="ld"></div></div>' +
+      '<div><div class="syne text-base font-black text-white mb-0.5">Entraînement IA en cours...</div>' +
+      '<p class="text-indigo-200 text-sm">L\'IA analyse ton diagnostic et crée tes exercices</p></div></div>';
+
+  } else if (!S.boostEx && !S.calState) {
+    html += '<div onclick="handleBoost()" class="rounded-2xl p-5 flex items-center gap-4 cursor-pointer active:scale-[.98] transition-transform shadow-lg mb-4" style="background:linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)">' +
+      '<div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/20 animate-pulse-light">⚡</div>' +
+      '<div class="flex-1 min-w-0"><div class="syne text-base font-black text-white mb-0.5">Mon entraînement IA</div>' +
+      '<p class="text-indigo-200 text-sm font-medium">Exercices ciblés sur mes lacunes</p></div>' +
+      '<div class="text-white/50 text-2xl font-light">›</div></div>';
+  } else if (bDone || S.boostConsumed) {
+    html += '<div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-3 mb-4">' +
+      '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0">⚡</div>' +
+      '<div><div class="syne font-black text-emerald-800 text-sm">Boost du jour terminé !</div>' +
+      '<div class="text-emerald-600 text-xs mt-0.5">Ton boost de demain est déjà en préparation 🔥</div></div></div>';
+  }
+
+  // ── Rendu des chapitres ───────────────────────────────
+  keys.forEach(function(cat){
+    if (cat === 'BOOST' && (bDone || S.boostConsumed)) return;
+    var exs = cats[cat]; var tot = exs.length; var done = 0;
+    for (var i = 0; i < tot; i++) {
+      var rr = res2(cat, i);
+      if (S.res[S.niv+'-'+rr.rC+'-'+rr.rI]) done++;
+    }
+    var comp    = done === tot && tot > 0;
+    var pct2    = tot > 0 ? Math.round((done/tot)*100) : 0;
+    var isBoost = cat === 'BOOST';
+    var isNew   = S.isNew[cat];
+    var isOpen  = !!S.exp[cat];
+    var iconPulse = isBoost && !comp ? 'animate-pulse-light' : '';
+    var cs = isBoost
+      ? 'background:linear-gradient(135deg,#312e81,#4338ca);border:none'
+      : (comp ? 'background:#f0fdf4;border-color:#a7f3d0' : 'background:#fff');
+
+    html += '<div data-cat="'+cat+'" class="rounded-2xl border border-slate-200 overflow-hidden shadow-sm afu mb-3" style="'+cs+'">';
+    html += '<div onclick="togCat(\''+cat+'\')" class="px-4 py-4 flex items-center gap-3 cursor-pointer select-none">';
+    html += '<div class="w-11 h-11 '+(isBoost?'bg-white/20':'bg-slate-100')+' rounded-xl flex items-center justify-center text-lg flex-shrink-0 '+iconPulse+'">'+(LVL[S.niv].icons[cat]||'📘')+'</div>';
+    html += '<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1.5"><span class="syne font-black text-sm '+(isBoost?'text-white':'text-slate-900')+' truncate">'+(LVL[S.niv].names[cat]||cat)+'</span>';
+    if (comp) html += '<span class="text-base">🏆</span>';
+    if (isNew) html += '<span class="text-[9px] syne font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-md">NEW</span>';
+    if (S.remReq[cat]) html += '<span class="text-[9px] syne font-black bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md">🔄 Demain</span>';
+    html += '</div><div class="flex items-center gap-2"><div class="pbar flex-1" style="max-width:100px"><div class="pfill '+(comp?'pfg':'pfp')+'" style="width:'+pct2+'%"></div></div>';
+    html += '<span class="text-[11px] font-bold '+(isBoost?'text-white/60':'text-slate-400')+'">'+done+'/'+tot+'</span></div></div>';
+    html += '<div class="'+(isBoost?'text-white/40':'text-slate-300')+' text-xl font-light select-none" style="transition:transform .2s;transform:rotate('+(isOpen?90:0)+'deg)">›</div></div>';
+
+    if (isOpen) {
+      // B3 — bannière prérequis fragile
+      var prereq = S.prereqBanner[cat];
+      if (prereq && prereq.chapitre) {
+        var preqName = (LVL[S.niv].names[prereq.chapitre] || prereq.chapitre);
+        html += '<div class="mx-4 mb-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-start gap-3">';
+        html += '<span class="text-base mt-0.5 flex-shrink-0">💡</span>';
+        html += '<div class="flex-1 min-w-0">';
+        html += '<div class="text-xs font-black text-amber-800 mb-1">Avant de continuer, un petit rappel te sera utile</div>';
+        html += '<div class="text-xs text-amber-700 font-medium mb-2">Ton score sur <strong>'+preqName+'</strong> est fragile. Révise-le d\'abord pour mieux réussir ici.</div>';
+        html += '<button onclick="togCat(\''+prereq.chapitre+'\')" class="text-[11px] font-black text-amber-900 bg-amber-100 border border-amber-200 rounded-lg px-3 py-1.5 active:scale-[.97] transition-transform">Revoir '+preqName+' →</button>';
+        html += '</div>';
+        html += '<button onclick="dismissPrereq(\''+cat+'\')" class="text-amber-400 text-xl leading-none flex-shrink-0 hover:text-amber-600 p-2 -mr-1">✕</button>';
+        html += '</div>';
+      }
+      var curIdx = S.qv[cat] || 0;
+      if (exs[curIdx]) html += rSection(cat, exs[curIdx], curIdx, tot, comp);
+      if (S.chapDone[cat]) html += renderChapComplete(cat, S.chapDone[cat]);
+    }
+    if (S.insights[cat] && isOpen) {
+      html += '<div class="mx-4 mb-4 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs font-medium text-blue-700 leading-relaxed">💡 '+S.insights[cat]+'</div>';
+    }
+    html += '</div>';
+  });
+
+  c.innerHTML = html || '<div class="text-center text-slate-400 font-semibold py-12 text-sm">Aucun exercice disponible pour ce niveau.</div>';
+  rMath();
+
+  // Scroll vers la pill active
+  setTimeout(function(){
+    var ap = document.querySelector('.pill.ring-2');
+    if (ap) ap.scrollIntoView({ block:'nearest', inline:'center', behavior:'smooth' });
+  }, 60);
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER SECTION EXERCICE
+// ══════════════════════════════════════════════════════════════
+function rSection(cat, data, idx, total, catDone) {
+  if (!data) return '';
+  var r       = res2(cat, idx);
+  var id      = S.niv+'-'+r.rC+'-'+r.rI;
+  var ui      = S.niv+'-'+cat+'-'+idx;
+  var isRev   = S.rev && S.cid === id;
+  var scored  = S.res[id];
+  var hasOpt  = data.options && data.options.length > 0;
+
+  // ── Pills de navigation ──────────────────────────────
+  var pills = '<div class="flex overflow-x-auto gap-1.5 px-4 py-3 border-t border-slate-100 bg-slate-50/60 no-sb">';
+  for (var i = 0; i < total; i++) {
+    var r2  = res2(cat, i);
+    var s2  = S.res[S.niv+'-'+r2.rC+'-'+r2.rI];
+    var act = i === idx;
+    var cls = 'pill ';
+    if (s2 === 'EASY' || s2 === 'MEDIUM') cls += 'bg-emerald-500 text-white';
+    else if (s2 === 'HARD')               cls += 'bg-rose-400 text-white';
+    else                                   cls += 'bg-white border-2 border-slate-200 text-slate-500';
+    if (act) cls += ' ring-2 ring-indigo-400 ring-offset-1';
+    pills += '<button onclick="goEx(\''+cat+'\','+i+')" class="'+cls+'">'+(i+1)+'</button>';
+  }
+  pills += '</div>';
+
+  // ── Actions bas de page ──────────────────────────────
+  var acts = '';
+  if (!isRev && !hasOpt) {
+    // Flashcard : bouton révéler
+    acts = '<button onclick="verify(\''+cat+'\','+idx+')" class="btn btn-dk btn-fw py-4 mt-4">Révéler la réponse</button>';
+  } else if (isRev && !scored && !hasOpt) {
+    // Flashcard révélée : auto-évaluation manuelle
+    acts =
+      '<div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4 text-center mt-4">' +
+      '<div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Réponse</div>' +
+      '<div class="mc text-base font-black text-slate-900">'+fmtL(data.a)+'</div></div>' +
+      '<div class="grid grid-cols-3 gap-2">' +
+      '<button onclick="mark(\''+cat+'\','+idx+',\'HARD\',null)" class="btn-ng btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">😤</span>À revoir</button>' +
+      '<button onclick="mark(\''+cat+'\','+idx+',\'MEDIUM\',null)" class="btn-wn btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">🤔</span>Je doute</button>' +
+      '<button onclick="mark(\''+cat+'\','+idx+',\'EASY\',null)" class="btn-ok btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">✅</span>Acquis</button></div>';
+  } else if (scored && !catDone) {
+    // Exercice répondu : bouton suivant
+    acts = '<button onclick="nextEx(\''+cat+'\')" class="btn btn-dk btn-fw py-4 mt-4 flex items-center justify-center gap-2">SUIVANT <span class="text-slate-400 font-normal text-xs">(ou swipe ←)</span></button>';
+  }
+
+  // ── Options QCM ──────────────────────────────────────
+  var opts = '';
+  if (hasOpt) {
+    // Mélange des options (une seule fois par exercice)
+    if (!isRev && !S.shuf[ui]) {
+      var arr = data.options.map(function(t,i){ return { t:t, i:i }; });
+      for (var si = arr.length-1; si > 0; si--) {
+        var sj = Math.floor(Math.random()*(si+1));
+        var tmp = arr[si]; arr[si] = arr[sj]; arr[sj] = tmp;
+      }
+      S.shuf[ui] = arr;
+    }
+    var sh  = S.shuf[ui] || data.options.map(function(t,i){ return { t:t, i:i }; });
+    var cI  = data.options.indexOf(data.a);
+    var ans = S.qans[id];
+    opts = '<div class="flex flex-col gap-2 mt-4">';
+    sh.forEach(function(o){
+      var ocls = 'opt ';
+      if (isRev) { ocls += o.i===cI ? 'oc ' : (o.t===ans ? 'ow ' : 'on '); }
+      var handler = !isRev ? 'onclick="checkOpt(\''+cat+'\','+idx+','+o.i+',this)"' : '';
+      opts += '<button data-oi="'+o.i+'" '+handler+' class="'+ocls.trim()+'"><span class="mc flex-1">'+fmtL(o.t)+'</span></button>';
+    });
+    opts += '</div>';
+  }
+
+  // ── Indices ──────────────────────────────────────────
+  var maxH  = (data.steps && data.steps.length) || 0;
+  var shown = scored ? maxH : (S.hints[id] || 0);
+  var hSteps = '';
+  if (maxH > 0) {
+    (data.steps||[]).forEach(function(s,i){
+      hSteps += '<div class="'+(i<shown?'block':'hidden')+' mc text-xs text-amber-800 bg-white/80 rounded-lg px-3 py-2 border border-amber-100">'+fmtL(s)+'</div>';
+    });
+  }
+  var hints =
+    '<div class="bg-amber-50 border border-amber-100 rounded-xl p-3">' +
+    '<div class="flex justify-between items-center mb-2">' +
+    '<span class="text-[10px] syne font-black text-amber-700 uppercase tracking-wider">💡 Indices</span>' +
+    (shown < maxH ? '<button onclick="showHint(\''+cat+'\','+idx+','+maxH+')" class="text-xs font-bold text-amber-600 bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-lg">Voir +1</button>' : '') +
+    '</div>' +
+    (maxH > 0 ? '<div class="space-y-1.5">'+hSteps+'</div>' : '<p class="text-amber-400 text-xs">Aucun indice disponible.</p>') +
+    '</div>';
+
+  // ── Formule clé (blur → reveal au tap) ───────────────
+  var fR  = scored || !!S.ftch[id];
+  var fContent = fmtL(data.f) || '<span class="text-slate-400 text-xs">Pas de formule.</span>';
+  var formula =
+    '<div onclick="'+(!fR ? 'revF(\''+cat+'\','+idx+')' : '')+'">' +
+    '<div class="fwrap '+(fR?'frev':'')+'">' +
+    '<div class="finner mc text-xs font-bold text-slate-700 text-center min-h-[1.5rem]">'+fContent+'</div>' +
+    (!fR ? '<div class="fhint">👁 Formule clé</div>' : '') +
+    '</div></div>';
+
+  return '<div class="border-t border-slate-100">'+pills+
+    '<div class="p-4 sm:p-5">' +
+    '<div class="flex justify-between items-center mb-3">' +
+    '<span class="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full '+((data.lvl||1)===1?'bg-indigo-100 text-indigo-700':'bg-amber-100 text-amber-700')+'">Niv. '+(data.lvl||1)+'</span>' +
+    '<span class="text-[11px] font-bold text-slate-500" style="animation:counterPop .3s ease both">'+(idx+1)+' / '+total+'</span>' +
+    '</div>' +
+    '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-4 min-h-[80px] flex items-center justify-center overflow-x-auto">' +
+    '<div class="mc text-center font-bold text-base leading-relaxed w-full min-w-0">'+fmtL(data.q)+'</div></div>' +
+    opts + acts +
+    '<div class="flex gap-2 mt-4">' +
+      '<button id="pill-hint-'+id+'" onclick="showHintInline(\''+cat+'\','+idx+','+maxH+')" class="help-pill pill-hint">💡 Indice</button>' +
+      '<button id="pill-form-'+id+'" onclick="revFInline(\''+cat+'\','+idx+')" class="help-pill pill-formula '+(fR?'opacity-40 pointer-events-none':'')+'">' +
+        (fR ? '✓ Formule vue' : '👁 Formule') +
+      '</button>' +
+    '</div>' +
+    '<div class="inline-help mc" id="help-inline-'+id+'"></div>' +
+    '</div></div>';
+}
+
+// ══════════════════════════════════════════════════════════════
+// TABLEAU BLANC — BOTTOM SHEET
+// ══════════════════════════════════════════════════════════════
+function toggleDraft() {
+  S.dOpen = !S.dOpen;
+  var d = document.getElementById('draft-drawer');
+  var b = document.getElementById('draft-bd');
+  if (S.dOpen) {
+    d.classList.add('open');
+    b.classList.add('show');
+    var ta = document.getElementById('draft-text');
+    if (ta && S.cid) ta.value = localStorage.getItem('draft_' + S.cid) || '';
+  } else {
+    // Sauvegarde avant fermeture
+       var ta = document.getElementById('draft-text');
+    if (ta && S.cid) {
+      S.drafts[S.cid] = { txt: ta.value };
+      localStorage.setItem('draft_' + S.cid, ta.value);
+    }
+    d.classList.remove('open');
+    b.classList.remove('show');
+  }
+}
+// ══════════════════════════════════════════════════════════════
+// TYPEWRITER + PILLS AIDE INLINE + NUDGE
+// ══════════════════════════════════════════════════════════════
+function typewriter(el, text, callback) {
+  el.innerHTML = '';
+  var i = 0;
+  function tick() {
+    if (i < text.length) { el.innerHTML += text.charAt(i); i++; setTimeout(tick, 22); }
+    else if (callback) callback();
+  }
+  tick();
+}
+
+// Déploie TOUS les indices + formule d'un coup (sans typewriter) — appelé sur erreur automatique
+function autoShowHelp(cat, idx) {
+  var r    = res2(cat, idx);
+  var id   = S.niv+'-'+r.rC+'-'+r.rI;
+  var exo  = LVL[S.niv].cats[cat][idx];
+  var area = document.getElementById('help-inline-'+id);
+  if (!area) return;
+
+  var steps = exo.steps || [];
+  var html  = '';
+
+  if (steps.length > 0) {
+    steps.forEach(function(s, i) {
+      html += '<div style="margin-bottom:.35rem">'
+        + '<span style="font-size:.7rem;font-weight:800;color:#d97706;text-transform:uppercase;letter-spacing:.05em">Indice '+(i+1)+' : </span>'
+        + s
+        + '</div>';
+    });
+    S.hints[id] = steps.length;
+    var ph = document.getElementById('pill-hint-'+id);
+    if (ph) ph.classList.add('opacity-40','pointer-events-none');
+  }
+
+  if (exo.f && !S.ftch[id]) {
+    S.ftch[id] = true;
+    html += '<div>'
+      + '<span style="font-size:.7rem;font-weight:800;color:#4338ca;text-transform:uppercase;letter-spacing:.05em">Formule : </span>'
+      + (exo.f||'')
+      + '</div>';
+    var pf = document.getElementById('pill-form-'+id);
+    if (pf) { pf.innerHTML = '✓ Formule vue'; pf.classList.add('opacity-40','pointer-events-none'); }
+  }
+
+  area.innerHTML = html;
+  area.classList.add('rdy'); // rend le conteneur visible (mc démarre opacity:0)
+  clearNudge(id);
+  if (window.MathJax) {
+    MathJax.typesetPromise([area]).catch(function(){});
+  }
+}
+
+window.showHintInline = function(cat, idx, max) {
+  var r  = res2(cat, idx);
+  var id = S.niv+'-'+r.rC+'-'+r.rI;
+  S.hints[id] = S.hints[id] || 0;
+  if (S.hints[id] >= max) return;
+  S.hints[id]++;
+  clearNudge(id);
+  var exo  = LVL[S.niv].cats[cat][idx];
+  var text = (exo.steps && exo.steps[S.hints[id]-1]) || '';
+  var area = document.getElementById('help-inline-'+id);
+  if (!area) return;
+  var label = '<span style="font-size:.7rem;font-weight:800;color:#d97706;text-transform:uppercase;letter-spacing:.05em">Indice '+S.hints[id]+' : </span>';
+  if (area.innerHTML) area.innerHTML += '<br>';
+  area.innerHTML += label;
+  var span = document.createElement('span');
+  area.appendChild(span);
+  typewriter(span, text, function() { if (window.MathJax) MathJax.typesetPromise([area]); });
+};
+
+window.revFInline = function(cat, idx) {
+  var r  = res2(cat, idx);
+  var id = S.niv+'-'+r.rC+'-'+r.rI;
+  if (S.ftch[id]) return;
+  S.ftch[id] = true;
+  clearNudge(id);
+  var exo  = LVL[S.niv].cats[cat][idx];
+  var area = document.getElementById('help-inline-'+id);
+  var btn  = document.getElementById('pill-form-'+id);
+  if (btn) { btn.innerHTML = '✓ Formule vue'; btn.classList.add('opacity-40','pointer-events-none'); }
+  if (!area) return;
+  if (area.innerHTML) area.innerHTML += '<br>';
+  area.innerHTML += '<span style="font-size:.7rem;font-weight:800;color:#4338ca;text-transform:uppercase;letter-spacing:.05em">Formule : </span>';
+  var span = document.createElement('span');
+  area.appendChild(span);
+  typewriter(span, exo.f || '', function() { if (window.MathJax) MathJax.typesetPromise([area]); });
+};
+
+var _nudgeTimers = {};
+function startNudge(id) {
+  clearNudge(id);
+  _nudgeTimers[id] = setTimeout(function() {
+    var ph = document.getElementById('pill-hint-'+id);
+    var pf = document.getElementById('pill-form-'+id);
+    if (ph) ph.classList.add('pill-nudge');
+    if (pf && !pf.classList.contains('pointer-events-none')) pf.classList.add('pill-nudge');
+  }, 20000);
+}
+function clearNudge(id) {
+  clearTimeout(_nudgeTimers[id]);
+  var ph = document.getElementById('pill-hint-'+id);
+  var pf = document.getElementById('pill-form-'+id);
+  if (ph) ph.classList.remove('pill-nudge');
+  if (pf) pf.classList.remove('pill-nudge');
+}
+
+function clrText() {
+  var ta = document.getElementById('draft-text');
+  if (ta) { ta.value = ''; ta.focus(); }
+}
+
+function insSymbol(s) {
+  var ta = document.getElementById('draft-text');
+  if (!ta) return;
+  var start = ta.selectionStart, end = ta.selectionEnd;
+  ta.value = ta.value.substring(0,start) + s + ta.value.substring(end);
+  ta.selectionStart = ta.selectionEnd = start + s.length;
+  ta.focus();
+}
+
+// ══════════════════════════════════════════════════════════════
+// ADMIN — DASHBOARD
+// ══════════════════════════════════════════════════════════════
+
+// Convertit une date (dd/MM/yyyy HH:mm, ISO, timestamp) en date relative
+function relDateAdmin(dateStr) {
+  if (!dateStr) return 'jamais';
+  try {
+    var r = relDate(String(dateStr));
+    return r || 'date inconnue';
+  } catch (e) { return 'date inconnue'; }
+}
+
+// ── Génère et copie le prompt Claude pour générer des exos ──
+function copyAdminPrompt(code, type, cat) {
+  var st = S._modalStudent;
+  if (!st) return;
+
+  // Trouver le détail du chapitre ciblé
+  var detail = (st.chapitresDetail || []).find(function(d) { return d.cat === cat; });
+
+  var lines = [];
+  lines.push('Tu génères des exercices de maths pour ' + st.prenom + ' (' + st.niveau + ').');
+  lines.push('');
+
+  if (detail) {
+    lines.push('=== PROFIL DU CHAPITRE : ' + cat.replace(/_/g, ' ') + ' ===');
+    lines.push('Exercices faits : ' + detail.totalExos + ' | Réussite : ' + detail.rateSuccess + '%');
+    lines.push('Temps moyen : ' + detail.avgTime + 's | Indices : ' + detail.avgIndices + ' moy. | Formule vue : ' + detail.pctFormula + '%');
+    var allExos = (detail.exosList || []).slice().sort(function(a, b) { return (a.num || 0) - (b.num || 0); });
+    if (allExos.length > 0) {
+      lines.push('');
+      lines.push('=== HISTORIQUE COMPLET DES EXERCICES ===');
+      allExos.forEach(function(e, i) {
+        var icon = e.res === 'HARD' ? '❌' : '✅';
+        var line = icon + ' "' + e.enonce + '"';
+        if (e.res === 'HARD' && e.wrongOpt) line += ' → répondu : "' + e.wrongOpt + '"';
+        lines.push((i + 1) + '. ' + line);
+        var ctx = [];
+        if (e.temps > 0)   ctx.push('⏱ ' + e.temps + 's');
+        if (e.indices > 0) ctx.push('💡 ' + e.indices + ' indice(s)');
+        if (e.formula)     ctx.push('📐 formule consultée');
+        if (ctx.length)    lines.push('   ' + ctx.join(' | '));
+      });
+      var hardCount = allExos.filter(function(e) { return e.res === 'HARD'; }).length;
+      if (hardCount === 0) {
+        lines.push('');
+        lines.push('(Aucune erreur récente — génère des exercices variés de niveau mixte)');
+      }
+    } else {
+      lines.push('');
+      lines.push('(Aucune donnée disponible)');
+    }
+  } else {
+    lines.push('Chapitre : ' + cat.replace(/_/g, ' '));
+    lines.push('(Aucune donnée disponible — génère des exercices adaptés au niveau ' + st.niveau + ')');
+  }
+
+  lines.push('');
+
+  if (type === 'boost') {
+    lines.push('=== CONSIGNE ===');
+    lines.push('Génère EXACTEMENT 5 exercices de BOOST progressifs, ciblés sur les erreurs ci-dessus.');
+    lines.push('');
+    lines.push('Format JSON strict (copie uniquement le JSON, rien d\'autre) :');
+    lines.push('{');
+    lines.push('  "insight": "Message motivant de 1-2 phrases pour ' + st.prenom + ', contextualisé sur le chapitre",');
+    lines.push('  "exos": [');
+    lines.push('    {');
+    lines.push('      "q": "Énoncé clair (utilise $...$ pour les expressions mathématiques)",');
+    lines.push('      "a": "Bonne réponse",');
+    lines.push('      "options": ["Bonne réponse", "Erreur typique 1", "Erreur typique 2"],');
+    lines.push('      "steps": ["Étape 1 : identifier la méthode", "Étape 2 : appliquer", "Étape 3 : conclure"],');
+    lines.push('      "f": "Formule clé courte et mémorable",');
+    lines.push('      "lvl": 1');
+    lines.push('    }');
+    lines.push('  ]');
+    lines.push('}');
+    lines.push('');
+    lines.push('Règles impératives :');
+    lines.push('- "a" DOIT être dans "options" (3 options exactement)');
+    lines.push('- 2 à 4 steps (vague → méthode → application → conclusion)');
+    lines.push('- lvl = 1 (basique) ou 2 (expert), mélange les deux');
+    lines.push('- Les mauvaises options doivent être des erreurs typiques réalistes');
+    lines.push('- "f" = formule courte (max 60 caractères)');
+  } else {
+    lines.push('=== CONSIGNE ===');
+    lines.push('Génère EXACTEMENT 20 exercices complets pour le chapitre ' + cat.replace(/_/g, ' ') + '.');
+    lines.push('10 exercices lvl 1 (basique) + 10 exercices lvl 2 (expert), progressifs.');
+    lines.push('');
+    lines.push('Format JSON strict (copie uniquement le JSON, rien d\'autre) :');
+    lines.push('{');
+    lines.push('  "categorie": "' + cat + '",');
+    lines.push('  "insight": "Message motivant de 1-2 phrases pour ' + st.prenom + '",');
+    lines.push('  "exos": [');
+    lines.push('    {');
+    lines.push('      "q": "...", "a": "...",');
+    lines.push('      "options": ["bonne réponse", "erreur 1", "erreur 2"],');
+    lines.push('      "steps": ["...", "...", "..."],');
+    lines.push('      "f": "...", "lvl": 1');
+    lines.push('    }');
+    lines.push('  ]');
+    lines.push('}');
+    lines.push('');
+    lines.push('Mêmes règles que le boost. Progressivité : commence simple, monte en difficulté.');
+  }
+
+  var prompt = lines.join('\n');
+  navigator.clipboard.writeText(prompt).then(function() {
+    showT('📋 Prompt copié ! Colle-le dans Claude ou ChatGPT.', 4000, '✅');
+  }).catch(function() {
+    // Fallback : ouvrir une textarea pour copie manuelle
+    var ta = document.createElement('textarea');
+    ta.value = prompt;
+    ta.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:200px;z-index:9999;font-size:12px;padding:8px';
+    document.body.appendChild(ta);
+    ta.select();
+    showT('Sélectionne tout et copie (Ctrl+A, Ctrl+C)', 5000, '📋');
+    setTimeout(function() { if (ta.parentNode) ta.parentNode.removeChild(ta); }, 6000);
+  });
+}
+
+// Retourne { bg, border, text, cls, icon } selon l'action
+function _actionStyle(action) {
+  if (action.indexOf('DIAGNOSTIC') !== -1) {
+    return { bg:'bg-rose-50', border:'border-rose-200', text:'text-rose-700', cls:'ac-diag', icon:'🔴' };
+  }
+  if (action.indexOf('BOOST') !== -1) {
+    return { bg:'bg-amber-50', border:'border-amber-200', text:'text-amber-700', cls:'ac-boost', icon:'🆕' };
+  }
+  if (action.indexOf('CHAPITRE') !== -1) {
+    return { bg:'bg-emerald-50', border:'border-emerald-200', text:'text-emerald-700', cls:'ac-chap', icon:'✅' };
+  }
+  return { bg:'bg-slate-50', border:'border-slate-200', text:'text-slate-400', cls:'ac-ras', icon:'👍' };
+}
+
+async function renderAdminDashboard() {
+  var c = document.getElementById('app-c');
+  if (!c) return;
+  updNav();
+
+  // Squelette de chargement
+  c.innerHTML =
+    '<div class="mb-5"><div class="sk h-8 w-48 mb-2"></div><div class="sk h-4 w-32"></div></div>' +
+    '<div class="space-y-3">' + [1,2,3,4].map(function(){
+      return '<div class="sk h-28 w-full rounded-2xl"></div>';
+    }).join('') + '</div>';
+
+  try {
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({
+      action: 'get_admin_overview', adminCode: S.prof.code
+    }) });
+    var d = await r.json();
+    if (d.status !== 'success') {
+      c.innerHTML = '<div class="text-center p-8 text-rose-500 font-semibold">' +
+        '❌ ' + (d.message || 'Erreur serveur') + '</div>';
+      return;
+    }
+    S.adminStudents = d.students || [];
+    _renderAdminCards();
+  } catch (e) {
+    c.innerHTML = '<div class="text-center p-8 text-rose-500 font-semibold">❌ Erreur réseau — vérifie ta connexion.</div>';
+  }
+}
+
+function _renderAdminCards() {
+  var c = document.getElementById('app-c');
+  if (!c) return;
+  var students = S.adminStudents || [];
+
+  if (!students.length) {
+    c.innerHTML = '<div class="text-center py-16 text-slate-400 font-semibold text-sm">Aucun élève inscrit pour l\'instant.</div>';
+    return;
+  }
+
+  var needsCount = students.filter(function(s){ return s.action.indexOf('RAS') === -1; }).length;
+  var html = '';
+
+  // En-tête dashboard
+  html += '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 mb-4">';
+  html += '<div class="flex items-center justify-between">';
+  html += '<div>';
+  html += '<div class="syne font-black text-slate-900 text-lg leading-tight">Mes Élèves 🎓</div>';
+  html += '<div class="text-slate-500 text-xs font-semibold mt-0.5">' + students.length + ' élève' + (students.length > 1 ? 's' : '') + '</div>';
+  html += '</div>';
+  if (needsCount > 0) {
+    html += '<div class="bg-rose-500 text-white syne font-black text-sm px-3 py-1.5 rounded-xl shadow-sm">' + needsCount + ' action' + (needsCount > 1 ? 's' : '') + '</div>';
+  } else {
+    html += '<div class="bg-emerald-100 text-emerald-700 syne font-black text-sm px-3 py-1.5 rounded-xl">✅ RAS</div>';
+  }
+  html += '</div>';
+  html += '<button onclick="renderAdminDashboard()" class="mt-3 text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors">↻ Actualiser</button>';
+  html += '</div>';
+
+  // Cartes élèves
+  students.forEach(function(st) {
+    var as       = _actionStyle(st.action);
+    var needsAct = st.action.indexOf('RAS') === -1;
+    var lastStr  = relDateAdmin(st.lastConnection);
+
+    html += '<div id="admin-card-' + st.code + '" ';
+    html += 'onclick="openStudentModal(\'' + st.code + '\')" ';
+    html += 'class="adm-card ' + as.cls + (needsAct ? ' needs-action' : '') + ' mb-3">';
+
+    // Ligne principale
+    html += '<div class="flex items-center gap-3 mb-2.5">';
+    html += '<div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black syne text-base shadow-sm flex-shrink-0" ';
+    html += 'style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">' + st.prenom.charAt(0).toUpperCase() + '</div>';
+    html += '<div class="flex-1 min-w-0">';
+    html += '<div class="flex items-center gap-2">';
+    html += '<span class="syne font-black text-slate-900 text-sm">' + st.prenom + '</span>';
+    html += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500">' + st.niveau + '</span>';
+    if (st.boostNew) html += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-600">⚡ boost prêt</span>';
+    if (st.chapNewCount > 0) html += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-600">📚 chap prêt</span>';
+    html += '</div>';
+    html += '<div class="text-[11px] text-slate-400 font-medium mt-0.5">Connexion : ' + lastStr + '</div>';
+    html += '</div>';
+    html += '<div class="text-xl flex-shrink-0">' + as.icon + '</div>';
+    html += '</div>';
+
+    // Badge action (uniquement si non-RAS)
+    if (needsAct) {
+      html += '<div class="' + as.bg + ' border ' + as.border + ' rounded-xl px-3 py-2 text-[11px] font-black ' + as.text + ' mb-2">' + st.action + '</div>';
+    }
+
+    // Stats chapitres depuis chapitresDetail (si dispo)
+    var detail = st.chapitresDetail || [];
+    var totalHard = detail.reduce(function(s, d) { return s + d.hardCount; }, 0);
+    var totalExos = detail.reduce(function(s, d) { return s + d.totalExos; }, 0);
+    if (totalExos > 0) {
+      var avgSucc = Math.round(detail.reduce(function(s,d){ return s + d.rateSuccess * d.totalExos; }, 0) / totalExos);
+      var barColor = avgSucc >= 75 ? '#059669' : avgSucc >= 50 ? '#f59e0b' : '#e11d48';
+      html += '<div class="flex items-center gap-2 mb-2">';
+      html += '<div class="flex-1"><div class="adm-bar-bg"><div class="adm-bar-fill" style="width:' + avgSucc + '%;background:' + barColor + '"></div></div></div>';
+      html += '<span class="text-[10px] font-black text-slate-500 flex-shrink-0">' + avgSucc + '% · ' + totalExos + ' exos</span>';
+      if (totalHard > 0) html += '<span class="text-[10px] font-black text-rose-500 flex-shrink-0">' + totalHard + '✗</span>';
+      html += '</div>';
+    }
+
+    // Chapitres
+    if (st.chapitres && st.chapitres.length > 0) {
+      html += '<div class="flex flex-wrap gap-1.5">';
+      st.chapitres.forEach(function(ch) {
+        var done = ch.statut && ch.statut.indexOf('Terminé') !== -1;
+        // Taux de réussite du chapitre si disponible
+        var chDetail = detail.find(function(d) { return d.cat === ch.cat; });
+        var rate = chDetail ? (' · ' + chDetail.rateSuccess + '%') : '';
+        html += '<span class="text-[10px] font-bold px-2 py-1 rounded-lg ';
+        html += done ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500';
+        html += '">' + (done ? '✅ ' : '') + ch.cat.replace(/_/g, ' ') + rate + '</span>';
+      });
+      html += '</div>';
+    }
+
+    html += '</div>'; // adm-card
+  });
+
+  c.innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════════════
+// ADMIN — MODAL ÉLÈVE
+// ══════════════════════════════════════════════════════════════
+
+function openStudentModal(code) {
+  var st = null;
+  for (var i = 0; i < S.adminStudents.length; i++) {
+    if (S.adminStudents[i].code === code) { st = S.adminStudents[i]; break; }
+  }
+  if (!st) return;
+  S._modalStudent = st;
+
+  var inner = document.getElementById('admin-modal-inner');
+  if (inner) inner.innerHTML = _buildModalHTML(st);
+
+  var modal = document.getElementById('admin-modal');
+  if (modal) {
+    modal.classList.add('open');
+    // Clic backdrop = fermer
+    modal.onclick = function(e) { if (e.target === modal) closeStudentModal(); };
+  }
+}
+
+function closeStudentModal() {
+  var modal = document.getElementById('admin-modal');
+  if (modal) modal.classList.remove('open');
+  S._modalStudent = null;
+}
+
+function _buildModalHTML(st) {
+  var as      = _actionStyle(st.action);
+  var lastStr = relDateAdmin(st.lastConnection);
+  var detail  = st.chapitresDetail || [];
+
+  // ── Bloc détail par chapitre ──────────────────────────────
+  var chapHTML = '';
+  if (detail.length === 0) {
+    chapHTML = '<div class="bg-slate-50 border border-slate-100 rounded-xl p-3 mb-4 text-xs text-slate-400 text-center">Aucun exercice enregistré (30 derniers jours)</div>';
+  } else {
+    detail.forEach(function(ch) {
+      var hasErrors = ch.hardCount > 0;
+      var barColor  = ch.rateSuccess >= 75 ? '#059669' : ch.rateSuccess >= 50 ? '#f59e0b' : '#e11d48';
+      chapHTML += '<div class="adm-chap-block' + (hasErrors ? ' has-errors' : '') + '">';
+
+      // En-tête chapitre
+      chapHTML += '<div class="flex items-center justify-between mb-2">';
+      chapHTML += '<div class="flex items-center gap-2">';
+      chapHTML += '<span class="text-xs font-black text-slate-800">' + ch.cat.replace(/_/g, ' ') + '</span>';
+      if (hasErrors) chapHTML += '<span class="adm-pill" style="background:#fee2e2;color:#b91c1c">' + ch.hardCount + ' ✗</span>';
+      chapHTML += '</div>';
+      chapHTML += '<div class="flex items-center gap-2">';
+      chapHTML += '<span class="text-[10px] text-slate-400 font-semibold">' + ch.totalExos + ' exos · ' + ch.rateSuccess + '%</span>';
+      chapHTML += '</div>';
+      chapHTML += '</div>';
+
+      // Barre de succès
+      chapHTML += '<div class="adm-bar-bg mb-2"><div class="adm-bar-fill" style="width:' + ch.rateSuccess + '%;background:' + barColor + '"></div></div>';
+
+      // Métriques en ligne
+      chapHTML += '<div class="flex gap-3 text-[10px] text-slate-400 font-semibold mb-2">';
+      chapHTML += '<span>⏱ ' + ch.avgTime + 's moy.</span>';
+      chapHTML += '<span>💡 ' + ch.avgIndices + ' ind. moy.</span>';
+      chapHTML += '<span>🧮 ' + ch.pctFormula + '% formule</span>';
+      chapHTML += '</div>';
+
+      // Liste des exos (tous, sans cap)
+      if (ch.exosList && ch.exosList.length > 0) {
+        chapHTML += '<div class="mt-1">';
+        ch.exosList.forEach(function(e) {
+          var isHard = e.res === 'HARD';
+          var enonce = e.enonce || '—';
+          chapHTML += '<div class="adm-exo-row">';
+          // Badge source
+          var srcBadge = '';
+          if (e.source === 'diagnostic') {
+            srcBadge = '<span class="adm-pill" style="background:#f1f5f9;color:#94a3b8;font-size:.6rem">DIAG</span>';
+          } else if (e.source === 'boost') {
+            srcBadge = '<span class="adm-pill" style="background:#fef3c7;color:#92400e;font-size:.6rem">BOOST</span>';
+          }
+          if (srcBadge) chapHTML += srcBadge;
+          chapHTML += '<span style="font-size:.9rem;flex-shrink:0">' + (isHard ? '❌' : '✅') + '</span>';
+          chapHTML += '<div class="flex-1 min-w-0">';
+          // Accordion si enoncé > 60 chars
+          if (enonce.length > 60) {
+            chapHTML += '<details><summary class="text-slate-600 leading-snug cursor-pointer">' + enonce.substring(0, 60) + '…</summary><span class="text-slate-600 leading-snug text-xs">' + enonce + '</span></details>';
+          } else {
+            chapHTML += '<div class="text-slate-600 leading-snug">' + enonce + '</div>';
+          }
+          if (isHard && e.wrongOpt) chapHTML += '<div class="text-rose-400 font-semibold mt-0.5">→ répondu : <em>' + e.wrongOpt + '</em></div>';
+          chapHTML += '</div>';
+          var pills = '';
+          if (e.temps > 0)    pills += '<span class="adm-pill" style="background:#f1f5f9;color:#64748b">⏱' + e.temps + 's</span>';
+          if (e.indices > 0)  pills += '<span class="adm-pill" style="background:#fef3c7;color:#92400e">💡×' + e.indices + '</span>';
+          if (e.formula)      pills += '<span class="adm-pill" style="background:#ede9fe;color:#5b21b6">📐</span>';
+          if (pills) chapHTML += '<div class="flex gap-1 flex-shrink-0">' + pills + '</div>';
+          chapHTML += '</div>';
+        });
+        chapHTML += '</div>';
+      }
+
+      // Bouton copier le prompt pour ce chapitre
+      chapHTML += '<button onclick="copyAdminPrompt(\'' + st.code + '\',\'boost\',\'' + ch.cat + '\')" class="adm-copy-btn">📋 Copier le prompt Claude — Boost ciblé ' + ch.cat.replace(/_/g,' ') + '</button>';
+      chapHTML += '</div>';
+    });
+  }
+
+  // ── Placeholders JSON ─────────────────────────────────────
+  var topCat = detail.length ? detail[0].cat : (st.chapitres.length ? st.chapitres[0].cat : 'Fractions');
+  var boostPH = '{"insight":"...","exos":[{"q":"...","a":"...","options":["...","...","..."],"steps":["...","..."],"f":"...","lvl":1}]}';
+  var chapPH  = '{"categorie":"' + topCat + '","insight":"...","exos":[{"q":"...","a":"...","options":["...","...","..."],"steps":["...","..."],"f":"...","lvl":1}]}';
+
+  return (
+    '<div class="flex justify-center pt-3 pb-1 sm:hidden"><div class="w-10 h-1.5 bg-slate-200 rounded-full"></div></div>' +
+
+    // Header
+    '<div class="px-5 pt-4 pb-3 border-b border-slate-100 flex justify-between items-center flex-shrink-0">' +
+      '<div class="flex items-center gap-3">' +
+        '<div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black syne text-xl shadow-md flex-shrink-0" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">' + st.prenom.charAt(0).toUpperCase() + '</div>' +
+        '<div>' +
+          '<div class="syne font-black text-slate-900">' + st.prenom + '</div>' +
+          '<div class="text-xs font-semibold text-slate-400">' + st.niveau + ' · ' + lastStr + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<button onclick="closeStudentModal()" class="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 font-bold text-base hover:bg-slate-200 transition-colors flex-shrink-0">✕</button>' +
+    '</div>' +
+
+    // Body (scrollable)
+    '<div class="flex-1 overflow-y-auto no-sb px-5 pt-4 pb-6">' +
+
+      // Badge action
+      '<div class="' + as.bg + ' border ' + as.border + ' rounded-xl px-4 py-2.5 text-sm font-black ' + as.text + ' mb-4 text-center">' + st.action + '</div>' +
+
+      // Section chapitres
+      '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">📊 Exercices par chapitre (30 jours)</div>' +
+      chapHTML +
+
+      '<div class="border-t border-slate-100 my-4"></div>' +
+
+      // 💬 Mot du professeur
+      '<div class="mb-4">' +
+        '<div class="text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">💬 Mot du professeur <span class="text-slate-400 font-normal normal-case tracking-normal">(optionnel — vu avant les exercices)</span></div>' +
+        '<textarea id="modal-motprof-' + st.code + '" class="adm-textarea" style="height:72px" placeholder="Ex: Bravo pour ta progression ! Ce chapitre va t\'aider à maîtriser les fractions. Courage 💪"></textarea>' +
+      '</div>' +
+
+      // ⚡ Boost — accordéon + verrouillage si boost en cours
+      (function() {
+        var bHistory = st.boostHistory || [];
+        var curDone  = st.currentBoostExosDone || 0;
+        var boostLocked = curDone > 0 && curDone < 5;  // boost en cours non terminé
+
+        // Statut courant
+        var statusLabel = '';
+        if (bHistory.length > 0) {
+          var latest = bHistory[0];
+          if (latest.status === 'pending')     statusLabel = '<span class="text-[10px] font-black text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">En attente (non démarré)</span>';
+          else if (latest.status === 'in_progress') statusLabel = '<span class="text-[10px] font-black text-amber-600 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">En cours ' + latest.exosDone + '/5</span>';
+          else if (latest.status === 'done')   statusLabel = '<span class="text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">Terminé ✓</span>';
+        }
+        if (st.boostNew && !statusLabel) statusLabel = '<span class="text-[10px] font-black text-amber-600 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">En attente ✓</span>';
+
+        // Historique accordéon
+        var histHTML = '';
+        if (bHistory.length > 0) {
+          histHTML = '<details class="mb-2"><summary class="text-[10px] font-semibold text-slate-400 cursor-pointer py-1 select-none">Historique des boosts (' + bHistory.length + ')</summary>';
+          histHTML += '<div class="mt-1 space-y-1 max-h-40 overflow-y-auto no-sb">';
+          bHistory.forEach(function(b) {
+            var stIcon = b.status === 'done' ? '✅' : b.status === 'in_progress' ? '🔄' : '⏳';
+            histHTML += '<div class="text-[10px] bg-slate-50 rounded-lg px-2 py-1 flex items-start gap-2">';
+            histHTML += '<span class="flex-shrink-0">' + stIcon + '</span>';
+            histHTML += '<div><span class="font-semibold text-slate-500">' + b.date + '</span> — ' + b.exosDone + '/5';
+            if (b.insight) histHTML += ' · <em class="text-slate-400">' + b.insight.substring(0, 60) + '</em>';
+            histHTML += '</div></div>';
+          });
+          histHTML += '</div></details>';
+        }
+
+        var boostBoxClass = boostLocked ? 'opacity-50 pointer-events-none' : '';
+        var boostMsg = boostLocked
+          ? '<div class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mb-2">Boost en cours ' + curDone + '/5 — terminer avant d\'en publier un autre</div>'
+          : '';
+
+        return (
+          '<div class="mb-4">' +
+            '<div class="flex items-center justify-between mb-1.5">' +
+              '<div class="text-xs font-black text-slate-700 uppercase tracking-wider">⚡ Publier un boost (5 exos)</div>' +
+              statusLabel +
+            '</div>' +
+            histHTML +
+            boostMsg +
+            '<div class="' + boostBoxClass + '">' +
+              '<textarea id="modal-boost-json-' + st.code + '" class="adm-textarea" style="height:110px" placeholder="' + boostPH.replace(/"/g,'&quot;') + '"></textarea>' +
+              '<button onclick="publishBoost(\'' + st.code + '\')" id="btn-boost-' + st.code + '" class="btn btn-ac btn-fw py-3 mt-2 text-sm">⚡ Enregistrer ce boost</button>' +
+            '</div>' +
+          '</div>'
+        );
+      })() +
+
+      // 📚 Chapitre — verrouillé si chapitre en cours
+      (function() {
+        var chapExosDone = st.currentChapExosDone || 0;
+        var chapLocked = chapExosDone > 0 && chapExosDone < 20;
+        var chapMsg = chapLocked
+          ? '<div class="text-xs text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2 mb-2">Chapitre en cours — ' + chapExosDone + '/20 exos. Terminer avant d\'assigner la suite.</div>'
+          : '';
+        var chapBoxClass = chapLocked ? 'opacity-50 pointer-events-none' : '';
+
+        return (
+          '<div class="mb-2">' +
+            '<div class="flex items-center justify-between mb-1.5">' +
+              '<div class="text-xs font-black text-slate-700 uppercase tracking-wider">📚 Publier un chapitre complet</div>' +
+              (st.chapNewCount > 0 ? '<span class="text-[10px] font-black text-indigo-600 bg-indigo-100 border border-indigo-200 px-2 py-0.5 rounded-full">' + st.chapNewCount + ' en attente ✓</span>' : '') +
+            '</div>' +
+            chapMsg +
+            '<div class="' + chapBoxClass + '">' +
+              '<button onclick="copyAdminPrompt(\'' + st.code + '\',\'chapitre\',\'' + topCat + '\')" class="adm-copy-btn mb-2">📋 Copier le prompt Claude — Chapitre complet ' + topCat.replace(/_/g,' ') + '</button>' +
+              '<textarea id="modal-chap-json-' + st.code + '" class="adm-textarea" style="height:130px" placeholder="' + chapPH.replace(/"/g,'&quot;') + '"></textarea>' +
+              '<button onclick="publishChapter(\'' + st.code + '\')" id="btn-chap-' + st.code + '" class="btn btn-dk btn-fw py-3 mt-2 text-sm">📚 Enregistrer ce chapitre</button>' +
+            '</div>' +
+          '</div>'
+        );
+      })() +
+
+    '</div>'
+  );
+}
+
+// ── Publier un boost pour un élève ───────────────────────────
+async function publishBoost(code) {
+  var ta  = document.getElementById('modal-boost-json-' + code);
+  var raw = ta ? ta.value.trim() : '';
+  if (!raw) { showT('Colle le JSON du boost d\'abord', 3000, '⚠️'); return; }
+
+  var parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (e) {
+    showT('JSON invalide : ' + e.message.substring(0, 50), 3500, '❌'); return;
+  }
+  if (!parsed.exos || !Array.isArray(parsed.exos) || parsed.exos.length === 0) {
+    showT('JSON invalide : exos[] vide ou manquant', 3500, '❌'); return;
+  }
+
+  var btn = document.getElementById('btn-boost-' + code);
+  if (btn) { btn.innerHTML = '<span class="ld"></span> Publication...'; btn.disabled = true; }
+
+  try {
+    var mpTa = document.getElementById('modal-motprof-' + code);
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({
+      action:     'publish_admin_boost',
+      adminCode:  S.prof.code,
+      targetCode: code,
+      exos:       parsed.exos,
+      insight:    parsed.insight || '',
+      motProf:    mpTa ? mpTa.value.trim() : ''
+    }) });
+    var d = await r.json();
+    if (d.status === 'success') {
+      showT('⚡ Boost publié ! L\'élève le recevra au prochain login.', 4500, '✅');
+      // Mettre à jour la carte en mémoire
+      for (var i = 0; i < S.adminStudents.length; i++) {
+        if (S.adminStudents[i].code === code) {
+          S.adminStudents[i].action   = '👍 RAS';
+          S.adminStudents[i].boostNew = true;
+          break;
+        }
+      }
+      closeStudentModal();
+      _renderAdminCards();
+    } else {
+      showT('❌ ' + (d.message || 'Erreur publication'), 4000, '❌');
+      if (btn) { btn.innerHTML = '⚡ Publier ce boost'; btn.disabled = false; }
+    }
+  } catch (e) {
+    showT('❌ Erreur réseau', 3000, '❌');
+    if (btn) { btn.innerHTML = '⚡ Publier ce boost'; btn.disabled = false; }
+  }
+}
+
+// ── Publier un chapitre pour un élève ────────────────────────
+async function publishChapter(code) {
+  var ta  = document.getElementById('modal-chap-json-' + code);
+  var raw = ta ? ta.value.trim() : '';
+  if (!raw) { showT('Colle le JSON du chapitre d\'abord', 3000, '⚠️'); return; }
+
+  var parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (e) {
+    showT('JSON invalide : ' + e.message.substring(0, 50), 3500, '❌'); return;
+  }
+  if (!parsed.categorie || typeof parsed.categorie !== 'string' || !parsed.categorie.trim()) {
+    showT('JSON invalide : champ "categorie" requis', 3500, '❌'); return;
+  }
+  if (!parsed.exos || !Array.isArray(parsed.exos) || parsed.exos.length === 0) {
+    showT('JSON invalide : exos[] vide ou manquant', 3500, '❌'); return;
+  }
+
+  var btn = document.getElementById('btn-chap-' + code);
+  if (btn) { btn.innerHTML = '<span class="ld"></span> Publication...'; btn.disabled = true; }
+
+  try {
+    var mpTa2 = document.getElementById('modal-motprof-' + code);
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({
+      action:     'publish_admin_chapter',
+      adminCode:  S.prof.code,
+      targetCode: code,
+      categorie:  parsed.categorie,
+      exos:       parsed.exos,
+      insight:    parsed.insight || '',
+      motProf:    mpTa2 ? mpTa2.value.trim() : ''
+    }) });
+    var d = await r.json();
+    if (d.status === 'success') {
+      showT('📚 Chapitre publié ! L\'élève le recevra au prochain login.', 4500, '✅');
+      // Mettre à jour en mémoire
+      for (var i = 0; i < S.adminStudents.length; i++) {
+        if (S.adminStudents[i].code === code) {
+          S.adminStudents[i].action      = '👍 RAS';
+          S.adminStudents[i].chapNewCount = (S.adminStudents[i].chapNewCount || 0) + 1;
+          break;
+        }
+      }
+      closeStudentModal();
+      _renderAdminCards();
+    } else {
+      showT('❌ ' + (d.message || 'Erreur publication'), 4000, '❌');
+      if (btn) { btn.innerHTML = '📚 Publier ce chapitre'; btn.disabled = false; }
+    }
+  } catch (e) {
+    showT('❌ Erreur réseau', 3000, '❌');
+    if (btn) { btn.innerHTML = '📚 Publier ce chapitre'; btn.disabled = false; }
+  }
+}
+</script>
+</body>
+</html>
