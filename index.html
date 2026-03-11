@@ -1485,7 +1485,6 @@ function _flowStartDiag() {
   // Appel GAS : selectedChapters:[] = TOUS les chapitres du niveau (8-12 exos)
   fetch(SU, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'generate_diagnostic', level: _flowLevel, selectedChapters: [] })
   })
   .then(function(r) { return r.json(); })
@@ -1648,7 +1647,7 @@ async function _flowGuestRegister() {
   var hash = await h256('Matheux2026!', email.toLowerCase().trim());
 
   // Tenter register
-  var r = await fetch(SU, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+  var r = await fetch(SU, { method: 'POST',
     body: JSON.stringify({ action: 'register', email: email.toLowerCase().trim(),
       name: prenom, level: S.niv, password: hash })
   }).then(function(x) { return x.json(); }).catch(function() { return { status: 'error' }; });
@@ -1659,7 +1658,7 @@ async function _flowGuestRegister() {
   } else if ((r.message || '').toLowerCase().includes('exist') || (r.message || '').toLowerCase().includes('déjà') || (r.message || '').toLowerCase().includes('compte')) {
     // Compte existant → login silencieux
     isExisting = true;
-    var r2 = await fetch(SU, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    var r2 = await fetch(SU, { method: 'POST',
       body: JSON.stringify({ action: 'login', email: email.toLowerCase().trim(), password: hash })
     }).then(function(x) { return x.json(); }).catch(function() { return { status: 'error' }; });
     if (r2.status === 'success') {
@@ -1683,7 +1682,7 @@ async function _flowGuestRegister() {
     var id  = S.niv + '-' + r3.rC + '-' + r3.rI;
     var status = S.res[id] || 'HARD';
     var elapsed = S.exoStartTime[id] ? Math.round((Date.now() - S.exoStartTime[id]) / 1000) : 0;
-    return fetch(SU, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    return fetch(SU, { method: 'POST',
       body: JSON.stringify({ action: 'save_score', code: code, name: prenom, level: S.niv,
         categorie: exo.oC || exo.categorie || 'Diagnostic', exercice_idx: i + 1,
         q: (exo.q || '').substring(0, 80), resultat: status,
@@ -1701,7 +1700,7 @@ async function _flowGuestRegister() {
   try { localStorage.setItem('boost_v23', JSON.stringify({ email: email.toLowerCase().trim(), password: hash })); } catch(e) {}
 
   // Login final → initApp normal
-  var loginR = await fetch(SU, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+  var loginR = await fetch(SU, { method: 'POST',
     body: JSON.stringify({ action: 'login', email: email.toLowerCase().trim(), password: hash })
   }).then(function(x) { return x.json(); }).catch(function() { return { status: 'error' }; });
 
