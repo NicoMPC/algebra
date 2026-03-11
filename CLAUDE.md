@@ -466,6 +466,19 @@ Règles prioritaires (ordre strict, plusieurs peuvent s'appliquer → afficher t
 
 ---
 
+### ✅ SESSION 12 mars — suite 2 (fixes UX, commit b96f9d8)
+
+#### Backend (GAS @24)
+- `login()` retourne `boostExosDone` (ExosDone du boost du jour depuis DailyBoosts)
+
+#### index.html
+- **Auto-login silencieux** : DOMContentLoaded ne montre plus le form pendant le fetch → plus de modal "mdp incorrect" parasite
+- **Boost consommé** : `initApp` — si `d.boostExosDone >= 5` → `S.boostConsumed = true` (fix boost "disponible" après refresh)
+- **Layout 2 colonnes** : chapitre/boost archivé → flex-row : carte ✅ (gauche) + carte 📅 "Prochain chapitre demain" (droite)
+- **Score local** : `renderProgress()` calcule score depuis `S.res` quand serveur montre 0 (fix Fractions 0%)
+
+---
+
 ### ✅ SESSION 12 mars — suite (UX admin + élève, commit 9421ef6)
 
 #### Admin modal élève
