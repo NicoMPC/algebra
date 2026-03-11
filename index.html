@@ -1459,11 +1459,7 @@ function flowSelectLevel(lv) {
 }
 
 function flowToggleChap(el, key) {
-  // Cap à 2 chapitres max
-  if (!el.classList.contains('sel') && _flowChaps.length >= 2) {
-    showT('2 chapitres max pour le diagnostic — c\'est déjà bien 🎯', 2500, '⚠️');
-    return;
-  }
+  // Sélection libre — pas de cap chapitres
   el.classList.toggle('sel');
   if (el.classList.contains('sel')) { if (!_flowChaps.includes(key)) _flowChaps.push(key); }
   else { _flowChaps = _flowChaps.filter(function(k){ return k !== key; }); }
@@ -1496,7 +1492,6 @@ function _flowStartDiag() {
   // Appel GAS generate_diagnostic sans code (guest)
   fetch(SU, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'generate_diagnostic', level: _flowLevel, selectedChapters: chaps })
   })
   .then(function(r) { return r.json(); })
@@ -1690,7 +1685,6 @@ async function flowRegister() {
         if (!exo) return;
         fetch(SU, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             action:       'save_score',
             code:         newCode,
