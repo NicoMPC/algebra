@@ -497,6 +497,31 @@ Règles prioritaires (ordre strict, plusieurs peuvent s'appliquer → afficher t
 
 ---
 
+### ✅ SESSION 12 mars — Git + variété profils admin
+
+#### Dépôt git corrompu → reconstruit
+- Objets git vides (crash disque probable) → `.git` supprimé et réinitialisé proprement
+- Tous les fichiers intacts. Nouveau commit racine `12a61e7` pushé sur GitHub.
+
+#### rebuild_sheet.py — règles ACTION corrigées (alignement GAS)
+- **Avant** : règles obsolètes (`🆕 BOOST TERMINÉ`, pas de BLOQUÉ, boost détecté via Scores/BOOST)
+- **Après** : règles identiques au GAS `rebuildSuivi()` :
+  - `🔴 BLOQUÉ` : inactif > 7j ET score < 40 sur tous chapitres
+  - `⚡ BOOST TERMINÉ → préparer le suivant` : ExosDone=5 ET dernierBoost < today
+  - `✅ CHAPITRE TERMINÉ → assigner la suite` : ≥20 exos ET cols Nicolas vides
+  - `👍 RAS` : sinon
+- Boost détecté via `DailyBoosts.ExosDone` (plus Scores/BOOST)
+- DailyBoosts chargés **une seule fois** avant la boucle utilisateurs
+
+#### Profils BLOQUÉ ajoutés (Sheet)
+- 3 profils avec scores anciens (2026-03-01) + tous HARD : **Inès** (INE504), **Sarah** (SAR405), **Romain** (ROM302)
+- Variété admin finale : 🔴×3 / ⚡×7 / ✅×7 / 👍×4
+
+#### Leçon technique
+- Codes Users ≠ codes Scores pour certains profils (ex: INE504 vs INE505) → toujours vérifier la cohérence des codes entre onglets avant d'écrire dans Scores
+
+---
+
 ### Session 10 mars — MVP injection parfaite (6 phases)
 
 #### backend.js (GAS @15)

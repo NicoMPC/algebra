@@ -482,6 +482,13 @@ def step7_rebuild_suivi():
     users_rows  = sh.read("Users")
     scores_rows = sh.read("Scores")
 
+    # DailyBoosts indexés par code (lus une seule fois)
+    boosts_by_code = {}
+    for r in sh.read("DailyBoosts"):
+        c = str(r.get("Code", ""))
+        if c:
+            boosts_by_code.setdefault(c, []).append(r)
+
     # Indexer scores par code
     scores_by_code = {}
     for r in scores_rows:
@@ -536,16 +543,27 @@ def step7_rebuild_suivi():
                 chap_first[cat] = d
         chap_order = sorted(chap_count.keys(), key=lambda c: chap_first.get(c, ""))
 
-        # Boost : compter exos BOOST aujourd'hui
-        boost_today_scores = [r for r in scores
-                              if r.get("Chapitre") == "BOOST" and r.get("Date") == today]
-        boost_today_done   = len(boost_today_scores)
-        boost_consumed     = boost_today_done >= 5
+        # Boost via DailyBoosts.ExosDone (même logique que GAS)
+        all_user_boosts = boosts_by_code.get(code, [])
+        boost_today_scores = []  # pour resume_boost (pas utilisé dans les règles)
+        if all_user_boosts:
+            sorted_boosts = sorted(all_user_boosts, key=lambda r: str(r.get("Date","")), reverse=True)
+            last_boost_row = sorted_boosts[0]
+            last_boost_date_val = str(last_boost_row.get("Date",""))
+            last_boost_exos_done = int(last_boost_row.get("ExosDone", 0) or 0)
+        else:
+            last_boost_date_val  = ""
+            last_boost_exos_done = 0
 
-        if boost_consumed:
-            boost_actuel = f"Consommé ✅ ({boost_today_done}/5)"
-        elif boost_today_done > 0:
-            boost_actuel = f"En cours ({boost_today_done}/5)"
+        if last_boost_date_val == today:
+            if last_boost_exos_done >= 5:
+                boost_actuel = f"Consommé ✅ (5/5)"
+            elif last_boost_exos_done > 0:
+                boost_actuel = f"En cours ({last_boost_exos_done}/5)"
+            else:
+                boost_actuel = "Pending 📬 (0/5)"
+        elif last_boost_date_val:
+            boost_actuel = f"Dernier: {last_boost_date_val} ✅"
         else:
             boost_actuel = "—"
 
@@ -578,23 +596,39 @@ def step7_rebuild_suivi():
         ]
         resume_boost = build_boost_summary(boost_today_scores)
 
-        # Calcul ACTION (4 règles, ordre strict)
-        total_scores_non_calib = sum(
-            1 for r in scores if r.get("Chapitre") not in ("CALIBRAGE",)
-        )
-        boost_rows = sh.read("DailyBoosts")
-        all_user_boosts = [r for r in boost_rows if str(r.get("Code","")) == code]
-        last_boost_date = max((str(r.get("Date","")) for r in all_user_boosts), default="")
+        # Calcul ACTION — règles identiques au GAS rebuildSuivi()
+        # Règle 1 : BLOQUÉ — inactif > 7j ET score < 40 sur tous chapitres
+        from datetime import datetime, timedelta
+        cutoff7 = (datetime.today() - timedelta(days=7)).strftime("%Y-%m-%d")
+        inactif_7j = (last_date < cutoff7) if last_date else True
+
+        def chap_score_pct(cat):
+            exos = chap_scores.get(cat, [])
+            if not exos: return 100
+            easy = sum(1 for r in exos if str(r.get("Résultat","")) == "EASY")
+            return round(easy * 100 / len(exos))
+
+        all_chap_low = (len(chap_order) > 0 and
+                        all(chap_score_pct(c) < 40 for c in chap_order))
+
+        # Règle 2 : BOOST TERMINÉ — ExosDone=5 ET dernierBoost < today ET newBoost vide
+        boost_termine = (len(all_user_boosts) >= 1 and
+                         last_boost_exos_done >= 5 and
+                         last_boost_date_val < today and
+                         not new_boost)
+
+        # Règle 3 : CHAPITRE TERMINÉ — ≥20 exos ET toutes cols Nicolas vides
         chap_termine_sans_suite = any(
-            chap_count.get(c, 0) >= 20 and not new_cols[i]
-            for i, c in enumerate(chaps) if c
-        )
-        if total_scores_non_calib > 0 and len(all_user_boosts) == 0:
-            action = "🔴 DIAGNOSTIC FAIT → préparer boost 1"
-        elif len(all_user_boosts) >= 1 and last_boost_date < today and not new_boost:
-            action = "🆕 BOOST TERMINÉ → préparer boost suivant"
+            chap_count.get(c, 0) >= 20
+            for c in chaps if c
+        ) and not new_ch1 and not new_ch2 and not new_ch3 and not new_ch4
+
+        if inactif_7j and all_chap_low:
+            action = "🔴 BLOQUÉ"
+        elif boost_termine:
+            action = "⚡ BOOST TERMINÉ → préparer le suivant"
         elif chap_termine_sans_suite:
-            action = "✅ CHAPITRE TERMINÉ → assigner suite"
+            action = "✅ CHAPITRE TERMINÉ → assigner la suite"
         else:
             action = "👍 RAS"
 
