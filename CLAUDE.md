@@ -466,6 +466,31 @@ Règles prioritaires (ordre strict, plusieurs peuvent s'appliquer → afficher t
 
 ---
 
+### ✅ SESSION 12 mars — UX élève + admin JSON boost (TERMINÉ)
+
+#### Git repo reconstruit
+- Objets git corrompus (fichiers vides) → `.git` supprimé, `git init`, remote re-ajouté
+- Commit restauration : `12a61e7` — tout l'historique perdu mais code intact
+
+#### rebuild_sheet.py — règles ACTION synchronisées avec GAS
+- Ajout `boosts_by_code` depuis DailyBoosts (ExosDone) avant la boucle
+- Règles exactes : 🔴 BLOQUÉ (inactif>7j + all scores<40) / ⚡ BOOST TERMINÉ (ExosDone=5 + dernier<today) / ✅ CHAPITRE TERMINÉ / 👍 RAS
+- Profils BLOQUÉ : Léa/Mathis/Sarah/Inès/Romain — scores mis à HARD, dates à 2026-03-01
+
+#### backend.js — Option 1 : bouton Copier boost JSON
+- `boostHistory` enrichi avec `exos: b.boost ? (b.boost.exos || []) : []`
+- `copyLastBoostJSON(code)` : JSON enrichi (exos originaux + stats élève par index)
+- Bouton "📋 Copier le dernier boost JSON" en tête de l'accordéon historique
+- GAS @23 ✅ — commit `c22f471`
+
+#### index.html — 4 phases UX élève (commit `2a808d3`)
+- **PHASE 1** : Chapitres/boost terminés → carte verte archivée pliée, `renderArchiveSection()` avec historique exos (✅/❌, réponse donnée si ❌, 💡/📐). Nouveau chapitre auto-déplié, trié en premier.
+- **PHASE 2** : `rMastery()` — chapitre 20/20 → toutes notions acquises. `renderProgress()` — compL local → score=100%, isMast=true.
+- **PHASE 3** : CSS `pulseGentle` (3s douce). Pills 💡 et 👁 pulsent jusqu'à ouverture. Stop auto : "✓ Indices vus" / "✓ Formule vue".
+- **PHASE 4** : Vérification — `renderChapComplete` conservée (dead code — pas d'impact), `chkComp` appelle toujours `render()` qui montre la carte archivée.
+
+---
+
 ### ✅ SESSION 11 mars — APRÈS-MIDI — Données scénarios + fixes admin modal
 
 #### Données Sheet (sheets.py)
