@@ -2474,16 +2474,21 @@ function getAdminOverview(p) {
   });
 
   // ── Progress (pour currentChapExosDone) ─────────────────
-  var progressByCode = {};  // code → [ { chapitre, nbExos, score, statut } ]
+  var progressByCode = {};  // code → [ { chapitre, nbExos, score, statut, dernierePratique } ]
   getRows(SH.PROGRESS).forEach(function(r) {
     var code = String(r['Code'] || '');
     if (!code) return;
     if (!progressByCode[code]) progressByCode[code] = [];
+    var dp = r['DernierePratique'];
+    var dpStr = (dp instanceof Date)
+      ? Utilities.formatDate(dp, 'Europe/Paris', 'yyyy-MM-dd')
+      : String(dp || '');
     progressByCode[code].push({
-      chapitre: String(r['Chapitre'] || ''),
-      nbExos:   parseInt(r['NbExos'] || 0) || 0,
-      score:    parseFloat(r['Score'] || 0) || 0,
-      statut:   String(r['Statut'] || '')
+      chapitre:         String(r['Chapitre'] || ''),
+      nbExos:           parseInt(r['NbExos'] || 0) || 0,
+      score:            parseFloat(r['Score'] || 0) || 0,
+      statut:           String(r['Statut'] || ''),
+      dernierePratique: dpStr
     });
   });
 
@@ -2528,7 +2533,12 @@ function getAdminOverview(p) {
       var boostNew    = row ? (String(row[BOOST_NEW_IDX] || '').trim() !== '') : false;
 
       // Détail par chapitre (depuis Scores 30j) — TOUS les exos, pas de cap
+      // Enrichi avec nbExos et dernierePratique depuis Progress (source de vérité)
       var chapData = scoresByCode[code] || {};
+      var userProgressMap = {};
+      (progressByCode[code] || []).forEach(function(pr) {
+        userProgressMap[pr.chapitre] = pr;
+      });
       var chapitresDetail = Object.keys(chapData).map(function(cat) {
         var exos      = chapData[cat].exos;
         var total     = exos.length;
@@ -2539,15 +2549,21 @@ function getAdminOverview(p) {
         var fCount    = exos.filter(function(e) { return e.formula; }).length;
         // Tri par num décroissant → du plus récent au plus ancien
         var sorted    = exos.slice().sort(function(a, b) { return b.num - a.num; });
+        // nbExos depuis Progress (source de vérité pour savoir si terminé)
+        var progEntry = userProgressMap[cat];
+        var nbExos = progEntry ? progEntry.nbExos : total;
+        var dernierePratique = progEntry ? progEntry.dernierePratique : '';
         return {
-          cat:        cat,
-          totalExos:  total,
-          hardCount:  hardExos.length,
-          rateSuccess:total ? Math.round(easyCount * 100 / total) : 0,
-          avgTime:    total ? Math.round(totalTime  / total)      : 0,
-          avgIndices: total ? Math.round(totalIdx   / total * 10) / 10 : 0,
-          pctFormula: total ? Math.round(fCount     * 100 / total)     : 0,
-          exosList:   sorted  // tous les exos, sans cap
+          cat:              cat,
+          totalExos:        total,
+          nbExos:           nbExos,
+          dernierePratique: dernierePratique,
+          hardCount:        hardExos.length,
+          rateSuccess:      total ? Math.round(easyCount * 100 / total) : 0,
+          avgTime:          total ? Math.round(totalTime  / total)      : 0,
+          avgIndices:       total ? Math.round(totalIdx   / total * 10) / 10 : 0,
+          pctFormula:       total ? Math.round(fCount     * 100 / total)     : 0,
+          exosList:         sorted  // tous les exos, sans cap
         };
       }).sort(function(a, b) { return b.hardCount - a.hardCount; }); // plus fragile en 1er
 
@@ -2583,14 +2599,24 @@ function getAdminOverview(p) {
       }
 
       // ── currentChapExosDone ────────────────────────────────
+      // Logique : seul le chapitre le plus récent (DernierePratique la plus haute)
+      // peut bloquer la box "Publier chapitre". Un ancien chapitre non terminé
+      // ne doit pas bloquer l'assignation d'une nouvelle suite.
       var userProgress = progressByCode[code] || [];
-      // Chapitre en cours = le premier non maîtrisé avec des exos
       var currentChapExosDone = 0;
-      var activeChapProgress = userProgress
-        .filter(function(pr) { return pr.nbExos > 0 && pr.nbExos < 20; })
-        .sort(function(a, b) { return b.nbExos - a.nbExos; });
-      if (activeChapProgress.length > 0) {
-        currentChapExosDone = activeChapProgress[0].nbExos;
+      if (userProgress.length > 0) {
+        // Trouver le chapitre avec la DernierePratique la plus récente
+        var mostRecentChap = userProgress
+          .filter(function(pr) { return pr.nbExos > 0; })
+          .sort(function(a, b) {
+            var da = a.dernierePratique || '';
+            var db = b.dernierePratique || '';
+            return db > da ? 1 : db < da ? -1 : 0;
+          })[0];
+        // Bloquer uniquement si ce chapitre actif n'est pas encore terminé
+        if (mostRecentChap && mostRecentChap.nbExos < 20) {
+          currentChapExosDone = mostRecentChap.nbExos;
+        }
       }
 
       return {

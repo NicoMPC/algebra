@@ -3528,7 +3528,9 @@ function _buildModalHTML(st) {
         );
       })() +
 
-      // 📚 Chapitre — verrouillé si chapitre en cours ou boost à préparer
+      // 📚 Chapitre — verrouillé si chapitre actif en cours ou boost à préparer
+      // chapLocked = true UNIQUEMENT si le chapitre le plus récent (currentChapExosDone)
+      // est en cours (>0 et <20). Les anciens chapitres non terminés ne bloquent pas.
       (function() {
         var chapExosDone = st.currentChapExosDone || 0;
         var chapInProgress = chapExosDone > 0 && chapExosDone < 20;
@@ -3544,6 +3546,48 @@ function _buildModalHTML(st) {
             : '');
         var chapBoxClass = chapLocked ? 'opacity-50 pointer-events-none' : '';
 
+        // ── Section chapitres archivés ─────────────────────────
+        var archivedChaps = detail.filter(function(ch) { return (ch.nbExos || ch.totalExos || 0) >= 20; });
+        var archiveHTML = '';
+        if (archivedChaps.length > 0) {
+          archiveHTML += '<details class="mt-3">';
+          archiveHTML += '<summary class="cursor-pointer text-sm font-medium text-slate-600 hover:text-indigo-600 py-1 select-none">📚 Chapitres archivés (' + archivedChaps.length + ' terminé' + (archivedChaps.length > 1 ? 's' : '') + ')</summary>';
+          archiveHTML += '<div class="mt-2 space-y-2">';
+          archivedChaps.forEach(function(ch) {
+            var nbEx     = ch.nbExos || ch.totalExos || 0;
+            var dpLabel  = ch.dernierePratique ? relDateAdmin(ch.dernierePratique) : '';
+            var infoLine = nbEx + '/20 · ' + ch.rateSuccess + '%' + (dpLabel ? ' · ' + dpLabel : '');
+            archiveHTML += '<div class="bg-slate-50 rounded-lg p-3 border border-slate-200">';
+            archiveHTML += '<div class="flex justify-between items-center mb-1">';
+            archiveHTML += '<span class="font-medium text-sm text-slate-800">' + ch.cat.replace(/_/g, ' ') + '</span>';
+            archiveHTML += '<span class="text-xs text-slate-500">' + infoLine + '</span>';
+            archiveHTML += '</div>';
+            // Barre de succès compacte
+            var barColor = ch.rateSuccess >= 75 ? '#059669' : ch.rateSuccess >= 50 ? '#f59e0b' : '#e11d48';
+            archiveHTML += '<div class="h-1 rounded-full bg-slate-200 mb-2"><div class="h-1 rounded-full" style="width:' + ch.rateSuccess + '%;background:' + barColor + '"></div></div>';
+            // Accordéon exos si disponibles
+            if (ch.exosList && ch.exosList.length > 0) {
+              archiveHTML += '<details class="text-xs text-slate-600 mt-1">';
+              archiveHTML += '<summary class="cursor-pointer select-none hover:text-indigo-600">Voir les ' + ch.exosList.length + ' exercices (30j)</summary>';
+              archiveHTML += '<div class="mt-1 space-y-1 max-h-40 overflow-y-auto no-sb">';
+              ch.exosList.forEach(function(e) {
+                var isHard = e.res === 'HARD';
+                var enonce = e.enonce || '—';
+                archiveHTML += '<div class="flex items-start gap-1.5 py-0.5">';
+                archiveHTML += '<span class="flex-shrink-0 text-xs">' + (isHard ? '❌' : '✅') + '</span>';
+                archiveHTML += '<span class="flex-1 leading-snug">' + (enonce.length > 70 ? enonce.substring(0, 70) + '…' : enonce) + '</span>';
+                if (e.indices > 0) archiveHTML += '<span class="flex-shrink-0 text-amber-600">💡×' + e.indices + '</span>';
+                archiveHTML += '</div>';
+              });
+              archiveHTML += '</div>';
+              archiveHTML += '</details>';
+            }
+            archiveHTML += '</div>';
+          });
+          archiveHTML += '</div>';
+          archiveHTML += '</details>';
+        }
+
         return (
           '<div class="mb-2">' +
             '<div class="flex items-center justify-between mb-1.5">' +
@@ -3556,6 +3600,7 @@ function _buildModalHTML(st) {
               '<textarea id="modal-chap-json-' + st.code + '" class="adm-textarea" style="height:130px" placeholder="' + chapPH.replace(/"/g,'&quot;') + '"></textarea>' +
               '<button onclick="publishChapter(\'' + st.code + '\')" id="btn-chap-' + st.code + '" class="btn btn-dk btn-fw py-3 mt-2 text-sm">📚 Enregistrer ce chapitre</button>' +
             '</div>' +
+            archiveHTML +
           '</div>'
         );
       })() +
