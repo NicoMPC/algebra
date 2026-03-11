@@ -1743,10 +1743,22 @@ async function _flowGuestRegister() {
       }
     } catch(e) {}
 
+    // Collecter les erreurs du diagnostic AVANT de reset LVL (pour boostFromDiag)
+    var _diagErrs = [];
+    var _calExosTmp = LVL[S.niv] && LVL[S.niv].cats ? (LVL[S.niv].cats['CALIBRAGE'] || []) : [];
+    _calExosTmp.forEach(function(exo, i) {
+      var r2 = res2('CALIBRAGE', i);
+      var id = S.niv + '-' + r2.rC + '-' + r2.rI;
+      if (S.res[id] === 'HARD') _diagErrs.push(exo.q || '');
+    });
+
     // Reset calState avant initApp pour passer le if(calState !== 'test') → calDone=true → null
     S.calState = null;
     initApp(loginR, true); // skipRender — on contrôle l'affichage
     if (LVL[S.niv] && LVL[S.niv].cats) delete LVL[S.niv].cats['CALIBRAGE'];
+
+    // Générer le premier boost en background pendant l'onboarding
+    boostFromDiag(_diagErrs.slice(0, 4));
 
     // Onboarding adapté : pas de slide "diagnostic" (déjà fait), slide "résultats sauvés"
     var _guestSlides = [
