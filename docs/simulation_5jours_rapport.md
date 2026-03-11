@@ -5,32 +5,20 @@ Date : 2026-03-11
 
 | Phase | Résultat |
 |---|---|
-| PHASE 1 : Nettoyage | 0 lignes supprimées, 0/4 profils créés |
-| PHASE 2 : J0-1 | 0 diagnostics, 2 boosts complets, 1 partiels, 0 boosts admin |
-| PHASE 3 : J2-3 | 5 chapitres complets, 2 partiels, 0 chap admin, 0 boosts admin |
-| PHASE 4 : J4-5 | 0 logins OK, 0 motProf reçus |
+| PHASE 1 : Nettoyage | 0 lignes supprimées, 4/4 profils créés |
+| PHASE 2 : J0-1 | 4 diagnostics, 2 boosts complets, 2 partiels, 3 boosts admin |
+| PHASE 3 : J2-3 | 7 chapitres complets, 2 partiels, 4 chap admin, 3 boosts admin |
+| PHASE 4 : J4-5 | 6 logins OK, 3 motProf reçus |
 | PHASE 5 : Tests | test_scenarios=timeout, test_complet=timeout |
 
 ## Nouveaux codes créés
+  - Thomas (abandonneur) : QU2XT5 — 6EME
+  - Paul (lent) : 5CCZEE — 5EME
+  - Léa (parfait_bizarre) : XPERX8 — 4EME
+  - Marc (boost_hater) : M9WCCS — 3EME
 
-
-## Erreurs (16)
-- Register Thomas: Un compte existe déjà avec cet email.
-- Register Paul: Un compte existe déjà avec cet email.
-- Register Léa: Un compte existe déjà avec cet email.
-- Register Marc: Un compte existe déjà avec cet email.
-- publish_admin_boost → JAD301 (avec motProf): Exo 1 invalide : "a" absent des options.
-- publish_admin_boost → ROM302 (avec motProf): Exo 1 invalide : "a" absent des options.
-- publish_admin_boost → LUC602 (sans motProf): Exo 1 invalide : "a" absent des options.
-- publish_admin_chapter → LUC602 Nombres_entiers (avec motProf): Exo 1 : "a" absent des options.
-- publish_admin_chapter → MAT505 Proportionnalité (sans motProf): Exo 1 : "a" absent des options.
-- publish_admin_chapter → JAD301 Fonctions (avec motProf): Exo 1 : "a" absent des options.
-- publish_admin_boost J3 → EMM601 (avec motProf): Exo 1 invalide : "a" absent des options.
-- publish_admin_boost J3 → THE404 (sans motProf): Exo 1 invalide : "a" absent des options.
-- Emma: reconnexion J4 OK: Email ou mot de passe incorrect.
-- Lucas: reconnexion J4 OK: Email ou mot de passe incorrect.
-- Jade: reconnexion J4 OK: Email ou mot de passe incorrect.
-- Double login simultané Inès : pas de crash: ['error', 'error']
+## Erreurs (1)
+- Jade: boost reçu avec motProf: {}
 
 ## Scénarios couverts
 - **Thomas (Abandonneur 6EME)** : inscription → abandon diagnostic 2/4 → reconnexion → reçoit boost motProf
