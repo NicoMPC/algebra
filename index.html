@@ -772,6 +772,9 @@
         </div>
       </div>
     </div>
+    <!-- Badge essai gratuit -->
+    <div id="trial-badge" class="hidden px-4 pb-2 pt-0"></div>
+
     <!-- Nav 2 vues — B2 -->
     <div id="main-nav" class="hidden px-4 pb-3 pt-1 border-t border-slate-100 flex gap-1.5">
       <button id="nav-chap" onclick="setView('chapters')"
@@ -968,6 +971,7 @@ let S = {
   boostInsight: null,     // { easy, total, boostCat } — écran post-boost
   diagChapResults: {},    // { cat → { easy, total, name } } pour comparaison boost
   isFirstDay: false,
+  trial: null,            // { trialActive, daysLeft, isPremium } — depuis GAS login()
   drafts: {},          // { exoId → { img, txt } }
   sent: new Set(),
   scoreQueue: JSON.parse(localStorage.getItem('sq') || '[]'),
@@ -1466,6 +1470,65 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ══════════════════════════════════════════════════════════════
+// ESSAI GRATUIT — badge + overlay
+// ══════════════════════════════════════════════════════════════
+function renderTrialBadge() {
+  var el = document.getElementById('trial-badge');
+  if (!el) return;
+  // Cacher sur vues landing/auth/admin
+  if (!S.prof || (S.prof && S.prof.isAdmin)) { el.classList.add('hidden'); return; }
+  var t = S.trial;
+  if (!t || t.isPremium) { el.classList.add('hidden'); return; }
+  if (!t.trialActive)    { el.classList.add('hidden'); return; }
+
+  var days = t.daysLeft || 0;
+  var urgent = days <= 2;
+  var color = urgent
+    ? 'background:#fef3c7;border-color:#fcd34d;color:#92400e'
+    : 'background:#eef2ff;border-color:#c7d2fe;color:#4338ca';
+  el.innerHTML =
+    '<div style="display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;' +
+    'padding:.3rem .75rem;border-radius:99px;border:1.5px solid;' + color + '">' +
+    '🔥 J-' + days + ' · Essai gratuit' +
+    '</div>';
+  el.classList.remove('hidden');
+}
+
+function showTrialExpired() {
+  // Ne pas empiler deux overlays
+  if (document.getElementById('trial-expired-overlay')) return;
+  var ov = document.createElement('div');
+  ov.id = 'trial-expired-overlay';
+  ov.style.cssText =
+    'position:fixed;inset:0;z-index:4000;display:flex;align-items:center;justify-content:center;' +
+    'padding:1.5rem;background:rgba(15,23,42,.82)';
+  ov.innerHTML =
+    '<div style="background:#fff;border-radius:24px;width:100%;max-width:380px;padding:2rem;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.35)">' +
+    '<div style="font-size:3rem;margin-bottom:.75rem">⏰</div>' +
+    '<div style="font-family:Syne,sans-serif;font-weight:900;font-size:1.2rem;color:#07090f;margin-bottom:.6rem">Ton essai de 7 jours est terminé</div>' +
+    '<p style="color:#64748b;font-size:.9rem;font-weight:500;line-height:1.6;margin-bottom:1.5rem">T\'as progressé, maintenant continue sans limite !</p>' +
+    '<button onclick="__trialProlonger()" style="width:100%;padding:1rem;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;' +
+    'font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer;margin-bottom:.75rem">' +
+    'Prolonger l\'accès →' +
+    '</button>' +
+    '<button onclick="__trialDismiss()" style="font-size:.8rem;font-weight:600;color:#94a3b8;background:none;border:none;cursor:pointer">' +
+    'Voir ma progression quand même' +
+    '</button>' +
+    '</div>';
+  document.body.appendChild(ov);
+}
+
+window.__trialProlonger = function() {
+  showT('Bientôt disponible — ton prof est au courant 🔥', 4000, '⏳');
+};
+window.__trialDismiss = function() {
+  var ov = document.getElementById('trial-expired-overlay');
+  if (ov) ov.remove();
+  // Redirige vers la progression (lecture seule acceptable)
+  setView('progress');
+};
+
+// ══════════════════════════════════════════════════════════════
 // APP INIT
 // ══════════════════════════════════════════════════════════════
 function initApp(d, skipRender) {
@@ -1475,6 +1538,13 @@ function initApp(d, skipRender) {
   S.boostEx    = d.boostExistsInDB;
   S.isFirstDay = d.isFirstDay || false;
   if ((d.boostExosDone || 0) >= 5) S.boostConsumed = true;
+
+  // ── Essai 7 jours ──────────────────────────────────────
+  S.trial = d.trial || { trialActive: true, daysLeft: 7, isPremium: false };
+  if (!S.trial.trialActive && !S.trial.isPremium) {
+    // Essai terminé et non premium — afficher overlay après init
+    setTimeout(showTrialExpired, 300);
+  }
 
   var loc = JSON.parse(localStorage.getItem(LK) || '{}');
   var ul  = loc[d.profile.code] || {};
@@ -1510,7 +1580,7 @@ function initApp(d, skipRender) {
   if (d.nextChapter) {
     if (typeof d.nextChapter === 'object' && d.nextChapter.categorie === 'PENDING_MANUAL') {
       // Prof prépare le contenu — afficher message doux, pas de crash
-      S.pendingManual = d.nextChapter.insight || 'Ton prof prépare ton prochain chapitre personnalisé… reviens demain !';
+      S.pendingManual = d.nextChapter.insight || '⏳ Ton prof prépare quelque chose pour toi. Reviens demain matin 🔥';
     } else if (typeof d.nextChapter === 'object' && d.nextChapter.categorie && d.nextChapter.exos && d.nextChapter.exos.length > 0) {
       // JSON complet valide : remplace le contenu du chapitre
       var nc = d.nextChapter;
@@ -1622,6 +1692,7 @@ function updH() {
   document.getElementById('ui-stk').innerText = S.stk;
   document.getElementById('ui-xp').innerText  = S.xp;
   if (S.stk >= 3) document.getElementById('stk-box').style.animation = 'remPulse 2s ease infinite';
+  renderTrialBadge();
 }
 
 function loadBoost() {
@@ -1739,16 +1810,16 @@ window.checkOpt = function(cat, idx, oI, btn) {
     c.className = 'opt ' + (parseInt(c.getAttribute('data-oi')) === cI ? 'oc' : 'on');
   });
 
-  var _OK = ['🔥 Parfait !','✅ Maîtrisé !','💪 Excellent !','⚡ Top niveau !','🎯 En plein dans le mille !','🚀 Continue comme ça !','👏 Bravo !'];
-  var _KO = ['💡 Regarde l\'explication, tu vas comprendre.','📚 Pas de panique — l\'erreur fait partie du chemin.','🧠 Retiens bien la méthode, c\'est ce qui compte.'];
+  var _OK = ['Carton plein 🎯','T\'as géré ça 💪','Dans le mille ⚡','Propre. Vraiment 🔥','Maîtrisé ✅','Trop fort(e) 🚀','GG c\'est dans la boîte 👌'];
+  var _KO = ['Presque ! Regarde bien la réponse 👀','Ça arrive, c\'est comme ça qu\'on apprend 💡','Pas grave — la prochaine tu l\'as 🎯'];
   if (exo.options[oI] === exo.a) {
     btn.className = 'opt oc';
     showXP(100);
-    showT(_OK[Math.floor(Math.random()*_OK.length)], '⭐', 1200);
+    showT(_OK[Math.floor(Math.random()*_OK.length)], 1200, '⭐');
     setTimeout(function(){ mark(cat, idx, 'EASY', null); }, 700);
   } else {
     btn.className = 'opt ow';
-    showT(_KO[Math.floor(Math.random()*_KO.length)], '💡', 2200);
+    showT(_KO[Math.floor(Math.random()*_KO.length)], 2200, '💡');
     // Passe l'option erronée choisie + déploie aide automatiquement (pédagogique)
     setTimeout(function(){
       mark(cat, idx, 'HARD', exo.options[oI]);
@@ -1991,6 +2062,7 @@ function updNav() {
 function setView(v) {
   S.view = v;
   updNav();
+  renderTrialBadge();
   if (v === 'admin') {
     renderAdminDashboard();
   } else if (v === 'progress' && !S.progressLoading) {
@@ -2177,7 +2249,7 @@ function renderChapComplete(cat, data) {
     '<div class="syne font-black text-indigo-900 text-base">✅ Chapitre terminé !</div>' +
     '<div class="text-indigo-700 text-sm font-semibold mt-1">Tu as réussi ' + data.easy + ' exercice' + (data.easy > 1 ? 's' : '') + ' sur ' + data.tot + '.</div>' +
     '</div>' +
-    '<div class="bg-indigo-100 border border-indigo-200 rounded-xl p-3 text-center text-sm font-semibold text-indigo-700">Ton prof prépare ton prochain chapitre personnalisé. Reviens demain matin pour la suite 🔥</div>' +
+    '<div class="bg-indigo-100 border border-indigo-200 rounded-xl p-3 text-center text-sm font-semibold text-indigo-700">Chapitre bouclé 🎉 Reviens demain — ton prof prépare la suite sur mesure.</div>' +
     '</div>';
 }
 
@@ -2187,8 +2259,8 @@ function renderChapComplete(cat, data) {
 function renderArchiveSection(cat, exs) {
   var isBoost = cat === 'BOOST';
   var msg = isBoost
-    ? 'Boost du jour terminé ✓ Le prochain arrive demain 🔥'
-    : 'Chapitre terminé ✓ Le prochain arrive demain matin 🔥';
+    ? 'Boost du jour : fait ✅ T\'es à jour. Reviens demain 🔥'
+    : '📅 Prochain contenu · Demain matin 🔥';
   var html = '<div class="mx-4 mb-4">';
   html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-emerald-700 text-center mb-3">' + msg + '</div>';
   var shown = 0;
@@ -2431,7 +2503,7 @@ function render() {
       html += '<div class="rounded-2xl p-5 flex items-center gap-4 mb-4" style="background:linear-gradient(135deg,#1e1b4b,#312e81)">' +
         '<div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/10">📅</div>' +
         '<div class="flex-1 min-w-0">' +
-          '<div class="syne text-sm font-black text-white/80 mb-0.5">Prochain boost disponible demain matin 🔥</div>' +
+          '<div class="syne text-sm font-black text-white/80 mb-0.5">📅 Prochain contenu · Demain matin 🔥</div>' +
           '<p class="text-indigo-300/70 text-xs font-medium">Ton prof prépare tes prochains exercices ciblés</p>' +
         '</div></div>';
     }
@@ -2472,7 +2544,7 @@ function render() {
         html += '<div class="flex-1 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-1.5 py-3 px-2 text-center" style="background:#fafafa">';
         html += '<div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-base">📅</div>';
         html += '<span class="syne font-black text-xs text-slate-500 leading-tight">Prochain chapitre</span>';
-        html += '<span class="text-[10px] text-slate-400 font-medium leading-tight">Ton prof prépare<br>la suite</span>';
+        html += '<span class="text-[10px] text-slate-400 font-medium leading-tight">📅 Prochain contenu</span>';
         html += '<span class="text-[10px] font-bold text-indigo-400">Demain matin 🔥</span>';
         html += '</div>';
       }
@@ -2781,6 +2853,7 @@ function startNudge(id) {
     var pf = document.getElementById('pill-form-'+id);
     if (ph) ph.classList.add('pill-nudge');
     if (pf && !pf.classList.contains('pointer-events-none')) pf.classList.add('pill-nudge');
+    showT('Psst — t\'as droit aux indices 💡 Hésite pas !', 3500, '💡');
   }, 20000);
 }
 function clearNudge(id) {
