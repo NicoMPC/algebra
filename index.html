@@ -1452,16 +1452,16 @@ document.addEventListener('DOMContentLoaded', function() {
   try {
     var creds = JSON.parse(s);
     if (!creds.email || !creds.password) return;
-    showAuth('login');
-    document.getElementById('le').value = creds.email;
-    document.getElementById('lp').value = '••••••••';
     fetch(SU, { method:'POST', body:JSON.stringify({ action:"login", email:creds.email, password:creds.password }) })
       .then(function(r){ return r.json(); })
       .then(function(d){
         if (d.status === 'success') { initApp(d, false); }
-        else { closeAuth(); }
+        else {
+          showAuth('login');
+          document.getElementById('le').value = creds.email;
+        }
       })
-      .catch(function(){ closeAuth(); });
+      .catch(function(){ /* silently fail */ });
   } catch(e) {}
 });
 
@@ -1474,6 +1474,7 @@ function initApp(d, skipRender) {
   S.boost      = d.dailyBoost;
   S.boostEx    = d.boostExistsInDB;
   S.isFirstDay = d.isFirstDay || false;
+  if ((d.boostExosDone || 0) >= 5) S.boostConsumed = true;
 
   var loc = JSON.parse(localStorage.getItem(LK) || '{}');
   var ul  = loc[d.profile.code] || {};
@@ -2108,7 +2109,16 @@ function renderProgress() {
       var r = res2(cat, i); return !!S.res[S.niv+'-'+r.rC+'-'+r.rI];
     }).length;
     var compLP   = doneLPct === exsLP.length && exsLP.length > 0;
-    var score    = compLP ? 100 : (p ? Math.round(p.score) : 0);
+    // Score local depuis S.res quand serveur pas encore synchronisé
+    var localEasyPct = 0;
+    if (doneLPct > 0) {
+      var le2 = exsLP.filter(function(e, i) {
+        var r = res2(cat, i); var rs = S.res[S.niv+'-'+r.rC+'-'+r.rI];
+        return rs === 'EASY' || rs === 'MEDIUM';
+      }).length;
+      localEasyPct = Math.round((le2 / doneLPct) * 100);
+    }
+    var score    = compLP ? 100 : (p && p.nbExos > 0 ? Math.round(p.score) : (doneLPct > 0 ? localEasyPct : 0));
     var nbExos   = Math.max(p ? (p.nbExos || 0) : 0, doneLPct);
     var isMast   = compLP || (p && (p.statut === 'maitrise' || p.score >= 80));
     var isStart  = nbExos > 0 || doneLPct > 0;
@@ -2446,30 +2456,29 @@ function render() {
     var isOpen  = !!S.exp[cat];
 
     if (isDone) {
-      // ── Carte archivée (chapitre/boost terminé) ──────────
-      html += '<div data-cat="'+cat+'" class="rounded-2xl border border-emerald-200 overflow-hidden shadow-sm afu mb-3" style="background:#f0fdf4">';
-      html += '<div onclick="togCat(\''+cat+'\')" class="px-4 py-3 flex items-center gap-3 cursor-pointer select-none">';
-      html += '<div class="w-11 h-11 bg-emerald-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0">'+(isBoost?'⚡':(LVL[S.niv].icons[cat]||'📘'))+'</div>';
-      html += '<div class="flex-1 min-w-0">';
-      html += '<div class="flex items-center gap-2 mb-0.5"><span class="syne font-black text-sm text-slate-700 truncate">'+(isBoost?'Entraînement IA':(LVL[S.niv].names[cat]||cat))+'</span>';
-      html += '<span class="text-[9px] font-black text-emerald-700 bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-full">✅ Terminé</span></div>';
-      html += '<div class="text-[11px] text-emerald-600 font-medium">'+(isBoost?done+'/'+tot+' · boost du jour fait':'done '+tot+'/'+tot)+'</div>';
-      html += '</div>';
-      html += '<div class="text-slate-300 text-xl font-light select-none" style="transition:transform .2s;transform:rotate('+(isOpen?90:0)+'deg)">›</div>';
-      html += '</div>';
-      if (isOpen) html += renderArchiveSection(cat, exs);
-      html += '</div>';
-      // Carte "prochain" pour les chapitres non-boost sans nouveau chapitre en attente
       var hasNewChap = Object.keys(S.isNew).some(function(k){ return S.isNew[k]; });
-      if (!isBoost && !hasNewChap) {
-        var chapName = LVL[S.niv].names[cat] || cat.replace(/_/g,' ');
-        html += '<div class="rounded-2xl border-2 border-dashed border-slate-200 px-4 py-3 flex items-center gap-3 mb-3" style="background:#fafafa">' +
-          '<div class="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-base flex-shrink-0">📅</div>' +
-          '<div class="flex-1 min-w-0">' +
-            '<div class="syne font-black text-xs text-slate-500">Prochain chapitre</div>' +
-            '<div class="text-[11px] text-slate-400 font-medium mt-0.5">Ton prof prépare la suite · Disponible demain matin 🔥</div>' +
-          '</div></div>';
+      var showProchain = !isBoost && !hasNewChap;
+      // ── Flex row : archivée (gauche) + prochain (droite) ──
+      html += '<div class="flex gap-2 mb-3 afu">';
+      // Carte gauche — archivée compacte
+      html += '<div data-cat="'+cat+'" onclick="togCat(\''+cat+'\')" class="flex-1 rounded-2xl border border-emerald-200 flex flex-col items-center justify-center gap-1.5 py-3 px-2 cursor-pointer select-none text-center" style="background:#f0fdf4">';
+      html += '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-base">'+(isBoost?'⚡':(LVL[S.niv].icons[cat]||'📘'))+'</div>';
+      html += '<span class="syne font-black text-xs text-slate-700 leading-tight px-1" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+(isBoost?'Entraînement IA':(LVL[S.niv].names[cat]||cat))+'</span>';
+      html += '<span class="text-[9px] font-black text-emerald-700 bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-full">✅ Terminé</span>';
+      html += '<span class="text-[10px] text-emerald-500/80 font-medium">'+(isOpen?'▾ historique':'▸ voir historique')+'</span>';
+      html += '</div>';
+      // Carte droite — prochain (si applicable)
+      if (showProchain) {
+        html += '<div class="flex-1 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-1.5 py-3 px-2 text-center" style="background:#fafafa">';
+        html += '<div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-base">📅</div>';
+        html += '<span class="syne font-black text-xs text-slate-500 leading-tight">Prochain chapitre</span>';
+        html += '<span class="text-[10px] text-slate-400 font-medium leading-tight">Ton prof prépare<br>la suite</span>';
+        html += '<span class="text-[10px] font-bold text-indigo-400">Demain matin 🔥</span>';
+        html += '</div>';
       }
+      html += '</div>';
+      // Section historique pleine largeur en dessous
+      if (isOpen) html += renderArchiveSection(cat, exs);
       return;
     }
 

@@ -296,6 +296,7 @@ function login(p) {
   var todayStr    = today();
   var boostRows   = getRows(SH.BOOSTS);
   var todayBoost  = null;
+  var boostExosDone = 0;
   for (var b = 0; b < boostRows.length; b++) {
     var br = boostRows[b];
     if (!br['Code'] || String(br['Code']) !== code) continue;
@@ -306,6 +307,7 @@ function login(p) {
       : String(brDate || '').substring(0, 10);
     if (brDateStr === todayStr) {
       todayBoost = parseJSON(br['BoostJSON']);
+      boostExosDone = parseInt(br['ExosDone'] || 0);
       break;
     }
   }
@@ -396,6 +398,7 @@ function login(p) {
     diagExos:           diagExos,
     dailyBoost:         todayBoost,
     boostExistsInDB:    boostExistsInDB,
+    boostExosDone:      boostExosDone,
     isFirstDay:         history.length === 0 && !boostExistsInDB,
     history:            history,
     dynamicChapters:    [],
