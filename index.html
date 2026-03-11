@@ -533,12 +533,14 @@
       </p>
       <button onclick="startTrialFlow()"
               class="btn btn-ac btn-fw s4 shadow-xl" id="cta-hero" style="max-width:380px;font-size:1.05rem;padding:1.15rem">
-        Essayer gratuitement 7 jours →
+        Essayer 7 jours gratuits — sans carte bancaire →
       </button>
-      <div class="flex items-center justify-center gap-4 mt-5 s4">
-        <span class="flex items-center gap-1.5 text-white/45 text-xs font-medium"><span class="text-green-400">✓</span>7 jours offerts</span>
-        <span class="w-px h-3 bg-white/20"></span>
-        <span class="flex items-center gap-1.5 text-white/45 text-xs font-medium"><span class="text-green-400">✓</span>Aucune carte bancaire</span>
+      <div class="flex items-center justify-center gap-4 mt-5 s4" style="flex-wrap:wrap;gap:.5rem 1rem">
+        <span class="flex items-center gap-1.5 text-white/45 text-xs font-medium"><span class="text-green-400">✓</span>Aucune carte bancaire requise</span>
+        <span class="w-px h-3 bg-white/20 hidden sm:block"></span>
+        <span class="flex items-center gap-1.5 text-white/45 text-xs font-medium"><span class="text-green-400">✓</span>Accès complet 7 jours</span>
+        <span class="w-px h-3 bg-white/20 hidden sm:block"></span>
+        <span class="flex items-center gap-1.5 text-white/45 text-xs font-medium"><span class="text-green-400">✓</span>Stop quand tu veux</span>
       </div>
     </div>
   </div>
@@ -589,7 +591,7 @@
         <div class="bg-white/10 border border-white/15 rounded-2xl p-6">
           <div class="w-14 h-14 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4">🎯</div>
           <h2 class="syne text-xl font-black text-white text-center mb-1">Diagnostic prêt !</h2>
-          <p class="text-white/55 text-sm text-center mb-6">Crée ton espace gratuit pour lancer le diagnostic complet et voir les résultats</p>
+          <p class="text-white/55 text-sm text-center mb-6">Sauvegarde tes résultats et continue 7 jours gratos — aucune carte requise 🔥</p>
           <div class="space-y-3">
             <input type="text"     id="fl-name"  class="flow-inp" placeholder="Prénom de l'élève" autocomplete="given-name">
             <input type="email"    id="fl-email" class="flow-inp" placeholder="Email (parent ou élève)" autocomplete="email">
@@ -1346,7 +1348,7 @@ async function flowRegister() {
     document.getElementById('main-app').classList.remove('hidden');
     initApp(loginD, true);
     S.calExos = diagD.exos;
-    startCal();
+    showOnboarding(function(){ startCal(); });
   } catch(err) {
     hideT(); showT('Erreur réseau — vérifie ta connexion 📡', 3500, '❌');
     document.getElementById('fl-btn-txt').classList.remove('hidden');
@@ -1439,7 +1441,7 @@ async function finalizeOnboarding() {
     document.getElementById('main-app').classList.remove('hidden');
     initApp(loginD, true);
     S.calExos = calExosFromAPI;
-    startCal();
+    showOnboarding(function(){ startCal(); });
   } catch(err) {
     hideT(); alert2("Erreur réseau","Vérifie ta connexion.","📡");
     document.getElementById('onboard-text').classList.remove('hidden');
@@ -1468,6 +1470,85 @@ document.addEventListener('DOMContentLoaded', function() {
       .catch(function(){ /* silently fail */ });
   } catch(e) {}
 });
+
+// ══════════════════════════════════════════════════════════════
+// ONBOARDING 3 SLIDES — post-inscription
+// ══════════════════════════════════════════════════════════════
+var _onbSlide = 0;
+var _onbCallback = null;
+var _onbSlides = [
+  {
+    emoji: '🎉',
+    title: '7 jours gratuits, sans carte',
+    body: 'Ton accès complet démarre maintenant. Pas de prise de tête.',
+    color: 'linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)'
+  },
+  {
+    emoji: '⚡',
+    title: 'Un diagnostic perso',
+    body: 'On détecte tes lacunes en quelques questions. C\'est pour toi, pas pour un examen.',
+    color: 'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)'
+  },
+  {
+    emoji: '🔥',
+    title: 'Ton prof prépare la suite',
+    body: 'Chaque jour, des exercices adaptés à ce que t\'as du mal. Reviens demain voir la suite.',
+    color: 'linear-gradient(135deg,#1e1b4b 0%,#4338ca 100%)'
+  }
+];
+
+function showOnboarding(cb) {
+  if (document.getElementById('onb-overlay')) {
+    // Déjà affiché — appel direct du callback
+    if (cb) cb();
+    return;
+  }
+  _onbSlide = 0;
+  _onbCallback = cb || null;
+  var ov = document.createElement('div');
+  ov.id = 'onb-overlay';
+  ov.style.cssText =
+    'position:fixed;inset:0;z-index:3500;display:flex;align-items:center;justify-content:center;' +
+    'padding:1.5rem;background:rgba(7,9,15,.88)';
+  document.body.appendChild(ov);
+  _onbRender();
+}
+
+function _onbRender() {
+  var ov = document.getElementById('onb-overlay');
+  if (!ov) return;
+  var sl = _onbSlides[_onbSlide];
+  var isLast = _onbSlide === _onbSlides.length - 1;
+  // Dots
+  var dots = _onbSlides.map(function(_, i) {
+    var active = i === _onbSlide;
+    return '<span style="display:inline-block;width:' + (active ? '22px' : '8px') + ';height:8px;border-radius:99px;background:' + (active ? '#818cf8' : 'rgba(255,255,255,.3)') + ';transition:all .3s"></span>';
+  }).join('');
+  ov.innerHTML =
+    '<div style="background:#fff;border-radius:24px;width:100%;max-width:360px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.45)">' +
+    '<div style="' + sl.color + ';padding:2.5rem 2rem 2rem;text-align:center">' +
+    '<div style="font-size:3.5rem;margin-bottom:1rem">' + sl.emoji + '</div>' +
+    '<div style="font-family:Syne,sans-serif;font-weight:900;font-size:1.25rem;color:#fff;line-height:1.2;margin-bottom:.75rem">' + sl.title + '</div>' +
+    '<p style="color:rgba(255,255,255,.7);font-size:.9rem;font-weight:500;line-height:1.6">' + sl.body + '</p>' +
+    '</div>' +
+    '<div style="padding:1.5rem;text-align:center">' +
+    '<div style="display:flex;align-items:center;justify-content:center;gap:.4rem;margin-bottom:1.25rem">' + dots + '</div>' +
+    (isLast
+      ? '<button onclick="_onbNext()" style="width:100%;padding:1rem;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer">C\'est parti →</button>'
+      : '<button onclick="_onbNext()" style="width:100%;padding:1rem;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer">Suivant →</button>') +
+    '</div></div>';
+}
+
+window._onbNext = function() {
+  _onbSlide++;
+  if (_onbSlide < _onbSlides.length) {
+    _onbRender();
+  } else {
+    var ov = document.getElementById('onb-overlay');
+    if (ov) ov.remove();
+    if (_onbCallback) { var cb = _onbCallback; _onbCallback = null; cb(); }
+  }
+};
 
 // ══════════════════════════════════════════════════════════════
 // ESSAI GRATUIT — badge + overlay
@@ -1859,6 +1940,18 @@ function mark(cat, idx, status, wrongOpt) {
 
 async function togCat(cat) {
   var was = !!S.exp[cat];
+  // Toast abandon boost incomplet
+  if (was && cat === 'BOOST' && !S.boostConsumed && S.boost && S.boost.exos) {
+    var bDoneCount2 = 0;
+    var bTot2 = S.boost.exos.length;
+    for (var bi2 = 0; bi2 < bTot2; bi2++) {
+      var br3 = res2('BOOST', bi2);
+      if (S.res[S.niv+'-'+br3.rC+'-'+br3.rI]) bDoneCount2++;
+    }
+    if (bDoneCount2 > 0 && bDoneCount2 < bTot2) {
+      showT('Tu t\'arrêtes là ? Pas de souci — tu reprends demain 💪', 3500, '💪');
+    }
+  }
   Object.keys(S.exp).forEach(function(k){ S.exp[k] = false; });
   S.exp[cat] = !was;
   if (S.isNew[cat]) S.isNew[cat] = false;
@@ -2398,7 +2491,7 @@ function renderMotProf() {
     '<div class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-3">Un mot de ton prof</div>' +
     '<p class="text-slate-800 font-medium text-base leading-relaxed mb-4">' + msg.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>') + '</p>' +
     '<div class="text-xs text-slate-400 mb-6">' + label + '</div>' +
-    '<button onclick="dismissMotProf()" class="btn btn-ac btn-fw py-4 text-base">C\'est parti ! →</button>' +
+    '<button onclick="dismissMotProf()" class="btn btn-ac btn-fw py-4 text-base">OK, j\'ai lu — on y va 🔥</button>' +
     '</div></div>';
 }
 window.dismissMotProf = function() {
@@ -2477,6 +2570,14 @@ function render() {
   }
 
   var html = '';
+
+  // ── Bandeau premier jour ──────────────────────────────
+  if (S.isFirstDay) {
+    html += '<div class="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 flex items-center gap-3 mb-4 afu">' +
+      '<div class="text-2xl flex-shrink-0">🎯</div>' +
+      '<div><div class="syne font-black text-indigo-800 text-sm mb-0.5">Bienvenue !</div>' +
+      '<div class="text-indigo-700 text-xs font-medium">Ton diagnostic est prêt. C\'est pas un exam — réponds honnêtement 🎯</div></div></div>';
+  }
 
   // ── Bandeau PENDING_MANUAL (prof prépare le contenu) ──
   if (S.pendingManual) {
@@ -2572,6 +2673,13 @@ function render() {
     html += '<div class="'+(isBoost?'text-white/40':'text-slate-300')+' text-xl font-light select-none" style="transition:transform .2s;transform:rotate('+(isOpen?90:0)+'deg)">›</div></div>';
 
     if (isOpen) {
+      // ── Bandeau reprise chapitre en cours ──
+      if (!isBoost && done > 0 && !comp) {
+        html += '<div class="mx-4 mb-3 bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-2.5 flex items-center gap-2">' +
+          '<span class="text-sm flex-shrink-0">💪</span>' +
+          '<span class="text-xs font-bold text-indigo-700">Tu reprends le chapitre — t\'en es à ' + done + '/' + tot + ' 💪 Continue !</span>' +
+          '</div>';
+      }
       // B3 — bannière prérequis fragile
       var prereq = S.prereqBanner[cat];
       if (prereq && prereq.chapitre) {
