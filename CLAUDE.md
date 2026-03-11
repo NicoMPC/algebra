@@ -182,9 +182,13 @@ Flux : `generateMorningReport(5h)` → analyse → `generatePendingExos()` → `
 Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | DateGeneree | Validé | DateValidation`
 
 ### BLOC 3 — Juridique & paiement 🟡
-- [ ] Mentions légales (données mineurs → RGPD renforcé)
-- [ ] Case consentement parental à l'inscription (obligatoire)
-- [ ] CGU/CGV + politique cookies
+- [x] Mentions légales (`mentions-legales.html`) — SIRET 837 763 713 00059, données mineurs, CNIL ✅
+- [x] CGU (`cgu.html`) — mineurs, essai 7j, résiliation ✅
+- [x] CGV (`cgv.html`) — 9,99€/mois, droit de rétractation 14j ✅
+- [x] Politique confidentialité (`politique-confidentialite.html`) — RGPD renforcé mineurs ✅
+- [x] Politique cookies (`politique-cookies.html`) — localStorage uniquement, pas de tiers ✅
+- [x] Case consentement parental à l'inscription (auth + landing step 4) ✅
+- [x] Footer légal intégré sur landing + app ✅
 - [ ] Intégration Stripe : freemium 7j → 9,99€/mois
 - [ ] Webhook Stripe → colonne `Premium` dans Users
 
@@ -287,6 +291,7 @@ sh.append_row("Scores", [...])
 | 12 mars | @24→23 | Git reconstruit (12a61e7), UX admin/élève, boostJSON copie, rebuild_sheet.py synchronisé, fix auto-login, boostConsumed | 12a61e7 c22f471 2a808d3 9421ef6 b96f9d8 |
 | 12 mars (soir) | @30 | Smart question count, fix Diagnostic-6ème guest, onboarding adapté, boost auto guest | 9524e3a ac046e4 |
 | 12 mars (nuit) | @30 | Quiz inline landing (step 3 card blanche), tutorial Q1, fix onbRender bg, cohérence messages | 544a112 |
+| 12 mars (nuit 2) | @30 | Simulation 20 profils/5j, messages parent/ado refondus, BLOC 3 juridique complet (5 pages + footer + consentement) | — |
 
 ---
 

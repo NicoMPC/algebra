@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Politique de confidentialité — Matheux</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #f7f8fc; color: #07090f; line-height: 1.7; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    nav { background: #1e1b4b; padding: 1rem 1.25rem; display: flex; align-items: center; gap: .75rem; }
+    nav a { color: rgba(255,255,255,.6); font-size: .85rem; text-decoration: none; }
+    nav a:hover { color: #fff; }
+    .logo { font-family: 'Syne', sans-serif; font-weight: 800; color: #fff; font-size: 1.1rem; text-decoration: none; }
+    .logo span { color: #818cf8; }
+    h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.75rem; margin-bottom: 1.5rem; margin-top: 2rem; color: #1e1b4b; }
+    h2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; margin-top: 2rem; margin-bottom: .5rem; color: #312e81; }
+    p, li { margin-bottom: .75rem; color: #334155; font-size: .95rem; }
+    ul { padding-left: 1.5rem; margin-bottom: .75rem; }
+    strong { color: #07090f; }
+    a { color: #4338ca; }
+    .chip { display: inline-block; background: #eef2ff; color: #4338ca; padding: .2rem .75rem; border-radius: 99px; font-size: .8rem; font-weight: 600; margin-bottom: 1rem; }
+    .mineurs { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
+    .mineurs p { color: #92400e; margin: 0; font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: .9rem; }
+    th { background: #eef2ff; color: #312e81; padding: .6rem .75rem; text-align: left; font-weight: 700; }
+    td { padding: .6rem .75rem; border-bottom: 1px solid #e2e8f0; color: #334155; }
+    tr:last-child td { border-bottom: none; }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">Math<span>eux</span></a>
+  <a href="index.html">← Retour</a>
+</nav>
+<div class="wrap">
+  <div class="chip">RGPD</div>
+  <h1>Politique de confidentialité</h1>
+
+  <div class="mineurs">
+    <p>⚠️ Ce service est utilisé par des élèves mineurs. Nous appliquons un niveau de protection renforcé conformément au RGPD et aux recommandations de la CNIL pour les données de mineurs.</p>
+  </div>
+
+  <h2>1. Responsable du traitement</h2>
+  <p><strong>Nicolas Follezou</strong> — Auto-entrepreneur, SIRET 837 763 713 00059<br>
+  30 rue Lucie Aubrac, 17137 L'Houmeau<br>
+  Email DPO : <a href="mailto:contact@matheux.fr">contact@matheux.fr</a></p>
+
+  <h2>2. Données collectées</h2>
+  <table>
+    <tr><th>Donnée</th><th>Finalité</th><th>Durée de conservation</th></tr>
+    <tr><td>Prénom</td><td>Personnalisation du service</td><td>Durée du compte + 1 an</td></tr>
+    <tr><td>Email</td><td>Authentification, notifications</td><td>Durée du compte + 1 an</td></tr>
+    <tr><td>Niveau scolaire</td><td>Adaptation pédagogique</td><td>Durée du compte</td></tr>
+    <tr><td>Scores et résultats d'exercices</td><td>Diagnostic, personnalisation, suivi de progression</td><td>Durée du compte + 1 an</td></tr>
+    <tr><td>Données de connexion (horodatage)</td><td>Calcul streak, détection inactivité</td><td>6 mois glissants</td></tr>
+    <tr><td>Hash du mot de passe (SHA-256)</td><td>Authentification</td><td>Durée du compte</td></tr>
+  </table>
+  <p><strong>Aucune donnée sensible</strong> (données biométriques, données de santé, orientation sexuelle, opinions politiques) n'est collectée.</p>
+
+  <h2>3. Base légale des traitements</h2>
+  <ul>
+    <li><strong>Exécution contractuelle</strong> : traitement des données nécessaires à la fourniture du service (exercices, progression, boost quotidien)</li>
+    <li><strong>Consentement</strong> : pour les mineurs, consentement du responsable légal requis lors de l'inscription</li>
+    <li><strong>Intérêt légitime</strong> : amélioration du service pédagogique (analyses agrégées et anonymisées)</li>
+  </ul>
+
+  <h2>4. Protection des données des mineurs</h2>
+  <p>Conformément à l'article 8 du RGPD et aux lignes directrices de la CNIL :</p>
+  <ul>
+    <li>Le consentement d'un responsable légal est requis pour les élèves de moins de 15 ans</li>
+    <li>Aucune donnée d'élève mineur n'est utilisée à des fins publicitaires</li>
+    <li>Aucun profil comportemental n'est transmis à des tiers</li>
+    <li>Les données sont stockées sur des serveurs Google (Google Sheets / Apps Script) soumis au RGPD via les clauses contractuelles types de l'UE</li>
+    <li>Le prénom seul est collecté (pas le nom de famille)</li>
+  </ul>
+
+  <h2>5. Destinataires des données</h2>
+  <p>Les données sont traitées par :</p>
+  <ul>
+    <li><strong>Nicolas Follezou</strong> (responsable du traitement) — accès complet dans le cadre du suivi pédagogique</li>
+    <li><strong>Google LLC</strong> (sous-traitant) — stockage via Google Sheets et Apps Script, soumis aux clauses contractuelles types UE</li>
+  </ul>
+  <p><strong>Aucune donnée n'est vendue ni cédée à des tiers.</strong></p>
+
+  <h2>6. Cookies et stockage local</h2>
+  <p>Matheux utilise le <strong>localStorage</strong> du navigateur pour maintenir la session de l'utilisateur. Aucun cookie tiers n'est déposé. Voir notre <a href="politique-cookies.html">Politique cookies</a>.</p>
+
+  <h2>7. Transfert hors UE</h2>
+  <p>Les données sont stockées sur les serveurs de Google (infrastructure mondiale). Google s'engage contractuellement au respect du RGPD via les clauses contractuelles types (CCT) approuvées par la Commission européenne.</p>
+
+  <h2>8. Vos droits</h2>
+  <p>Conformément au RGPD, vous disposez des droits suivants, exercables à <a href="mailto:contact@matheux.fr">contact@matheux.fr</a> :</p>
+  <ul>
+    <li><strong>Droit d'accès</strong> : obtenir une copie de vos données</li>
+    <li><strong>Droit de rectification</strong> : corriger des données inexactes</li>
+    <li><strong>Droit à l'effacement</strong> ("droit à l'oubli") : supprimer votre compte et toutes les données associées</li>
+    <li><strong>Droit d'opposition</strong> : vous opposer à certains traitements</li>
+    <li><strong>Droit à la portabilité</strong> : recevoir vos données dans un format structuré</li>
+    <li><strong>Droit de limitation</strong> : demander la suspension temporaire d'un traitement</li>
+  </ul>
+  <p>Délai de réponse : 30 jours maximum. En cas de réponse insatisfaisante, vous pouvez saisir la <a href="https://www.cnil.fr" target="_blank">CNIL</a>.</p>
+
+  <h2>9. Sécurité</h2>
+  <p>Les mots de passe sont hashés côté client (SHA-256 + sel) avant transmission. Les communications sont chiffrées via HTTPS. L'accès aux données est restreint au seul responsable du traitement.</p>
+
+  <h2>10. Contact DPO</h2>
+  <p>Pour toute question relative à la protection de vos données : <a href="mailto:contact@matheux.fr">contact@matheux.fr</a></p>
+
+  <p style="margin-top:2rem;color:#94a3b8;font-size:.82rem;">Dernière mise à jour : 12 mars 2026</p>
+</div>
+</body>
+</html>

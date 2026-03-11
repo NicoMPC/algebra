@@ -552,7 +552,7 @@
       </p>
       <button onclick="startTrialFlow()"
               class="btn btn-ac btn-fw s4 shadow-xl" id="cta-hero" style="max-width:380px;font-size:1.05rem;padding:1.15rem">
-        Commencer l'essai 7 jours gratuit →
+        Démarrer les 7 jours offerts →
       </button>
       <p class="text-white/35 text-xs mt-3 s4">Sans carte bancaire · Accès complet · Stop quand tu veux</p>
       <div class="flex items-center justify-center mt-5 s4" style="flex-wrap:wrap;gap:.4rem .9rem">
@@ -604,17 +604,25 @@
         <div class="bg-white/10 border border-white/15 rounded-2xl p-6">
           <div class="w-14 h-14 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4">🎯</div>
           <h2 class="syne text-xl font-black text-white text-center mb-1">Diagnostic prêt !</h2>
-          <p class="text-white/55 text-sm text-center mb-6">Sauvegarde tes résultats et continue 7 jours gratos — aucune carte requise 🔥</p>
+          <p class="text-white/55 text-sm text-center mb-6">Créez l'espace de votre enfant — 7 jours offerts, sans carte bancaire.</p>
           <div class="space-y-3">
             <input type="text"     id="fl-name"  class="flow-inp" placeholder="Prénom de l'élève" autocomplete="given-name">
             <input type="email"    id="fl-email" class="flow-inp" placeholder="Email (parent ou élève)" autocomplete="email">
             <input type="password" id="fl-pass"  class="flow-inp" placeholder="Mot de passe (min. 6 caractères)" autocomplete="new-password">
           </div>
+          <label style="display:flex;align-items:flex-start;gap:.5rem;cursor:pointer;margin-top:.75rem">
+            <input type="checkbox" id="consent-landing" style="margin-top:3px;flex-shrink:0;accent-color:#818cf8;width:16px;height:16px">
+            <span style="font-size:.72rem;color:rgba(255,255,255,.45);line-height:1.5">
+              J'accepte les <a href="cgu.html" target="_blank" style="color:rgba(255,255,255,.7);text-decoration:underline">CGU</a> et la
+              <a href="politique-confidentialite.html" target="_blank" style="color:rgba(255,255,255,.7);text-decoration:underline">Politique de confidentialité</a>.
+              Pour un élève mineur, je certifie être son responsable légal ou avoir son accord.
+            </span>
+          </label>
           <button onclick="flowRegister()" id="fl-btn" class="btn btn-ac btn-fw py-4 mt-5">
-            <span id="fl-btn-txt">Lancer mon diagnostic gratuit 🎯</span>
+            <span id="fl-btn-txt">Créer l'espace de mon enfant →</span>
             <span id="fl-btn-ld" class="ld hidden"></span>
           </button>
-          <p class="text-center text-white/35 text-xs mt-3">✓ 7 jours gratuits · ✓ Aucune carte bancaire</p>
+          <p class="text-center text-white/35 text-xs mt-3">✓ 7 jours offerts · ✓ Aucune carte bancaire · ✓ Sans engagement</p>
         </div>
       </div>
 
@@ -829,11 +837,18 @@
   </div>
 
   <!-- Footer landing -->
-  <div class="bg-slate-50 py-5 text-center border-t border-slate-100">
-    <p class="text-slate-400 text-xs font-medium">
-      © 2026 Matheux ·
-      <button onclick="showAuth('login')" class="underline hover:text-slate-600 transition-colors">Connexion</button>
-    </p>
+  <div class="bg-slate-50 py-6 border-t border-slate-100">
+    <div class="max-w-2xl mx-auto px-5">
+      <div class="flex flex-wrap justify-center gap-x-5 gap-y-2 mb-4">
+        <a href="mentions-legales.html" target="_blank" class="text-slate-400 hover:text-slate-600 text-xs font-medium transition-colors">Mentions légales</a>
+        <a href="cgu.html" target="_blank" class="text-slate-400 hover:text-slate-600 text-xs font-medium transition-colors">CGU</a>
+        <a href="cgv.html" target="_blank" class="text-slate-400 hover:text-slate-600 text-xs font-medium transition-colors">CGV</a>
+        <a href="politique-confidentialite.html" target="_blank" class="text-slate-400 hover:text-slate-600 text-xs font-medium transition-colors">Confidentialité</a>
+        <a href="politique-cookies.html" target="_blank" class="text-slate-400 hover:text-slate-600 text-xs font-medium transition-colors">Cookies</a>
+        <button onclick="showAuth('login')" class="text-slate-400 hover:text-slate-600 text-xs font-medium underline transition-colors">Connexion</button>
+      </div>
+      <p class="text-slate-300 text-xs text-center">© 2026 Matheux · Nicolas Follezou · contact@matheux.fr</p>
+    </div>
   </div>
 </div><!-- /landing-screen -->
 
@@ -872,6 +887,14 @@
             <option value="4EME" selected>Classe : 4ème</option>
             <option value="3EME">Classe : 3ème</option>
           </select>
+          <label style="display:flex;align-items:flex-start;gap:.5rem;cursor:pointer;padding:.25rem 0">
+            <input type="checkbox" id="consent-auth" style="margin-top:3px;flex-shrink:0;accent-color:var(--p);width:16px;height:16px">
+            <span style="font-size:.72rem;color:var(--mut);line-height:1.5">
+              J'accepte les <a href="cgu.html" target="_blank" style="color:var(--p);text-decoration:underline">CGU</a> et la
+              <a href="politique-confidentialite.html" target="_blank" style="color:var(--p);text-decoration:underline">Politique de confidentialité</a>.
+              Pour un élève mineur, je certifie être son responsable légal ou avoir son accord.
+            </span>
+          </label>
         </div>
 
         <!-- Email + MDP (communs) -->
@@ -956,6 +979,16 @@
 
   <!-- Contenu principal (injecté dynamiquement) -->
   <main id="app-c" class="space-y-3"></main>
+
+  <!-- Footer app -->
+  <footer class="mt-6 pb-4 text-center">
+    <div class="flex flex-wrap justify-center gap-x-4 gap-y-1.5">
+      <a href="mentions-legales.html" target="_blank" class="text-slate-300 hover:text-slate-500 text-[10px] font-medium transition-colors">Mentions légales</a>
+      <a href="cgu.html" target="_blank" class="text-slate-300 hover:text-slate-500 text-[10px] font-medium transition-colors">CGU</a>
+      <a href="politique-confidentialite.html" target="_blank" class="text-slate-300 hover:text-slate-500 text-[10px] font-medium transition-colors">Confidentialité</a>
+      <a href="politique-cookies.html" target="_blank" class="text-slate-300 hover:text-slate-500 text-[10px] font-medium transition-colors">Cookies</a>
+    </div>
+  </footer>
 
 </div><!-- /main-app -->
 
@@ -1665,9 +1698,9 @@ function _flowActivateStep4Guest() {
   var h2 = document.querySelector('#flow-s4 h2');
   if (h2) h2.textContent = ok + '/' + total + ' — ' + pct + '%';
   var desc = document.querySelector('#flow-s4 p');
-  if (desc) { desc.textContent = scoreLabel + ' Sauvegarde tes résultats — 7 jours gratos, aucune carte.'; }
+  if (desc) { desc.textContent = scoreLabel + ' Résultats sauvegardés — 7 jours offerts, sans carte bancaire.'; }
   var btnTxt = document.getElementById('fl-btn-txt');
-  if (btnTxt) btnTxt.textContent = 'Continuer gratuitement →';
+  if (btnTxt) btnTxt.textContent = 'Continuer — c\'est gratuit →';
   var btn = document.getElementById('fl-btn');
   if (btn) btn.setAttribute('onclick', '_flowGuestRegister()');
 
@@ -1681,6 +1714,8 @@ async function _flowGuestRegister() {
   if (!prenom.trim() || !email.trim() || !email.includes('@')) {
     showT('Prénom et email requis 😊', 2000, '⚠️'); return;
   }
+  var _glConsent = document.getElementById('consent-landing');
+  if (_glConsent && !_glConsent.checked) { showT('Veuillez accepter les CGU pour continuer', 2500, '⚠️'); return; }
 
   var btn = document.getElementById('fl-btn');
   if (btn) { btn.disabled = true; }
@@ -1707,13 +1742,13 @@ async function _flowGuestRegister() {
       showT("T'as déjà un compte — on t'a retrouvé 🔥", 3000, '🎉');
     } else {
       if (btn) { btn.disabled = false; }
-      if (btnTxt) btnTxt.textContent = 'Continuer gratuitement →';
+      if (btnTxt) btnTxt.textContent = 'Continuer — c\'est gratuit →';
       showT('Mauvais mot de passe — connecte-toi depuis le menu', 3000, '⚠️');
       return;
     }
   } else {
     if (btn) { btn.disabled = false; }
-    if (btnTxt) btnTxt.textContent = 'Continuer gratuitement →';
+    if (btnTxt) btnTxt.textContent = 'Continuer — c\'est gratuit →';
     showT('Erreur — réessaie dans quelques secondes', 2500, '⚠️'); return;
   }
 
@@ -1804,6 +1839,8 @@ async function flowRegister() {
   if (!name)  { showT('Le prénom est requis 😊', 2500, '⚠️'); return; }
   if (!email) { showT('L\'email est requis 😊', 2500, '⚠️'); return; }
   if (pass.length < 6) { showT('Mot de passe : 6 caractères minimum', 2500, '⚠️'); return; }
+  var _clConsent = document.getElementById('consent-landing');
+  if (_clConsent && !_clConsent.checked) { showT('Veuillez accepter les CGU pour continuer', 2500, '⚠️'); return; }
   var btn = document.getElementById('fl-btn');
   document.getElementById('fl-btn-txt').classList.add('hidden');
   document.getElementById('fl-btn-ld').classList.remove('hidden');
@@ -1966,6 +2003,8 @@ async function submitAuth() {
     var n = document.getElementById('rn').value.trim();
     var l = document.getElementById('rl').value;
     if (!n) { alert2("Oops","Le prénom de l'élève est requis."); togLd(false); return; }
+    var consentEl = document.getElementById('consent-auth');
+    if (consentEl && !consentEl.checked) { alert2("Consentement requis","Veuillez accepter les CGU et la Politique de confidentialité pour continuer."); togLd(false); return; }
     try {
       var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:"register", name:n, email:e, level:l, password:h }) });
       var d = await r.json();
@@ -2084,20 +2123,20 @@ var _onbCallback = null;
 var _onbSlides = [
   {
     emoji: '🎉',
-    title: '7 jours gratuits, sans carte',
-    body: 'Ton accès complet démarre maintenant. Pas de prise de tête.',
+    title: 'C\'est lancé — 7 jours offerts',
+    body: 'Accès complet immédiat. Aucune carte bancaire requise. Annulable à tout moment.',
     color: 'linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)'
   },
   {
-    emoji: '⚡',
-    title: 'Un diagnostic perso',
-    body: 'On détecte tes lacunes en quelques questions. C\'est pour toi, pas pour un examen.',
+    emoji: '🎯',
+    title: 'Un diagnostic sur mesure',
+    body: 'En quelques questions, Matheux identifie exactement où votre enfant bloque — pas les lacunes de la classe, les siennes.',
     color: 'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)'
   },
   {
-    emoji: '🔥',
-    title: 'Ton prof prépare la suite',
-    body: 'Chaque jour, des exercices adaptés à ce que t\'as du mal. Reviens demain voir la suite.',
+    emoji: '⚡',
+    title: 'Votre prof prépare la suite',
+    body: 'Chaque jour, des exercices personnalisés sur les vrais points faibles de votre enfant. Revenez demain voir les progrès.',
     color: 'linear-gradient(135deg,#1e1b4b 0%,#4338ca 100%)'
   }
 ];
@@ -2175,7 +2214,7 @@ function renderTrialBadge() {
   el.innerHTML =
     '<div style="display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;' +
     'padding:.3rem .75rem;border-radius:99px;border:1.5px solid;' + color + '">' +
-    '🔥 J-' + days + ' · Essai gratuit' +
+    '⚡ J-' + days + ' · Essai offert' +
     '</div>';
   el.classList.remove('hidden');
 }
@@ -2502,7 +2541,7 @@ window.checkOpt = function(cat, idx, oI, btn) {
   });
 
   var _OK = ['Carton plein 🎯','T\'as géré ça 💪','Dans le mille ⚡','Propre. Vraiment 🔥','Maîtrisé ✅','Trop fort(e) 🚀','GG c\'est dans la boîte 👌'];
-  var _KO = ['Presque ! Regarde bien la réponse 👀','Ça arrive, c\'est comme ça qu\'on apprend 💡','Pas grave — la prochaine tu l\'as 🎯'];
+  var _KO = ['Presque ! Regarde bien la réponse 👀','Ça arrive, c\'est comme ça qu\'on apprend 💡','Pas grave — la prochaine tu l\'as 🎯','Raté, mais regardé = déjà un progrès 👊','Difficile celui-là — retiens la correction 📝','Pas bon, mais tu vois la bonne réponse maintenant 🧠','C\'est ça qui fait monter de niveau 📈'];
   if (exo.options[oI] === exo.a) {
     btn.className = 'opt oc';
     showXP(100);
