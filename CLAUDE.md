@@ -21,7 +21,7 @@ Outil pédagogique adaptatif maths collège (6ème→3ème), diagnostic de lacun
 
 | Composant | Détail |
 |---|---|
-| `index.html` | SPA ~3500 lignes. CSS vars + Tailwind CDN + JS vanilla |
+| `index.html` | SPA ~3700 lignes. CSS vars + Tailwind CDN + JS vanilla |
 | GAS backend | `backend.js` — Web App déployée via clasp |
 | Sheet ID | `1zLBajKVL8FUzy7aV2Myi9gYFEFJjnALkLAg0hbicuDk` |
 | API URL | `const SU` dans index.html |
@@ -132,7 +132,7 @@ S: 📧 Rapport envoyé / Chap5+  [T: Code masquée]
 - [x] Bugs T1→T7 post-tests utilisateur tous corrigés ✅
 - [x] BLOC B — UX Progression & Mobile (B1 Constellation supprimée, B2 Progression, B3 fragiles, B4 mobile) ✅
 
-### BLOC 2 — Fiabilité & workflow quotidien 🟡
+### BLOC 2 — Fiabilité & workflow quotidien ✅ (quasi terminé)
 - [x] `generateMorningReport()` + trigger GAS 7h ✅
 - [x] `rebuildSuivi(code)` + `writeToHistorique(p)` ✅
 - [x] `login()` injecte `nextChapter` + `nextBoostTopic` depuis colonnes Nicolas ✅
@@ -239,6 +239,8 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 - Pas de réécriture complète — patches chirurgicaux seulement
 - CORS GAS : ne jamais ajouter `Content-Type` header sur les fetch (mode no-cors)
 - `source='boost'` dans chapitresDetail toujours `'chapter'` côté GAS → matching par position (index 0-4)
+- Guest flow CTA : mot de passe auto-généré `Matheux2026!` (hash SHA-256) — non communiqué à l'user
+- `_flowGuestRegister()` lit `#fl-name` / `#fl-email` (step 4 landing), pas de champ password
 
 ## 💰 Modèle économique
 - Freemium 7 jours → 9,99€/mois
@@ -285,27 +287,6 @@ sh.append_row("Scores", [...])
 | 12 mars | @24→23 | Git reconstruit (12a61e7), UX admin/élève, boostJSON copie, rebuild_sheet.py synchronisé, fix auto-login, boostConsumed | 12a61e7 c22f471 2a808d3 9421ef6 b96f9d8 |
 | 12 mars (soir) | @30 | Smart question count, fix Diagnostic-6ème guest, onboarding adapté, boost auto guest | 9524e3a ac046e4 |
 | 12 mars (nuit) | @30 | Quiz inline landing (step 3 card blanche), tutorial Q1, fix onbRender bg, cohérence messages | 544a112 |
-
----
-
-### Sessions 11 mars (après-midi/soir) — détail commits
-
-| Commit | Description |
-|--------|-------------|
-| 80a247f | hotfix CORS Content-Type sur fetch GAS |
-| 50c7bdb | Landing diagnostic complet : rSection CALIBRAGE réel, S minimal, chkComp intercepté |
-| 0da6a26 | hotfix CORS purge complète nouvelles fonctions |
-| a2ee071 | hotfix trial : admin exempt + TrialStart vide → trialActive=true |
-| 4e1a30e | Modal admin refonte : DIAG/CH séparés, chapitres triés, boost lock intelligent, purge localStorage |
-| 6564c30 | Backend pills priorité ⚡>✅>🔴>👍 + boostPending + chapTermine |
-| ab58d6d | chapLocked sur chapitre actif seulement + section archivés modal |
-| 72d200d | Cap 20 exos chapitresDetail + cohérence renderArchiveSection |
-| a66879c | Landing refonte vendeuse : hero émotionnel, 4 cartes, témoignages, CTA final |
-| 61b2924 | Flow landing diagnostic GAS (remplace DEMO_QS) + queue 24h + auto-login |
-| f917a29 | Backend essai 7j : TrialStart register + checkTrialStatus + login.trial |
-| 7e63b0f | Frontend essai 7j : badge J-X + overlay expiry + messages ton ado |
-| 372ac76 | Landing sans-carte + onboarding 3 slides + feedbacks |
-| d7be47f | Animations pulse pills + toast bounce + nettoyage code mort |
 
 ---
 
