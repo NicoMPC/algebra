@@ -86,6 +86,8 @@
     @keyframes remPulse  { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.75;transform:scale(.99)} }
     @keyframes shake      { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
     @keyframes counterPop { from{opacity:0;transform:scale(.7)} to{opacity:1;transform:none} }
+    @keyframes pulseGentle { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(245,158,11,0)} 50%{opacity:.88;box-shadow:0 0 0 4px rgba(245,158,11,.14)} }
+    .pulse-gentle { animation: pulseGentle 3s ease-in-out infinite; }
     @keyframes confettiFall {
       0%   { transform:translateY(-10px) rotate(0deg);   opacity:1; }
       100% { transform:translateY(110vh)  rotate(720deg); opacity:0; }
@@ -1521,6 +1523,7 @@ function initApp(d, skipRender) {
       });
       injectedCats.add(ncKey);
       S.isNew[ncKey] = true;
+      S.exp[ncKey] = true;  // auto-déplie le nouveau chapitre
       if (nc.motProf) S.motProfChap[ncKey] = nc.motProf;
       delete S.chapDone[ncKey];
       try {
@@ -1933,10 +1936,18 @@ function rMastery() {
   var keys = Object.keys(cats).filter(function(k){ return k !== 'CALIBRAGE'; });
   var tot = 0, master = 0;
   keys.forEach(function(cat){
-    cats[cat].forEach(function(e,i){
-      var r = res2(cat,i); tot++;
-      if (S.res[S.niv+'-'+r.rC+'-'+r.rI] === 'EASY') master++;
+    var catExs = cats[cat];
+    var catTot = catExs.length;
+    var catDone = 0, catEasy = 0;
+    catExs.forEach(function(e, i) {
+      var r = res2(cat, i);
+      var res = S.res[S.niv+'-'+r.rC+'-'+r.rI];
+      if (res) catDone++;
+      if (res === 'EASY') catEasy++;
     });
+    tot += catTot;
+    // Chapitre terminé → toutes les notions comptent comme acquises
+    master += (catDone === catTot && catTot > 0) ? catTot : catEasy;
   });
   var pct  = tot > 0 ? Math.round((master/tot)*100) : 0;
   var circ = 2 * Math.PI * 32;
@@ -2065,9 +2076,14 @@ function renderProgress() {
   var mastered = 0, started = 0;
   keys.forEach(function(cat){
     var p = getChapProgress(cat);
-    if (p && p.nbExos > 0) {
+    var exsL = LVL[S.niv] ? (LVL[S.niv].cats[cat] || []) : [];
+    var doneL = exsL.filter(function(e, i) {
+      var r = res2(cat, i); return !!S.res[S.niv+'-'+r.rC+'-'+r.rI];
+    }).length;
+    var compL = doneL === exsL.length && exsL.length > 0;
+    if ((p && p.nbExos > 0) || compL) {
       started++;
-      if (p.statut === 'maitrise' || p.score >= 80) mastered++;
+      if (compL || (p && (p.statut === 'maitrise' || p.score >= 80))) mastered++;
     }
   });
 
@@ -2087,10 +2103,15 @@ function renderProgress() {
     var p        = getChapProgress(cat);
     var name     = LVL[S.niv].names[cat] || cat;
     var icon     = LVL[S.niv].icons[cat] || '📘';
-    var score    = p ? Math.round(p.score) : 0;
+    var exsLP    = LVL[S.niv] ? (LVL[S.niv].cats[cat] || []) : [];
+    var doneLPct = exsLP.filter(function(e, i) {
+      var r = res2(cat, i); return !!S.res[S.niv+'-'+r.rC+'-'+r.rI];
+    }).length;
+    var compLP   = doneLPct === exsLP.length && exsLP.length > 0;
+    var score    = compLP ? 100 : (p ? Math.round(p.score) : 0);
     var nbExos   = p ? (p.nbExos || 0) : 0;
-    var isMast   = p && (p.statut === 'maitrise' || p.score >= 80);
-    var isStart  = nbExos > 0;
+    var isMast   = compLP || (p && (p.statut === 'maitrise' || p.score >= 80));
+    var isStart  = nbExos > 0 || doneLPct > 0;
     var dateStr  = p ? relDate(p.dernierePratique) : '';
     var barColor = isMast ? 'pfg' : 'pfp';
     var cardBg   = isMast ? 'bg-emerald-50 border-emerald-200' : (isStart ? 'bg-white border-slate-200' : 'bg-slate-50 border-slate-100');
@@ -2148,6 +2169,44 @@ function renderChapComplete(cat, data) {
     '</div>' +
     '<div class="bg-indigo-100 border border-indigo-200 rounded-xl p-3 text-center text-sm font-semibold text-indigo-700">Ton prof prépare ton prochain chapitre personnalisé. Reviens demain matin pour la suite 🔥</div>' +
     '</div>';
+}
+
+// ══════════════════════════════════════════════════════════════
+// ARCHIVAGE : historique exercices d'un chapitre/boost terminé
+// ══════════════════════════════════════════════════════════════
+function renderArchiveSection(cat, exs) {
+  var isBoost = cat === 'BOOST';
+  var msg = isBoost
+    ? 'Boost du jour terminé ✓ Le prochain arrive demain 🔥'
+    : 'Chapitre terminé ✓ Le prochain arrive demain matin 🔥';
+  var html = '<div class="mx-4 mb-4">';
+  html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-emerald-700 text-center mb-3">' + msg + '</div>';
+  var shown = 0;
+  exs.forEach(function(exo, idx) {
+    var r = res2(cat, idx);
+    var id = S.niv + '-' + r.rC + '-' + r.rI;
+    var result = S.res[id];
+    if (!result) return;
+    shown++;
+    var isHard = result === 'HARD';
+    html += '<div class="flex items-start gap-2 bg-white border border-slate-100 rounded-xl p-3 mb-2">';
+    html += '<span class="flex-shrink-0 text-sm mt-0.5">' + (isHard ? '❌' : '✅') + '</span>';
+    html += '<div class="flex-1 min-w-0">';
+    html += '<div class="text-xs font-semibold text-slate-700 leading-snug mc">' + fmtL(exo.q) + '</div>';
+    if (isHard && S.qans[id]) {
+      html += '<div class="text-[11px] text-rose-500 mt-0.5">→ répondu : <em>' + S.qans[id] + '</em></div>';
+    }
+    var meta = [];
+    if ((S.hints[id] || 0) > 0) meta.push('💡×' + S.hints[id]);
+    if (S.ftch[id]) meta.push('📐');
+    if (meta.length) html += '<div class="text-[10px] text-slate-400 mt-0.5">' + meta.join(' · ') + '</div>';
+    html += '</div></div>';
+  });
+  if (!shown) {
+    html += '<div class="text-center text-xs text-slate-400 py-2">Historique non disponible pour cette session.</div>';
+  }
+  html += '</div>';
+  return html;
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -2357,39 +2416,57 @@ function render() {
       '<div class="flex-1 min-w-0"><div class="syne text-base font-black text-white mb-0.5">Mon entraînement IA</div>' +
       '<p class="text-indigo-200 text-sm font-medium">Exercices ciblés sur mes lacunes</p></div>' +
       '<div class="text-white/50 text-2xl font-light">›</div></div>';
-  } else if (bDone || S.boostConsumed) {
-    html += '<div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-3 mb-4">' +
-      '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0">⚡</div>' +
-      '<div><div class="syne font-black text-emerald-800 text-sm">Boost du jour terminé !</div>' +
-      '<div class="text-emerald-600 text-xs mt-0.5">Ton boost de demain est déjà en préparation 🔥</div></div></div>';
   }
 
-  // ── Rendu des chapitres ───────────────────────────────
-  keys.forEach(function(cat){
-    if (cat === 'BOOST' && (bDone || S.boostConsumed)) return;
+  // ── Rendu des chapitres (new first, then active, then archived) ───
+  var sortedKeys = keys.slice().sort(function(a, b) {
+    var aNew = S.isNew[a] ? 0 : 1, bNew = S.isNew[b] ? 0 : 1;
+    return aNew - bNew;
+  });
+
+  sortedKeys.forEach(function(cat){
     var exs = cats[cat]; var tot = exs.length; var done = 0;
     for (var i = 0; i < tot; i++) {
       var rr = res2(cat, i);
       if (S.res[S.niv+'-'+rr.rC+'-'+rr.rI]) done++;
     }
     var comp    = done === tot && tot > 0;
-    var pct2    = tot > 0 ? Math.round((done/tot)*100) : 0;
     var isBoost = cat === 'BOOST';
+    var isDone  = isBoost ? (bDone || S.boostConsumed) : (comp || !!S.chapDone[cat]);
     var isNew   = S.isNew[cat];
     var isOpen  = !!S.exp[cat];
-    var iconPulse = isBoost && !comp ? 'animate-pulse-light' : '';
+
+    if (isDone) {
+      // ── Carte archivée (chapitre/boost terminé) ──────────
+      html += '<div data-cat="'+cat+'" class="rounded-2xl border border-emerald-200 overflow-hidden shadow-sm afu mb-3" style="background:#f0fdf4">';
+      html += '<div onclick="togCat(\''+cat+'\')" class="px-4 py-3 flex items-center gap-3 cursor-pointer select-none">';
+      html += '<div class="w-11 h-11 bg-emerald-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0">'+(isBoost?'⚡':(LVL[S.niv].icons[cat]||'📘'))+'</div>';
+      html += '<div class="flex-1 min-w-0">';
+      html += '<div class="flex items-center gap-2 mb-0.5"><span class="syne font-black text-sm text-slate-700 truncate">'+(isBoost?'Entraînement IA':(LVL[S.niv].names[cat]||cat))+'</span>';
+      html += '<span class="text-[9px] font-black text-emerald-700 bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-full">✅ Terminé</span></div>';
+      html += '<div class="text-[11px] text-emerald-600 font-medium">'+(isBoost?done+'/'+tot+' · boost du jour fait':'done '+tot+'/'+tot)+'</div>';
+      html += '</div>';
+      html += '<div class="text-slate-300 text-xl font-light select-none" style="transition:transform .2s;transform:rotate('+(isOpen?90:0)+'deg)">›</div>';
+      html += '</div>';
+      if (isOpen) html += renderArchiveSection(cat, exs);
+      html += '</div>';
+      return;
+    }
+
+    // ── Carte active ─────────────────────────────────────
+    var pct2    = tot > 0 ? Math.round((done/tot)*100) : 0;
+    var iconPulse = isBoost ? 'animate-pulse-light' : '';
     var cs = isBoost
       ? 'background:linear-gradient(135deg,#312e81,#4338ca);border:none'
-      : (comp ? 'background:#f0fdf4;border-color:#a7f3d0' : 'background:#fff');
+      : 'background:#fff';
 
     html += '<div data-cat="'+cat+'" class="rounded-2xl border border-slate-200 overflow-hidden shadow-sm afu mb-3" style="'+cs+'">';
     html += '<div onclick="togCat(\''+cat+'\')" class="px-4 py-4 flex items-center gap-3 cursor-pointer select-none">';
     html += '<div class="w-11 h-11 '+(isBoost?'bg-white/20':'bg-slate-100')+' rounded-xl flex items-center justify-center text-lg flex-shrink-0 '+iconPulse+'">'+(LVL[S.niv].icons[cat]||'📘')+'</div>';
     html += '<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1.5"><span class="syne font-black text-sm '+(isBoost?'text-white':'text-slate-900')+' truncate">'+(LVL[S.niv].names[cat]||cat)+'</span>';
-    if (comp) html += '<span class="text-base">🏆</span>';
     if (isNew) html += '<span class="text-[9px] syne font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-md">NEW</span>';
     if (S.remReq[cat]) html += '<span class="text-[9px] syne font-black bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md">🔄 Demain</span>';
-    html += '</div><div class="flex items-center gap-2"><div class="pbar flex-1" style="max-width:100px"><div class="pfill '+(comp?'pfg':'pfp')+'" style="width:'+pct2+'%"></div></div>';
+    html += '</div><div class="flex items-center gap-2"><div class="pbar flex-1" style="max-width:100px"><div class="pfill pfp" style="width:'+pct2+'%"></div></div>';
     html += '<span class="text-[11px] font-bold '+(isBoost?'text-white/60':'text-slate-400')+'">'+done+'/'+tot+'</span></div></div>';
     html += '<div class="'+(isBoost?'text-white/40':'text-slate-300')+' text-xl font-light select-none" style="transition:transform .2s;transform:rotate('+(isOpen?90:0)+'deg)">›</div></div>';
 
@@ -2409,8 +2486,7 @@ function render() {
         html += '</div>';
       }
       var curIdx = S.qv[cat] || 0;
-      if (exs[curIdx]) html += rSection(cat, exs[curIdx], curIdx, tot, comp);
-      if (S.chapDone[cat]) html += renderChapComplete(cat, S.chapDone[cat]);
+      if (exs[curIdx]) html += rSection(cat, exs[curIdx], curIdx, tot, false);
     }
     if (S.insights[cat] && isOpen) {
       html += '<div class="mx-4 mb-4 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs font-medium text-blue-700 leading-relaxed">💡 '+S.insights[cat]+'</div>';
@@ -2538,8 +2614,10 @@ function rSection(cat, data, idx, total, catDone) {
     '<div class="mc text-center font-bold text-base leading-relaxed w-full min-w-0">'+fmtL(data.q)+'</div></div>' +
     opts + acts +
     '<div class="flex gap-2 mt-4">' +
-      '<button id="pill-hint-'+id+'" onclick="showHintInline(\''+cat+'\','+idx+','+maxH+')" class="help-pill pill-hint">💡 Indice</button>' +
-      '<button id="pill-form-'+id+'" onclick="revFInline(\''+cat+'\','+idx+')" class="help-pill pill-formula '+(fR?'opacity-40 pointer-events-none':'')+'">' +
+      '<button id="pill-hint-'+id+'" onclick="showHintInline(\''+cat+'\','+idx+','+maxH+')" class="help-pill pill-hint'+(!scored && shown < maxH ? ' pulse-gentle' : '')+'">' +
+        (shown >= maxH && maxH > 0 && !scored ? '✓ Indices vus' : '💡 Indice') +
+      '</button>' +
+      '<button id="pill-form-'+id+'" onclick="revFInline(\''+cat+'\','+idx+')" class="help-pill pill-formula'+(!fR ? ' pulse-gentle' : ' opacity-40 pointer-events-none')+'">' +
         (fR ? '✓ Formule vue' : '👁 Formule') +
       '</button>' +
     '</div>' +
@@ -2641,6 +2719,11 @@ window.showHintInline = function(cat, idx, max) {
   var span = document.createElement('span');
   area.appendChild(span);
   typewriter(span, text, function() { if (window.MathJax) MathJax.typesetPromise([area]); });
+  // Si tous les indices vus → stopper pulsation + changer label
+  if (S.hints[id] >= max) {
+    var ph = document.getElementById('pill-hint-'+id);
+    if (ph) { ph.classList.remove('pulse-gentle'); ph.innerHTML = '✓ Indices vus'; }
+  }
 };
 
 window.revFInline = function(cat, idx) {
@@ -2652,7 +2735,7 @@ window.revFInline = function(cat, idx) {
   var exo  = LVL[S.niv].cats[cat][idx];
   var area = document.getElementById('help-inline-'+id);
   var btn  = document.getElementById('pill-form-'+id);
-  if (btn) { btn.innerHTML = '✓ Formule vue'; btn.classList.add('opacity-40','pointer-events-none'); }
+  if (btn) { btn.innerHTML = '✓ Formule vue'; btn.classList.add('opacity-40','pointer-events-none'); btn.classList.remove('pulse-gentle'); }
   if (!area) return;
   if (area.innerHTML) area.innerHTML += '<br>';
   area.innerHTML += '<span style="font-size:.7rem;font-weight:800;color:#4338ca;text-transform:uppercase;letter-spacing:.05em">Formule : </span>';
