@@ -1265,7 +1265,7 @@ function rebuildSuivi(code) {
     : '';
   if (extraChaps && !rapportEnvoye) rapportEnvoye = 'Chap+: ' + extraChaps;
 
-  // ── Calcul ACTION (4 règles revues) ──────────────────────
+  // ── Calcul ACTION (4 règles prioritaires — PATCH 3) ──────
   var allUserBoosts = getRows(SH.BOOSTS).filter(function(r) { return String(r['Code']||'') === code; });
   var lastBoostDate = allUserBoosts.length
     ? allUserBoosts.map(function(r){ return String(r['Date']||''); }).sort().pop()
@@ -1280,6 +1280,15 @@ function rebuildSuivi(code) {
     });
     lastBoostExosDone = parseInt(sortedBoosts[0]['ExosDone'] || 0) || 0;
   }
+
+  // Boost pending = boost aujourd'hui ET ExosDone === 0
+  var boostPendingSuivi = allUserBoosts.some(function(r) {
+    var bDate = r['Date'];
+    var bDateStr = (bDate instanceof Date)
+      ? Utilities.formatDate(bDate, 'Europe/Paris', 'yyyy-MM-dd')
+      : String(bDate || '').substring(0, 10);
+    return bDateStr === todayStr && parseInt(r['ExosDone'] || 0) === 0;
+  });
 
   // Inactivité > 7j
   var inactif7j = false;
@@ -1304,20 +1313,19 @@ function rebuildSuivi(code) {
     return cat && (chapCount[cat]||0) >= 20 && !newCh1 && !newCh2 && !newCh3 && !newCh4;
   });
 
-  var action;
-  // Règle 1 : BLOQUÉ — inactif > 7j ET score < 40 partout
-  if (inactif7j && allChapLow && chapOrder.length > 0) {
-    action = '🔴 BLOQUÉ';
-  // Règle 2 : Boost terminé (ExosDone==5) ET le dernier boost n'est pas d'aujourd'hui
-  } else if (allUserBoosts.length >= 1 && lastBoostExosDone >= 5 && lastBoostDate < todayStr && !newBoost) {
-    action = '⚡ BOOST TERMINÉ → préparer le suivant';
-  // Règle 3 : Chapitre terminé (≥20 exos) ET col Nicolas vide
-  } else if (chapTermine) {
-    action = '✅ CHAPITRE TERMINÉ → assigner la suite';
-  // Règle 4 : RAS
-  } else {
-    action = '👍 RAS';
+  // ── Calcul pills prioritaires (ordre strict) ─────────────
+  // Priorité : 1=⚡BOOST TERMINÉ  2=✅CHAPITRE TERMINÉ  3=🔴BLOQUÉ  4=👍RAS
+  var actions = [];
+  if (allUserBoosts.length >= 1 && lastBoostExosDone >= 5 && lastBoostDate < todayStr && !newBoost && !boostPendingSuivi) {
+    actions.push('⚡ BOOST TERMINÉ → préparer le suivant');
   }
+  if (chapTermine) {
+    actions.push('✅ CHAPITRE TERMINÉ → assigner la suite');
+  }
+  if (inactif7j && allChapLow && chapOrder.length > 0) {
+    actions.push('🔴 BLOQUÉ');
+  }
+  var action = actions.length > 0 ? actions.join(' · ') : '👍 RAS';
 
   // ── Construire la ligne ───────────────────────────────────
   var chaps   = chapOrder.slice(0, 4);
@@ -1367,14 +1375,28 @@ function rebuildSuivi(code) {
   // ── Couleurs ──────────────────────────────────────────────
   var targetRow = rowIdx + 1;  // 1-based
   var GREEN = '#d9ead3', RED = '#f4cccc', GRAY = '#efefef', WHITE = '#ffffff';
-  var YELLOW = '#fff2cc';
+  var YELLOW = '#fff2cc', ORANGE = '#fce5cd';
 
-  // Colonne A : ACTION — fond jaune pâle si ≠ RAS, gris si > 3j inactif
-  var acColor = action === '👍 RAS' ? WHITE : YELLOW;
+  // Colonne A : couleur basée sur la pill la plus urgente (PATCH 3)
+  // Priorité couleur : ⚡=jaune, ✅=vert clair, 🔴=rouge, RAS=blanc
+  var firstAction = actions.length > 0 ? actions[0] : '';
+  var acColor;
+  if (actions.length === 0) {
+    acColor = WHITE; // RAS
+  } else if (firstAction.indexOf('⚡') !== -1) {
+    acColor = YELLOW;
+  } else if (firstAction.indexOf('✅') !== -1) {
+    acColor = GREEN;
+  } else if (firstAction.indexOf('🔴') !== -1) {
+    acColor = RED;
+  } else {
+    acColor = YELLOW;
+  }
+  // Gris si inactif > 3j (override visuel)
   if (lastDate) {
     try {
       var daysInact = Math.floor((new Date(todayStr) - new Date(lastDate.substring(0,10))) / 86400000);
-      if (daysInact > 3) acColor = GRAY;
+      if (daysInact > 3 && actions.length === 0) acColor = GRAY;
     } catch (e) {}
   }
   suiviSh.getRange(targetRow, 1).setBackground(acColor);
@@ -2544,25 +2566,39 @@ function getAdminOverview(p) {
         var total     = exos.length;
         // Tri par num décroissant → du plus récent au plus ancien
         var sorted    = exos.slice().sort(function(a, b) { return b.num - a.num; });
+
+        // ── PATCH 1 — Séparation DIAG vs CH ─────────────────────
+        // Heuristique : les exos sauvegardés lors de la toute première session
+        // (date minimum de la catégorie) = exos de diagnostic.
+        // Les diagnostics sont toujours 2 exos par chapitre (DiagnosticExos) et
+        // sont faits lors de la première séance. Les exos chapitre arrivent ensuite.
+        var allDates = exos.map(function(e) { return e.date; }).filter(Boolean).sort();
+        var firstDate = allDates.length > 0 ? allDates[0] : '';
+        var diagExos = firstDate ? sorted.filter(function(e) { return e.date === firstDate; }) : [];
+        var chapExos = firstDate ? sorted.filter(function(e) { return e.date !== firstDate; }) : sorted.slice();
+
         // nbExos depuis Progress (source de vérité pour savoir si terminé)
         var progEntry = userProgressMap[cat];
-        var nbExosRaw = progEntry ? progEntry.nbExos : total;
-        // ── CAP STRICT 20 exos par chapitre ─────────────────────
+        var nbExosRaw = progEntry ? progEntry.nbExos : chapExos.length;
+        // ── CAP STRICT 20 exos chapitre uniquement (PATCH 1) ────
         var CAP       = 20;
         var nbExos    = Math.min(nbExosRaw, CAP);
-        // Calcul des stats sur les 20 premiers exos (les plus récents)
-        var capped    = sorted.slice(0, CAP);
-        var cappedN   = capped.length || 1; // éviter division par 0
-        var hardExos  = capped.filter(function(e) { return e.res === 'HARD'; });
-        var easyCount = capped.filter(function(e) { return e.res === 'EASY'; }).length;
-        var totalTime = capped.reduce(function(s, e) { return s + e.temps;   }, 0);
-        var totalIdx  = capped.reduce(function(s, e) { return s + e.indices; }, 0);
-        var fCount    = capped.filter(function(e) { return e.formula; }).length;
+        // Calcul des stats sur les exos chapitre uniquement (PATCH 1)
+        var cappedChap = chapExos.slice(0, CAP);
+        var cappedN   = cappedChap.length || 1; // éviter division par 0
+        var hardExos  = cappedChap.filter(function(e) { return e.res === 'HARD'; });
+        var easyCount = cappedChap.filter(function(e) { return e.res === 'EASY'; }).length;
+        var totalTime = cappedChap.reduce(function(s, e) { return s + e.temps;   }, 0);
+        var totalIdx  = cappedChap.reduce(function(s, e) { return s + e.indices; }, 0);
+        var fCount    = cappedChap.filter(function(e) { return e.formula; }).length;
         var dernierePratique = progEntry ? progEntry.dernierePratique : '';
         return {
           cat:              cat,
-          totalExos:        total,       // nb réel dans Scores (30j)
-          nbExos:           nbExos,      // cappé à 20
+          totalExos:        total,           // nb réel dans Scores (30j)
+          nbExos:           nbExos,          // cappé à 20, chapitre uniquement
+          nbDiagExos:       diagExos.length, // PATCH 1 — nb exos diagnostic
+          diagExos:         diagExos,        // PATCH 1 — exos de diagnostic
+          chapExos:         cappedChap,      // PATCH 1 — exos chapitre (cap 20)
           dernierePratique: dernierePratique,
           hardCount:        hardExos.length,
           rateSuccess:      Math.round(easyCount * 100 / cappedN),
@@ -2604,12 +2640,16 @@ function getAdminOverview(p) {
         }
       }
 
-      // ── currentChapExosDone ────────────────────────────────
+      // ── currentChapExosDone + PATCH 4 chapTermine ──────────
       // Logique : seul le chapitre le plus récent (DernierePratique la plus haute)
       // peut bloquer la box "Publier chapitre". Un ancien chapitre non terminé
       // ne doit pas bloquer l'assignation d'une nouvelle suite.
       var userProgress = progressByCode[code] || [];
       var currentChapExosDone = 0;
+      // PATCH 4 — chapTermine/chapInProgress/chapExosDone
+      var chapTermineFlag   = false;
+      var chapInProgressFlag = false;
+      var chapExosDoneFlag  = 0;
       if (userProgress.length > 0) {
         // Trouver le chapitre avec la DernierePratique la plus récente
         var mostRecentChap = userProgress
@@ -2619,11 +2659,73 @@ function getAdminOverview(p) {
             var db = b.dernierePratique || '';
             return db > da ? 1 : db < da ? -1 : 0;
           })[0];
-        // Bloquer uniquement si ce chapitre actif n'est pas encore terminé
-        if (mostRecentChap && mostRecentChap.nbExos < 20) {
-          currentChapExosDone = mostRecentChap.nbExos;
+        if (mostRecentChap) {
+          chapExosDoneFlag = mostRecentChap.nbExos;
+          if (mostRecentChap.nbExos >= 20) {
+            chapTermineFlag    = true;
+          } else if (mostRecentChap.nbExos > 0) {
+            chapInProgressFlag = true;
+          }
+          // Bloquer uniquement si ce chapitre actif n'est pas encore terminé
+          if (mostRecentChap.nbExos < 20) {
+            currentChapExosDone = mostRecentChap.nbExos;
+          }
         }
       }
+
+      // ── PATCH 2 — boostPending / boostInProgress / boostDone ─
+      var boostPendingFlag   = false;
+      var boostInProgressFlag = false;
+      var boostDoneFlag      = false;
+      var boostPendingContent = null;
+      // Chercher boost d'aujourd'hui
+      var todayBoostEntry = userBoosts.find(function(b) { return b.date === todayStrAdmin; });
+      if (todayBoostEntry) {
+        if (todayBoostEntry.exosDone === 0) {
+          boostPendingFlag    = true;
+          boostPendingContent = todayBoostEntry.boost;
+        } else if (todayBoostEntry.exosDone >= 5) {
+          boostDoneFlag = true;
+        } else {
+          boostInProgressFlag = true;
+        }
+      }
+
+      // ── PATCH 3 — actionPriority + actions array ───────────
+      // On recalcule les pills en utilisant la même logique que rebuildSuivi
+      // mais depuis les données boostHistory/chapitresDetail déjà calculées
+      var actionsAdmin = [];
+      var lastBoostEntryAdmin = userBoosts.length > 0 ? userBoosts[0] : null; // trié desc
+      var lastBoostDateAdmin  = lastBoostEntryAdmin ? lastBoostEntryAdmin.date : '';
+      var lastBoostExosDoneAdmin = lastBoostEntryAdmin ? lastBoostEntryAdmin.exosDone : 0;
+      var boostNewPending = boostNew; // boolean (col Suivi →Nouveau Boost non vide)
+      if (userBoosts.length >= 1 && lastBoostExosDoneAdmin >= 5 && lastBoostDateAdmin < todayStrAdmin && !boostNewPending && !boostPendingFlag) {
+        actionsAdmin.push('⚡ BOOST TERMINÉ → préparer le suivant');
+      }
+      // chapTermine pour pills admin : NbExos ≥ 20 dans Progress ET cols Nicolas Suivi vides
+      var hasChapTermineAdmin = chapitresDetail.some(function(ch) { return ch.nbExos >= 20; })
+        && chapNewCount === 0;
+      if (hasChapTermineAdmin) {
+        actionsAdmin.push('✅ CHAPITRE TERMINÉ → assigner la suite');
+      }
+      // BLOQUÉ : inactif > 7j ET tous scores bas
+      var inactif7jAdmin = false;
+      if (lastConnection) {
+        try {
+          var lastConnDate = lastConnection.substring(0, 10);
+          var daysIn = Math.floor((new Date(todayStrAdmin) - new Date(lastConnDate)) / 86400000);
+          if (daysIn > 7) inactif7jAdmin = true;
+        } catch (e) { inactif7jAdmin = true; }
+      } else {
+        inactif7jAdmin = true;
+      }
+      var allScoreLowAdmin = chapitresDetail.length > 0 && chapitresDetail.every(function(ch) {
+        return ch.rateSuccess < 40;
+      });
+      if (inactif7jAdmin && allScoreLowAdmin && chapitresDetail.length > 0) {
+        actionsAdmin.push('🔴 BLOQUÉ');
+      }
+      var actionPriority = actionsAdmin.length > 0 ? actionsAdmin[0] : '👍 RAS';
 
       return {
         code:                 code,
@@ -2631,6 +2733,9 @@ function getAdminOverview(p) {
         niveau:               niveau,
         lastConnection:       lastConnection,
         action:               action,
+        // PATCH 3
+        actionPriority:       actionPriority,
+        actions:              actionsAdmin.length > 0 ? actionsAdmin : ['👍 RAS'],
         chapitres:            chapitres,
         chapNewCount:         chapNewCount,
         boostActuel:          boostActuel,
@@ -2638,13 +2743,26 @@ function getAdminOverview(p) {
         chapitresDetail:      chapitresDetail,
         boostHistory:         boostHistory,
         currentBoostExosDone: currentBoostExosDone,
-        currentChapExosDone:  currentChapExosDone
+        currentChapExosDone:  currentChapExosDone,
+        // PATCH 2
+        boostPending:         boostPendingFlag,
+        boostInProgress:      boostInProgressFlag,
+        boostDone:            boostDoneFlag,
+        boostPendingContent:  boostPendingContent,
+        // PATCH 4
+        chapTermine:          chapTermineFlag,
+        chapInProgress:       chapInProgressFlag,
+        chapExosDone:         chapExosDoneFlag
       };
     })
     .sort(function(a, b) {
-      var aRas = a.action.indexOf('RAS') !== -1;
-      var bRas = b.action.indexOf('RAS') !== -1;
-      if (aRas !== bRas) return aRas ? 1 : -1;
+      // Tri par priorité action (⚡>✅>🔴>👍) puis lastConnection desc
+      var priority = { '⚡': 0, '✅': 1, '🔴': 2, '👍': 3 };
+      var aFirst = a.actionPriority ? a.actionPriority.charAt(0) : '👍';
+      var bFirst = b.actionPriority ? b.actionPriority.charAt(0) : '👍';
+      var aP = priority[aFirst] !== undefined ? priority[aFirst] : 3;
+      var bP = priority[bFirst] !== undefined ? priority[bFirst] : 3;
+      if (aP !== bP) return aP - bP;
       if (b.lastConnection > a.lastConnection) return 1;
       if (b.lastConnection < a.lastConnection) return -1;
       return 0;
