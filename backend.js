@@ -2542,28 +2542,34 @@ function getAdminOverview(p) {
       var chapitresDetail = Object.keys(chapData).map(function(cat) {
         var exos      = chapData[cat].exos;
         var total     = exos.length;
-        var hardExos  = exos.filter(function(e) { return e.res === 'HARD'; });
-        var easyCount = exos.filter(function(e) { return e.res === 'EASY'; }).length;
-        var totalTime = exos.reduce(function(s, e) { return s + e.temps;   }, 0);
-        var totalIdx  = exos.reduce(function(s, e) { return s + e.indices; }, 0);
-        var fCount    = exos.filter(function(e) { return e.formula; }).length;
         // Tri par num décroissant → du plus récent au plus ancien
         var sorted    = exos.slice().sort(function(a, b) { return b.num - a.num; });
         // nbExos depuis Progress (source de vérité pour savoir si terminé)
         var progEntry = userProgressMap[cat];
-        var nbExos = progEntry ? progEntry.nbExos : total;
+        var nbExosRaw = progEntry ? progEntry.nbExos : total;
+        // ── CAP STRICT 20 exos par chapitre ─────────────────────
+        var CAP       = 20;
+        var nbExos    = Math.min(nbExosRaw, CAP);
+        // Calcul des stats sur les 20 premiers exos (les plus récents)
+        var capped    = sorted.slice(0, CAP);
+        var cappedN   = capped.length || 1; // éviter division par 0
+        var hardExos  = capped.filter(function(e) { return e.res === 'HARD'; });
+        var easyCount = capped.filter(function(e) { return e.res === 'EASY'; }).length;
+        var totalTime = capped.reduce(function(s, e) { return s + e.temps;   }, 0);
+        var totalIdx  = capped.reduce(function(s, e) { return s + e.indices; }, 0);
+        var fCount    = capped.filter(function(e) { return e.formula; }).length;
         var dernierePratique = progEntry ? progEntry.dernierePratique : '';
         return {
           cat:              cat,
-          totalExos:        total,
-          nbExos:           nbExos,
+          totalExos:        total,       // nb réel dans Scores (30j)
+          nbExos:           nbExos,      // cappé à 20
           dernierePratique: dernierePratique,
           hardCount:        hardExos.length,
-          rateSuccess:      total ? Math.round(easyCount * 100 / total) : 0,
-          avgTime:          total ? Math.round(totalTime  / total)      : 0,
-          avgIndices:       total ? Math.round(totalIdx   / total * 10) / 10 : 0,
-          pctFormula:       total ? Math.round(fCount     * 100 / total)     : 0,
-          exosList:         sorted  // tous les exos, sans cap
+          rateSuccess:      Math.round(easyCount * 100 / cappedN),
+          avgTime:          Math.round(totalTime  / cappedN),
+          avgIndices:       Math.round(totalIdx   / cappedN * 10) / 10,
+          pctFormula:       Math.round(fCount     * 100 / cappedN),
+          exosList:         sorted  // tous les exos pour affichage, sans cap
         };
       }).sort(function(a, b) { return b.hardCount - a.hardCount; }); // plus fragile en 1er
 
