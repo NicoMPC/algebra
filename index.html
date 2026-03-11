@@ -1708,7 +1708,7 @@ async function _flowGuestRegister() {
   if (overlay) overlay.remove();
 
   if (loginR.status === 'success') {
-    loginR.isFirstDay = true;
+    loginR.isFirstDay = false; // diagnostic déjà fait dans le flow guest — ne pas relancer startCal()
     initApp(loginR);
   } else {
     showT('Connecte-toi depuis le menu 😊', 2500, '💡');
