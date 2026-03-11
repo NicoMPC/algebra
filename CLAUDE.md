@@ -822,6 +822,22 @@ Password test : `test123` (hash SHA-256 de `email::test123::AB22`)
 
 ---
 
+### ✅ SESSION 11 mars après-midi — Fix chapLocked + cap 20 exos (TERMINÉ)
+
+#### Fix chapLocked (Phase 1 — commit ab58d6d, GAS @27)
+- `chapLocked` : bloque uniquement sur chapitre le plus récent (DernierePratique) — pas tous les chapitres
+- Modal admin : section "📚 Chapitres archivés" dépliable (chapitres nbExos≥20)
+- GAS @27 déployé (fix chapLocked actif + archivage modal)
+
+#### Fix cap 20 exos chapitresDetail (Phase 2 — commit 72d200d, GAS @28)
+- `chapitresDetail` : cap strict 20 exos par chapitre — `nbExos = min(nbExosRaw, 20)`
+- `rateSuccess`, `avgTime`, `avgIndices`, `pctFormula` recalculés sur les 20 premiers exos (tri num décroissant = plus récents)
+- `totalExos` conservé pour info brute
+- Modal admin : `infoLine` "X/20" toujours ≤ 20 (cohérent automatiquement)
+- GAS @28 déployé (cap 20 exos chapitresDetail)
+
+---
+
 ## 🚦 Règle d'or chaque session
 1. Lire CLAUDE.md
 2. Identifier le BLOC actif et les priorités du jour
