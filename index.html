@@ -1806,8 +1806,9 @@ function initApp(d, skipRender) {
     setTimeout(showTrialExpired, 300);
   }
 
+  // PATCH F : LK (boost_loc_v23) utilisé UNIQUEMENT pour streak UX (S.stk) — jamais pour S.res/S.stk depuis données élève
   var loc = JSON.parse(localStorage.getItem(LK) || '{}');
-  var ul  = loc[d.profile.code] || {};
+  // ul supprimé — S.res/S.stk viennent exclusivement de d (GAS)
 
   LVL[S.niv] = { cats:{}, names:{}, icons:{} };
 
@@ -1938,7 +1939,9 @@ function initApp(d, skipRender) {
   document.getElementById('fab-draft').classList.remove('hidden');
 
   if (S.calState !== 'test') {
-    S.calState = ul.calDone ? null : (d.history.length === 0 ? 'sel' : null);
+    // calDone : état UX local (diagnostic fait) — lu depuis LK
+    var _calDone = loc[d.profile.code] ? loc[d.profile.code].calDone : false;
+    S.calState = _calDone ? null : (d.history.length === 0 ? 'sel' : null);
   }
 
   if (S.boostEx && S.boost) loadBoost();
@@ -3338,18 +3341,28 @@ function copyLastBoostJSON(code) {
   });
 }
 
-// Retourne { bg, border, text, cls, icon } selon l'action
+// Retourne { bg, border, text, cls, icon } selon l'action (pill texte)
 function _actionStyle(action) {
-  if (action.indexOf('DIAGNOSTIC') !== -1) {
+  if (!action) return { bg:'bg-slate-50', border:'border-slate-200', text:'text-slate-400', cls:'ac-ras', icon:'👍' };
+  if (action.indexOf('🔴') !== -1 || action.indexOf('BLOQUÉ') !== -1) {
     return { bg:'bg-rose-50', border:'border-rose-200', text:'text-rose-700', cls:'ac-diag', icon:'🔴' };
   }
-  if (action.indexOf('BOOST') !== -1) {
-    return { bg:'bg-amber-50', border:'border-amber-200', text:'text-amber-700', cls:'ac-boost', icon:'🆕' };
+  if (action.indexOf('⚡') !== -1 || action.indexOf('BOOST') !== -1) {
+    return { bg:'bg-amber-50', border:'border-amber-200', text:'text-amber-700', cls:'ac-boost', icon:'⚡' };
   }
-  if (action.indexOf('CHAPITRE') !== -1) {
+  if (action.indexOf('✅') !== -1 || action.indexOf('CHAPITRE') !== -1) {
     return { bg:'bg-emerald-50', border:'border-emerald-200', text:'text-emerald-700', cls:'ac-chap', icon:'✅' };
   }
   return { bg:'bg-slate-50', border:'border-slate-200', text:'text-slate-400', cls:'ac-ras', icon:'👍' };
+}
+
+// Retourne le style coloré pour une pill d'action (utilisé par dashboard + modal)
+function _pillStyle(action) {
+  if (!action) return { bg:'bg-slate-100', text:'text-slate-500' };
+  if (action.indexOf('🔴') !== -1 || action.indexOf('BLOQUÉ') !== -1) return { bg:'bg-rose-100', text:'text-rose-700' };
+  if (action.indexOf('⚡') !== -1 || action.indexOf('BOOST') !== -1) return { bg:'bg-amber-100', text:'text-amber-700' };
+  if (action.indexOf('✅') !== -1 || action.indexOf('CHAPITRE') !== -1) return { bg:'bg-emerald-100', text:'text-emerald-700' };
+  return { bg:'bg-slate-100', text:'text-slate-500' };
 }
 
 async function renderAdminDashboard() {
@@ -3391,7 +3404,7 @@ function _renderAdminCards() {
     return;
   }
 
-  var needsCount = students.filter(function(s){ return s.action.indexOf('RAS') === -1; }).length;
+  var needsCount = students.filter(function(s){ var ap = s.actionPriority || s.action || ''; return ap.indexOf('RAS') === -1; }).length;
   var html = '';
 
   // En-tête dashboard
@@ -3412,8 +3425,11 @@ function _renderAdminCards() {
 
   // Cartes élèves
   students.forEach(function(st) {
-    var as       = _actionStyle(st.action);
-    var needsAct = st.action.indexOf('RAS') === -1;
+    // PATCH A : utilise actionPriority (GAS @30) avec fallback sur action
+    var priority = st.actionPriority || st.action || '👍 RAS';
+    var allActions = (st.actions && st.actions.length > 0) ? st.actions : [priority];
+    var as       = _actionStyle(priority);
+    var needsAct = priority.indexOf('RAS') === -1;
     var lastStr  = relDateAdmin(st.lastConnection);
 
     html += '<div id="admin-card-' + st.code + '" ';
@@ -3433,12 +3449,25 @@ function _renderAdminCards() {
     html += '</div>';
     html += '<div class="text-[11px] text-slate-400 font-medium mt-0.5">Connexion : ' + lastStr + '</div>';
     html += '</div>';
-    html += '<div class="text-xl flex-shrink-0">' + as.icon + '</div>';
+    // Icône : coche verte UNIQUEMENT si RAS, alerte sinon
+    html += '<div class="text-xl flex-shrink-0">' + (needsAct ? as.icon : '✅') + '</div>';
     html += '</div>';
 
-    // Badge action (uniquement si non-RAS)
+    // Pill principale colorée (uniquement si non-RAS)
     if (needsAct) {
-      html += '<div class="' + as.bg + ' border ' + as.border + ' rounded-xl px-3 py-2 text-[11px] font-black ' + as.text + ' mb-2">' + st.action + '</div>';
+      var ps = _pillStyle(priority);
+      html += '<div class="' + ps.bg + ' rounded-xl px-3 py-2 text-[11px] font-black ' + ps.text + ' mb-1.5">' + priority + '</div>';
+      // Pills secondaires si plusieurs actions
+      if (allActions.length > 1) {
+        html += '<div class="flex flex-wrap gap-1 mb-2">';
+        for (var ai = 1; ai < allActions.length; ai++) {
+          var sp = _pillStyle(allActions[ai]);
+          html += '<span class="' + sp.bg + ' ' + sp.text + ' text-[10px] font-semibold px-2 py-0.5 rounded-full">' + allActions[ai] + '</span>';
+        }
+        html += '</div>';
+      } else {
+        html += '<div class="mb-2"></div>';
+      }
     }
 
     // Stats chapitres depuis chapitresDetail (si dispo)
@@ -3506,83 +3535,154 @@ function closeStudentModal() {
 }
 
 function _buildModalHTML(st) {
-  var as      = _actionStyle(st.action);
+  // PATCH A : actionPriority avec fallback
+  var priority = st.actionPriority || st.action || '👍 RAS';
+  var allActions = (st.actions && st.actions.length > 0) ? st.actions : [priority];
+  var as      = _actionStyle(priority);
   var lastStr = relDateAdmin(st.lastConnection);
   var detail  = st.chapitresDetail || [];
 
-  // ── Bloc détail par chapitre ──────────────────────────────
+  // ── Bloc détail par chapitre — PATCH B+C ─────────────────
+  // Fonction helper : rendu d'une liste d'exos
+  var _renderExoList = function(exos, openByDef) {
+    if (!exos || exos.length === 0) return '';
+    var h = '';
+    if (exos.length > 3) {
+      h += '<details class="mb-1"' + (openByDef ? ' open' : '') + '>';
+      var errCnt = exos.filter(function(e){ return e.res === 'HARD'; }).length;
+      h += '<summary class="text-[10px] font-semibold text-slate-500 cursor-pointer py-1 select-none">' +
+        exos.length + ' exercices' +
+        (errCnt > 0 ? ' · ' + errCnt + ' erreur' + (errCnt > 1 ? 's' : '') + ' ✗' : ' · voir le détail') +
+        '</summary>';
+    }
+    h += '<div class="mt-1">';
+    exos.forEach(function(e) {
+      var isHard = e.res === 'HARD';
+      var enonce = e.enonce || '—';
+      h += '<div class="adm-exo-row">';
+      h += '<span style="font-size:.9rem;flex-shrink:0">' + (isHard ? '❌' : '✅') + '</span>';
+      h += '<div class="flex-1 min-w-0">';
+      if (enonce.length > 60) {
+        h += '<details><summary class="text-slate-600 leading-snug cursor-pointer">' + enonce.substring(0, 60) + '…</summary><span class="text-slate-600 leading-snug text-xs">' + enonce + '</span></details>';
+      } else {
+        h += '<div class="text-slate-600 leading-snug">' + enonce + '</div>';
+      }
+      if (isHard && e.wrongOpt) h += '<div class="text-rose-400 font-semibold mt-0.5">→ répondu : <em>' + e.wrongOpt + '</em></div>';
+      h += '</div>';
+      var pills = '';
+      if (e.temps > 0)   pills += '<span class="adm-pill" style="background:#f1f5f9;color:#64748b">⏱' + e.temps + 's</span>';
+      if (e.indices > 0) pills += '<span class="adm-pill" style="background:#fef3c7;color:#92400e">💡×' + e.indices + '</span>';
+      if (e.formula)     pills += '<span class="adm-pill" style="background:#ede9fe;color:#5b21b6">📐</span>';
+      if (pills) h += '<div class="flex gap-1 flex-shrink-0">' + pills + '</div>';
+      h += '</div>';
+    });
+    h += '</div>';
+    if (exos.length > 3) h += '</details>';
+    return h;
+  };
+
+  // PATCH C : tri chapitres — terminés > en cours > diag seulement
+  var sorted = detail.slice().sort(function(a, b) {
+    var nbA = typeof a.nbExos === 'number' ? a.nbExos : (a.totalExos || 0);
+    var nbB = typeof b.nbExos === 'number' ? b.nbExos : (b.totalExos || 0);
+    var scoreA = nbA >= 20 ? 2 : nbA > 0 ? 1 : 0;
+    var scoreB = nbB >= 20 ? 2 : nbB > 0 ? 1 : 0;
+    return scoreB - scoreA;
+  });
+
+  var chapsDone     = sorted.filter(function(ch){ var nb = typeof ch.nbExos === 'number' ? ch.nbExos : (ch.totalExos||0); return nb >= 20; });
+  var chapsInProg   = sorted.filter(function(ch){ var nb = typeof ch.nbExos === 'number' ? ch.nbExos : (ch.totalExos||0); return nb > 0 && nb < 20; });
+  var chapsDiagOnly = sorted.filter(function(ch){ var nb = typeof ch.nbExos === 'number' ? ch.nbExos : (ch.totalExos||0); return nb === 0; });
+
+  var _renderChapSection = function(chList) {
+    var h = '';
+    chList.forEach(function(ch) {
+      var nbExos    = typeof ch.nbExos === 'number' ? ch.nbExos : (ch.totalExos || 0);
+      var nbDiag    = ch.nbDiagExos || 0;
+      var diagExos  = ch.diagExos   || [];
+      var chapExos  = ch.chapExos   || ch.exosList || [];
+      // Fallback : si les nouveaux champs ne sont pas là, on utilise exosList avec source
+      if (!ch.diagExos && !ch.chapExos && ch.exosList) {
+        diagExos = ch.exosList.filter(function(e){ return e.source === 'diagnostic'; });
+        chapExos = ch.exosList.filter(function(e){ return e.source !== 'diagnostic'; });
+      }
+      var hasErrors = ch.hardCount > 0;
+      var barColor  = ch.rateSuccess >= 75 ? '#059669' : ch.rateSuccess >= 50 ? '#f59e0b' : '#e11d48';
+
+      h += '<div class="adm-chap-block' + (hasErrors ? ' has-errors' : '') + '">';
+
+      // En-tête chapitre
+      h += '<div class="flex items-center justify-between mb-2">';
+      h += '<div class="flex items-center gap-2">';
+      h += '<span class="text-xs font-black text-slate-800">' + ch.cat.replace(/_/g, ' ') + '</span>';
+      if (hasErrors) h += '<span class="adm-pill" style="background:#fee2e2;color:#b91c1c">' + ch.hardCount + ' ✗</span>';
+      h += '</div>';
+      h += '<span class="text-[10px] text-slate-400 font-semibold">' + nbExos + '/20 · ' + ch.rateSuccess + '%</span>';
+      h += '</div>';
+
+      // Barre de succès (basée sur nbExos chapitre uniquement)
+      if (nbExos > 0) {
+        h += '<div class="adm-bar-bg mb-2"><div class="adm-bar-fill" style="width:' + ch.rateSuccess + '%;background:' + barColor + '"></div></div>';
+      }
+
+      // PATCH B : exos DIAG puis exos CH séparés
+      if (nbExos === 0 && nbDiag > 0) {
+        // Diagnostic fait, chapitre pas commencé
+        h += '<div class="text-[10px] text-slate-400 bg-slate-50 rounded-lg px-2 py-1.5 mb-1">Diagnostic fait — chapitre pas encore commencé</div>';
+      }
+
+      if (nbDiag > 0 || diagExos.length > 0) {
+        var dCnt = nbDiag || diagExos.length;
+        var diagSuccess = diagExos.filter(function(e){ return e.res !== 'HARD'; }).length;
+        var diagPct = diagExos.length > 0 ? Math.round(diagSuccess / diagExos.length * 100) : 0;
+        h += '<div class="mb-1.5">';
+        h += '<div class="flex items-center gap-1.5 mb-1">';
+        h += '<span class="adm-pill" style="background:#f1f5f9;color:#64748b;font-size:.6rem">DIAG</span>';
+        h += '<span class="text-[10px] text-slate-500 font-semibold">' + dCnt + ' exo' + (dCnt > 1 ? 's' : '') + ' de diagnostic' + (diagExos.length > 0 ? ' — ' + diagPct + '%' : '') + ' <span class="font-normal text-slate-400">(non compté dans le score chapitre)</span></span>';
+        h += '</div>';
+        if (diagExos.length > 0) h += _renderExoList(diagExos, false);
+        h += '</div>';
+      }
+
+      if (chapExos.length > 0 || nbExos > 0) {
+        var chSuccess = chapExos.filter(function(e){ return e.res !== 'HARD'; }).length;
+        var chPct = chapExos.length > 0 ? Math.round(chSuccess / chapExos.length * 100) : ch.rateSuccess;
+        h += '<div class="mb-1">';
+        h += '<div class="flex items-center gap-1.5 mb-1">';
+        h += '<span class="adm-pill" style="background:#ede9fe;color:#5b21b6;font-size:.6rem">CH</span>';
+        h += '<span class="text-[10px] text-slate-500 font-semibold">' + nbExos + '/20 exercices — ' + chPct + '%</span>';
+        h += '</div>';
+        if (chapExos.length > 0) h += _renderExoList(chapExos, hasErrors);
+        h += '</div>';
+      }
+
+      // Bouton copier prompt
+      h += '<button onclick="copyAdminPrompt(\'' + st.code + '\',\'boost\',\'' + ch.cat + '\')" class="adm-copy-btn">📋 Copier le prompt Claude — Boost ciblé ' + ch.cat.replace(/_/g,' ') + '</button>';
+      h += '</div>';
+    });
+    return h;
+  };
+
   var chapHTML = '';
   if (detail.length === 0) {
     chapHTML = '<div class="bg-slate-50 border border-slate-100 rounded-xl p-3 mb-4 text-xs text-slate-400 text-center">Aucun exercice enregistré (30 derniers jours)</div>';
   } else {
-    detail.forEach(function(ch) {
-      var hasErrors = ch.hardCount > 0;
-      var barColor  = ch.rateSuccess >= 75 ? '#059669' : ch.rateSuccess >= 50 ? '#f59e0b' : '#e11d48';
-      chapHTML += '<div class="adm-chap-block' + (hasErrors ? ' has-errors' : '') + '">';
-
-      // En-tête chapitre
-      chapHTML += '<div class="flex items-center justify-between mb-2">';
-      chapHTML += '<div class="flex items-center gap-2">';
-      chapHTML += '<span class="text-xs font-black text-slate-800">' + ch.cat.replace(/_/g, ' ') + '</span>';
-      if (hasErrors) chapHTML += '<span class="adm-pill" style="background:#fee2e2;color:#b91c1c">' + ch.hardCount + ' ✗</span>';
-      chapHTML += '</div>';
-      chapHTML += '<div class="flex items-center gap-2">';
-      chapHTML += '<span class="text-[10px] text-slate-400 font-semibold">' + ch.totalExos + ' exos · ' + ch.rateSuccess + '%</span>';
-      chapHTML += '</div>';
-      chapHTML += '</div>';
-
-      // Barre de succès
-      chapHTML += '<div class="adm-bar-bg mb-2"><div class="adm-bar-fill" style="width:' + ch.rateSuccess + '%;background:' + barColor + '"></div></div>';
-
-
-      // Liste des exos (collapsible si > 3)
-      if (ch.exosList && ch.exosList.length > 0) {
-        var openByDef = ch.hardCount > 0;
-        if (ch.exosList.length > 3) {
-          chapHTML += '<details class="mb-1"' + (openByDef ? ' open' : '') + '>';
-          chapHTML += '<summary class="text-[10px] font-semibold text-slate-500 cursor-pointer py-1 select-none">' +
-            ch.exosList.length + ' exercices · ' +
-            (ch.hardCount > 0 ? ch.hardCount + ' erreur' + (ch.hardCount > 1 ? 's' : '') + ' ✗' : 'voir le détail') +
-            '</summary>';
-        }
-        chapHTML += '<div class="mt-1">';
-        ch.exosList.forEach(function(e) {
-          var isHard = e.res === 'HARD';
-          var enonce = e.enonce || '—';
-          chapHTML += '<div class="adm-exo-row">';
-          // Badge source
-          var srcBadge = '';
-          if (e.source === 'diagnostic') {
-            srcBadge = '<span class="adm-pill" style="background:#f1f5f9;color:#94a3b8;font-size:.6rem">DIAG</span>';
-          } else if (e.source === 'boost') {
-            srcBadge = '<span class="adm-pill" style="background:#fef3c7;color:#92400e;font-size:.6rem">BOOST</span>';
-          }
-          if (srcBadge) chapHTML += srcBadge;
-          chapHTML += '<span style="font-size:.9rem;flex-shrink:0">' + (isHard ? '❌' : '✅') + '</span>';
-          chapHTML += '<div class="flex-1 min-w-0">';
-          // Accordion si enoncé > 60 chars
-          if (enonce.length > 60) {
-            chapHTML += '<details><summary class="text-slate-600 leading-snug cursor-pointer">' + enonce.substring(0, 60) + '…</summary><span class="text-slate-600 leading-snug text-xs">' + enonce + '</span></details>';
-          } else {
-            chapHTML += '<div class="text-slate-600 leading-snug">' + enonce + '</div>';
-          }
-          if (isHard && e.wrongOpt) chapHTML += '<div class="text-rose-400 font-semibold mt-0.5">→ répondu : <em>' + e.wrongOpt + '</em></div>';
-          chapHTML += '</div>';
-          var pills = '';
-          if (e.temps > 0)    pills += '<span class="adm-pill" style="background:#f1f5f9;color:#64748b">⏱' + e.temps + 's</span>';
-          if (e.indices > 0)  pills += '<span class="adm-pill" style="background:#fef3c7;color:#92400e">💡×' + e.indices + '</span>';
-          if (e.formula)      pills += '<span class="adm-pill" style="background:#ede9fe;color:#5b21b6">📐</span>';
-          if (pills) chapHTML += '<div class="flex gap-1 flex-shrink-0">' + pills + '</div>';
-          chapHTML += '</div>';
-        });
-        chapHTML += '</div>';
-        if (ch.exosList.length > 3) chapHTML += '</details>';
-      }
-
-      // Bouton copier le prompt pour ce chapitre
-      chapHTML += '<button onclick="copyAdminPrompt(\'' + st.code + '\',\'boost\',\'' + ch.cat + '\')" class="adm-copy-btn">📋 Copier le prompt Claude — Boost ciblé ' + ch.cat.replace(/_/g,' ') + '</button>';
-      chapHTML += '</div>';
-    });
+    if (chapsDone.length > 0) {
+      chapHTML += '<details open class="mb-2">';
+      chapHTML += '<summary class="cursor-pointer text-[10px] font-black text-emerald-700 uppercase tracking-widest py-1 select-none">✅ Chapitres terminés (' + chapsDone.length + ')</summary>';
+      chapHTML += '<div class="mt-1">' + _renderChapSection(chapsDone) + '</div>';
+      chapHTML += '</details>';
+    }
+    if (chapsInProg.length > 0) {
+      chapHTML += '<div class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1 mt-2">📖 En cours (' + chapsInProg.length + ')</div>';
+      chapHTML += _renderChapSection(chapsInProg);
+    }
+    if (chapsDiagOnly.length > 0) {
+      chapHTML += '<details class="mb-2 mt-2">';
+      chapHTML += '<summary class="cursor-pointer text-[10px] font-semibold text-slate-400 py-1 select-none">🔍 Diagnostiqués — pas encore commencés (' + chapsDiagOnly.length + ')</summary>';
+      chapHTML += '<div class="mt-1">' + _renderChapSection(chapsDiagOnly) + '</div>';
+      chapHTML += '</details>';
+    }
   }
 
   // ── Placeholders JSON ─────────────────────────────────────
@@ -3608,8 +3708,17 @@ function _buildModalHTML(st) {
     // Body (scrollable)
     '<div class="flex-1 overflow-y-auto no-sb px-5 pt-4 pb-6">' +
 
-      // Badge action
-      '<div class="' + as.bg + ' border ' + as.border + ' rounded-xl px-4 py-2.5 text-sm font-black ' + as.text + ' mb-4 text-center">' + st.action + '</div>' +
+      // PATCH A : badge action principal + pills secondaires
+      '<div class="' + as.bg + ' border ' + as.border + ' rounded-xl px-4 py-2.5 text-sm font-black ' + as.text + ' mb-2 text-center">' + priority + '</div>' +
+      (allActions.length > 1 ? (function() {
+        var pillsHTML = '<div class="flex flex-wrap gap-1 justify-center mb-3">';
+        for (var _ai = 1; _ai < allActions.length; _ai++) {
+          var _sp = _pillStyle(allActions[_ai]);
+          pillsHTML += '<span class="' + _sp.bg + ' ' + _sp.text + ' text-[10px] font-semibold px-2 py-0.5 rounded-full">' + allActions[_ai] + '</span>';
+        }
+        pillsHTML += '</div>';
+        return pillsHTML;
+      })() : '<div class="mb-2"></div>') +
 
       // Section chapitres
       '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">📊 Exercices par chapitre (30 jours)</div>' +
@@ -3623,21 +3732,50 @@ function _buildModalHTML(st) {
         '<textarea id="modal-motprof-' + st.code + '" class="adm-textarea" style="height:72px" placeholder="Ex: Bravo pour ta progression ! Ce chapitre va t\'aider à maîtriser les fractions. Courage 💪"></textarea>' +
       '</div>' +
 
-      // ⚡ Boost — accordéon + verrouillage si boost en cours
+      // PATCH D — ⚡ Boost : verrouillage intelligent
       (function() {
         var bHistory = st.boostHistory || [];
-        var curDone  = st.currentBoostExosDone || 0;
-        var boostLocked = curDone > 0 && curDone < 5;  // boost en cours non terminé
+        // Priorité aux nouveaux champs GAS @30, fallback sur anciens champs
+        var boostPending    = typeof st.boostPending    === 'boolean' ? st.boostPending    : false;
+        var boostInProgress = typeof st.boostInProgress === 'boolean' ? st.boostInProgress : (st.currentBoostExosDone > 0 && st.currentBoostExosDone < 5);
+        var boostDone       = typeof st.boostDone       === 'boolean' ? st.boostDone       : (st.currentBoostExosDone >= 5);
+        var pendingContent  = st.boostPendingContent || null;
+        var curDone         = st.currentBoostExosDone || 0;
+
+        // Verrouillage
+        var boostLocked = boostPending || boostInProgress;
 
         // Statut courant
         var statusLabel = '';
-        if (bHistory.length > 0) {
+        if (boostPending)    statusLabel = '<span class="text-[10px] font-black text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">⏳ En attente — pas démarré</span>';
+        else if (boostInProgress) statusLabel = '<span class="text-[10px] font-black text-amber-600 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">🔄 En cours ' + curDone + '/5</span>';
+        else if (boostDone)  statusLabel = '<span class="text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">✓ Dernier boost terminé</span>';
+        else if (bHistory.length > 0) {
           var latest = bHistory[0];
-          if (latest.status === 'pending')     statusLabel = '<span class="text-[10px] font-black text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">En attente (non démarré)</span>';
-          else if (latest.status === 'in_progress') statusLabel = '<span class="text-[10px] font-black text-amber-600 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">En cours ' + latest.exosDone + '/5</span>';
-          else if (latest.status === 'done')   statusLabel = '<span class="text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">Terminé ✓</span>';
+          if (latest.status === 'pending')     statusLabel = '<span class="text-[10px] font-black text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">⏳ En attente</span>';
+          else if (latest.status === 'in_progress') statusLabel = '<span class="text-[10px] font-black text-amber-600 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">🔄 En cours ' + latest.exosDone + '/5</span>';
+          else if (latest.status === 'done')   statusLabel = '<span class="text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">✓ Terminé</span>';
         }
-        if (st.boostNew && !statusLabel) statusLabel = '<span class="text-[10px] font-black text-amber-600 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">En attente ✓</span>';
+
+        // Message de verrouillage
+        var boostMsg = '';
+        if (boostPending) {
+          boostMsg = '<div class="text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-xl px-3 py-2 mb-2">⏳ Un boost est en attente — ' + (st.prenom || 'l\'élève') + ' ne l\'a pas encore commencé.</div>';
+          // Bouton voir le contenu du boost en attente
+          if (pendingContent) {
+            boostMsg += '<details class="mb-2"><summary class="cursor-pointer text-[10px] font-semibold text-slate-500 py-1 select-none">👁 Voir le boost en attente</summary>';
+            boostMsg += '<pre class="text-[9px] text-slate-600 bg-slate-50 border border-slate-200 rounded-lg p-2 overflow-x-auto max-h-32 mt-1 whitespace-pre-wrap">' +
+              (typeof pendingContent === 'string' ? pendingContent : JSON.stringify(pendingContent, null, 2)).substring(0, 800) +
+              '</pre></details>';
+          }
+        } else if (boostInProgress) {
+          boostMsg = '<div class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mb-2">🔄 Boost en cours — ' + curDone + '/5 exos faits. Attends qu\'il soit terminé.</div>';
+        }
+
+        // Mention si boost terminé
+        var boostReadyMsg = boostDone && !boostPending && !boostInProgress
+          ? '<div class="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 mb-2">✅ Dernier boost terminé — publie le suivant</div>'
+          : '';
 
         // Historique accordéon
         var histHTML = '';
@@ -3657,9 +3795,6 @@ function _buildModalHTML(st) {
         }
 
         var boostBoxClass = boostLocked ? 'opacity-50 pointer-events-none' : '';
-        var boostMsg = boostLocked
-          ? '<div class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mb-2">Boost en cours ' + curDone + '/5 — terminer avant d\'en publier un autre</div>'
-          : '';
 
         return (
           '<div class="mb-4">' +
@@ -3669,6 +3804,7 @@ function _buildModalHTML(st) {
             '</div>' +
             histHTML +
             boostMsg +
+            boostReadyMsg +
             '<div class="' + boostBoxClass + '">' +
               '<textarea id="modal-boost-json-' + st.code + '" class="adm-textarea" style="height:110px" placeholder="' + boostPH.replace(/"/g,'&quot;') + '"></textarea>' +
               '<button onclick="publishBoost(\'' + st.code + '\')" id="btn-boost-' + st.code + '" class="btn btn-ac btn-fw py-3 mt-2 text-sm">⚡ Enregistrer ce boost</button>' +
@@ -3677,65 +3813,19 @@ function _buildModalHTML(st) {
         );
       })() +
 
-      // 📚 Chapitre — verrouillé si chapitre actif en cours ou boost à préparer
-      // chapLocked = true UNIQUEMENT si le chapitre le plus récent (currentChapExosDone)
-      // est en cours (>0 et <20). Les anciens chapitres non terminés ne bloquent pas.
+      // PATCH E — 📚 Chapitre : verrouillage intelligent
       (function() {
-        var chapExosDone = st.currentChapExosDone || 0;
-        var chapInProgress = chapExosDone > 0 && chapExosDone < 20;
-        var bHist2 = st.boostHistory || [];
-        var boostNeedsPrep = bHist2.length > 0 &&
-          bHist2[0].status === 'done' &&
-          !bHist2.some(function(b) { return b.status === 'pending'; });
-        var chapLocked = chapInProgress || boostNeedsPrep;
-        var chapMsg = chapInProgress
-          ? '<div class="text-xs text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2 mb-2">Chapitre en cours — ' + chapExosDone + '/20 exos. Terminer avant d\'assigner la suite.</div>'
-          : (boostNeedsPrep
-            ? '<div class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mb-2">⚡ Prépare d\'abord le prochain boost pour cet élève avant d\'assigner un chapitre.</div>'
+        // Priorité aux nouveaux champs GAS @30, fallback sur anciens champs
+        var chapInProg  = typeof st.chapInProgress === 'boolean' ? st.chapInProgress : (st.currentChapExosDone > 0 && st.currentChapExosDone < 20);
+        var chapTerm    = typeof st.chapTermine    === 'boolean' ? st.chapTermine    : (st.currentChapExosDone >= 20);
+        var chapExosDone = st.chapExosDone || st.currentChapExosDone || 0;
+        var chapLocked   = chapInProg;
+        var chapMsg = chapInProg
+          ? '<div class="text-xs text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2 mb-2">📖 Chapitre en cours — ' + chapExosDone + '/20 exos. À terminer avant d\'assigner la suite.</div>'
+          : (chapTerm || !chapInProg
+            ? '<div class="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 mb-2">✅ Prêt à recevoir un nouveau chapitre</div>'
             : '');
         var chapBoxClass = chapLocked ? 'opacity-50 pointer-events-none' : '';
-
-        // ── Section chapitres archivés ─────────────────────────
-        var archivedChaps = detail.filter(function(ch) { return (ch.nbExos || ch.totalExos || 0) >= 20; });
-        var archiveHTML = '';
-        if (archivedChaps.length > 0) {
-          archiveHTML += '<details class="mt-3">';
-          archiveHTML += '<summary class="cursor-pointer text-sm font-medium text-slate-600 hover:text-indigo-600 py-1 select-none">📚 Chapitres archivés (' + archivedChaps.length + ' terminé' + (archivedChaps.length > 1 ? 's' : '') + ')</summary>';
-          archiveHTML += '<div class="mt-2 space-y-2">';
-          archivedChaps.forEach(function(ch) {
-            var nbEx     = ch.nbExos || ch.totalExos || 0;
-            var dpLabel  = ch.dernierePratique ? relDateAdmin(ch.dernierePratique) : '';
-            var infoLine = nbEx + '/20 · ' + ch.rateSuccess + '%' + (dpLabel ? ' · ' + dpLabel : '');
-            archiveHTML += '<div class="bg-slate-50 rounded-lg p-3 border border-slate-200">';
-            archiveHTML += '<div class="flex justify-between items-center mb-1">';
-            archiveHTML += '<span class="font-medium text-sm text-slate-800">' + ch.cat.replace(/_/g, ' ') + '</span>';
-            archiveHTML += '<span class="text-xs text-slate-500">' + infoLine + '</span>';
-            archiveHTML += '</div>';
-            // Barre de succès compacte
-            var barColor = ch.rateSuccess >= 75 ? '#059669' : ch.rateSuccess >= 50 ? '#f59e0b' : '#e11d48';
-            archiveHTML += '<div class="h-1 rounded-full bg-slate-200 mb-2"><div class="h-1 rounded-full" style="width:' + ch.rateSuccess + '%;background:' + barColor + '"></div></div>';
-            // Accordéon exos si disponibles
-            if (ch.exosList && ch.exosList.length > 0) {
-              archiveHTML += '<details class="text-xs text-slate-600 mt-1">';
-              archiveHTML += '<summary class="cursor-pointer select-none hover:text-indigo-600">Voir les ' + ch.exosList.length + ' exercices (30j)</summary>';
-              archiveHTML += '<div class="mt-1 space-y-1 max-h-40 overflow-y-auto no-sb">';
-              ch.exosList.forEach(function(e) {
-                var isHard = e.res === 'HARD';
-                var enonce = e.enonce || '—';
-                archiveHTML += '<div class="flex items-start gap-1.5 py-0.5">';
-                archiveHTML += '<span class="flex-shrink-0 text-xs">' + (isHard ? '❌' : '✅') + '</span>';
-                archiveHTML += '<span class="flex-1 leading-snug">' + (enonce.length > 70 ? enonce.substring(0, 70) + '…' : enonce) + '</span>';
-                if (e.indices > 0) archiveHTML += '<span class="flex-shrink-0 text-amber-600">💡×' + e.indices + '</span>';
-                archiveHTML += '</div>';
-              });
-              archiveHTML += '</div>';
-              archiveHTML += '</details>';
-            }
-            archiveHTML += '</div>';
-          });
-          archiveHTML += '</div>';
-          archiveHTML += '</details>';
-        }
 
         return (
           '<div class="mb-2">' +
@@ -3749,7 +3839,6 @@ function _buildModalHTML(st) {
               '<textarea id="modal-chap-json-' + st.code + '" class="adm-textarea" style="height:130px" placeholder="' + chapPH.replace(/"/g,'&quot;') + '"></textarea>' +
               '<button onclick="publishChapter(\'' + st.code + '\')" id="btn-chap-' + st.code + '" class="btn btn-dk btn-fw py-3 mt-2 text-sm">📚 Enregistrer ce chapitre</button>' +
             '</div>' +
-            archiveHTML +
           '</div>'
         );
       })() +
