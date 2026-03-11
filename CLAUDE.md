@@ -522,6 +522,24 @@ Règles prioritaires (ordre strict, plusieurs peuvent s'appliquer → afficher t
 
 ---
 
+### ✅ SESSION 12 mars — Option 1 : Bouton "Copier le dernier boost JSON"
+
+#### Ce qui a été fait
+- **backend.js** : `boostHistory` expose maintenant `exos[]` — le tableau complet des exos du boost (q/a/options/steps/f/lvl) — GAS @23
+- **index.html** : bouton `📋 Copier le dernier boost JSON (complet + stats élève)` ajouté en haut de l'accordéon "Historique des boosts" dans le modal élève
+- **index.html** : nouvelle fonction `copyLastBoostJSON(code)` :
+  - Récupère `bHistory[0].exos` (boost le plus récent, complet)
+  - Enrichit chaque exo avec les stats élève : `student_result`, `student_time_s`, `student_indices`, `student_formula`, `student_wrong` (matching par index avec `source=boost` depuis chapitresDetail)
+  - Ajoute `chapter_stats` (stats globales par chapitre)
+  - Output JSON formaté → clipboard + fallback textarea
+  - Commit `c22f471`
+
+#### Note technique
+- `source='boost'` dans chapitresDetail toujours `'chapter'` côté GAS (non implémenté) → matching par position (index 0-4). Fonctionne tant que l'élève fait les exos dans l'ordre.
+- Si besoin de matching fiable plus tard : ajouter un flag `isBoost` dans `save_score` côté GAS.
+
+---
+
 ### Session 10 mars — MVP injection parfaite (6 phases)
 
 #### backend.js (GAS @15)
