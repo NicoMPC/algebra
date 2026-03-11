@@ -591,7 +591,7 @@
       <!-- STEP 2 — Chapitres -->
       <div id="flow-s2" class="flow-step hidden">
         <h2 class="syne text-2xl font-black text-white text-center mb-2">Chapitres déjà vus ?</h2>
-        <p class="text-white/50 text-sm text-center mb-5">Coche ce qui a été étudié cette année (2 minimum)</p>
+        <p class="text-white/50 text-sm text-center mb-5">Coche les chapitres déjà vus cette année</p>
         <div id="flow-chaps-grid" class="grid grid-cols-2 gap-2.5 mb-6"></div>
         <button onclick="flowToStep3()" class="btn btn-ac btn-fw py-4">Voir le diagnostic →</button>
       </div>
@@ -1424,8 +1424,9 @@ function _flowResumeFromSaved() {
   _flowLevel   = saved.niveau || _flowLevel;
   _flowChaps   = saved.chapitres || _flowChaps;
   _flowDiagDone = false;
-  // Basculer directement dans l'app avec le vrai rendu CALIBRAGE
-  _flowLaunchAppDiag();
+  // Reprendre le quiz inline dans la landing
+  _flowSetStep(3);
+  _flowRenderQuestion(_flowExoIdx);
 }
 
 function _flowSetStep(n) {
@@ -1523,8 +1524,9 @@ function _flowStartDiag() {
           ts: Date.now(), step: 0
         }));
       } catch(e) {}
-      // → Basculer dans l'app réelle avec le vrai rendu rSection('CALIBRAGE')
-      _flowLaunchAppDiag();
+      // → Rendu quiz inline dans la landing
+      _flowExoIdx = 0;
+      _flowRenderQuestion(0);
     } else {
       if (container) container.innerHTML =
         '<div class="text-center py-6">' +
@@ -1541,144 +1543,161 @@ function _flowStartDiag() {
   });
 }
 
-function _flowLaunchAppDiag() {
-  // 1. Masquer la landing, afficher l'app
-  var landing = document.getElementById('landing-screen');
-  var app     = document.getElementById('main-app');
-  if (landing) landing.classList.add('hidden');
-  if (app)     app.classList.remove('hidden');
-
-  // 2. Initialiser S minimal suffisant pour startCal() et render()
-  S.niv  = _flowLevel;
-  S.prof = { code: 'GUEST', name: 'Toi', prenom: 'Toi', level: _flowLevel, isAdmin: false };
-  S.calExos      = _flowExos;
-  S.calState     = null;
-  S.res          = {};
-  S.hints        = {};
-  S.ftch         = {};
-  S.qv           = {};
-  S.qans         = {};
-  S.shuf         = {};
-  S.exp          = {};
-  S.rev          = false;
-  S.cid          = null;
-  S.xp           = 0;
-  S.stk          = 0;
-  S.sent         = new Set();
-  S.scoreQueue   = [];
-  S.exoStartTime = {};
-  S.drafts       = {};
-  S.insights     = {};
-  S.isNew        = {};
-  S.chapDone     = {};
-  S.remReq       = {};
-  S.prereqBanner = {};
-  S.diagInsight  = null;
-  S.boostInsight = null;
-  S._motProfScreen = null;
-  S.motProfChap  = {};
-  S.motProfBoost = null;
-  S.boostEx      = false;
-  S.boost        = null;
-  S.boostConsumed = false;
-  S.boostGen     = false;
-  S.boostPreping = false;
-  S.pendingManual = null;
-  S.nextBoostTopic = null;
-  S.diagChapResults = {};
-  S.progress     = null;
-  S.progressLoading = false;
-  S.isFirstDay   = false;
-  S.trial = { trialActive: true, daysLeft: 7, isPremium: false };
-  S._guestMode   = true;  // flag : intercepter fin CALIBRAGE → overlay inscription
-  S.view = 'chapters';
-
-  // Initialiser LVL pour ce niveau si absent
-  if (!LVL[S.niv]) LVL[S.niv] = { cats: {}, names: {}, icons: {} };
-
-  // Header — nom affiché
-  var aname = document.getElementById('aname');
-  if (aname) aname.innerText = 'Toi';
-
-  // Masquer FAB brouillon (pas de compte réel)
-  var fab = document.getElementById('fab-draft');
-  if (fab) fab.classList.add('hidden');
-
-  // 3. Lancer le diagnostic avec le vrai rendu rSection('CALIBRAGE')
-  startCal();
-}
-
-// _flowRenderDiagExo — SUPPRIMÉ : remplacé par _flowLaunchAppDiag() + startCal() + rSection('CALIBRAGE')
 // _flowCheckOptEnc / _flowCheckOpt — SUPPRIMÉS : remplacés par checkOpt() du vrai rendu
-// _flowShowResults — SUPPRIMÉE : remplacée par _flowShowGuestRegister()
 
 // ─────────────────────────────────────────────────────────────
 
-// ── INSCRIPTION GUEST après diagnostic dans l'app ────────────
-function _flowShowGuestRegister() {
-  // Calculer score depuis S.res (mark() a stocké 'EASY'/'HARD' directement)
-  var calExos = LVL[S.niv].cats['CALIBRAGE'] || [];
-  var ok = 0, total = calExos.length;
-  calExos.forEach(function(exo, i) {
-    var r2 = res2('CALIBRAGE', i);
-    var rs = S.res[S.niv + '-' + r2.rC + '-' + r2.rI];
-    if (rs === 'EASY') ok++;
+// ── RENDU QUIZ INLINE LANDING ─────────────────────────────────
+function _flowRenderQuestion(idx) {
+  var container = document.getElementById('flow-s3');
+  if (!container) return;
+  var exo = _flowExos[idx];
+  if (!exo) return;
+  var total = _flowExos.length;
+  var pct = Math.round((idx / total) * 100);
+  _flowStartTs = Date.now();
+
+  // Tutorial première question uniquement
+  var tutorial = '';
+  if (idx === 0) {
+    tutorial =
+      '<div style="background:rgba(99,102,241,.15);border:1.5px solid rgba(129,140,248,.3);' +
+      'border-radius:12px;padding:.75rem 1rem;margin-bottom:1rem;' +
+      'color:rgba(255,255,255,.75);font-size:.8rem;font-weight:500;line-height:1.5">' +
+      '💡 <strong style="color:#a5b4fc">Comment ça marche :</strong> réponds honnêtement — ' +
+      'c\'est pas un exam. Chaque question a des <strong style="color:#a5b4fc">indices</strong> ' +
+      'et une <strong style="color:#a5b4fc">formule</strong> dans la vraie app si tu bloques.' +
+      '</div>';
+  }
+
+  var opts = exo.options || exo.opts || [];
+  var optsHtml = '';
+  if (opts.length > 0) {
+    optsHtml =
+      '<div id="flow-opts" style="display:flex;flex-direction:column;gap:.6rem;margin-top:1rem">' +
+      opts.map(function(o, i) {
+        return '<button onclick="_flowAnswerOpt(' + i + ')" ' +
+          'style="width:100%;text-align:left;padding:.875rem 1rem;background:#f8fafc;' +
+          'border:2px solid #e2e8f0;border-radius:12px;font-size:.875rem;font-weight:600;' +
+          'color:#1e293b;cursor:pointer;transition:all .15s;font-family:inherit" class="flow-opt-btn">' +
+          '<span style="color:#6366f1;font-weight:800;margin-right:.4rem">' + String.fromCharCode(65+i) + '.</span> ' +
+          fmtL(o) + '</button>';
+      }).join('') +
+      '</div>';
+  }
+
+  container.innerHTML =
+    tutorial +
+    '<div style="background:#fff;border-radius:1.25rem;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.4)">' +
+    '<div style="background:#eef2ff;padding:1rem 1.25rem;border-bottom:1.5px solid #e0e7ff">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">' +
+    '<span style="font-size:.75rem;font-weight:800;color:#4338ca;font-family:Syne,sans-serif;letter-spacing:.03em">🎯 DIAGNOSTIC</span>' +
+    '<span style="font-size:.75rem;font-weight:700;color:#6366f1;background:#e0e7ff;padding:.2rem .65rem;border-radius:99px">' + (idx+1) + ' / ' + total + '</span>' +
+    '</div>' +
+    '<div style="height:4px;background:#e0e7ff;border-radius:99px">' +
+    '<div style="height:100%;background:linear-gradient(90deg,#4338ca,#6366f1);border-radius:99px;width:' + pct + '%;transition:width .4s ease"></div>' +
+    '</div>' +
+    '</div>' +
+    '<div style="padding:1.25rem 1.5rem 1.5rem">' +
+    '<p style="font-size:.95rem;font-weight:600;color:#0f172a;line-height:1.65;margin-bottom:.25rem" class="mc">' + fmtL(exo.q) + '</p>' +
+    optsHtml +
+    '</div>' +
+    '</div>';
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    try { MathJax.typesetPromise([container]); } catch(e) {}
+  }
+}
+
+function _flowAnswerOpt(optIdx) {
+  var exo = _flowExos[_flowExoIdx];
+  if (!exo) return;
+  var opts = exo.options || exo.opts || [];
+  var correctText = exo.rep || exo.answer || exo.a || '';
+  var correct = (opts[optIdx] === correctText);
+  var elapsed = Math.round((Date.now() - _flowStartTs) / 1000);
+
+  _flowResults.push({ idx: _flowExoIdx, correct: correct, time: elapsed });
+
+  // Feedback visuel
+  var buttons = document.querySelectorAll('#flow-opts .flow-opt-btn');
+  buttons.forEach(function(btn, i) {
+    btn.disabled = true;
+    if (i === optIdx) {
+      btn.style.background   = correct ? '#d1fae5' : '#fee2e2';
+      btn.style.borderColor  = correct ? '#10b981' : '#ef4444';
+      btn.style.color        = correct ? '#065f46' : '#991b1b';
+    } else if (opts[i] === correctText) {
+      btn.style.background   = '#d1fae5';
+      btn.style.borderColor  = '#10b981';
+      btn.style.color        = '#065f46';
+    }
   });
+
+  // Sauvegarder progression (abandon recovery)
+  try {
+    var gd = JSON.parse(localStorage.getItem('guestDiag') || '{}');
+    gd.results = _flowResults; gd.step = _flowExoIdx + 1;
+    localStorage.setItem('guestDiag', JSON.stringify(gd));
+  } catch(e) {}
+
+  _flowExoIdx++;
+  setTimeout(function() {
+    if (_flowExoIdx < _flowExos.length) {
+      _flowRenderQuestion(_flowExoIdx);
+    } else {
+      _flowDiagDone = true;
+      _flowActivateStep4Guest();
+    }
+  }, 800);
+}
+
+function _flowActivateStep4Guest() {
+  // Calculer le score pour affichage dans step 4
+  var ok = _flowResults.filter(function(r) { return r.correct; }).length;
+  var total = _flowResults.length;
   var pct = total > 0 ? Math.round((ok / total) * 100) : 0;
+  var scoreLabel = pct >= 80 ? "T'es solide 💪" : pct >= 50 ? "Bon niveau, on a repéré tes points faibles !" : "On a trouvé exactement où ça coince.";
 
-  var insight = pct >= 80 ? "T'es solide 💪 On va pousser encore plus loin."
-    : pct >= 50 ? "Bon niveau ! On a repéré tes points faibles — on s'en occupe."
-    : "On a trouvé exactement où ça coince. C'est ça qui va changer.";
+  // Adapter step 4 pour flow guest (sans mot de passe)
+  var passField = document.getElementById('fl-pass');
+  if (passField) passField.style.display = 'none';
+  var h2 = document.querySelector('#flow-s4 h2');
+  if (h2) h2.textContent = ok + '/' + total + ' — ' + pct + '%';
+  var desc = document.querySelector('#flow-s4 p');
+  if (desc) { desc.textContent = scoreLabel + ' Sauvegarde tes résultats — 7 jours gratos, aucune carte.'; }
+  var btnTxt = document.getElementById('fl-btn-txt');
+  if (btnTxt) btnTxt.textContent = 'Continuer gratuitement →';
+  var btn = document.getElementById('fl-btn');
+  if (btn) btn.setAttribute('onclick', '_flowGuestRegister()');
 
-  // Confetti si >= 60%
   if (pct >= 60) { try { launchConfetti(); } catch(e) {} }
-
-  // Overlay inscription par-dessus l'app (z-index > overlay trial)
-  var overlay = document.createElement('div');
-  overlay.id = 'guest-register-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.92);z-index:5000;display:flex;align-items:center;justify-content:center;padding:1rem;';
-  overlay.innerHTML = [
-    '<div style="background:#1e293b;border-radius:1.5rem;padding:2rem;max-width:420px;width:100%;text-align:center;">',
-    '<div style="font-size:2.5rem;margin-bottom:.5rem">' + (pct >= 60 ? '🎉' : '💡') + '</div>',
-    '<p style="font-size:1.25rem;font-weight:700;color:#f1f5f9;margin-bottom:.25rem">' + ok + '/' + total + ' — ' + pct + '%</p>',
-    '<p style="color:#94a3b8;font-size:.9rem;margin-bottom:1.5rem">' + insight + '</p>',
-    '<p style="color:#e2e8f0;font-weight:600;margin-bottom:1rem;font-size:1rem">Sauvegarde tes résultats pour continuer 🔥</p>',
-    '<input id="gr-prenom" type="text" placeholder="Ton prénom" style="width:100%;padding:.75rem 1rem;border-radius:.75rem;border:1px solid #334155;background:#0f172a;color:#f1f5f9;margin-bottom:.75rem;font-size:1rem;outline:none;">',
-    '<input id="gr-email" type="email" placeholder="Email (toi ou tes parents)" style="width:100%;padding:.75rem 1rem;border-radius:.75rem;border:1px solid #334155;background:#0f172a;color:#f1f5f9;margin-bottom:1rem;font-size:1rem;outline:none;">',
-    '<button onclick="_flowGuestRegister()" style="width:100%;padding:1rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-weight:700;border-radius:.75rem;font-size:1rem;border:none;cursor:pointer;">Sauvegarder &amp; continuer 7 jours gratos →</button>',
-    '<p style="color:#475569;font-size:.75rem;margin-top:.75rem">Sans carte bancaire · Stop quand tu veux</p>',
-    '</div>'
-  ].join('');
-  document.body.appendChild(overlay);
-
-  // Focus prénom
-  setTimeout(function() { var p = document.getElementById('gr-prenom'); if (p) p.focus(); }, 100);
+  _flowSetStep(4);
 }
 
 async function _flowGuestRegister() {
-  var prenom = (document.getElementById('gr-prenom') || {}).value || '';
-  var email  = (document.getElementById('gr-email')  || {}).value || '';
+  var prenom = (document.getElementById('fl-name')  || {}).value || '';
+  var email  = (document.getElementById('fl-email') || {}).value || '';
   if (!prenom.trim() || !email.trim() || !email.includes('@')) {
     showT('Prénom et email requis 😊', 2000, '⚠️'); return;
   }
 
-  var btn = document.querySelector('#guest-register-overlay button');
-  if (btn) { btn.disabled = true; btn.textContent = 'Enregistrement...'; }
+  var btn = document.getElementById('fl-btn');
+  if (btn) { btn.disabled = true; }
+  var btnTxt = document.getElementById('fl-btn-txt');
+  if (btnTxt) btnTxt.textContent = 'Enregistrement...';
 
-  // Hash compatible avec h256(pw, email) : email::Matheux2026!::AB22
   var hash = await h256('Matheux2026!', email.toLowerCase().trim());
 
-  // Tenter register
   var r = await fetch(SU, { method: 'POST',
     body: JSON.stringify({ action: 'register', email: email.toLowerCase().trim(),
-      name: prenom, level: S.niv, password: hash })
+      name: prenom, level: _flowLevel, password: hash })
   }).then(function(x) { return x.json(); }).catch(function() { return { status: 'error' }; });
 
   var code, isExisting = false;
   if (r.status === 'success') {
     code = r.profile ? r.profile.code : r.code;
   } else if ((r.message || '').toLowerCase().includes('exist') || (r.message || '').toLowerCase().includes('déjà') || (r.message || '').toLowerCase().includes('compte')) {
-    // Compte existant → login silencieux
     isExisting = true;
     var r2 = await fetch(SU, { method: 'POST',
       body: JSON.stringify({ action: 'login', email: email.toLowerCase().trim(), password: hash })
@@ -1687,95 +1706,91 @@ async function _flowGuestRegister() {
       code = r2.profile ? r2.profile.code : r2.code;
       showT("T'as déjà un compte — on t'a retrouvé 🔥", 3000, '🎉');
     } else {
-      if (btn) { btn.disabled = false; btn.textContent = 'Sauvegarder & continuer 7 jours gratos →'; }
+      if (btn) { btn.disabled = false; }
+      if (btnTxt) btnTxt.textContent = 'Continuer gratuitement →';
       showT('Mauvais mot de passe — connecte-toi depuis le menu', 3000, '⚠️');
       return;
     }
   } else {
-    if (btn) { btn.disabled = false; btn.textContent = 'Sauvegarder & continuer 7 jours gratos →'; }
+    if (btn) { btn.disabled = false; }
+    if (btnTxt) btnTxt.textContent = 'Continuer gratuitement →';
     showT('Erreur — réessaie dans quelques secondes', 2500, '⚠️'); return;
   }
 
-  // Sauver résultats diagnostic (mark() a déjà envoyé via scoreQueue mais avec code GUEST)
-  // On renvoie explicitement avec le vrai code pour persistance serveur
-  var calExos = LVL[S.niv].cats['CALIBRAGE'] || [];
-  var saves = calExos.map(function(exo, i) {
-    var r3 = res2('CALIBRAGE', i);
-    var id  = S.niv + '-' + r3.rC + '-' + r3.rI;
-    var status = S.res[id] || 'HARD';
-    var elapsed = S.exoStartTime[id] ? Math.round((Date.now() - S.exoStartTime[id]) / 1000) : 0;
+  // Sauver résultats diagnostic depuis _flowResults
+  var saves = _flowExos.map(function(exo, i) {
+    var res3 = _flowResults.find(function(rr) { return rr.idx === i; });
+    var status = res3 ? (res3.correct ? 'EASY' : 'HARD') : 'HARD';
+    var elapsed = res3 ? (res3.time || 0) : 0;
     return fetch(SU, { method: 'POST',
-      body: JSON.stringify({ action: 'save_score', code: code, name: prenom, level: S.niv,
+      body: JSON.stringify({ action: 'save_score', code: code, name: prenom, level: _flowLevel,
         categorie: exo.oC || exo.categorie || 'Diagnostic', exercice_idx: i + 1,
         q: (exo.q || '').substring(0, 80), resultat: status,
-        temps: elapsed, nbIndices: S.hints[id] || 0,
-        formule: !!S.ftch[id], source: 'CALIBRAGE' })
+        temps: elapsed, nbIndices: 0, formule: false, source: 'CALIBRAGE' })
     }).catch(function() {});
   });
 
-  // Attendre tous les saves avant login (éviter race condition)
   await Promise.all(saves);
 
-  // Nettoyer guest mode
-  S._guestMode = false;
+  // Nettoyer
   try { localStorage.removeItem('guestDiag'); } catch(e) {}
   try { localStorage.setItem('boost_v23', JSON.stringify({ email: email.toLowerCase().trim(), password: hash })); } catch(e) {}
 
-  // Login final → initApp normal
+  // Marquer calDone=true → évite l'écran 'sel' à la prochaine connexion
+  try {
+    var _loc2 = JSON.parse(localStorage.getItem(LK) || '{}');
+    if (code) {
+      if (!_loc2[code]) _loc2[code] = {};
+      _loc2[code].calDone = true;
+      localStorage.setItem(LK, JSON.stringify(_loc2));
+    }
+  } catch(e) {}
+
+  // Login final
   var loginR = await fetch(SU, { method: 'POST',
     body: JSON.stringify({ action: 'login', email: email.toLowerCase().trim(), password: hash })
   }).then(function(x) { return x.json(); }).catch(function() { return { status: 'error' }; });
 
-  var overlay = document.getElementById('guest-register-overlay');
-  if (overlay) overlay.remove();
-
   if (loginR.status === 'success') {
     loginR.isFirstDay = false;
 
-    // Marquer calDone=true pour ce code → évite l'écran 'sel' (invitation diagnostic) à la prochaine connexion
-    try {
-      var _loc2 = JSON.parse(localStorage.getItem(LK) || '{}');
-      var _c2 = loginR.profile ? loginR.profile.code : '';
-      if (_c2) {
-        if (!_loc2[_c2]) _loc2[_c2] = {};
-        _loc2[_c2].calDone = true;
-        localStorage.setItem(LK, JSON.stringify(_loc2));
-      }
-    } catch(e) {}
+    // Collecter les erreurs pour boostFromDiag
+    var _diagErrs = _flowResults
+      .filter(function(rr) { return !rr.correct; })
+      .map(function(rr) { return (_flowExos[rr.idx] || {}).q || ''; })
+      .filter(Boolean);
 
-    // Collecter les erreurs du diagnostic AVANT de reset LVL (pour boostFromDiag)
-    var _diagErrs = [];
-    var _calExosTmp = LVL[S.niv] && LVL[S.niv].cats ? (LVL[S.niv].cats['CALIBRAGE'] || []) : [];
-    _calExosTmp.forEach(function(exo, i) {
-      var r2 = res2('CALIBRAGE', i);
-      var id = S.niv + '-' + r2.rC + '-' + r2.rI;
-      if (S.res[id] === 'HARD') _diagErrs.push(exo.q || '');
-    });
+    // Basculer sur l'app
+    document.getElementById('landing-screen').classList.add('hidden');
+    document.getElementById('main-app').classList.remove('hidden');
 
-    // Reset calState avant initApp pour passer le if(calState !== 'test') → calDone=true → null
     S.calState = null;
-    initApp(loginR, true); // skipRender — on contrôle l'affichage
+    initApp(loginR, true);
     if (LVL[S.niv] && LVL[S.niv].cats) delete LVL[S.niv].cats['CALIBRAGE'];
 
-    // Générer le premier boost en background pendant l'onboarding
+    // Générer boost en background
     boostFromDiag(_diagErrs.slice(0, 4));
 
-    // Onboarding adapté : pas de slide "diagnostic" (déjà fait), slide "résultats sauvés"
+    // Onboarding adapté guest
     var _guestSlides = [
-      _onbSlides[0],  // "7 jours gratuits, sans carte"
-      { emoji: '⚡', title: 'Résultats sauvegardés !',
-        body: 'On a analysé tes réponses. Ton prof prépare tes exercices personnalisés — reviens demain pour ton boost du jour 🔥',
+      _onbSlides[0],
+      { emoji: '⚡', title: 'Ton boost du jour est prêt !',
+        body: 'On a analysé tes réponses et généré tes exercices perso. Lance ton premier boost dès maintenant 🔥',
         color: 'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)' },
-      _onbSlides[2]   // "Ton prof prépare la suite"
+      { emoji: '🔥', title: 'Une chose à faire aujourd\'hui',
+        body: 'Lance ton premier boost. 5 minutes, ciblé sur ce que t\'as raté. C\'est ça qui change.' ,
+        color: 'linear-gradient(135deg,#1e1b4b 0%,#4338ca 100%)' }
     ];
     var _savedSlides = _onbSlides;
     _onbSlides = _guestSlides;
     showOnboarding(function() {
       _onbSlides = _savedSlides;
-      render(); // → vue chapitres, sans diagnostic
+      render();
     });
   } else {
     showT('Connecte-toi depuis le menu 😊', 2500, '💡');
+    document.getElementById('landing-screen').classList.add('hidden');
+    document.getElementById('main-app').classList.remove('hidden');
     setView('chapters');
   }
 }
@@ -1784,6 +1799,8 @@ async function flowRegister() {
   var name  = (document.getElementById('fl-name')  || {}).value.trim();
   var email = (document.getElementById('fl-email') || {}).value.trim();
   var pass  = (document.getElementById('fl-pass')  || {}).value.trim();
+  var _fp = document.getElementById('fl-pass');
+  if (_fp) _fp.style.display = '';
   if (!name)  { showT('Le prénom est requis 😊', 2500, '⚠️'); return; }
   if (!email) { showT('L\'email est requis 😊', 2500, '⚠️'); return; }
   if (pass.length < 6) { showT('Mot de passe : 6 caractères minimum', 2500, '⚠️'); return; }
@@ -2114,7 +2131,7 @@ function _onbRender() {
   }).join('');
   ov.innerHTML =
     '<div style="background:#fff;border-radius:24px;width:100%;max-width:360px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.45)">' +
-    '<div style="' + sl.color + ';padding:2.5rem 2rem 2rem;text-align:center">' +
+    '<div style="background:' + sl.color + ';padding:2.5rem 2rem 2rem;text-align:center">' +
     '<div style="font-size:3.5rem;margin-bottom:1rem">' + sl.emoji + '</div>' +
     '<div style="font-family:Syne,sans-serif;font-weight:900;font-size:1.25rem;color:#fff;line-height:1.2;margin-bottom:.75rem">' + sl.title + '</div>' +
     '<p style="color:rgba(255,255,255,.7);font-size:.9rem;font-weight:500;line-height:1.6">' + sl.body + '</p>' +
@@ -2623,12 +2640,6 @@ function chkComp(cat) {
   if (done !== tot || tot === 0) return false;
 
   if (cat === 'CALIBRAGE') {
-    // Mode guest (landing flow) → overlay inscription au lieu du flow normal
-    if (S._guestMode) {
-      _flowShowGuestRegister();
-      return true;
-    }
-
     var loc = JSON.parse(localStorage.getItem(LK) || '{}');
     if (!loc[S.prof.code]) loc[S.prof.code] = {};
     loc[S.prof.code].calDone = true;
@@ -3303,6 +3314,16 @@ function render() {
 // ══════════════════════════════════════════════════════════════
 function rSection(cat, data, idx, total, catDone) {
   if (!data) return '';
+  // Tutorial première question diagnostic
+  var _tutorialBanner = '';
+  if (cat === 'CALIBRAGE' && idx === 0) {
+    _tutorialBanner =
+      '<div style="margin-bottom:.75rem;background:#eef2ff;border:1.5px solid #c7d2fe;border-radius:12px;' +
+      'padding:.65rem 1rem;color:#4338ca;font-size:.8rem;font-weight:600;line-height:1.5">' +
+      '💡 <strong>Comment ça marche :</strong> réponds honnêtement. Si tu bloques, utilise les <strong>indices</strong> ' +
+      'et la <strong>formule</strong> juste en dessous de la question.' +
+      '</div>';
+  }
   var r       = res2(cat, idx);
   var id      = S.niv+'-'+r.rC+'-'+r.rI;
   var ui      = S.niv+'-'+cat+'-'+idx;
@@ -3398,7 +3419,7 @@ function rSection(cat, data, idx, total, catDone) {
     (!fR ? '<div class="fhint">👁 Formule clé</div>' : '') +
     '</div></div>';
 
-  return '<div class="border-t border-slate-100">'+pills+
+  return '<div class="border-t border-slate-100">'+_tutorialBanner+pills+
     '<div class="p-4 sm:p-5">' +
     '<div class="flex justify-between items-center mb-3">' +
     '<span class="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full '+((data.lvl||1)===1?'bg-indigo-100 text-indigo-700':'bg-amber-100 text-amber-700')+'">Niv. '+(data.lvl||1)+'</span>' +
