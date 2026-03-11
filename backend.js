@@ -403,7 +403,8 @@ function login(p) {
     history:            history,
     dynamicChapters:    [],
     nextChapter:        nextChapter,
-    nextBoost:          nextBoost
+    nextBoost:          nextBoost,
+    trial:              checkTrialStatus({ code: code })
   };
 }
 
