@@ -1424,13 +1424,8 @@ function _flowResumeFromSaved() {
   _flowLevel   = saved.niveau || _flowLevel;
   _flowChaps   = saved.chapitres || _flowChaps;
   _flowDiagDone = false;
-  _flowSetStep(3);
-  if (_flowExoIdx < _flowExos.length) {
-    _flowRenderDiagExo();
-  } else {
-    _flowDiagDone = true;
-    _flowShowResults();
-  }
+  // Basculer directement dans l'app avec le vrai rendu CALIBRAGE
+  _flowLaunchAppDiag();
 }
 
 function _flowSetStep(n) {
@@ -1474,9 +1469,7 @@ function flowToStep3() {
 
 // ── DIAGNOSTIC GAS DANS LE FLOW ──────────────────────────────
 function _flowStartDiag() {
-  // Convertir les clés normalisées en noms propres pour l'API
-  // flowToggleChap normalise "Fractions 🍕" → "Fractions_"
-  // L'API attend "Fractions" (sans underscore de fin ni emoji)
+  // Convertir clés normalisées → noms propres (pour localStorage uniquement)
   var chaps = _flowChaps.map(function(c) { return c.replace(/_+$/, '').trim(); });
 
   // Afficher spinner dans le container step 3
@@ -1489,10 +1482,11 @@ function _flowStartDiag() {
       '</div>';
   }
 
-  // Appel GAS generate_diagnostic sans code (guest)
+  // Appel GAS : selectedChapters:[] = TOUS les chapitres du niveau (8-12 exos)
   fetch(SU, {
     method: 'POST',
-    body: JSON.stringify({ action: 'generate_diagnostic', level: _flowLevel, selectedChapters: chaps })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'generate_diagnostic', level: _flowLevel, selectedChapters: [] })
   })
   .then(function(r) { return r.json(); })
   .then(function(d) {
@@ -1508,7 +1502,8 @@ function _flowStartDiag() {
           ts: Date.now(), step: 0
         }));
       } catch(e) {}
-      _flowRenderDiagExo();
+      // → Basculer dans l'app réelle avec le vrai rendu rSection('CALIBRAGE')
+      _flowLaunchAppDiag();
     } else {
       if (container) container.innerHTML =
         '<div class="text-center py-6">' +
@@ -1525,135 +1520,202 @@ function _flowStartDiag() {
   });
 }
 
-function _flowRenderDiagExo() {
-  var exo   = _flowExos[_flowExoIdx];
-  var total = _flowExos.length;
-  var idx   = _flowExoIdx;
-  _flowStartTs = Date.now();
-  var pct = Math.round((idx / total) * 100);
+function _flowLaunchAppDiag() {
+  // 1. Masquer la landing, afficher l'app
+  var landing = document.getElementById('landing-screen');
+  var app     = document.getElementById('main-app');
+  if (landing) landing.classList.add('hidden');
+  if (app)     app.classList.remove('hidden');
 
-  var opts = exo.options || exo.opts || [];
-  // Mélanger les options
-  var shuffled = opts.slice().sort(function() { return Math.random() - 0.5; });
+  // 2. Initialiser S minimal suffisant pour startCal() et render()
+  S.niv  = _flowLevel;
+  S.prof = { code: 'GUEST', name: 'Toi', prenom: 'Toi', level: _flowLevel, isAdmin: false };
+  S.calExos      = _flowExos;
+  S.calState     = null;
+  S.res          = {};
+  S.hints        = {};
+  S.ftch         = {};
+  S.qv           = {};
+  S.qans         = {};
+  S.shuf         = {};
+  S.exp          = {};
+  S.rev          = false;
+  S.cid          = null;
+  S.xp           = 0;
+  S.stk          = 0;
+  S.sent         = new Set();
+  S.scoreQueue   = [];
+  S.exoStartTime = {};
+  S.drafts       = {};
+  S.insights     = {};
+  S.isNew        = {};
+  S.chapDone     = {};
+  S.remReq       = {};
+  S.prereqBanner = {};
+  S.diagInsight  = null;
+  S.boostInsight = null;
+  S._motProfScreen = null;
+  S.motProfChap  = {};
+  S.motProfBoost = null;
+  S.boostEx      = false;
+  S.boost        = null;
+  S.boostConsumed = false;
+  S.boostGen     = false;
+  S.boostPreping = false;
+  S.pendingManual = null;
+  S.nextBoostTopic = null;
+  S.diagChapResults = {};
+  S.progress     = null;
+  S.progressLoading = false;
+  S.isFirstDay   = false;
+  S.trial = { trialActive: true, daysLeft: 7, isPremium: false };
+  S._guestMode   = true;  // flag : intercepter fin CALIBRAGE → overlay inscription
+  S.view = 'chapters';
 
-  var html = '<div class="space-y-4">';
-  // Progress bar
-  html += '<div class="flex items-center gap-2 mb-2">' +
-    '<span class="text-xs text-white/50">' + (idx + 1) + ' / ' + total + '</span>' +
-    '<div class="flex-1 bg-white/15 rounded-full" style="height:4px">' +
-    '<div class="bg-indigo-400 rounded-full transition-all" style="height:4px;width:' + pct + '%"></div>' +
-    '</div></div>';
-  // Question
-  html += '<p class="font-semibold text-white text-base leading-relaxed flow-diag-q">' + exo.q + '</p>';
-  // Options QCM
-  if (shuffled.length) {
-    html += '<div class="space-y-2">';
-    var aidx = _flowExoIdx; // capturer l'index courant pour l'onclick
-    shuffled.forEach(function(opt, oi) {
-      // Stocker opt et a dans data-attributes pour éviter les problèmes d'échappement
-      var optEnc = encodeURIComponent(opt + '');
-      var aEnc   = encodeURIComponent(exo.a + '');
-      html += '<button onclick="_flowCheckOptEnc(\'' + optEnc + '\',\'' + aEnc + '\')" ' +
-        'class="flow-opt flow-diag-btn">' + opt + '</button>';
-    });
-    html += '</div>';
-  }
-  html += '</div>';
+  // Initialiser LVL pour ce niveau si absent
+  if (!LVL[S.niv]) LVL[S.niv] = { cats: {}, names: {}, icons: {} };
 
-  var container = document.getElementById('flow-s3');
-  if (container) {
-    container.innerHTML = html;
-    // MathJax
-    if (window.MathJax && window.MathJax.typeset) {
-      try { window.MathJax.typeset([container]); } catch(e) {}
-    }
-  }
+  // Header — nom affiché
+  var aname = document.getElementById('aname');
+  if (aname) aname.innerText = 'Toi';
+
+  // Masquer FAB brouillon (pas de compte réel)
+  var fab = document.getElementById('fab-draft');
+  if (fab) fab.classList.add('hidden');
+
+  // 3. Lancer le diagnostic avec le vrai rendu rSection('CALIBRAGE')
+  startCal();
 }
 
-function _flowCheckOptEnc(chosenEnc, correctEnc) {
-  try {
-    _flowCheckOpt(decodeURIComponent(chosenEnc), decodeURIComponent(correctEnc));
-  } catch(e) { _flowCheckOpt(chosenEnc, correctEnc); }
-}
+// _flowRenderDiagExo — SUPPRIMÉ : remplacé par _flowLaunchAppDiag() + startCal() + rSection('CALIBRAGE')
+// _flowCheckOptEnc / _flowCheckOpt — SUPPRIMÉS : remplacés par checkOpt() du vrai rendu
+// _flowShowResults — SUPPRIMÉE : remplacée par _flowShowGuestRegister()
 
-function _flowCheckOpt(chosen, correct) {
-  var isOk    = chosen === correct;
-  var elapsed = Math.round((Date.now() - _flowStartTs) / 1000);
-  _flowResults.push({ idx: _flowExoIdx, correct: isOk, time: elapsed });
-
-  // Feedback toast ton ado
-  var _OK = ["Carton plein 🎯","T'as géré ça 💪","Dans le mille ⚡","Propre. Vraiment 🔥","GG c'est dans la boîte 👌"];
-  var _KO = ["Presque ! Regarde bien 👀","Ça arrive, c'est comme ça qu'on apprend 💡","Pas grave — la prochaine tu l'as 🎯"];
-  showT(isOk ? _OK[Math.floor(Math.random()*_OK.length)] : _KO[Math.floor(Math.random()*_KO.length)], 1000, isOk ? '⭐' : '💡');
-
-  // Feedback visuel sur le bouton cliqué
-  var container = document.getElementById('flow-s3');
-  if (container) {
-    var btns = container.querySelectorAll('.flow-diag-btn');
-    btns.forEach(function(b) {
-      if (b.textContent.trim() === chosen) {
-        b.classList.add(isOk ? 'foc' : 'fow');
-      }
-      if (!isOk && b.textContent.trim() === correct) {
-        b.classList.add('foc');
-      }
-      b.style.pointerEvents = 'none';
-    });
-  }
-
-  // Mettre à jour la queue localStorage
-  try {
-    var saved = JSON.parse(localStorage.getItem('guestDiag') || '{}');
-    saved.results = _flowResults;
-    saved.step    = _flowExoIdx;
-    localStorage.setItem('guestDiag', JSON.stringify(saved));
-  } catch(e) {}
-
-  // Après 600ms → exo suivant ou fin
-  setTimeout(function() {
-    _flowExoIdx++;
-    if (_flowExoIdx < _flowExos.length) {
-      _flowRenderDiagExo();
-    } else {
-      _flowDiagDone = true;
-      _flowShowResults();
-    }
-  }, 600);
-}
-
-function _flowShowResults() {
-  var ok    = _flowResults.filter(function(r) { return r.correct; }).length;
-  var total = _flowResults.length;
-  var pct   = total > 0 ? Math.round((ok / total) * 100) : 0;
-
-  var insight = pct >= 80
-    ? "T'es au niveau 💪 On va pousser encore plus loin."
-    : pct >= 50
-    ? "Bon début ! On a repéré tes points faibles — on s'en occupe."
-    : "On a trouvé exactement où ça coince. C'est justement ça qui va changer.";
-
-  var stars = pct >= 80 ? '🔥🔥🔥' : pct >= 50 ? '⚡⚡' : '⚡';
-
-  var html =
-    '<div class="text-center py-4 space-y-4">' +
-    '<div style="font-size:2.5rem">' + stars + '</div>' +
-    '<div>' +
-    '<div class="syne text-white font-black text-3xl">' + ok + ' / ' + total + '</div>' +
-    '<div class="text-white/50 text-sm mt-1">bonnes réponses</div>' +
-    '</div>' +
-    '<p class="text-white/70 text-sm leading-relaxed max-w-xs mx-auto">' + insight + '</p>' +
-    '<button onclick="_flowSetStep(4)" class="btn btn-ac btn-fw py-4 mt-2" style="max-width:320px;margin:0 auto;display:block">' +
-    'Sauvegarde tes résultats →</button>' +
-    '<p class="text-white/30 text-xs">✓ 7 jours gratuits · ✓ Aucune carte bancaire</p>' +
-    '</div>';
-
-  var container = document.getElementById('flow-s3');
-  if (container) container.innerHTML = html;
-
-  // Confetti si pct >= 60
-  if (pct >= 60) { try { launchConfetti(); } catch(e) {} }
-}
 // ─────────────────────────────────────────────────────────────
+
+// ── INSCRIPTION GUEST après diagnostic dans l'app ────────────
+function _flowShowGuestRegister() {
+  // Calculer score depuis S.res (mark() a stocké 'EASY'/'HARD' directement)
+  var calExos = LVL[S.niv].cats['CALIBRAGE'] || [];
+  var ok = 0, total = calExos.length;
+  calExos.forEach(function(exo, i) {
+    var r2 = res2('CALIBRAGE', i);
+    var rs = S.res[S.niv + '-' + r2.rC + '-' + r2.rI];
+    if (rs === 'EASY') ok++;
+  });
+  var pct = total > 0 ? Math.round((ok / total) * 100) : 0;
+
+  var insight = pct >= 80 ? "T'es solide 💪 On va pousser encore plus loin."
+    : pct >= 50 ? "Bon niveau ! On a repéré tes points faibles — on s'en occupe."
+    : "On a trouvé exactement où ça coince. C'est ça qui va changer.";
+
+  // Confetti si >= 60%
+  if (pct >= 60) { try { launchConfetti(); } catch(e) {} }
+
+  // Overlay inscription par-dessus l'app (z-index > overlay trial)
+  var overlay = document.createElement('div');
+  overlay.id = 'guest-register-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.92);z-index:5000;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  overlay.innerHTML = [
+    '<div style="background:#1e293b;border-radius:1.5rem;padding:2rem;max-width:420px;width:100%;text-align:center;">',
+    '<div style="font-size:2.5rem;margin-bottom:.5rem">' + (pct >= 60 ? '🎉' : '💡') + '</div>',
+    '<p style="font-size:1.25rem;font-weight:700;color:#f1f5f9;margin-bottom:.25rem">' + ok + '/' + total + ' — ' + pct + '%</p>',
+    '<p style="color:#94a3b8;font-size:.9rem;margin-bottom:1.5rem">' + insight + '</p>',
+    '<p style="color:#e2e8f0;font-weight:600;margin-bottom:1rem;font-size:1rem">Sauvegarde tes résultats pour continuer 🔥</p>',
+    '<input id="gr-prenom" type="text" placeholder="Ton prénom" style="width:100%;padding:.75rem 1rem;border-radius:.75rem;border:1px solid #334155;background:#0f172a;color:#f1f5f9;margin-bottom:.75rem;font-size:1rem;outline:none;">',
+    '<input id="gr-email" type="email" placeholder="Email (toi ou tes parents)" style="width:100%;padding:.75rem 1rem;border-radius:.75rem;border:1px solid #334155;background:#0f172a;color:#f1f5f9;margin-bottom:1rem;font-size:1rem;outline:none;">',
+    '<button onclick="_flowGuestRegister()" style="width:100%;padding:1rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-weight:700;border-radius:.75rem;font-size:1rem;border:none;cursor:pointer;">Sauvegarder &amp; continuer 7 jours gratos →</button>',
+    '<p style="color:#475569;font-size:.75rem;margin-top:.75rem">Sans carte bancaire · Stop quand tu veux</p>',
+    '</div>'
+  ].join('');
+  document.body.appendChild(overlay);
+
+  // Focus prénom
+  setTimeout(function() { var p = document.getElementById('gr-prenom'); if (p) p.focus(); }, 100);
+}
+
+async function _flowGuestRegister() {
+  var prenom = (document.getElementById('gr-prenom') || {}).value || '';
+  var email  = (document.getElementById('gr-email')  || {}).value || '';
+  if (!prenom.trim() || !email.trim() || !email.includes('@')) {
+    showT('Prénom et email requis 😊', 2000, '⚠️'); return;
+  }
+
+  var btn = document.querySelector('#guest-register-overlay button');
+  if (btn) { btn.disabled = true; btn.textContent = 'Enregistrement...'; }
+
+  // Hash compatible avec h256(pw, email) : email::Matheux2026!::AB22
+  var hash = await h256('Matheux2026!', email.toLowerCase().trim());
+
+  // Tenter register
+  var r = await fetch(SU, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'register', email: email.toLowerCase().trim(),
+      name: prenom, level: S.niv, password: hash })
+  }).then(function(x) { return x.json(); }).catch(function() { return { status: 'error' }; });
+
+  var code, isExisting = false;
+  if (r.status === 'success') {
+    code = r.profile ? r.profile.code : r.code;
+  } else if ((r.message || '').toLowerCase().includes('exist') || (r.message || '').toLowerCase().includes('déjà') || (r.message || '').toLowerCase().includes('compte')) {
+    // Compte existant → login silencieux
+    isExisting = true;
+    var r2 = await fetch(SU, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'login', email: email.toLowerCase().trim(), password: hash })
+    }).then(function(x) { return x.json(); }).catch(function() { return { status: 'error' }; });
+    if (r2.status === 'success') {
+      code = r2.profile ? r2.profile.code : r2.code;
+      showT("T'as déjà un compte — on t'a retrouvé 🔥", 3000, '🎉');
+    } else {
+      if (btn) { btn.disabled = false; btn.textContent = 'Sauvegarder & continuer 7 jours gratos →'; }
+      showT('Mauvais mot de passe — connecte-toi depuis le menu', 3000, '⚠️');
+      return;
+    }
+  } else {
+    if (btn) { btn.disabled = false; btn.textContent = 'Sauvegarder & continuer 7 jours gratos →'; }
+    showT('Erreur — réessaie dans quelques secondes', 2500, '⚠️'); return;
+  }
+
+  // Sauver résultats diagnostic (mark() a déjà envoyé via scoreQueue mais avec code GUEST)
+  // On renvoie explicitement avec le vrai code pour persistance serveur
+  var calExos = LVL[S.niv].cats['CALIBRAGE'] || [];
+  var saves = calExos.map(function(exo, i) {
+    var r3 = res2('CALIBRAGE', i);
+    var id  = S.niv + '-' + r3.rC + '-' + r3.rI;
+    var status = S.res[id] || 'HARD';
+    var elapsed = S.exoStartTime[id] ? Math.round((Date.now() - S.exoStartTime[id]) / 1000) : 0;
+    return fetch(SU, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'save_score', code: code, name: prenom, level: S.niv,
+        categorie: exo.oC || exo.categorie || 'Diagnostic', exercice_idx: i + 1,
+        q: (exo.q || '').substring(0, 80), resultat: status,
+        temps: elapsed, nbIndices: S.hints[id] || 0,
+        formule: !!S.ftch[id], source: 'CALIBRAGE' })
+    }).catch(function() {});
+  });
+
+  // Attendre tous les saves avant login (éviter race condition)
+  await Promise.all(saves);
+
+  // Nettoyer guest mode
+  S._guestMode = false;
+  try { localStorage.removeItem('guestDiag'); } catch(e) {}
+  try { localStorage.setItem('boost_v23', JSON.stringify({ email: email.toLowerCase().trim(), password: hash })); } catch(e) {}
+
+  // Login final → initApp normal
+  var loginR = await fetch(SU, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'login', email: email.toLowerCase().trim(), password: hash })
+  }).then(function(x) { return x.json(); }).catch(function() { return { status: 'error' }; });
+
+  var overlay = document.getElementById('guest-register-overlay');
+  if (overlay) overlay.remove();
+
+  if (loginR.status === 'success') {
+    loginR.isFirstDay = true;
+    initApp(loginR);
+  } else {
+    showT('Connecte-toi depuis le menu 😊', 2500, '💡');
+    setView('chapters');
+  }
+}
 
 async function flowRegister() {
   var name  = (document.getElementById('fl-name')  || {}).value.trim();
@@ -2498,6 +2560,12 @@ function chkComp(cat) {
   if (done !== tot || tot === 0) return false;
 
   if (cat === 'CALIBRAGE') {
+    // Mode guest (landing flow) → overlay inscription au lieu du flow normal
+    if (S._guestMode) {
+      _flowShowGuestRegister();
+      return true;
+    }
+
     var loc = JSON.parse(localStorage.getItem(LK) || '{}');
     if (!loc[S.prof.code]) loc[S.prof.code] = {};
     loc[S.prof.code].calDone = true;
