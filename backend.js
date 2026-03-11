@@ -2559,6 +2559,7 @@ function getAdminOverview(p) {
           date:      b.date,
           exosDone:  b.exosDone,
           insight:   b.boost ? (b.boost.insight || '') : '',
+          exos:      b.boost ? (b.boost.exos || []) : [],
           status:    status,
           isPending: b.exosDone === 0
         };

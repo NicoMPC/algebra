@@ -2815,6 +2815,71 @@ function copyAdminPrompt(code, type, cat) {
   });
 }
 
+// Copie le JSON du dernier boost enrichi des stats élève
+function copyLastBoostJSON(code) {
+  var st = S._modalStudent;
+  if (!st) return;
+  var bHistory = st.boostHistory || [];
+  if (!bHistory.length) { showT('Aucun boost enregistré', 3000, '⚠️'); return; }
+
+  var lastBoost = bHistory[0];
+  var origExos  = lastBoost.exos || [];
+
+  // Collecter les stats boost depuis chapitresDetail (exos source='boost')
+  var boostStats = [];
+  (st.chapitresDetail || []).forEach(function(ch) {
+    (ch.exosList || []).forEach(function(e) {
+      if (e.source === 'boost') boostStats.push(e);
+    });
+  });
+
+  // Enrichir chaque exo original avec les stats élève (matching par index)
+  var enrichedExos = origExos.map(function(exo, i) {
+    var stat = boostStats[i] || null;
+    var out = { q: exo.q, a: exo.a, options: exo.options, steps: exo.steps, f: exo.f, lvl: exo.lvl };
+    if (stat) {
+      out.student_result  = stat.res;
+      out.student_time_s  = stat.temps;
+      if (stat.indices > 0) out.student_indices = stat.indices;
+      if (stat.formula)     out.student_formula  = true;
+      if (stat.wrongOpt)    out.student_wrong    = stat.wrongOpt;
+    }
+    return out;
+  });
+
+  // Stats chapitres couverts par ce boost
+  var chapStats = {};
+  (st.chapitresDetail || []).forEach(function(ch) {
+    chapStats[ch.cat] = {
+      totalExos: ch.totalExos, rateSuccess: ch.rateSuccess,
+      avgTime: ch.avgTime, avgIndices: ch.avgIndices, pctFormula: ch.pctFormula
+    };
+  });
+
+  var output = {
+    prenom:     st.prenom,
+    niveau:     st.niveau,
+    boost_date: lastBoost.date,
+    exos_done:  lastBoost.exosDone,
+    insight:    lastBoost.insight,
+    exos:       enrichedExos,
+    chapter_stats: chapStats
+  };
+
+  var json = JSON.stringify(output, null, 2);
+  navigator.clipboard.writeText(json).then(function() {
+    showT('📋 JSON copié ! Colle-le dans Claude pour générer le prochain boost.', 4000, '✅');
+  }).catch(function() {
+    var ta = document.createElement('textarea');
+    ta.value = json;
+    ta.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:200px;z-index:9999;font-size:12px;padding:8px';
+    document.body.appendChild(ta);
+    ta.select();
+    showT('Sélectionne tout et copie (Ctrl+A, Ctrl+C)', 5000, '📋');
+    setTimeout(function() { if (ta.parentNode) ta.parentNode.removeChild(ta); }, 6000);
+  });
+}
+
 // Retourne { bg, border, text, cls, icon } selon l'action
 function _actionStyle(action) {
   if (action.indexOf('DIAGNOSTIC') !== -1) {
@@ -3117,6 +3182,7 @@ function _buildModalHTML(st) {
         var histHTML = '';
         if (bHistory.length > 0) {
           histHTML = '<details class="mb-2"><summary class="text-[10px] font-semibold text-slate-400 cursor-pointer py-1 select-none">Historique des boosts (' + bHistory.length + ')</summary>';
+          histHTML += '<button onclick="copyLastBoostJSON(\'' + st.code + '\')" class="adm-copy-btn w-full mt-1 mb-2" style="font-size:.7rem">📋 Copier le dernier boost JSON (complet + stats élève)</button>';
           histHTML += '<div class="mt-1 space-y-1 max-h-40 overflow-y-auto no-sb">';
           bHistory.forEach(function(b) {
             var stIcon = b.status === 'done' ? '✅' : b.status === 'in_progress' ? '🔄' : '⏳';
