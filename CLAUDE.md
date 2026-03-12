@@ -241,7 +241,7 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 
 ## ✅ Ce qui fonctionne bien (ne pas toucher sans raison)
 - CSS/UI complet, mobile-first, animations propres (pulseGentle, toastIn, popIn)
-- Landing page : hero émotionnel, 4 cartes, pricing comparaison, CTA sans carte — sections fictives supprimées (témoignages/fondateur/Lucas)
+- Landing page : hero direct (problème→solution), 3 faits, prix seul (9,99€), CTA final — toutes sections fictives/comparaison supprimées
 - Mode Brevet : GAS generate_brevet multi-chapitres — **code complet conservé, UI désactivé (tab masqué, loadBrevet() bloqué)**
 - Mode Révision : GAS generate_revision (niveau inférieur, chapitres faibles) — **code complet conservé, UI désactivé (card masquée, launchRevision() bloqué)**
 - Feedback non-intrusif : bouton "Signaler" post-réponse + modal 3 types + GAS submit_feedback → onglet Insights

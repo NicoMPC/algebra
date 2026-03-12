@@ -571,29 +571,18 @@
   <div class="lhero px-5 pt-14 pb-16 relative">
     <div class="grid-ov"></div>
     <div class="max-w-lg mx-auto relative z-10 text-center">
-      <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white/80 px-3 py-1.5 rounded-full text-xs font-semibold mb-7 s1">
-        <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse-light"></span>
-        Diagnostic · Exercices sur mesure · Progression visible
-      </div>
       <h1 class="syne text-3xl sm:text-5xl font-black text-white leading-[1.1] mb-5 s2">
-        Ton enfant mérite des maths<br>
-        <span style="color:#818cf8">faites exactement pour lui.</span>
+        Ton enfant bloque en maths.<br>
+        <span style="color:#818cf8">Matheux trouve exactement pourquoi.</span>
       </h1>
       <p class="text-white/65 text-base font-medium leading-relaxed mb-9 max-w-sm mx-auto s3">
-        Matheux détecte précisément où il bloque, puis crée des exercices adaptés à ses vraies lacunes — pas à celles de la classe.
+        Diagnostic en 5 min. Exercices ciblés chaque matin. Progression visible en 1 semaine.
       </p>
       <button onclick="startTrialFlow()"
-              class="btn btn-ac btn-fw s4 shadow-xl" id="cta-hero" style="max-width:380px;font-size:1.05rem;padding:1.15rem">
-        Démarrer les 7 jours offerts →
+              class="btn btn-ac btn-fw s4 shadow-xl" id="cta-hero" style="max-width:380px;font-size:1.1rem;padding:1.2rem">
+        Commencer le diagnostic gratuit →
       </button>
-      <p class="text-white/35 text-xs mt-3 s4">Sans carte bancaire · Accès complet · Stop quand tu veux</p>
-      <div class="flex items-center justify-center mt-5 s4" style="flex-wrap:wrap;gap:.4rem .9rem">
-        <span class="flex items-center gap-1.5 text-white/50 text-xs font-medium"><span class="text-green-400">✓</span>Diagnostic précis en 5 min</span>
-        <span class="w-px h-3 bg-white/20 hidden sm:block"></span>
-        <span class="flex items-center gap-1.5 text-white/50 text-xs font-medium"><span class="text-green-400">✓</span>Exercices adaptés dès le 1er jour</span>
-        <span class="w-px h-3 bg-white/20 hidden sm:block"></span>
-        <span class="flex items-center gap-1.5 text-white/50 text-xs font-medium"><span class="text-green-400">✓</span>Progrès visibles en 1 semaine</span>
-      </div>
+      <p class="text-white/35 text-xs mt-3 s4">7 jours offerts · Sans carte bancaire · Stop quand tu veux</p>
     </div>
   </div>
 
@@ -661,149 +650,56 @@
     </div>
   </div><!-- /trial-flow -->
 
-  <!-- ── SECTION POURQUOI MATHEUX ───────────────────────────── -->
-  <div class="bg-white px-5 py-14">
+  <!-- ── 3 FAITS ────────────────────────────────────────────── -->
+  <div class="bg-white px-5 py-12">
     <div class="max-w-2xl mx-auto">
-      <div class="text-center mb-10">
-        <div class="stag mb-4">Pourquoi Matheux est différent</div>
-        <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900 leading-tight">
-          Ce n'est pas un problème<br>de travail. C'est un problème<br>de <span style="color:var(--p)">direction.</span>
-        </h2>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-        <!-- Carte 1 -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-          <div class="text-3xl mb-3">🎯</div>
-          <div class="syne font-bold text-slate-900 text-base mb-2">Il sait exactement où ton enfant bloque</div>
-          <p class="text-slate-500 text-sm leading-relaxed">Pas de programme générique. Un diagnostic en quelques questions révèle les vraies lacunes — et seulement celles-là.</p>
-        </div>
-        <!-- Carte 2 -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-          <div class="text-3xl mb-3">⚡</div>
-          <div class="syne font-bold text-slate-900 text-base mb-2">Des exercices créés pour lui, pas pour sa classe</div>
-          <p class="text-slate-500 text-sm leading-relaxed">Chaque exercice est adapté à ses erreurs réelles. Rien de trop facile, rien d'écrasant.</p>
-        </div>
-        <!-- Carte 3 -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-          <div class="text-3xl mb-3">🔥</div>
-          <div class="syne font-bold text-slate-900 text-base mb-2">Un boost ciblé chaque matin</div>
-          <p class="text-slate-500 text-sm leading-relaxed">5 exercices précis sur ce qu'il maîtrise encore mal. Ça prend 10 min. Ça change tout.</p>
-        </div>
-        <!-- Carte 4 -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-          <div class="text-3xl mb-3">📈</div>
-          <div class="syne font-bold text-slate-900 text-base mb-2">Il voit sa progression en temps réel</div>
-          <p class="text-slate-500 text-sm leading-relaxed">Pas de notes, pas de pression. Juste une courbe qui monte — et la fierté qui va avec.</p>
-        </div>
-      </div>
-      <!-- Sans / Avec -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="ccard bad">
-          <div class="text-xs font-bold text-rose-500 uppercase tracking-wider mb-4">Sans Matheux</div>
-          <div class="space-y-3">
-            <div class="chk text-slate-500"><span class="text-rose-400 mt-0.5">✕</span>Révise ce qu'il sait déjà</div>
-            <div class="chk text-slate-500"><span class="text-rose-400 mt-0.5">✕</span>Oublie avant l'exam</div>
-            <div class="chk text-slate-500"><span class="text-rose-400 mt-0.5">✕</span>Lacunes qui s'accumulent</div>
+      <div class="flex flex-col sm:flex-row gap-6 sm:gap-4">
+        <div class="flex-1 flex flex-col items-center text-center gap-3">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl" style="background:#eef2ff">🔍</div>
+          <div>
+            <div class="syne font-black text-slate-900 text-sm mb-1">Diagnostic en 5 min</div>
+            <p class="text-slate-500 text-xs leading-relaxed">Les vraies lacunes — pas un niveau général. Les notions exactes qui bloquent.</p>
           </div>
         </div>
-        <div class="ccard good">
-          <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-4">Avec Matheux</div>
-          <div class="space-y-3">
-            <div class="chk text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Diagnostic ciblé en 5 minutes</div>
-            <div class="chk text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Exercices sur mesure dès J+1</div>
-            <div class="chk text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Progrès mesurables chaque semaine</div>
+        <div class="hidden sm:block w-px bg-slate-100 self-stretch"></div>
+        <div class="flex-1 flex flex-col items-center text-center gap-3">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl" style="background:#eef2ff">⚡</div>
+          <div>
+            <div class="syne font-black text-slate-900 text-sm mb-1">Exercices sur mesure</div>
+            <p class="text-slate-500 text-xs leading-relaxed">Un boost de 5 exercices chaque matin, ciblés sur ses erreurs à lui. 10 min. Efficace.</p>
+          </div>
+        </div>
+        <div class="hidden sm:block w-px bg-slate-100 self-stretch"></div>
+        <div class="flex-1 flex flex-col items-center text-center gap-3">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl" style="background:#eef2ff">📈</div>
+          <div>
+            <div class="syne font-black text-slate-900 text-sm mb-1">Progression visible</div>
+            <p class="text-slate-500 text-xs leading-relaxed">Semaine après semaine, les lacunes se referment. La confiance revient. Les notes suivent.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ── SECTION COMMENT CA MARCHE ───────────────────────────── -->
-  <div style="background:#f8faff" class="px-5 py-14">
-    <div class="max-w-2xl mx-auto">
-      <div class="text-center mb-10">
-        <div class="stag mb-4">Comment ça marche</div>
-        <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900 leading-tight">3 étapes. Résultats en 1 semaine.</h2>
+  <!-- ── PRIX ───────────────────────────────────────────────── -->
+  <div style="background:#f8faff" class="px-5 py-12">
+    <div class="max-w-sm mx-auto text-center">
+      <div style="background:linear-gradient(135deg,#4338ca,#6366f1);border:2px solid #818cf8" class="rounded-3xl p-8 shadow-2xl">
+        <div class="text-indigo-200 text-xs font-bold uppercase tracking-widest mb-4">Matheux</div>
+        <div class="syne text-5xl font-black text-white mb-1">9,99<span class="text-2xl font-bold text-indigo-300"> €</span></div>
+        <div class="text-indigo-300 text-sm mb-6">par mois — résiliable à tout moment</div>
+        <div class="space-y-3 text-left mb-6">
+          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Diagnostic personnalisé dès le premier jour</span></div>
+          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Exercices adaptés à ses vraies lacunes</span></div>
+          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Accès illimité, 24h/24, tous les niveaux</span></div>
+          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Suivi de progression en temps réel</span></div>
+        </div>
+        <button onclick="startTrialFlow(); document.getElementById('landing-screen').scrollTop=0; document.getElementById('cta-hero').scrollIntoView({behavior:'smooth'})"
+                class="btn btn-ac btn-fw py-4 shadow-xl" style="font-size:1rem">
+          Essayer 7 jours gratuit →
+        </button>
+        <p class="text-indigo-300 text-xs mt-3">Sans carte bancaire · Sans engagement</p>
       </div>
-      <!-- Étapes — desktop horizontal / mobile vertical -->
-      <div class="flex flex-col md:flex-row gap-6 md:gap-4 items-start md:items-stretch">
-        <!-- Étape 1 -->
-        <div class="flex-1 bg-white border border-indigo-100 rounded-2xl p-6 relative">
-          <div class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center syne font-black text-base mb-4">1</div>
-          <div class="text-2xl mb-2">🔍</div>
-          <div class="syne font-bold text-slate-900 text-base mb-2">Le diagnostic</div>
-          <p class="text-slate-500 text-sm leading-relaxed">5 minutes pour identifier exactement où ton enfant en est. Pas un niveau général — les notions précises qui coincent.</p>
-        </div>
-        <!-- Séparateur desktop -->
-        <div class="hidden md:flex items-center self-center text-indigo-300 text-2xl font-black">→</div>
-        <!-- Étape 2 -->
-        <div class="flex-1 bg-white border border-indigo-100 rounded-2xl p-6 relative">
-          <div class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center syne font-black text-base mb-4">2</div>
-          <div class="text-2xl mb-2">📚</div>
-          <div class="syne font-bold text-slate-900 text-base mb-2">Les exercices du jour</div>
-          <p class="text-slate-500 text-sm leading-relaxed">Chaque matin, un plan d'entraînement adapté à lui. Les exercices s'ajustent selon ses réponses, en continu.</p>
-        </div>
-        <!-- Séparateur desktop -->
-        <div class="hidden md:flex items-center self-center text-indigo-300 text-2xl font-black">→</div>
-        <!-- Étape 3 -->
-        <div class="flex-1 bg-white border border-indigo-100 rounded-2xl p-6 relative">
-          <div class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center syne font-black text-base mb-4">3</div>
-          <div class="text-2xl mb-2">🚀</div>
-          <div class="syne font-bold text-slate-900 text-base mb-2">La progression qui se voit</div>
-          <p class="text-slate-500 text-sm leading-relaxed">Semaine après semaine, les lacunes disparaissent. Il reprend confiance. Les notes suivent.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── SECTION PRICING COMPARAISON ──────────────────────────── -->
-  <div class="bg-white px-5 py-14">
-    <div class="max-w-2xl mx-auto">
-      <div class="text-center mb-10">
-        <div class="stag mb-4">Le bon investissement</div>
-        <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900 leading-tight">L'efficacité d'un suivi personnalisé.<br>Le prix d'un café par semaine.</h2>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <!-- Cours particulier -->
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center relative overflow-hidden">
-          <div class="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-3">Cours particulier</div>
-          <div class="syne text-3xl font-black text-slate-500 mb-1">30 €</div>
-          <div class="text-slate-400 text-xs mb-4">par heure</div>
-          <ul class="text-left space-y-2 text-sm text-slate-500">
-            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>1h par semaine</li>
-            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>Disponibilité limitée</li>
-            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>~120€/mois</li>
-            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>Programme général</li>
-          </ul>
-        </div>
-        <!-- Matheux — carte mise en avant -->
-        <div style="background:linear-gradient(135deg,#4338ca,#6366f1);border:2px solid #818cf8;z-index:2" class="rounded-2xl p-6 text-center relative shadow-xl ring-2 ring-indigo-400">
-          <div style="background:#facc15;color:#1e1b4b;z-index:3" class="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-black px-4 py-1 rounded-full syne whitespace-nowrap">LE MEILLEUR RAPPORT QUALITE/PRIX</div>
-          <div class="text-indigo-200 text-xs font-semibold uppercase tracking-widest mb-3 mt-2">Matheux</div>
-          <div class="syne text-3xl font-black text-white mb-1">9,99 €</div>
-          <div class="text-indigo-200 text-xs mb-4">par mois</div>
-          <ul class="text-left space-y-2 text-sm text-white/90">
-            <li class="flex items-start gap-2"><span class="text-green-300 mt-0.5">✓</span>Chaque jour, 10-15 min</li>
-            <li class="flex items-start gap-2"><span class="text-green-300 mt-0.5">✓</span>Disponible 24h/24</li>
-            <li class="flex items-start gap-2"><span class="text-green-300 mt-0.5">✓</span>2,50€/semaine</li>
-            <li class="flex items-start gap-2"><span class="text-green-300 mt-0.5">✓</span>Adapté à VOTRE enfant</li>
-          </ul>
-          <div class="mt-5 bg-white/15 rounded-xl px-3 py-2 text-white text-xs font-bold">7 jours offerts — aucune carte</div>
-        </div>
-        <!-- Applis génériques -->
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center relative overflow-hidden">
-          <div class="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-3">Applis classiques</div>
-          <div class="syne text-3xl font-black text-slate-500 mb-1">5–15 €</div>
-          <div class="text-slate-400 text-xs mb-4">par mois</div>
-          <ul class="text-left space-y-2 text-sm text-slate-500">
-            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>Programme figé</li>
-            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>Pas de diagnostic</li>
-            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>Même exos pour tous</li>
-            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span>Peu d'adaptation</li>
-          </ul>
-        </div>
-      </div>
-      <p class="text-center text-slate-500 text-sm">Essayez 7 jours sans engagement — si votre enfant ne progresse pas, vous ne payez rien.</p>
     </div>
   </div>
 
@@ -811,24 +707,18 @@
   <div class="lhero px-5 py-16">
     <div class="grid-ov"></div>
     <div class="max-w-lg mx-auto relative z-10 text-center">
-      <h2 class="syne text-2xl sm:text-3xl font-black text-white leading-tight mb-4">
-        Prêt à voir ton enfant progresser vraiment ?
+      <h2 class="syne text-2xl sm:text-3xl font-black text-white leading-tight mb-3">
+        Prêt à voir la différence ?
       </h2>
-      <p class="text-white/60 text-sm font-medium mb-8">
-        Commence l'essai 7 jours — sans carte bancaire
+      <p class="text-white/55 text-sm font-medium mb-8 max-w-xs mx-auto">
+        Le diagnostic prend 5 minutes. Les résultats arrivent en 1 semaine.
       </p>
       <button onclick="startTrialFlow(); document.getElementById('landing-screen').scrollTop=0; document.getElementById('cta-hero').scrollIntoView({behavior:'smooth'})"
               style="max-width:340px;font-size:1.05rem;padding:1.15rem;display:block;margin:0 auto"
               class="btn btn-ac btn-fw shadow-xl">
         Démarrer maintenant →
       </button>
-      <div class="flex items-center justify-center mt-5" style="flex-wrap:wrap;gap:.4rem .9rem">
-        <span class="flex items-center gap-1.5 text-white/45 text-xs font-medium"><span class="text-green-400">✓</span>Accès complet</span>
-        <span class="w-px h-3 bg-white/20 hidden sm:block"></span>
-        <span class="flex items-center gap-1.5 text-white/45 text-xs font-medium"><span class="text-green-400">✓</span>Sans engagement</span>
-        <span class="w-px h-3 bg-white/20 hidden sm:block"></span>
-        <span class="flex items-center gap-1.5 text-white/45 text-xs font-medium"><span class="text-green-400">✓</span>Résultats en 1 semaine</span>
-      </div>
+      <p class="text-white/30 text-xs mt-4">✓ 7 jours offerts · ✓ Aucune carte · ✓ Stop quand tu veux</p>
     </div>
   </div>
 

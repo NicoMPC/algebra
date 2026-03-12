@@ -20,7 +20,7 @@
 | Emails auto | ✅ J+0 auto au register(), J+3/J+7 code prêt (trigger à activer) |
 | Analytics | ✅ GA4 G-7R2DW4585Y actif (RGPD-compliant) |
 | Limite bêta | 50 vrais élèves (IsTest=0), ~110 comptes test isolés |
-| Landing | ✅ Sections fictives supprimées (Lucas/témoignages/fondateur) |
+| Landing | ✅ Refaite — hero direct, 3 faits, prix seul, CTA. Zéro comparaison, zéro friction |
 
 ---
 
