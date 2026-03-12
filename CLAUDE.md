@@ -241,7 +241,7 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 
 ## ✅ Ce qui fonctionne bien (ne pas toucher sans raison)
 - CSS/UI complet, mobile-first, animations propres (pulseGentle, toastIn, popIn)
-- Landing page vendeuse : hero émotionnel, 4 cartes, témoignages, CTA sans carte + pricing comparaison + Nicolas fondateur
+- Landing page : hero émotionnel, 4 cartes, pricing comparaison, CTA sans carte — sections fictives supprimées (témoignages/fondateur/Lucas)
 - Mode Brevet : GAS generate_brevet multi-chapitres — **code complet conservé, UI désactivé (tab masqué, loadBrevet() bloqué)**
 - Mode Révision : GAS generate_revision (niveau inférieur, chapitres faibles) — **code complet conservé, UI désactivé (card masquée, launchRevision() bloqué)**
 - Feedback non-intrusif : bouton "Signaler" post-réponse + modal 3 types + GAS submit_feedback → onglet Insights
@@ -345,6 +345,7 @@ sh.append_row("Scores", [...])
 | 13 mars 2026 | @39 | Colonne IsTest Users, limite 50 vrais élèves, dashboard compteur X/50 + section test repliable, mark_all_test GAS, migration Python (110 comptes → IsTest=1) | — |
 | 13 mars 2026 | @40 | UX post-boost : confettis + auto-redirect chapitres 5s + boost card "Prochain dispo demain 🔥" ; Hints/Formule : contraste amber-800 + fond coloré (pill + autoShowHelp + showHintInline + revFInline) ; Admin BOOST TERMINÉ : fix condition (today inclus) ; Admin modal : indicateurs email J0/J3/J7 (trialStart GAS) | — |
 | 13 mars 2026 | @41 | Fix admin : actionPriority + actions mis à jour localement après publishBoost/publishChapter (compteur instantané) ; rebuildSuivi : suppression `lastBoostDate < todayStr` (cohérence avec getAdminOverview) ; login() : crée DailyBoosts exosDone=0 à la livraison du boost → admin voit ⏳ En attente au lieu de faux BOOST TERMINÉ | — |
+| 14 mars 2026 | @44 | UX landing quiz : même style que boost (help-pill CSS, typewriter) ; post-boost review : indices+formule pré-déployés (_previewHelp) ; admin 3 onglets (À faire/Traité/Test) + BLOQUÉ section repliable ; email J+0 HTML branded + archive 📧 Emails GAS ; test_full_v2.py 73/74 (99%) — admin=HMD493, publish API: targetCode+exos directs, login: nextBoost ; landing : sections fictives supprimées (Lucas/témoignages/fondateur) | — |
 
 ---
 

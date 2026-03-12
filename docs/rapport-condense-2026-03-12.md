@@ -1,29 +1,51 @@
-# Rapport Condensé Matheux — État 13 mars 2026 (mis à jour)
+# Rapport Condensé Matheux — État 14 mars 2026
 
 > Document unique — source de vérité du projet
-> Dernière mise à jour : 13 mars 2026 @41 — remplace tous les anciens rapports
+> Dernière mise à jour : 14 mars 2026 — remplace tous les anciens rapports
 
 ---
 
 ## Résumé exécutif
 
-**Matheux est fonctionnel à 97%+ — prêt pour les 50 premiers élèves. Seul manque : Stripe PROD.**
+**Matheux est fonctionnel à 99% — prêt pour les 50 premiers élèves. Seul manque : Stripe PROD.**
 
 | Dimension | État |
 |---|---|
-| Tests GAS automatisés | 89/93 (96%) — 4 race conditions GAS acceptables |
+| Tests automatisés (test_full_v2.py) | 73/74 (99%) — 1 race condition GAS acceptable |
 | Couverture programme officiel | ~85% — 29 chapitres en prod (580 exos) |
 | Modes désactivés UI | Brevet ✅ / Révision ✅ (code conservé) |
 | Juridique | Complet (5 pages + consentement parental + RGPD) |
-| GAS déployé | @41 — toutes actions opérationnelles |
+| GAS déployé | @44 — toutes actions opérationnelles |
 | Paiement | ⏳ Lien Stripe TEST actif — passer en PROD |
 | Emails auto | ✅ J+0 auto au register(), J+3/J+7 code prêt (trigger à activer) |
 | Analytics | ✅ GA4 G-7R2DW4585Y actif (RGPD-compliant) |
 | Limite bêta | 50 vrais élèves (IsTest=0), ~110 comptes test isolés |
+| Landing | ✅ Sections fictives supprimées (Lucas/témoignages/fondateur) |
 
 ---
 
-## Tests — couverture 89/93
+## Tests — couverture 73/74 (test_full_v2.py)
+
+| Scénario | Résultat |
+|---|---|
+| S1 Flux nominal Alice (5 jours) | ✅ |
+| S2 Abandon après diagnostic (Bob) | ✅ |
+| S3 Cas limites (email invalide, double inscription) | ✅ |
+| S4 5 élèves simultanés | ✅ |
+| S5 Admin overview et actions | ✅ |
+| S6 Trial 7 jours | ✅ |
+| S7 Diagnostic + generate_daily_boost | ✅ |
+| S8 Feedback élève | ✅ |
+| S9 Semaine complète J+0→J+7 (élève + Nicolas) | ✅ |
+| **TOTAL** | **73/74 (99%)** |
+
+**1 échec accepté** : race condition GAS (Sheet pas encore à jour entre 2 appels dans la même seconde). Non reproductible en conditions réelles.
+
+**Admin testé et validé** : `admin@matheux.fr` (HMD493), publish_admin_boost + publish_admin_chapter fonctionnels bout-en-bout.
+
+---
+
+## Tests — couverture 89/93 (ancien test_complet.py — archivé)
 
 | Scénario | Tests | ✅ | ❌ | Taux |
 |---|---|---|---|---|

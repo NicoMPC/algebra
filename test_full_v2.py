@@ -28,8 +28,8 @@ GAS_URL = (
     "https://script.google.com/macros/s/"
     "AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec"
 )
-ADMIN_EMAIL = "contact@matheux.fr"
-ADMIN_PASS  = "Matheux2026Admin!"
+ADMIN_EMAIL = "admin@matheux.fr"
+ADMIN_HASH  = "dba3013d8ee56602f8da554bd6f5ff0108324c6d220f137d2181d9d24fa0ef62"
 
 LEVELS  = ["6EME", "5EME", "4EME", "3EME"]
 VERBOSE = False
@@ -74,8 +74,7 @@ def assert_ok(result: dict, context: str) -> bool:
 
 def admin_login() -> dict | None:
     """Login admin et retourne le profil."""
-    h = h256(ADMIN_PASS, ADMIN_EMAIL)
-    r = gas({"action": "login", "email": ADMIN_EMAIL, "password": h})
+    r = gas({"action": "login", "email": ADMIN_EMAIL, "password": ADMIN_HASH})
     if r.get("status") == "success" and r.get("profile", {}).get("isAdmin"):
         return r["profile"]
     log(f"Admin login impossible : {r.get('message','?')}", "WARN")
@@ -86,11 +85,13 @@ def get_admin_overview(admin_code: str) -> dict:
 
 def nicolas_publish_boost(admin_code: str, student_code: str, boost_json: dict) -> bool:
     """Simule Nicolas qui publie un boost pour un élève."""
+    exos = boost_json.get("exos", boost_json) if isinstance(boost_json, dict) else boost_json
     r = gas({
         "action": "publish_admin_boost",
         "adminCode": admin_code,
-        "code": student_code,
-        "boostJSON": json.dumps(boost_json),
+        "targetCode": student_code,
+        "exos": exos,
+        "insight": boost_json.get("insight", "Boost personnalisé") if isinstance(boost_json, dict) else "",
         "motProf": "Bon courage pour ce boost !"
     })
     return r.get("status") == "success"
@@ -100,14 +101,16 @@ def nicolas_publish_chapter(admin_code: str, student_code: str, chapter_json: di
     r = gas({
         "action": "publish_admin_chapter",
         "adminCode": admin_code,
-        "code": student_code,
-        "chapJSON": json.dumps(chapter_json),
+        "targetCode": student_code,
+        "categorie": chapter_json.get("categorie", ""),
+        "exos": chapter_json.get("exos", []),
+        "insight": chapter_json.get("insight", "Nouveau chapitre personnalisé"),
         "motProf": "Nouveau chapitre — tu vas y arriver !"
     })
     return r.get("status") == "success"
 
 def create_simple_boost(level: str, category: str) -> dict:
-    """Crée un boost minimal valide."""
+    """Crée un boost minimal valide (exos directs pour l'API GAS)."""
     exos = []
     for i in range(5):
         exos.append({
@@ -162,7 +165,9 @@ class Student:
         r = gas({"action": "login", "email": self.email, "password": self.hash})
         if r.get("status") == "success":
             self.profile = r.get("profile")
-            self.boost   = r.get("dailyBoost")
+            # dailyBoost = boost déjà en DB pour aujourd'hui
+            # nextBoost  = boost livré à l'instant depuis Suivi (Nicolas vient de le publier)
+            self.boost = r.get("dailyBoost") or r.get("nextBoost")
             return r
         return None
 
