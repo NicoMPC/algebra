@@ -89,6 +89,8 @@ function doPost(e) {
       case 'import_chapters':            res = importChapters(p);          break;
       case 'send_test_email':            res = sendTestEmail(p);           break;
       case 'mark_all_test':              res = markAllTest(p);             break;
+      case 'forgot_password':            res = forgotPassword(p);          break;
+      case 'reset_password':             res = resetPassword(p);           break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -3262,10 +3264,151 @@ function ensureUsersCols() {
   if (header.indexOf('IsTest') === -1) {
     var colIdx3 = header.length + 1;
     sh.getRange(1, colIdx3).setValue('IsTest');
+    header.push('IsTest');
+    changed = true;
+  }
+
+  if (header.indexOf('ResetToken') === -1) {
+    var colIdx4 = header.length + 1;
+    sh.getRange(1, colIdx4).setValue('ResetToken');
+    header.push('ResetToken');
+    changed = true;
+  }
+
+  if (header.indexOf('ResetExpiry') === -1) {
+    var colIdx5 = header.length + 1;
+    sh.getRange(1, colIdx5).setValue('ResetExpiry');
     changed = true;
   }
 
   return changed;
+}
+
+// ════════════════════════════════════════════════════════════
+//  FORGOT_PASSWORD
+//  Payload : { email }
+//  → Génère un token 8 chars, stocke dans Users (ResetToken/ResetExpiry),
+//    envoie l'email avec le code. Valide 15 min.
+// ════════════════════════════════════════════════════════════
+function forgotPassword(p) {
+  ensureUsersCols();
+  var email = (p.email || '').trim().toLowerCase();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+    return { status: 'error', message: 'Email invalide.' };
+  }
+
+  var sh     = getSheet(SH.USERS);
+  var data   = sh.getDataRange().getValues();
+  var header = data[0];
+  var iEmail  = header.indexOf('Email');
+  var iPrenom = header.indexOf('Prénom');
+  var iReset  = header.indexOf('ResetToken');
+  var iExpiry = header.indexOf('ResetExpiry');
+
+  var rowIdx   = -1;
+  var userName = '';
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][iEmail] || '').toLowerCase() === email) {
+      rowIdx   = i;
+      userName = String(data[i][iPrenom] || '');
+      break;
+    }
+  }
+
+  // Réponse générique pour ne pas révéler si l'email existe (bonne pratique sécurité)
+  var successMsg = { status: 'success' };
+  if (rowIdx === -1) return successMsg; // email inconnu — réponse muette
+
+  // Générer token 8 chars (sans ambiguïté visuelle)
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var token = '';
+  for (var t = 0; t < 8; t++) {
+    token += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  var expiry = String(new Date().getTime() + 15 * 60 * 1000); // +15 min
+
+  sh.getRange(rowIdx + 1, iReset  + 1).setValue(token);
+  sh.getRange(rowIdx + 1, iExpiry + 1).setValue(expiry);
+
+  try {
+    var subject  = 'Matheux — Ton code de réinitialisation 🔐';
+    var htmlBody =
+      '<div style="max-width:500px;margin:0 auto;font-family:sans-serif;background:#fff;padding:32px 24px;border-radius:12px;">' +
+      '<h1 style="color:#4338ca;font-size:22px;margin-bottom:8px;">Réinitialisation du mot de passe</h1>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;">Bonjour' + (userName ? ' ' + userName : '') + ',</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;">Voici ton code de réinitialisation :</p>' +
+      '<div style="background:#f0f4ff;border:2px solid #4338ca;border-radius:12px;padding:20px;text-align:center;margin:20px 0;">' +
+      '<span style="font-size:30px;font-weight:900;letter-spacing:6px;color:#4338ca;font-family:monospace;">' + token + '</span>' +
+      '</div>' +
+      '<p style="color:#6b7280;font-size:14px;line-height:1.6;">⏱ Ce code expire dans <strong>15 minutes</strong>.</p>' +
+      '<p style="color:#6b7280;font-size:14px;line-height:1.6;">Si tu n\'as pas fait cette demande, ignore cet email.</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin-top:20px;">— Nicolas, Matheux</p>' +
+      '</div>';
+    GmailApp.sendEmail(email, subject, '', { htmlBody: htmlBody, from: 'no-reply@matheux.fr', name: 'Matheux' });
+  } catch (e) {
+    return { status: 'error', message: 'Erreur envoi email : ' + e.toString() };
+  }
+  return successMsg;
+}
+
+// ════════════════════════════════════════════════════════════
+//  RESET_PASSWORD
+//  Payload : { email, token, password (hash SHA-256) }
+//  → Valide le token + expiry, met à jour PasswordHash, efface le token.
+// ════════════════════════════════════════════════════════════
+function resetPassword(p) {
+  ensureUsersCols();
+  var email   = (p.email    || '').trim().toLowerCase();
+  var token   = (p.token    || '').trim().toUpperCase();
+  var newHash = (p.password || '').trim();
+
+  if (!email || !token || !newHash) {
+    return { status: 'error', message: 'Email, code et nouveau mot de passe requis.' };
+  }
+  if (newHash.length !== 64) {
+    return { status: 'error', message: 'Mot de passe invalide (format hash attendu).' };
+  }
+
+  var sh     = getSheet(SH.USERS);
+  var data   = sh.getDataRange().getValues();
+  var header = data[0];
+  var iEmail  = header.indexOf('Email');
+  var iHash   = header.indexOf('PasswordHash');
+  var iReset  = header.indexOf('ResetToken');
+  var iExpiry = header.indexOf('ResetExpiry');
+
+  if (iReset === -1 || iExpiry === -1) {
+    return { status: 'error', message: 'Aucune demande de réinitialisation trouvée.' };
+  }
+
+  var rowIdx = -1;
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][iEmail] || '').toLowerCase() === email) {
+      rowIdx = i; break;
+    }
+  }
+  if (rowIdx === -1) return { status: 'error', message: 'Email introuvable.' };
+
+  var storedToken  = String(data[rowIdx][iReset]  || '').trim().toUpperCase();
+  var storedExpiry = String(data[rowIdx][iExpiry] || '').trim();
+
+  if (!storedToken || storedToken !== token) {
+    return { status: 'error', message: 'Code invalide. Vérifie l\'email ou fais une nouvelle demande.' };
+  }
+
+  var expMs = parseInt(storedExpiry) || 0;
+  if (!expMs || new Date().getTime() > expMs) {
+    sh.getRange(rowIdx + 1, iReset  + 1).setValue('');
+    sh.getRange(rowIdx + 1, iExpiry + 1).setValue('');
+    return { status: 'error', message: 'Code expiré (15 min). Fais une nouvelle demande.' };
+  }
+
+  // ✅ Token valide — mise à jour du hash + effacement du token
+  sh.getRange(rowIdx + 1, iHash   + 1).setValue(newHash);
+  sh.getRange(rowIdx + 1, iReset  + 1).setValue('');
+  sh.getRange(rowIdx + 1, iExpiry + 1).setValue('');
+
+  return { status: 'success', message: 'Mot de passe mis à jour ! Tu peux te connecter.' };
 }
 
 /**

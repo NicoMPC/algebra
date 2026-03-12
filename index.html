@@ -1012,11 +1012,48 @@
         <div class="space-y-3 mt-3">
           <input type="email"    id="le" class="inp" placeholder="Email (parent ou élève)" autocomplete="email">
           <input type="password" id="lp" class="inp" placeholder="Mot de passe"            autocomplete="current-password">
-          <button onclick="submitAuth()" class="btn btn-ac btn-fw py-4 mt-1">
+          <button onclick="submitAuth()" id="btn-auth-submit" class="btn btn-ac btn-fw py-4 mt-1">
             <span id="auth-text">Continuer 🚀</span>
             <span id="auth-ld"   class="ld hidden"></span>
           </button>
         </div>
+
+        <!-- Lien mot de passe oublié (login uniquement) -->
+        <div id="forgot-wrap" class="hidden text-center mt-3">
+          <button onclick="showForgotForm()" class="text-xs font-semibold text-indigo-400 hover:text-indigo-600 transition-colors">
+            Mot de passe oublié ?
+          </button>
+        </div>
+
+        <!-- Formulaire inline réinitialisation -->
+        <div id="forgot-form" class="hidden mt-3 p-4 rounded-2xl" style="background:#f0f4ff;border:1.5px solid #c7d2fe">
+          <div class="syne font-black text-indigo-800 text-sm mb-3">🔐 Réinitialiser le mot de passe</div>
+
+          <!-- Étape 1 : saisir l'email -->
+          <div id="forgot-step-1">
+            <input type="email" id="forgot-email" class="inp" placeholder="Ton adresse email" autocomplete="email">
+            <button onclick="submitForgotRequest()" class="btn btn-ac btn-fw py-3 mt-2 text-sm">
+              <span id="forgot-req-txt">Envoyer le code 📧</span>
+              <span id="forgot-req-ld" class="ld hidden"></span>
+            </button>
+          </div>
+
+          <!-- Étape 2 : entrer le code + nouveau mot de passe -->
+          <div id="forgot-step-2" class="hidden space-y-2">
+            <p class="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2">✅ Code envoyé ! Vérifie tes emails (y compris spam). Valide 15 min.</p>
+            <input type="text"     id="forgot-token"   class="inp font-mono text-center tracking-widest" placeholder="CODE (8 caractères)" maxlength="8" style="text-transform:uppercase;letter-spacing:.3em" autocomplete="one-time-code">
+            <input type="password" id="forgot-newpass" class="inp" placeholder="Nouveau mot de passe (6 car. min)" autocomplete="new-password">
+            <button onclick="submitResetPassword()" class="btn btn-dk btn-fw py-3 text-sm">
+              <span id="forgot-reset-txt">Changer le mot de passe 🔐</span>
+              <span id="forgot-reset-ld" class="ld hidden"></span>
+            </button>
+          </div>
+
+          <button onclick="hideForgotForm()" class="block w-full text-center text-xs text-slate-400 hover:text-slate-600 transition-colors mt-3">
+            ✕ Annuler
+          </button>
+        </div>
+
       </div><!-- /auth-step-1 -->
 
       <!-- STEP 2 : SÉLECTION CHAPITRES ONBOARDING -->
@@ -1514,6 +1551,88 @@ function switchTab(tab) {
   document.getElementById('tab-r').className = base + (tab==='register' ? ' bg-white shadow-sm text-slate-900' : ' text-slate-400');
   document.getElementById('tab-l').className = base + (tab==='login'    ? ' bg-white shadow-sm text-slate-900' : ' text-slate-400');
   document.getElementById('auth-text').innerText = tab==='register' ? "Continuer 🚀" : "Entrer dans l'arène ⚡";
+  // Mot de passe oublié : visible seulement en mode login
+  var fw = document.getElementById('forgot-wrap');
+  if (fw) fw.classList.toggle('hidden', tab !== 'login');
+  hideForgotForm();
+}
+
+function showForgotForm() {
+  // Pré-remplir avec l'email si déjà saisi
+  var emailVal = document.getElementById('le').value.trim();
+  if (emailVal) document.getElementById('forgot-email').value = emailVal;
+  document.getElementById('forgot-form').classList.remove('hidden');
+  document.getElementById('forgot-wrap').classList.add('hidden');
+}
+
+function hideForgotForm() {
+  var ff = document.getElementById('forgot-form');
+  if (ff) ff.classList.add('hidden');
+  var s1 = document.getElementById('forgot-step-1');
+  var s2 = document.getElementById('forgot-step-2');
+  if (s1) s1.classList.remove('hidden');
+  if (s2) s2.classList.add('hidden');
+  var fi = document.getElementById('forgot-email');
+  var ft = document.getElementById('forgot-token');
+  var fn = document.getElementById('forgot-newpass');
+  if (fi) fi.value = '';
+  if (ft) ft.value = '';
+  if (fn) fn.value = '';
+  // Réafficher le lien si on est en mode login
+  var fw = document.getElementById('forgot-wrap');
+  if (fw) fw.classList.toggle('hidden', currentTab !== 'login');
+}
+
+async function submitForgotRequest() {
+  var email = (document.getElementById('forgot-email') || {}).value.trim();
+  if (!email) { showT('Email requis 😊', 2000, '⚠️'); return; }
+  var rTxt = document.getElementById('forgot-req-txt');
+  var rLd  = document.getElementById('forgot-req-ld');
+  if (rTxt) rTxt.classList.add('hidden');
+  if (rLd)  rLd.classList.remove('hidden');
+  try {
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'forgot_password', email:email }) });
+    var d = await r.json();
+    if (d.status === 'success') {
+      document.getElementById('forgot-step-1').classList.add('hidden');
+      document.getElementById('forgot-step-2').classList.remove('hidden');
+    } else {
+      showT(d.message || 'Erreur', 3500, '❌');
+    }
+  } catch(e) { showT('Erreur réseau 📡', 2500, '📡'); }
+  finally {
+    if (rTxt) rTxt.classList.remove('hidden');
+    if (rLd)  rLd.classList.add('hidden');
+  }
+}
+
+async function submitResetPassword() {
+  var email = (document.getElementById('forgot-email') || {}).value.trim();
+  var token = ((document.getElementById('forgot-token') || {}).value || '').trim().toUpperCase();
+  var pass  = (document.getElementById('forgot-newpass') || {}).value.trim();
+  if (!token || token.length < 8) { showT('Code de 8 caractères requis', 2500, '⚠️'); return; }
+  if (pass.length < 6) { showT('Mot de passe : 6 caractères minimum', 2500, '⚠️'); return; }
+  var rTxt = document.getElementById('forgot-reset-txt');
+  var rLd  = document.getElementById('forgot-reset-ld');
+  if (rTxt) rTxt.classList.add('hidden');
+  if (rLd)  rLd.classList.remove('hidden');
+  var h = await h256(pass, email);
+  try {
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'reset_password', email:email, token:token, password:h }) });
+    var d = await r.json();
+    if (d.status === 'success') {
+      showT('✅ Mot de passe mis à jour ! Connecte-toi.', 4000, '✅');
+      hideForgotForm();
+      document.getElementById('le').value = email;
+      switchTab('login');
+    } else {
+      showT(d.message || 'Erreur', 3500, '❌');
+    }
+  } catch(e) { showT('Erreur réseau 📡', 2500, '📡'); }
+  finally {
+    if (rTxt) rTxt.classList.remove('hidden');
+    if (rLd)  rLd.classList.add('hidden');
+  }
 }
 function updateLevelChapters() {
   var level = document.getElementById('rl').value;
@@ -2124,12 +2243,17 @@ async function flowRegister() {
 function togLd(on) {
   document.getElementById('auth-ld').classList.toggle('hidden', !on);
   document.getElementById('auth-text').classList.toggle('hidden', on);
+  var btnS = document.getElementById('btn-auth-submit');
+  if (btnS) btnS.disabled = !!on;
 }
 
 async function submitAuth() {
   var e = document.getElementById('le').value.trim();
   var p = document.getElementById('lp').value.trim();
   if (!e || !p) { alert2("Champs manquants","Email et mot de passe requis."); return; }
+  // Protection double-submit
+  var btnSubmit = document.getElementById('btn-auth-submit');
+  if (btnSubmit) btnSubmit.disabled = true;
   togLd(true);
   var h = await h256(p, e);
 
@@ -2343,14 +2467,17 @@ function renderTrialBadge() {
   if (!t.trialActive)    { el.classList.add('hidden'); return; }
 
   var days = t.daysLeft || 0;
-  var urgent = days <= 2;
+  // Badge visible uniquement les 3 derniers jours — ne pas stresser les parents dès J+1
+  if (days > 3) { el.classList.add('hidden'); return; }
+  var urgent = days <= 1;
   var color = urgent
     ? 'background:#fef3c7;border-color:#fcd34d;color:#92400e'
-    : 'background:#eef2ff;border-color:#c7d2fe;color:#4338ca';
+    : 'background:#fef9c3;border-color:#fde047;color:#713f12';
+  var msg = days === 0 ? 'Essai terminé aujourd\'hui ⏰' : 'J-' + days + ' · Essai se termine bientôt';
   el.innerHTML =
     '<div style="display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;' +
     'padding:.3rem .75rem;border-radius:99px;border:1.5px solid;' + color + '">' +
-    '⚡ J-' + days + ' · Essai offert' +
+    '⚡ ' + msg +
     '</div>';
   el.classList.remove('hidden');
 }
@@ -4168,6 +4295,43 @@ function copyLastBoostJSON(code) {
   });
 }
 
+// ── Template JSON boost — remplit la textarea avec un squelette prêt à éditer ──
+function insertBoostTemplate(code, cat) {
+  var ta = document.getElementById('modal-boost-json-' + code);
+  if (!ta) return;
+  var catDisp = (cat || 'Chapitre').replace(/_/g,' ');
+  var template = {
+    insight: 'Super travail ' + catDisp + ' — ces 5 exercices vont consolider ce que tu as appris ! 💪',
+    exos: [
+      { q: 'Énoncé exercice 1 (niveau de base)', a: 'Bonne réponse', options: ['Bonne réponse', 'Mauvaise A', 'Mauvaise B', 'Mauvaise C'], steps: ['Étape 1 : identifier...', 'Étape 2 : calculer...', 'Conclusion : ...'], f: 'Formule clé ici', lvl: 1 },
+      { q: 'Énoncé exercice 2 (niveau de base)', a: 'Bonne réponse', options: ['Mauvaise A', 'Bonne réponse', 'Mauvaise B', 'Mauvaise C'], steps: ['Méthode : ...', 'Application : ...'], f: 'Formule clé ici', lvl: 1 },
+      { q: 'Énoncé exercice 3 (niveau intermédiaire)', a: 'Bonne réponse', options: ['Mauvaise A', 'Mauvaise B', 'Bonne réponse', 'Mauvaise C'], steps: ['Analyser : ...', 'Résoudre : ...', 'Vérifier : ...'], f: 'Formule clé ici', lvl: 2 },
+      { q: 'Énoncé exercice 4 (niveau intermédiaire)', a: 'Bonne réponse', options: ['Mauvaise A', 'Mauvaise B', 'Mauvaise C', 'Bonne réponse'], steps: ['Décomposer : ...', 'Calculer étape par étape : ...'], f: 'Formule clé ici', lvl: 2 },
+      { q: 'Énoncé exercice 5 (niveau avancé)', a: 'Bonne réponse', options: ['Bonne réponse', 'Mauvaise A', 'Mauvaise B', 'Mauvaise C'], steps: ['Raisonner : ...', 'Appliquer la formule : ...', 'Vérifier l\'unité : ...'], f: 'Formule clé ici', lvl: 2 }
+    ]
+  };
+  ta.value = JSON.stringify(template, null, 2);
+  ta.focus();
+  showT('📝 Template inséré — remplace les placeholders ✏️', 3500, '✅');
+}
+
+// ── Dernier boost → textarea pour modification rapide ──────────────────────
+function copyLastBoostAsTemplate(code) {
+  var st = S._modalStudent;
+  if (!st) return;
+  var bHistory = st.boostHistory || [];
+  if (!bHistory.length) { showT('Aucun boost enregistré pour cet élève', 3000, '⚠️'); return; }
+  var lastBoost = bHistory[0];
+  var exos = (lastBoost.exos || []).map(function(e) {
+    return { q: e.q, a: e.a, options: e.options, steps: e.steps, f: e.f, lvl: e.lvl };
+  });
+  var ta = document.getElementById('modal-boost-json-' + code);
+  if (!ta) return;
+  ta.value = JSON.stringify({ insight: lastBoost.insight || '', exos: exos }, null, 2);
+  ta.focus();
+  showT('♻️ Dernier boost chargé — modifie et enregistre', 3500, '✅');
+}
+
 // Retourne { bg, border, text, cls, icon } selon l'action (pill texte)
 function _actionStyle(action) {
   if (!action) return { bg:'bg-slate-50', border:'border-slate-200', text:'text-slate-400', cls:'ac-ras', icon:'👍' };
@@ -4768,6 +4932,10 @@ function _buildModalHTML(st) {
             boostMsg +
             boostReadyMsg +
             '<div class="' + boostBoxClass + '">' +
+              '<div class="flex gap-1.5 mb-1">' +
+                '<button onclick="insertBoostTemplate(\'' + st.code + '\',\'' + topCat + '\')" class="flex-1 text-[11px] font-bold py-2 rounded-xl border transition-colors" style="background:#f0f4ff;color:#4338ca;border-color:#c7d2fe">📝 Template JSON</button>' +
+                '<button onclick="copyLastBoostAsTemplate(\'' + st.code + '\')" class="flex-1 text-[11px] font-bold py-2 rounded-xl border transition-colors" style="background:#f9f5ff;color:#7c3aed;border-color:#ddd6fe">♻️ Dernier boost</button>' +
+              '</div>' +
               '<textarea id="modal-boost-json-' + st.code + '" class="adm-textarea" style="height:110px" placeholder="' + boostPH.replace(/"/g,'&quot;') + '"></textarea>' +
               '<button onclick="publishBoost(\'' + st.code + '\')" id="btn-boost-' + st.code + '" class="btn btn-ac btn-fw py-3 mt-2 text-sm">⚡ Enregistrer ce boost</button>' +
             '</div>' +
