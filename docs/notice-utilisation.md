@@ -48,6 +48,7 @@
 | 12 mars (@50) | **Dark mode admin** : toggle 🌙/☀️ dans "Mes Élèves", persisté localStorage — streak/XP cachés en mode admin |
 | 12 mars (@50) | **Modales contextuelles** : boost seul → chapitre caché ; chapitre seul → boost caché ; les deux → tout affiché |
 | 12 mars (@50) | **5 profils réalistes** via `create_5_students.py` (Emma/Lucas/Inès/Théo/Chloé, scénarios variés) |
+| 12 mars (@50) | **Polish UX pré-lancement** : 9 messages corrigés (cohérence tu/ton, "Beau travail" vs "Bon boost", faute de genre streak, tutorial raccourci) + animation douce sur premier chapitre + bandeau guide nouveaux élèves |
 
 ---
 
