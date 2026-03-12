@@ -1,6 +1,6 @@
 # Notice d'utilisation — Matheux
 ## Ce que fait le site. Comment ça marche. Pour qui.
-> Version 14 mars 2026 — @48 | Rédigée pour Nicolas (fondateur)
+> Version 12 mars 2026 — @50 | Rédigée pour Nicolas (fondateur)
 
 ---
 
@@ -45,6 +45,9 @@
 | 14 mars (@47) | GAS simulate_next_day : bouton 🔮 (visible si ?sim=1 dans l'URL) pour tester le lendemain |
 | 14 mars (@47) | generate_diagnostic : injecte categorie dans chaque exo → save_score CALIBRAGE fonctionnel |
 | 14 mars (@48) | **Nettoyage base prod** : 136 comptes test supprimés, toutes les données vidées, onglets inutiles supprimés |
+| 12 mars (@50) | **Dark mode admin** : toggle 🌙/☀️ dans "Mes Élèves", persisté localStorage — streak/XP cachés en mode admin |
+| 12 mars (@50) | **Modales contextuelles** : boost seul → chapitre caché ; chapitre seul → boost caché ; les deux → tout affiché |
+| 12 mars (@50) | **5 profils réalistes** via `create_5_students.py` (Emma/Lucas/Inès/Théo/Chloé, scénarios variés) |
 
 ---
 
