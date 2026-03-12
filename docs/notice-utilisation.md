@@ -86,7 +86,7 @@ PARENT                          ÉLÈVE                        NICOLAS (toi)
 - Chaque jour, **5 exercices du Boost** attendent l'élève
 - Les exercices sont sélectionnés par Nicolas (toi) dans l'Admin Panel → publiés
 - L'élève répond, voit immédiatement si c'est juste ou faux
-- Si faux : indices disponibles + formule clé révélée + explication étape par étape
+- Si faux : indices disponibles + formule clé révélée + explication étape par étape (fond coloré amber/indigo, très lisible)
 - Swipe gauche → exercice suivant (navigation mobile naturelle)
 - **Streak** : compteur de jours consécutifs (motivation gamification)
 - Après chaque réponse : lien discret "📢 Signaler" pour envoyer un feedback
@@ -277,9 +277,10 @@ Accessible uniquement aux comptes avec `IsAdmin: true` dans `Users`.
 **Ce que tu vois par élève :**
 - Toutes ses réponses (badge DIAG = diagnostic, BOOST = entraînement)
 - Scores par chapitre triés : terminés → en cours → diagnostiqués
-- Statut boost (pending/in_progress/done)
+- Statut boost (pending/in_progress/done) — **BOOST TERMINÉ affiché le jour même** (fix @40)
 - Métriques : ⏱ temps moyen, 💡 indices, 🧮 % formule
 - Section "Archivés" (chapitres complétés >20 exos)
+- **📧 Indicateurs emails** : J0 ✅ | J3 ✅/⏳ | J7 ✅/⏳ (calculés depuis TrialStart)
 
 **Ce que tu peux faire :**
 - 📋 **Copier le prompt Claude** pour un chapitre → Claude génère le JSON d'exercices
