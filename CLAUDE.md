@@ -66,6 +66,7 @@ clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sx
 | `check_trial_status` | ✅ Fonctionne — { trialActive, daysLeft, isPremium } |
 | `import_chapters` | ✅ One-shot admin — pousse chapitres dans Curriculum_Officiel + DiagnosticExos via GAS |
 | `send_test_email` | ✅ Admin — envoie email J+0 test à l'adresse du fondateur (vérifie alias no-reply@matheux.fr) |
+| `mark_all_test`   | ✅ Admin one-shot — marque tous les comptes non-admin sans IsTest comme IsTest=1 |
 
 ---
 
@@ -83,7 +84,7 @@ Log Exercices ← DÉTAIL — 1 ligne/exercice, récent en haut, énoncé 60 cha
                 Date | Prénom | Niveau | Chapitre | Énoncé | Résultat |
                 Temps (sec) | Nb indices | Formule ouverte | Mauvaise option
 
-Users         → Code | Prénom | Niveau | Email | PasswordHash | DateInscription | IsAdmin | Premium | TrialStart
+Users         → Code | Prénom | Niveau | Email | PasswordHash | DateInscription | IsAdmin | Premium | TrialStart | PremiumEnd | IsTest
 ```
 
 ### Onglets GAS uniquement (gris — ne pas toucher)
@@ -167,7 +168,10 @@ S: 📧 Rapport envoyé / Chap5+  [T: Code masquée]
 - [x] Fix quiz inline CTA : `class="mc rdy"` sur énoncé (opacity:0 → visible immédiatement) ✅
 - [x] Onboarding guest cohérent : "Ton boost du jour est prêt !" + "Une chose à faire aujourd'hui" ✅
 - [x] boostFromDiag() déclenché en background pendant onboarding guest ✅
-- [x] Bypass limite 40 fam. pour emails @matheux.fr (tests fondateur) ✅
+- [x] Bypass limite : emails @matheux.fr → IsTest=1 auto, jamais comptés ✅
+- [x] Colonne `IsTest` dans Users — 110 comptes existants migrés IsTest=1 via Python ✅
+- [x] Limite bêta portée à 50 vrais élèves (IsTest=0, non-admin) ✅
+- [x] Dashboard admin : compteur X/50 coloré + section 🧪 Comptes test repliable ✅
 - [ ] Créer adresse contact@matheux.fr (hébergeur email + alias Gmail)
 - [ ] Validation inputs côté GAS (format email, longueur champs)
 - [ ] Rate limiting basique dans doPost
@@ -337,6 +341,7 @@ sh.append_row("Scores", [...])
 | 13 mars 2026 | @36 | GA4 G-7R2DW4585Y intégré, overlay trial → Stripe direct 9,99€/mois, email J+7 → Stripe, GmailApp from no-reply@matheux.fr, GA4 ID dans politique-cookies.html | — |
 | 13 mars 2026 | @37 | Dashboard admin : bloc "Outils Fondateur" en haut (Stripe TEST badge + btn, Email test via send_test_email GAS) | — |
 | 13 mars 2026 | @38 | Fix quiz CTA invisible (mc rdy), bypass 40-fam pour @matheux.fr, note contact@matheux.fr dans dashboard | — |
+| 13 mars 2026 | @39 | Colonne IsTest Users, limite 50 vrais élèves, dashboard compteur X/50 + section test repliable, mark_all_test GAS, migration Python (110 comptes → IsTest=1) | — |
 
 ---
 
