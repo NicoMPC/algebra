@@ -2774,6 +2774,7 @@ function getAdminOverview(p) {
       var prenom = String(u['Prénom'] || '');
       var niveau = String(u['Niveau'] || '');
       var isTestUser = u['IsTest'] === 1 || u['IsTest'] === true || String(u['IsTest']).toUpperCase() === 'TRUE' || String(u['IsTest']) === '1';
+      var trialStartAdmin = u['TrialStart'] ? String(u['TrialStart']) : '';
 
       var row            = suiviByCode[code] || null;
       var action         = row ? String(row[0] || '👍 RAS') : '👍 RAS';
@@ -2949,7 +2950,7 @@ function getAdminOverview(p) {
       var lastBoostDateAdmin  = lastBoostEntryAdmin ? lastBoostEntryAdmin.date : '';
       var lastBoostExosDoneAdmin = lastBoostEntryAdmin ? lastBoostEntryAdmin.exosDone : 0;
       var boostNewPending = boostNew; // boolean (col Suivi →Nouveau Boost non vide)
-      if (userBoosts.length >= 1 && lastBoostExosDoneAdmin >= 5 && lastBoostDateAdmin < todayStrAdmin && !boostNewPending && !boostPendingFlag) {
+      if (userBoosts.length >= 1 && lastBoostExosDoneAdmin >= 5 && !boostNewPending && !boostPendingFlag && !boostInProgressFlag) {
         actionsAdmin.push('⚡ BOOST TERMINÉ → préparer le suivant');
       }
       // chapTermine pour pills admin : NbExos ≥ 20 dans Progress ET cols Nicolas Suivi vides
@@ -3003,7 +3004,8 @@ function getAdminOverview(p) {
         chapTermine:          chapTermineFlag,
         chapInProgress:       chapInProgressFlag,
         chapExosDone:         chapExosDoneFlag,
-        isTest:               isTestUser
+        isTest:               isTestUser,
+        trialStart:           trialStartAdmin
       };
     })
     .sort(function(a, b) {

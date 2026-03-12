@@ -1,6 +1,6 @@
 # Notice d'utilisation — Matheux
 ## Ce que fait le site. Comment ça marche. Pour qui.
-> Version 13 mars 2026 | Rédigée pour Nicolas (fondateur)
+> Version 13 mars 2026 — @40 | Rédigée pour Nicolas (fondateur)
 
 ---
 
@@ -28,6 +28,11 @@
 | 13 mars | Fix quiz CTA : questions invisibles corrigées (fond blanc) |
 | 13 mars | Colonne **IsTest** dans Users — 110 comptes existants migrés test, vrais élèves comptés sur 50 |
 | 13 mars | Dashboard admin : compteur X/50, section 🧪 Comptes test repliable, Outils Fondateur (Stripe + email test) |
+| 13 mars (@40) | Indices et formule : contraste maximal — fond coloré + label bold amber/indigo dans tous les modes |
+| 13 mars (@40) | Post-boost : confettis + compte à rebours 5s + redirection auto vers chapitres |
+| 13 mars (@40) | Carte boost terminé : "Entraînement IA ✓" + badge "Prochain dispo demain 🔥" |
+| 13 mars (@40) | Admin BOOST TERMINÉ : condition corrigée (boost du jour inclus, plus besoin d'attendre J+1) |
+| 13 mars (@40) | Modal admin : indicateurs emails J0 ✅ / J3 ✅⏳ / J7 ✅⏳ par élève (depuis TrialStart) |
 
 ---
 
