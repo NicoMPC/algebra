@@ -21,7 +21,7 @@ Outil pédagogique adaptatif maths collège (6ème→3ème), diagnostic de lacun
 
 | Composant | Détail |
 |---|---|
-| `index.html` | SPA ~4700 lignes. CSS vars + Tailwind CDN + JS vanilla |
+| `index.html` | SPA ~5200 lignes. CSS vars + Tailwind CDN + JS vanilla |
 | GAS backend | `backend.js` — Web App déployée via clasp |
 | Sheet ID | `1zLBajKVL8FUzy7aV2Myi9gYFEFJjnALkLAg0hbicuDk` |
 | API URL | `const SU` dans index.html |
@@ -300,16 +300,18 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 - `sheets.py` : bibliothèque accès Google Sheets (Sheet Python/staging uniquement)
 - `rebuild_sheet.py` : reconstruit 👁 Suivi et 📋 Historique depuis données réelles
 - `create_demo_student.py` : crée profil élève démo + simule diagnostic + boost (pour test workflow)
+- `create_5_students.py` : crée 5 profils variés (perfectionniste/progrès/bloquée/régulier/hésitante) — `simulate_next_day` prend `code` direct
 - `test_full_v2.py` : suite de tests GAS complète — 73/74 PASS (99%)
 - `cleanup_prod.py` : nettoyage complet base prod (IRRÉVERSIBLE — demande confirmation)
 
 > Scripts archivés dans `scripts_archive/` : test_complet.py, test_workflows.py, test_scenarios.py, simulation_5jours.py, audit_formats.py, push_new_chapters.py, push_via_gas.py
 
-## ⚠️ Actions manuelles requises (14 mars 2026 @48)
-- ✅ GAS @48 déployé
+## ⚠️ Actions manuelles requises (12 mars 2026 @50)
+- ✅ GAS @50 déployé (no change backend — frontend only)
 - ✅ 29 chapitres × 20 exos en prod (580 exos)
 - ✅ GA4 `G-7R2DW4585Y` actif, Stripe TEST actif
 - ✅ Base prod nettoyée — 1 seul compte admin (admin@matheux.fr)
+- ✅ 5 profils élèves réalistes créés (create_5_students.py)
 - **⚡ Stripe PROD** : remplacer `test_14AdRacgw76N7vQcxqa3u00` dans index.html + backend.js + cgv.html (3 occurrences)
 - **⚡ Créer contact@matheux.fr** + alias no-reply@matheux.fr (hébergeur email + Gmail)
 - **⚡ Apps Script** → Déclencheurs → `triggerDailyMarketing` → Chaque jour 9h-10h
@@ -346,6 +348,7 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 | 14 mars 2026 | @45 | Fix stats Progression : score% = complétion (nbExos/total) au lieu du score qualité GAS (1/20=5% au lieu de 10%) ; message reprise chapitre simplifié (suppression double 💪 + stats redondantes) ; revFInline : fmtL() sur formule avant typewriter → LaTeX nu rendu correctement | ce423ae |
 | 14 mars 2026 | @47 | Profil démo Théo Lambert 4EME (code 3CZRS6, theo.lambert.2026@gmail.com, Algebre2026!) — diagnostic + boost simulés via create_demo_student.py ; GAS simulate_next_day (remet DailyBoosts date à hier) ; bouton "🔮 Simuler demain" (si ?sim=1 URL) ; boost done card : pulsation amber + compteur "dans Xh Ymn" + carte repliée auto ; header mobile : "Espace de" sur ligne séparée → prénom plus jamais tronqué ; generate_diagnostic injecte categorie dans chaque exo | — |
 | 14 mars 2026 | @48 | **Nettoyage base prod** : GAS cleanup_all (136 comptes supprimés, Progress/DailyBoosts/Scores/Historique/Emails/Insights/Suivi vidés, onglets _ARCHIVE_Prerequisites + Programme_Officiel + Waitlist supprimés) ; scripts Python archivés dans scripts_archive/ (7 scripts obsolètes) ; audit_complet.md + new_chapters_2026-03-12.json → docs/archive/ ; notice-utilisation.md + CLAUDE.md mis à jour @48 | f266559→ |
+| 12 mars 2026 | @50 | **Dark mode admin** (toggle 🌙/☀️, localStorage, 44 règles CSS `body.adm-dark`) ; **gamif-row hidden** pour admin (streak/XP masqués) ; **modales contextuelles** : BOOST action → section chap cachée, CHAPITRE action → section boost cachée, double action → les deux affichés, bandeau contextuel ⚡/📚/⚡📚 ; **create_5_students.py** : 5 scénarios réalistes (Emma 6EME perfectionniste VD3M67, Lucas 5EME progrès F3P5ZW, Inès 3EME bloquée 8VCMMQ, Théo 4EME régulier CFQGB6, Chloé 5EME hésitante PACVJS) | eab5bef bf1b2be |
 
 ---
 
