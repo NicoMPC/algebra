@@ -91,6 +91,7 @@ function doPost(e) {
       case 'send_test_email':            res = sendTestEmail(p);           break;
       case 'mark_all_test':              res = markAllTest(p);             break;
       case 'simulate_next_day':          res = simulateNextDay(p);         break;
+      case 'cleanup_all':                res = cleanupAll(p);              break;
       case 'forgot_password':            res = forgotPassword(p);          break;
       case 'reset_password':             res = resetPassword(p);           break;
       default:
@@ -3809,4 +3810,64 @@ function simulateNextDay(p) {
   }
   if (!updated) return { status: 'error', message: 'Aucune entrée DailyBoosts pour ce code.' };
   return { status: 'success', message: 'Date mise à hier (' + yesterdayStr + ') pour ' + updated + ' entrée(s).' };
+}
+
+// ════════════════════════════════════════════════════════════
+//  CLEANUP_ALL — Nettoyage complet de la base
+//  Supprime tous les comptes non-admin + vide les données.
+//  ⚠️ IRRÉVERSIBLE — à utiliser avec précaution.
+// ════════════════════════════════════════════════════════════
+function cleanupAll(p) {
+  if (!verifyAdmin(String(p.adminCode || ''))) {
+    return { status: 'error', message: 'Accès refusé.' };
+  }
+
+  var ss      = SpreadsheetApp.getActiveSpreadsheet();
+  var results = [];
+
+  // ── 1. Users : supprimer tous les non-admin (en partant du bas) ──
+  var userSh   = getSheet(SH.USERS);
+  var userData = userSh.getDataRange().getValues();
+  var headers  = userData[0];
+  var isAdminIdx = headers.indexOf('IsAdmin');
+  var deleted  = 0;
+  for (var i = userData.length - 1; i >= 1; i--) {
+    var v = userData[i][isAdminIdx];
+    var isAdm = (v === 1 || v === true || String(v) === '1' || String(v).toUpperCase() === 'TRUE');
+    if (!isAdm) { userSh.deleteRow(i + 1); deleted++; }
+  }
+  results.push('Users : ' + deleted + ' comptes non-admin supprimés');
+
+  // ── Helper : vider un onglet (garder ligne 1 = entêtes) ──
+  function clearSheet(name) {
+    if (!sheetExists(name)) { results.push(name + ' : absent (ignoré)'); return; }
+    var sh = getSheet(name);
+    var last = sh.getLastRow();
+    if (last > 1) sh.deleteRows(2, last - 1);
+    results.push(name + ' : vidé (' + (last - 1) + ' lignes supprimées)');
+  }
+
+  clearSheet(SH.PROGRESS);
+  clearSheet(SH.BOOSTS);
+  clearSheet(SH.SCORES);
+  clearSheet(SH.HISTORIQUE);
+  clearSheet(SH.RAPPORTS);
+  clearSheet(SH.EMAILS);
+  clearSheet('Insights');
+
+  // ── 2. 👁 Suivi : vider mais garder l'entête (ligne 1) ──
+  clearSheet(SH.SUIVI);
+
+  // ── 3. Supprimer les onglets archives inutiles ──
+  var toDelete = [
+    '_ARCHIVE_Queue', '_ARCHIVE_Rapports', '_ARCHIVE_Pending_Exos',
+    '_ARCHIVE_Prerequisites', 'Pending_Exos', 'Queue',
+    'Programme_Officiel', 'Waitlist'
+  ];
+  toDelete.forEach(function(name) {
+    var sh = ss.getSheetByName(name);
+    if (sh) { ss.deleteSheet(sh); results.push('Onglet supprimé : ' + name); }
+  });
+
+  return { status: 'success', results: results };
 }

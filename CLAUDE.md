@@ -287,32 +287,29 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 
 ---
 
-## 📁 docs/ — Fichiers clés (nettoyés 13 mars — 7 rapports obsolètes supprimés)
+## 📁 docs/ — Fichiers clés (nettoyés 14 mars @48)
 | Fichier | Contenu |
 |---|---|
-| `rapport-condense-2026-03-12.md` | **RÉFÉRENCE UNIQUE** — état complet @41, remplace tous les anciens rapports |
-| `notice-utilisation.md` | Guide complet site pour Nicolas (élèves, Sheet, admin, tech) — Version @41 |
+| `rapport-condense-2026-03-12.md` | Référence état @41 (historique) |
+| `notice-utilisation.md` | Guide complet site pour Nicolas — **Version @48** |
 | `programme-français-verif.md` | Couverture Eduscol ~85%, 12 notions manquantes identifiées |
-| `audit_complet.md` | Audit test_complet.py 89/93 (96%) |
 | `scenarios_comportement.md` | Référence scénarios de test comportement élèves |
-| `archive/` | Docs historiques (juridique, emails, marketing, landing, analytics) |
+| `archive/` | audit_complet.md + new_chapters_2026-03-12.json + docs historiques |
 
-### Python scripts (algebra/)
-```python
-from algebra.sheets import sh
-sh.read("Curriculum_Officiel")       # lit le Sheet live
-sh.write_rows("DiagnosticExos", rows)
-sh.append_row("Scores", [...])
-```
-- `rebuild_sheet.py` : reconstruit 👁 Suivi et 📋 Historique depuis données réelles — règles ACTION synchronisées avec GAS
-- `audit_formats.py` : audit conformité exercices Curriculum_Officiel + DiagnosticExos
-- `push_new_chapters.py` : push 5 nouveaux chapitres (Probabilités 3EME, Racines carrées 3EME, Nombres décimaux 6EME, Fonctions linéaires 4EME, Statistiques 6EME) → données dans `new_chapters_2026-03-12.json` → copier vers `/tmp/exos_data.json` avant de lancer
-- `test_workflows.py` : 38 tests GAS (groupes A+B), 37/38 PASS après deploy @31
+### Python scripts actifs (algebra/)
+- `sheets.py` : bibliothèque accès Google Sheets (Sheet Python/staging uniquement)
+- `rebuild_sheet.py` : reconstruit 👁 Suivi et 📋 Historique depuis données réelles
+- `create_demo_student.py` : crée profil élève démo + simule diagnostic + boost (pour test workflow)
+- `test_full_v2.py` : suite de tests GAS complète — 73/74 PASS (99%)
+- `cleanup_prod.py` : nettoyage complet base prod (IRRÉVERSIBLE — demande confirmation)
 
-## ⚠️ Actions manuelles requises (13 mars 2026 @41)
-- ✅ GAS @41 déployé
-- ✅ 5 chapitres poussés en prod via `push_via_gas.py`
-- ✅ GA4 `G-7R2DW4585Y` actif, Stripe TEST actif, 110 comptes test migrés IsTest=1
+> Scripts archivés dans `scripts_archive/` : test_complet.py, test_workflows.py, test_scenarios.py, simulation_5jours.py, audit_formats.py, push_new_chapters.py, push_via_gas.py
+
+## ⚠️ Actions manuelles requises (14 mars 2026 @48)
+- ✅ GAS @48 déployé
+- ✅ 29 chapitres × 20 exos en prod (580 exos)
+- ✅ GA4 `G-7R2DW4585Y` actif, Stripe TEST actif
+- ✅ Base prod nettoyée — 1 seul compte admin (admin@matheux.fr)
 - **⚡ Stripe PROD** : remplacer `test_14AdRacgw76N7vQcxqa3u00` dans index.html + backend.js + cgv.html (3 occurrences)
 - **⚡ Créer contact@matheux.fr** + alias no-reply@matheux.fr (hébergeur email + Gmail)
 - **⚡ Apps Script** → Déclencheurs → `triggerDailyMarketing` → Chaque jour 9h-10h
@@ -348,6 +345,7 @@ sh.append_row("Scores", [...])
 | 14 mars 2026 | @44 | UX landing quiz : même style que boost (help-pill CSS, typewriter) ; post-boost review : indices+formule pré-déployés (_previewHelp) ; admin 3 onglets (À faire/Traité/Test) + BLOQUÉ section repliable ; email J+0 HTML branded + archive 📧 Emails GAS ; test_full_v2.py 73/74 (99%) — admin=HMD493, publish API: targetCode+exos directs, login: nextBoost ; landing : sections fictives supprimées (Lucas/témoignages/fondateur) | — |
 | 14 mars 2026 | @45 | Fix stats Progression : score% = complétion (nbExos/total) au lieu du score qualité GAS (1/20=5% au lieu de 10%) ; message reprise chapitre simplifié (suppression double 💪 + stats redondantes) ; revFInline : fmtL() sur formule avant typewriter → LaTeX nu rendu correctement | ce423ae |
 | 14 mars 2026 | @47 | Profil démo Théo Lambert 4EME (code 3CZRS6, theo.lambert.2026@gmail.com, Algebre2026!) — diagnostic + boost simulés via create_demo_student.py ; GAS simulate_next_day (remet DailyBoosts date à hier) ; bouton "🔮 Simuler demain" (si ?sim=1 URL) ; boost done card : pulsation amber + compteur "dans Xh Ymn" + carte repliée auto ; header mobile : "Espace de" sur ligne séparée → prénom plus jamais tronqué ; generate_diagnostic injecte categorie dans chaque exo | — |
+| 14 mars 2026 | @48 | **Nettoyage base prod** : GAS cleanup_all (136 comptes supprimés, Progress/DailyBoosts/Scores/Historique/Emails/Insights/Suivi vidés, onglets _ARCHIVE_Prerequisites + Programme_Officiel + Waitlist supprimés) ; scripts Python archivés dans scripts_archive/ (7 scripts obsolètes) ; audit_complet.md + new_chapters_2026-03-12.json → docs/archive/ ; notice-utilisation.md + CLAUDE.md mis à jour @48 | f266559→ |
 
 ---
 

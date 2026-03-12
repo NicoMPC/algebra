@@ -1,6 +1,6 @@
 # Notice d'utilisation — Matheux
 ## Ce que fait le site. Comment ça marche. Pour qui.
-> Version 13 mars 2026 — @41 | Rédigée pour Nicolas (fondateur)
+> Version 14 mars 2026 — @48 | Rédigée pour Nicolas (fondateur)
 
 ---
 
@@ -36,6 +36,15 @@
 | 13 mars (@41) | Fix admin : compteur actions mis à jour **instantanément** après publication boost/chapitre (sans refresh) |
 | 13 mars (@41) | Fix rebuildSuivi : BOOST TERMINÉ affiché le jour même dans Sheet 👁 Suivi |
 | 13 mars (@41) | Fix login : livraison boost → entrée DailyBoosts exosDone=0 créée → admin voit ⏳ En attente (supprime faux BOOST TERMINÉ) |
+| 14 mars (@45) | Fix stats Progression : % = complétion (nbExos/total) — 1/20 exos = 5%, cohérent |
+| 14 mars (@45) | Message reprise chapitre simplifié (suppression double emoji + stats redondantes) |
+| 14 mars (@45) | Formule LaTeX dans pill "👁 Formule" : fmtL() corrigé → rendu MathJax correct |
+| 14 mars (@47) | Carte boost terminé : pulsation amber + compteur animé "dans Xh Ymn" (remplace texte statique) |
+| 14 mars (@47) | Carte boost repliée automatiquement après fin du boost + redirect dashboard |
+| 14 mars (@47) | Header mobile : "Espace de" sur ligne séparée → prénom jamais tronqué |
+| 14 mars (@47) | GAS simulate_next_day : bouton 🔮 (visible si ?sim=1 dans l'URL) pour tester le lendemain |
+| 14 mars (@47) | generate_diagnostic : injecte categorie dans chaque exo → save_score CALIBRAGE fonctionnel |
+| 14 mars (@48) | **Nettoyage base prod** : 136 comptes test supprimés, toutes les données vidées, onglets inutiles supprimés |
 
 ---
 
@@ -153,7 +162,7 @@ Chaque matin à 7h, un email automatique liste :
 - Puis chapitres par ordre de progression
 - Chaque card affiche : icône, nom, barre de progression, date dernière pratique
 - Badge "🆕 NEW" si Nicolas vient d'assigner un nouveau chapitre
-- Boost terminé : label **"Entraînement IA ✓"** + badge **"Prochain dispo demain 🔥"**
+- Boost terminé : label **"Entraînement IA ✓"** + point qui pulse + compteur **"dans Xh Ymn"**
 - Après avoir terminé le boost : **écran de résultats** avec confettis + compte à rebours 5s → retour auto chapitres
 
 ### Vue "📊 Progression"
@@ -225,15 +234,14 @@ Total curriculum : **29 chapitres × 20 exos = 580 exos** | DiagnosticExos : **2
 | `Scores` | GAS uniquement | Toutes les réponses | ❌ Ne jamais modifier |
 | `Progress` | GAS uniquement | Score/statut par chapitre | ❌ Ne jamais modifier |
 | `DailyBoosts` | GAS + admin | Historique des boosts | Lecture + admin panel |
-| `Curriculum_Officiel` | GAS uniquement | 480+ exercices (24 chap × 20) | ❌ Via scripts Python seulement |
-| `DiagnosticExos` | GAS uniquement | 48 exercices de diagnostic | ❌ Via scripts Python seulement |
+| `Curriculum_Officiel` | GAS uniquement | 580 exercices (29 chap × 20) | ❌ Via scripts Python seulement |
+| `DiagnosticExos` | GAS uniquement | 58 exercices de diagnostic (29 chap × 2) | ❌ Via scripts Python seulement |
 | `👁 Suivi` | **TOI** | Tableau de bord principal | ✅ Ton outil quotidien |
 | `📋 Historique` | GAS + toi (lecture) | Log chronologique des exercices | Lecture seule |
 | `Insights` | GAS + toi (lecture) | Feedbacks des élèves | Consulte régulièrement |
 | `Rapports` | GAS + toi (lecture) | Rapports quotidiens 7h | Lecture seule |
-| `RemediationChapters` | GAS uniquement | Chapitres de remédiation | ❌ Archivé |
-
-**Onglets archivés (ne pas toucher) :** `_ARCHIVE_Queue`, `_ARCHIVE_Prerequisites`, `_ARCHIVE_Rapports`, `_ARCHIVE_Pending_Exos`
+| `RemediationChapters` | GAS uniquement | Chapitres de remédiation (feature désactivée) | ❌ Ne pas modifier |
+| `📧 Emails` | GAS uniquement | Archive des emails envoyés (J+0, J+3, J+7) | Lecture seule |
 
 ---
 
@@ -319,11 +327,11 @@ Tout est enregistré dans l'onglet `Insights` du Sheet (créé automatiquement a
 
 ---
 
-## 12. Ce qui N'EST PAS encore fait (13 mars 2026 @41)
+## 12. Ce qui N'EST PAS encore fait (14 mars 2026 @48)
 
 | Fonctionnalité | Statut | Priorité |
 |---|---|---|
-| Passer Stripe TEST → PROD (3 occurrences : index.html, backend.js, cgv.html) | ⏳ Lien TEST actif | 🔴 Sprint suivant |
+| **Passer Stripe TEST → PROD** (3 occurrences : index.html, backend.js, cgv.html) | ⏳ Lien TEST actif | 🔴 Avant premier paiement |
 | Webhook Stripe → colonne Premium | ❌ Après Stripe PROD | 🔴 Sprint suivant |
 | Créer contact@matheux.fr + alias no-reply@matheux.fr | ❌ Hébergeur email + Gmail | 🔴 Maintenant |
 | Activer trigger `triggerDailyMarketing` (Apps Script 9h-10h) | ⏳ Code prêt | 🟡 Important |
@@ -353,30 +361,37 @@ git commit -m "feat: description"
 git push origin main
 ```
 
-### Pousser les 5 nouveaux chapitres
+### Scripts Python disponibles
 ```bash
-cd "/home/nicolas/Bureau/algebra live/algebra"
-python3 push_new_chapters.py --dry-run   # prévisualisation
-python3 push_new_chapters.py             # push réel
-python3 audit_formats.py                 # vérification conformité
+# Créer un profil élève démo (pour tester le workflow)
+python3 create_demo_student.py
+
+# Nettoyage complet de la base (IRRÉVERSIBLE)
+python3 cleanup_prod.py
+
+# Test complet du workflow GAS (73/74 = 99%)
+python3 test_full_v2.py
+
+# Reconstruire les onglets 👁 Suivi et 📋 Historique
+python3 rebuild_sheet.py
 ```
+> Scripts archivés dans `scripts_archive/` : push_new_chapters.py, test_complet.py, simulation_5jours.py, etc.
 
 ---
 
-## 14. Actions manuelles en attente (13 mars 2026 @41)
+## 14. Actions manuelles en attente (14 mars 2026 @48)
 
 | Action | Où | Priorité |
 |---|---|---|
-| ✅ IsAdmin mis à 1 pour `contact@matheux.fr` | Sheet Users | Fait |
-| ✅ GAS @41 déployé | Terminal | Fait |
-| ✅ 5 chapitres poussés en prod | push_via_gas.py | Fait |
-| ✅ GA4 G-7R2DW4585Y intégré | index.html | Fait |
+| ✅ GAS @48 déployé | Terminal `deploy.sh` | Fait |
+| ✅ 29 chapitres × 20 exos en prod (580 exos) | Curriculum_Officiel | Fait |
+| ✅ GA4 G-7R2DW4585Y actif (consentement RGPD) | index.html | Fait |
 | ✅ Stripe TEST lien actif (overlay + email J+7) | index.html / backend.js | Fait |
-| ✅ 110 comptes test migrés IsTest=1 | Python | Fait |
+| ✅ Base prod nettoyée (136 comptes test supprimés) | cleanup_prod.py | Fait |
 | **⚡ Créer contact@matheux.fr** | Hébergeur email | 🔴 Maintenant |
 | **⚡ Configurer alias no-reply@matheux.fr** | Gmail Paramètres → "Envoyer depuis" | 🔴 Maintenant |
 | **⚡ Apps Script UI → Déclencheurs → `triggerDailyMarketing` → Chaque jour 9h-10h** | Apps Script | 🟡 Cette semaine |
-| **⚡ Passer lien Stripe TEST → PROD** (3 occurrences) | index.html / backend.js / cgv.html | 🔴 Sprint suivant |
+| **⚡ Passer lien Stripe TEST → PROD** (3 occurrences) | index.html / backend.js / cgv.html | 🔴 Avant premier paiement |
 
 ---
 
@@ -390,4 +405,4 @@ python3 audit_formats.py                 # vérification conformité
 
 ---
 
-*Notice mise à jour le 13 mars 2026 @41 — Matheux v23 GOLD MASTER*
+*Notice mise à jour le 14 mars 2026 @48 — Matheux v23 GOLD MASTER*
