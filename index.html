@@ -17,6 +17,34 @@
   <meta name="twitter:card"       content="summary"/>
   <meta name="twitter:title"      content="Matheux — Révisions maths collège par IA"/>
 
+  <!-- ── GA4 — chargé uniquement si cookies acceptés ─────── -->
+  <!-- REMPLACER G-XXXXXXXXXX par votre Measurement ID Google Analytics 4 -->
+  <script>
+    (function(){
+      var GA4_ID = 'G-XXXXXXXXXX'; // <-- remplacer par votre ID GA4 réel
+      function loadGA4() {
+        if (window._ga4Loaded) return;
+        window._ga4Loaded = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA4_ID;
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function(){ window.dataLayer.push(arguments); };
+        gtag('js', new Date());
+        gtag('config', GA4_ID, { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+      }
+      // Helpers analytics — appelés depuis le JS de la page
+      window._track = function(eventName, params) {
+        if (typeof gtag === 'function') gtag('event', eventName, params || {});
+      };
+      // Vérifier le consentement stocké
+      var consent = localStorage.getItem('mx_cookie_consent');
+      if (consent === 'accepted') loadGA4();
+      window._initGA4 = loadGA4;
+    })();
+  </script>
+
   <!-- MathJax config avant chargement -->
   <script>
     window.MathJax = {
@@ -1836,6 +1864,10 @@ async function _flowGuestRegister() {
       showT('Mauvais mot de passe — connecte-toi depuis le menu', 3000, '⚠️');
       return;
     }
+  } else if (r.status === 'waitlist') {
+    if (btn) { btn.disabled = false; }
+    if (btnTxt) btnTxt.textContent = 'Continuer — c\'est gratuit →';
+    showT('Bêta complète · ton email est sur liste d\'attente 📋', 0, '⏳'); return;
   } else {
     if (btn) { btn.disabled = false; }
     if (btnTxt) btnTxt.textContent = 'Continuer — c\'est gratuit →';
@@ -2032,6 +2064,14 @@ async function flowRegister() {
           return;
         }
       }
+      if (regD.status === 'waitlist') {
+        hideT();
+        showT('Bêta complète · ton email est sur liste d\'attente 📋', 0, '⏳');
+        document.getElementById('fl-btn-txt').textContent = '📋 Sur liste d\'attente';
+        document.getElementById('fl-btn-ld').classList.add('hidden');
+        if (btn) btn.disabled = true;
+        return;
+      }
       showT('❌ ' + (regD.message || 'Erreur inscription'), 4000, '❌');
       document.getElementById('fl-btn-txt').classList.remove('hidden');
       document.getElementById('fl-btn-ld').classList.add('hidden');
@@ -2109,6 +2149,8 @@ async function submitAuth() {
           var key = c.replace(/[^\w\sÀ-ÿ]/g,'').trim().replace(/\s+/g,'_');
           return '<div onclick="this.classList.toggle(\'selected\')" class="chap-card syne" data-chap="'+key+'">'+c+'</div>';
         }).join('');
+      } else if (d.status === 'waitlist') {
+        alert2("Liste d'attente 📋", "Matheux est en bêta privée (40 familles). Ton email est enregistré — Nicolas te contacte dès qu'une place se libère.", '⏳');
       } else { alert2("Erreur", d.message); }
     } catch(err) { alert2("Erreur réseau","Vérifie ta connexion.","📡"); }
     finally { togLd(false); }
@@ -2336,7 +2378,7 @@ function showTrialExpired() {
 }
 
 window.__trialProlonger = function() {
-  showT('Bientôt disponible — ton prof est au courant 🔥', 4000, '⏳');
+  window.open('premium.html', '_blank');
 };
 window.__trialDismiss = function() {
   var ov = document.getElementById('trial-expired-overlay');
@@ -4728,6 +4770,45 @@ window.sendFeedback = async function(type) {
     showT('Merci pour ton retour 🙏', 2000, '✅');
   } catch(e) {}
 };
+</script>
+
+<!-- ── BANNIÈRE COOKIES RGPD ─────────────────────────────────── -->
+<div id="cookie-banner"
+     style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:6000;background:#1e293b;color:#e2e8f0;
+            padding:1rem 1.25rem;font-family:'DM Sans',sans-serif;font-size:.82rem">
+  <div style="max-width:680px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:.75rem">
+    <p style="flex:1;min-width:200px;line-height:1.5;color:#cbd5e1;margin:0">
+      Matheux utilise Google Analytics pour mesurer l'audience (données anonymisées). Aucun cookie publicitaire.
+      <a href="/politique-cookies.html" style="color:#818cf8;text-decoration:underline">En savoir plus</a>.
+    </p>
+    <div style="display:flex;gap:.5rem;flex-shrink:0">
+      <button id="cookie-refuse" onclick="_cookieConsent('refused')"
+              style="padding:.5rem 1rem;background:transparent;border:1.5px solid #475569;border-radius:8px;
+                     color:#94a3b8;font-size:.8rem;font-weight:600;cursor:pointer">Refuser</button>
+      <button id="cookie-accept" onclick="_cookieConsent('accepted')"
+              style="padding:.5rem 1rem;background:#4338ca;border:none;border-radius:8px;
+                     color:#fff;font-size:.8rem;font-weight:700;cursor:pointer">Accepter</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var consent = localStorage.getItem('mx_cookie_consent');
+  if (!consent) {
+    var b = document.getElementById('cookie-banner');
+    if (b) b.style.display = 'block';
+  }
+})();
+window._cookieConsent = function(choice) {
+  localStorage.setItem('mx_cookie_consent', choice);
+  var b = document.getElementById('cookie-banner');
+  if (b) b.style.display = 'none';
+  if (choice === 'accepted' && typeof window._initGA4 === 'function') window._initGA4();
+};
+// ── Événements analytiques clés ─────────────────────────
+// Appelés depuis le code existant via window._track()
+// Events: page_view, diagnostic_start, diagnostic_complete,
+//         register_success, login_success, boost_complete, trial_expired_shown
 </script>
 
 <!-- ── MODALE FEEDBACK ──────────────────────────────────────── -->

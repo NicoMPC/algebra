@@ -40,7 +40,7 @@
   <h1>Politique cookies et stockage local</h1>
 
   <div class="ok-box">
-    <p>✅ Matheux n'utilise pas de cookies tiers ni de trackers publicitaires. Aucun consentement cookie n'est requis au-delà des cookies strictement nécessaires.</p>
+    <p>✅ Matheux n'utilise aucun cookie publicitaire ni de ciblage. Google Analytics 4 (mesure d'audience) est chargé <strong>uniquement après votre consentement explicite</strong> via la bannière.</p>
   </div>
 
   <h2>Qu'est-ce qu'un cookie ?</h2>
@@ -67,6 +67,12 @@
       <td>Éviter les rechargements inutiles</td>
       <td>Permanente (local)</td>
     </tr>
+    <tr>
+      <td><code>mx_cookie_consent</code></td>
+      <td>"accepted" ou "refused"</td>
+      <td>Mémoriser votre choix de consentement analytics</td>
+      <td>Permanente (local)</td>
+    </tr>
   </table>
 
   <h2>Cookies tiers</h2>
@@ -78,8 +84,19 @@
   </ul>
   <p>Aucun cookie publicitaire, de ciblage ou de tracking comportemental n'est utilisé.</p>
 
-  <h2>Cookies analytics</h2>
-  <p>Matheux n'utilise pas Google Analytics ni aucun autre outil de mesure d'audience à ce jour.</p>
+  <h2>Cookies analytics (Google Analytics 4)</h2>
+  <p>Matheux utilise <strong>Google Analytics 4</strong> pour mesurer l'audience (pages vues, sessions, taux de conversion). Ce service est chargé <strong>uniquement si vous acceptez</strong> la bannière de consentement.</p>
+  <table>
+    <tr><th>Outil</th><th>Finalité</th><th>Sous-traitant</th><th>Transfert hors UE</th></tr>
+    <tr>
+      <td>Google Analytics 4</td>
+      <td>Mesure d'audience (anonymisée)</td>
+      <td>Google LLC (USA)</td>
+      <td>Oui — Clauses contractuelles standard UE</td>
+    </tr>
+  </table>
+  <p>Les IPs sont anonymisées (<code>anonymize_ip: true</code>). Vous pouvez refuser à tout moment via la bannière ou en supprimant <code>mx_cookie_consent</code> depuis le localStorage.</p>
+  <p>Si vous refusez, aucun cookie Google Analytics n'est déposé et aucune donnée n'est transmise à Google.</p>
 
   <h2>Gestion de vos préférences</h2>
   <p>Vous pouvez supprimer les données de stockage local à tout moment depuis les paramètres de votre navigateur :</p>
@@ -93,7 +110,7 @@
   <h2>Contact</h2>
   <p>Pour toute question : <a href="mailto:contact@matheux.fr">contact@matheux.fr</a></p>
 
-  <p style="margin-top:2rem;color:#94a3b8;font-size:.82rem;">Dernière mise à jour : 12 mars 2026</p>
+  <p style="margin-top:2rem;color:#94a3b8;font-size:.82rem;">Dernière mise à jour : 13 mars 2026</p>
 </div>
 </body>
 </html>

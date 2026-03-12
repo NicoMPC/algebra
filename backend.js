@@ -226,11 +226,29 @@ function register(p) {
     return { status: 'error', message: 'Un compte existe déjà avec cet email.' };
   }
 
+  // ─── Limite bêta : 40 familles ──────────────────────────────
+  var nonAdminCount = users.filter(function(u) {
+    var adm = u['IsAdmin'];
+    return !adm || (adm !== 1 && adm !== true && String(adm).toUpperCase() !== 'TRUE' && String(adm) !== '1');
+  }).length;
+  if (nonAdminCount >= 40) {
+    var wlSh = _ensureWaitlistSheet();
+    wlSh.appendRow([email, name, level, today()]);
+    return {
+      status:  'waitlist',
+      message: 'Matheux est en bêta privée limitée à 40 familles. Votre adresse est sur liste d\'attente — Nicolas vous contactera dès qu\'une place se libère (contact@matheux.fr).'
+    };
+  }
+  // ────────────────────────────────────────────────────────────
+
   var code = uniqueCode();
   var now  = today();
 
   // Users : Code | Prénom | Niveau | Email | PasswordHash | DateInscription | IsAdmin | Premium | TrialStart
   appendRow(SH.USERS, [code, name, level, email, hash, now, 0, 0, now]);
+
+  // Email bienvenue J+0 (silencieux — ne bloque pas l'inscription si erreur)
+  try { sendMarketingSequence(email, name, 0); } catch(e) {}
 
   return {
     status:  'success',
@@ -3207,6 +3225,20 @@ function ensureUsersCols() {
   }
 
   return changed;
+}
+
+/**
+ * Retourne (ou crée) l'onglet Waitlist avec header Email | Prénom | Niveau | Date
+ */
+function _ensureWaitlistSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('Waitlist');
+  if (!sh) {
+    sh = ss.insertSheet('Waitlist');
+    sh.getRange(1, 1, 1, 4).setValues([['Email', 'Prénom', 'Niveau', 'Date']]);
+    sh.getRange(1, 1, 1, 4).setFontWeight('bold');
+  }
+  return sh;
 }
 
 /**

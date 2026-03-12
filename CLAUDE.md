@@ -39,9 +39,9 @@ clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sx
 - Sheet ID scripts Python : `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4`
 - Compte de service : `algebra/algebreboost-sheets-2595a71cadfb.json` (ignoré par git)
 - ⚠️ `clasp deploy` seul sans `--deploymentId` crée des URLs inaccessibles → toujours passer l'ID
-- `deploy.sh` ne fait que push — toujours lancer les 2 commandes séparément
+- `deploy.sh "description"` fait push + deploy en une commande
 
-## 📦 Actions GAS — état réel (@31)
+## 📦 Actions GAS — état réel (@34)
 | Action | Statut |
 |---|---|
 | `register` | ✅ Fonctionne — TrialStart = TODAY |
@@ -64,10 +64,11 @@ clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sx
 | `publish_admin_boost` | ✅ Fonctionne — écrit →Nouveau Boost (col 18), rebuildSuivi |
 | `publish_admin_chapter` | ✅ Fonctionne — écrit premier slot →Nouveau Ch libre, rebuildSuivi |
 | `check_trial_status` | ✅ Fonctionne — { trialActive, daysLeft, isPremium } |
+| `import_chapters` | ✅ One-shot admin — pousse chapitres dans Curriculum_Officiel + DiagnosticExos via GAS |
 
 ---
 
-## 📋 Structure Google Sheet — état 11 mars
+## 📋 Structure Google Sheet — état 12 mars
 
 ### Onglets Nicolas (bleus)
 ```
@@ -184,20 +185,27 @@ Email sujet `[Matheux ⚡ ACTION]` si fragiles/bloquées. Stocké dans onglet `R
 Flux : `generateMorningReport(5h)` → analyse → `generatePendingExos()` → `Pending_Exos` → fondateur met YES → `processPendingAtLogin()` au login élève.
 Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | DateGeneree | Validé | DateValidation`
 
-### BLOC 3 — Juridique & paiement 🟡
+### BLOC 3 — Juridique & paiement 🟢
 - [x] Mentions légales (`mentions-legales.html`) — SIRET 837 763 713 00059, données mineurs, CNIL ✅
-- [x] CGU (`cgu.html`) — mineurs, essai 7j, résiliation ✅
+- [x] CGU (`cgu.html`) — mineurs, essai 7j, résiliation, clause bêta 40 familles ✅
 - [x] CGV (`cgv.html`) — 9,99€/mois, droit de rétractation 14j ✅
 - [x] Politique confidentialité (`politique-confidentialite.html`) — RGPD renforcé mineurs ✅
-- [x] Politique cookies (`politique-cookies.html`) — localStorage uniquement, pas de tiers ✅
+- [x] Politique cookies (`politique-cookies.html`) — localStorage + GA4 consentement explicite ✅
 - [x] Case consentement parental à l'inscription (auth + landing step 4) ✅
 - [x] Footer légal intégré sur landing + app ✅
-- [ ] Intégration Stripe : freemium 7j → 9,99€/mois
+- [x] Bannière cookies RGPD (consentement avant chargement GA4) ✅
+- [x] GA4 conditionnel (chargé seulement après consentement, IP anonymisée) ✅ — **remplacer G-XXXXXXXXXX**
+- [x] Limite bêta 40 familles dans register() GAS → Waitlist sheet ✅
+- [x] Email bienvenue J+0 automatique au register() ✅
+- [x] Page premium.html — offre + lien email contact@matheux.fr ✅
+- [x] `__trialProlonger()` → ouvre premium.html ✅
+- [ ] Intégration Stripe : remplacer btn-contact par btn-stripe dans premium.html
 - [ ] Webhook Stripe → colonne `Premium` dans Users
 
 ### BLOC 4 — Marketing & conversion 🟢
-- [ ] Email bienvenue automatique (GAS + Gmail API ou Brevo)
-- [ ] Séquence J+3, J+7 pour conversion freemium→payant
+- [x] Email bienvenue J+0 déclenché au register() (voir BLOC 3) ✅
+- [ ] Activer triggerDailyMarketing : Apps Script UI → Déclencheurs → Chaque jour 9h-10h
+- [ ] Séquence J+3, J+7 activée via triggerDailyMarketing (code complet — activer trigger)
 - [ ] Témoignages vrais élèves sur la landing
 - [x] Page pricing comparative (cours particulier vs Matheux vs autres applis) ✅
 - [x] Section fondateur Nicolas sur landing ✅
@@ -211,7 +219,7 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 - [x] Mode "Préparation Brevet" (GAS generate_brevet + code conservé, **UI désactivé demande Nicolas**) ✅
 - [x] Mode Révision niveau inférieur (GAS generate_revision + code conservé, **UI désactivé demande Nicolas**) ✅
 - [x] Système feedback élève (submit_feedback GAS + modal + onglet Insights) ✅
-- [x] 5 chapitres prioritaires JSON créés (Probabilités 3EME, Racines carrées 3EME, Nombres décimaux 6EME, Fonctions linéaires 4EME, Statistiques 6EME) — en attente push Sheet ✅
+- [x] 5 chapitres prioritaires poussés en prod (Probabilités 3EME, Racines carrées 3EME, Nombres décimaux 6EME, Fonctions linéaires 4EME, Statistiques 6EME) ✅
 - [ ] Migration Sheets → vraie BDD si >50 users simultanés
 
 ---
@@ -289,11 +297,14 @@ sh.append_row("Scores", [...])
 - `push_new_chapters.py` : push 5 nouveaux chapitres (Probabilités 3EME, Racines carrées 3EME, Nombres décimaux 6EME, Fonctions linéaires 4EME, Statistiques 6EME) → données dans `new_chapters_2026-03-12.json` → copier vers `/tmp/exos_data.json` avant de lancer
 - `test_workflows.py` : 38 tests GAS (groupes A+B), 37/38 PASS après deploy @31
 
-## ⚠️ Actions manuelles requises (12 mars 2026)
-- Sheet Users → colonne `IsAdmin` → mettre `true` pour `contact@matheux.fr`
-- Deploy GAS @31 : `clasp push --force && clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF --description "Brevet+Révision désactivés UI, 5 chapitres JSON prêts"`
-- Push 5 chapitres : `cp algebra/new_chapters_2026-03-12.json /tmp/exos_data.json && python3 push_new_chapters.py`
-- Lancer `python3 audit_formats.py` pour vérifier conformité exercices après push
+## ⚠️ Actions manuelles requises (13 mars 2026)
+- ✅ GAS @34 déployé (verifyAdmin fix + import_chapters)
+- ✅ 5 chapitres poussés en prod via `push_via_gas.py`
+- **⚡ GAS @35 à déployer** : `bash deploy.sh "waitlist + email J0"` — contient waitlist 40 fam. + email bienvenue J+0
+- **⚡ GA4** : remplacer `G-XXXXXXXXXX` dans index.html par votre Measurement ID Google Analytics 4
+- **⚡ Stripe** (quand prêt) : dans premium.html, décommenter `btn-stripe`, commenter `btn-contact`, remplacer `VOTRE_LIEN_STRIPE`
+- Apps Script UI → Déclencheurs → ajouter `triggerDailyMarketing` → Chaque jour 9h-10h (séquences J+3 / J+7)
+- `python3 audit_formats.py` — à lancer pour vérifier conformité des 5 nouveaux chapitres
 
 ---
 
@@ -315,7 +326,8 @@ sh.append_row("Scores", [...])
 | 12 mars (nuit) | @30 | Quiz inline landing (step 3 card blanche), tutorial Q1, fix onbRender bg, cohérence messages | 544a112 |
 | 12 mars (nuit 2) | @30 | Simulation 20 profils/5j, messages parent/ado refondus, BLOC 3 juridique complet (5 pages + footer + consentement) | — |
 | 13 mars | @31 | BLOCS 4-5 : landing pricing+fondateur+carousel, programme-français-verif.md (66% couv.), audit_formats.py, Mode Brevet (GAS+UI 3 screens), Mode Révision (GAS+card), Feedback (modal+Insights tab), 7 bugs fixes (showT/SHEET_ID/Array.find/chkComp/togCat/res2/sendScore), test_workflows.py 37/38 PASS (97%) | — |
-| 12 mars 2026 | @31 | Désactivation UI Brevet+Révision (code conservé), création 5 chapitres JSON (Probabilités/Racines/Décimaux/FctLinéaires/Stats), rapport condensé, notice refaite, programme-français-verif.md ~85% | — |
+| 12 mars 2026 | @34 | Désactivation UI Brevet+Révision (code conservé), 5 chapitres poussés en prod (100 exos), verifyAdmin fix (TRUE/1), rapport condensé, notice refaite, programme ~85% | — |
+| 13 mars 2026 | @35 | BLOC 3 🟢 complet : waitlist 40 fam. GAS, email J+0 auto, GA4 consentement, bannière cookies RGPD, premium.html, trial→premium.html, CGU clause bêta, politique-cookies GA4 | — |
 
 ---
 

@@ -1,6 +1,6 @@
 # Notice d'utilisation — Matheux
 ## Ce que fait le site. Comment ça marche. Pour qui.
-> Version 12 mars 2026 | Rédigée pour Nicolas (fondateur)
+> Version 13 mars 2026 | Rédigée pour Nicolas (fondateur)
 
 ---
 
@@ -15,10 +15,16 @@
 | Date | Nouveauté |
 |---|---|
 | 12 mars | Mode Brevet et Mode Révision désactivés (code conservé — bientôt disponibles) |
-| 12 mars | 5 nouveaux chapitres créés (Probabilités, Racines carrées, Décimaux, Fonctions linéaires, Statistiques) — en attente push Sheet |
+| 12 mars | 5 nouveaux chapitres poussés en prod (Probabilités, Racines carrées, Décimaux, Fonctions linéaires, Statistiques) — 100 exos + 10 diags |
 | 13 mars | Feedback élèves (bouton Signaler → onglet Insights) |
 | 12 mars | Juridique complet (5 pages légales + consentement parental) |
 | 12 mars | Landing vendeuse : pricing comparatif, fondateur Nicolas, carousel témoignages |
+| 13 mars | Waitlist 40 familles dans register() GAS + onglet Waitlist auto-créé |
+| 13 mars | Email bienvenue J+0 automatique au register() |
+| 13 mars | GA4 conditionnel (bannière consentement RGPD, IP anonymisée) |
+| 13 mars | Page premium.html — offre + contact → activer Stripe ici |
+| 13 mars | Overlay trial expiré → ouvre premium.html |
+| 13 mars | CGU clause bêta 40 familles, politique-cookies mise à jour GA4 |
 
 ---
 
@@ -82,7 +88,7 @@ PARENT                          ÉLÈVE                        NICOLAS (toi)
 ### Étape 4 : Fin du trial (J+7)
 - Un **badge J-X** apparaît dans l'interface dès J+5
 - À J+7 : overlay bloquant → "Passe à l'abonnement pour continuer"
-- Prix : **9,99€/mois** (**Stripe non encore intégré — en attente**)
+- Prix : **9,99€/mois** — page premium.html active, paiement via contact@matheux.fr en attendant Stripe
 - L'élève peut toujours voir sa progression en cliquant "Voir ma progression quand même"
 
 ---
@@ -185,21 +191,16 @@ Chaque exercice dans le Sheet a ce format JSON :
 | 4EME | Puissances, Fractions, Proportionnalité, Calcul_Littéral, Équations, Pythagore |
 | 3EME | Calcul_Littéral, Équations, Fonctions, Théorème_de_Thalès, Trigonométrie, Statistiques |
 
-### En attente de push (JSON prêt — fichier `new_chapters_2026-03-12.json`)
-| Chapitre | Niveau | Priorité |
+### Ajoutés le 12 mars 2026 ✅ EN PROD
+| Chapitre | Niveau | Exos |
 |---|---|---|
-| Probabilités | 3EME | 🔴 Critique — présent au Brevet |
-| Racines_carrees | 3EME | 🔴 Critique — présent au Brevet |
-| Nombres_decimaux | 6EME | 🔴 Critique — base absolue |
-| Fonctions_lineaires | 4EME | 🟡 Important — programme officiel |
-| Statistiques_6eme | 6EME | 🟡 Important — programme cycle 3 |
+| Probabilités | 3EME | 20 exos + 2 diags |
+| Racines_carrees | 3EME | 20 exos + 2 diags |
+| Nombres_decimaux | 6EME | 20 exos + 2 diags |
+| Fonctions_lineaires | 4EME | 20 exos + 2 diags |
+| Statistiques_6eme | 6EME | 20 exos + 2 diags |
 
-**Pour pousser ces chapitres :**
-```bash
-cd "/home/nicolas/Bureau/algebra live/algebra"
-python3 push_new_chapters.py --dry-run   # vérification
-python3 push_new_chapters.py             # push réel
-```
+Total curriculum : **29 chapitres × 20 exos = 580 exos** | DiagnosticExos : **29 chapitres × 2 = 58 exos**
 
 ---
 
@@ -303,16 +304,16 @@ Tout est enregistré dans l'onglet `Insights` du Sheet (créé automatiquement a
 
 ---
 
-## 12. Ce qui N'EST PAS encore fait (12 mars 2026)
+## 12. Ce qui N'EST PAS encore fait (13 mars 2026)
 
 | Fonctionnalité | Statut | Priorité |
 |---|---|---|
-| Paiement Stripe | ❌ Non intégré | 🔴 CRITIQUE |
-| Email bienvenue J+0 automatique | ❌ Code présent, non activé | 🟡 Important |
-| Séquences email J+3/J+7 | ❌ Code présent, non activé | 🟡 Important |
+| Paiement Stripe | ❌ Non intégré — premium.html prêt, bouton email actif | 🔴 Sprint suivant |
+| Webhook Stripe → colonne Premium | ❌ À faire après Stripe | 🔴 Sprint suivant |
+| Séquences email J+3/J+7 | ⏳ Code prêt — activer trigger Apps Script | 🟡 Important |
+| Measurement ID GA4 réel | ⏳ Remplacer G-XXXXXXXXXX dans index.html | 🟡 Important |
 | Mode Brevet | ⏳ Code prêt, UI désactivé | 🟡 Bientôt |
 | Mode Révision | ⏳ Code prêt, UI désactivée | 🟡 Bientôt |
-| 5 nouveaux chapitres dans Sheet | 🔄 JSON prêt, push restant | 🔴 Urgent |
 | Action delete_test_users (GAS) | ❌ À créer | 🟡 Utile |
 | Validation inputs GAS (email) | ❌ À faire | 🟢 Mineur |
 | Migration BDD >50 users | ❌ Sheets limite ~20 simultanés | 🔵 Long terme |
@@ -347,14 +348,18 @@ python3 audit_formats.py                 # vérification conformité
 
 ---
 
-## 14. Actions manuelles en attente (12 mars 2026)
+## 14. Actions manuelles en attente (13 mars 2026)
 
 | Action | Où | Priorité |
 |---|---|---|
-| Mettre `IsAdmin: true` pour `contact@matheux.fr` | Sheet → onglet `Users` → colonne H | 🔴 Maintenant |
-| Deploy GAS @31 (Brevet/Révision désactivés) | Terminal (voir §13) | 🔴 Maintenant |
-| Push 5 nouveaux chapitres | Terminal (voir §13) | 🔴 Aujourd'hui |
-| Intégrer Stripe | Développement | 🔴 Sprint suivant |
+| ✅ IsAdmin mis à 1 pour `contact@matheux.fr` | Sheet Users | Fait |
+| ✅ GAS @34 déployé | Terminal | Fait |
+| ✅ 5 chapitres poussés en prod | push_via_gas.py | Fait |
+| **⚡ GAS @35 déployer** : `bash deploy.sh "waitlist + email J0"` | Terminal | 🔴 Maintenant |
+| **⚡ GA4** : remplacer `G-XXXXXXXXXX` par votre Measurement ID | index.html ligne ~21 | 🟡 Dès que compte GA4 créé |
+| Apps Script UI → Déclencheurs → `triggerDailyMarketing` → Chaque jour 9h-10h | Apps Script | 🟡 Cette semaine |
+| Stripe → décommenter btn-stripe dans premium.html | premium.html | 🔴 Sprint suivant |
+| git push tous les fichiers modifiés | Terminal | 🟡 À faire |
 
 ---
 
