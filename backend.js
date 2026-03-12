@@ -87,6 +87,7 @@ function doPost(e) {
       case 'publish_admin_chapter':      res = publishAdminChapter(p);     break;
       case 'check_trial_status':         res = checkTrialStatus(p);        break;
       case 'import_chapters':            res = importChapters(p);          break;
+      case 'send_test_email':            res = sendTestEmail(p);           break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
