@@ -86,6 +86,7 @@ function doPost(e) {
       case 'publish_admin_boost':        res = publishAdminBoost(p);       break;
       case 'publish_admin_chapter':      res = publishAdminChapter(p);     break;
       case 'check_trial_status':         res = checkTrialStatus(p);        break;
+      case 'import_chapters':            res = importChapters(p);          break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -2620,7 +2621,8 @@ function verifyAdmin(adminCode) {
   var users = getRows(SH.USERS);
   for (var i = 0; i < users.length; i++) {
     if (String(users[i]['Code']) === adminCode) {
-      return parseInt(users[i]['IsAdmin'] || 0) === 1;
+      var v = users[i]['IsAdmin'];
+      return v === 1 || v === true || String(v) === '1' || String(v).toUpperCase() === 'TRUE';
     }
   }
   return false;
@@ -3385,4 +3387,76 @@ function checkTrialStatus(p) {
   }
 
   return { status: 'success', trialActive: trialActive, daysLeft: daysLeft, isPremium: isPremium };
+}
+
+// ════════════════════════════════════════════════════════════
+//  IMPORT CHAPITRES — action admin one-shot (12 mars 2026)
+//  Payload : { adminCode, chapters: [{niveau,categorie,titre,icone,exos:[]}],
+//              diagExos: [{niveau,categorie,exos:[]}] }
+// ════════════════════════════════════════════════════════════
+function importChapters(p) {
+  if (!verifyAdmin(String(p.adminCode || ''))) {
+    return { status: 'error', message: 'Accès refusé.' };
+  }
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var results = [];
+
+  // ── Curriculum_Officiel ──────────────────────────────────
+  var currSheet = ss.getSheetByName(SH.CURRICULUM);
+  var chapters = p.chapters || [];
+  for (var i = 0; i < chapters.length; i++) {
+    var ch = chapters[i];
+    var niveau = String(ch.niveau || '');
+    var categorie = String(ch.categorie || '');
+    // Vérifier si déjà présent
+    var existing = currSheet.getDataRange().getValues();
+    var already = false;
+    for (var r = 1; r < existing.length; r++) {
+      if (String(existing[r][0]).toUpperCase() === niveau.toUpperCase() &&
+          String(existing[r][1]) === categorie) {
+        already = true; break;
+      }
+    }
+    if (already) {
+      results.push('SKIP Curriculum ' + niveau + '/' + categorie + ' (déjà présent)');
+      continue;
+    }
+    currSheet.appendRow([
+      niveau,
+      categorie,
+      String(ch.titre || ''),
+      String(ch.icone || '📘'),
+      JSON.stringify(ch.exos || [])
+    ]);
+    results.push('OK Curriculum ' + niveau + '/' + categorie + ' (' + (ch.exos||[]).length + ' exos)');
+  }
+
+  // ── DiagnosticExos ───────────────────────────────────────
+  var diagSheet = ss.getSheetByName(SH.DIAG);
+  var diagList = p.diagExos || [];
+  for (var j = 0; j < diagList.length; j++) {
+    var dg = diagList[j];
+    var dniv = String(dg.niveau || '');
+    var dcat = String(dg.categorie || '');
+    var existingD = diagSheet.getDataRange().getValues();
+    var alreadyD = false;
+    for (var rd = 1; rd < existingD.length; rd++) {
+      if (String(existingD[rd][0]).toUpperCase() === dniv.toUpperCase() &&
+          String(existingD[rd][1]) === dcat) {
+        alreadyD = true; break;
+      }
+    }
+    if (alreadyD) {
+      results.push('SKIP Diag ' + dniv + '/' + dcat + ' (déjà présent)');
+      continue;
+    }
+    diagSheet.appendRow([
+      dniv,
+      dcat,
+      JSON.stringify(dg.exos || [])
+    ]);
+    results.push('OK Diag ' + dniv + '/' + dcat + ' (' + (dg.exos||[]).length + ' exos)');
+  }
+
+  return { status: 'success', results: results };
 }
