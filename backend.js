@@ -90,6 +90,7 @@ function doPost(e) {
       case 'import_chapters':            res = importChapters(p);          break;
       case 'send_test_email':            res = sendTestEmail(p);           break;
       case 'mark_all_test':              res = markAllTest(p);             break;
+      case 'simulate_next_day':          res = simulateNextDay(p);         break;
       case 'forgot_password':            res = forgotPassword(p);          break;
       case 'reset_password':             res = resetPassword(p);           break;
       default:
@@ -618,19 +619,20 @@ function generateDiagnostic(p) {
   // Garantit 1 exo lvl1 + 1 exo lvl2 par chapitre sélectionné
   var exos = [];
   filtered.forEach(function(r) {
+    var cat     = String(r['Categorie'] || '');
     var chapExos = parseJSON(r['ExosJSON']);
     var l1 = shuffle(chapExos.filter(function(e){ return (e.lvl || 1) === 1; }));
     var l2 = shuffle(chapExos.filter(function(e){ return (e.lvl || 1) === 2; }));
-    if (l1.length > 0) exos.push(l1[0]);
+    if (l1.length > 0) { l1[0].categorie = cat; exos.push(l1[0]); }
     if (l2.length > 0) {
-      exos.push(l2[0]);
+      l2[0].categorie = cat; exos.push(l2[0]);
     } else if (l1.length > 1) {
       // Fallback : pas de champ lvl → on prend un 2e exo lvl1 comme substitute
-      exos.push(l1[1]);
+      l1[1].categorie = cat; exos.push(l1[1]);
     }
     // Fallback total : aucun exo dans aucun bucket
     if (l1.length === 0 && l2.length === 0) {
-      chapExos.slice(0, 2).forEach(function(e){ exos.push(e); });
+      chapExos.slice(0, 2).forEach(function(e){ e.categorie = cat; exos.push(e); });
     }
   });
 
@@ -3772,4 +3774,39 @@ function importChapters(p) {
   }
 
   return { status: 'success', results: results };
+}
+
+// ════════════════════════════════════════════════════════════
+//  SIMULATE_NEXT_DAY — Outil de test
+//  Remet la date du DailyBoosts à hier pour simuler le lendemain.
+//  Utilisé depuis le bouton "🔮 Simuler demain" (?sim=1 dans l'URL).
+// ════════════════════════════════════════════════════════════
+function simulateNextDay(p) {
+  var code = String(p.code || '').trim();
+  if (!code) return { status: 'error', message: 'code requis.' };
+
+  if (!sheetExists(SH.BOOSTS)) return { status: 'error', message: 'Onglet DailyBoosts introuvable.' };
+
+  var sh   = getSheet(SH.BOOSTS);
+  var data = sh.getDataRange().getValues();
+  if (data.length < 2) return { status: 'error', message: 'DailyBoosts vide.' };
+
+  var headers  = data[0];
+  var codeCol  = headers.indexOf('Code') + 1;   // 1-based
+  var dateCol  = headers.indexOf('Date') + 1;
+  if (codeCol < 1 || dateCol < 1) return { status: 'error', message: 'Colonnes Code/Date introuvables.' };
+
+  var yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  var yesterdayStr = Utilities.formatDate(yesterday, 'Europe/Paris', 'yyyy-MM-dd');
+
+  var updated = 0;
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][codeCol - 1]) === code) {
+      sh.getRange(i + 1, dateCol).setValue(yesterdayStr);
+      updated++;
+    }
+  }
+  if (!updated) return { status: 'error', message: 'Aucune entrée DailyBoosts pour ce code.' };
+  return { status: 'success', message: 'Date mise à hier (' + yesterdayStr + ') pour ' + updated + ' entrée(s).' };
 }

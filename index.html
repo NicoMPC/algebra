@@ -871,8 +871,9 @@
       <div class="flex items-center gap-3 min-w-0">
         <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-sm shadow-md flex-shrink-0">📐</div>
         <div class="min-w-0">
-          <div class="syne font-black text-slate-900 text-sm truncate">
-            Espace de <span id="aname" class="text-indigo-600"></span>
+          <div class="text-[10px] text-slate-400 font-medium leading-none mb-0.5">Espace de</div>
+          <div class="syne font-black text-slate-900 text-sm truncate leading-tight">
+            <span id="aname" class="text-indigo-600"></span>
           </div>
           <div class="flex items-center gap-1 mt-0.5">
             <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
@@ -3451,7 +3452,49 @@ function _boostInsightConfetti() {
 window.dismissBoostInsight = function() {
   if (S._boostRedirectTimer) { clearInterval(S._boostRedirectTimer); S._boostRedirectTimer = null; }
   S.boostInsight = null;
+  S.exp['BOOST'] = false;
   setView('chapters');
+};
+
+// ── Compteur animé "dans Xh Ymn" dans la carte boost terminé ──
+function _startBoostCountdown() {
+  function update() {
+    var el = document.getElementById('boost-countdown');
+    if (!el) return false;
+    var now = new Date();
+    var midnight = new Date(now); midnight.setHours(24, 0, 0, 0);
+    var diff = Math.max(0, Math.floor((midnight - now) / 1000));
+    var h = Math.floor(diff / 3600);
+    var m = Math.floor((diff % 3600) / 60);
+    el.textContent = h > 0 ? 'dans ' + h + 'h' + (m > 0 ? m + 'mn' : '') : (m > 0 ? 'dans ' + m + 'mn' : 'bientôt !');
+    return true;
+  }
+  if (!update()) return;
+  if (window._boostCdTimer) clearInterval(window._boostCdTimer);
+  window._boostCdTimer = setInterval(function() {
+    if (!update()) clearInterval(window._boostCdTimer);
+  }, 30000);
+}
+
+// ── Simuler le lendemain (bouton visible si ?sim=1 dans l'URL) ──
+window._simulateNextDay = function() {
+  if (!S.prof || !S.prof.code) return;
+  showT('Simulation en cours…', 2000, '⏳');
+  fetch(SU, { method:'POST', body: JSON.stringify({ action:'simulate_next_day', code: S.prof.code }) })
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.status === 'success') {
+        try {
+          var ds = JSON.parse(localStorage.getItem(DK) || '{}');
+          if (ds[S.prof.code]) { delete ds[S.prof.code].boostConsumed; localStorage.setItem(DK, JSON.stringify(ds)); }
+        } catch(e) {}
+        showT('Lendemain simulé ! Rechargement…', 2000, '🔮');
+        setTimeout(function(){ window.location.reload(); }, 1800);
+      } else {
+        showT('Erreur : ' + (d.message || 'inconnu'), 3000, '❌');
+      }
+    })
+    .catch(function(){ showT('Erreur réseau', 2000, '❌'); });
 };
 
 function renderMotProf() {
@@ -3615,7 +3658,20 @@ function render() {
       html += '<div data-cat="'+cat+'" onclick="togCat(\''+cat+'\')" class="flex-1 rounded-2xl border border-emerald-200 flex flex-col items-center justify-center gap-1.5 py-3 px-2 cursor-pointer select-none text-center" style="background:#f0fdf4">';
       html += '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-base">'+(isBoost?'⚡':(LVL[S.niv].icons[cat]||'📘'))+'</div>';
       html += '<span class="syne font-black text-xs text-slate-700 leading-tight px-1" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+(isBoost?'Entraînement IA ✓':(LVL[S.niv].names[cat]||cat))+'</span>';
-      html += '<span class="text-[9px] font-black text-emerald-700 bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-full">'+(isBoost?'Prochain dispo demain 🔥':'✅ Terminé')+'</span>';
+      if (isBoost) {
+        html += '<div class="flex items-center justify-center gap-1.5 my-0.5">' +
+          '<span class="relative flex h-2 w-2 flex-shrink-0">' +
+            '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>' +
+            '<span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>' +
+          '</span>' +
+          '<span id="boost-countdown" class="text-[9px] font-bold text-amber-700">dans …</span>' +
+        '</div>';
+        if (window.location.search.includes('sim=1')) {
+          html += '<button onclick="_simulateNextDay()" class="mt-0.5 text-[8px] font-bold text-indigo-400 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full active:opacity-70">🔮 Simuler demain</button>';
+        }
+      } else {
+        html += '<span class="text-[9px] font-black text-emerald-700 bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-full">✅ Terminé</span>';
+      }
       html += '<span class="text-[10px] text-emerald-500/80 font-medium">'+(isOpen ? (isBoost ? '▾ fermer' : '▾ historique') : (isBoost ? '▸ revoir mes exercices' : '▸ voir historique'))+'</span>';
       html += '</div>';
       // Carte droite — prochain (si applicable)
@@ -3691,6 +3747,7 @@ function render() {
 
   c.innerHTML = html || '<div class="text-center text-slate-400 font-semibold py-12 text-sm">Aucun exercice disponible pour ce niveau.</div>';
   rMath();
+  _startBoostCountdown();
 
   // Scroll vers la pill active
   setTimeout(function(){
