@@ -41,11 +41,11 @@ clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sx
 - ⚠️ `clasp deploy` seul sans `--deploymentId` crée des URLs inaccessibles → toujours passer l'ID
 - `deploy.sh "description"` fait push + deploy en une commande
 
-## 📦 Actions GAS — état réel (@41)
+## 📦 Actions GAS — état réel (@51)
 | Action | Statut |
 |---|---|
 | `register` | ✅ Fonctionne — TrialStart = TODAY |
-| `login` | ✅ Fonctionne — retourne `trial: { trialActive, daysLeft, isPremium }` + `boostExosDone` |
+| `login` | ✅ Fonctionne — retourne `trial: { trialActive, daysLeft, isPremium }` + `boostExosDone` + `pendingBrevet` |
 | `save_score` | ✅ Fonctionne + updateConfidenceScore + rebuildSuivi + writeToHistorique |
 | `save_boost` | ✅ Fonctionne + ExosDone dans DailyBoosts + rebuildSuivi |
 | `generate_diagnostic` | ✅ Fonctionne — guest (sans code) pour landing flow |
@@ -60,13 +60,19 @@ clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sx
 | `generate_revision` | ✅ DISPONIBLE — révision niveau inférieur sur chapitres faibles (UI désactivé — code conservé) |
 | `submit_feedback` | ✅ NOUVEAU — écrit dans onglet Insights (créé auto si absent) |
 | `generateMorningReport` | ✅ Fonctionne — génération IA désactivée |
-| `get_admin_overview` | ✅ Fonctionne — boostHistory[], source exos, chapitresDetail cap 20 |
+| `get_admin_overview` | ✅ Fonctionne — boostHistory[], source exos, chapitresDetail cap 20 + brevChapitresDisponibles + pendingBrevet/lastBrevetResult par élève |
 | `publish_admin_boost` | ✅ Fonctionne — écrit →Nouveau Boost (col 18), rebuildSuivi |
 | `publish_admin_chapter` | ✅ Fonctionne — écrit premier slot →Nouveau Ch libre, rebuildSuivi |
 | `check_trial_status` | ✅ Fonctionne — { trialActive, daysLeft, isPremium } |
 | `import_chapters` | ✅ One-shot admin — pousse chapitres dans Curriculum_Officiel + DiagnosticExos via GAS |
 | `send_test_email` | ✅ Admin — envoie email J+0 test à l'adresse du fondateur (vérifie alias no-reply@matheux.fr) |
 | `mark_all_test`   | ✅ Admin one-shot — marque tous les comptes non-admin sans IsTest comme IsTest=1 |
+| `generate_brevet_session` | ✅ NOUVEAU — génère session brevet (chapitres sélectionnés → exos mélangés) |
+| `save_brevet_result` | ✅ NOUVEAU — sauvegarde résultat dans BrevetResults (isolé de Progress/Scores) |
+| `publish_admin_brevet` | ✅ NOUVEAU — admin publie brevet blanc personnalisé (chapitres + message → col PendingBrevet Users) |
+| `get_brevet_chapters` | ✅ NOUVEAU — liste chapitres disponibles dans BrevetExos |
+| `request_brevet_chapter` | ✅ NOUVEAU — élève demande chapitre manquant → Insights |
+| `import_brevet_exos` | ✅ One-shot admin — pousse exercices dans BrevetExos |
 
 ---
 
@@ -84,8 +90,9 @@ Log Exercices ← DÉTAIL — 1 ligne/exercice, récent en haut, énoncé 60 cha
                 Date | Prénom | Niveau | Chapitre | Énoncé | Résultat |
                 Temps (sec) | Nb indices | Formule ouverte | Mauvaise option
 
-Users         → Code | Prénom | Niveau | Email | PasswordHash | DateInscription | IsAdmin | Premium | TrialStart | PremiumEnd | IsTest
+Users         → Code | Prénom | Niveau | Email | PasswordHash | DateInscription | IsAdmin | Premium | TrialStart | PremiumEnd | IsTest | PendingBrevet
 ```
+(col PendingBrevet = JSON `{chapitres:[], message, date}` quand admin publie un brevet blanc)
 
 ### Onglets GAS uniquement (gris — ne pas toucher)
 ```
@@ -96,6 +103,8 @@ DiagnosticExos      → Niveau | Categorie | ExosJSON
 Scores              → Code | Prénom | Niveau | Chapitre | NumExo | Énoncé |
                        Résultat | Temps(sec) | NbIndices | FormuleVue | MauvaiseOption | Draft | Date
 RemediationChapters → Code | Categorie | Version | ExosJSON | Insight | Date
+BrevetExos          → Niveau | Categorie | ExosJSON  (format: {q,opts:[],ans:int,hint,diff})
+BrevetResults       → Code | Prénom | Niveau | Date | Chapitres | NbQuestions | NbCorrect | Score% | DetailJSON | Message
 ```
 
 ### Archivés (données conservées)
@@ -103,12 +112,13 @@ RemediationChapters → Code | Categorie | Version | ExosJSON | Insight | Date
 _ARCHIVE_Queue / _ARCHIVE_Prerequisites / _ARCHIVE_Rapports / _ARCHIVE_Pending_Exos
 ```
 
-### Règles ⚡ ACTION NICOLAS (rebuildSuivi — état 13 mars @41)
+### Règles ⚡ ACTION NICOLAS (rebuildSuivi — état @51)
 | Valeur | Condition | Priorité |
 |---|---|---|
 | `🔴 BLOQUÉ` | inactif >7j ET score <40 sur tous chapitres | 1 |
 | `⚡ BOOST TERMINÉ → préparer le suivant` | ExosDone==5 ET pas de boost pending (fix @41 : inclut boost du jour) | 2 |
 | `✅ CHAPITRE TERMINÉ → assigner la suite` | Progress NbExos ≥20 ET cols 📝 Nicolas vides | 3 |
+| `📝 BREVET EN ATTENTE → à faire` | PendingBrevet non vide ET niveau 3EME | 3b |
 | `👍 RAS` | sinon | 4 |
 
 Plusieurs règles simultanées → toutes affichées en pills, couleur card = plus urgente.
@@ -231,7 +241,7 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 - [ ] Agent analyse lacunes quotidien automatique
 - [ ] Agent génération boost automatique
 - [ ] Agent rapport parents (email hebdo)
-- [x] Mode "Préparation Brevet" (GAS generate_brevet + code conservé, **UI désactivé demande Nicolas**) ✅
+- [x] Mode "Préparation Brevet" (GAS generate_brevet + code conservé) ✅ — **Mode Brevet Blanc refait @51** : BrevetExos séparés (15ch×8exos), sélection par chapitre, quiz sans indices, résultats détaillés, admin publie brevet sur mesure, option B demande chapitre ✅
 - [x] Mode Révision niveau inférieur (GAS generate_revision + code conservé, **UI désactivé demande Nicolas**) ✅
 - [x] Système feedback élève (submit_feedback GAS + modal + onglet Insights) ✅
 - [x] 5 chapitres prioritaires poussés en prod (Probabilités 3EME, Racines carrées 3EME, Nombres décimaux 6EME, Fonctions linéaires 4EME, Statistiques 6EME) ✅
@@ -242,7 +252,7 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 ## ✅ Ce qui fonctionne bien (ne pas toucher sans raison)
 - CSS/UI complet, mobile-first, animations propres (pulseGentle, toastIn, popIn)
 - Landing page : hero direct (problème→solution), 3 faits, prix seul (9,99€), CTA final — toutes sections fictives/comparaison supprimées
-- Mode Brevet : GAS generate_brevet multi-chapitres — **code complet conservé, UI désactivé (tab masqué, loadBrevet() bloqué)**
+- Mode Brevet Blanc : onglet 🎓 Brevet (3EME only) — sélection chapitres BrevetExos, quiz 8q/chap sans indices, résultats détaillés par chapitre, save_brevet_result isolé (hors Progress/Scores), admin publie brevet sur mesure via publish_admin_brevet, option B "demander chapitre" → Insights
 - Mode Révision : GAS generate_revision (niveau inférieur, chapitres faibles) — **code complet conservé, UI désactivé (card masquée, launchRevision() bloqué)**
 - Feedback non-intrusif : bouton "Signaler" post-réponse + modal 3 types + GAS submit_feedback → onglet Insights
 - Auth register + login + auto-login silencieux
@@ -303,6 +313,9 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 - `create_5_students.py` : crée 5 profils variés (perfectionniste/progrès/bloquée/régulier/hésitante) — `simulate_next_day` prend `code` direct
 - `test_full_v2.py` : suite de tests GAS complète — 73/74 PASS (99%)
 - `cleanup_prod.py` : nettoyage complet base prod (IRRÉVERSIBLE — demande confirmation)
+- `fix_lucas_ines.py` : ajuste profils démo Lucas (CHAPITRE TERMINÉ only) et Inès (BOOST + CHAPITRE TERMINÉ)
+- `import_brevet_exos.py` : pousse brevet_exos_3eme.json → BrevetExos GAS (one-shot, 120 exos déjà importés)
+- `brevet_exos_3eme.json` : 15 chapitres × 8 exos = 120 exercices style brevet 3EME (format {q,opts,ans,hint,diff})
 
 > Scripts archivés dans `scripts_archive/` : test_complet.py, test_workflows.py, test_scenarios.py, simulation_5jours.py, audit_formats.py, push_new_chapters.py, push_via_gas.py
 
@@ -349,6 +362,7 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 | 14 mars 2026 | @47 | Profil démo Théo Lambert 4EME (code 3CZRS6, theo.lambert.2026@gmail.com, Algebre2026!) — diagnostic + boost simulés via create_demo_student.py ; GAS simulate_next_day (remet DailyBoosts date à hier) ; bouton "🔮 Simuler demain" (si ?sim=1 URL) ; boost done card : pulsation amber + compteur "dans Xh Ymn" + carte repliée auto ; header mobile : "Espace de" sur ligne séparée → prénom plus jamais tronqué ; generate_diagnostic injecte categorie dans chaque exo | — |
 | 14 mars 2026 | @48 | **Nettoyage base prod** : GAS cleanup_all (136 comptes supprimés, Progress/DailyBoosts/Scores/Historique/Emails/Insights/Suivi vidés, onglets _ARCHIVE_Prerequisites + Programme_Officiel + Waitlist supprimés) ; scripts Python archivés dans scripts_archive/ (7 scripts obsolètes) ; audit_complet.md + new_chapters_2026-03-12.json → docs/archive/ ; notice-utilisation.md + CLAUDE.md mis à jour @48 | f266559→ |
 | 12 mars 2026 | @50 | **Dark mode admin** (toggle 🌙/☀️, localStorage, 44 règles CSS `body.adm-dark`) ; **gamif-row hidden** pour admin (streak/XP masqués) ; **modales contextuelles** : BOOST action → section chap cachée, CHAPITRE action → section boost cachée, double action → les deux affichés, bandeau contextuel ⚡/📚/⚡📚 ; **create_5_students.py** : 5 scénarios réalistes (Emma 6EME perfectionniste VD3M67, Lucas 5EME progrès F3P5ZW, Inès 3EME bloquée 8VCMMQ, Théo 4EME régulier CFQGB6, Chloé 5EME hésitante PACVJS) ; **Polish UX** : 9 messages corrigés (tu/ton cohérent, faute genre streak, _KO, toast abandon, headlines boost/diag) + `pulseNewChap` animation douce + bandeau guide premier chapitre | eab5bef bf1b2be 942b0c2 |
+| 15 mars 2026 | @51 | **Mode Brevet Blanc 🎓 — COMPLET** : fix_lucas_ines.py (Lucas=CHAPITRE TERMINÉ, Inès=BOOST+CHAPITRE TERMINÉ) ; backend.js +6 actions (generate_brevet_session, save_brevet_result, publish_admin_brevet, get_brevet_chapters, request_brevet_chapter, import_brevet_exos) ; onglets BrevetExos+BrevetResults GAS ; login() injecte pendingBrevet ; rebuildSuivi : pill "📝 BREVET EN ATTENTE" 3EME ; getAdminOverview : brevChapitresDisponibles + pendingBrevet/lastBrevetResult par élève ; index.html : onglet 🎓/📝 Brevet (3EME only + pendingBrevet), sélection chapitres, quiz sans indices, résultats par chapitre + "refaire" + "demander chapitre" ; modal admin : section brevet par élève (checkboxes + message + publier) ; brevet_exos_3eme.json : 15 chap × 8 exos = 120 exercices style brevet programme français 2026 ; import_brevet_exos.py : 120 exos poussés en prod | — |
 
 ---
 

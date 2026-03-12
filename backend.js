@@ -25,20 +25,22 @@ var ALLOWED_LEVELS = ['6EME', '5EME', '4EME', '3EME'];
 
 // ── Noms exacts des onglets ──────────────────────────────────
 var SH = {
-  USERS:       'Users',
-  SCORES:      'Scores',
-  CURRICULUM:  'Curriculum_Officiel',
-  BOOSTS:      'DailyBoosts',
-  DIAG:        'DiagnosticExos',
-  REMEDIATION: 'RemediationChapters',
-  PROGRESS:    'Progress',
-  PREREQS:     'Prerequisites',
-  QUEUE:       'Queue',
-  RAPPORTS:    'Rapports',
-  PENDING:     'Pending_Exos',
-  SUIVI:       '👁 Suivi',
-  HISTORIQUE:  '📋 Historique',
-  EMAILS:      '📧 Emails'
+  USERS:          'Users',
+  SCORES:         'Scores',
+  CURRICULUM:     'Curriculum_Officiel',
+  BOOSTS:         'DailyBoosts',
+  DIAG:           'DiagnosticExos',
+  REMEDIATION:    'RemediationChapters',
+  PROGRESS:       'Progress',
+  PREREQS:        'Prerequisites',
+  QUEUE:          'Queue',
+  RAPPORTS:       'Rapports',
+  PENDING:        'Pending_Exos',
+  SUIVI:          '👁 Suivi',
+  HISTORIQUE:     '📋 Historique',
+  EMAILS:         '📧 Emails',
+  BREVET_EXOS:    'BrevetExos',
+  BREVET_RESULTS: 'BrevetResults'
 };
 
 // ════════════════════════════════════════════════════════════
@@ -94,6 +96,12 @@ function doPost(e) {
       case 'cleanup_all':                res = cleanupAll(p);              break;
       case 'forgot_password':            res = forgotPassword(p);          break;
       case 'reset_password':             res = resetPassword(p);           break;
+      case 'generate_brevet_session':    res = generateBrevetSession(p);   break;
+      case 'save_brevet_result':         res = saveBrevetResult(p);        break;
+      case 'publish_admin_brevet':       res = publishAdminBrevet(p);      break;
+      case 'request_brevet_chapter':     res = requestBrevetChapter(p);    break;
+      case 'get_brevet_chapters':        res = getBrevetChapters(p);       break;
+      case 'import_brevet_exos':         res = importBrevetExos(p);        break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -442,6 +450,13 @@ function login(p) {
     try { rebuildSuivi(code); } catch (e) {}
   }
 
+  // ── Injection PendingBrevet (col 12, 3EME uniquement) ─────
+  var pendingBrevet = null;
+  var rawPendingBrev = user['PendingBrevet'] ? String(user['PendingBrevet']).trim() : '';
+  if (rawPendingBrev) {
+    try { pendingBrevet = JSON.parse(rawPendingBrev); } catch(e) {}
+  }
+
   return {
     status:             'success',
     profile:            { code: code, name: name, level: level, isAdmin: isAdmin, premium: premium, trialStart: trialStart },
@@ -455,6 +470,7 @@ function login(p) {
     dynamicChapters:    [],
     nextChapter:        nextChapter,
     nextBoost:          nextBoost,
+    pendingBrevet:      pendingBrevet,
     trial:              checkTrialStatus({ code: code })
   };
 }
@@ -1365,14 +1381,24 @@ function rebuildSuivi(code) {
     return cat && (chapCount[cat]||0) >= 20 && !newCh1 && !newCh2 && !newCh3 && !newCh4;
   });
 
+  // ── PendingBrevet (Users col 12) ──────────────────────────
+  var pendingBrevetSuivi = null;
+  var rawBrevetSuivi = user['PendingBrevet'] ? String(user['PendingBrevet']).trim() : '';
+  if (rawBrevetSuivi) {
+    try { pendingBrevetSuivi = JSON.parse(rawBrevetSuivi); } catch(e) {}
+  }
+
   // ── Calcul pills prioritaires (ordre strict) ─────────────
-  // Priorité : 1=⚡BOOST TERMINÉ  2=✅CHAPITRE TERMINÉ  3=🔴BLOQUÉ  4=👍RAS
+  // Priorité : 1=⚡BOOST TERMINÉ  2=✅CHAPITRE TERMINÉ  3=📝BREVET EN ATTENTE  4=🔴BLOQUÉ  5=👍RAS
   var actions = [];
   if (allUserBoosts.length >= 1 && lastBoostExosDone >= 5 && !newBoost && !boostPendingSuivi) {
     actions.push('⚡ BOOST TERMINÉ → préparer le suivant');
   }
   if (chapTermine) {
     actions.push('✅ CHAPITRE TERMINÉ → assigner la suite');
+  }
+  if (pendingBrevetSuivi && niveau === '3EME') {
+    actions.push('📝 BREVET EN ATTENTE → à faire');
   }
   if (inactif7j && allChapLow && chapOrder.length > 0) {
     actions.push('🔴 BLOQUÉ');
@@ -2797,6 +2823,28 @@ function getAdminOverview(p) {
       var isTestUser = u['IsTest'] === 1 || u['IsTest'] === true || String(u['IsTest']).toUpperCase() === 'TRUE' || String(u['IsTest']) === '1';
       var trialStartAdmin = u['TrialStart'] ? String(u['TrialStart']) : '';
 
+      // ── Brevet (3EME uniquement) ─────────────────────────
+      var pendingBrevetAdmin = null;
+      var rawBrevAdmin = u['PendingBrevet'] ? String(u['PendingBrevet']).trim() : '';
+      if (rawBrevAdmin) { try { pendingBrevetAdmin = JSON.parse(rawBrevAdmin); } catch(e) {} }
+      var lastBrevetResult = null;
+      if (niveau === '3EME' && sheetExists(SH.BREVET_RESULTS)) {
+        var brevRows = getRows(SH.BREVET_RESULTS).filter(function(r) { return String(r['Code'] || '') === code; });
+        if (brevRows.length > 0) {
+          var sortedBrev = brevRows.slice().sort(function(a, b) {
+            return String(b['Date'] || '') > String(a['Date'] || '') ? 1 : -1;
+          });
+          var lb = sortedBrev[0];
+          lastBrevetResult = {
+            date:    String(lb['Date']       || ''),
+            score:   parseInt(lb['Score%']   || 0) || 0,
+            nbQ:     parseInt(lb['NbQuestions'] || 0) || 0,
+            correct: parseInt(lb['NbCorrect'] || 0) || 0,
+            detail:  parseJSON(lb['DetailJSON'])
+          };
+        }
+      }
+
       var row            = suiviByCode[code] || null;
       var action         = row ? String(row[0] || '👍 RAS') : '👍 RAS';
       var lastConnection = row ? String(row[3] || '')       : '';
@@ -2994,6 +3042,9 @@ function getAdminOverview(p) {
       var allScoreLowAdmin = chapitresDetail.length > 0 && chapitresDetail.every(function(ch) {
         return ch.rateSuccess < 40;
       });
+      if (pendingBrevetAdmin && niveau === '3EME') {
+        actionsAdmin.push('📝 BREVET EN ATTENTE → à faire');
+      }
       if (inactif7jAdmin && allScoreLowAdmin && chapitresDetail.length > 0) {
         actionsAdmin.push('🔴 BLOQUÉ');
       }
@@ -3026,7 +3077,9 @@ function getAdminOverview(p) {
         chapInProgress:       chapInProgressFlag,
         chapExosDone:         chapExosDoneFlag,
         isTest:               isTestUser,
-        trialStart:           trialStartAdmin
+        trialStart:           trialStartAdmin,
+        pendingBrevet:        pendingBrevetAdmin,
+        lastBrevetResult:     lastBrevetResult
       };
     })
     .sort(function(a, b) {
@@ -3045,7 +3098,18 @@ function getAdminOverview(p) {
   var realCount = students.filter(function(s) { return !s.isTest; }).length;
   var testCount = students.filter(function(s) { return  s.isTest; }).length;
 
-  return { status: 'success', students: students, realCount: realCount, testCount: testCount };
+  // Chapitres Brevet disponibles (pour checkboxes admin modal 3EME)
+  var brevChapitresDisponibles = [];
+  if (sheetExists(SH.BREVET_EXOS)) {
+    getRows(SH.BREVET_EXOS)
+      .filter(function(r) { return String(r['Niveau'] || '').toUpperCase() === '3EME'; })
+      .forEach(function(r) {
+        var c = String(r['Categorie'] || '').trim();
+        if (c) brevChapitresDisponibles.push(c);
+      });
+  }
+
+  return { status: 'success', students: students, realCount: realCount, testCount: testCount, brevChapitresDisponibles: brevChapitresDisponibles };
 }
 
 // ════════════════════════════════════════════════════════════
@@ -3870,4 +3934,234 @@ function cleanupAll(p) {
   });
 
   return { status: 'success', results: results };
+}
+
+// ════════════════════════════════════════════════════════════
+//  BREVET — generate_brevet_session
+//  Payload : { code, level, chapitres (array), nbPerChap? }
+//  Lit depuis BrevetExos — exercices spéciaux style Brevet.
+//  Retourne { exos, total, chapitres }
+// ════════════════════════════════════════════════════════════
+
+function generateBrevetSession(p) {
+  var code      = String(p.code  || '');
+  var level     = (p.level || '3EME').toUpperCase();
+  var chapitres = Array.isArray(p.chapitres) ? p.chapitres : [];
+  var nbPerChap = Math.max(1, Math.min(5, parseInt(p.nbPerChap || 3) || 3));
+
+  if (!isValidLevel(level))   return { status: 'error', message: 'Niveau invalide.' };
+  if (chapitres.length === 0) return { status: 'error', message: 'Sélectionne au moins un chapitre.' };
+
+  if (!sheetExists(SH.BREVET_EXOS)) {
+    return { status: 'error', message: 'Les exercices Brevet ne sont pas encore chargés. Reviens dans quelques minutes.' };
+  }
+
+  var brevRows = getRows(SH.BREVET_EXOS).filter(function(r) {
+    return String(r['Niveau'] || '').toUpperCase() === level;
+  });
+
+  var finalExos = [];
+  chapitres.forEach(function(chap) {
+    var row = brevRows.filter(function(r) { return String(r['Categorie'] || '') === chap; })[0];
+    if (!row) return;
+    var exos = parseJSON(row['ExosJSON']);
+    if (!Array.isArray(exos) || exos.length === 0) return;
+    var picked = shuffle(exos.slice()).slice(0, nbPerChap);
+    picked.forEach(function(ex) {
+      finalExos.push(Object.assign({}, ex, { categorie: chap }));
+    });
+  });
+
+  if (finalExos.length === 0) {
+    return { status: 'error', message: 'Aucun exercice trouvé pour ces chapitres.' };
+  }
+
+  return { status: 'success', exos: shuffle(finalExos), total: finalExos.length, chapitres: chapitres };
+}
+
+// ════════════════════════════════════════════════════════════
+//  BREVET — save_brevet_result
+//  Payload : { code, name, level, chapitres, results (array), message? }
+//  Écrit dans BrevetResults. NE touche PAS Progress ni Scores.
+//  Vide PendingBrevet dans Users. Appelle rebuildSuivi.
+// ════════════════════════════════════════════════════════════
+
+function saveBrevetResult(p) {
+  var code      = String(p.code  || '');
+  var name      = String(p.name  || '');
+  var level     = String(p.level || '');
+  var chapitres = Array.isArray(p.chapitres) ? p.chapitres : [];
+  var results   = Array.isArray(p.results)   ? p.results   : [];
+  var message   = String(p.message || '').trim();
+
+  if (!code)              return { status: 'error', message: 'code requis.' };
+  if (results.length === 0) return { status: 'error', message: 'Aucun résultat.' };
+
+  var nbCorrect = results.filter(function(r) { return r.resultat === 'EASY'; }).length;
+  var nbQ       = results.length;
+  var score     = Math.round(nbCorrect * 100 / nbQ);
+
+  // Détail par chapitre
+  var detailByChap = {};
+  results.forEach(function(r) {
+    var cat = String(r.categorie || 'Inconnu');
+    if (!detailByChap[cat]) detailByChap[cat] = { correct: 0, total: 0 };
+    detailByChap[cat].total++;
+    if (r.resultat === 'EASY') detailByChap[cat].correct++;
+  });
+  var detail = Object.keys(detailByChap).map(function(cat) {
+    return { categorie: cat, correct: detailByChap[cat].correct, total: detailByChap[cat].total };
+  });
+
+  // Créer BrevetResults si absent
+  if (!sheetExists(SH.BREVET_RESULTS)) {
+    SpreadsheetApp.getActiveSpreadsheet().insertSheet(SH.BREVET_RESULTS);
+    getSheet(SH.BREVET_RESULTS).appendRow(['Code','Prénom','Niveau','Date','Chapitres','NbQuestions','NbCorrect','Score%','DetailJSON','Message']);
+  }
+  appendRow(SH.BREVET_RESULTS, [
+    code, name, level, today(),
+    chapitres.join(', '), nbQ, nbCorrect, score,
+    JSON.stringify(detail), message
+  ]);
+
+  // Vider PendingBrevet dans Users (col 12)
+  try {
+    var usersSh   = getSheet(SH.USERS);
+    var usersData = usersSh.getDataRange().getValues();
+    for (var i = 1; i < usersData.length; i++) {
+      if (String(usersData[i][0]) === code) {
+        if (usersData[0].length >= 12) usersSh.getRange(i + 1, 12).setValue('');
+        break;
+      }
+    }
+    rebuildSuivi(code);
+  } catch(e) { Logger.log('saveBrevetResult rebuildSuivi KO: ' + e); }
+
+  return { status: 'success', score: score, nbCorrect: nbCorrect, nbQ: nbQ, detail: detail };
+}
+
+// ════════════════════════════════════════════════════════════
+//  BREVET — publish_admin_brevet
+//  Payload : { adminCode, targetCode, chapitres (array), message? }
+//  Écrit PendingBrevet JSON dans Users col 12.
+// ════════════════════════════════════════════════════════════
+
+function publishAdminBrevet(p) {
+  if (!verifyAdmin(String(p.adminCode || ''))) {
+    return { status: 'error', message: 'Accès refusé.' };
+  }
+
+  var targetCode = String(p.targetCode || '');
+  var chapitres  = Array.isArray(p.chapitres) ? p.chapitres : [];
+  var message    = String(p.message || '').trim();
+
+  if (!targetCode)        return { status: 'error', message: 'targetCode requis.' };
+  if (chapitres.length === 0) return { status: 'error', message: 'Sélectionne au moins un chapitre.' };
+
+  var pendingJSON = JSON.stringify({ chapitres: chapitres, message: message, date: today() });
+
+  var usersSh   = getSheet(SH.USERS);
+  var usersData = usersSh.getDataRange().getValues();
+  var found     = false;
+
+  if (usersData.length > 0 && usersData[0].length < 12) {
+    usersSh.getRange(1, 12).setValue('PendingBrevet');
+  }
+
+  for (var i = 1; i < usersData.length; i++) {
+    if (String(usersData[i][0]) === targetCode) {
+      usersSh.getRange(i + 1, 12).setValue(pendingJSON);
+      found = true;
+      break;
+    }
+  }
+
+  if (!found) return { status: 'error', message: 'Élève introuvable.' };
+  try { rebuildSuivi(targetCode); } catch(e) {}
+  return { status: 'success', message: 'Brevet Blanc publié. L\'élève le verra à sa prochaine connexion.' };
+}
+
+// ════════════════════════════════════════════════════════════
+//  BREVET — get_brevet_chapters
+//  Payload : { level? } — défaut 3EME
+// ════════════════════════════════════════════════════════════
+
+function getBrevetChapters(p) {
+  var level = (p.level || '3EME').toUpperCase();
+  if (!sheetExists(SH.BREVET_EXOS)) {
+    return { status: 'success', chapitres: [], message: 'Aucun contenu brevet disponible.' };
+  }
+  var chapitres = getRows(SH.BREVET_EXOS)
+    .filter(function(r) { return String(r['Niveau'] || '').toUpperCase() === level; })
+    .map(function(r) { return String(r['Categorie'] || '').trim(); })
+    .filter(Boolean);
+  return { status: 'success', chapitres: chapitres, level: level };
+}
+
+// ════════════════════════════════════════════════════════════
+//  BREVET — request_brevet_chapter (Option B)
+//  Payload : { code, name, niveau, chapter }
+//  Écrit dans Insights (via submitFeedback)
+// ════════════════════════════════════════════════════════════
+
+function requestBrevetChapter(p) {
+  var chapter = String(p.chapter || '').trim();
+  if (!p.code || !chapter) return { status: 'error', message: 'code et chapter requis.' };
+  return submitFeedback({
+    code:    String(p.code   || ''),
+    name:    String(p.name   || ''),
+    niveau:  String(p.niveau || ''),
+    type:    'suggestion',
+    message: '📝 Demande de chapitre Brevet : "' + chapter + '"',
+    exo_q:   ''
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+//  BREVET — import_brevet_exos (admin one-shot)
+//  Payload : { adminCode, data: [{niveau, categorie, exos}] }
+//  Insère ou met à jour les lignes dans BrevetExos.
+// ════════════════════════════════════════════════════════════
+
+function importBrevetExos(p) {
+  if (!verifyAdmin(String(p.adminCode || ''))) {
+    return { status: 'error', message: 'Accès refusé.' };
+  }
+
+  var exosData = p.data;
+  if (!Array.isArray(exosData) || exosData.length === 0) {
+    return { status: 'error', message: 'data requis : [{niveau, categorie, exos}].' };
+  }
+
+  if (!sheetExists(SH.BREVET_EXOS)) {
+    SpreadsheetApp.getActiveSpreadsheet().insertSheet(SH.BREVET_EXOS);
+    getSheet(SH.BREVET_EXOS).appendRow(['Niveau', 'Categorie', 'ExosJSON']);
+  }
+
+  var sh       = getSheet(SH.BREVET_EXOS);
+  var existing = sh.getDataRange().getValues();
+  var inserted = 0, updated = 0;
+
+  exosData.forEach(function(item) {
+    var niveau    = String(item.niveau    || '').toUpperCase();
+    var categorie = String(item.categorie || '');
+    var exosJSON  = JSON.stringify(item.exos || []);
+    var found     = false;
+    for (var i = 1; i < existing.length; i++) {
+      if (String(existing[i][0]).toUpperCase() === niveau && String(existing[i][1]) === categorie) {
+        sh.getRange(i + 1, 3).setValue(exosJSON);
+        existing[i][2] = exosJSON;
+        updated++;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      sh.appendRow([niveau, categorie, exosJSON]);
+      existing.push([niveau, categorie, exosJSON]);
+      inserted++;
+    }
+  });
+
+  return { status: 'success', inserted: inserted, updated: updated, total: exosData.length };
 }

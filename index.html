@@ -126,6 +126,22 @@
       50%      { box-shadow: 0 0 0 6px rgba(99,102,241,.11), 0 1px 4px rgba(0,0,0,.07); }
     }
     .pulse-new-chap { animation: pulseNewChap 2.8s ease-in-out infinite; }
+
+    /* ── Brevet ── */
+    .brev-chap-cb { display:flex; align-items:center; gap:.6rem; padding:.5rem .75rem; border-radius:.75rem; border:1.5px solid #e2e8f0; cursor:pointer; transition:border-color .15s,background .15s; user-select:none; }
+    .brev-chap-cb.sel { border-color:#6366f1; background:#eef2ff; }
+    .brev-chap-cb input[type=checkbox] { width:1rem; height:1rem; accent-color:#6366f1; cursor:pointer; flex-shrink:0; }
+    .brev-quiz-opt { width:100%; text-align:left; padding:.85rem 1rem; border-radius:.9rem; border:1.5px solid #e2e8f0; background:#f8fafc; font-size:.875rem; cursor:pointer; transition:border-color .15s,background .15s; }
+    .brev-quiz-opt:hover { border-color:#6366f1; background:#eef2ff; }
+    .brev-quiz-opt.correct { border-color:#10b981; background:#d1fae5; color:#065f46; font-weight:700; }
+    .brev-quiz-opt.wrong   { border-color:#ef4444; background:#fee2e2; color:#991b1b; }
+    .brev-quiz-opt.disabled { pointer-events:none; }
+    .brev-detail-row { display:flex; align-items:center; justify-content:space-between; padding:.5rem 0; border-bottom:1px solid #f1f5f9; }
+    .brev-detail-row:last-child { border-bottom:none; }
+    .adm-brev-cb { display:flex; align-items:center; gap:.5rem; padding:.35rem .5rem; border-radius:.5rem; font-size:.75rem; cursor:pointer; user-select:none; }
+    .adm-brev-cb.sel { background:#eef2ff; color:#4338ca; font-weight:700; }
+    .adm-brev-cb input { accent-color:#6366f1; }
+
     @keyframes toastIn {
       0%   { transform: translateX(-50%) translateY(20px) scale(0.95); opacity: 0; }
       70%  { transform: translateX(-50%) translateY(-4px) scale(1.02); }
@@ -953,7 +969,7 @@
               class="flex-1 py-2 rounded-xl text-xs font-black syne transition-colors bg-slate-100 text-slate-500">
         📊 Progression
       </button>
-      <!-- MODES DÉSACTIVÉS UI — code conservé pour activation future (demande Nicolas 12 mars 2026) -->
+      <!-- Brevet : visible 3EME uniquement ou si pendingBrevet admin -->
       <button id="nav-brev" onclick="setView('brevet')"
               style="display:none"
               class="flex-1 py-2 rounded-xl text-xs font-black syne transition-colors bg-slate-100 text-slate-500">
@@ -1160,7 +1176,7 @@ let S = {
   sent: new Set(),
   scoreQueue: JSON.parse(localStorage.getItem('sq') || '[]'),
   adminMode: false, timeOffset: 0, forceFail: false,
-  adminStudents: [], adminTab: 'todo',
+  adminStudents: [], adminTab: 'todo', _adminBrevChaps: [],
   tmpEmail: '', tmpHash: '',
   exoStartTime: {},    // { exoId → timestamp ms } — NOUVEAU v23
   view: 'chapters',   // 'chapters' | 'progress' | 'brevet'
@@ -1170,6 +1186,15 @@ let S = {
   brevetMode: false,  // false | 'loading' | 'active' | 'done'
   brevetExos: [],
   brevetChaps: [],
+  // ── Mode Brevet @51 ──
+  brevState:         null,    // null | 'select' | 'loading' | 'quiz' | 'results'
+  brevAllChapters:   [],      // chapitres disponibles (BrevetExos)
+  brevSelectedChaps: [],      // sélection élève
+  brevPendingConfig: null,    // {chapitres,message,date} depuis admin
+  brevQuizExos:      [],      // exos session courante
+  brevQuizIdx:       0,       // question courante
+  brevQuizResults:   [],      // [{categorie,q,resultat,ansGiven,correct}]
+  brevResultData:    null,    // réponse save_brevet_result
 };
 
 const LVL = {};
@@ -2527,6 +2552,23 @@ function initApp(d, skipRender) {
     }
   }
 
+  // ── Injection PendingBrevet @51 ────────────────────────
+  if (d.pendingBrevet && typeof d.pendingBrevet === 'object') {
+    S.brevPendingConfig = d.pendingBrevet;
+  }
+  // Afficher le bouton Brevet pour les 3EME (ou si brevet en attente)
+  var navBrevBtn = document.getElementById('nav-brev');
+  if (navBrevBtn && (S.niv === '3EME' || S.brevPendingConfig)) {
+    navBrevBtn.style.display = '';
+    if (S.brevPendingConfig) {
+      navBrevBtn.innerHTML = '📝 Brevet';
+      navBrevBtn.style.background = '#fef3c7';
+      navBrevBtn.style.color = '#92400e';
+    } else {
+      navBrevBtn.innerHTML = '🎓 Brevet';
+    }
+  }
+
   if (d.nextBoost && d.nextBoost.exos && d.nextBoost.exos.length > 0) {
     // Remplace le boost actuel par le nouveau contenu
     S.boost   = d.nextBoost;
@@ -3013,9 +3055,7 @@ function setView(v) {
   } else if (v === 'progress' && !S.progressLoading) {
     loadProgress();
   } else if (v === 'brevet') {
-    // UI désactivé — redirection vers chapitres (demande Nicolas 12 mars 2026)
-    S.view = 'chapters';
-    render();
+    loadBrevet();
   } else {
     render();
   }
@@ -3023,57 +3063,423 @@ function setView(v) {
 
 
 // ══════════════════════════════════════════════════════════════
-// VUE BREVET — MODES DÉSACTIVÉS UI (code conservé pour activation future — demande Nicolas 12 mars 2026)
+// VUE BREVET @51 — Brevet Blanc sur mesure
 // ══════════════════════════════════════════════════════════════
+
 async function loadBrevet() {
-  // UI désactivé — bientôt disponible
-  showT('Mode Brevet bientôt disponible 🔥', 3000, '🎓');
-  setView('chapters');
-  return;
-  S.brevetMode = 'loading';
-  renderBrevet();
+  // Si brevet en attente depuis admin → pré-sélectionner les chapitres
+  if (S.brevPendingConfig && S.brevPendingConfig.chapitres) {
+    S.brevSelectedChaps = S.brevPendingConfig.chapitres.slice();
+  }
+
+  S.brevState = 'loading';
+  _renderBrevetView();
+
   try {
     var r = await fetch(SU, { method:'POST', body: JSON.stringify({
-      action: 'generate_brevet',
-      code:   S.prof.code,
-      niveau: S.niv
+      action: 'get_brevet_chapters', level: '3EME'
     })});
     var d = await r.json();
-    if (d.status === 'success' && d.exos && d.exos.length > 0) {
-      S.brevetExos  = d.exos.map(function(e, i){ return Object.assign({}, e, { oC:'BREVET', oI:i }); });
-      S.brevetChaps = d.chapitres_couverts || [];
-      S.qv['BREVET'] = 0;
-      LVL[S.niv].cats['BREVET']  = S.brevetExos;
-      LVL[S.niv].names['BREVET'] = 'Examen blanc Brevet';
-      LVL[S.niv].icons['BREVET'] = '🎓';
-      S.brevetMode = 'active';
-    } else {
-      S.brevetMode = false;
-      showT('Impossible de charger le Brevet : ' + (d.message || 'erreur GAS'), 3000, '❌');
-    }
+    S.brevAllChapters = (d.status === 'success' && d.chapitres) ? d.chapitres : [];
   } catch(e) {
-    S.brevetMode = false;
-    showT('Erreur réseau — réessaie', 3000, '❌');
+    S.brevAllChapters = [];
   }
-  renderBrevet();
+
+  // Si aucun chapitre encore chargé → message doux
+  if (S.brevAllChapters.length === 0) {
+    var c = document.getElementById('app-c');
+    if (c) c.innerHTML =
+      '<div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 text-center afu">' +
+      '<div class="text-4xl mb-4">⏳</div>' +
+      '<h2 class="syne text-xl font-black text-slate-900 mb-2">Contenu en cours de chargement</h2>' +
+      '<p class="text-slate-500 text-sm mb-6">Ton prof prépare les exercices Brevet.<br>Reviens dans quelques minutes !</p>' +
+      '<button onclick="setView(\'chapters\')" class="btn btn-fw py-3 bg-slate-100 text-slate-700 font-bold rounded-xl">Retour aux chapitres</button>' +
+      '</div>';
+    return;
+  }
+
+  S.brevState = 'select';
+  _renderBrevetView();
 }
 
-function renderBrevet() {
+function _renderBrevetView() {
+  var c = document.getElementById('app-c');
+  if (!c) return;
+  if (S.brevState === 'loading') {
+    c.innerHTML =
+      '<div class="bg-white rounded-3xl p-10 shadow-sm border border-indigo-200 text-center afu">' +
+      '<div class="ld mx-auto mb-5" style="width:2.5rem;height:2.5rem"></div>' +
+      '<div class="syne font-black text-indigo-900 text-base">Chargement du Brevet…</div>' +
+      '</div>';
+    return;
+  }
+  if (S.brevState === 'select')  { _renderBrevetSelect(); return; }
+  if (S.brevState === 'quiz')    { _brevRenderQ(S.brevQuizIdx); return; }
+  if (S.brevState === 'results') { _renderBrevetResults(); return; }
+  // Fallback : écran accueil brevet
+  c.innerHTML =
+    '<div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 afu">' +
+    '<div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4" style="background:linear-gradient(135deg,#1e1b4b,#4338ca)">🎓</div>' +
+    '<h2 class="syne text-2xl font-black text-slate-900 mb-2 text-center">Brevet Blanc</h2>' +
+    '<button onclick="loadBrevet()" class="btn btn-ac btn-fw py-4 mt-4">Commencer →</button>' +
+    '</div>';
+}
+
+function _renderBrevetSelect() {
   var c = document.getElementById('app-c');
   if (!c) return;
 
-  // Écran de lancement
+  var hasPending = S.brevPendingConfig && S.brevPendingConfig.chapitres && S.brevPendingConfig.chapitres.length > 0;
+  var chaps = S.brevAllChapters;
+
+  var html = '<div class="space-y-4 afu">';
+
+  // Header
+  html += '<div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100">';
+  html += '<div class="flex items-center gap-3 mb-3">';
+  html += '<div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0" style="background:linear-gradient(135deg,#1e1b4b,#4338ca)">🎓</div>';
+  html += '<div><div class="syne font-black text-slate-900 text-base">Brevet Blanc sur mesure</div>';
+  html += '<div class="text-xs text-slate-500">Choisis les chapitres à travailler</div></div>';
+  html += '</div>';
+
+  // Banner si brevet admin
+  if (hasPending) {
+    html += '<div class="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5 mb-3">';
+    html += '<span class="text-base shrink-0">📬</span>';
+    html += '<div class="text-xs text-amber-800"><span class="font-bold">Ton prof a préparé une sélection</span> — les chapitres sont déjà cochés ci-dessous.';
+    if (S.brevPendingConfig.message) html += '<div class="mt-1 italic">"' + S.brevPendingConfig.message + '"</div>';
+    html += '</div></div>';
+  }
+
+  // Boutons sélection rapide
+  html += '<div class="flex gap-2 mb-3">';
+  html += '<button onclick="_brevSelAll(true)" class="text-xs font-bold text-indigo-600 border border-indigo-200 rounded-lg px-3 py-1.5 bg-indigo-50">Tout cocher</button>';
+  html += '<button onclick="_brevSelAll(false)" class="text-xs font-bold text-slate-500 border border-slate-200 rounded-lg px-3 py-1.5 bg-slate-50">Tout décocher</button>';
+  if (!hasPending) {
+    // Pré-sélectionner ses chapitres travaillés
+    html += '<button onclick="_brevSelWorked()" class="text-xs font-bold text-emerald-600 border border-emerald-200 rounded-lg px-3 py-1.5 bg-emerald-50">Mes chapitres</button>';
+  }
+  html += '</div>';
+  html += '</div>';
+
+  // Liste des chapitres
+  html += '<div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100">';
+  html += '<div class="text-xs font-black text-slate-500 uppercase tracking-wide mb-3">Chapitres disponibles (' + chaps.length + ')</div>';
+  html += '<div id="brev-chap-list" class="grid grid-cols-1 gap-2">';
+  chaps.forEach(function(chap) {
+    var sel = S.brevSelectedChaps.indexOf(chap) !== -1;
+    var chapId = 'brev-cb-' + chap.replace(/[^a-z0-9]/gi, '_');
+    html += '<label class="brev-chap-cb' + (sel ? ' sel' : '') + '" id="brev-lbl-' + chapId + '">';
+    html += '<input type="checkbox" id="' + chapId + '" ' + (sel ? 'checked' : '') + ' onchange="_brevToggleChap(\'' + chap.replace(/'/g, "\\'") + '\', this.checked)">';
+    html += '<span class="text-sm font-semibold text-slate-700">' + chap + '</span>';
+    html += '</label>';
+  });
+  html += '</div></div>';
+
+  // Option B : demander un chapitre
+  html += '<div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100">';
+  html += '<button onclick="_brevRequestChapModal()" class="text-xs font-bold text-slate-500 flex items-center gap-1.5 hover:text-indigo-600 transition-colors">';
+  html += '<span>➕</span><span>Demander un chapitre à ton prof</span></button>';
+  html += '</div>';
+
+  // CTA
+  html += '<div class="pb-6">';
+  html += '<div id="brev-cta-area">';
+  html += _brevCtaHTML();
+  html += '</div></div>';
+  html += '</div>';
+
+  c.innerHTML = html;
+}
+
+function _brevCtaHTML() {
+  var n = S.brevSelectedChaps.length;
+  if (n === 0) {
+    return '<div class="text-center text-sm text-slate-400 py-3">Coche au moins un chapitre pour commencer</div>';
+  }
+  var total = n * 3;
+  return '<button onclick="startBrevetQuiz()" class="btn btn-ac btn-fw py-4">' +
+    '🎓 Commencer — ' + total + ' questions (~' + n + ' chapitres) →' +
+    '</button>';
+}
+
+function _brevToggleChap(chap, checked) {
+  var idx = S.brevSelectedChaps.indexOf(chap);
+  if (checked && idx === -1) S.brevSelectedChaps.push(chap);
+  if (!checked && idx !== -1) S.brevSelectedChaps.splice(idx, 1);
+  // Update label style
+  var chapId = 'brev-lbl-brev-cb-' + chap.replace(/[^a-z0-9]/gi, '_');
+  var lbl = document.getElementById(chapId);
+  if (lbl) lbl.className = 'brev-chap-cb' + (checked ? ' sel' : '');
+  // Update CTA
+  var ctaArea = document.getElementById('brev-cta-area');
+  if (ctaArea) ctaArea.innerHTML = _brevCtaHTML();
+}
+
+function _brevSelAll(sel) {
+  S.brevSelectedChaps = sel ? S.brevAllChapters.slice() : [];
+  _renderBrevetSelect();
+}
+
+function _brevSelWorked() {
+  // Sélectionner les chapitres que l'élève a travaillés (dans S.res)
+  var worked = new Set();
+  Object.keys(S.res || {}).forEach(function(k) {
+    var parts = k.split('-');
+    if (parts.length >= 2 && parts[1] && parts[1] !== 'BOOST' && parts[1] !== 'CALIBRAGE') {
+      // Chercher si ce chapitre est dans les chapitres brevet
+      var cat = parts.slice(1, -1).join('-');
+      S.brevAllChapters.forEach(function(bc) {
+        if (bc.toLowerCase() === cat.toLowerCase()) worked.add(bc);
+      });
+    }
+  });
+  S.brevSelectedChaps = worked.size > 0 ? Array.from(worked) : S.brevAllChapters.slice(0, 3);
+  _renderBrevetSelect();
+}
+
+function _brevRequestChapModal() {
+  var chap = prompt('Quel chapitre veux-tu demander à ton prof pour le brevet ?');
+  if (!chap || !chap.trim()) return;
+  fetch(SU, { method:'POST', body: JSON.stringify({
+    action:  'request_brevet_chapter',
+    code:    S.prof.code,
+    name:    S.prof.name,
+    niveau:  S.niv,
+    chapter: chap.trim()
+  })}).then(function() {
+    showT('Demande envoyée à ton prof 👍', 3000, '📬');
+  }).catch(function() {});
+}
+
+async function startBrevetQuiz() {
+  if (S.brevSelectedChaps.length === 0) return;
+  S.brevState = 'loading';
+  _renderBrevetView();
+
+  try {
+    var r = await fetch(SU, { method:'POST', body: JSON.stringify({
+      action:    'generate_brevet_session',
+      code:      S.prof.code,
+      level:     S.niv,
+      chapitres: S.brevSelectedChaps,
+      nbPerChap: 3
+    })});
+    var d = await r.json();
+    if (d.status === 'success' && d.exos && d.exos.length > 0) {
+      S.brevQuizExos    = d.exos;
+      S.brevQuizIdx     = 0;
+      S.brevQuizResults = [];
+      S.brevState       = 'quiz';
+    } else {
+      showT(d.message || 'Erreur chargement brevet', 3000, '❌');
+      S.brevState = 'select';
+    }
+  } catch(e) {
+    showT('Erreur réseau — réessaie', 3000, '❌');
+    S.brevState = 'select';
+  }
+  _renderBrevetView();
+}
+
+function _brevRenderQ(idx) {
+  var c = document.getElementById('app-c');
+  if (!c) return;
+  var exos  = S.brevQuizExos;
+  var total = exos.length;
+  if (idx >= total) { _brevFinish(); return; }
+  var ex    = exos[idx];
+  var opts  = ex.opts || ex.options || [];
+  var pct   = total > 0 ? Math.round((idx / total) * 100) : 0;
+
+  var html =
+    '<div class="space-y-4 afu">' +
+    '<div class="bg-white rounded-3xl shadow-sm border-2 border-indigo-200 overflow-hidden">' +
+    '<div class="px-5 py-4 bg-indigo-50 border-b border-indigo-100">' +
+    '<div class="flex justify-between items-center mb-2.5">' +
+    '<div class="flex items-center gap-2"><span>🎓</span><span class="syne font-black text-indigo-900 text-sm">Brevet Blanc</span></div>' +
+    '<span class="text-xs font-bold text-indigo-500 bg-white px-2 py-1 rounded-lg border border-indigo-100">' + (idx + 1) + ' / ' + total + '</span>' +
+    '</div>' +
+    '<div class="pbar"><div class="pfill pfp" style="width:' + pct + '%"></div></div>' +
+    '</div>' +
+    '<div class="px-5 pt-4 pb-1">' +
+    '<div class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">' + (ex.categorie || '') + '</div>' +
+    '<div class="text-slate-800 font-semibold leading-relaxed mb-4 text-sm mc rdy">' + (ex.q || '') + '</div>' +
+    '</div>' +
+    '<div class="px-5 pb-5 space-y-2" id="brev-opts">';
+
+  opts.forEach(function(opt, i) {
+    html += '<button class="brev-quiz-opt" id="brev-opt-' + i + '" onclick="_brevAnswerOpt(' + idx + ',' + i + ')">' + opt + '</button>';
+  });
+
+  html += '</div>';
+  html += '<div class="px-5 pb-4 text-center text-[11px] text-slate-400 italic">Conditions examen — pas d\'indices disponibles</div>';
+  html += '</div></div>';
+
+  c.innerHTML = html;
+  rMath();
+}
+
+function _brevAnswerOpt(idx, choice) {
+  var ex     = S.brevQuizExos[idx];
+  var opts   = ex.opts || ex.options || [];
+  var correct= typeof ex.ans === 'number' ? ex.ans : opts.indexOf(ex.a);
+  var isOk   = choice === correct;
+
+  // Désactiver tous les boutons et colorer
+  opts.forEach(function(_, i) {
+    var btn = document.getElementById('brev-opt-' + i);
+    if (!btn) return;
+    btn.classList.add('disabled');
+    if (i === correct) btn.classList.add('correct');
+    else if (i === choice) btn.classList.add('wrong');
+  });
+
+  // Enregistrer le résultat
+  S.brevQuizResults.push({
+    categorie: ex.categorie || '',
+    q:         ex.q || '',
+    resultat:  isOk ? 'EASY' : 'HARD',
+    ansGiven:  opts[choice] || '',
+    correct:   opts[correct] || ''
+  });
+
+  // Passer à la question suivante après 1.2s
+  setTimeout(function() {
+    S.brevQuizIdx = idx + 1;
+    if (S.brevQuizIdx >= S.brevQuizExos.length) {
+      _brevFinish();
+    } else {
+      _brevRenderQ(S.brevQuizIdx);
+    }
+  }, 1200);
+}
+
+async function _brevFinish() {
+  S.brevState = 'loading';
+  _renderBrevetView();
+
+  var message = S.brevPendingConfig ? (S.brevPendingConfig.message || '') : '';
+
+  try {
+    var r = await fetch(SU, { method:'POST', body: JSON.stringify({
+      action:    'save_brevet_result',
+      code:      S.prof.code,
+      name:      S.prof.name,
+      level:     S.niv,
+      chapitres: S.brevSelectedChaps,
+      results:   S.brevQuizResults,
+      message:   message
+    })});
+    var d = await r.json();
+    if (d.status === 'success') {
+      S.brevResultData   = d;
+      S.brevPendingConfig = null;  // effacer le pending local
+      // Mettre à jour le bouton nav
+      var navBrevBtn = document.getElementById('nav-brev');
+      if (navBrevBtn) { navBrevBtn.innerHTML = '🎓 Brevet'; navBrevBtn.style.background = ''; navBrevBtn.style.color = ''; }
+    } else {
+      showT('Résultat non sauvegardé : ' + (d.message || 'erreur'), 3000, '⚠️');
+      S.brevResultData = { score: 0, nbCorrect: 0, nbQ: S.brevQuizResults.length, detail: [] };
+    }
+  } catch(e) {
+    showT('Résultats non sauvegardés (offline)', 3000, '⚠️');
+    var nbOk = S.brevQuizResults.filter(function(r){ return r.resultat === 'EASY'; }).length;
+    S.brevResultData = { score: Math.round(nbOk * 100 / S.brevQuizResults.length), nbCorrect: nbOk, nbQ: S.brevQuizResults.length, detail: [] };
+  }
+  S.brevState = 'results';
+  _renderBrevetView();
+}
+
+function _renderBrevetResults() {
+  var c = document.getElementById('app-c');
+  if (!c) return;
+  var data    = S.brevResultData || {};
+  var score   = data.score   || 0;
+  var nbOk    = data.nbCorrect || 0;
+  var nbQ     = data.nbQ     || S.brevQuizResults.length;
+  var detail  = data.detail  || [];
+  var message = S.brevQuizResults.length > 0 ? '' : '';
+  var grade   = score >= 80 ? '🏆 Excellent !' : score >= 60 ? '👍 Bien joué !' : score >= 40 ? '📈 Continue !' : '💪 À retravailler';
+  var scoreColor = score >= 60 ? '#4338ca' : score >= 40 ? '#f59e0b' : '#e11d48';
+
+  var html = '<div class="space-y-4 afu">';
+
+  // Score principal
+  html += '<div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 text-center">';
+  html += '<div class="text-4xl mb-3">' + (score >= 60 ? '🎉' : '💪') + '</div>';
+  html += '<h2 class="syne text-xl font-black text-slate-900 mb-1">Brevet Blanc terminé</h2>';
+  html += '<div class="text-4xl font-black my-4" style="color:' + scoreColor + '">' + score + '<span class="text-xl">%</span></div>';
+  html += '<div class="text-slate-600 font-semibold mb-1">' + nbOk + ' / ' + nbQ + ' bonnes réponses</div>';
+  html += '<div class="font-bold text-sm mb-4" style="color:' + scoreColor + '">' + grade + '</div>';
+
+  // Barre score
+  html += '<div class="pbar mb-4"><div class="pfill" style="width:' + score + '%;background:' + scoreColor + '"></div></div>';
+
+  // Message du prof si présent
+  if (S.brevPendingConfig && S.brevPendingConfig.message) {
+    html += '<div class="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5 text-left mt-3">';
+    html += '<span class="text-base shrink-0">💬</span>';
+    html += '<div class="text-xs text-amber-800"><span class="font-bold">Ton prof :</span> ' + S.brevPendingConfig.message + '</div>';
+    html += '</div>';
+  }
+  html += '</div>';
+
+  // Détail par chapitre
+  if (detail.length > 0) {
+    html += '<div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100">';
+    html += '<div class="text-xs font-black text-slate-500 uppercase tracking-wide mb-3">Résultats par chapitre</div>';
+    detail.forEach(function(d) {
+      var chapScore = d.total > 0 ? Math.round(d.correct * 100 / d.total) : 0;
+      var icon = chapScore >= 67 ? '✅' : '🔴';
+      var color = chapScore >= 67 ? '#059669' : '#e11d48';
+      html += '<div class="brev-detail-row">';
+      html += '<div class="flex items-center gap-2"><span>' + icon + '</span><span class="text-sm font-semibold text-slate-700">' + d.categorie + '</span></div>';
+      html += '<div class="flex items-center gap-2">';
+      html += '<span class="text-xs text-slate-500">' + d.correct + '/' + d.total + '</span>';
+      html += '<span class="text-xs font-bold" style="color:' + color + '">' + chapScore + '%</span>';
+      html += '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  // Actions
+  html += '<div class="space-y-2 pb-6">';
+  html += '<button onclick="_brevRefaire()" class="btn btn-ac btn-fw py-3">Refaire un Brevet Blanc →</button>';
+  html += '<button onclick="_brevRequestChapModal()" class="btn btn-fw py-3 bg-indigo-50 text-indigo-700 font-bold rounded-xl text-sm">➕ Demander un chapitre à mon prof</button>';
+  html += '<button onclick="setView(\'chapters\')" class="btn btn-fw py-3 bg-slate-100 text-slate-700 font-bold rounded-xl">Retour aux chapitres</button>';
+  html += '</div>';
+  html += '</div>';
+
+  c.innerHTML = html;
+  rMath();
+  if (score >= 60) launchConfetti();
+}
+
+function _brevRefaire() {
+  S.brevState       = 'select';
+  S.brevQuizExos    = [];
+  S.brevQuizIdx     = 0;
+  S.brevQuizResults = [];
+  S.brevResultData  = null;
+  _renderBrevetView();
+}
+
+function renderBrevet() {
+  // Délègue au nouveau système brevet @51
+  _renderBrevetView();
+  // Ancien code conservé pour compatibilité (non exécuté car on retourne après _renderBrevetView)
+  return;
+  var c = document.getElementById('app-c');
+  if (!c) return;
+
+  // Écran de lancement (legacy)
   if (!S.brevetMode || S.brevetMode === false) {
     c.innerHTML =
       '<div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 afu">' +
       '<div class="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-5 shadow-lg" style="background:linear-gradient(135deg,#1e1b4b,#4338ca)">🎓</div>' +
       '<h2 class="syne text-2xl font-black text-slate-900 mb-2 text-center">Mode Brevet</h2>' +
-      '<p class="text-slate-500 text-sm text-center mb-2 leading-relaxed">Un examen blanc complet. Tous les chapitres du programme, dans les conditions réelles du Brevet.</p>' +
-      '<ul class="text-sm text-slate-600 mb-7 space-y-2">' +
-      '<li class="flex items-center gap-2"><span class="text-indigo-500 font-bold">✓</span>~15 questions multi-chapitres</li>' +
-      '<li class="flex items-center gap-2"><span class="text-indigo-500 font-bold">✓</span>Questions de niveau 2 (comme au Brevet)</li>' +
-      '<li class="flex items-center gap-2"><span class="text-indigo-500 font-bold">✓</span>Score final par chapitre</li>' +
-      '</ul>' +
       '<button onclick="loadBrevet()" class="btn btn-ac btn-fw py-4">Lancer l\'examen blanc →</button>' +
       '</div>';
     return;
@@ -4416,6 +4822,7 @@ async function renderAdminDashboard() {
     S.adminStudents = d.students || [];
     S.adminRealCount = d.realCount || 0;
     S.adminTestCount = d.testCount || 0;
+    S._adminBrevChaps = d.brevChapitresDisponibles || [];  // @51 Brevet
     _renderAdminCards();
   } catch (e) {
     c.innerHTML = '<div class="text-center p-8 text-rose-500 font-semibold">❌ Erreur réseau — vérifie ta connexion.</div>';
@@ -5059,8 +5466,110 @@ function _buildModalHTML(st) {
         );
       })() : '') +
 
+    // ── Section Brevet (3EME uniquement) @51 ─────────────────
+    (st.niveau === '3EME' ? (function() {
+      var brevChaps = S._adminBrevChaps || [];
+      // Chapitres pratiqués par l'élève (pour pré-sélection)
+      var worked = (st.chapitresDetail || []).map(function(ch) { return ch.cat; });
+      var pendingBrev = st.pendingBrevet;
+      var lastBrev    = st.lastBrevetResult;
+
+      var hb = '<div class="mt-3 pt-3 border-t border-slate-100">';
+      hb += '<div class="flex items-center justify-between mb-2">';
+      hb += '<div class="text-xs font-black text-slate-700 uppercase tracking-wider">🎓 Brevet Blanc sur mesure</div>';
+      if (pendingBrev) {
+        hb += '<span class="text-[10px] font-black text-amber-600 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">📝 En attente</span>';
+      }
+      hb += '</div>';
+
+      // Dernier résultat
+      if (lastBrev) {
+        var lbColor = lastBrev.score >= 60 ? '#059669' : '#e11d48';
+        hb += '<div class="text-xs bg-slate-50 rounded-xl px-3 py-2 mb-2 flex items-center justify-between">';
+        hb += '<span class="text-slate-500">Dernier brevet · ' + relDateAdmin(lastBrev.date) + '</span>';
+        hb += '<span class="font-black text-sm" style="color:' + lbColor + '">' + lastBrev.score + '% (' + lastBrev.correct + '/' + lastBrev.nbQ + ')</span>';
+        hb += '</div>';
+      }
+
+      // Sélection chapitres (si BrevetExos chargé)
+      if (brevChaps.length > 0) {
+        hb += '<div class="text-[10px] text-slate-500 font-semibold mb-1.5">Chapitres à inclure :</div>';
+        hb += '<div class="grid grid-cols-2 gap-1 mb-2" id="adm-brev-chaps-' + st.code + '">';
+        brevChaps.forEach(function(chap) {
+          var sel = worked.indexOf(chap) !== -1 || (pendingBrev && pendingBrev.chapitres && pendingBrev.chapitres.indexOf(chap) !== -1);
+          var cbId = 'adm-brev-cb-' + st.code + '-' + chap.replace(/[^a-z0-9]/gi, '_');
+          hb += '<label class="adm-brev-cb' + (sel ? ' sel' : '') + '" id="adm-brev-lbl-' + cbId + '">';
+          hb += '<input type="checkbox" id="' + cbId + '" ' + (sel ? 'checked' : '') + ' onchange="(function(el){var l=document.getElementById(\'adm-brev-lbl-' + cbId + '\');if(l)l.className=\'adm-brev-cb\'+(el.checked?\' sel\':\'\');})(this)">';
+          hb += '<span>' + chap + '</span></label>';
+        });
+        hb += '</div>';
+        hb += '<input id="adm-brev-msg-' + st.code + '" class="adm-textarea" style="height:40px;resize:none;line-height:1.4" placeholder="Message du prof (optionnel)..." value="' + (pendingBrev && pendingBrev.message ? pendingBrev.message.replace(/"/g,'&quot;') : '') + '">';
+        hb += '<button onclick="publishBrevet(\'' + st.code + '\')" id="btn-brev-' + st.code + '" class="btn btn-dk btn-fw py-2.5 mt-2 text-sm">🎓 Publier Brevet Blanc</button>';
+      } else {
+        hb += '<div class="text-xs text-slate-400 bg-slate-50 rounded-xl px-3 py-2">Aucun exercice Brevet chargé — importer via import_brevet_exos.</div>';
+      }
+      hb += '</div>';
+      return hb;
+    })() : '') +
+
     '</div>'
   );
+}
+
+// ── Publier un brevet pour un élève (admin) ───────────────────
+async function publishBrevet(code) {
+  var container = document.getElementById('adm-brev-chaps-' + code);
+  var chapitres = [];
+  if (container) {
+    container.querySelectorAll('input[type=checkbox]:checked').forEach(function(cb) {
+      // Extraire le nom du chapitre depuis l'ID : adm-brev-cb-CODE-CHAPNOM
+      var lblId = 'adm-brev-lbl-' + cb.id;
+      var lbl = document.getElementById(lblId);
+      if (lbl) {
+        var span = lbl.querySelector('span');
+        if (span) chapitres.push(span.textContent.trim());
+      }
+    });
+  }
+
+  if (chapitres.length === 0) {
+    showT('Coche au moins un chapitre', 3000, '⚠️'); return;
+  }
+
+  var msgInput = document.getElementById('adm-brev-msg-' + code);
+  var message  = msgInput ? msgInput.value.trim() : '';
+
+  var btn = document.getElementById('btn-brev-' + code);
+  if (btn) { btn.innerHTML = '<span class="ld"></span> Publication...'; btn.disabled = true; }
+
+  try {
+    var r = await fetch(SU, { method:'POST', body: JSON.stringify({
+      action:     'publish_admin_brevet',
+      adminCode:  S.prof.code,
+      targetCode: code,
+      chapitres:  chapitres,
+      message:    message
+    })});
+    var d = await r.json();
+    if (d.status === 'success') {
+      showT('🎓 Brevet Blanc publié ! L\'élève le verra à son prochain login.', 4500, '✅');
+      for (var i = 0; i < S.adminStudents.length; i++) {
+        if (S.adminStudents[i].code === code) {
+          S.adminStudents[i].pendingBrevet = { chapitres: chapitres, message: message };
+          S.adminStudents[i].actions = (S.adminStudents[i].actions || []).concat(['📝 BREVET EN ATTENTE → à faire']);
+          break;
+        }
+      }
+      closeStudentModal();
+      _renderAdminCards();
+    } else {
+      showT('❌ ' + (d.message || 'Erreur'), 4000, '❌');
+      if (btn) { btn.innerHTML = '🎓 Publier Brevet Blanc'; btn.disabled = false; }
+    }
+  } catch(e) {
+    showT('❌ Erreur réseau', 3000, '❌');
+    if (btn) { btn.innerHTML = '🎓 Publier Brevet Blanc'; btn.disabled = false; }
+  }
 }
 
 // ── Publier un boost pour un élève ───────────────────────────
