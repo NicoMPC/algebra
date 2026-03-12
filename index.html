@@ -4844,8 +4844,10 @@ async function publishBoost(code) {
       // Mettre à jour la carte en mémoire
       for (var i = 0; i < S.adminStudents.length; i++) {
         if (S.adminStudents[i].code === code) {
-          S.adminStudents[i].action   = '👍 RAS';
-          S.adminStudents[i].boostNew = true;
+          S.adminStudents[i].action         = '👍 RAS';
+          S.adminStudents[i].actionPriority = '👍 RAS';
+          S.adminStudents[i].actions        = ['👍 RAS'];
+          S.adminStudents[i].boostNew       = true;
           break;
         }
       }
@@ -4900,8 +4902,10 @@ async function publishChapter(code) {
       // Mettre à jour en mémoire
       for (var i = 0; i < S.adminStudents.length; i++) {
         if (S.adminStudents[i].code === code) {
-          S.adminStudents[i].action      = '👍 RAS';
-          S.adminStudents[i].chapNewCount = (S.adminStudents[i].chapNewCount || 0) + 1;
+          S.adminStudents[i].action         = '👍 RAS';
+          S.adminStudents[i].actionPriority = '👍 RAS';
+          S.adminStudents[i].actions        = ['👍 RAS'];
+          S.adminStudents[i].chapNewCount   = (S.adminStudents[i].chapNewCount || 0) + 1;
           break;
         }
       }

@@ -406,6 +406,21 @@ function login(p) {
             if (boostParsed && boostParsed.exos && boostParsed.exos.length > 0) {
               nextBoost = boostParsed;
               suiviSh.getRange(si + 1, 19).setValue('');
+              // Créer entrée DailyBoosts exosDone=0 → admin voit "⏳ En attente"
+              try {
+                var nextDay = Utilities.formatDate(new Date(new Date().getTime() + 86400000), 'Europe/Paris', 'yyyy-MM-dd');
+                var boostSh = getSheet(SH.BOOSTS);
+                var boostData = boostSh.getDataRange().getValues();
+                var alreadyExists = false;
+                for (var bi = 1; bi < boostData.length; bi++) {
+                  if (String(boostData[bi][0]) === code && String(boostData[bi][1]).substring(0,10) === nextDay) {
+                    alreadyExists = true; break;
+                  }
+                }
+                if (!alreadyExists) {
+                  appendRow(SH.BOOSTS, [code, nextDay, JSON.stringify(boostParsed), 0]);
+                }
+              } catch(e) { Logger.log('login boost DailyBoosts KO: ' + e); }
             } else {
               Logger.log('login boost injection KO pour ' + code);
             }
@@ -1347,7 +1362,7 @@ function rebuildSuivi(code) {
   // ── Calcul pills prioritaires (ordre strict) ─────────────
   // Priorité : 1=⚡BOOST TERMINÉ  2=✅CHAPITRE TERMINÉ  3=🔴BLOQUÉ  4=👍RAS
   var actions = [];
-  if (allUserBoosts.length >= 1 && lastBoostExosDone >= 5 && lastBoostDate < todayStr && !newBoost && !boostPendingSuivi) {
+  if (allUserBoosts.length >= 1 && lastBoostExosDone >= 5 && !newBoost && !boostPendingSuivi) {
     actions.push('⚡ BOOST TERMINÉ → préparer le suivant');
   }
   if (chapTermine) {

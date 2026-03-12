@@ -343,6 +343,7 @@ sh.append_row("Scores", [...])
 | 13 mars 2026 | @38 | Fix quiz CTA invisible (mc rdy), bypass 40-fam pour @matheux.fr, note contact@matheux.fr dans dashboard | — |
 | 13 mars 2026 | @39 | Colonne IsTest Users, limite 50 vrais élèves, dashboard compteur X/50 + section test repliable, mark_all_test GAS, migration Python (110 comptes → IsTest=1) | — |
 | 13 mars 2026 | @40 | UX post-boost : confettis + auto-redirect chapitres 5s + boost card "Prochain dispo demain 🔥" ; Hints/Formule : contraste amber-800 + fond coloré (pill + autoShowHelp + showHintInline + revFInline) ; Admin BOOST TERMINÉ : fix condition (today inclus) ; Admin modal : indicateurs email J0/J3/J7 (trialStart GAS) | — |
+| 13 mars 2026 | @41 | Fix admin : actionPriority + actions mis à jour localement après publishBoost/publishChapter (compteur instantané) ; rebuildSuivi : suppression `lastBoostDate < todayStr` (cohérence avec getAdminOverview) ; login() : crée DailyBoosts exosDone=0 à la livraison du boost → admin voit ⏳ En attente au lieu de faux BOOST TERMINÉ | — |
 
 ---
 

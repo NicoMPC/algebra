@@ -33,6 +33,9 @@
 | 13 mars (@40) | Carte boost terminé : "Entraînement IA ✓" + badge "Prochain dispo demain 🔥" |
 | 13 mars (@40) | Admin BOOST TERMINÉ : condition corrigée (boost du jour inclus, plus besoin d'attendre J+1) |
 | 13 mars (@40) | Modal admin : indicateurs emails J0 ✅ / J3 ✅⏳ / J7 ✅⏳ par élève (depuis TrialStart) |
+| 13 mars (@41) | Fix admin : compteur actions mis à jour **instantanément** après publication boost/chapitre (sans refresh) |
+| 13 mars (@41) | Fix rebuildSuivi : BOOST TERMINÉ affiché le jour même dans Sheet 👁 Suivi |
+| 13 mars (@41) | Fix login : livraison boost → entrée DailyBoosts exosDone=0 créée → admin voit ⏳ En attente (supprime faux BOOST TERMINÉ) |
 
 ---
 
@@ -150,6 +153,8 @@ Chaque matin à 7h, un email automatique liste :
 - Puis chapitres par ordre de progression
 - Chaque card affiche : icône, nom, barre de progression, date dernière pratique
 - Badge "🆕 NEW" si Nicolas vient d'assigner un nouveau chapitre
+- Boost terminé : label **"Entraînement IA ✓"** + badge **"Prochain dispo demain 🔥"**
+- Après avoir terminé le boost : **écran de résultats** avec confettis + compte à rebours 5s → retour auto chapitres
 
 ### Vue "📊 Progression"
 - Résumé : X chapitres maîtrisés / X commencés
@@ -277,7 +282,8 @@ Accessible uniquement aux comptes avec `IsAdmin: true` dans `Users`.
 **Ce que tu vois par élève :**
 - Toutes ses réponses (badge DIAG = diagnostic, BOOST = entraînement)
 - Scores par chapitre triés : terminés → en cours → diagnostiqués
-- Statut boost (pending/in_progress/done) — **BOOST TERMINÉ affiché le jour même** (fix @40)
+- Statut boost : ⏳ En attente → 🔄 En cours X/5 → ✓ Terminé (temps réel)
+- Après publication d'un boost : **compteur actions mis à jour immédiatement** (fix @41), admin voit ⏳ En attente dès que l'élève se connecte (fix @41)
 - Métriques : ⏱ temps moyen, 💡 indices, 🧮 % formule
 - Section "Archivés" (chapitres complétés >20 exos)
 - **📧 Indicateurs emails** : J0 ✅ | J3 ✅/⏳ | J7 ✅/⏳ (calculés depuis TrialStart)
@@ -317,13 +323,13 @@ Tout est enregistré dans l'onglet `Insights` du Sheet (créé automatiquement a
 
 | Fonctionnalité | Statut | Priorité |
 |---|---|---|
-| Paiement Stripe | ❌ Non intégré — premium.html prêt, bouton email actif | 🔴 Sprint suivant |
-| Webhook Stripe → colonne Premium | ❌ À faire après Stripe | 🔴 Sprint suivant |
-| Séquences email J+3/J+7 | ⏳ Code prêt — activer trigger Apps Script | 🟡 Important |
-| Measurement ID GA4 réel | ⏳ Remplacer G-XXXXXXXXXX dans index.html | 🟡 Important |
+| Paiement Stripe | ⏳ Lien TEST actif — passer en PROD | 🔴 Sprint suivant |
+| Webhook Stripe → colonne Premium | ❌ À faire après Stripe PROD | 🔴 Sprint suivant |
+| Créer adresse contact@matheux.fr | ❌ Hébergeur email + alias Gmail | 🔴 Maintenant |
+| Configurer alias no-reply@matheux.fr | ❌ Gmail → Paramètres → Envoyer depuis | 🔴 Maintenant |
+| Séquences email J+3/J+7 | ⏳ Code prêt — activer trigger Apps Script (9h-10h) | 🟡 Important |
 | Mode Brevet | ⏳ Code prêt, UI désactivé | 🟡 Bientôt |
 | Mode Révision | ⏳ Code prêt, UI désactivée | 🟡 Bientôt |
-| Action delete_test_users (GAS) | ❌ À créer | 🟡 Utile |
 | Validation inputs GAS (email) | ❌ À faire | 🟢 Mineur |
 | Migration BDD >50 users | ❌ Sheets limite ~20 simultanés | 🔵 Long terme |
 
@@ -362,13 +368,16 @@ python3 audit_formats.py                 # vérification conformité
 | Action | Où | Priorité |
 |---|---|---|
 | ✅ IsAdmin mis à 1 pour `contact@matheux.fr` | Sheet Users | Fait |
-| ✅ GAS @34 déployé | Terminal | Fait |
+| ✅ GAS @40 déployé | Terminal | Fait |
 | ✅ 5 chapitres poussés en prod | push_via_gas.py | Fait |
-| **⚡ GAS @35 déployer** : `bash deploy.sh "waitlist + email J0"` | Terminal | 🔴 Maintenant |
-| **⚡ GA4** : remplacer `G-XXXXXXXXXX` par votre Measurement ID | index.html ligne ~21 | 🟡 Dès que compte GA4 créé |
-| Apps Script UI → Déclencheurs → `triggerDailyMarketing` → Chaque jour 9h-10h | Apps Script | 🟡 Cette semaine |
-| Stripe → décommenter btn-stripe dans premium.html | premium.html | 🔴 Sprint suivant |
-| git push tous les fichiers modifiés | Terminal | 🟡 À faire |
+| ✅ GA4 G-7R2DW4585Y intégré | index.html | Fait |
+| ✅ Stripe TEST lien actif (overlay + email J+7) | index.html / backend.js | Fait |
+| ✅ 110 comptes test migrés IsTest=1 | Python | Fait |
+| **⚡ Créer contact@matheux.fr** | Hébergeur email | 🔴 Maintenant |
+| **⚡ Configurer alias no-reply@matheux.fr** | Gmail Paramètres → "Envoyer depuis" | 🔴 Maintenant |
+| **⚡ Apps Script UI → Déclencheurs → `triggerDailyMarketing` → Chaque jour 9h-10h** | Apps Script | 🟡 Cette semaine |
+| **⚡ Passer lien Stripe TEST → PROD** (3 occurrences : index.html, backend.js, cgv.html) | index.html / backend.js / cgv.html | 🔴 Sprint suivant |
+| git push tous les fichiers modifiés | Terminal : `git push origin main` | 🟡 À faire |
 
 ---
 
@@ -382,4 +391,4 @@ python3 audit_formats.py                 # vérification conformité
 
 ---
 
-*Notice générée le 12 mars 2026 — Matheux v23 GOLD MASTER*
+*Notice mise à jour le 13 mars 2026 @40 — Matheux v23 GOLD MASTER*
