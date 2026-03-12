@@ -73,10 +73,10 @@ def login_admin():
 
 
 def simulate_next_day(admin_code, target_code, day_label=""):
+    # simulate_next_day prend le code élève dans p.code (pas adminCode/targetCode)
     return gas({
-        "action":     "simulate_next_day",
-        "adminCode":  admin_code,
-        "targetCode": target_code
+        "action": "simulate_next_day",
+        "code":   target_code
     }, f"simulate_next_day {day_label}")
 
 # ── Helpers scénarios ─────────────────────────────────────────────────────────
