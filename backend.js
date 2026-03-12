@@ -3312,6 +3312,34 @@ function sendMarketingSequence(email, prenom, day) {
 }
 
 /**
+ * Action admin — envoie un email J+0 test à l'adresse du fondateur.
+ * Permet de vérifier que l'alias no-reply@matheux.fr fonctionne.
+ */
+function sendTestEmail(p) {
+  var code = (p.adminCode || '').trim();
+  if (!code) return { status: 'error', message: 'adminCode requis.' };
+
+  var users = getRows(SH.USERS);
+  var user  = null;
+  for (var i = 0; i < users.length; i++) {
+    if (String(users[i]['Code']) === code) { user = users[i]; break; }
+  }
+  if (!user) return { status: 'error', message: 'Utilisateur introuvable.' };
+
+  var isAdmin = parseInt(user['IsAdmin'] || 0) === 1 ||
+    String(user['IsAdmin']).toUpperCase() === 'TRUE';
+  if (!isAdmin) return { status: 'error', message: 'Accès refusé.' };
+
+  var email  = String(user['Email'] || '').trim();
+  var prenom = String(user['Prénom'] || 'Nicolas').trim();
+  var result = sendMarketingSequence(email, prenom, 0);
+  if (result.status === 'success') {
+    return { status: 'success', to: email };
+  }
+  return result;
+}
+
+/**
  * Trigger Apps Script — à appeler chaque jour à 9h-10h.
  * Configuration : Apps Script UI → Déclencheurs → triggerDailyMarketing → Chaque jour → 9h-10h
  *

@@ -65,6 +65,7 @@ clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sx
 | `publish_admin_chapter` | ✅ Fonctionne — écrit premier slot →Nouveau Ch libre, rebuildSuivi |
 | `check_trial_status` | ✅ Fonctionne — { trialActive, daysLeft, isPremium } |
 | `import_chapters` | ✅ One-shot admin — pousse chapitres dans Curriculum_Officiel + DiagnosticExos via GAS |
+| `send_test_email` | ✅ Admin — envoie email J+0 test à l'adresse du fondateur (vérifie alias no-reply@matheux.fr) |
 
 ---
 
@@ -331,6 +332,7 @@ sh.append_row("Scores", [...])
 | 12 mars 2026 | @34 | Désactivation UI Brevet+Révision (code conservé), 5 chapitres poussés en prod (100 exos), verifyAdmin fix (TRUE/1), rapport condensé, notice refaite, programme ~85% | — |
 | 13 mars 2026 | @35 | BLOC 3 🟢 complet : waitlist 40 fam. GAS, email J+0 auto, GA4 consentement, bannière cookies RGPD, premium.html, trial→premium.html, CGU clause bêta, politique-cookies GA4 | — |
 | 13 mars 2026 | @36 | GA4 G-7R2DW4585Y intégré, overlay trial → Stripe direct 9,99€/mois, email J+7 → Stripe, GmailApp from no-reply@matheux.fr, GA4 ID dans politique-cookies.html | — |
+| 13 mars 2026 | @37 | Dashboard admin : bloc "Outils Fondateur" en haut (Stripe TEST badge + btn, Email test via send_test_email GAS) | — |
 
 ---
 
