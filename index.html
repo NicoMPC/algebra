@@ -3242,8 +3242,8 @@ function renderProgress() {
       }).length;
       localEasyPct = Math.round((le2 / doneLPct) * 100);
     }
-    var score    = compLP ? 100 : (p && p.nbExos > 0 ? Math.round(p.score) : (doneLPct > 0 ? localEasyPct : 0));
     var nbExos   = Math.max(p ? (p.nbExos || 0) : 0, doneLPct);
+    var score    = compLP ? 100 : Math.round((nbExos / Math.max(exsLP.length, 1)) * 100);
     var isMast   = compLP || (p && (p.statut === 'maitrise' || p.score >= 80));
     var isStart  = nbExos > 0 || doneLPct > 0;
     var dateStr  = p ? relDate(p.dernierePratique) : '';
@@ -3663,7 +3663,7 @@ function render() {
       if (!isBoost && done > 0 && !comp) {
         html += '<div class="mx-4 mb-3 bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-2.5 flex items-center gap-2">' +
           '<span class="text-sm flex-shrink-0">💪</span>' +
-          '<span class="text-xs font-bold text-indigo-700">Tu reprends le chapitre — t\'en es à ' + done + '/' + tot + ' 💪 Continue !</span>' +
+          '<span class="text-xs font-bold text-indigo-700">Bon retour ! Continue là où tu t\'es arrêté.</span>' +
           '</div>';
       }
       // B3 — bannière prérequis fragile
@@ -3976,7 +3976,7 @@ window.revFInline = function(cat, idx) {
   wrap.appendChild(label);
   wrap.appendChild(span);
   area.appendChild(wrap);
-  typewriter(span, exo.f || '', function() { if (window.MathJax) MathJax.typesetPromise([area]); });
+  typewriter(span, fmtL(exo.f || ''), function() { if (window.MathJax) MathJax.typesetPromise([area]); });
 };
 
 var _nudgeTimers = {};
