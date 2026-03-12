@@ -1,12 +1,24 @@
 # Notice d'utilisation — Matheux
 ## Ce que fait le site. Comment ça marche. Pour qui.
-> Version 13 mars 2026 | Rédigée pour Nicolas (fondateur)
+> Version 12 mars 2026 | Rédigée pour Nicolas (fondateur)
 
 ---
 
 ## En une phrase
 
 **Matheux est une application web de soutien scolaire en maths pour les collégiens (6ème→3ème), qui détecte automatiquement les lacunes d'un élève et lui prépare des exercices personnalisés chaque jour.**
+
+---
+
+## Nouveautés — Mars 2026
+
+| Date | Nouveauté |
+|---|---|
+| 12 mars | Mode Brevet et Mode Révision désactivés (code conservé — bientôt disponibles) |
+| 12 mars | 5 nouveaux chapitres créés (Probabilités, Racines carrées, Décimaux, Fonctions linéaires, Statistiques) — en attente push Sheet |
+| 13 mars | Feedback élèves (bouton Signaler → onglet Insights) |
+| 12 mars | Juridique complet (5 pages légales + consentement parental) |
+| 12 mars | Landing vendeuse : pricing comparatif, fondateur Nicolas, carousel témoignages |
 
 ---
 
@@ -19,7 +31,7 @@ PARENT                          ÉLÈVE                        NICOLAS (toi)
   │ (crée le compte enfant)       │ (5-10 min, 1 fois)            │ Google Sheet
   │                               │                               │ "👁 Suivi"
   │ ← reçoit code 6 lettres       │ Résultats immédiats           │
-  │                               │ → lacunes identifiées         │ Assign le boost
+  │                               │ → lacunes identifiées         │ Assigne le boost
   │                               │                               │ du lendemain
   │                               │ Boost quotidien               │
   │                               │ 5 exos / 10-15 min            │ Voit l'avancement
@@ -28,8 +40,8 @@ PARENT                          ÉLÈVE                        NICOLAS (toi)
   │                               │ Chapitres au menu             │ Rapport 7h tous
   │                               │ (peut explorer librement)     │ les matins
   │                               │                               │
-  │                               │ Mode Brevet (3EME)            │
-  │                               │ Mode Révision bases           │
+  │                               │ Feedback "Signaler" après     │
+  │                               │ chaque exercice → Insights    │
   │                               └───────────────────────────────┘
 ```
 
@@ -41,36 +53,37 @@ PARENT                          ÉLÈVE                        NICOLAS (toi)
 1. Le parent arrive sur **matheux.fr** (landing page)
 2. Il clique sur **"Démarrer les 7 jours offerts"**
 3. Il choisit le niveau (6ème, 5ème, 4ème ou 3ème)
-4. Il sélectionne les chapitres à travailler (les matières qui coincent)
-5. **Quiz de calibrage rapide** : 4-10 questions (1 par chapitre sélectionné) — directement sur la landing
+4. Il sélectionne les chapitres à travailler (1 à 4 chapitres)
+5. **Quiz de calibrage rapide** : 4 à 10 questions inline — directement sur la landing, sans créer de compte
 6. Il remplit son prénom + email → crée le compte
 7. ✅ L'élève reçoit un **code à 6 caractères** (ex: `FP48QF`) et accède immédiatement à l'app
 
 **Ce qui se passe dans le Sheet :** Une ligne est créée dans l'onglet `Users` avec l'email, le hash du mot de passe, la date d'inscription (= début du trial 7 jours).
 
 ### Étape 2 : Diagnostic (élève, 5-10 min, 1 seule fois)
-- L'élève voit l'écran "Prêt ?" → clique "Lancer le diagnostic"
-- Questions de niveau 1 et 2 sur chaque chapitre sélectionné
-- L'algorithme détecte : EASY (maîtrisé) / MEDIUM (fragile) / HARD (lacune)
-- **Résultat immédiat** : "Tu es fort en Fractions, les Équations résistent encore"
-- Un premier **boost personnalisé** est généré automatiquement
+- Le quiz de calibrage landing **EST** le diagnostic — les résultats sont sauvegardés automatiquement
+- Pas de re-diagnostic dans l'app (évite la frustration)
+- Un premier **boost personnalisé** est généré automatiquement en arrière-plan pendant l'onboarding
+- Si l'élève abandonne à mi-diagnostic sur la landing : reprise possible pendant 24h
 
-**Ce qui se passe dans le Sheet :** Les scores sont enregistrés dans `Scores`, une entrée est créée dans `Progress` par chapitre, le boost est préparé dans `DailyBoosts`.
+**Ce qui se passe dans le Sheet :** Les scores sont enregistrés dans `Scores`, une entrée dans `Progress` par chapitre, le boost est préparé dans `DailyBoosts`.
 
 ### Étape 3 : Routine quotidienne (élève, 10-15 min/jour)
 - Chaque jour, **5 exercices du Boost** attendent l'élève
-- Les exercices sont sélectionnés par Nicolas (toi) dans le Sheet → publiés via l'admin
+- Les exercices sont sélectionnés par Nicolas (toi) dans l'Admin Panel → publiés
 - L'élève répond, voit immédiatement si c'est juste ou faux
-- Si faux : indices disponibles + formule clé révélée
+- Si faux : indices disponibles + formule clé révélée + explication étape par étape
 - Swipe gauche → exercice suivant (navigation mobile naturelle)
-- **Streak** : compteur de jours consécutifs (motivation)
+- **Streak** : compteur de jours consécutifs (motivation gamification)
+- Après chaque réponse : lien discret "📢 Signaler" pour envoyer un feedback
 
-**Ce qui se passe dans le Sheet :** `save_score` écrit dans `Scores` + met à jour `Progress` + `rebuildSuivi()` recalcule l'onglet `👁 Suivi` + `writeToHistorique()` ajoute à `📋 Historique`.
+**Ce qui se passe dans le Sheet :** `save_score` écrit dans `Scores` + met à jour `Progress` + `rebuildSuivi()` recalcule `👁 Suivi` + `writeToHistorique()` ajoute à `📋 Historique`.
 
 ### Étape 4 : Fin du trial (J+7)
 - Un **badge J-X** apparaît dans l'interface dès J+5
 - À J+7 : overlay bloquant → "Passe à l'abonnement pour continuer"
-- Prix : **9,99€/mois** (Stripe — pas encore intégré au 13 mars 2026)
+- Prix : **9,99€/mois** (**Stripe non encore intégré — en attente**)
+- L'élève peut toujours voir sa progression en cliquant "Voir ma progression quand même"
 
 ---
 
@@ -84,69 +97,70 @@ C'est ton outil de travail principal. Chaque ligne = 1 élève.
 | `⚡ ACTION NICOLAS` | 4 statuts possibles (voir ci-dessous) | Tu lis et tu agis |
 | `Prénom` | Le prénom de l'élève | Info |
 | `Niveau` | 6EME / 5EME / 4EME / 3EME | Info |
-| `Dernière connexion` | Date en JJ/MM | Si inactif >5j → relance |
+| `Dernière connexion` | Date en JJ/MM | Si inactif >5j → relance WhatsApp |
 | `Chapitre 1/2/3/4` | Chapitre + statut (score %) | Vois la progression |
-| `📝 Ch1 suite` | **TU ÉCRIS ICI** le prochain chapitre à débloquer | Ton action |
+| `📝 Ch1 suite` | **TU PEUX ÉCRIRE ICI** (ou via Admin Panel) | Prochain chapitre à débloquer |
 | `Boost consommé?` | Oui/Non | A-t-il fait son boost ? |
-| `📝 Prochain boost` | **TU ÉCRIS ICI** le JSON du boost | Ton action |
+| `📝 Prochain boost` | **TU PEUX ÉCRIRE ICI** (ou via Admin Panel) | JSON du boost |
 
 ### Les 4 statuts `⚡ ACTION NICOLAS`
 | Statut | Signification | Que faire |
 |---|---|---|
 | `🔴 BLOQUÉ` | Inactif >7j ET scores <40% | Message WhatsApp parent |
-| `⚡ BOOST TERMINÉ → préparer le suivant` | A fini ses 5 exos | Mettre le prochain boost JSON dans la colonne R |
-| `✅ CHAPITRE TERMINÉ → assigner la suite` | >20 exos sur ce chapitre | Écrire le prochain chapitre dans colonne G/J/M/P |
+| `⚡ BOOST TERMINÉ → préparer le suivant` | A fini ses 5 exos | Mettre le prochain boost JSON via Admin |
+| `✅ CHAPITRE TERMINÉ → assigner la suite` | >20 exos sur ce chapitre | Écrire le prochain chapitre via Admin |
 | `👍 RAS` | Tout va bien | Rien à faire |
 
-### Comment publier un boost (action la plus fréquente)
-1. Tu vois `⚡ BOOST TERMINÉ` pour un élève
-2. Tu ouvres l'**Admin Panel** (triple-clic sur le logo de l'app)
-3. Tu cliques sur le nom de l'élève → tu vois ses chapitres et lacunes
-4. Tu copies le JSON du dernier boost pour voir le format
-5. Tu cliques "Préparer le prochain boost" → tu entres le JSON → "Publier"
-6. Le lendemain matin, l'élève a ses 5 nouveaux exercices
+### Procédure admin quotidienne (10 min/matin)
+1. Ouvrir l'app → triple-clic sur le logo → Admin Panel
+2. Scanner les cartes élèves triées par urgence (🔴 en tête)
+3. Pour chaque `⚡ BOOST TERMINÉ` :
+   - Cliquer sur l'élève → voir ses lacunes
+   - Copier le prompt Claude (bouton "📋 Copier")
+   - Coller dans Claude → obtenir le JSON → coller dans "Publier un boost" → Enregistrer
+4. Pour chaque `✅ CHAPITRE TERMINÉ` :
+   - Même procédure avec "Publier un chapitre"
+5. Vérifier les élèves `🔴 BLOQUÉ` → message parent si nécessaire
 
 ### Rapport quotidien 7h
-Chaque matin à 7h, tu reçois un email avec :
-- Les élèves qui ont des **chapitres BLOQUÉS ou FRAGILES**
-- Un prompt prêt à copier dans DeepSeek pour générer de nouveaux exercices
+Chaque matin à 7h, un email automatique liste :
+- Les élèves avec chapitres **BLOQUÉS ou FRAGILES**
+- Un prompt prêt à copier dans Claude pour générer de nouveaux exercices
 
 ---
 
 ## 4. Les vues de l'application (côté élève)
 
 ### Vue "📚 Chapitres"
-- Liste tous les chapitres débloqués
 - **Boost quotidien** en premier (card violette ⚡)
-- Si Mode Révision actif : REVISION en premier (card verte 🔁)
 - Puis chapitres par ordre de progression
 - Chaque card affiche : icône, nom, barre de progression, date dernière pratique
+- Badge "🆕 NEW" si Nicolas vient d'assigner un nouveau chapitre
 
 ### Vue "📊 Progression"
 - Résumé : X chapitres maîtrisés / X commencés
-- Card "Révision [niveau inférieur]" → lance le Mode Révision
 - Liste de toutes les cards chapitres avec barres de progression et scores
+- **Mode Révision** : ⏳ désactivé temporairement — code prêt pour activation future
 
-### Vue "🎓 Brevet" (3EME et autres niveaux)
-- **Écran lancement** : description du mode, "Lancer l'examen blanc →"
-- **Examen en cours** : ~15 questions multi-chapitres, progression visible, nom du chapitre source affiché
-- **Résultat** : score %, grade (🏆/👍/📈/💪), chapitres couverts, bouton "Refaire"
+### Vue "🎓 Brevet"
+- **⏳ Désactivée temporairement** — tab masqué
+- Code complet conservé, sera activé prochainement pour les 3EME
 
-### Mode Révision (accessible depuis vue Progression)
-- Identifie les 3 chapitres les plus faibles du niveau inférieur
-- Génère 6-9 exercices de révision (2 lvl1 + 1 lvl2 par chapitre)
-- Injecté comme catégorie temporaire dans la vue Chapitres
+### Feedback après exercice
+- Lien discret "📢 Signaler une erreur dans cet exercice" sous chaque question
+- 3 types rapides : 🐛 Erreur / ❓ Pas clair / 👍 Utile + commentaire texte libre
+- Enregistré dans l'onglet `Insights` du Sheet (créé automatiquement)
 
 ---
 
-## 5. Les exercices — comment ils sont structurés
+## 5. Les exercices — format et structure
 
 Chaque exercice dans le Sheet a ce format JSON :
 ```json
 {
-  "q": "Énoncé de la question",
-  "a": "La bonne réponse",
-  "options": ["réponse A", "réponse B", "bonne réponse", "réponse D"],
+  "q": "Énoncé de la question (avec $latex$ si besoin)",
+  "a": "La bonne réponse (doit être dans options)",
+  "options": ["réponse A", "bonne réponse", "réponse C", "réponse D"],
   "steps": ["Étape 1 d'aide", "Étape 2", "Formule clé"],
   "f": "Formule LaTeX ou texte",
   "lvl": 1
@@ -155,134 +169,203 @@ Chaque exercice dans le Sheet a ce format JSON :
 
 - `lvl:1` = exercice de base (fondamentaux)
 - `lvl:2` = exercice avancé (type contrôle/brevet)
-- Chaque chapitre a **20 exercices** dans `Curriculum_Officiel`
-- Le **boost quotidien** : 5 exercices sélectionnés par Nicolas + GAS
-- Les **diagnostics** : 2 exercices par chapitre (1 lvl1 + 1 lvl2)
+- Chaque chapitre a **20 exercices** dans `Curriculum_Officiel` (10 lvl1 + 10 lvl2)
+- Le **boost quotidien** : 5 exercices sélectionnés + personnalisés par Nicolas
+- Les **diagnostics** : 2 exercices par chapitre (1 lvl1 + 1 lvl2) dans `DiagnosticExos`
 
 ---
 
-## 6. Les onglets Google Sheet — rôles
+## 6. Les chapitres disponibles — état au 12 mars 2026
 
-| Onglet | Qui l'utilise | Contenu |
+### Curriculum_Officiel (24 chapitres × 20 exos = 480 exos)
+| Niveau | Chapitres |
+|---|---|
+| 6EME | Nombres_entiers, Fractions, Proportionnalité, Géométrie, PérimètresAires, Angles |
+| 5EME | Fractions, Nombres_relatifs, Proportionnalité, Calcul_Littéral, Pythagore, Puissances |
+| 4EME | Puissances, Fractions, Proportionnalité, Calcul_Littéral, Équations, Pythagore |
+| 3EME | Calcul_Littéral, Équations, Fonctions, Théorème_de_Thalès, Trigonométrie, Statistiques |
+
+### En attente de push (JSON prêt — fichier `new_chapters_2026-03-12.json`)
+| Chapitre | Niveau | Priorité |
 |---|---|---|
-| `Users` | GAS + toi (lecture) | Un compte par élève |
-| `Scores` | GAS uniquement | Toutes les réponses enregistrées |
-| `Progress` | GAS uniquement | Score/statut par chapitre par élève |
-| `DailyBoosts` | GAS + toi (via admin) | Historique des boosts quotidiens |
-| `Curriculum_Officiel` | GAS uniquement | 480+ exercices (24 chapitres × 20) |
-| `DiagnosticExos` | GAS uniquement | 48 exercices de diagnostic |
-| `👁 Suivi` | **TOI** | Tableau de bord principal |
-| `📋 Historique` | GAS + toi (lecture) | Log chronologique des exercices |
-| `Insights` | GAS + toi (lecture) | Feedbacks des élèves |
-| `Rapports` | GAS + toi (lecture) | Rapports quotidiens 7h |
+| Probabilités | 3EME | 🔴 Critique — présent au Brevet |
+| Racines_carrees | 3EME | 🔴 Critique — présent au Brevet |
+| Nombres_decimaux | 6EME | 🔴 Critique — base absolue |
+| Fonctions_lineaires | 4EME | 🟡 Important — programme officiel |
+| Statistiques_6eme | 6EME | 🟡 Important — programme cycle 3 |
 
-**Ne jamais modifier manuellement** : `Scores`, `Progress`, `DailyBoosts`, `Curriculum_Officiel`, `DiagnosticExos`.
+**Pour pousser ces chapitres :**
+```bash
+cd "/home/nicolas/Bureau/algebra live/algebra"
+python3 push_new_chapters.py --dry-run   # vérification
+python3 push_new_chapters.py             # push réel
+```
 
 ---
 
-## 7. L'architecture technique — simplifié
+## 7. Les onglets Google Sheet — rôles
+
+| Onglet | Qui l'utilise | Contenu | Toucher ? |
+|---|---|---|---|
+| `Users` | GAS + toi (lecture) | Un compte par élève | Lecture seule (sauf IsAdmin) |
+| `Scores` | GAS uniquement | Toutes les réponses | ❌ Ne jamais modifier |
+| `Progress` | GAS uniquement | Score/statut par chapitre | ❌ Ne jamais modifier |
+| `DailyBoosts` | GAS + admin | Historique des boosts | Lecture + admin panel |
+| `Curriculum_Officiel` | GAS uniquement | 480+ exercices (24 chap × 20) | ❌ Via scripts Python seulement |
+| `DiagnosticExos` | GAS uniquement | 48 exercices de diagnostic | ❌ Via scripts Python seulement |
+| `👁 Suivi` | **TOI** | Tableau de bord principal | ✅ Ton outil quotidien |
+| `📋 Historique` | GAS + toi (lecture) | Log chronologique des exercices | Lecture seule |
+| `Insights` | GAS + toi (lecture) | Feedbacks des élèves | Consulte régulièrement |
+| `Rapports` | GAS + toi (lecture) | Rapports quotidiens 7h | Lecture seule |
+| `RemediationChapters` | GAS uniquement | Chapitres de remédiation | ❌ Archivé |
+
+**Onglets archivés (ne pas toucher) :** `_ARCHIVE_Queue`, `_ARCHIVE_Prerequisites`, `_ARCHIVE_Rapports`, `_ARCHIVE_Pending_Exos`
+
+---
+
+## 8. L'architecture technique — simplifié
 
 ```
-NAVIGATEUR (index.html)                    GOOGLE APPS SCRIPT (backend.js)
+NAVIGATEUR (index.html ~4750 lignes)       GOOGLE APPS SCRIPT (backend.js)
         │                                              │
-        │  fetch POST (JSON)                           │
+        │  fetch POST (JSON, SANS Content-Type !)      │
         ├──────────────────────────────────────────────►
-        │                                              │
         │  { action: 'save_score',                     │  Lit/écrit dans
         │    code: 'ABC123',                           │  Google Sheet
         │    categorie: 'Fractions',                   │  via Spreadsheet API
         │    resultat: 'EASY', ... }                   │
-        │                                              │
         │  ◄─────────────────────────────────────────  │
         │  { status: 'success' }                       │
         │                                              │
-  localStorage                                   Google Sheets
-  - boost_v23: {email, hash}              (base de données)
-  - boost_loc_v23: {streak, last}
-  - done_v23: {chapDone, boostConsumed}
+  localStorage                                   Google Sheets (prod)
+  - boost_v23: {email, hash}              ID: 1zLBajKVL8FUzy7aV2Myi9gYFEFJjnALkLAg0hbicuDk
+  - boost_loc_v23: {stk, last}
 ```
 
-**Pas de serveur propre** — tout passe par Google Apps Script gratuit.
+⚠️ **Règle CORS critique** : Ne JAMAIS ajouter `Content-Type: application/json` sur les fetch vers GAS. Déclenche un preflight OPTIONS que GAS ne gère pas → erreur CORS. Le fetch doit être sans headers.
+
 **Limite** : ~20 utilisateurs simultanés max (Google Sheets).
 
 ---
 
-## 8. Gestion du trial 7 jours
+## 9. Gestion du trial 7 jours
 
 - À l'inscription : `TrialStart = date du jour` enregistré dans `Users`
 - À chaque login : GAS calcule `daysLeft = 7 - (today - TrialStart)`
 - Si `daysLeft <= 0` : `trialActive: false` → overlay bloquant côté frontend
 - Badge `J-X` visible dans le header dès J+5
-- Le trial donne **accès complet** à toutes les fonctionnalités
+- Le trial donne **accès complet** à toutes les fonctionnalités actives
+- Bouton "Voir ma progression quand même" : ferme l'overlay et affiche la progression
 
 ---
 
-## 9. L'admin panel (triple-clic logo)
+## 10. L'admin panel (compte admin)
 
-Uniquement accessible aux comptes avec `IsAdmin: true` dans `Users`.
+Accessible uniquement aux comptes avec `IsAdmin: true` dans `Users`.
+
+**Connexion :** ton email admin → login normal → redirection automatique vers "Mes Élèves"
 
 **Ce que tu vois par élève :**
 - Toutes ses réponses (badge DIAG = diagnostic, BOOST = entraînement)
-- Scores par chapitre (triés : terminés → en cours → diagnostiqués)
+- Scores par chapitre triés : terminés → en cours → diagnostiqués
 - Statut boost (pending/in_progress/done)
+- Métriques : ⏱ temps moyen, 💡 indices, 🧮 % formule
 - Section "Archivés" (chapitres complétés >20 exos)
 
 **Ce que tu peux faire :**
-- Publier le prochain boost (entrer le JSON des 5 exercices)
-- Assigner le prochain chapitre
-- Copier un prompt DeepSeek pour générer des exos
-- Voir l'historique complet des boosts
+- 📋 **Copier le prompt Claude** pour un chapitre → Claude génère le JSON d'exercices
+- ⚡ **Publier un boost** (JSON 5 exercices) → disponible au prochain login élève
+- 📚 **Publier un chapitre** (JSON 20 exercices) → badge NEW chez l'élève
+- 📋 **Copier le dernier boost JSON** pour le modifier
+
+**Flux complet (30 secondes) :**
+1. Clic "📋 Copier le prompt Claude"
+2. Coller dans Claude (Ctrl+V) → Entrée → JSON généré
+3. Sélectionner le JSON → Ctrl+C → retour sur Matheux
+4. Coller dans "Publier" → Enregistrer → ✅ Toast vert
 
 ---
 
-## 10. Système de feedback élèves
+## 11. Système de feedback élèves
 
 Après chaque exercice répondu, un lien discret apparaît :
 > "📢 Signaler une erreur dans cet exercice"
 
-L'élève peut :
-- Signaler 🐛 Erreur / ❓ Pas clair / 👍 Utile
-- Ajouter un commentaire texte libre
+L'élève peut choisir :
+- 🐛 **Erreur** : l'exercice contient une erreur
+- ❓ **Pas clair** : l'énoncé est confus
+- 👍 **Utile** : l'exercice lui a été utile
 
-Tout est enregistré dans l'onglet `Insights` du Sheet (créé automatiquement).
-→ Tu consultes `Insights` pour identifier les exercices à corriger.
+Avec un commentaire texte libre optionnel.
 
----
-
-## 11. Ce qui N'EST PAS encore fait (13 mars 2026)
-
-| Fonctionnalité | Statut |
-|---|---|
-| Paiement Stripe | ❌ Non intégré |
-| Email bienvenue automatique | ❌ Non intégré |
-| Séquences email J+3/J+7 | ❌ Non intégrées |
-| Suppression profils de test (GAS) | ❌ À créer |
-| Probabi lités / Racines carrées (3EME) | 🔄 En cours |
-| Nombres décimaux (6EME) | 🔄 En cours |
-| Fonctions linéaires (4EME) | 🔄 En cours |
+Tout est enregistré dans l'onglet `Insights` du Sheet (créé automatiquement au premier feedback).
+→ Consulte `Insights` régulièrement pour identifier les exercices à corriger.
 
 ---
 
-## 12. Procédure de déploiement
+## 12. Ce qui N'EST PAS encore fait (12 mars 2026)
 
-Chaque modification du backend :
+| Fonctionnalité | Statut | Priorité |
+|---|---|---|
+| Paiement Stripe | ❌ Non intégré | 🔴 CRITIQUE |
+| Email bienvenue J+0 automatique | ❌ Code présent, non activé | 🟡 Important |
+| Séquences email J+3/J+7 | ❌ Code présent, non activé | 🟡 Important |
+| Mode Brevet | ⏳ Code prêt, UI désactivé | 🟡 Bientôt |
+| Mode Révision | ⏳ Code prêt, UI désactivée | 🟡 Bientôt |
+| 5 nouveaux chapitres dans Sheet | 🔄 JSON prêt, push restant | 🔴 Urgent |
+| Action delete_test_users (GAS) | ❌ À créer | 🟡 Utile |
+| Validation inputs GAS (email) | ❌ À faire | 🟢 Mineur |
+| Migration BDD >50 users | ❌ Sheets limite ~20 simultanés | 🔵 Long terme |
+
+---
+
+## 13. Procédure de déploiement
+
+### Modifier le backend (backend.js)
 ```bash
 cd "/home/nicolas/Bureau/algebra live/algebra"
 clasp push --force
 clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF --description "description du changement"
 ```
 
-Pour le frontend (`index.html`) : push vers GitHub Pages (auto-deploy).
+### Modifier le frontend (index.html)
+Push vers GitHub Pages (auto-deploy) :
+```bash
+cd "/home/nicolas/Bureau/algebra live/algebra"
+git add index.html
+git commit -m "feat: description"
+git push origin main
+```
+
+### Pousser les 5 nouveaux chapitres
+```bash
+cd "/home/nicolas/Bureau/algebra live/algebra"
+python3 push_new_chapters.py --dry-run   # prévisualisation
+python3 push_new_chapters.py             # push réel
+python3 audit_formats.py                 # vérification conformité
+```
 
 ---
 
-## 13. Contacts et support
+## 14. Actions manuelles en attente (12 mars 2026)
+
+| Action | Où | Priorité |
+|---|---|---|
+| Mettre `IsAdmin: true` pour `contact@matheux.fr` | Sheet → onglet `Users` → colonne H | 🔴 Maintenant |
+| Deploy GAS @31 (Brevet/Révision désactivés) | Terminal (voir §13) | 🔴 Maintenant |
+| Push 5 nouveaux chapitres | Terminal (voir §13) | 🔴 Aujourd'hui |
+| Intégrer Stripe | Développement | 🔴 Sprint suivant |
+
+---
+
+## 15. Contacts et ressources
 
 - **Fondateur** : Nicolas Follezou — contact@matheux.fr
 - **GitHub** : https://github.com/NicoMPC/algebra
-- **Sheet** : ID `1zLBajKVL8FUzy7aV2Myi9gYFEFJjnALkLAg0hbicuDk`
-- **GAS URL** : `https://script.google.com/macros/s/AKfycbx.../exec`
+- **Sheet prod** : ID `1zLBajKVL8FUzy7aV2Myi9gYFEFJjnALkLAg0hbicuDk`
+- **GAS URL** : `https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec`
+- **Rapport condensé** : `docs/rapport-condense-2026-03-12.md`
 
 ---
 
-*Notice générée le 13 mars 2026 — Matheux v23 GOLD MASTER*
+*Notice générée le 12 mars 2026 — Matheux v23 GOLD MASTER*

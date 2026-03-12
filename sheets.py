@@ -15,7 +15,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
 KEY_FILE  = "/home/nicolas/Bureau/algebra live/algebra/algebreboost-sheets-2595a71cadfb.json"
-SHEET_ID  = "1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4"
+SHEET_ID  = "1zLBajKVL8FUzy7aV2Myi9gYFEFJjnALkLAg0hbicuDk"  # PROD
 SCOPES    = ["https://www.googleapis.com/auth/spreadsheets"]
 
 

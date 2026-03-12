@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
 """
-push_new_chapters.py — Matheux : pousse les 4 nouveaux chapitres dans Google Sheets.
+push_new_chapters.py — Matheux : pousse les 5 nouveaux chapitres dans Google Sheets.
 
 Chapitres ajoutés :
   - Probabilites (3EME)         → Curriculum_Officiel + DiagnosticExos
   - Racines_carrees (3EME)      → Curriculum_Officiel + DiagnosticExos
   - Nombres_decimaux (6EME)     → Curriculum_Officiel + DiagnosticExos
   - Fonctions_lineaires (4EME)  → Curriculum_Officiel + DiagnosticExos
+  - Statistiques (6EME)         → Curriculum_Officiel + DiagnosticExos  [NOUVEAU 12 mars 2026]
 
 Usage :
   python3 push_new_chapters.py [--dry-run]
+  python3 push_new_chapters.py --file algebra/new_chapters_2026-03-12.json [--dry-run]
 
 Prérequis :
   - sheets.py configuré avec PROD_SHEET_ID = 1zLBajKVL8FUzy7aV2Myi9gYFEFJjnALkLAg0hbicuDk
-  - Fichier de données : /tmp/exos_data.json (généré par les agents)
+  - Fichier de données : algebra/new_chapters_2026-03-12.json (ou /tmp/exos_data.json)
   - Compte de service : algebra/algebreboost-sheets-2595a71cadfb.json
 """
 
@@ -24,7 +26,18 @@ import os
 sys.path.insert(0, '/home/nicolas/Bureau/algebra live/algebra')
 
 DRY_RUN = '--dry-run' in sys.argv
-DATA_FILE = '/tmp/exos_data.json'
+
+# Fichier de données : --file <path> ou défaut new_chapters_2026-03-12.json
+_file_args = [a for a in sys.argv if a.startswith('--file=')]
+if _file_args:
+    DATA_FILE = _file_args[0].split('=', 1)[1]
+elif '--file' in sys.argv:
+    _idx = sys.argv.index('--file')
+    DATA_FILE = sys.argv[_idx + 1] if _idx + 1 < len(sys.argv) else '/tmp/exos_data.json'
+else:
+    # Chercher d'abord le fichier canonique, sinon fallback /tmp/exos_data.json
+    _default = os.path.join(os.path.dirname(__file__), 'new_chapters_2026-03-12.json')
+    DATA_FILE = _default if os.path.exists(_default) else '/tmp/exos_data.json'
 
 # Métadonnées des nouveaux chapitres pour Curriculum_Officiel
 CHAPTER_META = {
@@ -52,6 +65,12 @@ CHAPTER_META = {
         'Titre':     'Fonctions linéaires',
         'Icone':     '📈',
     },
+    'statistiques_6eme': {
+        'Niveau':    '6EME',
+        'Categorie': 'Statistiques_6eme',
+        'Titre':     'Statistiques',
+        'Icone':     '📊',
+    },
 }
 
 # Mapping clé données → clé diagnostic
@@ -60,6 +79,7 @@ DIAG_MAP = {
     'racines_carrees_3eme':   'Racines_carrées_3EME',
     'nombres_decimaux_6eme':  'Nombres_décimaux_6EME',
     'fonctions_lineaires_4eme': 'Fonctions_linéaires_4EME',
+    'statistiques_6eme':        'Statistiques_6EME',
 }
 
 
@@ -100,13 +120,13 @@ def push_curriculum(sh, data):
             print(f"  [SKIP] {niveau}/{categorie} déjà présent dans Curriculum_Officiel")
             continue
 
-        row = {
-            'Niveau':    niveau,
-            'Categorie': categorie,
-            'Titre':     meta['Titre'],
-            'Icone':     meta['Icone'],
-            'ExosJSON':  json.dumps(exos, ensure_ascii=False),
-        }
+        row = [
+            niveau,
+            categorie,
+            meta['Titre'],
+            meta['Icone'],
+            json.dumps(exos, ensure_ascii=False),
+        ]
 
         lvl1 = sum(1 for e in exos if e.get('lvl') == 1)
         lvl2 = sum(1 for e in exos if e.get('lvl') == 2)
@@ -138,11 +158,11 @@ def push_diagnostic(sh, data):
             print(f"  [SKIP] {niveau}/{categorie} déjà présent dans DiagnosticExos")
             continue
 
-        row = {
-            'Niveau':    niveau,
-            'Categorie': categorie,
-            'ExosJSON':  json.dumps(exos, ensure_ascii=False),
-        }
+        row = [
+            niveau,
+            categorie,
+            json.dumps(exos, ensure_ascii=False),
+        ]
 
         print(f"  {'[DRY] ' if DRY_RUN else ''}Ajout diag {niveau}/{categorie} : {len(exos)} exos")
 

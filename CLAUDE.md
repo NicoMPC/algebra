@@ -56,8 +56,8 @@ clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sx
 | `get_prerequisites` | ✅ Fonctionne |
 | `enqueue` | ✅ Fonctionne (onglet Queue archivé → erreur propre) |
 | `generate_exam_prep` | ✅ Fonctionne — per-chapter, 10 questions (7 lvl2 + 3 lvl1 non acquis) |
-| `generate_brevet` | ✅ NOUVEAU — multi-chapitres niveau, ~15q style Brevet |
-| `generate_revision` | ✅ NOUVEAU — révision niveau inférieur sur chapitres faibles |
+| `generate_brevet` | ✅ DISPONIBLE — multi-chapitres niveau, ~15q style Brevet (UI désactivé — code conservé) |
+| `generate_revision` | ✅ DISPONIBLE — révision niveau inférieur sur chapitres faibles (UI désactivé — code conservé) |
 | `submit_feedback` | ✅ NOUVEAU — écrit dans onglet Insights (créé auto si absent) |
 | `generateMorningReport` | ✅ Fonctionne — génération IA désactivée |
 | `get_admin_overview` | ✅ Fonctionne — boostHistory[], source exos, chapitresDetail cap 20 |
@@ -208,9 +208,10 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 - [ ] Agent analyse lacunes quotidien automatique
 - [ ] Agent génération boost automatique
 - [ ] Agent rapport parents (email hebdo)
-- [x] Mode "Préparation Brevet" (GAS generate_brevet + UI 3 screens + nav tab) ✅
-- [x] Mode Révision niveau inférieur (GAS generate_revision + card Progression) ✅
+- [x] Mode "Préparation Brevet" (GAS generate_brevet + code conservé, **UI désactivé demande Nicolas**) ✅
+- [x] Mode Révision niveau inférieur (GAS generate_revision + code conservé, **UI désactivé demande Nicolas**) ✅
 - [x] Système feedback élève (submit_feedback GAS + modal + onglet Insights) ✅
+- [x] 5 chapitres prioritaires JSON créés (Probabilités 3EME, Racines carrées 3EME, Nombres décimaux 6EME, Fonctions linéaires 4EME, Statistiques 6EME) — en attente push Sheet ✅
 - [ ] Migration Sheets → vraie BDD si >50 users simultanés
 
 ---
@@ -218,8 +219,8 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 ## ✅ Ce qui fonctionne bien (ne pas toucher sans raison)
 - CSS/UI complet, mobile-first, animations propres (pulseGentle, toastIn, popIn)
 - Landing page vendeuse : hero émotionnel, 4 cartes, témoignages, CTA sans carte + pricing comparaison + Nicolas fondateur
-- Mode Brevet : nav tab + launch/active/done screens + GAS generate_brevet multi-chapitres
-- Mode Révision : GAS generate_revision (niveau inférieur, chapitres faibles) + launchRevision() + card Progression
+- Mode Brevet : GAS generate_brevet multi-chapitres — **code complet conservé, UI désactivé (tab masqué, loadBrevet() bloqué)**
+- Mode Révision : GAS generate_revision (niveau inférieur, chapitres faibles) — **code complet conservé, UI désactivé (card masquée, launchRevision() bloqué)**
 - Feedback non-intrusif : bouton "Signaler" post-réponse + modal 3 types + GAS submit_feedback → onglet Insights
 - Auth register + login + auto-login silencieux
 - Scores enrichis : temps, wrongOpt, indices, formule (v23)
@@ -266,11 +267,10 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 ## 📁 docs/ — Fichiers clés
 | Fichier | Contenu |
 |---|---|
-| `rapport.md` | Rapport session 11 mars nuit |
-| `rapport-13-mars.md` | Rapport session 13 mars — 6 phases, 7 bugs fixés, tests 97% |
-| `notice-utilisation.md` | Guide complet site pour Nicolas (élèves, Sheet, admin, tech) |
-| `programme-français-verif.md` | Couverture Eduscol 66%, 12 notions manquantes identifiées |
-| `audit_complet.md` | Audit test_complet.py 77/81 (95%) |
+| `rapport-condense-2026-03-12.md` | **RÉFÉRENCE UNIQUE** — état complet au 12 mars, remplace tous les anciens rapports |
+| `notice-utilisation.md` | Guide complet site pour Nicolas (élèves, Sheet, admin, tech) — Version 12 mars |
+| `programme-français-verif.md` | Couverture Eduscol ~85% avec +5 chap., 12 notions manquantes identifiées |
+| `audit_complet.md` | Audit test_complet.py 89/93 (96%) |
 | `juridique-checklist.md` | RGPD mineurs, templates légaux, case consentement HTML+JS |
 | `landing-page-brief.md` | Brief landing 9 sections + copywriting |
 | `marketing-phase1.md` | 3 phases : WhatsApp, LinkedIn, parrainage, Google Ads |
@@ -286,13 +286,14 @@ sh.append_row("Scores", [...])
 ```
 - `rebuild_sheet.py` : reconstruit 👁 Suivi et 📋 Historique depuis données réelles — règles ACTION synchronisées avec GAS
 - `audit_formats.py` : audit conformité exercices Curriculum_Officiel + DiagnosticExos
-- `push_new_chapters.py` : push 4 nouveaux chapitres (Probabilités 3EME, Racines carrées 3EME, Nombres décimaux 6EME, Fonctions linéaires 4EME) → données dans `/tmp/exos_data.json`
+- `push_new_chapters.py` : push 5 nouveaux chapitres (Probabilités 3EME, Racines carrées 3EME, Nombres décimaux 6EME, Fonctions linéaires 4EME, Statistiques 6EME) → données dans `new_chapters_2026-03-12.json` → copier vers `/tmp/exos_data.json` avant de lancer
 - `test_workflows.py` : 38 tests GAS (groupes A+B), 37/38 PASS après deploy @31
 
-## ⚠️ Action manuelle requise après session 13 mars
-- Sheet Users → colonne `IsAdmin` → mettre `true` pour `contact@matheux.fr` (A13 WARN)
-- Lancer `python3 push_new_chapters.py` pour pousser les 4 nouveaux chapitres dans le Sheet
-- Lancer `python3 audit_formats.py` pour vérifier conformité exercices en prod
+## ⚠️ Actions manuelles requises (12 mars 2026)
+- Sheet Users → colonne `IsAdmin` → mettre `true` pour `contact@matheux.fr`
+- Deploy GAS @31 : `clasp push --force && clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF --description "Brevet+Révision désactivés UI, 5 chapitres JSON prêts"`
+- Push 5 chapitres : `cp algebra/new_chapters_2026-03-12.json /tmp/exos_data.json && python3 push_new_chapters.py`
+- Lancer `python3 audit_formats.py` pour vérifier conformité exercices après push
 
 ---
 
@@ -314,6 +315,7 @@ sh.append_row("Scores", [...])
 | 12 mars (nuit) | @30 | Quiz inline landing (step 3 card blanche), tutorial Q1, fix onbRender bg, cohérence messages | 544a112 |
 | 12 mars (nuit 2) | @30 | Simulation 20 profils/5j, messages parent/ado refondus, BLOC 3 juridique complet (5 pages + footer + consentement) | — |
 | 13 mars | @31 | BLOCS 4-5 : landing pricing+fondateur+carousel, programme-français-verif.md (66% couv.), audit_formats.py, Mode Brevet (GAS+UI 3 screens), Mode Révision (GAS+card), Feedback (modal+Insights tab), 7 bugs fixes (showT/SHEET_ID/Array.find/chkComp/togCat/res2/sendScore), test_workflows.py 37/38 PASS (97%) | — |
+| 12 mars 2026 | @31 | Désactivation UI Brevet+Révision (code conservé), création 5 chapitres JSON (Probabilités/Racines/Décimaux/FctLinéaires/Stats), rapport condensé, notice refaite, programme-français-verif.md ~85% | — |
 
 ---
 

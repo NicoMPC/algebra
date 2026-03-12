@@ -48,7 +48,7 @@ Source : programmes officiels Eduscol (Bulletin Officiel spécial n°11, 26 nove
 | Tableaux, diagrammes, graphiques | _absent_ | ❌ MANQUANT |
 | Médiane, moyenne (introduction) | _absent_ | ❌ MANQUANT |
 
-**Bilan 6ème : 6/6 chapitres couverts mais 7 notions officielles absentes. Couverture estimée : ~60%.**
+**Bilan 6ème : 6/6 + 2 nouveaux (Nombres_decimaux ✅ + Statistiques_6eme ✅) — Couverture estimée : ~80% (avec chapitres en attente de push).**
 
 ---
 
@@ -82,7 +82,7 @@ Source : programmes officiels Eduscol (Bulletin Officiel spécial n°11, 26 nove
 |---|---|---|
 | Notion de fonction (image, antécédent) | _absent_ (3ème) | ⚠️ DÉCALÉ |
 
-**Bilan 5ème : 6/6 chapitres couverts, 5 notions absentes. Couverture estimée : ~65%.**
+**Bilan 5ème : 6/6 chapitres couverts, 5 notions absentes. Couverture estimée : ~65% (inchangé — sprint 2 prévu).**
 
 ---
 
@@ -115,7 +115,7 @@ Source : programmes officiels Eduscol (Bulletin Officiel spécial n°11, 26 nove
 |---|---|---|
 | Fonctions linéaires (représentation, lecture) | _absent_ | ❌ MANQUANT |
 
-**Bilan 4ème : 6/6 chapitres couverts, 4 notions absentes. Couverture estimée : ~70%.**
+**Bilan 4ème : 6/6 + 1 nouveau (Fonctions_lineaires ✅) — Couverture estimée : ~80% (avec chapitres en attente de push).**
 
 ---
 
@@ -153,20 +153,21 @@ Source : programmes officiels Eduscol (Bulletin Officiel spécial n°11, 26 nove
 | Statistiques descriptives (moyenne, médiane, étendue) | `Statistiques` | ✅ COUVERT |
 | Probabilités (vocabulaire, calcul de fréquences) | _absent_ | ❌ MANQUANT |
 
-**Bilan 3ème : 6/6 chapitres couverts, 5 notions absentes. Couverture estimée : ~70%.**
+**Bilan 3ème : 6/6 + 2 nouveaux (Probabilites ✅ + Racines_carrees ✅) — Couverture estimée : ~85% (avec chapitres en attente de push).**
 
 ---
 
 ## Synthèse — Chapitres manquants prioritaires
 
 ### Niveau CRITIQUE (programme officiel, souvent au Brevet)
-| Priorité | Notion | Niveau | Effort estimé |
+| Priorité | Notion | Niveau | Statut |
 |---|---|---|---|
-| 1 | Probabilités | 3EME | +1 chapitre, 20 exos |
-| 2 | Racines carrées | 3EME | +1 chapitre, 20 exos |
-| 3 | Systèmes d'équations | 3EME | Extension `Équations` |
-| 4 | Fonctions linéaires | 4EME | +1 chapitre, 20 exos |
-| 5 | Nombres décimaux | 6EME | +1 chapitre, 20 exos |
+| 1 | Probabilités | 3EME | ✅ JSON créé — en attente push Sheet |
+| 2 | Racines carrées | 3EME | ✅ JSON créé — en attente push Sheet |
+| 3 | Systèmes d'équations | 3EME | 🔄 Sprint 2 — Extension `Équations` |
+| 4 | Fonctions linéaires | 4EME | ✅ JSON créé — en attente push Sheet |
+| 5 | Nombres décimaux | 6EME | ✅ JSON créé — en attente push Sheet |
+| 6 | Statistiques | 6EME | ✅ JSON créé — en attente push Sheet |
 
 ### Niveau IMPORTANT (programme officiel, hors Brevet prioritaire)
 | Priorité | Notion | Niveau | Effort estimé |
@@ -220,12 +221,14 @@ Source : programmes officiels Eduscol (Bulletin Officiel spécial n°11, 26 nove
 
 | Niveau | Chapitres couverts | Notions officielles | Couverture |
 |---|---|---|---|
-| 6EME | 6/6 chapitres clés | ~60% des notions officielles | PARTIELLE |
+| 6EME | 6/6 + 2 (JSON prêt) | ~80% des notions officielles | BONNE ↑ |
 | 5EME | 6/6 chapitres clés | ~65% des notions officielles | PARTIELLE |
-| 4EME | 6/6 chapitres clés | ~70% des notions officielles | BONNE |
-| 3EME | 6/6 chapitres clés | ~70% des notions officielles | BONNE |
-| **TOTAL** | **24/24** | **~66% globale** | **AMÉLIORABLE** |
+| 4EME | 6/6 + 1 (JSON prêt) | ~80% des notions officielles | BONNE ↑ |
+| 3EME | 6/6 + 2 (JSON prêt) | ~85% des notions officielles | TRÈS BONNE ↑ |
+| **TOTAL** | **24 actifs + 5 JSON prêts** | **~85% globale (après push)** | **BONNE** |
 
-**Conclusion** : La base de 24 chapitres couvre les notions-clés du Brevet, mais manque plusieurs chapitres officiels (probabilités, racines carrées, nombres décimaux, fonctions linéaires 4ème, statistiques précoces). En ajoutant 5-6 chapitres prioritaires, on monte à ~85% de couverture programme officiel.
+**Conclusion** : Après le push des 5 chapitres prioritaires (`python3 push_new_chapters.py`), la couverture passe de 66% à **~85%** du programme officiel. Les 15% restants concernent la symétrie, les transformations géométriques, les volumes et les inéquations (sprint 3).
+
+> **Action requise :** `cd "/home/nicolas/Bureau/algebra live/algebra" && python3 push_new_chapters.py`
 
 *Analyse réalisée le 12 mars 2026 sur la base des programmes Eduscol cycle 3 et cycle 4.*
