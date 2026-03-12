@@ -450,6 +450,47 @@
     .adm-copy-btn { display:flex; align-items:center; gap:.4rem; background:linear-gradient(135deg,#4f46e5,#7c3aed); color:#fff; border:none; border-radius:10px; padding:.5rem 1rem; font-size:.75rem; font-weight:700; cursor:pointer; transition:all .15s; width:100%; justify-content:center; margin-top:.6rem; }
     .adm-copy-btn:active { transform:scale(.97); opacity:.9; }
 
+    /* ── ADMIN DARK MODE ──────────────────────────────────── */
+    body.adm-dark { background: #0f172a; }
+    body.adm-dark .bg-white.rounded-2xl { background: #1e293b !important; border-color: #334155 !important; }
+    body.adm-dark header.bg-white { background: #1e293b !important; border-color: #334155 !important; }
+    body.adm-dark .adm-card { background: #1e293b !important; border-color: #334155 !important; }
+    body.adm-dark .adm-card.needs-action { border-color: #4f46e5 !important; box-shadow: 0 2px 12px rgba(79,70,229,.25) !important; }
+    body.adm-dark .adm-card .text-slate-900 { color: #f1f5f9 !important; }
+    body.adm-dark .adm-card .text-slate-700 { color: #cbd5e1 !important; }
+    body.adm-dark .adm-card .text-slate-600 { color: #94a3b8 !important; }
+    body.adm-dark .adm-card .text-slate-500 { color: #64748b !important; }
+    body.adm-dark .adm-card .text-slate-400 { color: #475569 !important; }
+    body.adm-dark .adm-card .bg-white { background: #1e293b !important; }
+    body.adm-dark .adm-card .bg-slate-50 { background: #0f172a !important; }
+    body.adm-dark .adm-card .bg-slate-100 { background: #334155 !important; }
+    body.adm-dark .adm-card .text-slate-500.bg-slate-100 { color: #94a3b8 !important; }
+    body.adm-dark .adm-card .border-slate-100 { border-color: #334155 !important; }
+    body.adm-dark .adm-card .border-slate-200 { border-color: #475569 !important; }
+    body.adm-dark .adm-chap-block { background: #0f172a !important; border-color: #334155 !important; }
+    body.adm-dark .adm-chap-block .text-slate-800 { color: #e2e8f0 !important; }
+    body.adm-dark .adm-chap-block .text-slate-600 { color: #94a3b8 !important; }
+    body.adm-dark .adm-chap-block .text-slate-500 { color: #64748b !important; }
+    body.adm-dark .adm-chap-block .text-slate-400 { color: #475569 !important; }
+    body.adm-dark .adm-chap-block .bg-slate-50 { background: #0f172a !important; }
+    body.adm-dark .adm-chap-block .bg-slate-100 { background: #334155 !important; }
+    body.adm-dark .adm-bar-bg { background: #334155 !important; }
+    body.adm-dark .adm-exo-row { border-bottom-color: #1e293b !important; }
+    body.adm-dark .adm-exo-row .text-slate-600 { color: #94a3b8 !important; }
+    body.adm-dark .adm-textarea { background: #0f172a !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+    body.adm-dark .adm-textarea:focus { background: #1e293b !important; }
+    body.adm-dark #admin-modal-inner { background: #1e293b !important; }
+    body.adm-dark #admin-modal-inner .text-slate-900 { color: #f1f5f9 !important; }
+    body.adm-dark #admin-modal-inner .text-slate-700 { color: #cbd5e1 !important; }
+    body.adm-dark #admin-modal-inner .text-slate-500 { color: #64748b !important; }
+    body.adm-dark #admin-modal-inner .text-slate-400 { color: #475569 !important; }
+    body.adm-dark #admin-modal-inner .bg-slate-50 { background: #0f172a !important; }
+    body.adm-dark #admin-modal-inner .bg-slate-100 { background: #334155 !important; }
+    body.adm-dark #admin-modal-inner .border-slate-100 { border-color: #334155 !important; }
+    body.adm-dark #admin-modal-inner .border-slate-200 { border-color: #475569 !important; }
+    body.adm-dark #admin-modal-inner .adm-chap-block { background: #0f172a !important; border-color: #334155 !important; }
+    body.adm-dark #admin-modal-inner .adm-chap-block .text-slate-800 { color: #e2e8f0 !important; }
+
     /* ── SYMBOLES TABLEAU BLANC ──────────────────────────── */
     .sym-btn {
       background:#f1f5f9; border:1.5px solid #e2e8f0; border-radius:8px;
@@ -884,7 +925,7 @@
       <button onclick="logout()"
               class="w-9 h-9 bg-rose-50 border border-rose-100 text-rose-400 rounded-xl flex items-center justify-center text-base hover:bg-rose-100 transition-colors">✕</button>
     </div>
-    <div class="flex items-center justify-between px-4 py-2.5 gap-3">
+    <div id="gamif-row" class="flex items-center justify-between px-4 py-2.5 gap-3">
       <div class="flex gap-2">
         <div id="stk-box" class="flex items-center gap-1.5 bg-amber-50 border border-amber-100 text-amber-700 font-black text-sm px-2.5 py-1.5 rounded-xl syne">
           🔥 <span id="ui-stk">0</span>
@@ -2538,6 +2579,10 @@ function initApp(d, skipRender) {
   if (S.prof.isAdmin) {
     document.getElementById('fab-draft').classList.add('hidden');
     document.getElementById('mastery-w').innerHTML = '';
+    var gamifRow = document.getElementById('gamif-row');
+    if (gamifRow) gamifRow.classList.add('hidden');
+    document.body.classList.add('adm-mode');
+    if (localStorage.getItem('adm_dark_v1') === '1') document.body.classList.add('adm-dark');
     S.view = 'admin';
     renderAdminDashboard();
     return;
@@ -4404,11 +4449,15 @@ function _renderAdminCards() {
   var slotColor = realCount >= 45 ? 'text-rose-600' : realCount >= 35 ? 'text-amber-500' : 'text-slate-500';
   html += '<div class="text-xs font-bold mt-0.5 ' + slotColor + '">' + realCount + ' / 50 places réelles</div>';
   html += '</div>';
+  html += '<div class="flex items-center gap-2">';
   if (needsCount > 0) {
     html += '<div class="bg-rose-500 text-white syne font-black text-sm px-3 py-1.5 rounded-xl shadow-sm">' + needsCount + ' action' + (needsCount > 1 ? 's' : '') + '</div>';
   } else {
     html += '<div class="bg-emerald-100 text-emerald-700 syne font-black text-sm px-3 py-1.5 rounded-xl">✅ RAS</div>';
   }
+  var isDark = document.body.classList.contains('adm-dark');
+  html += '<button onclick="_toggleAdmDark()" title="Mode nuit" class="w-9 h-9 rounded-xl flex items-center justify-center text-base transition-colors ' + (isDark ? 'bg-indigo-900 text-amber-300' : 'bg-slate-100 text-slate-400 hover:bg-slate-200') + '">' + (isDark ? '☀️' : '🌙') + '</button>';
+  html += '</div>';
   html += '</div>';
   html += '<button onclick="renderAdminDashboard()" class="mt-2 text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors">↻ Actualiser</button>';
   html += '</div>';
@@ -4550,6 +4599,12 @@ function _adminSetTab(tab) {
   _renderAdminCards();
 }
 
+function _toggleAdmDark() {
+  var on = document.body.classList.toggle('adm-dark');
+  localStorage.setItem('adm_dark_v1', on ? '1' : '0');
+  _renderAdminCards();
+}
+
 async function _adminMarkAllTest() {
   var btn = document.getElementById('mark-all-test-btn');
   if (btn) { btn.disabled = true; btn.textContent = '...'; }
@@ -4628,6 +4683,11 @@ function _buildModalHTML(st) {
   // PATCH A : actionPriority avec fallback
   var priority = st.actionPriority || st.action || '👍 RAS';
   var allActions = (st.actions && st.actions.length > 0) ? st.actions : [priority];
+  var needsBoost = allActions.some(function(a) { return a.indexOf('BOOST TERMINÉ') !== -1; });
+  var needsChap  = allActions.some(function(a) { return a.indexOf('CHAPITRE TERMINÉ') !== -1; });
+  // Si ni boost ni chap → montrer les deux (RAS/BLOQUÉ)
+  var showBoost = needsBoost || (!needsBoost && !needsChap);
+  var showChap  = needsChap  || (!needsBoost && !needsChap);
   var as      = _actionStyle(priority);
   var lastStr = relDateAdmin(st.lastConnection);
   var detail  = st.chapitresDetail || [];
@@ -4847,8 +4907,13 @@ function _buildModalHTML(st) {
         '<textarea id="modal-motprof-' + st.code + '" class="adm-textarea" style="height:72px" placeholder="Ex: Bravo pour ta progression ! Ce chapitre va t\'aider à maîtriser les fractions. Courage 💪"></textarea>' +
       '</div>' +
 
-      // PATCH D — ⚡ Boost : verrouillage intelligent
-      (function() {
+      // Séparateur contextuel si UNE SEULE action active
+      (needsBoost && !needsChap ? '<div class="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mb-3 text-[11px] text-amber-700 font-semibold">⚡ Action : préparer le prochain boost</div>' : '') +
+      (needsChap && !needsBoost ? '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 mb-3 text-[11px] text-emerald-700 font-semibold">📚 Action : assigner le prochain chapitre</div>' : '') +
+      (needsBoost && needsChap  ? '<div class="bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2 mb-3 text-[11px] text-indigo-700 font-semibold">⚡📚 Double action : boost ET chapitre à préparer</div>' : '') +
+
+      // PATCH D — ⚡ Boost : conditionnel
+      (showBoost ? (function() {
         var bHistory = st.boostHistory || [];
         // Priorité aux nouveaux champs GAS @30, fallback sur anciens champs
         var boostPending    = typeof st.boostPending    === 'boolean' ? st.boostPending    : false;
@@ -4930,10 +4995,13 @@ function _buildModalHTML(st) {
             '</div>' +
           '</div>'
         );
-      })() +
+      })() : '') +
 
-      // PATCH E — 📚 Chapitre : verrouillage intelligent
-      (function() {
+      // Séparateur si les deux sections affichées
+      (showBoost && showChap ? '<div class="border-t border-slate-100 my-3"></div>' : '') +
+
+      // PATCH E — 📚 Chapitre : conditionnel
+      (showChap ? (function() {
         // Priorité aux nouveaux champs GAS @30, fallback sur anciens champs
         var chapInProg  = typeof st.chapInProgress === 'boolean' ? st.chapInProgress : (st.currentChapExosDone > 0 && st.currentChapExosDone < 20);
         var chapTerm    = typeof st.chapTermine    === 'boolean' ? st.chapTermine    : (st.currentChapExosDone >= 20);
@@ -4960,7 +5028,7 @@ function _buildModalHTML(st) {
             '</div>' +
           '</div>'
         );
-      })() +
+      })() : '') +
 
     '</div>'
   );
