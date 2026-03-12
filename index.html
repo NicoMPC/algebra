@@ -121,6 +121,11 @@
       50% { opacity: 0.7; transform: scale(1.05); }
     }
     .pulse-hint { animation: pulseHint 2.5s ease-in-out infinite; }
+    @keyframes pulseNewChap {
+      0%,100% { box-shadow: 0 0 0 0 rgba(99,102,241,0),  0 1px 4px rgba(0,0,0,.07); }
+      50%      { box-shadow: 0 0 0 6px rgba(99,102,241,.11), 0 1px 4px rgba(0,0,0,.07); }
+    }
+    .pulse-new-chap { animation: pulseNewChap 2.8s ease-in-out infinite; }
     @keyframes toastIn {
       0%   { transform: translateX(-50%) translateY(20px) scale(0.95); opacity: 0; }
       70%  { transform: translateX(-50%) translateY(-4px) scale(1.02); }
@@ -2308,13 +2313,13 @@ var _onbSlides = [
   {
     emoji: '🎯',
     title: 'Un diagnostic sur mesure',
-    body: 'En quelques questions, Matheux identifie exactement où votre enfant bloque — pas les lacunes de la classe, les siennes.',
+    body: 'En quelques questions, Matheux identifie exactement où ton enfant bloque — pas les lacunes de la classe, les siennes.',
     color: 'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)'
   },
   {
     emoji: '⚡',
-    title: 'Votre prof prépare la suite',
-    body: 'Chaque jour, des exercices personnalisés sur les vrais points faibles de votre enfant. Revenez demain voir les progrès.',
+    title: 'Ton prof prépare la suite',
+    body: 'Chaque jour, des exercices ciblés sur les vrais points faibles de ton enfant. Reviens demain voir les progrès.',
     color: 'linear-gradient(135deg,#1e1b4b 0%,#4338ca 100%)'
   }
 ];
@@ -2726,7 +2731,7 @@ window.checkOpt = function(cat, idx, oI, btn) {
   });
 
   var _OK = ['Carton plein 🎯','T\'as géré ça 💪','Dans le mille ⚡','Propre. Vraiment 🔥','Maîtrisé ✅','Trop fort(e) 🚀','GG c\'est dans la boîte 👌'];
-  var _KO = ['Presque ! Regarde bien la réponse 👀','Ça arrive, c\'est comme ça qu\'on apprend 💡','Pas grave — la prochaine tu l\'as 🎯','Raté, mais regardé = déjà un progrès 👊','Difficile celui-là — retiens la correction 📝','Pas bon, mais tu vois la bonne réponse maintenant 🧠','C\'est ça qui fait monter de niveau 📈'];
+  var _KO = ['Pas celui-là — la correction est juste en dessous 👀','Ça arrive — retiens la correction, c\'est comme ça qu\'on progresse 💡','Pas grave — la prochaine tu l\'as 🎯','Raté, mais regardé = déjà un progrès 👊','Difficile celui-là — retiens bien la correction 📝','Pas bon cette fois — tu vois la bonne réponse maintenant 🧠','C\'est ça qui fait monter de niveau 📈'];
   if (exo.options[oI] === exo.a) {
     btn.className = 'opt oc';
     showXP(100);
@@ -2783,7 +2788,7 @@ async function togCat(cat) {
       if (S.res[S.niv+'-'+br3.rC+'-'+br3.rI]) bDoneCount2++;
     }
     if (bDoneCount2 > 0 && bDoneCount2 < bTot2) {
-      showT('Tu t\'arrêtes là ? Pas de souci — tu reprends demain 💪', 3500, '💪');
+      showT('Sauvegardé — tu reprends quand tu veux 💪', 2500, '💾');
     }
   }
   Object.keys(S.exp).forEach(function(k){ S.exp[k] = false; });
@@ -3385,9 +3390,9 @@ function renderDiagInsight() {
   var pct  = d.total > 0 ? Math.round(d.totalEasy / d.total * 100) : 0;
 
   var headline, emoji;
-  if (pct >= 75)      { headline = 'Excellent départ ' + name + '&nbsp;! Tu as de solides bases.'; emoji = '💪'; }
-  else if (pct >= 50) { headline = 'Bon début ' + name + '. On va vite combler les lacunes.';       emoji = '📈'; }
-  else                { headline = 'On sait maintenant exactement où travailler ' + name + '. C\'est parti.'; emoji = '🎯'; }
+  if (pct >= 75)      { headline = 'Solides bases ' + name + '&nbsp;! On va aller chercher les dernières lacunes.'; emoji = '💪'; }
+  else if (pct >= 50) { headline = 'Bon début ' + name + '. Les lacunes sont ciblées — on va les corriger.'; emoji = '📈'; }
+  else                { headline = 'On sait exactement où travailler ' + name + '. C\'est le plus important.'; emoji = '🎯'; }
 
   var chapHtml = '';
   Object.keys(S.diagChapResults).forEach(function(chap) {
@@ -3430,11 +3435,11 @@ function renderBoostInsight() {
 
   var headline, emoji;
   if (d.easy === d.total && d.total > 0) {
-    headline = 'Parfait ' + name + '&nbsp;! Tu progresses vite.'; emoji = '🔥';
+    headline = 'Parfait ' + name + '&nbsp;! ' + d.total + ' sur ' + d.total + ' — garde ce rythme.'; emoji = '🔥';
   } else if (d.easy >= 3) {
-    headline = 'Bon boost ' + name + '. ' + d.easy + ' exercice' + (d.easy > 1 ? 's' : '') + ' maîtrisé' + (d.easy > 1 ? 's' : '') + ' aujourd\'hui. Reviens demain pour continuer.'; emoji = '💪';
+    headline = 'Beau travail ' + name + '. ' + d.easy + ' exercice' + (d.easy > 1 ? 's' : '') + ' dans la boîte aujourd\'hui. Reviens demain&nbsp;!'; emoji = '💪';
   } else {
-    headline = 'Ces notions résistent encore ' + name + '. Ton prochain boost sera encore plus ciblé.'; emoji = '🎯';
+    headline = 'Quelques notions à retravailler ' + name + '. Ton prochain boost sera encore plus ciblé.'; emoji = '🎯';
   }
 
   // Comparaison avec le diagnostic sur le même chapitre
@@ -3461,7 +3466,7 @@ function renderBoostInsight() {
     '</div>' +
     (progressHtml ? progressHtml : '') +
     '<div class="bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 text-sm font-semibold text-amber-800 text-center">' +
-      '🔥 Streak&nbsp;: ' + streak + ' jour' + (streak > 1 ? 's' : '') + ' consécutif' + (streak > 1 ? 's' : '') + ' — reviens demain pour ne pas la perdre&nbsp;!' +
+      '🔥 Streak&nbsp;: ' + streak + ' jour' + (streak > 1 ? 's' : '') + ' consécutif' + (streak > 1 ? 's' : '') + ' — reviens demain pour ne pas le perdre&nbsp;!' +
     '</div>' +
     '<button onclick="dismissBoostInsight()" class="btn btn-ac btn-fw py-4 text-base">Voir mes chapitres 🏠</button>' +
     '<div id="boost-redirect-msg" class="text-center text-xs text-slate-400 mt-2">Retour automatique dans <span id="boost-redirect-count">5</span>s…</div>' +
@@ -3682,6 +3687,18 @@ function render() {
     return aNew - bNew;
   });
 
+  // Détection "premier chapitre" : aucun exo de chapitre fait encore (hors BOOST/CALIBRAGE)
+  var _totalChapDone = 0;
+  keys.forEach(function(k) {
+    if (k === 'BOOST' || k === 'CALIBRAGE') return;
+    var kExs = cats[k] || [];
+    for (var j = 0; j < kExs.length; j++) {
+      var kr = res2(k, j);
+      if (S.res[S.niv+'-'+kr.rC+'-'+kr.rI]) _totalChapDone++;
+    }
+  });
+  var _showFirstGuide = _totalChapDone === 0; // Aucun exo de chapitre encore fait
+
   sortedKeys.forEach(function(cat){
     var exs = cats[cat]; var tot = exs.length; var done = 0;
     for (var i = 0; i < tot; i++) {
@@ -3745,11 +3762,24 @@ function render() {
     // ── Carte active ─────────────────────────────────────
     var pct2    = tot > 0 ? Math.round((done/tot)*100) : 0;
     var iconPulse = isBoost ? 'animate-pulse-light' : '';
+
+    // Guide "premier chapitre" : première carte non-boost, non-done
+    var _isFirstGuide = _showFirstGuide && !isBoost;
+    if (_isFirstGuide) _showFirstGuide = false; // N'appliquer qu'au premier
+
+    if (_isFirstGuide) {
+      html += '<div class="flex items-center gap-2 bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-2.5 mb-2 afu">' +
+        '<span class="text-sm">👆</span>' +
+        '<span class="text-xs font-bold text-indigo-700">Commence par là — ton premier chapitre t\'attend</span>' +
+        '</div>';
+    }
+
     var cs = isBoost
       ? 'background:linear-gradient(135deg,#312e81,#4338ca);border:none'
       : 'background:#fff';
 
-    html += '<div data-cat="'+cat+'" class="rounded-2xl border border-slate-200 overflow-hidden shadow-sm afu mb-3" style="'+cs+'">';
+    var cardPulseClass = _isFirstGuide ? ' pulse-new-chap' : '';
+    html += '<div data-cat="'+cat+'" class="rounded-2xl border border-slate-200 overflow-hidden shadow-sm afu mb-3' + cardPulseClass + '" style="'+cs+'">';
     html += '<div onclick="togCat(\''+cat+'\')" class="px-4 py-4 flex items-center gap-3 cursor-pointer select-none">';
     html += '<div class="w-11 h-11 '+(isBoost?'bg-white/20':'bg-slate-100')+' rounded-xl flex items-center justify-center text-lg flex-shrink-0 '+iconPulse+'">'+(LVL[S.niv].icons[cat]||'📘')+'</div>';
     html += '<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1.5"><span class="syne font-black text-sm '+(isBoost?'text-white':'text-slate-900')+' truncate">'+(LVL[S.niv].names[cat]||cat)+'</span>';
@@ -3827,9 +3857,8 @@ function rSection(cat, data, idx, total, catDone) {
   if (cat === 'CALIBRAGE' && idx === 0) {
     _tutorialBanner =
       '<div style="margin-bottom:.75rem;background:#eef2ff;border:1.5px solid #c7d2fe;border-radius:12px;' +
-      'padding:.65rem 1rem;color:#4338ca;font-size:.8rem;font-weight:600;line-height:1.5">' +
-      '💡 <strong>Comment ça marche :</strong> réponds honnêtement. Si tu bloques, utilise les <strong>indices</strong> ' +
-      'et la <strong>formule</strong> juste en dessous de la question.' +
+      'padding:.6rem 1rem;color:#4338ca;font-size:.78rem;font-weight:600;line-height:1.5">' +
+      '💡 Réponds honnêtement — les <strong>indices</strong> et la <strong>formule</strong> sont là si tu bloques.' +
       '</div>';
   }
   var r       = res2(cat, idx);
