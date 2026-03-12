@@ -1,6 +1,6 @@
 # Notice d'utilisation — Matheux
 ## Ce que fait le site. Comment ça marche. Pour qui.
-> Version 13 mars 2026 — @40 | Rédigée pour Nicolas (fondateur)
+> Version 13 mars 2026 — @41 | Rédigée pour Nicolas (fondateur)
 
 ---
 
@@ -319,18 +319,18 @@ Tout est enregistré dans l'onglet `Insights` du Sheet (créé automatiquement a
 
 ---
 
-## 12. Ce qui N'EST PAS encore fait (13 mars 2026)
+## 12. Ce qui N'EST PAS encore fait (13 mars 2026 @41)
 
 | Fonctionnalité | Statut | Priorité |
 |---|---|---|
-| Paiement Stripe | ⏳ Lien TEST actif — passer en PROD | 🔴 Sprint suivant |
-| Webhook Stripe → colonne Premium | ❌ À faire après Stripe PROD | 🔴 Sprint suivant |
-| Créer adresse contact@matheux.fr | ❌ Hébergeur email + alias Gmail | 🔴 Maintenant |
-| Configurer alias no-reply@matheux.fr | ❌ Gmail → Paramètres → Envoyer depuis | 🔴 Maintenant |
-| Séquences email J+3/J+7 | ⏳ Code prêt — activer trigger Apps Script (9h-10h) | 🟡 Important |
+| Passer Stripe TEST → PROD (3 occurrences : index.html, backend.js, cgv.html) | ⏳ Lien TEST actif | 🔴 Sprint suivant |
+| Webhook Stripe → colonne Premium | ❌ Après Stripe PROD | 🔴 Sprint suivant |
+| Créer contact@matheux.fr + alias no-reply@matheux.fr | ❌ Hébergeur email + Gmail | 🔴 Maintenant |
+| Activer trigger `triggerDailyMarketing` (Apps Script 9h-10h) | ⏳ Code prêt | 🟡 Important |
 | Mode Brevet | ⏳ Code prêt, UI désactivé | 🟡 Bientôt |
-| Mode Révision | ⏳ Code prêt, UI désactivée | 🟡 Bientôt |
-| Validation inputs GAS (email) | ❌ À faire | 🟢 Mineur |
+| Mode Révision | ⏳ Code prêt, UI désactivé | 🟡 Bientôt |
+| Validation inputs GAS (email, longueur) | ❌ À faire | 🟢 Mineur |
+| Rate limiting doPost | ❌ À faire | 🟢 Mineur |
 | Migration BDD >50 users | ❌ Sheets limite ~20 simultanés | 🔵 Long terme |
 
 ---
@@ -363,12 +363,12 @@ python3 audit_formats.py                 # vérification conformité
 
 ---
 
-## 14. Actions manuelles en attente (13 mars 2026)
+## 14. Actions manuelles en attente (13 mars 2026 @41)
 
 | Action | Où | Priorité |
 |---|---|---|
 | ✅ IsAdmin mis à 1 pour `contact@matheux.fr` | Sheet Users | Fait |
-| ✅ GAS @40 déployé | Terminal | Fait |
+| ✅ GAS @41 déployé | Terminal | Fait |
 | ✅ 5 chapitres poussés en prod | push_via_gas.py | Fait |
 | ✅ GA4 G-7R2DW4585Y intégré | index.html | Fait |
 | ✅ Stripe TEST lien actif (overlay + email J+7) | index.html / backend.js | Fait |
@@ -376,8 +376,7 @@ python3 audit_formats.py                 # vérification conformité
 | **⚡ Créer contact@matheux.fr** | Hébergeur email | 🔴 Maintenant |
 | **⚡ Configurer alias no-reply@matheux.fr** | Gmail Paramètres → "Envoyer depuis" | 🔴 Maintenant |
 | **⚡ Apps Script UI → Déclencheurs → `triggerDailyMarketing` → Chaque jour 9h-10h** | Apps Script | 🟡 Cette semaine |
-| **⚡ Passer lien Stripe TEST → PROD** (3 occurrences : index.html, backend.js, cgv.html) | index.html / backend.js / cgv.html | 🔴 Sprint suivant |
-| git push tous les fichiers modifiés | Terminal : `git push origin main` | 🟡 À faire |
+| **⚡ Passer lien Stripe TEST → PROD** (3 occurrences) | index.html / backend.js / cgv.html | 🔴 Sprint suivant |
 
 ---
 
@@ -391,4 +390,4 @@ python3 audit_formats.py                 # vérification conformité
 
 ---
 
-*Notice mise à jour le 13 mars 2026 @40 — Matheux v23 GOLD MASTER*
+*Notice mise à jour le 13 mars 2026 @41 — Matheux v23 GOLD MASTER*

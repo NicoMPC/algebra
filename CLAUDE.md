@@ -41,7 +41,7 @@ clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sx
 - ⚠️ `clasp deploy` seul sans `--deploymentId` crée des URLs inaccessibles → toujours passer l'ID
 - `deploy.sh "description"` fait push + deploy en une commande
 
-## 📦 Actions GAS — état réel (@34)
+## 📦 Actions GAS — état réel (@41)
 | Action | Statut |
 |---|---|
 | `register` | ✅ Fonctionne — TrialStart = TODAY |
@@ -70,7 +70,7 @@ clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sx
 
 ---
 
-## 📋 Structure Google Sheet — état 12 mars
+## 📋 Structure Google Sheet — état 13 mars @41
 
 ### Onglets Nicolas (bleus)
 ```
@@ -103,11 +103,11 @@ RemediationChapters → Code | Categorie | Version | ExosJSON | Insight | Date
 _ARCHIVE_Queue / _ARCHIVE_Prerequisites / _ARCHIVE_Rapports / _ARCHIVE_Pending_Exos
 ```
 
-### Règles ⚡ ACTION NICOLAS (rebuildSuivi — état 11 mars)
+### Règles ⚡ ACTION NICOLAS (rebuildSuivi — état 13 mars @41)
 | Valeur | Condition | Priorité |
 |---|---|---|
 | `🔴 BLOQUÉ` | inactif >7j ET score <40 sur tous chapitres | 1 |
-| `⚡ BOOST TERMINÉ → préparer le suivant` | ExosDone==5 ET dernier boost < aujourd'hui ET pas de boost pending | 2 |
+| `⚡ BOOST TERMINÉ → préparer le suivant` | ExosDone==5 ET pas de boost pending (fix @41 : inclut boost du jour) | 2 |
 | `✅ CHAPITRE TERMINÉ → assigner la suite` | Progress NbExos ≥20 ET cols 📝 Nicolas vides | 3 |
 | `👍 RAS` | sinon | 4 |
 
@@ -133,12 +133,12 @@ S: 📧 Rapport envoyé / Chap5+  [T: Code masquée]
 
 ### BLOC 1 — Socle technique ✅ TERMINÉ
 - [x] generate_diagnostic / generate_daily_boost / isFirstDay / boostExistsInDB ✅
-- [x] Curriculum_Officiel : 480 exos (24 chap × 20) ✅
-- [x] DiagnosticExos : 48 exos (24 chap × 2 lvl) ✅
+- [x] Curriculum_Officiel : 580 exos (29 chap × 20) — +5 chapitres poussés 12 mars ✅
+- [x] DiagnosticExos : 58 exos (29 chap × 2 lvl) ✅
 - [x] Bugs T1→T7 post-tests utilisateur tous corrigés ✅
 - [x] BLOC B — UX Progression & Mobile (B1 Constellation supprimée, B2 Progression, B3 fragiles, B4 mobile) ✅
 
-### BLOC 2 — Fiabilité & workflow quotidien ✅ (quasi terminé)
+### BLOC 2 — Fiabilité & workflow quotidien ✅ TERMINÉ
 - [x] `generateMorningReport()` + trigger GAS 7h ✅
 - [x] `rebuildSuivi(code)` + `writeToHistorique(p)` ✅
 - [x] `login()` injecte `nextChapter` + `nextBoostTopic` depuis colonnes Nicolas ✅
@@ -172,6 +172,12 @@ S: 📧 Rapport envoyé / Chap5+  [T: Code masquée]
 - [x] Colonne `IsTest` dans Users — 110 comptes existants migrés IsTest=1 via Python ✅
 - [x] Limite bêta portée à 50 vrais élèves (IsTest=0, non-admin) ✅
 - [x] Dashboard admin : compteur X/50 coloré + section 🧪 Comptes test repliable ✅
+- [x] UX post-boost : confettis + auto-redirect chapitres 5s + card "Prochain dispo demain 🔥" ✅
+- [x] Hints/Formule : contraste amber-800 + fond coloré ✅
+- [x] Admin BOOST TERMINÉ fix (today inclus) + actions mises à jour instantanément ✅
+- [x] Modal admin : indicateurs email J0/J3/J7 depuis TrialStart ✅
+- [x] Fix rebuildSuivi : BOOST TERMINÉ le jour même (suppression `lastBoostDate < today`) ✅
+- [x] Fix login : DailyBoosts exosDone=0 créé → admin voit ⏳ En attente ✅
 - [ ] Créer adresse contact@matheux.fr (hébergeur email + alias Gmail)
 - [ ] Validation inputs côté GAS (format email, longueur champs)
 - [ ] Rate limiting basique dans doPost
@@ -281,18 +287,15 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 
 ---
 
-## 📁 docs/ — Fichiers clés
+## 📁 docs/ — Fichiers clés (nettoyés 13 mars — 7 rapports obsolètes supprimés)
 | Fichier | Contenu |
 |---|---|
-| `rapport-condense-2026-03-12.md` | **RÉFÉRENCE UNIQUE** — état complet au 12 mars, remplace tous les anciens rapports |
-| `notice-utilisation.md` | Guide complet site pour Nicolas (élèves, Sheet, admin, tech) — Version 12 mars |
-| `programme-français-verif.md` | Couverture Eduscol ~85% avec +5 chap., 12 notions manquantes identifiées |
+| `rapport-condense-2026-03-12.md` | **RÉFÉRENCE UNIQUE** — état complet @41, remplace tous les anciens rapports |
+| `notice-utilisation.md` | Guide complet site pour Nicolas (élèves, Sheet, admin, tech) — Version @41 |
+| `programme-français-verif.md` | Couverture Eduscol ~85%, 12 notions manquantes identifiées |
 | `audit_complet.md` | Audit test_complet.py 89/93 (96%) |
-| `juridique-checklist.md` | RGPD mineurs, templates légaux, case consentement HTML+JS |
-| `landing-page-brief.md` | Brief landing 9 sections + copywriting |
-| `marketing-phase1.md` | 3 phases : WhatsApp, LinkedIn, parrainage, Google Ads |
-| `emails-sequences.md` | 6 séquences email + implémentation GAS (opt-out RGPD) |
-| `tracking-analytics.md` | GA4 RGPD-compat., 8 événements JS, formules Sheet |
+| `scenarios_comportement.md` | Référence scénarios de test comportement élèves |
+| `archive/` | Docs historiques (juridique, emails, marketing, landing, analytics) |
 
 ### Python scripts (algebra/)
 ```python
@@ -306,15 +309,13 @@ sh.append_row("Scores", [...])
 - `push_new_chapters.py` : push 5 nouveaux chapitres (Probabilités 3EME, Racines carrées 3EME, Nombres décimaux 6EME, Fonctions linéaires 4EME, Statistiques 6EME) → données dans `new_chapters_2026-03-12.json` → copier vers `/tmp/exos_data.json` avant de lancer
 - `test_workflows.py` : 38 tests GAS (groupes A+B), 37/38 PASS après deploy @31
 
-## ⚠️ Actions manuelles requises (13 mars 2026)
-- ✅ GAS @34 déployé (verifyAdmin fix + import_chapters)
+## ⚠️ Actions manuelles requises (13 mars 2026 @41)
+- ✅ GAS @41 déployé
 - ✅ 5 chapitres poussés en prod via `push_via_gas.py`
-- **⚡ GAS @35 à déployer** : `bash deploy.sh "waitlist + email J0"` — contient waitlist 40 fam. + email bienvenue J+0
-- ✅ **GA4** : `G-7R2DW4585Y` intégré dans index.html — GA4 actif après consentement cookies
-- ✅ **Stripe** : lien `https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00` dans overlay trial + email J+7
-- **⚡ Stripe** : quand le lien PROD est prêt, remplacer `test_14AdRacgw76N7vQcxqa3u00` dans index.html + backend.js + cgv.html (3 occurrences)
-- Apps Script UI → Déclencheurs → ajouter `triggerDailyMarketing` → Chaque jour 9h-10h (séquences J+3 / J+7)
-- `python3 audit_formats.py` — à lancer pour vérifier conformité des 5 nouveaux chapitres
+- ✅ GA4 `G-7R2DW4585Y` actif, Stripe TEST actif, 110 comptes test migrés IsTest=1
+- **⚡ Stripe PROD** : remplacer `test_14AdRacgw76N7vQcxqa3u00` dans index.html + backend.js + cgv.html (3 occurrences)
+- **⚡ Créer contact@matheux.fr** + alias no-reply@matheux.fr (hébergeur email + Gmail)
+- **⚡ Apps Script** → Déclencheurs → `triggerDailyMarketing` → Chaque jour 9h-10h
 
 ---
 
