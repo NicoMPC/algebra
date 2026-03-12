@@ -37,7 +37,8 @@ var SH = {
   RAPPORTS:    'Rapports',
   PENDING:     'Pending_Exos',
   SUIVI:       '👁 Suivi',
-  HISTORIQUE:  '📋 Historique'
+  HISTORIQUE:  '📋 Historique',
+  EMAILS:      '📧 Emails'
 };
 
 // ════════════════════════════════════════════════════════════
@@ -3414,6 +3415,26 @@ function resetPassword(p) {
 /**
  * Retourne (ou crée) l'onglet Waitlist avec header Email | Prénom | Niveau | Date
  */
+// ── Archive emails envoyés ──────────────────────────────────
+function _ensureEmailsSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName(SH.EMAILS);
+  if (!sh) {
+    sh = ss.insertSheet(SH.EMAILS);
+    sh.getRange(1, 1, 1, 5).setValues([['Date', 'Email', 'Prénom', 'Type', 'Statut']]);
+    sh.getRange(1, 1, 1, 5).setFontWeight('bold').setBackground('#e0e7ff');
+  }
+  return sh;
+}
+
+function _logEmail(email, prenom, type, status) {
+  try {
+    var sh = _ensureEmailsSheet();
+    var now = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm');
+    sh.appendRow([now, email, prenom, type, status]);
+  } catch(e) {} // silencieux
+}
+
 function _ensureWaitlistSheet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sh = ss.getSheetByName('Waitlist');
@@ -3439,16 +3460,32 @@ function sendMarketingSequence(email, prenom, day) {
       '</p>';
 
     if (day === 0) {
-      subject  = 'Bienvenue sur Matheux, ' + prenom + ' ! 🎯';
+      subject  = prenom + ' vient de rejoindre Matheux — voici la suite 🚀';
       htmlBody =
-        '<div style="max-width:500px;margin:0 auto;font-family:sans-serif;background:#ffffff;padding:32px 24px;border-radius:12px;">' +
-        '<h1 style="color:#4338ca;font-size:24px;margin-bottom:8px;">Bienvenue, ' + prenom + ' !</h1>' +
-        '<p style="color:#374151;font-size:16px;line-height:1.6;">On est vraiment contents de vous accueillir sur Matheux.</p>' +
-        '<p style="color:#374151;font-size:16px;line-height:1.6;">L\'objectif est simple : avancer à votre rythme, sans pression, en comprenant vraiment les notions — pas en les apprenant par cœur.</p>' +
-        '<p style="color:#374151;font-size:16px;line-height:1.6;">Cette semaine, ' + prenom + ' va passer un petit diagnostic (8 questions), et l\'application va adapter les exercices à son niveau exact. Aucun jugement, aucune mauvaise réponse définitive.</p>' +
-        '<p style="color:#374151;font-size:16px;line-height:1.6;"><strong>Pour commencer :</strong> connectez-vous sur <a href="https://matheux.fr" style="color:#4338ca;">matheux.fr</a> et suivez le guide.</p>' +
-        '<p style="color:#374151;font-size:16px;line-height:1.6;">Si vous avez la moindre question, répondez simplement à cet email.</p>' +
-        '<p style="color:#374151;font-size:16px;line-height:1.6;">À très vite,<br><strong>Nicolas</strong><br><span style="color:#6b7280;font-size:14px;">Prof de maths & fondateur de Matheux</span></p>' +
+        '<div style="max-width:520px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;background:#f8fafc;padding:0;">' +
+        // ── Header
+        '<div style="background:linear-gradient(135deg,#312e81,#4338ca);padding:36px 32px 28px;border-radius:16px 16px 0 0;text-align:center;">' +
+        '<div style="font-size:42px;margin-bottom:10px;">⚡</div>' +
+        '<h1 style="color:#ffffff;font-size:22px;font-weight:900;margin:0;letter-spacing:-.3px;">Bienvenue, ' + prenom + '&nbsp;!</h1>' +
+        '<p style="color:rgba(255,255,255,.7);font-size:14px;margin:8px 0 0;">Profil créé — tout est prêt</p>' +
+        '</div>' +
+        // ── Corps
+        '<div style="background:#ffffff;padding:32px;border-radius:0 0 16px 16px;box-shadow:0 4px 24px rgba(0,0,0,.07);">' +
+        '<p style="color:#374151;font-size:15px;line-height:1.7;margin-top:0;">Bonjour,</p>' +
+        '<p style="color:#374151;font-size:15px;line-height:1.7;">Je suis <strong>Nicolas</strong>, prof de maths et fondateur de Matheux. Je viens de créer le profil de <strong>' + prenom + '</strong> — tout est configuré pour lui.</p>' +
+        '<p style="color:#374151;font-size:15px;line-height:1.7;margin-bottom:6px;">Voici ce qui va se passer :</p>' +
+        // ── Steps
+        '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:18px 20px;margin:12px 0;">' +
+        '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;"><div style="font-size:20px;flex-shrink:0;">🎯</div><div><strong style="color:#166534;font-size:14px;">Étape 1 — Diagnostic (5 min)</strong><br><span style="color:#374151;font-size:13px;line-height:1.5;">8 questions pour identifier exactement ce que ' + prenom + ' sait et ce qu\'il faut travailler en priorité. Sans jugement, sans note.</span></div></div>' +
+        '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;"><div style="font-size:20px;flex-shrink:0;">⚡</div><div><strong style="color:#166534;font-size:14px;">Étape 2 — Boost quotidien (10 min/jour)</strong><br><span style="color:#374151;font-size:13px;line-height:1.5;">Chaque matin, 5 exercices ciblés sur les vraies lacunes. Indices et formules disponibles si besoin. Régulier &gt; intense.</span></div></div>' +
+        '<div style="display:flex;align-items:flex-start;gap:12px;"><div style="font-size:20px;flex-shrink:0;">📈</div><div><strong style="color:#166534;font-size:14px;">Étape 3 — Progression visible</strong><br><span style="color:#374151;font-size:13px;line-height:1.5;">XP, streak, taux de réussite. Je suis les progrès en temps réel et j\'adapte les exercices chaque semaine.</span></div></div>' +
+        '</div>' +
+        // ── CTA
+        '<div style="text-align:center;margin:28px 0 20px;">' +
+        '<a href="https://matheux.fr" style="background:linear-gradient(135deg,#4338ca,#6366f1);color:#ffffff;font-size:15px;font-weight:800;text-decoration:none;padding:14px 32px;border-radius:12px;display:inline-block;letter-spacing:-.2px;">Commencer le diagnostic →</a>' +
+        '</div>' +
+        '<p style="color:#6b7280;font-size:13px;line-height:1.6;border-top:1px solid #e5e7eb;padding-top:18px;margin-bottom:0;">Des questions ? Répondez directement à cet email — je lis tous les messages personnellement.<br><strong style="color:#374151;">Nicolas</strong> · Prof de maths &amp; fondateur de Matheux</p>' +
+        '</div>' +
         footer + '</div>';
 
     } else if (day === 3) {
@@ -3487,9 +3524,11 @@ function sendMarketingSequence(email, prenom, day) {
     }
 
     GmailApp.sendEmail(email, subject, '', { htmlBody: htmlBody, from: 'no-reply@matheux.fr', name: 'Matheux' });
+    _logEmail(email, prenom, 'J+' + day, 'envoyé');
     return { status: 'success' };
 
   } catch (err) {
+    _logEmail(email, prenom, 'J+' + day, 'erreur: ' + err.toString().substring(0, 80));
     return { status: 'error', message: err.toString() };
   }
 }

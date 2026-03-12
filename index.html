@@ -1864,33 +1864,24 @@ function _flowRenderQuestion(idx) {
       '</div>';
   }
 
-  // ── Indices et formule pour le quiz inline ────────────────
+  // ── Indices et formule — même UX que le mode boost (help-pill + inline-help) ──
   var fHints = _flowHints[idx] || 0;
   var steps = exo.steps || [];
   var maxH = steps.length;
-  var hintStepsHtml = steps.slice(0, fHints).map(function(s) {
-    return '<div style="font-size:.78rem;color:#92400e;background:#fff8;border-radius:8px;padding:.4rem .7rem;border:1px solid #fde68a;margin-bottom:.3rem" class="mc">' + fmtL(s) + '</div>';
-  }).join('');
-  var hintBlock = maxH > 0 ? (
-    '<div id="flow-hints-' + idx + '" style="background:#fffbeb;border:1px solid #fde68a;border-radius:.75rem;padding:.65rem .85rem;margin-top:.75rem">' +
-    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem">' +
-    '<span style="font-size:.7rem;font-weight:800;color:#b45309;letter-spacing:.04em;font-family:Syne,sans-serif">💡 INDICES</span>' +
-    (fHints < maxH ? '<button onclick="_flowShowHint(' + idx + ')" style="font-size:.7rem;font-weight:700;color:#b45309;background:#fef3c7;border:1px solid #fde68a;padding:.15rem .6rem;border-radius:6px;cursor:pointer">Voir +1</button>' : '<span style="font-size:.7rem;color:#86efac">✓ Tous vus</span>') +
-    '</div>' +
-    (fHints > 0 ? hintStepsHtml : '<span style="font-size:.75rem;color:#d97706">Clique sur "Voir +1" si tu bloques</span>') +
-    '</div>'
-  ) : '';
-
   var exoF = exo.f || '';
   var fSeen = !!(_flowFormulaShown && _flowFormulaShown[idx]);
-  var formulaBlock = exoF ? (
-    '<div onclick="_flowShowFormula(' + idx + ')" style="margin-top:.5rem;border-radius:.75rem;overflow:hidden;cursor:pointer">' +
-    '<div data-flow-formula="' + idx + '" style="background:' + (fSeen ? '#f8fafc' : '#1e1b4b') + ';border:1.5px solid ' + (fSeen ? '#e2e8f0' : '#3730a3') + ';border-radius:.75rem;padding:.6rem .85rem;text-align:center;transition:all .3s">' +
-    (fSeen
-      ? '<span style="font-size:.8rem;font-weight:700;color:#475569" class="mc">' + fmtL(exoF) + '</span>'
-      : '<span style="font-size:.75rem;font-weight:700;color:rgba(255,255,255,.7)">👁 Formule clé — tap pour révéler</span>') +
-    '</div></div>'
-  ) : '';
+
+  var helpPills = '<div class="flex gap-2 mt-4">';
+  if (maxH > 0) {
+    helpPills += '<button id="flow-pill-hint-' + idx + '" onclick="_flowShowHint(' + idx + ',' + maxH + ')" class="help-pill pill-hint' + (fHints < maxH ? ' pulse-hint' : '') + '">' +
+      (fHints >= maxH ? '✓ Indices vus' : '💡 Indice') + '</button>';
+  }
+  if (exoF) {
+    helpPills += '<button id="flow-pill-form-' + idx + '" onclick="_flowShowFormula(' + idx + ')" class="help-pill pill-formula' + (!fSeen ? ' pulse-hint' : ' opacity-40 pointer-events-none') + '">' +
+      (fSeen ? '✓ Formule vue' : '👁 Formule') + '</button>';
+  }
+  helpPills += '</div>';
+  var helpArea = '<div class="inline-help mc" id="flow-help-inline-' + idx + '"></div>';
 
   container.innerHTML =
     tutorial +
@@ -1907,8 +1898,8 @@ function _flowRenderQuestion(idx) {
     '<div style="padding:1.25rem 1.5rem 1.5rem">' +
     '<p style="font-size:.95rem;font-weight:600;color:#0f172a;line-height:1.65;margin-bottom:.25rem" class="mc rdy">' + fmtL(exo.q) + '</p>' +
     optsHtml +
-    hintBlock +
-    formulaBlock +
+    helpPills +
+    helpArea +
     '</div>' +
     '</div>';
 
@@ -1960,40 +1951,53 @@ function _flowAnswerOpt(optIdx) {
   }, 800);
 }
 
-window._flowShowHint = function(idx) {
+window._flowShowHint = function(idx, max) {
   var exo = _flowExos[idx];
   if (!exo) return;
-  var maxH = (exo.steps || []).length;
-  _flowHints[idx] = Math.min((_flowHints[idx] || 0) + 1, maxH);
-  var fH = _flowHints[idx];
-  // Mettre à jour inline sans re-render
-  var block = document.getElementById('flow-hints-' + idx);
-  if (!block) return;
-  var steps = exo.steps || [];
-  var stepsHtml = steps.slice(0, fH).map(function(s) {
-    return '<div style="font-size:.78rem;color:#92400e;background:#fff8;border-radius:8px;padding:.4rem .7rem;border:1px solid #fde68a;margin-bottom:.3rem" class="mc">' + fmtL(s) + '</div>';
-  }).join('');
-  var btnHtml = fH < maxH
-    ? '<button onclick="_flowShowHint(' + idx + ')" style="font-size:.7rem;font-weight:700;color:#b45309;background:#fef3c7;border:1px solid #fde68a;padding:.15rem .6rem;border-radius:6px;cursor:pointer">Voir +1</button>'
-    : '<span style="font-size:.7rem;color:#86efac">✓ Tous vus</span>';
-  block.innerHTML =
-    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem">' +
-    '<span style="font-size:.7rem;font-weight:800;color:#b45309;letter-spacing:.04em;font-family:Syne,sans-serif">💡 INDICES</span>' +
-    btnHtml + '</div>' + stepsHtml;
+  _flowHints[idx] = Math.min((_flowHints[idx] || 0) + 1, max);
+  var n = _flowHints[idx];
+  var text = (exo.steps && exo.steps[n - 1]) || '';
+  var area = document.getElementById('flow-help-inline-' + idx);
+  if (!area) return;
+  var wrap = document.createElement('div');
+  wrap.style.cssText = 'margin-bottom:.35rem;background:#fef9c3;border:1px solid #fbbf24;border-radius:8px;padding:.35rem .6rem';
+  var label = document.createElement('span');
+  label.style.cssText = 'font-size:.7rem;font-weight:900;color:#78350f;text-transform:uppercase;letter-spacing:.05em';
+  label.textContent = 'Indice ' + n + ' : ';
+  var span = document.createElement('span');
+  span.style.cssText = 'color:#1e1b4b;font-weight:600';
+  wrap.appendChild(label); wrap.appendChild(span);
+  area.appendChild(wrap);
+  area.classList.add('rdy');
+  typewriter(span, text, function() { if (window.MathJax) MathJax.typesetPromise([area]); });
+  // Mettre à jour le pill
+  var btn = document.getElementById('flow-pill-hint-' + idx);
+  if (btn) {
+    btn.classList.remove('pulse-hint');
+    if (n >= max) { btn.innerHTML = '✓ Indices vus'; btn.classList.add('opacity-40','pointer-events-none'); }
+  }
 };
 
 window._flowShowFormula = function(idx) {
+  if (_flowFormulaShown[idx]) return;
   _flowFormulaShown[idx] = true;
   var exo = _flowExos[idx];
   if (!exo || !exo.f) return;
-  var container = document.getElementById('flow-s3');
-  if (!container) return;
-  // Mettre à jour le div formule inline
-  var fDiv = container.querySelector('[data-flow-formula="' + idx + '"]');
-  if (!fDiv) return;
-  fDiv.innerHTML = '<span style="font-size:.8rem;font-weight:700;color:#475569" class="mc">' + fmtL(exo.f) + '</span>';
-  fDiv.style.background = '#f8fafc';
-  fDiv.style.borderColor = '#e2e8f0';
+  var area = document.getElementById('flow-help-inline-' + idx);
+  var btn  = document.getElementById('flow-pill-form-' + idx);
+  if (btn) { btn.innerHTML = '✓ Formule vue'; btn.classList.remove('pulse-hint'); btn.classList.add('opacity-40','pointer-events-none'); }
+  if (!area) return;
+  var wrap = document.createElement('div');
+  wrap.style.cssText = 'background:#e0e7ff;border:1px solid #818cf8;border-radius:8px;padding:.35rem .6rem';
+  var label = document.createElement('span');
+  label.style.cssText = 'font-size:.7rem;font-weight:900;color:#3730a3;text-transform:uppercase;letter-spacing:.05em';
+  label.textContent = 'Formule : ';
+  var span = document.createElement('span');
+  span.style.cssText = 'color:#1e1b4b;font-weight:600';
+  wrap.appendChild(label); wrap.appendChild(span);
+  area.appendChild(wrap);
+  area.classList.add('rdy');
+  typewriter(span, exo.f, function() { if (window.MathJax) MathJax.typesetPromise([area]); });
 };
 
 function _flowActivateStep4Guest() {
@@ -3908,6 +3912,22 @@ function render() {
   }, 60);
 }
 
+// ── Génère le HTML hints+formule pour le mode révision boost ──
+function _previewHelp(exo) {
+  var html = '';
+  (exo.steps || []).forEach(function(s, i) {
+    html += '<div style="margin-bottom:.3rem;background:#fef9c3;border:1px solid #fbbf24;border-radius:8px;padding:.3rem .6rem">' +
+      '<span style="font-size:.68rem;font-weight:900;color:#78350f;text-transform:uppercase;letter-spacing:.05em">Indice '+(i+1)+' : </span>' +
+      '<span style="color:#1e1b4b;font-weight:600" class="mc">'+fmtL(s)+'</span></div>';
+  });
+  if (exo.f) {
+    html += '<div style="background:#e0e7ff;border:1px solid #818cf8;border-radius:8px;padding:.3rem .6rem">' +
+      '<span style="font-size:.68rem;font-weight:900;color:#3730a3;text-transform:uppercase;letter-spacing:.05em">Formule : </span>' +
+      '<span style="color:#1e1b4b;font-weight:600" class="mc">'+fmtL(exo.f)+'</span></div>';
+  }
+  return html;
+}
+
 // ══════════════════════════════════════════════════════════════
 // RENDER SECTION EXERCICE
 // ══════════════════════════════════════════════════════════════
@@ -4036,7 +4056,9 @@ function rSection(cat, data, idx, total, catDone) {
         (fR ? '✓ Formule vue' : '👁 Formule') +
       '</button>' +
     '</div>' +
-    '<div class="inline-help mc" id="help-inline-'+id+'"></div>' +
+    '<div class="inline-help mc'+(cat==='BOOST'&&catDone&&scored?' rdy':'')+'" id="help-inline-'+id+'">' +
+    (cat==='BOOST'&&catDone&&scored ? _previewHelp(data) : '') +
+    '</div>' +
     '</div></div>';
 }
 
@@ -4494,7 +4516,7 @@ function _renderAdminCards() {
 
   var realStudents = students.filter(function(s){ return !s.isTest; });
   var testStudents = students.filter(function(s){ return  s.isTest; });
-  var needsCount   = realStudents.filter(function(s){ var ap = s.actionPriority || s.action || ''; return ap.indexOf('RAS') === -1; }).length;
+  var needsCount   = realStudents.filter(function(s){ var ap = s.actionPriority || s.action || ''; return ap.indexOf('BOOST TERMINÉ') !== -1 || ap.indexOf('CHAPITRE TERMINÉ') !== -1; }).length;
   var realCount    = S.adminRealCount !== undefined ? S.adminRealCount : realStudents.length;
   var html = '';
 
@@ -4548,14 +4570,20 @@ function _renderAdminCards() {
   html += '</div>';
 
   // ── Onglets À traiter / Traité / Comptes test ──────────────
-  var todoStudents  = realStudents.filter(function(s){ var ap = s.actionPriority || s.action || ''; return ap.indexOf('RAS') === -1; });
-  var doneStudents  = realStudents.filter(function(s){ var ap = s.actionPriority || s.action || ''; return ap.indexOf('RAS') !== -1; });
+  var _needsAction = function(s) {
+    var ap = s.actionPriority || s.action || '';
+    return ap.indexOf('BOOST TERMINÉ') !== -1 || ap.indexOf('CHAPITRE TERMINÉ') !== -1;
+  };
+  var _isBlocked = function(s) { var ap = s.actionPriority || s.action || ''; return ap.indexOf('BLOQUÉ') !== -1; };
+  var todoStudents    = realStudents.filter(_needsAction);
+  var blockedStudents = realStudents.filter(function(s){ return !_needsAction(s) && _isBlocked(s); });
+  var doneStudents    = realStudents.filter(function(s){ return !_needsAction(s) && !_isBlocked(s); });
   var activeTab = S.adminTab || 'todo';
 
   var tabs = [
-    { key: 'todo',  label: '⚡ À traiter', count: todoStudents.length, color: todoStudents.length > 0 ? '#ef4444' : '#94a3b8' },
-    { key: 'done',  label: '✅ Traité',    count: doneStudents.length, color: '#059669' },
-    { key: 'test',  label: '🧪 Test',      count: testStudents.length, color: '#94a3b8' }
+    { key: 'todo',  label: '⚡ À faire',  count: todoStudents.length, color: todoStudents.length > 0 ? '#ef4444' : '#94a3b8' },
+    { key: 'done',  label: '✅ Traité',   count: doneStudents.length, color: '#059669' },
+    { key: 'test',  label: '🧪 Test',     count: testStudents.length, color: '#94a3b8' }
   ];
   html += '<div class="flex gap-1.5 mb-4">';
   tabs.forEach(function(t) {
@@ -4634,6 +4662,15 @@ function _renderAdminCards() {
       html += '<div class="text-center py-8 text-slate-400 text-sm font-semibold">✅ Tout est traité — aucune action en attente.</div>';
     }
     todoStudents.forEach(function(st) { html += _buildStudentCard(st); });
+    // Section BLOQUÉS (info, pas une action)
+    if (blockedStudents.length > 0) {
+      html += '<details class="mt-3"><summary style="cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;padding:.65rem 1rem;background:#fff1f2;border-radius:12px;border:1.5px solid #fecdd3">';
+      html += '<span class="text-[11px] font-bold text-rose-600">🔴 Élèves bloqués (' + blockedStudents.length + ')</span>';
+      html += '<span class="text-rose-400 text-[10px] ml-auto">▼</span>';
+      html += '</summary><div class="mt-2">';
+      blockedStudents.forEach(function(st) { html += _buildStudentCard(st); });
+      html += '</div></details>';
+    }
 
   } else if (activeTab === 'done') {
     if (doneStudents.length === 0) {
