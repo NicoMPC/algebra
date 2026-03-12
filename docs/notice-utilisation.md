@@ -14,7 +14,7 @@
 
 | Date | Nouveauté |
 |---|---|
-| 12 mars | Mode Brevet et Mode Révision désactivés (code conservé — bientôt disponibles) |
+| 15 mars | **Mode Brevet Blanc** : onglet 🎓 Brevet (3EME), 120 exos brevet, quiz sans indices, résultats par chapitre, admin publie brevet sur mesure |
 | 12 mars | 5 nouveaux chapitres poussés en prod (Probabilités, Racines carrées, Décimaux, Fonctions linéaires, Statistiques) — 100 exos + 10 diags |
 | 13 mars | Feedback élèves (bouton Signaler → onglet Insights) |
 | 12 mars | Juridique complet (5 pages légales + consentement parental) |
@@ -174,9 +174,15 @@ Chaque matin à 7h, un email automatique liste :
 - Liste de toutes les cards chapitres avec barres de progression et scores
 - **Mode Révision** : ⏳ désactivé temporairement — code prêt pour activation future
 
-### Vue "🎓 Brevet"
-- **⏳ Désactivée temporairement** — tab masqué
-- Code complet conservé, sera activé prochainement pour les 3EME
+### Vue "🎓 Brevet" (3EME uniquement — @51)
+- Onglet **🎓 Brevet** visible uniquement pour les élèves de 3EME
+- Si tu as publié un brevet sur mesure → onglet devient **📝 Brevet** (fond doré) pour alerter l'élève
+- **Sélection des chapitres** : l'élève choisit sur quoi s'entraîner parmi les 15 chapitres disponibles
+  - "Tout sélectionner" / "Chapitres travaillés" (ceux déjà vus)
+  - Bouton "📩 Demander un chapitre" si un chapitre manque → te parvient dans Insights
+- **Quiz sans indices** (conditions d'examen réelles) — 8 questions par chapitre sélectionné
+- **Résultats** : score global + détail par chapitre (✅/❌ par question) + bouton "Refaire"
+- Les résultats sont stockés dans `BrevetResults` — **isolé** de Progress/Scores (ne perturbe pas l'algorithme adaptatif)
 
 ### Feedback après exercice
 - Lien discret "📢 Signaler une erreur dans cet exercice" sous chaque question
@@ -305,6 +311,7 @@ Accessible uniquement aux comptes avec `IsAdmin: true` dans `Users`.
 - ⚡ **Publier un boost** (JSON 5 exercices) → disponible au prochain login élève
 - 📚 **Publier un chapitre** (JSON 20 exercices) → badge NEW chez l'élève
 - 📋 **Copier le dernier boost JSON** pour le modifier
+- 🎓 **Publier un brevet blanc** (3EME) : cocher les chapitres voulus + message personnalisé → l'onglet Brevet de l'élève devient 📝 doré avec ta config
 
 **Flux complet (30 secondes) :**
 1. Clic "📋 Copier le prompt Claude"
@@ -339,7 +346,7 @@ Tout est enregistré dans l'onglet `Insights` du Sheet (créé automatiquement a
 | Webhook Stripe → colonne Premium | ❌ Après Stripe PROD | 🔴 Sprint suivant |
 | Créer contact@matheux.fr + alias no-reply@matheux.fr | ❌ Hébergeur email + Gmail | 🔴 Maintenant |
 | Activer trigger `triggerDailyMarketing` (Apps Script 9h-10h) | ⏳ Code prêt | 🟡 Important |
-| Mode Brevet | ⏳ Code prêt, UI désactivé | 🟡 Bientôt |
+| Mode Brevet | ✅ Livré @51 — 120 exos en prod | ✅ Fait |
 | Mode Révision | ⏳ Code prêt, UI désactivé | 🟡 Bientôt |
 | Validation inputs GAS (email, longueur) | ❌ À faire | 🟢 Mineur |
 | Rate limiting doPost | ❌ À faire | 🟢 Mineur |
