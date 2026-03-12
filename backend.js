@@ -88,6 +88,7 @@ function doPost(e) {
       case 'check_trial_status':         res = checkTrialStatus(p);        break;
       case 'import_chapters':            res = importChapters(p);          break;
       case 'send_test_email':            res = sendTestEmail(p);           break;
+      case 'mark_all_test':              res = markAllTest(p);             break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -227,29 +228,33 @@ function register(p) {
     return { status: 'error', message: 'Un compte existe déjà avec cet email.' };
   }
 
-  // ─── Bypass : adresses @matheux.fr jamais bloquées ──────────
-  var isFounderEmail = email.endsWith('@matheux.fr');
+  // ─── Compte de test : @matheux.fr ou flag test:true dans payload ─
+  var isTest = email.endsWith('@matheux.fr') || p.test === true;
 
-  // ─── Limite bêta : 40 familles ──────────────────────────────
-  var nonAdminCount = users.filter(function(u) {
-    var adm = u['IsAdmin'];
-    return !adm || (adm !== 1 && adm !== true && String(adm).toUpperCase() !== 'TRUE' && String(adm) !== '1');
-  }).length;
-  if (!isFounderEmail && nonAdminCount >= 40) {
-    var wlSh = _ensureWaitlistSheet();
-    wlSh.appendRow([email, name, level, today()]);
-    return {
-      status:  'waitlist',
-      message: 'Matheux est en bêta privée limitée à 40 familles. Votre adresse est sur liste d\'attente — Nicolas vous contactera dès qu\'une place se libère (contact@matheux.fr).'
-    };
+  // ─── Limite bêta : 50 vrais utilisateurs (IsTest=0, non-admin) ──
+  if (!isTest) {
+    var realCount = users.filter(function(u) {
+      var adm = u['IsAdmin'];
+      var isAdm = adm === 1 || adm === true || String(adm).toUpperCase() === 'TRUE' || String(adm) === '1';
+      var isTst = u['IsTest'] === 1 || u['IsTest'] === true || String(u['IsTest']).toUpperCase() === 'TRUE' || String(u['IsTest']) === '1';
+      return !isAdm && !isTst;
+    }).length;
+    if (realCount >= 50) {
+      var wlSh = _ensureWaitlistSheet();
+      wlSh.appendRow([email, name, level, today()]);
+      return {
+        status:  'waitlist',
+        message: 'Matheux est en bêta privée limitée à 50 familles. Votre adresse est sur liste d\'attente — Nicolas vous contactera dès qu\'une place se libère (contact@matheux.fr).'
+      };
+    }
   }
-  // ────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────────
 
   var code = uniqueCode();
   var now  = today();
 
-  // Users : Code | Prénom | Niveau | Email | PasswordHash | DateInscription | IsAdmin | Premium | TrialStart
-  appendRow(SH.USERS, [code, name, level, email, hash, now, 0, 0, now]);
+  // Users : Code | Prénom | Niveau | Email | PasswordHash | DateInscription | IsAdmin | Premium | TrialStart | PremiumEnd | IsTest
+  appendRow(SH.USERS, [code, name, level, email, hash, now, 0, 0, now, '', isTest ? 1 : 0]);
 
   // Email bienvenue J+0 (silencieux — ne bloque pas l'inscription si erreur)
   try { sendMarketingSequence(email, name, 0); } catch(e) {}
@@ -2760,11 +2765,15 @@ function getAdminOverview(p) {
   var BOOST_NEW_IDX = 18;
 
   var students = users
-    .filter(function(u) { return parseInt(u['IsAdmin'] || 0) !== 1; })
+    .filter(function(u) {
+      var adm = u['IsAdmin'];
+      return !(adm === 1 || adm === true || String(adm).toUpperCase() === 'TRUE' || String(adm) === '1');
+    })
     .map(function(u) {
       var code   = String(u['Code']   || '');
       var prenom = String(u['Prénom'] || '');
       var niveau = String(u['Niveau'] || '');
+      var isTestUser = u['IsTest'] === 1 || u['IsTest'] === true || String(u['IsTest']).toUpperCase() === 'TRUE' || String(u['IsTest']) === '1';
 
       var row            = suiviByCode[code] || null;
       var action         = row ? String(row[0] || '👍 RAS') : '👍 RAS';
@@ -2993,7 +3002,8 @@ function getAdminOverview(p) {
         // PATCH 4
         chapTermine:          chapTermineFlag,
         chapInProgress:       chapInProgressFlag,
-        chapExosDone:         chapExosDoneFlag
+        chapExosDone:         chapExosDoneFlag,
+        isTest:               isTestUser
       };
     })
     .sort(function(a, b) {
@@ -3009,7 +3019,10 @@ function getAdminOverview(p) {
       return 0;
     });
 
-  return { status: 'success', students: students };
+  var realCount = students.filter(function(s) { return !s.isTest; }).length;
+  var testCount = students.filter(function(s) { return  s.isTest; }).length;
+
+  return { status: 'success', students: students, realCount: realCount, testCount: testCount };
 }
 
 // ════════════════════════════════════════════════════════════
@@ -3225,6 +3238,13 @@ function ensureUsersCols() {
   if (header.indexOf('PremiumEnd') === -1) {
     var colIdx2 = header.length + 1;
     sh.getRange(1, colIdx2).setValue('PremiumEnd');
+    header.push('PremiumEnd');
+    changed = true;
+  }
+
+  if (header.indexOf('IsTest') === -1) {
+    var colIdx3 = header.length + 1;
+    sh.getRange(1, colIdx3).setValue('IsTest');
     changed = true;
   }
 
@@ -3340,6 +3360,36 @@ function sendTestEmail(p) {
     return { status: 'success', to: email };
   }
   return result;
+}
+
+/**
+ * Migration one-shot admin : marque tous les comptes existants (non-admin, IsTest vide)
+ * comme IsTest=1 pour nettoyer la base des comptes de test.
+ */
+function markAllTest(p) {
+  if (!verifyAdmin(String(p.adminCode || ''))) {
+    return { status: 'error', message: 'Accès refusé.' };
+  }
+  ensureUsersCols();
+  var sh     = getSheet(SH.USERS);
+  var data   = sh.getDataRange().getValues();
+  var header = data[0];
+  var iAdmin  = header.indexOf('IsAdmin');
+  var iIsTest = header.indexOf('IsTest');
+  if (iIsTest === -1) return { status: 'error', message: 'Colonne IsTest introuvable.' };
+
+  var count = 0;
+  for (var i = 1; i < data.length; i++) {
+    var row   = data[i];
+    var isAdm = row[iAdmin] === 1 || row[iAdmin] === true || String(row[iAdmin]).toUpperCase() === 'TRUE' || String(row[iAdmin]) === '1';
+    if (isAdm) continue;
+    var cur = row[iIsTest];
+    if (cur === '' || cur === null || cur === undefined || cur === 0 || cur === false) {
+      sh.getRange(i + 1, iIsTest + 1).setValue(1);
+      count++;
+    }
+  }
+  return { status: 'success', message: count + ' compte(s) marqué(s) IsTest=1.' };
 }
 
 /**

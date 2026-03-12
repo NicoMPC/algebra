@@ -164,8 +164,11 @@ S: 📧 Rapport envoyé / Chap5+  [T: Code masquée]
 - [x] Step 4 guest adapté dynamiquement : score affiché, sans mot de passe, `_flowActivateStep4Guest()` ✅
 - [x] Suppression `_flowLaunchAppDiag()`, `_flowShowGuestRegister()`, `S._guestMode` ✅
 - [x] Fix `_onbRender` : `background:` prefix sur `sl.color` (texte blanc sur fond blanc) ✅
+- [x] Fix quiz inline CTA : `class="mc rdy"` sur énoncé (opacity:0 → visible immédiatement) ✅
 - [x] Onboarding guest cohérent : "Ton boost du jour est prêt !" + "Une chose à faire aujourd'hui" ✅
 - [x] boostFromDiag() déclenché en background pendant onboarding guest ✅
+- [x] Bypass limite 40 fam. pour emails @matheux.fr (tests fondateur) ✅
+- [ ] Créer adresse contact@matheux.fr (hébergeur email + alias Gmail)
 - [ ] Validation inputs côté GAS (format email, longueur champs)
 - [ ] Rate limiting basique dans doPost
 
@@ -333,6 +336,7 @@ sh.append_row("Scores", [...])
 | 13 mars 2026 | @35 | BLOC 3 🟢 complet : waitlist 40 fam. GAS, email J+0 auto, GA4 consentement, bannière cookies RGPD, premium.html, trial→premium.html, CGU clause bêta, politique-cookies GA4 | — |
 | 13 mars 2026 | @36 | GA4 G-7R2DW4585Y intégré, overlay trial → Stripe direct 9,99€/mois, email J+7 → Stripe, GmailApp from no-reply@matheux.fr, GA4 ID dans politique-cookies.html | — |
 | 13 mars 2026 | @37 | Dashboard admin : bloc "Outils Fondateur" en haut (Stripe TEST badge + btn, Email test via send_test_email GAS) | — |
+| 13 mars 2026 | @38 | Fix quiz CTA invisible (mc rdy), bypass 40-fam pour @matheux.fr, note contact@matheux.fr dans dashboard | — |
 
 ---
 
