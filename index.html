@@ -1750,7 +1750,7 @@ function _flowRenderQuestion(idx) {
     '</div>' +
     '</div>' +
     '<div style="padding:1.25rem 1.5rem 1.5rem">' +
-    '<p style="font-size:.95rem;font-weight:600;color:#0f172a;line-height:1.65;margin-bottom:.25rem" class="mc">' + fmtL(exo.q) + '</p>' +
+    '<p style="font-size:.95rem;font-weight:600;color:#0f172a;line-height:1.65;margin-bottom:.25rem" class="mc rdy">' + fmtL(exo.q) + '</p>' +
     optsHtml +
     '</div>' +
     '</div>';
@@ -4209,6 +4209,12 @@ function _renderAdminCards() {
   html += '<div id="admin-email-status" class="text-slate-400 text-[10px] font-semibold mt-0.5">Envoie un email J+0 test à ton adresse</div>';
   html += '</div>';
   html += '<button onclick="_adminTestEmail()" id="admin-email-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">Tester →</button>';
+  html += '</div>';
+
+  // Todo contact@matheux.fr
+  html += '<div class="bg-amber-900/40 border border-amber-700/50 rounded-xl p-3 flex items-center gap-3">';
+  html += '<span class="text-amber-400 text-base flex-shrink-0">⚠️</span>';
+  html += '<div class="text-amber-200 text-[11px] font-semibold leading-snug">Créer <strong>contact@matheux.fr</strong> dans ton hébergeur email (OVH/Gandi/…) et l\'ajouter comme alias Gmail si pas encore fait.</div>';
   html += '</div>';
 
   html += '</div></div>';

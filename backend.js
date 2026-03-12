@@ -227,12 +227,15 @@ function register(p) {
     return { status: 'error', message: 'Un compte existe déjà avec cet email.' };
   }
 
+  // ─── Bypass : adresses @matheux.fr jamais bloquées ──────────
+  var isFounderEmail = email.endsWith('@matheux.fr');
+
   // ─── Limite bêta : 40 familles ──────────────────────────────
   var nonAdminCount = users.filter(function(u) {
     var adm = u['IsAdmin'];
     return !adm || (adm !== 1 && adm !== true && String(adm).toUpperCase() !== 'TRUE' && String(adm) !== '1');
   }).length;
-  if (nonAdminCount >= 40) {
+  if (!isFounderEmail && nonAdminCount >= 40) {
     var wlSh = _ensureWaitlistSheet();
     wlSh.appendRow([email, name, level, today()]);
     return {
