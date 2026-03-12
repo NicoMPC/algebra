@@ -194,12 +194,13 @@ Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | 
 - [x] Case consentement parental à l'inscription (auth + landing step 4) ✅
 - [x] Footer légal intégré sur landing + app ✅
 - [x] Bannière cookies RGPD (consentement avant chargement GA4) ✅
-- [x] GA4 conditionnel (chargé seulement après consentement, IP anonymisée) ✅ — **remplacer G-XXXXXXXXXX**
+- [x] GA4 conditionnel (chargé seulement après consentement, IP anonymisée) ✅ — Measurement ID **G-7R2DW4585Y** intégré
 - [x] Limite bêta 40 familles dans register() GAS → Waitlist sheet ✅
 - [x] Email bienvenue J+0 automatique au register() ✅
 - [x] Page premium.html — offre + lien email contact@matheux.fr ✅
-- [x] `__trialProlonger()` → ouvre premium.html ✅
-- [ ] Intégration Stripe : remplacer btn-contact par btn-stripe dans premium.html
+- [x] Overlay trial → lien Stripe direct `https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00` ✅ (`__trialProlonger()` — bouton "9,99 €/mois")
+- [x] Email J+7 → lien Stripe direct ✅
+- [x] Emails envoyés depuis `no-reply@matheux.fr` via GmailApp ✅
 - [ ] Webhook Stripe → colonne `Premium` dans Users
 
 ### BLOC 4 — Marketing & conversion 🟢
@@ -301,8 +302,9 @@ sh.append_row("Scores", [...])
 - ✅ GAS @34 déployé (verifyAdmin fix + import_chapters)
 - ✅ 5 chapitres poussés en prod via `push_via_gas.py`
 - **⚡ GAS @35 à déployer** : `bash deploy.sh "waitlist + email J0"` — contient waitlist 40 fam. + email bienvenue J+0
-- **⚡ GA4** : remplacer `G-XXXXXXXXXX` dans index.html par votre Measurement ID Google Analytics 4
-- **⚡ Stripe** (quand prêt) : dans premium.html, décommenter `btn-stripe`, commenter `btn-contact`, remplacer `VOTRE_LIEN_STRIPE`
+- ✅ **GA4** : `G-7R2DW4585Y` intégré dans index.html — GA4 actif après consentement cookies
+- ✅ **Stripe** : lien `https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00` dans overlay trial + email J+7
+- **⚡ Stripe** : quand le lien PROD est prêt, remplacer `test_14AdRacgw76N7vQcxqa3u00` dans index.html + backend.js + cgv.html (3 occurrences)
 - Apps Script UI → Déclencheurs → ajouter `triggerDailyMarketing` → Chaque jour 9h-10h (séquences J+3 / J+7)
 - `python3 audit_formats.py` — à lancer pour vérifier conformité des 5 nouveaux chapitres
 
@@ -328,6 +330,7 @@ sh.append_row("Scores", [...])
 | 13 mars | @31 | BLOCS 4-5 : landing pricing+fondateur+carousel, programme-français-verif.md (66% couv.), audit_formats.py, Mode Brevet (GAS+UI 3 screens), Mode Révision (GAS+card), Feedback (modal+Insights tab), 7 bugs fixes (showT/SHEET_ID/Array.find/chkComp/togCat/res2/sendScore), test_workflows.py 37/38 PASS (97%) | — |
 | 12 mars 2026 | @34 | Désactivation UI Brevet+Révision (code conservé), 5 chapitres poussés en prod (100 exos), verifyAdmin fix (TRUE/1), rapport condensé, notice refaite, programme ~85% | — |
 | 13 mars 2026 | @35 | BLOC 3 🟢 complet : waitlist 40 fam. GAS, email J+0 auto, GA4 consentement, bannière cookies RGPD, premium.html, trial→premium.html, CGU clause bêta, politique-cookies GA4 | — |
+| 13 mars 2026 | @36 | GA4 G-7R2DW4585Y intégré, overlay trial → Stripe direct 9,99€/mois, email J+7 → Stripe, GmailApp from no-reply@matheux.fr, GA4 ID dans politique-cookies.html | — |
 
 ---
 

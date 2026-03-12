@@ -21,7 +21,7 @@
   <!-- REMPLACER G-XXXXXXXXXX par votre Measurement ID Google Analytics 4 -->
   <script>
     (function(){
-      var GA4_ID = 'G-XXXXXXXXXX'; // <-- remplacer par votre ID GA4 réel
+      var GA4_ID = 'G-7R2DW4585Y';
       function loadGA4() {
         if (window._ga4Loaded) return;
         window._ga4Loaded = true;
@@ -2368,7 +2368,7 @@ function showTrialExpired() {
     '<p style="color:#64748b;font-size:.9rem;font-weight:500;line-height:1.6;margin-bottom:1.5rem">T\'as progressé, maintenant continue sans limite !</p>' +
     '<button onclick="__trialProlonger()" style="width:100%;padding:1rem;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;' +
     'font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer;margin-bottom:.75rem">' +
-    'Prolonger l\'accès →' +
+    'Passer à l\'abonnement 9,99 €/mois →' +
     '</button>' +
     '<button onclick="__trialDismiss()" style="font-size:.8rem;font-weight:600;color:#94a3b8;background:none;border:none;cursor:pointer">' +
     'Voir ma progression quand même' +
@@ -2378,7 +2378,7 @@ function showTrialExpired() {
 }
 
 window.__trialProlonger = function() {
-  window.open('premium.html', '_blank');
+  window.open('https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00', '_blank');
 };
 window.__trialDismiss = function() {
   var ov = document.getElementById('trial-expired-overlay');
@@ -4188,6 +4188,32 @@ function _renderAdminCards() {
   var needsCount = students.filter(function(s){ var ap = s.actionPriority || s.action || ''; return ap.indexOf('RAS') === -1; }).length;
   var html = '';
 
+  // ── Outils Fondateur ──────────────────────────────────────
+  html += '<div class="bg-slate-900 rounded-2xl p-4 mb-4 border border-slate-700">';
+  html += '<div class="syne font-black text-slate-200 text-sm mb-3">🛠️ Outils Fondateur</div>';
+  html += '<div class="flex flex-col gap-2">';
+
+  // Stripe
+  html += '<div class="bg-slate-800 rounded-xl p-3 flex items-center justify-between gap-3">';
+  html += '<div>';
+  html += '<div class="text-white text-xs font-bold">💳 Stripe</div>';
+  html += '<div class="text-amber-400 text-[10px] font-semibold mt-0.5">MODE TEST — à passer en PROD avant lancement</div>';
+  html += '</div>';
+  html += '<button onclick="_adminOpenStripe()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">Ouvrir lien →</button>';
+  html += '</div>';
+
+  // Email
+  html += '<div class="bg-slate-800 rounded-xl p-3 flex items-center justify-between gap-3">';
+  html += '<div>';
+  html += '<div class="text-white text-xs font-bold">📧 Email no-reply@matheux.fr</div>';
+  html += '<div id="admin-email-status" class="text-slate-400 text-[10px] font-semibold mt-0.5">Envoie un email J+0 test à ton adresse</div>';
+  html += '</div>';
+  html += '<button onclick="_adminTestEmail()" id="admin-email-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">Tester →</button>';
+  html += '</div>';
+
+  html += '</div></div>';
+  // ──────────────────────────────────────────────────────────
+
   // En-tête dashboard
   html += '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 mb-4">';
   html += '<div class="flex items-center justify-between">';
@@ -4284,6 +4310,31 @@ function _renderAdminCards() {
   });
 
   c.innerHTML = html;
+}
+
+function _adminOpenStripe() {
+  window.open('https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00', '_blank');
+}
+
+async function _adminTestEmail() {
+  var btn = document.getElementById('admin-email-btn');
+  var st  = document.getElementById('admin-email-status');
+  if (btn) { btn.disabled = true; btn.textContent = '...'; }
+  try {
+    var r = await fetch(SU, { method: 'POST', body: JSON.stringify({
+      action: 'send_test_email', adminCode: S.prof.code
+    }) }).then(function(x) { return x.json(); });
+    if (r.status === 'success') {
+      if (st) st.textContent = '✅ Email envoyé à ' + (r.to || 'ton adresse') + ' — vérifie ta boîte';
+      if (st) st.className = 'text-emerald-400 text-[10px] font-semibold mt-0.5';
+    } else {
+      if (st) st.textContent = '❌ ' + (r.message || 'Erreur');
+      if (st) st.className = 'text-rose-400 text-[10px] font-semibold mt-0.5';
+    }
+  } catch(e) {
+    if (st) st.textContent = '❌ Erreur réseau';
+  }
+  if (btn) { btn.disabled = false; btn.textContent = 'Tester →'; }
 }
 
 // ══════════════════════════════════════════════════════════════

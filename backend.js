@@ -3293,7 +3293,7 @@ function sendMarketingSequence(email, prenom, day) {
         '<li>Travaillé avec des exercices adaptés à son niveau</li>' +
         '<li>Posé des bases solides pour la suite</li>' +
         '</ul>' +
-        '<p style="color:#374151;font-size:16px;line-height:1.6;">Pour continuer sur cette lancée, vous pouvez <a href="https://matheux.fr" style="color:#4338ca;font-weight:bold;">activer l\'abonnement</a> — 9,99 €/mois, sans engagement, résiliable à tout moment.</p>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.6;">Pour continuer sur cette lancée, vous pouvez <a href="https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00" style="color:#4338ca;font-weight:bold;">activer l\'abonnement</a> — 9,99 €/mois, sans engagement, résiliable à tout moment.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Si vous avez des questions avant de décider, répondez à cet email — je suis là.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Merci pour votre confiance,<br><strong>Nicolas</strong></p>' +
         footer + '</div>';
@@ -3302,7 +3302,7 @@ function sendMarketingSequence(email, prenom, day) {
       return { status: 'error', message: 'Jour invalide : ' + day + '. Valeurs acceptées : 0, 3, 7.' };
     }
 
-    MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody });
+    GmailApp.sendEmail(email, subject, '', { htmlBody: htmlBody, from: 'no-reply@matheux.fr', name: 'Matheux' });
     return { status: 'success' };
 
   } catch (err) {

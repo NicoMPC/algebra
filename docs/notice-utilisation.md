@@ -21,10 +21,11 @@
 | 12 mars | Landing vendeuse : pricing comparatif, fondateur Nicolas, carousel témoignages |
 | 13 mars | Waitlist 40 familles dans register() GAS + onglet Waitlist auto-créé |
 | 13 mars | Email bienvenue J+0 automatique au register() |
-| 13 mars | GA4 conditionnel (bannière consentement RGPD, IP anonymisée) |
-| 13 mars | Page premium.html — offre + contact → activer Stripe ici |
-| 13 mars | Overlay trial expiré → ouvre premium.html |
-| 13 mars | CGU clause bêta 40 familles, politique-cookies mise à jour GA4 |
+| 13 mars | GA4 **G-7R2DW4585Y** actif (bannière consentement RGPD, IP anonymisée) |
+| 13 mars | Overlay trial expiré → lien Stripe direct **9,99 €/mois** |
+| 13 mars | Email J+7 → lien Stripe direct intégré |
+| 13 mars | Emails envoyés depuis **no-reply@matheux.fr** (GmailApp alias) |
+| 13 mars | CGU clause bêta 40 familles, politique-cookies GA4 ID renseigné |
 
 ---
 

@@ -12,9 +12,10 @@
 | Dimension | État |
 |---|---|
 | Tests GAS automatisés | 89/93 (96%) — 4 race conditions GAS acceptées |
-| Couverture programme officiel | ~66% (24 chap.) → ~85% avec +5 chap. prioritaires |
+| Couverture programme officiel | ~85% — 29 chapitres en prod (580 exos) |
 | Modes désactivés UI | Brevet ✅ / Révision ✅ (code conservé) |
 | Juridique | Complet (5 pages + consentement parental) |
+| GAS | @34 — verifyAdmin fix, import_chapters, 5 chap. prod |
 | Paiement | ❌ Stripe non intégré |
 | Emails auto | ❌ Non intégrés |
 
@@ -101,9 +102,9 @@ Curriculum_Officiel 480 exos (24×20), DiagnosticExos 48 exos (24×2), tous bugs
 
 ### Court terme (cette semaine)
 1. **Stripe** : intégrer webhook → colonne `Premium` dans Users → désactiver overlay
-2. **Push 5 chapitres** : `cp new_chapters_2026-03-12.json /tmp/exos_data.json && python3 push_new_chapters.py`
-3. **Deploy GAS @31** : `clasp push --force && clasp deploy --deploymentId ...`
-4. **IsAdmin** : mettre `true` pour `contact@matheux.fr` dans Users
+2. ✅ **5 chapitres poussés en prod** (12 mars — push_via_gas.py)
+3. ✅ **GAS @34 déployé** (verifyAdmin fix, import_chapters)
+4. ✅ **IsAdmin mis à 1** pour `contact@matheux.fr`
 
 ### Moyen terme
 5. Email bienvenue J+0 automatique (GAS + Gmail API)
@@ -148,7 +149,7 @@ Curriculum_Officiel 480 exos (24×20), DiagnosticExos 48 exos (24×2), tous bugs
 - [x] 24 chapitres × 20 exos = 480 exercices
 - [x] DiagnosticExos 48 exos (24×2)
 - [x] Couverture programme 66% → 85% avec +5 chapitres en attente push
-- [ ] 5 chapitres prioritaires poussés dans Sheet (JSON prêt)
+- [x] 5 chapitres prioritaires poussés en prod (12 mars — 100 exos + 10 diags) ✅
 - [x] MathJax v3 + fallback 2.5s
 - [x] Anti-redondance exos vus
 - [x] Scores enrichis (temps, indices, wrongOpt, formule)
