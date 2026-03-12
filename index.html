@@ -1326,7 +1326,7 @@ let S = {
   sent: new Set(),
   scoreQueue: JSON.parse(localStorage.getItem('sq') || '[]'),
   adminMode: false, timeOffset: 0, forceFail: false,
-  adminStudents: [],
+  adminStudents: [], adminTab: 'todo',
   tmpEmail: '', tmpHash: '',
   exoStartTime: {},    // { exoId → timestamp ms } — NOUVEAU v23
   view: 'chapters',   // 'chapters' | 'progress' | 'brevet'
@@ -1655,6 +1655,8 @@ var _flowResults   = [];      // { exoIdx, correct, time } par exo
 var _flowExoIdx    = 0;       // index exo courant
 var _flowStartTs   = 0;       // timestamp début exo (ms)
 var _flowDiagDone  = false;   // diagnostic terminé avant inscription
+var _flowHints        = {};   // { exoIdx: nbHintsShown } pour le quiz inline
+var _flowFormulaShown = {};  // { exoIdx: true } formules révélées
 
 function startTrialFlow() {
   document.getElementById('trial-flow').classList.remove('hidden');
@@ -1791,6 +1793,8 @@ function _flowStartDiag() {
       _flowResults = [];
       _flowExoIdx  = 0;
       _flowDiagDone = false;
+      _flowHints = {};
+      _flowFormulaShown = {};
       // Sauvegarder en localStorage — queue 24h pour abandon
       try {
         localStorage.setItem('guestDiag', JSON.stringify({
@@ -1860,6 +1864,34 @@ function _flowRenderQuestion(idx) {
       '</div>';
   }
 
+  // ── Indices et formule pour le quiz inline ────────────────
+  var fHints = _flowHints[idx] || 0;
+  var steps = exo.steps || [];
+  var maxH = steps.length;
+  var hintStepsHtml = steps.slice(0, fHints).map(function(s) {
+    return '<div style="font-size:.78rem;color:#92400e;background:#fff8;border-radius:8px;padding:.4rem .7rem;border:1px solid #fde68a;margin-bottom:.3rem" class="mc">' + fmtL(s) + '</div>';
+  }).join('');
+  var hintBlock = maxH > 0 ? (
+    '<div id="flow-hints-' + idx + '" style="background:#fffbeb;border:1px solid #fde68a;border-radius:.75rem;padding:.65rem .85rem;margin-top:.75rem">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem">' +
+    '<span style="font-size:.7rem;font-weight:800;color:#b45309;letter-spacing:.04em;font-family:Syne,sans-serif">💡 INDICES</span>' +
+    (fHints < maxH ? '<button onclick="_flowShowHint(' + idx + ')" style="font-size:.7rem;font-weight:700;color:#b45309;background:#fef3c7;border:1px solid #fde68a;padding:.15rem .6rem;border-radius:6px;cursor:pointer">Voir +1</button>' : '<span style="font-size:.7rem;color:#86efac">✓ Tous vus</span>') +
+    '</div>' +
+    (fHints > 0 ? hintStepsHtml : '<span style="font-size:.75rem;color:#d97706">Clique sur "Voir +1" si tu bloques</span>') +
+    '</div>'
+  ) : '';
+
+  var exoF = exo.f || '';
+  var fSeen = !!(_flowFormulaShown && _flowFormulaShown[idx]);
+  var formulaBlock = exoF ? (
+    '<div onclick="_flowShowFormula(' + idx + ')" style="margin-top:.5rem;border-radius:.75rem;overflow:hidden;cursor:pointer">' +
+    '<div data-flow-formula="' + idx + '" style="background:' + (fSeen ? '#f8fafc' : '#1e1b4b') + ';border:1.5px solid ' + (fSeen ? '#e2e8f0' : '#3730a3') + ';border-radius:.75rem;padding:.6rem .85rem;text-align:center;transition:all .3s">' +
+    (fSeen
+      ? '<span style="font-size:.8rem;font-weight:700;color:#475569" class="mc">' + fmtL(exoF) + '</span>'
+      : '<span style="font-size:.75rem;font-weight:700;color:rgba(255,255,255,.7)">👁 Formule clé — tap pour révéler</span>') +
+    '</div></div>'
+  ) : '';
+
   container.innerHTML =
     tutorial +
     '<div style="background:#fff;border-radius:1.25rem;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.4)">' +
@@ -1875,6 +1907,8 @@ function _flowRenderQuestion(idx) {
     '<div style="padding:1.25rem 1.5rem 1.5rem">' +
     '<p style="font-size:.95rem;font-weight:600;color:#0f172a;line-height:1.65;margin-bottom:.25rem" class="mc rdy">' + fmtL(exo.q) + '</p>' +
     optsHtml +
+    hintBlock +
+    formulaBlock +
     '</div>' +
     '</div>';
 
@@ -1926,6 +1960,42 @@ function _flowAnswerOpt(optIdx) {
   }, 800);
 }
 
+window._flowShowHint = function(idx) {
+  var exo = _flowExos[idx];
+  if (!exo) return;
+  var maxH = (exo.steps || []).length;
+  _flowHints[idx] = Math.min((_flowHints[idx] || 0) + 1, maxH);
+  var fH = _flowHints[idx];
+  // Mettre à jour inline sans re-render
+  var block = document.getElementById('flow-hints-' + idx);
+  if (!block) return;
+  var steps = exo.steps || [];
+  var stepsHtml = steps.slice(0, fH).map(function(s) {
+    return '<div style="font-size:.78rem;color:#92400e;background:#fff8;border-radius:8px;padding:.4rem .7rem;border:1px solid #fde68a;margin-bottom:.3rem" class="mc">' + fmtL(s) + '</div>';
+  }).join('');
+  var btnHtml = fH < maxH
+    ? '<button onclick="_flowShowHint(' + idx + ')" style="font-size:.7rem;font-weight:700;color:#b45309;background:#fef3c7;border:1px solid #fde68a;padding:.15rem .6rem;border-radius:6px;cursor:pointer">Voir +1</button>'
+    : '<span style="font-size:.7rem;color:#86efac">✓ Tous vus</span>';
+  block.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem">' +
+    '<span style="font-size:.7rem;font-weight:800;color:#b45309;letter-spacing:.04em;font-family:Syne,sans-serif">💡 INDICES</span>' +
+    btnHtml + '</div>' + stepsHtml;
+};
+
+window._flowShowFormula = function(idx) {
+  _flowFormulaShown[idx] = true;
+  var exo = _flowExos[idx];
+  if (!exo || !exo.f) return;
+  var container = document.getElementById('flow-s3');
+  if (!container) return;
+  // Mettre à jour le div formule inline
+  var fDiv = container.querySelector('[data-flow-formula="' + idx + '"]');
+  if (!fDiv) return;
+  fDiv.innerHTML = '<span style="font-size:.8rem;font-weight:700;color:#475569" class="mc">' + fmtL(exo.f) + '</span>';
+  fDiv.style.background = '#f8fafc';
+  fDiv.style.borderColor = '#e2e8f0';
+};
+
 function _flowActivateStep4Guest() {
   // Calculer le score pour affichage dans step 4
   var ok = _flowResults.filter(function(r) { return r.correct; }).length;
@@ -1933,9 +2003,9 @@ function _flowActivateStep4Guest() {
   var pct = total > 0 ? Math.round((ok / total) * 100) : 0;
   var scoreLabel = pct >= 80 ? "T'es solide 💪" : pct >= 50 ? "Bon niveau, on a repéré tes points faibles !" : "On a trouvé exactement où ça coince.";
 
-  // Adapter step 4 pour flow guest (sans mot de passe)
+  // Adapter step 4 pour flow guest — le champ mot de passe reste visible
   var passField = document.getElementById('fl-pass');
-  if (passField) passField.style.display = 'none';
+  if (passField) passField.style.display = '';
   var h2 = document.querySelector('#flow-s4 h2');
   if (h2) h2.textContent = ok + '/' + total + ' — ' + pct + '%';
   var desc = document.querySelector('#flow-s4 p');
@@ -1952,8 +2022,12 @@ function _flowActivateStep4Guest() {
 async function _flowGuestRegister() {
   var prenom = (document.getElementById('fl-name')  || {}).value || '';
   var email  = (document.getElementById('fl-email') || {}).value || '';
+  var pass   = (document.getElementById('fl-pass')  || {}).value || '';
   if (!prenom.trim() || !email.trim() || !email.includes('@')) {
     showT('Prénom et email requis 😊', 2000, '⚠️'); return;
+  }
+  if (!pass.trim() || pass.trim().length < 6) {
+    showT('Mot de passe requis (min. 6 caractères)', 2500, '⚠️'); return;
   }
   var _glConsent = document.getElementById('consent-landing');
   if (_glConsent && !_glConsent.checked) { showT('Veuillez accepter les CGU pour continuer', 2500, '⚠️'); return; }
@@ -1961,9 +2035,17 @@ async function _flowGuestRegister() {
   var btn = document.getElementById('fl-btn');
   if (btn) { btn.disabled = true; }
   var btnTxt = document.getElementById('fl-btn-txt');
-  if (btnTxt) btnTxt.textContent = 'Enregistrement...';
+  if (btnTxt) btnTxt.textContent = 'Création du compte...';
 
-  var hash = await h256('Matheux2026!', email.toLowerCase().trim());
+  // Spinner visuel
+  var flowStep4 = document.getElementById('flow-s4');
+  var spinDiv = document.createElement('div');
+  spinDiv.id = 'flow-register-spin';
+  spinDiv.style.cssText = 'text-align:center;padding:1rem 0;font-size:2rem;animation:spin .75s linear infinite;display:inline-block;width:100%';
+  spinDiv.textContent = '⚡';
+  if (btn && btn.parentNode) btn.parentNode.insertBefore(spinDiv, btn);
+
+  var hash = await h256(pass.trim(), email.toLowerCase().trim());
 
   var r = await fetch(SU, { method: 'POST',
     body: JSON.stringify({ action: 'register', email: email.toLowerCase().trim(),
@@ -1982,16 +2064,19 @@ async function _flowGuestRegister() {
       code = r2.profile ? r2.profile.code : r2.code;
       showT("T'as déjà un compte — on t'a retrouvé 🔥", 3000, '🎉');
     } else {
+      var sp2 = document.getElementById('flow-register-spin'); if (sp2) sp2.remove();
       if (btn) { btn.disabled = false; }
       if (btnTxt) btnTxt.textContent = 'Continuer — c\'est gratuit →';
-      showT('Mauvais mot de passe — connecte-toi depuis le menu', 3000, '⚠️');
+      showT('Email déjà utilisé avec un autre mot de passe — connecte-toi depuis le menu', 3500, '⚠️');
       return;
     }
   } else if (r.status === 'waitlist') {
+    var sp3 = document.getElementById('flow-register-spin'); if (sp3) sp3.remove();
     if (btn) { btn.disabled = false; }
     if (btnTxt) btnTxt.textContent = 'Continuer — c\'est gratuit →';
     showT('Bêta complète · ton email est sur liste d\'attente 📋', 0, '⏳'); return;
   } else {
+    var sp4 = document.getElementById('flow-register-spin'); if (sp4) sp4.remove();
     if (btn) { btn.disabled = false; }
     if (btnTxt) btnTxt.textContent = 'Continuer — c\'est gratuit →';
     showT('Erreur — réessaie dans quelques secondes', 2500, '⚠️'); return;
@@ -2866,6 +2951,8 @@ async function togCat(cat) {
   }
   Object.keys(S.exp).forEach(function(k){ S.exp[k] = false; });
   S.exp[cat] = !was;
+  // Boost consommé : reprendre la révision depuis le Q1
+  if (!was && cat === 'BOOST' && S.boostConsumed) S.qv['BOOST'] = 0;
   if (S.isNew[cat]) S.isNew[cat] = false;
   if (S.exp[cat] && S.motProfChap[cat]) S._motProfScreen = cat;
   render();
@@ -3738,7 +3825,7 @@ function render() {
       html += '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-base">'+(isBoost?'⚡':(LVL[S.niv].icons[cat]||'📘'))+'</div>';
       html += '<span class="syne font-black text-xs text-slate-700 leading-tight px-1" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+(isBoost?'Entraînement IA ✓':(LVL[S.niv].names[cat]||cat))+'</span>';
       html += '<span class="text-[9px] font-black text-emerald-700 bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-full">'+(isBoost?'Prochain dispo demain 🔥':'✅ Terminé')+'</span>';
-      html += '<span class="text-[10px] text-emerald-500/80 font-medium">'+(isOpen?'▾ historique':'▸ voir historique')+'</span>';
+      html += '<span class="text-[10px] text-emerald-500/80 font-medium">'+(isOpen ? (isBoost ? '▾ fermer' : '▾ historique') : (isBoost ? '▸ revoir mes exercices' : '▸ voir historique'))+'</span>';
       html += '</div>';
       // Carte droite — prochain (si applicable)
       if (showProchain) {
@@ -3751,7 +3838,15 @@ function render() {
       }
       html += '</div>';
       // Section historique pleine largeur en dessous
-      if (isOpen) html += renderArchiveSection(cat, exs);
+      if (isOpen) {
+        if (isBoost) {
+          // Mode révision : navigation Q1-Q5 comme en mode chapitre (read-only)
+          var bqv = S.qv['BOOST'] || 0;
+          html += rSection('BOOST', exs[bqv], bqv, tot, true);
+        } else {
+          html += renderArchiveSection(cat, exs);
+        }
+      }
       return;
     }
 
@@ -4436,12 +4531,12 @@ function _renderAdminCards() {
   // ──────────────────────────────────────────────────────────
 
   // En-tête dashboard
-  html += '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 mb-4">';
+  html += '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 mb-3">';
   html += '<div class="flex items-center justify-between">';
   html += '<div>';
   html += '<div class="syne font-black text-slate-900 text-lg leading-tight">Mes Élèves 🎓</div>';
   var slotColor = realCount >= 45 ? 'text-rose-600' : realCount >= 35 ? 'text-amber-500' : 'text-slate-500';
-  html += '<div class="text-xs font-bold mt-0.5 ' + slotColor + '">' + realCount + ' / 50 places réelles utilisées</div>';
+  html += '<div class="text-xs font-bold mt-0.5 ' + slotColor + '">' + realCount + ' / 50 places réelles</div>';
   html += '</div>';
   if (needsCount > 0) {
     html += '<div class="bg-rose-500 text-white syne font-black text-sm px-3 py-1.5 rounded-xl shadow-sm">' + needsCount + ' action' + (needsCount > 1 ? 's' : '') + '</div>';
@@ -4449,116 +4544,129 @@ function _renderAdminCards() {
     html += '<div class="bg-emerald-100 text-emerald-700 syne font-black text-sm px-3 py-1.5 rounded-xl">✅ RAS</div>';
   }
   html += '</div>';
-  html += '<button onclick="renderAdminDashboard()" class="mt-3 text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors">↻ Actualiser</button>';
+  html += '<button onclick="renderAdminDashboard()" class="mt-2 text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors">↻ Actualiser</button>';
   html += '</div>';
 
-  // Cartes élèves RÉELS
-  if (realStudents.length === 0) {
-    html += '<div class="text-center py-6 text-slate-400 text-sm font-semibold">Aucun vrai élève inscrit pour l\'instant.</div>';
-  }
-  realStudents.forEach(function(st) {
-    // PATCH A : utilise actionPriority (GAS @30) avec fallback sur action
+  // ── Onglets À traiter / Traité / Comptes test ──────────────
+  var todoStudents  = realStudents.filter(function(s){ var ap = s.actionPriority || s.action || ''; return ap.indexOf('RAS') === -1; });
+  var doneStudents  = realStudents.filter(function(s){ var ap = s.actionPriority || s.action || ''; return ap.indexOf('RAS') !== -1; });
+  var activeTab = S.adminTab || 'todo';
+
+  var tabs = [
+    { key: 'todo',  label: '⚡ À traiter', count: todoStudents.length, color: todoStudents.length > 0 ? '#ef4444' : '#94a3b8' },
+    { key: 'done',  label: '✅ Traité',    count: doneStudents.length, color: '#059669' },
+    { key: 'test',  label: '🧪 Test',      count: testStudents.length, color: '#94a3b8' }
+  ];
+  html += '<div class="flex gap-1.5 mb-4">';
+  tabs.forEach(function(t) {
+    var active = activeTab === t.key;
+    html += '<button onclick="_adminSetTab(\'' + t.key + '\')" class="flex-1 rounded-xl py-2 px-1 text-[11px] font-black transition-all ' +
+      (active ? 'text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50') + '" ' +
+      (active ? 'style="background:' + t.color + '"' : '') + '>' +
+      t.label + ' <span class="' + (active ? 'bg-white/25' : 'bg-slate-100') + ' rounded-md px-1.5 py-0.5 ml-0.5">' + t.count + '</span>' +
+      '</button>';
+  });
+  html += '</div>';
+
+  // Contenu de l'onglet actif
+  var _buildStudentCard = function(st) {
     var priority = st.actionPriority || st.action || '👍 RAS';
     var allActions = (st.actions && st.actions.length > 0) ? st.actions : [priority];
     var as       = _actionStyle(priority);
     var needsAct = priority.indexOf('RAS') === -1;
     var lastStr  = relDateAdmin(st.lastConnection);
+    var detail   = st.chapitresDetail || [];
 
-    html += '<div id="admin-card-' + st.code + '" ';
-    html += 'onclick="openStudentModal(\'' + st.code + '\')" ';
-    html += 'class="adm-card ' + as.cls + (needsAct ? ' needs-action' : '') + ' mb-3">';
-
-    // Ligne principale
-    html += '<div class="flex items-center gap-3 mb-2.5">';
-    html += '<div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black syne text-base shadow-sm flex-shrink-0" ';
-    html += 'style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">' + st.prenom.charAt(0).toUpperCase() + '</div>';
-    html += '<div class="flex-1 min-w-0">';
-    html += '<div class="flex items-center gap-2">';
-    html += '<span class="syne font-black text-slate-900 text-sm">' + st.prenom + '</span>';
-    html += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500">' + st.niveau + '</span>';
-    if (st.boostNew) html += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-600">⚡ boost prêt</span>';
-    if (st.chapNewCount > 0) html += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-600">📚 chap prêt</span>';
-    html += '</div>';
-    html += '<div class="text-[11px] text-slate-400 font-medium mt-0.5">Connexion : ' + lastStr + '</div>';
-    html += '</div>';
-    // Icône : coche verte UNIQUEMENT si RAS, alerte sinon
-    html += '<div class="text-xl flex-shrink-0">' + (needsAct ? as.icon : '✅') + '</div>';
-    html += '</div>';
-
-    // Pill principale colorée (uniquement si non-RAS)
+    var h = '';
+    h += '<div id="admin-card-' + st.code + '" onclick="openStudentModal(\'' + st.code + '\')" class="adm-card ' + as.cls + (needsAct ? ' needs-action' : '') + ' mb-3">';
+    h += '<div class="flex items-center gap-3 mb-2.5">';
+    h += '<div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black syne text-base shadow-sm flex-shrink-0" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">' + st.prenom.charAt(0).toUpperCase() + '</div>';
+    h += '<div class="flex-1 min-w-0">';
+    h += '<div class="flex items-center gap-2">';
+    h += '<span class="syne font-black text-slate-900 text-sm">' + st.prenom + '</span>';
+    h += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500">' + st.niveau + '</span>';
+    if (st.boostNew) h += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-600">⚡ boost prêt</span>';
+    if (st.chapNewCount > 0) h += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-600">📚 chap prêt</span>';
+    h += '</div>';
+    h += '<div class="text-[11px] text-slate-400 font-medium mt-0.5">Connexion : ' + lastStr + '</div>';
+    h += '</div>';
+    h += '<div class="text-xl flex-shrink-0">' + (needsAct ? as.icon : '✅') + '</div>';
+    h += '</div>';
     if (needsAct) {
       var ps = _pillStyle(priority);
-      html += '<div class="' + ps.bg + ' rounded-xl px-3 py-2 text-[11px] font-black ' + ps.text + ' mb-1.5">' + priority + '</div>';
-      // Pills secondaires si plusieurs actions
+      h += '<div class="' + ps.bg + ' rounded-xl px-3 py-2 text-[11px] font-black ' + ps.text + ' mb-1.5">' + priority + '</div>';
       if (allActions.length > 1) {
-        html += '<div class="flex flex-wrap gap-1 mb-2">';
+        h += '<div class="flex flex-wrap gap-1 mb-2">';
         for (var ai = 1; ai < allActions.length; ai++) {
           var sp = _pillStyle(allActions[ai]);
-          html += '<span class="' + sp.bg + ' ' + sp.text + ' text-[10px] font-semibold px-2 py-0.5 rounded-full">' + allActions[ai] + '</span>';
+          h += '<span class="' + sp.bg + ' ' + sp.text + ' text-[10px] font-semibold px-2 py-0.5 rounded-full">' + allActions[ai] + '</span>';
         }
-        html += '</div>';
-      } else {
-        html += '<div class="mb-2"></div>';
-      }
+        h += '</div>';
+      } else { h += '<div class="mb-2"></div>'; }
     }
-
-    // Stats chapitres depuis chapitresDetail (si dispo)
-    var detail = st.chapitresDetail || [];
-    var totalHard = detail.reduce(function(s, d) { return s + d.hardCount; }, 0);
-    var totalExos = detail.reduce(function(s, d) { return s + d.totalExos; }, 0);
-    if (totalExos > 0) {
-      var avgSucc = Math.round(detail.reduce(function(s,d){ return s + d.rateSuccess * d.totalExos; }, 0) / totalExos);
-      var barColor = avgSucc >= 75 ? '#059669' : avgSucc >= 50 ? '#f59e0b' : '#e11d48';
-      html += '<div class="flex items-center gap-2 mb-2">';
-      html += '<div class="flex-1"><div class="adm-bar-bg"><div class="adm-bar-fill" style="width:' + avgSucc + '%;background:' + barColor + '"></div></div></div>';
-      html += '<span class="text-[10px] font-black text-slate-500 flex-shrink-0">' + avgSucc + '% · ' + totalExos + ' exos</span>';
-      if (totalHard > 0) html += '<span class="text-[10px] font-black text-rose-500 flex-shrink-0">' + totalHard + '✗</span>';
-      html += '</div>';
+    var totalHard2 = detail.reduce(function(s, d) { return s + d.hardCount; }, 0);
+    var totalExos2 = detail.reduce(function(s, d) { return s + d.totalExos; }, 0);
+    if (totalExos2 > 0) {
+      var avgSucc2 = Math.round(detail.reduce(function(s,d){ return s + d.rateSuccess * d.totalExos; }, 0) / totalExos2);
+      var bc2 = avgSucc2 >= 75 ? '#059669' : avgSucc2 >= 50 ? '#f59e0b' : '#e11d48';
+      h += '<div class="flex items-center gap-2 mb-2">';
+      h += '<div class="flex-1"><div class="adm-bar-bg"><div class="adm-bar-fill" style="width:' + avgSucc2 + '%;background:' + bc2 + '"></div></div></div>';
+      h += '<span class="text-[10px] font-black text-slate-500 flex-shrink-0">' + avgSucc2 + '% · ' + totalExos2 + ' exos</span>';
+      if (totalHard2 > 0) h += '<span class="text-[10px] font-black text-rose-500 flex-shrink-0">' + totalHard2 + '✗</span>';
+      h += '</div>';
     }
-
-    // Chapitres
     if (st.chapitres && st.chapitres.length > 0) {
-      html += '<div class="flex flex-wrap gap-1.5">';
+      h += '<div class="flex flex-wrap gap-1.5">';
       st.chapitres.forEach(function(ch) {
-        var done = ch.statut && ch.statut.indexOf('Terminé') !== -1;
-        // Taux de réussite du chapitre si disponible
-        var chDetail = detail.find(function(d) { return d.cat === ch.cat; });
-        var rate = chDetail ? (' · ' + chDetail.rateSuccess + '%') : '';
-        html += '<span class="text-[10px] font-bold px-2 py-1 rounded-lg ';
-        html += done ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500';
-        html += '">' + (done ? '✅ ' : '') + ch.cat.replace(/_/g, ' ') + rate + '</span>';
+        var done2 = ch.statut && ch.statut.indexOf('Terminé') !== -1;
+        var chDet = detail.find(function(d) { return d.cat === ch.cat; });
+        var rate = chDet ? (' · ' + chDet.rateSuccess + '%') : '';
+        h += '<span class="text-[10px] font-bold px-2 py-1 rounded-lg ' + (done2 ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500') + '">' + (done2 ? '✅ ' : '') + ch.cat.replace(/_/g, ' ') + rate + '</span>';
       });
-      html += '</div>';
+      h += '</div>';
     }
+    h += '</div>';
+    return h;
+  };
 
-    html += '</div>'; // adm-card
-  });
+  if (activeTab === 'todo') {
+    if (todoStudents.length === 0) {
+      html += '<div class="text-center py-8 text-slate-400 text-sm font-semibold">✅ Tout est traité — aucune action en attente.</div>';
+    }
+    todoStudents.forEach(function(st) { html += _buildStudentCard(st); });
 
-  // Section comptes test (repliable)
-  if (testStudents.length > 0) {
-    html += '<details class="mt-4" id="test-accounts-details">';
-    html += '<summary style="cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem;background:#f1f5f9;border-radius:14px;border:1.5px dashed #cbd5e1">';
-    html += '<span class="text-slate-500 text-xs font-bold">🧪 Comptes test (' + testStudents.length + ')</span>';
-    html += '<span class="text-slate-400 text-[10px] ml-auto">▼ voir</span>';
-    html += '</summary>';
-    html += '<div class="mt-2 space-y-2">';
-    html += '<div class="flex justify-end mb-1">';
-    html += '<button onclick="_adminMarkAllTest()" class="text-[10px] font-bold text-slate-400 hover:text-rose-500 underline transition-colors" id="mark-all-test-btn">Marquer tous les comptes actuels comme test →</button>';
-    html += '</div>';
-    testStudents.forEach(function(st) {
-      html += '<div class="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-3 py-2.5 flex items-center gap-3 opacity-60">';
-      html += '<div class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 bg-slate-200 text-sm font-black flex-shrink-0">' + st.prenom.charAt(0).toUpperCase() + '</div>';
-      html += '<div class="flex-1 min-w-0">';
-      html += '<span class="text-slate-600 text-xs font-bold">' + st.prenom + '</span>';
-      html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded ml-1.5 bg-slate-200 text-slate-400">' + st.niveau + '</span>';
-      html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded ml-1 bg-slate-100 text-slate-400">🧪 TEST</span>';
-      html += '<div class="text-[10px] text-slate-400 font-medium mt-0.5">' + st.code + '</div>';
-      html += '</div></div>';
-    });
-    html += '</div></details>';
+  } else if (activeTab === 'done') {
+    if (doneStudents.length === 0) {
+      html += '<div class="text-center py-8 text-slate-400 text-sm font-semibold">Aucun élève dans l\'onglet "Traité" pour l\'instant.</div>';
+    }
+    doneStudents.forEach(function(st) { html += _buildStudentCard(st); });
+
+  } else { // test
+    if (testStudents.length === 0) {
+      html += '<div class="text-center py-8 text-slate-400 text-sm font-semibold">Aucun compte test.</div>';
+    } else {
+      html += '<div class="flex justify-end mb-2">';
+      html += '<button onclick="_adminMarkAllTest()" class="text-[10px] font-bold text-slate-400 hover:text-rose-500 underline transition-colors" id="mark-all-test-btn">Marquer tous les comptes actuels comme test →</button>';
+      html += '</div>';
+      testStudents.forEach(function(st) {
+        html += '<div class="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-3 py-2.5 flex items-center gap-3 opacity-60 mb-2">';
+        html += '<div class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 bg-slate-200 text-sm font-black flex-shrink-0">' + st.prenom.charAt(0).toUpperCase() + '</div>';
+        html += '<div class="flex-1 min-w-0">';
+        html += '<span class="text-slate-600 text-xs font-bold">' + st.prenom + '</span>';
+        html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded ml-1.5 bg-slate-200 text-slate-400">' + st.niveau + '</span>';
+        html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded ml-1 bg-slate-100 text-slate-400">🧪 TEST</span>';
+        html += '<div class="text-[10px] text-slate-400 font-medium mt-0.5">' + st.code + '</div>';
+        html += '</div></div>';
+      });
+    }
   }
 
   c.innerHTML = html;
+}
+
+function _adminSetTab(tab) {
+  S.adminTab = tab;
+  _renderAdminCards();
 }
 
 async function _adminMarkAllTest() {
