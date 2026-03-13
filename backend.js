@@ -2028,12 +2028,12 @@ function generateBrevet(p) {
     return { status: 'error', message: 'Niveau invalide.' };
   }
 
-  // Chapitres brevet prioritaires par niveau
+  // Chapitres brevet prioritaires par niveau (màj 13 mars 2026 — +Systèmes_Équations, +Inéquations)
   var brevetChaps = {
-    '3EME': ['Calcul_Littéral', 'Équations', 'Fonctions', 'Théorème_de_Thalès', 'Trigonométrie', 'Statistiques'],
+    '3EME': ['Calcul_Littéral', 'Équations', 'Fonctions', 'Théorème_de_Thalès', 'Trigonométrie', 'Statistiques', 'Probabilités', 'Racines_Carrées', 'Systèmes_Équations', 'Inéquations'],
     '4EME': ['Calcul_Littéral', 'Équations', 'Pythagore', 'Proportionnalité', 'Puissances', 'Fractions'],
     '5EME': ['Fractions', 'Nombres_relatifs', 'Proportionnalité', 'Pythagore', 'Puissances', 'Calcul_Littéral'],
-    '6EME': ['Nombres_entiers', 'Fractions', 'Proportionnalité', 'PérimètresAires', 'Géométrie', 'Angles']
+    '6EME': ['Nombres_entiers', 'Fractions', 'Proportionnalité', 'Périmètres_Aires', 'Géométrie', 'Angles']
   };
 
   var targetChaps = brevetChaps[niveau] || brevetChaps['3EME'];

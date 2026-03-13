@@ -1,5 +1,5 @@
 # Vérification Programme Officiel Français — Matheux
-Date analyse : 12 mars 2026 | Référentiel : Eduscol 2016-2024, cycle 3 et cycle 4
+Date analyse : 13 mars 2026 | Référentiel : Eduscol 2016-2024, cycle 3 et cycle 4
 
 ---
 
@@ -21,7 +21,7 @@ Source : programmes officiels Eduscol (Bulletin Officiel spécial n°11, 26 nove
 | Notion officielle | Dans Matheux | Statut |
 |---|---|---|
 | Nombres entiers (opérations, division euclidienne, multiples/diviseurs, PGCD) | `Nombres_entiers` | ✅ COUVERT |
-| Nombres décimaux (comparaison, ordre, opérations) | _absent_ | ❌ MANQUANT |
+| Nombres décimaux (comparaison, ordre, opérations) | `Nombres_Décimaux` | ✅ COUVERT |
 | Fractions (écriture, comparaison, addition, soustraction) | `Fractions` | ✅ COUVERT |
 | Proportionnalité (tableaux, règle de trois, pourcentages) | `Proportionnalité` | ✅ COUVERT |
 | Puissances de 10 (notation scientifique simplifiée) | _absent_ | ❌ MANQUANT |
@@ -30,25 +30,25 @@ Source : programmes officiels Eduscol (Bulletin Officiel spécial n°11, 26 nove
 | Notion officielle | Dans Matheux | Statut |
 |---|---|---|
 | Figures planes : triangle, quadrilatères, cercle | `Géométrie` | ✅ PARTIELLEMENT |
-| Symétrie axiale (axes de symétrie, construction) | _absent_ | ❌ MANQUANT |
-| Agrandissement/réduction (notion de rapport) | _absent_ | ❌ MANQUANT |
+| Symétrie axiale (axes de symétrie, construction) | `Symétrie_Axiale` | ✅ COUVERT |
+| Agrandissement/réduction (notion de rapport) | `Agrandissement_Réduction` | ✅ COUVERT |
 | Angles (mesure, construction, types) | `Angles` | ✅ COUVERT |
 
 ### Grandeurs et mesures (officiel)
 | Notion officielle | Dans Matheux | Statut |
 |---|---|---|
-| Périmètres (polygones, cercle) | `PérimètresAires` | ✅ COUVERT |
-| Aires (rectangles, triangles, disques) | `PérimètresAires` | ✅ COUVERT |
-| Volumes (pavés droits, cylindres) | _absent_ | ❌ MANQUANT |
-| Conversions d'unités | _absent_ | ❌ MANQUANT |
+| Périmètres (polygones, cercle) | `Périmètres_Aires` | ✅ COUVERT |
+| Aires (rectangles, triangles, disques) | `Périmètres_Aires` | ✅ COUVERT |
+| Volumes (pavés droits, cylindres) | `Volumes` | ✅ COUVERT |
+| Conversions d'unités | `Conversions_Unités` | ✅ COUVERT |
 
 ### Données et statistiques (officiel)
 | Notion officielle | Dans Matheux | Statut |
 |---|---|---|
-| Tableaux, diagrammes, graphiques | _absent_ | ❌ MANQUANT |
-| Médiane, moyenne (introduction) | _absent_ | ❌ MANQUANT |
+| Tableaux, diagrammes, graphiques | `Statistiques_6ème` | ✅ COUVERT |
+| Médiane, moyenne (introduction) | `Statistiques_6ème` | ✅ COUVERT |
 
-**Bilan 6ème : 6/6 + 2 nouveaux (Nombres_decimaux ✅ + Statistiques_6eme ✅) — Couverture estimée : ~80% (avec chapitres en attente de push).**
+**Bilan 6ème : 12 chapitres — Couverture estimée : ~95%** ✅
 
 ---
 
@@ -61,7 +61,7 @@ Source : programmes officiels Eduscol (Bulletin Officiel spécial n°11, 26 nove
 | Nombres relatifs (addition, soustraction, multiplication) | `Nombres_relatifs` | ✅ COUVERT |
 | Proportionnalité (applications) | `Proportionnalité` | ✅ COUVERT |
 | Puissances entières positives | `Puissances` | ✅ COUVERT |
-| Racines carrées (introduction) | _absent_ | ❌ MANQUANT |
+| Racines carrées (introduction) | `Racines_Carrées` | ✅ COUVERT |
 
 ### Algèbre (officiel)
 | Notion officielle | Dans Matheux | Statut |
@@ -73,16 +73,16 @@ Source : programmes officiels Eduscol (Bulletin Officiel spécial n°11, 26 nove
 | Notion officielle | Dans Matheux | Statut |
 |---|---|---|
 | Théorème de Pythagore (découverte) | `Pythagore` | ✅ COUVERT |
-| Symétrie centrale (construction, propriétés) | _absent_ | ❌ MANQUANT |
-| Translations, rotations (transformations) | _absent_ | ❌ MANQUANT |
-| Triangles semblables (introduction) | _absent_ | ❌ MANQUANT |
+| Symétrie centrale (construction, propriétés) | `Symétrie_Centrale` | ✅ COUVERT |
+| Translations, rotations (transformations) | `Transformations` | ✅ COUVERT |
+| Triangles semblables (introduction) | `Triangles_Semblables` | ✅ COUVERT |
 
 ### Fonctions (officiel)
 | Notion officielle | Dans Matheux | Statut |
 |---|---|---|
 | Notion de fonction (image, antécédent) | _absent_ (3ème) | ⚠️ DÉCALÉ |
 
-**Bilan 5ème : 6/6 chapitres couverts, 5 notions absentes. Couverture estimée : ~65% (inchangé — sprint 2 prévu).**
+**Bilan 5ème : 10 chapitres — Couverture estimée : ~90%** ✅
 
 ---
 
@@ -100,22 +100,22 @@ Source : programmes officiels Eduscol (Bulletin Officiel spécial n°11, 26 nove
 |---|---|---|
 | Développement / factorisation | `Calcul_Littéral` | ✅ COUVERT |
 | Équations du 1er degré à une inconnue | `Équations` | ✅ COUVERT |
-| Inéquations (introduction) | _absent_ | ❌ MANQUANT |
+| Inéquations (introduction) | `Inéquations` | ✅ COUVERT |
 
 ### Géométrie (officiel)
 | Notion officielle | Dans Matheux | Statut |
 |---|---|---|
 | Théorème de Pythagore (applications et réciproque) | `Pythagore` | ✅ COUVERT |
 | Théorème de Thalès (introduction) | _absent_ (3ème) | ⚠️ DÉCALÉ |
-| Homothétie | _absent_ | ❌ MANQUANT |
+| Homothétie | `Homothétie` | ✅ COUVERT |
 | Sections de solides | _absent_ | ❌ MANQUANT |
 
 ### Fonctions (officiel)
 | Notion officielle | Dans Matheux | Statut |
 |---|---|---|
-| Fonctions linéaires (représentation, lecture) | _absent_ | ❌ MANQUANT |
+| Fonctions linéaires (représentation, lecture) | `Fonctions_Linéaires` | ✅ COUVERT |
 
-**Bilan 4ème : 6/6 + 1 nouveau (Fonctions_lineaires ✅) — Couverture estimée : ~80% (avec chapitres en attente de push).**
+**Bilan 4ème : 9 chapitres — Couverture estimée : ~90%** ✅
 
 ---
 
@@ -124,7 +124,7 @@ Source : programmes officiels Eduscol (Bulletin Officiel spécial n°11, 26 nove
 ### Nombres et calculs (officiel)
 | Notion officielle | Dans Matheux | Statut |
 |---|---|---|
-| Racines carrées (calcul, simplification) | _absent_ | ❌ MANQUANT |
+| Racines carrées (calcul, simplification) | `Racines_Carrées` | ✅ COUVERT |
 | Notation scientifique | _absent_ | ❌ MANQUANT |
 
 ### Algèbre (officiel)
@@ -132,8 +132,8 @@ Source : programmes officiels Eduscol (Bulletin Officiel spécial n°11, 26 nove
 |---|---|---|
 | Développement / factorisation avancés | `Calcul_Littéral` | ✅ COUVERT |
 | Identités remarquables (a+b)², (a-b)², (a+b)(a-b) | `Calcul_Littéral` | ⚠️ PARTIEL |
-| Équations du 1er degré + systèmes d'équations | `Équations` | ⚠️ PARTIEL |
-| Inéquations du 1er degré | _absent_ | ❌ MANQUANT |
+| Équations du 1er degré + systèmes d'équations | `Équations` + `Systèmes_Équations` | ✅ COUVERT |
+| Inéquations du 1er degré | `Inéquations` | ✅ COUVERT |
 
 ### Fonctions (officiel)
 | Notion officielle | Dans Matheux | Statut |
@@ -151,84 +151,52 @@ Source : programmes officiels Eduscol (Bulletin Officiel spécial n°11, 26 nove
 | Notion officielle | Dans Matheux | Statut |
 |---|---|---|
 | Statistiques descriptives (moyenne, médiane, étendue) | `Statistiques` | ✅ COUVERT |
-| Probabilités (vocabulaire, calcul de fréquences) | _absent_ | ❌ MANQUANT |
+| Probabilités (vocabulaire, calcul de fréquences) | `Probabilités` | ✅ COUVERT |
 
-**Bilan 3ème : 6/6 + 2 nouveaux (Probabilites ✅ + Racines_carrees ✅) — Couverture estimée : ~85% (avec chapitres en attente de push).**
+**Bilan 3ème : 10 chapitres — Couverture estimée : ~95%** ✅
 
 ---
 
-## Synthèse — Chapitres manquants prioritaires
+## Synthèse — Chapitres restants (Sprint 4)
 
-### Niveau CRITIQUE (programme officiel, souvent au Brevet)
-| Priorité | Notion | Niveau | Statut |
+### Niveau MINEUR (programme officiel, non prioritaire)
+| Priorité | Notion | Niveau | Note |
 |---|---|---|---|
-| 1 | Probabilités | 3EME | ✅ JSON créé — en attente push Sheet |
-| 2 | Racines carrées | 3EME | ✅ JSON créé — en attente push Sheet |
-| 3 | Systèmes d'équations | 3EME | 🔄 Sprint 2 — Extension `Équations` |
-| 4 | Fonctions linéaires | 4EME | ✅ JSON créé — en attente push Sheet |
-| 5 | Nombres décimaux | 6EME | ✅ JSON créé — en attente push Sheet |
-| 6 | Statistiques | 6EME | ✅ JSON créé — en attente push Sheet |
-
-### Niveau IMPORTANT (programme officiel, hors Brevet prioritaire)
-| Priorité | Notion | Niveau | Effort estimé |
-|---|---|---|---|
-| 6 | Symétrie axiale | 6EME | +1 chapitre |
-| 7 | Symétrie centrale | 5EME | +1 chapitre |
-| 8 | Volumes | 6EME | Extension `PérimètresAires` |
-| 9 | Transformations (translations, rotations) | 5EME | +1 chapitre |
-| 10 | Statistiques (6ème/5ème) | 6EME | +1 chapitre |
-| 11 | Inéquations | 3EME | Extension `Équations` |
-| 12 | Notation scientifique | 3EME | Extension `Puissances`/`Calcul_Littéral` |
+| 1 | Notation scientifique | 3EME | Extension `Puissances` |
+| 2 | Sections de solides | 4EME | Chapitre géométrie 3D |
+| 3 | Puissances de 10 | 6EME | Extension `Nombres_entiers` |
 
 ---
 
 ## Cohérence interne Matheux — Observations
 
-### Progressions logiques OK
-- **Fractions** : 6EME → 5EME → 4EME (progression cohérente, difficultés croissantes)
-- **Pythagore** : 5EME (découverte) → 4EME (réciproque) ✅ conforme au programme
-- **Calcul_Littéral** : 5EME (introduction) → 4EME (développement) → 3EME (identités) ✅ conforme
-- **Équations** : 4EME (1er degré) → 3EME (avancé) ✅ conforme
+### Progressions logiques ✅
+- **Fractions** : 6EME → 5EME → 4EME (progression cohérente)
+- **Pythagore** : 5EME (découverte) → 4EME (réciproque) ✅
+- **Calcul_Littéral** : 5EME (introduction) → 4EME (développement) → 3EME (identités) ✅
+- **Équations** : 4EME (1er degré) → 3EME (avancé + systèmes) ✅
+- **Inéquations** : 4EME (introduction) → 3EME (complet avec brevet) ✅
+- **Racines_Carrées** : 5EME (introduction) → 3EME (simplification, rationalisation) ✅
+- **Symétrie** : 6EME (axiale) → 5EME (centrale) ✅
 
 ### Décalages programme (à surveiller)
-- **Thalès** : officiellement introduit en 4ème, Matheux le met uniquement en 3ème. Acceptable si la 4ème couvre "introduction", la 3ème "démonstration complète".
-- **Fonctions** : officiellement à partir de 5ème (notion), Matheux concentre en 3ème uniquement. Lacune pédagogique pour les élèves de 5ème et 4ème.
-- **Statistiques** : officiellement dès 6ème, Matheux uniquement en 3ème.
+- **Thalès** : officiellement introduit en 4ème, Matheux le met uniquement en 3ème. Acceptable.
+- **Fonctions** : officiellement à partir de 5ème (notion), Matheux concentre en 3ème uniquement.
 
 ---
 
-## Recommandations par priorité
+## Verdict couverture globale — 13 mars 2026
 
-### Sprint 1 — Court terme (prochains exercices à créer)
-1. **Probabilités 3ème** — indispensable pour le Brevet (toujours au programme)
-2. **Racines carrées 3ème** — présent chaque année au Brevet
-3. **Nombres décimaux 6ème** — base absolue, beaucoup d'élèves en 6ème manquent ce chapitre
-
-### Sprint 2 — Moyen terme
-4. **Fonctions linéaires 4ème** — chapitre officiel manquant
-5. **Statistiques 6ème** — conforme programme cycle 3
-6. **Systèmes d'équations 3ème** — extension logique de `Équations`
-
-### Sprint 3 — Complétion programme
-7. Symétrie axiale (6ème) + centrale (5ème)
-8. Transformations géométriques (5ème)
-9. Volumes (6ème)
-10. Inéquations (3ème)
-
----
-
-## Verdict couverture globale
-
-| Niveau | Chapitres couverts | Notions officielles | Couverture |
+| Niveau | Chapitres | Notions officielles | Couverture |
 |---|---|---|---|
-| 6EME | 6/6 + 2 (JSON prêt) | ~80% des notions officielles | BONNE ↑ |
-| 5EME | 6/6 chapitres clés | ~65% des notions officielles | PARTIELLE |
-| 4EME | 6/6 + 1 (JSON prêt) | ~80% des notions officielles | BONNE ↑ |
-| 3EME | 6/6 + 2 (JSON prêt) | ~85% des notions officielles | TRÈS BONNE ↑ |
-| **TOTAL** | **24 actifs + 5 JSON prêts** | **~85% globale (après push)** | **BONNE** |
+| 6EME | 12 chapitres | ~95% des notions officielles | ✅ EXCELLENTE |
+| 5EME | 10 chapitres | ~90% des notions officielles | ✅ TRÈS BONNE |
+| 4EME | 9 chapitres | ~90% des notions officielles | ✅ TRÈS BONNE |
+| 3EME | 10 chapitres | ~95% des notions officielles | ✅ EXCELLENTE |
+| **TOTAL** | **41 chapitres** | **~93% globale** | ✅ **EXCELLENTE** |
 
-**Conclusion** : Après le push des 5 chapitres prioritaires (`python3 push_new_chapters.py`), la couverture passe de 66% à **~85%** du programme officiel. Les 15% restants concernent la symétrie, les transformations géométriques, les volumes et les inéquations (sprint 3).
+**Conclusion** : Sprint 1+2+3 complétés le 13 mars 2026.
+41 chapitres actifs — 820 exos curriculum + 82 diag + 410 boost + 136 brevet.
+Reste Sprint 4 (3 notions mineures) représentant ~7% du programme.
 
-> **Action requise :** `cd "/home/nicolas/Bureau/algebra live/algebra" && python3 push_new_chapters.py`
-
-*Analyse réalisée le 12 mars 2026 sur la base des programmes Eduscol cycle 3 et cycle 4.*
+*Analyse réalisée le 13 mars 2026 sur la base des programmes Eduscol cycle 3 et cycle 4.*

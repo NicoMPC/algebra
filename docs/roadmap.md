@@ -11,7 +11,7 @@
 | Dimension | État |
 |---|---|
 | Tests automatisés | 73/74 (99%) — 1 race condition GAS acceptable |
-| Couverture programme | ~85% — 29 chapitres (580 exos) |
+| Couverture programme | ~93% — 41 chapitres (820 exos curriculum + 82 diag + 410 boost + 136 brevet) |
 | Juridique | Complet (5 pages + consentement parental + RGPD) |
 | Paiement | ⏳ Lien Stripe TEST actif — passer en PROD |
 | Emails auto | ✅ J+0 auto, J+3/J+7 code prêt (trigger à activer) |
@@ -37,8 +37,11 @@
 ## BLOC 1 — Socle technique ✅ TERMINÉ
 
 - [x] generate_diagnostic / generate_daily_boost / isFirstDay / boostExistsInDB
-- [x] Curriculum_Officiel : 580 exos (29 chap × 20) — +5 chapitres poussés 12 mars
-- [x] DiagnosticExos : 58 exos (29 chap × 2)
+- [x] Curriculum_Officiel : 820 exos (41 chap × 20) — +12 chapitres poussés 13 mars (Sprint 2+3)
+- [x] DiagnosticExos : 82 exos (41 chap × 2)
+- [x] BoostExos : 410 exos (41 chap × 10)
+- [x] BrevetExos : 136 exos (17 chap × 8) — +Systèmes_Équations, +Inéquations 3EME
+- [x] CHAPS_BY_LEVEL : 41 chapitres exposés dans sélecteur diagnostic (fix accents catégories 13 mars)
 - [x] Bugs T1→T7 post-tests utilisateur tous corrigés
 - [x] UX Progression & Mobile (Progression, fragiles, mobile)
 - [x] Harmonisation `_doLoginAndLaunch` / `_flowGuestRegister` — fix onboarding fantôme + double diagnostic (13 mars)
@@ -84,7 +87,8 @@
 - [x] Consentement parental + footer légal
 - [x] GA4 RGPD-compliant (bannière consentement, IP anonymisée)
 - [x] Waitlist + limite bêta 50 familles
-- [x] Email bienvenue J+0 auto
+- [ ] Email J+0 — refonte template vouvoiement parent + replyTo nicolas@matheux.fr (brief dans product.md § Emails automatiques)
+- [ ] replyTo: nicolas@matheux.fr sur J+3, J+7 et reset MDP
 - [x] Overlay trial → Stripe direct 9,99€/mois (lien TEST)
 - [x] Email J+7 → lien Stripe
 - [x] Emails from no-reply@matheux.fr
