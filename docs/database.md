@@ -90,6 +90,7 @@ _ARCHIVE_Queue / _ARCHIVE_Prerequisites / _ARCHIVE_Rapports / _ARCHIVE_Pending_E
 | K | MauvaiseOption | String | Option choisie si erreur QCM |
 | L | Draft | String | Texte brouillon de l'élève |
 | M | Date | Date | `yyyy-MM-dd` |
+| N | Source | String | `BOOST` / `CALIBRAGE` / `` (curriculum) — ajouté BUG-06 fix |
 
 ### Progress
 

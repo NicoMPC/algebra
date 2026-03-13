@@ -6296,7 +6296,11 @@ async function publishChapter(code) {
     }) });
     var d = await r.json();
     if (d.status === 'success') {
-      showT('📚 Chapitre publié ! L\'élève le recevra au prochain login.', 4500, '✅');
+      if (d.overwrite) {
+        showT('⚠️ 4 chapitres déjà en attente — Ch1 remplacé par le nouveau', 5000, '⚠️');
+      } else {
+        showT('📚 Chapitre publié ! L\'élève le recevra au prochain login.', 4500, '✅');
+      }
       // Mettre à jour en mémoire
       for (var i = 0; i < S.adminStudents.length; i++) {
         if (S.adminStudents[i].code === code) {

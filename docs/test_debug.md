@@ -1,7 +1,7 @@
 # test_debug.md — Bugs à corriger (audit 13 mars 2026)
 
 > Résultat de l'audit complet : lecture codebase + simulation 7 jours GAS réel (5 profils).
-> **Ne coder qu'après relecture de ce fichier + validation Nicolas.**
+> **✅ Tous les bugs corrigés le 13 mars 2026 — @60 bugfixes.**
 > Ordre de correction : Lot 1 → Lot 2 → Lot 3.
 
 ---

@@ -8,8 +8,8 @@
 
 **Matheux est fonctionnel à 99% — prêt pour les 50 premiers élèves. Seul manque : Stripe PROD.**
 
-> ⚠️ **Audit complet réalisé le 13 mars 2026** (simulation 7j × 5 profils sur GAS réel).
-> 4 bugs critiques identifiés à corriger avant onboarding élèves. Voir [test_debug.md](test_debug.md).
+> ✅ **Audit + bugfixes réalisés le 13 mars 2026** (simulation 7j × 5 profils sur GAS réel).
+> BUG-01 à BUG-12 corrigés dans backend.js @60. Voir [test_debug.md](test_debug.md).
 
 | Dimension | État |
 |---|---|
@@ -29,7 +29,7 @@
 
 | # | Action | Statut | Priorité |
 |---|---|---|---|
-| 0 | **Fixes bugs audit** (BUG-01 à BUG-08 dans [test_debug.md](test_debug.md)) | ❌ À faire | 🔴 |
+| 0 | **Fixes bugs audit** (BUG-01 à BUG-12 dans [test_debug.md](test_debug.md)) | ✅ Corrigés @60 | 🟢 |
 | 1 | Passer Stripe TEST → PROD (3 occurrences : index.html, backend.js, cgv.html) | ⏳ Attente lien prod | 🔴 |
 | 2 | Créer contact@matheux.fr + alias no-reply@matheux.fr | ⏳ Manuel hébergeur | 🔴 |
 | 3 | Activer trigger `triggerDailyMarketing` (Apps Script UI → 9h-10h) | ⏳ 5 min manuel | 🟡 |
