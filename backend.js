@@ -312,8 +312,10 @@ function login(p) {
   var code       = String(user['Code']);
   var level      = String(user['Niveau']).toUpperCase();
   var name       = String(user['Prénom']);
-  var isAdmin    = parseInt(user['IsAdmin']  || 0) === 1;
-  var premium    = parseInt(user['Premium']  || 0) === 1;
+  var _adm = user['IsAdmin'];
+  var isAdmin = _adm === 1 || _adm === true || String(_adm) === '1' || String(_adm).toUpperCase() === 'TRUE';
+  var _prm = user['Premium'];
+  var premium = _prm === 1 || _prm === true || String(_prm) === '1' || String(_prm).toUpperCase() === 'TRUE';
   var trialStart = user['TrialStart'] ? String(user['TrialStart']) : '';
 
   // ── Curriculum officiel (chapitres du niveau) ─────────────
@@ -421,7 +423,7 @@ function login(p) {
               suiviSh.getRange(si + 1, 19).setValue('');
               // Créer entrée DailyBoosts exosDone=0 → admin voit "⏳ En attente"
               try {
-                var nextDay = Utilities.formatDate(new Date(new Date().getTime() + 86400000), 'Europe/Paris', 'yyyy-MM-dd');
+                var nextDay = todayStr; // Boost livré aujourd'hui → daté aujourd'hui
                 var boostSh = getSheet(SH.BOOSTS);
                 var boostData = boostSh.getDataRange().getValues();
                 var alreadyExists = false;
@@ -527,6 +529,29 @@ function saveScore(p) {
     } catch (e) {
       // Silencieux — le score de confiance est non-bloquant
     }
+  }
+
+  // ── MAJ ExosDone dans DailyBoosts si source=BOOST ────────
+  // Incrémente ExosDone de 1 à chaque exercice boost sauvegardé.
+  // Le frontend déduplique via S.sent → chaque exo passe exactement 1 fois.
+  if (source === 'BOOST') {
+    try {
+      var bCode = String(p.code);
+      var bToday = today();
+      var bSh = getSheet(SH.BOOSTS);
+      var bData = bSh.getDataRange().getValues();
+      for (var bi = 1; bi < bData.length; bi++) {
+        var bDate = bData[bi][1];
+        var bDateStr = (bDate instanceof Date)
+          ? Utilities.formatDate(bDate, 'Europe/Paris', 'yyyy-MM-dd')
+          : String(bDate || '').substring(0, 10);
+        if (String(bData[bi][0]) === bCode && bDateStr === bToday) {
+          var curExosDone = parseInt(bData[bi][3] || 0) || 0;
+          bSh.getRange(bi + 1, 4).setValue(curExosDone + 1);
+          break;
+        }
+      }
+    } catch (e) {}
   }
 
   try { rebuildSuivi(String(p.code)); } catch (e) {}
@@ -898,7 +923,7 @@ function generateDailyBoost(p) {
       break;
     }
   }
-  if (!saved) appendRow(SH.BOOSTS, [code, todayStr2, JSON.stringify(boost)]);
+  if (!saved) appendRow(SH.BOOSTS, [code, todayStr2, JSON.stringify(boost), 0]);
 
   return { status: 'success', boost: boost };
 }
