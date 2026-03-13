@@ -307,6 +307,8 @@
     .pfill  { height:100%; border-radius:99px; transition:width .5s cubic-bezier(.4,0,.2,1); }
     .pfp    { background:linear-gradient(90deg,var(--p),#818cf8); }
     .pfg    { background:linear-gradient(90deg,var(--grn),#34d399); }
+    .pfr    { background:linear-gradient(90deg,#e11d48,#fb7185); }
+    .pfo    { background:linear-gradient(90deg,#f59e0b,#fbbf24); }
 
     /* ── MASTERY RING ─────────────────────────────────────── */
     .mring        { width:72px; height:72px; position:relative; flex-shrink:0; }
@@ -696,6 +698,51 @@
       border-top:1px solid #e2e8f0; margin-top:.75rem;
       padding-top:.75rem; font-size:.85rem; font-weight:500;
       color:#475569; line-height:1.6; min-height:1rem;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       FIGURES GÉOMÉTRIQUES SVG
+    ══════════════════════════════════════════════════════ */
+    .geo-fig {
+      display:flex; justify-content:center; margin-bottom:.75rem;
+      animation: figFadeIn .5s ease both;
+    }
+    .geo-fig svg {
+      max-width:260px; width:100%; height:auto;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,.08));
+    }
+    .geo-fig text {
+      font-family:'DM Sans',sans-serif; font-weight:700;
+    }
+    .geo-fig .geo-label { fill:#4338ca; font-size:13px; }
+    .geo-fig .geo-val   { fill:#059669; font-size:12px; font-weight:800; }
+    .geo-fig .geo-unknown { fill:#dc2626; font-size:13px; font-weight:800; }
+    .geo-fig .geo-line  { stroke:#334155; stroke-width:2; fill:none; stroke-linecap:round; }
+    .geo-fig .geo-fill  { fill:#eef2ff; stroke:#6366f1; stroke-width:1.5; }
+    .geo-fig .geo-fill2 { fill:#f0fdf4; stroke:#22c55e; stroke-width:1.5; }
+    .geo-fig .geo-angle  { fill:none; stroke:#f59e0b; stroke-width:1.5; }
+    .geo-fig .geo-right  { fill:none; stroke:#6366f1; stroke-width:1.5; }
+    .geo-fig .geo-dash  { stroke:#94a3b8; stroke-width:1.5; stroke-dasharray:6,4; fill:none; }
+    .geo-fig .geo-axis  { stroke:#c084fc; stroke-width:1.5; stroke-dasharray:8,4; fill:none; }
+    .geo-fig .geo-dot   { fill:#4338ca; r:3; }
+    .geo-fig .geo-3d-edge   { stroke:#334155; stroke-width:1.5; fill:none; stroke-linejoin:round; }
+    .geo-fig .geo-3d-hidden { stroke:#94a3b8; stroke-width:1; stroke-dasharray:5,4; fill:none; }
+    .geo-fig .geo-3d-face   { stroke:#6366f1; stroke-width:1; fill:#eef2ff; opacity:.5; }
+    .geo-fig .geo-3d-face2  { stroke:#22c55e; stroke-width:1; fill:#f0fdf4; opacity:.4; }
+    /* Brouillon quadrillé */
+    #draft-text.grid-on {
+      background-image:
+        linear-gradient(rgba(99,102,241,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,.06) 1px, transparent 1px);
+      background-size: 24px 24px;
+      font-family: 'DM Sans', monospace;
+      line-height: 24px;
+    }
+    @keyframes figFadeIn { from{opacity:0;transform:translateY(8px) scale(.96)} to{opacity:1;transform:none} }
+    @keyframes figDraw { from{stroke-dashoffset:var(--len)} to{stroke-dashoffset:0} }
+    .geo-fig .geo-draw {
+      stroke-dasharray:var(--len);
+      animation: figDraw .8s ease-out both;
     }
   </style>
 </head>
@@ -1395,7 +1442,10 @@
     <div class="flex-1 flex flex-col px-3 pt-3 pb-3 bg-white overflow-hidden">
       <div class="flex justify-between items-center mb-1.5 flex-shrink-0">
         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">✏️ Tes calculs</span>
-        <button onclick="clrText()" class="text-xs font-bold text-rose-400 hover:text-rose-600 transition-colors">Effacer</button>
+        <div class="flex gap-2 items-center">
+          <button onclick="toggleGrid()" id="btn-grid" class="text-xs font-bold text-slate-400 hover:text-indigo-600 transition-colors" title="Quadrillé">▦</button>
+          <button onclick="clrText()" class="text-xs font-bold text-rose-400 hover:text-rose-600 transition-colors">Effacer</button>
+        </div>
       </div>
       <textarea id="draft-text" style="flex:1;resize:none;min-height:100px"
                 placeholder="Écris tes calculs ici..."></textarea>
@@ -3045,7 +3095,8 @@ function initApp(d, skipRender) {
     }
   } catch (e) {}
 
-  S.res = {}; S.xp = 0; S.sent = new Set();
+  S.res = {}; S.xp = 0; S.sent = new Set(); S._todayChap = null;
+  var _today = tod();
   if (d.history) {
     d.history.forEach(function(r){
       if (injectedCats.has(r.categorie)) return;  // skip chapitres injectés
@@ -3053,6 +3104,10 @@ function initApp(d, skipRender) {
       S.res[key] = r.resultat;
       S.xp += parseInt(r.xp) || 0;
       S.sent.add(S.prof.code + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1));
+      // Détecte le chapitre pratiqué aujourd'hui (règle 1 chapitre/jour)
+      if (r.date && r.date.substring(0,10) === _today && r.categorie !== 'BOOST' && r.categorie !== 'CALIBRAGE' && r.categorie !== 'BREVET' && r.categorie !== 'REVISION') {
+        S._todayChap = r.categorie;
+      }
     });
   }
 
@@ -3259,6 +3314,8 @@ function mark(cat, idx, status, wrongOpt) {
   var exo = LVL[S.niv].cats[cat][idx];
   S.res[id] = status;
   S.cid = id; S.rev = true;
+  // Règle 1 chapitre/jour : enregistre le chapitre pratiqué aujourd'hui
+  if (cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') S._todayChap = cat;
   var xp = status === 'EASY' ? 100 : status === 'MEDIUM' ? 50 : 10;
   S.xp += xp;
   sendScore(r.rC, r.rI, status, xp, exo.q, wrongOpt || null, cat);
@@ -3272,6 +3329,12 @@ function mark(cat, idx, status, wrongOpt) {
 
 async function togCat(cat) {
   var was = !!S.exp[cat];
+  // Règle 1 chapitre/jour : bloque l'ouverture d'un 2e chapitre
+  if (!was && S._todayChap && cat !== S._todayChap && cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') {
+    var todayName = (LVL[S.niv] && LVL[S.niv].names[S._todayChap]) || S._todayChap;
+    showT('Un seul chapitre par jour — tu travailles déjà sur ' + todayName + '. Reviens demain !', 4000, '🔒');
+    return;
+  }
   // Toast abandon boost incomplet
   if (was && cat === 'BOOST' && !S.boostConsumed && S.boost && S.boost.exos) {
     var bDoneCount2 = 0;
@@ -4078,6 +4141,12 @@ function getChapProgress(cat) {
 }
 
 function openFromProgress(cat) {
+  // Règle 1 chapitre/jour
+  if (S._todayChap && cat !== S._todayChap && cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') {
+    var todayName = (LVL[S.niv] && LVL[S.niv].names[S._todayChap]) || S._todayChap;
+    showT('Un seul chapitre par jour — tu travailles déjà sur ' + todayName + '. Reviens demain !', 4000, '🔒');
+    return;
+  }
   S.view = 'chapters';
   Object.keys(S.exp).forEach(function(k){ S.exp[k] = false; });
   S.exp[cat] = true;
@@ -4098,99 +4167,168 @@ function renderProgress() {
     return;
   }
 
-  // Compteurs résumé
-  var mastered = 0, started = 0;
+  // ── Données par chapitre ──
+  var chapData = [];
+  var totalScore = 0, scoredCount = 0, mastered = 0;
   keys.forEach(function(cat){
-    var p = getChapProgress(cat);
-    var exsL = LVL[S.niv] ? (LVL[S.niv].cats[cat] || []) : [];
-    var doneL = exsL.filter(function(e, i) {
-      var r = res2(cat, i); return !!S.res[S.niv+'-'+r.rC+'-'+r.rI];
-    }).length;
-    var compL = doneL === exsL.length && exsL.length > 0;
-    if ((p && p.nbExos > 0) || compL) {
-      started++;
-      if (compL || (p && (p.statut === 'maitrise' || p.score >= 80))) mastered++;
-    }
+    var p    = getChapProgress(cat);
+    var score = p ? Math.round(p.score) : 0;
+    var nbExos = p ? (p.nbExos || 0) : 0;
+    var isMast = p && (p.statut === 'maitrise' || p.score >= 90);
+    var isStart = nbExos > 0;
+    if (isStart) { totalScore += score; scoredCount++; }
+    if (isMast) mastered++;
+    chapData.push({ cat:cat, score:score, nbExos:nbExos, isMast:isMast, isStart:isStart, p:p });
   });
+  var avgScore = scoredCount > 0 ? Math.round(totalScore / scoredCount) : 0;
+  var streak = S.stk || 0;
+
+  // Tri : en cours (score<90, nbExos>0) en haut, maîtrisés après, non commencés en bas
+  chapData.sort(function(a, b) {
+    var oa = a.isStart ? (a.isMast ? 1 : 0) : 2;
+    var ob = b.isStart ? (b.isMast ? 1 : 0) : 2;
+    if (oa !== ob) return oa - ob;
+    return b.score - a.score;
+  });
+
+  // Ton adapté au niveau
+  var is3eme = S.niv === '3EME';
+  var is6eme = S.niv === '6EME';
 
   var html = '';
 
-  // Résumé global
-  html += '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 mb-3">';
+  // ── Rien fait du tout → CTA minimal ──
+  if (scoredCount === 0) {
+    html += '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 text-center afu">';
+    html += '<div class="text-3xl mb-3">📊</div>';
+    html += '<div class="syne font-black text-slate-900 text-base mb-1">' + (is3eme ? 'Ta progression apparaîtra ici' : 'Ta progression va s\'afficher ici') + '</div>';
+    html += '<div class="text-sm text-slate-400 font-medium mb-4">' + (is3eme ? 'Fais tes premiers exercices pour voir tes stats.' : 'Fais quelques exercices et reviens voir !') + '</div>';
+    html += '<button onclick="setView(\'chapters\')" class="btn btn-ac py-3 px-6">Commencer →</button>';
+    html += '</div>';
+    c.innerHTML = html;
+    return;
+  }
+
+  // ── Header résumé ──
+  html += '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 mb-3 afu">';
   html += '<div class="syne font-black text-slate-900 text-sm mb-3">Progression · '+LN[S.niv]+'</div>';
   html += '<div class="flex gap-2">';
-  html += '<div class="flex-1 bg-emerald-50 border border-emerald-100 rounded-xl p-3 text-center"><div class="syne font-black text-xl text-emerald-700">'+mastered+'</div><div class="text-[11px] text-emerald-600 font-semibold mt-0.5">Maîtrisés</div></div>';
-  html += '<div class="flex-1 bg-indigo-50 border border-indigo-100 rounded-xl p-3 text-center"><div class="syne font-black text-xl text-indigo-700">'+started+'</div><div class="text-[11px] text-indigo-600 font-semibold mt-0.5">Commencés</div></div>';
-  html += '<div class="flex-1 bg-slate-50 border border-slate-100 rounded-xl p-3 text-center"><div class="syne font-black text-xl text-slate-700">'+keys.length+'</div><div class="text-[11px] text-slate-500 font-semibold mt-0.5">Chapitres</div></div>';
+  html += '<div class="flex-1 bg-emerald-50 border border-emerald-100 rounded-xl p-3 text-center"><div class="syne font-black text-xl text-emerald-700">'+mastered+'<span class="text-sm text-emerald-400 font-bold">/'+keys.length+'</span></div><div class="text-[11px] text-emerald-600 font-semibold mt-0.5">Maîtrisés</div></div>';
+  html += '<div class="flex-1 bg-amber-50 border border-amber-100 rounded-xl p-3 text-center"><div class="syne font-black text-xl text-amber-700">'+(streak > 0 ? streak : '—')+'</div><div class="text-[11px] text-amber-600 font-semibold mt-0.5">'+(streak > 0 ? 'Streak 🔥' : 'Streak')+'</div></div>';
+  html += '<div class="flex-1 bg-indigo-50 border border-indigo-100 rounded-xl p-3 text-center"><div class="syne font-black text-xl text-indigo-700">'+avgScore+'</div><div class="text-[11px] text-indigo-600 font-semibold mt-0.5">Score moy.</div></div>';
   html += '</div></div>';
 
-  // Carte Mode Révision — UI désactivé (demande Nicolas 12 mars 2026) — code conservé
-  // var niveaux = ['6EME','5EME','4EME','3EME'];
-  // var curNivIdx = niveaux.indexOf(S.niv);
-  // var revLabel = curNivIdx > 0 ? 'Révision ' + niveaux[curNivIdx-1].replace('EME','ème') : 'Révision niveau';
-  // html += '<div onclick="launchRevision()" style="cursor:pointer;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac" ...';
-  /* RÉVISION DÉSACTIVÉE — pour réactiver : décommenter les lignes ci-dessus */
-
-  // Liste des chapitres
-  keys.forEach(function(cat){
-    var p        = getChapProgress(cat);
-    var name     = LVL[S.niv].names[cat] || cat;
-    var icon     = LVL[S.niv].icons[cat] || '📘';
-    var exsLP    = LVL[S.niv] ? (LVL[S.niv].cats[cat] || []) : [];
-    var doneLPct = exsLP.filter(function(e, i) {
-      var r = res2(cat, i); return !!S.res[S.niv+'-'+r.rC+'-'+r.rI];
-    }).length;
-    var compLP   = doneLPct === exsLP.length && exsLP.length > 0;
-    // Score local depuis S.res quand serveur pas encore synchronisé
-    var localEasyPct = 0;
-    if (doneLPct > 0) {
-      var le2 = exsLP.filter(function(e, i) {
-        var r = res2(cat, i); var rs = S.res[S.niv+'-'+r.rC+'-'+r.rI];
-        return rs === 'EASY' || rs === 'MEDIUM';
-      }).length;
-      localEasyPct = Math.round((le2 / doneLPct) * 100);
+  // ── Message contextuel (1 ligne) ──
+  var ctxMsg = '', ctxBg = '';
+  var recentMastered = null;
+  chapData.forEach(function(ch) {
+    if (ch.isMast && ch.p && ch.p.dernierePratique) {
+      var ds = String(ch.p.dernierePratique).substring(0,10);
+      var dd = new Date(ds);
+      if (!isNaN(dd.getTime()) && (Date.now() - dd.getTime()) < 7*86400000) {
+        recentMastered = (LVL[S.niv].names[ch.cat] || ch.cat);
+      }
     }
-    var nbExos   = Math.max(p ? (p.nbExos || 0) : 0, doneLPct);
-    var score    = compLP ? 100 : Math.round((nbExos / Math.max(exsLP.length, 1)) * 100);
-    var isMast   = compLP || (p && (p.statut === 'maitrise' || p.score >= 80));
-    var isStart  = nbExos > 0 || doneLPct > 0;
-    var dateStr  = p ? relDate(p.dernierePratique) : '';
-    var barColor = isMast ? 'pfg' : 'pfp';
-    var cardBg   = isMast ? 'bg-emerald-50 border-emerald-200' : (isStart ? 'bg-white border-slate-200' : 'bg-slate-50 border-slate-100');
+  });
+  // Dernière pratique globale — pour inactivité
+  var lastPractice = 0;
+  chapData.forEach(function(ch) {
+    if (ch.p && ch.p.dernierePratique) {
+      var ds2 = String(ch.p.dernierePratique).substring(0,10);
+      var dd2 = new Date(ds2);
+      if (!isNaN(dd2.getTime()) && dd2.getTime() > lastPractice) lastPractice = dd2.getTime();
+    }
+  });
+  var inactiveDays = lastPractice > 0 ? Math.floor((Date.now() - lastPractice) / 86400000) : 0;
+
+  if (mastered === keys.length) {
+    ctxMsg = is3eme ? '🏆 Tous les chapitres maîtrisés — prêt pour le brevet' : '🏆 Tous les chapitres maîtrisés — bravo !';
+    ctxBg = 'bg-emerald-50 border-emerald-200 text-emerald-800';
+  } else if (streak >= 3) {
+    ctxMsg = '🔥 ' + streak + ' jours d\'affilée — continue comme ça';
+    ctxBg = 'bg-amber-50 border-amber-200 text-amber-800';
+  } else if (recentMastered) {
+    ctxMsg = '✓ ' + recentMastered + ' maîtrisé cette semaine';
+    ctxBg = 'bg-emerald-50 border-emerald-200 text-emerald-800';
+  } else if (inactiveDays >= 3) {
+    ctxMsg = 'Ça fait ' + inactiveDays + ' jours — 5 exercices suffisent pour reprendre';
+    ctxBg = 'bg-slate-50 border-slate-200 text-slate-600';
+  }
+  if (ctxMsg) {
+    html += '<div class="' + ctxBg + ' border rounded-2xl px-4 py-2.5 text-xs font-semibold text-center mb-3">' + ctxMsg + '</div>';
+  }
+
+  // ── Cartes chapitres en cours + maîtrisés ──
+  var notStarted = [];
+  chapData.forEach(function(ch) {
+    if (!ch.isStart) { notStarted.push(ch); return; }
+    var cat  = ch.cat;
+    var name = LVL[S.niv].names[cat] || cat;
+    var icon = LVL[S.niv].icons[cat] || '📘';
+    var score = ch.score;
+    var nbExos = ch.nbExos;
+    var dateStr = ch.p ? relDate(ch.p.dernierePratique) : '';
+    var isMast = ch.isMast;
+    // Couleur barre progressive
+    var barClass = score >= 90 ? 'pfg' : score >= 70 ? 'pfp' : score >= 40 ? 'pfo' : 'pfr';
+    // Locked = autre chapitre pratiqué aujourd'hui
+    var locked = S._todayChap && cat !== S._todayChap;
+    var cardBg = isMast ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-slate-200';
 
     html += '<div data-cat="'+cat+'" onclick="openFromProgress(\''+cat+'\')" ';
-    html += 'class="rounded-2xl border '+cardBg+' shadow-sm p-4 mb-3 cursor-pointer active:scale-[.98] transition-transform">';
+    html += 'class="rounded-2xl border '+cardBg+' shadow-sm p-4 mb-2.5 cursor-pointer active:scale-[.98] transition-transform'+(locked?' opacity-60':'')+'">';
 
     // Ligne titre
-    html += '<div class="flex items-center gap-3 mb-2.5">';
+    html += '<div class="flex items-center gap-3 mb-2">';
     html += '<div class="w-10 h-10 '+(isMast?'bg-emerald-100':'bg-slate-100')+' rounded-xl flex items-center justify-center text-lg flex-shrink-0">'+icon+'</div>';
     html += '<div class="flex-1 min-w-0">';
-    html += '<div class="flex items-center gap-1.5 mb-0.5">';
+    html += '<div class="flex items-center gap-1.5">';
     html += '<span class="syne font-black text-sm text-slate-900 truncate">'+name+'</span>';
-    if (isMast) html += '<span class="text-sm leading-none">✅</span>';
+    if (isMast) html += '<span class="text-[11px] font-black text-emerald-600 bg-emerald-100 px-1.5 py-0.5 rounded-full flex-shrink-0">Maîtrisé ✓</span>';
+    if (locked) html += '<span class="text-sm flex-shrink-0">🔒</span>';
     html += '</div>';
-    if (dateStr) html += '<div class="text-[11px] text-slate-400 font-medium">'+dateStr+'</div>';
+    // Sous-titre : nbExos + date
+    var sub = nbExos + ' exercice' + (nbExos > 1 ? 's' : '');
+    if (dateStr) sub += ' · ' + dateStr;
+    html += '<div class="text-[11px] text-slate-400 font-medium mt-0.5">'+sub+'</div>';
     html += '</div>';
     // Score
     html += '<div class="text-right flex-shrink-0">';
-    html += '<div class="syne font-black text-lg leading-none '+(isMast?'text-emerald-600':isStart?'text-indigo-600':'text-slate-300')+'">'+score+'%</div>';
+    var scoreLabel = is3eme ? '' : '';
+    html += '<div class="syne font-black text-lg leading-none '+(isMast?'text-emerald-600':'text-indigo-600')+'">'+score+'</div>';
+    html += '<div class="text-[10px] text-slate-400 font-semibold">/100</div>';
     html += '</div></div>';
 
-    // Barre + infos
-    if (isStart) {
-      html += '<div class="pbar mb-1.5"><div class="pfill '+barColor+'" style="width:'+score+'%"></div></div>';
-      html += '<div class="flex justify-between">';
-      html += '<span class="text-[11px] text-slate-400 font-medium">'+nbExos+' exo'+(nbExos>1?'s':'')+' fait'+(nbExos>1?'s':'')+'</span>';
-      if (isMast) html += '<span class="text-[11px] font-black text-emerald-600">Maîtrisé ✅</span>';
-      html += '</div>';
-    } else {
-      html += '<div class="text-[11px] text-slate-400 font-semibold text-center py-0.5">Non commencé · Tap pour commencer →</div>';
+    // Barre
+    html += '<div class="pbar"><div class="pfill '+barClass+'" style="width:'+Math.max(score, 3)+'%"></div></div>';
+
+    // CTA discret
+    if (!isMast && !locked) {
+      html += '<div class="text-right mt-1.5"><span class="text-[11px] font-bold text-indigo-500">Continuer →</span></div>';
     }
+
     html += '</div>';
   });
 
-  if (!S.progress || S.progress.length === 0) {
-    html += '<div class="text-center text-slate-400 text-xs font-medium py-2">Les données se synchronisent après chaque exercice.</div>';
+  // ── Chapitres non commencés ──
+  if (notStarted.length > 0) {
+    html += '<div class="mt-4 mb-2"><div class="text-[11px] text-slate-400 font-bold uppercase tracking-wider px-1 mb-2">À découvrir</div>';
+    notStarted.forEach(function(ch) {
+      var name2 = LVL[S.niv].names[ch.cat] || ch.cat;
+      var icon2 = LVL[S.niv].icons[ch.cat] || '📘';
+      var locked2 = S._todayChap && ch.cat !== S._todayChap;
+      html += '<div data-cat="'+ch.cat+'" onclick="openFromProgress(\''+ch.cat+'\')" ';
+      html += 'class="flex items-center gap-3 bg-slate-50 border border-slate-100 rounded-xl p-3 mb-2 cursor-pointer active:scale-[.98] transition-transform'+(locked2?' opacity-50':'')+'">';
+      html += '<div class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-base flex-shrink-0">'+icon2+'</div>';
+      html += '<span class="text-sm font-semibold text-slate-500 flex-1 truncate">'+name2+'</span>';
+      if (locked2) {
+        html += '<span class="text-sm">🔒</span>';
+      } else {
+        html += '<span class="text-[11px] font-bold text-indigo-500">Commencer →</span>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
   }
 
   c.innerHTML = html;
@@ -4838,6 +4976,7 @@ function rSection(cat, data, idx, total, catDone) {
     '<span class="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full '+((data.lvl||1)===1?'bg-indigo-100 text-indigo-700':'bg-amber-100 text-amber-700')+'">Niv. '+(data.lvl||1)+'</span>' +
     '<span class="text-[11px] font-bold text-slate-500" style="animation:counterPop .3s ease both">'+(idx+1)+' / '+total+'</span>' +
     '</div>' +
+    getExoFigure(data, cat) +
     '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-4 min-h-[80px] flex items-center justify-center overflow-x-auto">' +
     '<div class="mc text-center font-bold text-base leading-relaxed w-full min-w-0">'+fmtL(data.q)+'</div></div>' +
     opts + acts +
@@ -4903,7 +5042,7 @@ function getContextSymbols(niv, cat) {
   }
   // Thalès / géométrie analytique
   else if (/thalès/i.test(c)) {
-    extra = [{s:'/',l:'/'},{s:'×',l:'×'},{s:'=',l:'='},{s:'AB',l:'AB'},{s:"A'B'",l:"A'B'"}];
+    extra = [{s:'°',l:'°'},{s:'/',l:'/'},{s:'×',l:'×'},{s:'=',l:'='},{s:'AB',l:'AB'},{s:"A'B'",l:"A'B'"},{s:'∥',l:'∥'},{s:'△',l:'△'}];
   }
 
   // Déduplique base + extra
@@ -4960,6 +5099,8 @@ function toggleDraft() {
     b.classList.add('show');
     var ta = document.getElementById('draft-text');
     if (ta && S.cid) ta.value = (S.drafts[S.cid] && S.drafts[S.cid].txt) || localStorage.getItem('draft_' + S.cid) || '';
+    // Restaurer mode quadrillé
+    if (ta) { var g = localStorage.getItem('draft_grid') === '1'; ta.classList.toggle('grid-on', g); var gb = document.getElementById('btn-grid'); if (gb) gb.style.color = g ? '#6366f1' : ''; }
     switchDraftTab(S.dTab || 'draft');
   } else {
     var ta = document.getElementById('draft-text');
@@ -4977,17 +5118,36 @@ function toggleDraft() {
 // ══════════════════════════════════════════════════════════════
 function renderCalcButtons() {
   var cat = getDraftCat();
+  var niv = S.niv || '6EME';
   var hasTrig = /trigono|angle|pythagore/i.test(cat);
+  var hasGeo = /géomét|périmètre|aire|volume|cercle|section|agrandissement/i.test(cat);
+  var hasPow = /puissance|notation.scient|racine/i.test(cat);
+  var hasFrac = /fraction|proportion/i.test(cat) || niv === '6EME';
   var rows = [
-    [{l:'C', fn:"calcClear()", cls:'clr'}, {l:'⌫', fn:"calcBack()", cls:'clr'}, {l:'%', fn:"calcInput('%')", cls:'op'}, {l:'÷', fn:"calcInput('/')", cls:'op'}],
-    [{l:'7', fn:"calcInput('7')"}, {l:'8', fn:"calcInput('8')"}, {l:'9', fn:"calcInput('9')"}, {l:'×', fn:"calcInput('*')", cls:'op'}],
-    [{l:'4', fn:"calcInput('4')"}, {l:'5', fn:"calcInput('5')"}, {l:'6', fn:"calcInput('6')"}, {l:'-', fn:"calcInput('-')", cls:'op'}],
-    [{l:'1', fn:"calcInput('1')"}, {l:'2', fn:"calcInput('2')"}, {l:'3', fn:"calcInput('3')"}, {l:'+', fn:"calcInput('+')", cls:'op'}],
-    [{l:'x²', fn:"calcSq()", cls:'spec'}, {l:'0', fn:"calcInput('0')"}, {l:'.', fn:"calcInput('.')"}, {l:'=', fn:"calcCompute()", cls:'eq'}],
-    [{l:'√', fn:"calcSqrt()", cls:'spec'}, {l:'(', fn:"calcInput('(')", cls:'spec'}, {l:')', fn:"calcInput(')')", cls:'spec'}, {l:'→✏️', fn:"calcCopyToText()", cls:'copy'}]
+    [{l:'C', fn:"calcClear()", cls:'clr'}, {l:'⌫', fn:"calcBack()", cls:'clr'}, {l:'M+', fn:"calcMStore()", cls:'clr'}, {l:'MR', fn:"calcMRecall()", cls:'clr'}],
+    [{l:'7', fn:"calcInput('7')"}, {l:'8', fn:"calcInput('8')"}, {l:'9', fn:"calcInput('9')"}, {l:'÷', fn:"calcInput('/')", cls:'op'}],
+    [{l:'4', fn:"calcInput('4')"}, {l:'5', fn:"calcInput('5')"}, {l:'6', fn:"calcInput('6')"}, {l:'×', fn:"calcInput('*')", cls:'op'}],
+    [{l:'1', fn:"calcInput('1')"}, {l:'2', fn:"calcInput('2')"}, {l:'3', fn:"calcInput('3')"}, {l:'-', fn:"calcInput('-')", cls:'op'}],
+    [{l:'x²', fn:"calcSq()", cls:'spec'}, {l:'0', fn:"calcInput('0')"}, {l:'.', fn:"calcInput('.')"}, {l:'+', fn:"calcInput('+')", cls:'op'}],
+    [{l:'√', fn:"calcSqrt()", cls:'spec'}, {l:'(', fn:"calcInput('(')", cls:'spec'}, {l:')', fn:"calcInput(')')", cls:'spec'}, {l:'=', fn:"calcCompute()", cls:'eq'}]
   ];
+  // Ligne contextuelle selon chapitre/niveau
+  var ctxRow = [];
   if (hasTrig) {
-    rows.push([{l:'sin', fn:"calcTrig('sin')", cls:'spec'},{l:'cos', fn:"calcTrig('cos')", cls:'spec'},{l:'tan', fn:"calcTrig('tan')", cls:'spec'},{l:'π', fn:"calcInput('3.14159')", cls:'spec'}]);
+    ctxRow = [{l:'sin', fn:"calcTrig('sin')", cls:'spec'},{l:'cos', fn:"calcTrig('cos')", cls:'spec'},{l:'tan', fn:"calcTrig('tan')", cls:'spec'},{l:'π', fn:"calcInput('3.14159')", cls:'spec'}];
+  } else if (hasGeo) {
+    ctxRow = [{l:'π', fn:"calcInput('3.14159')", cls:'spec'},{l:'x³', fn:"calcCube()", cls:'spec'},{l:'%', fn:"calcInput('%')", cls:'op'},{l:'→✏️', fn:"calcCopyToText()", cls:'copy'}];
+  } else if (hasPow) {
+    ctxRow = [{l:'x³', fn:"calcCube()", cls:'spec'},{l:'xⁿ', fn:"calcPow()", cls:'spec'},{l:'10ⁿ', fn:"calcPow10()", cls:'spec'},{l:'→✏️', fn:"calcCopyToText()", cls:'copy'}];
+  } else if (hasFrac) {
+    ctxRow = [{l:'a/b', fn:"calcFrac()", cls:'spec'},{l:'%', fn:"calcInput('%')", cls:'op'},{l:'±', fn:"calcNeg()", cls:'spec'},{l:'→✏️', fn:"calcCopyToText()", cls:'copy'}];
+  }
+  if (ctxRow.length) rows.push(ctxRow);
+  // Toujours ajouter le bouton copie si pas déjà présent
+  var hasCopy = false;
+  rows.forEach(function(r){r.forEach(function(b){if(b.fn && b.fn.indexOf('calcCopyToText')>=0) hasCopy=true;});});
+  if (!hasCopy) {
+    rows.push([{l:'%', fn:"calcInput('%')", cls:'op'},{l:'±', fn:"calcNeg()", cls:'spec'},{l:'MC', fn:"calcMClear()", cls:'clr'},{l:'→✏️', fn:"calcCopyToText()", cls:'copy'}]);
   }
   var html = rows.map(function(row) {
     return '<div class="calc-row">' + row.map(function(btn) {
@@ -5104,6 +5264,585 @@ function calcCopyToText() {
     ta.focus();
   }, 80);
 }
+// ── Fonctions calculette avancées ──
+function calcMStore() {
+  if (!S.calc) S.calc = {expr:'',needReset:false};
+  try { S.calc.mem = parseFloat(document.getElementById('calc-disp').textContent) || 0; } catch(e){}
+  var disp = document.getElementById('calc-expr');
+  if (disp) disp.textContent = 'M = ' + (S.calc.mem||0);
+}
+function calcMRecall() {
+  if (!S.calc || S.calc.mem === undefined) return;
+  calcInput(String(S.calc.mem));
+}
+function calcMClear() {
+  if (S.calc) S.calc.mem = undefined;
+  var disp = document.getElementById('calc-expr');
+  if (disp) disp.textContent = 'M effacé';
+}
+function calcCube() {
+  if (!S.calc || !S.calc.expr) return;
+  try {
+    var v = parseFloat(S.calc.expr); if (isNaN(v)) return;
+    var str = (v*v*v).toString();
+    var disp = document.getElementById('calc-disp');
+    var expr = document.getElementById('calc-expr');
+    if (expr) expr.textContent = v + '³ =';
+    if (disp) disp.textContent = str;
+    S.calc.expr = str; S.calc.needReset = true;
+  } catch(e){}
+}
+function calcPow() {
+  if (!S.calc) S.calc = {expr:'',needReset:false};
+  S.calc.expr += '**';
+  var disp = document.getElementById('calc-disp');
+  if (disp) disp.textContent = S.calc.expr;
+}
+function calcPow10() {
+  if (!S.calc) S.calc = {expr:'',needReset:false};
+  var disp = document.getElementById('calc-disp');
+  var expr = document.getElementById('calc-expr');
+  try {
+    var v = parseFloat(S.calc.expr) || 0;
+    var str = Math.pow(10, v).toString();
+    if (expr) expr.textContent = '10^' + v + ' =';
+    if (disp) disp.textContent = str;
+    S.calc.expr = str; S.calc.needReset = true;
+  } catch(e){}
+}
+function calcNeg() {
+  if (!S.calc || !S.calc.expr) return;
+  if (S.calc.expr.charAt(0) === '-') S.calc.expr = S.calc.expr.substring(1);
+  else S.calc.expr = '-' + S.calc.expr;
+  var disp = document.getElementById('calc-disp');
+  if (disp) disp.textContent = S.calc.expr;
+}
+function calcFrac() {
+  if (!S.calc) S.calc = {expr:'',needReset:false};
+  S.calc.expr += '/';
+  var disp = document.getElementById('calc-disp');
+  if (disp) disp.textContent = S.calc.expr;
+}
+
+// ══════════════════════════════════════════════════════════════
+// FIGURES GÉOMÉTRIQUES SVG — AUTO-DÉTECTION + RENDU
+// ══════════════════════════════════════════════════════════════
+
+function autoDetectFigure(q, cat) {
+  if (!q || !cat) return null;
+  var t = (q + ' ' + cat).toLowerCase().replace(/\$/g,'').replace(/\{,\}/g,'.').replace(/\\,/g,'');
+  var nums = t.match(/\d+(?:[.,]\d+)?/g);
+  var n = nums ? nums.map(function(x){return parseFloat(x.replace(',','.'))}) : [];
+
+  // ── Triangle rectangle (Pythagore / Trigonométrie) ──
+  if (/triangle\s*rectangle|pythagore|hypoténuse/i.test(t)) {
+    var a=n[0]||3, b=n[1]||4, c=n[2]||null;
+    return {type:'tri_rect', a:a, b:b, c:c, cat:cat};
+  }
+  // ── Trigonométrie (sin/cos/tan d'un angle) ──
+  if (/trigono|sin\b|cos\b|tan\b|adjacent|opposé|angle.*triangle/i.test(t) && !/théorème.*thalès/i.test(t)) {
+    var angle = null; nums && nums.forEach(function(x){var v=parseFloat(x.replace(',','.')); if(v>10&&v<90) angle=v;});
+    return {type:'tri_trigo', angle:angle||35, a:n[0]||5, b:n[1]||null, cat:cat};
+  }
+  // ── Thalès (configuration) ──
+  if (/thalès/i.test(t)) {
+    return {type:'thales', a:n[0]||4, b:n[1]||6, c:n[2]||3, d:n[3]||null, cat:cat};
+  }
+  // ── Cercle (rayon, diamètre, aire, périmètre) ──
+  if (/cercle|rayon|diamètre|disque/i.test(t) && !/demi.cercle/i.test(t)) {
+    var r = n[0]||5;
+    if (/diamètre/i.test(t) && r>2) r = r/2;
+    return {type:'circle', r:r, cat:cat};
+  }
+  // ── Rectangle / Carré ──
+  if (/rectangle|longueur.*largeur|largeur.*longueur/i.test(t)) {
+    return {type:'rect', w:n[0]||8, h:n[1]||n[0]||5, cat:cat};
+  }
+  if (/carré|côté.*carré/i.test(t) && !/racine/i.test(t)) {
+    var s=n[0]||5;
+    return {type:'rect', w:s, h:s, square:true, cat:cat};
+  }
+  // ── Angle ──
+  if ((/angle|mesure.*°|degrés/i.test(t)) && /angle/i.test(cat)) {
+    var deg = null; n.forEach(function(v){if(v>5&&v<180) deg=v;});
+    return {type:'angle', deg:deg||60, cat:cat};
+  }
+  // ── Parallèles / perpendiculaires ──
+  if (/parallèle|perpendiculaire/i.test(t) && /géomét/i.test(cat)) {
+    return {type:'parallel', perp:/perpendiculaire/i.test(t), cat:cat};
+  }
+  // ── Symétrie axiale ──
+  if (/symétrie\s*axiale|axe\s*de\s*symétrie/i.test(t)) {
+    return {type:'sym_axial', cat:cat};
+  }
+  // ── Symétrie centrale ──
+  if (/symétrie\s*centrale|centre\s*de\s*symétrie/i.test(t)) {
+    return {type:'sym_central', cat:cat};
+  }
+  // ── Solides 3D ──
+  if (/cube|pavé|parallélépipède/i.test(t)) {
+    return {type:'cube', a:n[0]||4, b:n[1]||n[0]||3, c:n[2]||n[0]||2, isCube:/cube/i.test(t), cat:cat};
+  }
+  if (/cylindre/i.test(t)) {
+    return {type:'cylinder', r:n[0]||3, h:n[1]||6, cat:cat};
+  }
+  if (/cône/i.test(t)) {
+    return {type:'cone', r:n[0]||3, h:n[1]||6, cat:cat};
+  }
+  if (/pyramide/i.test(t)) {
+    return {type:'pyramid', a:n[0]||4, h:n[1]||6, cat:cat};
+  }
+  if (/sphère|boule/i.test(t)) {
+    return {type:'sphere', r:n[0]||4, cat:cat};
+  }
+  // ── Section de solide ──
+  if (/section/i.test(t) && /solide|section/i.test(cat)) {
+    return {type:'section_solid', cat:cat};
+  }
+  // ── Homothétie ──
+  if (/homothétie|agrandissement|réduction|rapport.*k|k\s*=/i.test(t)) {
+    var k=null; n.forEach(function(v){if(v>0&&v<10&&v!==1) k=v;});
+    return {type:'homothety', k:k||2, cat:cat};
+  }
+  // ── Triangles semblables ──
+  if (/semblable|similaire/i.test(t)) {
+    return {type:'similar_tri', a:n[0]||3, b:n[1]||4, c:n[2]||5, cat:cat};
+  }
+  // ── Périmètre / Aire générique (si pas déjà matché) ──
+  if (/périmètre|aire|surface/i.test(t) && n.length>=1) {
+    if (/triangle/i.test(t)) {
+      return {type:'triangle', a:n[0]||5, b:n[1]||4, c:n[2]||6, cat:cat};
+    }
+  }
+  // ── Volumes génériques ──
+  if (/volume/i.test(t) && !/cube|pavé|cylindre|cône|pyramide|sphère/i.test(t)) {
+    return {type:'cube', a:n[0]||4, b:n[1]||3, c:n[2]||2, isCube:false, cat:cat};
+  }
+  // ── Transformations ──
+  if (/translation|rotation/i.test(t)) {
+    return {type:'transform', isRotation:/rotation/i.test(t), cat:cat};
+  }
+  return null;
+}
+
+function renderFig(fig) {
+  if (!fig) return '';
+  var svg = '';
+  var W = 260, H = 200;
+
+  switch(fig.type) {
+
+  // ═══ TRIANGLE RECTANGLE ═══
+  case 'tri_rect':
+    var ax=40,ay=170, bx=220,by=170, cx=40,cy=40;
+    var sa=fig.a, sb=fig.b, sc=fig.c;
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<polygon points="'+ax+','+ay+' '+bx+','+by+' '+cx+','+cy+'" class="geo-fill"/>' +
+      '<line x1="'+ax+'" y1="'+ay+'" x2="'+bx+'" y2="'+by+'" class="geo-line geo-draw" style="--len:200"/>' +
+      '<line x1="'+bx+'" y1="'+by+'" x2="'+cx+'" y2="'+cy+'" class="geo-line geo-draw" style="--len:220"/>' +
+      '<line x1="'+cx+'" y1="'+cy+'" x2="'+ax+'" y2="'+ay+'" class="geo-line geo-draw" style="--len:140"/>' +
+      '<rect x="'+ax+'" y="'+(ay-16)+'" width="16" height="16" class="geo-right"/>' +
+      '<circle cx="'+ax+'" cy="'+ay+'" class="geo-dot"/>' +
+      '<circle cx="'+bx+'" cy="'+by+'" class="geo-dot"/>' +
+      '<circle cx="'+cx+'" cy="'+cy+'" class="geo-dot"/>' +
+      '<text x="'+(ax-8)+'" y="'+(ay+16)+'" class="geo-label">A</text>' +
+      '<text x="'+(bx+6)+'" y="'+(by+16)+'" class="geo-label">B</text>' +
+      '<text x="'+(cx-12)+'" y="'+(cy-8)+'" class="geo-label">C</text>' +
+      '<text x="'+((ax+bx)/2)+'" y="'+(ay+18)+'" text-anchor="middle" class="geo-val">'+sa+'</text>' +
+      '<text x="'+(ax-18)+'" y="'+((ay+cy)/2)+'" text-anchor="middle" class="geo-val">'+sb+'</text>' +
+      (sc ? '<text x="'+((bx+cx)/2+14)+'" y="'+((by+cy)/2)+'" class="geo-val">'+sc+'</text>' :
+             '<text x="'+((bx+cx)/2+14)+'" y="'+((by+cy)/2)+'" class="geo-unknown">?</text>') +
+      '</svg>';
+    break;
+
+  // ═══ TRIANGLE TRIGONOMÉTRIE ═══
+  case 'tri_trigo':
+    var ax=40,ay=170,bx=220,by=170,cx=40,cy=50;
+    var angRad = fig.angle*Math.PI/180;
+    var arcR = 30;
+    var arcX = bx-arcR*Math.cos(Math.atan2(by-cy,bx-cx));
+    var arcY = by-arcR*Math.sin(Math.atan2(by-cy,bx-cx));
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<polygon points="'+ax+','+ay+' '+bx+','+by+' '+cx+','+cy+'" class="geo-fill"/>' +
+      '<line x1="'+ax+'" y1="'+ay+'" x2="'+bx+'" y2="'+by+'" class="geo-line"/>' +
+      '<line x1="'+bx+'" y1="'+by+'" x2="'+cx+'" y2="'+cy+'" class="geo-line"/>' +
+      '<line x1="'+cx+'" y1="'+cy+'" x2="'+ax+'" y2="'+ay+'" class="geo-line"/>' +
+      '<rect x="'+ax+'" y="'+(ay-16)+'" width="16" height="16" class="geo-right"/>' +
+      '<path d="M '+(bx-30)+','+by+' A 30,30 0 0,1 '+(bx-20)+','+(by-22)+'" class="geo-angle"/>' +
+      '<text x="'+(bx-44)+'" y="'+(by-10)+'" class="geo-val" style="font-size:11px">'+fig.angle+'°</text>' +
+      '<text x="'+((ax+bx)/2)+'" y="'+(ay+18)+'" text-anchor="middle" class="geo-label" style="font-size:11px">adjacent</text>' +
+      '<text x="'+(ax-10)+'" y="'+((ay+cy)/2)+'" class="geo-label" style="font-size:11px;writing-mode:tb">opposé</text>' +
+      '<text x="'+((bx+cx)/2+12)+'" y="'+((by+cy)/2)+'" class="geo-label" style="font-size:11px">hyp.</text>' +
+      '<circle cx="'+ax+'" cy="'+ay+'" class="geo-dot"/>' +
+      '<circle cx="'+bx+'" cy="'+by+'" class="geo-dot"/>' +
+      '<circle cx="'+cx+'" cy="'+cy+'" class="geo-dot"/>' +
+      '</svg>';
+    break;
+
+  // ═══ THALÈS ═══
+  case 'thales':
+    var ox=130,oy=30;
+    var ax=50,ay=170,bx=210,by=170;
+    var mx=70,my=110,nx=190,ny=110;
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<line x1="'+ox+'" y1="'+oy+'" x2="'+ax+'" y2="'+ay+'" class="geo-line"/>' +
+      '<line x1="'+ox+'" y1="'+oy+'" x2="'+bx+'" y2="'+by+'" class="geo-line"/>' +
+      '<line x1="'+ax+'" y1="'+ay+'" x2="'+bx+'" y2="'+by+'" class="geo-line"/>' +
+      '<line x1="'+mx+'" y1="'+my+'" x2="'+nx+'" y2="'+ny+'" class="geo-line geo-dash" style="stroke:#6366f1"/>' +
+      '<text x="'+(ox+4)+'" y="'+(oy-6)+'" class="geo-label">O</text>' +
+      '<text x="'+(ax-16)+'" y="'+(ay+4)+'" class="geo-label">A</text>' +
+      '<text x="'+(bx+6)+'" y="'+(by+4)+'" class="geo-label">B</text>' +
+      '<text x="'+(mx-18)+'" y="'+(my+4)+'" class="geo-label">M</text>' +
+      '<text x="'+(nx+6)+'" y="'+(ny+4)+'" class="geo-label">N</text>' +
+      '<text x="'+((ox+mx)/2-16)+'" y="'+((oy+my)/2)+'" class="geo-val">'+fig.a+'</text>' +
+      '<text x="'+((ox+nx)/2+8)+'" y="'+((oy+ny)/2)+'" class="geo-val">'+fig.b+'</text>' +
+      '<text x="'+((mx+nx)/2)+'" y="'+(my-6)+'" text-anchor="middle" class="geo-val">'+fig.c+'</text>' +
+      (fig.d ? '<text x="'+((ax+bx)/2)+'" y="'+(ay+16)+'" text-anchor="middle" class="geo-val">'+fig.d+'</text>' :
+               '<text x="'+((ax+bx)/2)+'" y="'+(ay+16)+'" text-anchor="middle" class="geo-unknown">?</text>') +
+      '<circle cx="'+ox+'" cy="'+oy+'" class="geo-dot"/>' +
+      '<circle cx="'+ax+'" cy="'+ay+'" class="geo-dot"/>' +
+      '<circle cx="'+bx+'" cy="'+by+'" class="geo-dot"/>' +
+      '<circle cx="'+mx+'" cy="'+my+'" class="geo-dot"/>' +
+      '<circle cx="'+nx+'" cy="'+ny+'" class="geo-dot"/>' +
+      '</svg>';
+    break;
+
+  // ═══ CERCLE ═══
+  case 'circle':
+    var cx0=130,cy0=105,r0=70;
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<circle cx="'+cx0+'" cy="'+cy0+'" r="'+r0+'" class="geo-fill geo-draw" style="--len:440"/>' +
+      '<line x1="'+cx0+'" y1="'+cy0+'" x2="'+(cx0+r0)+'" y2="'+cy0+'" class="geo-dash" style="stroke:#059669;stroke-dasharray:none;stroke-width:2"/>' +
+      '<circle cx="'+cx0+'" cy="'+cy0+'" class="geo-dot"/>' +
+      '<circle cx="'+(cx0+r0)+'" cy="'+cy0+'" class="geo-dot"/>' +
+      '<text x="'+(cx0-8)+'" y="'+(cy0-8)+'" class="geo-label">O</text>' +
+      '<text x="'+((cx0+cx0+r0)/2)+'" y="'+(cy0-8)+'" text-anchor="middle" class="geo-val">r = '+fig.r+'</text>' +
+      '</svg>';
+    break;
+
+  // ═══ RECTANGLE / CARRÉ ═══
+  case 'rect':
+    var rx=40,ry=50,rw=180,rh=110;
+    if(fig.square) rh=rw=140;
+    var rxe=rx+rw, rye=ry+rh;
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect x="'+rx+'" y="'+ry+'" width="'+rw+'" height="'+rh+'" rx="2" class="geo-fill geo-draw" style="--len:'+(2*rw+2*rh)+'"/>' +
+      '<circle cx="'+rx+'" cy="'+ry+'" class="geo-dot"/>' +
+      '<circle cx="'+rxe+'" cy="'+ry+'" class="geo-dot"/>' +
+      '<circle cx="'+rxe+'" cy="'+rye+'" class="geo-dot"/>' +
+      '<circle cx="'+rx+'" cy="'+rye+'" class="geo-dot"/>' +
+      '<text x="'+((rx+rxe)/2)+'" y="'+(ry-8)+'" text-anchor="middle" class="geo-val">'+fig.w+'</text>' +
+      (fig.square ? '' : '<text x="'+(rxe+8)+'" y="'+((ry+rye)/2+4)+'" class="geo-val">'+fig.h+'</text>') +
+      '<text x="'+(rx-8)+'" y="'+(ry-4)+'" class="geo-label">A</text>' +
+      '<text x="'+(rxe+4)+'" y="'+(ry-4)+'" class="geo-label">B</text>' +
+      '<text x="'+(rxe+4)+'" y="'+(rye+14)+'" class="geo-label">C</text>' +
+      '<text x="'+(rx-8)+'" y="'+(rye+14)+'" class="geo-label">D</text>' +
+      (fig.square ? '<rect x="'+rx+'" y="'+(rye-12)+'" width="12" height="12" class="geo-right"/>' : '') +
+      '</svg>';
+    break;
+
+  // ═══ ANGLE ═══
+  case 'angle':
+    var ox2=60,oy2=160;
+    var deg2=fig.deg, rad2=deg2*Math.PI/180;
+    var len2=150;
+    var ex2=ox2+len2, ey2=oy2;
+    var fx2=ox2+len2*Math.cos(rad2), fy2=oy2-len2*Math.sin(rad2);
+    var arcR2=40;
+    var large2=deg2>180?1:0;
+    var aex=ox2+arcR2, aey=oy2;
+    var afx=ox2+arcR2*Math.cos(rad2), afy=oy2-arcR2*Math.sin(rad2);
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<line x1="'+ox2+'" y1="'+oy2+'" x2="'+ex2+'" y2="'+ey2+'" class="geo-line"/>' +
+      '<line x1="'+ox2+'" y1="'+oy2+'" x2="'+fx2.toFixed(1)+'" y2="'+fy2.toFixed(1)+'" class="geo-line"/>' +
+      '<path d="M '+aex+','+aey+' A '+arcR2+','+arcR2+' 0 '+large2+',0 '+afx.toFixed(1)+','+afy.toFixed(1)+'" class="geo-angle" style="stroke-width:2"/>' +
+      '<text x="'+(ox2+arcR2*1.4*Math.cos(rad2/2)).toFixed(0)+'" y="'+(oy2-arcR2*1.4*Math.sin(rad2/2)).toFixed(0)+'" class="geo-val" text-anchor="middle">'+deg2+'°</text>' +
+      '<circle cx="'+ox2+'" cy="'+oy2+'" class="geo-dot"/>' +
+      '<text x="'+(ox2-10)+'" y="'+(oy2+16)+'" class="geo-label">O</text>' +
+      '</svg>';
+    break;
+
+  // ═══ DROITES PARALLÈLES / PERPENDICULAIRES ═══
+  case 'parallel':
+    if (fig.perp) {
+      svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+        '<line x1="30" y1="100" x2="230" y2="100" class="geo-line"/>' +
+        '<line x1="130" y1="30" x2="130" y2="180" class="geo-line"/>' +
+        '<rect x="130" y="100" width="14" height="14" transform="translate(0,-14)" class="geo-right"/>' +
+        '<text x="235" y="104" class="geo-label">(d₁)</text>' +
+        '<text x="134" y="26" class="geo-label">(d₂)</text>' +
+        '<text x="148" y="92" class="geo-val" style="font-size:11px">⊥</text>' +
+        '</svg>';
+    } else {
+      svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+        '<line x1="30" y1="70" x2="230" y2="70" class="geo-line"/>' +
+        '<line x1="30" y1="130" x2="230" y2="130" class="geo-line"/>' +
+        '<text x="235" y="74" class="geo-label">(d₁)</text>' +
+        '<text x="235" y="134" class="geo-label">(d₂)</text>' +
+        '<text x="130" y="106" text-anchor="middle" class="geo-val" style="font-size:11px">∥</text>' +
+        '<path d="M 80,70 L 74,82 M 86,70 L 80,82" class="geo-angle"/>' +
+        '<path d="M 80,130 L 74,142 M 86,130 L 80,142" class="geo-angle"/>' +
+        '</svg>';
+    }
+    break;
+
+  // ═══ SYMÉTRIE AXIALE ═══
+  case 'sym_axial':
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<line x1="130" y1="10" x2="130" y2="190" class="geo-axis"/>' +
+      '<text x="134" y="20" class="geo-label" style="fill:#a855f7;font-size:11px">(d)</text>' +
+      '<polygon points="50,60 90,140 70,140" class="geo-fill"/>' +
+      '<polygon points="210,60 170,140 190,140" class="geo-fill2"/>' +
+      '<line x1="50" y1="60" x2="210" y2="60" class="geo-dash"/>' +
+      '<line x1="90" y1="140" x2="170" y2="140" class="geo-dash"/>' +
+      '<line x1="70" y1="140" x2="190" y2="140" class="geo-dash"/>' +
+      '<circle cx="50" cy="60" class="geo-dot"/><circle cx="210" cy="60" class="geo-dot"/>' +
+      '<circle cx="90" cy="140" class="geo-dot"/><circle cx="170" cy="140" class="geo-dot"/>' +
+      '<text x="42" y="54" class="geo-label">A</text><text x="214" y="54" class="geo-label">A\'</text>' +
+      '</svg>';
+    break;
+
+  // ═══ SYMÉTRIE CENTRALE ═══
+  case 'sym_central':
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<circle cx="130" cy="100" r="4" style="fill:#a855f7"/>' +
+      '<text x="138" y="98" class="geo-label" style="fill:#a855f7">O</text>' +
+      '<polygon points="50,50 100,80 70,110" class="geo-fill"/>' +
+      '<polygon points="210,150 160,120 190,90" class="geo-fill2"/>' +
+      '<line x1="50" y1="50" x2="210" y2="150" class="geo-dash"/>' +
+      '<line x1="100" y1="80" x2="160" y2="120" class="geo-dash"/>' +
+      '<line x1="70" y1="110" x2="190" y2="90" class="geo-dash"/>' +
+      '<circle cx="50" cy="50" class="geo-dot"/><circle cx="210" cy="150" class="geo-dot"/>' +
+      '<text x="36" y="48" class="geo-label">A</text><text x="216" y="152" class="geo-label">A\'</text>' +
+      '<text x="88" y="76" class="geo-label">B</text><text x="162" y="134" class="geo-label">B\'</text>' +
+      '</svg>';
+    break;
+
+  // ═══ CUBE / PAVÉ DROIT ═══
+  case 'cube':
+    var dx=30,dy=20; // décalage iso
+    var x0=50,y0=140,w3=120,h3=90;
+    if(fig.isCube) {w3=100;h3=100;}
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      // Face arrière
+      '<polygon points="'+(x0+dx)+','+(y0-h3-dy)+' '+(x0+w3+dx)+','+(y0-h3-dy)+' '+(x0+w3)+','+(y0-h3)+' '+(x0)+','+(y0-h3)+'" class="geo-3d-face2"/>' +
+      '<line x1="'+(x0+dx)+'" y1="'+(y0-h3-dy)+'" x2="'+(x0+w3+dx)+'" y2="'+(y0-h3-dy)+'" class="geo-3d-hidden"/>' +
+      '<line x1="'+(x0+w3+dx)+'" y1="'+(y0-h3-dy)+'" x2="'+(x0+w3+dx)+'" y2="'+(y0-dy)+'" class="geo-3d-hidden"/>' +
+      '<line x1="'+(x0+dx)+'" y1="'+(y0-h3-dy)+'" x2="'+(x0+dx)+'" y2="'+(y0-dy)+'" class="geo-3d-hidden"/>' +
+      // Face avant
+      '<rect x="'+x0+'" y="'+(y0-h3)+'" width="'+w3+'" height="'+h3+'" class="geo-3d-face"/>' +
+      // Face droite
+      '<polygon points="'+(x0+w3)+','+(y0-h3)+' '+(x0+w3+dx)+','+(y0-h3-dy)+' '+(x0+w3+dx)+','+(y0-dy)+' '+(x0+w3)+','+y0+'" class="geo-3d-face" style="opacity:.35"/>' +
+      // Face dessus
+      '<polygon points="'+x0+','+(y0-h3)+' '+(x0+dx)+','+(y0-h3-dy)+' '+(x0+w3+dx)+','+(y0-h3-dy)+' '+(x0+w3)+','+(y0-h3)+'" class="geo-3d-face" style="opacity:.25"/>' +
+      // Arêtes visibles
+      '<line x1="'+x0+'" y1="'+y0+'" x2="'+(x0+w3)+'" y2="'+y0+'" class="geo-3d-edge"/>' +
+      '<line x1="'+x0+'" y1="'+(y0-h3)+'" x2="'+(x0+w3)+'" y2="'+(y0-h3)+'" class="geo-3d-edge"/>' +
+      '<line x1="'+x0+'" y1="'+y0+'" x2="'+x0+'" y2="'+(y0-h3)+'" class="geo-3d-edge"/>' +
+      '<line x1="'+(x0+w3)+'" y1="'+y0+'" x2="'+(x0+w3)+'" y2="'+(y0-h3)+'" class="geo-3d-edge"/>' +
+      '<line x1="'+(x0+w3)+'" y1="'+y0+'" x2="'+(x0+w3+dx)+'" y2="'+(y0-dy)+'" class="geo-3d-edge"/>' +
+      '<line x1="'+(x0+w3)+'" y1="'+(y0-h3)+'" x2="'+(x0+w3+dx)+'" y2="'+(y0-h3-dy)+'" class="geo-3d-edge"/>' +
+      '<line x1="'+x0+'" y1="'+(y0-h3)+'" x2="'+(x0+dx)+'" y2="'+(y0-h3-dy)+'" class="geo-3d-edge"/>' +
+      '<line x1="'+(x0+dx)+'" y1="'+(y0-h3-dy)+'" x2="'+(x0+w3+dx)+'" y2="'+(y0-h3-dy)+'" class="geo-3d-edge"/>' +
+      '<line x1="'+(x0+w3+dx)+'" y1="'+(y0-h3-dy)+'" x2="'+(x0+w3+dx)+'" y2="'+(y0-dy)+'" class="geo-3d-edge"/>' +
+      // Labels
+      '<text x="'+((x0+x0+w3)/2)+'" y="'+(y0+16)+'" text-anchor="middle" class="geo-val">'+fig.a+'</text>' +
+      (fig.isCube?'':'<text x="'+(x0+w3+dx+8)+'" y="'+((y0-h3+y0)/2)+'" class="geo-val">'+fig.b+'</text>') +
+      (fig.isCube?'':'<text x="'+((x0+w3+x0+w3+dx)/2+4)+'" y="'+(y0-h3-dy-4)+'" text-anchor="middle" class="geo-val">'+fig.c+'</text>') +
+      '</svg>';
+    break;
+
+  // ═══ CYLINDRE ═══
+  case 'cylinder':
+    var cx1=130,top=40,bot=155,rx1=60,ry1=18;
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<ellipse cx="'+cx1+'" cy="'+bot+'" rx="'+rx1+'" ry="'+ry1+'" class="geo-3d-face"/>' +
+      '<line x1="'+(cx1-rx1)+'" y1="'+top+'" x2="'+(cx1-rx1)+'" y2="'+bot+'" class="geo-3d-edge"/>' +
+      '<line x1="'+(cx1+rx1)+'" y1="'+top+'" x2="'+(cx1+rx1)+'" y2="'+bot+'" class="geo-3d-edge"/>' +
+      '<ellipse cx="'+cx1+'" cy="'+top+'" rx="'+rx1+'" ry="'+ry1+'" class="geo-3d-face" style="opacity:.6"/>' +
+      '<line x1="'+cx1+'" y1="'+top+'" x2="'+(cx1+rx1)+'" y2="'+top+'" class="geo-dash" style="stroke:#059669"/>' +
+      '<text x="'+((cx1+cx1+rx1)/2)+'" y="'+(top-6)+'" text-anchor="middle" class="geo-val">r='+fig.r+'</text>' +
+      '<text x="'+(cx1+rx1+10)+'" y="'+((top+bot)/2+4)+'" class="geo-val">h='+fig.h+'</text>' +
+      '</svg>';
+    break;
+
+  // ═══ CÔNE ═══
+  case 'cone':
+    var cx2=130,tipY=35,baseY=160,rx2=60,ry2=16;
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<ellipse cx="'+cx2+'" cy="'+baseY+'" rx="'+rx2+'" ry="'+ry2+'" class="geo-3d-face"/>' +
+      '<line x1="'+(cx2-rx2)+'" y1="'+baseY+'" x2="'+cx2+'" y2="'+tipY+'" class="geo-3d-edge"/>' +
+      '<line x1="'+(cx2+rx2)+'" y1="'+baseY+'" x2="'+cx2+'" y2="'+tipY+'" class="geo-3d-edge"/>' +
+      '<line x1="'+cx2+'" y1="'+tipY+'" x2="'+cx2+'" y2="'+baseY+'" class="geo-dash" style="stroke:#059669"/>' +
+      '<circle cx="'+cx2+'" cy="'+tipY+'" class="geo-dot"/>' +
+      '<text x="'+(cx2+8)+'" y="'+((tipY+baseY)/2)+'" class="geo-val">h='+fig.h+'</text>' +
+      '<text x="'+((cx2+cx2+rx2)/2)+'" y="'+(baseY+16)+'" text-anchor="middle" class="geo-val">r='+fig.r+'</text>' +
+      '</svg>';
+    break;
+
+  // ═══ PYRAMIDE ═══
+  case 'pyramid':
+    var px0=130,ptip=30,pbl=60,pbr=200,pfl=80,pfr=180,pby=170;
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<polygon points="'+pbl+','+pby+' '+pbr+','+pby+' '+(pbr-15)+','+(pby-25)+' '+(pbl+15)+','+(pby-25)+'" class="geo-3d-face" style="opacity:.3"/>' +
+      '<line x1="'+pbl+'" y1="'+pby+'" x2="'+px0+'" y2="'+ptip+'" class="geo-3d-edge"/>' +
+      '<line x1="'+pbr+'" y1="'+pby+'" x2="'+px0+'" y2="'+ptip+'" class="geo-3d-edge"/>' +
+      '<line x1="'+(pbl+15)+'" y1="'+(pby-25)+'" x2="'+px0+'" y2="'+ptip+'" class="geo-3d-hidden"/>' +
+      '<line x1="'+(pbr-15)+'" y1="'+(pby-25)+'" x2="'+px0+'" y2="'+ptip+'" class="geo-3d-edge"/>' +
+      '<line x1="'+pbl+'" y1="'+pby+'" x2="'+pbr+'" y2="'+pby+'" class="geo-3d-edge"/>' +
+      '<line x1="'+pbr+'" y1="'+pby+'" x2="'+(pbr-15)+'" y2="'+(pby-25)+'" class="geo-3d-edge"/>' +
+      '<line x1="'+pbl+'" y1="'+pby+'" x2="'+(pbl+15)+'" y2="'+(pby-25)+'" class="geo-3d-hidden"/>' +
+      '<line x1="'+(pbl+15)+'" y1="'+(pby-25)+'" x2="'+(pbr-15)+'" y2="'+(pby-25)+'" class="geo-3d-hidden"/>' +
+      '<line x1="'+px0+'" y1="'+ptip+'" x2="'+px0+'" y2="'+pby+'" class="geo-dash" style="stroke:#059669"/>' +
+      '<circle cx="'+px0+'" cy="'+ptip+'" class="geo-dot"/>' +
+      '<text x="'+(px0+8)+'" y="'+((ptip+pby)/2)+'" class="geo-val">h='+fig.h+'</text>' +
+      '<text x="'+((pbl+pbr)/2)+'" y="'+(pby+16)+'" text-anchor="middle" class="geo-val">'+fig.a+'</text>' +
+      '</svg>';
+    break;
+
+  // ═══ SPHÈRE ═══
+  case 'sphere':
+    var scx=130,scy=100,sr=70;
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<defs><radialGradient id="sg" cx="40%" cy="35%"><stop offset="0%" stop-color="#c7d2fe"/><stop offset="100%" stop-color="#eef2ff"/></radialGradient></defs>' +
+      '<circle cx="'+scx+'" cy="'+scy+'" r="'+sr+'" fill="url(#sg)" stroke="#6366f1" stroke-width="1.5"/>' +
+      '<ellipse cx="'+scx+'" cy="'+scy+'" rx="'+sr+'" ry="'+(sr*0.3)+'" class="geo-dash" style="stroke:#6366f1;opacity:.5"/>' +
+      '<line x1="'+scx+'" y1="'+scy+'" x2="'+(scx+sr)+'" y2="'+scy+'" class="geo-dash" style="stroke:#059669;stroke-dasharray:none;stroke-width:2"/>' +
+      '<circle cx="'+scx+'" cy="'+scy+'" class="geo-dot"/>' +
+      '<text x="'+(scx-8)+'" y="'+(scy-8)+'" class="geo-label">O</text>' +
+      '<text x="'+((scx+scx+sr)/2)+'" y="'+(scy-8)+'" text-anchor="middle" class="geo-val">r='+fig.r+'</text>' +
+      '</svg>';
+    break;
+
+  // ═══ SECTION DE SOLIDE ═══
+  case 'section_solid':
+    var dx3=30,dy3=20;
+    var x3=50,y3=150,w4=110,h4=95;
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      // Pavé simplifié
+      '<rect x="'+x3+'" y="'+(y3-h4)+'" width="'+w4+'" height="'+h4+'" class="geo-3d-face"/>' +
+      '<line x1="'+x3+'" y1="'+y3+'" x2="'+(x3+w4)+'" y2="'+y3+'" class="geo-3d-edge"/>' +
+      '<line x1="'+x3+'" y1="'+(y3-h4)+'" x2="'+(x3+w4)+'" y2="'+(y3-h4)+'" class="geo-3d-edge"/>' +
+      '<line x1="'+x3+'" y1="'+y3+'" x2="'+x3+'" y2="'+(y3-h4)+'" class="geo-3d-edge"/>' +
+      '<line x1="'+(x3+w4)+'" y1="'+y3+'" x2="'+(x3+w4)+'" y2="'+(y3-h4)+'" class="geo-3d-edge"/>' +
+      '<line x1="'+(x3+w4)+'" y1="'+y3+'" x2="'+(x3+w4+dx3)+'" y2="'+(y3-dy3)+'" class="geo-3d-edge"/>' +
+      '<line x1="'+(x3+w4)+'" y1="'+(y3-h4)+'" x2="'+(x3+w4+dx3)+'" y2="'+(y3-h4-dy3)+'" class="geo-3d-edge"/>' +
+      '<line x1="'+x3+'" y1="'+(y3-h4)+'" x2="'+(x3+dx3)+'" y2="'+(y3-h4-dy3)+'" class="geo-3d-edge"/>' +
+      '<line x1="'+(x3+dx3)+'" y1="'+(y3-h4-dy3)+'" x2="'+(x3+w4+dx3)+'" y2="'+(y3-h4-dy3)+'" class="geo-3d-edge"/>' +
+      '<line x1="'+(x3+w4+dx3)+'" y1="'+(y3-h4-dy3)+'" x2="'+(x3+w4+dx3)+'" y2="'+(y3-dy3)+'" class="geo-3d-edge"/>' +
+      // Plan de section (diagonale colorée)
+      '<polygon points="'+x3+','+(y3-h4*0.6)+' '+(x3+w4)+','+(y3-h4*0.3)+' '+(x3+w4+dx3)+','+(y3-h4*0.3-dy3)+' '+(x3+dx3)+','+(y3-h4*0.6-dy3)+'" style="fill:#fde68a;stroke:#f59e0b;stroke-width:2;opacity:.45"/>' +
+      '<text x="'+((x3+x3+w4)/2+dx3/2)+'" y="'+(y3-h4*0.45-dy3/2-6)+'" text-anchor="middle" class="geo-val" style="fill:#d97706;font-size:11px">section</text>' +
+      '</svg>';
+    break;
+
+  // ═══ HOMOTHÉTIE ═══
+  case 'homothety':
+    var hox=50,hoy=160;
+    var hax=100,hay=100,hbx=140,hby=100,hcx=120,hcy=60;
+    var k2=fig.k>1?fig.k:1/fig.k;
+    var hax2=hox+(hax-hox)*k2, hay2=hoy+(hay-hoy)*k2;
+    var hbx2=hox+(hbx-hox)*k2, hby2=hoy+(hby-hoy)*k2;
+    var hcx2=hox+(hcx-hox)*k2, hcy2=hoy+(hcy-hoy)*k2;
+    // Clamp to viewBox
+    if(hax2>250||hbx2>250||hcx2>250) {k2=1.5; hax2=hox+(hax-hox)*k2; hay2=hoy+(hay-hoy)*k2; hbx2=hox+(hbx-hox)*k2; hby2=hoy+(hby-hoy)*k2; hcx2=hox+(hcx-hox)*k2; hcy2=hoy+(hcy-hoy)*k2;}
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<polygon points="'+hax+','+hay+' '+hbx+','+hby+' '+hcx+','+hcy+'" class="geo-fill"/>' +
+      '<polygon points="'+hax2.toFixed(0)+','+hay2.toFixed(0)+' '+hbx2.toFixed(0)+','+hby2.toFixed(0)+' '+hcx2.toFixed(0)+','+hcy2.toFixed(0)+'" class="geo-fill2"/>' +
+      '<line x1="'+hox+'" y1="'+hoy+'" x2="'+hax2.toFixed(0)+'" y2="'+hay2.toFixed(0)+'" class="geo-dash"/>' +
+      '<line x1="'+hox+'" y1="'+hoy+'" x2="'+hbx2.toFixed(0)+'" y2="'+hby2.toFixed(0)+'" class="geo-dash"/>' +
+      '<line x1="'+hox+'" y1="'+hoy+'" x2="'+hcx2.toFixed(0)+'" y2="'+hcy2.toFixed(0)+'" class="geo-dash"/>' +
+      '<circle cx="'+hox+'" cy="'+hoy+'" r="4" style="fill:#a855f7"/>' +
+      '<text x="'+(hox-10)+'" y="'+(hoy+16)+'" class="geo-label" style="fill:#a855f7">O</text>' +
+      '<text x="'+hax+'" y="'+(hay-6)+'" class="geo-label">A</text>' +
+      '<text x="'+hax2.toFixed(0)+'" y="'+(hay2-6)+'" class="geo-label" style="fill:#22c55e">A\'</text>' +
+      '<text x="'+(hox+30)+'" y="'+(hoy-8)+'" class="geo-val" style="font-size:11px">k='+fig.k+'</text>' +
+      '</svg>';
+    break;
+
+  // ═══ TRIANGLES SEMBLABLES ═══
+  case 'similar_tri':
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<polygon points="30,160 130,160 80,80" class="geo-fill"/>' +
+      '<polygon points="150,160 230,160 190,110" class="geo-fill2"/>' +
+      '<circle cx="30" cy="160" class="geo-dot"/><circle cx="130" cy="160" class="geo-dot"/><circle cx="80" cy="80" class="geo-dot"/>' +
+      '<circle cx="150" cy="160" class="geo-dot"/><circle cx="230" cy="160" class="geo-dot"/><circle cx="190" cy="110" class="geo-dot"/>' +
+      '<text x="22" y="176" class="geo-label">A</text><text x="132" y="176" class="geo-label">B</text><text x="74" y="74" class="geo-label">C</text>' +
+      '<text x="142" y="176" class="geo-label" style="fill:#22c55e">A\'</text><text x="232" y="176" class="geo-label" style="fill:#22c55e">B\'</text><text x="194" y="106" class="geo-label" style="fill:#22c55e">C\'</text>' +
+      '<text x="80" y="176" text-anchor="middle" class="geo-val">'+fig.a+'</text>' +
+      '<text x="190" y="176" text-anchor="middle" class="geo-val" style="fill:#22c55e">?</text>' +
+      '<path d="M 52,160 A 22,22 0 0,1 58,143" class="geo-angle"/>' +
+      '<path d="M 170,160 A 18,18 0 0,1 175,146" class="geo-angle"/>' +
+      '</svg>';
+    break;
+
+  // ═══ TRIANGLE QUELCONQUE ═══
+  case 'triangle':
+    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<polygon points="40,170 220,170 130,40" class="geo-fill"/>' +
+      '<line x1="40" y1="170" x2="220" y2="170" class="geo-line"/>' +
+      '<line x1="220" y1="170" x2="130" y2="40" class="geo-line"/>' +
+      '<line x1="130" y1="40" x2="40" y2="170" class="geo-line"/>' +
+      '<circle cx="40" cy="170" class="geo-dot"/><circle cx="220" cy="170" class="geo-dot"/><circle cx="130" cy="40" class="geo-dot"/>' +
+      '<text x="32" y="186" class="geo-label">A</text><text x="224" y="186" class="geo-label">B</text><text x="124" y="34" class="geo-label">C</text>' +
+      '<text x="130" y="186" text-anchor="middle" class="geo-val">'+fig.a+'</text>' +
+      (fig.b?'<text x="180" y="100" class="geo-val">'+fig.b+'</text>':'') +
+      (fig.c?'<text x="76" y="100" class="geo-val">'+fig.c+'</text>':'') +
+      '</svg>';
+    break;
+
+  // ═══ TRANSFORMATION (translation/rotation) ═══
+  case 'transform':
+    if (fig.isRotation) {
+      svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+        '<circle cx="130" cy="110" r="4" style="fill:#a855f7"/>' +
+        '<text x="138" y="114" class="geo-label" style="fill:#a855f7">O</text>' +
+        '<polygon points="60,70 110,50 90,90" class="geo-fill"/>' +
+        '<polygon points="150,150 200,130 180,170" class="geo-fill2"/>' +
+        '<path d="M 100,80 A 50,50 0 0,1 160,140" class="geo-dash" style="stroke:#a855f7" marker-end="url(#arrowR)"/>' +
+        '<defs><marker id="arrowR" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#a855f7"/></marker></defs>' +
+        '<text x="170" y="100" class="geo-val" style="fill:#a855f7;font-size:11px">rotation</text>' +
+        '</svg>';
+    } else {
+      svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+        '<polygon points="40,60 100,40 80,100" class="geo-fill"/>' +
+        '<polygon points="140,110 200,90 180,150" class="geo-fill2"/>' +
+        '<line x1="40" y1="60" x2="140" y2="110" class="geo-dash" style="stroke:#6366f1" marker-end="url(#arrowT)"/>' +
+        '<line x1="100" y1="40" x2="200" y2="90" class="geo-dash" style="stroke:#6366f1" marker-end="url(#arrowT)"/>' +
+        '<line x1="80" y1="100" x2="180" y2="150" class="geo-dash" style="stroke:#6366f1" marker-end="url(#arrowT)"/>' +
+        '<defs><marker id="arrowT" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#6366f1"/></marker></defs>' +
+        '<text x="120" y="70" class="geo-val" style="font-size:11px">vecteur</text>' +
+        '</svg>';
+    }
+    break;
+
+  default:
+    return '';
+  }
+
+  return svg ? '<div class="geo-fig">' + svg + '</div>' : '';
+}
+
+// Vérifie si un chapitre est géométrique
+function isGeoCat(cat) {
+  return /géomét|angle|triangle|périmètre|aire|pythagore|trigono|homothét|similaire|semblable|section|transformation|symétrie|volume|agrandissement|thalès/i.test(cat||'');
+}
+
+// Point d'entrée : génère la figure pour un exercice
+function getExoFigure(data, cat) {
+  if (!data || !data.q) return '';
+  // Vérifier si c'est un chapitre géométrique
+  var realCat = cat;
+  if (cat === 'BOOST' || cat === 'CALIBRAGE' || cat === 'REVISION' || cat === 'BREVET') {
+    // Pour les modes spéciaux, utiliser la catégorie originale
+    realCat = data.oC || cat;
+  }
+  if (!isGeoCat(realCat)) return '';
+  // Tenter auto-détection
+  var fig = data.fig || autoDetectFigure(data.q, realCat);
+  return renderFig(fig);
+}
+
 // ══════════════════════════════════════════════════════════════
 // TYPEWRITER + PILLS AIDE INLINE + NUDGE
 // ══════════════════════════════════════════════════════════════
@@ -5233,6 +5972,14 @@ function clearNudge(id) {
 function clrText() {
   var ta = document.getElementById('draft-text');
   if (ta) { ta.value = ''; if (S.cid) { S.drafts[S.cid] = {txt:''}; localStorage.removeItem('draft_' + S.cid); } ta.focus(); }
+}
+function toggleGrid() {
+  var ta = document.getElementById('draft-text');
+  var btn = document.getElementById('btn-grid');
+  if (!ta) return;
+  ta.classList.toggle('grid-on');
+  if (btn) btn.style.color = ta.classList.contains('grid-on') ? '#6366f1' : '';
+  localStorage.setItem('draft_grid', ta.classList.contains('grid-on') ? '1' : '0');
 }
 
 function insSymbol(s) {

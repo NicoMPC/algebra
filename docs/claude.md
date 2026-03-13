@@ -89,6 +89,20 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 - Pas de données sensibles dans localStorage (auth token uniquement)
 - GA4 conditionné au consentement cookies
 
+### Règle 1 chapitre/jour
+- Un élève ne peut travailler que sur **1 chapitre par jour** (hors BOOST, CALIBRAGE, BREVET, REVISION)
+- `S._todayChap` : détecté au login depuis `d.history` (dates), mis à jour dans `mark()`
+- Bloqué dans `togCat()` et `openFromProgress()` → toast + return
+- Verrouillage visuel (opacity + 🔒) dans la vue Progression
+
+### Figures géométriques SVG
+- `autoDetectFigure(q, cat)` : auto-génère un spec `fig` depuis le texte de la question
+- `renderFig(fig)` : génère le SVG inline depuis le spec
+- `getExoFigure(data, cat)` : point d'entrée appelé dans `rSection()`, gère les modes spéciaux (BOOST/CALIBRAGE → catégorie originale `data.oC`)
+- Champ optionnel `data.fig` sur les exercices JSON : override l'auto-détection
+- 15 types de figures supportés (tri_rect, tri_trigo, thales, circle, rect, angle, parallel, sym_axial, sym_central, cube, cylinder, cone, pyramid, sphere, section_solid, homothety, similar_tri, triangle, transform)
+- Fallback safe : si auto-détection échoue → pas de figure → l'exercice marche comme avant
+
 ### Pas de sur-ingénierie
 - Pas de feature flags, pas d'abstractions prématurées
 - Si faisable manuellement par Nicolas en 2 min → ne pas automatiser

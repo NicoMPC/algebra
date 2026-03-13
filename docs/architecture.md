@@ -95,7 +95,8 @@ const S = {
 - **Mastery ring** : cercle SVG de progression par chapitre
 - **Confettis** : animation post-boost terminé
 - **Messages** : ton ado "Game Boy Chill" (EASY×7 variantes, HARD×3)
-- **Brouillon contextuel** : tiroir bas-de-page, 2 onglets — Brouillon (symboles adaptés au chapitre via `getContextSymbols(niv, cat)`) + Calculette (sin/cos/tan si géo/trigo, copie vers brouillon via `calcCopyToText()`)
+- **Brouillon contextuel** : tiroir bas-de-page, 2 onglets — Brouillon (symboles adaptés au chapitre via `getContextSymbols(niv, cat)`, mode quadrillé toggle) + Calculette (adaptée par niveau/chapitre : trig si géo, π si aires/volumes, puissances si 5EME+, fractions si 6EME, mémoire M+/MR, copie vers brouillon)
+- **Figures géométriques SVG** : auto-détection depuis le texte de la question + catégorie. Moteur `autoDetectFigure(q, cat)` → `renderFig(fig)` → SVG inline animé. 15 types : triangle rectangle, trigo, Thalès, cercle, rectangle/carré, angle, parallèles/perpendiculaires, symétrie axiale/centrale, cube/pavé, cylindre, cône, pyramide, sphère, section de solide, homothétie, triangles semblables, transformations. Champ `fig` optionnel dans les exercices JSON pour override manuel. Fallback safe : pas de figure si non détecté.
 
 ---
 
@@ -278,7 +279,8 @@ Scripts archivés dans `scripts_archive/`.
 - Gamification : XP, streak, mastery ring SVG
 - MathJax v3 avec fallback, chrono par exercice
 - Nudge pills après 20s, tableau blanc maths
-- Vue Progression, bannière prérequis fragiles
+- Vue Progression refonte : header (maîtrisés/streak/score moy.), barre colorée progressive (rouge→orange→bleu→vert), message contextuel, tri en cours/maîtrisés/non commencés, bannière prérequis fragiles
+- Règle 1 chapitre/jour : `S._todayChap` bloque l'ouverture d'un 2e chapitre (togCat + openFromProgress), toast + lock visuel
 - Essai 7j : badge J-X, overlay, onboarding 3 slides
 - Flow landing CTA complet
 - Post-boost : confettis + auto-redirect 5s
