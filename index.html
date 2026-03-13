@@ -401,8 +401,8 @@
     #trial-flow .flow-step { min-height:320px; }
     /* Step 3 quiz — pas d'animation entre les questions pour éviter le jump */
     #flow-s3 > div { animation:none; }
-    /* Steps 1, 2, 4 centrés verticalement */
-    #flow-s1, #flow-s2, #flow-s4 { display:flex; flex-direction:column; justify-content:center; }
+    /* Steps 1, 2, 4 centrés verticalement — .flow-step (pas d'ID) pour ne pas écraser .hidden */
+    .flow-step:not(.hidden) { display:flex; flex-direction:column; justify-content:center; }
     /* Centrage exercices mobile — quiz/diagnostic dans l'app */
     @media (max-width:640px) {
       #main-app { padding-left:.75rem; padding-right:.75rem; }
