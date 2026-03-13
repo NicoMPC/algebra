@@ -389,6 +389,25 @@
     /* ── TRIAL FLOW INLINE ───────────────────────────────── */
     @keyframes flowIn { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none} }
     .flow-step { animation:flowIn .28s ease-out; }
+    /* Fullscreen overlay mode — masque la landing */
+    #trial-flow.flow-fs {
+      position:fixed; inset:0; z-index:200;
+      background:var(--ink); overflow-y:auto;
+      display:flex; align-items:center; justify-content:center;
+      padding:1.5rem 1rem; margin:0;
+    }
+    #trial-flow.flow-fs > .max-w-lg { width:100%; }
+    /* Hauteur min fixe par step — empêche le jump */
+    #trial-flow .flow-step { min-height:320px; }
+    /* Step 3 quiz — pas d'animation entre les questions pour éviter le jump */
+    #flow-s3 > div { animation:none; }
+    /* Steps 1, 2, 4 centrés verticalement */
+    #flow-s1, #flow-s2, #flow-s4 { display:flex; flex-direction:column; justify-content:center; }
+    /* Centrage exercices mobile — quiz/diagnostic dans l'app */
+    @media (max-width:640px) {
+      #main-app { padding-left:.75rem; padding-right:.75rem; }
+      #app-c .rounded-3xl, #app-c .rounded-2xl { margin-left:auto; margin-right:auto; }
+    }
     .flow-dot  { width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);transition:all .2s; }
     .flow-dot.on { background:#818cf8;transform:scale(1.25); }
     .lvl-btn {
@@ -856,7 +875,7 @@
           <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Accès illimité, 6ème à 3ème, 24h/24</span></div>
           <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Accompagnement par un prof de maths</span></div>
         </div>
-        <button onclick="startTrialFlow(); document.getElementById('landing-screen').scrollTop=0; document.getElementById('cta-hero').scrollIntoView({behavior:'smooth'})"
+        <button onclick="startTrialFlow()"
                 class="btn btn-ac btn-fw py-4 shadow-xl" style="font-size:1rem">
           Essayer 7 jours gratuit →
         </button>
@@ -876,7 +895,7 @@
       <p class="text-white/55 text-sm font-medium mb-8 max-w-sm mx-auto">
         5 minutes de diagnostic maintenant, des progrès visibles dès la semaine prochaine. Chaque erreur est une information, pas un échec.
       </p>
-      <button onclick="startTrialFlow(); document.getElementById('landing-screen').scrollTop=0; document.getElementById('cta-hero').scrollIntoView({behavior:'smooth'})"
+      <button onclick="startTrialFlow()"
               style="max-width:340px;font-size:1.05rem;padding:1.15rem;display:block;margin:0 auto"
               class="btn btn-ac btn-fw shadow-xl">
         Lancer le diagnostic gratuit →
@@ -1631,10 +1650,12 @@ var _flowFormulaShown = {};  // { exoIdx: true } formules révélées
 })();
 
 function startTrialFlow() {
-  document.getElementById('trial-flow').classList.remove('hidden');
+  var tf = document.getElementById('trial-flow');
+  tf.classList.remove('hidden');
+  tf.classList.add('flow-fs');
   document.getElementById('cta-hero').classList.add('hidden');
   _flowSetStep(1);
-  document.getElementById('trial-flow').scrollIntoView({ behavior:'smooth', block:'start' });
+  tf.scrollTop = 0;
   // Vérifier s'il y a un diagnostic abandonné à reprendre
   var saved = null;
   try { saved = JSON.parse(localStorage.getItem('guestDiag') || 'null'); } catch(e) {}
@@ -1682,6 +1703,9 @@ function _flowSetStep(n) {
     document.getElementById('flow-s' + i).classList.toggle('hidden', i !== n);
     document.getElementById('fdot-' + i).classList.toggle('on', i === n);
   }
+  // Reset scroll du conteneur fullscreen
+  var tf = document.getElementById('trial-flow');
+  if (tf) tf.scrollTop = 0;
 }
 
 function flowSelectLevel(lv) {
@@ -1878,6 +1902,9 @@ function _flowRenderQuestion(idx) {
   if (window.MathJax && MathJax.typesetPromise) {
     try { MathJax.typesetPromise([container]); } catch(e) {}
   }
+  // Scroll stable — haut du conteneur fullscreen
+  var tf = document.getElementById('trial-flow');
+  if (tf) tf.scrollTop = 0;
 }
 
 function _flowAnswerOpt(optIdx) {
@@ -2456,8 +2483,8 @@ var _onbSlides = [
   },
   {
     emoji: '⚡',
-    title: 'Ton prof prépare la suite',
-    body: 'Chaque jour, des exercices ciblés sur les vrais points faibles de ton enfant. Reviens demain voir les progrès.',
+    title: 'Lance ton Boost du jour !',
+    body: 'Chaque jour, un <strong>Boost personnalisé</strong> t\'attend — des exercices ciblés sur tes vrais points faibles. Commence maintenant, ça prend 5 minutes.',
     color: 'linear-gradient(135deg,#1e1b4b 0%,#4338ca 100%)'
   }
 ];
@@ -2773,7 +2800,7 @@ function updH() {
 function loadBoost() {
   if (!S.boost) return;
   LVL[S.niv].cats["BOOST"]  = S.boost.exos.map(function(e,i){ return Object.assign({},e,{oC:'BOOST',oI:i}); });
-  LVL[S.niv].names["BOOST"] = "Entraînement IA du jour";
+  LVL[S.niv].names["BOOST"] = "Mon Boost du jour";
   LVL[S.niv].icons["BOOST"] = "⚡";
   S.insights["BOOST"]        = S.boost.insight;
 }
@@ -2811,7 +2838,7 @@ async function boostFromDiag(errs) {
     var d = await r.json();
     if (d.status === 'success') {
       S.boost = d.boost; S.boostEx = true; loadBoost();
-      showT("⚡ Ton entraînement personnalisé est prêt !", 4000, "⚡");
+      showT("⚡ Ton Boost du jour est prêt !", 4000, "⚡");
     } else { hideT(); }
   } catch(e) { hideT(); }
   finally { S.boostPreping = false; render(); }
@@ -4180,14 +4207,14 @@ function render() {
   if (S.boostPreping) {
     html += '<div class="rounded-2xl p-5 flex items-center gap-4 shadow-lg mb-4" style="background:linear-gradient(135deg,#312e81,#4338ca)">' +
       '<div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0"><div class="ld"></div></div>' +
-      '<div><div class="syne text-base font-black text-white mb-0.5">Entraînement IA en cours...</div>' +
+      '<div><div class="syne text-base font-black text-white mb-0.5">Mon Boost du jour en cours...</div>' +
       '<p class="text-indigo-200 text-sm">L\'IA analyse ton diagnostic et crée tes exercices</p></div></div>';
 
   } else if (!S.boostEx && !S.calState) {
     if (S.isFirstDay) {
       html += '<div onclick="handleBoost()" class="rounded-2xl p-5 flex items-center gap-4 cursor-pointer active:scale-[.98] transition-transform shadow-lg mb-4" style="background:linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)">' +
         '<div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/20 animate-pulse-light">⚡</div>' +
-        '<div class="flex-1 min-w-0"><div class="syne text-base font-black text-white mb-0.5">Mon entraînement IA</div>' +
+        '<div class="flex-1 min-w-0"><div class="syne text-base font-black text-white mb-0.5">Mon Boost du jour</div>' +
         '<p class="text-indigo-200 text-sm font-medium">Exercices ciblés sur mes points à renforcer</p></div>' +
         '<div class="text-white/50 text-2xl font-light">›</div></div>';
     } else {
@@ -4238,7 +4265,7 @@ function render() {
       // Carte gauche — archivée compacte
       html += '<div data-cat="'+cat+'" onclick="togCat(\''+cat+'\')" class="flex-1 rounded-2xl border border-emerald-200 flex flex-col items-center justify-center gap-1.5 py-3 px-2 cursor-pointer select-none text-center" style="background:#f0fdf4">';
       html += '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-base">'+(isBoost?'⚡':(LVL[S.niv].icons[cat]||'📘'))+'</div>';
-      html += '<span class="syne font-black text-xs text-slate-700 leading-tight px-1" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+(isBoost?'Entraînement IA ✓':(LVL[S.niv].names[cat]||cat))+'</span>';
+      html += '<span class="syne font-black text-xs text-slate-700 leading-tight px-1" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+(isBoost?'Mon Boost ✓':(LVL[S.niv].names[cat]||cat))+'</span>';
       if (isBoost) {
         html += '<div class="flex items-center justify-center gap-1.5 my-0.5">' +
           '<span class="relative flex h-2 w-2 flex-shrink-0">' +
