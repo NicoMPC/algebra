@@ -119,7 +119,7 @@ function doPost(e) {
 | Action | Description | Statut |
 |---|---|---|
 | `register` | Inscription élève. TrialStart = TODAY, email J+0 auto (si alias Gmail opérationnel) | ✅ |
-| `login` | Connexion. Retourne trial, boostExosDone, pendingBrevet, nextChapter, nextBoostTopic | ✅ |
+| `login` | Connexion. Retourne trial, boostExosDone, pendingBrevet, nextChapter, nextBoostTopic, **revisionChapters** | ✅ |
 | `save_score` | Sauvegarde réponse. MAJ Progress + rebuildSuivi + writeToHistorique + ExosDone si BOOST. Persiste `source` (col N Scores) | ✅ |
 | `save_boost` | Sauvegarde fin de boost. ExosDone + rebuildSuivi | ✅ |
 | `generate_diagnostic` | Génère diagnostic. Mode guest (sans code) pour landing flow | ✅ |
@@ -134,7 +134,7 @@ function doPost(e) {
 | `generate_revision` | Révision niveau inférieur — UI désactivé | ✅ |
 | `submit_feedback` | Feedback élève → onglet Insights | ✅ |
 | `generateMorningReport` | Rapport matin 7h (génération IA désactivée) | ✅ |
-| `get_admin_overview` | Vue admin complète. Retourne `email` + `j0Sent` + `emailsDue` + `secondaryActions` + `category` (capitale/secondaire/ras) + `trialDays` + `inactivityDays` + `neverStarted` par élève. boostPendingContent alimenté depuis col S si élève n'a pas encore récupéré le boost | ✅ |
+| `get_admin_overview` | Vue admin complète. Retourne `email` + `j0Sent` + `emailsDue` + `secondaryActions` + `category` + `trialDays` + `inactivityDays` + `neverStarted` + **`revisionChapters`** par élève + **`allChapsByLevel`** global. boostPendingContent alimenté depuis col S si élève n'a pas encore récupéré le boost | ✅ |
 | `publish_admin_boost` | Admin publie boost (→Nouveau Boost col 18) + rebuildSuivi | ✅ |
 | `publish_admin_chapter` | Admin publie chapitre (→Nouveau Ch libre) + rebuildSuivi. Retourne `overwrite:true` si >4 chapitres en attente (toast ⚠️ côté frontend) | ✅ |
 | `log_manual_email` | Admin — logue un email envoyé manuellement dans l'onglet Emails. Params : `adminCode`, `userEmail`, `type` (ex: `J+0-manuel`). Vérifie admin, récupère prénom, appelle `_logEmail` | ✅ |
@@ -148,6 +148,7 @@ function doPost(e) {
 | `get_brevet_chapters` | Liste chapitres disponibles dans BrevetExos | ✅ |
 | `request_brevet_chapter` | Élève demande chapitre manquant → Insights | ✅ |
 | `import_brevet_exos` | One-shot admin — pousse exercices dans BrevetExos | ✅ |
+| `publish_admin_revision` | Admin assigne chapitres d'une autre année à un élève → Users col M `RevisionChapters` (JSON) + rebuildSuivi. Payload : `adminCode, targetCode, chapters:[{niveau,categorie}]`. Vide si `chapters=[]` | ✅ |
 
 ### Fonctions internes clés
 

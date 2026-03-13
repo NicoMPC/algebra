@@ -67,6 +67,7 @@ _ARCHIVE_Queue / _ARCHIVE_Prerequisites / _ARCHIVE_Rapports / _ARCHIVE_Pending_E
 | J | PremiumEnd | Date | Date fin premium (futur Stripe) |
 | K | IsTest | Number | `0` = vrai élève, `1` = compte test |
 | L | PendingBrevet | String | JSON `{chapitres:[], message, date}` quand admin publie un brevet blanc |
+| M | RevisionChapters | String | JSON `[{niveau:"5EME", categorie:"Fractions"}]` — chapitres d'une autre année assignés par l'admin. Auto-créée si absente. |
 
 **Règles importantes :**
 - Emails `@matheux.fr` → `IsTest=1` automatiquement au `register()`

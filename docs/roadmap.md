@@ -129,6 +129,7 @@
 - [x] Mode Révision (code conservé, UI désactivé)
 - [x] Feedback élève → Insights
 - [x] 5 chapitres prioritaires en prod
+- [x] **Mode Révision** — admin ouvre chapitres d'une autre année depuis la fiche élève → dashboard élève + badge 🔁 + toast notification (13 mars 2026)
 - [ ] Agent analyse lacunes quotidien automatique
 - [ ] Agent génération boost automatique
 - [ ] Agent rapport parents (email hebdo)

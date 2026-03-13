@@ -1510,7 +1510,7 @@ let S = {
   sent: new Set(),
   scoreQueue: JSON.parse(localStorage.getItem('sq') || '[]'),
   adminMode: false, timeOffset: 0, forceFail: false,
-  adminStudents: [], adminTab: 'todo', _adminBrevChaps: [],
+  adminStudents: [], adminTab: 'todo', _adminBrevChaps: [], _adminChapsByLevel: {},
   tmpEmail: '', tmpHash: '',
   exoStartTime: {},    // { exoId → timestamp ms } — NOUVEAU v23
   view: 'chapters',   // 'chapters' | 'progress' | 'brevet'
@@ -1520,6 +1520,7 @@ let S = {
   brevetMode: false,  // false | 'loading' | 'active' | 'done'
   brevetExos: [],
   brevetChaps: [],
+  revisionCats: [],   // categories qui sont des chapitres de révision (autre année)
   // ── Mode Brevet @51 ──
   brevState:         null,    // null | 'select' | 'loading' | 'quiz' | 'results'
   brevAllChapters:   [],      // chapitres disponibles (BrevetExos)
@@ -2896,6 +2897,7 @@ function initApp(d, skipRender) {
   // ul supprimé — S.res/S.stk viennent exclusivement de d (GAS)
 
   LVL[S.niv] = { cats:{}, names:{}, icons:{} };
+  S.revisionCats = [];  // reset à chaque login
 
   if (d.curriculumOfficiel && d.curriculumOfficiel.length > 0) {
     d.curriculumOfficiel.forEach(function(c){
@@ -2962,6 +2964,26 @@ function initApp(d, skipRender) {
   // ── Injection PendingBrevet @51 ────────────────────────
   if (d.pendingBrevet && typeof d.pendingBrevet === 'object') {
     S.brevPendingConfig = d.pendingBrevet;
+  }
+  // ── Chapitres de révision (autre année) ────────────────
+  if (d.revisionChapters && d.revisionChapters.length > 0) {
+    d.revisionChapters.forEach(function(rc) {
+      var cat = rc.categorie;
+      if (!LVL[S.niv].cats[cat]) {
+        LVL[S.niv].cats[cat] = rc.exos.map(function(e, i) {
+          return Object.assign({}, e, { oC: cat, oI: i });
+        });
+        LVL[S.niv].names[cat] = rc.titre;
+        LVL[S.niv].icons[cat] = rc.icone;
+      }
+      if (S.revisionCats.indexOf(cat) === -1) S.revisionCats.push(cat);
+      S.isNew[cat] = true;
+      S.exp[cat]   = true;
+    });
+    setTimeout(function() {
+      var nb = d.revisionChapters.length;
+      showT('🔁 ' + nb + ' chapitre' + (nb > 1 ? 's' : '') + ' de révision ajouté' + (nb > 1 ? 's' : '') + ' par ton prof !', 5500, '🔁');
+    }, 2800);
   }
   // Afficher le bouton Brevet pour les 3EME (ou si brevet en attente)
   var navBrevBtn = document.getElementById('nav-brev');
@@ -4490,6 +4512,13 @@ function render() {
       '<div class="text-2xl flex-shrink-0">⏳</div>' +
       '<div><div class="syne font-black text-amber-800 text-sm">' + S.pendingManual + '</div></div></div>';
   }
+  // ── Bandeau chapitres de révision ─────────────────────
+  if (S.revisionCats && S.revisionCats.length > 0) {
+    html += '<div class="rounded-2xl border border-violet-200 bg-violet-50 p-4 flex items-center gap-3 mb-3 afu">' +
+      '<div class="text-2xl flex-shrink-0">🔁</div>' +
+      '<div><div class="syne font-black text-violet-800 text-sm mb-0.5">Chapitres de révision ajoutés !</div>' +
+      '<div class="text-violet-700 text-xs font-medium">Ton prof a ajouté des chapitres d\'une autre année pour renforcer tes bases 💪</div></div></div>';
+  }
 
   // ── Bandeau état Boost ────────────────────────────────
   if (S.boostPreping) {
@@ -4619,6 +4648,7 @@ function render() {
     html += '<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1.5"><span class="syne font-black text-sm '+(isBoost?'text-white':'text-slate-900')+' truncate">'+(LVL[S.niv].names[cat]||cat)+'</span>';
     if (isNew) html += '<span class="text-[9px] syne font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-md">NEW</span>';
     if (S.remReq[cat]) html += '<span class="text-[9px] syne font-black bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md">🔄 Demain</span>';
+    if (S.revisionCats && S.revisionCats.indexOf(cat) !== -1) html += '<span class="text-[9px] syne font-black bg-violet-100 text-violet-700 border border-violet-200 px-1.5 py-0.5 rounded-md">🔁 Révision</span>';
     html += '</div><div class="flex items-center gap-2"><div class="pbar flex-1" style="max-width:100px"><div class="pfill pfp" style="width:'+pct2+'%"></div></div>';
     html += '<span class="text-[11px] font-bold '+(isBoost?'text-white/60':'text-slate-400')+'">'+done+'/'+tot+'</span></div></div>';
     html += '<div class="'+(isBoost?'text-white/40':'text-slate-300')+' text-xl font-light select-none" style="transition:transform .2s;transform:rotate('+(isOpen?90:0)+'deg)">›</div></div>';
@@ -5394,6 +5424,7 @@ async function renderAdminDashboard() {
     S.adminRealCount = d.realCount || 0;
     S.adminTestCount = d.testCount || 0;
     S._adminBrevChaps = d.brevChapitresDisponibles || [];  // @51 Brevet
+    if (d.allChapsByLevel) S._adminChapsByLevel = d.allChapsByLevel;
     _renderAdminCards();
   } catch (e) {
     c.innerHTML = '<div class="text-center p-8 text-rose-500 font-semibold">❌ Erreur réseau — vérifie ta connexion.</div>';
@@ -6147,8 +6178,158 @@ function _buildModalHTML(st) {
       return hb;
     })() : '') +
 
+    // ── Section Révision (toutes années) ─────────────────
+    (function() {
+      var allChaps = S._adminChapsByLevel || {};
+      var studentNiv = st.niveau || '';
+      var levels = ['6EME', '5EME', '4EME', '3EME'].filter(function(l) { return l !== studentNiv; });
+      var currentRev = Array.isArray(st.revisionChapters) ? st.revisionChapters : [];
+
+      var hr = '<div class="mt-3 pt-3 border-t border-slate-100">';
+      hr += '<div class="flex items-center justify-between mb-2">';
+      hr += '<div class="text-xs font-black text-slate-700 uppercase tracking-wider">🔁 Ouvrir une autre année</div>';
+      if (currentRev.length > 0) {
+        hr += '<span class="text-[10px] font-black text-violet-600 bg-violet-50 border border-violet-200 px-2 py-0.5 rounded-full">' + currentRev.length + ' actif' + (currentRev.length > 1 ? 's' : '') + '</span>';
+      }
+      hr += '</div>';
+
+      if (currentRev.length > 0) {
+        hr += '<div class="text-[10px] text-violet-700 bg-violet-50 border border-violet-100 rounded-xl px-3 py-2 mb-2">';
+        hr += '<span class="font-semibold">Révisions actives : </span>';
+        hr += currentRev.map(function(rc) { return (rc.niveau || '') + ' · ' + (rc.categorie || ''); }).join(' · ');
+        hr += '</div>';
+      }
+
+      hr += '<div class="text-[10px] text-slate-500 font-semibold mb-1.5">Sélectionner l\'année à réviser :</div>';
+      hr += '<div class="flex gap-1 mb-2">';
+      levels.forEach(function(l) {
+        hr += '<button onclick="adminRevSelectLevel(\'' + st.code + '\',\'' + l + '\')" id="adm-rev-lvl-btn-' + st.code + '-' + l + '" class="flex-1 text-[11px] font-bold py-1.5 rounded-xl border transition-colors" style="background:#f8fafc;color:#64748b;border-color:#e2e8f0">' + l + '</button>';
+      });
+      hr += '</div>';
+      hr += '<div id="adm-rev-chaps-' + st.code + '" class="grid grid-cols-2 gap-1 mb-2"></div>';
+      hr += '<button onclick="publishRevision(\'' + st.code + '\')" id="btn-rev-' + st.code + '" class="btn btn-fw py-2.5 mt-1 text-sm" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;border-radius:0.75rem">🔁 Publier les révisions</button>';
+      if (currentRev.length > 0) {
+        hr += '<button onclick="clearRevision(\'' + st.code + '\')" class="adm-copy-btn mt-1.5" style="background:#475569">✕ Retirer toutes les révisions</button>';
+      }
+      hr += '</div>';
+      return hr;
+    })() +
+
     '</div>'
   );
+}
+
+// ── Sélectionner le niveau pour révision admin ────────────────
+function adminRevSelectLevel(code, level) {
+  var allChaps = S._adminChapsByLevel || {};
+  var chaps = allChaps[level] || [];
+  var container = document.getElementById('adm-rev-chaps-' + code);
+  if (!container) return;
+
+  // Highlight le bouton sélectionné
+  ['6EME', '5EME', '4EME', '3EME'].forEach(function(l) {
+    var btn = document.getElementById('adm-rev-lvl-btn-' + code + '-' + l);
+    if (!btn) return;
+    if (l === level) {
+      btn.style.background = '#ede9fe'; btn.style.color = '#5b21b6'; btn.style.borderColor = '#c4b5fd';
+    } else {
+      btn.style.background = '#f8fafc'; btn.style.color = '#64748b'; btn.style.borderColor = '#e2e8f0';
+    }
+  });
+
+  // Récupérer les révisions déjà actives pour ce student
+  var st = null;
+  for (var i = 0; i < S.adminStudents.length; i++) {
+    if (S.adminStudents[i].code === code) { st = S.adminStudents[i]; break; }
+  }
+  var currentRev = st && Array.isArray(st.revisionChapters) ? st.revisionChapters : [];
+
+  if (chaps.length === 0) {
+    container.innerHTML = '<div class="col-span-2 text-[10px] text-slate-400 bg-slate-50 rounded-xl px-3 py-2">Aucun chapitre disponible pour ce niveau.</div>';
+    return;
+  }
+
+  var h = '';
+  chaps.forEach(function(chap) {
+    var cbId = 'adm-rev-cb-' + code + '-' + chap.categorie.replace(/[^a-z0-9]/gi, '_');
+    var isCurrent = currentRev.some(function(rc) { return rc.categorie === chap.categorie && rc.niveau === level; });
+    h += '<label class="adm-brev-cb' + (isCurrent ? ' sel' : '') + '" id="adm-rev-lbl-' + cbId + '">';
+    h += '<input type="checkbox" id="' + cbId + '" data-niveau="' + level + '" data-categorie="' + chap.categorie + '" ' + (isCurrent ? 'checked' : '') + ' onchange="(function(el){var l=document.getElementById(\'adm-rev-lbl-' + cbId + '\');if(l)l.className=\'adm-brev-cb\'+(el.checked?\' sel\':\'\');})(this)">';
+    h += '<span>' + (chap.icone || '') + ' ' + chap.categorie + '</span></label>';
+  });
+  container.innerHTML = h;
+}
+
+// ── Publier les révisions (admin) ─────────────────────────────
+async function publishRevision(code) {
+  var container = document.getElementById('adm-rev-chaps-' + code);
+  var chapters = [];
+  if (container) {
+    container.querySelectorAll('input[type=checkbox]:checked').forEach(function(cb) {
+      var niv = cb.getAttribute('data-niveau');
+      var cat = cb.getAttribute('data-categorie');
+      if (niv && cat) chapters.push({ niveau: niv, categorie: cat });
+    });
+  }
+
+  if (chapters.length === 0) {
+    showT('Coche au moins un chapitre de révision', 3000, '⚠️'); return;
+  }
+
+  var btn = document.getElementById('btn-rev-' + code);
+  if (btn) { btn.innerHTML = '<span class="ld"></span> Publication...'; btn.disabled = true; }
+
+  try {
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({
+      action: 'publish_admin_revision',
+      adminCode: S.prof.code,
+      targetCode: code,
+      chapters: chapters
+    })});
+    var d = await r.json();
+    if (d.status === 'success') {
+      showT('🔁 Révisions publiées ! L\'élève les verra à son prochain login.', 4500, '✅');
+      for (var i = 0; i < S.adminStudents.length; i++) {
+        if (S.adminStudents[i].code === code) {
+          S.adminStudents[i].revisionChapters = chapters;
+          break;
+        }
+      }
+      closeStudentModal();
+      _renderAdminCards();
+    } else {
+      showT('Erreur : ' + (d.message || 'inconnue'), 4000, '❌');
+      if (btn) { btn.innerHTML = '🔁 Publier les révisions'; btn.disabled = false; }
+    }
+  } catch(e) {
+    showT('Erreur réseau', 3000, '❌');
+    if (btn) { btn.innerHTML = '🔁 Publier les révisions'; btn.disabled = false; }
+  }
+}
+
+// ── Retirer toutes les révisions (admin) ─────────────────────
+async function clearRevision(code) {
+  if (!confirm('Retirer tous les chapitres de révision de cet élève ?')) return;
+  try {
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({
+      action: 'publish_admin_revision',
+      adminCode: S.prof.code,
+      targetCode: code,
+      chapters: []
+    })});
+    var d = await r.json();
+    if (d.status === 'success') {
+      showT('✕ Révisions retirées.', 3000, '✅');
+      for (var i = 0; i < S.adminStudents.length; i++) {
+        if (S.adminStudents[i].code === code) {
+          S.adminStudents[i].revisionChapters = [];
+          break;
+        }
+      }
+      closeStudentModal();
+      _renderAdminCards();
+    }
+  } catch(e) { showT('Erreur réseau', 3000, '❌'); }
 }
 
 // ── Publier un brevet pour un élève (admin) ───────────────────
