@@ -114,11 +114,11 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @56
+### Actions GAS — état @59
 
 | Action | Description | Statut |
 |---|---|---|
-| `register` | Inscription élève. TrialStart = TODAY, email J+0 auto | ✅ |
+| `register` | Inscription élève. TrialStart = TODAY, email J+0 auto (si alias Gmail opérationnel) | ✅ |
 | `login` | Connexion. Retourne trial, boostExosDone, pendingBrevet, nextChapter, nextBoostTopic | ✅ |
 | `save_score` | Sauvegarde réponse. MAJ Progress + rebuildSuivi + writeToHistorique + ExosDone si BOOST | ✅ |
 | `save_boost` | Sauvegarde fin de boost. ExosDone + rebuildSuivi | ✅ |
@@ -134,9 +134,10 @@ function doPost(e) {
 | `generate_revision` | Révision niveau inférieur — UI désactivé | ✅ |
 | `submit_feedback` | Feedback élève → onglet Insights | ✅ |
 | `generateMorningReport` | Rapport matin 7h (génération IA désactivée) | ✅ |
-| `get_admin_overview` | Vue admin complète (boostHistory avec motProf, chapitresDetail, brevets). boostPendingContent alimenté depuis col S si élève n'a pas encore récupéré le boost | ✅ |
+| `get_admin_overview` | Vue admin complète. Retourne `email` + `j0Sent` + `emailsDue` + `secondaryActions` + `category` (capitale/secondaire/ras) + `trialDays` + `inactivityDays` + `neverStarted` par élève. boostPendingContent alimenté depuis col S si élève n'a pas encore récupéré le boost | ✅ |
 | `publish_admin_boost` | Admin publie boost (→Nouveau Boost col 18) + rebuildSuivi | ✅ |
 | `publish_admin_chapter` | Admin publie chapitre (→Nouveau Ch libre) + rebuildSuivi | ✅ |
+| `log_manual_email` | Admin — logue un email envoyé manuellement dans l'onglet Emails. Params : `adminCode`, `userEmail`, `type` (ex: `J+0-manuel`). Vérifie admin, récupère prénom, appelle `_logEmail` | ✅ |
 | `check_trial_status` | Vérifie trial actif { trialActive, daysLeft, isPremium } | ✅ |
 | `import_chapters` | One-shot admin — pousse chapitres dans Curriculum_Officiel + DiagnosticExos | ✅ |
 | `send_test_email` | Admin — envoie email J+0 test | ✅ |
@@ -280,4 +281,6 @@ Scripts archivés dans `scripts_archive/`.
 - Flow landing CTA complet
 - Post-boost : confettis + auto-redirect 5s
 - Modales admin contextuelles (BOOST/CHAPITRE séparés)
-- Indicateurs emails J0/J3/J7 dans modal admin
+- Indicateurs emails J0/J3/J5/J7 smart dans modal admin (vert=envoyé, rose=DUE, gris=pas encore)
+- Onglet "📧 Suivi" : élèves avec actions secondaires (emails dus, inactifs, jamais commencés)
+- Messages élèves : streak break alert, boost en cours nudge, chapitre maîtrisé, milestones streak

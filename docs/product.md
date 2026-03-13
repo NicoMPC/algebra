@@ -86,13 +86,23 @@ Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse 
 
 ## Emails automatiques
 
-| Email | Déclencheur | Contenu |
-|---|---|---|
-| J+0 | `register()` | Bienvenue + code accès + premiers pas |
-| J+3 | `triggerDailyMarketing` | Encouragement + rappel boost |
-| J+7 | `triggerDailyMarketing` | Trial expire → lien Stripe direct |
+| Email | Déclencheur | Destinataire | Contenu |
+|---|---|---|---|
+| J+0 | `register()` auto OU manuel admin (voir ci-dessous) | Parent | Bienvenue, 3 étapes (diagnostic → boost → progression), CTA matheux.fr, rappel 7j gratuit sans CB |
+| J+3 | `triggerDailyMarketing` | Parent | Encouragement + rappel boost quotidien |
+| J+7 | `triggerDailyMarketing` | Parent | Trial expire → lien Stripe direct |
+| Reset MDP | `sendPasswordReset()` | Élève/parent | Code 6 chiffres, expire 15 min |
 
-Envoyés depuis `no-reply@matheux.fr` via GmailApp.
+**Architecture email :**
+- Expéditeur : `no-reply@matheux.fr` (alias GmailApp via seopourvous@gmail.com)
+- Reply-to : `nicolas@matheux.fr` (les parents qui répondent arrivent sur la boîte pro)
+- Contact public affiché sur le site : `contact@matheux.fr`
+- Rapport matin Nicolas : `FOUNDER_EMAIL = 'seopourvous@gmail.com'` (à migrer vers `nicolas@matheux.fr` plus tard)
+
+**Ton des emails :** vouvoiement — le destinataire est le **parent**. Le prénom utilisé est celui de **l'élève**. Ton rassurant de prof humain, pas startup.
+
+**Mail de bienvenue manuel (fallback) :**
+GmailApp ne peut pas envoyer depuis `no-reply@matheux.fr` sans alias Gmail fonctionnel. Si J+0 auto échoue ou n'a pas été envoyé, le modal élève affiche un bouton `📧 Copier mail de bienvenue` → copie le texte complet prêt à coller dans Gmail (champ À, Objet, corps). Un second bouton `✓ Marquer comme envoyé` appelle `log_manual_email` GAS → insère une ligne `J+0-manuel / envoyé` dans l'onglet Emails. L'indicateur J0 passe de ⏳ à ✅ instantanément. Le bouton n'apparaît que si aucun log J+0/J+0-manuel n'existe pour cet élève.
 
 ---
 
@@ -135,7 +145,8 @@ Triple-clic sur le logo → Admin Panel (comptes `IsAdmin: true` uniquement).
 - Scores par chapitre triés : terminés → en cours → diagnostiqués
 - Statut boost : ⏳ En attente → 🔄 En cours X/5 → ✓ Terminé
 - Métriques : ⏱ temps moyen, 💡 indices, 🧮 % formule
-- 📧 Indicateurs emails J0/J3/J7
+- 📧 Indicateurs emails J0/J3/J7 (J0 réel depuis onglet Emails — ✅ si envoyé, ⏳ si non)
+- 📧 Bouton "Copier mail de bienvenue" si J0 pas encore envoyé + "Marquer comme envoyé"
 - Actions : publier boost, publier chapitre, publier brevet blanc (3EME), copier prompt Claude
 
 ### Vues élève

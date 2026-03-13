@@ -14,9 +14,11 @@
 | Couverture programme | **~100%** — 44 chapitres (880 exos curriculum + 88 diag + 440 boost + 144 brevet) |
 | Juridique | Complet (5 pages + consentement parental + RGPD) |
 | Paiement | ⏳ Lien Stripe TEST actif — passer en PROD |
-| Emails auto | ✅ J+0 auto, J+3/J+7 code prêt (trigger à activer) |
+| Emails auto | ✅ J+0 auto + fallback manuel admin, J+3/J+5/J+7 code prêt (trigger à activer) |
 | Analytics | ✅ GA4 RGPD-compliant |
 | Limite bêta | 50 vrais élèves (IsTest=0) |
+| Messages élèves | ✅ Streak alert, boost en cours, chapitre maîtrisé, milestones 3/7j |
+| Admin smart | ✅ GAS @59 — catégories capitale/secondaire, onglet Suivi, copie emails |
 
 ---
 
@@ -70,6 +72,10 @@
 - [x] Fix admin : actions mises à jour instantanément
 - [x] Fix mot du prof affiché élève au login (S._motProfScreen @56)
 - [x] Fix aperçu boost admin structuré (motProf + insight + questions, col S avant login élève)
+- [x] Mail de bienvenue manuel : bouton "Copier" + "Marquer comme envoyé" dans modal élève si J0 absent (`log_manual_email` GAS, indicateur J0 temps réel depuis onglet Emails)
+- [x] Admin smart @59 : catégories capitale/secondaire/ras, onglet "📧 Suivi", emailsDue J+3/J+5/J+7, copie + marquage depuis modal
+- [x] Messages élèves : streak break alert, boost en cours nudge, chapitre maîtrisé, milestones streak 3j/7j
+- [x] Email J+5 "Encore 2 jours" dans séquence marketing
 - [ ] Validation inputs côté GAS (format email, longueur)
 - [ ] Rate limiting basique dans doPost
 
@@ -143,7 +149,7 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 ## Checklist "Prêt pour 50 élèves"
 
 ### Infrastructure
-- [x] GAS @56 stable — 26 actions opérationnelles
+- [x] GAS @57 stable — 27 actions opérationnelles
 - [x] Google Sheet prod
 - [ ] Validation inputs GAS
 - [ ] Rate limiting doPost
