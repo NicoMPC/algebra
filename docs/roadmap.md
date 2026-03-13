@@ -41,6 +41,7 @@
 - [x] DiagnosticExos : 58 exos (29 chap × 2)
 - [x] Bugs T1→T7 post-tests utilisateur tous corrigés
 - [x] UX Progression & Mobile (Progression, fragiles, mobile)
+- [x] Harmonisation `_doLoginAndLaunch` / `_flowGuestRegister` — fix onboarding fantôme + double diagnostic (13 mars)
 
 ---
 

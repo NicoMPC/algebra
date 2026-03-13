@@ -177,14 +177,27 @@ Email sujet `[Matheux ⚡ ACTION]` si fragiles/bloquées.
 
 ### Inscription → premier boost
 
+**Flux A — Trial Flow (parcours principal, CTA landing)**
 ```
-1. Parent remplit landing (niveau + chapitres)
-2. Quiz calibrage inline (4-10 questions)
-3. Formulaire prénom + email → register() GAS
+1. Choix niveau (6EME→3EME) → sélection chapitres déjà vus
+2. Quiz diagnostic inline guest (4-10 questions, AVANT inscription)
+3. Formulaire prénom + email + mdp → register() GAS
 4. GAS : crée Users + email J+0 auto
-5. Auto-login → onboarding 3 slides
-6. boostFromDiag() en background → DailyBoosts
-7. Élève voit son premier boost
+5. Scores CALIBRAGE sauvés fire-and-forget
+6. calDone=true localStorage + suppression CALIBRAGE des cats
+7. boostFromDiag() en background → DailyBoosts
+8. Onboarding guest (3 slides : bienvenue + boost prêt + action)
+9. render() → élève voit son premier boost
+```
+Deux variantes convergentes : `_flowGuestRegister()` (guest complet) et `_doLoginAndLaunch()` (via `flowRegister()`). Les deux suivent la même logique quand `_flowDiagDone=true`.
+
+**Flux B — Auth Screen (modale connexion/inscription, secondaire)**
+```
+1. Inscription (prénom + niveau + email + mdp + consentement)
+2. Sélection chapitres → finalizeOnboarding()
+3. generate_diagnostic API + login silencieux
+4. Onboarding 3 slides → startCal() → diagnostic DANS l'app
+5. chkComp('CALIBRAGE') → boostFromDiag() → boost prêt
 ```
 
 ### Exercice → suivi admin
