@@ -43,6 +43,20 @@
 | 0 | **Fixes bugs audit** (BUG-01 à BUG-12 dans [test_debug.md](test_debug.md)) | ✅ Corrigés @60 | 🟢 |
 | 1 | Validation inputs GAS (format email, longueur champs) | ❌ À faire | 🟢 |
 | 2 | Rate limiting basique dans doPost | ❌ À faire | 🟢 |
+| 3 | **BUG-AUDIT-01** : `Systèmes_Équations 3EME exo#16` — `"a": "4 lapins"` absent des options numériques | ❌ À faire | 🔴 |
+| 4 | **BUG-AUDIT-02/03** : Boost `Transformations 5EME` + `Homothétie 4EME` — tiret unicode `−` vs `-` (réponse hors options) | ❌ À faire | 🔴 |
+| 5 | **BUG-AUDIT-04** : 5 doublons Boost/Curriculum (`Fonctions_Linéaires 4EME`, `Notation_Scientifique 3EME`, `Sections_Solides 4EME` ×2, `Puissances_10 6EME`) | ❌ À faire | 🟡 |
+| 6 | **BUG-AUDIT-05** : Vérifier compatibilité `diff` "easy/medium/hard" BrevetExos vs `index.html` (le code attend 1/2 selon database.md) | ❌ À faire | 🟡 |
+
+### Améliorations exercices — sprints suivants
+
+> Détail complet : [docs/audit-exercices-2026-03.md](audit-exercices-2026-03.md) — Score global 4,0/5 → 4,5/5 après corrections.
+
+| Priorité | Action | Chapitres concernés | Volume |
+|---|---|---|---|
+| 1 | **AMÉLIO-01** : Réécrire indices révélateurs (guidants sans dévoiler) | Homothétie 4EME (17), Agrandissement_Réduction 6EME (15), Conversions_Unités 6EME (15), Racines_Carrées 5EME (10), Triangles_Semblables 5EME (10), Fonctions 3EME (12), Inéquations 3EME (8) | ~103 exos |
+| 2 | **AMÉLIO-02** : Ajouter 3ème indice aux exos à 1 seul indice | Fonctions 3EME, Puissances 5EME, Calcul_Littéral 5EME | ~20 exos |
+| 3 | **AMÉLIO-03** : Contextualisation (passer de 2 % à 20 % d'exos en situation réelle) | Priorité 5EME + 3EME | long terme |
 
 ---
 
@@ -106,7 +120,7 @@
 - [x] Waitlist + limite bêta 50 familles
 - [ ] Email J+0 — refonte template vouvoiement parent + replyTo nicolas@matheux.fr (brief dans product.md § Emails automatiques)
 - [ ] replyTo: nicolas@matheux.fr sur J+3, J+7 et reset MDP
-- [x] Overlay trial → Stripe direct 9,99€/mois (lien TEST)
+- [x] Overlay trial → Stripe direct 19,99€/mois (lien TEST)
 - [x] Email J+7 → lien Stripe
 - [ ] **Créer alias `no-reply@matheux.fr`** (GmailApp) + `contact@matheux.fr` (public) — **⚠️ Manuel hébergeur**
 - [ ] **Passer Stripe TEST → PROD** (3 occurrences) — **⚠️ Manuel après lien Stripe PROD**
@@ -126,10 +140,10 @@
 ## BLOC 5 — Automatisation & scale 🔵
 
 - [x] Mode Brevet Blanc complet (BrevetExos, quiz, résultats, admin publie)
-- [x] Mode Révision (code conservé, UI désactivé)
 - [x] Feedback élève → Insights
 - [x] 5 chapitres prioritaires en prod
 - [x] **Mode Révision** — admin ouvre chapitres d'une autre année depuis la fiche élève → dashboard élève + badge 🔁 + toast notification (13 mars 2026)
+- [x] **Brouillon contextuel + Calculette** — symboles adaptés par chapitre/niveau, onglets Brouillon|Calculette, sin/cos/tan si géo/trigo, copie vers brouillon (13 mars 2026)
 - [ ] Agent analyse lacunes quotidien automatique
 - [ ] Agent génération boost automatique
 - [ ] Agent rapport parents (email hebdo)

@@ -95,6 +95,7 @@ const S = {
 - **Mastery ring** : cercle SVG de progression par chapitre
 - **Confettis** : animation post-boost terminé
 - **Messages** : ton ado "Game Boy Chill" (EASY×7 variantes, HARD×3)
+- **Brouillon contextuel** : tiroir bas-de-page, 2 onglets — Brouillon (symboles adaptés au chapitre via `getContextSymbols(niv, cat)`) + Calculette (sin/cos/tan si géo/trigo, copie vers brouillon via `calcCopyToText()`)
 
 ---
 
@@ -268,7 +269,7 @@ Scripts archivés dans `scripts_archive/`.
 - CSS/UI complet, mobile-first, animations
 - Landing page : hero direct, 3 faits, prix seul, CTA final
 - Mode Brevet Blanc : onglet 🎓 Brevet (3EME), 120 exos, quiz sans indices, résultats détaillés
-- Mode Révision : code conservé, UI désactivé
+- Mode Révision : admin assigne chapitres d'une autre année → badge 🔁 + toast élève (col M `RevisionChapters`)
 - Feedback non-intrusif : bouton "Signaler" → Insights
 - Auth register + login + auto-login silencieux
 - Scores enrichis : temps, wrongOpt, indices, formule

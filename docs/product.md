@@ -9,7 +9,7 @@
 
 **Matheux est un outil de soutien scolaire en maths pour les collégiens (6ème → 3ème), qui détecte automatiquement les lacunes d'un élève et lui prépare des exercices personnalisés chaque jour.**
 
-Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse les résultats, prépare les boosts quotidiens, et assigne les chapitres suivants. Objectif : accompagnement quasi-individuel à 9,99 €/mois — 25× moins cher qu'un cours particulier.
+Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse les résultats, prépare les boosts quotidiens, et assigne les chapitres suivants. Objectif : accompagnement quasi-individuel à 19,99 €/mois — 25× moins cher qu'un cours particulier.
 
 ---
 
@@ -56,7 +56,7 @@ Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse 
 
 ### Conversion (J7)
 1. Badge J-X visible dès J5
-2. J7 : overlay bloquant → "9,99 €/mois pour continuer"
+2. J7 : overlay bloquant → "19,99 €/mois pour continuer"
 3. Email J+7 avec lien Stripe direct
 4. Bouton "Voir ma progression quand même" (ferme l'overlay)
 
@@ -66,7 +66,7 @@ Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse 
 
 | Élément | Détail |
 |---|---|
-| Prix | 9,99 €/mois |
+| Prix | 19,99 €/mois |
 | Essai | 7 jours gratuits, accès complet, sans carte bancaire |
 | Paiement | Stripe — **lien TEST actif, à passer en PROD manuellement** (3 occurrences : `index.html`, `backend.js`, `cgv.html`) |
 | Cible | 50 clients = ~500 € MRR |
@@ -112,7 +112,7 @@ GmailApp ne peut pas envoyer depuis `no-reply@matheux.fr` sans alias Gmail fonct
 5 pages légales en production :
 - `mentions-legales.html` — SIRET 837 763 713 00059
 - `cgu.html` — mineurs, essai 7j, résiliation, clause bêta
-- `cgv.html` — 9,99€/mois, droit de rétractation 14j
+- `cgv.html` — 19,99€/mois, droit de rétractation 14j
 - `politique-confidentialite.html` — RGPD renforcé mineurs
 - `politique-cookies.html` — localStorage + GA4 consentement explicite
 

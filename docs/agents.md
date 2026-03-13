@@ -121,7 +121,7 @@ Ne touche pas au JS applicatif
 
 Ton : “prof de maths bienveillant”, pas startup tech
 
-Prix → cohérence avec l’offre (9,99 €/mois)
+Prix → cohérence avec l’offre (19,99 €/mois)
 
 Emails : utiliser templates existants backend.js (sendEmail)
 
@@ -333,7 +333,7 @@ Alertes dette UX
 
 Règles spécifiques
 
-Priorité : 50 élèves payants, 9,99 €/mois
+Priorité : 50 élèves payants, 19,99 €/mois
 
 Pas d’over-engineering
 
