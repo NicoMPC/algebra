@@ -145,6 +145,20 @@ _ARCHIVE_Queue / _ARCHIVE_Prerequisites / _ARCHIVE_Rapports / _ARCHIVE_Pending_E
 - 10 exercices `lvl:1` (fondamentaux) + 10 `lvl:2` (avancés) par chapitre
 - 29 chapitres × 20 exos = **580 exercices** en prod
 
+### BoostExos
+
+| Col | Nom | Type | Description |
+|---|---|---|---|
+| A | Niveau | String | `6EME` / `5EME` / `4EME` / `3EME` |
+| B | Categorie | String | Identifiant catégorie (même noms que Curriculum_Officiel) |
+| C | ExosJSON | String | JSON tableau de 10 exercices (5 lvl1 + 5 lvl2) |
+
+Pool d'exercices **dédiée aux boosts quotidiens**, séparée de Curriculum_Officiel pour éviter que les exercices de boost polluent la progression des chapitres. Même format d'exercice, mêmes compétences, mais nombres et wording différents.
+
+29 chapitres × 10 exos = **290 exercices boost** en prod.
+
+**Fallback** : si l'onglet BoostExos est absent ou vide pour un niveau, `generateDailyBoost()` utilise Curriculum_Officiel automatiquement.
+
 ### DiagnosticExos
 
 | Col | Nom | Type | Description |
@@ -222,6 +236,7 @@ Users (Code) ──┬── Scores (Code)
                └── 👁 Suivi (Code en col T)
 
 Curriculum_Officiel (Niveau, Categorie) ── DiagnosticExos (Niveau, Categorie)
+BoostExos (Niveau, Categorie) ── même structure que Curriculum (pool séparée)
 BrevetExos (Niveau, Categorie) ── standalone (pas de FK vers Curriculum)
 Insights ── standalone (feedback libre)
 📧 Emails ── standalone (archive)
@@ -239,4 +254,4 @@ Rapports ── standalone (archive)
 | 4EME | Puissances, Fractions, Proportionnalité, Calcul_Littéral, Équations, Pythagore, Fonctions_lineaires |
 | 3EME | Calcul_Littéral, Équations, Fonctions, Théorème_de_Thalès, Trigonométrie, Statistiques, Probabilités, Racines_carrees |
 
-Total : **29 chapitres × 20 exos = 580 exercices** + **29 × 2 = 58 diagnostics** + **15 × 8 = 120 brevet**
+Total : **29 chapitres × 20 exos = 580 exercices** + **29 × 10 = 290 boost** + **29 × 2 = 58 diagnostics** + **15 × 8 = 120 brevet**

@@ -40,7 +40,8 @@ var SH = {
   HISTORIQUE:     '📋 Historique',
   EMAILS:         '📧 Emails',
   BREVET_EXOS:    'BrevetExos',
-  BREVET_RESULTS: 'BrevetResults'
+  BREVET_RESULTS: 'BrevetResults',
+  BOOST_EXOS:     'BoostExos'
 };
 
 // ════════════════════════════════════════════════════════════
@@ -511,8 +512,7 @@ function saveScore(p) {
   ]);
 
   // Mise à jour score de confiance + streak (best-effort, ne bloque pas la réponse)
-  // Exclure BOOST et CALIBRAGE : leurs exos sont remappés vers la catégorie d'origine
-  // côté client, ce qui fausserait le compteur nbExos du chapitre dans Progress.
+  // Exclure BOOST et CALIBRAGE : pool séparé, ne doit pas impacter Progress chapitres.
   var streakAlert = false;
   var source = String(p.source || p.categorie || '');
   if (source !== 'BOOST' && source !== 'CALIBRAGE') {
@@ -746,13 +746,19 @@ function generateDailyBoost(p) {
     return { status: 'error', message: 'code et level (6EME/5EME/4EME/3EME) requis.' };
   }
 
-  // Récupère tout le curriculum du niveau
-  var curriculum = getRows(SH.CURRICULUM).filter(function(r) {
+  // Récupère le pool d'exercices boost dédié (fallback → Curriculum_Officiel)
+  var boostPool = [];
+  if (sheetExists(SH.BOOST_EXOS)) {
+    boostPool = getRows(SH.BOOST_EXOS).filter(function(r) {
+      return r['Niveau'] && r['Niveau'].toString().toUpperCase() === level;
+    });
+  }
+  var curriculum = boostPool.length > 0 ? boostPool : getRows(SH.CURRICULUM).filter(function(r) {
     return r['Niveau'] && r['Niveau'].toString().toUpperCase() === level;
   });
 
   if (curriculum.length === 0) {
-    return { status: 'error', message: 'Curriculum_Officiel vide pour le niveau ' + level + '.' };
+    return { status: 'error', message: 'Aucun exercice disponible pour le niveau ' + level + '.' };
   }
 
   // ── P5 : Filtrer strictement sur les chapitres diagnostiqués de l'élève ──
@@ -901,7 +907,7 @@ function generateDailyBoost(p) {
   }
 
   if (pool.length === 0) {
-    return { status: 'error', message: 'Aucun exercice disponible dans Curriculum_Officiel.' };
+    return { status: 'error', message: 'Aucun exercice disponible pour le boost.' };
   }
 
   var selected = shuffle(pool).slice(0, 5);

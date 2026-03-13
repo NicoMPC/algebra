@@ -26,7 +26,7 @@ NAVIGATEUR (index.html)              GOOGLE APPS SCRIPT (backend.js)
 |---|---|---|---|
 | Frontend | HTML + CSS vars + Tailwind CDN + JS vanilla | `index.html` | ~5900 lignes |
 | Backend | Google Apps Script (V8) | `backend.js` | ~4200 lignes |
-| Base de données | Google Sheets | — | 12 onglets actifs |
+| Base de données | Google Sheets | — | 13 onglets actifs |
 | Hébergement frontend | GitHub Pages | `matheux.fr` | Auto-deploy sur push |
 | Hébergement backend | Google Apps Script Web App | URL fixe via deployment ID | — |
 | Auth | SHA-256 client-side | localStorage `boost_v23` | `email + '::' + password + '::AB22'` |
@@ -122,7 +122,7 @@ function doPost(e) {
 | `save_score` | Sauvegarde réponse. MAJ Progress + rebuildSuivi + writeToHistorique + ExosDone si BOOST | ✅ |
 | `save_boost` | Sauvegarde fin de boost. ExosDone + rebuildSuivi | ✅ |
 | `generate_diagnostic` | Génère diagnostic. Mode guest (sans code) pour landing flow | ✅ |
-| `generate_daily_boost` | Génère boost quotidien filtré sur chapitres diagnostiqués | ✅ |
+| `generate_daily_boost` | Génère boost quotidien depuis BoostExos (fallback Curriculum_Officiel), filtré sur chapitres diagnostiqués | ✅ |
 | `generate_remediation` | ⏸️ Désactivé — return success immédiat | ⏸️ |
 | `get_progress` | Récupère progression par chapitre | ✅ |
 | `detect_fragile_prereqs` | Détection prérequis fragiles (archivé → false) | ✅ |
@@ -236,6 +236,7 @@ Commandes de déploiement : voir [claude.md](claude.md#déploiement).
 | `cleanup_prod.py` | Nettoyage complet base prod | ⚠️ IRRÉVERSIBLE |
 | `fix_lucas_ines.py` | Ajuste profils démo spécifiques | Non |
 | `import_brevet_exos.py` | Pousse brevet_exos_3eme.json → BrevetExos | One-shot |
+| `push_boost_exos.py` | Pousse boost_exos.json → BoostExos (290 exos) | One-shot |
 
 Scripts archivés dans `scripts_archive/`.
 
