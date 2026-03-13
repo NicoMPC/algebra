@@ -623,15 +623,18 @@ function saveBoost(p) {
 //  correspondre EXACTEMENT aux valeurs data-chap générées par
 //  le frontend (voir CHAPS_BY_LEVEL dans index.html).
 //
-//  Clés attendues par niveau :
+//  Clés attendues par niveau (29 chapitres — màj 13 mars 2026) :
 //  6EME : Nombres_entiers, Fractions, Proportionnalité,
-//          Géométrie, PérimètresAires, Angles
+//          Géométrie, Périmètres_Aires, Angles,
+//          Nombres_Décimaux, Statistiques_6ème
 //  5EME : Fractions, Nombres_relatifs, Proportionnalité,
 //          Puissances, Pythagore, Calcul_Littéral
 //  4EME : Fractions, Puissances, Calcul_Littéral,
-//          Équations, Pythagore, Proportionnalité
+//          Équations, Pythagore, Proportionnalité,
+//          Fonctions_Linéaires
 //  3EME : Calcul_Littéral, Équations, Fonctions,
-//          Théorème_de_Thalès, Trigonométrie, Statistiques
+//          Théorème_de_Thalès, Trigonométrie, Statistiques,
+//          Probabilités, Racines_Carrées
 //
 //  ExosJSON par ligne :
 //  [ { "q":"...", "a":"...", "options":[...],
