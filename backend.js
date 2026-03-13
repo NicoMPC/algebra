@@ -11,7 +11,7 @@
 //    get_admin_overview · publish_admin_boost · publish_admin_chapter
 //
 //  Onglets Google Sheet requis :
-//    Users · Scores · Curriculum_Officiel · DailyBoosts
+//    Users · Scores · Curriculum_Officiel · BoostExos · DailyBoosts
 //    DiagnosticExos · RemediationChapters · Progress
 //    👁 Suivi · 📋 Historique
 //
