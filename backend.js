@@ -789,8 +789,10 @@ function generateDailyBoost(p) {
   var insight = '';
 
   if (fromDiag) {
-    // ── Boost post-diagnostic : tirage varié priorité chapitres faibles
-    // Trier le curriculum par score croissant (chapitres faibles d'abord)
+    // ── Boost post-diagnostic : ciblé sur les chapitres sélectionnés par l'élève
+    // Le filtre P5 (diagnosedChaps) restreint déjà aux chapitres diagnostiqués
+    // = les chapitres choisis dans le flow landing (via selectedChapters)
+    // Trier par score croissant (chapitres faibles d'abord) pour prioriser le tirage
     var sortedCurriculum = curriculum.slice().sort(function(a, b) {
       var sA = weaknessMap[String(a['Categorie'])] || 0;
       var sB = weaknessMap[String(b['Categorie'])] || 0;
@@ -806,7 +808,15 @@ function generateDailyBoost(p) {
         pool.push(Object.assign({}, ex, { _cat: cat }));
       });
     });
-    insight = 'Programme personnalisé basé sur ton diagnostic. Ces 5 exercices couvrent tes points clés du niveau ' + level.replace('EME', 'ème') + '.';
+    var diagCatLabels = [];
+    sortedCurriculum.forEach(function(r) {
+      var c = String(r['Categorie']);
+      if (diagCatLabels.indexOf(c) === -1) diagCatLabels.push(c);
+    });
+    var catLabelsFromDiag = diagCatLabels.slice(0, 2).map(function(c) { return c.toLowerCase().replace(/_/g, ' '); });
+    insight = catLabelsFromDiag.length === 1
+      ? 'Ton diagnostic révèle des lacunes en "' + catLabelsFromDiag[0] + '". Ces 5 exercices vont consolider ce point.'
+      : 'Ton diagnostic révèle des lacunes en "' + catLabelsFromDiag.join('" et "') + '". On s\'y attaque.';
 
   } else {
     // ── Boost quotidien : cible les chapitres avec erreurs du jour

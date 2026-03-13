@@ -183,8 +183,7 @@ L'IA peut poser des questions pour clarifier, mais tout doit passer par ce workf
 |---|---|
 | GAS URL | `https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec` |
 | Deployment ID | `AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF` |
-| Sheet ID (prod) | `1zLBajKVL8FUzy7aV2Myi9gYFEFJjnALkLAg0hbicuDk` |
-| Sheet ID (Python/staging) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
+| Sheet ID (prod) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
 | GitHub | `https://github.com/NicoMPC/algebra` |
 | Stripe (TEST) | `https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00` |
 | GA4 | `G-7R2DW4585Y` |

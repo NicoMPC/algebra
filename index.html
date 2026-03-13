@@ -1777,10 +1777,10 @@ function _flowStartDiag() {
       '</div>';
   }
 
-  // Appel GAS : selectedChapters:[] = TOUS les chapitres du niveau (8-12 exos)
+  // Appel GAS : envoyer les chapitres sélectionnés par l'élève
   fetch(SU, {
     method: 'POST',
-    body: JSON.stringify({ action: 'generate_diagnostic', level: _flowLevel, selectedChapters: [] })
+    body: JSON.stringify({ action: 'generate_diagnostic', level: _flowLevel, selectedChapters: _flowChaps })
   })
   .then(function(r) { return r.json(); })
   .then(function(d) {

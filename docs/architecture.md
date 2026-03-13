@@ -18,7 +18,7 @@ NAVIGATEUR (index.html)              GOOGLE APPS SCRIPT (backend.js)
         │  { status: 'success', ... }            │
         │                                        │
   localStorage                             Google Sheets (prod)
-  - boost_v23: {email, hash}        ID: 1zLBajKVL8FUzy7aV2Myi9gYFEFJjnALkLAg0hbicuDk
+  - boost_v23: {email, hash}        ID: 1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4
   - boost_loc_v23: {stk, last}
 ```
 
@@ -114,7 +114,7 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @52
+### Actions GAS — état @53
 
 | Action | Description | Statut |
 |---|---|---|
@@ -123,7 +123,7 @@ function doPost(e) {
 | `save_score` | Sauvegarde réponse. MAJ Progress + rebuildSuivi + writeToHistorique + ExosDone si BOOST | ✅ |
 | `save_boost` | Sauvegarde fin de boost. ExosDone + rebuildSuivi | ✅ |
 | `generate_diagnostic` | Génère diagnostic. Mode guest (sans code) pour landing flow | ✅ |
-| `generate_daily_boost` | Génère boost quotidien depuis BoostExos (fallback Curriculum_Officiel), filtré sur chapitres diagnostiqués | ✅ |
+| `generate_daily_boost` | Génère boost quotidien depuis BoostExos (fallback Curriculum_Officiel), ciblé sur chapitres sélectionnés par l'élève | ✅ |
 | `generate_remediation` | ⏸️ Désactivé — return success immédiat | ⏸️ |
 | `get_progress` | Récupère progression par chapitre | ✅ |
 | `detect_fragile_prereqs` | Détection prérequis fragiles (archivé → false) | ✅ |

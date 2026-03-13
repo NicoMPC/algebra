@@ -9,8 +9,7 @@
 
 | Environnement | Sheet ID |
 |---|---|
-| **Production** (GAS) | `1zLBajKVL8FUzy7aV2Myi9gYFEFJjnALkLAg0hbicuDk` |
-| **Staging** (Python) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
+| **Production** (GAS + Python) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
 
 Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 
@@ -254,4 +253,6 @@ Rapports ── standalone (archive)
 | 4EME | Puissances, Fractions, Proportionnalité, Calcul_Littéral, Équations, Pythagore, Fonctions_lineaires |
 | 3EME | Calcul_Littéral, Équations, Fonctions, Théorème_de_Thalès, Trigonométrie, Statistiques, Probabilités, Racines_carrees |
 
-Total : **29 chapitres × 20 exos = 580 exercices** + **29 × 10 = 290 boost** + **29 × 2 = 58 diagnostics** + **15 × 8 = 120 brevet**
+Total : **29 chapitres × 20 exos = 580 exercices** + **29 × 10 = 290 boost (BoostExos)** + **29 × 2 = 58 diagnostics** + **15 × 8 = 120 brevet**
+
+**Flux boost auto** : diagnostic ne teste que les chapitres sélectionnés → P5 filtre BoostExos aux mêmes chapitres → boost ciblé, pas de dispersion cross-chapitre.
