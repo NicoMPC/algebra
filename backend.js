@@ -57,16 +57,17 @@ function doPost(e) {
     var p = JSON.parse(e.postData.contents);
     var res;
 
-    // Rate limiting : max 15 req/min par email sur les actions sensibles
-    if (p.action === 'register' || p.action === 'login') {
-      var rlKey   = 'rl_' + (p.email || '').toLowerCase().replace(/[^a-z0-9@._-]/g, '');
-      var cache   = CacheService.getScriptCache();
-      var count   = parseInt(cache.get(rlKey) || '0');
-      if (count >= 15) {
-        return json({ status: 'error', message: 'Trop de tentatives. Réessaie dans 1 minute.' });
-      }
-      cache.put(rlKey, String(count + 1), 60);
+    // Rate limiting global : max 60 req/min par identifiant (email ou code)
+    var rlId = (p.email || p.code || p.adminCode || 'anon').toString().toLowerCase().replace(/[^a-z0-9@._-]/g, '');
+    var rlKey   = 'rl_' + rlId;
+    var cache   = CacheService.getScriptCache();
+    var count   = parseInt(cache.get(rlKey) || '0');
+    // Actions sensibles : limite plus stricte (15/min)
+    var rlLimit = (p.action === 'register' || p.action === 'login' || p.action === 'forgot_password') ? 15 : 60;
+    if (count >= rlLimit) {
+      return json({ status: 'error', message: 'rate_limit' });
     }
+    cache.put(rlKey, String(count + 1), 60);
 
     switch (p.action) {
       case 'register':             res = register(p);            break;
@@ -104,6 +105,7 @@ function doPost(e) {
       case 'request_brevet_chapter':     res = requestBrevetChapter(p);    break;
       case 'get_brevet_chapters':        res = getBrevetChapters(p);       break;
       case 'import_brevet_exos':         res = importBrevetExos(p);        break;
+      case 'publish_admin_revision':     res = publishAdminRevision(p);    break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -468,6 +470,34 @@ function login(p) {
     try { pendingBrevet = JSON.parse(rawPendingBrev); } catch(e) {}
   }
 
+  // ── Chapitres de révision (autre année — col RevisionChapters) ────
+  var revisionChapters = [];
+  var rawRevChaps = user['RevisionChapters'] ? String(user['RevisionChapters']).trim() : '';
+  if (rawRevChaps) {
+    try {
+      var revArr = JSON.parse(rawRevChaps);
+      if (Array.isArray(revArr)) {
+        var currRowsAll = getRows(SH.CURRICULUM);
+        revArr.forEach(function(rc) {
+          var rcNiv = String(rc.niveau || '').toUpperCase();
+          var rcCat = String(rc.categorie || '');
+          for (var ri = 0; ri < currRowsAll.length; ri++) {
+            var rr = currRowsAll[ri];
+            if (String(rr['Niveau'] || '').toUpperCase() === rcNiv && String(rr['Categorie'] || '') === rcCat) {
+              revisionChapters.push({
+                niveau: rcNiv, categorie: rcCat,
+                titre: String(rr['Titre'] || rcCat),
+                icone: String(rr['Icone'] || '🔁'),
+                exos:  parseJSON(rr['ExosJSON'])
+              });
+              break;
+            }
+          }
+        });
+      }
+    } catch(e) { Logger.log('RevisionChapters parse error: ' + e); }
+  }
+
   return {
     status:             'success',
     profile:            { code: code, name: name, level: level, isAdmin: isAdmin, premium: premium, trialStart: trialStart },
@@ -482,6 +512,7 @@ function login(p) {
     nextChapter:        nextChapter,
     nextBoost:          nextBoost,
     pendingBrevet:      pendingBrevet,
+    revisionChapters:   revisionChapters,
     trial:              checkTrialStatus({ code: code })
   };
 }
@@ -501,8 +532,20 @@ function saveScore(p) {
     }
   }
 
+  // Validation inputs
+  var VALID_RESULTS = ['EASY', 'MEDIUM', 'HARD'];
+  if (VALID_RESULTS.indexOf(String(p.resultat)) === -1) {
+    return { status: 'error', message: 'Résultat invalide. Valeurs acceptées : EASY, MEDIUM, HARD.' };
+  }
+  if (String(p.code).length !== 6) {
+    return { status: 'error', message: 'Code élève invalide.' };
+  }
+  if (!isValidLevel(String(p.level || '').toUpperCase())) {
+    return { status: 'error', message: 'Niveau invalide.' };
+  }
+
   // Scores : Code | Prénom | Niveau | Chapitre | NumExo | Énoncé |
-  //          Résultat | Temps(sec) | NbIndices | FormuleVue | MauvaiseOption | Draft | Date
+  //          Résultat | Temps(sec) | NbIndices | FormuleVue | MauvaiseOption | Draft | Date | Source
   appendRow(SH.SCORES, [
     String(p.code),
     String(p.name),
@@ -516,7 +559,8 @@ function saveScore(p) {
     p.formule ? 1 : 0,
     String(p.wrongOpt || ''),
     String(p.draft    || ''),
-    today()
+    today(),
+    String(p.source   || '')  // col N — 'BOOST' / 'CALIBRAGE' / '' (curriculum)
   ]);
 
   // Mise à jour score de confiance + streak (best-effort, ne bloque pas la réponse)
@@ -609,7 +653,8 @@ function saveBoost(p) {
   }
 
   // DailyBoosts : Code | Date | BoostJSON | ExosDone
-  appendRow(SH.BOOSTS, [code, todayStr, JSON.stringify(p.boost), exosDone]);
+  // ExosDone initialisé à 0 — saveScore(source=BOOST) est la seule source de vérité
+  appendRow(SH.BOOSTS, [code, todayStr, JSON.stringify(p.boost), 0]);
   try { rebuildSuivi(code); } catch (e) {}
   return { status: 'success' };
 }
@@ -1167,7 +1212,7 @@ function updateConfidenceScore(code, level, categorie, resultat, indicesVus, exo
     var lastDate  = new Date(lastPractice);
     var todayDate = new Date(todayStr);
     var daysDiff  = Math.floor((todayDate - lastDate) / msPerDay);
-    if (daysDiff > 14) {
+    if (daysDiff > 14 && lastPractice !== todayStr) {
       score = Math.max(0, score - Math.floor((daysDiff - 14) * 0.5));
     }
   }
@@ -1232,7 +1277,7 @@ function updateConfidenceScore(code, level, categorie, resultat, indicesVus, exo
     appendRow(SH.PROGRESS, newRow);
   }
 
-  return { streakAlert: streakAlert, streak: streak, score: score };
+  return { streak: streak, score: score, streakAlert: streakAlert };
 }
 
 // ════════════════════════════════════════════════════════════
@@ -1340,14 +1385,15 @@ function rebuildSuivi(code) {
 
   var todayStr = today();
   var dates    = allScores.map(function(r) { return String(r['Date'] || ''); }).filter(Boolean).sort();
-  var lastDate = dates.length ? formatDateFR(dates[dates.length - 1]) : '';
+  var lastDate = dates.length ? dates[dates.length - 1] : '';
 
   // Chapitres dans l'ordre de première apparition (sans CALIBRAGE ni BOOST)
   var chapOrder = [], chapCount = {}, chapFirstDate = {}, chapScores = {};
   allScores.forEach(function(r) {
     var cat = String(r['Chapitre'] || '');
+    var src = String(r['Source']   || '');
     var d   = String(r['Date']     || '');
-    if (!cat || cat === 'CALIBRAGE' || cat === 'BOOST') return;
+    if (!cat || cat === 'CALIBRAGE' || cat === 'BOOST' || src === 'BOOST') return;
     chapCount[cat] = (chapCount[cat] || 0) + 1;
     if (!chapScores[cat]) chapScores[cat] = [];
     chapScores[cat].push(r);
@@ -1360,7 +1406,7 @@ function rebuildSuivi(code) {
 
   // ── Boost ─────────────────────────────────────────────────
   var boostTodayScores = allScores.filter(function(r) {
-    return String(r['Chapitre'] || '') === 'BOOST' && String(r['Date'] || '') === todayStr;
+    return String(r['Source'] || '') === 'BOOST' && String(r['Date'] || '') === todayStr;
   });
   var boostTodayDone = boostTodayScores.length;
   var boostConsumed  = boostTodayDone >= 5;
@@ -1435,8 +1481,9 @@ function rebuildSuivi(code) {
     return Math.round(easy * 100 / exos.length) < 40;
   });
 
-  var chapTermine = chapOrder.slice(0, 4).some(function(cat) {
-    return cat && (chapCount[cat]||0) >= 20 && !newCh1 && !newCh2 && !newCh3 && !newCh4;
+  var newCols = [newCh1, newCh2, newCh3, newCh4];
+  var chapTermine = chapOrder.slice(0, 4).some(function(cat, idx) {
+    return cat && (chapCount[cat]||0) >= 20 && !newCols[idx];
   });
 
   // ── PendingBrevet (Users col 12) ──────────────────────────
@@ -1465,7 +1512,6 @@ function rebuildSuivi(code) {
 
   // ── Construire la ligne ───────────────────────────────────
   var chaps   = chapOrder.slice(0, 4);
-  var newCols = [newCh1, newCh2, newCh3, newCh4];
   while (chaps.length < 4) chaps.push('');
 
   function chapStatut(cat) {
@@ -2801,7 +2847,8 @@ function getAdminOverview(p) {
     var cat  = String(r['Chapitre'] || '');
     var res  = String(r['Résultat'] || '');
     var date = String(r['Date']     || '').substring(0, 10);
-    if (!code || !cat || cat === 'CALIBRAGE' || cat === 'BOOST') return;
+    var src  = String(r['Source']   || '');
+    if (!code || !cat || cat === 'CALIBRAGE' || cat === 'BOOST' || src === 'BOOST') return;
     if (date < cutoff30) return;
     if (!scoresByCode[code])      scoresByCode[code]      = {};
     if (!scoresByCode[code][cat]) scoresByCode[code][cat] = { exos: [] };
@@ -2904,6 +2951,11 @@ function getAdminOverview(p) {
       var pendingBrevetAdmin = null;
       var rawBrevAdmin = u['PendingBrevet'] ? String(u['PendingBrevet']).trim() : '';
       if (rawBrevAdmin) { try { pendingBrevetAdmin = JSON.parse(rawBrevAdmin); } catch(e) {} }
+
+      // ── RevisionChapters ─────────────────────────────────
+      var revisionChaptersAdmin = null;
+      var rawRevAdmin = u['RevisionChapters'] ? String(u['RevisionChapters']).trim() : '';
+      if (rawRevAdmin) { try { revisionChaptersAdmin = JSON.parse(rawRevAdmin); } catch(e) {} }
       var lastBrevetResult = null;
       if (niveau === '3EME' && sheetExists(SH.BREVET_RESULTS)) {
         var brevRows = getRows(SH.BREVET_RESULTS).filter(function(r) { return String(r['Code'] || '') === code; });
@@ -3108,14 +3160,14 @@ function getAdminOverview(p) {
       var lastBoostDateAdmin  = lastBoostEntryAdmin ? lastBoostEntryAdmin.date : '';
       var lastBoostExosDoneAdmin = lastBoostEntryAdmin ? lastBoostEntryAdmin.exosDone : 0;
       var boostNewPending = boostNew; // boolean (col Suivi →Nouveau Boost non vide)
-      if (userBoosts.length >= 1 && lastBoostExosDoneAdmin >= 5 && !boostNewPending && !boostPendingFlag && !boostInProgressFlag) {
-        actionsAdmin.push('⚡ BOOST TERMINÉ → préparer le suivant');
-      }
-      // chapTermine pour pills admin : NbExos ≥ 20 dans Progress ET cols Nicolas Suivi vides
+      // CHAPITRE TERMINÉ en premier (plus structurel, plus rare)
       var hasChapTermineAdmin = chapitresDetail.some(function(ch) { return ch.nbExos >= 20; })
         && chapNewCount === 0;
       if (hasChapTermineAdmin) {
         actionsAdmin.push('✅ CHAPITRE TERMINÉ → assigner la suite');
+      }
+      if (userBoosts.length >= 1 && lastBoostExosDoneAdmin >= 5 && !boostNewPending && !boostPendingFlag && !boostInProgressFlag) {
+        actionsAdmin.push('⚡ BOOST TERMINÉ → préparer le suivant');
       }
       // BLOQUÉ : inactif > 7j ET tous scores bas
       var inactif7jAdmin = false;
@@ -3126,7 +3178,7 @@ function getAdminOverview(p) {
           if (daysIn > 7) inactif7jAdmin = true;
         } catch (e) { inactif7jAdmin = true; }
       } else {
-        inactif7jAdmin = true;
+        inactif7jAdmin = false;  // Pas encore connecté ≠ inactif depuis 7j
       }
       var allScoreLowAdmin = chapitresDetail.length > 0 && chapitresDetail.every(function(ch) {
         return ch.rateSuccess < 40;
@@ -3213,6 +3265,7 @@ function getAdminOverview(p) {
         isTest:               isTestUser,
         trialStart:           trialStartAdmin,
         pendingBrevet:        pendingBrevetAdmin,
+        revisionChapters:     revisionChaptersAdmin,
         lastBrevetResult:     lastBrevetResult,
         email:                email,
         j0Sent:               j0Sent,
@@ -3251,7 +3304,19 @@ function getAdminOverview(p) {
       });
   }
 
-  return { status: 'success', students: students, realCount: realCount, testCount: testCount, brevChapitresDisponibles: brevChapitresDisponibles };
+  // Tous les chapitres par niveau (pour sélecteur révision dans modale admin)
+  var allChapsByLevel = {};
+  getRows(SH.CURRICULUM).forEach(function(r) {
+    var niv = String(r['Niveau'] || '').toUpperCase();
+    if (!allChapsByLevel[niv]) allChapsByLevel[niv] = [];
+    allChapsByLevel[niv].push({
+      categorie: String(r['Categorie'] || ''),
+      titre:     String(r['Titre']     || ''),
+      icone:     String(r['Icone']     || '')
+    });
+  });
+
+  return { status: 'success', students: students, realCount: realCount, testCount: testCount, brevChapitresDisponibles: brevChapitresDisponibles, allChapsByLevel: allChapsByLevel };
 }
 
 // ════════════════════════════════════════════════════════════
@@ -3401,7 +3466,8 @@ function publishAdminChapter(p) {
 
   var suiviSh   = getSheet(SH.SUIVI);
   var suiviData = suiviSh.getDataRange().getValues();
-  var found     = false;
+  var found          = false;
+  var overwriteWarning = false;
 
   for (var si = 1; si < suiviData.length; si++) {
     if (String(suiviData[si][20]) !== targetCode) continue;
@@ -3418,6 +3484,7 @@ function publishAdminChapter(p) {
     if (!written) {
       // Tous les slots pleins → écrase le slot G (premier, le plus ancien)
       suiviSh.getRange(si + 1, SLOTS_1[0]).setValue(chapJSON);
+      overwriteWarning = true;
     }
     found = true;
     break;
@@ -3439,7 +3506,7 @@ function publishAdminChapter(p) {
 
   try { rebuildSuivi(targetCode); } catch (e) {}
 
-  return { status: 'success', message: 'Chapitre "' + categorie + '" publié. L\'élève le recevra à son prochain login.' };
+  return { status: 'success', message: 'Chapitre "' + categorie + '" publié. L\'élève le recevra à son prochain login.', overwrite: overwriteWarning };
 }
 
 // ════════════════════════════════════════════════════════════
@@ -3685,6 +3752,13 @@ function sendMarketingSequence(email, prenom, day) {
       '</p>';
 
     if (day === 0) {
+      // Dédup : ne pas envoyer si J+0 déjà envoyé (registration auto + cron 9h)
+      var alreadySentJ0 = getRows(SH.EMAILS).some(function(r) {
+        return String(r['Email'] || '').toLowerCase() === email.toLowerCase()
+          && (r['Type'] === 'J+0' || r['Type'] === 'J+0-manuel')
+          && r['Statut'] === 'envoyé';
+      });
+      if (alreadySentJ0) return { status: 'success', message: 'J+0 déjà envoyé.' };
       subject  = prenom + ' vient de rejoindre Matheux — voici la suite 🚀';
       htmlBody =
         '<div style="max-width:520px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;background:#f8fafc;padding:0;">' +
@@ -3733,7 +3807,7 @@ function sendMarketingSequence(email, prenom, day) {
         '<h1 style="color:#4338ca;font-size:24px;margin-bottom:8px;">Plus que 2 jours d\'essai</h1>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Bonjour,</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Dans 2 jours, l\'essai de <strong>' + prenom + '</strong> se termine.</p>' +
-        '<p style="color:#374151;font-size:16px;line-height:1.6;">Si vous souhaitez continuer, c\'est <strong>9,99 €/mois</strong> — sans engagement, résiliable à tout moment.</p>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.6;">Si vous souhaitez continuer, c\'est <strong>19,99 €/mois</strong> — sans engagement, résiliable à tout moment.</p>' +
         '<div style="text-align:center;margin:28px 0 20px;">' +
         '<a href="https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00" style="background:linear-gradient(135deg,#4338ca,#6366f1);color:#ffffff;font-size:15px;font-weight:800;text-decoration:none;padding:14px 32px;border-radius:12px;display:inline-block;letter-spacing:-.2px;">Continuer avec Matheux →</a>' +
         '</div>' +
@@ -3754,13 +3828,13 @@ function sendMarketingSequence(email, prenom, day) {
         '<li>Travaillé avec des exercices adaptés à son niveau</li>' +
         '<li>Posé des bases solides pour la suite</li>' +
         '</ul>' +
-        '<p style="color:#374151;font-size:16px;line-height:1.6;">Pour continuer sur cette lancée, vous pouvez <a href="https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00" style="color:#4338ca;font-weight:bold;">activer l\'abonnement</a> — 9,99 €/mois, sans engagement, résiliable à tout moment.</p>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.6;">Pour continuer sur cette lancée, vous pouvez <a href="https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00" style="color:#4338ca;font-weight:bold;">activer l\'abonnement</a> — 19,99 €/mois, sans engagement, résiliable à tout moment.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Si vous avez des questions avant de décider, répondez à cet email — je suis là.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Merci pour votre confiance,<br><strong>Nicolas</strong></p>' +
         footer + '</div>';
 
     } else {
-      return { status: 'error', message: 'Jour invalide : ' + day + '. Valeurs acceptées : 0, 3, 7.' };
+      return { status: 'error', message: 'Jour invalide : ' + day + '. Valeurs acceptées : 0, 3, 5, 7.' };
     }
 
     GmailApp.sendEmail(email, subject, '', { htmlBody: htmlBody, from: 'no-reply@matheux.fr', name: 'Matheux' });
@@ -4045,7 +4119,7 @@ function simulateNextDay(p) {
       updated++;
     }
   }
-  if (!updated) return { status: 'error', message: 'Aucune entrée DailyBoosts pour ce code.' };
+  if (!updated) return { status: 'ok', message: 'Aucun boost à simuler pour ce code.' };
   return { status: 'success', message: 'Date mise à hier (' + yesterdayStr + ') pour ' + updated + ' entrée(s).' };
 }
 
@@ -4337,4 +4411,47 @@ function importBrevetExos(p) {
   });
 
   return { status: 'success', inserted: inserted, updated: updated, total: exosData.length };
+}
+
+// ════════════════════════════════════════════════════════════
+//  ADMIN — publish_admin_revision
+//  Payload : { adminCode, targetCode, chapters: [{niveau, categorie}] }
+//  Écrit RevisionChapters JSON dans Users col M (auto-créée si absente).
+// ════════════════════════════════════════════════════════════
+
+function publishAdminRevision(p) {
+  if (!verifyAdmin(String(p.adminCode || ''))) {
+    return { status: 'error', message: 'Accès refusé.' };
+  }
+  var targetCode = String(p.targetCode || '');
+  if (!targetCode) return { status: 'error', message: 'targetCode requis.' };
+
+  var chapters = Array.isArray(p.chapters) ? p.chapters : [];
+
+  var usersSh   = getSheet(SH.USERS);
+  var usersData = usersSh.getDataRange().getValues();
+  var headers   = usersData[0];
+  var codeIdx   = headers.indexOf('Code');
+
+  // Trouver ou créer la colonne RevisionChapters
+  var revIdx = headers.indexOf('RevisionChapters');
+  if (revIdx === -1) {
+    revIdx = headers.length;
+    usersSh.getRange(1, revIdx + 1).setValue('RevisionChapters');
+  }
+
+  var found = false;
+  for (var i = 1; i < usersData.length; i++) {
+    if (String(usersData[i][codeIdx]) === targetCode) {
+      usersSh.getRange(i + 1, revIdx + 1).setValue(
+        chapters.length > 0 ? JSON.stringify(chapters) : ''
+      );
+      found = true;
+      break;
+    }
+  }
+  if (!found) return { status: 'error', message: 'Élève introuvable.' };
+
+  try { rebuildSuivi(targetCode); } catch(e) {}
+  return { status: 'success', count: chapters.length };
 }

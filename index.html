@@ -3318,6 +3318,17 @@ function mark(cat, idx, status, wrongOpt) {
   if (cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') S._todayChap = cat;
   var xp = status === 'EASY' ? 100 : status === 'MEDIUM' ? 50 : 10;
   S.xp += xp;
+  // Streak : mise à jour locale au premier exercice du jour
+  var _loc = JSON.parse(localStorage.getItem(LK) || '{}');
+  var _me  = _loc[S.prof.code];
+  if (_me && _me.last !== tod()) {
+    // Premier exercice d'un nouveau jour
+    var _yd = new Date(); _yd.setDate(_yd.getDate() - 1);
+    var _yds = _yd.getFullYear() + '-' + String(_yd.getMonth()+1).padStart(2,'0') + '-' + String(_yd.getDate()).padStart(2,'0');
+    S.stk = _me.last === _yds ? (_me.stk || 1) + 1 : 1;
+    _me.stk = S.stk; _me.last = tod();
+    localStorage.setItem(LK, JSON.stringify(_loc));
+  }
   sendScore(r.rC, r.rI, status, xp, exo.q, wrongOpt || null, cat);
   updH();
   var done = chkComp(cat);
