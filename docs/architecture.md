@@ -114,13 +114,13 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @59
+### Actions GAS — état @60
 
 | Action | Description | Statut |
 |---|---|---|
 | `register` | Inscription élève. TrialStart = TODAY, email J+0 auto (si alias Gmail opérationnel) | ✅ |
 | `login` | Connexion. Retourne trial, boostExosDone, pendingBrevet, nextChapter, nextBoostTopic | ✅ |
-| `save_score` | Sauvegarde réponse. MAJ Progress + rebuildSuivi + writeToHistorique + ExosDone si BOOST | ✅ |
+| `save_score` | Sauvegarde réponse. MAJ Progress + rebuildSuivi + writeToHistorique + ExosDone si BOOST. Persiste `source` (col N Scores) | ✅ |
 | `save_boost` | Sauvegarde fin de boost. ExosDone + rebuildSuivi | ✅ |
 | `generate_diagnostic` | Génère diagnostic. Mode guest (sans code) pour landing flow | ✅ |
 | `generate_daily_boost` | Génère boost quotidien depuis BoostExos (fallback Curriculum_Officiel), ciblé sur chapitres sélectionnés par l'élève | ✅ |
@@ -136,7 +136,7 @@ function doPost(e) {
 | `generateMorningReport` | Rapport matin 7h (génération IA désactivée) | ✅ |
 | `get_admin_overview` | Vue admin complète. Retourne `email` + `j0Sent` + `emailsDue` + `secondaryActions` + `category` (capitale/secondaire/ras) + `trialDays` + `inactivityDays` + `neverStarted` par élève. boostPendingContent alimenté depuis col S si élève n'a pas encore récupéré le boost | ✅ |
 | `publish_admin_boost` | Admin publie boost (→Nouveau Boost col 18) + rebuildSuivi | ✅ |
-| `publish_admin_chapter` | Admin publie chapitre (→Nouveau Ch libre) + rebuildSuivi | ✅ |
+| `publish_admin_chapter` | Admin publie chapitre (→Nouveau Ch libre) + rebuildSuivi. Retourne `overwrite:true` si >4 chapitres en attente (toast ⚠️ côté frontend) | ✅ |
 | `log_manual_email` | Admin — logue un email envoyé manuellement dans l'onglet Emails. Params : `adminCode`, `userEmail`, `type` (ex: `J+0-manuel`). Vérifie admin, récupère prénom, appelle `_logEmail` | ✅ |
 | `check_trial_status` | Vérifie trial actif { trialActive, daysLeft, isPremium } | ✅ |
 | `import_chapters` | One-shot admin — pousse chapitres dans Curriculum_Officiel + DiagnosticExos | ✅ |
@@ -234,7 +234,7 @@ Deux variantes convergentes : `_flowGuestRegister()` (guest complet) et `_doLogi
 | GitHub Pages | Frontend (index.html, pages légales) | Gratuit |
 | Google Apps Script | Backend API | Gratuit (quotas Google) |
 | Google Sheets | Base de données | Gratuit |
-| Gmail (GmailApp) | Emails auto (J+0, J+3, J+7) | Gratuit |
+| Gmail (GmailApp) | Emails auto (J+0, J+3, J+5, J+7) — alias no-reply@matheux.fr requis | Gratuit |
 | Stripe | Paiement (TEST pour l'instant) | ~0,39€/transaction |
 | GA4 | Analytics | Gratuit |
 

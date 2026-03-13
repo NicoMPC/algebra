@@ -68,7 +68,7 @@ Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse 
 |---|---|
 | Prix | 9,99 €/mois |
 | Essai | 7 jours gratuits, accès complet, sans carte bancaire |
-| Paiement | Stripe (lien TEST actif — à passer en PROD) |
+| Paiement | Stripe — **lien TEST actif, à passer en PROD manuellement** (3 occurrences : `index.html`, `backend.js`, `cgv.html`) |
 | Cible | 50 clients = ~500 € MRR |
 
 ---
@@ -79,8 +79,8 @@ Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse 
 - **Boost quotidien** : 5 exercices/jour = habitude, pas surcharge
 - **Indices progressifs** : 1-3 étapes + formule clé révélée après erreur
 - `lvl:1` = fondamental, `lvl:2` = avancé (type contrôle/brevet)
-- 29 chapitres × 20 exos = 580 exercices + 58 diagnostics + 120 brevet
-- Couverture ~85% programme officiel — détail dans [programme-français-verif.md](programme-français-verif.md)
+- 44 chapitres × 20 exos = **880 exercices** + 88 diagnostics + 440 boost + 144 brevet (3EME)
+- Couverture **~100%** programme officiel — détail dans [programme-français-verif.md](programme-français-verif.md)
 
 ---
 
@@ -89,8 +89,9 @@ Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse 
 | Email | Déclencheur | Destinataire | Contenu |
 |---|---|---|---|
 | J+0 | `register()` auto OU manuel admin (voir ci-dessous) | Parent | Bienvenue, 3 étapes (diagnostic → boost → progression), CTA matheux.fr, rappel 7j gratuit sans CB |
-| J+3 | `triggerDailyMarketing` | Parent | Encouragement + rappel boost quotidien |
-| J+7 | `triggerDailyMarketing` | Parent | Trial expire → lien Stripe direct |
+| J+3 | `triggerDailyMarketing` (⚠️ trigger à activer manuellement) | Parent | Encouragement + rappel boost quotidien |
+| J+5 | `triggerDailyMarketing` (⚠️ trigger à activer manuellement) | Parent | "Encore 2 jours" — urgence douce + lien Stripe |
+| J+7 | `triggerDailyMarketing` (⚠️ trigger à activer manuellement) | Parent | Trial expire → lien Stripe direct |
 | Reset MDP | `sendPasswordReset()` | Élève/parent | Code 6 chiffres, expire 15 min |
 
 **Architecture email :**

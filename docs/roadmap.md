@@ -6,7 +6,7 @@
 
 ## État global — 13 mars 2026
 
-**Matheux est fonctionnel à 99% — prêt pour les 50 premiers élèves. Seul manque : Stripe PROD.**
+**Matheux est fonctionnel à 100% côté code. Seuls manques : Stripe PROD + 2 actions manuelles.**
 
 > ✅ **Audit + bugfixes réalisés le 13 mars 2026** (simulation 7j × 5 profils sur GAS réel).
 > BUG-01 à BUG-12 corrigés dans backend.js @60. Voir [test_debug.md](test_debug.md).
@@ -16,27 +16,33 @@
 | Tests automatisés | 73/74 (99%) — 1 race condition GAS acceptable |
 | Couverture programme | **~100%** — 44 chapitres (880 exos curriculum + 88 diag + 440 boost + 144 brevet) |
 | Juridique | Complet (5 pages + consentement parental + RGPD) |
-| Paiement | ⏳ Lien Stripe TEST actif — passer en PROD |
-| Emails auto | ✅ J+0 auto + fallback manuel admin, J+3/J+5/J+7 code prêt (trigger à activer) |
+| Paiement | ⏳ Lien Stripe TEST actif — **à passer en PROD manuellement** |
+| Emails auto | ✅ J+0 auto + fallback manuel admin, J+3/J+5/J+7 code prêt — **trigger à activer manuellement** |
 | Analytics | ✅ GA4 RGPD-compliant |
 | Limite bêta | 50 vrais élèves (IsTest=0) |
 | Messages élèves | ✅ Streak alert, boost en cours, chapitre maîtrisé, milestones 3/7j |
-| Admin smart | ✅ GAS @59 — catégories capitale/secondaire, onglet Suivi, copie emails |
+| Admin smart | ✅ GAS @60 — bugfixes audit, catégories capitale/secondaire, onglet Suivi, copie emails |
+| Emails (@matheux.fr) | ⏳ **à créer manuellement** : contact@ + alias no-reply@ |
 
 ---
 
-## Priorités immédiates
+## Actions manuelles — à faire par Nicolas (bloquantes prod)
+
+| # | Action | Où | Priorité |
+|---|---|---|---|
+| 1 | **Stripe TEST → PROD** — remplacer `test_14AdRacgw76N7vQcxqa3u00` (3 occurrences : `index.html`, `backend.js`, `cgv.html`) | Stripe dashboard + éditeur | 🔴 |
+| 2 | **Créer `contact@matheux.fr`** (adresse publique) + **alias `no-reply@matheux.fr`** dans Gmail (pour GmailApp) | Hébergeur email + Gmail Paramètres → Comptes | 🔴 |
+| 3 | **Activer trigger `triggerDailyMarketing`** → Apps Script UI → Déclencheurs → `triggerDailyMarketing` → Chaque jour → 9h-10h | Google Apps Script UI | 🔴 |
+| 4 | **Webhook Stripe → colonne `Premium`** dans Users | Stripe dashboard → Webhooks | 🟡 après Stripe PROD |
+| 5 | Vrais témoignages élèves/parents sur landing | À collecter après premiers clients | 🔵 |
+
+## Priorités code — prochaines sessions
 
 | # | Action | Statut | Priorité |
 |---|---|---|---|
 | 0 | **Fixes bugs audit** (BUG-01 à BUG-12 dans [test_debug.md](test_debug.md)) | ✅ Corrigés @60 | 🟢 |
-| 1 | Passer Stripe TEST → PROD (3 occurrences : index.html, backend.js, cgv.html) | ⏳ Attente lien prod | 🔴 |
-| 2 | Créer contact@matheux.fr + alias no-reply@matheux.fr | ⏳ Manuel hébergeur | 🔴 |
-| 3 | Activer trigger `triggerDailyMarketing` (Apps Script UI → 9h-10h) | ⏳ 5 min manuel | 🟡 |
-| 4 | Webhook Stripe → colonne Premium dans Users | ❌ Après Stripe PROD | 🟡 |
-| 5 | Validation inputs GAS (format email, longueur champs) | ❌ À faire | 🟢 |
-| 6 | Rate limiting basique dans doPost | ❌ À faire | 🟢 |
-| 7 | Vrais témoignages élèves/parents sur landing | ❌ À collecter | 🔵 |
+| 1 | Validation inputs GAS (format email, longueur champs) | ❌ À faire | 🟢 |
+| 2 | Rate limiting basique dans doPost | ❌ À faire | 🟢 |
 
 ---
 
@@ -82,6 +88,7 @@
 - [x] Email J+5 "Encore 2 jours" dans séquence marketing
 - [ ] Validation inputs côté GAS (format email, longueur)
 - [ ] Rate limiting basique dans doPost
+- [x] **BUG-01→12** — bugfixes audit corrigés @60 (13 mars)
 
 ### BLOC 2b — Rapport matin ✅
 `generateMorningReport()` + trigger 7h quotidien.
@@ -101,9 +108,9 @@
 - [ ] replyTo: nicolas@matheux.fr sur J+3, J+7 et reset MDP
 - [x] Overlay trial → Stripe direct 9,99€/mois (lien TEST)
 - [x] Email J+7 → lien Stripe
-- [x] Emails from no-reply@matheux.fr
-- [ ] **Passer Stripe TEST → PROD** (3 occurrences)
-- [ ] **Webhook Stripe → colonne Premium**
+- [ ] **Créer alias `no-reply@matheux.fr`** (GmailApp) + `contact@matheux.fr` (public) — **⚠️ Manuel hébergeur**
+- [ ] **Passer Stripe TEST → PROD** (3 occurrences) — **⚠️ Manuel après lien Stripe PROD**
+- [ ] **Webhook Stripe → colonne Premium** — **⚠️ Manuel Stripe dashboard**
 
 ---
 
@@ -111,7 +118,7 @@
 
 - [x] Landing vendeuse — refonte complète 13 mars (hero parent, programme Eduscol 4 niveaux, sur mesure + IA x humain, mockup scree.png, témoignages x3, fondateur "Ancien chef de projet Aérospatiale", FAQ accordion, compteurs animés 44/880/100%, chapitres sur mesure à l'infini, CTA "Les bons exercices")
 - [x] Email J+0 auto
-- [ ] Activer trigger `triggerDailyMarketing` (J+3/J+7)
+- [ ] **Activer trigger `triggerDailyMarketing`** (J+3/J+5/J+7) — **⚠️ Manuel Apps Script UI → 9h-10h**
 - [ ] Vrais témoignages élèves/parents
 
 ---
@@ -153,7 +160,7 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 ## Checklist "Prêt pour 50 élèves"
 
 ### Infrastructure
-- [x] GAS @57 stable — 27 actions opérationnelles
+- [x] GAS @60 stable — 27+ actions, bugfixes audit complets
 - [x] Google Sheet prod
 - [ ] Validation inputs GAS
 - [ ] Rate limiting doPost
@@ -161,21 +168,21 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 ### Acquisition & conversion
 - [x] Landing + flow CTA + quiz inline + onboarding
 - [x] Trial 7j + badge J-X + overlay → Stripe
-- [x] Email J+0 auto
-- [ ] Stripe PROD
-- [ ] Séquences J+3/J+7 activées
+- [x] Email J+0 auto (avec dédup cron/register)
+- [ ] **Stripe PROD** ⚠️ Manuel
+- [ ] **Séquences J+3/J+5/J+7 activées** ⚠️ Manuel (trigger Apps Script)
 
 ### Légal
 - [x] 5 pages légales + consentement parental + RGPD + GA4
 
 ### Pédagogie
-- [x] 580 exercices + 58 diagnostics + 120 brevet
-- [x] Couverture ~85% programme officiel
+- [x] 880 exos curriculum + 88 diag + 440 boost + 144 brevet — programme complet ~100%
 
 ### UX
 - [x] Mobile-first, gamification, messages ado
 - [x] Post-boost confettis, feedback, indices lisibles
 
 ### Admin
-- [x] Dashboard trié, modal complet, publish 1-clic
+- [x] Dashboard trié, modal complet, publish 1-clic, toast overwrite chapitre
 - [x] Rapport matin, compteur X/50, dark mode
+- [x] Emails dus J+3/J+5/J+7, onglet Suivi, indicateurs J0
