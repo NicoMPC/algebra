@@ -11,7 +11,7 @@
 | Dimension | État |
 |---|---|
 | Tests automatisés | 73/74 (99%) — 1 race condition GAS acceptable |
-| Couverture programme | ~93% — 41 chapitres (820 exos curriculum + 82 diag + 410 boost + 136 brevet) |
+| Couverture programme | **~100%** — 44 chapitres (880 exos curriculum + 88 diag + 440 boost + 144 brevet) |
 | Juridique | Complet (5 pages + consentement parental + RGPD) |
 | Paiement | ⏳ Lien Stripe TEST actif — passer en PROD |
 | Emails auto | ✅ J+0 auto, J+3/J+7 code prêt (trigger à activer) |
@@ -37,11 +37,11 @@
 ## BLOC 1 — Socle technique ✅ TERMINÉ
 
 - [x] generate_diagnostic / generate_daily_boost / isFirstDay / boostExistsInDB
-- [x] Curriculum_Officiel : 820 exos (41 chap × 20) — +12 chapitres poussés 13 mars (Sprint 2+3)
-- [x] DiagnosticExos : 82 exos (41 chap × 2)
-- [x] BoostExos : 410 exos (41 chap × 10)
-- [x] BrevetExos : 136 exos (17 chap × 8) — +Systèmes_Équations, +Inéquations 3EME
-- [x] CHAPS_BY_LEVEL : 41 chapitres exposés dans sélecteur diagnostic (fix accents catégories 13 mars)
+- [x] Curriculum_Officiel : 880 exos (44 chap × 20) — programme collège 100% couvert (Sprint 1→4)
+- [x] DiagnosticExos : 88 exos (44 chap × 2)
+- [x] BoostExos : 440 exos (44 chap × 10)
+- [x] BrevetExos : 144 exos (18 chap × 8) — tous chapitres 3EME couverts
+- [x] CHAPS_BY_LEVEL : 44 chapitres exposés dans sélecteur diagnostic
 - [x] Bugs T1→T7 post-tests utilisateur tous corrigés
 - [x] UX Progression & Mobile (Progression, fragiles, mobile)
 - [x] Harmonisation `_doLoginAndLaunch` / `_flowGuestRegister` — fix onboarding fantôme + double diagnostic (13 mars)

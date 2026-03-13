@@ -244,15 +244,15 @@ Rapports ── standalone (archive)
 
 ---
 
-## Chapitres disponibles — 41 chapitres en prod (màj 13 mars 2026)
+## Chapitres disponibles — 44 chapitres en prod (màj 13 mars 2026 — programme complet)
 
 | Niveau | Chapitres |
 |---|---|
-| 6EME (12) | Nombres_entiers, Fractions, Proportionnalité, Géométrie, Périmètres_Aires, Angles, Nombres_Décimaux, Statistiques_6ème, Symétrie_Axiale, Volumes, Agrandissement_Réduction, Conversions_Unités |
+| 6EME (13) | Nombres_entiers, Fractions, Proportionnalité, Géométrie, Périmètres_Aires, Angles, Nombres_Décimaux, Statistiques_6ème, Symétrie_Axiale, Volumes, Agrandissement_Réduction, Conversions_Unités, Puissances_10 |
 | 5EME (10) | Fractions, Nombres_relatifs, Proportionnalité, Calcul_Littéral, Pythagore, Puissances, Symétrie_Centrale, Transformations, Racines_Carrées, Triangles_Semblables |
-| 4EME (9) | Puissances, Fractions, Proportionnalité, Calcul_Littéral, Équations, Pythagore, Fonctions_Linéaires, Inéquations, Homothétie |
-| 3EME (10) | Calcul_Littéral, Équations, Fonctions, Théorème_de_Thalès, Trigonométrie, Statistiques, Probabilités, Racines_Carrées, Systèmes_Équations, Inéquations |
+| 4EME (10) | Puissances, Fractions, Proportionnalité, Calcul_Littéral, Équations, Pythagore, Fonctions_Linéaires, Inéquations, Homothétie, Sections_Solides |
+| 3EME (11) | Calcul_Littéral, Équations, Fonctions, Théorème_de_Thalès, Trigonométrie, Statistiques, Probabilités, Racines_Carrées, Systèmes_Équations, Inéquations, Notation_Scientifique |
 
-Total : **41 chapitres × 20 exos = 820 exercices** + **41 × 10 = 410 boost (BoostExos)** + **41 × 2 = 82 diagnostics** + **17 × 8 = 136 brevet** (3EME uniquement)
+Total : **44 chapitres × 20 exos = 880 exercices** + **44 × 10 = 440 boost (BoostExos)** + **44 × 2 = 88 diagnostics** + **18 × 8 = 144 brevet** (3EME uniquement)
 
 **Flux boost auto** : diagnostic ne teste que les chapitres sélectionnés → P5 filtre BoostExos aux mêmes chapitres → boost ciblé, pas de dispersion cross-chapitre.

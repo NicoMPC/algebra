@@ -623,18 +623,20 @@ function saveBoost(p) {
 //  correspondre EXACTEMENT aux valeurs data-chap générées par
 //  le frontend (voir CHAPS_BY_LEVEL dans index.html).
 //
-//  Clés attendues par niveau (29 chapitres — màj 13 mars 2026) :
-//  6EME : Nombres_entiers, Fractions, Proportionnalité,
-//          Géométrie, Périmètres_Aires, Angles,
-//          Nombres_Décimaux, Statistiques_6ème
-//  5EME : Fractions, Nombres_relatifs, Proportionnalité,
-//          Puissances, Pythagore, Calcul_Littéral
-//  4EME : Fractions, Puissances, Calcul_Littéral,
-//          Équations, Pythagore, Proportionnalité,
-//          Fonctions_Linéaires
-//  3EME : Calcul_Littéral, Équations, Fonctions,
-//          Théorème_de_Thalès, Trigonométrie, Statistiques,
-//          Probabilités, Racines_Carrées
+//  Clés attendues par niveau (44 chapitres — màj 13 mars 2026 — couverture 100%) :
+//  6EME (13): Nombres_entiers, Fractions, Proportionnalité, Géométrie,
+//             Périmètres_Aires, Angles, Nombres_Décimaux, Statistiques_6ème,
+//             Symétrie_Axiale, Volumes, Agrandissement_Réduction,
+//             Conversions_Unités, Puissances_10
+//  5EME (10): Fractions, Nombres_relatifs, Proportionnalité, Puissances,
+//             Pythagore, Calcul_Littéral, Symétrie_Centrale, Transformations,
+//             Racines_Carrées, Triangles_Semblables
+//  4EME (10): Fractions, Puissances, Calcul_Littéral, Équations, Pythagore,
+//             Proportionnalité, Fonctions_Linéaires, Inéquations,
+//             Homothétie, Sections_Solides
+//  3EME (11): Calcul_Littéral, Équations, Fonctions, Théorème_de_Thalès,
+//             Trigonométrie, Statistiques, Probabilités, Racines_Carrées,
+//             Systèmes_Équations, Inéquations, Notation_Scientifique
 //
 //  ExosJSON par ligne :
 //  [ { "q":"...", "a":"...", "options":[...],
@@ -2028,9 +2030,9 @@ function generateBrevet(p) {
     return { status: 'error', message: 'Niveau invalide.' };
   }
 
-  // Chapitres brevet prioritaires par niveau (màj 13 mars 2026 — +Systèmes_Équations, +Inéquations)
+  // Chapitres brevet prioritaires par niveau (màj 13 mars 2026 — couverture 100%)
   var brevetChaps = {
-    '3EME': ['Calcul_Littéral', 'Équations', 'Fonctions', 'Théorème_de_Thalès', 'Trigonométrie', 'Statistiques', 'Probabilités', 'Racines_Carrées', 'Systèmes_Équations', 'Inéquations'],
+    '3EME': ['Calcul_Littéral', 'Équations', 'Fonctions', 'Théorème_de_Thalès', 'Trigonométrie', 'Statistiques', 'Probabilités', 'Racines_Carrées', 'Systèmes_Équations', 'Inéquations', 'Notation_Scientifique'],
     '4EME': ['Calcul_Littéral', 'Équations', 'Pythagore', 'Proportionnalité', 'Puissances', 'Fractions'],
     '5EME': ['Fractions', 'Nombres_relatifs', 'Proportionnalité', 'Pythagore', 'Puissances', 'Calcul_Littéral'],
     '6EME': ['Nombres_entiers', 'Fractions', 'Proportionnalité', 'Périmètres_Aires', 'Géométrie', 'Angles']
