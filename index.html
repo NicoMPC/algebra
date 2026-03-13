@@ -2182,8 +2182,8 @@ async function flowRegister() {
   // Fonction interne : finaliser le login après register OU switch silencieux
   async function _doLoginAndLaunch(email, h, loginD) {
     localStorage.setItem(SK, JSON.stringify({ email: email, password: h }));
-    loginD.isFirstDay = true;
-    S.calState = 'test';
+    loginD.isFirstDay = !_flowDiagDone;
+    S.calState = _flowDiagDone ? null : 'test';
     document.getElementById('landing-screen').classList.add('hidden');
     document.getElementById('main-app').classList.remove('hidden');
     initApp(loginD, true);
@@ -2222,14 +2222,37 @@ async function flowRegister() {
       } catch(e) {}
     }
 
-    // showOnboarding : skipper le slide "diagnostic" si déjà fait dans le flow
     if (_flowDiagDone) {
-      // Modifier temporairement les slides pour retirer le slide diagnostic
-      var savedSlides = _onbSlides;
-      _onbSlides = _onbSlides.filter(function(sl) { return sl.emoji !== '⚡'; });
+      // Aligner sur _flowGuestRegister : calDone + supprimer CALIBRAGE + boost + guest slides
+      try {
+        var _loc3 = JSON.parse(localStorage.getItem(LK) || '{}');
+        var _code3 = S.prof.code;
+        if (_code3) {
+          if (!_loc3[_code3]) _loc3[_code3] = {};
+          _loc3[_code3].calDone = true;
+          localStorage.setItem(LK, JSON.stringify(_loc3));
+        }
+      } catch(e) {}
+      if (LVL[S.niv] && LVL[S.niv].cats) delete LVL[S.niv].cats['CALIBRAGE'];
+      var _diagErrs2 = _flowResults
+        .filter(function(rr) { return !rr.correct; })
+        .map(function(rr) { return (_flowExos[rr.idx] || {}).q || ''; })
+        .filter(Boolean);
+      boostFromDiag(_diagErrs2.slice(0, 4));
+      var _guestSlides2 = [
+        _onbSlides[0],
+        { emoji: '⚡', title: 'Ton boost du jour est prêt !',
+          body: 'On a analysé tes réponses et généré tes exercices perso. Lance ton premier boost dès maintenant 🔥',
+          color: 'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)' },
+        { emoji: '🔥', title: 'Une chose à faire aujourd\'hui',
+          body: 'Lance ton premier boost. 5 minutes, ciblé sur ce que t\'as raté. C\'est ça qui change.',
+          color: 'linear-gradient(135deg,#1e1b4b 0%,#4338ca 100%)' }
+      ];
+      var _savedSlides2 = _onbSlides;
+      _onbSlides = _guestSlides2;
       showOnboarding(function() {
-        _onbSlides = savedSlides;
-        startCal();
+        _onbSlides = _savedSlides2;
+        render();
       });
     } else {
       showOnboarding(function() { startCal(); });
