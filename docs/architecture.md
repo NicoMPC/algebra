@@ -114,7 +114,7 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @54
+### Actions GAS — état @56
 
 | Action | Description | Statut |
 |---|---|---|
@@ -134,7 +134,7 @@ function doPost(e) {
 | `generate_revision` | Révision niveau inférieur — UI désactivé | ✅ |
 | `submit_feedback` | Feedback élève → onglet Insights | ✅ |
 | `generateMorningReport` | Rapport matin 7h (génération IA désactivée) | ✅ |
-| `get_admin_overview` | Vue admin complète (boostHistory, chapitresDetail, brevets) | ✅ |
+| `get_admin_overview` | Vue admin complète (boostHistory avec motProf, chapitresDetail, brevets). boostPendingContent alimenté depuis col S si élève n'a pas encore récupéré le boost | ✅ |
 | `publish_admin_boost` | Admin publie boost (→Nouveau Boost col 18) + rebuildSuivi | ✅ |
 | `publish_admin_chapter` | Admin publie chapitre (→Nouveau Ch libre) + rebuildSuivi | ✅ |
 | `check_trial_status` | Vérifie trial actif { trialActive, daysLeft, isPremium } | ✅ |
@@ -214,11 +214,14 @@ Deux variantes convergentes : `_flowGuestRegister()` (guest complet) et `_doLogi
 
 ```
 1. Nicolas ouvre admin → voit ⚡ BOOST TERMINÉ
-2. Copie prompt Claude → génère JSON 5 exos
+2. Copie prompt Claude → génère JSON 5 exos (+ motProf optionnel)
 3. Colle dans "Publier un boost" → publish_admin_boost GAS
-4. GAS : écrit →Nouveau Boost (col 18 Suivi) + rebuildSuivi
-5. Au prochain login élève : login() lit col 18 → crée DailyBoosts (exosDone=0)
-6. Admin voit ⏳ En attente
+4. GAS : écrit { insight, exos, motProf } dans →Nouveau Boost (col S Suivi) + rebuildSuivi
+5. Admin clique sur l'élève (onglet Traité) → aperçu structuré : motProf + insight + 5 questions
+   (boostPendingContent lu depuis col S tant que l'élève n'a pas encore récupéré le boost)
+6. Au prochain login élève : login() lit col S → crée DailyBoosts (exosDone=0) + vide col S
+7. Si motProf présent : S._motProfScreen = 'boost' → écran "Un mot de ton prof 💬" avant les exos
+8. Admin voit ⏳ En attente dans DailyBoosts
 ```
 
 ---
