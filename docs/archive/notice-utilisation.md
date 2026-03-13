@@ -1,6 +1,14 @@
 # Notice d'utilisation — Matheux
 ## Ce que fait le site. Comment ça marche. Pour qui.
-> Version 12 mars 2026 — @50 | Rédigée pour Nicolas (fondateur)
+> Version 13 mars 2026 — @52 | Rédigée pour Nicolas (fondateur)
+
+### Voir aussi
+- [claude.md](claude.md) — Manuel IA (règles de développement)
+- [architecture.md](architecture.md) — Architecture technique
+- [database.md](database.md) — Schéma Google Sheets
+- [product.md](product.md) — Vision produit
+- [roadmap.md](roadmap.md) — Priorités de développement
+- [history.md](history.md) — Journal des sessions
 
 ---
 

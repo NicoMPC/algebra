@@ -1,375 +1,72 @@
 # CLAUDE.md — Matheux (matheux.fr)
-> Lis ce fichier en entier à chaque session. Mets à jour les checkboxes en fin de session.
+
+> Point d'entrée projet. Lis ce fichier puis consulte les docs détaillées selon la tâche.
 
 ---
 
-## 🎯 Projet en une phrase
-SPA vanilla JS (index.html ~3500 lignes) + backend Google Apps Script sur Google Sheets.
-Outil pédagogique adaptatif maths collège (6ème→3ème), diagnostic de lacunes, exercices personnalisés, gamification. MVP solo → 50 clients payants.
+## Projet en une phrase
 
-## 👤 Contexte fondateur
-- Seul, prof de maths, déjà des élèves actifs avec retours positifs
-- Budget ~400€, objectif : finir en 1 mois de Claude Max
-- 2-3h/jour de travail manuel accepté en phase 1
-- Codebase : V23 GOLD MASTER — ne pas réécrire, patcher chirurgicalement
-- Dossier local : `/home/nicolas/Bureau/algebra live`
-- Repo GitHub : https://github.com/NicoMPC/algebra
+SPA vanilla JS (`index.html` ~5900 lignes) + backend Google Apps Script (`backend.js` ~4200 lignes) sur Google Sheets.
+Outil pédagogique adaptatif maths collège (6ème→3ème), diagnostic de lacunes, exercices personnalisés, gamification.
+MVP solo → 50 clients payants à 9,99 €/mois.
+
+## Contexte fondateur
+
+- Nicolas Follezou, prof de maths, seul développeur
+- Codebase V23 GOLD MASTER — patches chirurgicaux, pas de réécriture
+- Dossier : `/home/nicolas/Bureau/algebra live`
+- Repo : https://github.com/NicoMPC/algebra
 
 ---
 
-## 🏗️ Architecture réelle
+## Documentation — `docs/`
 
-| Composant | Détail |
-|---|---|
-| `index.html` | SPA ~5200 lignes. CSS vars + Tailwind CDN + JS vanilla |
-| GAS backend | `backend.js` — Web App déployée via clasp |
-| Sheet ID | `1zLBajKVL8FUzy7aV2Myi9gYFEFJjnALkLAg0hbicuDk` |
-| API URL | `const SU` dans index.html |
-| Auth | localStorage clé `boost_v23` → `{ email, hash }` (auth uniquement — données depuis GAS) |
-| State local | localStorage clé `boost_loc_v23` → `{ [code]: { stk, last } }` |
-| Hash MDP | SHA-256 de `email + '::' + password + '::AB22'` (client-side) |
-| Fonts | Syne (titres) + DM Sans (body) |
+| Document | Contenu | Quand le lire |
+|---|---|---|
+| **[docs/claude.md](docs/claude.md)** | GOD MODE — Manuel IA complet (règles, workflow, conventions) | **Toujours** — avant toute modification |
+| **[docs/architecture.md](docs/architecture.md)** | Structure frontend/backend, flux API, déploiement | Quand on touche au code |
+| **[docs/database.md](docs/database.md)** | Schéma Google Sheets (onglets, colonnes, relations) | Quand on touche aux données |
+| **[docs/product.md](docs/product.md)** | Vision produit, parcours utilisateur, workflow Nicolas | Pour comprendre le produit |
+| **[docs/roadmap.md](docs/roadmap.md)** | Priorités par blocs, checklist, actions en attente | Pour savoir quoi faire |
+| **[docs/agents.md](docs/agents.md)** | Agents IA spécialisés, workflow de délégation CTO | Pour déléguer une tâche |
+| **[docs/programme-français-verif.md](docs/programme-français-verif.md)** | Couverture programme Eduscol (~85%) | Pour les chapitres manquants |
 
-## 🔧 Workflow déploiement GAS
+---
+
+## Règles critiques — rappel rapide
+
+1. **Ne jamais réécrire** — patches chirurgicaux sur le code existant
+2. **CORS GAS** — ne JAMAIS mettre `Content-Type: application/json` sur les fetch
+3. **Schéma Sheets** — ne jamais modifier les colonnes sans documenter (index hardcodés)
+4. **Données mineurs** — RGPD renforcé, consentement parental obligatoire
+5. **Estimer les tokens** avant toute tâche lourde → attendre validation
+6. **Doc vivante** — mettre à jour, supprimer l'obsolète, ne pas créer de fichiers inutiles
+
+Détail complet dans [docs/claude.md](docs/claude.md).
+
+---
+
+## Déploiement rapide
+
 ```bash
+# Backend GAS
+cd "/home/nicolas/Bureau/algebra live/algebra"
 clasp push --force
 clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF --description "description"
-```
-- GAS URL : `https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec`
-- Sheet ID scripts Python : `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4`
-- Compte de service : `algebra/algebreboost-sheets-2595a71cadfb.json` (ignoré par git)
-- ⚠️ `clasp deploy` seul sans `--deploymentId` crée des URLs inaccessibles → toujours passer l'ID
-- `deploy.sh "description"` fait push + deploy en une commande
 
-## 📦 Actions GAS — état réel (@51)
-| Action | Statut |
+# Frontend
+git add index.html && git commit -m "feat: ..." && git push origin main
+```
+
+---
+
+## URLs clés
+
+| Ressource | Valeur |
 |---|---|
-| `register` | ✅ Fonctionne — TrialStart = TODAY |
-| `login` | ✅ Fonctionne — retourne `trial: { trialActive, daysLeft, isPremium }` + `boostExosDone` + `pendingBrevet` |
-| `save_score` | ✅ Fonctionne + updateConfidenceScore + rebuildSuivi + writeToHistorique + MAJ ExosDone DailyBoosts si source=BOOST |
-| `save_boost` | ✅ Fonctionne + ExosDone dans DailyBoosts + rebuildSuivi |
-| `generate_diagnostic` | ✅ Fonctionne — guest (sans code) pour landing flow |
-| `generate_daily_boost` | ✅ Fonctionne — filtré sur chapitres diagnostiqués élève |
-| `generate_remediation` | ⏸️ Désactivé — return success immédiat |
-| `get_progress` | ✅ Fonctionne |
-| `detect_fragile_prereqs` | ✅ Fonctionne (onglet Prerequisites archivé → fragile:false) |
-| `get_prerequisites` | ✅ Fonctionne |
-| `enqueue` | ✅ Fonctionne (onglet Queue archivé → erreur propre) |
-| `generate_exam_prep` | ✅ Fonctionne — per-chapter, 10 questions (7 lvl2 + 3 lvl1 non acquis) |
-| `generate_brevet` | ✅ DISPONIBLE — multi-chapitres niveau, ~15q style Brevet (UI désactivé — code conservé) |
-| `generate_revision` | ✅ DISPONIBLE — révision niveau inférieur sur chapitres faibles (UI désactivé — code conservé) |
-| `submit_feedback` | ✅ NOUVEAU — écrit dans onglet Insights (créé auto si absent) |
-| `generateMorningReport` | ✅ Fonctionne — génération IA désactivée |
-| `get_admin_overview` | ✅ Fonctionne — boostHistory[], source exos, chapitresDetail cap 20 + brevChapitresDisponibles + pendingBrevet/lastBrevetResult par élève |
-| `publish_admin_boost` | ✅ Fonctionne — écrit →Nouveau Boost (col 18), rebuildSuivi |
-| `publish_admin_chapter` | ✅ Fonctionne — écrit premier slot →Nouveau Ch libre, rebuildSuivi |
-| `check_trial_status` | ✅ Fonctionne — { trialActive, daysLeft, isPremium } |
-| `import_chapters` | ✅ One-shot admin — pousse chapitres dans Curriculum_Officiel + DiagnosticExos via GAS |
-| `send_test_email` | ✅ Admin — envoie email J+0 test à l'adresse du fondateur (vérifie alias no-reply@matheux.fr) |
-| `mark_all_test`   | ✅ Admin one-shot — marque tous les comptes non-admin sans IsTest comme IsTest=1 |
-| `generate_brevet_session` | ✅ NOUVEAU — génère session brevet (chapitres sélectionnés → exos mélangés) |
-| `save_brevet_result` | ✅ NOUVEAU — sauvegarde résultat dans BrevetResults (isolé de Progress/Scores) |
-| `publish_admin_brevet` | ✅ NOUVEAU — admin publie brevet blanc personnalisé (chapitres + message → col PendingBrevet Users) |
-| `get_brevet_chapters` | ✅ NOUVEAU — liste chapitres disponibles dans BrevetExos |
-| `request_brevet_chapter` | ✅ NOUVEAU — élève demande chapitre manquant → Insights |
-| `import_brevet_exos` | ✅ One-shot admin — pousse exercices dans BrevetExos |
-
----
-
-## 📋 Structure Google Sheet — état 13 mars @41
-
-### Onglets Nicolas (bleus)
-```
-Vue Élèves    ← PRINCIPAL — 1 ligne/élève, ACTION NICOLAS en col A (gelée)
-                ⚡ ACTION NICOLAS | Prénom | Niveau | Dernière connexion | Streak 🔥 |
-                Chapitres diagnostiqués | Chapitre en cours | Nb exos faits | Score global % |
-                Chapitres fragiles 🔴 | Taux réussite semaine |
-                📚 Prochain chapitre (Nicolas) | 📧 Rapport envoyé le (Nicolas) | Code (masqué)
-
-Log Exercices ← DÉTAIL — 1 ligne/exercice, récent en haut, énoncé 60 chars
-                Date | Prénom | Niveau | Chapitre | Énoncé | Résultat |
-                Temps (sec) | Nb indices | Formule ouverte | Mauvaise option
-
-Users         → Code | Prénom | Niveau | Email | PasswordHash | DateInscription | IsAdmin | Premium | TrialStart | PremiumEnd | IsTest | PendingBrevet
-```
-(col PendingBrevet = JSON `{chapitres:[], message, date}` quand admin publie un brevet blanc)
-
-### Onglets GAS uniquement (gris — ne pas toucher)
-```
-Progress            → Code | Niveau | Chapitre | Score | NbExos | NbErreurs | DernierePratique | Statut | Streak
-DailyBoosts         → Code | Date | BoostJSON | ExosDone
-Curriculum_Officiel → Niveau | Categorie | Titre | Icone | ExosJSON
-DiagnosticExos      → Niveau | Categorie | ExosJSON
-Scores              → Code | Prénom | Niveau | Chapitre | NumExo | Énoncé |
-                       Résultat | Temps(sec) | NbIndices | FormuleVue | MauvaiseOption | Draft | Date
-RemediationChapters → Code | Categorie | Version | ExosJSON | Insight | Date
-BrevetExos          → Niveau | Categorie | ExosJSON  (format: {q,opts:[],ans:int,hint,diff})
-BrevetResults       → Code | Prénom | Niveau | Date | Chapitres | NbQuestions | NbCorrect | Score% | DetailJSON | Message
-```
-
-### Archivés (données conservées)
-```
-_ARCHIVE_Queue / _ARCHIVE_Prerequisites / _ARCHIVE_Rapports / _ARCHIVE_Pending_Exos
-```
-
-### Règles ⚡ ACTION NICOLAS (rebuildSuivi — état @51)
-| Valeur | Condition | Priorité |
-|---|---|---|
-| `🔴 BLOQUÉ` | inactif >7j ET score <40 sur tous chapitres | 1 |
-| `⚡ BOOST TERMINÉ → préparer le suivant` | ExosDone==5 ET pas de boost pending (fix @41 : inclut boost du jour) | 2 |
-| `✅ CHAPITRE TERMINÉ → assigner la suite` | Progress NbExos ≥20 ET cols 📝 Nicolas vides | 3 |
-| `📝 BREVET EN ATTENTE → à faire` | PendingBrevet non vide ET niveau 3EME | 3b |
-| `👍 RAS` | sinon | 4 |
-
-Plusieurs règles simultanées → toutes affichées en pills, couleur card = plus urgente.
-`rebuildSuivi(code)` appelé dans `save_score` et `save_boost`.
-`writeToHistorique(p)` appelé dans `save_score` — insert en ligne 2 (récent en haut), énoncé réel.
-
-### 👁 Suivi — structure colonnes (GAS : Code en col U = index 20 1-based)
-```
-A: ⚡ ACTION  B: Prénom  C: Niveau  D: Dernière connexion
-E: Chapitre 1  F: Statut 1  G: 📝 Ch1 suite (Nicolas)
-H: Chapitre 2  I: Statut 2  J: 📝 Ch2 suite (Nicolas)
-K: Chapitre 3  L: Statut 3  M: 📝 Ch3 suite (Nicolas)
-N: Chapitre 4  O: Statut 4  P: 📝 Ch4 suite (Nicolas)
-Q: Boost consommé?  R: 📝 Prochain boost (Nicolas)
-S: 📧 Rapport envoyé / Chap5+  [T: Code masquée]
-```
-→Nouveau Ch : indices [6,9,12,15] | →Boost : index 18
-
----
-
-## 🗺️ ROADMAP PAR BLOCS
-
-### BLOC 1 — Socle technique ✅ TERMINÉ
-- [x] generate_diagnostic / generate_daily_boost / isFirstDay / boostExistsInDB ✅
-- [x] Curriculum_Officiel : 580 exos (29 chap × 20) — +5 chapitres poussés 12 mars ✅
-- [x] DiagnosticExos : 58 exos (29 chap × 2 lvl) ✅
-- [x] Bugs T1→T7 post-tests utilisateur tous corrigés ✅
-- [x] BLOC B — UX Progression & Mobile (B1 Constellation supprimée, B2 Progression, B3 fragiles, B4 mobile) ✅
-
-### BLOC 2 — Fiabilité & workflow quotidien ✅ TERMINÉ
-- [x] `generateMorningReport()` + trigger GAS 7h ✅
-- [x] `rebuildSuivi(code)` + `writeToHistorique(p)` ✅
-- [x] `login()` injecte `nextChapter` + `nextBoostTopic` depuis colonnes Nicolas ✅
-- [x] Mode Admin : get_admin_overview + publish_admin_boost + publish_admin_chapter ✅
-- [x] Dashboard admin : redirect isAdmin → "Mes Élèves", cartes urgence ✅
-- [x] Modal élève : tous les exos, accordion, badge DIAG/BOOST, copyAdminPrompt complet ✅
-- [x] Modal admin refondu : DIAG/CH séparés, chapitres triés (terminés>en cours>diag), boost lock (pending/in_progress/done) ✅
-- [x] ExosDone dans DailyBoosts col D ✅
-- [x] chapLocked sur chapitre actif uniquement + section archivés modal ✅
-- [x] Cap 20 exos chapitresDetail + cohérence renderArchiveSection ✅
-- [x] Colonne `Premium` + `TrialStart` dans Users ✅
-- [x] Essai 7 jours full droits sans carte ✅ (checkTrialStatus, badge J-X, overlay expiry, onboarding 3 slides)
-- [x] Messages & encouragements ultra-ado Game Boy Chill ✅ (EASY×7 + HARD×3 + feedbacks partout)
-- [x] Flow landing + diagnostic GAS complet ✅ (rSection CALIBRAGE, guest generate_diagnostic, queue 24h, auto-login)
-- [x] Landing vendeuse refaite ✅ (hero émotionnel, 4 cartes, témoignages, CTA final)
-- [x] CORS fixé : plus de Content-Type header sur les fetch GAS ✅
-- [x] LocalStorage : auth uniquement, données toujours depuis GAS ✅
-- [x] Backend pills priorité ⚡>✅>🔴>👍 + boostPending + chapTermine ✅
-- [x] Bouton "Copier le dernier boost JSON" dans modal admin ✅
-- [x] Smart question count : `_pickDiagExos()` — 1ch→4q, 2ch→6q, 3ch→8q, 4+→10q, ≥1/chap ✅
-- [x] Fix "Diagnostic - 6ème" après flow guest : calDone=true + S.calState=null avant initApp ✅
-- [x] Quiz inline landing step 3 : fond sombre + card blanche, `_flowRenderQuestion()` / `_flowAnswerOpt()` ✅
-- [x] Tutorial première question (landing + rSection CALIBRAGE idx===0) ✅
-- [x] Step 4 guest adapté dynamiquement : score affiché, sans mot de passe, `_flowActivateStep4Guest()` ✅
-- [x] Suppression `_flowLaunchAppDiag()`, `_flowShowGuestRegister()`, `S._guestMode` ✅
-- [x] Fix `_onbRender` : `background:` prefix sur `sl.color` (texte blanc sur fond blanc) ✅
-- [x] Fix quiz inline CTA : `class="mc rdy"` sur énoncé (opacity:0 → visible immédiatement) ✅
-- [x] Onboarding guest cohérent : "Ton boost du jour est prêt !" + "Une chose à faire aujourd'hui" ✅
-- [x] boostFromDiag() déclenché en background pendant onboarding guest ✅
-- [x] Bypass limite : emails @matheux.fr → IsTest=1 auto, jamais comptés ✅
-- [x] Colonne `IsTest` dans Users — 110 comptes existants migrés IsTest=1 via Python ✅
-- [x] Limite bêta portée à 50 vrais élèves (IsTest=0, non-admin) ✅
-- [x] Dashboard admin : compteur X/50 coloré + section 🧪 Comptes test repliable ✅
-- [x] UX post-boost : confettis + auto-redirect chapitres 5s + card "Prochain dispo demain 🔥" ✅
-- [x] Hints/Formule : contraste amber-800 + fond coloré ✅
-- [x] Admin BOOST TERMINÉ fix (today inclus) + actions mises à jour instantanément ✅
-- [x] Modal admin : indicateurs email J0/J3/J7 depuis TrialStart ✅
-- [x] Fix rebuildSuivi : BOOST TERMINÉ le jour même (suppression `lastBoostDate < today`) ✅
-- [x] Fix login : DailyBoosts exosDone=0 créé → admin voit ⏳ En attente ✅
-- [ ] Créer adresse contact@matheux.fr (hébergeur email + alias Gmail)
-- [ ] Validation inputs côté GAS (format email, longueur champs)
-- [ ] Rate limiting basique dans doPost
-
-### BLOC 2b — Rapport matin ✅ IMPLÉMENTÉ
-Fonction `generateMorningReport()` dans backend.js — trigger 7h quotidien.
-
-| Statut | Critères |
-|---|---|
-| ✅ ACQUISE | score > 80 + statut='maitrise' + 0 HARD depuis 14j + ≥3 sessions |
-| 🔴 BLOQUEE | score < 40 + pas d'amélioration sur 2 semaines + ≥4 sessions |
-| 🟡 FRAGILE | score < 40 OU ≥3 HARD cette semaine |
-| 📈 EN_PROGRESSION | taux erreur cette semaine < semaine passée (−10 pts) |
-| 📘 EN_COURS | défaut |
-
-Email sujet `[Matheux ⚡ ACTION]` si fragiles/bloquées. Stocké dans onglet `Rapports`.
-
-### BLOC 2c — Génération IA automatique ✅ IMPLÉMENTÉ (désactivée en prod)
-Flux : `generateMorningReport(5h)` → analyse → `generatePendingExos()` → `Pending_Exos` → fondateur met YES → `processPendingAtLogin()` au login élève.
-Onglet `Pending_Exos` : `Code | Prénom | Niveau | Chapitre | Type | ExosJSON | DateGeneree | Validé | DateValidation`
-
-### BLOC 3 — Juridique & paiement 🟢
-- [x] Mentions légales (`mentions-legales.html`) — SIRET 837 763 713 00059, données mineurs, CNIL ✅
-- [x] CGU (`cgu.html`) — mineurs, essai 7j, résiliation, clause bêta 40 familles ✅
-- [x] CGV (`cgv.html`) — 9,99€/mois, droit de rétractation 14j ✅
-- [x] Politique confidentialité (`politique-confidentialite.html`) — RGPD renforcé mineurs ✅
-- [x] Politique cookies (`politique-cookies.html`) — localStorage + GA4 consentement explicite ✅
-- [x] Case consentement parental à l'inscription (auth + landing step 4) ✅
-- [x] Footer légal intégré sur landing + app ✅
-- [x] Bannière cookies RGPD (consentement avant chargement GA4) ✅
-- [x] GA4 conditionnel (chargé seulement après consentement, IP anonymisée) ✅ — Measurement ID **G-7R2DW4585Y** intégré
-- [x] Limite bêta 40 familles dans register() GAS → Waitlist sheet ✅
-- [x] Email bienvenue J+0 automatique au register() ✅
-- [x] Page premium.html — offre + lien email contact@matheux.fr ✅
-- [x] Overlay trial → lien Stripe direct `https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00` ✅ (`__trialProlonger()` — bouton "9,99 €/mois")
-- [x] Email J+7 → lien Stripe direct ✅
-- [x] Emails envoyés depuis `no-reply@matheux.fr` via GmailApp ✅
-- [ ] Webhook Stripe → colonne `Premium` dans Users
-
-### BLOC 4 — Marketing & conversion 🟢
-- [x] Email bienvenue J+0 déclenché au register() (voir BLOC 3) ✅
-- [ ] Activer triggerDailyMarketing : Apps Script UI → Déclencheurs → Chaque jour 9h-10h
-- [ ] Séquence J+3, J+7 activée via triggerDailyMarketing (code complet — activer trigger)
-- [ ] Témoignages vrais élèves sur la landing
-- [x] Page pricing comparative (cours particulier vs Matheux vs autres applis) ✅
-- [x] Section fondateur Nicolas sur landing ✅
-- [x] Carousel testimonials mobile snap-scroll ✅
-
-### BLOC 5 — Automatisation & scale 🔵
-- [x] clasp push automatique (`./watch_deploy.sh`) ✅
-- [ ] Agent analyse lacunes quotidien automatique
-- [ ] Agent génération boost automatique
-- [ ] Agent rapport parents (email hebdo)
-- [x] Mode "Préparation Brevet" (GAS generate_brevet + code conservé) ✅ — **Mode Brevet Blanc refait @51** : BrevetExos séparés (15ch×8exos), sélection par chapitre, quiz sans indices, résultats détaillés, admin publie brevet sur mesure, option B demande chapitre ✅
-- [x] Mode Révision niveau inférieur (GAS generate_revision + code conservé, **UI désactivé demande Nicolas**) ✅
-- [x] Système feedback élève (submit_feedback GAS + modal + onglet Insights) ✅
-- [x] 5 chapitres prioritaires poussés en prod (Probabilités 3EME, Racines carrées 3EME, Nombres décimaux 6EME, Fonctions linéaires 4EME, Statistiques 6EME) ✅
-- [ ] Migration Sheets → vraie BDD si >50 users simultanés
-
----
-
-## ✅ Ce qui fonctionne bien (ne pas toucher sans raison)
-- CSS/UI complet, mobile-first, animations propres (pulseGentle, toastIn, popIn)
-- Landing page : hero direct (problème→solution), 3 faits, prix seul (9,99€), CTA final — toutes sections fictives/comparaison supprimées
-- Mode Brevet Blanc : onglet 🎓 Brevet (3EME only) — sélection chapitres BrevetExos, quiz 8q/chap sans indices, résultats détaillés par chapitre, save_brevet_result isolé (hors Progress/Scores), admin publie brevet sur mesure via publish_admin_brevet, option B "demander chapitre" → Insights
-- Mode Révision : GAS generate_revision (niveau inférieur, chapitres faibles) — **code complet conservé, UI désactivé (card masquée, launchRevision() bloqué)**
-- Feedback non-intrusif : bouton "Signaler" post-réponse + modal 3 types + GAS submit_feedback → onglet Insights
-- Auth register + login + auto-login silencieux
-- Scores enrichis : temps, wrongOpt, indices, formule (v23)
-- Swipe gauche → exercice suivant
-- Admin panel triple-clic logo → redirect auto isAdmin
-- Gamification : XP / streak / mastery ring SVG
-- MathJax v3 avec fallback 2.5s + overflow-x-auto
-- Chrono par exercice `exoStartTime` + `_timerPaused` (visibilitychange/blur/focus)
-- Nudge pills après 20s d'inactivité
-- Tableau blanc bottom sheet avec symboles maths
-- Vue Progression : barre confiance, dates relatives, badge Maîtrisé
-- Bannière prérequis fragiles (ambre) avant exercices, mis en cache par session
-- Auto-indices sur erreur : `autoShowHelp()` injecte HTML direct (pas de typewriter)
-- Badges niveau colorés + compteur animé dans `rSection()`
-- Essai 7j : badge J-X, overlay bloquant, onboarding 3 slides
-- Flow landing CTA : niveau → chapitres → quiz inline step 3 → form step 4 → switch app → onboarding → chapitres
-- `_pickDiagExos(exos, chapCount)` : smart count (1ch→4q … 4+→10q), ≥1 par chapitre
-- `_flowRenderQuestion(idx)` : renderer MCQ inline (card blanche sur fond sombre landing), tutorial Q0
-- `_flowActivateStep4Guest()` : adapte step 4 dynamiquement (score, sans MDP) → `_flowGuestRegister()`
-- `rSection('CALIBRAGE', ...)` : banner tutorial sur idx===0 (app normale)
-- Messages ton ado : EASY×7 HARD×3 + abandon/chapitre/boost/nudge/MotProf
-- Modal admin : DIAG/CH séparés, chapitres triés, boost lock intelligent, copyBoostJSON
-- `relDate`/`relDateAdmin` robuste : formats FR/ISO/timestamp, plafond "2 ans"
-
----
-
-## ⚠️ Contraintes techniques
-- Google Sheets : fragile à ~20 users simultanés, quota Apps Script 6min/call
-- Données de mineurs : RGPD renforcé, consentement parental obligatoire
-- Hash MDP côté client uniquement → pas de salt côté serveur (acceptable MVP)
-- Pas de réécriture complète — patches chirurgicaux seulement
-- CORS GAS : ne jamais ajouter `Content-Type` header sur les fetch (mode no-cors)
-- `source='boost'` dans chapitresDetail toujours `'chapter'` côté GAS → matching par position (index 0-4)
-- Guest flow CTA : mot de passe auto-généré `Matheux2026!` (hash SHA-256) — non communiqué à l'user
-- `_flowGuestRegister()` lit `#fl-name` / `#fl-email` (step 4 landing), pas de champ password
-
-## 💰 Modèle économique
-- Freemium 7 jours → 9,99€/mois
-- Cible : 50 clients = ~500€ MRR
-- Paiement : Stripe simple
-
----
-
-## 📁 docs/ — Fichiers clés (nettoyés 14 mars @48)
-| Fichier | Contenu |
-|---|---|
-| `rapport-condense-2026-03-12.md` | Référence état @41 (historique) |
-| `notice-utilisation.md` | Guide complet site pour Nicolas — **Version @48** |
-| `programme-français-verif.md` | Couverture Eduscol ~85%, 12 notions manquantes identifiées |
-| `scenarios_comportement.md` | Référence scénarios de test comportement élèves |
-| `archive/` | audit_complet.md + new_chapters_2026-03-12.json + docs historiques |
-
-### Python scripts actifs (algebra/)
-- `sheets.py` : bibliothèque accès Google Sheets (Sheet Python/staging uniquement)
-- `rebuild_sheet.py` : reconstruit 👁 Suivi et 📋 Historique depuis données réelles
-- `create_demo_student.py` : crée profil élève démo + simule diagnostic + boost (pour test workflow)
-- `create_5_students.py` : crée 5 profils variés (perfectionniste/progrès/bloquée/régulier/hésitante) — `simulate_next_day` prend `code` direct
-- `test_full_v2.py` : suite de tests GAS complète — 73/74 PASS (99%)
-- `cleanup_prod.py` : nettoyage complet base prod (IRRÉVERSIBLE — demande confirmation)
-- `fix_lucas_ines.py` : ajuste profils démo Lucas (CHAPITRE TERMINÉ only) et Inès (BOOST + CHAPITRE TERMINÉ)
-- `import_brevet_exos.py` : pousse brevet_exos_3eme.json → BrevetExos GAS (one-shot, 120 exos déjà importés)
-- `brevet_exos_3eme.json` : 15 chapitres × 8 exos = 120 exercices style brevet 3EME (format {q,opts,ans,hint,diff})
-
-> Scripts archivés dans `scripts_archive/` : test_complet.py, test_workflows.py, test_scenarios.py, simulation_5jours.py, audit_formats.py, push_new_chapters.py, push_via_gas.py
-
-## ⚠️ Actions manuelles requises (12 mars 2026 @50)
-- ✅ GAS @50 déployé (no change backend — frontend only)
-- ✅ 29 chapitres × 20 exos en prod (580 exos)
-- ✅ GA4 `G-7R2DW4585Y` actif, Stripe TEST actif
-- ✅ Base prod nettoyée — 1 seul compte admin (admin@matheux.fr)
-- ✅ 5 profils élèves réalistes créés (create_5_students.py)
-- **⚡ Stripe PROD** : remplacer `test_14AdRacgw76N7vQcxqa3u00` dans index.html + backend.js + cgv.html (3 occurrences)
-- **⚡ Créer contact@matheux.fr** + alias no-reply@matheux.fr (hébergeur email + Gmail)
-- **⚡ Apps Script** → Déclencheurs → `triggerDailyMarketing` → Chaque jour 9h-10h
-
----
-
-## 📅 Historique sessions — condensé
-
-| Date | GAS | Résumé | Commits clés |
-|---|---|---|---|
-| 9 mars | @5 | DiagnosticExos refaits, 20 profils test créés, bugs T1-T7, test flux complet | — |
-| 9→10 mars nuit | @8 | Prompt génération refondu, algo sélection exos, docs/ 8 fichiers | 2f0d345 aaa8b2c d69c108 68b18a3 dbbf0a2 |
-| 10 mars matin | @10 | login() nettoyé, generateDailyBoost bug hors-scope corrigé, 4 onglets archivés | — |
-| 10 mars soir | @15 | rebuildSuivi(), writeToHistorique(), rebuild_sheet.py, structure 👁 Suivi 20 cols | — |
-| 10 mars nuit | @13 | Audit 95% test_complet.py, 4 bugs UX (boostConsumed, relDate, renderChapComplete) | d6aae86 025cbb9 |
-| 11 mars nuit | @19 | Landing SEO+trial inline, messages ado, test_scenarios.py 6/6, email J+3/J+7, bug date boostExistsInDB fixé | — |
-| 11 mars matin | @22 | Admin dashboard refondu, ExosDone DailyBoosts, rebuildSuivi règles revues, modal élève enrichi, données 20 scénarios | 6db9e7c 5bc72e5 |
-| 11 mars après-midi | @28 | Fix chapLocked actif uniquement, section archivés modal, cap 20 exos chapitresDetail, essai 7j complet | ab58d6d 72d200d |
-| 11 mars soir | @30 | CORS fix, landing CALIBRAGE+flow guest, admin modal DIAG/CH, pills prioritaires, landing vendeuse, essai 7j onboarding | 80a247f 50c7bdb 0da6a26 a2ee071 4e1a30e 6564c30 ab58d6d 72d200d a66879c 61b2924 f917a29 7e63b0f 372ac76 d7be47f |
-| 12 mars | @24→23 | Git reconstruit (12a61e7), UX admin/élève, boostJSON copie, rebuild_sheet.py synchronisé, fix auto-login, boostConsumed | 12a61e7 c22f471 2a808d3 9421ef6 b96f9d8 |
-| 12 mars (soir) | @30 | Smart question count, fix Diagnostic-6ème guest, onboarding adapté, boost auto guest | 9524e3a ac046e4 |
-| 12 mars (nuit) | @30 | Quiz inline landing (step 3 card blanche), tutorial Q1, fix onbRender bg, cohérence messages | 544a112 |
-| 12 mars (nuit 2) | @30 | Simulation 20 profils/5j, messages parent/ado refondus, BLOC 3 juridique complet (5 pages + footer + consentement) | — |
-| 13 mars | @31 | BLOCS 4-5 : landing pricing+fondateur+carousel, programme-français-verif.md (66% couv.), audit_formats.py, Mode Brevet (GAS+UI 3 screens), Mode Révision (GAS+card), Feedback (modal+Insights tab), 7 bugs fixes (showT/SHEET_ID/Array.find/chkComp/togCat/res2/sendScore), test_workflows.py 37/38 PASS (97%) | — |
-| 12 mars 2026 | @34 | Désactivation UI Brevet+Révision (code conservé), 5 chapitres poussés en prod (100 exos), verifyAdmin fix (TRUE/1), rapport condensé, notice refaite, programme ~85% | — |
-| 13 mars 2026 | @35 | BLOC 3 🟢 complet : waitlist 40 fam. GAS, email J+0 auto, GA4 consentement, bannière cookies RGPD, premium.html, trial→premium.html, CGU clause bêta, politique-cookies GA4 | — |
-| 13 mars 2026 | @36 | GA4 G-7R2DW4585Y intégré, overlay trial → Stripe direct 9,99€/mois, email J+7 → Stripe, GmailApp from no-reply@matheux.fr, GA4 ID dans politique-cookies.html | — |
-| 13 mars 2026 | @37 | Dashboard admin : bloc "Outils Fondateur" en haut (Stripe TEST badge + btn, Email test via send_test_email GAS) | — |
-| 13 mars 2026 | @38 | Fix quiz CTA invisible (mc rdy), bypass 40-fam pour @matheux.fr, note contact@matheux.fr dans dashboard | — |
-| 13 mars 2026 | @39 | Colonne IsTest Users, limite 50 vrais élèves, dashboard compteur X/50 + section test repliable, mark_all_test GAS, migration Python (110 comptes → IsTest=1) | — |
-| 13 mars 2026 | @40 | UX post-boost : confettis + auto-redirect chapitres 5s + boost card "Prochain dispo demain 🔥" ; Hints/Formule : contraste amber-800 + fond coloré (pill + autoShowHelp + showHintInline + revFInline) ; Admin BOOST TERMINÉ : fix condition (today inclus) ; Admin modal : indicateurs email J0/J3/J7 (trialStart GAS) | — |
-| 13 mars 2026 | @41 | Fix admin : actionPriority + actions mis à jour localement après publishBoost/publishChapter (compteur instantané) ; rebuildSuivi : suppression `lastBoostDate < todayStr` (cohérence avec getAdminOverview) ; login() : crée DailyBoosts exosDone=0 à la livraison du boost → admin voit ⏳ En attente au lieu de faux BOOST TERMINÉ | — |
-| 14 mars 2026 | @44 | UX landing quiz : même style que boost (help-pill CSS, typewriter) ; post-boost review : indices+formule pré-déployés (_previewHelp) ; admin 3 onglets (À faire/Traité/Test) + BLOQUÉ section repliable ; email J+0 HTML branded + archive 📧 Emails GAS ; test_full_v2.py 73/74 (99%) — admin=HMD493, publish API: targetCode+exos directs, login: nextBoost ; landing : sections fictives supprimées (Lucas/témoignages/fondateur) | — |
-| 14 mars 2026 | @45 | Fix stats Progression : score% = complétion (nbExos/total) au lieu du score qualité GAS (1/20=5% au lieu de 10%) ; message reprise chapitre simplifié (suppression double 💪 + stats redondantes) ; revFInline : fmtL() sur formule avant typewriter → LaTeX nu rendu correctement | ce423ae |
-| 14 mars 2026 | @47 | Profil démo Théo Lambert 4EME (code 3CZRS6, theo.lambert.2026@gmail.com, Algebre2026!) — diagnostic + boost simulés via create_demo_student.py ; GAS simulate_next_day (remet DailyBoosts date à hier) ; bouton "🔮 Simuler demain" (si ?sim=1 URL) ; boost done card : pulsation amber + compteur "dans Xh Ymn" + carte repliée auto ; header mobile : "Espace de" sur ligne séparée → prénom plus jamais tronqué ; generate_diagnostic injecte categorie dans chaque exo | — |
-| 14 mars 2026 | @48 | **Nettoyage base prod** : GAS cleanup_all (136 comptes supprimés, Progress/DailyBoosts/Scores/Historique/Emails/Insights/Suivi vidés, onglets _ARCHIVE_Prerequisites + Programme_Officiel + Waitlist supprimés) ; scripts Python archivés dans scripts_archive/ (7 scripts obsolètes) ; audit_complet.md + new_chapters_2026-03-12.json → docs/archive/ ; notice-utilisation.md + CLAUDE.md mis à jour @48 | f266559→ |
-| 12 mars 2026 | @50 | **Dark mode admin** (toggle 🌙/☀️, localStorage, 44 règles CSS `body.adm-dark`) ; **gamif-row hidden** pour admin (streak/XP masqués) ; **modales contextuelles** : BOOST action → section chap cachée, CHAPITRE action → section boost cachée, double action → les deux affichés, bandeau contextuel ⚡/📚/⚡📚 ; **create_5_students.py** : 5 scénarios réalistes (Emma 6EME perfectionniste VD3M67, Lucas 5EME progrès F3P5ZW, Inès 3EME bloquée 8VCMMQ, Théo 4EME régulier CFQGB6, Chloé 5EME hésitante PACVJS) ; **Polish UX** : 9 messages corrigés (tu/ton cohérent, faute genre streak, _KO, toast abandon, headlines boost/diag) + `pulseNewChap` animation douce + bandeau guide premier chapitre | eab5bef bf1b2be 942b0c2 |
-| 15 mars 2026 | @51 | **Mode Brevet Blanc 🎓 — COMPLET** : fix_lucas_ines.py (Lucas=CHAPITRE TERMINÉ, Inès=BOOST+CHAPITRE TERMINÉ) ; backend.js +6 actions (generate_brevet_session, save_brevet_result, publish_admin_brevet, get_brevet_chapters, request_brevet_chapter, import_brevet_exos) ; onglets BrevetExos+BrevetResults GAS ; login() injecte pendingBrevet ; rebuildSuivi : pill "📝 BREVET EN ATTENTE" 3EME ; getAdminOverview : brevChapitresDisponibles + pendingBrevet/lastBrevetResult par élève ; index.html : onglet 🎓/📝 Brevet (3EME only + pendingBrevet), sélection chapitres, quiz sans indices, résultats par chapitre + "refaire" + "demander chapitre" ; modal admin : section brevet par élève (checkboxes + message + publier) ; brevet_exos_3eme.json : 15 chap × 8 exos = 120 exercices style brevet programme français 2026 ; import_brevet_exos.py : 120 exos poussés en prod | — |
-| 13 mars 2026 | @52 | **GOD MODE AUDIT — 4 bugs critiques corrigés** : (1) ExosDone DailyBoosts jamais mis à jour → saveScore incrémente ExosDone quand source=BOOST ; (2) Boost admin daté demain au lieu d'aujourd'hui → login() utilise todayStr ; (3) login() isAdmin/premium fragiles (parseInt only) → vérification robuste true/TRUE/1/'1' ; (4) generateDailyBoost écrit 3 cols → 4 cols avec ExosDone=0. Audit complet ~10000 lignes (index.html + backend.js), 0 CORS violation, fetch BOOST OK, admin pills/rebuildSuivi cohérents. | — |
-
----
-
-## 🚦 Règle d'or chaque session
-1. Lire CLAUDE.md
-2. Identifier le BLOC actif et les priorités du jour
-3. Travailler uniquement dans ce périmètre
-4. Tester sur mobile avant commit
-5. Mettre à jour les checkboxes ici en fin de session
+| GAS URL | `https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec` |
+| Sheet ID (prod) | `1zLBajKVL8FUzy7aV2Myi9gYFEFJjnALkLAg0hbicuDk` |
+| Sheet ID (Python) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
+| GitHub | `https://github.com/NicoMPC/algebra` |
+| Stripe (TEST) | `https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00` |
+| GA4 | `G-7R2DW4585Y` |
