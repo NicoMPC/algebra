@@ -40,6 +40,7 @@ NAVIGATEUR (index.html)              GOOGLE APPS SCRIPT (backend.js)
 Le fichier est organisé en sections :
 
 1. **CSS** (~1500 lignes) : variables CSS custom, Tailwind utilities, animations (`pulseGentle`, `toastIn`, `popIn`, `pulseNewChap`)
+   - ⚠️ **Règle spécificité** : ne JAMAIS utiliser de sélecteurs ID (`#flow-sX`) pour définir `display` sur des éléments qui utilisent `.hidden` de Tailwind — l'ID (spécificité `1,0,0`) écrase la classe `.hidden` (`0,1,0`). Utiliser des classes (`.flow-step:not(.hidden)`) à la place.
 2. **HTML** : structure minimale (header, main, footer, modales)
 3. **JavaScript** (~3500 lignes) : logique applicative complète
 
