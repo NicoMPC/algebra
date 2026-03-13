@@ -116,7 +116,9 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @60
+### Actions GAS — état @63
+
+> @63 : rate limiting global (60/min, 15/min login/register), validation inputs saveScore, 6 bugfixes simulation QA.
 
 | Action | Description | Statut |
 |---|---|---|

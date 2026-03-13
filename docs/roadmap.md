@@ -4,12 +4,14 @@
 
 ---
 
-## État global — 13 mars 2026
+## État global — 14 mars 2026
 
 **Matheux est fonctionnel à 100% côté code. Seuls manques : Stripe PROD + 2 actions manuelles.**
 
 > ✅ **Audit + bugfixes réalisés le 13 mars 2026** (simulation 7j × 5 profils sur GAS réel).
 > BUG-01 à BUG-12 corrigés dans backend.js @60. Voir [test_debug.md](test_debug.md).
+> ✅ **Simulation QA 40 élèves le 14 mars 2026** — 6 bugs supplémentaires corrigés (BUG-SIM-01→06).
+> GAS @63. Voir [test-simulation-2026-03.md](test-simulation-2026-03.md).
 
 | Dimension | État |
 |---|---|
@@ -21,7 +23,7 @@
 | Analytics | ✅ GA4 RGPD-compliant |
 | Limite bêta | 50 vrais élèves (IsTest=0) |
 | Messages élèves | ✅ Streak alert, boost en cours, chapitre maîtrisé, milestones 3/7j |
-| Admin smart | ✅ GAS @60 — bugfixes audit, catégories capitale/secondaire, onglet Suivi, copie emails |
+| Admin smart | ✅ GAS @63 — bugfixes audit + simulation QA, rate limiting global, validation inputs |
 | Emails (@matheux.fr) | ⏳ **à créer manuellement** : contact@ + alias no-reply@ |
 
 ---
@@ -41,8 +43,8 @@
 | # | Action | Statut | Priorité |
 |---|---|---|---|
 | 0 | **Fixes bugs audit** (BUG-01 à BUG-12 dans [test_debug.md](test_debug.md)) | ✅ Corrigés @60 | 🟢 |
-| 1 | Validation inputs GAS (format email, longueur champs) | ❌ À faire | 🟢 |
-| 2 | Rate limiting basique dans doPost | ❌ À faire | 🟢 |
+| 1 | Validation inputs GAS (format email, longueur champs) | ✅ Corrigé @63 (register + saveScore) | 🟢 |
+| 2 | Rate limiting global dans doPost (60/min, 15/min sensibles) | ✅ Corrigé @63 | 🟢 |
 | 3 | **BUG-AUDIT-01** : `Systèmes_Équations 3EME exo#16` — `"a": "4 lapins"` absent des options numériques | ❌ À faire | 🔴 |
 | 4 | **BUG-AUDIT-02/03** : Boost `Transformations 5EME` + `Homothétie 4EME` — tiret unicode `−` vs `-` (réponse hors options) | ❌ À faire | 🔴 |
 | 5 | **BUG-AUDIT-04** : 5 doublons Boost/Curriculum (`Fonctions_Linéaires 4EME`, `Notation_Scientifique 3EME`, `Sections_Solides 4EME` ×2, `Puissances_10 6EME`) | ❌ À faire | 🟡 |
@@ -100,8 +102,8 @@
 - [x] Admin smart @59 : catégories capitale/secondaire/ras, onglet "📧 Suivi", emailsDue J+3/J+5/J+7, copie + marquage depuis modal
 - [x] Messages élèves : streak break alert, boost en cours nudge, chapitre maîtrisé, milestones streak 3j/7j
 - [x] Email J+5 "Encore 2 jours" dans séquence marketing
-- [ ] Validation inputs côté GAS (format email, longueur)
-- [ ] Rate limiting basique dans doPost
+- [x] Validation inputs côté GAS (format email, longueur) — @63
+- [x] Rate limiting global dans doPost — @63
 - [x] **BUG-01→12** — bugfixes audit corrigés @60 (13 mars)
 
 ### BLOC 2b — Rapport matin ✅
@@ -177,8 +179,8 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 ### Infrastructure
 - [x] GAS @60 stable — 27+ actions, bugfixes audit complets
 - [x] Google Sheet prod
-- [ ] Validation inputs GAS
-- [ ] Rate limiting doPost
+- [x] Validation inputs GAS (register + saveScore — @63)
+- [x] Rate limiting doPost (global 60/min, sensibles 15/min — @63)
 
 ### Acquisition & conversion
 - [x] Landing + flow CTA + quiz inline + onboarding
