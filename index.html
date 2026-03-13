@@ -2736,7 +2736,7 @@ function initApp(d, skipRender) {
     // Remplace le boost actuel par le nouveau contenu
     S.boost   = d.nextBoost;
     S.boostEx = true;
-    if (d.nextBoost.motProf) S.motProfBoost = d.nextBoost.motProf;
+    if (d.nextBoost.motProf) { S.motProfBoost = d.nextBoost.motProf; S._motProfScreen = 'boost'; }
     injectedCats.add('BOOST');
     // Vider done state boost
     S.boostConsumed = false;
@@ -5540,12 +5540,21 @@ function _buildModalHTML(st) {
         var boostMsg = '';
         if (boostPending) {
           boostMsg = '<div class="text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-xl px-3 py-2 mb-2">⏳ Un boost est en attente — ' + (st.prenom || 'l\'élève') + ' ne l\'a pas encore commencé.</div>';
-          // Bouton voir le contenu du boost en attente
+          // Aperçu structuré du boost en attente (insight + mot du prof + questions)
           if (pendingContent) {
-            boostMsg += '<details class="mb-2"><summary class="cursor-pointer text-[10px] font-semibold text-slate-500 py-1 select-none">👁 Voir le boost en attente</summary>';
-            boostMsg += '<pre class="text-[9px] text-slate-600 bg-slate-50 border border-slate-200 rounded-lg p-2 overflow-x-auto max-h-32 mt-1 whitespace-pre-wrap">' +
-              (typeof pendingContent === 'string' ? pendingContent : JSON.stringify(pendingContent, null, 2)).substring(0, 800) +
-              '</pre></details>';
+            var pc = typeof pendingContent === 'string' ? JSON.parse(pendingContent) : pendingContent;
+            boostMsg += '<details class="mb-2"><summary class="cursor-pointer text-[10px] font-semibold text-slate-500 py-1 select-none">👁 Voir le boost publié</summary>';
+            boostMsg += '<div class="mt-1 bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">';
+            if (pc.motProf) boostMsg += '<div class="text-[11px] text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-lg px-2 py-1.5"><span class="font-black">💬 Mot du prof :</span> ' + pc.motProf.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+            if (pc.insight) boostMsg += '<div class="text-[11px] text-slate-600 italic">✨ ' + pc.insight.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+            if (pc.exos && pc.exos.length) {
+              boostMsg += '<ol class="space-y-1 pl-2">';
+              pc.exos.forEach(function(e, i) {
+                boostMsg += '<li class="text-[10px] text-slate-500"><span class="font-semibold text-slate-700">' + (i+1) + '.</span> ' + (e.q || '').replace(/</g,'&lt;').replace(/>/g,'&gt;').substring(0,80) + (e.q && e.q.length > 80 ? '…' : '') + '</li>';
+              });
+              boostMsg += '</ol>';
+            }
+            boostMsg += '</div></details>';
           }
         } else if (boostInProgress) {
           boostMsg = '<div class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mb-2">🔄 Boost en cours — ' + curDone + '/5 exos faits. Attends qu\'il soit terminé.</div>';
@@ -5568,6 +5577,7 @@ function _buildModalHTML(st) {
             histHTML += '<span class="flex-shrink-0">' + stIcon + '</span>';
             histHTML += '<div><span class="font-semibold text-slate-500">' + b.date + '</span> — ' + b.exosDone + '/5';
             if (b.insight) histHTML += ' · <em class="text-slate-400">' + b.insight.substring(0, 60) + '</em>';
+            if (b.motProf) histHTML += '<div class="text-[10px] text-indigo-500 mt-0.5">💬 ' + b.motProf.substring(0, 80) + (b.motProf.length > 80 ? '…' : '') + '</div>';
             histHTML += '</div></div>';
           });
           histHTML += '</div></details>';

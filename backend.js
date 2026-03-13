@@ -2993,6 +2993,7 @@ function getAdminOverview(p) {
           date:      b.date,
           exosDone:  b.exosDone,
           insight:   b.boost ? (b.boost.insight || '') : '',
+          motProf:   b.boost ? (b.boost.motProf || '') : '',
           exos:      b.boost ? (b.boost.exos || []) : [],
           status:    status,
           isPending: b.exosDone === 0
@@ -3050,7 +3051,7 @@ function getAdminOverview(p) {
       var boostInProgressFlag = false;
       var boostDoneFlag      = false;
       var boostPendingContent = null;
-      // Chercher boost d'aujourd'hui
+      // Chercher boost d'aujourd'hui dans DailyBoosts
       var todayBoostEntry = userBoosts.find(function(b) { return b.date === todayStrAdmin; });
       if (todayBoostEntry) {
         if (todayBoostEntry.exosDone === 0) {
@@ -3060,6 +3061,17 @@ function getAdminOverview(p) {
           boostDoneFlag = true;
         } else {
           boostInProgressFlag = true;
+        }
+      }
+      // Si boost publié (col S non vide) mais pas encore récupéré par l'élève (DailyBoosts vide)
+      // → lire la col S du Suivi pour afficher le contenu dans la modale admin
+      if (!boostPendingContent && boostNew) {
+        var rawColS = row ? String(row[BOOST_NEW_IDX] || '').trim() : '';
+        if (rawColS) {
+          try {
+            boostPendingContent = JSON.parse(rawColS);
+            boostPendingFlag    = true;
+          } catch(e) {}
         }
       }
 
