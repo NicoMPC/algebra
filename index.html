@@ -641,6 +641,27 @@
     }
     #draft-text:focus { border-color:var(--p); background:#fff; }
 
+    /* ── CALCULETTE ──────────────────────────────────────── */
+    .calc-btn {
+      flex:1; border:1.5px solid #e2e8f0; border-radius:10px;
+      font-size:.9rem; font-weight:700; cursor:pointer; padding:0;
+      transition:all .1s; background:#f8fafc; color:#1e293b;
+      font-family:'DM Sans',sans-serif; -webkit-tap-highlight-color:transparent;
+      display:flex; align-items:center; justify-content:center; min-height:36px;
+    }
+    .calc-btn:active { background:#e2e8f0; transform:scale(.94); }
+    .calc-btn.op  { background:#eef2ff; color:#4338ca; border-color:#c7d2fe; }
+    .calc-btn.op:active { background:#c7d2fe; }
+    .calc-btn.eq  { background:linear-gradient(135deg,#4338ca,#6366f1); color:white; border:none; }
+    .calc-btn.eq:active { opacity:.85; }
+    .calc-btn.clr { background:#fee2e2; color:#dc2626; border-color:#fca5a5; }
+    .calc-btn.clr:active { background:#fca5a5; }
+    .calc-btn.spec{ background:#f0fdf4; color:#059669; border-color:#a7f3d0; font-size:.75rem; }
+    .calc-btn.spec:active { background:#d1fae5; }
+    .calc-btn.copy{ background:#1e293b; color:white; border:none; font-size:.68rem; border-radius:10px; }
+    .calc-btn.copy:active { background:#334155; }
+    .calc-row { display:flex; gap:5px; flex:1; }
+
     /* ── PILLS INDICES & FORMULE ─────────────────────────── */
     .help-pill {
       display:inline-flex; align-items:center; gap:.35rem;
@@ -1350,58 +1371,48 @@
 
   <!-- Header du tiroir -->
   <div class="px-4 py-3 border-b border-slate-200 flex justify-between items-center bg-slate-50 rounded-t-[24px] flex-shrink-0">
-    <div class="syne font-black text-slate-800 text-base flex items-center gap-2">✏️ Tableau de brouillon</div>
+    <!-- Onglets Brouillon / Calculette -->
+    <div class="flex gap-1 bg-slate-200 rounded-xl p-0.5">
+      <button id="tab-draft" onclick="switchDraftTab('draft')"
+              class="syne font-black text-sm px-3 py-1 rounded-[10px] bg-white shadow text-slate-800 transition-all">✏️ Brouillon</button>
+      <button id="tab-calc" onclick="switchDraftTab('calc')"
+              class="syne font-black text-sm px-3 py-1 rounded-[10px] text-slate-500 transition-all">🔢 Calculette</button>
+    </div>
     <button onclick="toggleDraft()"
             class="text-slate-500 font-semibold border border-slate-300 px-3 py-1.5 rounded-xl text-sm bg-white hover:bg-slate-50 transition-colors">
       Baisser ↓
     </button>
   </div>
 
-  <!-- Barre de symboles mathématiques (scrollable, sticky) -->
-  <div class="px-3 py-2 border-b border-slate-100 bg-white flex-shrink-0">
-    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 px-1">
-      Symboles → insérés dans le texte
+  <!-- PANEL BROUILLON -->
+  <div id="panel-draft" class="flex flex-col flex-1 overflow-hidden">
+    <!-- Barre de symboles contextuels -->
+    <div class="px-3 py-2 border-b border-slate-100 bg-white flex-shrink-0">
+      <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 px-1" id="sym-label">Symboles utiles</div>
+      <div id="sym-bar" class="flex gap-1.5 overflow-x-auto no-sb pb-1"></div>
     </div>
-    <div class="flex gap-1.5 overflow-x-auto no-sb pb-1">
-      <button class="sym-btn" onclick="insSymbol('²')">x²</button>
-      <button class="sym-btn" onclick="insSymbol('³')">x³</button>
-      <button class="sym-btn" onclick="insSymbol('√')">√</button>
-      <button class="sym-btn" onclick="insSymbol('×')">×</button>
-      <button class="sym-btn" onclick="insSymbol('÷')">÷</button>
-      <button class="sym-btn" onclick="insSymbol('π')">π</button>
-      <button class="sym-btn" onclick="insSymbol('Δ')">Δ</button>
-      <button class="sym-btn" onclick="insSymbol('θ')">θ</button>
-      <button class="sym-btn" onclick="insSymbol('≈')">≈</button>
-      <button class="sym-btn" onclick="insSymbol('∈')">∈</button>
-      <button class="sym-btn" onclick="insSymbol('∉')">∉</button>
-      <button class="sym-btn" onclick="insSymbol('∩')">∩</button>
-      <button class="sym-btn" onclick="insSymbol('∪')">∪</button>
-      <button class="sym-btn" onclick="insSymbol('→')">→</button>
-      <button class="sym-btn" onclick="insSymbol('≤')">≤</button>
-      <button class="sym-btn" onclick="insSymbol('≥')">≥</button>
-      <button class="sym-btn" onclick="insSymbol('≠')">≠</button>
-      <button class="sym-btn" onclick="insSymbol('⁰')">⁰</button>
-      <button class="sym-btn" onclick="insSymbol('¹')">¹</button>
-      <button class="sym-btn" onclick="insSymbol('²')">²</button>
-      <button class="sym-btn" onclick="insSymbol('³')">³</button>
-      <button class="sym-btn" onclick="insSymbol('⁴')">⁴</button>
-      <button class="sym-btn" onclick="insSymbol('₀')">₀</button>
-      <button class="sym-btn" onclick="insSymbol('₁')">₁</button>
-      <button class="sym-btn" onclick="insSymbol('₂')">₂</button>
-      <button class="sym-btn" onclick="insSymbol('(')">( )</button>
-      <button class="sym-btn" onclick="insSymbol('[')">[ ]</button>
-      <button class="sym-btn" onclick="insSymbol('{')">{ }</button>
+    <!-- Zone texte -->
+    <div class="flex-1 flex flex-col px-3 pt-3 pb-3 bg-white overflow-hidden">
+      <div class="flex justify-between items-center mb-1.5 flex-shrink-0">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">✏️ Tes calculs</span>
+        <button onclick="clrText()" class="text-xs font-bold text-rose-400 hover:text-rose-600 transition-colors">Effacer</button>
+      </div>
+      <textarea id="draft-text" style="flex:1;resize:none;min-height:100px"
+                placeholder="Écris tes calculs ici..."></textarea>
     </div>
   </div>
 
-  <!-- Zone texte / calculs (pleine hauteur) -->
-  <div class="flex-1 flex flex-col px-3 pt-3 pb-3 bg-white overflow-hidden">
-    <div class="flex justify-between items-center mb-1.5 flex-shrink-0">
-      <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">✏️ Tes calculs</span>
-      <button onclick="clrText()" class="text-xs font-bold text-rose-400 hover:text-rose-600 transition-colors">Effacer</button>
+  <!-- PANEL CALCULETTE -->
+  <div id="panel-calc" class="flex flex-col flex-1 overflow-hidden hidden">
+    <!-- Écran -->
+    <div class="px-3 pt-3 pb-2 bg-white flex-shrink-0">
+      <div id="calc-screen" class="bg-slate-900 text-white rounded-xl px-4 py-3 text-right font-mono text-xl min-h-[52px] flex flex-col justify-end overflow-hidden">
+        <div id="calc-expr" class="text-slate-400 text-xs truncate mb-0.5"></div>
+        <div id="calc-disp">0</div>
+      </div>
     </div>
-    <textarea id="draft-text" style="flex:1;resize:none;min-height:120px"
-              placeholder="Écris tes calculs ici, utilise les symboles ci-dessus..."></textarea>
+    <!-- Boutons calculette -->
+    <div class="flex-1 px-3 pb-3 overflow-y-auto" id="calc-btns"></div>
   </div>
 
 </div><!-- /draft-drawer -->
@@ -1522,6 +1533,8 @@ let S = {
   brevetExos: [],
   brevetChaps: [],
   revisionCats: [],   // categories qui sont des chapitres de révision (autre année)
+  dTab: 'draft',      // onglet actif tiroir brouillon: 'draft' | 'calc'
+  calc: null,         // état calculette { expr, needReset }
   // ── Mode Brevet @51 ──
   brevState:         null,    // null | 'select' | 'loading' | 'quiz' | 'results'
   brevAllChapters:   [],      // chapitres disponibles (BrevetExos)
@@ -3302,13 +3315,10 @@ function dismissPrereq(cat) {
 //  2. Démarre exoStartTime sur les exercices non répondus
 function goEx(cat, i) {
   // 1. Sauvegarde brouillon exercice actif
-  var _canvas   = document.getElementById('canv-draft');
   var _textarea = document.getElementById('draft-text');
-  if (S.cid && _canvas && _canvas.width > 0) {
-    S.drafts[S.cid] = {
-      img: _canvas.toDataURL(),
-      txt: _textarea ? _textarea.value : ''
-    };
+  if (S.cid && _textarea) {
+    S.drafts[S.cid] = { txt: _textarea.value };
+    localStorage.setItem('draft_' + S.cid, _textarea.value);
   }
 
   S.qv[cat] = parseInt(i);
@@ -4848,6 +4858,99 @@ function rSection(cat, data, idx, total, catDone) {
 // ══════════════════════════════════════════════════════════════
 // TABLEAU BLANC — BOTTOM SHEET
 // ══════════════════════════════════════════════════════════════
+
+// Détermine la catégorie active pour les symboles contextuels
+function getDraftCat() {
+  if (!S.cid) return '';
+  // Format cid: "4EME-Pythagore-0"
+  var parts = S.cid.split('-');
+  return parts.length >= 2 ? parts.slice(1, -1).join('-') : '';
+}
+
+// Retourne les symboles utiles selon niveau + chapitre
+function getContextSymbols(niv, cat) {
+  var c = (cat || '').toLowerCase();
+  // Base toujours présente
+  var base = [
+    {s:'²', l:'x²'}, {s:'√', l:'√'}, {s:'×', l:'×'}, {s:'÷', l:'÷'},
+    {s:'≈', l:'≈'}, {s:'≠', l:'≠'}, {s:'(', l:'( )'}, {s:'=', l:'='}
+  ];
+  var extra = [];
+
+  // Géométrie / angles / trigonométrie
+  if (/géomét|angle|triangle|périmètre|aire|pythagore|trigono|homothét|similaire|semblable|section|transformation|symétrie|volume|agrandissement/i.test(c)) {
+    extra = [{s:'°',l:'°'},{s:'π',l:'π'},{s:'θ',l:'θ'},{s:'∠',l:'∠'},{s:'△',l:'△'},{s:'⊥',l:'⊥'},{s:'∥',l:'∥'},{s:'³',l:'x³'}];
+  }
+  // Fractions / proportionnalité / conversions
+  else if (/fraction|proportion|conversion|décimal|rapport/i.test(c)) {
+    extra = [{s:'/',l:'/'},{s:'%',l:'%'},{s:'÷',l:'÷'},{s:'×',l:'×'}];
+  }
+  // Algèbre / équations / calcul littéral / inéquations / systèmes
+  else if (/équation|calcul.litt|inéquat|système|fonction/i.test(c)) {
+    extra = [{s:'≤',l:'≤'},{s:'≥',l:'≥'},{s:'<',l:'<'},{s:'>',l:'>'},{s:'→',l:'→'},{s:'²',l:'x²'},{s:'³',l:'x³'},{s:'x',l:'x'},{s:'y',l:'y'}];
+  }
+  // Puissances / notation scientifique / racines
+  else if (/puissance|notation.scient|racine/i.test(c)) {
+    extra = [{s:'²',l:'x²'},{s:'³',l:'x³'},{s:'⁴',l:'x⁴'},{s:'⁻¹',l:'x⁻¹'},{s:'√',l:'√'},{s:'∛',l:'∛'},{s:'×10',l:'×10'}];
+  }
+  // Statistiques / probabilités
+  else if (/stat|probab/i.test(c)) {
+    extra = [{s:'%',l:'%'},{s:'∑',l:'∑'},{s:'x̄',l:'x̄'},{s:'≤',l:'≤'},{s:'≥',l:'≥'},{s:'∈',l:'∈'}];
+  }
+  // Ensembles / nombres
+  else if (/nombre|entier|relat|ensemble/i.test(c)) {
+    extra = [{s:'∈',l:'∈'},{s:'∉',l:'∉'},{s:'∩',l:'∩'},{s:'∪',l:'∪'},{s:'⊂',l:'⊂'},{s:'ℤ',l:'ℤ'},{s:'ℝ',l:'ℝ'},{s:'ℕ',l:'ℕ'}];
+  }
+  // Thalès / géométrie analytique
+  else if (/thalès/i.test(c)) {
+    extra = [{s:'/',l:'/'},{s:'×',l:'×'},{s:'=',l:'='},{s:'AB',l:'AB'},{s:"A'B'",l:"A'B'"}];
+  }
+
+  // Déduplique base + extra
+  var seen = {};
+  var result = [];
+  base.concat(extra).forEach(function(sym) {
+    if (!seen[sym.s]) { seen[sym.s] = true; result.push(sym); }
+  });
+  return result;
+}
+
+// Rend les symboles contextuels dans la barre
+function renderDraftSymbols() {
+  var cat = getDraftCat();
+  var syms = getContextSymbols(S.niv, cat);
+  var bar = document.getElementById('sym-bar');
+  var lbl = document.getElementById('sym-label');
+  if (!bar) return;
+  bar.innerHTML = syms.map(function(sym) {
+    return '<button class="sym-btn" onclick="insSymbol(\'' + sym.s.replace(/'/g,"\\'") + '\')">' + sym.l + '</button>';
+  }).join('');
+  if (lbl) {
+    lbl.textContent = cat ? 'Symboles — ' + cat.replace(/_/g,' ') : 'Symboles utiles';
+  }
+}
+
+// Bascule entre onglets Brouillon / Calculette
+function switchDraftTab(tab) {
+  S.dTab = tab;
+  var pd = document.getElementById('panel-draft');
+  var pc = document.getElementById('panel-calc');
+  var td = document.getElementById('tab-draft');
+  var tc = document.getElementById('tab-calc');
+  if (!pd || !pc) return;
+  if (tab === 'calc') {
+    pd.classList.add('hidden'); pc.classList.remove('hidden');
+    if (td) { td.classList.remove('bg-white','shadow','text-slate-800'); td.classList.add('text-slate-500'); }
+    if (tc) { tc.classList.add('bg-white','shadow','text-slate-800'); tc.classList.remove('text-slate-500'); }
+    renderCalcButtons();
+  } else {
+    pc.classList.add('hidden'); pd.classList.remove('hidden');
+    if (tc) { tc.classList.remove('bg-white','shadow','text-slate-800'); tc.classList.add('text-slate-500'); }
+    if (td) { td.classList.add('bg-white','shadow','text-slate-800'); td.classList.remove('text-slate-500'); }
+    renderDraftSymbols();
+  }
+}
+
 function toggleDraft() {
   S.dOpen = !S.dOpen;
   var d = document.getElementById('draft-drawer');
@@ -4856,10 +4959,10 @@ function toggleDraft() {
     d.classList.add('open');
     b.classList.add('show');
     var ta = document.getElementById('draft-text');
-    if (ta && S.cid) ta.value = localStorage.getItem('draft_' + S.cid) || '';
+    if (ta && S.cid) ta.value = (S.drafts[S.cid] && S.drafts[S.cid].txt) || localStorage.getItem('draft_' + S.cid) || '';
+    switchDraftTab(S.dTab || 'draft');
   } else {
-    // Sauvegarde avant fermeture
-       var ta = document.getElementById('draft-text');
+    var ta = document.getElementById('draft-text');
     if (ta && S.cid) {
       S.drafts[S.cid] = { txt: ta.value };
       localStorage.setItem('draft_' + S.cid, ta.value);
@@ -4867,6 +4970,139 @@ function toggleDraft() {
     d.classList.remove('open');
     b.classList.remove('show');
   }
+}
+
+// ══════════════════════════════════════════════════════════════
+// CALCULETTE
+// ══════════════════════════════════════════════════════════════
+function renderCalcButtons() {
+  var cat = getDraftCat();
+  var hasTrig = /trigono|angle|pythagore/i.test(cat);
+  var rows = [
+    [{l:'C', fn:"calcClear()", cls:'clr'}, {l:'⌫', fn:"calcBack()", cls:'clr'}, {l:'%', fn:"calcInput('%')", cls:'op'}, {l:'÷', fn:"calcInput('/')", cls:'op'}],
+    [{l:'7', fn:"calcInput('7')"}, {l:'8', fn:"calcInput('8')"}, {l:'9', fn:"calcInput('9')"}, {l:'×', fn:"calcInput('*')", cls:'op'}],
+    [{l:'4', fn:"calcInput('4')"}, {l:'5', fn:"calcInput('5')"}, {l:'6', fn:"calcInput('6')"}, {l:'-', fn:"calcInput('-')", cls:'op'}],
+    [{l:'1', fn:"calcInput('1')"}, {l:'2', fn:"calcInput('2')"}, {l:'3', fn:"calcInput('3')"}, {l:'+', fn:"calcInput('+')", cls:'op'}],
+    [{l:'x²', fn:"calcSq()", cls:'spec'}, {l:'0', fn:"calcInput('0')"}, {l:'.', fn:"calcInput('.')"}, {l:'=', fn:"calcCompute()", cls:'eq'}],
+    [{l:'√', fn:"calcSqrt()", cls:'spec'}, {l:'(', fn:"calcInput('(')", cls:'spec'}, {l:')', fn:"calcInput(')')", cls:'spec'}, {l:'→✏️', fn:"calcCopyToText()", cls:'copy'}]
+  ];
+  if (hasTrig) {
+    rows.push([{l:'sin', fn:"calcTrig('sin')", cls:'spec'},{l:'cos', fn:"calcTrig('cos')", cls:'spec'},{l:'tan', fn:"calcTrig('tan')", cls:'spec'},{l:'π', fn:"calcInput('3.14159')", cls:'spec'}]);
+  }
+  var html = rows.map(function(row) {
+    return '<div class="calc-row">' + row.map(function(btn) {
+      return '<button class="calc-btn' + (btn.cls ? ' ' + btn.cls : '') + '" onclick="' + btn.fn + '">' + btn.l + '</button>';
+    }).join('') + '</div>';
+  }).join('');
+  var el = document.getElementById('calc-btns');
+  if (el) el.innerHTML = html;
+}
+
+function calcInput(v) {
+  if (!S.calc) S.calc = {expr:'', needReset:false};
+  if (S.calc.needReset && /[0-9.]/.test(v)) { S.calc.expr = ''; S.calc.needReset = false; }
+  else S.calc.needReset = false;
+  S.calc.expr += v;
+  var disp = document.getElementById('calc-disp');
+  if (disp) disp.textContent = S.calc.expr || '0';
+}
+
+function calcCompute() {
+  if (!S.calc || !S.calc.expr) return;
+  var expr = document.getElementById('calc-expr');
+  var disp = document.getElementById('calc-disp');
+  try {
+    // Remplace × ÷ symboles
+    var e = S.calc.expr.replace(/×/g,'*').replace(/÷/g,'/');
+    // % → /100 (simple)
+    e = e.replace(/(\d+(?:\.\d+)?)\s*%/g, '($1/100)');
+    // eslint-disable-next-line no-new-func
+    var result = Function('"use strict";return (' + e + ')')();
+    if (!isFinite(result)) throw new Error('inf');
+    var str = parseFloat(result.toFixed(10)).toString();
+    if (expr) expr.textContent = S.calc.expr + ' =';
+    if (disp) disp.textContent = str;
+    S.calc.expr = str;
+    S.calc.needReset = true;
+  } catch(err) {
+    if (disp) disp.textContent = 'Erreur';
+    S.calc.expr = '';
+    S.calc.needReset = true;
+  }
+}
+
+function calcClear() {
+  S.calc = {expr:'', needReset:false};
+  var disp = document.getElementById('calc-disp');
+  var expr = document.getElementById('calc-expr');
+  if (disp) disp.textContent = '0';
+  if (expr) expr.textContent = '';
+}
+
+function calcBack() {
+  if (!S.calc) return;
+  S.calc.expr = S.calc.expr.slice(0, -1);
+  var disp = document.getElementById('calc-disp');
+  if (disp) disp.textContent = S.calc.expr || '0';
+}
+
+function calcSqrt() {
+  if (!S.calc) S.calc = {expr:''};
+  S.calc.expr = 'sqrt(' + (S.calc.expr || '0') + ')';
+  try {
+    var val = Math.sqrt(parseFloat(S.calc.expr.match(/sqrt\((.+)\)/)[1]));
+    var str = parseFloat(val.toFixed(10)).toString();
+    var disp = document.getElementById('calc-disp');
+    var expr = document.getElementById('calc-expr');
+    if (expr) expr.textContent = '√ =';
+    if (disp) disp.textContent = str;
+    S.calc.expr = str; S.calc.needReset = true;
+  } catch(e) { calcClear(); }
+}
+
+function calcSq() {
+  if (!S.calc || !S.calc.expr) return;
+  try {
+    var v = parseFloat(S.calc.expr);
+    if (isNaN(v)) return;
+    var str = (v * v).toString();
+    var disp = document.getElementById('calc-disp');
+    var expr = document.getElementById('calc-expr');
+    if (expr) expr.textContent = '² =';
+    if (disp) disp.textContent = str;
+    S.calc.expr = str; S.calc.needReset = true;
+  } catch(e) {}
+}
+
+function calcTrig(fn) {
+  if (!S.calc || !S.calc.expr) return;
+  try {
+    var deg = parseFloat(S.calc.expr);
+    if (isNaN(deg)) return;
+    var rad = deg * Math.PI / 180;
+    var val = fn === 'sin' ? Math.sin(rad) : fn === 'cos' ? Math.cos(rad) : Math.tan(rad);
+    var str = parseFloat(val.toFixed(8)).toString();
+    var disp = document.getElementById('calc-disp');
+    var expr = document.getElementById('calc-expr');
+    if (expr) expr.textContent = fn + '(' + deg + '°) =';
+    if (disp) disp.textContent = str;
+    S.calc.expr = str; S.calc.needReset = true;
+  } catch(e) {}
+}
+
+function calcCopyToText() {
+  var disp = document.getElementById('calc-disp');
+  if (!disp) return;
+  var val = disp.textContent;
+  switchDraftTab('draft');
+  setTimeout(function() {
+    var ta = document.getElementById('draft-text');
+    if (!ta) return;
+    var s = ta.selectionStart, e = ta.selectionEnd;
+    ta.value = ta.value.substring(0,s) + val + ta.value.substring(e);
+    ta.selectionStart = ta.selectionEnd = s + val.length;
+    ta.focus();
+  }, 80);
 }
 // ══════════════════════════════════════════════════════════════
 // TYPEWRITER + PILLS AIDE INLINE + NUDGE
@@ -4996,15 +5232,19 @@ function clearNudge(id) {
 
 function clrText() {
   var ta = document.getElementById('draft-text');
-  if (ta) { ta.value = ''; ta.focus(); }
+  if (ta) { ta.value = ''; if (S.cid) { S.drafts[S.cid] = {txt:''}; localStorage.removeItem('draft_' + S.cid); } ta.focus(); }
 }
 
 function insSymbol(s) {
+  // Paires auto-complétées
+  var pairs = {'(':'()','[':'[]','{':'{}'};
+  var insert = pairs[s] || s;
   var ta = document.getElementById('draft-text');
   if (!ta) return;
   var start = ta.selectionStart, end = ta.selectionEnd;
-  ta.value = ta.value.substring(0,start) + s + ta.value.substring(end);
-  ta.selectionStart = ta.selectionEnd = start + s.length;
+  ta.value = ta.value.substring(0,start) + insert + ta.value.substring(end);
+  // Curseur au milieu pour paires, sinon après
+  ta.selectionStart = ta.selectionEnd = start + (pairs[s] ? 1 : insert.length);
   ta.focus();
 }
 
