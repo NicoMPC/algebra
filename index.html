@@ -1058,7 +1058,7 @@
       <div style="background:linear-gradient(135deg,#4338ca,#6366f1);border:2px solid #818cf8;position:relative;overflow:hidden" class="rounded-3xl p-8 shadow-2xl">
         <div style="position:absolute;top:.85rem;right:.85rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:99px;padding:.2rem .7rem;font-size:.6rem;font-weight:800;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.06em">Bêta · Places limitées</div>
         <div class="text-indigo-200 text-xs font-bold uppercase tracking-widest mb-4 mt-2">Accès complet</div>
-        <div class="syne text-5xl font-black text-white mb-1">9,99<span class="text-2xl font-bold text-indigo-300"> €</span></div>
+        <div class="syne text-5xl font-black text-white mb-1">19,99<span class="text-2xl font-bold text-indigo-300"> €</span></div>
         <div class="text-indigo-300 text-sm mb-6">par mois — résiliable à tout moment</div>
         <div class="space-y-3 text-left mb-6">
           <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Diagnostic personnalisé dès le premier jour</span></div>
@@ -1075,7 +1075,7 @@
         </button>
         <p class="text-indigo-300 text-xs mt-3">Sans carte bancaire · Sans engagement · Satisfait ou remboursé 14j</p>
       </div>
-      <p class="text-slate-400 text-xs mt-5"><del class="text-slate-300">30-50 €/h en cours particulier</del> → <strong class="text-indigo-600">9,99 €/mois</strong> pour un suivi quotidien</p>
+      <p class="text-slate-400 text-xs mt-5"><del class="text-slate-300">30-50 €/h en cours particulier</del> → <strong class="text-indigo-600">19,99 €/mois</strong> pour un suivi quotidien</p>
     </div>
   </div>
 
@@ -2848,7 +2848,7 @@ function showTrialExpired() {
     '<p style="color:#64748b;font-size:.9rem;font-weight:500;line-height:1.6;margin-bottom:1.5rem">T\'as progressé, maintenant continue sans limite !</p>' +
     '<button onclick="__trialProlonger()" style="width:100%;padding:1rem;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;' +
     'font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer;margin-bottom:.75rem">' +
-    'Passer à l\'abonnement 9,99 €/mois →' +
+    'Passer à l\'abonnement 19,99 €/mois →' +
     '</button>' +
     '<button onclick="__trialDismiss()" style="font-size:.8rem;font-weight:600;color:#94a3b8;background:none;border:none;cursor:pointer">' +
     'Voir ma progression quand même' +
@@ -5113,10 +5113,10 @@ function copySequenceEmail(code, type) {
     body = 'Bonjour,\n\n3 jours déjà avec Matheux !\n\nOn espère que les premiers exercices se passent bien pour ' + prenom + '.\n\nPas d\'inquiétude si certaines notions semblent difficiles — c\'est normal, c\'est même l\'objectif de ces exercices de les identifier et de les travailler.\n\nLe boost quotidien (5 exercices, ~10 minutes) est la clé. La régularité fait toute la différence.\n\nUn petit retour ? Répondez directement à cet email — je lis tout.\n\nNicolas\nProf de maths & fondateur de Matheux';
   } else if (type === 'J+5') {
     subject = 'Encore 2 jours, ' + prenom + ' 📅';
-    body = 'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\nSi vous souhaitez continuer, c\'est 9,99 €/mois — sans engagement, résiliable à tout moment.\n→ ' + stripeLink + '\n\nSinon, pas de pression — ' + prenom + ' conserve ses résultats.\n\nDes questions ? Répondez directement à cet email.\n\nNicolas\nProf de maths & fondateur de Matheux';
+    body = 'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\nSi vous souhaitez continuer, c\'est 19,99 €/mois — sans engagement, résiliable à tout moment.\n→ ' + stripeLink + '\n\nSinon, pas de pression — ' + prenom + ' conserve ses résultats.\n\nDes questions ? Répondez directement à cet email.\n\nNicolas\nProf de maths & fondateur de Matheux';
   } else if (type === 'J+7') {
     subject = 'Bilan de la semaine de ' + prenom + ' ⭐';
-    body = 'Bonjour,\n\nUne semaine avec Matheux !\n\nC\'est déjà beaucoup — le simple fait de commencer, c\'est 90 % du travail.\n\nCe que ' + prenom + ' a fait cette semaine :\n✓ Identifié ses points forts et points à renforcer\n✓ Travaillé avec des exercices adaptés\n✓ Posé des bases solides pour la suite\n\nPour continuer :\n→ 9,99 €/mois, sans engagement, résiliable à tout moment\n→ ' + stripeLink + '\n\nDes questions avant de décider ? Répondez à cet email — je suis là.\n\nNicolas\nProf de maths & fondateur de Matheux';
+    body = 'Bonjour,\n\nUne semaine avec Matheux !\n\nC\'est déjà beaucoup — le simple fait de commencer, c\'est 90 % du travail.\n\nCe que ' + prenom + ' a fait cette semaine :\n✓ Identifié ses points forts et points à renforcer\n✓ Travaillé avec des exercices adaptés\n✓ Posé des bases solides pour la suite\n\nPour continuer :\n→ 19,99 €/mois, sans engagement, résiliable à tout moment\n→ ' + stripeLink + '\n\nDes questions avant de décider ? Répondez à cet email — je suis là.\n\nNicolas\nProf de maths & fondateur de Matheux';
   }
 
   var text = 'À : [email parent]\nObjet : ' + subject + '\n\n' + body;
