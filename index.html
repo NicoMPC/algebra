@@ -2834,7 +2834,7 @@ async function boostFromDiag(errs) {
   showT("L'IA analyse ton diagnostic...", 0, "🧠");
   startTs();
   try {
-    var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:"generate_daily_boost", code:S.prof.code, level:S.niv, errors:errs }) });
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:"generate_daily_boost", code:S.prof.code, level:S.niv, errors:errs, chapters:_flowChaps }) });
     var d = await r.json();
     if (d.status === 'success') {
       S.boost = d.boost; S.boostEx = true; loadBoost();

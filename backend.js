@@ -761,21 +761,25 @@ function generateDailyBoost(p) {
     return { status: 'error', message: 'Aucun exercice disponible pour le niveau ' + level + '.' };
   }
 
-  // ── P5 : Filtrer strictement sur les chapitres diagnostiqués de l'élève ──
-  var diagnosedChaps = [];
-  getRows(SH.SCORES).filter(function(r) {
-    return r['Code'] && String(r['Code']) === code;
-  }).forEach(function(r) {
-    var cat = String(r['Chapitre'] || '');
-    if (cat && cat !== 'CALIBRAGE' && diagnosedChaps.indexOf(cat) === -1) {
-      diagnosedChaps.push(cat);
-    }
-  });
-  if (diagnosedChaps.length > 0) {
-    var filtered = curriculum.filter(function(r) {
-      return diagnosedChaps.indexOf(String(r['Categorie'])) !== -1;
+  // ── P5 : Filtrer sur les chapitres sélectionnés par l'élève ──
+  // Priorité : p.chapters (envoyé par boostFromDiag) > déduit depuis Scores (fallback)
+  var targetChaps = [];
+  if (Array.isArray(p.chapters) && p.chapters.length > 0) {
+    targetChaps = p.chapters.map(function(c) { return String(c); });
+  } else {
+    getRows(SH.SCORES).filter(function(r) {
+      return r['Code'] && String(r['Code']) === code;
+    }).forEach(function(r) {
+      var cat = String(r['Chapitre'] || '');
+      if (cat && cat !== 'CALIBRAGE' && cat !== 'BOOST' && targetChaps.indexOf(cat) === -1) {
+        targetChaps.push(cat);
+      }
     });
-    // Fallback : si aucun chapitre diagostiqué n'existe dans le curriculum, utiliser tout le curriculum
+  }
+  if (targetChaps.length > 0) {
+    var filtered = curriculum.filter(function(r) {
+      return targetChaps.indexOf(String(r['Categorie'])) !== -1;
+    });
     if (filtered.length > 0) curriculum = filtered;
   }
 
