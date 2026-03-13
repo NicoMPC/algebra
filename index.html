@@ -2334,7 +2334,7 @@ async function flowRegister() {
       diagExos = diagD.exos;
     }
 
-    showT('Chargement de ton espace...', 0, '📚');
+    showT('Ton espace se charge... ⚡', 0, '📚');
     var loginR = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'login', email:email, password:h }) });
     var loginD = await loginR.json();
     hideT();
@@ -2640,6 +2640,14 @@ function initApp(d, skipRender) {
   S.isFirstDay = d.isFirstDay || false;
   if ((d.boostExosDone || 0) >= 5) S.boostConsumed = true;
 
+  // S3 — Nudge boost en cours : boost partiellement fait, pas encore terminé
+  var _beDone = d.boostExosDone || 0;
+  if (_beDone > 0 && _beDone < 5) {
+    setTimeout(function() {
+      showT('Ton boost est en cours ⚡ — encore ' + (5 - _beDone) + ' exo' + (5 - _beDone > 1 ? 's' : '') + ' et c\'est dans la boîte !', 5000, '⚡');
+    }, 2500);
+  }
+
   // ── Essai 7 jours ──────────────────────────────────────
   S.trial = d.trial || { trialActive: true, daysLeft: 7, isPremium: false };
   if (!S.trial.trialActive && !S.trial.isPremium) {
@@ -2808,6 +2816,14 @@ function initApp(d, skipRender) {
 
   if (S.boostEx && S.boost) loadBoost();
   updH();
+
+  // S2 — Streak break alert : si streak en cours et boost pas encore fait aujourd'hui
+  if (S.stk >= 1 && !S.boostConsumed) {
+    setTimeout(function() {
+      showT('🔥 Streak de ' + S.stk + ' jour' + (S.stk > 1 ? 's' : '') + ' — fais ton boost pour le garder !', 5000, '🔥');
+    }, 2000);
+  }
+
   if (!skipRender) { render(); flushQ(); }
 }
 
@@ -3134,6 +3150,9 @@ function chkComp(cat) {
       showT('Révision terminée ! ' + easy + '/' + tot + ' réussis 🔁', 3500, '✅');
     } else {
       if (easy >= Math.ceil(tot * 0.7)) launchConfetti();
+      // S5 — Chapitre maîtrisé : confettis + toast
+      showT('🏆 Chapitre maîtrisé ! Tu peux passer à la suite 📚', 5000, '🏆');
+      if (typeof _boostInsightConfetti === 'function') _boostInsightConfetti();
       // Persister chapitre terminé dans localStorage
       try {
         var ds5 = JSON.parse(localStorage.getItem(DK) || '{}');
@@ -4023,6 +4042,18 @@ function renderBoostInsight() {
     }
   }
 
+  var streakMsg, streakBg;
+  if (streak === 3) {
+    streakMsg = '🔥 3 jours d\'affilée — une habitude commence. Continue !';
+    streakBg  = 'bg-orange-50 border-orange-200 text-orange-800';
+  } else if (streak === 7) {
+    streakMsg = '🏆 7 jours — tu es en mode champion. C\'est énorme !';
+    streakBg  = 'bg-amber-50 border-amber-300 text-amber-900';
+  } else {
+    streakMsg = '🔥 Streak&nbsp;: ' + streak + ' jour' + (streak > 1 ? 's' : '') + ' consécutif' + (streak > 1 ? 's' : '') + ' — reviens demain pour ne pas le perdre&nbsp;!';
+    streakBg  = 'bg-amber-50 border-amber-200 text-amber-800';
+  }
+
   c.innerHTML =
     '<div class="space-y-4 afu">' +
     '<div class="rounded-3xl p-6 text-center text-white" style="background:linear-gradient(135deg,#1e1b4b 0%,#3730a3 60%,#4f46e5 100%)">' +
@@ -4034,9 +4065,7 @@ function renderBoostInsight() {
       '</div>' +
     '</div>' +
     (progressHtml ? progressHtml : '') +
-    '<div class="bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 text-sm font-semibold text-amber-800 text-center">' +
-      '🔥 Streak&nbsp;: ' + streak + ' jour' + (streak > 1 ? 's' : '') + ' consécutif' + (streak > 1 ? 's' : '') + ' — reviens demain pour ne pas le perdre&nbsp;!' +
-    '</div>' +
+    '<div class="' + streakBg + ' border rounded-2xl px-4 py-3 text-sm font-semibold text-center">' + streakMsg + '</div>' +
     '<button onclick="dismissBoostInsight()" class="btn btn-ac btn-fw py-4 text-base">Voir mes chapitres 🏠</button>' +
     '<div id="boost-redirect-msg" class="text-center text-xs text-slate-400 mt-2">Retour automatique dans <span id="boost-redirect-count">5</span>s…</div>' +
     '</div>';
@@ -4725,6 +4754,149 @@ function relDateAdmin(dateStr) {
   } catch (e) { return 'date inconnue'; }
 }
 
+// ── Copie le mail de bienvenue pour envoi manuel ─────────────
+function copyWelcomeEmail(code) {
+  var st = S._modalStudent;
+  if (!st) return;
+  var prenom = st.prenom || '';
+  var email  = st.email  || '';
+  var text =
+    'À : ' + email + '\n' +
+    'Objet : ' + prenom + ' est inscrit(e) sur Matheux — voici comment ça commence 🎯\n' +
+    '\n' +
+    'Bonjour,\n' +
+    '\n' +
+    'Je m\'appelle Nicolas — je suis prof de maths et j\'ai créé Matheux\n' +
+    'pour aider les collégiens à combler leurs lacunes sans pression,\n' +
+    '10 minutes par jour.\n' +
+    '\n' +
+    'Le profil de ' + prenom + ' est prêt. Voici comment ça se passe :\n' +
+    '\n' +
+    '🎯 Étape 1 — Le diagnostic (5 min)\n' +
+    '8 questions pour identifier exactement ce qui bloque ' + prenom + '.\n' +
+    'Pas de note, pas de jugement — juste un point de départ honnête.\n' +
+    '\n' +
+    '⚡ Étape 2 — Le boost quotidien (10 min/jour)\n' +
+    'Chaque matin, 5 exercices ciblés sur les vraies lacunes de ' + prenom + '.\n' +
+    'Des indices disponibles si besoin. Régulier vaut mieux qu\'intense.\n' +
+    '\n' +
+    '📈 Étape 3 — La progression visible\n' +
+    'Je suis les résultats en direct et j\'adapte les exercices chaque semaine.\n' +
+    'Vous recevrez un bilan à J+3 et J+7.\n' +
+    '\n' +
+    '→ Commencer le diagnostic : https://matheux.fr\n' +
+    '\n' +
+    '⏱ Rappel : 7 jours d\'essai gratuit, sans carte bancaire.\n' +
+    '\n' +
+    'Des questions ? Répondez directement à cet email — je lis tout personnellement.\n' +
+    '\n' +
+    'Nicolas\n' +
+    'Prof de maths & fondateur de Matheux';
+
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('btn-welcome-copy-' + code);
+    if (btn) { btn.textContent = '✅ Copié !'; setTimeout(function() { btn.textContent = '📧 Copier mail de bienvenue'; }, 2000); }
+    var markBtn = document.getElementById('btn-welcome-mark-' + code);
+    if (markBtn) markBtn.style.display = '';
+  }).catch(function() {
+    showT('Erreur clipboard — copie manuelle requise', 3000, '⚠️');
+  });
+}
+
+// ── Marque le mail de bienvenue comme envoyé ─────────────────
+async function markWelcomeEmailSent(code) {
+  var st = S._modalStudent;
+  if (!st) return;
+  var btn = document.getElementById('btn-welcome-mark-' + code);
+  if (btn) { btn.disabled = true; btn.textContent = '...'; }
+  try {
+    var r = await fetch(SU, { method: 'POST', body: JSON.stringify({
+      action: 'log_manual_email', adminCode: S.prof.code,
+      userEmail: st.email, type: 'J+0-manuel'
+    }) }).then(function(x) { return x.json(); });
+    if (r.status === 'success') {
+      st.j0Sent = true;
+      showT('✅ Email marqué comme envoyé', 2500, '✅');
+      // Mettre à jour l'indicateur J0 et masquer les boutons
+      var j0Span = document.getElementById('j0-indicator-' + code);
+      if (j0Span) { j0Span.textContent = '✅ J0'; j0Span.className = j0Span.className.replace('text-amber-500','text-emerald-600'); }
+      var copyBtn = document.getElementById('btn-welcome-copy-' + code);
+      if (copyBtn) copyBtn.style.display = 'none';
+      if (btn) btn.style.display = 'none';
+    } else {
+      showT('❌ ' + (r.message || 'Erreur'), 3000, '❌');
+      if (btn) { btn.disabled = false; btn.textContent = '✓ Marquer comme envoyé'; }
+    }
+  } catch(e) {
+    showT('❌ Erreur réseau', 3000, '❌');
+    if (btn) { btn.disabled = false; btn.textContent = '✓ Marquer comme envoyé'; }
+  }
+}
+
+// ── Copie le texte d'un email de séquence J+3/J+5/J+7 ─────────
+function copySequenceEmail(code, type) {
+  var st = S._modalStudent;
+  if (!st) return;
+  var prenom = st.prenom || 'ton élève';
+  var stripeLink = 'https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00';
+  var subject = '', body = '';
+
+  if (type === 'J+3') {
+    subject = 'Comment ça se passe pour ' + prenom + ' ? 💪';
+    body = 'Bonjour,\n\n3 jours déjà avec Matheux !\n\nOn espère que les premiers exercices se passent bien pour ' + prenom + '.\n\nPas d\'inquiétude si certaines notions semblent difficiles — c\'est normal, c\'est même l\'objectif de ces exercices de les identifier et de les travailler.\n\nLe boost quotidien (5 exercices, ~10 minutes) est la clé. La régularité fait toute la différence.\n\nUn petit retour ? Répondez directement à cet email — je lis tout.\n\nNicolas\nProf de maths & fondateur de Matheux';
+  } else if (type === 'J+5') {
+    subject = 'Encore 2 jours, ' + prenom + ' 📅';
+    body = 'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\nSi vous souhaitez continuer, c\'est 9,99 €/mois — sans engagement, résiliable à tout moment.\n→ ' + stripeLink + '\n\nSinon, pas de pression — ' + prenom + ' conserve ses résultats.\n\nDes questions ? Répondez directement à cet email.\n\nNicolas\nProf de maths & fondateur de Matheux';
+  } else if (type === 'J+7') {
+    subject = 'Bilan de la semaine de ' + prenom + ' ⭐';
+    body = 'Bonjour,\n\nUne semaine avec Matheux !\n\nC\'est déjà beaucoup — le simple fait de commencer, c\'est 90 % du travail.\n\nCe que ' + prenom + ' a fait cette semaine :\n✓ Identifié ses points forts et points à renforcer\n✓ Travaillé avec des exercices adaptés\n✓ Posé des bases solides pour la suite\n\nPour continuer :\n→ 9,99 €/mois, sans engagement, résiliable à tout moment\n→ ' + stripeLink + '\n\nDes questions avant de décider ? Répondez à cet email — je suis là.\n\nNicolas\nProf de maths & fondateur de Matheux';
+  }
+
+  var text = 'À : [email parent]\nObjet : ' + subject + '\n\n' + body;
+
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('btn-seq-copy-' + code + '-' + type.replace('+',''));
+    if (btn) { btn.textContent = '✅ Copié !'; setTimeout(function() { btn.textContent = '📧 Copier ' + type; }, 2000); }
+    var markBtn = document.getElementById('btn-seq-mark-' + code + '-' + type.replace('+',''));
+    if (markBtn) markBtn.style.display = '';
+  }).catch(function() {
+    showT('Erreur clipboard — copie manuelle requise', 3000, '⚠️');
+  });
+}
+
+// ── Marque un email de séquence comme envoyé ──────────────────
+async function markSequenceEmailSent(code, type) {
+  var st = S._modalStudent;
+  if (!st) return;
+  var typeKey = type.replace('+', '');
+  var btn = document.getElementById('btn-seq-mark-' + code + '-' + typeKey);
+  if (btn) { btn.disabled = true; btn.textContent = '...'; }
+  try {
+    var r = await fetch(SU, { method: 'POST', body: JSON.stringify({
+      action: 'log_manual_email', adminCode: S.prof.code,
+      userEmail: st.email, type: type + '-manuel'
+    }) }).then(function(x) { return x.json(); });
+    if (r.status === 'success') {
+      // Retirer de emailsDue
+      if (st.emailsDue) { var idx = st.emailsDue.indexOf(type); if (idx !== -1) st.emailsDue.splice(idx, 1); }
+      if (st.secondaryActions) {
+        st.secondaryActions = st.secondaryActions.filter(function(a) { return a.indexOf(type) === -1 && a.indexOf('Email') === -1 || st.emailsDue.length > 0; });
+      }
+      showT('✅ ' + type + ' marqué comme envoyé', 2500, '✅');
+      // Masquer boutons
+      var copyBtn = document.getElementById('btn-seq-copy-' + code + '-' + typeKey);
+      if (copyBtn) copyBtn.style.display = 'none';
+      if (btn) btn.style.display = 'none';
+    } else {
+      showT('❌ ' + (r.message || 'Erreur'), 3000, '❌');
+      if (btn) { btn.disabled = false; btn.textContent = '✓ Marquer ' + type + ' envoyé'; }
+    }
+  } catch(e) {
+    showT('❌ Erreur réseau', 3000, '❌');
+    if (btn) { btn.disabled = false; btn.textContent = '✓ Marquer ' + type + ' envoyé'; }
+  }
+}
+
 // ── Génère et copie le prompt Claude pour générer des exos ──
 function copyAdminPrompt(code, type, cat) {
   var st = S._modalStudent;
@@ -5066,16 +5238,20 @@ function _renderAdminCards() {
     var ap = s.actionPriority || s.action || '';
     return ap.indexOf('BOOST TERMINÉ') !== -1 || ap.indexOf('CHAPITRE TERMINÉ') !== -1;
   };
-  var _isBlocked = function(s) { var ap = s.actionPriority || s.action || ''; return ap.indexOf('BLOQUÉ') !== -1; };
-  var todoStudents    = realStudents.filter(_needsAction);
-  var blockedStudents = realStudents.filter(function(s){ return !_needsAction(s) && _isBlocked(s); });
-  var doneStudents    = realStudents.filter(function(s){ return !_needsAction(s) && !_isBlocked(s); });
+  var todoStudents  = realStudents.filter(_needsAction);
+  var suiviStudents = realStudents.filter(function(s) {
+    return !_needsAction(s) && s.secondaryActions && s.secondaryActions.length > 0;
+  });
+  var doneStudents  = realStudents.filter(function(s) {
+    return !_needsAction(s) && !(s.secondaryActions && s.secondaryActions.length > 0);
+  });
   var activeTab = S.adminTab || 'todo';
 
   var tabs = [
-    { key: 'todo',  label: '⚡ À faire',  count: todoStudents.length, color: todoStudents.length > 0 ? '#ef4444' : '#94a3b8' },
-    { key: 'done',  label: '✅ Traité',   count: doneStudents.length, color: '#059669' },
-    { key: 'test',  label: '🧪 Test',     count: testStudents.length, color: '#94a3b8' }
+    { key: 'todo',  label: '⚡ À faire',  count: todoStudents.length,  color: todoStudents.length  > 0 ? '#ef4444' : '#94a3b8' },
+    { key: 'suivi', label: '📧 Suivi',    count: suiviStudents.length, color: suiviStudents.length > 0 ? '#f59e0b' : '#94a3b8' },
+    { key: 'done',  label: '✅ Traité',   count: doneStudents.length,  color: '#059669' },
+    { key: 'test',  label: '🧪 Test',     count: testStudents.length,  color: '#94a3b8' }
   ];
   html += '<div class="flex gap-1.5 mb-4">';
   tabs.forEach(function(t) {
@@ -5124,6 +5300,14 @@ function _renderAdminCards() {
         h += '</div>';
       } else { h += '<div class="mb-2"></div>'; }
     }
+    // Pills actions secondaires
+    if (st.secondaryActions && st.secondaryActions.length > 0 && !needsAct) {
+      h += '<div class="flex flex-wrap gap-1">';
+      st.secondaryActions.forEach(function(sa) {
+        h += '<span class="text-[10px] font-semibold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">' + sa + '</span>';
+      });
+      h += '</div>';
+    }
     var totalHard2 = detail.reduce(function(s, d) { return s + d.hardCount; }, 0);
     var totalExos2 = detail.reduce(function(s, d) { return s + d.totalExos; }, 0);
     if (totalExos2 > 0) {
@@ -5154,14 +5338,13 @@ function _renderAdminCards() {
       html += '<div class="text-center py-8 text-slate-400 text-sm font-semibold">✅ Tout est traité — aucune action en attente.</div>';
     }
     todoStudents.forEach(function(st) { html += _buildStudentCard(st); });
-    // Section BLOQUÉS (info, pas une action)
-    if (blockedStudents.length > 0) {
-      html += '<details class="mt-3"><summary style="cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;padding:.65rem 1rem;background:#fff1f2;border-radius:12px;border:1.5px solid #fecdd3">';
-      html += '<span class="text-[11px] font-bold text-rose-600">🔴 Élèves bloqués (' + blockedStudents.length + ')</span>';
-      html += '<span class="text-rose-400 text-[10px] ml-auto">▼</span>';
-      html += '</summary><div class="mt-2">';
-      blockedStudents.forEach(function(st) { html += _buildStudentCard(st); });
-      html += '</div></details>';
+
+  } else if (activeTab === 'suivi') {
+    if (suiviStudents.length === 0) {
+      html += '<div class="text-center py-8 text-slate-400 text-sm font-semibold">✅ Aucun suivi en attente</div>';
+    } else {
+      html += '<div class="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mb-3 text-[11px] text-amber-700 font-semibold">📧 Ces élèves ont besoin d\'un suivi : email à envoyer, inactifs, ou n\'ont jamais commencé. Clique pour voir les détails.</div>';
+      suiviStudents.forEach(function(st) { html += _buildStudentCard(st); });
     }
 
   } else if (activeTab === 'done') {
@@ -5439,7 +5622,7 @@ function _buildModalHTML(st) {
   var boostPH = '{"insight":"...","exos":[{"q":"...","a":"...","options":["...","...","..."],"steps":["...","..."],"f":"...","lvl":1}]}';
   var chapPH  = '{"categorie":"' + topCat + '","insight":"...","exos":[{"q":"...","a":"...","options":["...","...","..."],"steps":["...","..."],"f":"...","lvl":1}]}';
 
-  // ── Email indicators J0/J3/J7 ──────────────────────────────
+  // ── Email indicators J0/J3/J7/J5 (version smart) ──────────────────────────────
   var emailHTML = '';
   (function() {
     var ts = st.trialStart || '';
@@ -5447,18 +5630,61 @@ function _buildModalHTML(st) {
     var d0 = new Date(ts); if (isNaN(d0)) return;
     var now = new Date();
     var daysSince = Math.floor((now - d0) / 86400000);
-    var j0 = '✅ J0';
-    var j3 = daysSince >= 3 ? '✅ J3' : '⏳ J3 (dans ' + (3 - daysSince) + 'j)';
-    var j7 = daysSince >= 7 ? '✅ J7' : '⏳ J7 (dans ' + (7 - daysSince) + 'j)';
-    var clr3 = daysSince >= 3 ? 'text-emerald-600' : 'text-amber-500';
-    var clr7 = daysSince >= 7 ? 'text-emerald-600' : 'text-amber-500';
-    emailHTML = '<div class="flex items-center gap-2 flex-wrap bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 mb-3">' +
+    var emailsDue = st.emailsDue || [];
+
+    // J+0
+    var j0Sent = !!st.j0Sent;
+    var j0    = j0Sent ? '✅ J0' : '⏳ J0 (pas envoyé)';
+    var clrJ0 = j0Sent ? 'text-emerald-600' : 'text-amber-500';
+
+    // J+3
+    var j3IsDue  = emailsDue.indexOf('J+3') !== -1;
+    var j3Sent   = !j3IsDue && daysSince >= 3;
+    var j3Label  = j3Sent ? '✅ J3' : j3IsDue ? '📧 J3 À ENVOYER' : '⏳ J3 (dans ' + Math.max(0, 3 - daysSince) + 'j)';
+    var clrJ3    = j3Sent ? 'text-emerald-600' : j3IsDue ? 'text-rose-500 font-black' : 'text-slate-400';
+
+    // J+5
+    var j5IsDue  = emailsDue.indexOf('J+5') !== -1;
+    var j5Sent   = !j5IsDue && daysSince >= 5;
+    var j5Label  = j5Sent ? '✅ J5' : j5IsDue ? '📧 J5 À ENVOYER' : daysSince >= 4 ? '⏳ J5 (demain)' : '';
+    var clrJ5    = j5Sent ? 'text-emerald-600' : j5IsDue ? 'text-rose-500 font-black' : 'text-slate-400';
+
+    // J+7
+    var j7IsDue  = emailsDue.indexOf('J+7') !== -1;
+    var j7Sent   = !j7IsDue && daysSince >= 7;
+    var j7Label  = j7Sent ? '✅ J7' : j7IsDue ? '📧 J7 À ENVOYER' : '⏳ J7 (dans ' + Math.max(0, 7 - daysSince) + 'j)';
+    var clrJ7    = j7Sent ? 'text-emerald-600' : j7IsDue ? 'text-rose-500 font-black' : 'text-slate-400';
+
+    // Bouton copie J+0 si pas encore envoyé
+    var copyBtnHTML = !j0Sent
+      ? '<button id="btn-welcome-copy-' + st.code + '" onclick="copyWelcomeEmail(\'' + st.code + '\')" class="adm-copy-btn mt-2" style="background:linear-gradient(135deg,#059669,#10b981)">📧 Copier mail de bienvenue</button>' +
+        '<button id="btn-welcome-mark-' + st.code + '" onclick="markWelcomeEmailSent(\'' + st.code + '\')" class="adm-copy-btn mt-1" style="background:#475569;display:none">✓ Marquer comme envoyé</button>'
+      : '';
+
+    // Boutons copie pour les emails de séquence dus
+    var seqBtnsHTML = '';
+    if (j3IsDue) seqBtnsHTML +=
+      '<button id="btn-seq-copy-' + st.code + '-J3" onclick="copySequenceEmail(\'' + st.code + '\',\'J+3\')" class="adm-copy-btn mt-1" style="background:linear-gradient(135deg,#d97706,#f59e0b)">📧 Copier J+3</button>' +
+      '<button id="btn-seq-mark-' + st.code + '-J3" onclick="markSequenceEmailSent(\'' + st.code + '\',\'J+3\')" class="adm-copy-btn mt-0.5" style="background:#475569;display:none">✓ Marquer J+3 envoyé</button>';
+    if (j5IsDue) seqBtnsHTML +=
+      '<button id="btn-seq-copy-' + st.code + '-J5" onclick="copySequenceEmail(\'' + st.code + '\',\'J+5\')" class="adm-copy-btn mt-1" style="background:linear-gradient(135deg,#d97706,#f59e0b)">📧 Copier J+5</button>' +
+      '<button id="btn-seq-mark-' + st.code + '-J5" onclick="markSequenceEmailSent(\'' + st.code + '\',\'J+5\')" class="adm-copy-btn mt-0.5" style="background:#475569;display:none">✓ Marquer J+5 envoyé</button>';
+    if (j7IsDue) seqBtnsHTML +=
+      '<button id="btn-seq-copy-' + st.code + '-J7" onclick="copySequenceEmail(\'' + st.code + '\',\'J+7\')" class="adm-copy-btn mt-1" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">📧 Copier J+7 + Stripe</button>' +
+      '<button id="btn-seq-mark-' + st.code + '-J7" onclick="markSequenceEmailSent(\'' + st.code + '\',\'J+7\')" class="adm-copy-btn mt-0.5" style="background:#475569;display:none">✓ Marquer J+7 envoyé</button>';
+
+    emailHTML = '<div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 mb-3">' +
+      '<div class="flex items-center gap-2 flex-wrap">' +
       '<span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">📧 Emails</span>' +
-      '<span class="text-[10px] font-bold text-emerald-600">' + j0 + '</span>' +
+      '<span id="j0-indicator-' + st.code + '" class="text-[10px] font-bold ' + clrJ0 + '">' + j0 + '</span>' +
       '<span class="text-[9px] text-slate-300">·</span>' +
-      '<span class="text-[10px] font-bold ' + clr3 + '">' + j3 + '</span>' +
+      '<span class="text-[10px] font-bold ' + clrJ3 + '">' + j3Label + '</span>' +
+      (j5Label ? '<span class="text-[9px] text-slate-300">·</span><span class="text-[10px] font-bold ' + clrJ5 + '">' + j5Label + '</span>' : '') +
       '<span class="text-[9px] text-slate-300">·</span>' +
-      '<span class="text-[10px] font-bold ' + clr7 + '">' + j7 + '</span>' +
+      '<span class="text-[10px] font-bold ' + clrJ7 + '">' + j7Label + '</span>' +
+      '</div>' +
+      copyBtnHTML +
+      seqBtnsHTML +
       '</div>';
   })();
 

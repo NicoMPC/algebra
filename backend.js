@@ -89,6 +89,7 @@ function doPost(e) {
       case 'get_admin_overview':         res = getAdminOverview(p);        break;
       case 'publish_admin_boost':        res = publishAdminBoost(p);       break;
       case 'publish_admin_chapter':      res = publishAdminChapter(p);     break;
+      case 'log_manual_email':           res = logManualEmail(p);          break;
       case 'check_trial_status':         res = checkTrialStatus(p);        break;
       case 'import_chapters':            res = importChapters(p);          break;
       case 'send_test_email':            res = sendTestEmail(p);           break;
@@ -2864,6 +2865,23 @@ function getAdminOverview(p) {
     });
   });
 
+  // ── Emails envoyés (pour indicateurs J+0/J+3/J+5/J+7) ────
+  var emailsSentByUser = {}; // email → Set de types envoyés
+  var j0SentByEmail = {};    // email → bool (compatibilité)
+  if (sheetExists(SH.EMAILS)) {
+    var emailsSh  = getSheet(SH.EMAILS);
+    var emailsRaw = emailsSh.getDataRange().getValues();
+    for (var ei = 1; ei < emailsRaw.length; ei++) {
+      var eEmail  = String(emailsRaw[ei][1] || '').trim().toLowerCase();
+      var eType   = String(emailsRaw[ei][3] || '').trim();
+      var eStatus = String(emailsRaw[ei][4] || '').trim();
+      if (!eEmail || eStatus !== 'envoyé') continue;
+      if (!emailsSentByUser[eEmail]) emailsSentByUser[eEmail] = {};
+      emailsSentByUser[eEmail][eType] = true;
+      if (eType === 'J+0' || eType === 'J+0-manuel') j0SentByEmail[eEmail] = true;
+    }
+  }
+
   // ── Construction de la liste élèves ─────────────────────
   var CHAP_NEW_IDX  = [6, 9, 12, 15];
   var BOOST_NEW_IDX = 18;
@@ -2877,6 +2895,8 @@ function getAdminOverview(p) {
       var code   = String(u['Code']   || '');
       var prenom = String(u['Prénom'] || '');
       var niveau = String(u['Niveau'] || '');
+      var email  = String(u['Email']  || '').trim().toLowerCase();
+      var j0Sent = !!j0SentByEmail[email];
       var isTestUser = u['IsTest'] === 1 || u['IsTest'] === true || String(u['IsTest']).toUpperCase() === 'TRUE' || String(u['IsTest']) === '1';
       var trialStartAdmin = u['TrialStart'] ? String(u['TrialStart']) : '';
 
@@ -3119,6 +3139,51 @@ function getAdminOverview(p) {
       }
       var actionPriority = actionsAdmin.length > 0 ? actionsAdmin[0] : '👍 RAS';
 
+      // ── Champs smart : catégorisation admin ──────────────
+      // trialDays : jours depuis inscription
+      var trialDays = 0;
+      if (trialStartAdmin) {
+        try {
+          var tsd = new Date(trialStartAdmin);
+          tsd.setHours(0,0,0,0);
+          trialDays = Math.round((new Date(todayStrAdmin) - tsd) / 86400000);
+        } catch(e) {}
+      }
+
+      // emailsDue : emails de séquence à envoyer
+      var sentForUser = emailsSentByUser[email] || {};
+      var emailsDue = [];
+      if (trialDays >= 3 && trialDays <= 6 && !sentForUser['J+3'] && !sentForUser['J+3-manuel']) emailsDue.push('J+3');
+      if (trialDays >= 5 && trialDays <= 6 && !sentForUser['J+5'] && !sentForUser['J+5-manuel']) emailsDue.push('J+5');
+      if (trialDays >= 7 && !sentForUser['J+7'] && !sentForUser['J+7-manuel']) emailsDue.push('J+7');
+
+      // inactivityDays : jours depuis dernière connexion
+      var inactivityDays = 0;
+      if (lastConnection) {
+        try {
+          var lcd = lastConnection.substring(0, 10);
+          inactivityDays = Math.floor((new Date(todayStrAdmin) - new Date(lcd)) / 86400000);
+        } catch(e) {}
+      } else {
+        inactivityDays = trialDays; // jamais connecté depuis inscription
+      }
+
+      // neverStarted : n'a jamais fait un seul boost
+      var neverStarted = userBoosts.length === 0;
+
+      // secondaryActions : toutes les actions secondaires
+      var secondaryActions = [];
+      if (emailsDue.length > 0) secondaryActions.push('📧 Email ' + emailsDue.join(' + ') + ' à envoyer');
+      if (neverStarted && trialDays >= 1) secondaryActions.push('🚀 Jamais commencé · J+' + trialDays);
+      if (!neverStarted && boostInProgressFlag) secondaryActions.push('🔄 Boost commencé non terminé');
+      if (inactivityDays >= 2 && inactivityDays < 7 && !neverStarted) secondaryActions.push('⏰ Inactif depuis ' + inactivityDays + 'j');
+
+      // category : capitale > secondaire > ras
+      var isCapitale = actionsAdmin.some(function(a) {
+        return a.indexOf('BOOST TERMINÉ') !== -1 || a.indexOf('CHAPITRE TERMINÉ') !== -1;
+      });
+      var category = isCapitale ? 'capitale' : secondaryActions.length > 0 ? 'secondaire' : 'ras';
+
       return {
         code:                 code,
         prenom:               prenom,
@@ -3148,7 +3213,15 @@ function getAdminOverview(p) {
         isTest:               isTestUser,
         trialStart:           trialStartAdmin,
         pendingBrevet:        pendingBrevetAdmin,
-        lastBrevetResult:     lastBrevetResult
+        lastBrevetResult:     lastBrevetResult,
+        email:                email,
+        j0Sent:               j0Sent,
+        trialDays:            trialDays,
+        emailsDue:            emailsDue,
+        inactivityDays:       inactivityDays,
+        neverStarted:         neverStarted,
+        secondaryActions:     secondaryActions,
+        category:             category,
       };
     })
     .sort(function(a, b) {
@@ -3571,6 +3644,22 @@ function _logEmail(email, prenom, type, status) {
   } catch(e) {} // silencieux
 }
 
+// ── Log email manuel (admin dashboard) ──────────────────────
+function logManualEmail(p) {
+  if (!verifyAdmin(String(p.adminCode || ''))) return { status: 'error', message: 'Accès refusé.' };
+  var userEmail = String(p.userEmail || '').trim().toLowerCase();
+  var type      = String(p.type      || 'J+0-manuel').trim();
+  if (!userEmail) return { status: 'error', message: 'userEmail requis.' };
+  var users = getRows(SH.USERS);
+  var user  = null;
+  for (var i = 0; i < users.length; i++) {
+    if (String(users[i]['Email'] || '').toLowerCase() === userEmail) { user = users[i]; break; }
+  }
+  var prenom = user ? String(user['Prénom'] || '') : '';
+  _logEmail(userEmail, prenom, type, 'manuel');
+  return { status: 'success' };
+}
+
 function _ensureWaitlistSheet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sh = ss.getSheetByName('Waitlist');
@@ -3634,6 +3723,21 @@ function sendMarketingSequence(email, prenom, day) {
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Pas d\'inquiétude si certaines notions semblent difficiles — c\'est normal, c\'est même l\'objectif : identifier ce qui accroche pour mieux le travailler.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;"><strong>Petit rappel :</strong> le boost quotidien (5 exercices, ~10 minutes) est la clé. Régulier vaut mieux qu\'intense.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">N\'hésitez pas à me faire un retour — un simple "ça va bien" ou "on galère sur les fractions" suffit. Je lis tous les messages.</p>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.6;">Bon courage,<br><strong>Nicolas</strong></p>' +
+        footer + '</div>';
+
+    } else if (day === 5) {
+      subject  = 'Encore 2 jours, ' + prenom + ' 📅';
+      htmlBody =
+        '<div style="max-width:500px;margin:0 auto;font-family:sans-serif;background:#ffffff;padding:32px 24px;border-radius:12px;">' +
+        '<h1 style="color:#4338ca;font-size:24px;margin-bottom:8px;">Plus que 2 jours d\'essai</h1>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.6;">Bonjour,</p>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.6;">Dans 2 jours, l\'essai de <strong>' + prenom + '</strong> se termine.</p>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.6;">Si vous souhaitez continuer, c\'est <strong>9,99 €/mois</strong> — sans engagement, résiliable à tout moment.</p>' +
+        '<div style="text-align:center;margin:28px 0 20px;">' +
+        '<a href="https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00" style="background:linear-gradient(135deg,#4338ca,#6366f1);color:#ffffff;font-size:15px;font-weight:800;text-decoration:none;padding:14px 32px;border-radius:12px;display:inline-block;letter-spacing:-.2px;">Continuer avec Matheux →</a>' +
+        '</div>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.6;">Sinon, pas de pression — <strong>' + prenom + '</strong> garde ses résultats et peut revenir quand il le souhaite.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Bon courage,<br><strong>Nicolas</strong></p>' +
         footer + '</div>';
 
@@ -3768,7 +3872,7 @@ function triggerDailyMarketing() {
     var diffMs   = today_ - startDate;
     var diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0 || diffDays === 3 || diffDays === 7) {
+    if (diffDays === 0 || diffDays === 3 || diffDays === 5 || diffDays === 7) {
       try {
         sendMarketingSequence(email, prenom, diffDays);
       } catch (e) {
