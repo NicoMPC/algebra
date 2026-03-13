@@ -65,6 +65,8 @@
 - [x] Colonne IsTest + limite 50 vrais élèves
 - [x] UX post-boost : confettis + auto-redirect 5s
 - [x] Fix admin : actions mises à jour instantanément
+- [x] Fix mot du prof affiché élève au login (S._motProfScreen @56)
+- [x] Fix aperçu boost admin structuré (motProf + insight + questions, col S avant login élève)
 - [ ] Validation inputs côté GAS (format email, longueur)
 - [ ] Rate limiting basique dans doPost
 
@@ -137,7 +139,7 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 ## Checklist "Prêt pour 50 élèves"
 
 ### Infrastructure
-- [x] GAS @52 stable — 26 actions opérationnelles
+- [x] GAS @56 stable — 26 actions opérationnelles
 - [x] Google Sheet prod
 - [ ] Validation inputs GAS
 - [ ] Rate limiting doPost
