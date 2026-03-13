@@ -114,7 +114,7 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @53
+### Actions GAS — état @54
 
 | Action | Description | Statut |
 |---|---|---|
