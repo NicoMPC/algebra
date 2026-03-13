@@ -35,7 +35,7 @@ Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse 
 ## Parcours utilisateur
 
 ### Acquisition (landing → inscription)
-1. Parent arrive sur matheux.fr → hero direct : problème → solution → prix
+1. Parent arrive sur matheux.fr → hero ciblé parent : "Votre enfant a des difficultés en maths ? On sait où." → 10 sections (chiffres, programme Eduscol, comment, sur mesure, mockup, témoignages, fondateur, prix, FAQ, CTA)
 2. CTA "Commencer le diagnostic →" → overlay fullscreen (masque la landing, focus total)
 3. Step 1 : choix classe (6e-3e) → Step 2 : chapitres déjà vus
 4. Step 3 : quiz diagnostic inline (4-10 questions, box stable sans jump)

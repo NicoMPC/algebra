@@ -105,7 +105,7 @@
 
 ## BLOC 4 — Marketing & conversion 🟢
 
-- [x] Landing vendeuse (hero, pricing, fondateur, carousel)
+- [x] Landing vendeuse — refonte complète 13 mars (hero parent, programme Eduscol 4 niveaux, sur mesure + IA x humain, mockup scree.png, témoignages x3, fondateur "Ancien chef de projet Aérospatiale", FAQ accordion, compteurs animés 44/880/100%, chapitres sur mesure à l'infini, CTA "Les bons exercices")
 - [x] Email J+0 auto
 - [ ] Activer trigger `triggerDailyMarketing` (J+3/J+7)
 - [ ] Vrais témoignages élèves/parents

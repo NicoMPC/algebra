@@ -833,15 +833,15 @@
     <div class="max-w-2xl mx-auto">
       <div class="grid grid-cols-3 gap-4 text-center">
         <div class="reveal">
-          <div class="syne text-3xl sm:text-4xl font-black text-white mb-1">44</div>
+          <div class="syne text-3xl sm:text-4xl font-black text-white mb-1 counter-num" data-target="44">0</div>
           <div class="text-white/45 text-xs font-semibold uppercase tracking-wide leading-relaxed">chapitres<br>programme officiel</div>
         </div>
         <div class="reveal reveal-d1">
-          <div class="syne text-3xl sm:text-4xl font-black mb-1" style="color:#818cf8">880</div>
+          <div class="syne text-3xl sm:text-4xl font-black mb-1 counter-num" style="color:#818cf8" data-target="880">0</div>
           <div class="text-white/45 text-xs font-semibold uppercase tracking-wide leading-relaxed">exercices<br>tous niveaux</div>
         </div>
         <div class="reveal reveal-d2">
-          <div class="syne text-3xl sm:text-4xl font-black text-white mb-1">100%</div>
+          <div class="syne text-3xl sm:text-4xl font-black text-white mb-1 counter-num" data-target="100" data-suffix="%">0%</div>
           <div class="text-white/45 text-xs font-semibold uppercase tracking-wide leading-relaxed">programme<br>Eduscol collège</div>
         </div>
       </div>
@@ -905,7 +905,10 @@
           </div>
         </div>
       </div>
-      <p class="text-center text-slate-400 text-xs reveal" style="transition-delay:.3s">44 chapitres · 880 exercices · 88 diagnostics · Brevet Blanc inclus pour les 3ème</p>
+      <div class="reveal" style="transition-delay:.35s;background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1.5px solid #c7d2fe;border-radius:14px;padding:1.1rem 1.5rem;text-align:center">
+        <p class="text-slate-700 text-sm font-semibold mb-1">880 exercices de base — et une infinité générés sur mesure.</p>
+        <p class="text-slate-500 text-xs leading-relaxed">Chaque chapitre produit des exercices personnalisés jusqu'à ce que la notion soit maîtrisée. Il n'y a pas de limite.</p>
+      </div>
     </div>
   </div>
 
@@ -918,22 +921,19 @@
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
         <div class="land-step reveal reveal-d1">
-          <div class="land-step-num">1</div>
           <div class="land-step-icon float-anim" style="background:#eef2ff">🔎</div>
           <div class="syne font-black text-slate-900 mb-2">Diagnostic ciblé</div>
           <p class="text-slate-500 text-sm leading-relaxed">Votre enfant répond à quelques questions sur les chapitres vus en classe. On identifie les points précis à travailler — pas un niveau général, les notions exactes.</p>
         </div>
         <div class="land-step reveal reveal-d2">
-          <div class="land-step-num">2</div>
           <div class="land-step-icon float-anim" style="background:#fef3c7;animation-delay:.4s">⚡</div>
           <div class="syne font-black text-slate-900 mb-2">Boost quotidien</div>
-          <p class="text-slate-500 text-sm leading-relaxed">5 exercices ciblés, chaque jour. Si votre enfant bloque, un indice progressif l'aide à trouver. La formule-clé s'affiche à la fin. 15 minutes. Pas de temps perdu.</p>
+          <p class="text-slate-500 text-sm leading-relaxed">Chaque jour : 5 exercices ciblés sur ses difficultés. Si votre enfant bloque, un indice progressif l'aide à trouver. La formule-clé s'affiche à la fin. 15 minutes.</p>
         </div>
         <div class="land-step reveal reveal-d3">
-          <div class="land-step-num">3</div>
           <div class="land-step-icon float-anim" style="background:#d1fae5;animation-delay:.8s">📈</div>
-          <div class="syne font-black text-slate-900 mb-2">Progression continue</div>
-          <p class="text-slate-500 text-sm leading-relaxed">À chaque session, le parcours s'adapte. Les notions maîtrisées avancent. Les difficultés persistantes sont retravaillées différemment. Le programme évolue avec l'élève.</p>
+          <div class="syne font-black text-slate-900 mb-2">Chapitres complets sur mesure</div>
+          <p class="text-slate-500 text-sm leading-relaxed">Au-delà du boost, chaque chapitre du programme est travaillé en profondeur — exercices générés sur mesure, notion par notion, jusqu'à ce que chaque point soit acquis.</p>
         </div>
       </div>
     </div>
@@ -1025,7 +1025,7 @@
             <div style="width:60px;height:60px;background:linear-gradient(135deg,#4338ca,#6366f1);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;box-shadow:0 8px 24px rgba(67,56,202,.25)">👨‍💻</div>
             <div>
               <div class="syne font-black text-slate-900 mb-0.5">Nicolas Follezou</div>
-              <div class="text-xs font-semibold mb-4" style="color:#6366f1">Ingénieur aérospatial · Entrepreneur depuis 7 ans · Fondateur matheux.fr</div>
+              <div class="text-xs font-semibold mb-4" style="color:#6366f1">Ancien chef de projet Aérospatiale · Entrepreneur depuis 7 ans · Fondateur matheux.fr</div>
               <p class="text-slate-600 text-sm leading-relaxed mb-3">En donnant des cours de maths en visio, j'ai commencé à créer mes propres outils : diagnostics rapides, exercices ciblés, suivi de progression. Ce qui devait rester un usage personnel est devenu une évidence — des dizaines de familles avaient exactement le même problème, sans solution vraiment adaptée.</p>
               <p class="text-slate-600 text-sm leading-relaxed mb-5">J'ai créé l'outil que j'aurais rêvé avoir quand j'avais moi-même des difficultés en maths. <strong class="text-slate-800">Matheux est né de là :</strong> rendre accessibles des progrès réels, au quotidien, sans le budget d'un cours particulier.</p>
               <div class="flex flex-wrap gap-5">
@@ -1127,18 +1127,6 @@
         Démarrer le diagnostic — c'est gratuit →
       </button>
       <p class="text-white/30 text-xs mt-4">✓ 7 jours offerts · ✓ Aucune carte · ✓ Programme officiel Eduscol</p>
-    </div>
-  </div>
-
-  <!-- ── SEO FOOTER ─────────────────────────────────────────────── -->
-  <div class="bg-white px-5 py-10 border-t border-slate-100">
-    <div class="max-w-2xl mx-auto">
-      <h2 class="syne text-xl font-black text-slate-900 mb-3">
-        Exercices de maths personnalisés — programme officiel 6ème, 5ème, 4ème, 3ème
-      </h2>
-      <p class="text-slate-500 text-sm font-medium leading-relaxed">
-        De la 6ème à la 3ème, Matheux identifie les difficultés précises et programme des <strong>exercices de maths sur mesure</strong>, alignés sur le programme Eduscol. Pas de programme générique — un parcours construit pour chaque élève, qui s'améliore à chaque session.
-      </p>
     </div>
   </div>
 
@@ -1869,11 +1857,33 @@ var _flowFormulaShown = {};  // { exoIdx: true } formules révélées
   if (!root) return;
   var obs = new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
-      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+      if (!e.isIntersecting) return;
+      e.target.classList.add('visible');
+      obs.unobserve(e.target);
+      // Counter animation pour les .counter-num dans cet élément ou lui-même
+      var nums = e.target.querySelectorAll ? e.target.querySelectorAll('.counter-num') : [];
+      if (e.target.classList.contains('counter-num')) nums = [e.target];
+      nums.forEach(function(el) { _animCounter(el); });
     });
   }, { root: root, threshold: 0.12 });
   root.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
 })();
+
+function _animCounter(el) {
+  var target = parseInt(el.getAttribute('data-target'), 10);
+  var suffix = el.getAttribute('data-suffix') || '';
+  if (!target) return;
+  var duration = 700; // ms
+  var start = null;
+  function step(ts) {
+    if (!start) start = ts;
+    var progress = Math.min((ts - start) / duration, 1);
+    var ease = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+    el.textContent = Math.round(ease * target) + suffix;
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
 
 function startTrialFlow() {
   var tf = document.getElementById('trial-flow');
