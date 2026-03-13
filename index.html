@@ -2092,7 +2092,7 @@ async function _flowGuestRegister() {
     var elapsed = res3 ? (res3.time || 0) : 0;
     return fetch(SU, { method: 'POST',
       body: JSON.stringify({ action: 'save_score', code: code, name: prenom, level: _flowLevel,
-        categorie: exo.oC || exo.categorie || 'Diagnostic', exercice_idx: i + 1,
+        categorie: 'CALIBRAGE', exercice_idx: i + 1,
         q: (exo.q || '').substring(0, 80), resultat: status,
         temps: elapsed, nbIndices: 0, formule: false, source: 'CALIBRAGE' })
     }).catch(function() {});
@@ -2202,7 +2202,7 @@ async function flowRegister() {
             code:         newCode,
             name:         newPrenom,
             level:        _flowLevel,
-            categorie:    exo.categorie || (_flowChaps[0] || 'Diagnostic').replace(/_+$/, '').trim(),
+            categorie:    'CALIBRAGE',
             exercice_idx: res.idx,
             q:            exo.q || '',
             resultat:     res.correct ? 'EASY' : 'HARD',

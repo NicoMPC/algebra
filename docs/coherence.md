@@ -139,8 +139,48 @@
 | `index.html:2837` | `boostFromDiag()` | ajout `chapters: _flowChaps` |
 | `backend.js:764-784` | `generateDailyBoost()` P5 | priorité `p.chapters`, exclusion BOOST |
 | `backend.js:751-758` | `generateDailyBoost()` source | BoostExos prioritaire, fallback Curriculum |
+| `index.html:2095` | `_flowGuestRegister()` save diag | `categorie: 'CALIBRAGE'` (était `exo.oC \|\| exo.categorie`) |
+| `index.html:2205` | modal registration save diag | `categorie: 'CALIBRAGE'` (était `exo.categorie \|\| ...`) |
+| `backend.js:364-372` | `login()` history filter | exclut `Chapitre === 'CALIBRAGE'` de l'historique |
+
+---
+
+## Bug 4 — Chapitres "entamés" fantômes après diagnostic (fix @55)
+
+### Symptôme
+
+Après le flux CTA "essayez" (diagnostic → boost auto → inscription), certains chapitres apparaissaient comme "entamés" sur le dashboard, alors que l'élève n'avait fait aucun exercice curriculum. En passant par la modale inscription, le dashboard était vierge.
+
+### Cause racine
+
+Les scores de diagnostic étaient sauvegardés avec `categorie = nom_réel_du_chapitre` (ex: 'Fractions') au lieu de 'CALIBRAGE'. Le champ `source: 'CALIBRAGE'` n'étant **jamais stocké** dans la table Scores (pas de colonne Source), `login()` retournait ces scores indistinctement du curriculum dans `d.history`.
+
+`initApp()` les chargeait dans `S.res` avec des clés comme `'5EME-Fractions-0'` qui **collidaient** avec les index des exercices curriculum du même chapitre. Le dashboard voyait `S.res['5EME-Fractions-0']` non-nul → chapitre marqué "entamé".
+
+### Pourquoi la modale ne posait pas le problème
+
+Le flux modale inscrit l'utilisateur AVANT le diagnostic → aucun score n'existe dans Scores au moment du login → `S.res` vierge → dashboard propre.
+
+### Fix (3 patches)
+
+1. **Frontend guest flow** (`index.html:2095`): `categorie: 'CALIBRAGE'` → les scores de diagnostic sont maintenant sauvegardés sous le chapitre 'CALIBRAGE', pas sous le vrai nom
+2. **Frontend modal flow** (`index.html:2205`): idem
+3. **Backend login** (`backend.js:364-372`): filtre `Chapitre === 'CALIBRAGE'` de `d.history` → défense en profondeur, ces scores ne servent pas au frontend
+
+### Cohérence vérifiée
+
+| Composant | Filtre CALIBRAGE | Statut |
+|---|---|---|
+| `saveScore()` — skip Progress update | `source !== 'CALIBRAGE'` ✅ | Déjà OK (@54) |
+| `rebuildSuivi()` — skip chapitre | `cat === 'CALIBRAGE'` ✅ | Déjà OK |
+| `getAdminOverview()` — skip chapitre | `cat === 'CALIBRAGE'` ✅ | Déjà OK |
+| `login()` — exclut de history | `chap === 'CALIBRAGE'` ✅ | **Nouveau** |
+| `renderProgress()` — skip catégorie | `k !== 'CALIBRAGE'` ✅ | Déjà OK |
+| Guest flow — categorie sauvée | `'CALIBRAGE'` ✅ | **Fixé** |
+| Modal flow — categorie sauvée | `'CALIBRAGE'` ✅ | **Fixé** |
 
 ## Déploiements
 
 - GAS @54 : `fix: boost ciblé — chapters explicites dans boostFromDiag + filtre BOOST exclus P5`
 - Git : `bdb2118` sur main
+- GAS @55 : `fix: chapitres entamés fantômes — diagnostic categorie CALIBRAGE + filtre login history`

@@ -362,7 +362,14 @@ function login(p) {
 
   // ── Historique des scores ─────────────────────────────────
   var history = getRows(SH.SCORES)
-    .filter(function(r) { return r['Code'] && String(r['Code']) === code; })
+    .filter(function(r) {
+      if (!r['Code'] || String(r['Code']) !== code) return false;
+      // Exclure CALIBRAGE (diagnostic) : ces scores ne doivent pas alimenter S.res
+      // car ils collidaient avec les index des exercices curriculum (chapitres "entamés" fantômes)
+      var chap = String(r['Chapitre'] || '');
+      if (chap === 'CALIBRAGE') return false;
+      return true;
+    })
     .map(function(r) {
       var res = String(r['Résultat'] || '');
       return {
