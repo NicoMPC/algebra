@@ -29,7 +29,7 @@ MVP solo → 50 clients payants à 9,99 €/mois.
 | **[docs/product.md](docs/product.md)** | Vision produit, parcours utilisateur, workflow Nicolas | Pour comprendre le produit |
 | **[docs/roadmap.md](docs/roadmap.md)** | Priorités par blocs, checklist, actions en attente | Pour savoir quoi faire |
 | **[docs/agents.md](docs/agents.md)** | Agents IA spécialisés, workflow de délégation CTO | Pour déléguer une tâche |
-| **[docs/programme-français-verif.md](docs/programme-français-verif.md)** | Couverture programme Eduscol (~85%) | Pour les chapitres manquants |
+| **[docs/programme-français-verif.md](docs/programme-français-verif.md)** | Couverture programme Eduscol (~100% — 44 chapitres) | Référence programme |
 
 ---
 
