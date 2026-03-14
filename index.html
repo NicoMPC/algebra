@@ -257,9 +257,9 @@
     }
     .on { opacity:.35; pointer-events:none; }
 
-    /* ── TABLEAU BLANC — BOTTOM SHEET ────────────────────── */
+    /* ── TABLEAU BLANC — BOTTOM SHEET (mobile) ─────────── */
     #draft-drawer {
-      position:fixed; bottom:0; left:0; right:0; height:62vh;
+      position:fixed; bottom:0; left:0; right:0; height:50vh;
       background:white; border-radius:24px 24px 0 0;
       transform:translateY(100%);
       transition:transform .35s cubic-bezier(.4,0,.2,1);
@@ -272,6 +272,26 @@
       z-index:990; opacity:0; transition:opacity .3s; pointer-events:none;
     }
     #draft-bd.show { opacity:1; pointer-events:auto; }
+
+    /* ── TABLEAU BLANC — SIDE PANEL (desktop ≥1024px) ─── */
+    @media (min-width:1024px) {
+      #draft-drawer {
+        top:0; bottom:0; right:0; left:auto;
+        width:33.333%; height:100vh;
+        border-radius:0;
+        transform:translateX(100%);
+        box-shadow:-10px 0 40px rgba(0,0,0,.12);
+      }
+      #draft-drawer.open { transform:translateX(0); }
+      #draft-bd { display:none; }
+      #fab-draft {
+        bottom:1.5rem !important; right:1.5rem !important;
+      }
+      /* Boutons calc un peu plus grands sur desktop */
+      .calc-btn { min-height:42px; font-size:1rem; }
+      .calc-row { gap:6px; }
+      #draft-text { font-size:1.05rem; line-height:1.7; }
+    }
 
     /* ── FORMULE FLOUE (reveal on tap) ───────────────────── */
     .fwrap {
@@ -1426,9 +1446,9 @@
       <button id="tab-calc" onclick="switchDraftTab('calc')"
               class="syne font-black text-sm px-3 py-1 rounded-[10px] text-slate-500 transition-all">🔢 Calculette</button>
     </div>
-    <button onclick="toggleDraft()"
+    <button id="btn-close-draft" onclick="toggleDraft()"
             class="text-slate-500 font-semibold border border-slate-300 px-3 py-1.5 rounded-xl text-sm bg-white hover:bg-slate-50 transition-colors">
-      Baisser ↓
+      Fermer ✕
     </button>
   </div>
 
@@ -5099,9 +5119,10 @@ function toggleDraft() {
   S.dOpen = !S.dOpen;
   var d = document.getElementById('draft-drawer');
   var b = document.getElementById('draft-bd');
+  var isDesktop = window.innerWidth >= 1024;
   if (S.dOpen) {
     d.classList.add('open');
-    b.classList.add('show');
+    if (!isDesktop) b.classList.add('show');
     var ta = document.getElementById('draft-text');
     if (ta && S.cid) ta.value = (S.drafts[S.cid] && S.drafts[S.cid].txt) || localStorage.getItem('draft_' + S.cid) || '';
     // Restaurer mode quadrillé
