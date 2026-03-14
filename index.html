@@ -795,6 +795,9 @@
     .adm-pill { display:inline-flex; align-items:center; border-radius:6px; padding:1px 5px; font-size:.65rem; font-weight:700; flex-shrink:0; }
     .adm-copy-btn { display:flex; align-items:center; gap:.4rem; background:linear-gradient(135deg,#4f46e5,#7c3aed); color:#fff; border:none; border-radius:10px; padding:.5rem 1rem; font-size:.75rem; font-weight:700; cursor:pointer; transition:all .15s; width:100%; justify-content:center; margin-top:.6rem; }
     .adm-copy-btn:active { transform:scale(.97); opacity:.9; }
+    #admin-modal details > summary { list-style:none; border-bottom:1px solid #f1f5f9; }
+    #admin-modal details > summary::-webkit-details-marker { display:none; }
+    #admin-modal details[open] > summary { border-bottom-color:#e2e8f0; margin-bottom:.25rem; }
 
     /* ── ADMIN DARK MODE ──────────────────────────────────── */
     body.adm-dark { background: #0f172a; }
@@ -8122,10 +8125,177 @@ function _buildModalHTML(st) {
       '</div>';
   })();
 
+  // ── Variables action zone ─────────────────────────────────────
+  var _j0Sent       = !!st.j0Sent;
+  var _emailsDue    = st.emailsDue || [];
+  var _j3Due        = _emailsDue.indexOf('J+3') !== -1;
+  var _j5Due        = _emailsDue.indexOf('J+5') !== -1;
+  var _j7Due        = _emailsDue.indexOf('J+7') !== -1;
+  var _hasSeqDue    = _j3Due || _j5Due || _j7Due;
+  var _bHistory     = st.boostHistory || [];
+  var _bPending     = typeof st.boostPending    === 'boolean' ? st.boostPending    : false;
+  var _bInProg      = typeof st.boostInProgress === 'boolean' ? st.boostInProgress : (st.currentBoostExosDone > 0 && st.currentBoostExosDone < 5);
+  var _bDone        = typeof st.boostDone       === 'boolean' ? st.boostDone       : (st.currentBoostExosDone >= 5);
+  var _bCurDone     = st.currentBoostExosDone || 0;
+  var _bLocked      = _bPending || _bInProg;
+  var _pendContent  = st.boostPendingContent || null;
+  var _chapInProg   = typeof st.chapInProgress === 'boolean' ? st.chapInProgress : (st.currentChapExosDone > 0 && st.currentChapExosDone < 20);
+  var _chapTerm     = typeof st.chapTermine    === 'boolean' ? st.chapTermine    : (st.currentChapExosDone >= 20);
+  var _chapExDone   = st.chapExosDone || st.currentChapExosDone || 0;
+
+  // ── Action zone HTML ──────────────────────────────────────────
+  var _azHTML = '';
+
+  // 1. Email J0 non envoyé → priorité maximale
+  if (!_j0Sent) {
+    _azHTML += '<div class="bg-rose-50 border-2 border-rose-300 rounded-2xl p-4 mb-3">' +
+      '<div class="flex items-center gap-2 mb-2.5">' +
+        '<span class="text-lg">📧</span>' +
+        '<div>' +
+          '<div class="text-rose-800 font-black text-sm">Mail de bienvenue à envoyer</div>' +
+          '<div class="text-rose-500 text-xs">J+0 — pas encore envoyé</div>' +
+        '</div>' +
+      '</div>' +
+      '<button id="btn-welcome-copy-' + st.code + '" onclick="copyWelcomeEmail(\'' + st.code + '\')" class="btn btn-fw py-2.5 text-sm mb-1.5" style="background:linear-gradient(135deg,#059669,#10b981);color:white;border-radius:.75rem">📧 Copier le mail de bienvenue</button>' +
+      '<button id="btn-welcome-mark-' + st.code + '" onclick="markWelcomeEmailSent(\'' + st.code + '\')" class="adm-copy-btn" style="background:#475569;display:none">✓ Marquer comme envoyé</button>' +
+    '</div>';
+  }
+
+  // 2. Emails séquence dus (J3/J5/J7)
+  if (_hasSeqDue) {
+    _azHTML += '<div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 mb-3">' +
+      '<div class="flex items-center gap-2 mb-2.5">' +
+        '<span class="text-lg">📬</span>' +
+        '<div class="text-amber-800 font-black text-sm">Email de relance à envoyer</div>' +
+      '</div>';
+    if (_j3Due) _azHTML +=
+      '<button id="btn-seq-copy-' + st.code + '-J3" onclick="copySequenceEmail(\'' + st.code + '\',\'J+3\')" class="btn btn-fw py-2.5 text-sm mb-1" style="background:linear-gradient(135deg,#d97706,#f59e0b);color:white;border-radius:.75rem">📧 Copier J+3</button>' +
+      '<button id="btn-seq-mark-' + st.code + '-J3" onclick="markSequenceEmailSent(\'' + st.code + '\',\'J+3\')" class="adm-copy-btn mb-1" style="background:#475569;display:none">✓ Marquer J+3 envoyé</button>';
+    if (_j5Due) _azHTML +=
+      '<button id="btn-seq-copy-' + st.code + '-J5" onclick="copySequenceEmail(\'' + st.code + '\',\'J+5\')" class="btn btn-fw py-2.5 text-sm mb-1" style="background:linear-gradient(135deg,#d97706,#f59e0b);color:white;border-radius:.75rem">📧 Copier J+5</button>' +
+      '<button id="btn-seq-mark-' + st.code + '-J5" onclick="markSequenceEmailSent(\'' + st.code + '\',\'J+5\')" class="adm-copy-btn mb-1" style="background:#475569;display:none">✓ Marquer J+5 envoyé</button>';
+    if (_j7Due) _azHTML +=
+      '<button id="btn-seq-copy-' + st.code + '-J7" onclick="copySequenceEmail(\'' + st.code + '\',\'J+7\')" class="btn btn-fw py-2.5 text-sm mb-1" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;border-radius:.75rem">📧 Copier J+7 + Stripe</button>' +
+      '<button id="btn-seq-mark-' + st.code + '-J7" onclick="markSequenceEmailSent(\'' + st.code + '\',\'J+7\')" class="adm-copy-btn mb-1" style="background:#475569;display:none">✓ Marquer J+7 envoyé</button>';
+    _azHTML += '</div>';
+  }
+
+  // 3. Boost
+  if (showBoost) {
+    var _bStatusBadge = '';
+    if (_bPending)   _bStatusBadge = '<span class="text-[10px] font-black text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">⏳ En attente</span>';
+    else if (_bInProg) _bStatusBadge = '<span class="text-[10px] font-black text-amber-600 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">🔄 En cours ' + _bCurDone + '/5</span>';
+    else if (_bDone)   _bStatusBadge = '<span class="text-[10px] font-black text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full">✓ Terminé — à renouveler</span>';
+    else if (_bHistory.length > 0) {
+      var _bl = _bHistory[0];
+      if (_bl.status === 'done') _bStatusBadge = '<span class="text-[10px] font-black text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full">✓ Terminé</span>';
+    }
+
+    var _bCardColor = needsBoost ? 'border-amber-400 bg-amber-50' : 'border-slate-200 bg-slate-50';
+    var _bTitleColor = needsBoost ? 'text-amber-800' : 'text-slate-600';
+
+    // Aperçu si boost en attente
+    var _bPendPreview = '';
+    if (_bPending && _pendContent) {
+      var _pc = typeof _pendContent === 'string' ? JSON.parse(_pendContent) : _pendContent;
+      _bPendPreview = '<details class="mb-2"><summary class="cursor-pointer text-[10px] font-semibold text-slate-500 py-1 select-none">👁 Voir le boost publié</summary>';
+      _bPendPreview += '<div class="mt-1 bg-white border border-slate-200 rounded-xl p-3 space-y-2">';
+      if (_pc.motProf) _bPendPreview += '<div class="text-[11px] text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-lg px-2 py-1.5"><span class="font-black">💬 Mot du prof :</span> ' + _pc.motProf.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+      if (_pc.insight) _bPendPreview += '<div class="text-[11px] text-slate-600 italic">✨ ' + _pc.insight.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+      if (_pc.exos && _pc.exos.length) {
+        _bPendPreview += '<ol class="space-y-1 pl-2">';
+        _pc.exos.forEach(function(e, i) {
+          _bPendPreview += '<li class="text-[10px] text-slate-500"><span class="font-semibold text-slate-700">' + (i+1) + '.</span> ' + (e.q || '').replace(/</g,'&lt;').replace(/>/g,'&gt;').substring(0,80) + (e.q && e.q.length > 80 ? '…' : '') + '</li>';
+        });
+        _bPendPreview += '</ol>';
+      }
+      _bPendPreview += '</div></details>';
+    }
+
+    // Historique accordéon
+    var _bHist = '';
+    if (_bHistory.length > 0) {
+      _bHist = '<details class="mt-2 mb-1"><summary class="text-[10px] font-semibold text-slate-400 cursor-pointer py-1 select-none">Historique (' + _bHistory.length + ' boosts)</summary>';
+      _bHist += '<button onclick="copyLastBoostJSON(\'' + st.code + '\')" class="adm-copy-btn w-full mt-1 mb-1" style="font-size:.7rem">📋 Copier le dernier boost JSON</button>';
+      _bHist += '<div class="mt-1 space-y-1 max-h-32 overflow-y-auto no-sb">';
+      _bHistory.forEach(function(b) {
+        var _bi = b.status === 'done' ? '✅' : b.status === 'in_progress' ? '🔄' : '⏳';
+        _bHist += '<div class="text-[10px] bg-white rounded-lg px-2 py-1 flex items-start gap-2">';
+        _bHist += '<span class="flex-shrink-0">' + _bi + '</span>';
+        _bHist += '<div><span class="font-semibold text-slate-500">' + b.date + '</span> — ' + b.exosDone + '/5';
+        if (b.insight) _bHist += ' · <em class="text-slate-400">' + b.insight.substring(0, 50) + '</em>';
+        _bHist += '</div></div>';
+      });
+      _bHist += '</div></details>';
+    }
+
+    _azHTML += '<div class="border-2 ' + _bCardColor + ' rounded-2xl p-4 mb-3">' +
+      '<div class="flex items-center justify-between mb-3">' +
+        '<div class="flex items-center gap-2">' +
+          '<span class="text-lg">⚡</span>' +
+          '<div class="' + _bTitleColor + ' font-black text-sm">Boost de ' + st.prenom + '</div>' +
+        '</div>' +
+        _bStatusBadge +
+      '</div>' +
+      (_bPending ? '<div class="text-xs text-blue-700 bg-blue-50 border border-blue-100 rounded-xl px-3 py-2 mb-2">⏳ Boost publié — pas encore commencé par ' + st.prenom + '</div>' + _bPendPreview : '') +
+      (_bInProg  ? '<div class="text-xs text-amber-700 bg-amber-100 border border-amber-200 rounded-xl px-3 py-2 mb-2">🔄 En cours — ' + _bCurDone + '/5 exos faits. Attends qu\'il soit terminé.</div>' : '') +
+      '<div class="' + (_bLocked ? 'opacity-40 pointer-events-none' : '') + '">' +
+        '<div class="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1.5">💬 Mot du prof <span class="font-normal normal-case tracking-normal text-slate-400">(optionnel)</span></div>' +
+        '<textarea id="modal-motprof-' + st.code + '" class="adm-textarea mb-2" style="height:56px" placeholder="Ex: Bravo pour ta progression ! Ce chapitre va t\'aider. Courage 💪"></textarea>' +
+        '<div class="flex gap-1.5 mb-1.5">' +
+          '<button onclick="insertBoostTemplate(\'' + st.code + '\',\'' + topCat + '\')" class="flex-1 text-[11px] font-bold py-2 rounded-xl border" style="background:#f0f4ff;color:#4338ca;border-color:#c7d2fe">📝 Template</button>' +
+          '<button onclick="copyLastBoostAsTemplate(\'' + st.code + '\')" class="flex-1 text-[11px] font-bold py-2 rounded-xl border" style="background:#f9f5ff;color:#7c3aed;border-color:#ddd6fe">♻️ Dernier</button>' +
+        '</div>' +
+        '<textarea id="modal-boost-json-' + st.code + '" class="adm-textarea" style="height:100px" placeholder="' + boostPH.replace(/"/g,'&quot;') + '"></textarea>' +
+        '<button onclick="publishBoost(\'' + st.code + '\')" id="btn-boost-' + st.code + '" class="btn btn-ac btn-fw py-3 mt-2 text-sm">⚡ Publier ce boost</button>' +
+      '</div>' +
+      _bHist +
+    '</div>';
+  }
+
+  // 4. Chapitre
+  if (showChap) {
+    var _chCardColor = needsChap ? 'border-indigo-400 bg-indigo-50' : 'border-slate-200 bg-slate-50';
+    var _chTitleColor = needsChap ? 'text-indigo-800' : 'text-slate-600';
+    var _chMsg = _chapInProg
+      ? '<div class="text-xs text-indigo-700 bg-indigo-100 border border-indigo-200 rounded-xl px-3 py-2 mb-2">📖 Chapitre en cours — ' + _chapExDone + '/20 exos. Attends qu\'il soit terminé.</div>'
+      : (!_chapInProg && !needsChap ? '<div class="text-xs text-slate-500 bg-slate-100 rounded-xl px-3 py-2 mb-2">Aucun chapitre actif — tu peux en assigner un</div>' : '');
+    var _chNewBadge = st.chapNewCount > 0 ? '<span class="text-[10px] font-black text-indigo-600 bg-indigo-100 border border-indigo-200 px-2 py-0.5 rounded-full">' + st.chapNewCount + ' en attente ✓</span>' : '';
+
+    _azHTML += '<div class="border-2 ' + _chCardColor + ' rounded-2xl p-4 mb-3">' +
+      '<div class="flex items-center justify-between mb-3">' +
+        '<div class="flex items-center gap-2">' +
+          '<span class="text-lg">📚</span>' +
+          '<div class="' + _chTitleColor + ' font-black text-sm">Chapitre de ' + st.prenom + '</div>' +
+        '</div>' +
+        _chNewBadge +
+      '</div>' +
+      _chMsg +
+      '<div class="' + (_chapInProg ? 'opacity-40 pointer-events-none' : '') + '">' +
+        '<button onclick="copyAdminPrompt(\'' + st.code + '\',\'chapitre\',\'' + topCat + '\')" class="adm-copy-btn mb-2">📋 Copier le prompt Claude — ' + topCat.replace(/_/g,' ') + '</button>' +
+        '<textarea id="modal-chap-json-' + st.code + '" class="adm-textarea" style="height:120px" placeholder="' + chapPH.replace(/"/g,'&quot;') + '"></textarea>' +
+        '<button onclick="publishChapter(\'' + st.code + '\')" id="btn-chap-' + st.code + '" class="btn btn-dk btn-fw py-3 mt-2 text-sm">📚 Publier ce chapitre</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // 5. RAS — rien à faire
+  if (!needsBoost && !needsChap && _j0Sent && !_hasSeqDue) {
+    _azHTML = '<div class="bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-3 mb-3 text-center">' +
+      '<div class="text-emerald-700 font-black text-sm">✓ Rien à faire pour ' + st.prenom + '</div>' +
+      '<div class="text-emerald-500 text-xs mt-0.5">Reviens demain · Consulte la progression ci-dessous si besoin</div>' +
+    '</div>';
+  }
+
+  // ── Email section (pour accordéon) ────────────────────────────
+  var _emailAccordHTML = '<div class="' + (_j0Sent ? 'hidden' : '') + '">' +
+    '<span id="j0-indicator-' + st.code + '" class="text-[10px] font-bold ' + (_j0Sent ? 'text-emerald-600' : 'text-amber-500') + '">' + (_j0Sent ? '✅ J0 envoyé' : '⏳ J0 non envoyé') + '</span>' +
+  '</div>';
+
   return (
     '<div class="flex justify-center pt-3 pb-1 sm:hidden"><div class="w-10 h-1.5 bg-slate-200 rounded-full"></div></div>' +
 
-    // Header
+    // ── Header ─────────────────────────────────────────────────
     '<div class="px-5 pt-4 pb-3 border-b border-slate-100 flex justify-between items-center flex-shrink-0">' +
       '<div class="flex items-center gap-3">' +
         '<div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black syne text-xl shadow-md flex-shrink-0" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">' + st.prenom.charAt(0).toUpperCase() + '</div>' +
@@ -8137,194 +8307,50 @@ function _buildModalHTML(st) {
       '<button onclick="closeStudentModal()" class="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 font-bold text-base hover:bg-slate-200 transition-colors flex-shrink-0">✕</button>' +
     '</div>' +
 
-    // Body (scrollable)
+    // ── Body (scrollable) ───────────────────────────────────────
     '<div class="flex-1 overflow-y-auto no-sb px-5 pt-4 pb-6">' +
 
-      // PATCH A : badge action principal + pills secondaires
-      '<div class="' + as.bg + ' border ' + as.border + ' rounded-xl px-4 py-2.5 text-sm font-black ' + as.text + ' mb-2 text-center">' + priority + '</div>' +
-      (allActions.length > 1 ? (function() {
-        var pillsHTML = '<div class="flex flex-wrap gap-1 justify-center mb-3">';
-        for (var _ai = 1; _ai < allActions.length; _ai++) {
-          var _sp = _pillStyle(allActions[_ai]);
-          pillsHTML += '<span class="' + _sp.bg + ' ' + _sp.text + ' text-[10px] font-semibold px-2 py-0.5 rounded-full">' + allActions[_ai] + '</span>';
-        }
-        pillsHTML += '</div>';
-        return pillsHTML;
-      })() : '<div class="mb-2"></div>') +
+      // ── ZONE ACTION — tout en haut, immédiat ──────────────────
+      _azHTML +
 
-      emailHTML +
+      // ── Accordéon : Emails ────────────────────────────────────
+      '<details class="mb-2" ' + (!_j0Sent || _hasSeqDue ? 'open' : '') + '>' +
+        '<summary class="cursor-pointer flex items-center justify-between py-2 select-none">' +
+          '<span class="text-[11px] font-black text-slate-500 uppercase tracking-widest">📧 Suivi emails</span>' +
+          (!_j0Sent || _hasSeqDue ? '<span class="text-[10px] font-black text-rose-500 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full">À envoyer</span>' : '<span class="text-[10px] text-slate-400">✓ OK</span>') +
+        '</summary>' +
+        '<div class="mt-1 pb-2">' + emailHTML + _emailAccordHTML + '</div>' +
+      '</details>' +
 
-      // Section chapitres
-      '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">📊 Exercices par chapitre (30 jours)</div>' +
-      chapHTML +
+      // ── Accordéon : Progression ───────────────────────────────
+      '<details class="mb-2">' +
+        '<summary class="cursor-pointer flex items-center justify-between py-2 select-none">' +
+          '<span class="text-[11px] font-black text-slate-500 uppercase tracking-widest">📊 Progression — 30 jours</span>' +
+          '<span class="text-[10px] text-slate-400">' + detail.length + ' chapitre' + (detail.length > 1 ? 's' : '') + '</span>' +
+        '</summary>' +
+        '<div class="mt-1 pb-2">' + chapHTML + '</div>' +
+      '</details>' +
 
-      '<div class="border-t border-slate-100 my-4"></div>' +
-
-      // 💬 Mot du professeur
-      '<div class="mb-4">' +
-        '<div class="text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">💬 Mot du professeur <span class="text-slate-400 font-normal normal-case tracking-normal">(optionnel — vu avant les exercices)</span></div>' +
-        '<textarea id="modal-motprof-' + st.code + '" class="adm-textarea" style="height:72px" placeholder="Ex: Bravo pour ta progression ! Ce chapitre va t\'aider à maîtriser les fractions. Courage 💪"></textarea>' +
-      '</div>' +
-
-      // Séparateur contextuel si UNE SEULE action active
-      (needsBoost && !needsChap ? '<div class="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mb-3 text-[11px] text-amber-700 font-semibold">⚡ Action : préparer le prochain boost</div>' : '') +
-      (needsChap && !needsBoost ? '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 mb-3 text-[11px] text-emerald-700 font-semibold">📚 Action : assigner le prochain chapitre</div>' : '') +
-      (needsBoost && needsChap  ? '<div class="bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2 mb-3 text-[11px] text-indigo-700 font-semibold">⚡📚 Double action : boost ET chapitre à préparer</div>' : '') +
-
-      // PATCH D — ⚡ Boost : conditionnel
-      (showBoost ? (function() {
-        var bHistory = st.boostHistory || [];
-        // Priorité aux nouveaux champs GAS @30, fallback sur anciens champs
-        var boostPending    = typeof st.boostPending    === 'boolean' ? st.boostPending    : false;
-        var boostInProgress = typeof st.boostInProgress === 'boolean' ? st.boostInProgress : (st.currentBoostExosDone > 0 && st.currentBoostExosDone < 5);
-        var boostDone       = typeof st.boostDone       === 'boolean' ? st.boostDone       : (st.currentBoostExosDone >= 5);
-        var pendingContent  = st.boostPendingContent || null;
-        var curDone         = st.currentBoostExosDone || 0;
-
-        // Verrouillage
-        var boostLocked = boostPending || boostInProgress;
-
-        // Statut courant
-        var statusLabel = '';
-        if (boostPending)    statusLabel = '<span class="text-[10px] font-black text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">⏳ En attente — pas démarré</span>';
-        else if (boostInProgress) statusLabel = '<span class="text-[10px] font-black text-amber-600 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">🔄 En cours ' + curDone + '/5</span>';
-        else if (boostDone)  statusLabel = '<span class="text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">✓ Dernier boost terminé</span>';
-        else if (bHistory.length > 0) {
-          var latest = bHistory[0];
-          if (latest.status === 'pending')     statusLabel = '<span class="text-[10px] font-black text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">⏳ En attente</span>';
-          else if (latest.status === 'in_progress') statusLabel = '<span class="text-[10px] font-black text-amber-600 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">🔄 En cours ' + latest.exosDone + '/5</span>';
-          else if (latest.status === 'done')   statusLabel = '<span class="text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">✓ Terminé</span>';
-        }
-
-        // Message de verrouillage
-        var boostMsg = '';
-        if (boostPending) {
-          boostMsg = '<div class="text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-xl px-3 py-2 mb-2">⏳ Un boost est en attente — ' + (st.prenom || 'l\'élève') + ' ne l\'a pas encore commencé.</div>';
-          // Aperçu structuré du boost en attente (insight + mot du prof + questions)
-          if (pendingContent) {
-            var pc = typeof pendingContent === 'string' ? JSON.parse(pendingContent) : pendingContent;
-            boostMsg += '<details class="mb-2"><summary class="cursor-pointer text-[10px] font-semibold text-slate-500 py-1 select-none">👁 Voir le boost publié</summary>';
-            boostMsg += '<div class="mt-1 bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">';
-            if (pc.motProf) boostMsg += '<div class="text-[11px] text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-lg px-2 py-1.5"><span class="font-black">💬 Mot du prof :</span> ' + pc.motProf.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
-            if (pc.insight) boostMsg += '<div class="text-[11px] text-slate-600 italic">✨ ' + pc.insight.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
-            if (pc.exos && pc.exos.length) {
-              boostMsg += '<ol class="space-y-1 pl-2">';
-              pc.exos.forEach(function(e, i) {
-                boostMsg += '<li class="text-[10px] text-slate-500"><span class="font-semibold text-slate-700">' + (i+1) + '.</span> ' + (e.q || '').replace(/</g,'&lt;').replace(/>/g,'&gt;').substring(0,80) + (e.q && e.q.length > 80 ? '…' : '') + '</li>';
-              });
-              boostMsg += '</ol>';
-            }
-            boostMsg += '</div></details>';
-          }
-        } else if (boostInProgress) {
-          boostMsg = '<div class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mb-2">🔄 Boost en cours — ' + curDone + '/5 exos faits. Attends qu\'il soit terminé.</div>';
-        }
-
-        // Mention si boost terminé
-        var boostReadyMsg = boostDone && !boostPending && !boostInProgress
-          ? '<div class="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 mb-2">✅ Dernier boost terminé — publie le suivant</div>'
-          : '';
-
-        // Historique accordéon
-        var histHTML = '';
-        if (bHistory.length > 0) {
-          histHTML = '<details class="mb-2"><summary class="text-[10px] font-semibold text-slate-400 cursor-pointer py-1 select-none">Historique des boosts (' + bHistory.length + ')</summary>';
-          histHTML += '<button onclick="copyLastBoostJSON(\'' + st.code + '\')" class="adm-copy-btn w-full mt-1 mb-2" style="font-size:.7rem">📋 Copier le dernier boost JSON (complet + stats élève)</button>';
-          histHTML += '<div class="mt-1 space-y-1 max-h-40 overflow-y-auto no-sb">';
-          bHistory.forEach(function(b) {
-            var stIcon = b.status === 'done' ? '✅' : b.status === 'in_progress' ? '🔄' : '⏳';
-            histHTML += '<div class="text-[10px] bg-slate-50 rounded-lg px-2 py-1 flex items-start gap-2">';
-            histHTML += '<span class="flex-shrink-0">' + stIcon + '</span>';
-            histHTML += '<div><span class="font-semibold text-slate-500">' + b.date + '</span> — ' + b.exosDone + '/5';
-            if (b.insight) histHTML += ' · <em class="text-slate-400">' + b.insight.substring(0, 60) + '</em>';
-            if (b.motProf) histHTML += '<div class="text-[10px] text-indigo-500 mt-0.5">💬 ' + b.motProf.substring(0, 80) + (b.motProf.length > 80 ? '…' : '') + '</div>';
-            histHTML += '</div></div>';
-          });
-          histHTML += '</div></details>';
-        }
-
-        var boostBoxClass = boostLocked ? 'opacity-50 pointer-events-none' : '';
-
-        return (
-          '<div class="mb-4">' +
-            '<div class="flex items-center justify-between mb-1.5">' +
-              '<div class="text-xs font-black text-slate-700 uppercase tracking-wider">⚡ Publier un boost (5 exos)</div>' +
-              statusLabel +
-            '</div>' +
-            histHTML +
-            boostMsg +
-            boostReadyMsg +
-            '<div class="' + boostBoxClass + '">' +
-              '<div class="flex gap-1.5 mb-1">' +
-                '<button onclick="insertBoostTemplate(\'' + st.code + '\',\'' + topCat + '\')" class="flex-1 text-[11px] font-bold py-2 rounded-xl border transition-colors" style="background:#f0f4ff;color:#4338ca;border-color:#c7d2fe">📝 Template JSON</button>' +
-                '<button onclick="copyLastBoostAsTemplate(\'' + st.code + '\')" class="flex-1 text-[11px] font-bold py-2 rounded-xl border transition-colors" style="background:#f9f5ff;color:#7c3aed;border-color:#ddd6fe">♻️ Dernier boost</button>' +
-              '</div>' +
-              '<textarea id="modal-boost-json-' + st.code + '" class="adm-textarea" style="height:110px" placeholder="' + boostPH.replace(/"/g,'&quot;') + '"></textarea>' +
-              '<button onclick="publishBoost(\'' + st.code + '\')" id="btn-boost-' + st.code + '" class="btn btn-ac btn-fw py-3 mt-2 text-sm">⚡ Enregistrer ce boost</button>' +
-            '</div>' +
-          '</div>'
-        );
-      })() : '') +
-
-      // Séparateur si les deux sections affichées
-      (showBoost && showChap ? '<div class="border-t border-slate-100 my-3"></div>' : '') +
-
-      // PATCH E — 📚 Chapitre : conditionnel
-      (showChap ? (function() {
-        // Priorité aux nouveaux champs GAS @30, fallback sur anciens champs
-        var chapInProg  = typeof st.chapInProgress === 'boolean' ? st.chapInProgress : (st.currentChapExosDone > 0 && st.currentChapExosDone < 20);
-        var chapTerm    = typeof st.chapTermine    === 'boolean' ? st.chapTermine    : (st.currentChapExosDone >= 20);
-        var chapExosDone = st.chapExosDone || st.currentChapExosDone || 0;
-        var chapLocked   = chapInProg;
-        var chapMsg = chapInProg
-          ? '<div class="text-xs text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2 mb-2">📖 Chapitre en cours — ' + chapExosDone + '/20 exos. À terminer avant d\'assigner la suite.</div>'
-          : (chapTerm || !chapInProg
-            ? '<div class="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 mb-2">✅ Prêt à recevoir un nouveau chapitre</div>'
-            : '');
-        var chapBoxClass = chapLocked ? 'opacity-50 pointer-events-none' : '';
-
-        return (
-          '<div class="mb-2">' +
-            '<div class="flex items-center justify-between mb-1.5">' +
-              '<div class="text-xs font-black text-slate-700 uppercase tracking-wider">📚 Publier un chapitre complet</div>' +
-              (st.chapNewCount > 0 ? '<span class="text-[10px] font-black text-indigo-600 bg-indigo-100 border border-indigo-200 px-2 py-0.5 rounded-full">' + st.chapNewCount + ' en attente ✓</span>' : '') +
-            '</div>' +
-            chapMsg +
-            '<div class="' + chapBoxClass + '">' +
-              '<button onclick="copyAdminPrompt(\'' + st.code + '\',\'chapitre\',\'' + topCat + '\')" class="adm-copy-btn mb-2">📋 Copier le prompt Claude — Chapitre complet ' + topCat.replace(/_/g,' ') + '</button>' +
-              '<textarea id="modal-chap-json-' + st.code + '" class="adm-textarea" style="height:130px" placeholder="' + chapPH.replace(/"/g,'&quot;') + '"></textarea>' +
-              '<button onclick="publishChapter(\'' + st.code + '\')" id="btn-chap-' + st.code + '" class="btn btn-dk btn-fw py-3 mt-2 text-sm">📚 Enregistrer ce chapitre</button>' +
-            '</div>' +
-          '</div>'
-        );
-      })() : '') +
-
-    // ── Section Brevet (3EME uniquement) @51 ─────────────────
+    // ── Accordéon : Brevet (3EME uniquement) ─────────────────
     (st.niveau === '3EME' ? (function() {
       var brevChaps = S._adminBrevChaps || [];
-      // Chapitres pratiqués par l'élève (pour pré-sélection)
       var worked = (st.chapitresDetail || []).map(function(ch) { return ch.cat; });
       var pendingBrev = st.pendingBrevet;
       var lastBrev    = st.lastBrevetResult;
 
-      var hb = '<div class="mt-3 pt-3 border-t border-slate-100">';
-      hb += '<div class="flex items-center justify-between mb-2">';
-      hb += '<div class="text-xs font-black text-slate-700 uppercase tracking-wider">🎓 Brevet Blanc sur mesure</div>';
-      if (pendingBrev) {
-        hb += '<span class="text-[10px] font-black text-amber-600 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">📝 En attente</span>';
-      }
-      hb += '</div>';
+      var hb = '<details class="mb-2"><summary class="cursor-pointer flex items-center justify-between py-2 select-none">' +
+        '<span class="text-[11px] font-black text-slate-500 uppercase tracking-widest">🎓 Brevet Blanc</span>' +
+        (pendingBrev ? '<span class="text-[10px] font-black text-amber-600 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">📝 En attente</span>' : '<span class="text-[10px] text-slate-400">Publier un blanc</span>') +
+        '</summary><div class="mt-2 pb-2">';
 
-      // Dernier résultat
       if (lastBrev) {
         var lbColor = lastBrev.score >= 60 ? '#059669' : '#e11d48';
         hb += '<div class="text-xs bg-slate-50 rounded-xl px-3 py-2 mb-2 flex items-center justify-between">';
-        hb += '<span class="text-slate-500">Dernier brevet · ' + relDateAdmin(lastBrev.date) + '</span>';
+        hb += '<span class="text-slate-500">Dernier · ' + relDateAdmin(lastBrev.date) + '</span>';
         hb += '<span class="font-black text-sm" style="color:' + lbColor + '">' + lastBrev.score + '% (' + lastBrev.correct + '/' + lastBrev.nbQ + ')</span>';
         hb += '</div>';
       }
 
-      // Sélection chapitres (si BrevetExos chargé)
       if (brevChaps.length > 0) {
         hb += '<div class="text-[10px] text-slate-500 font-semibold mb-1.5">Chapitres à inclure :</div>';
         hb += '<div class="grid grid-cols-2 gap-1 mb-2" id="adm-brev-chaps-' + st.code + '">';
@@ -8339,35 +8365,32 @@ function _buildModalHTML(st) {
         hb += '<input id="adm-brev-msg-' + st.code + '" class="adm-textarea" style="height:40px;resize:none;line-height:1.4" placeholder="Message du prof (optionnel)..." value="' + (pendingBrev && pendingBrev.message ? pendingBrev.message.replace(/"/g,'&quot;') : '') + '">';
         hb += '<button onclick="publishBrevet(\'' + st.code + '\')" id="btn-brev-' + st.code + '" class="btn btn-dk btn-fw py-2.5 mt-2 text-sm">🎓 Publier Brevet Blanc</button>';
       } else {
-        hb += '<div class="text-xs text-slate-400 bg-slate-50 rounded-xl px-3 py-2">Aucun exercice Brevet chargé — importer via import_brevet_exos.</div>';
+        hb += '<div class="text-xs text-slate-400 bg-slate-50 rounded-xl px-3 py-2">Aucun exercice Brevet chargé.</div>';
       }
-      hb += '</div>';
+      hb += '</div></details>';
       return hb;
     })() : '') +
 
-    // ── Section Révision (toutes années) ─────────────────
+    // ── Accordéon : Révision autre année ─────────────────────
     (function() {
       var allChaps = S._adminChapsByLevel || {};
       var studentNiv = st.niveau || '';
       var levels = ['6EME', '5EME', '4EME', '3EME'].filter(function(l) { return l !== studentNiv; });
       var currentRev = Array.isArray(st.revisionChapters) ? st.revisionChapters : [];
 
-      var hr = '<div class="mt-3 pt-3 border-t border-slate-100">';
-      hr += '<div class="flex items-center justify-between mb-2">';
-      hr += '<div class="text-xs font-black text-slate-700 uppercase tracking-wider">🔁 Ouvrir une autre année</div>';
-      if (currentRev.length > 0) {
-        hr += '<span class="text-[10px] font-black text-violet-600 bg-violet-50 border border-violet-200 px-2 py-0.5 rounded-full">' + currentRev.length + ' actif' + (currentRev.length > 1 ? 's' : '') + '</span>';
-      }
-      hr += '</div>';
+      var hr = '<details class="mb-2"><summary class="cursor-pointer flex items-center justify-between py-2 select-none">' +
+        '<span class="text-[11px] font-black text-slate-500 uppercase tracking-widest">🔁 Autre année</span>' +
+        (currentRev.length > 0 ? '<span class="text-[10px] font-black text-violet-600 bg-violet-50 border border-violet-200 px-2 py-0.5 rounded-full">' + currentRev.length + ' actif' + (currentRev.length > 1 ? 's' : '') + '</span>' : '<span class="text-[10px] text-slate-400">Révision</span>') +
+        '</summary><div class="mt-2 pb-2">';
 
       if (currentRev.length > 0) {
         hr += '<div class="text-[10px] text-violet-700 bg-violet-50 border border-violet-100 rounded-xl px-3 py-2 mb-2">';
-        hr += '<span class="font-semibold">Révisions actives : </span>';
-        hr += currentRev.map(function(rc) { return (rc.niveau || '') + ' · ' + (rc.categorie || ''); }).join(' · ');
+        hr += '<span class="font-semibold">Actives : </span>';
+        hr += currentRev.map(function(rc) { return (rc.niveau || '') + ' · ' + (rc.categorie || ''); }).join(', ');
         hr += '</div>';
       }
 
-      hr += '<div class="text-[10px] text-slate-500 font-semibold mb-1.5">Sélectionner l\'année à réviser :</div>';
+      hr += '<div class="text-[10px] text-slate-500 font-semibold mb-1.5">Année à réviser :</div>';
       hr += '<div class="flex gap-1 mb-2">';
       levels.forEach(function(l) {
         hr += '<button onclick="adminRevSelectLevel(\'' + st.code + '\',\'' + l + '\')" id="adm-rev-lvl-btn-' + st.code + '-' + l + '" class="flex-1 text-[11px] font-bold py-1.5 rounded-xl border transition-colors" style="background:#f8fafc;color:#64748b;border-color:#e2e8f0">' + l + '</button>';
@@ -8378,7 +8401,7 @@ function _buildModalHTML(st) {
       if (currentRev.length > 0) {
         hr += '<button onclick="clearRevision(\'' + st.code + '\')" class="adm-copy-btn mt-1.5" style="background:#475569">✕ Retirer toutes les révisions</button>';
       }
-      hr += '</div>';
+      hr += '</div></details>';
       return hr;
     })() +
 
