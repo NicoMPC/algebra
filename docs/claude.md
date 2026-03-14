@@ -62,7 +62,7 @@ docs/archive/                      → Docs historiques (ne pas lire sauf besoin
 
 ### Patches chirurgicaux uniquement
 - Codebase **V23 GOLD MASTER** — ne jamais réécrire
-- `index.html` ~7860 lignes → **ne jamais diviser**
+- `index.html` ~8100 lignes → **ne jamais diviser**
 - Vanilla JS, pas de framework, pas de bundler, pas de dépendances sans validation Nicolas
 - Modifier **uniquement** la fonction concernée par la tâche
 
@@ -103,7 +103,19 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 - **18 types** de figures supportés : tri_rect, tri_trigo, thales, circle, rect, angle, parallel, sym_axial, sym_central, cube, cylinder, cone, pyramid, sphere, section_solid, homothety, similar_tri, triangle, transform, **vectors**, **repere**, **trigo_circle**
 - Lettres de points extraites dynamiquement de l'énoncé (`pts[]`) — plus de lettres hardcodées
 - Filtrage strict `nonGeoChaps` : pas de figure pour algèbre, fractions, stats, probas, etc.
+- **Système de confiance** : chaque figure a `confidence: 'high'|'medium'|'low'` — `low` filtré (pas de figure affichée)
 - Fallback safe : si auto-détection échoue → pas de figure → l'exercice marche comme avant
+
+### Visualisation post-réponse
+- `extractFunction(q)` : détecte f(x)=ax+b et ax²+bx+c dans l'énoncé
+- `renderFunctionGraph(fnSpec)` : trace SVG 280×180 (axes, courbe indigo)
+- Affiché dans `_previewHelp()` après réponse uniquement — jamais avant
+
+### Types d'exercices
+- `exo.type` : `'qcm'` (défaut), `'vf'` (Vrai/Faux), `'fill'` (trou à compléter)
+- VF : 2 gros boutons + `exo.justification` affiché post-réponse
+- Fill : `___` dans l'énoncé remplacé par span indigo stylisé
+- Grille options adaptative : 2 opts → 2 cols, 3 → vertical, 4 → grille 2×2
 
 ### Pas de sur-ingénierie
 - Pas de feature flags, pas d'abstractions prématurées

@@ -24,7 +24,7 @@ NAVIGATEUR (index.html)              GOOGLE APPS SCRIPT (backend.js)
 
 | Composant | Technologie | Fichier | Taille |
 |---|---|---|---|
-| Frontend | HTML + CSS vars + Tailwind CDN + JS vanilla | `index.html` | ~7860 lignes |
+| Frontend | HTML + CSS vars + Tailwind CDN + JS vanilla | `index.html` | ~8100 lignes |
 | Backend | Google Apps Script (V8) | `backend.js` | ~4457 lignes |
 | Base de données | Google Sheets | — | 13 onglets actifs |
 | Hébergement frontend | GitHub Pages | `matheux.fr` | Auto-deploy sur push |
