@@ -95,7 +95,7 @@ const S = {
 - **Mastery ring** : cercle SVG de progression par chapitre
 - **Confettis** : animation post-boost terminé
 - **Messages** : ton ado "Game Boy Chill" (EASY×7 variantes, HARD×3)
-- **Brouillon contextuel** : tiroir bas-de-page, 2 onglets — Brouillon (symboles adaptés au chapitre via `getContextSymbols(niv, cat)`, mode quadrillé toggle) + Calculette (adaptée par niveau/chapitre : trig si géo, π si aires/volumes, puissances si 5EME+, fractions si 6EME, mémoire M+/MR, copie vers brouillon)
+- **Brouillon contextuel + Calculette** : mobile = bottom sheet 50vh avec onglets (brouillon|calculette), desktop = panneau latéral droit 1/3 écran avec les 2 fusionnés (calculette en haut, brouillon en bas). Brouillon : symboles adaptés au chapitre via `getContextSymbols(niv, cat)`, mode quadrillé toggle. Calculette : adaptée par niveau/chapitre (trig si géo, π si aires/volumes, puissances si 5EME+, fractions si 6EME), mémoire M+/MR, copie vers brouillon.
 - **Figures géométriques SVG** : auto-détection depuis le texte de la question + catégorie. Moteur `autoDetectFigure(q, cat)` → `renderFig(fig)` → SVG inline animé. **18 types** : triangle rectangle, trigo, Thalès, cercle (+ mode diamètre), rectangle/carré, angle (3 lettres), parallèles/perpendiculaires, symétrie axiale/centrale (3 paires A/A'), cube/pavé, cylindre, cône, pyramide, sphère, section de solide, homothétie, triangles semblables, transformations, **vecteurs/produit scalaire** (1ERE), **repère orthonormé** (1ERE), **cercle trigonométrique** (1ERE). Lettres de points extraites dynamiquement de l'énoncé (`pts[]`). Filtrage `nonGeoChaps` (pas de figure sur algèbre/stats/probas). viewBox 280×210, `overflow:visible`. Champ `fig` optionnel dans les exercices JSON pour override manuel. Fallback safe : pas de figure si non détecté.
 
 ---
@@ -279,7 +279,7 @@ Scripts archivés dans `scripts_archive/`.
 - Auth register + login + auto-login silencieux (modale protégée contre interruption trial-flow CTA)
 - Scores enrichis : temps, wrongOpt, indices, formule
 - Swipe gauche → exercice suivant
-- Admin panel (triple-clic logo), dark mode admin
+- Admin panel (triple-clic logo), dark mode admin, mode nuit landing (toggle lune dans la nav, `body.land-night`, persisté localStorage)
 - Gamification : XP, streak, mastery ring SVG
 - MathJax v3 avec fallback, chrono par exercice
 - Nudge pills après 20s, tableau blanc maths

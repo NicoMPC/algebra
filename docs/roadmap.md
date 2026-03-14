@@ -154,6 +154,8 @@
 - [x] **Figures géo SVG v2** — lettres dynamiques, filtrage strict, 18 types (3 nouveaux 1ERE : vectors, repere, trigo_circle), viewBox 280×210 (14 mars 2026)
 - [x] **Auth modal protégé** — showAuth() gardé trial-flow + auto-login silencieux sans modale imposée (14 mars 2026)
 - [x] **Toast mobile responsive** — white-space normal, max-width 88vw, word-break, border-radius 18px (14 mars 2026)
+- [x] **Brouillon/Calculette desktop** — panneau latéral droit 1/3 écran, les 2 fusionnés (calc en haut, brouillon en bas). Mobile : bottom sheet 50vh (énoncé reste visible) (14 mars 2026)
+- [x] **Mode nuit landing** — toggle lune dans la nav, fond sombre sur toutes les sections claires, persisté localStorage (14 mars 2026)
 - [ ] Agent analyse lacunes quotidien automatique
 - [ ] Agent génération boost automatique
 - [ ] Agent rapport parents (email hebdo)
