@@ -96,10 +96,11 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 
 ### Règle 1 chapitre/jour
 - Un élève ne peut travailler que sur **1 chapitre par jour** (hors BOOST, CALIBRAGE, BREVET, REVISION)
+- **Désactivé pour le niveau 1ERE** — tous les chapitres sont accessibles sans restriction
 - Le verrou ne s'active qu'après **complétion** d'un chapitre (tous exercices répondus), pas dès le premier exercice
 - `S._todayChap` : set dans `chkComp()` à la complétion, détecté au login via `chapDone` + dates historique
-- Bloqué dans `togCat()` et `openFromProgress()` → toast + return
-- Verrouillage visuel (opacity + 🔒) dans la vue Progression
+- Bloqué dans `togCat()` et `openFromProgress()` → toast + return (condition `S.niv !== '1ERE'`)
+- Verrouillage visuel (opacity + 🔒) dans la vue Progression (idem, bypassé si 1ERE)
 
 ### Figures géométriques SVG
 - `autoDetectFigure(q, cat)` : auto-génère un spec `fig` depuis le texte de la question
