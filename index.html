@@ -1113,6 +1113,11 @@
           <div class="syne font-black text-slate-900 mb-2">Chapitres complets sur mesure</div>
           <p class="text-slate-500 text-sm leading-relaxed">Au-delà du boost, chaque chapitre du programme est travaillé en profondeur — exercices générés sur mesure, notion par notion, jusqu'à ce que chaque point soit acquis.</p>
         </div>
+        <div class="land-step reveal reveal-d4">
+          <div class="land-step-icon float-anim" style="background:#ede9fe;animation-delay:1.2s">📖</div>
+          <div class="syne font-black text-slate-900 mb-2">Mon cours — rédigé sur mesure</div>
+          <p class="text-slate-500 text-sm leading-relaxed">À chaque palier (5, 10, 15, 20 exercices), un cours personnalisé se débloque : l'essentiel, la méthode, les pièges à éviter. Rédigé à partir de ce que votre enfant a vraiment travaillé.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -1687,7 +1692,7 @@ let S = {
   sent: new Set(),
   scoreQueue: JSON.parse(localStorage.getItem('sq') || '[]'),
   adminMode: false, timeOffset: 0, forceFail: false,
-  adminStudents: [], adminTab: 'todo', _adminBrevChaps: [], _adminChapsByLevel: {},
+  adminStudents: [], adminTab: 'todo', adminCoursData: null, _adminBrevChaps: [], _adminChapsByLevel: {},
   tmpEmail: '', tmpHash: '',
   exoStartTime: {},    // { exoId → timestamp ms } — NOUVEAU v23
   view: 'chapters',   // 'chapters' | 'progress' | 'brevet'
@@ -1713,6 +1718,9 @@ let S = {
   boostHistory:      [],      // [{date, exosDone, boost, scores}] — boosts passés
   retroSess:         {},      // { cat → sessionIdx } — session sélectionnée en retro mode
   retroBoost:        null,    // idx boost ouvert en retro
+  retroExoIdx:       {},      // { cat → exoIdx } — navigation dans la session retro
+  coursMap:          {},      // { cat → {unlocked, locked, nbExos, nextMilestone} }
+  coursView:         null,    // cat dont le cours est ouvert (overlay)
 };
 
 const LVL = {};
@@ -3264,6 +3272,9 @@ function initApp(d, skipRender) {
       });
     });
   }
+  // ── Cours data ────────────────────────────────────────────────
+  S.coursMap = d.coursData || {};
+
   // ── Boost history avec cross-ref scores source=BOOST ─────────
   S.boostHistory = (d.boostHistory || []).map(function(b) {
     var bDate = b.date;
@@ -3495,6 +3506,9 @@ function mark(cat, idx, status, wrongOpt) {
   }
   sendScore(r.rC, r.rI, status, xp, exo.q, wrongOpt || null, cat);
   updH();
+  if (cat !== 'CALIBRAGE' && cat !== 'BOOST' && cat !== 'BREVET' && cat !== 'REVISION') {
+    _checkCoursMilestone(cat);
+  }
   var done = chkComp(cat);
   if (!done) {
     if (status === 'EASY') { setTimeout(function(){ nextEx(cat); }, 600); }
@@ -4676,13 +4690,22 @@ function renderArchiveSection(cat, exs) {
       var sess = sessions[selIdx];
       var easy = sess.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
       var tot = sess.exos.length;
-      html += '<div class="text-[10px] font-semibold text-slate-400 mb-2 text-center">📅 ' + _fmtRetroDateLong(sess.date) + ' · ' + tot + ' exos · ' + easy + '/' + tot + ' réussis</div>';
-      sess.exos.forEach(function(score) {
+      html += '<div class="text-[10px] font-semibold text-slate-400 mb-2 text-center">📅 ' + _fmtRetroDateLong(sess.date) + ' · ' + easy + '/' + tot + ' réussis</div>';
+      // Navigation exo par exo
+      var exoNav = S.retroExoIdx[cat] || 0;
+      if (exoNav >= sess.exos.length) exoNav = 0;
+      var score = sess.exos[exoNav];
+      if (score) {
         var exoIdx = parseInt(score.exercice_idx) - 1;
         var exo = exs[exoIdx];
-        if (!exo) return;
-        html += _renderRetroExo(exo, score, cat, exoIdx);
-      });
+        if (exo) html += _renderRetroExo(exo, score, cat, exoIdx);
+      }
+      // Barre de navigation prev/next
+      html += '<div class="flex items-center justify-between mt-3 gap-2">';
+      html += '<button onclick="_retroNav(\''+cat+'\',-1)" class="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-black text-slate-400 bg-white '+(exoNav === 0 ? 'opacity-30 pointer-events-none' : 'active:bg-slate-50')+'">← Précédent</button>';
+      html += '<span class="text-[11px] font-black text-slate-500 flex-shrink-0">'+(exoNav+1)+' / '+tot+'</span>';
+      html += '<button onclick="_retroNav(\''+cat+'\',1)" class="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-black text-slate-400 bg-white '+(exoNav === tot-1 ? 'opacity-30 pointer-events-none' : 'active:bg-slate-50')+'">Suivant →</button>';
+      html += '</div>';
     } else {
       // Fallback : vue plate (session courante)
       html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-emerald-700 text-center mb-3">📅 Prochain contenu · Demain matin 🔥</div>';
@@ -4750,6 +4773,18 @@ function _fmtRetroDateLong(dateStr) {
 function _selectRetroSess(cat, idx) {
   if (!S.retroSess) S.retroSess = {};
   S.retroSess[cat] = idx;
+  S.retroExoIdx[cat] = 0; // reset à la 1ère question
+  render();
+}
+function _retroNav(cat, dir) {
+  var sessions = S.chapSessions && S.chapSessions[cat];
+  if (!sessions) return;
+  var selIdx = S.retroSess[cat] || 0;
+  var sess = sessions[selIdx];
+  if (!sess) return;
+  var cur = S.retroExoIdx[cat] || 0;
+  cur = Math.max(0, Math.min(sess.exos.length - 1, cur + dir));
+  S.retroExoIdx[cat] = cur;
   render();
 }
 function _toggleRetroBoost(idx) {
@@ -5104,7 +5139,7 @@ function render() {
         '<div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/10" style="animation:lockPulse 2.5s ease-in-out infinite">🔒</div>' +
         '<div class="flex-1 min-w-0">' +
           '<div class="syne text-sm font-black text-white/80 mb-0.5">Prochain contenu</div>' +
-          '<p class="next-content-timer text-indigo-300 text-sm font-bold">dans …</p>' +
+          '<p class="text-indigo-300 text-sm font-bold">Demain matin 🌅</p>' +
         '</div></div>';
     }
   }
@@ -5167,7 +5202,7 @@ function render() {
             '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>' +
             '<span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>' +
           '</span>' +
-          '<span id="boost-countdown" class="text-[9px] font-bold text-amber-700">dans …</span>' +
+          '<span class="text-[9px] font-bold text-amber-700">Demain matin 🌅</span>' +
         '</div>';
         if (window.location.search.includes('sim=1')) {
           html += '<button onclick="_simulateNextDay()" class="mt-0.5 text-[8px] font-bold text-indigo-400 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full active:opacity-70">🔮 Simuler demain</button>';
@@ -5178,6 +5213,10 @@ function render() {
       }
       var _histLabel = _sessCount > 1 ? (_sessCount + ' passages') : 'historique';
       html += '<span class="text-[10px] text-emerald-500/80 font-medium">'+(isOpen ? '▾ fermer' : ('▸ ' + (isBoost ? 'revoir mes exos' : _histLabel)))+'</span>';
+      // Bouton Mon cours (si contenu disponible)
+      if (!isBoost && S.coursMap[cat] && S.coursMap[cat].unlocked && S.coursMap[cat].unlocked.length > 0) {
+        html += '<button onclick="event.stopPropagation();openCoursView(\''+cat+'\')" class="mt-1 text-[10px] font-black text-indigo-600 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-xl w-full active:bg-indigo-100">📖 Mon cours</button>';
+      }
       html += '</div>';
       html += '</div>'; // .chap-stack
       // Carte droite — prochain avec timer
@@ -5187,8 +5226,7 @@ function render() {
         html += '<span style="animation:lockPulse 2.5s ease-in-out infinite">🔒</span>';
         html += '</div>';
         html += '<span class="syne font-black text-xs text-slate-500 leading-tight">Prochain chapitre</span>';
-        html += '<span class="text-[10px] text-slate-400 font-medium leading-tight">Disponible</span>';
-        html += '<span class="next-content-timer text-[10px] font-bold text-indigo-400">dans …</span>';
+        html += '<span class="text-[10px] font-bold text-indigo-400">Demain matin 🌅</span>';
         html += '</div>';
       }
       html += '</div>';
@@ -5228,6 +5266,13 @@ function render() {
     if (S.revisionCats && S.revisionCats.indexOf(cat) !== -1) html += '<span class="text-[9px] syne font-black bg-violet-100 text-violet-700 border border-violet-200 px-1.5 py-0.5 rounded-md">🔁 Révision</span>';
     html += '</div><div class="flex items-center gap-2"><div class="pbar flex-1" style="max-width:100px"><div class="pfill pfp" style="width:'+pct2+'%"></div></div>';
     html += '<span class="text-[11px] font-bold '+(isBoost?'text-white/60':'text-slate-400')+'">'+done+'/'+tot+'</span>'+(isBoost?'':_trendArrow(cat))+'</div></div>';
+    // Teaser cours (3-4 exos restants avant déblocage)
+    if (!isBoost && S.coursMap[cat]) {
+      var _cm = S.coursMap[cat]; var _nexM = _cm.nextMilestone;
+      if (_nexM && (_nexM - done) > 0 && (_nexM - done) <= 2) {
+        html += '<div class="mx-4 mb-2 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-1.5 text-[10px] font-bold text-indigo-600">📖 Plus que '+(_nexM - done)+' exo'+((_nexM-done)>1?'s':'')+' pour débloquer ton cours !</div>';
+      }
+    }
     html += '<div class="'+(isBoost?'text-white/40':'text-slate-300')+' text-xl font-light select-none" style="transition:transform .2s;transform:rotate('+(isOpen?90:0)+'deg)">›</div></div>';
 
     if (isOpen) {
@@ -5274,6 +5319,117 @@ function render() {
 }
 
 // ── Génère le HTML hints+formule pour le mode révision boost ──
+// ══════════════════════════════════════════════════════════════
+// MON COURS — Vue in-app du cours par chapitre
+// ══════════════════════════════════════════════════════════════
+function openCoursView(cat) {
+  S.coursView = cat;
+  var cm = S.coursMap[cat];
+  if (!cm) return;
+  var catName = (LVL[S.niv] && LVL[S.niv].names[cat]) || cat.replace(/_/g,' ');
+  var total = (cm.unlocked ? cm.unlocked.length : 0) + (cm.locked ? cm.locked.length : 0);
+  var icons = ['💡','📐','⚠️','✨'];
+
+  var html = '<div id="cours-modal" style="position:fixed;inset:0;z-index:9998;background:rgba(15,23,42,.6);overflow-y:auto;-webkit-overflow-scrolling:touch" onclick="if(event.target===this)closeCoursView()">';
+  html += '<div class="bg-white" style="min-height:100vh;max-width:480px;margin:0 auto;padding:1.5rem 1.25rem 3rem">';
+
+  // Header
+  html += '<div class="flex items-center justify-between mb-5">';
+  html += '<div>';
+  html += '<div class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1">Mon cours</div>';
+  html += '<div class="syne font-black text-xl text-slate-900">' + catName + '</div>';
+  html += '</div>';
+  html += '<button onclick="closeCoursView()" class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 text-lg">✕</button>';
+  html += '</div>';
+
+  // Barre de progression cours
+  var pct = total > 0 ? Math.round((cm.unlocked.length / total) * 100) : 0;
+  html += '<div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 mb-5">';
+  html += '<div class="flex items-center justify-between mb-2">';
+  html += '<span class="text-xs font-black text-slate-700">Progression du cours</span>';
+  html += '<span class="text-xs font-black text-indigo-600">'+cm.unlocked.length+'/'+total+' sections</span>';
+  html += '</div>';
+  html += '<div class="pbar"><div class="pfill pfp" style="width:'+pct+'%"></div></div>';
+  if (cm.nextMilestone) {
+    var exosLeft = cm.nextMilestone - cm.nbExos;
+    html += '<div class="text-[10px] text-slate-400 font-medium mt-2">📚 Plus que ' + exosLeft + ' exo' + (exosLeft > 1 ? 's' : '') + ' pour débloquer la prochaine section</div>';
+  } else {
+    html += '<div class="text-[10px] text-emerald-500 font-bold mt-2">✨ Cours complet — tu as tout maîtrisé !</div>';
+  }
+  html += '</div>';
+
+  // Sections débloquées
+  if (cm.unlocked && cm.unlocked.length > 0) {
+    cm.unlocked.forEach(function(sect, i) {
+      html += '<div class="mb-4 rounded-2xl border border-slate-100 overflow-hidden">';
+      html += '<div class="flex items-center gap-3 px-4 py-3" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">';
+      html += '<span class="text-xl">' + (icons[i] || '📖') + '</span>';
+      html += '<div class="flex-1"><div class="syne font-black text-white text-sm">' + sect.titre + '</div>';
+      html += '<div class="text-white/60 text-[10px]">Débloqué à ' + sect.unlock_at + ' exercices</div></div>';
+      html += '<span class="text-white/80 text-xs font-bold bg-white/20 px-2 py-1 rounded-full">✓</span>';
+      html += '</div>';
+      html += '<div class="px-4 py-3 text-sm text-slate-700 font-medium leading-relaxed mc" style="white-space:pre-wrap">' + fmtL(sect.contenu) + '</div>';
+      html += '</div>';
+    });
+  }
+
+  // Sections verrouillées
+  if (cm.locked && cm.locked.length > 0) {
+    html += '<div class="mt-2 mb-2 text-[10px] font-black text-slate-400 text-center uppercase tracking-wider">Prochaines sections</div>';
+    cm.locked.forEach(function(sect, i) {
+      var realI = (cm.unlocked ? cm.unlocked.length : 0) + i;
+      html += '<div class="mb-3 rounded-2xl border border-dashed border-slate-200 overflow-hidden" style="opacity:.55">';
+      html += '<div class="flex items-center gap-3 px-4 py-3 bg-slate-50">';
+      html += '<span class="text-xl opacity-40">' + (icons[realI] || '📖') + '</span>';
+      html += '<div class="flex-1"><div class="syne font-black text-slate-400 text-sm">' + sect.titre + '</div>';
+      html += '<div class="text-slate-400 text-[10px]">Se débloque à ' + sect.unlock_at + ' exercices</div></div>';
+      html += '<span class="text-slate-300 text-lg">🔒</span>';
+      html += '</div>';
+      html += '</div>';
+    });
+  }
+
+  html += '<button onclick="closeCoursView()" class="mt-4 w-full py-3 rounded-2xl bg-indigo-600 text-white font-black syne text-sm">Retour aux exercices →</button>';
+  html += '</div></div>';
+
+  var old = document.getElementById('cours-modal');
+  if (old) old.remove();
+  document.body.insertAdjacentHTML('beforeend', html);
+  rMath();
+}
+function closeCoursView() {
+  var el = document.getElementById('cours-modal');
+  if (el) el.remove();
+  S.coursView = null;
+}
+
+// ── Gamification milestones cours ─────────────────────────────
+function _checkCoursMilestone(cat) {
+  if (!S.coursMap[cat]) return;
+  var sessions = S.chapSessions && S.chapSessions[cat];
+  // Compter exos curriculum faits pour ce chapitre
+  var nbExos = 0;
+  var exs = LVL[S.niv] && LVL[S.niv].cats[cat];
+  if (exs) {
+    for (var i = 0; i < exs.length; i++) {
+      var r = res2(cat, i);
+      if (S.res[S.niv+'-'+r.rC+'-'+r.rI]) nbExos++;
+    }
+  }
+  var milestones = [5, 10, 15, 20];
+  milestones.forEach(function(m) {
+    if (nbExos === m) {
+      var msgs = {
+        5:  '📖 Ton cours est prêt ! Consulte-le depuis le chapitre.',
+        10: '📖 Ton cours s\'enrichit — nouvelles notions disponibles !',
+        15: '📖 Cours avancé débloqué — points de vigilance personnalisés.',
+        20: '✨ Cours complet ! Tu as tout maîtrisé 🏆'
+      };
+      setTimeout(function() { showT(msgs[m], 5000, '📖'); }, 500);
+    }
+  });
+}
+
 // ── Tendance chapitre (flèche) ─────────────────────────────────
 function _chapTrend(cat) {
   var sessions = S.chapSessions && S.chapSessions[cat];
@@ -7246,7 +7402,8 @@ function _renderAdminCards() {
     { key: 'todo',  label: '⚡ À faire',  count: todoStudents.length,  color: todoStudents.length  > 0 ? '#ef4444' : '#94a3b8' },
     { key: 'suivi', label: '📧 Suivi',    count: suiviStudents.length, color: suiviStudents.length > 0 ? '#f59e0b' : '#94a3b8' },
     { key: 'done',  label: '✅ Traité',   count: doneStudents.length,  color: '#059669' },
-    { key: 'test',  label: '🧪 Test',     count: testStudents.length,  color: '#94a3b8' }
+    { key: 'test',  label: '🧪 Test',     count: testStudents.length,  color: '#94a3b8' },
+    { key: 'cours', label: '📚 Cours',    count: '',                   color: '#06b6d4' }
   ];
   html += '<div class="flex gap-1.5 mb-4">';
   tabs.forEach(function(t) {
@@ -7348,6 +7505,9 @@ function _renderAdminCards() {
     }
     doneStudents.forEach(function(st) { html += _buildStudentCard(st); });
 
+  } else if (activeTab === 'cours') {
+    html += _renderAdminCoursHTML();
+
   } else { // test
     if (testStudents.length === 0) {
       html += '<div class="text-center py-8 text-slate-400 text-sm font-semibold">Aucun compte test.</div>';
@@ -7373,7 +7533,114 @@ function _renderAdminCards() {
 
 function _adminSetTab(tab) {
   S.adminTab = tab;
+  if (tab === 'cours' && !S.adminCoursData) _loadAdminCours();
   _renderAdminCards();
+}
+
+// ── Admin: Cours ───────────────────────────────────────────────
+function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function _renderAdminCoursHTML() {
+  if (!S.adminCoursData) {
+    return '<div class="text-center py-8 text-slate-400 text-sm font-semibold">⏳ Chargement des cours...</div>';
+  }
+  var rows = S.adminCoursData; // [{Niveau, Categorie, Section5, Section10, Section15, Section20}]
+  var byLevel = {};
+  rows.forEach(function(r) {
+    var niv = r['Niveau'] || '?';
+    if (!byLevel[niv]) byLevel[niv] = [];
+    byLevel[niv].push(r);
+  });
+  // Enrichit avec les chapitres connus qui n'ont pas encore de cours
+  var allChaps = S._adminChapsByLevel || {};
+  Object.keys(allChaps).forEach(function(niv) {
+    var existing = (byLevel[niv] || []).map(function(r) { return r['Categorie']; });
+    (allChaps[niv] || []).forEach(function(cat) {
+      if (existing.indexOf(cat) === -1) {
+        if (!byLevel[niv]) byLevel[niv] = [];
+        byLevel[niv].push({ Niveau: niv, Categorie: cat, Section5: '', Section10: '', Section15: '', Section20: '', _new: true });
+      }
+    });
+  });
+  var html = '';
+  html += '<div class="bg-cyan-50 border border-cyan-200 rounded-xl px-3 py-2 mb-4 text-[11px] text-cyan-700 font-semibold">📚 Rédige les cours par chapitre. Chaque section se débloque après 5/10/15/20 exercices faits par l\'élève.</div>';
+  var levels = ['6EME','5EME','4EME','3EME','1ERE'];
+  levels.forEach(function(niv) {
+    var chaps = byLevel[niv];
+    if (!chaps || chaps.length === 0) return;
+    html += '<div class="mb-4">';
+    html += '<div class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">'+niv+'</div>';
+    chaps.forEach(function(row) {
+      var cat = row['Categorie'] || '';
+      var hasContent = (row['Section5']||'').trim() || (row['Section10']||'').trim() || (row['Section15']||'').trim() || (row['Section20']||'').trim();
+      var id = 'cours-'+niv+'-'+cat;
+      html += '<div class="bg-white border border-slate-200 rounded-xl mb-2 overflow-hidden">';
+      html += '<button onclick="_toggleAdminCours(\''+id+'\')" class="w-full flex items-center justify-between px-3 py-2.5 text-left">';
+      html += '<span class="text-xs font-bold text-slate-700">'+cat.replace(/_/g,' ')+'</span>';
+      html += '<span class="text-[10px] font-bold '+(hasContent ? 'text-emerald-500' : 'text-slate-300')+'">'+( hasContent ? '✅ rédigé' : '⬜ vide')+'</span>';
+      html += '</button>';
+      html += '<div id="'+id+'" class="hidden px-3 pb-3">';
+      var sections = [
+        { key: 'Section5',  label: "📖 L'essentiel (5 exos)" },
+        { key: 'Section10', label: '🔬 Méthode & Exemples (10 exos)' },
+        { key: 'Section15', label: '⚠️ Points de vigilance (15 exos)' },
+        { key: 'Section20', label: '🏆 Cours complet (20 exos)' }
+      ];
+      sections.forEach(function(s) {
+        html += '<div class="mb-2">';
+        html += '<div class="text-[10px] font-black text-slate-400 mb-0.5">'+s.label+'</div>';
+        html += '<textarea id="cours-'+niv+'-'+cat+'-'+s.key+'" rows="3" class="w-full text-[11px] border border-slate-200 rounded-lg px-2 py-1.5 resize-none font-mono focus:outline-none focus:border-cyan-400" placeholder="Texte du cours (KaTeX supporté : $\\frac{a}{b}$)">'+_esc(row[s.key]||'')+'</textarea>';
+        html += '</div>';
+      });
+      html += '<button onclick="saveCours(\''+niv+'\',\''+cat+'\')" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-black text-[11px] rounded-xl py-2 mt-1 transition-colors">💾 Enregistrer</button>';
+      html += '</div></div>';
+    });
+    html += '</div>';
+  });
+  return html;
+}
+
+function _toggleAdminCours(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.toggle('hidden');
+}
+
+async function _loadAdminCours() {
+  try {
+    var r = await fetch(SU, { method:'POST', body: JSON.stringify({ action: 'get_cours_admin', code: S.prof.code }) });
+    var d = await r.json();
+    if (d.ok) {
+      S.adminCoursData = d.rows || [];
+      _renderAdminCards();
+    }
+  } catch(e) {}
+}
+
+async function saveCours(niv, cat) {
+  var id = 'cours-'+niv+'-'+cat;
+  var data = {};
+  ['Section5','Section10','Section15','Section20'].forEach(function(k) {
+    var el = document.getElementById(id+'-'+k);
+    data[k] = el ? el.value.trim() : '';
+  });
+  try {
+    var r = await fetch(SU, { method:'POST', body: JSON.stringify({ action: 'save_cours', code: S.prof.code, niveau: niv, categorie: cat, data: data }) });
+    var d = await r.json();
+    if (d.ok) {
+      showT('✅ Cours enregistré — '+cat.replace(/_/g,' '), 3000, '📚');
+      // Update cache
+      if (S.adminCoursData) {
+        var idx = S.adminCoursData.findIndex(function(r) { return r['Niveau']===niv && r['Categorie']===cat; });
+        if (idx >= 0) {
+          Object.assign(S.adminCoursData[idx], data);
+        } else {
+          var nr = { Niveau: niv, Categorie: cat }; Object.assign(nr, data);
+          S.adminCoursData.push(nr);
+        }
+      }
+    } else {
+      showT('❌ Erreur : '+(d.message||'inconnue'), 3000, '❌');
+    }
+  } catch(e) { showT('❌ Erreur réseau', 3000, '❌'); }
 }
 
 function _toggleAdmDark() {

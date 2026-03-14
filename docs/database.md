@@ -40,6 +40,7 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 | `📧 Emails` | Archive des emails envoyés | Lecture seule |
 | `Insights` | Feedbacks élèves + demandes chapitres | Lecture seule |
 | `Rapports` | Rapports quotidiens 7h | Lecture seule |
+| `Cours` | Cours par chapitre rédigés par admin (4 sections × 54 chap) | ❌ Via admin panel uniquement |
 
 ### Onglets archivés
 
@@ -177,6 +178,24 @@ Pool d'exercices **dédiée aux boosts quotidiens**, séparée de Curriculum_Off
 | C | ExosJSON | String | JSON tableau d'exercices `{lvl, q, a, options:[], f, steps:[]}` (format standard) |
 
 15 chapitres × 8-16 exos = **144 exercices** style brevet (3 chapitres fusionnés à 16 exos).
+
+### Cours
+
+| Col | Nom | Type | Description |
+|---|---|---|---|
+| A | Niveau | String | `6EME` / `5EME` / `4EME` / `3EME` / `1ERE` |
+| B | Categorie | String | Identifiant chapitre (même que Curriculum_Officiel) |
+| C | Section5 | String | Contenu cours débloqué à 5 exos — "L'essentiel" |
+| D | Section10 | String | Contenu cours débloqué à 10 exos — "Méthode & Exemples" |
+| E | Section15 | String | Contenu cours débloqué à 15 exos — "Points de vigilance" |
+| F | Section20 | String | Contenu cours débloqué à 20 exos — "Cours complet ✨" |
+| G | DateMaj | Date | Date de dernière modification |
+
+**Règles :**
+- Géré exclusivement via l'onglet "📚 Cours" du dashboard admin (GAS `save_cours`)
+- Chargé au login → `coursData` dans la réponse → `S.coursMap` dans le frontend
+- `nbExos` calculé depuis l'historique (source ≠ BOOST, catégorie ≠ CALIBRAGE)
+- Milestones 5/10/15/20 → toast gamification + bouton "📖 Mon cours" sur la carte chapitre
 
 ### BrevetResults
 
