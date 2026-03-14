@@ -16,6 +16,8 @@
   <meta property="og:url"         content="https://matheux.fr/"/>
   <meta name="twitter:card"       content="summary"/>
   <meta name="twitter:title"      content="Matheux — Révisions maths collège par IA"/>
+  <meta name="theme-color" content="#4338ca">
+  <link rel="dns-prefetch" href="https://script.google.com">
 
   <!-- ── GA4 — chargé uniquement si cookies acceptés ─────── -->
   <!-- REMPLACER G-XXXXXXXXXX par votre Measurement ID Google Analytics 4 -->
@@ -45,22 +47,16 @@
     })();
   </script>
 
-  <!-- MathJax config avant chargement -->
-  <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [['$','$'],['\\(','\\)']],
-        displayMath: [['$$','$$'],['\\[','\\]']]
-      },
-      options: {
-        skipHtmlTags: ['script','noscript','style','textarea','pre','code']
-      }
-    };
-  </script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- KaTeX — rendu maths rapide -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="dist/tailwind.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"></noscript>
 
   <style>
     /* ── VARIABLES & RESET ───────────────────────────────── */
@@ -166,7 +162,7 @@
     .s3  { animation: s1 .6s .40s ease both; }
     .s4  { animation: s1 .6s .55s ease both; }
 
-    /* Fade-in pour les blocs MathJax */
+    /* Fade-in pour les blocs maths (KaTeX) */
     .mc       { opacity:0; transition:opacity .25s ease; }
     .mc.rdy   { opacity:1; }
 
@@ -207,8 +203,9 @@
       font-family:'Syne',sans-serif; font-weight:700;
       border-radius:var(--r); transition:all .15s;
       position:relative; overflow:hidden; text-decoration:none;
+      touch-action:manipulation; user-select:none;
     }
-    .btn:active { transform:scale(.97); }
+    .btn:active { transform:scale(.97); opacity:.8; }
     .btn-dk { background:var(--ink); color:#fff; padding:.9rem 1.5rem; font-size:.9rem; }
     .btn-ac {
       background:linear-gradient(135deg,var(--p) 0%,#6366f1 100%);
@@ -226,8 +223,9 @@
       border:2px solid var(--brd); border-radius:var(--r);
       background:#fff; width:100%; display:flex; align-items:center;
       cursor:pointer; font-weight:600; font-size:.9rem; min-height:56px;
-      transition:all .15s;
+      transition:all .15s; touch-action:manipulation; user-select:none;
     }
+    .opt:active:not(.oc):not(.ow):not(.on) { transform:scale(.97); opacity:.8; }
     .opt::before {
       content:''; position:absolute; left:1rem; top:50%;
       transform:translateY(-50%); width:1.2rem; height:1.2rem;
@@ -378,7 +376,7 @@
       transform:translate(-50%,calc(-100% - 1.5rem));
       z-index:5000; display:flex; align-items:center; gap:.6rem;
       background:var(--ink); color:#fff; font-weight:600;
-      padding:.7rem 1.1rem; border-radius:18px;
+      padding:.7rem 1.1rem; border-radius:clamp(12px, 3vw, 99px);
       box-shadow:0 8px 32px rgba(0,0,0,.3);
       font-size:.875rem; white-space:normal;
       word-break:break-word; text-align:center; line-height:1.4;
@@ -428,6 +426,7 @@
       background:var(--ink); overflow-y:auto;
       display:flex; align-items:center; justify-content:center;
       padding:1.5rem 1rem; margin:0;
+      max-height:100dvh;
     }
     #trial-flow.flow-fs > .max-w-lg { width:100%; }
     /* Hauteur min fixe par step — empêche le jump */
@@ -656,7 +655,7 @@
       background:#fff; border:1.5px solid var(--brd);
       border-radius:var(--rl); padding:1rem 1.1rem;
       cursor:pointer; transition:all .15s; position:relative;
-      overflow:hidden;
+      overflow:hidden; max-width:100%; word-break:break-word;
     }
     .adm-card:active { transform:scale(.99); }
     .adm-card.needs-action { border-color:#c7d2fe; box-shadow:0 2px 12px rgba(67,56,202,.1); }
@@ -921,7 +920,7 @@
         <span class="dot-live"></span>
         Programme officiel Eduscol · 6ème → 3ème
       </div>
-      <h1 class="syne text-3xl sm:text-5xl font-black text-white leading-[1.1] mb-5" style="animation:s1 .6s .05s ease both">
+      <h1 class="syne sm:text-5xl font-black text-white leading-[1.1] mb-5" style="font-size:clamp(1.6rem, 7vw, 2.8rem);animation:s1 .6s .05s ease both">
         Votre enfant a des difficultés<br>
         <span style="color:#818cf8">en maths ?</span>
       </h1>
@@ -932,7 +931,7 @@
         Matheux identifie les points précis qui freinent votre enfant et lui prépare chaque jour 5 exercices ciblés, alignés sur son programme scolaire.
       </p>
       <button onclick="startTrialFlow()"
-              class="btn btn-ac btn-fw shadow-xl" id="cta-hero" style="max-width:380px;font-size:1.1rem;padding:1.2rem;animation:s1 .6s .25s ease both">
+              class="btn btn-ac btn-fw shadow-xl" id="cta-hero" style="max-width:380px;font-size:1.1rem;padding:1.2rem;min-height:56px;animation:s1 .6s .25s ease both">
         Démarrer le diagnostic gratuit →
       </button>
       <p class="text-white/35 text-xs mt-3" style="animation:s1 .6s .35s ease both">7 jours offerts · Sans carte bancaire · 44 chapitres programme officiel</p>
@@ -1152,7 +1151,7 @@
       <div class="stag mx-auto mb-4">L'interface</div>
       <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900 mb-8">Simple. Efficace. Pensé pour les collégiens.</h2>
       <div style="border-radius:24px;overflow:hidden;box-shadow:0 24px 80px rgba(67,56,202,.12);border:1.5px solid #e2e8f0;max-width:380px;margin:0 auto">
-        <img src="scree.png" alt="Interface Matheux — exercice boost quotidien" style="width:100%;display:block" loading="lazy"
+        <img src="scree.png" alt="Interface Matheux — exercice boost quotidien" style="width:100%;display:block" loading="lazy" width="606" height="1096"
              onerror="this.parentElement.style.cssText='padding:4rem 2rem;background:#f8faff;text-align:center;border-radius:24px';this.outerHTML='<div style=\'color:#94a3b8;font-size:.875rem;font-weight:600\'>📱 Capture d\'écran à venir</div>'">
       </div>
       <p class="text-slate-400 text-xs mt-5">Interface mobile-first · Exercices avec indices progressifs · Formules-clés révélées</p>
@@ -1585,8 +1584,8 @@
      class="fixed inset-0 z-[3000] items-end sm:items-center justify-center"
      style="background:rgba(15,23,42,.72)">
   <div id="admin-modal-inner"
-       class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl abi overflow-hidden flex flex-col"
-       style="max-height:92vh">
+       class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl abi flex flex-col"
+       style="max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch">
     <!-- contenu injecté dynamiquement -->
   </div>
 </div>
@@ -1804,26 +1803,23 @@ function launchConfetti() {
 // ══════════════════════════════════════════════════════════════
 // MATHJAX — rendu différé + fallback 2.5s
 // ══════════════════════════════════════════════════════════════
-function rMath() {
-  var c = document.getElementById('app-c');
-  if (!c) return;
-  var fb = setTimeout(function(){
-    document.querySelectorAll('.mc:not(.rdy)').forEach(function(e){ e.classList.add('rdy'); });
-  }, 2500);
-  if (!window.MathJax || !window.MathJax.typesetPromise) {
-    clearTimeout(fb);
-    document.querySelectorAll('.mc').forEach(function(e){ e.classList.add('rdy'); });
-    return;
+function rMath(el) {
+  var target = el || document.getElementById('app-c');
+  if (!target) return;
+  if (typeof renderMathInElement === 'function') {
+    try {
+      renderMathInElement(target, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ],
+        throwOnError: false
+      });
+    } catch(e) {}
   }
-  try {
-    if (MathJax.typesetClear) MathJax.typesetClear([c]);
-    MathJax.typesetPromise([c])
-      .then(function(){ clearTimeout(fb); document.querySelectorAll('.mc').forEach(function(e){ e.classList.add('rdy'); }); })
-      .catch(function(){ clearTimeout(fb); document.querySelectorAll('.mc').forEach(function(e){ e.classList.add('rdy'); }); });
-  } catch(e) {
-    clearTimeout(fb);
-    document.querySelectorAll('.mc').forEach(function(el){ el.classList.add('rdy'); });
-  }
+  document.querySelectorAll('.mc').forEach(function(e){ e.classList.add('rdy'); });
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -2324,9 +2320,7 @@ function _flowRenderQuestion(idx) {
     '</div>' +
     '</div>';
 
-  if (window.MathJax && MathJax.typesetPromise) {
-    try { MathJax.typesetPromise([container]); } catch(e) {}
-  }
+  rMath(container);
   // Scroll stable — haut du conteneur fullscreen
   var tf = document.getElementById('trial-flow');
   if (tf) tf.scrollTop = 0;
@@ -2393,7 +2387,7 @@ window._flowShowHint = function(idx, max) {
   wrap.appendChild(label); wrap.appendChild(span);
   area.appendChild(wrap);
   area.classList.add('rdy');
-  typewriter(span, text, function() { if (window.MathJax) MathJax.typesetPromise([area]); });
+  typewriter(span, text, function() { rMath(area); });
   // Mettre à jour le pill
   var btn = document.getElementById('flow-pill-hint-' + idx);
   if (btn) {
@@ -2421,7 +2415,7 @@ window._flowShowFormula = function(idx) {
   wrap.appendChild(label); wrap.appendChild(span);
   area.appendChild(wrap);
   area.classList.add('rdy');
-  typewriter(span, exo.f, function() { if (window.MathJax) MathJax.typesetPromise([area]); });
+  typewriter(span, exo.f, function() { rMath(area); });
 };
 
 function _flowActivateStep4Guest() {
@@ -5223,7 +5217,7 @@ function toggleDraft() {
   var isDesktop = window.innerWidth >= 1024;
   if (S.dOpen) {
     d.classList.add('open');
-    if (!isDesktop) b.classList.add('show');
+    if (!isDesktop) { b.classList.add('show'); var ec = document.getElementById('app-c'); if (ec) ec.style.paddingBottom = '55vh'; }
     var ta = document.getElementById('draft-text');
     if (ta && S.cid) ta.value = (S.drafts[S.cid] && S.drafts[S.cid].txt) || localStorage.getItem('draft_' + S.cid) || '';
     // Restaurer mode quadrillé
@@ -5243,6 +5237,7 @@ function toggleDraft() {
     }
     d.classList.remove('open');
     b.classList.remove('show');
+    var ec = document.getElementById('app-c'); if (ec) ec.style.paddingBottom = '';
   }
 }
 
@@ -6160,9 +6155,7 @@ function autoShowHelp(cat, idx) {
   area.innerHTML = html;
   area.classList.add('rdy'); // rend le conteneur visible (mc démarre opacity:0)
   clearNudge(id);
-  if (window.MathJax) {
-    MathJax.typesetPromise([area]).catch(function(){});
-  }
+  rMath(area);
 }
 
 window.showHintInline = function(cat, idx, max) {
@@ -6186,7 +6179,7 @@ window.showHintInline = function(cat, idx, max) {
   wrap.appendChild(label);
   wrap.appendChild(span);
   area.appendChild(wrap);
-  typewriter(span, text, function() { if (window.MathJax) MathJax.typesetPromise([area]); });
+  typewriter(span, text, function() { rMath(area); });
   // Si tous les indices vus → stopper pulsation + changer label
   if (S.hints[id] >= max) {
     var ph = document.getElementById('pill-hint-'+id);
@@ -6215,7 +6208,7 @@ window.revFInline = function(cat, idx) {
   wrap.appendChild(label);
   wrap.appendChild(span);
   area.appendChild(wrap);
-  typewriter(span, fmtL(exo.f || ''), function() { if (window.MathJax) MathJax.typesetPromise([area]); });
+  typewriter(span, fmtL(exo.f || ''), function() { rMath(area); });
 };
 
 var _nudgeTimers = {};
