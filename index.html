@@ -4488,6 +4488,9 @@ function renderArchiveSection(cat, exs) {
     if ((S.hints[id] || 0) > 0) meta.push('💡×' + S.hints[id]);
     if (S.ftch[id]) meta.push('📐');
     if (meta.length) html += '<div class="text-[10px] text-slate-400 mt-0.5">' + meta.join(' · ') + '</div>';
+    if (exo && (exo.steps && exo.steps.length || exo.f)) {
+      html += _previewHelp(exo);
+    }
     html += '</div></div>';
   });
   if (!shown) {
@@ -5103,17 +5106,17 @@ function rSection(cat, data, idx, total, catDone) {
     '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-4 min-h-[80px] flex items-center justify-center overflow-x-auto">' +
     '<div class="mc text-center font-bold text-base leading-relaxed w-full min-w-0">'+fmtL(data.q)+'</div></div>' +
     opts + acts +
-    '<div class="flex gap-2 mt-4">' +
-      '<button id="pill-hint-'+id+'" onclick="showHintInline(\''+cat+'\','+idx+','+maxH+')" class="help-pill pill-hint'+(shown >= maxH ? ' opacity-40 pointer-events-none' : (!scored ? ' pulse-hint' : ''))+'">' +
-        (shown >= maxH ? '✓ Indices vus' : '💡 Indice') +
-      '</button>' +
-      '<button id="pill-form-'+id+'" onclick="revFInline(\''+cat+'\','+idx+')" class="help-pill pill-formula'+(!fR ? ' pulse-hint' : ' opacity-40 pointer-events-none')+'">' +
-        (fR ? '✓ Formule vue' : '👁 Formule') +
-      '</button>' +
-    '</div>' +
-    '<div class="inline-help mc'+(cat==='BOOST'&&catDone&&scored?' rdy':'')+'" id="help-inline-'+id+'">' +
-    (cat==='BOOST'&&catDone&&scored ? _previewHelp(data) : '') +
-    '</div>' +
+    (catDone && scored
+      ? '<div class="inline-help mc rdy" id="help-inline-'+id+'">'+_previewHelp(data)+'</div>'
+      : '<div class="flex gap-2 mt-4">' +
+        '<button id="pill-hint-'+id+'" onclick="showHintInline(\''+cat+'\','+idx+','+maxH+')" class="help-pill pill-hint'+(shown >= maxH ? ' opacity-40 pointer-events-none' : (!scored ? ' pulse-hint' : ''))+'">' +
+          (shown >= maxH ? '✓ Indices vus' : '💡 Indice') +
+        '</button>' +
+        '<button id="pill-form-'+id+'" onclick="revFInline(\''+cat+'\','+idx+')" class="help-pill pill-formula'+(!fR ? ' pulse-hint' : ' opacity-40 pointer-events-none')+'">' +
+          (fR ? '✓ Formule vue' : '👁 Formule') +
+        '</button>' +
+      '</div>' +
+      '<div class="inline-help mc" id="help-inline-'+id+'"></div>') +
     '</div></div>';
 }
 
