@@ -51,6 +51,7 @@ docs/agents.md                     → Agents IA spécialisés (délégation CTO
 docs/programme-français-verif.md   → Couverture Eduscol (référence)
 docs/test-simulation-2026-03.md    → QA simulation 40 élèves (résultats live)
 docs/rapport-1ere.md               → Rapport insertion 1ERE Spé Maths + compte Auguste
+docs/rapport-figures-auth-toast.md → Rapport fix figures géo + auth modal + toast mobile
 docs/archive/                      → Docs historiques (ne pas lire sauf besoin)
 ```
 
@@ -104,7 +105,9 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 - `renderFig(fig)` : génère le SVG inline depuis le spec
 - `getExoFigure(data, cat)` : point d'entrée appelé dans `rSection()`, gère les modes spéciaux (BOOST/CALIBRAGE → catégorie originale `data.oC`)
 - Champ optionnel `data.fig` sur les exercices JSON : override l'auto-détection
-- 15 types de figures supportés (tri_rect, tri_trigo, thales, circle, rect, angle, parallel, sym_axial, sym_central, cube, cylinder, cone, pyramid, sphere, section_solid, homothety, similar_tri, triangle, transform)
+- **18 types** de figures supportés : tri_rect, tri_trigo, thales, circle, rect, angle, parallel, sym_axial, sym_central, cube, cylinder, cone, pyramid, sphere, section_solid, homothety, similar_tri, triangle, transform, **vectors**, **repere**, **trigo_circle**
+- Lettres de points extraites dynamiquement de l'énoncé (`pts[]`) — plus de lettres hardcodées
+- Filtrage strict `nonGeoChaps` : pas de figure pour algèbre, fractions, stats, probas, etc.
 - Fallback safe : si auto-détection échoue → pas de figure → l'exercice marche comme avant
 
 ### Pas de sur-ingénierie

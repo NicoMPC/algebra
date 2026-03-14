@@ -17,7 +17,7 @@
 |---|---|
 | Tests automatisés | **74/74 (100%)** + simulation 40 élèves **17/17 PASS** (1616 appels API, 0 erreur) |
 | Couverture programme | **~100%** — 54 chapitres (1080 exos curriculum + 108 diag + 540 boost + 144 brevet) |
-| Niveau 1ERE Spé | **10 chapitres expérimentaux** — backend prêt, frontend non modifié (connexion uniquement) |
+| Niveau 1ERE Spé | **10 chapitres expérimentaux** — backend prêt, frontend non modifié (connexion uniquement), 3 types SVG dédiés |
 | Juridique | Complet (5 pages + consentement parental + RGPD) |
 | Paiement | ⏳ Lien Stripe TEST actif — **à passer en PROD manuellement** |
 | Emails auto | ✅ J+0 auto + fallback manuel admin, J+3/J+5/J+7 code prêt — **trigger à activer manuellement** |
@@ -50,6 +50,9 @@
 | 4 | **BUG-AUDIT-02/03** : Boost `Transformations 5EME` + `Homothétie 4EME` — tiret unicode `−` vs `-` (réponse hors options) | ❌ À faire | 🔴 |
 | 5 | **BUG-AUDIT-04** : 5 doublons Boost/Curriculum (`Fonctions_Linéaires 4EME`, `Notation_Scientifique 3EME`, `Sections_Solides 4EME` ×2, `Puissances_10 6EME`) | ❌ À faire | 🟡 |
 | 6 | **BUG-AUDIT-05** : Vérifier compatibilité `diff` "easy/medium/hard" BrevetExos vs `index.html` (le code attend 1/2 selon database.md) | ❌ À faire | 🟡 |
+| 7 | **Figures géo SVG** : lettres dynamiques depuis l'énoncé, filtrage nonGeoChaps, 3 nouveaux types 1ERE (vectors, repere, trigo_circle), cercle diamètre, angle 3 lettres, symétries 3 paires | ✅ Corrigé @65 | 🟢 |
+| 8 | **Auth modal CTA** : showAuth() gardé contre interruption trial-flow + auto-login silencieux | ✅ Corrigé @65 | 🟢 |
+| 9 | **Toast mobile** : white-space normal + max-width 88vw + word-break pour wrap multi-ligne | ✅ Corrigé @65 | 🟢 |
 
 ### Améliorations exercices — sprints suivants
 
@@ -148,6 +151,9 @@
 - [x] **Mode Révision** — admin ouvre chapitres d'une autre année depuis la fiche élève → dashboard élève + badge 🔁 + toast notification (13 mars 2026)
 - [x] **Brouillon contextuel + Calculette** — symboles adaptés par chapitre/niveau, onglets Brouillon|Calculette, sin/cos/tan si géo/trigo, copie vers brouillon (13 mars 2026)
 - [x] **Niveau 1ERE Spé Maths** — 10 chapitres, 330 exercices, backend `ALLOWED_LEVELS` + `niveauOrder` patchés @64. Frontend non modifié (pas de sélecteur 1ERE à l'inscription). Compte test Auguste (AUG001) prêt. Voir [rapport-1ere.md](rapport-1ere.md) (14 mars 2026)
+- [x] **Figures géo SVG v2** — lettres dynamiques, filtrage strict, 18 types (3 nouveaux 1ERE : vectors, repere, trigo_circle), viewBox 280×210 (14 mars 2026)
+- [x] **Auth modal protégé** — showAuth() gardé trial-flow + auto-login silencieux sans modale imposée (14 mars 2026)
+- [x] **Toast mobile responsive** — white-space normal, max-width 88vw, word-break, border-radius 18px (14 mars 2026)
 - [ ] Agent analyse lacunes quotidien automatique
 - [ ] Agent génération boost automatique
 - [ ] Agent rapport parents (email hebdo)
