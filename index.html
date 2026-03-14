@@ -3102,7 +3102,7 @@ function initApp(d, skipRender) {
     }
   } catch (e) {}
 
-  S.res = {}; S.xp = 0; S.sent = new Set(); S._todayChap = null;
+  S.res = {}; S.xp = 0; S.sent = new Set();
   var _today = tod();
   if (d.history) {
     d.history.forEach(function(r){
@@ -3111,20 +3111,12 @@ function initApp(d, skipRender) {
       S.res[key] = r.resultat;
       S.xp += parseInt(r.xp) || 0;
       S.sent.add(S.prof.code + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1));
-      // (règle 1 chapitre/jour : détection déplacée après la boucle, sur chapDone)
+      // (règle 1 chapitre/jour désactivée)
     });
   }
 
-  // Règle 1 chapitre/jour : verrouille seulement si un chapitre a été COMPLÉTÉ aujourd'hui (désactivé 1ERE)
-  if (d.history && S.chapDone && S.niv !== '1ERE') {
-    var _completedCats = new Set(Object.keys(S.chapDone));
-    d.history.forEach(function(r){
-      if (r.date && r.date.substring(0,10) === _today && _completedCats.has(r.categorie)
-          && r.categorie !== 'BOOST' && r.categorie !== 'CALIBRAGE' && r.categorie !== 'BREVET' && r.categorie !== 'REVISION') {
-        S._todayChap = r.categorie;
-      }
-    });
-  }
+  // Règle 1 chapitre/jour : DÉSACTIVÉE — tous les chapitres restent accessibles
+  // L'animation informative est gérée dans chkComp() à la complétion
 
   if (!loc[S.prof.code]) loc[S.prof.code] = { stk:1, last:tod() };
   S.stk = loc[S.prof.code].stk || 1;
@@ -3329,7 +3321,7 @@ function mark(cat, idx, status, wrongOpt) {
   var exo = LVL[S.niv].cats[cat][idx];
   S.res[id] = status;
   S.cid = id; S.rev = true;
-  // Règle 1 chapitre/jour : _todayChap est set uniquement à la complétion (dans chkComp)
+  // (règle 1 chapitre/jour désactivée — tous les chapitres accessibles)
   var xp = status === 'EASY' ? 100 : status === 'MEDIUM' ? 50 : 10;
   S.xp += xp;
   // Streak : mise à jour locale au premier exercice du jour
@@ -3354,12 +3346,6 @@ function mark(cat, idx, status, wrongOpt) {
 
 async function togCat(cat) {
   var was = !!S.exp[cat];
-  // Règle 1 chapitre/jour : bloque l'ouverture d'un 2e chapitre (désactivé 1ERE)
-  if (!was && S._todayChap && S.niv !== '1ERE' && cat !== S._todayChap && cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') {
-    var todayName = (LVL[S.niv] && LVL[S.niv].names[S._todayChap]) || S._todayChap;
-    showT('Un seul chapitre par jour — tu travailles déjà sur ' + todayName + '. Reviens demain !', 4000, '🔒');
-    return;
-  }
   // Toast abandon boost incomplet
   if (was && cat === 'BOOST' && !S.boostConsumed && S.boost && S.boost.exos) {
     var bDoneCount2 = 0;
@@ -3473,8 +3459,7 @@ function chkComp(cat) {
 
   if (!S.chapDone[cat]) {
     S.chapDone[cat] = { errs: errs, tot: tot, easy: easy, medium: medium, hard: hard };
-    // Règle 1 chapitre/jour : verrouille après complétion d'un chapitre curriculum (désactivé 1ERE)
-    if (S.niv !== '1ERE' && cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') S._todayChap = cat;
+    // Info : animation prochain chapitre (ne bloque rien)
     // Enqueue silencieux si erreurs (remédiation générée en arrière-plan)
     if (errs.length > 0 && !S.remReq[cat]) {
       S.remReq[cat] = true;
@@ -3509,8 +3494,8 @@ function chkComp(cat) {
       showT('Révision terminée ! ' + easy + '/' + tot + ' réussis 🔁', 3500, '✅');
     } else {
       if (easy >= Math.ceil(tot * 0.7)) launchConfetti();
-      // S5 — Chapitre maîtrisé : confettis + toast
-      showT('🏆 Chapitre maîtrisé ! Tu peux passer à la suite 📚', 5000, '🏆');
+      // S5 — Chapitre terminé : confettis + toast + info prochain chapitre
+      showT('🏆 Chapitre terminé ! Ton prochain chapitre est en préparation, il sera disponible demain 📚', 6000, '🏆');
       if (typeof _boostInsightConfetti === 'function') _boostInsightConfetti();
       // Persister chapitre terminé dans localStorage
       try {
@@ -4168,12 +4153,6 @@ function getChapProgress(cat) {
 }
 
 function openFromProgress(cat) {
-  // Règle 1 chapitre/jour (désactivé 1ERE)
-  if (S._todayChap && S.niv !== '1ERE' && cat !== S._todayChap && cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') {
-    var todayName = (LVL[S.niv] && LVL[S.niv].names[S._todayChap]) || S._todayChap;
-    showT('Un seul chapitre par jour — tu travailles déjà sur ' + todayName + '. Reviens demain !', 4000, '🔒');
-    return;
-  }
   S.view = 'chapters';
   Object.keys(S.exp).forEach(function(k){ S.exp[k] = false; });
   S.exp[cat] = true;
@@ -4298,8 +4277,7 @@ function renderProgress() {
     var isMast = ch.isMast;
     // Couleur barre progressive
     var barClass = score >= 90 ? 'pfg' : score >= 70 ? 'pfp' : score >= 40 ? 'pfo' : 'pfr';
-    // Locked = autre chapitre pratiqué aujourd'hui (désactivé 1ERE)
-    var locked = S.niv !== '1ERE' && S._todayChap && cat !== S._todayChap;
+    var locked = false;
     var cardBg = isMast ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-slate-200';
 
     html += '<div data-cat="'+cat+'" onclick="openFromProgress(\''+cat+'\')" ';
@@ -4343,7 +4321,7 @@ function renderProgress() {
     notStarted.forEach(function(ch) {
       var name2 = LVL[S.niv].names[ch.cat] || ch.cat;
       var icon2 = LVL[S.niv].icons[ch.cat] || '📘';
-      var locked2 = S.niv !== '1ERE' && S._todayChap && ch.cat !== S._todayChap;
+      var locked2 = false;
       html += '<div data-cat="'+ch.cat+'" onclick="openFromProgress(\''+ch.cat+'\')" ';
       html += 'class="flex items-center gap-3 bg-slate-50 border border-slate-100 rounded-xl p-3 mb-2 cursor-pointer active:scale-[.98] transition-transform'+(locked2?' opacity-50':'')+'">';
       html += '<div class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-base flex-shrink-0">'+icon2+'</div>';
@@ -4500,6 +4478,7 @@ function renderBoostInsight() {
     '</div>' +
     (progressHtml ? progressHtml : '') +
     '<div class="' + streakBg + ' border rounded-2xl px-4 py-3 text-sm font-semibold text-center">' + streakMsg + '</div>' +
+    '<div class="bg-indigo-50 border border-indigo-200 rounded-2xl px-4 py-3 text-sm font-semibold text-indigo-700 text-center">✨ Ton prochain boost est en cours de préparation, il sera disponible demain&nbsp;!</div>' +
     '<button onclick="dismissBoostInsight()" class="btn btn-ac btn-fw py-4 text-base">Voir mes chapitres 🏠</button>' +
     '<div id="boost-redirect-msg" class="text-center text-xs text-slate-400 mt-2">Retour automatique dans <span id="boost-redirect-count">5</span>s…</div>' +
     '</div>';
