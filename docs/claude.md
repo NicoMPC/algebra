@@ -52,6 +52,8 @@ docs/programme-français-verif.md   → Couverture Eduscol (référence)
 docs/test-simulation-2026-03.md    → QA simulation 40 élèves (résultats live)
 docs/rapport-1ere.md               → Rapport insertion 1ERE Spé Maths + compte Auguste
 docs/rapport-figures-auth-toast.md → Rapport fix figures géo + auth modal + toast mobile
+docs/audit-exos-2026-03-14.md      → Audit exercices collège (1408 exos, 1 bug corrigé)
+docs/audit-exos-1ere-2026-03-14.md → Audit exercices 1ERE (320 exos, 147 corrections)
 docs/archive/                      → Docs historiques (ne pas lire sauf besoin)
 ```
 
