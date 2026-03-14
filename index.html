@@ -50,7 +50,8 @@
   <!-- KaTeX — rendu maths rapide -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+          onload="window._katexReady=true;if(window._katexQueue){window._katexQueue.forEach(function(fn){fn()});window._katexQueue=null}"></script>
   <link rel="stylesheet" href="dist/tailwind.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -406,7 +407,7 @@
     /* ── CHAPITRE CARDS ONBOARDING ───────────────────────── */
     .chap-card {
       border:2px solid var(--brd); border-radius:12px;
-      padding:11px 8px; text-align:center; cursor:pointer;
+      padding:14px 10px; text-align:center; cursor:pointer;
       transition:border-color .15s,background .15s,transform .15s;
       background:white; user-select:none;
       font-weight:700; color:var(--mut); font-size:.8rem; line-height:1.3;
@@ -913,18 +914,18 @@
   </nav>
 
   <!-- Hero -->
-  <div class="lhero px-5 pt-12 pb-16 relative">
+  <div class="lhero px-5 pt-14 pb-20 relative">
     <div class="grid-ov"></div>
     <div class="max-w-lg mx-auto relative z-10 text-center">
       <div class="hero-badge" style="animation:s1 .5s ease both">
         <span class="dot-live"></span>
         Programme officiel Eduscol · 6ème → 3ème
       </div>
-      <h1 class="syne sm:text-5xl font-black text-white leading-[1.1] mb-5" style="font-size:clamp(1.6rem, 7vw, 2.8rem);animation:s1 .6s .05s ease both">
+      <h1 class="syne sm:text-5xl font-black text-white leading-[1.1] mb-7" style="font-size:clamp(1.6rem, 7vw, 2.8rem);animation:s1 .6s .05s ease both">
         Votre enfant a des difficultés<br>
         <span style="color:#818cf8">en maths ?</span>
       </h1>
-      <p class="text-white/80 text-lg font-bold mb-2 max-w-md mx-auto" style="animation:s1 .6s .1s ease both">
+      <p class="text-white/80 text-lg font-bold mb-3 max-w-md mx-auto" style="animation:s1 .6s .1s ease both">
         On sait exactement où. Et comment y remédier.
       </p>
       <p class="text-white/55 text-base font-medium leading-relaxed mb-9 max-w-md mx-auto" style="animation:s1 .6s .15s ease both">
@@ -934,7 +935,7 @@
               class="btn btn-ac btn-fw shadow-xl" id="cta-hero" style="max-width:380px;font-size:1.1rem;padding:1.2rem;min-height:56px;animation:s1 .6s .25s ease both">
         Démarrer le diagnostic gratuit →
       </button>
-      <p class="text-white/35 text-xs mt-3" style="animation:s1 .6s .35s ease both">7 jours offerts · Sans carte bancaire · 44 chapitres programme officiel</p>
+      <p class="text-white/35 text-xs mt-5" style="animation:s1 .6s .35s ease both">7 jours offerts · Sans carte bancaire · 44 chapitres programme officiel</p>
     </div>
   </div>
 
@@ -942,7 +943,7 @@
   <div id="trial-flow" class="hidden lhero px-5 pb-14 -mt-2">
     <div class="max-w-lg mx-auto">
       <!-- Dots progress -->
-      <div class="flex items-center justify-center gap-2.5 pt-2 pb-7">
+      <div class="flex items-center justify-center gap-2.5 pt-4 pb-9">
         <div class="flow-dot on" id="fdot-1"></div>
         <div class="flow-dot" id="fdot-2"></div>
         <div class="flow-dot" id="fdot-3"></div>
@@ -951,8 +952,8 @@
 
       <!-- STEP 1 — Classe -->
       <div id="flow-s1" class="flow-step">
-        <h2 class="syne text-2xl font-black text-white text-center mb-2">Quelle classe ?</h2>
-        <p class="text-white/50 text-sm text-center mb-7">Le programme s'adapte au niveau de ton enfant</p>
+        <h2 class="syne text-2xl font-black text-white text-center mb-4">Quelle classe ?</h2>
+        <p class="text-white/50 text-sm text-center mb-8">Le programme s'adapte au niveau de ton enfant</p>
         <div class="grid grid-cols-2 gap-3">
           <button onclick="flowSelectLevel('6EME')" class="lvl-btn" id="lvl-6EME">6<sup>ème</sup></button>
           <button onclick="flowSelectLevel('5EME')" class="lvl-btn" id="lvl-5EME">5<sup>ème</sup></button>
@@ -963,9 +964,9 @@
 
       <!-- STEP 2 — Chapitres -->
       <div id="flow-s2" class="flow-step hidden">
-        <h2 class="syne text-2xl font-black text-white text-center mb-2">Chapitres déjà vus ?</h2>
-        <p class="text-white/50 text-sm text-center mb-5">Coche les chapitres déjà vus cette année</p>
-        <div id="flow-chaps-grid" class="grid grid-cols-2 gap-2.5 mb-6"></div>
+        <h2 class="syne text-2xl font-black text-white text-center mb-4">Chapitres déjà vus ?</h2>
+        <p class="text-white/50 text-sm text-center mb-7">Coche les chapitres déjà vus cette année</p>
+        <div id="flow-chaps-grid" class="grid grid-cols-2 gap-3 mb-7"></div>
         <button onclick="flowToStep3()" class="btn btn-ac btn-fw py-4">Voir le diagnostic →</button>
       </div>
 
@@ -974,11 +975,11 @@
 
       <!-- STEP 4 — Inscription -->
       <div id="flow-s4" class="flow-step hidden">
-        <div class="bg-white/10 border border-white/15 rounded-2xl p-6">
-          <div class="w-14 h-14 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4">🎯</div>
-          <h2 class="syne text-xl font-black text-white text-center mb-1">Diagnostic prêt !</h2>
-          <p class="text-white/55 text-sm text-center mb-6">Créez l'espace de votre enfant — 7 jours offerts, sans carte bancaire.</p>
-          <div class="space-y-3">
+        <div class="bg-white/10 border border-white/15 rounded-2xl p-7">
+          <div class="w-14 h-14 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-5">🎯</div>
+          <h2 class="syne text-xl font-black text-white text-center mb-3">Diagnostic prêt !</h2>
+          <p class="text-white/55 text-sm text-center mb-7">Créez l'espace de votre enfant — 7 jours offerts, sans carte bancaire.</p>
+          <div class="space-y-4">
             <input type="text"     id="fl-name"  class="flow-inp" placeholder="Prénom de l'élève" autocomplete="given-name">
             <input type="email"    id="fl-email" class="flow-inp" placeholder="Email (parent ou élève)" autocomplete="email">
             <input type="password" id="fl-pass"  class="flow-inp" placeholder="Mot de passe (min. 6 caractères)" autocomplete="new-password">
@@ -1003,19 +1004,19 @@
   </div><!-- /trial-flow -->
 
   <!-- ── CHIFFRES CLÉS ─────────────────────────────────────── -->
-  <div style="background:var(--ink);border-top:1px solid rgba(255,255,255,.08)" class="px-5 py-10">
+  <div style="background:var(--ink);border-top:1px solid rgba(255,255,255,.08)" class="px-5 py-16">
     <div class="max-w-2xl mx-auto">
       <div class="grid grid-cols-3 gap-4 text-center">
         <div class="reveal">
-          <div class="syne text-3xl sm:text-4xl font-black text-white mb-1 counter-num" data-target="44">0</div>
+          <div class="syne text-3xl sm:text-4xl font-black text-white mb-2 counter-num" data-target="44">0</div>
           <div class="text-white/45 text-xs font-semibold uppercase tracking-wide leading-relaxed">chapitres<br>programme officiel</div>
         </div>
         <div class="reveal reveal-d1">
-          <div class="syne text-3xl sm:text-4xl font-black mb-1 counter-num" style="color:#818cf8" data-target="880">0</div>
+          <div class="syne text-3xl sm:text-4xl font-black mb-2 counter-num" style="color:#818cf8" data-target="880">0</div>
           <div class="text-white/45 text-xs font-semibold uppercase tracking-wide leading-relaxed">exercices<br>tous niveaux</div>
         </div>
         <div class="reveal reveal-d2">
-          <div class="syne text-3xl sm:text-4xl font-black text-white mb-1 counter-num" data-target="100" data-suffix="%">0%</div>
+          <div class="syne text-3xl sm:text-4xl font-black text-white mb-2 counter-num" data-target="100" data-suffix="%">0%</div>
           <div class="text-white/45 text-xs font-semibold uppercase tracking-wide leading-relaxed">programme<br>Eduscol collège</div>
         </div>
       </div>
@@ -1033,7 +1034,7 @@
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
         <div class="reveal reveal-d1" style="background:#fff;border:1.5px solid #e2e8f0;border-radius:16px;padding:1.25rem">
           <div class="syne font-black text-slate-900 text-sm mb-3 text-center">6<sup>ème</sup></div>
-          <div class="flex flex-col gap-1.5">
+          <div class="flex flex-col gap-2">
             <span class="prog-tag">Nombres entiers</span>
             <span class="prog-tag">Fractions</span>
             <span class="prog-tag">Proportionnalité</span>
@@ -1045,7 +1046,7 @@
         </div>
         <div class="reveal reveal-d2" style="background:#fff;border:1.5px solid #e2e8f0;border-radius:16px;padding:1.25rem">
           <div class="syne font-black text-slate-900 text-sm mb-3 text-center">5<sup>ème</sup></div>
-          <div class="flex flex-col gap-1.5">
+          <div class="flex flex-col gap-2">
             <span class="prog-tag">Nombres relatifs</span>
             <span class="prog-tag">Puissances</span>
             <span class="prog-tag">Pythagore</span>
@@ -1057,7 +1058,7 @@
         </div>
         <div class="reveal reveal-d1" style="background:#fff;border:1.5px solid #e2e8f0;border-radius:16px;padding:1.25rem">
           <div class="syne font-black text-slate-900 text-sm mb-3 text-center">4<sup>ème</sup></div>
-          <div class="flex flex-col gap-1.5">
+          <div class="flex flex-col gap-2">
             <span class="prog-tag">Équations</span>
             <span class="prog-tag">Fonctions Linéaires</span>
             <span class="prog-tag">Calcul Littéral</span>
@@ -1069,7 +1070,7 @@
         </div>
         <div class="reveal reveal-d2" style="background:#fff;border:1.5px solid #e2e8f0;border-radius:16px;padding:1.25rem">
           <div class="syne font-black text-slate-900 text-sm mb-3 text-center">3<sup>ème</sup></div>
-          <div class="flex flex-col gap-1.5">
+          <div class="flex flex-col gap-2">
             <span class="prog-tag">Fonctions</span>
             <span class="prog-tag">Théorème de Thalès</span>
             <span class="prog-tag">Trigonométrie</span>
@@ -1080,7 +1081,7 @@
         </div>
       </div>
       <div class="reveal" style="transition-delay:.35s;background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1.5px solid #c7d2fe;border-radius:14px;padding:1.1rem 1.5rem;text-align:center">
-        <p class="text-slate-700 text-sm font-semibold mb-1">880 exercices de base — et une infinité générés sur mesure.</p>
+        <p class="text-slate-700 text-sm font-semibold mb-2">880 exercices de base — et une infinité générés sur mesure.</p>
         <p class="text-slate-500 text-xs leading-relaxed">Chaque chapitre produit des exercices personnalisés jusqu'à ce que la notion soit maîtrisée. Il n'y a pas de limite.</p>
       </div>
     </div>
@@ -1117,28 +1118,28 @@
   <div style="background:#f8faff" class="px-5 py-16">
     <div class="max-w-2xl mx-auto">
       <div class="text-center mb-10 reveal">
-        <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900 mb-2">Les exercices s'améliorent à chaque session.</h2>
+        <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900 mb-3">Les exercices s'améliorent à chaque session.</h2>
         <p class="text-slate-500 text-sm max-w-md mx-auto">Ce n'est pas un manuel numérique. Chaque réponse informe le prochain exercice. Plus votre enfant travaille, plus le parcours est précis.</p>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div class="land-benefit reveal reveal-d1">
           <div class="text-2xl mb-3">🎯</div>
-          <div class="syne font-black text-slate-900 text-sm mb-1">Ciblé sur ses difficultés réelles</div>
+          <div class="syne font-black text-slate-900 text-sm mb-2">Ciblé sur ses difficultés réelles</div>
           <p class="text-slate-500 text-xs leading-relaxed">Zéro exercice générique. Chaque question est choisie en fonction de ce que votre enfant a raté ou hésité lors des sessions précédentes.</p>
         </div>
         <div class="land-benefit reveal reveal-d2">
           <div class="text-2xl mb-3">⏱️</div>
-          <div class="syne font-black text-slate-900 text-sm mb-1">15 minutes. Pas de temps perdu.</div>
+          <div class="syne font-black text-slate-900 text-sm mb-2">15 minutes. Pas de temps perdu.</div>
           <p class="text-slate-500 text-xs leading-relaxed">5 exercices par jour, construits pour être efficaces. Pas de révisions au hasard — exactement ce qui manque, exactement quand il faut.</p>
         </div>
         <div class="land-benefit reveal reveal-d1">
           <div class="text-2xl mb-3">🔁</div>
-          <div class="syne font-black text-slate-900 text-sm mb-1">Parcours qui évolue chaque semaine</div>
+          <div class="syne font-black text-slate-900 text-sm mb-2">Parcours qui évolue chaque semaine</div>
           <p class="text-slate-500 text-xs leading-relaxed">Au fil des sessions, les notions maîtrisées laissent place aux suivantes. Votre enfant progresse dans le bon ordre, sans trous dans sa compréhension.</p>
         </div>
         <div class="land-benefit reveal reveal-d2" style="border-color:#c7d2fe;background:linear-gradient(135deg,#eef2ff,#f5f3ff)">
           <div class="text-2xl mb-3">🤝</div>
-          <div class="syne font-black text-slate-900 text-sm mb-1">Quand l'IA rencontre l'humain</div>
+          <div class="syne font-black text-slate-900 text-sm mb-2">Quand l'IA rencontre l'humain</div>
           <p class="text-slate-500 text-xs leading-relaxed">L'intelligence artificielle analyse les résultats et adapte les exercices en temps réel. Un professionnel supervise chaque parcours et veille à ce que rien ne soit laissé de côté.</p>
         </div>
       </div>
@@ -1165,7 +1166,7 @@
         <div class="stag mx-auto mb-3">Témoignages</div>
         <h2 class="syne text-2xl font-black text-slate-900">Ce qu'en disent les parents.</h2>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
         <div class="sp-quote reveal reveal-d1">
           <div style="color:#f59e0b;font-size:.85rem;margin-bottom:.75rem">★★★★★</div>
           <p class="text-slate-600 text-sm leading-relaxed mb-4">"Mon fils était complètement bloqué en équations. En trois semaines, il a rattrapé tout le retard du trimestre. Ce qui m'a convaincu : les exercices changeaient vraiment d'une session à l'autre."</p>
@@ -1232,9 +1233,9 @@
       <div style="background:linear-gradient(135deg,#4338ca,#6366f1);border:2px solid #818cf8;position:relative;overflow:hidden" class="rounded-3xl p-8 shadow-2xl">
         <div style="position:absolute;top:.85rem;right:.85rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:99px;padding:.2rem .7rem;font-size:.6rem;font-weight:800;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.06em">Bêta · Places limitées</div>
         <div class="text-indigo-200 text-xs font-bold uppercase tracking-widest mb-4 mt-2">Accès complet</div>
-        <div class="syne text-5xl font-black text-white mb-1">19,99<span class="text-2xl font-bold text-indigo-300"> €</span></div>
-        <div class="text-indigo-300 text-sm mb-6">par mois — résiliable à tout moment</div>
-        <div class="space-y-3 text-left mb-6">
+        <div class="syne text-5xl font-black text-white mb-3">19,99<span class="text-2xl font-bold text-indigo-300"> €</span></div>
+        <div class="text-indigo-300 text-sm mb-7">par mois — résiliable à tout moment</div>
+        <div class="space-y-4 text-left mb-7">
           <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Diagnostic personnalisé dès le premier jour</span></div>
           <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Exercices ciblés sur les difficultés de votre enfant</span></div>
           <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Programme officiel Eduscol — 6ème à 3ème</span></div>
@@ -1367,7 +1368,7 @@
         </div>
 
         <!-- Email + MDP (communs) -->
-        <div class="space-y-3 mt-3">
+        <div class="space-y-4 mt-4">
           <input type="email"    id="le" class="inp" placeholder="Email (parent ou élève)" autocomplete="email">
           <input type="password" id="lp" class="inp" placeholder="Mot de passe"            autocomplete="current-password">
           <button onclick="submitAuth()" id="btn-auth-submit" class="btn btn-ac btn-fw py-4 mt-1">
@@ -1420,7 +1421,7 @@
           Pour que l'IA ne te pose pas de questions sur des notions pas encore vues, sélectionne les chapitres que tu as
           <strong>déjà étudiés cette année</strong> :
         </p>
-        <div class="grid grid-cols-2 gap-2.5 mb-6" id="onboarding-chaps"></div>
+        <div class="grid grid-cols-2 gap-3 mb-7" id="onboarding-chaps"></div>
         <button onclick="finalizeOnboarding()" id="btn-onboard" class="btn btn-dk btn-fw py-4">
           <span id="onboard-text">Lancer mon Diagnostic IA 🎯</span>
           <span id="onboard-ld" class="ld hidden"></span>
@@ -1746,6 +1747,8 @@ async function h256(pw, em) {
 
 function fmtL(s) {
   if (!s) return '';
+  // Nettoyage espaces parasites avant opérateurs LaTeX
+  s = s.replace(/ \^/g, '^').replace(/ _/g, '_').replace(/ \\frac/g, '\\frac').replace(/ \\sqrt/g, '\\sqrt');
   if (s.includes('$') || s.includes('\\(')) return s;
   if (s.includes('\\') || /[_\^{}]/.test(s)) return '$' + s + '$';
   return s;
@@ -1801,25 +1804,37 @@ function launchConfetti() {
 }
 
 // ══════════════════════════════════════════════════════════════
-// MATHJAX — rendu différé + fallback 2.5s
+// KATEX — rendu maths + fallback si pas encore chargé
 // ══════════════════════════════════════════════════════════════
+function _doKatex(target) {
+  renderMathInElement(target, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '$', right: '$', display: false},
+      {left: '\\(', right: '\\)', display: false},
+      {left: '\\[', right: '\\]', display: true}
+    ],
+    throwOnError: false
+  });
+  target.querySelectorAll('.mc:not(.rdy)').forEach(function(e){ e.classList.add('rdy'); });
+}
+
 function rMath(el) {
   var target = el || document.getElementById('app-c');
   if (!target) return;
   if (typeof renderMathInElement === 'function') {
-    try {
-      renderMathInElement(target, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false},
-          {left: '\\(', right: '\\)', display: false},
-          {left: '\\[', right: '\\]', display: true}
-        ],
-        throwOnError: false
-      });
-    } catch(e) {}
+    try { _doKatex(target); } catch(e) {
+      target.querySelectorAll('.mc:not(.rdy)').forEach(function(e){ e.classList.add('rdy'); });
+    }
+  } else {
+    // KaTeX pas encore chargé — mettre en file d'attente
+    if (!window._katexQueue) window._katexQueue = [];
+    window._katexQueue.push(function(){ rMath(target); });
+    // Fallback 3s — afficher quand même si KaTeX ne charge jamais
+    setTimeout(function(){
+      target.querySelectorAll('.mc:not(.rdy)').forEach(function(e){ e.classList.add('rdy'); });
+    }, 3000);
   }
-  document.querySelectorAll('.mc').forEach(function(e){ e.classList.add('rdy'); });
 }
 
 // ══════════════════════════════════════════════════════════════
