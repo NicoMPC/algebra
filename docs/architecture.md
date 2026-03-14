@@ -284,7 +284,7 @@ Scripts archivés dans `scripts_archive/`.
 - MathJax v3 avec fallback, chrono par exercice
 - Nudge pills après 20s, tableau blanc maths
 - Vue Progression refonte : header (maîtrisés/streak/score moy.), barre colorée progressive (rouge→orange→bleu→vert), message contextuel, tri en cours/maîtrisés/non commencés, bannière prérequis fragiles
-- Règle 1 chapitre/jour : `S._todayChap` bloque l'ouverture d'un 2e chapitre (togCat + openFromProgress), toast + lock visuel
+- Règle 1 chapitre/jour : `S._todayChap` bloque l'ouverture d'un 2e chapitre après **complétion** (set dans chkComp, vérifié dans togCat + openFromProgress), toast + lock visuel
 - Essai 7j : badge J-X, overlay, onboarding 3 slides
 - Flow landing CTA complet
 - Post-boost : confettis + auto-redirect 5s

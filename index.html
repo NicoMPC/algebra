@@ -3111,8 +3111,16 @@ function initApp(d, skipRender) {
       S.res[key] = r.resultat;
       S.xp += parseInt(r.xp) || 0;
       S.sent.add(S.prof.code + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1));
-      // Détecte le chapitre pratiqué aujourd'hui (règle 1 chapitre/jour)
-      if (r.date && r.date.substring(0,10) === _today && r.categorie !== 'BOOST' && r.categorie !== 'CALIBRAGE' && r.categorie !== 'BREVET' && r.categorie !== 'REVISION') {
+      // (règle 1 chapitre/jour : détection déplacée après la boucle, sur chapDone)
+    });
+  }
+
+  // Règle 1 chapitre/jour : verrouille seulement si un chapitre a été COMPLÉTÉ aujourd'hui
+  if (d.history && S.chapDone) {
+    var _completedCats = new Set(Object.keys(S.chapDone));
+    d.history.forEach(function(r){
+      if (r.date && r.date.substring(0,10) === _today && _completedCats.has(r.categorie)
+          && r.categorie !== 'BOOST' && r.categorie !== 'CALIBRAGE' && r.categorie !== 'BREVET' && r.categorie !== 'REVISION') {
         S._todayChap = r.categorie;
       }
     });
@@ -3321,8 +3329,7 @@ function mark(cat, idx, status, wrongOpt) {
   var exo = LVL[S.niv].cats[cat][idx];
   S.res[id] = status;
   S.cid = id; S.rev = true;
-  // Règle 1 chapitre/jour : enregistre le chapitre pratiqué aujourd'hui
-  if (cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') S._todayChap = cat;
+  // Règle 1 chapitre/jour : _todayChap est set uniquement à la complétion (dans chkComp)
   var xp = status === 'EASY' ? 100 : status === 'MEDIUM' ? 50 : 10;
   S.xp += xp;
   // Streak : mise à jour locale au premier exercice du jour
@@ -3466,6 +3473,8 @@ function chkComp(cat) {
 
   if (!S.chapDone[cat]) {
     S.chapDone[cat] = { errs: errs, tot: tot, easy: easy, medium: medium, hard: hard };
+    // Règle 1 chapitre/jour : verrouille après complétion d'un chapitre curriculum
+    if (cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') S._todayChap = cat;
     // Enqueue silencieux si erreurs (remédiation générée en arrière-plan)
     if (errs.length > 0 && !S.remReq[cat]) {
       S.remReq[cat] = true;
