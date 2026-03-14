@@ -568,6 +568,80 @@
     .faq-q::-webkit-details-marker { display:none; }
     .faq-a { padding:0 1.25rem 1rem; font-size:.875rem; color:#64748b; line-height:1.7; }
 
+    /* ── MODE NUIT LANDING ─────────────────────────────────── */
+    #night-toggle {
+      background:none; border:1px solid rgba(255,255,255,.2);
+      border-radius:10px; padding:.4rem .55rem; cursor:pointer;
+      font-size:1rem; line-height:1; transition:all .2s;
+      color:rgba(255,255,255,.6);
+    }
+    #night-toggle:hover { border-color:rgba(255,255,255,.4); color:#fff; }
+    body.land-night #night-toggle { color:#fbbf24; border-color:rgba(251,191,36,.4); }
+
+    body.land-night #landing-screen { background:#0c0f1a; }
+    /* Sections claires → fond sombre */
+    body.land-night #landing-screen > div:not(.lhero) {
+      background:#0f1225 !important;
+    }
+    body.land-night .bg-white,
+    body.land-night [style*="background:#f5f7ff"],
+    body.land-night [style*="background:#f8faff"] {
+      background:#0f1225 !important;
+    }
+    body.land-night .bg-slate-50 { background:#0a0d19 !important; }
+    /* Textes */
+    body.land-night .text-slate-900,
+    body.land-night .syne.text-slate-900,
+    body.land-night [class*="font-black"].text-slate-900 { color:#e2e8f0 !important; }
+    body.land-night .text-slate-800 { color:#cbd5e1 !important; }
+    body.land-night .text-slate-700 { color:#94a3b8 !important; }
+    body.land-night .text-slate-600 { color:#94a3b8 !important; }
+    body.land-night .text-slate-500 { color:#64748b !important; }
+    body.land-night .text-slate-400 { color:#475569 !important; }
+    body.land-night .text-slate-300 { color:#334155 !important; }
+    /* Cards & bordures */
+    body.land-night .land-step,
+    body.land-night .land-benefit,
+    body.land-night .sp-quote,
+    body.land-night .faq-item {
+      background:#151933 !important; border-color:#1e2545 !important;
+    }
+    body.land-night .faq-item[open] { border-color:#4338ca !important; }
+    body.land-night .faq-q { color:#cbd5e1 !important; }
+    body.land-night .faq-a { color:#94a3b8 !important; }
+    /* Programme cards */
+    body.land-night #landing-screen [style*="background:#fff"] {
+      background:#151933 !important; border-color:#1e2545 !important;
+    }
+    body.land-night .prog-tag { background:#1e2545; border-color:#2d3566; color:#818cf8; }
+    body.land-night .prog-tag.brevet { background:#2d2206; border-color:#92400e; color:#fbbf24; }
+    body.land-night .prog-tag[style*="background:#f8fafc"] { background:#0f1225 !important; border-color:#1e2545 !important; color:#475569 !important; }
+    /* Stag */
+    body.land-night .stag { background:#1e2545; border-color:#2d3566; }
+    /* Fondateur card */
+    body.land-night [style*="background:linear-gradient(135deg,#f5f7ff,#faf5ff)"] {
+      background:linear-gradient(135deg,#151933,#1a1540) !important; border-color:#1e2545 !important;
+    }
+    /* CTA info box (880 exercices) */
+    body.land-night [style*="background:linear-gradient(135deg,#eef2ff,#f5f3ff)"] {
+      background:linear-gradient(135deg,#1e2545,#1a1540) !important; border-color:#2d3566 !important;
+    }
+    /* Footer */
+    body.land-night .bg-slate-50 .border-t { border-color:#1e2545 !important; }
+    body.land-night .bg-slate-50 a { color:#475569 !important; }
+    body.land-night .bg-slate-50 a:hover { color:#818cf8 !important; }
+    /* Séparateurs fondateur */
+    body.land-night [style*="width:1px;background:#e2e8f0"] { background:#1e2545 !important; }
+    /* Chap cards onboarding (dark bg already in trial flow) */
+    body.land-night .chap-card { background:#151933; border-color:#1e2545; color:#94a3b8; }
+    body.land-night .chap-card.selected { background:#1e2545; border-color:#818cf8; color:#818cf8; }
+    /* Flow inputs */
+    body.land-night .flow-inp { background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.12); color:#e2e8f0; }
+    /* Image mockup border */
+    body.land-night [style*="border:1.5px solid #e2e8f0;max-width:380px"] { border-color:#1e2545 !important; }
+    /* Border-top key stats */
+    body.land-night .border-t.border-slate-100 { border-color:#1e2545 !important; }
+
     /* ── ADMIN PANEL (DEV TOOLS) ─────────────────────────── */
     #admin-panel {
       position:fixed; bottom:80px; right:20px; width:300px;
@@ -830,10 +904,13 @@
       <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-sm shadow-md">📐</div>
       <span class="syne font-black text-white" style="font-size:1.1rem">Math<span style="color:#818cf8">eux</span></span>
     </div>
-    <button onclick="showAuth('login')"
-            class="text-white/70 hover:text-white text-sm font-semibold border border-white/20 px-4 py-2 rounded-xl hover:bg-white/10 transition-colors">
-      Connexion
-    </button>
+    <div class="flex items-center gap-2">
+      <button id="night-toggle" onclick="toggleLandNight()" title="Mode nuit">🌙</button>
+      <button onclick="showAuth('login')"
+              class="text-white/70 hover:text-white text-sm font-semibold border border-white/20 px-4 py-2 rounded-xl hover:bg-white/10 transition-colors">
+        Connexion
+      </button>
+    </div>
   </nav>
 
   <!-- Hero -->
@@ -1827,6 +1904,14 @@ document.addEventListener('touchend', function(e){
 // ══════════════════════════════════════════════════════════════
 // AUTH
 // ══════════════════════════════════════════════════════════════
+// Mode nuit landing
+function toggleLandNight() {
+  var on = document.body.classList.toggle('land-night');
+  localStorage.setItem('land_night', on ? '1' : '0');
+}
+// Restaurer au chargement
+if (localStorage.getItem('land_night') === '1') document.body.classList.add('land-night');
+
 function showAuth(tab) {
   // Ne pas interrompre le flow CTA si l'utilisateur est dedans
   var tf = document.getElementById('trial-flow');
