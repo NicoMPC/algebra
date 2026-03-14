@@ -281,16 +281,25 @@
         border-radius:0;
         transform:translateX(100%);
         box-shadow:-10px 0 40px rgba(0,0,0,.12);
+        overflow-y:auto;
       }
       #draft-drawer.open { transform:translateX(0); }
       #draft-bd { display:none; }
       #fab-draft {
         bottom:1.5rem !important; right:1.5rem !important;
       }
-      /* Boutons calc un peu plus grands sur desktop */
-      .calc-btn { min-height:42px; font-size:1rem; }
-      .calc-row { gap:6px; }
-      #draft-text { font-size:1.05rem; line-height:1.7; }
+      /* Desktop fusionné : cacher onglets, afficher les 2 panels */
+      #draft-drawer .draft-tabs { display:none !important; }
+      #draft-drawer #panel-calc,
+      #draft-drawer #panel-draft {
+        display:flex !important; flex:none !important;
+      }
+      #panel-calc { border-bottom:1px solid #e2e8f0; }
+      #draft-text { min-height:180px; font-size:1.05rem; line-height:1.7; }
+      .calc-btn { min-height:40px; font-size:.95rem; }
+      .calc-row { gap:5px; }
+      .calc-desktop-label { display:block !important; }
+      #panel-calc .px-3.pt-3.pb-2 { padding-top:.5rem; }
     }
 
     /* ── FORMULE FLOUE (reveal on tap) ───────────────────── */
@@ -1440,7 +1449,7 @@
   <!-- Header du tiroir -->
   <div class="px-4 py-3 border-b border-slate-200 flex justify-between items-center bg-slate-50 rounded-t-[24px] flex-shrink-0">
     <!-- Onglets Brouillon / Calculette -->
-    <div class="flex gap-1 bg-slate-200 rounded-xl p-0.5">
+    <div class="draft-tabs flex gap-1 bg-slate-200 rounded-xl p-0.5">
       <button id="tab-draft" onclick="switchDraftTab('draft')"
               class="syne font-black text-sm px-3 py-1 rounded-[10px] bg-white shadow text-slate-800 transition-all">✏️ Brouillon</button>
       <button id="tab-calc" onclick="switchDraftTab('calc')"
@@ -1475,6 +1484,10 @@
 
   <!-- PANEL CALCULETTE -->
   <div id="panel-calc" class="flex flex-col flex-1 overflow-hidden hidden">
+    <!-- Label desktop (caché sur mobile via draft-tabs logic) -->
+    <div class="calc-desktop-label hidden px-3 pt-3 pb-1">
+      <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">🔢 Calculette</span>
+    </div>
     <!-- Écran -->
     <div class="px-3 pt-3 pb-2 bg-white flex-shrink-0">
       <div id="calc-screen" class="bg-slate-900 text-white rounded-xl px-4 py-3 text-right font-mono text-xl min-h-[52px] flex flex-col justify-end overflow-hidden">
@@ -5127,7 +5140,13 @@ function toggleDraft() {
     if (ta && S.cid) ta.value = (S.drafts[S.cid] && S.drafts[S.cid].txt) || localStorage.getItem('draft_' + S.cid) || '';
     // Restaurer mode quadrillé
     if (ta) { var g = localStorage.getItem('draft_grid') === '1'; ta.classList.toggle('grid-on', g); var gb = document.getElementById('btn-grid'); if (gb) gb.style.color = g ? '#6366f1' : ''; }
-    switchDraftTab(S.dTab || 'draft');
+    if (isDesktop) {
+      // Desktop fusionné : afficher les 2 panels + rendre les 2
+      renderCalcButtons();
+      renderDraftSymbols();
+    } else {
+      switchDraftTab(S.dTab || 'draft');
+    }
   } else {
     var ta = document.getElementById('draft-text');
     if (ta && S.cid) {
