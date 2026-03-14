@@ -3115,8 +3115,8 @@ function initApp(d, skipRender) {
     });
   }
 
-  // Règle 1 chapitre/jour : verrouille seulement si un chapitre a été COMPLÉTÉ aujourd'hui
-  if (d.history && S.chapDone) {
+  // Règle 1 chapitre/jour : verrouille seulement si un chapitre a été COMPLÉTÉ aujourd'hui (désactivé 1ERE)
+  if (d.history && S.chapDone && S.niv !== '1ERE') {
     var _completedCats = new Set(Object.keys(S.chapDone));
     d.history.forEach(function(r){
       if (r.date && r.date.substring(0,10) === _today && _completedCats.has(r.categorie)
@@ -3354,8 +3354,8 @@ function mark(cat, idx, status, wrongOpt) {
 
 async function togCat(cat) {
   var was = !!S.exp[cat];
-  // Règle 1 chapitre/jour : bloque l'ouverture d'un 2e chapitre
-  if (!was && S._todayChap && cat !== S._todayChap && cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') {
+  // Règle 1 chapitre/jour : bloque l'ouverture d'un 2e chapitre (désactivé 1ERE)
+  if (!was && S._todayChap && S.niv !== '1ERE' && cat !== S._todayChap && cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') {
     var todayName = (LVL[S.niv] && LVL[S.niv].names[S._todayChap]) || S._todayChap;
     showT('Un seul chapitre par jour — tu travailles déjà sur ' + todayName + '. Reviens demain !', 4000, '🔒');
     return;
@@ -3473,8 +3473,8 @@ function chkComp(cat) {
 
   if (!S.chapDone[cat]) {
     S.chapDone[cat] = { errs: errs, tot: tot, easy: easy, medium: medium, hard: hard };
-    // Règle 1 chapitre/jour : verrouille après complétion d'un chapitre curriculum
-    if (cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') S._todayChap = cat;
+    // Règle 1 chapitre/jour : verrouille après complétion d'un chapitre curriculum (désactivé 1ERE)
+    if (S.niv !== '1ERE' && cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') S._todayChap = cat;
     // Enqueue silencieux si erreurs (remédiation générée en arrière-plan)
     if (errs.length > 0 && !S.remReq[cat]) {
       S.remReq[cat] = true;
@@ -4168,8 +4168,8 @@ function getChapProgress(cat) {
 }
 
 function openFromProgress(cat) {
-  // Règle 1 chapitre/jour
-  if (S._todayChap && cat !== S._todayChap && cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') {
+  // Règle 1 chapitre/jour (désactivé 1ERE)
+  if (S._todayChap && S.niv !== '1ERE' && cat !== S._todayChap && cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') {
     var todayName = (LVL[S.niv] && LVL[S.niv].names[S._todayChap]) || S._todayChap;
     showT('Un seul chapitre par jour — tu travailles déjà sur ' + todayName + '. Reviens demain !', 4000, '🔒');
     return;
@@ -4298,8 +4298,8 @@ function renderProgress() {
     var isMast = ch.isMast;
     // Couleur barre progressive
     var barClass = score >= 90 ? 'pfg' : score >= 70 ? 'pfp' : score >= 40 ? 'pfo' : 'pfr';
-    // Locked = autre chapitre pratiqué aujourd'hui
-    var locked = S._todayChap && cat !== S._todayChap;
+    // Locked = autre chapitre pratiqué aujourd'hui (désactivé 1ERE)
+    var locked = S.niv !== '1ERE' && S._todayChap && cat !== S._todayChap;
     var cardBg = isMast ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-slate-200';
 
     html += '<div data-cat="'+cat+'" onclick="openFromProgress(\''+cat+'\')" ';
@@ -4343,7 +4343,7 @@ function renderProgress() {
     notStarted.forEach(function(ch) {
       var name2 = LVL[S.niv].names[ch.cat] || ch.cat;
       var icon2 = LVL[S.niv].icons[ch.cat] || '📘';
-      var locked2 = S._todayChap && ch.cat !== S._todayChap;
+      var locked2 = S.niv !== '1ERE' && S._todayChap && ch.cat !== S._todayChap;
       html += '<div data-cat="'+ch.cat+'" onclick="openFromProgress(\''+ch.cat+'\')" ';
       html += 'class="flex items-center gap-3 bg-slate-50 border border-slate-100 rounded-xl p-3 mb-2 cursor-pointer active:scale-[.98] transition-transform'+(locked2?' opacity-50':'')+'">';
       html += '<div class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-base flex-shrink-0">'+icon2+'</div>';
