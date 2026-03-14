@@ -46,9 +46,11 @@
 | 0 | **Fixes bugs audit** (BUG-01 à BUG-12 dans [test_debug.md](test_debug.md)) | ✅ Corrigés @60 | 🟢 |
 | 1 | Validation inputs GAS (format email, longueur champs) | ✅ Corrigé @63 (register + saveScore) | 🟢 |
 | 2 | Rate limiting global dans doPost (60/min, 15/min sensibles) | ✅ Corrigé @63 | 🟢 |
-| 3 | **BUG-AUDIT-01** : `Systèmes_Équations 3EME exo#16` — `"a": "4 lapins"` absent des options numériques | ❌ À faire | 🔴 |
-| 4 | **BUG-AUDIT-02/03** : Boost `Transformations 5EME` + `Homothétie 4EME` — tiret unicode `−` vs `-` (réponse hors options) | ❌ À faire | 🔴 |
-| 5 | **BUG-AUDIT-04** : 5 doublons Boost/Curriculum (`Fonctions_Linéaires 4EME`, `Notation_Scientifique 3EME`, `Sections_Solides 4EME` ×2, `Puissances_10 6EME`) | ❌ À faire | 🟡 |
+| 3 | **BUG-AUDIT-01** : `Systèmes_Équations 3EME exo#16` — réponse corrigée | ✅ Corrigé (déjà en prod) | 🟢 |
+| 4 | **BUG-AUDIT-02/03** : Boost `Transformations 5EME` + `Homothétie 4EME` — tiret unicode | ✅ Corrigé (déjà en prod) | 🟢 |
+| 5 | **BUG-AUDIT-04** : 5 doublons Boost/Curriculum collège | ✅ Corrigé (déjà en prod) | 🟢 |
+| 11 | **Doublons 1ERE** : 19 doublons Boost/Curriculum dans 6 chapitres 1ERE (insert_1ere.py) | ❌ À faire | 🟡 |
+| 10 | **BUG-1ERE-JSON** : `a ∉ options` dans `insert_1ere.py` — réponses marquées fausses même si correctes (Dérivation + 5 autres chapitres) | ✅ Corrigé 14 mars — assert guard ajouté dans `_exo()` | 🟢 |
 | 6 | **BUG-AUDIT-05** : BrevetExos convertis au format standard `{lvl, q, a, options, f, steps}` + 3 doublons fusionnés (18→15 chap) | ✅ Corrigé 14 mars | 🟢 |
 | 7 | **Figures géo SVG** : lettres dynamiques depuis l'énoncé, filtrage nonGeoChaps, 3 nouveaux types 1ERE (vectors, repere, trigo_circle), cercle diamètre, angle 3 lettres, symétries 3 paires | ✅ Corrigé @65 | 🟢 |
 | 8 | **Auth modal CTA** : showAuth() gardé contre interruption trial-flow + auto-login silencieux | ✅ Corrigé @65 | 🟢 |
@@ -151,6 +153,7 @@
 - [x] **Mode Révision** — admin ouvre chapitres d'une autre année depuis la fiche élève → dashboard élève + badge 🔁 + toast notification (13 mars 2026)
 - [x] **Brouillon contextuel + Calculette** — symboles adaptés par chapitre/niveau, onglets Brouillon|Calculette, sin/cos/tan si géo/trigo, copie vers brouillon (13 mars 2026)
 - [x] **Niveau 1ERE Spé Maths** — 10 chapitres, 330 exercices, backend `ALLOWED_LEVELS` + `niveauOrder` patchés @64. Frontend non modifié (pas de sélecteur 1ERE à l'inscription). Compte test Auguste (AUG001) prêt. Voir [rapport-1ere.md](rapport-1ere.md) (14 mars 2026)
+- [x] **Fix BUG-1ERE-JSON** — `a ∉ options` dans 6/10 chapitres 1ERE (Dérivation, Suites, Exponentielle, Trigo, Produit scalaire, Géométrie repérée, Probas cond, Variables aléatoires, Algorithmique). Assert guard permanent dans `_exo()`. 600 exercices validés (14 mars 2026)
 - [x] **Figures géo SVG v2** — lettres dynamiques, filtrage strict, 18 types (3 nouveaux 1ERE : vectors, repere, trigo_circle), viewBox 280×210 (14 mars 2026)
 - [x] **Auth modal protégé** — showAuth() gardé trial-flow + auto-login silencieux sans modale imposée (14 mars 2026)
 - [x] **Toast mobile responsive** — white-space normal, max-width 88vw, word-break, border-radius 18px (14 mars 2026)
