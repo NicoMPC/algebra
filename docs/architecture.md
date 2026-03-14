@@ -24,7 +24,7 @@ NAVIGATEUR (index.html)              GOOGLE APPS SCRIPT (backend.js)
 
 | Composant | Technologie | Fichier | Taille |
 |---|---|---|---|
-| Frontend | HTML + CSS vars + Tailwind purgé v4 + JS vanilla | `index.html` | ~5900 lignes |
+| Frontend | HTML + CSS vars + Tailwind CDN + JS vanilla | `index.html` | ~5900 lignes |
 | Backend | Google Apps Script (V8) | `backend.js` | ~4200 lignes |
 | Base de données | Google Sheets | — | 13 onglets actifs |
 | Hébergement frontend | GitHub Pages | `matheux.fr` | Auto-deploy sur push |
@@ -84,8 +84,8 @@ const S = {
 
 ### Librairies externes (CDN)
 
-- **Tailwind CSS v4** : build purgé local (`dist/tailwind.css`, 41Ko) — rebuild : `npx @tailwindcss/cli -i ./src/input.css -o ./dist/tailwind.css --minify`
-- **KaTeX v0.16.9** : rendu LaTeX (defer, ~280Ko)
+- **Tailwind CSS** : utilities responsive
+- **KaTeX v0.16.9** : rendu LaTeX (defer + queue retry, fallback 3s)
 - **Syne** + **DM Sans** : Google Fonts
 
 ### Gamification
