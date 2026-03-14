@@ -21,7 +21,7 @@
 // ════════════════════════════════════════════════════════════
 
 // ── Niveaux autorisés ────────────────────────────────────────
-var ALLOWED_LEVELS = ['6EME', '5EME', '4EME', '3EME'];
+var ALLOWED_LEVELS = ['6EME', '5EME', '4EME', '3EME', '1ERE'];
 
 // ── Noms exacts des onglets ──────────────────────────────────
 var SH = {
@@ -801,7 +801,7 @@ function generateDailyBoost(p) {
   var fromDiag = Array.isArray(p.errors) && p.errors.length > 0;
 
   if (!code || !isValidLevel(level)) {
-    return { status: 'error', message: 'code et level (6EME/5EME/4EME/3EME) requis.' };
+    return { status: 'error', message: 'code et level (6EME/5EME/4EME/3EME/1ERE) requis.' };
   }
 
   // Récupère le pool d'exercices boost dédié (fallback → Curriculum_Officiel)
@@ -1986,7 +1986,7 @@ function generateRevision(p) {
   }
 
   // Niveau inférieur
-  var niveauOrder = ['6EME', '5EME', '4EME', '3EME'];
+  var niveauOrder = ['6EME', '5EME', '4EME', '3EME', '1ERE'];
   var idx = niveauOrder.indexOf(niveau);
   var revNiveau = idx > 0 ? niveauOrder[idx - 1] : niveau;
   var isSameLevel = revNiveau === niveau;

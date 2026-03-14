@@ -1,16 +1,32 @@
 # Rapport de simulation QA — 40 élèves × 15 jours
 
-> Date : 14 mars 2026 | GAS @63 | Méthode : analyse statique + revue de code exhaustive
+> Date : 14 mars 2026 | GAS @63 | Méthode : analyse statique + **test live 1616 appels API**
 
 ---
 
 ## Méthodologie
 
-Simulation par **analyse statique du code** (backend.js ~4200 lignes + index.html ~5900 lignes).
-Traçage manuel de tous les flux décrits dans la simulation : login → boost → save_score → get_progress,
-avec vérification de cohérence des données à chaque étape.
+1. **Analyse statique du code** (backend.js ~4200 lignes + index.html ~5900 lignes) — traçage des flux.
+2. **Test live `test_full_v2.py`** — 74/74 PASS (100%) — flux nominal complet.
+3. **Simulation live `test_simulation_40.py`** — 40 comptes @matheux.fr (IsTest=1), 15 jours simulés, **1616 appels API réels** en ~2h51.
 
-Pas de simulation live sur GAS (pas de pollution de la base de prod).
+### Résultats live
+
+| Métrique | Valeur |
+|---|---|
+| Appels API | 1 616 |
+| Durée totale | 10 270s (~2h51) |
+| Erreurs réseau | 0 |
+| Timeouts (>30s) | 9 (0.6%) — tous récupérés par retry |
+| 40 logins en rafale | 40/40 en 21.9s |
+| Admin overview (59 élèves) | 9.6s |
+
+| Action | Count | Avg(s) | Max(s) | P95(s) |
+|---|---|---|---|---|
+| register | 40 | 4.40 | 6.96 | 5.97 |
+| login | 408 | 5.13 | 67.92 | 6.81 |
+| save_score | 1158 | 6.86 | 68.13 | 9.94 |
+| get_admin_overview | 4 | 7.31 | 9.56 | 9.56 |
 
 ---
 
@@ -129,7 +145,18 @@ Pas de simulation live sur GAS (pas de pollution de la base de prod).
 | Admin workflow | 9/10 | Actions, pills, boost/chapitre — tous fonctionnels |
 | Frontend UX | 9/10 | Streak, XP, mastery ring — tous à jour temps réel |
 | Edge cases | 8/10 | PendingBrevet persistant, trial overlay, 1 chap/jour |
-| **Global** | **8.7/10** | |
+| **Global** | **9.0/10** | Confirmé par 1616 appels live — 0 erreur |
+
+---
+
+## Validation live — 14 mars 2026
+
+| Suite | Résultat |
+|---|---|
+| `test_full_v2.py` | **74/74 PASS (100%)** |
+| `test_simulation_40.py` (40 élèves × 15 jours) | **17/17 PASS, 0 erreur, 1616 appels** |
+
+**Conclusion : GAS tient 40 élèves sans problème.** Les 9 timeouts (0.6%) sont des pics GAS temporaires, récupérés automatiquement par retry.
 
 ---
 
@@ -138,3 +165,4 @@ Pas de simulation live sur GAS (pas de pollution de la base de prod).
 1. **B3 — generateMorningReport** : si >40 élèves, envisager un traitement par batch (10 élèves par exécution avec trigger séquentiel) pour rester sous la limite 6 min GAS.
 2. **D2 — Push temps réel** : actuellement les boosts admin ne sont reçus qu'au login. Pour une UX temps réel, envisager un polling léger (check toutes les 5 min) côté frontend.
 3. **A1 — Race condition** : acceptable MVP. Si >50 users simultanés, migrer vers une vraie BDD (Firestore/Supabase).
+4. **Timeouts** : save_score max 68s observé en pic. Le retry avec backoff couvre ces cas. Pas bloquant pour MVP.

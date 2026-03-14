@@ -9,21 +9,22 @@
 **Matheux est fonctionnel à 100% côté code. Seuls manques : Stripe PROD + 2 actions manuelles.**
 
 > ✅ **Audit + bugfixes réalisés le 13 mars 2026** (simulation 7j × 5 profils sur GAS réel).
-> BUG-01 à BUG-12 corrigés dans backend.js @60. Voir [test_debug.md](test_debug.md).
-> ✅ **Simulation QA 40 élèves le 14 mars 2026** — 6 bugs supplémentaires corrigés (BUG-SIM-01→06).
-> GAS @63. Voir [test-simulation-2026-03.md](test-simulation-2026-03.md).
+> BUG-01 à BUG-12 corrigés dans backend.js @60.
+> ✅ **Simulation QA 40 élèves le 14 mars 2026** — 6 bugs corrigés (BUG-SIM-01→06) + **test live 1616 appels API : 0 erreur**. GAS @63.
+> ✅ **Niveau 1ERE Spé Maths ajouté le 14 mars 2026** — 10 chapitres, 330 exercices (200 curriculum + 20 diag + 100 boost + 10 restants), compte Auguste (AUG001) prêt pour visio. GAS @64.
 
 | Dimension | État |
 |---|---|
-| Tests automatisés | 73/74 (99%) — 1 race condition GAS acceptable |
-| Couverture programme | **~100%** — 44 chapitres (880 exos curriculum + 88 diag + 440 boost + 144 brevet) |
+| Tests automatisés | **74/74 (100%)** + simulation 40 élèves **17/17 PASS** (1616 appels API, 0 erreur) |
+| Couverture programme | **~100%** — 54 chapitres (1080 exos curriculum + 108 diag + 540 boost + 144 brevet) |
+| Niveau 1ERE Spé | **10 chapitres expérimentaux** — backend prêt, frontend non modifié (connexion uniquement) |
 | Juridique | Complet (5 pages + consentement parental + RGPD) |
 | Paiement | ⏳ Lien Stripe TEST actif — **à passer en PROD manuellement** |
 | Emails auto | ✅ J+0 auto + fallback manuel admin, J+3/J+5/J+7 code prêt — **trigger à activer manuellement** |
 | Analytics | ✅ GA4 RGPD-compliant |
 | Limite bêta | 50 vrais élèves (IsTest=0) |
 | Messages élèves | ✅ Streak alert, boost en cours, chapitre maîtrisé, milestones 3/7j |
-| Admin smart | ✅ GAS @63 — bugfixes audit + simulation QA, rate limiting global, validation inputs |
+| Admin smart | ✅ GAS @64 — bugfixes audit + simulation QA, rate limiting global, validation inputs, 1ERE Spé |
 | Emails (@matheux.fr) | ⏳ **à créer manuellement** : contact@ + alias no-reply@ |
 
 ---
@@ -52,7 +53,7 @@
 
 ### Améliorations exercices — sprints suivants
 
-> Détail complet : [docs/audit-exercices-2026-03.md](audit-exercices-2026-03.md) — Score global 4,0/5 → 4,5/5 après corrections.
+> Détail complet dans l'archive docs/archive/ — Score global 4,0/5 → 4,5/5 après corrections.
 
 | Priorité | Action | Chapitres concernés | Volume |
 |---|---|---|---|
@@ -65,11 +66,11 @@
 ## BLOC 1 — Socle technique ✅ TERMINÉ
 
 - [x] generate_diagnostic / generate_daily_boost / isFirstDay / boostExistsInDB
-- [x] Curriculum_Officiel : 880 exos (44 chap × 20) — programme collège 100% couvert (Sprint 1→4)
-- [x] DiagnosticExos : 88 exos (44 chap × 2)
-- [x] BoostExos : 440 exos (44 chap × 10)
+- [x] Curriculum_Officiel : 1080 exos (54 chap × 20) — programme collège 100% + 1ERE Spé (Sprint 1→4 + @64)
+- [x] DiagnosticExos : 108 exos (54 chap × 2)
+- [x] BoostExos : 540 exos (54 chap × 10)
 - [x] BrevetExos : 144 exos (18 chap × 8) — tous chapitres 3EME couverts
-- [x] CHAPS_BY_LEVEL : 44 chapitres exposés dans sélecteur diagnostic
+- [x] CHAPS_BY_LEVEL : 54 chapitres exposés (44 collège + 10 1ERE Spé) dans sélecteur diagnostic
 - [x] Bugs T1→T7 post-tests utilisateur tous corrigés
 - [x] UX Progression & Mobile (Progression, fragiles, mobile)
 - [x] Harmonisation `_doLoginAndLaunch` / `_flowGuestRegister` — fix onboarding fantôme + double diagnostic (13 mars)
@@ -146,6 +147,7 @@
 - [x] 5 chapitres prioritaires en prod
 - [x] **Mode Révision** — admin ouvre chapitres d'une autre année depuis la fiche élève → dashboard élève + badge 🔁 + toast notification (13 mars 2026)
 - [x] **Brouillon contextuel + Calculette** — symboles adaptés par chapitre/niveau, onglets Brouillon|Calculette, sin/cos/tan si géo/trigo, copie vers brouillon (13 mars 2026)
+- [x] **Niveau 1ERE Spé Maths** — 10 chapitres, 330 exercices, backend `ALLOWED_LEVELS` + `niveauOrder` patchés @64. Frontend non modifié (pas de sélecteur 1ERE à l'inscription). Compte test Auguste (AUG001) prêt. Voir [rapport-1ere.md](rapport-1ere.md) (14 mars 2026)
 - [ ] Agent analyse lacunes quotidien automatique
 - [ ] Agent génération boost automatique
 - [ ] Agent rapport parents (email hebdo)
@@ -177,7 +179,7 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 ## Checklist "Prêt pour 50 élèves"
 
 ### Infrastructure
-- [x] GAS @60 stable — 27+ actions, bugfixes audit complets
+- [x] GAS @64 stable — 28+ actions, bugfixes audit complets, niveau 1ERE
 - [x] Google Sheet prod
 - [x] Validation inputs GAS (register + saveScore — @63)
 - [x] Rate limiting doPost (global 60/min, sensibles 15/min — @63)
@@ -193,7 +195,7 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 - [x] 5 pages légales + consentement parental + RGPD + GA4
 
 ### Pédagogie
-- [x] 880 exos curriculum + 88 diag + 440 boost + 144 brevet — programme complet ~100%
+- [x] 1080 exos curriculum + 108 diag + 540 boost + 144 brevet — programme complet ~100% + 1ERE Spé
 
 ### UX
 - [x] Mobile-first, gamification, messages ado

@@ -47,7 +47,11 @@ docs/architecture.md               → Technique (frontend + backend + flux)
 docs/database.md                   → Schéma Sheets (onglets + colonnes)
 docs/product.md                    → Produit (vision + parcours + business + workflow Nicolas)
 docs/roadmap.md                    → Priorités + état d'avancement
+docs/agents.md                     → Agents IA spécialisés (délégation CTO)
 docs/programme-français-verif.md   → Couverture Eduscol (référence)
+docs/test-simulation-2026-03.md    → QA simulation 40 élèves (résultats live)
+docs/rapport-1ere.md               → Rapport insertion 1ERE Spé Maths + compte Auguste
+docs/archive/                      → Docs historiques (ne pas lire sauf besoin)
 ```
 
 ### Ce qui NE doit PAS être dans la doc
@@ -135,7 +139,9 @@ git add index.html && git commit -m "feat: ..." && git push origin main
 
 ### Tests
 ```bash
-python3 test_full_v2.py          # Suite complète — 73/74 (99%)
+python3 test_full_v2.py          # Suite complète — 74/74 (100%)
+python3 test_simulation_40.py   # Simulation 40 élèves × 15 jours — 17/17 (1616 appels API)
+python3 cleanup_prod.py         # Nettoyage complet base (⚠️ IRRÉVERSIBLE)
 python3 create_demo_student.py   # Profil élève démo
 python3 rebuild_sheet.py         # Reconstruire Suivi + Historique
 ```

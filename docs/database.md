@@ -32,20 +32,18 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 | `Progress` | Score/statut par chapitre par élève | ❌ |
 | `Scores` | Toutes les réponses individuelles | ❌ |
 | `DailyBoosts` | Historique des boosts quotidiens | Lecture + admin panel |
-| `Curriculum_Officiel` | Exercices par chapitre (580 exos) | ❌ Via scripts Python seulement |
-| `DiagnosticExos` | Exercices de diagnostic (58 exos) | ❌ Via scripts Python seulement |
+| `Curriculum_Officiel` | Exercices par chapitre (1080 exos) | ❌ Via scripts Python seulement |
+| `DiagnosticExos` | Exercices de diagnostic (108 exos) | ❌ Via scripts Python seulement |
 | `RemediationChapters` | Chapitres de remédiation (désactivé) | ❌ |
-| `BrevetExos` | Exercices style brevet (120 exos) | ❌ Via script Python seulement |
+| `BrevetExos` | Exercices style brevet (144 exos) | ❌ Via script Python seulement |
 | `BrevetResults` | Résultats brevets blancs | ❌ |
 | `📧 Emails` | Archive des emails envoyés | Lecture seule |
 | `Insights` | Feedbacks élèves + demandes chapitres | Lecture seule |
 | `Rapports` | Rapports quotidiens 7h | Lecture seule |
 
-### Onglets archivés (données conservées)
+### Onglets archivés
 
-```
-_ARCHIVE_Queue / _ARCHIVE_Prerequisites / _ARCHIVE_Rapports / _ARCHIVE_Pending_Exos
-```
+Supprimés par `cleanup_all` le 14 mars 2026 : `_ARCHIVE_Queue`, `_ARCHIVE_Prerequisites`, `_ARCHIVE_Rapports`, `_ARCHIVE_Pending_Exos`, `Pending_Exos`, `Queue`, `Programme_Officiel`, `Waitlist`.
 
 ---
 
@@ -57,7 +55,7 @@ _ARCHIVE_Queue / _ARCHIVE_Prerequisites / _ARCHIVE_Rapports / _ARCHIVE_Pending_E
 |---|---|---|---|
 | A | Code | String | Identifiant unique 6 chars (ex: `FP48QF`) |
 | B | Prénom | String | |
-| C | Niveau | String | `6EME` / `5EME` / `4EME` / `3EME` |
+| C | Niveau | String | `6EME` / `5EME` / `4EME` / `3EME` / `1ERE` |
 | D | Email | String | lowercase, trimmed |
 | E | PasswordHash | String | SHA-256(`email::password::AB22`) |
 | F | DateInscription | Date | `yyyy-MM-dd` |
@@ -125,7 +123,7 @@ _ARCHIVE_Queue / _ARCHIVE_Prerequisites / _ARCHIVE_Rapports / _ARCHIVE_Pending_E
 
 | Col | Nom | Type | Description |
 |---|---|---|---|
-| A | Niveau | String | `6EME` / `5EME` / `4EME` / `3EME` |
+| A | Niveau | String | `6EME` / `5EME` / `4EME` / `3EME` / `1ERE` |
 | B | Categorie | String | Identifiant unique (ex: `Fractions`) |
 | C | Titre | String | Nom affiché (ex: `Fractions 🍕`) |
 | D | Icone | String | Emoji |
@@ -144,19 +142,19 @@ _ARCHIVE_Queue / _ARCHIVE_Prerequisites / _ARCHIVE_Rapports / _ARCHIVE_Pending_E
 ```
 
 - 10 exercices `lvl:1` (fondamentaux) + 10 `lvl:2` (avancés) par chapitre
-- 29 chapitres × 20 exos = **580 exercices** en prod
+- 54 chapitres × 20 exos = **1080 exercices** en prod
 
 ### BoostExos
 
 | Col | Nom | Type | Description |
 |---|---|---|---|
-| A | Niveau | String | `6EME` / `5EME` / `4EME` / `3EME` |
+| A | Niveau | String | `6EME` / `5EME` / `4EME` / `3EME` / `1ERE` |
 | B | Categorie | String | Identifiant catégorie (même noms que Curriculum_Officiel) |
 | C | ExosJSON | String | JSON tableau de 10 exercices (5 lvl1 + 5 lvl2) |
 
 Pool d'exercices **dédiée aux boosts quotidiens**, séparée de Curriculum_Officiel pour éviter que les exercices de boost polluent la progression des chapitres. Même format d'exercice, mêmes compétences, mais nombres et wording différents.
 
-29 chapitres × 10 exos = **290 exercices boost** en prod.
+54 chapitres × 10 exos = **540 exercices boost** en prod.
 
 **Fallback** : si l'onglet BoostExos est absent ou vide pour un niveau, `generateDailyBoost()` utilise Curriculum_Officiel automatiquement.
 
@@ -168,7 +166,7 @@ Pool d'exercices **dédiée aux boosts quotidiens**, séparée de Curriculum_Off
 | B | Categorie | String | Identifiant chapitre |
 | C | ExosJSON | String | JSON tableau de 2 exercices (1 lvl1 + 1 lvl2) |
 
-29 chapitres × 2 exos = **58 exercices** de diagnostic.
+54 chapitres × 2 exos = **108 exercices** de diagnostic.
 
 ### BrevetExos
 
@@ -178,7 +176,7 @@ Pool d'exercices **dédiée aux boosts quotidiens**, séparée de Curriculum_Off
 | B | Categorie | String | Chapitre brevet |
 | C | ExosJSON | String | JSON tableau de 8 exercices `{q, opts:[], ans:int, hint, diff}` |
 
-15 chapitres × 8 exos = **120 exercices** style brevet.
+18 chapitres × 8 exos = **144 exercices** style brevet.
 
 ### BrevetResults
 
@@ -246,7 +244,7 @@ Rapports ── standalone (archive)
 
 ---
 
-## Chapitres disponibles — 44 chapitres en prod (màj 13 mars 2026 — programme complet)
+## Chapitres disponibles — 54 chapitres en prod (màj 14 mars 2026)
 
 | Niveau | Chapitres |
 |---|---|
@@ -254,7 +252,8 @@ Rapports ── standalone (archive)
 | 5EME (10) | Fractions, Nombres_relatifs, Proportionnalité, Calcul_Littéral, Pythagore, Puissances, Symétrie_Centrale, Transformations, Racines_Carrées, Triangles_Semblables |
 | 4EME (10) | Puissances, Fractions, Proportionnalité, Calcul_Littéral, Équations, Pythagore, Fonctions_Linéaires, Inéquations, Homothétie, Sections_Solides |
 | 3EME (11) | Calcul_Littéral, Équations, Fonctions, Théorème_de_Thalès, Trigonométrie, Statistiques, Probabilités, Racines_Carrées, Systèmes_Équations, Inéquations, Notation_Scientifique |
+| 1ERE (10) | Second_Degre, Suites, Derivation, Exponentielle, Trigonometrie, Produit_Scalaire, Geometrie_Repere, Probabilites_Cond, Variables_Aleatoires, Algorithmique |
 
-Total : **44 chapitres × 20 exos = 880 exercices** + **44 × 10 = 440 boost (BoostExos)** + **44 × 2 = 88 diagnostics** + **18 × 8 = 144 brevet** (3EME uniquement)
+Total : **54 chapitres × 20 exos = 1080 exercices** + **54 × 10 = 540 boost (BoostExos)** + **54 × 2 = 108 diagnostics** + **18 × 8 = 144 brevet** (3EME uniquement)
 
 **Flux boost auto** : diagnostic ne teste que les chapitres sélectionnés → P5 filtre BoostExos aux mêmes chapitres → boost ciblé, pas de dispersion cross-chapitre.

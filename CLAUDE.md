@@ -7,8 +7,8 @@
 ## Projet en une phrase
 
 SPA vanilla JS (`index.html` ~5900 lignes) + backend Google Apps Script (`backend.js` ~4200 lignes) sur Google Sheets.
-Outil pédagogique adaptatif maths collège (6ème→3ème), diagnostic de lacunes, exercices personnalisés, gamification.
-MVP solo → 50 clients payants à 9,99 €/mois.
+Outil pédagogique adaptatif maths collège + lycée (6ème→3ème + 1ère Spé Maths), diagnostic de lacunes, exercices personnalisés, gamification.
+MVP solo → 50 clients payants à 19,99 €/mois.
 
 ## Contexte fondateur
 

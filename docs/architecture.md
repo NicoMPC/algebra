@@ -116,9 +116,9 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @63
+### Actions GAS — état @64
 
-> @63 : rate limiting global (60/min, 15/min login/register), validation inputs saveScore, 6 bugfixes simulation QA.
+> @64 : ajout niveau 1ERE Spé Maths (ALLOWED_LEVELS, niveauOrder). @63 : rate limiting global (60/min, 15/min login/register), validation inputs saveScore, 6 bugfixes simulation QA.
 
 | Action | Description | Statut |
 |---|---|---|
@@ -255,11 +255,13 @@ Commandes de déploiement : voir [claude.md](claude.md#déploiement).
 | `rebuild_sheet.py` | Reconstruit 👁 Suivi et 📋 Historique | Non |
 | `create_demo_student.py` | Crée profil démo + simule diagnostic + boost | Non |
 | `create_5_students.py` | Crée 5 profils variés (test scénarios) | Non |
-| `test_full_v2.py` | Suite de tests GAS complète (73/74) | Non |
+| `test_full_v2.py` | Suite de tests GAS complète (74/74) | Non |
+| `test_simulation_40.py` | Simulation 40 élèves × 15 jours (17/17, 1616 appels) | Non |
 | `cleanup_prod.py` | Nettoyage complet base prod | ⚠️ IRRÉVERSIBLE |
 | `fix_lucas_ines.py` | Ajuste profils démo spécifiques | Non |
 | `import_brevet_exos.py` | Pousse brevet_exos_3eme.json → BrevetExos | One-shot |
 | `push_boost_exos.py` | Pousse boost_exos.json → BoostExos (290 exos) | One-shot |
+| `insert_1ere.py` | Insère niveau 1ERE Spé Maths (330 exos) + compte Auguste | Idempotent |
 
 Scripts archivés dans `scripts_archive/`.
 

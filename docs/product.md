@@ -7,7 +7,7 @@
 
 ## Vision
 
-**Matheux est un outil de soutien scolaire en maths pour les collégiens (6ème → 3ème), qui détecte automatiquement les lacunes d'un élève et lui prépare des exercices personnalisés chaque jour.**
+**Matheux est un outil de soutien scolaire en maths pour les collégiens et lycéens (6ème → 3ème + 1ère Spé Maths), qui détecte automatiquement les lacunes d'un élève et lui prépare des exercices personnalisés chaque jour.**
 
 Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse les résultats, prépare les boosts quotidiens, et assigne les chapitres suivants. Objectif : accompagnement quasi-individuel à 19,99 €/mois — 25× moins cher qu'un cours particulier.
 
@@ -15,8 +15,8 @@ Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse 
 
 ## Utilisateurs cibles
 
-### L'élève (11-15 ans)
-- Collégien de la 6ème à la 3ème, lacunes en maths
+### L'élève (11-17 ans)
+- Collégien (6ème→3ème) ou lycéen (1ère Spé Maths), lacunes en maths
 - Téléphone ou tablette familiale, 10-15 min/jour
 - Sensible à la gamification (streak, XP, confettis)
 
@@ -79,8 +79,8 @@ Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse 
 - **Boost quotidien** : 5 exercices/jour = habitude, pas surcharge
 - **Indices progressifs** : 1-3 étapes + formule clé révélée après erreur
 - `lvl:1` = fondamental, `lvl:2` = avancé (type contrôle/brevet)
-- 44 chapitres × 20 exos = **880 exercices** + 88 diagnostics + 440 boost + 144 brevet (3EME)
-- Couverture **~100%** programme officiel — détail dans [programme-français-verif.md](programme-français-verif.md)
+- 54 chapitres × 20 exos = **1080 exercices** + 108 diagnostics + 540 boost + 144 brevet (3EME)
+- Couverture **~100%** programme collège officiel + 1ère Spé Maths (10 chapitres expérimentaux) — détail dans [programme-français-verif.md](programme-français-verif.md)
 
 ---
 
