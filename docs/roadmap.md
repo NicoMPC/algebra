@@ -159,6 +159,14 @@
 - [x] **Toast mobile responsive** — white-space normal, max-width 88vw, word-break, border-radius 18px (14 mars 2026)
 - [x] **Brouillon/Calculette desktop** — panneau latéral droit 1/3 écran, les 2 fusionnés (calc en haut, brouillon en bas). Mobile : bottom sheet 50vh (énoncé reste visible) (14 mars 2026)
 - [x] **Mode nuit landing** — toggle lune dans la nav, fond sombre sur toutes les sections claires, persisté localStorage (14 mars 2026)
+- [x] **Brevet Blanc UX v2** — écran d'accueil enrichi (nb questions, durée estimée, conditions), chronomètre discret pendant le quiz, écran résultats refondu (mentions Très bien/Bien/Passable/À retravailler, chapitres faibles en rouge, bouton "Voir mes erreurs", temps écoulé) (14 mars 2026)
+- [x] **Progression enrichie** — tri chapitres par score ASC (faibles en premier), labels Fragile/En progrès/Solide/Maîtrisé, badge ⚠️ À reprendre si >7j inactif, accordéon chapitres maîtrisés, synthèse globale (nb chapitres, exos, streak) (14 mars 2026)
+- [x] **Figures géo v3 — système de confiance** — chaque figure a un score confidence (high/medium/low), figures low filtrées, triangle "à prouver rectangle" → triangle neutre, cercle sans rayon numérique → pas de figure, angle à calculer → pas de figure (14 mars 2026)
+- [x] **Visualisation courbes post-réponse** — extractFunction détecte f(x)=ax+b et ax²+bx+c dans l'énoncé, renderFunctionGraph trace en SVG après réponse, intégré dans _previewHelp (14 mars 2026)
+- [x] **Types d'exercices enrichis** — support VF (2 gros boutons + justification post-réponse), fill (trou ___ mis en évidence indigo), grille options adaptative (2→2 cols, 3→vertical, 4→2×2) (14 mars 2026)
+- [x] **Signaler uniformisé** — bouton "📢 Une erreur dans cet exercice ?" ajouté dans renderArchiveSection (historique), présent sur tous les modes (14 mars 2026)
+- [x] **Audit messages & onboarding** — tous les messages vérifiés cohérents (prix, nb exos, ton, français), aucune incohérence détectée (14 mars 2026)
+- [x] **Documentation nettoyée** — CLAUDE.md épuré en point d'entrée, 7 rapports archivés, docs vivantes mises à jour (14 mars 2026)
 - [ ] Agent analyse lacunes quotidien automatique
 - [ ] Agent génération boost automatique
 - [ ] Agent rapport parents (email hebdo)
@@ -216,3 +224,15 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 - [x] Dashboard trié, modal complet, publish 1-clic, toast overwrite chapitre
 - [x] Rapport matin, compteur X/50, dark mode
 - [x] Emails dus J+3/J+5/J+7, onglet Suivi, indicateurs J0
+
+---
+
+## PHASE 2 — Après 20 clients payants
+
+| # | Feature | Description | Priorité |
+|---|---|---|---|
+| 1 | Doc vivante par élève/chapitre | Fiche notion + faiblesses identifiées, in-app, adaptée niveau/âge. Admin : bouton "Générer fiche chapitre" → JSON → injection. Frontend : modal/drawer in-app. | 🟡 |
+| 2 | Graphes de fonctions post-réponse avancés | Tracé automatique depuis l'énoncé — exponentielles, trigo, fonctions par morceaux | 🟡 |
+| 3 | Arbres de probabilités post-réponse | Détection auto "arbre" dans l'énoncé → arbre pondéré SVG après réponse | 🟡 |
+| 4 | Types d'exercices enrichis — rollout | VF, fill, compléter — rollout progressif sur les nouveaux exercices générés | 🟡 |
+| 5 | Audit géométrie contextuelle | Exercices trop courts/abstraits à reformuler (voir audit-geo-context) | 🔵 |

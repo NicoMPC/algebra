@@ -47,13 +47,6 @@ docs/architecture.md               → Technique (frontend + backend + flux)
 docs/database.md                   → Schéma Sheets (onglets + colonnes)
 docs/product.md                    → Produit (vision + parcours + business + workflow Nicolas)
 docs/roadmap.md                    → Priorités + état d'avancement
-docs/agents.md                     → Agents IA spécialisés (délégation CTO)
-docs/programme-français-verif.md   → Couverture Eduscol (référence)
-docs/test-simulation-2026-03.md    → QA simulation 40 élèves (résultats live)
-docs/rapport-1ere.md               → Rapport insertion 1ERE Spé Maths + compte Auguste
-docs/rapport-figures-auth-toast.md → Rapport fix figures géo + auth modal + toast mobile
-docs/audit-exos-2026-03-14.md      → Audit exercices collège (1408 exos, 1 bug corrigé)
-docs/audit-exos-1ere-2026-03-14.md → Audit exercices 1ERE (320 exos, 147 corrections)
 docs/archive/                      → Docs historiques (ne pas lire sauf besoin)
 ```
 
@@ -69,7 +62,7 @@ docs/archive/                      → Docs historiques (ne pas lire sauf besoin
 
 ### Patches chirurgicaux uniquement
 - Codebase **V23 GOLD MASTER** — ne jamais réécrire
-- `index.html` ~5900 lignes → **ne jamais diviser**
+- `index.html` ~7860 lignes → **ne jamais diviser**
 - Vanilla JS, pas de framework, pas de bundler, pas de dépendances sans validation Nicolas
 - Modifier **uniquement** la fonction concernée par la tâche
 

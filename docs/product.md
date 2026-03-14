@@ -154,4 +154,6 @@ Triple-clic sur le logo → Admin Panel (comptes `IsAdmin: true` uniquement).
 - **📚 Chapitres** : boost quotidien + chapitres par progression
 - **📊 Progression** : barres de progression + scores par chapitre
 - **🎓 Brevet** (3EME) : quiz brevet sans indices, 120 exos, résultats par chapitre
+- **🔁 Révision** : chapitres d'une autre année assignés par l'admin (col M `RevisionChapters`), badge 🔁 + toast élève
+- **Brouillon + Calculette** : mobile = bottom sheet 50vh avec onglets, desktop = panneau latéral 1/3 écran. Symboles adaptés au chapitre, mode quadrillé, calculette contextuelle (trig, fractions, etc.)
 - **Feedback** : bouton "📢 Signaler" après chaque exercice → onglet Insights
