@@ -323,6 +323,17 @@
       border:2px solid transparent; font-family:'Syne',sans-serif;
     }
 
+    /* ── CARD STACK (historique sessions) ────────────────── */
+    .chap-stack { position:relative; flex:1; }
+    .chap-stack-ghost { position:absolute; left:3px; right:3px; border-radius:1rem; pointer-events:none; }
+    .chap-stack-badge { position:absolute; top:-5px; right:-5px; background:#6366f1; color:#fff; border-radius:99px; font-size:.6rem; font-weight:900; padding:.1rem .4rem; z-index:3; letter-spacing:.02em; border:2px solid #fff; }
+    @keyframes lockPulse { 0%,100%{transform:scale(1);opacity:.9} 50%{transform:scale(1.08);opacity:1} }
+    .trend-arrow-up   { font-size:.65rem; font-weight:900; color:#16a34a; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px; padding:.1rem .35rem; margin-left:.3rem; }
+    .trend-arrow-flat { font-size:.65rem; font-weight:900; color:#d97706; background:#fffbeb; border:1px solid #fde68a; border-radius:6px; padding:.1rem .35rem; margin-left:.3rem; }
+    .trend-arrow-down { font-size:.65rem; font-weight:900; color:#dc2626; background:#fef2f2; border:1px solid #fecaca; border-radius:6px; padding:.1rem .35rem; margin-left:.3rem; }
+    .retro-exo-card   { background:#fff; border:1px solid #f1f5f9; border-radius:.85rem; padding:.75rem; margin-bottom:.5rem; }
+    .retro-pill       { display:inline-block; font-size:.6rem; font-weight:900; font-family:'Syne',sans-serif; padding:.15rem .5rem; border-radius:6px; border:1px solid; margin-right:.3rem; }
+
     /* ── BARRE DE PROGRESSION ────────────────────────────── */
     .pbar   { height:6px; background:var(--brd); border-radius:99px; overflow:hidden; width:100%; }
     .pfill  { height:100%; border-radius:99px; transition:width .5s cubic-bezier(.4,0,.2,1); }
@@ -1468,6 +1479,7 @@
         📚 Chapitres
       </button>
       <button id="nav-prog" onclick="setView('progress')"
+              style="display:none"
               class="flex-1 py-2 rounded-xl text-xs font-black syne transition-colors bg-slate-100 text-slate-500">
         📊 Progression
       </button>
@@ -1697,6 +1709,10 @@ let S = {
   brevQuizIdx:       0,       // question courante
   brevQuizResults:   [],      // [{categorie,q,resultat,ansGiven,correct}]
   brevResultData:    null,    // réponse save_brevet_result
+  chapSessions:      {},      // { cat → [{date, exos:[score...]}] } — sessions par chapitre
+  boostHistory:      [],      // [{date, exosDone, boost, scores}] — boosts passés
+  retroSess:         {},      // { cat → sessionIdx } — session sélectionnée en retro mode
+  retroBoost:        null,    // idx boost ouvert en retro
 };
 
 const LVL = {};
@@ -3051,8 +3067,7 @@ window.__trialProlonger = function() {
 window.__trialDismiss = function() {
   var ov = document.getElementById('trial-expired-overlay');
   if (ov) ov.remove();
-  // Redirige vers la progression (lecture seule acceptable)
-  setView('progress');
+  setView('chapters');
 };
 
 // ══════════════════════════════════════════════════════════════
@@ -3221,17 +3236,42 @@ function initApp(d, skipRender) {
   } catch (e) {}
 
   S.res = {}; S.xp = 0; S.sent = new Set();
+  S.chapSessions = {}; S.retroSess = {}; S.retroBoost = null;
   var _today = tod();
   if (d.history) {
+    var _sessBuf = {};
     d.history.forEach(function(r){
       if (injectedCats.has(r.categorie)) return;  // skip chapitres injectés
       var key = r.niveau + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1);
       S.res[key] = r.resultat;
       S.xp += parseInt(r.xp) || 0;
       S.sent.add(S.prof.code + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1));
-      // (règle 1 chapitre/jour désactivée)
+      // ── Grouper par (cat, date) pour retro mode ──
+      if (r.categorie !== 'CALIBRAGE') {
+        var day = String(r.date || '').substring(0, 10);
+        if (day) {
+          var _k = r.categorie;
+          if (!_sessBuf[_k]) _sessBuf[_k] = {};
+          if (!_sessBuf[_k][day]) _sessBuf[_k][day] = [];
+          _sessBuf[_k][day].push(r);
+        }
+      }
+    });
+    Object.keys(_sessBuf).forEach(function(cat) {
+      var days = Object.keys(_sessBuf[cat]).sort().reverse();
+      S.chapSessions[cat] = days.map(function(day) {
+        return { date: day, exos: _sessBuf[cat][day] };
+      });
     });
   }
+  // ── Boost history avec cross-ref scores source=BOOST ─────────
+  S.boostHistory = (d.boostHistory || []).map(function(b) {
+    var bDate = b.date;
+    var scores = (d.history || []).filter(function(r) {
+      return r.source === 'BOOST' && String(r.date || '').substring(0, 10) === bDate;
+    });
+    return { date: b.date, exosDone: b.exosDone, boost: b.boost, scores: scores };
+  });
 
   // Règle 1 chapitre/jour : DÉSACTIVÉE — tous les chapitres restent accessibles
   // L'animation informative est gérée dans chkComp() à la complétion
@@ -3478,6 +3518,7 @@ async function togCat(cat) {
   }
   Object.keys(S.exp).forEach(function(k){ S.exp[k] = false; });
   S.exp[cat] = !was;
+  if (!S.exp[cat]) { delete S.retroSess[cat]; S.retroBoost = null; }
   // Boost consommé : reprendre la révision depuis le Q1
   if (!was && cat === 'BOOST' && S.boostConsumed) S.qv['BOOST'] = 0;
   if (S.isNew[cat]) S.isNew[cat] = false;
@@ -4274,11 +4315,11 @@ async function launchRevision() {
       showT('Révision prête ! ' + (d.chapitres_revises||[]).join(', '), 3000, '🔁');
     } else {
       showT(d.message || 'Impossible de générer la révision', 3000, '❌');
-      setView('progress');
+      setView('chapters');
     }
   } catch(e) {
     showT('Erreur réseau', 3000, '❌');
-    setView('progress');
+    setView('chapters');
   }
 }
 
@@ -4573,43 +4614,180 @@ function renderProgress() {
 // ══════════════════════════════════════════════════════════════
 function renderArchiveSection(cat, exs) {
   var isBoost = cat === 'BOOST';
-  var msg = isBoost
-    ? 'Boost du jour : fait ✅ T\'es à jour. Reviens demain 🔥'
-    : '📅 Prochain contenu · Demain matin 🔥';
   var html = '<div class="mx-4 mb-4">';
-  html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-emerald-700 text-center mb-3">' + msg + '</div>';
-  var shown = 0;
-  exs.forEach(function(exo, idx) {
-    var r = res2(cat, idx);
-    var id = S.niv + '-' + r.rC + '-' + r.rI;
-    var result = S.res[id];
-    if (!result) return;
-    shown++;
-    var isHard = result === 'HARD';
-    html += '<div class="flex items-start gap-2 bg-white border border-slate-100 rounded-xl p-3 mb-2">';
-    html += '<span class="flex-shrink-0 text-sm mt-0.5">' + (isHard ? '❌' : '✅') + '</span>';
-    html += '<div class="flex-1 min-w-0">';
-    html += '<div class="text-xs font-semibold text-slate-700 leading-snug mc">' + fmtL(exo.q) + '</div>';
-    if (isHard && S.qans[id]) {
-      html += '<div class="text-[11px] text-rose-500 mt-0.5">→ répondu : <em>' + S.qans[id] + '</em></div>';
+
+  if (isBoost) {
+    // ── Boost du jour terminé ─────────────────────────────
+    html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-emerald-700 text-center mb-3">Boost du jour : fait ✅ T\'es à jour. Reviens demain 🔥</div>';
+    exs.forEach(function(exo, idx) {
+      var r = res2(cat, idx);
+      var id = S.niv + '-' + r.rC + '-' + r.rI;
+      var result = S.res[id];
+      if (!result) return;
+      html += _renderRetroExo(exo, { resultat: result, mauvaise_option: S.qans[id] || '', nb_indices: S.hints[id] || 0, formule_vue: !!S.ftch[id] }, cat, idx);
+    });
+    // ── Boosts passés ──────────────────────────────────────
+    if (S.boostHistory && S.boostHistory.length > 0) {
+      html += '<div class="mt-4 mb-2 flex items-center gap-2"><div class="flex-1 h-px bg-slate-100"></div><span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Mes boosts passés</span><div class="flex-1 h-px bg-slate-100"></div></div>';
+      S.boostHistory.forEach(function(b, bi) {
+        if (!b.boost || !b.boost.exos) return;
+        var done = b.exosDone || 0;
+        var total = b.boost.exos.length;
+        var pct = total > 0 ? Math.round(done / total * 100) : 0;
+        var isOpenB = S.retroBoost === bi;
+        html += '<div class="mb-2">';
+        html += '<button onclick="_toggleRetroBoost('+bi+')" class="w-full flex items-center gap-3 bg-white border border-slate-100 rounded-xl px-4 py-2.5 text-left active:bg-slate-50">';
+        html += '<span class="text-base flex-shrink-0">⚡</span>';
+        html += '<div class="flex-1 min-w-0"><div class="text-xs font-black text-slate-700">Boost du ' + _fmtRetroDate(b.date) + '</div>';
+        html += '<div class="text-[10px] text-slate-400 font-medium">' + done + '/' + total + ' réussis</div></div>';
+        var scoreColor = pct >= 70 ? '#16a34a' : pct >= 40 ? '#d97706' : '#dc2626';
+        html += '<span style="font-size:.7rem;font-weight:900;color:'+scoreColor+'">'+pct+'%</span>';
+        html += '<div class="text-slate-300 text-base ml-1">'+(isOpenB ? '▾' : '▸')+'</div>';
+        html += '</button>';
+        if (isOpenB) {
+          html += '<div class="mt-1 space-y-1 px-1">';
+          b.boost.exos.forEach(function(exo, ei) {
+            var matchScore = b.scores.find(function(s) { return parseInt(s.exercice_idx) - 1 === ei; });
+            html += _renderRetroExo(exo, matchScore || { resultat: '', mauvaise_option: '' }, null, ei);
+          });
+          html += '</div>';
+        }
+        html += '</div>';
+      });
     }
-    var meta = [];
-    if ((S.hints[id] || 0) > 0) meta.push('💡×' + S.hints[id]);
-    if (S.ftch[id]) meta.push('📐');
-    if (meta.length) html += '<div class="text-[10px] text-slate-400 mt-0.5">' + meta.join(' · ') + '</div>';
-    if (exo && (exo.steps && exo.steps.length || exo.f)) {
-      html += _previewHelp(exo);
+  } else {
+    // ── Chapitres : vue sessions ──────────────────────────
+    var sessions = S.chapSessions && S.chapSessions[cat];
+    if (sessions && sessions.length > 0) {
+      var MAX_PILLS = 4;
+      var selIdx = (S.retroSess[cat] !== undefined) ? S.retroSess[cat] : 0;
+      if (selIdx >= sessions.length) selIdx = 0;
+      // Pills de sessions
+      html += '<div class="flex gap-1.5 flex-wrap mb-3">';
+      var showN = Math.min(sessions.length, MAX_PILLS);
+      for (var pi = 0; pi < showN; pi++) {
+        var isActive = pi === selIdx;
+        html += '<button onclick="_selectRetroSess(\''+cat+'\','+pi+')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border '+(isActive ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-500 border-slate-200 active:bg-slate-50')+'">' + _fmtRetroDate(sessions[pi].date) + '</button>';
+      }
+      if (sessions.length > MAX_PILLS) {
+        html += '<button onclick="_openRetroModal(\''+cat+'\')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border border-slate-200 bg-slate-50 text-slate-400">+' + (sessions.length - MAX_PILLS) + ' sessions →</button>';
+      }
+      html += '</div>';
+      var sess = sessions[selIdx];
+      var easy = sess.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+      var tot = sess.exos.length;
+      html += '<div class="text-[10px] font-semibold text-slate-400 mb-2 text-center">📅 ' + _fmtRetroDateLong(sess.date) + ' · ' + tot + ' exos · ' + easy + '/' + tot + ' réussis</div>';
+      sess.exos.forEach(function(score) {
+        var exoIdx = parseInt(score.exercice_idx) - 1;
+        var exo = exs[exoIdx];
+        if (!exo) return;
+        html += _renderRetroExo(exo, score, cat, exoIdx);
+      });
+    } else {
+      // Fallback : vue plate (session courante)
+      html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-emerald-700 text-center mb-3">📅 Prochain contenu · Demain matin 🔥</div>';
+      var shown = 0;
+      exs.forEach(function(exo, idx) {
+        var r = res2(cat, idx);
+        var id = S.niv + '-' + r.rC + '-' + r.rI;
+        var result = S.res[id];
+        if (!result) return;
+        shown++;
+        html += _renderRetroExo(exo, { resultat: result, mauvaise_option: S.qans[id] || '', nb_indices: S.hints[id] || 0, formule_vue: !!S.ftch[id] }, cat, idx);
+      });
+      if (!shown) html += '<div class="text-center text-xs text-slate-400 py-2">Historique non disponible.</div>';
     }
-    html += '</div>';
-    // Bouton Signaler en historique
-    html += '<button onclick="openFeedback(\''+cat+'\','+idx+')" class="text-[10px] text-slate-300 hover:text-slate-500 transition-colors underline ml-auto mt-1 block">📢 Une erreur dans cet exercice ?</button>';
-    html += '</div>';
-  });
-  if (!shown) {
-    html += '<div class="text-center text-xs text-slate-400 py-2">Historique non disponible pour cette session.</div>';
   }
   html += '</div>';
   return html;
+}
+
+// ── Carte retro d'un exercice (lecture seule) ──────────────────
+function _renderRetroExo(exo, score, cat, idx) {
+  var result = (score && score.resultat) || '';
+  var isHard = result === 'HARD', isMed = result === 'MEDIUM', isEasy = result === 'EASY';
+  var icon = isEasy ? '✅' : isHard ? '❌' : isMed ? '🟡' : '⬜';
+  var borderColor = isEasy ? '#d1fae5' : isHard ? '#fee2e2' : isMed ? '#fef3c7' : '#f1f5f9';
+  var html = '<div class="retro-exo-card" style="border-color:'+borderColor+'">';
+  html += '<div class="flex items-start gap-2">';
+  html += '<span class="flex-shrink-0 text-sm mt-0.5">'+icon+'</span>';
+  html += '<div class="flex-1 min-w-0">';
+  html += '<div class="text-xs font-semibold text-slate-700 leading-snug mc">' + fmtL(exo.q) + '</div>';
+  if (exo.a) html += '<div class="text-[11px] font-bold text-emerald-600 mt-1 mc">✓ ' + fmtL(exo.a) + '</div>';
+  if ((isHard || isMed) && score.mauvaise_option) {
+    html += '<div class="text-[11px] text-rose-500 mt-0.5 mc">→ répondu : <em>' + fmtL(score.mauvaise_option) + '</em></div>';
+  }
+  var meta = [];
+  if ((score.nb_indices || 0) > 0) meta.push('💡×' + score.nb_indices);
+  if (score.formule_vue) meta.push('📐 formule');
+  if (meta.length) html += '<div class="text-[10px] text-slate-400 mt-1">' + meta.join(' · ') + '</div>';
+  if (exo.steps && exo.steps.length || exo.f) html += _previewHelp(exo);
+  html += '</div></div>';
+  if (cat !== null && idx !== undefined) {
+    html += '<div class="text-right mt-1"><button onclick="openFeedback(\''+cat+'\','+idx+')" class="text-[10px] text-slate-300 underline">📢 Signaler une erreur</button></div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+// ── Helpers date retro ─────────────────────────────────────────
+function _fmtRetroDate(dateStr) {
+  if (!dateStr) return '?';
+  var d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr.substring(5);
+  var months = ['jan','fév','mar','avr','mai','juin','juil','aoû','sep','oct','nov','déc'];
+  return d.getDate() + ' ' + months[d.getMonth()];
+}
+function _fmtRetroDateLong(dateStr) {
+  if (!dateStr) return '?';
+  var d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  var months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+// ── Sélectionner une session retro ────────────────────────────
+function _selectRetroSess(cat, idx) {
+  if (!S.retroSess) S.retroSess = {};
+  S.retroSess[cat] = idx;
+  render();
+}
+function _toggleRetroBoost(idx) {
+  S.retroBoost = (S.retroBoost === idx) ? null : idx;
+  render();
+}
+
+// ── Modal "voir toutes les sessions" ──────────────────────────
+function _openRetroModal(cat) {
+  var sessions = S.chapSessions && S.chapSessions[cat];
+  if (!sessions) return;
+  var catName = (LVL[S.niv] && LVL[S.niv].names[cat]) || cat.replace(/_/g,' ');
+  var html = '<div id="retro-modal" onclick="if(event.target===this)_closeRetroModal()" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center">';
+  html += '<div class="bg-white rounded-t-3xl w-full max-w-md" style="max-height:75vh;overflow-y:auto;padding:1.5rem 1.25rem 2rem">';
+  html += '<div class="flex items-center justify-between mb-4">';
+  html += '<div class="syne font-black text-slate-900 text-sm">📚 ' + catName + '</div>';
+  html += '<button onclick="_closeRetroModal()" class="text-slate-400 text-xl leading-none w-8 h-8 flex items-center justify-center">✕</button>';
+  html += '</div>';
+  sessions.forEach(function(sess, i) {
+    var easy = sess.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+    var total = sess.exos.length;
+    var pct = total > 0 ? Math.round(easy / total * 100) : 0;
+    var bar = pct >= 70 ? '#16a34a' : pct >= 40 ? '#d97706' : '#dc2626';
+    html += '<button onclick="_closeRetroModal();_selectRetroSess(\''+cat+'\','+i+')" style="display:flex;align-items:center;gap:.75rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:1rem;padding:.75rem 1rem;margin-bottom:.5rem;width:100%;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent">';
+    html += '<div style="width:2.5rem;height:2.5rem;background:#eef2ff;border-radius:.75rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0">📅</div>';
+    html += '<div style="flex:1;min-width:0"><div style="font-size:.75rem;font-weight:900;color:#0f172a;font-family:Syne,sans-serif">Session du ' + _fmtRetroDateLong(sess.date) + '</div>';
+    html += '<div style="font-size:.65rem;font-weight:600;color:#94a3b8">' + total + ' exercices · ' + easy + ' réussis</div></div>';
+    html += '<div style="font-size:.85rem;font-weight:900;color:'+bar+'">' + pct + '%</div>';
+    html += '</button>';
+  });
+  html += '</div></div>';
+  var old = document.getElementById('retro-modal');
+  if (old) old.remove();
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+function _closeRetroModal() {
+  var el = document.getElementById('retro-modal');
+  if (el) el.remove();
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -4923,10 +5101,10 @@ function render() {
         '<div class="text-white/50 text-2xl font-light">›</div></div>';
     } else {
       html += '<div class="rounded-2xl p-5 flex items-center gap-4 mb-4" style="background:linear-gradient(135deg,#1e1b4b,#312e81)">' +
-        '<div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/10">📅</div>' +
+        '<div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/10" style="animation:lockPulse 2.5s ease-in-out infinite">🔒</div>' +
         '<div class="flex-1 min-w-0">' +
-          '<div class="syne text-sm font-black text-white/80 mb-0.5">📅 Prochain contenu · Demain matin 🔥</div>' +
-          '<p class="text-indigo-300/70 text-xs font-medium">Ton prof prépare tes prochains exercices ciblés</p>' +
+          '<div class="syne text-sm font-black text-white/80 mb-0.5">Prochain contenu</div>' +
+          '<p class="next-content-timer text-indigo-300 text-sm font-bold">dans …</p>' +
         '</div></div>';
     }
   }
@@ -4964,10 +5142,23 @@ function render() {
     if (isDone) {
       var hasNewChap = Object.keys(S.isNew).some(function(k){ return S.isNew[k]; });
       var showProchain = !isBoost && !hasNewChap;
+      var _sessCount = isBoost ? (S.boostHistory ? S.boostHistory.length + 1 : 1) : ((S.chapSessions && S.chapSessions[cat]) ? S.chapSessions[cat].length : 0);
       // ── Flex row : archivée (gauche) + prochain (droite) ──
       html += '<div class="flex gap-2 mb-3 afu">';
-      // Carte gauche — archivée compacte
-      html += '<div data-cat="'+cat+'" onclick="togCat(\''+cat+'\')" class="flex-1 rounded-2xl border border-emerald-200 flex flex-col items-center justify-center gap-1.5 py-3 px-2 cursor-pointer select-none text-center" style="background:#f0fdf4">';
+      // Carte gauche — archivée compacte avec stack si sessions multiples
+      var _numGhosts = !isBoost && _sessCount >= 3 ? 2 : (!isBoost && _sessCount === 2 ? 1 : 0);
+      html += '<div class="chap-stack" style="flex:1">';
+      // Cartes fantômes derrière (seulement pour chapitres non-boost)
+      if (_numGhosts >= 2) {
+        html += '<div class="chap-stack-ghost" style="bottom:-9px;left:7px;right:7px;height:calc(100% + 2px);background:#a7f3d0;border:1px solid #6ee7b7;z-index:0"></div>';
+      }
+      if (_numGhosts >= 1) {
+        html += '<div class="chap-stack-ghost" style="bottom:-5px;left:4px;right:4px;height:calc(100% + 2px);background:#d1fae5;border:1px solid #a7f3d0;z-index:1"></div>';
+      }
+      html += '<div data-cat="'+cat+'" onclick="togCat(\''+cat+'\')" class="rounded-2xl border border-emerald-200 flex flex-col items-center justify-center gap-1.5 py-3 px-2 cursor-pointer select-none text-center" style="background:#f0fdf4;position:relative;z-index:2">';
+      if (!isBoost && _sessCount > 1) {
+        html += '<span class="chap-stack-badge">×'+_sessCount+'</span>';
+      }
       html += '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-base">'+(isBoost?'⚡':(LVL[S.niv].icons[cat]||'📘'))+'</div>';
       html += '<span class="syne font-black text-xs text-slate-700 leading-tight px-1" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+(isBoost?'Mon Boost ✓':(LVL[S.niv].names[cat]||cat))+'</span>';
       if (isBoost) {
@@ -4982,29 +5173,28 @@ function render() {
           html += '<button onclick="_simulateNextDay()" class="mt-0.5 text-[8px] font-bold text-indigo-400 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full active:opacity-70">🔮 Simuler demain</button>';
         }
       } else {
-        html += '<span class="text-[9px] font-black text-emerald-700 bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-full">✅ Terminé</span>';
+        var _trendHtml = _trendArrow(cat);
+        html += '<div class="flex items-center gap-1"><span class="text-[9px] font-black text-emerald-700 bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-full">✅ Terminé</span>'+_trendHtml+'</div>';
       }
-      html += '<span class="text-[10px] text-emerald-500/80 font-medium">'+(isOpen ? (isBoost ? '▾ fermer' : '▾ historique') : (isBoost ? '▸ revoir mes exercices' : '▸ voir historique'))+'</span>';
+      var _histLabel = _sessCount > 1 ? (_sessCount + ' passages') : 'historique';
+      html += '<span class="text-[10px] text-emerald-500/80 font-medium">'+(isOpen ? '▾ fermer' : ('▸ ' + (isBoost ? 'revoir mes exos' : _histLabel)))+'</span>';
       html += '</div>';
-      // Carte droite — prochain (si applicable)
+      html += '</div>'; // .chap-stack
+      // Carte droite — prochain avec timer
       if (showProchain) {
         html += '<div class="flex-1 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-1.5 py-3 px-2 text-center" style="background:#fafafa">';
-        html += '<div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-base">📅</div>';
+        html += '<div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-xl relative">';
+        html += '<span style="animation:lockPulse 2.5s ease-in-out infinite">🔒</span>';
+        html += '</div>';
         html += '<span class="syne font-black text-xs text-slate-500 leading-tight">Prochain chapitre</span>';
-        html += '<span class="text-[10px] text-slate-400 font-medium leading-tight">📅 Prochain contenu</span>';
-        html += '<span class="text-[10px] font-bold text-indigo-400">Demain matin 🔥</span>';
+        html += '<span class="text-[10px] text-slate-400 font-medium leading-tight">Disponible</span>';
+        html += '<span class="next-content-timer text-[10px] font-bold text-indigo-400">dans …</span>';
         html += '</div>';
       }
       html += '</div>';
       // Section historique pleine largeur en dessous
       if (isOpen) {
-        if (isBoost) {
-          // Mode révision : navigation Q1-Q5 comme en mode chapitre (read-only)
-          var bqv = S.qv['BOOST'] || 0;
-          html += rSection('BOOST', exs[bqv], bqv, tot, true);
-        } else {
-          html += renderArchiveSection(cat, exs);
-        }
+        html += renderArchiveSection(cat, exs);
       }
       return;
     }
@@ -5037,7 +5227,7 @@ function render() {
     if (S.remReq[cat]) html += '<span class="text-[9px] syne font-black bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md">🔄 Demain</span>';
     if (S.revisionCats && S.revisionCats.indexOf(cat) !== -1) html += '<span class="text-[9px] syne font-black bg-violet-100 text-violet-700 border border-violet-200 px-1.5 py-0.5 rounded-md">🔁 Révision</span>';
     html += '</div><div class="flex items-center gap-2"><div class="pbar flex-1" style="max-width:100px"><div class="pfill pfp" style="width:'+pct2+'%"></div></div>';
-    html += '<span class="text-[11px] font-bold '+(isBoost?'text-white/60':'text-slate-400')+'">'+done+'/'+tot+'</span></div></div>';
+    html += '<span class="text-[11px] font-bold '+(isBoost?'text-white/60':'text-slate-400')+'">'+done+'/'+tot+'</span>'+(isBoost?'':_trendArrow(cat))+'</div></div>';
     html += '<div class="'+(isBoost?'text-white/40':'text-slate-300')+' text-xl font-light select-none" style="transition:transform .2s;transform:rotate('+(isOpen?90:0)+'deg)">›</div></div>';
 
     if (isOpen) {
@@ -5074,6 +5264,7 @@ function render() {
   c.innerHTML = html || '<div class="text-center text-slate-400 font-semibold py-12 text-sm">Aucun exercice disponible pour ce niveau.</div>';
   rMath();
   _startBoostCountdown();
+  _startNextContentTimer();
 
   // Scroll vers la pill active
   setTimeout(function(){
@@ -5083,6 +5274,56 @@ function render() {
 }
 
 // ── Génère le HTML hints+formule pour le mode révision boost ──
+// ── Tendance chapitre (flèche) ─────────────────────────────────
+function _chapTrend(cat) {
+  var sessions = S.chapSessions && S.chapSessions[cat];
+  if (!sessions || sessions.length < 2) return null;
+  var rate = function(s) {
+    var easy = s.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+    return s.exos.length > 0 ? easy / s.exos.length : 0;
+  };
+  var recent = rate(sessions[0]);
+  var olderSum = 0;
+  for (var i = 1; i < sessions.length; i++) olderSum += rate(sessions[i]);
+  var olderAvg = olderSum / (sessions.length - 1);
+  if (recent > olderAvg + 0.15) return 'up';
+  if (recent < olderAvg - 0.15) return 'down';
+  return 'flat';
+}
+function _trendArrow(cat) {
+  var t = _chapTrend(cat);
+  if (!t) return '';
+  var cfg = {
+    up:   ['↑','trend-arrow-up'],
+    flat: ['→','trend-arrow-flat'],
+    down: ['↓','trend-arrow-down']
+  }[t];
+  return '<span class="'+cfg[1]+'">'+cfg[0]+'</span>';
+}
+
+// ── Countdown "prochain contenu" (9h demain) ───────────────────
+function _startNextContentTimer() {
+  function _updateTimer() {
+    var els = document.querySelectorAll('.next-content-timer');
+    if (!els.length) return false;
+    var now = new Date();
+    var next9 = new Date(now);
+    next9.setDate(next9.getDate() + 1);
+    next9.setHours(9, 0, 0, 0);
+    var diff = Math.max(0, Math.floor((next9 - now) / 1000));
+    var h = Math.floor(diff / 3600);
+    var m = Math.floor((diff % 3600) / 60);
+    var txt = h > 0 ? 'dans ' + h + 'h' + (m > 0 ? m + 'min' : '') : (m > 0 ? 'dans ' + m + 'min' : 'bientôt !');
+    els.forEach(function(el) { el.textContent = txt; });
+    return true;
+  }
+  if (!_updateTimer()) return;
+  if (window._nextContentTimer) clearInterval(window._nextContentTimer);
+  window._nextContentTimer = setInterval(function() {
+    if (!_updateTimer()) clearInterval(window._nextContentTimer);
+  }, 60000);
+}
+
 function _previewHelp(exo) {
   var html = '';
   (exo.steps || []).forEach(function(s, i) {

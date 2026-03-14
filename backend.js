@@ -376,12 +376,16 @@ function login(p) {
     .map(function(r) {
       var res = String(r['Résultat'] || '');
       return {
-        niveau:       String(r['Niveau']   || ''),
-        categorie:    String(r['Chapitre'] || ''),
-        exercice_idx: r['NumExo'],
-        resultat:     res,
-        xp:           res === 'EASY' ? 100 : res === 'MEDIUM' ? 50 : 10,
-        date:         String(r['Date']     || '')
+        niveau:          String(r['Niveau']          || ''),
+        categorie:       String(r['Chapitre']        || ''),
+        exercice_idx:    r['NumExo'],
+        resultat:        res,
+        xp:              res === 'EASY' ? 100 : res === 'MEDIUM' ? 50 : 10,
+        date:            String(r['Date']            || ''),
+        mauvaise_option: String(r['MauvaiseOption']  || ''),
+        nb_indices:      parseInt(r['NbIndices'])     || 0,
+        formule_vue:     r['FormuleVue'] === 1 || r['FormuleVue'] === '1' || r['FormuleVue'] === true,
+        source:          String(r['Source']          || '')
       };
     });
 
@@ -498,6 +502,21 @@ function login(p) {
     } catch(e) { Logger.log('RevisionChapters parse error: ' + e); }
   }
 
+  // ── Historique des boosts passés (hors aujourd'hui, 10 derniers) ──────────
+  var boostHistory = [];
+  try {
+    var todayStr = tod();
+    boostHistory = getRows(SH.BOOSTS)
+      .filter(function(r) { return String(r['Code']) === code && String(r['Date'] || '') !== todayStr; })
+      .sort(function(a, b) { return String(b['Date'] || '').localeCompare(String(a['Date'] || '')); })
+      .slice(0, 10)
+      .map(function(r) {
+        var boostData = null;
+        try { boostData = JSON.parse(String(r['BoostJSON'] || '{}')); } catch(e2) {}
+        return { date: String(r['Date'] || ''), exosDone: parseInt(r['ExosDone']) || 0, boost: boostData };
+      });
+  } catch(e) { Logger.log('boostHistory error: ' + e); }
+
   return {
     status:             'success',
     profile:            { code: code, name: name, level: level, isAdmin: isAdmin, premium: premium, trialStart: trialStart },
@@ -508,6 +527,7 @@ function login(p) {
     boostExosDone:      boostExosDone,
     isFirstDay:         history.length === 0 && !boostExistsInDB,
     history:            history,
+    boostHistory:       boostHistory,
     dynamicChapters:    [],
     nextChapter:        nextChapter,
     nextBoost:          nextBoost,
