@@ -118,9 +118,9 @@
     .pulse-gentle { animation: pulseGentle 3s ease-in-out infinite; }
     @keyframes pulseHint {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(1.05); }
+      50% { opacity: 0.85; transform: scale(1.02); }
     }
-    .pulse-hint { animation: pulseHint 2.5s ease-in-out infinite; }
+    .pulse-hint { animation: pulseHint 4s ease-in-out infinite; }
     @keyframes pulseNewChap {
       0%,100% { box-shadow: 0 0 0 0 rgba(99,102,241,0),  0 1px 4px rgba(0,0,0,.07); }
       50%      { box-shadow: 0 0 0 6px rgba(99,102,241,.11), 0 1px 4px rgba(0,0,0,.07); }
@@ -684,15 +684,14 @@
     }
     @keyframes pillBounce {
       0%,100%{ transform:translateY(0); }
-      30%    { transform:translateY(-5px); }
-      60%    { transform:translateY(-2px); }
+      50%    { transform:translateY(-3px); }
     }
     .pill-nudge {
-      animation: pillBounce .6s ease infinite;
-      box-shadow: 0 0 0 4px rgba(245,158,11,.25);
+      animation: pillBounce 2s ease-in-out infinite;
+      box-shadow: 0 0 0 3px rgba(245,158,11,.15);
     }
     .pill-nudge.pill-formula {
-      box-shadow: 0 0 0 4px rgba(99,102,241,.2);
+      box-shadow: 0 0 0 3px rgba(99,102,241,.12);
     }
 
     /* ── ZONE AIDE INLINE (sous l'énoncé) ───────────────── */
@@ -4987,8 +4986,8 @@ function rSection(cat, data, idx, total, catDone) {
     '<div class="mc text-center font-bold text-base leading-relaxed w-full min-w-0">'+fmtL(data.q)+'</div></div>' +
     opts + acts +
     '<div class="flex gap-2 mt-4">' +
-      '<button id="pill-hint-'+id+'" onclick="showHintInline(\''+cat+'\','+idx+','+maxH+')" class="help-pill pill-hint'+(!scored && shown < maxH ? ' pulse-hint' : '')+'">' +
-        (shown >= maxH && maxH > 0 && !scored ? '✓ Indices vus' : '💡 Indice') +
+      '<button id="pill-hint-'+id+'" onclick="showHintInline(\''+cat+'\','+idx+','+maxH+')" class="help-pill pill-hint'+(shown >= maxH ? ' opacity-40 pointer-events-none' : (!scored ? ' pulse-hint' : ''))+'">' +
+        (shown >= maxH ? '✓ Indices vus' : '💡 Indice') +
       '</button>' +
       '<button id="pill-form-'+id+'" onclick="revFInline(\''+cat+'\','+idx+')" class="help-pill pill-formula'+(!fR ? ' pulse-hint' : ' opacity-40 pointer-events-none')+'">' +
         (fR ? '✓ Formule vue' : '👁 Formule') +
@@ -6063,7 +6062,7 @@ window.showHintInline = function(cat, idx, max) {
   // Si tous les indices vus → stopper pulsation + changer label
   if (S.hints[id] >= max) {
     var ph = document.getElementById('pill-hint-'+id);
-    if (ph) { ph.classList.remove('pulse-hint'); ph.innerHTML = '✓ Indices vus'; }
+    if (ph) { ph.classList.remove('pulse-hint'); ph.classList.add('opacity-40','pointer-events-none'); ph.innerHTML = '✓ Indices vus'; }
   }
 };
 
@@ -6097,7 +6096,7 @@ function startNudge(id) {
   _nudgeTimers[id] = setTimeout(function() {
     var ph = document.getElementById('pill-hint-'+id);
     var pf = document.getElementById('pill-form-'+id);
-    if (ph) ph.classList.add('pill-nudge');
+    if (ph && !ph.classList.contains('pointer-events-none')) ph.classList.add('pill-nudge');
     if (pf && !pf.classList.contains('pointer-events-none')) pf.classList.add('pill-nudge');
     showT('Psst — t\'as droit aux indices 💡 Hésite pas !', 3500, '💡');
   }, 20000);
