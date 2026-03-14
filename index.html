@@ -8,6 +8,15 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Matheux — Révisions maths collège personnalisées par IA</title>
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#4338ca">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Matheux">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
   <meta name="description" content="Matheux détecte les difficultés en maths collège (6e, 5e, 4e, 3e) et génère des exercices personnalisés adaptés à votre enfant. 7 jours offerts, sans carte bancaire."/>
   <link rel="canonical" href="https://matheux.fr/"/>
   <meta property="og:title"       content="Matheux — Révisions maths collège personnalisées par IA"/>
@@ -1037,6 +1046,22 @@
         Démarrer le diagnostic gratuit →
       </button>
       <p class="text-white/40 text-xs mt-3" style="animation:s1 .6s .35s ease both">7 jours offerts · Sans carte bancaire · 44 chapitres programme officiel</p>
+      <div id="pwa-install-banner" class="hidden mt-3 flex items-center gap-3
+        bg-white/10 border border-white/20 rounded-2xl px-4 py-3 max-w-sm mx-auto"
+        style="animation:s1 .6s .5s ease both">
+        <span class="text-2xl flex-shrink-0">📲</span>
+        <div class="flex-1 min-w-0">
+          <div class="text-white font-bold text-sm">Installer l'app</div>
+          <div class="text-white/60 text-xs">Accès direct depuis ton écran d'accueil</div>
+        </div>
+        <button onclick="_installPWA()"
+          class="bg-white text-indigo-700 font-black text-xs px-3 py-1.5 rounded-xl
+          flex-shrink-0 active:scale-95 transition-transform">
+          Installer
+        </button>
+        <button onclick="document.getElementById('pwa-install-banner').classList.add('hidden')"
+          class="text-white/40 text-lg leading-none flex-shrink-0 p-1">✕</button>
+      </div>
       <div class="sp-row mt-4" style="animation:s1 .6s .45s ease both">
         <div class="sp-avatars">
           <div class="sp-av" style="background:linear-gradient(135deg,#4338ca,#6366f1)">S</div>
@@ -8743,6 +8768,64 @@ window._cookieConsent = function(choice) {
     </div>
   </div>
 </div>
+
+<!-- PWA — Service Worker -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then(function(reg) {
+        reg.addEventListener('updatefound', function() {
+          var newWorker = reg.installing;
+          newWorker.addEventListener('statechange', function() {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              if (typeof showT === 'function') {
+                showT('Mise à jour disponible — rechargez la page 🔄', 6000, '🔄');
+              }
+            }
+          });
+        });
+      })
+      .catch(function(err) { console.log('SW non enregistré:', err); });
+  });
+}
+
+// Gestion de l'invite d'installation PWA
+var _pwaPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  _pwaPrompt = e;
+  var banner = document.getElementById('pwa-install-banner');
+  if (banner && window.matchMedia('(display-mode: browser)').matches) {
+    banner.classList.remove('hidden');
+  }
+});
+
+window._installPWA = function() {
+  if (!_pwaPrompt) return;
+  _pwaPrompt.prompt();
+  _pwaPrompt.userChoice.then(function(result) {
+    if (result.outcome === 'accepted') {
+      document.getElementById('pwa-install-banner').classList.add('hidden');
+      if (typeof showT === 'function') showT('Matheux ajouté à ton écran d\'accueil ! 🎉', 4000, '🎉');
+    }
+    _pwaPrompt = null;
+  });
+};
+
+// iOS install hint — affiché une seule fois
+var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+var isStandalone = window.navigator.standalone === true;
+var iosHintShown = localStorage.getItem('mx_ios_hint');
+if (isIOS && !isStandalone && !iosHintShown) {
+  setTimeout(function() {
+    if (typeof showT === 'function') {
+      showT('Pour installer l\'app : appuie sur ⎙ puis "Sur l\'écran d\'accueil"', 6000, '📲');
+      localStorage.setItem('mx_ios_hint', '1');
+    }
+  }, 8000);
+}
+</script>
 
 </body>
 </html>
