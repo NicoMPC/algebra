@@ -38,6 +38,7 @@
 | 3 | **Activer trigger `triggerDailyMarketing`** → Apps Script UI → Déclencheurs → `triggerDailyMarketing` → Chaque jour → 9h-10h | Google Apps Script UI | 🔴 |
 | 4 | **Webhook Stripe → colonne `Premium`** dans Users | Stripe dashboard → Webhooks | 🟡 après Stripe PROD |
 | 5 | Vrais témoignages élèves/parents sur landing | À collecter après premiers clients | 🔵 |
+| 6 | **Design overhaul landing** — hero glow, social proof fold, CTA shimmer, glass stats, step numbers watermark, avatars+Vérifié, 0,66€/jour, guarantee badge, sticky mobile CTA | ✅ Fait @68 (14 mars 2026) | 🟢 |
 
 ## Priorités code — prochaines sessions
 
