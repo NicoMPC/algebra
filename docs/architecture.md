@@ -24,7 +24,7 @@ NAVIGATEUR (index.html)              GOOGLE APPS SCRIPT (backend.js)
 
 | Composant | Technologie | Fichier | Taille |
 |---|---|---|---|
-| Frontend | HTML + CSS vars + Tailwind CDN + JS vanilla | `index.html` | ~5900 lignes |
+| Frontend | HTML + CSS vars + Tailwind purgé v4 + JS vanilla | `index.html` | ~5900 lignes |
 | Backend | Google Apps Script (V8) | `backend.js` | ~4200 lignes |
 | Base de données | Google Sheets | — | 13 onglets actifs |
 | Hébergement frontend | GitHub Pages | `matheux.fr` | Auto-deploy sur push |
@@ -84,8 +84,8 @@ const S = {
 
 ### Librairies externes (CDN)
 
-- **Tailwind CSS** : utilities responsive
-- **MathJax v3** : rendu LaTeX (fallback 2.5s si offline)
+- **Tailwind CSS v4** : build purgé local (`dist/tailwind.css`, 41Ko) — rebuild : `npx @tailwindcss/cli -i ./src/input.css -o ./dist/tailwind.css --minify`
+- **KaTeX v0.16.9** : rendu LaTeX (defer, ~280Ko)
 - **Syne** + **DM Sans** : Google Fonts
 
 ### Gamification
@@ -281,7 +281,7 @@ Scripts archivés dans `scripts_archive/`.
 - Swipe gauche → exercice suivant
 - Admin panel (triple-clic logo), dark mode admin, mode nuit landing (toggle lune dans la nav, `body.land-night`, persisté localStorage)
 - Gamification : XP, streak, mastery ring SVG
-- MathJax v3 avec fallback, chrono par exercice
+- KaTeX v0.16.9 (rendu maths), chrono par exercice
 - Nudge pills après 20s, tableau blanc maths
 - Vue Progression refonte : header (maîtrisés/streak/score moy.), barre colorée progressive (rouge→orange→bleu→vert), message contextuel, tri en cours/maîtrisés/non commencés, bannière prérequis fragiles
 - Règle 1 chapitre/jour : **DÉSACTIVÉE** — tous les chapitres accessibles en permanence. Animation informative "prochain chapitre en préparation" après complétion (chapitre + boost), ne bloque rien

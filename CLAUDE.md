@@ -56,6 +56,9 @@ clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sx
 
 # Frontend
 git add index.html && git commit -m "feat: ..." && git push origin main
+
+# Rebuild Tailwind CSS (après modif classes dans index.html)
+npx @tailwindcss/cli -i ./src/input.css -o ./dist/tailwind.css --minify
 ```
 
 ---
