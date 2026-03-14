@@ -35,7 +35,8 @@ CHAPTERS = [
 # ════════════════════════════════════════════════════════════
 
 def _exo(lvl, q, a, opts, f, steps):
-    """Construit un dict exercice."""
+    """Construit un dict exercice. Valide que a ∈ options."""
+    assert a in opts, f"BUG: a={a!r} pas dans options={opts!r} (q={q[:60]})"
     return {"lvl": lvl, "q": q, "a": a, "options": opts, "f": f, "steps": steps}
 
 def _gen_second_degre(variant=0):
@@ -243,14 +244,14 @@ def _gen_suites(variant=0):
             u0, r = 100+V*10, -(5+V)
             n = -(u0 // r)
             exos.append(_exo(2, f"$u_n = {u0} {r:+d}n$. À partir de quel rang $u_n < 0$ ?",
-                f"$n > {-u0/r:.0f}$, soit $n \\geq {int(-u0/r)+1}$",
+                f"$n \\geq {int(-u0/r)+1}$",
                 [f"$n \\geq {int(-u0/r)+1}$", f"$n \\geq {int(-u0/r)}$", f"$n \\geq {u0}$"],
                 "Résoudre $u_n < 0$.",
                 ["$" + str(u0) + str(r) + "n < 0$.", f"$n > {-u0/r:.1f}$.", "Premier entier au-dessus."]))
         elif i == 2:
             q = V + 2
             exos.append(_exo(2, f"$v_0 = 1$, $q = {q}$. Calculer $S = \\sum_{{k=0}}^{{6}} v_k$.",
-                f"$S = \\frac{{1 - {q}^7}}{{1 - {q}}} = \\frac{{{1-q**7}}}{{{1-q}}}$",
+                f"$S = \\frac{{{1-q**7}}}{{{1-q}}}$",
                 [f"$S = \\frac{{{1-q**7}}}{{{1-q}}}$", f"$S = 7 \\times {q}$", f"$S = {q}^7$"],
                 "$S = v_0 \\frac{1-q^{n+1}}{1-q}$",
                 ["7 termes ($k=0$ à $6$).", "Appliquer la formule de somme géométrique.", "Calculer."]))
@@ -262,8 +263,8 @@ def _gen_suites(variant=0):
                 ["$u_5 - u_2 = 3r$.", f"$3r = {16+V} - {7+V} = 9$, $r = 3$.", f"$u_0 = u_2 - 2r = {7+V} - 6 = {1+V}$."]))
         elif i < 6:
             exos.append(_exo(2, f"$u_n = n^2 - {4+V}n$. Étudier le sens de variation.",
-                f"Décroissante puis croissante (min en $n = {(4+V)//2}$)",
-                [f"Décroissante puis croissante", "Toujours croissante", "Toujours décroissante"],
+                "Décroissante puis croissante",
+                ["Décroissante puis croissante", "Toujours croissante", "Toujours décroissante"],
                 "Étudier le signe de $u_{n+1} - u_n$.",
                 ["$u_{n+1} - u_n = 2n + 1 - " + str(4+V) + "$.", f"$= 0$ quand $n = {(3+V)/2:.1f}$.", "Signe change : décroissante puis croissante."]))
         elif i < 8:
@@ -274,7 +275,7 @@ def _gen_suites(variant=0):
                 ["Taux : $t = " + str((2+V)/100) + "$.", "$C_n = C_0 \\times (1+t)^n$.", "Calculer $C_5$."]))
         else:
             exos.append(_exo(2, f"$u_0 = {V+2}$, $u_{{n+1}} = \\sqrt{{u_n + {V+6}}}$. Conjecturer la limite.",
-                f"$\\ell = \\frac{{1+\\sqrt{{1+4 \\times {V+6}}}}}{{2}}$",
+                f"$\\ell = \\frac{{1+\\sqrt{{{1+4*(V+6)}}}}}{{2}}$",
                 [f"$\\ell = \\frac{{1+\\sqrt{{{1+4*(V+6)}}}}}{{2}}$", "$\\ell = " + str(V+6) + "$", "$+\\infty$"],
                 "Si $\\ell$ existe : $\\ell = \\sqrt{\\ell + c}$, donc $\\ell^2 - \\ell - c = 0$.",
                 ["Supposer $u_n \\to \\ell$.", "$\\ell^2 = \\ell + " + str(V+6) + "$.", "Résoudre l'équation du 2nd degré."]))
@@ -299,7 +300,7 @@ def _gen_derivation(variant=0):
     ]
     for func, deriv, good, bad1, bad2, form in derivees:
         exos.append(_exo(1, f"Dériver {func}.",
-            deriv, [good, bad1, bad2], form,
+            good, [good, bad1, bad2], form,
             ["Identifier le type de fonction.", "Appliquer la formule de dérivation.", "Simplifier."]))
 
     # lvl 2
@@ -310,22 +311,22 @@ def _gen_derivation(variant=0):
          "$y = f'(a)(x-a)+f(a)$",
          [f"$f'(x)=2x$, $f'({1+V})={2*(1+V)}$.", f"$f({1+V})={(1+V)**2}$.", "Appliquer $y=f'(a)(x-a)+f(a)$."]),
         (f"$f(x) = x^3 - {3+V}x$. Trouver les extrema.",
-         f"$f'(x) = 3x^2 - {3+V} = 0$",
+         f"$x = \\pm\\sqrt{{\\frac{{{3+V}}}{{3}}}}$",
          [f"$x = \\pm\\sqrt{{\\frac{{{3+V}}}{{3}}}}$", f"$x = \\pm{3+V}$", f"$x = 0$"],
          "$f'(x) = 0$ aux extrema.",
          ["Dériver.", f"$3x^2 = {3+V}$.", "Résoudre et vérifier le signe de $f'$."]),
         (f"$f(x) = xe^x$. Calculer $f'(x)$.",
-         "$f'(x) = (1+x)e^x$",
+         "$(1+x)e^x$",
          ["$(1+x)e^x$", "$xe^x + 1$", "$e^x$"],
          "$(uv)' = u'v + uv'$",
          ["$u=x$, $v=e^x$.", "$u'=1$, $v'=e^x$.", "$f' = e^x + xe^x = (1+x)e^x$."]),
         (f"$f(x) = \\frac{{x+{V+1}}}{{x-1}}$. Calculer $f'(x)$.",
-         f"$f'(x) = \\frac{{-{V+2}}}{{(x-1)^2}}$",
+         f"$\\frac{{-{V+2}}}{{(x-1)^2}}$",
          [f"$\\frac{{-{V+2}}}{{(x-1)^2}}$", f"$\\frac{{1}}{{(x-1)^2}}$", f"$\\frac{{{V+1}}}{{x-1}}$"],
          "$(u/v)' = (u'v - uv')/v^2$",
          ["$u = x+{0}$, $v = x-1$.".format(V+1), "$u'v - uv' = 1(x-1) - (x+{0})$.".format(V+1), f"$= -{V+2}$."]),
         (f"Dresser le tableau de variation de $f(x) = -x^2 + {2*(V+2)}x$ sur $\\mathbb{{R}}$.",
-         f"Croissante sur $]-\\infty; {V+2}]$, décroissante sur $[{V+2}; +\\infty[$",
+         f"Croissante puis décroissante, max en $x={V+2}$",
          [f"Croissante puis décroissante, max en $x={V+2}$", "Toujours décroissante", f"Décroissante puis croissante, min en $x={V+2}$"],
          "$f'(x) = 0$ donne le sommet, $a<0$ → max.",
          [f"$f'(x) = -2x + {2*(V+2)}$.", f"$f'(x) = 0 \\Rightarrow x = {V+2}$.", "$a = -1 < 0$ → maximum."]),
@@ -337,7 +338,7 @@ def _gen_derivation(variant=0):
     for i in range(5):
         k = 2 + V + i
         exos.append(_exo(2, f"$f(x) = (x^2+{k})e^x$. Signe de $f'(0)$ ?",
-            f"$f'(0) = {k}$, positif",
+            f"Positif ($f'(0) = {k}$)",
             [f"Positif ($f'(0) = {k}$)", "Négatif", "Nul"],
             "$(uv)' = u'v + uv'$",
             [f"$f'(x) = (2x)e^x + (x^2+{k})e^x$.", "$f'(x) = (x^2+2x+{0})e^x$.".format(k), f"$f'(0) = {k} > 0$."]))
@@ -352,8 +353,8 @@ def _gen_exponentielle(variant=0):
         (f"Simplifier $e^{{{2+V}}} \\times e^{{{3+V}}}$.", f"$e^{{{5+2*V}}}$",
          [f"$e^{{{5+2*V}}}$", f"$e^{{{(2+V)*(3+V)}}}$", f"${2+V}e^{{{3+V}}}$"],
          "$e^a \\times e^b = e^{a+b}$"),
-        (f"Simplifier $\\frac{{e^{{{5+V}}}}}{{e^{{{2+V}}}}}$.", f"$e^{{{3}}}$",
-         [f"$e^3$", f"$e^{{{(5+V)/(2+V):.0f}}}$", f"$e^{{{(5+V)*(2+V)}}}$"],
+        (f"Simplifier $\\frac{{e^{{{5+V}}}}}{{e^{{{2+V}}}}}$.", "$e^3$",
+         ["$e^3$", f"$e^{{{(5+V)//(2+V)}}}$", f"$e^{{{(5+V)*(2+V)}}}$"],
          "$e^a / e^b = e^{a-b}$"),
         ("Que vaut $e^0$ ?", "$1$", ["$1$", "$0$", "$e$"], "$e^0 = 1$ pour tout réel."),
         (f"Simplifier $(e^{{{V+2}}})^3$.", f"$e^{{{3*(V+2)}}}$",
@@ -381,7 +382,7 @@ def _gen_exponentielle(variant=0):
 
     # lvl 2
     l2_data = [
-        (f"Résoudre $e^{{2x}} - {V+3}e^x + {V+2} = 0$.", "Poser $X = e^x$, résoudre $X^2 - " + str(V+3) + "X + " + str(V+2) + " = 0$.",
+        (f"Résoudre $e^{{2x}} - {V+3}e^x + {V+2} = 0$.", "Poser $X = e^x$ et résoudre le trinôme",
          ["Poser $X = e^x$ et résoudre le trinôme", f"$x = {V+2}$", f"$x = \\ln({V+3})$"],
          "Changement de variable $X = e^x$ → équation du 2nd degré."),
         (f"Étudier le signe de $f(x) = e^x - {V+2}$.",
@@ -389,15 +390,15 @@ def _gen_exponentielle(variant=0):
          [f"$f(x) > 0$ si $x > \\ln({V+2})$", "$f(x) > 0$ pour tout $x$", f"$f(x) > 0$ si $x > {V+2}$"],
          "$e^x > k \\Leftrightarrow x > \\ln(k)$ si $k > 0$."),
         (f"Dériver $f(x) = x e^{{-x}}$.",
-         "$f'(x) = (1-x)e^{-x}$",
+         "$(1-x)e^{-x}$",
          ["$(1-x)e^{-x}$", "$-xe^{-x}$", "$e^{-x}$"],
          "$(uv)' = u'v + uv'$, $(e^{-x})' = -e^{-x}$."),
         (f"$f(x) = e^{{2x}} - {2*(V+2)}e^x + {(V+2)**2 - 1}$. Résoudre $f(x) = 0$.",
-         f"$e^x = {V+1}$ ou $e^x = {V+3}$",
+         f"$x = \\ln({V+1})$ ou $x = \\ln({V+3})$",
          [f"$x = \\ln({V+1})$ ou $x = \\ln({V+3})$", f"$x = {V+1}$", "Pas de solution"],
          "Poser $X = e^x$, discriminant du trinôme."),
         (f"Montrer que $\\lim_{{x \\to +\\infty}} xe^{{-x}} = 0$.",
-         "Croissance comparée : $e^x$ l'emporte sur tout polynôme.",
+         "Croissance comparée : $e^x \\gg x$",
          ["Croissance comparée : $e^x \\gg x$", "$= +\\infty$", "$= 1$"],
          "$\\lim_{x \\to +\\infty} \\frac{x}{e^x} = 0$"),
         (f"Population modélisée par $P(t) = {1000+V*200} e^{{0.0{V+2}t}}$. Temps de doublement ?",
@@ -408,13 +409,13 @@ def _gen_exponentielle(variant=0):
          [f"$x \\geq \\ln({V+1})$", f"$x \\geq {V+1}$", "$x \\geq 0$"],
          "$e^x \\geq k \\Leftrightarrow x \\geq \\ln(k)$ ($k > 0$, $e^x$ croissante)."),
         (f"Étudier les variations de $f(x) = e^{{2x}} - {2+V}x$.",
-         f"$f'(x) = 2e^{{2x}} - {2+V}$. Min en $x = \\frac{{\\ln({(2+V)/2:.1f})}}{{2}}$.",
-         [f"Décroissante puis croissante", "Toujours croissante", "Croissante puis décroissante"],
+         "Décroissante puis croissante",
+         ["Décroissante puis croissante", "Toujours croissante", "Croissante puis décroissante"],
          "$f'(x) = 2e^{2x} - k$, s'annule quand $e^{2x} = k/2$."),
         (f"Simplifier $\\ln(e^{{{V+3}}})$.", f"${V+3}$",
          [f"${V+3}$", f"$e^{{{V+3}}}$", f"$\\frac{{{V+3}}}{{e}}$"],
          "$\\ln(e^a) = a$"),
-        (f"Vrai ou faux : $e^{{a+b}} = e^a + e^b$ ?", "Faux, $e^{a+b} = e^a \\times e^b$.",
+        (f"Vrai ou faux : $e^{{a+b}} = e^a + e^b$ ?", "Faux",
          ["Faux", "Vrai", "Vrai seulement si $a=b$"],
          "$e^{a+b} = e^a \\cdot e^b \\neq e^a + e^b$ en général."),
     ]
@@ -454,12 +455,12 @@ def _gen_trigo(variant=0):
          ["$1$", "$\\cos(2x)$", "$2$"],
          "$\\cos^2 x + \\sin^2 x = 1$ (identité fondamentale)"),
         (f"Résoudre $2\\sin(x) - {V+1} = 0$ sur $[0; 2\\pi]$.",
-         f"$\\sin(x) = \\frac{{{V+1}}}{{2}}$" if V+1 <= 2 else "Pas de solution ($|\\sin x| \\leq 1$)",
+         f"$\\sin(x) = {(V+1)/2}$" if V+1 <= 2 else "Pas de solution",
          [f"$\\sin(x) = {(V+1)/2}$" if V+1 <= 2 else "Pas de solution",
           "$x = \\pi/" + str(V+2) + "$", f"$x = {V+1}$"],
          "$\\sin(x) = k$ a des solutions ssi $|k| \\leq 1$."),
         (f"Exprimer $\\cos(2x)$ en fonction de $\\cos(x)$.",
-         "$\\cos(2x) = 2\\cos^2(x) - 1$",
+         "$2\\cos^2(x) - 1$",
          ["$2\\cos^2(x) - 1$", "$2\\cos(x) - 1$", "$\\cos^2(x) - \\sin^2(x)$ uniquement"],
          "$\\cos(2x) = 2\\cos^2 x - 1 = 1 - 2\\sin^2 x = \\cos^2 x - \\sin^2 x$"),
         ("Donner la dérivée de $\\sin(2x)$.", "$2\\cos(2x)$",
@@ -473,7 +474,7 @@ def _gen_trigo(variant=0):
          ["$x = 5\\pi/6$ ou $x = 7\\pi/6$", "$x = \\pi/6$", "$x = 5\\pi/6$ uniquement"],
          "$\\cos(x) = -\\sqrt{3}/2 \\Rightarrow$ angle de référence $\\pi/6$, quadrants II et III."),
         (f"Montrer que $\\sin(\\pi - x) = \\sin(x)$.",
-         "Propriété de symétrie du sinus",
+         "Vrai (symétrie par rapport à $\\pi/2$)",
          ["Vrai (symétrie par rapport à $\\pi/2$)", "Faux", "Vrai seulement si $x \\in [0;\\pi]$"],
          "$\\sin(\\pi - x) = \\sin x$ (formule d'addition)."),
         (f"Amplitude et période de $f(x) = 3\\sin(2x + \\pi/{V+3})$ ?",
@@ -508,7 +509,7 @@ def _gen_produit_scalaire(variant=0):
          [f"$\\sqrt{{{(3+V)**2+(4+V)**2}}}$", f"${3+V+4+V}$", f"${(3+V)*(4+V)}$"],
          "$\\|\\vec{u}\\| = \\sqrt{x^2+y^2}$"),
         (f"$\\vec{{AB}} \\cdot \\vec{{AC}} = 0$. Que peut-on dire du triangle $ABC$ ?",
-         "Il est rectangle en $A$.",
+         "Rectangle en $A$",
          ["Rectangle en $A$", "Rectangle en $B$", "Équilatéral"],
          "$\\vec{AB} \\perp \\vec{AC} \\Leftrightarrow$ angle droit en $A$."),
     ]
@@ -526,15 +527,15 @@ def _gen_produit_scalaire(variant=0):
     # lvl 2
     l2 = [
         (f"Triangle $ABC$ avec $AB={3+V}$, $AC={4+V}$, $BC={5+V}$. Calculer $\\vec{{AB}} \\cdot \\vec{{AC}}$ (Al-Kashi).",
-         f"$\\frac{{{(3+V)**2+(4+V)**2-(5+V)**2}}}{{2}}$",
+         f"${((3+V)**2+(4+V)**2-(5+V)**2)//2}$",
          [f"${((3+V)**2+(4+V)**2-(5+V)**2)//2}$", f"${(3+V)*(4+V)}$", "$0$"],
          "$\\vec{AB} \\cdot \\vec{AC} = \\frac{AB^2+AC^2-BC^2}{2}$ (Al-Kashi)"),
         (f"Projeté orthogonal de $\\vec{{u}}({V+4};{V+2})$ sur $\\vec{{v}}({V+1};0)$.",
-         f"$\\frac{{{(V+4)*(V+1)}}}{{{V+1}}} = {V+4}$",
+         f"${V+4}$",
          [f"${V+4}$", f"${V+2}$", f"${(V+4)*(V+2)/(V+1):.1f}$"],
          "Projeté = $\\frac{\\vec{u} \\cdot \\vec{v}}{\\|\\vec{v}\\|}$"),
         (f"$A(0;0)$, $B({2+V};0)$, $C(1;{2+V})$. L'angle $\\widehat{{BAC}}$ est-il droit ?",
-         f"Non (sauf si $\\vec{{AB}} \\cdot \\vec{{AC}} = 0$)",
+         f"Non, $\\vec{{AB}} \\cdot \\vec{{AC}} = {2+V} \\neq 0$",
          [f"Non, $\\vec{{AB}} \\cdot \\vec{{AC}} = {2+V} \\neq 0$", "Oui", "On ne peut pas savoir"],
          "$\\vec{AB} \\cdot \\vec{AC} = 0 \\Leftrightarrow$ angle droit."),
     ]
@@ -544,7 +545,7 @@ def _gen_produit_scalaire(variant=0):
     for i in range(7):
         k = V + i + 2
         exos.append(_exo(2, f"$\\vec{{u}}({k};{k+1})$, $\\vec{{v}}(1;-1)$. Trouver l'angle entre $\\vec{{u}}$ et $\\vec{{v}}$.",
-            f"$\\cos(\\theta) = \\frac{{{k-(k+1)}}}{{\\sqrt{{{k**2+(k+1)**2}}} \\times \\sqrt{{2}}}} = \\frac{{-1}}{{\\sqrt{{{k**2+(k+1)**2}}} \\cdot \\sqrt{{2}}}}$",
+            f"$\\cos(\\theta) = \\frac{{-1}}{{\\sqrt{{{2*(k**2+(k+1)**2)}}}}}$",
             [f"$\\cos(\\theta) = \\frac{{-1}}{{\\sqrt{{{2*(k**2+(k+1)**2)}}}}}$",
              f"$\\cos(\\theta) = \\frac{{{2*k+1}}}{{\\sqrt{{{k**2+(k+1)**2}}}}}$", "$\\theta = 90°$"],
             "$\\cos(\\theta) = \\frac{\\vec{u} \\cdot \\vec{v}}{\\|u\\| \\|v\\|}$",
@@ -576,13 +577,13 @@ def _gen_geometrie_repere(variant=0):
         elif i < 9:
             d = round(((a-c)**2 + (b-c)**2)**0.5, 2)
             exos.append(_exo(1, f"Distance entre $A({a};{b})$ et $B({c};{c})$.",
-                f"$d = \\sqrt{{{(a-c)**2+(b-c)**2}}}$",
+                f"$\\sqrt{{{(a-c)**2+(b-c)**2}}}$",
                 [f"$\\sqrt{{{(a-c)**2+(b-c)**2}}}$", f"${abs(a-c)+abs(b-c)}$", f"${abs(a-c)*(b-c)}$"],
                 "$d = \\sqrt{(x_B-x_A)^2+(y_B-y_A)^2}$",
                 ["Différences de coordonnées.", "Élever au carré et additionner.", "Racine carrée."]))
         else:
             exos.append(_exo(1, f"Milieu de $[A({a};{b}), B({c};{a})]$ ?",
-                f"$M(\\frac{{{a+c}}}{{2}};\\frac{{{b+a}}}{{2}})$",
+                f"$M({(a+c)/2};{(b+a)/2})$",
                 [f"$M({(a+c)/2};{(b+a)/2})$", f"$M({a};{b})$", f"$M({c-a};{b-a})$"],
                 "$M = (\\frac{x_A+x_B}{2}; \\frac{y_A+y_B}{2})$",
                 ["Moyenne des abscisses.", "Moyenne des ordonnées.", "Conclure."]))
@@ -597,19 +598,19 @@ def _gen_geometrie_repere(variant=0):
                 [f"Centre $({a};{b})$, rayon ${a+1}$.", "Appliquer la formule.", "Développer si nécessaire."]))
         elif i < 5:
             exos.append(_exo(2, f"Les droites $y = {a}x + 1$ et $y = {-1/a:.2f}x + {b}$ sont-elles perpendiculaires ?",
-                "Oui ($m_1 \\times m_2 = -1$)",
+                "Oui",
                 ["Oui", "Non", "Parallèles"],
                 "Deux droites sont perpendiculaires ssi $m_1 m_2 = -1$.",
                 [f"$m_1 = {a}$, $m_2 = {-1/a:.2f}$.", f"$m_1 \\times m_2 = {a*(-1/a):.0f}$.", "Conclure."]))
         elif i < 7:
             exos.append(_exo(2, f"Intersection des droites $y = {a}x + {b}$ et $y = {a+1}x + {b-1}$.",
-                f"$x = {(b-(b-1))/(a+1-a):.0f}$, soit $x = 1$",
+                f"$({1}; {a+b})$",
                 [f"$({1}; {a+b})$", f"$({b}; {a})$", "Pas d'intersection"],
                 "Résoudre le système $y = m_1 x + p_1$ et $y = m_2 x + p_2$.",
                 ["Égaliser les deux expressions.", f"${a}x + {b} = {a+1}x + {b-1}$.", "Résoudre."]))
         else:
             exos.append(_exo(2, f"Distance du point $P({a};{b})$ à la droite ${a+1}x + {b+1}y + {1} = 0$.",
-                f"$d = \\frac{{|{(a+1)*a + (b+1)*b + 1}|}}{{\\sqrt{{{(a+1)**2+(b+1)**2}}}}}$",
+                f"$\\frac{{|{(a+1)*a+(b+1)*b+1}|}}{{\\sqrt{{{(a+1)**2+(b+1)**2}}}}}$",
                 [f"$\\frac{{|{(a+1)*a+(b+1)*b+1}|}}{{\\sqrt{{{(a+1)**2+(b+1)**2}}}}}$", f"${a+b}$", "$0$"],
                 "$d = \\frac{|ax_0+by_0+c|}{\\sqrt{a^2+b^2}}$",
                 ["Identifier $a, b, c$ de la droite.", "Remplacer les coordonnées du point.", "Calculer."]))
@@ -623,20 +624,20 @@ def _gen_probas_cond(variant=0):
     for i in range(10):
         if i == 0:
             exos.append(_exo(1, f"$P(A) = 0.{V+5}$, $P(B|A) = 0.{V+3}$. Calculer $P(A \\cap B)$.",
-                f"$P(A \\cap B) = 0.{V+5} \\times 0.{V+3}$",
+                f"${(V+5)*(V+3)/100:.2f}$",
                 [f"${(V+5)*(V+3)/100:.2f}$", f"$0.{V+5} + 0.{V+3}$", f"$0.{V+3}$"],
                 "$P(A \\cap B) = P(A) \\times P(B|A)$",
                 ["Formule du produit.", "Remplacer les valeurs.", "Calculer."]))
         elif i == 1:
             exos.append(_exo(1, f"$P(A \\cap B) = 0.{V+2}$, $P(A) = 0.{V+5}$. Calculer $P(B|A)$.",
-                f"$P(B|A) = \\frac{{0.{V+2}}}{{0.{V+5}}}$",
+                f"$\\frac{{0.{V+2}}}{{0.{V+5}}}$",
                 [f"$\\frac{{0.{V+2}}}{{0.{V+5}}}$", f"$0.{V+2} \\times 0.{V+5}$", f"$0.{V+5} - 0.{V+2}$"],
                 "$P(B|A) = \\frac{P(A \\cap B)}{P(A)}$",
                 ["Formule de Bayes simplifiée.", "Remplacer.", "Calculer."]))
         elif i < 5:
             p = (V + i + 2) * 10
             exos.append(_exo(1, f"Un test est positif à ${p}$% si malade. $P(\\text{{malade}}) = 0.0{V+1}$. $P(\\text{{positif}} \\cap \\text{{malade}})$ = ?",
-                f"$0.{p//10} \\times 0.0{V+1}$",
+                f"${p/100 * (V+1)/100:.4f}$",
                 [f"${p/100 * (V+1)/100:.4f}$", f"$0.{p//10}$", f"$0.0{V+1}$"],
                 "$P(T^+ \\cap M) = P(T^+|M) \\times P(M)$",
                 ["Identifier $P(T^+|M)$ et $P(M)$.", "Multiplier.", "Calculer."]))
@@ -657,7 +658,7 @@ def _gen_probas_cond(variant=0):
     for i in range(10):
         if i < 3:
             exos.append(_exo(2, f"$P(A)=0.{V+3}$, $P(B|A)=0.{V+6}$, $P(B|\\bar{{A}})=0.{V+1}$. Calculer $P(B)$ (prob. totales).",
-                f"$P(B) = 0.{V+3} \\times 0.{V+6} + 0.{10-V-3} \\times 0.{V+1}$",
+                f"$P(B) = {((V+3)*(V+6)+(10-V-3)*(V+1))/100:.4f}$",
                 [f"$P(B) = {((V+3)*(V+6)+(10-V-3)*(V+1))/100:.4f}$",
                  f"$P(B) = 0.{V+6}$", f"$P(B) = 0.{V+3} + 0.{V+1}$"],
                 "$P(B) = P(A)P(B|A) + P(\\bar{A})P(B|\\bar{A})$",
@@ -670,7 +671,7 @@ def _gen_probas_cond(variant=0):
                 [f"$P(A) \\times P(B) = 0.{V+3} \\times 0.{V+5}$.", f"$= {(V+3)*(V+5)/100:.2f}$.", "$= P(A \\cap B)$ → indépendants."]))
         else:
             exos.append(_exo(2, f"Urne : {V+3} rouges, {V+5} bleues. On tire 2 boules sans remise. $P(2 \\text{{ rouges}})$ ?",
-                f"$\\frac{{{V+3}}}{{{2*V+8}}} \\times \\frac{{{V+2}}}{{{2*V+7}}}$",
+                f"$\\frac{{{(V+3)*(V+2)}}}{{{(2*V+8)*(2*V+7)}}}$",
                 [f"$\\frac{{{(V+3)*(V+2)}}}{{{(2*V+8)*(2*V+7)}}}$",
                  f"$(\\frac{{{V+3}}}{{{2*V+8}}})^2$", f"$\\frac{{{V+3}}}{{{2*V+8}}}$"],
                 "Sans remise : la 2e probabilité est modifiée.",
@@ -688,7 +689,7 @@ def _gen_var_aleatoires(variant=0):
             probs = [0.2+V*0.01, 0.5, 0.3-V*0.01]
             E = sum(v*p for v,p in zip(vals, probs))
             exos.append(_exo(1, f"$X$ prend les valeurs ${vals[0]}, {vals[1]}, {vals[2]}$ avec probabilités ${probs[0]:.2f}, {probs[1]:.2f}, {probs[2]:.2f}$. $E(X)$ = ?",
-                f"$E(X) = {E:.2f}$",
+                f"${E:.2f}$",
                 [f"${E:.2f}$", f"${sum(vals)/3:.2f}$", f"${sum(probs):.2f}$"],
                 "$E(X) = \\sum x_i p_i$",
                 ["Multiplier chaque valeur par sa probabilité.", "Additionner les produits.", f"$E(X) = {E:.2f}$."]))
@@ -717,7 +718,7 @@ def _gen_var_aleatoires(variant=0):
             from math import comb, factorial
             c = comb(n, k)
             exos.append(_exo(2, f"$X \\sim B({n}; 0.{V+3})$. Calculer $P(X = {k})$.",
-                f"$\\binom{{{n}}}{{{k}}} \\times 0.{V+3}^{k} \\times 0.{10-V-3}^{{{n-k}}}$",
+                f"$\\binom{{{n}}}{{{k}}} (0.{V+3})^{k}(0.{10-V-3})^{{{n-k}}}$",
                 [f"$\\binom{{{n}}}{{{k}}} (0.{V+3})^{k}(0.{10-V-3})^{{{n-k}}}$",
                  f"$0.{V+3}^{k}$", f"${n} \\times 0.{V+3}^{k}$"],
                 "$P(X=k) = \\binom{n}{k} p^k (1-p)^{n-k}$",
@@ -729,7 +730,7 @@ def _gen_var_aleatoires(variant=0):
             E2 = sum(v**2*p for v,p in zip(vals,probs))
             Var = E2 - E**2
             exos.append(_exo(2, f"$X$ : valeurs $0,1,2,3$ avec probas $0.1, 0.3, 0.4, 0.2$. $V(X)$ = ?",
-                f"$V(X) = E(X^2) - [E(X)]^2 = {Var:.2f}$",
+                f"${Var:.2f}$",
                 [f"${Var:.2f}$", f"${E:.1f}$", f"${E2:.1f}$"],
                 "$V(X) = E(X^2) - [E(X)]^2$",
                 [f"$E(X) = {E:.1f}$.", f"$E(X^2) = {E2:.1f}$.", f"$V(X) = {E2:.1f} - {E:.1f}^2 = {Var:.2f}$."]))
@@ -737,7 +738,7 @@ def _gen_var_aleatoires(variant=0):
             n = V + 8
             p_val = (V+3)/10
             exos.append(_exo(2, f"$X \\sim B({n}; {p_val})$. $E(X)$ et $V(X)$ ?",
-                f"$E(X) = {n*p_val:.1f}$, $V(X) = {n*p_val*(1-p_val):.2f}$",
+                f"$E = {n*p_val:.1f}$, $V = {n*p_val*(1-p_val):.2f}$",
                 [f"$E = {n*p_val:.1f}$, $V = {n*p_val*(1-p_val):.2f}$",
                  f"$E = {n*p_val:.1f}$, $V = {n*p_val:.1f}$",
                  f"$E = {n:.0f}$, $V = {p_val}$"],
@@ -764,10 +765,10 @@ def _gen_algorithmique(variant=0):
          [f"${(V+7)%3}$", f"${(V+7)//3}$", f"${V+7}$"],
          "`%` = modulo (reste de la division euclidienne)."),
         (f"Écrire en Python : « si $x > {V+5}$ alors afficher 'grand' ».",
-         f"if x > {V+5}: print('grand')",
+         f"`if x > {V+5}: print('grand')`",
          [f"`if x > {V+5}: print('grand')`", f"`if x > {V+5} print('grand')`", f"`while x > {V+5}: print('grand')`"],
          "Syntaxe `if condition: instruction`"),
-        (f"Que fait `range({V+2}, {V+7})` ?", f"Génère {V+2}, {V+3}, ..., {V+6}",
+        (f"Que fait `range({V+2}, {V+7})` ?", f"Entiers de ${V+2}$ à ${V+6}$",
          [f"Entiers de ${V+2}$ à ${V+6}$", f"Entiers de ${V+2}$ à ${V+7}$", f"Entiers de $0$ à ${V+7}$"],
          "`range(a, b)` → entiers de $a$ à $b-1$."),
         (f"Que renvoie `[i**2 for i in range(5)]` ?", "$[0, 1, 4, 9, 16]$",
@@ -801,7 +802,7 @@ def _gen_algorithmique(variant=0):
          ["`sort()`", "`order()`", "`sorted()`"],
          "`liste.sort()` trie en place. `sorted(liste)` renvoie une copie triée."),
         (f"Écrire une fonction `est_premier(n)` qui teste si $n$ est premier.",
-         "Tester les diviseurs de $2$ à $\\sqrt{{n}}$.",
+         "Boucle de $2$ à $\\sqrt{n}$, tester `n % i == 0`",
          ["Boucle de $2$ à $\\sqrt{n}$, tester `n % i == 0`", "Tester `n % 2 == 0`", "Tester tous les nombres de $1$ à $n$"],
          "Un nombre premier n'a aucun diviseur entre $2$ et $\\sqrt{n}$."),
         (f"Que renvoie `max([{V+2}, {V+9}, {V+1}, {V+7}])` ?", f"${V+9}$",
