@@ -79,7 +79,7 @@ Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse 
 - **Boost quotidien** : 5 exercices/jour = habitude, pas surcharge
 - **Indices progressifs** : 1-3 étapes + formule clé révélée après erreur
 - `lvl:1` = fondamental, `lvl:2` = avancé (type contrôle/brevet)
-- 54 chapitres × 20 exos = **1080 exercices** + 108 diagnostics + 540 boost + 144 brevet (3EME)
+- 54 chapitres × 20 exos = **1080 exercices** + 108 diagnostics + 540 boost + 144 brevet (3EME, 15 chap, format standard)
 - Couverture **~100%** programme collège officiel + 1ère Spé Maths (10 chapitres expérimentaux) — détail dans [programme-français-verif.md](programme-français-verif.md)
 
 ---

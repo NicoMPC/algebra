@@ -41,6 +41,13 @@ DiagnosticExos:       20 exos, 0 absent, 0 doublons ✅
 BoostExos:           100 exos, 0 absent, 0 doublons ✅
 ```
 
+## BrevetExos — audit et conversion (même session)
+
+- **144 exercices** audités → 0 erreur de contenu (maths correctes, pas de doublons)
+- **Conversion format** : `{opts, ans, hint, diff}` → `{lvl, q, a, options, f, steps}` (format standard Curriculum)
+- **3 chapitres doublons fusionnés** : 18 → 15 chapitres (Systèmes, Inéquations, Notation Scientifique)
+- Frontend compatible : `ex.opts || ex.options` + `typeof ex.ans === 'number' ? ex.ans : opts.indexOf(ex.a)`
+
 ## Données non touchées
 - ✅ Exercices collège (6EME-3EME) non modifiés
 - ✅ Aucune modification de `index.html` ou `backend.js`

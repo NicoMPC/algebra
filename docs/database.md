@@ -35,7 +35,7 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 | `Curriculum_Officiel` | Exercices par chapitre (1080 exos) | ❌ Via scripts Python seulement |
 | `DiagnosticExos` | Exercices de diagnostic (108 exos) | ❌ Via scripts Python seulement |
 | `RemediationChapters` | Chapitres de remédiation (désactivé) | ❌ |
-| `BrevetExos` | Exercices style brevet (144 exos) | ❌ Via script Python seulement |
+| `BrevetExos` | Exercices brevet 3EME (144 exos, 15 chap, format standard) | ❌ Via script Python seulement |
 | `BrevetResults` | Résultats brevets blancs | ❌ |
 | `📧 Emails` | Archive des emails envoyés | Lecture seule |
 | `Insights` | Feedbacks élèves + demandes chapitres | Lecture seule |
@@ -174,9 +174,9 @@ Pool d'exercices **dédiée aux boosts quotidiens**, séparée de Curriculum_Off
 |---|---|---|---|
 | A | Niveau | String | (toujours `3EME`) |
 | B | Categorie | String | Chapitre brevet |
-| C | ExosJSON | String | JSON tableau de 8 exercices `{q, opts:[], ans:int, hint, diff}` |
+| C | ExosJSON | String | JSON tableau d'exercices `{lvl, q, a, options:[], f, steps:[]}` (format standard) |
 
-18 chapitres × 8 exos = **144 exercices** style brevet.
+15 chapitres × 8-16 exos = **144 exercices** style brevet (3 chapitres fusionnés à 16 exos).
 
 ### BrevetResults
 
@@ -254,6 +254,6 @@ Rapports ── standalone (archive)
 | 3EME (11) | Calcul_Littéral, Équations, Fonctions, Théorème_de_Thalès, Trigonométrie, Statistiques, Probabilités, Racines_Carrées, Systèmes_Équations, Inéquations, Notation_Scientifique |
 | 1ERE (10) | Second_Degre, Suites, Derivation, Exponentielle, Trigonometrie, Produit_Scalaire, Geometrie_Repere, Probabilites_Cond, Variables_Aleatoires, Algorithmique |
 
-Total : **54 chapitres × 20 exos = 1080 exercices** + **54 × 10 = 540 boost (BoostExos)** + **54 × 2 = 108 diagnostics** + **18 × 8 = 144 brevet** (3EME uniquement)
+Total : **54 chapitres × 20 exos = 1080 exercices** + **54 × 10 = 540 boost (BoostExos)** + **54 × 2 = 108 diagnostics** + **15 chap × 8-16 = 144 brevet** (3EME uniquement)
 
 **Flux boost auto** : diagnostic ne teste que les chapitres sélectionnés → P5 filtre BoostExos aux mêmes chapitres → boost ciblé, pas de dispersion cross-chapitre.
