@@ -3009,7 +3009,7 @@ function getAdminOverview(p) {
   }
 
   // ── Cours (pour coursNeeded) ────────────────────────────
-  var coursSheet = ss.getSheetByName('Cours');
+  var coursSheet = sheetExists(SH.COURS) ? getSheet(SH.COURS) : null;
   var coursRows  = coursSheet ? coursSheet.getDataRange().getValues() : [];
   var coursMap   = {};
   coursRows.slice(1).forEach(function(r) {

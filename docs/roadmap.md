@@ -14,6 +14,7 @@
 > ✅ **Niveau 1ERE Spé Maths ajouté le 14 mars 2026** — 10 chapitres, 330 exercices (200 curriculum + 20 diag + 100 boost + 10 restants), compte Auguste (AUG001) prêt pour visio. GAS @64.
 > ✅ **Admin panel upgrade le 15 mars 2026** — email modal éditable, coursNeeded, renommage BLOQUÉ→Sans nouvelles, dark mode onboarding, 6 profils test. GAS @69.
 > ✅ **Objectif élève post-quiz le 15 mars 2026** — overlay 4 choix après diagnostic, colonne Users N, emails J+5/J+7 personnalisés, badge admin. GAS @70.
+> ✅ **Simulation 10 profils le 15 mars 2026** — 111 appels GAS, 10/10 profils OK. Fix `ss is not defined` dans getAdminOverview + sw.js exclu de GAS. GAS @72.
 
 | Dimension | État |
 |---|---|
