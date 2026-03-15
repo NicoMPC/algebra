@@ -2237,10 +2237,12 @@ function submitFeedback(p) {
   var code    = String(p.code    || '');
   var name    = String(p.name    || '');
   var niveau  = String(p.niveau  || '');
-  var type    = String(p.type    || 'general');   // 'trop_dur', 'erreur', 'super', 'general'
+  var type    = String(p.type    || 'general');   // 'trop_dur', 'erreur', 'super', 'general', 'difficile', 'moyen', 'bien'
   var message = String(p.message || '');
   var exoQ    = String(p.exo_q   || '');
   var rating  = parseInt(p.rating || 0);
+  var source  = String(p.source  || 'general');   // 'boost' | 'brevet' | 'chapitre' | 'general'
+  var ref     = String(p.ref     || '');           // catégorie ou 'BOOST' ou 'BREVET'
 
   if (!message && !type) {
     return { status: 'error', message: 'message ou type requis' };
@@ -2250,12 +2252,12 @@ function submitFeedback(p) {
   var tab = ss.getSheetByName('Insights');
   if (!tab) {
     tab = ss.insertSheet('Insights');
-    tab.appendRow(['Date', 'Code', 'Prénom', 'Niveau', 'Type', 'Message', 'Énoncé exo', 'Note (1-5)']);
-    tab.getRange(1, 1, 1, 8).setFontWeight('bold').setBackground('#e0e7ff');
+    tab.appendRow(['Date', 'Code', 'Prénom', 'Niveau', 'Type', 'Message', 'Énoncé exo', 'Note (1-5)', 'Source', 'Ref']);
+    tab.getRange(1, 1, 1, 10).setFontWeight('bold').setBackground('#e0e7ff');
   }
 
   var today = Utilities.formatDate(new Date(), 'Europe/Paris', 'yyyy-MM-dd HH:mm');
-  tab.appendRow([today, code, name, niveau, type, message, exoQ.substring(0, 80), rating || '']);
+  tab.appendRow([today, code, name, niveau, type, message, exoQ.substring(0, 80), rating || '', source, ref]);
 
   return { status: 'success' };
 }
@@ -2918,6 +2920,37 @@ function getAdminOverview(p) {
     }
   }
 
+  // ── Charger Insights (feedbacks de session) ─────────────
+  var insightsBySess = {}; // code → [{date, type, rating, source, ref, message}]
+  if (sheetExists('Insights')) {
+    var insRows = getSheet('Insights').getDataRange().getValues();
+    var insHeader = insRows[0];
+    var insCodeIdx = insHeader.indexOf('Code');
+    var insDateIdx = insHeader.indexOf('Date');
+    var insTypeIdx = insHeader.indexOf('Type');
+    var insRatIdx  = insHeader.indexOf('Note (1-5)');
+    var insSrcIdx  = insHeader.indexOf('Source');
+    var insRefIdx  = insHeader.indexOf('Ref');
+    var insMsgIdx  = insHeader.indexOf('Message');
+    if (insSrcIdx !== -1) {
+      insRows.slice(1).forEach(function(r) {
+        var src = String(r[insSrcIdx] || '');
+        if (src !== 'boost' && src !== 'brevet' && src !== 'chapitre') return;
+        var c = String(r[insCodeIdx] || '');
+        if (!c) return;
+        if (!insightsBySess[c]) insightsBySess[c] = [];
+        insightsBySess[c].push({
+          date:    String(r[insDateIdx] || ''),
+          type:    String(r[insTypeIdx] || ''),
+          rating:  parseInt(r[insRatIdx]  || 0) || 0,
+          source:  src,
+          ref:     String(r[insRefIdx]  || ''),
+          message: String(r[insMsgIdx]  || '')
+        });
+      });
+    }
+  }
+
   // ── Scores (30 derniers jours, TOUS résultats) ───────────
   var cutoff30 = dateOffset(-30);
   var scoresByCode = {};  // code → { cat → { exos:[] } }
@@ -3340,6 +3373,51 @@ function getAdminOverview(p) {
       if (!neverStarted && boostInProgressFlag) secondaryActions.push('🔄 Boost commencé non terminé');
       if (inactivityDays >= 2 && inactivityDays < 7 && !neverStarted) secondaryActions.push('⏰ Inactif depuis ' + inactivityDays + 'j');
 
+      // ── Actions parent recommandées ────────────────────────────
+      var parentActions = [];
+
+      // 1. Premier boost terminé → féliciter le parent
+      var firstBoostDone = userBoosts.some(function(b) {
+        return parseInt(b['ExosDone'] || 0) >= 5;
+      });
+      if (firstBoostDone && trialDays <= 3 && !sentForUser['parent-premier-boost-manuel']) {
+        parentActions.push('🎉 FÉLICITER LE PARENT — premier boost terminé');
+      }
+
+      // 2. Streak ≥ 7 jours → partager la progression
+      var streak = 0;
+      var doneDates = userBoosts
+        .filter(function(b) { return parseInt(b['ExosDone'] || 0) >= 5; })
+        .map(function(b) { return String(b['Date'] || '').substring(0, 10); })
+        .sort().reverse();
+      if (doneDates.length >= 2) {
+        var prevDate = null;
+        for (var si2 = 0; si2 < doneDates.length; si2++) {
+          if (!prevDate) { streak = 1; prevDate = doneDates[si2]; continue; }
+          var diff = Math.floor((new Date(prevDate) - new Date(doneDates[si2])) / 86400000);
+          if (diff === 1) { streak++; prevDate = doneDates[si2]; } else break;
+        }
+      }
+      if (streak >= 7 && !sentForUser['parent-streak-7-manuel']) {
+        parentActions.push('🔥 PARTAGER STREAK AU PARENT — ' + streak + ' jours consécutifs');
+      }
+
+      // 3. Inactif 3j (pas encore 7j) → relance douce parent
+      if (inactivityDays >= 3 && inactivityDays < 7 && !neverStarted && !sentForUser['parent-relance-manuel']) {
+        parentActions.push('💬 RELANCE DOUCE PARENT — inactif ' + inactivityDays + 'j');
+      }
+
+      // 4. Brevet blanc terminé → envoyer les résultats au parent
+      if (lastBrevetResult && !sentForUser['parent-brevet-manuel']) {
+        var bScore = lastBrevetResult.score || 0;
+        parentActions.push('📊 ENVOYER RÉSULTATS BREVET AU PARENT — ' + bScore + '%');
+      }
+
+      // 5. Chapitre terminé → bilan chapitre au parent
+      if (chapTermineFlag && !sentForUser['parent-chapitre-manuel']) {
+        parentActions.push('📚 BILAN CHAPITRE AU PARENT');
+      }
+
       // category : capitale > secondaire > ras
       var isCapitale = actionsAdmin.some(function(a) {
         return a.indexOf('BOOST TERMINÉ') !== -1 || a.indexOf('CHAPITRE TERMINÉ') !== -1;
@@ -3387,6 +3465,8 @@ function getAdminOverview(p) {
         category:             category,
         coursNeeded:          coursNeeded,
         objectif:             objectifAdmin,
+        sessionFeedbacks:     (insightsBySess[code] || []).slice(-10),
+        parentActions:        parentActions,
       };
     })
     .sort(function(a, b) {

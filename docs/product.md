@@ -59,10 +59,12 @@ Personne ne peut copier ça facilement — ça demande Nicolas.
 3. L'élève voit son premier "Mon Boost du jour" immédiatement
 
 ### Routine quotidienne (J1-J7)
-1. "Mon Boost du jour" : 5 exercices, 10-15 min
-2. Feedback immédiat + indices si erreur + formule clé
-3. Boost terminé → confettis + redirect chapitres
-4. Peut explorer les chapitres librement
+1. **Boost du jour** : socle quotidien — 5 exercices ciblés, 10 min. Engagement moral, pas technique.
+   Après le Boost : **quartier libre** — chapitres à la demande, Brevet Blanc, révisions multi-chapitres. Aucune limite.
+2. Feedback de session à la fin du Boost / chapitre / Brevet Blanc (4 émojis : Difficile/Moyen/Bien/Top). Stocké dans Insights (source + ref). Visible dans la fiche admin lors de la préparation du prochain contenu.
+3. Feedback immédiat + indices si erreur + formule clé
+4. Boost terminé → confettis + redirect chapitres
+5. Peut explorer les chapitres librement
 5. Nicolas voit l'avancement dans le dashboard admin
 
 ### Conversion (J7)
@@ -162,6 +164,8 @@ Triple-clic sur le logo → Admin Panel (comptes `IsAdmin: true` uniquement).
 - 📧 Indicateurs emails J0/J3/J7 (J0 réel depuis onglet Emails — ✅ si envoyé, ⏳ si non)
 - 📧 Bouton "Copier mail de bienvenue" si J0 pas encore envoyé + "Marquer comme envoyé"
 - Actions : publier boost, publier chapitre, publier brevet blanc (3EME), copier prompt Claude
+- 👨‍👩‍👧 Actions parent recommandées : félicitation premier boost, partage streak 7j, relance douce 3j, résultats brevet, bilan chapitre
+- 💬 Feedbacks de session élève : ressenti sur les 3 derniers boosts/chapitres/brevets
 
 ### Vues élève
 - **📚 Chapitres** : boost quotidien + chapitres par progression

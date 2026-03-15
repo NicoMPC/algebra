@@ -38,7 +38,7 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 | `BrevetExos` | Exercices brevet 3EME (144 exos, 15 chap, format standard) | ❌ Via script Python seulement |
 | `BrevetResults` | Résultats brevets blancs | ❌ |
 | `📧 Emails` | Archive des emails envoyés | Lecture seule |
-| `Insights` | Feedbacks élèves + demandes chapitres | Lecture seule |
+| `Insights` | Feedbacks élèves (signalement erreur + feedback session boost/brevet/chapitre) | Lecture seule |
 | `Rapports` | Rapports quotidiens 7h | Lecture seule |
 | `Cours` | Cours par chapitre rédigés par admin (4 sections × 54 chap) | ❌ Via admin panel uniquement |
 
@@ -243,6 +243,21 @@ S: 📧 Rapport envoyé / Chap5+    [T: Code masquée]
 
 Plusieurs règles simultanées → toutes affichées en pills, couleur card = plus urgente.
 
+### Insights
+
+| Col | Nom | Type | Description |
+|---|---|---|---|
+| A | Date | DateTime | `yyyy-MM-dd HH:mm` |
+| B | Code | String | FK → Users |
+| C | Prénom | String | |
+| D | Niveau | String | |
+| E | Type | String | `difficile` / `moyen` / `bien` / `super` / `trop_dur` / `erreur` / `general` |
+| F | Message | String | Texte libre optionnel |
+| G | Énoncé exo | String | Texte de l'exercice tronqué 80 chars (si signalement) |
+| H | Note (1-5) | Number | Rating numérique |
+| I | Source | String | `boost` / `brevet` / `chapitre` / `general` (vide = signalement erreur) |
+| J | Ref | String | Catégorie concernée ou `BOOST` / `BREVET` |
+
 ---
 
 ## Relations entre onglets
@@ -257,7 +272,7 @@ Users (Code) ──┬── Scores (Code)
 Curriculum_Officiel (Niveau, Categorie) ── DiagnosticExos (Niveau, Categorie)
 BoostExos (Niveau, Categorie) ── même structure que Curriculum (pool séparée)
 BrevetExos (Niveau, Categorie) ── standalone (pas de FK vers Curriculum)
-Insights ── standalone (feedback libre)
+Insights ── standalone (feedback élève : signalement + session)
 📧 Emails ── standalone (archive)
 Rapports ── standalone (archive)
 ```

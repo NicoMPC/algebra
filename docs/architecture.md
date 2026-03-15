@@ -136,7 +136,7 @@ function doPost(e) {
 | `generate_exam_prep` | Préparation examen par chapitre (10q : 7 lvl2 + 3 lvl1) | ✅ |
 | `generate_brevet` | Brevet multi-chapitres (~15q style Brevet) — UI désactivé | ✅ |
 | `generate_revision` | Révision niveau inférieur — UI désactivé | ✅ |
-| `submit_feedback` | Feedback élève → onglet Insights | ✅ |
+| `submit_feedback` | Feedback élève → onglet Insights. Types : signalement erreur (general) ou feedback session (boost/brevet/chapitre). Champs : source, ref, rating (1-5), type (difficile/moyen/bien/super) | ✅ |
 | `generateMorningReport` | Rapport matin 7h (génération IA désactivée) | ✅ |
 | `get_admin_overview` | Vue admin complète. Retourne `email` + `j0Sent` + `emailsDue` + `secondaryActions` + `category` + `trialDays` + `inactivityDays` + `neverStarted` + **`revisionChapters`** par élève + **`allChapsByLevel`** global. boostPendingContent alimenté depuis col S si élève n'a pas encore récupéré le boost | ✅ |
 | `publish_admin_boost` | Admin publie boost (→Nouveau Boost col 18) + rebuildSuivi | ✅ |
