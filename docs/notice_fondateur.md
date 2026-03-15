@@ -1,7 +1,7 @@
 # Notice fondateur — Matheux
 
 > Tout ce que tu dois savoir pour lancer et gérer Matheux au quotidien.
-> Mise à jour : 15 mars 2026 — GAS @72
+> Mise à jour : 15 mars 2026 — GAS @73
 
 ---
 
@@ -83,6 +83,26 @@ L'admin affiche les emails en attente par élève :
 | J+7 | Fin du trial | Conversion avec lien Stripe |
 
 Les boutons "Copier J+X" génèrent un email **adapté à l'objectif** de l'élève. Tu n'as qu'à coller et envoyer.
+
+### Actions parent (nouveau @73)
+
+Le dashboard affiche des **actions parent recommandées** (bloc violet) quand un événement le justifie :
+
+| Action | Déclencheur | Ce que tu fais |
+|---|---|---|
+| 🎉 Féliciter le parent | Premier boost terminé (J+1) | Copier le message → envoyer → marquer comme fait |
+| 🔥 Partager streak | Streak ≥ 7 jours | Copier le message → envoyer |
+| 💬 Relance douce parent | Inactif 3j (avant 7j) | Copier le message → envoyer |
+| 📊 Résultats brevet | Brevet blanc terminé | Copier le message → envoyer |
+| 📚 Bilan chapitre | Chapitre terminé (20 exos) | Copier le message → envoyer |
+
+Chaque bouton génère un email prêt à coller, signé "Nicolas · Prof de maths · Matheux". Tu marques ensuite l'action comme faite.
+
+### Feedback de session (nouveau @73)
+
+À la fin de chaque boost, brevet blanc ou chapitre, l'élève voit une modale "Comment ça s'est passé ?" avec 4 choix (😤 Difficile / 😐 Moyen / 😊 Bien / 🔥 Top).
+
+Le feedback apparaît dans la fiche admin sous l'historique boost ("Ressenti élève"). Si 2 feedbacks "Difficile" consécutifs → allège le prochain boost.
 
 ### Brevet blanc (3EME)
 
@@ -227,4 +247,64 @@ Les 10 profils SIM01-SIM10 (@sim.matheux.fr) sont des profils de simulation auto
 
 ---
 
-*Matheux — GAS @72 — 15 mars 2026*
+## 11. Architecture de présence humaine
+
+**L'IA fait le travail. Nicolas prend la responsabilité.**
+
+Un parent qui a un problème sait qu'il peut écrire à nicolas@matheux.fr et avoir une réponse humaine. Duolingo n'a personne à appeler. Matheux si. C'est ça le fossé.
+
+### Ce que l'IA fait en silence
+
+| Tâche | Déclencheur | Contrôle Nicolas |
+|---|---|---|
+| Génération des boosts | rebuildSuivi détecte BOOST TERMINÉ | Valide les anomalies |
+| Analyse des patterns d'erreur | Après save_score | Lecture dashboard |
+| Rapport parent hebdo | Trigger dimanche 18h | Signe le contenu |
+| Détection inactivité | getAdminOverview | Reçoit alerte admin |
+| Cours par chapitre | Milestone 5/10/15/20 exos | Rédige les sections |
+| Emails de séquence J+3/J+5/J+7 | triggerDailyMarketing | Personnalise si besoin |
+
+### Ce que Nicolas fait vraiment
+
+- Valide les cas flagrants (élève sans nouvelles depuis 7j)
+- Répond aux emails parents qui demandent un échange humain
+- Prépare les boosts manuellement tant que l'automatisation n'est pas active
+- Rédige les cours par chapitre (sections 5/10/15/20 exos)
+- Publie les brevets blancs pour les 3èmes
+- Envoie les 5 actions parent proactives (félicitation, streak, relance, brevet, chapitre)
+
+---
+
+## 12. Signaux de présence humaine — règles absolues
+
+### Timing humain
+`triggerDailyMarketing` tourne entre 9h et 10h — variations naturelles. Rapports du dimanche : entre 17h45 et 18h15.
+
+### Première personne dans tous les messages
+Jamais : "Notre algorithme a détecté que..."
+Toujours : "J'ai remarqué que..." ou "Cette semaine j'ai vu que..."
+
+### Ce qui ne doit JAMAIS changer
+- L'adresse de réponse : `nicolas@matheux.fr` (pas un no-reply)
+- La signature : "Nicolas · Prof de maths · Matheux" (pas "L'équipe Matheux")
+- Le ton : vouvoiement parents, tutoiement élèves
+- La transparence : ne jamais prétendre que Nicolas a écrit quelque chose qu'il n'a pas écrit
+
+### Email fondateur (1x/mois)
+Un email court, signé Nicolas, envoyé à toute la base. Une observation réelle sur le mois écoulé, un conseil, une anecdote pédagogique. 20 minutes à écrire. Impact fort sur la rétention.
+
+---
+
+## 13. À terme (après 200 clients)
+
+Nicolas passe de "exécutant" à "superviseur" :
+- Valide les anomalies détectées par l'agent
+- Répond aux emails humains
+- Rédige les cours et ajuste les templates
+- Envoie les 5 actions parent proactives (15-20 min/jour max)
+
+Le produit scale. La confiance reste.
+
+---
+
+*Matheux — GAS @73 — 15 mars 2026*
