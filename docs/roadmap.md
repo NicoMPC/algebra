@@ -4,7 +4,7 @@
 
 ---
 
-## État global — 14 mars 2026
+## État global — 15 mars 2026
 
 **Matheux est fonctionnel à 100% côté code. Seuls manques : Stripe PROD + 2 actions manuelles.**
 
@@ -12,6 +12,7 @@
 > BUG-01 à BUG-12 corrigés dans backend.js @60.
 > ✅ **Simulation QA 40 élèves le 14 mars 2026** — 6 bugs corrigés (BUG-SIM-01→06) + **test live 1616 appels API : 0 erreur**. GAS @63.
 > ✅ **Niveau 1ERE Spé Maths ajouté le 14 mars 2026** — 10 chapitres, 330 exercices (200 curriculum + 20 diag + 100 boost + 10 restants), compte Auguste (AUG001) prêt pour visio. GAS @64.
+> ✅ **Admin panel upgrade le 15 mars 2026** — email modal éditable, coursNeeded, renommage BLOQUÉ→Sans nouvelles, dark mode onboarding, 6 profils test. GAS @69.
 
 | Dimension | État |
 |---|---|
@@ -24,7 +25,7 @@
 | Analytics | ✅ GA4 RGPD-compliant |
 | Limite bêta | 50 vrais élèves (IsTest=0) |
 | Messages élèves | ✅ Streak alert, boost en cours, chapitre maîtrisé, milestones 3/7j |
-| Admin smart | ✅ GAS @64 — bugfixes audit + simulation QA, rate limiting global, validation inputs, 1ERE Spé |
+| Admin smart | ✅ GAS @69 — email modal éditable, coursNeeded, Sans nouvelles, dark mode onboarding, 6 profils test |
 | Emails (@matheux.fr) | ⏳ **à créer manuellement** : contact@ + alias no-reply@ |
 
 ---
@@ -107,6 +108,12 @@
 - [x] Fix aperçu boost admin structuré (motProf + insight + questions, col S avant login élève)
 - [x] Mail de bienvenue manuel : bouton "Copier" + "Marquer comme envoyé" dans modal élève si J0 absent (`log_manual_email` GAS, indicateur J0 temps réel depuis onglet Emails)
 - [x] Admin smart @59 : catégories capitale/secondaire/ras, onglet "📧 Suivi", emailsDue J+3/J+5/J+7, copie + marquage depuis modal
+- [x] **Email modal éditable** — mini-modal overlay avec objet + corps éditables avant copie, bouton marquer envoyé post-copie (15 mars 2026)
+- [x] **Templates email marketing v2** — J+0/J+3/J+7 réécrits ton prof humain, comparaison prix 66ct/jour (15 mars 2026)
+- [x] **BLOQUÉ → Sans nouvelles** — renommage `🔴 BLOQUÉ` → `💤 Sans nouvelles` backend + frontend (15 mars 2026)
+- [x] **coursNeeded dans getAdminOverview** — détection cours manquants par milestone, card cyan "Cours à compléter" dans fiche admin, message élève "cours en préparation" si section non rédigée (15 mars 2026)
+- [x] **Dark mode → onboarding uniquement** — toggle déplacé de la landing vers les slides onboarding (15 mars 2026)
+- [x] **Profils test diversifiés** — `scripts/setup_test_profiles.py`, 6 comptes test (J+0/J+3/J+5/J+7/cours/inactif) créés automatiquement (15 mars 2026)
 - [x] Messages élèves : streak break alert, boost en cours nudge, chapitre maîtrisé, milestones streak 3j/7j
 - [x] Email J+5 "Encore 2 jours" dans séquence marketing
 - [x] Validation inputs côté GAS (format email, longueur) — @63
@@ -127,7 +134,7 @@
 - [x] Consentement parental + footer légal
 - [x] GA4 RGPD-compliant (bannière consentement, IP anonymisée)
 - [x] Waitlist + limite bêta 50 familles
-- [ ] Email J+0 — refonte template vouvoiement parent + replyTo nicolas@matheux.fr (brief dans product.md § Emails automatiques)
+- [x] Email J+0 — refonte template vouvoiement parent (15 mars 2026)
 - [ ] replyTo: nicolas@matheux.fr sur J+3, J+7 et reset MDP
 - [x] Overlay trial → Stripe direct 19,99€/mois (lien TEST)
 - [x] Email J+7 → lien Stripe
@@ -227,6 +234,7 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 - [x] Dashboard trié, modal complet, publish 1-clic, toast overwrite chapitre
 - [x] Rapport matin, compteur X/50, dark mode
 - [x] Emails dus J+3/J+5/J+7, onglet Suivi, indicateurs J0
+- [x] Email modal éditable + templates marketing v2 + coursNeeded + Sans nouvelles + 6 profils test (@69)
 
 ---
 
