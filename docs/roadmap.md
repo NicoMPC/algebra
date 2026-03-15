@@ -120,6 +120,7 @@
 - [x] Messages élèves : streak break alert, boost en cours nudge, chapitre maîtrisé, milestones streak 3j/7j
 - [x] Email J+5 "Encore 2 jours" dans séquence marketing
 - [x] **Message architecture system** — `_msg()` adaptatif niveau (6EME/3EME/def), coach marks (indice/boost/brouillon), _OK/_KO contextuels, onboarding slide 3 selon objectif, emails J+3/J+5/J+7 personnalisés objectif, rapport parent hebdo (15 mars 2026, @74)
+- [x] **Checklist quotidienne admin** — onglet 📋 Aujourd'hui, items par priorité (boost/chapitre/emails/parent/brevet/inactifs), coches manuelles + auto-coches publishBoost/publishChapter, rapport hebdo manuel dimanche, fix logManualEmail statut (15 mars 2026, @75)
 - [x] Validation inputs côté GAS (format email, longueur) — @63
 - [x] Rate limiting global dans doPost — @63
 - [x] **BUG-01→12** — bugfixes audit corrigés @60 (13 mars)

@@ -116,7 +116,7 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @74
+### Actions GAS — état @75
 
 > @64 : ajout niveau 1ERE Spé Maths (ALLOWED_LEVELS, niveauOrder). @63 : rate limiting global (60/min, 15/min login/register), validation inputs saveScore, 6 bugfixes simulation QA.
 
@@ -141,7 +141,9 @@ function doPost(e) {
 | `get_admin_overview` | Vue admin complète. Retourne `email` + `j0Sent` + `emailsDue` + `secondaryActions` + `category` + `trialDays` + `inactivityDays` + `neverStarted` + **`revisionChapters`** par élève + **`allChapsByLevel`** global. boostPendingContent alimenté depuis col S si élève n'a pas encore récupéré le boost | ✅ |
 | `publish_admin_boost` | Admin publie boost (→Nouveau Boost col 18) + rebuildSuivi | ✅ |
 | `publish_admin_chapter` | Admin publie chapitre (→Nouveau Ch libre) + rebuildSuivi. Retourne `overwrite:true` si >4 chapitres en attente (toast ⚠️ côté frontend) | ✅ |
-| `log_manual_email` | Admin — logue un email envoyé manuellement dans l'onglet Emails. Params : `adminCode`, `userEmail`, `type` (ex: `J+0-manuel`). Vérifie admin, récupère prénom, appelle `_logEmail` | ✅ |
+| `log_manual_email` | Admin — logue un email envoyé manuellement dans l'onglet Emails. Params : `adminCode`, `userEmail`, `type` (ex: `J+0-manuel`). Statut='envoyé' (fix @75) | ✅ |
+| `get_daily_checklist` | Checklist quotidienne admin — lit Users/Emails/Boosts/Suivi/Progress, retourne items triés par priorité (boost/chapitre/emails/parent/brevet/inactifs). @75 | ✅ |
+| `send_weekly_report` | Envoi manuel du rapport parent hebdo depuis le dashboard admin. Appelle `triggerWeeklyParentReport`. @75 | ✅ |
 | `check_trial_status` | Vérifie trial actif { trialActive, daysLeft, isPremium } | ✅ |
 | `triggerWeeklyParentReport` | Rapport parent hebdo dimanche 17h-18h (stats semaine, % réussite, chapitres maîtrisés) — trigger à activer manuellement | ✅ |
 | `import_chapters` | One-shot admin — pousse chapitres dans Curriculum_Officiel + DiagnosticExos | ✅ |
