@@ -251,7 +251,7 @@ Plusieurs règles simultanées → toutes affichées en pills, couleur card = pl
 | B | Code | String | FK → Users |
 | C | Prénom | String | |
 | D | Niveau | String | |
-| E | Type | String | `difficile` / `moyen` / `bien` / `super` / `trop_dur` / `erreur` / `general` |
+| E | Type | String | `difficile` / `moyen` / `bien` / `super` / `trop_dur` / `erreur` / `general` / `pas_compris` / `contact_parent` |
 | F | Message | String | Texte libre optionnel |
 | G | Énoncé exo | String | Texte de l'exercice tronqué 80 chars (si signalement) |
 | H | Note (1-5) | Number | Rating numérique |

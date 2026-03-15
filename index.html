@@ -2127,6 +2127,38 @@ var _MSGS = {
   net_error:       'Erreur réseau — vérifie ta connexion 📡',
   net_retry:       'Erreur réseau — réessaie',
   save_offline:    'Résultats non sauvegardés (offline)',
+  pas_compris: {
+    '6EME': [
+      "Noté ! On va y revenir dans ton boost 💪",
+      "Ok, c'est retenu — t'inquiète pas on va retravailler ça 👍",
+      "Compris ! Je vais te le redonner autrement 🔄"
+    ],
+    '5EME': [
+      "Noté ! On y reviendra dans un prochain exo 🔄",
+      "C'est enregistré — on va retravailler ce point 💪",
+      "Ok, je vais cibler ça dans ton boost 👍"
+    ],
+    '4EME': [
+      "Noté. On reviendra dessus dans un prochain exercice.",
+      "C'est retenu — je vais insister sur ce point.",
+      "Ok, ce sera dans ton prochain boost."
+    ],
+    '3EME': [
+      "Noté. On reviendra dessus dans un prochain exercice.",
+      "C'est enregistré — on insistera sur ce point.",
+      "Ok, je vais cibler ça dans ton prochain boost."
+    ],
+    '1ERE': [
+      "Noté. Ce point sera renforcé dans les prochains exercices.",
+      "Enregistré — on reprendra ce concept.",
+      "C'est pris en compte pour la suite."
+    ],
+    'def': [
+      "Noté ! On va y revenir 🔄",
+      "C'est enregistré — on insistera dessus.",
+      "Ok, je vais cibler ça dans ton boost 💪"
+    ]
+  },
 };
 
 function _msg(key, vars) {
@@ -6157,6 +6189,28 @@ function _previewHelp(exo) {
   return html;
 }
 
+function _handlePasCompris(cat, idx, exoQ) {
+  var wrap = document.getElementById('btn-pas-compris-wrap');
+  if (wrap) wrap.remove();
+  var pcKey = 'pc_' + (S.prof ? S.prof.code : '') + '_' + cat + '_' + idx;
+  sessionStorage.setItem(pcKey, '1');
+  showT(_msg('pas_compris'), 3500, '📝');
+  var srcLabel = cat === 'BOOST' ? 'boost' : cat === 'CALIBRAGE' ? 'calibrage' : 'chapitre';
+  var realCat = cat;
+  var cats = LVL[S.niv] ? LVL[S.niv].cats : {};
+  if (cats[cat] && cats[cat][idx] && cats[cat][idx].oC) realCat = cats[cat][idx].oC;
+  fetch(SU, {
+    method: 'POST',
+    body: JSON.stringify({
+      action:    'log_pas_compris',
+      code:      S.prof ? S.prof.code : '',
+      chapitre:  realCat,
+      enonce:    (exoQ || '').substring(0, 80),
+      source:    srcLabel
+    })
+  }).catch(function() {});
+}
+
 // ══════════════════════════════════════════════════════════════
 // RENDER SECTION EXERCICE
 // ══════════════════════════════════════════════════════════════
@@ -6210,8 +6264,10 @@ function rSection(cat, data, idx, total, catDone) {
       '<button onclick="mark(\''+cat+'\','+idx+',\'EASY\',null)" class="btn-ok btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">✅</span>Acquis</button></div>';
   } else if (scored && !catDone) {
     // Exercice répondu : bouton suivant
+    var _pcKey = 'pc_' + (S.prof ? S.prof.code : '') + '_' + cat + '_' + idx;
     acts = '<button onclick="nextEx(\''+cat+'\')" class="btn btn-dk btn-fw py-4 mt-4 flex items-center justify-center gap-2">SUIVANT <span class="text-slate-400 font-normal text-xs">(ou swipe ←)</span></button>' +
-      '<div class="text-center mt-2"><button onclick="openFeedback(\''+cat+'\','+idx+')" class="text-[10px] text-slate-300 hover:text-slate-500 transition-colors underline">📢 Signaler une erreur dans cet exercice</button></div>';
+      '<div class="text-center mt-2"><button onclick="openFeedback(\''+cat+'\','+idx+')" class="text-[10px] text-slate-300 hover:text-slate-500 transition-colors underline">📢 Signaler une erreur dans cet exercice</button></div>' +
+      (!sessionStorage.getItem(_pcKey) ? '<div id="btn-pas-compris-wrap" class="mt-2 text-center"><button onclick="_handlePasCompris(\''+cat+'\','+idx+',\''+((data.q||'').replace(/'/g,"\\'").substring(0,80))+'\')" class="text-xs text-slate-400 underline hover:text-slate-600 transition-colors bg-transparent border-none cursor-pointer">Je n\'ai pas compris</button></div>' : '');
   }
 
   // ── Options QCM (adaptatif 2/3/4 options) ──────────────────
@@ -6288,7 +6344,8 @@ function rSection(cat, data, idx, total, catDone) {
     '<div class="mc text-center font-bold text-base leading-relaxed w-full min-w-0">'+(exoType === 'fill' ? fmtL(data.q).replace(/___/g, '<span style="display:inline-block;min-width:5rem;border-bottom:3px solid #4338ca;background:#eef2ff;border-radius:4px;padding:2px 8px;margin:0 4px">…</span>') : fmtL(data.q))+'</div></div>' +
     opts + acts +
     (catDone && scored
-      ? '<div class="inline-help mc rdy" id="help-inline-'+id+'">'+_previewHelp(data)+'</div>'
+      ? '<div class="inline-help mc rdy" id="help-inline-'+id+'">'+_previewHelp(data)+'</div>' +
+        (!sessionStorage.getItem('pc_' + (S.prof ? S.prof.code : '') + '_' + cat + '_' + idx) ? '<div id="btn-pas-compris-wrap" class="mt-2 text-center"><button onclick="_handlePasCompris(\''+cat+'\','+idx+',\''+((data.q||'').replace(/'/g,"\\'").substring(0,80))+'\')" class="text-xs text-slate-400 underline hover:text-slate-600 transition-colors bg-transparent border-none cursor-pointer">Je n\'ai pas compris</button></div>' : '')
       : '<div class="flex gap-2 mt-4">' +
         '<button id="pill-hint-'+id+'" onclick="showHintInline(\''+cat+'\','+idx+','+maxH+')" class="help-pill pill-hint'+(shown >= maxH ? ' opacity-40 pointer-events-none' : (!scored ? ' pulse-hint' : ''))+'">' +
           (shown >= maxH ? '✓ Indices vus' : '💡 Indice') +
@@ -7861,6 +7918,44 @@ function copyAdminPrompt(code, type, cat) {
     lines.push('(Aucune donnée disponible — génère des exercices adaptés au niveau ' + st.niveau + ')');
   }
 
+  // Injecter profilCognitif si disponible
+  var pc = st.profilCognitif;
+  if (pc) {
+    lines.push('');
+    lines.push('=== PROFIL COGNITIF ===');
+    if (pc.comportement) {
+      lines.push('Comportement : ' + pc.comportement.tauxIndices + '% indices · ' + pc.comportement.tauxFormule + '% formule · ' + pc.comportement.tauxPasCompris + '% pas compris');
+    }
+    if (pc.velocite) {
+      lines.push('Vélocité : maîtrise en ' + pc.velocite.moyenne + ' jours (' + pc.velocite.label + ')');
+    }
+    if (pc.weakPoints && pc.weakPoints.length > 0) {
+      lines.push('');
+      lines.push('=== POINTS FAIBLES PRIORITAIRES ===');
+      pc.weakPoints.forEach(function(w, i) {
+        var line = (i+1) + '. ' + w.cat.replace(/_/g, ' ') + ' (score ' + w.score + '%)';
+        if (w.nbPasCompris > 0) line += ' — ' + w.nbPasCompris + ' incompréhension(s) déclarée(s)';
+        lines.push(line);
+        if (w.systematique && w.erreurDominante) lines.push('   → Erreur systématique : répond "' + w.erreurDominante + '" — insiste spécifiquement sur ce cas');
+      });
+    }
+    var pcInsights = (st.sessionFeedbacks || []).filter(function(i) { return i.type === 'pas_compris'; });
+    if (pcInsights.length > 0) {
+      lines.push('');
+      lines.push('=== INCOMPRÉHENSIONS DÉCLARÉES (bouton "pas compris") ===');
+      var byChap = {};
+      pcInsights.forEach(function(i) {
+        var ref = i.ref || i.source || 'inconnu';
+        if (!byChap[ref]) byChap[ref] = [];
+        if (i.message) byChap[ref].push('"' + i.message + '"');
+      });
+      Object.keys(byChap).forEach(function(chap) {
+        lines.push(chap.replace(/_/g, ' ') + ' : ' + byChap[chap].length + ' fois' + (byChap[chap].length > 0 ? ' — ' + byChap[chap].slice(0, 2).join(', ') : ''));
+      });
+      lines.push('→ Varier les formulations pour contourner ces patterns.');
+    }
+  }
+
   lines.push('');
 
   if (type === 'boost') {
@@ -8768,6 +8863,14 @@ function closeStudentModal() {
   S._modalStudent = null;
 }
 
+function _pcMetric(val, label, note) {
+  return '<div class="bg-slate-50 rounded-xl p-2 text-center">' +
+    '<div class="text-base font-bold text-slate-800">' + val + '</div>' +
+    '<div class="text-[10px] text-slate-500 leading-tight">' + label + '</div>' +
+    (note ? '<div class="text-[9px] text-slate-400 leading-tight mt-0.5">' + note + '</div>' : '') +
+    '</div>';
+}
+
 function _buildModalHTML(st) {
   // PATCH A : actionPriority avec fallback
   var priority = st.actionPriority || st.action || '👍 RAS';
@@ -9321,6 +9424,49 @@ function _buildModalHTML(st) {
       }
       hr += '</div></details>';
       return hr;
+    })() +
+
+    // ── Accordéon : Profil cognitif ───────────────────────────
+    (function() {
+      if (!st.profilCognitif) return '<div class="text-xs text-slate-400 mt-2 italic">Pas encore assez de données — revenez après 5 exercices.</div>';
+      var pc = st.profilCognitif;
+      if (!pc.weakPoints || pc.weakPoints.length === 0) return '<div class="text-xs text-slate-400 mt-2 italic">Pas encore assez de données — revenez après 5 exercices.</div>';
+      var h = '<details class="mt-4">';
+      h += '<summary class="text-xs font-bold text-indigo-600 cursor-pointer py-2 select-none tracking-wide uppercase">Profil cognitif</summary>';
+      h += '<div class="mt-2 space-y-3">';
+      if (pc.comportement) {
+        var c = pc.comportement;
+        h += '<div class="grid grid-cols-2 gap-2">';
+        h += _pcMetric(c.tauxIndices + '%', 'Indices demandés', c.tauxIndices > 50 ? 'Cherche de l\'aide souvent' : c.tauxIndices < 15 ? 'Travaille en autonomie' : '');
+        h += _pcMetric(c.tauxFormule + '%', 'Formule consultée', '');
+        h += _pcMetric(c.tauxPasCompris + '%', 'Pas compris', c.tauxPasCompris > 30 ? 'Beaucoup de zones floues' : '');
+        h += _pcMetric(c.tauxBrouillon + '%', 'Utilise le brouillon', '');
+        h += '</div>';
+      }
+      if (pc.weakPoints && pc.weakPoints.length > 0) {
+        h += '<div class="text-xs font-semibold text-slate-500 uppercase tracking-wide mt-2 mb-1">Points faibles</div>';
+        pc.weakPoints.forEach(function(w) {
+          var dot = w.score < 40 ? '🔴' : w.score < 60 ? '🟡' : '🟢';
+          h += '<div class="text-xs text-slate-700 leading-relaxed">';
+          h += dot + ' <strong>' + w.cat.replace(/_/g, ' ') + '</strong> — score ' + w.score + '%';
+          if (w.nbPasCompris > 0) h += ' · ' + w.nbPasCompris + ' incompréhension(s)';
+          if (w.systematique && w.erreurDominante) h += '<br><span class="text-rose-500 pl-4">Erreur systématique : ' + w.erreurDominante + '</span>';
+          h += '</div>';
+        });
+      }
+      if (pc.velocite) {
+        h += '<div class="text-xs text-slate-500 mt-1">Maîtrise un chapitre en <strong>' + pc.velocite.moyenne + ' jours</strong> en moyenne (' + pc.velocite.label + ')</div>';
+      }
+      if (pc.predictionBrevet && st.niveau === '3EME') {
+        var pb = pc.predictionBrevet;
+        h += '<div class="text-xs text-slate-500 mt-1">🎓 Brevet : ' + pb.chapMaitrises + '/15 chapitres maîtrisés';
+        if (pb.semainesEst > 0) h += ' · ~' + pb.semainesEst + ' semaine(s) estimées';
+        h += '</div>';
+        var pct = Math.min(Math.round(pb.chapMaitrises * 100 / 15), 100);
+        h += '<div class="w-full bg-slate-100 rounded-full h-1.5 mt-1"><div class="bg-indigo-500 h-1.5 rounded-full" style="width:' + pct + '%"></div></div>';
+      }
+      h += '</div></details>';
+      return h;
     })() +
 
     '</div>'

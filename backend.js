@@ -113,6 +113,7 @@ function doPost(e) {
       case 'send_weekly_report':         res = sendWeeklyReportNow(p);     break;
       case 'log_contact':                res = logContact(p);              break;
       case 'send_session_rapport':       res = sendSessionRapport(p);      break;
+      case 'log_pas_compris':            res = logPasCompris(p);           break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -2939,7 +2940,8 @@ function getAdminOverview(p) {
     if (insSrcIdx !== -1) {
       insRows.slice(1).forEach(function(r) {
         var src = String(r[insSrcIdx] || '');
-        if (src !== 'boost' && src !== 'brevet' && src !== 'chapitre') return;
+        var iType = String(r[insTypeIdx] || '');
+        if (iType !== 'pas_compris' && src !== 'boost' && src !== 'brevet' && src !== 'chapitre') return;
         var c = String(r[insCodeIdx] || '');
         if (!c) return;
         if (!insightsBySess[c]) insightsBySess[c] = [];
@@ -2987,7 +2989,8 @@ function getAdminOverview(p) {
       temps:   parseInt(r['Temps(sec)']    || 0) || 0,
       date:    date,
       num:     numExoRaw,
-      source:  scoreSource
+      source:  scoreSource,
+      draft:   String(r['Draft'] || '')
     });
   });
 
@@ -3428,6 +3431,135 @@ function getAdminOverview(p) {
       });
       var category = isCapitale ? 'capitale' : secondaryActions.length > 0 ? 'secondaire' : 'ras';
 
+      // ── Profil cognitif ──────────────────────────────────────
+      var erreursByChap = {};
+      chapitresDetail.forEach(function(ch) {
+        var hardExos = (ch.exosList || []).filter(function(e) {
+          return e.res === 'HARD' && e.wrongOpt;
+        });
+        if (hardExos.length === 0) return;
+        var freq = {};
+        hardExos.forEach(function(e) {
+          var w = String(e.wrongOpt || '').trim();
+          if (w) freq[w] = (freq[w] || 0) + 1;
+        });
+        var topErreurs = Object.keys(freq).sort(function(a,b){
+          return freq[b]-freq[a];
+        }).slice(0, 3);
+        var erreurDominante = topErreurs[0] || null;
+        var systematique = erreurDominante && freq[erreurDominante] >= 3;
+        erreursByChap[ch.cat] = {
+          total:           hardExos.length,
+          systematique:    !!systematique,
+          topErreurs:      topErreurs,
+          erreurDominante: erreurDominante,
+          freqDominante:   erreurDominante ? freq[erreurDominante] : 0
+        };
+      });
+
+      var allChapExos = [];
+      chapitresDetail.forEach(function(ch) {
+        (ch.exosList || []).forEach(function(e) { allChapExos.push(e); });
+      });
+      var totalExosB = allChapExos.length || 1;
+      var nbIndices  = allChapExos.filter(function(e){ return e.indices > 0; }).length;
+      var nbFormule  = allChapExos.filter(function(e){ return e.formula;     }).length;
+      var nbBrouill  = allChapExos.filter(function(e){
+        return e.draft && String(e.draft).trim().length > 0;
+      }).length;
+      var nbPasComp = (insightsBySess[code] || []).filter(function(i){
+        return i.type === 'pas_compris';
+      }).length;
+      var comportement = {
+        tauxIndices:    Math.round(nbIndices  * 100 / totalExosB),
+        tauxFormule:    Math.round(nbFormule  * 100 / totalExosB),
+        tauxPasCompris: Math.round(nbPasComp  * 100 / Math.max(totalExosB, 1)),
+        utiliseBrouillon: nbBrouill > 0,
+        tauxBrouillon:  Math.round(nbBrouill  * 100 / totalExosB)
+      };
+
+      var velocite = null;
+      var progressCode = progressByCode[code] || [];
+      var maitrises = progressCode.filter(function(pr){
+        return String(pr.statut || '') === 'maitrise';
+      });
+      if (maitrises.length >= 2) {
+        var durees = [];
+        maitrises.forEach(function(pr) {
+          var cat2 = String(pr.chapitre || '');
+          var chDet = chapitresDetail.find(function(c){ return c.cat === cat2; });
+          if (!chDet) return;
+          var allD = (chDet.exosList || []).map(function(e){
+            return e.date || '';
+          }).filter(Boolean).sort();
+          if (allD.length < 2) return;
+          var first = new Date(allD[0]);
+          var last  = new Date(String(pr.dernierePratique || allD[allD.length-1])
+            .substring(0, 10));
+          var diff = Math.round((last - first) / 86400000);
+          if (diff >= 0 && diff < 365) durees.push(diff);
+        });
+        if (durees.length > 0) {
+          var moy = Math.round(durees.reduce(function(s,d){
+            return s+d;
+          }, 0) / durees.length);
+          velocite = {
+            moyenne: moy,
+            label:   moy <= 7 ? 'rapide' : moy <= 21 ? 'moyen' : 'lent'
+          };
+        }
+      }
+
+      var weakPoints = chapitresDetail
+        .filter(function(ch){ return (ch.nbExos || 0) >= 5; })
+        .map(function(ch) {
+          var pc2 = (insightsBySess[code] || []).filter(function(i){
+            return i.type === 'pas_compris' && i.ref === ch.cat;
+          }).length;
+          return {
+            cat:             ch.cat,
+            score:           ch.rateSuccess,
+            nbErreurs:       ch.hardCount,
+            nbPasCompris:    pc2,
+            erreurDominante: erreursByChap[ch.cat]
+              ? erreursByChap[ch.cat].erreurDominante
+              : null,
+            systematique:    erreursByChap[ch.cat]
+              ? erreursByChap[ch.cat].systematique
+              : false
+          };
+        })
+        .sort(function(a, b){ return a.score - b.score; })
+        .slice(0, 3);
+
+      var predictionBrevet = null;
+      if (niveau === '3EME' && velocite && velocite.moyenne > 0) {
+        var bresults = progressCode.filter(function(pr){
+          return String(pr.statut || '') === 'maitrise'
+            && String(pr.niveau || '').toUpperCase() === '3EME';
+        });
+        var chapFragiles = weakPoints.filter(function(w){ return w.score < 50; });
+        if (bresults.length >= 2) {
+          var semainesEst = Math.ceil(
+            chapFragiles.length * velocite.moyenne / 7
+          );
+          predictionBrevet = {
+            chapMaitrises:   bresults.length,
+            chapFragiles:    chapFragiles.length,
+            semainesEst:     semainesEst,
+            suffisant:       semainesEst <= 8
+          };
+        }
+      }
+
+      var profilCognitif = {
+        erreursByChap:    erreursByChap,
+        comportement:     comportement,
+        velocite:         velocite,
+        weakPoints:       weakPoints,
+        predictionBrevet: predictionBrevet
+      };
+
       return {
         code:                 code,
         prenom:               prenom,
@@ -3471,6 +3603,7 @@ function getAdminOverview(p) {
         objectif:             objectifAdmin,
         sessionFeedbacks:     (insightsBySess[code] || []).slice(-10),
         parentActions:        parentActions,
+        profilCognitif:       profilCognitif,
       };
     })
     .sort(function(a, b) {
@@ -3936,6 +4069,30 @@ function logManualEmail(p) {
   }
   var prenom = user ? String(user['Prénom'] || '') : '';
   _logEmail(userEmail, prenom, type, 'envoyé');
+  return { status: 'success' };
+}
+
+function logPasCompris(p) {
+  var code   = String(p.code     || '');
+  var chap   = String(p.chapitre || '');
+  var enonce = String(p.enonce   || '').substring(0, 80);
+  var source = String(p.source   || '');
+  if (!code) return { status: 'error', message: 'Code manquant.' };
+
+  var user = null;
+  var users = getRows(SH.USERS);
+  for (var i = 0; i < users.length; i++) {
+    if (String(users[i]['Code']) === code) { user = users[i]; break; }
+  }
+  var prenom = user ? String(user['Prénom'] || '') : '';
+  var niveau = user ? String(user['Niveau'] || '') : '';
+
+  var now = Utilities.formatDate(new Date(), 'Europe/Paris', 'yyyy-MM-dd HH:mm');
+  appendRow('Insights', [
+    now, code, prenom, niveau,
+    'pas_compris', '',
+    enonce, 0, source, chap
+  ]);
   return { status: 'success' };
 }
 
