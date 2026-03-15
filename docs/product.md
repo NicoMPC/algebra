@@ -11,6 +11,15 @@
 
 Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse les résultats, prépare les boosts quotidiens, et assigne les chapitres suivants. Objectif : accompagnement quasi-individuel à 19,99 €/mois — 25× moins cher qu'un cours particulier.
 
+**Positionnement différenciant** :
+Matheux n'est pas "des exercices personnalisés" — tout le monde dit ça.
+Matheux c'est une **empreinte cognitive unique** : après 30 jours, l'app connaît
+les patterns d'erreur de l'élève, sa vitesse de progression, ses lacunes réelles.
+Cette mémoire ne peut pas être transférée. C'est le levier de rétention le plus puissant.
+
+Argument commercial principal : "Un prof de maths derrière, pas juste un algorithme."
+Personne ne peut copier ça facilement — ça demande Nicolas.
+
 ---
 
 ## Utilisateurs cibles
@@ -35,15 +44,17 @@ Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse 
 ## Parcours utilisateur
 
 ### Acquisition (landing → inscription)
-1. Parent arrive sur matheux.fr → hero ciblé parent : "Votre enfant a des difficultés en maths ? On sait où." → 10 sections (chiffres, programme Eduscol, comment, sur mesure, mockup, témoignages, fondateur, prix, FAQ, CTA)
-2. CTA "Commencer le diagnostic →" → overlay fullscreen (masque la landing, focus total)
+1. Parent arrive sur matheux.fr → hero ciblé parent : "Votre enfant mérite un prof qui le connaît vraiment." → 11 sections (chiffres, programme, comment ça marche, **ce que Matheux sait** (empreinte cognitive), sur mesure, mockup, témoignages ×4, fondateur, prix, FAQ ×7, CTA)
+2. CTA "Voir où en est mon enfant →" → overlay fullscreen (masque la landing, focus total)
 3. Step 1 : choix classe (6e-3e) → Step 2 : chapitres déjà vus
 4. Step 3 : quiz diagnostic inline (4-10 questions, box stable sans jump)
 5. Step 4 : formulaire inscription (prénom + email + MDP + consentement parental)
 6. Compte créé → code 6 chars → accès immédiat
 
 ### Onboarding (J0)
-1. Auto-login → onboarding 3 slides (dernier slide incite à "Lancer ton Boost du jour")
+1. Auto-login → **slide objectif** (4 choix post-quiz : lacunes / chapitre_jour / brevet / toutes_matieres)
+   → stocké en col N Users → personnalise les emails J+5/J+7 et futurs pitch d'offres
+   → onboarding 3 slides (dernier slide incite à "Lancer ton Boost du jour")
 2. Boost personnalisé généré en background (`boostFromDiag`)
 3. L'élève voit son premier "Mon Boost du jour" immédiatement
 
@@ -70,6 +81,8 @@ Le fondateur (Nicolas Follezou, prof de maths) fait le lien humain : il analyse 
 | Essai | 7 jours gratuits, accès complet, sans carte bancaire |
 | Paiement | Stripe — **lien TEST actif, à passer en PROD manuellement** (3 occurrences : `index.html`, `backend.js`, `cgv.html`) |
 | Cible | 50 clients = ~500 € MRR |
+| Offre flash | -50% premier mois (9,99€) envoyée manuellement à J+2/J+3 aux élèves engagés | Lien Stripe séparé, zéro code |
+| Offres futures | Basées sur données col Objectif — décision après 10-15 clients | Ne pas créer avant |
 
 ---
 

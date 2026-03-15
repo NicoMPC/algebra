@@ -179,10 +179,20 @@
 - [x] **Audit messages & onboarding** — tous les messages vérifiés cohérents (prix, nb exos, ton, français), aucune incohérence détectée (14 mars 2026)
 - [x] **Documentation nettoyée** — CLAUDE.md épuré en point d'entrée, 7 rapports archivés, docs vivantes mises à jour (14 mars 2026)
 - [x] **PWA — Progressive Web App** — manifest.json, sw.js (Cache First + Network First GAS), offline.html, 11 icônes (72→512px + maskable + apple-touch), balises PWA head, bannière install Android (`beforeinstallprompt`), iOS hint 1x (localStorage) — code commité, **déploiement Netlify/GitHub Pages à valider** (14 mars 2026)
+- [x] **Landing refonte wording** — axe "empreinte cognitive + prof humain + FOMO rétention" : hero, stats, programme, étapes, nouvelle section "Ce que Matheux sait", 4ème témoignage, fondateur renforcé, prix, 2 FAQ, CTA final, sticky mobile. Aucune modif JS/CSS. (15 mars 2026)
+- [ ] **Objectif élève post-quiz** — slide 4 choix (lacunes/chapitre_jour/brevet/toutes_matieres), col N Users, emails J+5/J+7 personnalisés par objectif. Prompt prêt (15 mars 2026)
+- [ ] **Admin panel upgrade** — emails éditables avant copie, duplication supprimée, 💤 Sans nouvelles, action cours (coursNeeded), dark mode onboarding only, profils test diversifiés. Prompt prêt (15 mars 2026)
+- [ ] **Simulation test complète** — script Python 10 profils × tous les workflows, rapport friction. Prompt prêt (15 mars 2026)
+- [ ] **Profil d'apprentissage élève** — page dédiée montrant : 3 points forts identifiés, 2 lacunes en cours, vitesse de progression, streak record. Affiché avec cadenas dans l'overlay trial J+7 ("ces données disparaissent dans 48h")
+- [ ] **Automatisation boosts nuit** — agent qui tourne chaque nuit, lit les erreurs depuis Scores, génère le JSON boost, pousse dans Suivi sans intervention Nicolas. Déclencheur : rebuildSuivi détecte BOOST TERMINÉ → GAS génère automatiquement. Priorité : dès 30 clients actifs
+- [ ] **Rapport parent hebdo automatique** — email dimanche 18h, formulé comme bilan humain (not IA), données réelles : nb exos, score de confiance avant/après, chapitre débloqué, prochain objectif
 - [ ] Agent analyse lacunes quotidien automatique
-- [ ] Agent génération boost automatique
-- [ ] Agent rapport parents (email hebdo)
-- [ ] Migration Sheets → vraie BDD si >50 users simultanés
+- [ ] **Migration Sheets → Supabase** — à déclencher à 80-100 clients payants (pas avant).
+  Capacité actuelle estimée : ~15 connexions simultanées, ~8 save_score simultanés, 100 clients actifs confortables.
+  Stack cible : Supabase (PostgreSQL) + GAS comme proxy ou Node.js sur Railway.
+  Emails : remplacer GmailApp par Brevo (300/j gratuit) ou Resend.
+  Durée estimée : 3-5 sessions Claude Code + 2-3 semaines de tests.
+  **Ne pas faire avant d'avoir le problème.**
 
 ---
 
@@ -251,18 +261,61 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 | 4 | Types d'exercices enrichis — rollout | VF, fill, compléter — rollout progressif sur les nouveaux exercices générés | 🟡 |
 | 5 | Audit géométrie contextuelle | Exercices trop courts/abstraits à reformuler (voir audit-geo-context) | 🔵 |
 
-### Offres différenciées (données objectifs requises)
+### Offres différenciées — décision basée sur données réelles
 
-> Décision basée sur les valeurs de la colonne `Objectif` après 10-15 clients.
+> **Ne pas créer avant d'avoir lu la colonne `Objectif` sur 10-15 clients.**
+> Les données de la colonne N (Users) diront quoi construire.
 
-| Si majorité déclare | Offre envisagée |
-|---|---|
-| `lacunes` | Offre actuelle (19,99€/mois) — déjà adaptée |
-| `brevet` | Pack "Prépa Brevet" — accès prioritaire brevets blancs, peut justifier un prix légèrement supérieur |
-| `chapitre_jour` | Offre "Suivi annuel" — engagement 10 mois, prix réduit/mois |
-| `toutes_matieres` | Offre "Multi-niveaux" — accès tous niveaux pour fratrie |
+| Si majorité déclare | Offre envisagée | Prix |
+|---|---|---|
+| `lacunes` | Offre actuelle — déjà bien positionnée | 19,99€/mois |
+| `brevet` | Pack "Prépa Brevet" — accès prioritaire brevets blancs + suivi dédié | 24,99€/mois |
+| `chapitre_jour` | Offre "Suivi annuel" — engagement 10 mois, prix réduit | 14,99€/mois |
+| `toutes_matieres` | Offre "Multi-niveaux" — accès tous niveaux (fratrie) | 29,99€/mois |
 
 **Workflow de migration** : email personnalisé selon objectif déclaré → lien Stripe vers nouveau plan.
-Aucun client existant n'est verrouillé (pas de CB pendant le trial).
+Aucun client existant verrouillé (pas de CB pendant le trial).
 
-**À faire quand** : quand N ≥ 10 clients, regarder la répartition des `Objectif` dans Users.
+**Offre flash de conversion** : à J+2/J+3, si l'élève est engagé (boost fait, streak actif),
+envoyer manuellement une offre -50% premier mois ("9,99€ ce mois-ci, sans engagement").
+Lien Stripe séparé créé en 2 min. Envoi manuel depuis la fiche admin. Zéro code requis.
+
+**Quand décider** : après 10-15 clients, regarder la répartition `Objectif` dans Users.
+
+### Rétention & FOMO — mécaniques psychologiques
+
+> Objectif : rendre le départ douloureux, pas l'abonnement obligatoire.
+> Principe : la valeur accumulée doit être visible et concrète.
+
+**Mécanique 1 — Profil d'apprentissage avec cadenas**
+À J+7, overlay trial ne dit pas juste "19,99€/mois".
+Il montre le profil construit : points forts, lacunes identifiées, streak, vitesse de progression.
+Avec un message : "Ces données disparaissent dans 48h. Continue pour garder ton profil."
+Honnête, factuel, puissant.
+
+**Mécanique 2 — Streak comme identité (pas comme peur)**
+Pas "tu vas perdre ton streak" à la Duolingo.
+Mais : "Lucas a travaillé 12 jours d'affilée — top 5% des élèves Matheux."
+La perte devient une fierté à protéger, pas une anxiété.
+
+**Mécanique 3 — Rapport parent comme lien émotionnel**
+Email hebdo formulé comme bilan humain :
+"Cette semaine Hugo a débloqué les fractions — une notion qui lui résistait depuis septembre.
+Son score de confiance est passé de 34 à 61/100."
+Le parent ne désabonne pas ce qui progresse.
+
+**Mécanique 4 — Personnalisation explicite dans les messages**
+Pas "exercices personnalisés" (générique).
+Mais : "Ton prof a remarqué que tu fais toujours la même erreur sur les fractions
+avec dénominateurs différents — voici pourquoi."
+Sentiment de relation, pas d'outil.
+
+**Mécanique 5 — Coût de reconstruction visible**
+À J+30 : "Si tu recommences ailleurs, il faudra X semaines pour retrouver
+ce niveau de personnalisation." Ancré dans la réalité — un service concurrent repart de zéro.
+
+**À implémenter dans l'ordre** :
+1. Profil d'apprentissage dans l'overlay trial (PHASE 2 priorité 1)
+2. Rapport parent hebdo automatique (dès 20 clients)
+3. Streak comme identité dans les toasts (petit patch, fort impact)
+4. Personnalisation explicite dans les messages post-exo (wording uniquement)
