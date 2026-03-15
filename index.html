@@ -840,6 +840,46 @@
     body.adm-dark #admin-modal-inner .adm-chap-block { background: #0f172a !important; border-color: #334155 !important; }
     body.adm-dark #admin-modal-inner .adm-chap-block .text-slate-800 { color: #e2e8f0 !important; }
 
+    /* ── MODE NUIT APP ──────────────────────────────────────── */
+    body.app-night #main-app { background:#0f172a !important; }
+    body.app-night #main-app header { background:#1e293b !important; border-color:#334155 !important; }
+    body.app-night #main-app header .border-b,
+    body.app-night #main-app header .border-t { border-color:#334155 !important; }
+    body.app-night #main-app .text-slate-900 { color:#f1f5f9 !important; }
+    body.app-night #main-app .text-slate-800 { color:#e2e8f0 !important; }
+    body.app-night #main-app .text-slate-700 { color:#cbd5e1 !important; }
+    body.app-night #main-app .text-slate-600 { color:#94a3b8 !important; }
+    body.app-night #main-app .text-slate-500 { color:#64748b !important; }
+    body.app-night #main-app .text-slate-400 { color:#475569 !important; }
+    body.app-night #main-app .text-slate-300 { color:#334155 !important; }
+    body.app-night #main-app .text-indigo-600 { color:#818cf8 !important; }
+    body.app-night #main-app .text-indigo-700 { color:#a5b4fc !important; }
+    body.app-night #main-app .bg-white { background:#1e293b !important; }
+    body.app-night #main-app .bg-slate-50 { background:#0f172a !important; }
+    body.app-night #main-app .bg-slate-100 { background:#334155 !important; }
+    body.app-night #main-app .bg-indigo-50 { background:#1e1b4b !important; }
+    body.app-night #main-app .bg-indigo-100 { background:#312e81 !important; }
+    body.app-night #main-app .bg-emerald-50 { background:#052e16 !important; }
+    body.app-night #main-app .bg-amber-50 { background:#1c1107 !important; }
+    body.app-night #main-app .bg-rose-50 { background:#2d0a0a !important; }
+    body.app-night #main-app .border-slate-100 { border-color:#334155 !important; }
+    body.app-night #main-app .border-slate-200 { border-color:#475569 !important; }
+    body.app-night #main-app .border-emerald-200 { border-color:#065f46 !important; }
+    body.app-night #main-app .border-indigo-200 { border-color:#3730a3 !important; }
+    body.app-night #main-app .border-amber-200 { border-color:#78350f !important; }
+    body.app-night #main-app .pbar { background:#334155 !important; }
+    body.app-night #main-app footer a { color:#334155 !important; }
+    body.app-night #main-app .retro-exo-card { background:#1e293b !important; }
+    body.app-night #main-app .shadow-sm { box-shadow:0 1px 3px rgba(0,0,0,.5) !important; }
+    body.app-night #main-app #main-nav button:not(.bg-indigo-600) { background:#334155 !important; color:#94a3b8 !important; }
+    /* Chapter cards inline backgrounds */
+    body.app-night #app-c .rounded-2xl[style*="background:#fff"] { background:#1e293b !important; }
+    body.app-night #app-c [style*="background:#fafafa"] { background:#0f172a !important; }
+    body.app-night #app-c [style*="background:#f0fdf4"] { background:#052e16 !important; border-color:#065f46 !important; }
+    body.app-night #app-c .chap-stack-ghost { filter:brightness(.3); }
+    /* Night button active state */
+    body.app-night #app-night-btn { background:#1e1b4b !important; border-color:#4f46e5 !important; color:#fbbf24 !important; }
+
     /* ── SYMBOLES TABLEAU BLANC ──────────────────────────── */
     .sym-btn {
       background:#f1f5f9; border:1.5px solid #e2e8f0; border-radius:8px;
@@ -1687,6 +1727,8 @@
           </div>
         </div>
       </div>
+      <button id="app-night-btn" onclick="toggleAppNight()"
+              class="w-9 h-9 bg-slate-100 border border-slate-200 text-slate-400 rounded-xl flex items-center justify-center text-base hover:bg-slate-200 transition-colors mr-1.5" title="Mode nuit">🌙</button>
       <button onclick="logout()"
               class="w-9 h-9 bg-rose-50 border border-rose-100 text-rose-400 rounded-xl flex items-center justify-center text-base hover:bg-rose-100 transition-colors">✕</button>
     </div>
@@ -2273,6 +2315,24 @@ function toggleLandNight() {
 }
 // Restaurer au chargement
 if (localStorage.getItem('land_night') === '1') document.body.classList.add('land-night');
+
+// Mode nuit app
+function toggleAppNight() {
+  var on = document.body.classList.toggle('app-night');
+  localStorage.setItem('app_night', on ? '1' : '0');
+  var btn = document.getElementById('app-night-btn');
+  if (btn) btn.textContent = on ? '☀️' : '🌙';
+}
+(function() {
+  if (localStorage.getItem('app_night') === '1') {
+    document.body.classList.add('app-night');
+    // Le bouton sera mis à jour au render, mais on peut le faire ici aussi
+    document.addEventListener('DOMContentLoaded', function() {
+      var btn = document.getElementById('app-night-btn');
+      if (btn) btn.textContent = '☀️';
+    });
+  }
+})();
 
 function showAuth(tab) {
   // Ne pas interrompre le flow CTA si l'utilisateur est dedans
@@ -3940,7 +4000,7 @@ async function togCat(cat) {
   }
   Object.keys(S.exp).forEach(function(k){ S.exp[k] = false; });
   S.exp[cat] = !was;
-  if (!S.exp[cat]) { delete S.retroSess[cat]; S.retroBoost = null; }
+  if (!S.exp[cat]) { delete S.retroSess[cat]; S.retroBoost = null; if (cat === 'BOOST') delete S.retroExoIdx['BOOST']; }
   // Boost consommé : reprendre la révision depuis le Q1
   if (!was && cat === 'BOOST' && S.boostConsumed) S.qv['BOOST'] = 0;
   if (S.isNew[cat]) S.isNew[cat] = false;
@@ -5043,13 +5103,26 @@ function renderArchiveSection(cat, exs) {
   if (isBoost) {
     // ── Boost du jour terminé ─────────────────────────────
     html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-emerald-700 text-center mb-3">Boost du jour : fait ✅ T\'es à jour. Reviens demain 🔥</div>';
+    // Collecter les exos répondus pour navigation Précédent/Suivant
+    var _boostAnswered = [];
     exs.forEach(function(exo, idx) {
       var r = res2(cat, idx);
       var id = S.niv + '-' + r.rC + '-' + r.rI;
       var result = S.res[id];
-      if (!result) return;
-      html += _renderRetroExo(exo, { resultat: result, mauvaise_option: S.qans[id] || '', nb_indices: S.hints[id] || 0, formule_vue: !!S.ftch[id] }, cat, idx);
+      if (result) _boostAnswered.push({ exo: exo, idx: idx, id: id, result: result });
     });
+    if (_boostAnswered.length > 0) {
+      var _bNav = S.retroExoIdx['BOOST'] || 0;
+      if (_bNav >= _boostAnswered.length) _bNav = 0;
+      var _bItem = _boostAnswered[_bNav];
+      html += _renderRetroExo(_bItem.exo, { resultat: _bItem.result, mauvaise_option: S.qans[_bItem.id] || '', nb_indices: S.hints[_bItem.id] || 0, formule_vue: !!S.ftch[_bItem.id] }, cat, _bItem.idx);
+      // Barre nav
+      html += '<div class="flex items-center justify-between mt-3 gap-2">';
+      html += '<button onclick="_retroNavBoost(-1)" class="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-black text-slate-400 bg-white ' + (_bNav === 0 ? 'opacity-30 pointer-events-none' : 'active:bg-slate-50') + '">← Précédent</button>';
+      html += '<span class="text-[11px] font-black text-slate-500 flex-shrink-0">' + (_bNav + 1) + ' / ' + _boostAnswered.length + '</span>';
+      html += '<button onclick="_retroNavBoost(1)" class="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-black text-slate-400 bg-white ' + (_bNav === _boostAnswered.length - 1 ? 'opacity-30 pointer-events-none' : 'active:bg-slate-50') + '">Suivant →</button>';
+      html += '</div>';
+    }
     // ── Boosts passés ──────────────────────────────────────
     if (S.boostHistory && S.boostHistory.length > 0) {
       html += '<div class="mt-4 mb-2 flex items-center gap-2"><div class="flex-1 h-px bg-slate-100"></div><span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Mes boosts passés</span><div class="flex-1 h-px bg-slate-100"></div></div>';
@@ -5195,6 +5268,21 @@ function _retroNav(cat, dir) {
   var cur = S.retroExoIdx[cat] || 0;
   cur = Math.max(0, Math.min(sess.exos.length - 1, cur + dir));
   S.retroExoIdx[cat] = cur;
+  render();
+}
+function _retroNavBoost(dir) {
+  if (!S.retroExoIdx) S.retroExoIdx = {};
+  // Calculer le total des exos boost répondus pour borner la navigation
+  var _bTotal = 0;
+  if (S.boost && S.boost.exos) {
+    S.boost.exos.forEach(function(_, i) {
+      var r = res2('BOOST', i);
+      if (S.res[S.niv + '-' + r.rC + '-' + r.rI]) _bTotal++;
+    });
+  }
+  var cur = S.retroExoIdx['BOOST'] || 0;
+  cur = Math.max(0, Math.min(_bTotal - 1, cur + dir));
+  S.retroExoIdx['BOOST'] = cur;
   render();
 }
 function _toggleRetroBoost(idx) {
@@ -5581,6 +5669,10 @@ window.dismissMotProf = function() {
 // RENDER PRINCIPAL
 // ══════════════════════════════════════════════════════════════
 function render() {
+  // Sync icône mode nuit
+  var _nightBtn = document.getElementById('app-night-btn');
+  if (_nightBtn) _nightBtn.textContent = document.body.classList.contains('app-night') ? '☀️' : '🌙';
+
   var c = document.getElementById('app-c');
   if (!S.prof) {
     c.innerHTML = '<div class="space-y-3">'+[1,2,3].map(function(){ return '<div class="sk h-20 w-full"></div>'; }).join('')+'</div>';
@@ -5710,7 +5802,9 @@ function render() {
       if (S.res[S.niv+'-'+kr.rC+'-'+kr.rI]) _totalChapDone++;
     }
   });
-  var _showFirstGuide = _totalChapDone === 0; // Aucun exo de chapitre encore fait
+  // Afficher le guide "commence par là" seulement après que le boost est consommé
+  // (ou s'il n'y a pas de boost disponible) — évite de montrer le guide pendant que le boost attend
+  var _showFirstGuide = _totalChapDone === 0 && (!S.boost || S.boostConsumed);
 
   sortedKeys.forEach(function(cat){
     var exs = cats[cat]; var tot = exs.length; var done = 0;
@@ -5745,7 +5839,7 @@ function render() {
         html += '<span class="chap-stack-badge">×'+_sessCount+'</span>';
       }
       html += '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-base">'+(isBoost?'⚡':(LVL[S.niv].icons[cat]||'📘'))+'</div>';
-      html += '<span class="syne font-black text-xs text-slate-700 leading-tight px-1" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+(isBoost?'Mon Boost ✓':(LVL[S.niv].names[cat]||cat))+'</span>';
+      html += '<span class="syne font-black text-sm text-slate-800 leading-tight px-1" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:800">'+(isBoost?'Mon Boost ✓':(LVL[S.niv].names[cat]||cat))+'</span>';
       if (isBoost) {
         html += '<div class="flex items-center justify-center gap-1.5 my-0.5">' +
           '<span class="relative flex h-2 w-2 flex-shrink-0">' +
@@ -5810,7 +5904,7 @@ function render() {
     html += '<div data-cat="'+cat+'" class="rounded-2xl border border-slate-200 overflow-hidden shadow-sm afu mb-3' + cardPulseClass + '" style="'+cs+'">';
     html += '<div onclick="togCat(\''+cat+'\')" class="px-4 py-4 flex items-center gap-3 cursor-pointer select-none">';
     html += '<div class="w-11 h-11 '+(isBoost?'bg-white/20':'bg-slate-100')+' rounded-xl flex items-center justify-center text-lg flex-shrink-0 '+iconPulse+'">'+(LVL[S.niv].icons[cat]||'📘')+'</div>';
-    html += '<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1.5"><span class="syne font-black text-sm '+(isBoost?'text-white':'text-slate-900')+' truncate">'+(LVL[S.niv].names[cat]||cat)+'</span>';
+    html += '<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1.5"><span class="syne font-black text-sm '+(isBoost?'text-white':'text-slate-900')+' truncate" style="font-weight:800">'+(LVL[S.niv].names[cat]||cat)+'</span>';
     if (isNew) html += '<span class="text-[9px] syne font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-md">NEW</span>';
     if (S.remReq[cat]) html += '<span class="text-[9px] syne font-black bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md">🔄 Demain</span>';
     if (S.revisionCats && S.revisionCats.indexOf(cat) !== -1) html += '<span class="text-[9px] syne font-black bg-violet-100 text-violet-700 border border-violet-200 px-1.5 py-0.5 rounded-md">🔁 Révision</span>';
