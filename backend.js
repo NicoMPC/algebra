@@ -1557,7 +1557,7 @@ function rebuildSuivi(code) {
   }
 
   // ── Calcul pills prioritaires (ordre strict) ─────────────
-  // Priorité : 1=⚡BOOST TERMINÉ  2=✅CHAPITRE TERMINÉ  3=📝BREVET EN ATTENTE  4=🔴BLOQUÉ  5=👍RAS
+  // Priorité : 1=⚡BOOST TERMINÉ  2=✅CHAPITRE TERMINÉ  3=📝BREVET EN ATTENTE  4=💤Sans nouvelles  5=👍RAS
   var actions = [];
   if (allUserBoosts.length >= 1 && lastBoostExosDone >= 5 && !newBoost && !boostPendingSuivi) {
     actions.push('⚡ BOOST TERMINÉ → préparer le suivant');
@@ -1583,7 +1583,7 @@ function rebuildSuivi(code) {
     actions.push('📝 BREVET EN ATTENTE → à faire');
   }
   if (inactif7j && allChapLow && chapOrder.length > 0) {
-    actions.push('🔴 BLOQUÉ');
+    actions.push('💤 Sans nouvelles');
   }
   var action = actions.length > 0 ? actions.join(' · ') : '👍 RAS';
 
@@ -2452,7 +2452,7 @@ function generateMorningReport() {
         var hardRecents = c.hardDates.filter(function(d){ return d >= dateOffset(-7); }).length;
         chapFragiles.push('  🔴 BLOQUEE — ' + chap + ' (score:' + score + ', ' + errRate + '% erreurs, ' + nbSess + ' sessions)');
         actionLines.push('[URGENT] ' + s.name + ' — ' + chap + ' (' + s.level + ')');
-        actionLines.push('  Score: ' + score + '/100 | ' + errRate + '% erreurs | bloqué depuis ' + nbSess + ' sessions');
+        actionLines.push('  Score: ' + score + '/100 | ' + errRate + '% erreurs | inactif depuis ' + nbSess + ' sessions');
         actionLines.push('  → Prompt DeepSeek : "Génère 5 exos de remédiation sur ' + chap + ' niveau ' + s.level + ', steps très détaillés, contexte concret, niveau lvl1 uniquement"');
         actionLines.push('');
 
@@ -3006,6 +3006,14 @@ function getAdminOverview(p) {
     }
   }
 
+  // ── Cours (pour coursNeeded) ────────────────────────────
+  var coursSheet = ss.getSheetByName('Cours');
+  var coursRows  = coursSheet ? coursSheet.getDataRange().getValues() : [];
+  var coursMap   = {};
+  coursRows.slice(1).forEach(function(r) {
+    coursMap[r[0]+'-'+r[1]] = { s5: r[2], s10: r[3], s15: r[4], s20: r[5] };
+  });
+
   // ── Construction de la liste élèves ─────────────────────
   var CHAP_NEW_IDX  = [6, 9, 12, 15];
   var BOOST_NEW_IDX = 18;
@@ -3135,6 +3143,28 @@ function getAdminOverview(p) {
         };
       }).sort(function(a, b) { return b.hardCount - a.hardCount; }); // plus fragile en 1er
 
+      // ── coursNeeded — cours manquants pour milestones atteints ──
+      var coursNeeded = [];
+      var milestoneMap = { 5: 's5', 10: 's10', 15: 's15', 20: 's20' };
+      (chapitresDetail || []).forEach(function(chap) {
+        var nb = chap.nbExos || 0;
+        [5, 10, 15, 20].forEach(function(m) {
+          if (nb >= m) {
+            var key = niveau + '-' + chap.cat;
+            var cr  = coursMap[key];
+            var field = milestoneMap[m];
+            if (!cr || !(cr[field] || '').trim()) {
+              coursNeeded.push({ cat: chap.cat, milestone: m, nbExos: nb });
+            }
+          }
+        });
+      });
+      var cnBycat = {};
+      coursNeeded.forEach(function(c) {
+        if (!cnBycat[c.cat] || c.milestone < cnBycat[c.cat].milestone) cnBycat[c.cat] = c;
+      });
+      coursNeeded = Object.values(cnBycat);
+
       // ── boostHistory ───────────────────────────────────────
       var userBoosts = (boostsByCode[code] || []).slice().sort(function(a, b) {
         return b.date > a.date ? 1 : b.date < a.date ? -1 : 0;
@@ -3246,7 +3276,7 @@ function getAdminOverview(p) {
       if (userBoosts.length >= 1 && lastBoostExosDoneAdmin >= 5 && !boostNewPending && !boostPendingFlag && !boostInProgressFlag) {
         actionsAdmin.push('⚡ BOOST TERMINÉ → préparer le suivant');
       }
-      // BLOQUÉ : inactif > 7j ET tous scores bas
+      // Sans nouvelles : inactif > 7j ET tous scores bas
       var inactif7jAdmin = false;
       if (lastConnection) {
         try {
@@ -3264,7 +3294,7 @@ function getAdminOverview(p) {
         actionsAdmin.push('📝 BREVET EN ATTENTE → à faire');
       }
       if (inactif7jAdmin && allScoreLowAdmin && chapitresDetail.length > 0) {
-        actionsAdmin.push('🔴 BLOQUÉ');
+        actionsAdmin.push('💤 Sans nouvelles');
       }
       var actionPriority = actionsAdmin.length > 0 ? actionsAdmin[0] : '👍 RAS';
 
@@ -3352,6 +3382,7 @@ function getAdminOverview(p) {
         neverStarted:         neverStarted,
         secondaryActions:     secondaryActions,
         category:             category,
+        coursNeeded:          coursNeeded,
       };
     })
     .sort(function(a, b) {

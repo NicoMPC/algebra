@@ -1017,7 +1017,6 @@
       <span class="syne font-black text-white" style="font-size:1.1rem">Math<span style="color:#818cf8">eux</span></span>
     </div>
     <div class="flex items-center gap-2">
-      <button id="night-toggle" onclick="toggleLandNight()" title="Mode nuit">🌙</button>
       <button onclick="showAuth('login')"
               class="text-white/80 hover:text-white text-sm font-semibold border border-white/35 px-4 py-2 rounded-xl hover:bg-white/10 transition-colors">
         Connexion
@@ -3173,6 +3172,9 @@ function _onbRender() {
     '</div>' +
     '<div style="padding:1.5rem;text-align:center">' +
     '<div style="display:flex;align-items:center;justify-content:center;gap:.4rem;margin-bottom:1.25rem">' + dots + '</div>' +
+    '<div style="text-align:center;margin-bottom:.75rem">' +
+      '<button onclick="toggleLandNight()" style="background:none;border:1px solid #e2e8f0;border-radius:99px;padding:.3rem .8rem;font-size:.8rem;color:#64748b;cursor:pointer">\uD83C\uDF19 Mode nuit</button>' +
+    '</div>' +
     (isLast
       ? '<button onclick="_onbNext()" class="pop-in" style="width:100%;padding:1rem;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer">C\'est parti →</button>'
       : '<button onclick="_onbNext()" style="width:100%;padding:1rem;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer">Suivant →</button>') +
@@ -5533,6 +5535,15 @@ function openCoursView(cat) {
   }
   html += '</div>';
 
+  // Cours en préparation (aucune section débloquée mais exos >= 5)
+  if (cm.unlocked.length === 0 && cm.nbExos >= 5) {
+    html += '<div style="text-align:center;padding:2rem 1rem">' +
+      '<div style="font-size:2.5rem;margin-bottom:1rem">📚</div>' +
+      '<div style="font-family:Syne,sans-serif;font-weight:800;color:#0f172a;font-size:1.05rem;margin-bottom:.5rem">Cours en préparation</div>' +
+      '<p style="color:#64748b;font-size:.9rem;line-height:1.6">Bravo pour tes ' + cm.nbExos + ' exercices !<br>Ton prof rédige ton cours personnalisé.<br>Reviens demain pour le découvrir. 🎯</p>' +
+    '</div>';
+  }
+
   // Sections débloquées
   if (cm.unlocked && cm.unlocked.length > 0) {
     cm.unlocked.forEach(function(sect, i) {
@@ -5592,15 +5603,22 @@ function _checkCoursMilestone(cat) {
     }
   }
   var milestones = [5, 10, 15, 20];
+  var cm = S.coursMap[cat];
   milestones.forEach(function(m) {
     if (nbExos === m) {
-      var msgs = {
-        5:  '📖 Ton cours est prêt ! Consulte-le depuis le chapitre.',
-        10: '📖 Ton cours s\'enrichit — nouvelles notions disponibles !',
-        15: '📖 Cours avancé débloqué — points de vigilance personnalisés.',
-        20: '✨ Cours complet ! Tu as tout maîtrisé 🏆'
-      };
-      setTimeout(function() { showT(msgs[m], 5000, '📖'); }, 500);
+      // Vérifier si le cours pour ce milestone est rédigé
+      var hasSection = cm && cm.unlocked && cm.unlocked.some(function(s) { return s.unlock_at === m; });
+      if (hasSection) {
+        var msgs = {
+          5:  '📖 Ton cours est prêt ! Consulte-le depuis le chapitre.',
+          10: '📖 Ton cours s\'enrichit — nouvelles notions disponibles !',
+          15: '📖 Cours avancé débloqué — points de vigilance personnalisés.',
+          20: '✨ Cours complet ! Tu as tout maîtrisé 🏆'
+        };
+        setTimeout(function() { showT(msgs[m], 5000, '📖'); }, 500);
+      } else {
+        setTimeout(function() { showT('🎉 Bravo ! Ton prof prépare ton cours personnalisé — retrouve-le demain !', 5000, '📚'); }, 500);
+      }
     }
   });
 }
@@ -7079,53 +7097,90 @@ function relDateAdmin(dateStr) {
   } catch (e) { return 'date inconnue'; }
 }
 
+// ── Mini-modal email éditable ─────────────────────────────────
+function _openEmailModal(code, type, subject, body) {
+  var existing = document.getElementById('email-edit-modal');
+  if (existing) existing.remove();
+  var ov = document.createElement('div');
+  ov.id = 'email-edit-modal';
+  ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:1rem';
+  ov.innerHTML =
+    '<div style="background:#fff;border-radius:20px;width:100%;max-width:480px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.4)">' +
+    '<div style="background:linear-gradient(135deg,#4338ca,#6366f1);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center">' +
+      '<span style="color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:.95rem">📧 ' + type + '</span>' +
+      '<button onclick="document.getElementById(\'email-edit-modal\').remove()" style="color:rgba(255,255,255,.7);font-size:1.25rem;background:none;border:none;cursor:pointer;line-height:1">✕</button>' +
+    '</div>' +
+    '<div style="padding:1.25rem">' +
+      '<div style="margin-bottom:.75rem">' +
+        '<div style="font-size:.7rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem">Objet</div>' +
+        '<input id="email-modal-subject" type="text" value="' + subject.replace(/"/g, '&quot;') + '" style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:.5rem .75rem;font-size:.85rem;color:#0f172a;outline:none;box-sizing:border-box">' +
+      '</div>' +
+      '<div>' +
+        '<div style="font-size:.7rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem">Corps</div>' +
+        '<textarea id="email-modal-body" rows="10" style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:.65rem .75rem;font-size:.82rem;color:#0f172a;line-height:1.6;resize:vertical;outline:none;box-sizing:border-box;font-family:DM Sans,sans-serif">' + _escAttr(body) + '</textarea>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:.5rem;margin-top:1rem">' +
+        '<button id="email-modal-copy-btn" onclick="_emailModalCopy(\'' + code + '\',\'' + type + '\')" style="width:100%;padding:.8rem;background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:.9rem;border:none;border-radius:12px;cursor:pointer">📋 Copier ce texte</button>' +
+        '<button id="email-modal-mark-btn" onclick="_emailModalMark(\'' + code + '\',\'' + type + '\')" style="width:100%;padding:.8rem;background:#64748b;color:#fff;font-family:Syne,sans-serif;font-weight:700;font-size:.85rem;border:none;border-radius:12px;cursor:pointer;display:none">✓ Marquer comme envoyé</button>' +
+      '</div>' +
+    '</div></div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click', function(e) { if (e.target === ov) ov.remove(); });
+}
+
+function _escAttr(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function _emailModalCopy(code, type) {
+  var subj = document.getElementById('email-modal-subject');
+  var body = document.getElementById('email-modal-body');
+  if (!subj || !body) return;
+  var text = 'Objet : ' + subj.value + '\n\n' + body.value;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('email-modal-copy-btn');
+    if (btn) { btn.textContent = '✅ Copié !'; btn.style.background = '#10b981'; }
+    var markBtn = document.getElementById('email-modal-mark-btn');
+    if (markBtn) markBtn.style.display = '';
+  }).catch(function() { showT('Erreur clipboard', 3000, '⚠️'); });
+}
+
+async function _emailModalMark(code, type) {
+  var markBtn = document.getElementById('email-modal-mark-btn');
+  if (markBtn) { markBtn.disabled = true; markBtn.textContent = '...'; }
+  if (type === 'J+0') {
+    await markWelcomeEmailSent(code);
+  } else {
+    await markSequenceEmailSent(code, type);
+  }
+  var ov = document.getElementById('email-edit-modal');
+  if (ov) ov.remove();
+}
+
 // ── Copie le mail de bienvenue pour envoi manuel ─────────────
 function copyWelcomeEmail(code) {
   var st = S._modalStudent;
   if (!st) return;
   var prenom = st.prenom || '';
   var email  = st.email  || '';
-  var text =
-    'À : ' + email + '\n' +
-    'Objet : ' + prenom + ' est inscrit(e) sur Matheux — voici comment ça commence 🎯\n' +
-    '\n' +
-    'Bonjour,\n' +
-    '\n' +
-    'Je m\'appelle Nicolas — je suis prof de maths et j\'ai créé Matheux\n' +
-    'pour aider les collégiens à combler leurs lacunes sans pression,\n' +
-    '10 minutes par jour.\n' +
-    '\n' +
-    'Le profil de ' + prenom + ' est prêt. Voici comment ça se passe :\n' +
-    '\n' +
-    '🎯 Étape 1 — Le diagnostic (5 min)\n' +
-    '8 questions pour identifier exactement ce qui bloque ' + prenom + '.\n' +
-    'Pas de note, pas de jugement — juste un point de départ honnête.\n' +
-    '\n' +
-    '⚡ Étape 2 — Le boost quotidien (10 min/jour)\n' +
-    'Chaque matin, 5 exercices ciblés sur les vraies lacunes de ' + prenom + '.\n' +
-    'Des indices disponibles si besoin. Régulier vaut mieux qu\'intense.\n' +
-    '\n' +
-    '📈 Étape 3 — La progression visible\n' +
-    'Je suis les résultats en direct et j\'adapte les exercices chaque semaine.\n' +
-    'Vous recevrez un bilan à J+3 et J+7.\n' +
-    '\n' +
-    '→ Commencer le diagnostic : https://matheux.fr\n' +
-    '\n' +
-    '⏱ Rappel : 7 jours d\'essai gratuit, sans carte bancaire.\n' +
-    '\n' +
-    'Des questions ? Répondez directement à cet email — je lis tout personnellement.\n' +
-    '\n' +
+  var subject = prenom + ' vient de démarrer son diagnostic Matheux 🎯';
+  var body = 'Bonjour,\n\n' +
+    'Je m\'appelle Nicolas — prof de maths et fondateur de Matheux.\n\n' +
+    'Le profil de ' + prenom + ' est actif. Son diagnostic vient d\'être lancé : en quelques questions, j\'identifie précisément les notions qui bloquent — pas celles de la classe entière, les siennes.\n\n' +
+    'Ce qui attend ' + prenom + ' :\n\n' +
+    '🎯 Un diagnostic personnalisé\n' +
+    'Pas une liste de tout le programme — uniquement ce qui mérite d\'être retravaillé.\n\n' +
+    '⚡ Un Boost du jour\n' +
+    '5 exercices ciblés, chaque matin. 10 minutes suffisent. C\'est la clé.\n\n' +
+    '📈 Une progression visible\n' +
+    'Je suis les résultats en direct. Je vous envoie un point à J+3 et J+7.\n\n' +
+    '→ Démarrer maintenant : https://matheux.fr\n\n' +
+    'L\'essai dure 7 jours, sans carte bancaire. Vous décidez ensuite, sans pression.\n\n' +
+    'Des questions ? Répondez directement — je lis chaque message.\n\n' +
     'Nicolas\n' +
-    'Prof de maths & fondateur de Matheux';
+    'Prof de maths · Matheux';
 
-  navigator.clipboard.writeText(text).then(function() {
-    var btn = document.getElementById('btn-welcome-copy-' + code);
-    if (btn) { btn.textContent = '✅ Copié !'; setTimeout(function() { btn.textContent = '📧 Copier mail de bienvenue'; }, 2000); }
-    var markBtn = document.getElementById('btn-welcome-mark-' + code);
-    if (markBtn) markBtn.style.display = '';
-  }).catch(function() {
-    showT('Erreur clipboard — copie manuelle requise', 3000, '⚠️');
-  });
+  _openEmailModal(code, 'J+0', subject, body);
 }
 
 // ── Marque le mail de bienvenue comme envoyé ─────────────────
@@ -7167,26 +7222,40 @@ function copySequenceEmail(code, type) {
   var subject = '', body = '';
 
   if (type === 'J+3') {
-    subject = 'Comment ça se passe pour ' + prenom + ' ? 💪';
-    body = 'Bonjour,\n\n3 jours déjà avec Matheux !\n\nOn espère que les premiers exercices se passent bien pour ' + prenom + '.\n\nPas d\'inquiétude si certaines notions semblent difficiles — c\'est normal, c\'est même l\'objectif de ces exercices de les identifier et de les travailler.\n\nLe boost quotidien (5 exercices, ~10 minutes) est la clé. La régularité fait toute la différence.\n\nUn petit retour ? Répondez directement à cet email — je lis tout.\n\nNicolas\nProf de maths & fondateur de Matheux';
+    subject = 'Premier point sur ' + prenom + ' — 3 jours de Matheux 📊';
+    body = 'Bonjour,\n\n' +
+      'Trois jours se sont écoulés depuis l\'inscription de ' + prenom + '.\n\n' +
+      'J\'ai pu voir ses premières réponses. Ce que je vois à ce stade est courant :\n' +
+      'certaines notions semblent solides, d\'autres moins — c\'est exactement pour ça que le diagnostic existe.\n\n' +
+      'Ce qui fait la différence à ce stade : la régularité.\n' +
+      'Pas besoin d\'heures de travail. Le Boost du jour — 5 exercices, 10 minutes — suffit à créer l\'habitude.\n\n' +
+      'Si ' + prenom + ' n\'a pas encore pris le rythme, c\'est normal. Il reste 4 jours d\'essai — c\'est amplement assez pour voir des résultats concrets.\n\n' +
+      'Un retour sur comment ça se passe ? Répondez à cet email — je suis disponible.\n\n' +
+      'Nicolas\n' +
+      'Prof de maths · Matheux';
   } else if (type === 'J+5') {
     subject = 'Encore 2 jours, ' + prenom + ' 📅';
-    body = 'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\nSi vous souhaitez continuer, c\'est 19,99 €/mois — sans engagement, résiliable à tout moment.\n→ ' + stripeLink + '\n\nSinon, pas de pression — ' + prenom + ' conserve ses résultats.\n\nDes questions ? Répondez directement à cet email.\n\nNicolas\nProf de maths & fondateur de Matheux';
+    body = 'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\nSi vous souhaitez continuer, c\'est 19,99 €/mois — sans engagement, résiliable à tout moment.\n→ ' + stripeLink + '\n\nSinon, pas de pression — ' + prenom + ' conserve ses résultats.\n\nDes questions ? Répondez directement à cet email.\n\nNicolas\nProf de maths · Matheux';
   } else if (type === 'J+7') {
-    subject = 'Bilan de la semaine de ' + prenom + ' ⭐';
-    body = 'Bonjour,\n\nUne semaine avec Matheux !\n\nC\'est déjà beaucoup — le simple fait de commencer, c\'est 90 % du travail.\n\nCe que ' + prenom + ' a fait cette semaine :\n✓ Identifié ses points forts et points à renforcer\n✓ Travaillé avec des exercices adaptés\n✓ Posé des bases solides pour la suite\n\nPour continuer :\n→ 19,99 €/mois, sans engagement, résiliable à tout moment\n→ ' + stripeLink + '\n\nDes questions avant de décider ? Répondez à cet email — je suis là.\n\nNicolas\nProf de maths & fondateur de Matheux';
+    subject = 'Le bilan de la semaine de ' + prenom + ' ✅';
+    body = 'Bonjour,\n\n' +
+      'La semaine d\'essai de ' + prenom + ' se termine aujourd\'hui.\n\n' +
+      'Ce que cette semaine a permis de faire :\n' +
+      '→ Identifier les chapitres prioritaires à retravailler\n' +
+      '→ Reprendre contact avec les exercices, sans pression\n' +
+      '→ Établir une base de départ fiable\n\n' +
+      'Le travail sérieux commence maintenant — et c\'est là que Matheux prend tout son sens.\n\n' +
+      'Pour continuer avec ' + prenom + ' :\n' +
+      '→ 19,99 €/mois · sans engagement · résiliable à tout moment\n' +
+      '→ ' + stripeLink + '\n\n' +
+      'Pour référence : un cours particulier coûte 30 à 50 €/heure.\n' +
+      'Matheux, c\'est un suivi quotidien personnalisé, à 66 centimes par jour.\n\n' +
+      'Des questions avant de décider ? Répondez à cet email.\n\n' +
+      'Nicolas\n' +
+      'Prof de maths · Matheux';
   }
 
-  var text = 'À : [email parent]\nObjet : ' + subject + '\n\n' + body;
-
-  navigator.clipboard.writeText(text).then(function() {
-    var btn = document.getElementById('btn-seq-copy-' + code + '-' + type.replace('+',''));
-    if (btn) { btn.textContent = '✅ Copié !'; setTimeout(function() { btn.textContent = '📧 Copier ' + type; }, 2000); }
-    var markBtn = document.getElementById('btn-seq-mark-' + code + '-' + type.replace('+',''));
-    if (markBtn) markBtn.style.display = '';
-  }).catch(function() {
-    showT('Erreur clipboard — copie manuelle requise', 3000, '⚠️');
-  });
+  _openEmailModal(code, type, subject, body);
 }
 
 // ── Marque un email de séquence comme envoyé ──────────────────
@@ -7436,8 +7505,8 @@ function copyLastBoostAsTemplate(code) {
 // Retourne { bg, border, text, cls, icon } selon l'action (pill texte)
 function _actionStyle(action) {
   if (!action) return { bg:'bg-slate-50', border:'border-slate-200', text:'text-slate-400', cls:'ac-ras', icon:'👍' };
-  if (action.indexOf('🔴') !== -1 || action.indexOf('BLOQUÉ') !== -1) {
-    return { bg:'bg-rose-50', border:'border-rose-200', text:'text-rose-700', cls:'ac-diag', icon:'🔴' };
+  if (action.indexOf('💤') !== -1 || action.indexOf('Sans nouvelles') !== -1) {
+    return { bg:'bg-rose-50', border:'border-rose-200', text:'text-rose-700', cls:'ac-diag', icon:'💤' };
   }
   if (action.indexOf('⚡') !== -1 || action.indexOf('BOOST') !== -1) {
     return { bg:'bg-amber-50', border:'border-amber-200', text:'text-amber-700', cls:'ac-boost', icon:'⚡' };
@@ -7451,7 +7520,7 @@ function _actionStyle(action) {
 // Retourne le style coloré pour une pill d'action (utilisé par dashboard + modal)
 function _pillStyle(action) {
   if (!action) return { bg:'bg-slate-100', text:'text-slate-500' };
-  if (action.indexOf('🔴') !== -1 || action.indexOf('BLOQUÉ') !== -1) return { bg:'bg-rose-100', text:'text-rose-700' };
+  if (action.indexOf('💤') !== -1 || action.indexOf('Sans nouvelles') !== -1) return { bg:'bg-rose-100', text:'text-rose-700' };
   if (action.indexOf('⚡') !== -1 || action.indexOf('BOOST') !== -1) return { bg:'bg-amber-100', text:'text-amber-700' };
   if (action.indexOf('✅') !== -1 || action.indexOf('CHAPITRE') !== -1) return { bg:'bg-emerald-100', text:'text-emerald-700' };
   return { bg:'bg-slate-100', text:'text-slate-500' };
@@ -7904,7 +7973,7 @@ function _buildModalHTML(st) {
   var allActions = (st.actions && st.actions.length > 0) ? st.actions : [priority];
   var needsBoost = allActions.some(function(a) { return a.indexOf('BOOST TERMINÉ') !== -1; });
   var needsChap  = allActions.some(function(a) { return a.indexOf('CHAPITRE TERMINÉ') !== -1; });
-  // Si ni boost ni chap → montrer les deux (RAS/BLOQUÉ)
+  // Si ni boost ni chap → montrer les deux (RAS / Sans nouvelles)
   var showBoost = needsBoost || (!needsBoost && !needsChap);
   var showChap  = needsChap  || (!needsBoost && !needsChap);
   var as      = _actionStyle(priority);
@@ -8059,71 +8128,7 @@ function _buildModalHTML(st) {
   var boostPH = '{"insight":"...","exos":[{"q":"...","a":"...","options":["...","...","..."],"steps":["...","..."],"f":"...","lvl":1}]}';
   var chapPH  = '{"categorie":"' + topCat + '","insight":"...","exos":[{"q":"...","a":"...","options":["...","...","..."],"steps":["...","..."],"f":"...","lvl":1}]}';
 
-  // ── Email indicators J0/J3/J7/J5 (version smart) ──────────────────────────────
-  var emailHTML = '';
-  (function() {
-    var ts = st.trialStart || '';
-    if (!ts) return;
-    var d0 = new Date(ts); if (isNaN(d0)) return;
-    var now = new Date();
-    var daysSince = Math.floor((now - d0) / 86400000);
-    var emailsDue = st.emailsDue || [];
-
-    // J+0
-    var j0Sent = !!st.j0Sent;
-    var j0    = j0Sent ? '✅ J0' : '⏳ J0 (pas envoyé)';
-    var clrJ0 = j0Sent ? 'text-emerald-600' : 'text-amber-500';
-
-    // J+3
-    var j3IsDue  = emailsDue.indexOf('J+3') !== -1;
-    var j3Sent   = !j3IsDue && daysSince >= 3;
-    var j3Label  = j3Sent ? '✅ J3' : j3IsDue ? '📧 J3 À ENVOYER' : '⏳ J3 (dans ' + Math.max(0, 3 - daysSince) + 'j)';
-    var clrJ3    = j3Sent ? 'text-emerald-600' : j3IsDue ? 'text-rose-500 font-black' : 'text-slate-400';
-
-    // J+5
-    var j5IsDue  = emailsDue.indexOf('J+5') !== -1;
-    var j5Sent   = !j5IsDue && daysSince >= 5;
-    var j5Label  = j5Sent ? '✅ J5' : j5IsDue ? '📧 J5 À ENVOYER' : daysSince >= 4 ? '⏳ J5 (demain)' : '';
-    var clrJ5    = j5Sent ? 'text-emerald-600' : j5IsDue ? 'text-rose-500 font-black' : 'text-slate-400';
-
-    // J+7
-    var j7IsDue  = emailsDue.indexOf('J+7') !== -1;
-    var j7Sent   = !j7IsDue && daysSince >= 7;
-    var j7Label  = j7Sent ? '✅ J7' : j7IsDue ? '📧 J7 À ENVOYER' : '⏳ J7 (dans ' + Math.max(0, 7 - daysSince) + 'j)';
-    var clrJ7    = j7Sent ? 'text-emerald-600' : j7IsDue ? 'text-rose-500 font-black' : 'text-slate-400';
-
-    // Bouton copie J+0 si pas encore envoyé
-    var copyBtnHTML = !j0Sent
-      ? '<button id="btn-welcome-copy-' + st.code + '" onclick="copyWelcomeEmail(\'' + st.code + '\')" class="adm-copy-btn mt-2" style="background:linear-gradient(135deg,#059669,#10b981)">📧 Copier mail de bienvenue</button>' +
-        '<button id="btn-welcome-mark-' + st.code + '" onclick="markWelcomeEmailSent(\'' + st.code + '\')" class="adm-copy-btn mt-1" style="background:#475569;display:none">✓ Marquer comme envoyé</button>'
-      : '';
-
-    // Boutons copie pour les emails de séquence dus
-    var seqBtnsHTML = '';
-    if (j3IsDue) seqBtnsHTML +=
-      '<button id="btn-seq-copy-' + st.code + '-J3" onclick="copySequenceEmail(\'' + st.code + '\',\'J+3\')" class="adm-copy-btn mt-1" style="background:linear-gradient(135deg,#d97706,#f59e0b)">📧 Copier J+3</button>' +
-      '<button id="btn-seq-mark-' + st.code + '-J3" onclick="markSequenceEmailSent(\'' + st.code + '\',\'J+3\')" class="adm-copy-btn mt-0.5" style="background:#475569;display:none">✓ Marquer J+3 envoyé</button>';
-    if (j5IsDue) seqBtnsHTML +=
-      '<button id="btn-seq-copy-' + st.code + '-J5" onclick="copySequenceEmail(\'' + st.code + '\',\'J+5\')" class="adm-copy-btn mt-1" style="background:linear-gradient(135deg,#d97706,#f59e0b)">📧 Copier J+5</button>' +
-      '<button id="btn-seq-mark-' + st.code + '-J5" onclick="markSequenceEmailSent(\'' + st.code + '\',\'J+5\')" class="adm-copy-btn mt-0.5" style="background:#475569;display:none">✓ Marquer J+5 envoyé</button>';
-    if (j7IsDue) seqBtnsHTML +=
-      '<button id="btn-seq-copy-' + st.code + '-J7" onclick="copySequenceEmail(\'' + st.code + '\',\'J+7\')" class="adm-copy-btn mt-1" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">📧 Copier J+7 + Stripe</button>' +
-      '<button id="btn-seq-mark-' + st.code + '-J7" onclick="markSequenceEmailSent(\'' + st.code + '\',\'J+7\')" class="adm-copy-btn mt-0.5" style="background:#475569;display:none">✓ Marquer J+7 envoyé</button>';
-
-    emailHTML = '<div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 mb-3">' +
-      '<div class="flex items-center gap-2 flex-wrap">' +
-      '<span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">📧 Emails</span>' +
-      '<span id="j0-indicator-' + st.code + '" class="text-[10px] font-bold ' + clrJ0 + '">' + j0 + '</span>' +
-      '<span class="text-[9px] text-slate-300">·</span>' +
-      '<span class="text-[10px] font-bold ' + clrJ3 + '">' + j3Label + '</span>' +
-      (j5Label ? '<span class="text-[9px] text-slate-300">·</span><span class="text-[10px] font-bold ' + clrJ5 + '">' + j5Label + '</span>' : '') +
-      '<span class="text-[9px] text-slate-300">·</span>' +
-      '<span class="text-[10px] font-bold ' + clrJ7 + '">' + j7Label + '</span>' +
-      '</div>' +
-      copyBtnHTML +
-      seqBtnsHTML +
-      '</div>';
-  })();
+  // ── (emailHTML supprimé — emails gérés uniquement dans _azHTML) ──
 
   // ── Variables action zone ─────────────────────────────────────
   var _j0Sent       = !!st.j0Sent;
@@ -8279,6 +8284,30 @@ function _buildModalHTML(st) {
     '</div>';
   }
 
+  // 4b. Cours à compléter
+  var _coursNeeded = st.coursNeeded || [];
+  if (_coursNeeded.length > 0) {
+    _azHTML += '<div class="bg-cyan-50 border-2 border-cyan-300 rounded-2xl p-4 mb-3">' +
+      '<div class="flex items-center gap-2 mb-2">' +
+        '<span class="text-lg">📚</span>' +
+        '<div>' +
+          '<div class="text-cyan-800 font-black text-sm">Cours à compléter</div>' +
+          '<div class="text-cyan-600 text-xs">' + _coursNeeded.length + ' section' + (_coursNeeded.length > 1 ? 's' : '') + ' non rédigée' + (_coursNeeded.length > 1 ? 's' : '') + '</div>' +
+        '</div>' +
+      '</div>';
+    _coursNeeded.forEach(function(cn) {
+      _azHTML += '<div class="bg-white border border-cyan-200 rounded-xl px-3 py-2 mb-1.5 flex items-center justify-between">' +
+        '<div>' +
+          '<div class="text-[11px] font-bold text-slate-700">' + cn.cat.replace(/_/g,' ') + '</div>' +
+          '<div class="text-[10px] text-cyan-600">Débloqué à ' + cn.milestone + ' exos · ' + cn.nbExos + ' faits</div>' +
+        '</div>' +
+        '<button onclick="showSection(\'ADMIN\');setTimeout(function(){var tabs=document.querySelectorAll(\'[data-admin-tab]\');tabs.forEach(function(t){if(t.dataset.adminTab===\'cours\')t.click();});},200)" ' +
+          'style="background:linear-gradient(135deg,#0891b2,#06b6d4);color:#fff;border:none;border-radius:8px;padding:.4rem .75rem;font-size:.75rem;font-weight:700;cursor:pointer">Rédiger →</button>' +
+      '</div>';
+    });
+    _azHTML += '</div>';
+  }
+
   // 5. RAS — rien à faire
   if (!needsBoost && !needsChap && _j0Sent && !_hasSeqDue) {
     _azHTML = '<div class="bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-3 mb-3 text-center">' +
@@ -8319,7 +8348,7 @@ function _buildModalHTML(st) {
           '<span class="text-[11px] font-black text-slate-500 uppercase tracking-widest">📧 Suivi emails</span>' +
           (!_j0Sent || _hasSeqDue ? '<span class="text-[10px] font-black text-rose-500 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full">À envoyer</span>' : '<span class="text-[10px] text-slate-400">✓ OK</span>') +
         '</summary>' +
-        '<div class="mt-1 pb-2">' + emailHTML + _emailAccordHTML + '</div>' +
+        '<div class="mt-1 pb-2">' + _emailAccordHTML + '</div>' +
       '</details>' +
 
       // ── Accordéon : Progression ───────────────────────────────
