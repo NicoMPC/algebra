@@ -4,7 +4,7 @@
 
 ## Projet
 
-SPA vanilla JS (`index.html` ~8100 lignes) + backend Google Apps Script (`backend.js` ~4457 lignes) sur Google Sheets.
+SPA vanilla JS (`index.html` ~9000 lignes) + backend Google Apps Script (`backend.js` ~4637 lignes) sur Google Sheets.
 Outil pédagogique adaptatif maths 6ème→3ème + 1ère Spé Maths. MVP solo → 50 clients à 19,99 €/mois.
 
 ## Documentation — `docs/`

@@ -13,6 +13,7 @@
 > ✅ **Simulation QA 40 élèves le 14 mars 2026** — 6 bugs corrigés (BUG-SIM-01→06) + **test live 1616 appels API : 0 erreur**. GAS @63.
 > ✅ **Niveau 1ERE Spé Maths ajouté le 14 mars 2026** — 10 chapitres, 330 exercices (200 curriculum + 20 diag + 100 boost + 10 restants), compte Auguste (AUG001) prêt pour visio. GAS @64.
 > ✅ **Admin panel upgrade le 15 mars 2026** — email modal éditable, coursNeeded, renommage BLOQUÉ→Sans nouvelles, dark mode onboarding, 6 profils test. GAS @69.
+> ✅ **Objectif élève post-quiz le 15 mars 2026** — overlay 4 choix après diagnostic, colonne Users N, emails J+5/J+7 personnalisés, badge admin. GAS @70.
 
 | Dimension | État |
 |---|---|
@@ -148,6 +149,7 @@
 
 - [x] Landing vendeuse — refonte complète 13 mars (hero parent, programme Eduscol 4 niveaux, sur mesure + IA x humain, mockup scree.png, témoignages x3, fondateur "Ancien chef de projet Aérospatiale", FAQ accordion, compteurs animés 44/880/100%, chapitres sur mesure à l'infini, CTA "Les bons exercices")
 - [x] Email J+0 auto
+- [x] **Objectif élève post-quiz** — overlay 4 choix, colonne Users N, emails J+5/J+7 personnalisés selon objectif, badge dans fiche admin (@70, 15 mars 2026)
 - [ ] **Activer trigger `triggerDailyMarketing`** (J+3/J+5/J+7) — **⚠️ Manuel Apps Script UI → 9h-10h**
 - [ ] Vrais témoignages élèves/parents
 

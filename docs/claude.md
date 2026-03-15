@@ -62,7 +62,7 @@ docs/archive/                      → Docs historiques (ne pas lire sauf besoin
 
 ### Patches chirurgicaux uniquement
 - Codebase **V23 GOLD MASTER** — ne jamais réécrire
-- `index.html` ~8100 lignes → **ne jamais diviser**
+- `index.html` ~9000 lignes → **ne jamais diviser**
 - Vanilla JS, pas de framework, pas de bundler, pas de dépendances sans validation Nicolas
 - Modifier **uniquement** la fonction concernée par la tâche
 
