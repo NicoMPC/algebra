@@ -111,6 +111,7 @@ function doPost(e) {
       case 'get_cours_admin':            res = getCoursAdmin(p);           break;
       case 'get_daily_checklist':        res = getDailyChecklist(p);       break;
       case 'send_weekly_report':         res = sendWeeklyReportNow(p);     break;
+      case 'log_contact':                res = logContact(p);              break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -3918,6 +3919,17 @@ function logManualEmail(p) {
   }
   var prenom = user ? String(user['Prénom'] || '') : '';
   _logEmail(userEmail, prenom, type, 'envoyé');
+  return { status: 'success' };
+}
+
+function logContact(p) {
+  if (!verifyAdmin(String(p.adminCode || ''))) return { status: 'error', message: 'Accès refusé.' };
+  var code   = String(p.code   || '');
+  var prenom = String(p.prenom || '');
+  var niveau = String(p.niveau || '');
+  if (!code) return { status: 'error', message: 'Code manquant.' };
+  var now = Utilities.formatDate(new Date(), 'Europe/Paris', 'yyyy-MM-dd HH:mm');
+  appendRow('Insights', [now, code, prenom, niveau, 'contact_parent', 'Contact parent effectué', '', '', '', '']);
   return { status: 'success' };
 }
 

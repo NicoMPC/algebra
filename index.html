@@ -7990,440 +7990,502 @@ async function renderAdminDashboard() {
   }
 }
 
+// ══════════════════════════════════════════════════════════════
+// ADMIN COCKPIT — À FAIRE / FAIT / TEST
+// ══════════════════════════════════════════════════════════════
+
+if (!S._adminJournal) S._adminJournal = [];
+if (!S._adminDoneActions) S._adminDoneActions = {};
+
+// ── Compute actions per student with priority ranks ──────────
+function _computeActions(st) {
+  var actions = [];
+  var done = S._adminDoneActions || {};
+  var detail = st.chapitresDetail || [];
+
+  // Rank 1: contact — inactif >7j ET score <40% partout
+  var allLow = detail.length > 0 && detail.every(function(ch) { return ch.rateSuccess < 40; });
+  if (st.inactivityDays > 7 && allLow && !done[st.code + '_contact']) {
+    actions.push({ rank: 1, type: 'contact', label: 'Contacter le parent', color: 'rose', icon: '\ud83d\udcde', detail: 'Inactif ' + st.inactivityDays + 'j \u00b7 scores <40%' });
+  }
+
+  // Rank 2: boost — ExosDone=5, pas de boost pending
+  var bHist = st.boostHistory || [];
+  var lastBDone = bHist.length > 0 && bHist[0].exosDone >= 5;
+  var bPending = st.boostPending || st.boostNew;
+  var bInProg = st.boostInProgress;
+  if (lastBDone && !bPending && !bInProg && !done[st.code + '_boost']) {
+    actions.push({ rank: 2, type: 'boost', label: 'Boost termin\u00e9', color: 'amber', icon: '\u26a1', detail: 'Pr\u00e9parer le suivant', cat: detail.length ? detail[0].cat : 'Fractions' });
+  }
+
+  // Rank 3: chapitre — NbExos >=20, pas de chapitre en attente
+  if (st.chapTermine && (st.chapNewCount || 0) === 0 && !done[st.code + '_chapitre']) {
+    actions.push({ rank: 3, type: 'chapitre', label: 'Chapitre termin\u00e9', color: 'indigo', icon: '\ud83d\udcda', detail: 'Assigner la suite', cat: detail.length ? detail[0].cat : '' });
+  }
+
+  // Rank 4: cours — palier atteint, cours non rédigé
+  var cn = st.coursNeeded || [];
+  if (cn.length > 0 && !done[st.code + '_cours']) {
+    actions.push({ rank: 4, type: 'cours', label: 'Cours \u00e0 r\u00e9diger', color: 'cyan', icon: '\ud83d\udcd6', detail: cn.length + ' section(s)' });
+  }
+
+  // Rank 5: brevet — PendingBrevet + 3EME
+  if (st.pendingBrevet && st.niveau === '3EME' && !done[st.code + '_brevet']) {
+    actions.push({ rank: 5, type: 'brevet', label: 'Brevet en attente', color: 'purple', icon: '\ud83c\udf93', detail: '\u00c0 traiter' });
+  }
+
+  // Rank 6: email J+0
+  if (!st.j0Sent && !done[st.code + '_email_j0']) {
+    actions.push({ rank: 6, type: 'email_j0', label: 'Email J+0', color: 'orange', icon: '\ud83d\udce7', detail: 'Bienvenue non envoy\u00e9' });
+  }
+
+  // Rank 7: email J+3/J+5/J+7
+  (st.emailsDue || []).forEach(function(e) {
+    var key = 'email_' + e.replace('+', '');
+    if (!done[st.code + '_' + key]) {
+      actions.push({ rank: 7, type: key, emailType: e, label: 'Email ' + e, color: 'orange', icon: '\ud83d\udce7', detail: 'Relance \u00e0 envoyer' });
+    }
+  });
+
+  return actions.sort(function(a, b) { return a.rank - b.rank; });
+}
+
+// ── Main dashboard renderer — 3 tabs ─────────────────────────
 function _renderAdminCards() {
   var c = document.getElementById('app-c');
   if (!c) return;
   var students = S.adminStudents || [];
 
   if (!students.length) {
-    c.innerHTML = '<div class="text-center py-16 text-slate-400 font-semibold text-sm">Aucun élève inscrit pour l\'instant.</div>';
+    c.innerHTML = '<div class="text-center py-16 text-slate-400 font-semibold text-sm">Aucun \u00e9l\u00e8ve inscrit.</div>';
     return;
   }
 
-  var realStudents = students.filter(function(s){ return !s.isTest; });
-  var testStudents = students.filter(function(s){ return  s.isTest; });
-  var needsCount   = realStudents.filter(function(s){ var ap = s.actionPriority || s.action || ''; return ap.indexOf('BOOST TERMINÉ') !== -1 || ap.indexOf('CHAPITRE TERMINÉ') !== -1; }).length;
-  var realCount    = S.adminRealCount !== undefined ? S.adminRealCount : realStudents.length;
+  var realStudents = students.filter(function(s) { return !s.isTest; });
+  var testStudents = students.filter(function(s) { return s.isTest; });
+
+  var todoStudents = [];
+  var faitStudents = [];
+  realStudents.forEach(function(st) {
+    st._ckActions = _computeActions(st);
+    if (st._ckActions.length > 0) todoStudents.push(st);
+    else faitStudents.push(st);
+  });
+
+  // Sort: content actions (rank 1-5) first, email-only (6-7) second
+  todoStudents.sort(function(a, b) {
+    var aMin = a._ckActions.length ? a._ckActions[0].rank : 99;
+    var bMin = b._ckActions.length ? b._ckActions[0].rank : 99;
+    var aG = aMin <= 5 ? 0 : 1, bG = bMin <= 5 ? 0 : 1;
+    if (aG !== bG) return aG - bG;
+    return aMin - bMin;
+  });
+
+  var realCount = S.adminRealCount !== undefined ? S.adminRealCount : realStudents.length;
+  var activeTab = S.adminTab || 'todo';
+  if (activeTab !== 'todo' && activeTab !== 'done' && activeTab !== 'test' && activeTab !== 'cours') activeTab = 'todo';
+  var journal = S._adminJournal || [];
+
   var html = '';
 
-  // ── Outils Fondateur ──────────────────────────────────────
-  html += '<div class="bg-slate-900 rounded-2xl p-4 mb-4 border border-slate-700">';
-  html += '<div class="syne font-black text-slate-200 text-sm mb-3">🛠️ Outils Fondateur</div>';
-  html += '<div class="flex flex-col gap-2">';
+  // ── Header ─────────────────────────────────────────────────
+  var today = new Date();
+  var _days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  var _months = ['jan','f\u00e9v','mar','avr','mai','jun','jul','ao\u00fb','sep','oct','nov','d\u00e9c'];
+  var dateStr = _days[today.getDay()] + ' ' + today.getDate() + ' ' + _months[today.getMonth()];
 
-  // Stripe
-  html += '<div class="bg-slate-800 rounded-xl p-3 flex items-center justify-between gap-3">';
-  html += '<div>';
-  html += '<div class="text-white text-xs font-bold">💳 Stripe</div>';
-  html += '<div class="text-amber-400 text-[10px] font-semibold mt-0.5">MODE TEST — à passer en PROD avant lancement</div>';
-  html += '</div>';
-  html += '<button onclick="_adminOpenStripe()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">Ouvrir lien →</button>';
-  html += '</div>';
-
-  // Email
-  html += '<div class="bg-slate-800 rounded-xl p-3 flex items-center justify-between gap-3">';
-  html += '<div>';
-  html += '<div class="text-white text-xs font-bold">📧 Email no-reply@matheux.fr</div>';
-  html += '<div id="admin-email-status" class="text-slate-400 text-[10px] font-semibold mt-0.5">Envoie un email J+0 test à ton adresse</div>';
-  html += '</div>';
-  html += '<button onclick="_adminTestEmail()" id="admin-email-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">Tester →</button>';
-  html += '</div>';
-
-  // Todo contact@matheux.fr
-  html += '<div class="bg-amber-900/40 border border-amber-700/50 rounded-xl p-3 flex items-center gap-3">';
-  html += '<span class="text-amber-400 text-base flex-shrink-0">⚠️</span>';
-  html += '<div class="text-amber-200 text-[11px] font-semibold leading-snug">Créer <strong>contact@matheux.fr</strong> dans ton hébergeur email (OVH/Gandi/…) et l\'ajouter comme alias Gmail si pas encore fait.</div>';
-  html += '</div>';
-
-  html += '</div></div>';
-  // ──────────────────────────────────────────────────────────
-
-  // En-tête dashboard
   html += '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 mb-3">';
   html += '<div class="flex items-center justify-between">';
   html += '<div>';
-  html += '<div class="syne font-black text-slate-900 text-lg leading-tight">Mes Élèves 🎓</div>';
-  var slotColor = realCount >= 45 ? 'text-rose-600' : realCount >= 35 ? 'text-amber-500' : 'text-slate-500';
-  html += '<div class="text-xs font-bold mt-0.5 ' + slotColor + '">' + realCount + ' / 50 places réelles</div>';
+  html += '<div class="syne font-black text-slate-900 text-lg leading-tight">Admin Matheux</div>';
+  html += '<div class="text-xs text-slate-400 font-medium mt-0.5">' + dateStr + ' \u00b7 ' + realCount + '/50 \u00e9l\u00e8ves</div>';
   html += '</div>';
   html += '<div class="flex items-center gap-2">';
-  if (needsCount > 0) {
-    html += '<div class="bg-rose-500 text-white syne font-black text-sm px-3 py-1.5 rounded-xl shadow-sm">' + needsCount + ' action' + (needsCount > 1 ? 's' : '') + '</div>';
-  } else {
-    html += '<div class="bg-emerald-100 text-emerald-700 syne font-black text-sm px-3 py-1.5 rounded-xl">✅ RAS</div>';
-  }
   var isDark = document.body.classList.contains('adm-dark');
-  html += '<button onclick="_toggleAdmDark()" title="Mode nuit" class="w-9 h-9 rounded-xl flex items-center justify-center text-base transition-colors ' + (isDark ? 'bg-indigo-900 text-amber-300' : 'bg-slate-100 text-slate-400 hover:bg-slate-200') + '">' + (isDark ? '☀️' : '🌙') + '</button>';
-  html += '</div>';
-  html += '</div>';
-  html += '<button onclick="renderAdminDashboard()" class="mt-2 text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors">↻ Actualiser</button>';
-  html += '</div>';
+  html += '<button onclick="_toggleAdmDark()" title="Mode nuit" class="w-9 h-9 rounded-xl flex items-center justify-center text-base transition-colors ' + (isDark ? 'bg-indigo-900 text-amber-300' : 'bg-slate-100 text-slate-400 hover:bg-slate-200') + '">' + (isDark ? '\u2600\ufe0f' : '\ud83c\udf19') + '</button>';
+  if (today.getDay() === 0) html += '<button onclick="_sendWeeklyReport()" id="btn-weekly-report" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-3 py-2 rounded-xl transition-colors">\ud83d\udce8 Rapport parents</button>';
+  html += '<button onclick="renderAdminDashboard()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition-colors">\u21bb Actualiser</button>';
+  html += '</div></div></div>';
 
-  // ── Onglets À traiter / Traité / Comptes test ──────────────
-  var _needsAction = function(s) {
-    var ap = s.actionPriority || s.action || '';
-    return ap.indexOf('BOOST TERMINÉ') !== -1 || ap.indexOf('CHAPITRE TERMINÉ') !== -1;
-  };
-  var todoStudents  = realStudents.filter(_needsAction);
-  var suiviStudents = realStudents.filter(function(s) {
-    return !_needsAction(s) && s.secondaryActions && s.secondaryActions.length > 0;
-  });
-  var doneStudents  = realStudents.filter(function(s) {
-    return !_needsAction(s) && !(s.secondaryActions && s.secondaryActions.length > 0);
-  });
-  var activeTab = S.adminTab || 'checklist';
-
-  var tabs = [
-    { key: 'checklist', label: '📋 Aujourd\'hui', count: S._checklistCount || '', color: (S._checklistCount || 0) > 0 ? '#ef4444' : '#059669' },
-    { key: 'todo',  label: '⚡ À faire',  count: todoStudents.length,  color: todoStudents.length  > 0 ? '#ef4444' : '#94a3b8' },
-    { key: 'suivi', label: '📧 Suivi',    count: suiviStudents.length, color: suiviStudents.length > 0 ? '#f59e0b' : '#94a3b8' },
-    { key: 'done',  label: '✅ Traité',   count: doneStudents.length,  color: '#059669' },
-    { key: 'test',  label: '🧪 Test',     count: testStudents.length,  color: '#94a3b8' },
-    { key: 'cours', label: '📚 Cours',    count: '',                   color: '#06b6d4' }
+  // ── Tabs ───────────────────────────────────────────────────
+  var _tabs = [
+    { key: 'todo', label: '\u00c0 FAIRE', count: todoStudents.length, color: todoStudents.length > 0 ? '#ef4444' : '#059669' },
+    { key: 'done', label: 'FAIT',         count: journal.length,       color: '#059669' },
+    { key: 'test', label: 'TEST',         count: testStudents.length,  color: '#94a3b8' }
   ];
-  html += '<div class="flex gap-1.5 mb-4">';
-  tabs.forEach(function(t) {
+  html += '<div class="flex gap-2 mb-4">';
+  _tabs.forEach(function(t) {
     var active = activeTab === t.key;
-    html += '<button onclick="_adminSetTab(\'' + t.key + '\')" class="flex-1 rounded-xl py-2 px-1 text-[11px] font-black transition-all ' +
+    html += '<button onclick="_adminSetTab(\'' + t.key + '\')" class="flex-1 rounded-xl py-2.5 text-xs font-black transition-all ' +
       (active ? 'text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50') + '" ' +
       (active ? 'style="background:' + t.color + '"' : '') + '>' +
-      t.label + ' <span class="' + (active ? 'bg-white/25' : 'bg-slate-100') + ' rounded-md px-1.5 py-0.5 ml-0.5">' + t.count + '</span>' +
-      '</button>';
+      t.label + ' <span class="' + (active ? 'bg-white/25' : 'bg-slate-100') + ' rounded-md px-1.5 py-0.5 ml-1">' + t.count + '</span></button>';
   });
   html += '</div>';
 
-  // Contenu de l'onglet actif
-  var _buildStudentCard = function(st) {
-    var priority = st.actionPriority || st.action || '👍 RAS';
-    var allActions = (st.actions && st.actions.length > 0) ? st.actions : [priority];
-    var as       = _actionStyle(priority);
-    var needsAct = priority.indexOf('RAS') === -1;
-    var lastStr  = relDateAdmin(st.lastConnection);
-    var detail   = st.chapitresDetail || [];
-
-    var h = '';
-    h += '<div id="admin-card-' + st.code + '" onclick="openStudentModal(\'' + st.code + '\')" class="adm-card ' + as.cls + (needsAct ? ' needs-action' : '') + ' mb-3">';
-    h += '<div class="flex items-center gap-3 mb-2.5">';
-    h += '<div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black syne text-base shadow-sm flex-shrink-0" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">' + st.prenom.charAt(0).toUpperCase() + '</div>';
-    h += '<div class="flex-1 min-w-0">';
-    h += '<div class="flex items-center gap-2">';
-    h += '<span class="syne font-black text-slate-900 text-sm">' + st.prenom + '</span>';
-    h += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500">' + st.niveau + '</span>';
-    if (st.boostNew) h += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-600">⚡ boost prêt</span>';
-    if (st.chapNewCount > 0) h += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-600">📚 chap prêt</span>';
-    h += '</div>';
-    h += '<div class="text-[11px] text-slate-400 font-medium mt-0.5">Connexion : ' + lastStr + '</div>';
-    h += '</div>';
-    h += '<div class="text-xl flex-shrink-0">' + (needsAct ? as.icon : '✅') + '</div>';
-    h += '</div>';
-    if (needsAct) {
-      var ps = _pillStyle(priority);
-      h += '<div class="' + ps.bg + ' rounded-xl px-3 py-2 text-[11px] font-black ' + ps.text + ' mb-1.5">' + priority + '</div>';
-      if (allActions.length > 1) {
-        h += '<div class="flex flex-wrap gap-1 mb-2">';
-        for (var ai = 1; ai < allActions.length; ai++) {
-          var sp = _pillStyle(allActions[ai]);
-          h += '<span class="' + sp.bg + ' ' + sp.text + ' text-[10px] font-semibold px-2 py-0.5 rounded-full">' + allActions[ai] + '</span>';
-        }
-        h += '</div>';
-      } else { h += '<div class="mb-2"></div>'; }
-    }
-    // Pills actions secondaires
-    if (st.secondaryActions && st.secondaryActions.length > 0 && !needsAct) {
-      h += '<div class="flex flex-wrap gap-1">';
-      st.secondaryActions.forEach(function(sa) {
-        h += '<span class="text-[10px] font-semibold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">' + sa + '</span>';
-      });
-      h += '</div>';
-    }
-    var totalHard2 = detail.reduce(function(s, d) { return s + d.hardCount; }, 0);
-    var totalExos2 = detail.reduce(function(s, d) { return s + d.totalExos; }, 0);
-    if (totalExos2 > 0) {
-      var avgSucc2 = Math.round(detail.reduce(function(s,d){ return s + d.rateSuccess * d.totalExos; }, 0) / totalExos2);
-      var bc2 = avgSucc2 >= 75 ? '#059669' : avgSucc2 >= 50 ? '#f59e0b' : '#e11d48';
-      h += '<div class="flex items-center gap-2 mb-2">';
-      h += '<div class="flex-1"><div class="adm-bar-bg"><div class="adm-bar-fill" style="width:' + avgSucc2 + '%;background:' + bc2 + '"></div></div></div>';
-      h += '<span class="text-[10px] font-black text-slate-500 flex-shrink-0">' + avgSucc2 + '% · ' + totalExos2 + ' exos</span>';
-      if (totalHard2 > 0) h += '<span class="text-[10px] font-black text-rose-500 flex-shrink-0">' + totalHard2 + '✗</span>';
-      h += '</div>';
-    }
-    if (st.chapitres && st.chapitres.length > 0) {
-      h += '<div class="flex flex-wrap gap-1.5">';
-      st.chapitres.forEach(function(ch) {
-        var done2 = ch.statut && ch.statut.indexOf('Terminé') !== -1;
-        var chDet = detail.find(function(d) { return d.cat === ch.cat; });
-        var rate = chDet ? (' · ' + chDet.rateSuccess + '%') : '';
-        h += '<span class="text-[10px] font-bold px-2 py-1 rounded-lg ' + (done2 ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500') + '">' + (done2 ? '✅ ' : '') + ch.cat.replace(/_/g, ' ') + rate + '</span>';
-      });
-      h += '</div>';
-    }
-    h += '</div>';
-    return h;
-  };
-
-  if (activeTab === 'checklist') {
-    html += '<div id="checklist-content"></div>';
-
-  } else if (activeTab === 'todo') {
+  // ── Tab content ────────────────────────────────────────────
+  if (activeTab === 'todo') {
     if (todoStudents.length === 0) {
-      html += '<div class="text-center py-8 text-slate-400 text-sm font-semibold">✅ Tout est traité — aucune action en attente.</div>';
-    }
-    todoStudents.forEach(function(st) { html += _buildStudentCard(st); });
-
-  } else if (activeTab === 'suivi') {
-    if (suiviStudents.length === 0) {
-      html += '<div class="text-center py-8 text-slate-400 text-sm font-semibold">✅ Aucun suivi en attente</div>';
+      html += '<div class="text-center py-12">';
+      html += '<div class="text-4xl mb-3">\ud83c\udf89</div>';
+      html += '<div class="syne font-black text-slate-700 text-base mb-1">Tout est trait\u00e9 !</div>';
+      html += '<div class="text-slate-400 text-sm">' + journal.length + ' action' + (journal.length !== 1 ? 's' : '') + ' trait\u00e9e' + (journal.length !== 1 ? 's' : '') + ' aujourd\'hui</div>';
+      html += '</div>';
     } else {
-      html += '<div class="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mb-3 text-[11px] text-amber-700 font-semibold">📧 Ces élèves ont besoin d\'un suivi : email à envoyer, inactifs, ou n\'ont jamais commencé. Clique pour voir les détails.</div>';
-      suiviStudents.forEach(function(st) { html += _buildStudentCard(st); });
+      todoStudents.forEach(function(st) { html += _buildCockpitCard(st); });
     }
-
   } else if (activeTab === 'done') {
-    if (doneStudents.length === 0) {
-      html += '<div class="text-center py-8 text-slate-400 text-sm font-semibold">Aucun élève dans l\'onglet "Traité" pour l\'instant.</div>';
+    if (journal.length === 0 && faitStudents.length === 0) {
+      html += '<div class="text-center py-12 text-slate-400 text-sm font-semibold">Aucune action trait\u00e9e pour le moment.</div>';
+    } else {
+      if (journal.length > 0) {
+        html += '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Journal du jour</div>';
+        journal.slice().reverse().forEach(function(entry) {
+          html += '<div class="bg-white border border-slate-100 rounded-xl px-3 py-2 mb-1.5 flex items-center gap-3">';
+          html += '<div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-sm flex-shrink-0" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">' + entry.prenom.charAt(0).toUpperCase() + '</div>';
+          html += '<div class="flex-1 min-w-0">';
+          html += '<span class="text-xs font-bold text-slate-700">' + entry.prenom + '</span>';
+          html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded ml-1.5 bg-slate-100 text-slate-400">' + entry.niveau + '</span>';
+          html += '<div class="text-[10px] text-slate-400 font-medium">' + entry.label + ' \u00b7 ' + entry.time + '</div>';
+          html += '</div>';
+          html += '<span class="text-emerald-500 text-base flex-shrink-0">\u2705</span>';
+          html += '</div>';
+        });
+      }
+      if (faitStudents.length > 0) {
+        html += '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 mt-4 px-1">\u00c9l\u00e8ves \u00e0 jour (' + faitStudents.length + ')</div>';
+        faitStudents.forEach(function(st) {
+          var lastStr = relDateAdmin(st.lastConnection);
+          html += '<div class="bg-white border border-slate-100 rounded-xl px-3 py-2 mb-1.5 flex items-center gap-3 opacity-70">';
+          html += '<div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-sm flex-shrink-0" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">' + st.prenom.charAt(0).toUpperCase() + '</div>';
+          html += '<div class="flex-1 min-w-0">';
+          html += '<span class="text-xs font-bold text-slate-700">' + st.prenom + '</span>';
+          html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded ml-1.5 bg-slate-100 text-slate-400">' + st.niveau + '</span>';
+          html += '<div class="text-[10px] text-slate-400">' + lastStr + '</div>';
+          html += '</div>';
+          html += '<span class="text-emerald-500 text-sm flex-shrink-0">\u2713 RAS</span>';
+          html += '</div>';
+        });
+      }
     }
-    doneStudents.forEach(function(st) { html += _buildStudentCard(st); });
-
   } else if (activeTab === 'cours') {
+    html += '<button onclick="_adminSetTab(\'todo\')" class="text-xs text-indigo-600 font-bold mb-3 hover:underline">\u2190 Retour</button>';
     html += _renderAdminCoursHTML();
-
-  } else { // test
+  } else {
+    // TEST tab
+    html += '<div class="bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 mb-3 text-[11px] text-slate-500 font-semibold">\ud83e\uddea Comptes de test \u2014 non comptabilis\u00e9s dans \u00c0 FAIRE</div>';
     if (testStudents.length === 0) {
       html += '<div class="text-center py-8 text-slate-400 text-sm font-semibold">Aucun compte test.</div>';
     } else {
       html += '<div class="flex justify-end mb-2">';
-      html += '<button onclick="_adminMarkAllTest()" class="text-[10px] font-bold text-slate-400 hover:text-rose-500 underline transition-colors" id="mark-all-test-btn">Marquer tous les comptes actuels comme test →</button>';
+      html += '<button onclick="_adminMarkAllTest()" class="text-[10px] font-bold text-slate-400 hover:text-rose-500 underline transition-colors" id="mark-all-test-btn">Marquer tous comme test \u2192</button>';
       html += '</div>';
       testStudents.forEach(function(st) {
-        html += '<div class="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-3 py-2.5 flex items-center gap-3 opacity-60 mb-2">';
-        html += '<div class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 bg-slate-200 text-sm font-black flex-shrink-0">' + st.prenom.charAt(0).toUpperCase() + '</div>';
-        html += '<div class="flex-1 min-w-0">';
-        html += '<span class="text-slate-600 text-xs font-bold">' + st.prenom + '</span>';
-        html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded ml-1.5 bg-slate-200 text-slate-400">' + st.niveau + '</span>';
-        html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded ml-1 bg-slate-100 text-slate-400">🧪 TEST</span>';
-        html += '<div class="text-[10px] text-slate-400 font-medium mt-0.5">' + st.code + '</div>';
-        html += '</div></div>';
+        st._ckActions = _computeActions(st);
+        html += _buildCockpitCard(st);
       });
     }
   }
 
   c.innerHTML = html;
+}
 
-  // Déclencher le chargement de la checklist si onglet actif
-  if (activeTab === 'checklist') {
-    var clEl = document.getElementById('checklist-content');
-    if (clEl) _renderChecklistTab(clEl);
+// ── Build a cockpit card with inline workflows ───────────────
+function _buildCockpitCard(st) {
+  var actions = st._ckActions || [];
+  var lastStr = relDateAdmin(st.lastConnection);
+
+  // Border color by highest priority
+  var borderCls = 'border-l-slate-200';
+  if (actions.length > 0) {
+    var r = actions[0].rank;
+    if (r === 1) borderCls = 'border-l-rose-500';
+    else if (r <= 5) borderCls = 'border-l-indigo-500';
+    else borderCls = 'border-l-amber-500';
+  }
+
+  // Streak from boost history
+  var streak = 0;
+  var doneDates = (st.boostHistory || []).filter(function(b) { return b.exosDone >= 5; })
+    .map(function(b) { return b.date; }).sort().reverse();
+  if (doneDates.length >= 1) {
+    streak = 1;
+    for (var si = 1; si < doneDates.length; si++) {
+      if (Math.floor((new Date(doneDates[si-1]) - new Date(doneDates[si])) / 86400000) === 1) streak++;
+      else break;
+    }
+  }
+
+  var h = '';
+  h += '<div id="ck-card-' + st.code + '" class="bg-white rounded-2xl border border-slate-100 shadow-sm mb-3 overflow-hidden border-l-4 ' + borderCls + '">';
+
+  // Card header
+  h += '<div class="px-4 pt-3 pb-2">';
+  h += '<div class="flex items-center gap-3">';
+  h += '<div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black syne text-base shadow-sm flex-shrink-0" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">' + st.prenom.charAt(0).toUpperCase() + '</div>';
+  h += '<div class="flex-1 min-w-0">';
+  h += '<div class="flex items-center gap-1.5 flex-wrap">';
+  h += '<span class="syne font-black text-slate-900 text-sm">' + st.prenom + '</span>';
+  h += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500">' + st.niveau + '</span>';
+  if (streak > 1) h += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-600">\ud83d\udd25 ' + streak + 'j</span>';
+  h += '</div>';
+  h += '<div class="text-[10px] text-slate-400 font-medium mt-0.5">Derni\u00e8re co : ' + lastStr + ' \u00b7 ' + st.code + '</div>';
+  h += '</div></div></div>';
+
+  // Actions
+  if (actions.length === 0) {
+    h += '<div class="px-4 pb-3 text-xs text-emerald-600 font-semibold">\u2713 Rien \u00e0 faire</div>';
+  } else {
+    actions.forEach(function(action, idx) {
+      var bt = idx > 0 ? ' border-t border-slate-100' : '';
+      var _cm = {
+        rose:   { bg:'bg-rose-50',   text:'text-rose-700',   bdr:'border-rose-200' },
+        amber:  { bg:'bg-amber-50',  text:'text-amber-700',  bdr:'border-amber-200' },
+        indigo: { bg:'bg-indigo-50', text:'text-indigo-700', bdr:'border-indigo-200' },
+        cyan:   { bg:'bg-cyan-50',   text:'text-cyan-700',   bdr:'border-cyan-200' },
+        purple: { bg:'bg-purple-50', text:'text-purple-700', bdr:'border-purple-200' },
+        orange: { bg:'bg-orange-50', text:'text-orange-700', bdr:'border-orange-200' }
+      };
+      var cm = _cm[action.color] || _cm['indigo'];
+
+      h += '<div class="px-4 py-3' + bt + '">';
+      h += '<div class="flex items-center gap-2 mb-2">';
+      h += '<span class="text-[11px] font-black ' + cm.bg + ' ' + cm.text + ' border ' + cm.bdr + ' px-2 py-0.5 rounded-full">' + action.icon + ' ' + action.label + '</span>';
+      h += '<span class="text-[10px] text-slate-400">' + action.detail + '</span>';
+      h += '</div>';
+      h += _buildActionWorkflow(st, action);
+      h += '</div>';
+    });
+  }
+
+  h += '</div>';
+  return h;
+}
+
+// ── Build inline workflow per action type ─────────────────────
+function _buildActionWorkflow(st, action) {
+  var h = '';
+
+  if (action.type === 'contact') {
+    h += '<button onclick="_adminMarkContact(\'' + st.code + '\',\'' + st.prenom.replace(/'/g, "\\'") + '\',\'' + st.niveau + '\')" class="w-full bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">\u2713 Marquer contact\u00e9</button>';
+
+  } else if (action.type === 'boost') {
+    var topCat = (action.cat || 'Fractions').replace(/'/g, "\\'");
+    h += '<button onclick="copyAdminPrompt(\'' + st.code + '\',\'boost\',\'' + topCat + '\')" class="adm-copy-btn mb-2">\ud83d\udccb Copier le prompt Claude</button>';
+    h += '<textarea id="ck-boost-json-' + st.code + '" class="adm-textarea mb-2" style="height:80px" placeholder="Coller le JSON ici..." oninput="_ckTogglePublish(\'' + st.code + '\',\'boost\')"></textarea>';
+    h += '<button id="ck-btn-boost-' + st.code + '" onclick="_ckPublishBoost(\'' + st.code + '\')" disabled class="w-full bg-slate-300 text-white text-xs font-bold py-2.5 rounded-xl transition-colors cursor-not-allowed">\u26a1 Publier</button>';
+
+  } else if (action.type === 'chapitre') {
+    var topCat2 = (action.cat || '').replace(/'/g, "\\'");
+    h += '<button onclick="copyAdminPrompt(\'' + st.code + '\',\'chapitre\',\'' + topCat2 + '\')" class="adm-copy-btn mb-2">\ud83d\udccb Copier le prompt Claude</button>';
+    h += '<textarea id="ck-chap-json-' + st.code + '" class="adm-textarea mb-2" style="height:80px" placeholder="Coller le JSON ici..." oninput="_ckTogglePublish(\'' + st.code + '\',\'chapitre\')"></textarea>';
+    h += '<button id="ck-btn-chap-' + st.code + '" onclick="_ckPublishChapter(\'' + st.code + '\')" disabled class="w-full bg-slate-300 text-white text-xs font-bold py-2.5 rounded-xl transition-colors cursor-not-allowed">\ud83d\udcda Publier</button>';
+
+  } else if (action.type === 'cours') {
+    h += '<button onclick="_adminSetTab(\'cours\')" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">\ud83d\udcd6 Aller aux cours \u2192</button>';
+
+  } else if (action.type === 'brevet') {
+    h += '<button onclick="openStudentModal(\'' + st.code + '\')" class="w-full bg-purple-500 hover:bg-purple-600 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">\ud83c\udf93 Ouvrir pour publier \u2192</button>';
+
+  } else if (action.type === 'email_j0') {
+    h += '<div class="flex gap-2">';
+    h += '<button onclick="_ckOpenEmail(\'' + st.code + '\',\'J+0\')" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">\ud83d\udce7 Voir le template</button>';
+    h += '<button onclick="_ckMarkEmail(\'' + st.code + '\',\'J+0\')" class="flex-1 bg-slate-400 hover:bg-slate-500 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">\u2713 Marquer envoy\u00e9</button>';
+    h += '</div>';
+
+  } else if (action.type.startsWith('email_')) {
+    var emailType = action.emailType || action.type.replace('email_J', 'J+');
+    h += '<div class="flex gap-2">';
+    h += '<button onclick="_ckOpenEmail(\'' + st.code + '\',\'' + emailType + '\')" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">\ud83d\udce7 Voir le template</button>';
+    h += '<button onclick="_ckMarkEmail(\'' + st.code + '\',\'' + emailType + '\')" class="flex-1 bg-slate-400 hover:bg-slate-500 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">\u2713 Marquer envoy\u00e9</button>';
+    h += '</div>';
+  }
+
+  return h;
+}
+
+// ── Toggle publish button enabled/disabled ───────────────────
+function _ckTogglePublish(code, type) {
+  var ta = document.getElementById('ck-' + type + '-json-' + code);
+  var btn = document.getElementById('ck-btn-' + type + '-' + code);
+  if (!ta || !btn) return;
+  var has = ta.value.trim().length > 0;
+  btn.disabled = !has;
+  btn.className = has
+    ? 'w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-2.5 rounded-xl transition-colors cursor-pointer'
+    : 'w-full bg-slate-300 text-white text-xs font-bold py-2.5 rounded-xl transition-colors cursor-not-allowed';
+}
+
+// ── Publish boost from cockpit card ──────────────────────────
+async function _ckPublishBoost(code) {
+  var ta = document.getElementById('ck-boost-json-' + code);
+  var raw = ta ? ta.value.trim() : '';
+  if (!raw) { showT('Colle le JSON du boost d\'abord', 3000, '\u26a0\ufe0f'); return; }
+  var parsed;
+  try { parsed = JSON.parse(raw); } catch(e) { showT('JSON invalide : ' + e.message.substring(0, 50), 3500, '\u274c'); return; }
+  if (!parsed.exos || !Array.isArray(parsed.exos) || parsed.exos.length === 0) {
+    showT('JSON invalide : exos[] vide', 3500, '\u274c'); return;
+  }
+  var btn = document.getElementById('ck-btn-boost-' + code);
+  if (btn) { btn.innerHTML = '\u23f3 Publication...'; btn.disabled = true; }
+  try {
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({
+      action: 'publish_admin_boost', adminCode: S.prof.code,
+      targetCode: code, exos: parsed.exos, insight: parsed.insight || '', motProf: ''
+    }) });
+    var d = await r.json();
+    if (d.status === 'success') {
+      showT('\u26a1 Boost publi\u00e9 !', 4000, '\u2705');
+      for (var i = 0; i < S.adminStudents.length; i++) {
+        if (S.adminStudents[i].code === code) {
+          S.adminStudents[i].boostNew = true;
+          S.adminStudents[i].boostPending = true;
+          break;
+        }
+      }
+      _ckMarkDone(code, 'boost', '\u26a1 Boost publi\u00e9');
+    } else {
+      showT('\u274c ' + (d.message || 'Erreur'), 4000, '\u274c');
+      if (btn) { btn.innerHTML = '\u26a1 Publier'; btn.disabled = false; }
+    }
+  } catch(e) {
+    showT('\u274c Erreur r\u00e9seau', 3000, '\u274c');
+    if (btn) { btn.innerHTML = '\u26a1 Publier'; btn.disabled = false; }
   }
 }
 
+// ── Publish chapter from cockpit card ────────────────────────
+async function _ckPublishChapter(code) {
+  var ta = document.getElementById('ck-chap-json-' + code);
+  var raw = ta ? ta.value.trim() : '';
+  if (!raw) { showT('Colle le JSON du chapitre d\'abord', 3000, '\u26a0\ufe0f'); return; }
+  var parsed;
+  try { parsed = JSON.parse(raw); } catch(e) { showT('JSON invalide : ' + e.message.substring(0, 50), 3500, '\u274c'); return; }
+  if (!parsed.categorie || !parsed.exos || !Array.isArray(parsed.exos) || parsed.exos.length === 0) {
+    showT('JSON invalide : categorie ou exos[] manquant', 3500, '\u274c'); return;
+  }
+  var btn = document.getElementById('ck-btn-chap-' + code);
+  if (btn) { btn.innerHTML = '\u23f3 Publication...'; btn.disabled = true; }
+  try {
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({
+      action: 'publish_admin_chapter', adminCode: S.prof.code,
+      targetCode: code, categorie: parsed.categorie, exos: parsed.exos, insight: parsed.insight || '', motProf: ''
+    }) });
+    var d = await r.json();
+    if (d.status === 'success') {
+      if (d.overwrite) showT('\u26a0\ufe0f 4 chapitres en attente \u2014 Ch1 remplac\u00e9', 5000, '\u26a0\ufe0f');
+      else showT('\ud83d\udcda Chapitre publi\u00e9 !', 4000, '\u2705');
+      for (var i = 0; i < S.adminStudents.length; i++) {
+        if (S.adminStudents[i].code === code) {
+          S.adminStudents[i].chapNewCount = (S.adminStudents[i].chapNewCount || 0) + 1;
+          break;
+        }
+      }
+      _ckMarkDone(code, 'chapitre', '\ud83d\udcda Chapitre publi\u00e9');
+    } else {
+      showT('\u274c ' + (d.message || 'Erreur'), 4000, '\u274c');
+      if (btn) { btn.innerHTML = '\ud83d\udcda Publier'; btn.disabled = false; }
+    }
+  } catch(e) {
+    showT('\u274c Erreur r\u00e9seau', 3000, '\u274c');
+    if (btn) { btn.innerHTML = '\ud83d\udcda Publier'; btn.disabled = false; }
+  }
+}
+
+// ── Mark contact as done ─────────────────────────────────────
+async function _adminMarkContact(code, prenom, niveau) {
+  try {
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({
+      action: 'log_contact', adminCode: S.prof.code,
+      code: code, prenom: prenom, niveau: niveau
+    }) }).then(function(x) { return x.json(); });
+    if (r.status === 'success') {
+      showT('\u2705 Contact parent logg\u00e9', 2500, '\u2705');
+      _ckMarkDone(code, 'contact', '\ud83d\udcde Parent contact\u00e9');
+    } else {
+      showT('\u274c ' + (r.message || 'Erreur'), 3000, '\u274c');
+    }
+  } catch(e) {
+    showT('\u274c Erreur r\u00e9seau', 3000, '\u274c');
+  }
+}
+
+// ── Open email template (reuses existing email modal) ────────
+function _ckOpenEmail(code, type) {
+  var st = (S.adminStudents || []).find(function(s) { return s.code === code; });
+  if (!st) return;
+  S._modalStudent = st;
+  if (type === 'J+0') copyWelcomeEmail(code);
+  else copySequenceEmail(code, type);
+}
+
+// ── Mark email as sent from cockpit ──────────────────────────
+async function _ckMarkEmail(code, type) {
+  var st = (S.adminStudents || []).find(function(s) { return s.code === code; });
+  if (!st) return;
+  try {
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({
+      action: 'log_manual_email', adminCode: S.prof.code,
+      userEmail: st.email, type: type + '-manuel'
+    }) }).then(function(x) { return x.json(); });
+    if (r.status === 'success') {
+      if (type === 'J+0') st.j0Sent = true;
+      else {
+        var idx = (st.emailsDue || []).indexOf(type);
+        if (idx !== -1) st.emailsDue.splice(idx, 1);
+      }
+      showT('\u2705 ' + type + ' marqu\u00e9 comme envoy\u00e9', 2500, '\u2705');
+      var doneKey = type === 'J+0' ? 'email_j0' : 'email_' + type.replace('+', '');
+      _ckMarkDone(code, doneKey, '\ud83d\udce7 ' + type + ' envoy\u00e9');
+    } else {
+      showT('\u274c ' + (r.message || 'Erreur'), 3000, '\u274c');
+    }
+  } catch(e) {
+    showT('\u274c Erreur r\u00e9seau', 3000, '\u274c');
+  }
+}
+
+// ── Mark an action as done + add to journal + re-render ──────
+function _ckMarkDone(code, type, label) {
+  var st = (S.adminStudents || []).find(function(s) { return s.code === code; });
+  if (!S._adminDoneActions) S._adminDoneActions = {};
+  S._adminDoneActions[code + '_' + type] = true;
+  if (!S._adminJournal) S._adminJournal = [];
+  S._adminJournal.push({
+    time: new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' }),
+    code: code,
+    prenom: st ? st.prenom : code,
+    niveau: st ? st.niveau : '',
+    label: label
+  });
+  _renderAdminCards();
+}
+
+// ── Tab switcher ─────────────────────────────────────────────
 function _adminSetTab(tab) {
   S.adminTab = tab;
   if (tab === 'cours' && !S.adminCoursData) _loadAdminCours();
   _renderAdminCards();
 }
 
-// ── Admin: Checklist quotidienne ────────────────────────────────
-async function _renderChecklistTab(c) {
-  c.innerHTML =
-    '<div class="sk h-8 w-48 mb-4 rounded-xl"></div>' +
-    '<div class="space-y-2">' + [1,2,3].map(function() {
-      return '<div class="sk h-16 w-full rounded-2xl"></div>';
-    }).join('') + '</div>';
-
-  try {
-    var r = await fetch(SU, { method: 'POST', body: JSON.stringify({
-      action: 'get_daily_checklist', adminCode: S.prof.code
-    }) });
-    var d = await r.json();
-    if (d.status !== 'success') {
-      c.innerHTML = '<div class="text-rose-500 text-sm font-semibold p-4">\u274c ' + (d.message || 'Erreur') + '</div>';
-      return;
-    }
-
-    S._checklistItems = d.items || [];
-    S._checklistCount = d.summary.total;
-
-    _renderChecklistHTML(c, d);
-  } catch(e) {
-    c.innerHTML = '<div class="text-rose-500 text-sm font-semibold p-4">\u274c Erreur réseau</div>';
-  }
+// ── Rapport hebdo parents (dimanche) ─────────────────────────
+function _sendWeeklyReport() {
+  var btn = document.getElementById('btn-weekly-report');
+  if (btn) { btn.disabled = true; btn.textContent = 'Envoi en cours...'; }
+  fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'send_weekly_report', adminCode: S.adminCode }) })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.status === 'success') {
+        _msg('Rapport envoyé à ' + (d.sent || 0) + ' parent(s)', 'success');
+        if (btn) { btn.textContent = '\u2705 Envoyé (' + (d.sent || 0) + ')'; btn.classList.replace('bg-amber-500', 'bg-emerald-500'); }
+      } else { _msg(d.message || 'Erreur envoi rapport', 'error'); if (btn) { btn.disabled = false; btn.textContent = '\ud83d\udce8 Rapport parents'; } }
+    })
+    .catch(function() { _msg('Erreur réseau', 'error'); if (btn) { btn.disabled = false; btn.textContent = '\ud83d\udce8 Rapport parents'; } });
 }
 
-function _renderChecklistHTML(c, d) {
-  var items   = d.items   || [];
-  var summary = d.summary || {};
-  var html = '';
-
-  var today = new Date();
-  var days  = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-  var months= ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
-  var dateStr = days[today.getDay()] + ' ' + today.getDate() + ' ' + months[today.getMonth()];
-
-  html += '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 mb-4">';
-  html += '<div class="flex items-center justify-between">';
-  html += '<div>';
-  html += '<div class="syne font-black text-slate-900 text-base">\ud83d\udccb ' + dateStr + '</div>';
-  html += '<div class="text-xs text-slate-400 font-medium mt-0.5">' +
-    (summary.total === 0 ? '\u2705 Rien à faire — profite !' :
-     summary.priority1 + ' urgent' + (summary.priority1 > 1 ? 's' : '') +
-     (summary.priority2 > 0 ? ' \u00b7 ' + summary.priority2 + ' à traiter' : '') +
-     (summary.priority3 > 0 ? ' \u00b7 ' + summary.priority3 + ' à surveiller' : '')) +
-  '</div>';
-  html += '</div>';
-  html += '<button onclick="_refreshChecklist()" class="text-xs font-bold text-indigo-600 px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 transition-colors">\u21bb Actualiser</button>';
-  html += '</div>';
-  html += '</div>';
-
-  if (summary.rapportHebdo) {
-    html += '<div class="bg-violet-50 border border-violet-200 rounded-2xl p-4 mb-3">';
-    html += '<div class="flex items-center justify-between gap-3">';
-    html += '<div class="flex items-center gap-2">';
-    html += '<span class="text-lg">\ud83d\udcca</span>';
-    html += '<div>';
-    html += '<div class="text-violet-800 font-black text-sm">Rapport parent hebdomadaire</div>';
-    html += '<div class="text-violet-500 text-xs">Dimanche — à envoyer maintenant</div>';
-    html += '</div></div>';
-    html += '<button onclick="_sendWeeklyReport(this)" class="bg-violet-600 text-white text-xs font-bold px-3 py-2 rounded-xl flex-shrink-0 hover:bg-violet-700 transition-colors">Envoyer \u2192</button>';
-    html += '</div></div>';
-  }
-
-  if (items.length === 0) {
-    html += '<div class="text-center py-12">';
-    html += '<div class="text-4xl mb-3">\ud83c\udf89</div>';
-    html += '<div class="syne font-black text-slate-700 text-base mb-1">Tout est traité !</div>';
-    html += '<div class="text-slate-400 text-sm">Aucune action en attente pour le moment.</div>';
-    html += '</div>';
-    c.innerHTML = html;
-    return;
-  }
-
-  var p1 = items.filter(function(i){ return i.priority === 1; });
-  var p2 = items.filter(function(i){ return i.priority === 2; });
-  var p3 = items.filter(function(i){ return i.priority === 3; });
-
-  var _colorMap = {
-    amber:  { bg: 'bg-amber-50',  border: 'border-amber-200',  text: 'text-amber-800',  btn: '#d97706' },
-    indigo: { bg: 'bg-indigo-50', border: 'border-indigo-200', text: 'text-indigo-800', btn: '#4338ca' },
-    green:  { bg: 'bg-emerald-50',border: 'border-emerald-200',text: 'text-emerald-800',btn: '#059669' },
-    orange: { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-800', btn: '#ea580c' },
-    red:    { bg: 'bg-rose-50',   border: 'border-rose-200',   text: 'text-rose-800',   btn: '#e11d48' },
-    purple: { bg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-800', btn: '#7c3aed' },
-    violet: { bg: 'bg-violet-50', border: 'border-violet-200', text: 'text-violet-800', btn: '#6d28d9' },
-    slate:  { bg: 'bg-slate-50',  border: 'border-slate-200',  text: 'text-slate-600',  btn: '#475569' }
-  };
-
-  var _renderSection = function(sItems, title) {
-    if (sItems.length === 0) return '';
-    var sh = '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 mt-4 px-1">' + title + '</div>';
-    sItems.forEach(function(item) {
-      var col = _colorMap[item.color] || _colorMap['slate'];
-      var doneId = 'cl-item-' + item.code + '-' + item.type;
-
-      sh += '<div id="' + doneId + '" class="' + col.bg + ' border ' + col.border + ' rounded-2xl p-3.5 mb-2 transition-all">';
-      sh += '<div class="flex items-center gap-3">';
-      sh += '<div class="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black text-sm shadow-sm flex-shrink-0" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">' + item.prenom.charAt(0).toUpperCase() + '</div>';
-      sh += '<div class="flex-1 min-w-0">';
-      sh += '<div class="flex items-center gap-1.5">';
-      sh += '<span class="font-black text-slate-800 text-sm">' + item.prenom + '</span>';
-      sh += '<span class="text-[10px] font-bold bg-white/60 px-1.5 py-0.5 rounded-md text-slate-500">' + item.niveau + '</span>';
-      sh += '</div>';
-      sh += '<div class="text-xs font-semibold ' + col.text + ' mt-0.5">' + item.icon + ' ' + item.label + '</div>';
-      sh += '<div class="text-[10px] text-slate-400 font-medium mt-0.5">' + item.sublabel + '</div>';
-      sh += '</div>';
-      sh += '<div class="flex flex-col gap-1.5 flex-shrink-0">';
-
-      if (item.type.startsWith('email_') || item.type.startsWith('parent_') || item.type === 'sans_nouvelles') {
-        sh += '<button onclick="openStudentModal(\'' + item.code + '\')" ' +
-          'class="text-white text-[11px] font-bold px-3 py-1.5 rounded-xl hover:opacity-90 transition-opacity" ' +
-          'style="background:' + col.btn + '">Ouvrir \u2192</button>';
-        sh += '<button onclick="_checklistMarkDone(\'' + item.code + '\',\'' + item.type + '\',\'' + item.doneKey + '\',this)" ' +
-          'class="text-[10px] font-semibold text-slate-400 hover:text-emerald-600 transition-colors text-center">\u2610 Fait</button>';
-      } else {
-        sh += '<button onclick="openStudentModal(\'' + item.code + '\')" ' +
-          'class="text-white text-[11px] font-bold px-3 py-1.5 rounded-xl hover:opacity-90 transition-opacity" ' +
-          'style="background:' + col.btn + '">Traiter \u2192</button>';
-      }
-
-      sh += '</div></div></div>';
-    });
-    return sh;
-  };
-
-  if (p1.length > 0) html += _renderSection(p1, '\ud83d\udd34 Urgent — à faire maintenant');
-  if (p2.length > 0) html += _renderSection(p2, '\ud83d\udfe1 À traiter aujourd\'hui');
-  if (p3.length > 0) html += _renderSection(p3, '\ud83d\udfe2 À surveiller');
-
-  c.innerHTML = html;
-}
-
-async function _checklistMarkDone(code, type, doneKey, btn) {
-  var st = (S.adminStudents || []).find(function(s) { return s.code === code; });
-  if (!st) { showT('Élève introuvable', 2000, '\u26a0\ufe0f'); return; }
-
-  if (btn) { btn.textContent = '...'; btn.disabled = true; }
-
-  try {
-    var r = await fetch(SU, { method: 'POST', body: JSON.stringify({
-      action: 'log_manual_email',
-      adminCode: S.prof.code,
-      userEmail: st.email,
-      type: doneKey
-    }) }).then(function(x) { return x.json(); });
-
-    if (r.status === 'success') {
-      var el = document.getElementById('cl-item-' + code + '-' + type);
-      if (el) {
-        el.style.opacity = '0.45';
-        el.style.pointerEvents = 'none';
-        var checkEl = el.querySelector('button:last-child');
-        if (checkEl) checkEl.textContent = '\u2705 Fait';
-      }
-      showT('\u2705 Marqué comme fait', 2000, '\u2705');
-
-      S._checklistCount = Math.max(0, (S._checklistCount || 1) - 1);
-      _renderAdminCards();
-    } else {
-      showT('\u274c Erreur : ' + (r.message || ''), 3000, '\u274c');
-      if (btn) { btn.textContent = '\u2610 Fait'; btn.disabled = false; }
-    }
-  } catch(e) {
-    showT('\u274c Erreur réseau', 3000, '\u274c');
-    if (btn) { btn.textContent = '\u2610 Fait'; btn.disabled = false; }
-  }
-}
-
-async function _sendWeeklyReport(btn) {
-  if (btn) { btn.textContent = 'Envoi...'; btn.disabled = true; }
-  try {
-    var r = await fetch(SU, { method: 'POST', body: JSON.stringify({
-      action: 'send_weekly_report', adminCode: S.prof.code
-    }) }).then(function(x) { return x.json(); });
-
-    if (r.status === 'success') {
-      showT('\ud83d\udcca Rapport envoyé à ' + (r.sent || 0) + ' parent(s) !', 4000, '\u2705');
-      if (btn) { btn.textContent = '\u2705 Envoyé'; btn.style.background = '#059669'; }
-    } else {
-      showT('\u274c ' + (r.message || 'Erreur'), 3000, '\u274c');
-      if (btn) { btn.textContent = 'Envoyer \u2192'; btn.disabled = false; }
-    }
-  } catch(e) {
-    showT('\u274c Erreur réseau', 3000, '\u274c');
-    if (btn) { btn.textContent = 'Envoyer \u2192'; btn.disabled = false; }
-  }
-}
-
-async function _refreshChecklist() {
-  var c = document.getElementById('checklist-content');
-  if (c) await _renderChecklistTab(c);
-}
-
+// ── Legacy compatibility (used by old publishBoost/publishChapter in modal) ──
 function _checklistAutoCheck(code, type) {
-  var el = document.getElementById('cl-item-' + code + '-' + type);
-  if (el) {
-    el.style.opacity = '0.45';
-    el.style.pointerEvents = 'none';
-  }
-  S._checklistCount = Math.max(0, (S._checklistCount || 1) - 1);
+  // No-op in new cockpit — kept for backwards compatibility with modal publish
 }
 
 // ── Admin: Cours ───────────────────────────────────────────────

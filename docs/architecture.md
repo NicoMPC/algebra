@@ -57,7 +57,7 @@ Les vues sont des fonctions JS qui injectent du HTML dans `#main` :
 | Calibrage | `rSection('CALIBRAGE', ...)` | Diagnostic (quiz initial) |
 | Progression | `rSection('PROGRESSION', ...)` | Barres de progression par chapitre |
 | Brevet | `rSection('BREVET', ...)` | Mode brevet blanc (3EME only) |
-| Admin | `rSection('ADMIN', ...)` | Dashboard "Mes Élèves" |
+| Admin | `rSection('ADMIN', ...)` | Cockpit admin 3 onglets : À FAIRE / FAIT / TEST (@76) |
 
 ### Navigation
 
@@ -116,8 +116,9 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @75
+### Actions GAS — état @76
 
+> @76 : refonte admin cockpit — 3 onglets (À FAIRE/FAIT/TEST), cartes inline avec workflows, journal horodaté, `log_contact` ajouté. Anciens onglets (Aujourd'hui/À faire/Suivi/Traité/Test/Cours) remplacés. Cours accessible depuis les cartes.
 > @64 : ajout niveau 1ERE Spé Maths (ALLOWED_LEVELS, niveauOrder). @63 : rate limiting global (60/min, 15/min login/register), validation inputs saveScore, 6 bugfixes simulation QA.
 
 | Action | Description | Statut |
@@ -156,6 +157,7 @@ function doPost(e) {
 | `request_brevet_chapter` | Élève demande chapitre manquant → Insights | ✅ |
 | `import_brevet_exos` | One-shot admin — pousse exercices dans BrevetExos | ✅ |
 | `publish_admin_revision` | Admin assigne chapitres d'une autre année à un élève → Users col M `RevisionChapters` (JSON) + rebuildSuivi. Payload : `adminCode, targetCode, chapters:[{niveau,categorie}]`. Vide si `chapters=[]` | ✅ |
+| `log_contact` | Admin — logue un contact parent effectué dans Insights. Params : `adminCode`, `code`, `prenom`, `niveau`. @76 | ✅ |
 
 ### Fonctions internes clés
 
@@ -282,7 +284,7 @@ Scripts archivés dans `scripts_archive/`.
 - Auth register + login + auto-login silencieux (modale protégée contre interruption trial-flow CTA)
 - Scores enrichis : temps, wrongOpt, indices, formule
 - Swipe gauche → exercice suivant
-- Admin panel (triple-clic logo), dark mode admin, mode nuit landing (toggle lune dans la nav, `body.land-night`, persisté localStorage)
+- Admin cockpit (triple-clic logo) : 3 onglets À FAIRE / FAIT / TEST, cartes élèves avec workflows inline (boost/chapitre/email/contact/cours/brevet), journal horodaté, dark mode admin, bouton rapport parents le dimanche
 - Gamification : XP, streak, mastery ring SVG
 - KaTeX v0.16.9 (rendu maths), chrono par exercice
 - Nudge pills après 20s, tableau blanc maths

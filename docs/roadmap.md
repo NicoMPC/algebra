@@ -28,7 +28,7 @@
 | Analytics | ✅ GA4 RGPD-compliant |
 | Limite bêta | 50 vrais élèves (IsTest=0) |
 | Messages élèves | ✅ Système adaptatif `_msg()` — ~35 entrées, niveau, objectif, coach marks, _OK/_KO contextuels |
-| Admin smart | ✅ GAS @69 — email modal éditable, coursNeeded, Sans nouvelles, dark mode onboarding, 6 profils test |
+| Admin cockpit | ✅ GAS @76 — cockpit 3 onglets À FAIRE/FAIT/TEST, cartes inline, journal horodaté, log_contact |
 | Emails (@matheux.fr) | ⏳ **à créer manuellement** : contact@ + alias no-reply@ |
 
 ---

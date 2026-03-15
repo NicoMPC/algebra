@@ -2,7 +2,7 @@
 
 > Si tu lis ce document, c'est que tu reprends le projet.
 > Tout ce qu'il faut pour comprendre, maintenir et faire grandir Matheux est ici.
-> Mise a jour : 15 mars 2026 -- GAS @75
+> Mise a jour : 15 mars 2026 -- GAS @76
 
 ---
 
@@ -168,82 +168,61 @@ La colonne "Objectif" dans Google Sheets te dira ce que les clients veulent. Exe
 
 Triple-clic sur le logo Matheux en haut de la page. Le dashboard admin apparait (seuls les comptes `IsAdmin` y ont acces).
 
-### L'onglet "Aujourd'hui" (checklist quotidienne)
+### Le cockpit -- 3 onglets
 
-C'est le premier onglet qui s'affiche. Il te montre **toutes les actions a faire aujourd'hui**, triees par urgence :
+Le dashboard affiche 3 onglets : **A FAIRE** / **FAIT** / **TEST**.
 
-**Priorite 1 (rouge) -- a faire maintenant :**
+**A FAIRE** : chaque eleve qui a des actions en attente apparait sous forme de carte. Les actions sont triees par priorite :
 
-| Item | Signification | Ce que tu fais |
-|---|---|---|
-| Preparer le prochain boost | L'eleve a fini ses 5 exos | Ouvre la fiche -> genere un nouveau boost |
-| Assigner le prochain chapitre | 20 exos completes sur un chapitre | Ouvre la fiche -> assigne le chapitre suivant |
-| Envoyer le mail de bienvenue | Nouvel inscrit aujourd'hui | Copie le mail -> envoie -> coche "Fait" |
+| Rang | Action | Declencheur | Comment c'est traite |
+|---|---|---|---|
+| 1 | Contacter le parent | Inactif >7j ET score <40% partout | Bouton "Marquer contacte" |
+| 2 | Boost termine | 5 exos faits, pas de boost en attente | Copier prompt -> coller JSON -> Publier |
+| 3 | Chapitre termine | 20 exos faits, pas de chapitre assigne | Copier prompt -> coller JSON -> Publier |
+| 4 | Cours a rediger | Palier 5/10/15/20 atteint, cours vide | Aller a l'editeur de cours |
+| 5 | Brevet en attente | PendingBrevet + 3EME | Ouvrir la fiche -> publier |
+| 6 | Email J+0 | Inscription, email non envoye | Voir template -> Copier -> Marquer envoye |
+| 7 | Email J+3/J+5/J+7 | Selon date inscription | Voir template -> Copier -> Marquer envoye |
 
-**Priorite 2 (jaune) -- a traiter dans la journee :**
+Les cartes avec actions de rang 1-5 (contenu a creer) apparaissent en premier.
+Les cartes avec seulement des emails (rang 6-7) en dessous.
 
-| Item | Signification | Ce que tu fais |
-|---|---|---|
-| Envoyer J+3 | 3 jours apres inscription | Copie le mail J+3 -> envoie |
-| Envoyer J+5 | Plus que 2 jours d'essai | Copie le mail J+5 (urgence) -> envoie |
-| Envoyer J+7 + lien Stripe | Trial termine | Copie le mail J+7 + lien paiement -> envoie |
-| Feliciter le parent | Premier boost termine | Copie le message -> envoie au parent |
-| Relance douce parent | Inactif 3-6 jours | Copie le message -> envoie |
-| Publier un brevet blanc | Brevet en attente (3eme) | Ouvre la fiche -> publie |
+Bordure gauche de la carte :
+- Rouge = contact parent urgent
+- Bleu = boost / chapitre / cours / brevet
+- Orange = email
 
-**Priorite 3 (bleu) -- a surveiller :**
+Chaque action a son workflow directement SUR la carte : pas besoin d'ouvrir une fiche separee.
 
-| Item | Signification | Ce que tu fais |
-|---|---|---|
-| Sans nouvelles depuis Xj | Inactif 7+ jours | Relance parent recommandee |
+**FAIT** : journal horodate des actions traitees pendant la session + liste des eleves a jour.
 
-Chaque item a un bouton "Ouvrir" (ouvre la fiche de l'eleve) et "Fait" (coche et retire de la liste).
+**TEST** : comptes de test (IsTest=1), meme structure de carte mais pas comptes dans le total A FAIRE.
 
-**Le dimanche** : un encart supplementaire "Rapport parent hebdomadaire" apparait avec un bouton "Envoyer" qui declenche l'envoi automatique a tous les parents d'eleves actifs.
-
-Le bouton "Actualiser" en haut recharge la checklist depuis les donnees fraiches.
-
-### Les autres onglets
-
-| Onglet | Contenu |
-|---|---|
-| A faire | Eleves tries par urgence (meme infos mais vue par eleve) |
-| Suivi | Eleves qui ont besoin d'un suivi (emails dus, inactifs) |
-| Traite | Eleves ou tout va bien |
-| Test | Comptes de test (pas de vrais eleves) |
-| Cours | Editeur de cours par chapitre |
-
-### La fiche d'un eleve
-
-Quand tu cliques sur un eleve, tu vois :
-
-- **Son niveau + derniere connexion + objectif**
-- **Son boost du jour** : en cours (2/5), termine, ou aucun
-- **Ses chapitres actifs** (max 4 en meme temps) avec progression
-- **Son historique** : toutes les reponses, scores, temps, indices utilises
-- **Ses feedbacks** : ressenti sur les 3 derniers boosts/chapitres
-- **Les actions possibles** :
-  - Publier un boost (coller le JSON genere par Claude)
-  - Publier un chapitre
-  - Publier un brevet blanc (3eme)
-  - Copier un email (J+0, J+3, J+5, J+7) -- editable avant copie
-  - Copier le prompt Claude (pour generer le prochain boost)
-  - Envoyer un message parent (felicitation, relance, bilan)
-  - Assigner des chapitres de revision d'une autre annee
+Le bouton "Actualiser" recharge les donnees fraiches depuis le serveur.
 
 ### Comment preparer un boost
 
 C'est l'action la plus frequente. Voici le workflow :
 
-1. La checklist te dit "Preparer le prochain boost" pour un eleve
-2. Tu cliques "Ouvrir" -> la fiche de l'eleve s'ouvre
-3. Tu cliques "Copier le prompt Claude" -> ca copie un texte dans ton presse-papier
-4. Tu colles ce texte dans Claude (claude.ai) -> Claude genere un JSON de 5 exercices
-5. Tu copies le JSON et le colles dans le champ "Publier un boost" de la fiche
-6. Tu cliques "Publier" -> le boost est enregistre
+1. L'onglet A FAIRE montre une carte avec l'action "Boost termine"
+2. Tu cliques "Copier le prompt Claude" sur la carte -> ca copie un texte
+3. Tu colles ce texte dans Claude (claude.ai) -> Claude genere un JSON de 5 exercices
+4. Tu copies le JSON et le colles dans le champ "Coller le JSON ici" sur la carte
+5. Le bouton "Publier" s'active -> tu cliques -> le boost est enregistre
+6. La carte passe automatiquement dans l'onglet FAIT + journal horodate
 7. Au prochain login de l'eleve, il verra son nouveau boost
 
 Le meme workflow existe pour les chapitres.
+
+### La fiche d'un eleve (modale)
+
+Disponible en cliquant sur un eleve depuis certaines actions (brevet, revision). Contient :
+
+- Boost : apercu, historique, publication
+- Chapitres : progression detaillee, scores, temps
+- Brevet blanc : selection chapitres + publication (3eme)
+- Revision : assignation chapitres d'une autre annee
+- Emails : templates editables J+0/J+3/J+5/J+7
 
 ---
 
@@ -252,15 +231,15 @@ Le meme workflow existe pour les chapitres.
 ### Le matin (30-45 min)
 
 1. **Ouvre le dashboard admin** (matheux.fr -> triple-clic logo)
-2. **Regarde l'onglet "Aujourd'hui"** -- c'est ta to-do list
-3. **Traite les items rouges d'abord** :
-   - Boosts a preparer -> prompt Claude -> JSON -> publier
-   - Chapitres a assigner -> meme workflow
-   - Emails J+0 a envoyer -> copier -> envoyer -> cocher
-4. **Traite les items jaunes** :
-   - Emails J+3/J+5/J+7 -> copier -> envoyer -> cocher
-   - Messages parents -> copier -> envoyer -> cocher
-5. **Regarde les items bleus** (inactifs 7j+) -> decide si tu relances
+2. **Regarde l'onglet "A FAIRE"** -- toutes les actions classees par priorite
+3. **Traite de haut en bas** :
+   - Contact parents urgents (bordure rouge) -> "Marquer contacte"
+   - Boosts termines (bordure bleue) -> Copier prompt -> JSON -> Publier
+   - Chapitres termines -> meme workflow
+   - Cours a rediger -> aller a l'editeur
+   - Emails J+0/J+3/J+5/J+7 (bordure orange) -> Voir template -> Copier -> Marquer envoye
+4. **Chaque action traitee passe dans l'onglet FAIT** avec un horodatage
+5. Quand l'onglet A FAIRE est vide -> c'est fini pour la journee
 
 ### En continu
 
@@ -270,7 +249,7 @@ Le meme workflow existe pour les chapitres.
 
 ### Le dimanche
 
-- Le bouton "Envoyer le rapport hebdo" apparait dans la checklist
+- Le bouton "Rapport parents" apparait dans le cockpit admin (en haut, a cote de Actualiser)
 - Il envoie automatiquement un bilan personnalise a chaque parent
 - Le bilan contient : nombre d'exercices faits, % de reussite, chapitres maitrises
 
@@ -316,7 +295,7 @@ Le meme workflow existe pour les chapitres.
 
 - **J+0** : tente de s'envoyer automatiquement a l'inscription. Si ca echoue (alias Gmail pas configure), tu le fais manuellement depuis le dashboard (bouton "Copier mail de bienvenue").
 - **J+3, J+5, J+7** : generes par `triggerDailyMarketing` (un programme qui tourne chaque matin entre 9h et 10h). **Ce trigger doit etre active manuellement** (voir section 12).
-- **Rapport hebdo** : genere par `triggerWeeklyParentReport`. Peut etre declenche manuellement le dimanche depuis la checklist admin, ou automatiquement via un trigger Apps Script (a configurer).
+- **Rapport hebdo** : genere par `triggerWeeklyParentReport`. Le dimanche, un bouton "Rapport parents" apparait dans le cockpit admin pour l'envoyer manuellement. Peut aussi etre automatise via un trigger Apps Script (a configurer).
 
 ### Les emails sont adaptes a l'objectif
 
@@ -601,7 +580,7 @@ Pour le rapport parent hebdo, ajouter un 2eme declencheur :
 | Le site ne se met pas a jour | Cache navigateur | Ctrl+Shift+R (ou vider le cache) |
 | Un exercice est faux | Erreur dans les donnees | L'eleve peut cliquer "Signaler" -> ca arrive dans l'onglet Insights |
 | L'eleve ne voit pas son boost | Le boost n'est pas encore publie | Verifie la fiche de l'eleve dans l'admin |
-| Le rapport hebdo ne s'envoie pas | Trigger pas configure ou pas dimanche | Utilise le bouton manuel dans la checklist admin |
+| Le rapport hebdo ne s'envoie pas | Trigger pas configure ou pas dimanche | Utilise le bouton "Rapport parents" dans le cockpit admin (visible le dimanche) |
 
 ### Ou regarder les logs
 
