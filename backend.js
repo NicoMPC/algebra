@@ -553,7 +553,7 @@ function login(p) {
   // ── Historique des boosts passés (hors aujourd'hui, 10 derniers) ──────────
   var boostHistory = [];
   try {
-    var todayStr = tod();
+    var todayStr = today();
     boostHistory = getRows(SH.BOOSTS)
       .filter(function(r) { return String(r['Code']) === code && String(r['Date'] || '') !== todayStr; })
       .sort(function(a, b) { return String(b['Date'] || '').localeCompare(String(a['Date'] || '')); })
@@ -3741,16 +3741,32 @@ function ensureUsersCols() {
     changed = true;
   }
 
+  if (header.indexOf('PendingBrevet') === -1) {
+    sh.getRange(1, header.length + 1).setValue('PendingBrevet');
+    header.push('PendingBrevet');
+    changed = true;
+  }
+
+  if (header.indexOf('RevisionChapters') === -1) {
+    sh.getRange(1, header.length + 1).setValue('RevisionChapters');
+    header.push('RevisionChapters');
+    changed = true;
+  }
+
+  if (header.indexOf('Objectif') === -1) {
+    sh.getRange(1, header.length + 1).setValue('Objectif');
+    header.push('Objectif');
+    changed = true;
+  }
+
   if (header.indexOf('ResetToken') === -1) {
-    var colIdx4 = header.length + 1;
-    sh.getRange(1, colIdx4).setValue('ResetToken');
+    sh.getRange(1, header.length + 1).setValue('ResetToken');
     header.push('ResetToken');
     changed = true;
   }
 
   if (header.indexOf('ResetExpiry') === -1) {
-    var colIdx5 = header.length + 1;
-    sh.getRange(1, colIdx5).setValue('ResetExpiry');
+    sh.getRange(1, header.length + 1).setValue('ResetExpiry');
     changed = true;
   }
 
@@ -4557,7 +4573,7 @@ function checkTrialStatus(p) {
   }
 
   var premium    = userRow[iPremium];
-  var isPremium  = (premium === true || premium === 1 || premium === 'TRUE' || premium === 'true');
+  var isPremium  = (premium === true || premium === 1 || premium === 'TRUE' || premium === 'true' || String(premium) === '1');
 
   var trialActive = false;
   var daysLeft    = 0;
@@ -5036,7 +5052,7 @@ function saveCours(p) {
 
   var niveau    = String(p.niveau    || '').toUpperCase();
   var categorie = String(p.categorie || '');
-  var today     = tod();
+  var todayDate = today();
 
   // Créer le sheet si inexistant
   if (!sheetExists(SH.COURS)) {
@@ -5052,7 +5068,7 @@ function saveCours(p) {
     if (String(data[i][0]) === niveau && String(data[i][1]) === categorie) {
       courseSh.getRange(i + 1, 3, 1, 5).setValues([[
         String(p.section5 || ''), String(p.section10 || ''),
-        String(p.section15 || ''), String(p.section20 || ''), today
+        String(p.section15 || ''), String(p.section20 || ''), todayDate
       ]]);
       found = true; break;
     }
@@ -5060,7 +5076,7 @@ function saveCours(p) {
   if (!found) {
     courseSh.appendRow([niveau, categorie,
       String(p.section5 || ''), String(p.section10 || ''),
-      String(p.section15 || ''), String(p.section20 || ''), today
+      String(p.section15 || ''), String(p.section20 || ''), todayDate
     ]);
   }
   return { status: 'success' };
