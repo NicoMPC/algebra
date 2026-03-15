@@ -168,6 +168,7 @@
 - [x] **Signaler uniformisé** — bouton "📢 Une erreur dans cet exercice ?" ajouté dans renderArchiveSection (historique), présent sur tous les modes (14 mars 2026)
 - [x] **Audit messages & onboarding** — tous les messages vérifiés cohérents (prix, nb exos, ton, français), aucune incohérence détectée (14 mars 2026)
 - [x] **Documentation nettoyée** — CLAUDE.md épuré en point d'entrée, 7 rapports archivés, docs vivantes mises à jour (14 mars 2026)
+- [x] **PWA — Progressive Web App** — manifest.json, sw.js (Cache First + Network First GAS), offline.html, 11 icônes (72→512px + maskable + apple-touch), balises PWA head, bannière install Android (`beforeinstallprompt`), iOS hint 1x (localStorage) — code commité, **déploiement Netlify/GitHub Pages à valider** (14 mars 2026)
 - [ ] Agent analyse lacunes quotidien automatique
 - [ ] Agent génération boost automatique
 - [ ] Agent rapport parents (email hebdo)
@@ -220,6 +221,7 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 ### UX
 - [x] Mobile-first, gamification, messages ado
 - [x] Post-boost confettis, feedback, indices lisibles
+- [~] **PWA installable** — code prêt (manifest + SW + icônes + bannière), **à valider en prod** (Chrome DevTools → Application → tout vert, Lighthouse PWA ≥ 90)
 
 ### Admin
 - [x] Dashboard trié, modal complet, publish 1-clic, toast overwrite chapitre

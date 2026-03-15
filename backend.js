@@ -41,7 +41,8 @@ var SH = {
   EMAILS:         '📧 Emails',
   BREVET_EXOS:    'BrevetExos',
   BREVET_RESULTS: 'BrevetResults',
-  BOOST_EXOS:     'BoostExos'
+  BOOST_EXOS:     'BoostExos',
+  COURS:          'Cours'
 };
 
 // ════════════════════════════════════════════════════════════
@@ -106,6 +107,8 @@ function doPost(e) {
       case 'get_brevet_chapters':        res = getBrevetChapters(p);       break;
       case 'import_brevet_exos':         res = importBrevetExos(p);        break;
       case 'publish_admin_revision':     res = publishAdminRevision(p);    break;
+      case 'save_cours':                 res = saveCours(p);               break;
+      case 'get_cours_admin':            res = getCoursAdmin(p);           break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -502,6 +505,45 @@ function login(p) {
     } catch(e) { Logger.log('RevisionChapters parse error: ' + e); }
   }
 
+  // ── Cours par chapitre (sections débloquées selon progression) ─────────────
+  var coursData = {};
+  try {
+    if (sheetExists(SH.COURS)) {
+      // Compter nbExos curriculum par chapitre depuis history (hors BOOST)
+      var _chapNbExos = {};
+      history.forEach(function(r) {
+        if (r.source === 'BOOST' || r.categorie === 'CALIBRAGE') return;
+        if (!_chapNbExos[r.categorie]) _chapNbExos[r.categorie] = 0;
+        _chapNbExos[r.categorie]++;
+      });
+      var milestones = [
+        { at: 5,  key: 'Section5'  },
+        { at: 10, key: 'Section10' },
+        { at: 15, key: 'Section15' },
+        { at: 20, key: 'Section20' }
+      ];
+      var titresDefaut = { 5: "L'essentiel", 10: 'Méthode & Exemples', 15: 'Points de vigilance', 20: 'Cours complet ✨' };
+      getRows(SH.COURS).forEach(function(row) {
+        if (String(row['Niveau'] || '') !== level) return;
+        var cat = String(row['Categorie'] || '');
+        if (!cat) return;
+        var nbExos = _chapNbExos[cat] || 0;
+        var unlocked = [], locked = [];
+        milestones.forEach(function(m) {
+          var contenu = String(row[m.key] || '').trim();
+          if (!contenu) return;
+          var sect = { unlock_at: m.at, titre: titresDefaut[m.at], contenu: contenu };
+          if (nbExos >= m.at) unlocked.push(sect);
+          else locked.push({ unlock_at: m.at, titre: titresDefaut[m.at] });
+        });
+        if (unlocked.length + locked.length > 0) {
+          var next = locked.length > 0 ? locked[0].unlock_at : null;
+          coursData[cat] = { unlocked: unlocked, locked: locked, nbExos: nbExos, nextMilestone: next };
+        }
+      });
+    }
+  } catch(e) { Logger.log('coursData error: ' + e); }
+
   // ── Historique des boosts passés (hors aujourd'hui, 10 derniers) ──────────
   var boostHistory = [];
   try {
@@ -528,6 +570,7 @@ function login(p) {
     isFirstDay:         history.length === 0 && !boostExistsInDB,
     history:            history,
     boostHistory:       boostHistory,
+    coursData:          coursData,
     dynamicChapters:    [],
     nextChapter:        nextChapter,
     nextBoost:          nextBoost,
@@ -1522,6 +1565,20 @@ function rebuildSuivi(code) {
   if (chapTermine) {
     actions.push('✅ CHAPITRE TERMINÉ → assigner la suite');
   }
+  // Cours à créer : chapitre avec ≥5 exos mais aucun contenu cours
+  try {
+    if (sheetExists(SH.COURS)) {
+      var _coursRows = getRows(SH.COURS);
+      chapOrder.slice(0, 4).forEach(function(cat) {
+        if (!cat || (chapCount[cat] || 0) < 5) return;
+        var hasCours = _coursRows.some(function(r) {
+          return String(r['Niveau']||'') === niveau && String(r['Categorie']||'') === cat
+            && String(r['Section5']||'').trim() !== '';
+        });
+        if (!hasCours) actions.push('📚 COURS À CRÉER → ' + cat.replace(/_/g,' '));
+      });
+    }
+  } catch(e) {}
   if (pendingBrevetSuivi && niveau === '3EME') {
     actions.push('📝 BREVET EN ATTENTE → à faire');
   }
@@ -4474,4 +4531,72 @@ function publishAdminRevision(p) {
 
   try { rebuildSuivi(targetCode); } catch(e) {}
   return { status: 'success', count: chapters.length };
+}
+
+// ════════════════════════════════════════════════════════════
+//  SAVE_COURS — Admin enregistre le contenu d'un cours chapitre
+//  Payload : { adminCode, niveau, categorie, section5, section10, section15, section20 }
+// ════════════════════════════════════════════════════════════
+function saveCours(p) {
+  var adminCode = String(p.adminCode || '');
+  var adminUsers = getRows(SH.USERS).filter(function(u) {
+    return String(u['Code'] || '') === adminCode && (u['IsAdmin'] == 1 || u['IsAdmin'] === 'TRUE' || u['IsAdmin'] === true);
+  });
+  if (!adminUsers.length) return { status: 'error', message: 'Non autorisé.' };
+
+  var niveau    = String(p.niveau    || '').toUpperCase();
+  var categorie = String(p.categorie || '');
+  var today     = tod();
+
+  // Créer le sheet si inexistant
+  if (!sheetExists(SH.COURS)) {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sh = ss.insertSheet(SH.COURS);
+    sh.getRange(1, 1, 1, 7).setValues([['Niveau','Categorie','Section5','Section10','Section15','Section20','DateMaj']]);
+  }
+
+  var courseSh = getSheet(SH.COURS);
+  var data = courseSh.getDataRange().getValues();
+  var found = false;
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][0]) === niveau && String(data[i][1]) === categorie) {
+      courseSh.getRange(i + 1, 3, 1, 5).setValues([[
+        String(p.section5 || ''), String(p.section10 || ''),
+        String(p.section15 || ''), String(p.section20 || ''), today
+      ]]);
+      found = true; break;
+    }
+  }
+  if (!found) {
+    courseSh.appendRow([niveau, categorie,
+      String(p.section5 || ''), String(p.section10 || ''),
+      String(p.section15 || ''), String(p.section20 || ''), today
+    ]);
+  }
+  return { status: 'success' };
+}
+
+// ════════════════════════════════════════════════════════════
+//  GET_COURS_ADMIN — Admin lit tout le contenu cours
+//  Payload : { adminCode }
+// ════════════════════════════════════════════════════════════
+function getCoursAdmin(p) {
+  var adminCode = String(p.adminCode || '');
+  var adminUsers = getRows(SH.USERS).filter(function(u) {
+    return String(u['Code'] || '') === adminCode && (u['IsAdmin'] == 1 || u['IsAdmin'] === 'TRUE' || u['IsAdmin'] === true);
+  });
+  if (!adminUsers.length) return { status: 'error', message: 'Non autorisé.' };
+
+  var cours = sheetExists(SH.COURS) ? getRows(SH.COURS).map(function(r) {
+    return {
+      niveau:    String(r['Niveau']    || ''),
+      categorie: String(r['Categorie'] || ''),
+      section5:  String(r['Section5']  || ''),
+      section10: String(r['Section10'] || ''),
+      section15: String(r['Section15'] || ''),
+      section20: String(r['Section20'] || ''),
+      dateMaj:   String(r['DateMaj']   || '')
+    };
+  }) : [];
+  return { status: 'success', cours: cours };
 }
