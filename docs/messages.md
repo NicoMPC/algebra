@@ -2,7 +2,7 @@
 
 > Document vivant. Toute modification d'un message dans le code doit être reflétée ici.
 > Référence : `_MSGS` dans `index.html` + templates email dans `backend.js`.
-> Mise à jour : 2026-03-15 — GAS @77
+> Mise à jour : 2026-03-15 — GAS @80
 
 ---
 

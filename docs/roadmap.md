@@ -4,7 +4,7 @@
 
 ---
 
-## État global — 15 mars 2026 (dernière mise à jour : @77)
+## État global — 15 mars 2026 (dernière mise à jour : @80)
 
 **Matheux est fonctionnel à 100% côté code. Seuls manques : Stripe PROD + 2 actions manuelles.**
 
@@ -232,7 +232,7 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 ## Checklist "Prêt pour 50 élèves"
 
 ### Infrastructure
-- [x] GAS @77 stable — 29+ actions, bugfixes complets, niveau 1ERE, audit exercices
+- [x] GAS @80 stable — 30+ actions, bugfixes complets, niveau 1ERE, audit exercices, simulation 21j OK (4 bugs corrigés)
 - [x] Google Sheet prod
 - [x] Validation inputs GAS (register + saveScore — @63)
 - [x] Rate limiting doPost (global 60/min, sensibles 15/min — @63)

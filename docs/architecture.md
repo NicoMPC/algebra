@@ -118,7 +118,7 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @77
+### Actions GAS — état @80
 
 > @77 : mode nuit app (bouton 🌙 header, `body.app-night`, `localStorage app_night`), guide "Commence par là" seulement après boost consommé, titres chapitres `font-weight:800`, boost terminé = navigation Précédent/Suivant. Audit + correction 1872 exercices (score qualité ~98%).
 > @76 : refonte admin cockpit — 3 onglets (À FAIRE/FAIT/TEST), cartes inline avec workflows, journal horodaté, `log_contact` ajouté. Anciens onglets (Aujourd'hui/À faire/Suivi/Traité/Test/Cours) remplacés. Cours accessible depuis les cartes.

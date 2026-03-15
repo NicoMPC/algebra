@@ -2,7 +2,7 @@
 
 > Si tu lis ce document, c'est que tu reprends le projet.
 > Tout ce qu'il faut pour comprendre, maintenir et faire grandir Matheux est ici.
-> Mise a jour : 15 mars 2026 -- GAS @77
+> Mise a jour : 15 mars 2026 -- GAS @80
 
 ---
 
@@ -735,10 +735,10 @@ Les exercices couvrent **~100% du programme officiel** du college (BO Eduscol) +
 | **Prompt Claude** | Le texte qu'on copie dans Claude pour generer des exercices |
 | **Empreinte cognitive** | Le profil d'apprentissage unique accumule par l'eleve |
 | **MRR** | Monthly Recurring Revenue (revenu mensuel recurrent) |
-| **@77** | Numero de version actuel du backend (incremente a chaque deploiement) |
+| **@80** | Numero de version actuel du backend (incremente a chaque deploiement) |
 
 ---
 
-*Matheux -- GAS @77 -- 15 mars 2026*
+*Matheux -- GAS @80 -- 15 mars 2026*
 *Document de reference pour la reprise du projet.*
 *Si tu as des questions, le code source et la documentation technique (dossier docs/) contiennent tous les details.*
