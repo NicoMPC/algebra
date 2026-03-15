@@ -8071,9 +8071,10 @@ function _renderAdminCards() {
   var doneStudents  = realStudents.filter(function(s) {
     return !_needsAction(s) && !(s.secondaryActions && s.secondaryActions.length > 0);
   });
-  var activeTab = S.adminTab || 'todo';
+  var activeTab = S.adminTab || 'checklist';
 
   var tabs = [
+    { key: 'checklist', label: '📋 Aujourd\'hui', count: S._checklistCount || '', color: (S._checklistCount || 0) > 0 ? '#ef4444' : '#059669' },
     { key: 'todo',  label: '⚡ À faire',  count: todoStudents.length,  color: todoStudents.length  > 0 ? '#ef4444' : '#94a3b8' },
     { key: 'suivi', label: '📧 Suivi',    count: suiviStudents.length, color: suiviStudents.length > 0 ? '#f59e0b' : '#94a3b8' },
     { key: 'done',  label: '✅ Traité',   count: doneStudents.length,  color: '#059669' },
@@ -8160,7 +8161,10 @@ function _renderAdminCards() {
     return h;
   };
 
-  if (activeTab === 'todo') {
+  if (activeTab === 'checklist') {
+    html += '<div id="checklist-content"></div>';
+
+  } else if (activeTab === 'todo') {
     if (todoStudents.length === 0) {
       html += '<div class="text-center py-8 text-slate-400 text-sm font-semibold">✅ Tout est traité — aucune action en attente.</div>';
     }
@@ -8204,12 +8208,222 @@ function _renderAdminCards() {
   }
 
   c.innerHTML = html;
+
+  // Déclencher le chargement de la checklist si onglet actif
+  if (activeTab === 'checklist') {
+    var clEl = document.getElementById('checklist-content');
+    if (clEl) _renderChecklistTab(clEl);
+  }
 }
 
 function _adminSetTab(tab) {
   S.adminTab = tab;
   if (tab === 'cours' && !S.adminCoursData) _loadAdminCours();
   _renderAdminCards();
+}
+
+// ── Admin: Checklist quotidienne ────────────────────────────────
+async function _renderChecklistTab(c) {
+  c.innerHTML =
+    '<div class="sk h-8 w-48 mb-4 rounded-xl"></div>' +
+    '<div class="space-y-2">' + [1,2,3].map(function() {
+      return '<div class="sk h-16 w-full rounded-2xl"></div>';
+    }).join('') + '</div>';
+
+  try {
+    var r = await fetch(SU, { method: 'POST', body: JSON.stringify({
+      action: 'get_daily_checklist', adminCode: S.prof.code
+    }) });
+    var d = await r.json();
+    if (d.status !== 'success') {
+      c.innerHTML = '<div class="text-rose-500 text-sm font-semibold p-4">\u274c ' + (d.message || 'Erreur') + '</div>';
+      return;
+    }
+
+    S._checklistItems = d.items || [];
+    S._checklistCount = d.summary.total;
+
+    _renderChecklistHTML(c, d);
+  } catch(e) {
+    c.innerHTML = '<div class="text-rose-500 text-sm font-semibold p-4">\u274c Erreur réseau</div>';
+  }
+}
+
+function _renderChecklistHTML(c, d) {
+  var items   = d.items   || [];
+  var summary = d.summary || {};
+  var html = '';
+
+  var today = new Date();
+  var days  = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  var months= ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
+  var dateStr = days[today.getDay()] + ' ' + today.getDate() + ' ' + months[today.getMonth()];
+
+  html += '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 mb-4">';
+  html += '<div class="flex items-center justify-between">';
+  html += '<div>';
+  html += '<div class="syne font-black text-slate-900 text-base">\ud83d\udccb ' + dateStr + '</div>';
+  html += '<div class="text-xs text-slate-400 font-medium mt-0.5">' +
+    (summary.total === 0 ? '\u2705 Rien à faire — profite !' :
+     summary.priority1 + ' urgent' + (summary.priority1 > 1 ? 's' : '') +
+     (summary.priority2 > 0 ? ' \u00b7 ' + summary.priority2 + ' à traiter' : '') +
+     (summary.priority3 > 0 ? ' \u00b7 ' + summary.priority3 + ' à surveiller' : '')) +
+  '</div>';
+  html += '</div>';
+  html += '<button onclick="_refreshChecklist()" class="text-xs font-bold text-indigo-600 px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 transition-colors">\u21bb Actualiser</button>';
+  html += '</div>';
+  html += '</div>';
+
+  if (summary.rapportHebdo) {
+    html += '<div class="bg-violet-50 border border-violet-200 rounded-2xl p-4 mb-3">';
+    html += '<div class="flex items-center justify-between gap-3">';
+    html += '<div class="flex items-center gap-2">';
+    html += '<span class="text-lg">\ud83d\udcca</span>';
+    html += '<div>';
+    html += '<div class="text-violet-800 font-black text-sm">Rapport parent hebdomadaire</div>';
+    html += '<div class="text-violet-500 text-xs">Dimanche — à envoyer maintenant</div>';
+    html += '</div></div>';
+    html += '<button onclick="_sendWeeklyReport(this)" class="bg-violet-600 text-white text-xs font-bold px-3 py-2 rounded-xl flex-shrink-0 hover:bg-violet-700 transition-colors">Envoyer \u2192</button>';
+    html += '</div></div>';
+  }
+
+  if (items.length === 0) {
+    html += '<div class="text-center py-12">';
+    html += '<div class="text-4xl mb-3">\ud83c\udf89</div>';
+    html += '<div class="syne font-black text-slate-700 text-base mb-1">Tout est traité !</div>';
+    html += '<div class="text-slate-400 text-sm">Aucune action en attente pour le moment.</div>';
+    html += '</div>';
+    c.innerHTML = html;
+    return;
+  }
+
+  var p1 = items.filter(function(i){ return i.priority === 1; });
+  var p2 = items.filter(function(i){ return i.priority === 2; });
+  var p3 = items.filter(function(i){ return i.priority === 3; });
+
+  var _colorMap = {
+    amber:  { bg: 'bg-amber-50',  border: 'border-amber-200',  text: 'text-amber-800',  btn: '#d97706' },
+    indigo: { bg: 'bg-indigo-50', border: 'border-indigo-200', text: 'text-indigo-800', btn: '#4338ca' },
+    green:  { bg: 'bg-emerald-50',border: 'border-emerald-200',text: 'text-emerald-800',btn: '#059669' },
+    orange: { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-800', btn: '#ea580c' },
+    red:    { bg: 'bg-rose-50',   border: 'border-rose-200',   text: 'text-rose-800',   btn: '#e11d48' },
+    purple: { bg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-800', btn: '#7c3aed' },
+    violet: { bg: 'bg-violet-50', border: 'border-violet-200', text: 'text-violet-800', btn: '#6d28d9' },
+    slate:  { bg: 'bg-slate-50',  border: 'border-slate-200',  text: 'text-slate-600',  btn: '#475569' }
+  };
+
+  var _renderSection = function(sItems, title) {
+    if (sItems.length === 0) return '';
+    var sh = '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 mt-4 px-1">' + title + '</div>';
+    sItems.forEach(function(item) {
+      var col = _colorMap[item.color] || _colorMap['slate'];
+      var doneId = 'cl-item-' + item.code + '-' + item.type;
+
+      sh += '<div id="' + doneId + '" class="' + col.bg + ' border ' + col.border + ' rounded-2xl p-3.5 mb-2 transition-all">';
+      sh += '<div class="flex items-center gap-3">';
+      sh += '<div class="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black text-sm shadow-sm flex-shrink-0" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">' + item.prenom.charAt(0).toUpperCase() + '</div>';
+      sh += '<div class="flex-1 min-w-0">';
+      sh += '<div class="flex items-center gap-1.5">';
+      sh += '<span class="font-black text-slate-800 text-sm">' + item.prenom + '</span>';
+      sh += '<span class="text-[10px] font-bold bg-white/60 px-1.5 py-0.5 rounded-md text-slate-500">' + item.niveau + '</span>';
+      sh += '</div>';
+      sh += '<div class="text-xs font-semibold ' + col.text + ' mt-0.5">' + item.icon + ' ' + item.label + '</div>';
+      sh += '<div class="text-[10px] text-slate-400 font-medium mt-0.5">' + item.sublabel + '</div>';
+      sh += '</div>';
+      sh += '<div class="flex flex-col gap-1.5 flex-shrink-0">';
+
+      if (item.type.startsWith('email_') || item.type.startsWith('parent_') || item.type === 'sans_nouvelles') {
+        sh += '<button onclick="openStudentModal(\'' + item.code + '\')" ' +
+          'class="text-white text-[11px] font-bold px-3 py-1.5 rounded-xl hover:opacity-90 transition-opacity" ' +
+          'style="background:' + col.btn + '">Ouvrir \u2192</button>';
+        sh += '<button onclick="_checklistMarkDone(\'' + item.code + '\',\'' + item.type + '\',\'' + item.doneKey + '\',this)" ' +
+          'class="text-[10px] font-semibold text-slate-400 hover:text-emerald-600 transition-colors text-center">\u2610 Fait</button>';
+      } else {
+        sh += '<button onclick="openStudentModal(\'' + item.code + '\')" ' +
+          'class="text-white text-[11px] font-bold px-3 py-1.5 rounded-xl hover:opacity-90 transition-opacity" ' +
+          'style="background:' + col.btn + '">Traiter \u2192</button>';
+      }
+
+      sh += '</div></div></div>';
+    });
+    return sh;
+  };
+
+  if (p1.length > 0) html += _renderSection(p1, '\ud83d\udd34 Urgent — à faire maintenant');
+  if (p2.length > 0) html += _renderSection(p2, '\ud83d\udfe1 À traiter aujourd\'hui');
+  if (p3.length > 0) html += _renderSection(p3, '\ud83d\udfe2 À surveiller');
+
+  c.innerHTML = html;
+}
+
+async function _checklistMarkDone(code, type, doneKey, btn) {
+  var st = (S.adminStudents || []).find(function(s) { return s.code === code; });
+  if (!st) { showT('Élève introuvable', 2000, '\u26a0\ufe0f'); return; }
+
+  if (btn) { btn.textContent = '...'; btn.disabled = true; }
+
+  try {
+    var r = await fetch(SU, { method: 'POST', body: JSON.stringify({
+      action: 'log_manual_email',
+      adminCode: S.prof.code,
+      userEmail: st.email,
+      type: doneKey
+    }) }).then(function(x) { return x.json(); });
+
+    if (r.status === 'success') {
+      var el = document.getElementById('cl-item-' + code + '-' + type);
+      if (el) {
+        el.style.opacity = '0.45';
+        el.style.pointerEvents = 'none';
+        var checkEl = el.querySelector('button:last-child');
+        if (checkEl) checkEl.textContent = '\u2705 Fait';
+      }
+      showT('\u2705 Marqué comme fait', 2000, '\u2705');
+
+      S._checklistCount = Math.max(0, (S._checklistCount || 1) - 1);
+      _renderAdminCards();
+    } else {
+      showT('\u274c Erreur : ' + (r.message || ''), 3000, '\u274c');
+      if (btn) { btn.textContent = '\u2610 Fait'; btn.disabled = false; }
+    }
+  } catch(e) {
+    showT('\u274c Erreur réseau', 3000, '\u274c');
+    if (btn) { btn.textContent = '\u2610 Fait'; btn.disabled = false; }
+  }
+}
+
+async function _sendWeeklyReport(btn) {
+  if (btn) { btn.textContent = 'Envoi...'; btn.disabled = true; }
+  try {
+    var r = await fetch(SU, { method: 'POST', body: JSON.stringify({
+      action: 'send_weekly_report', adminCode: S.prof.code
+    }) }).then(function(x) { return x.json(); });
+
+    if (r.status === 'success') {
+      showT('\ud83d\udcca Rapport envoyé à ' + (r.sent || 0) + ' parent(s) !', 4000, '\u2705');
+      if (btn) { btn.textContent = '\u2705 Envoyé'; btn.style.background = '#059669'; }
+    } else {
+      showT('\u274c ' + (r.message || 'Erreur'), 3000, '\u274c');
+      if (btn) { btn.textContent = 'Envoyer \u2192'; btn.disabled = false; }
+    }
+  } catch(e) {
+    showT('\u274c Erreur réseau', 3000, '\u274c');
+    if (btn) { btn.textContent = 'Envoyer \u2192'; btn.disabled = false; }
+  }
+}
+
+async function _refreshChecklist() {
+  var c = document.getElementById('checklist-content');
+  if (c) await _renderChecklistTab(c);
+}
+
+function _checklistAutoCheck(code, type) {
+  var el = document.getElementById('cl-item-' + code + '-' + type);
+  if (el) {
+    el.style.opacity = '0.45';
+    el.style.pointerEvents = 'none';
+  }
+  S._checklistCount = Math.max(0, (S._checklistCount || 1) - 1);
 }
 
 // ── Admin: Cours ───────────────────────────────────────────────
@@ -9168,6 +9382,7 @@ async function publishBoost(code) {
           break;
         }
       }
+      _checklistAutoCheck(code, 'boost_a_preparer');
       closeStudentModal();
       _renderAdminCards();
     } else {
@@ -9230,6 +9445,7 @@ async function publishChapter(code) {
           break;
         }
       }
+      _checklistAutoCheck(code, 'chapitre_a_assigner');
       closeStudentModal();
       _renderAdminCards();
     } else {

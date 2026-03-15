@@ -109,6 +109,8 @@ function doPost(e) {
       case 'publish_admin_revision':     res = publishAdminRevision(p);    break;
       case 'save_cours':                 res = saveCours(p);               break;
       case 'get_cours_admin':            res = getCoursAdmin(p);           break;
+      case 'get_daily_checklist':        res = getDailyChecklist(p);       break;
+      case 'send_weekly_report':         res = sendWeeklyReportNow(p);     break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -3915,7 +3917,7 @@ function logManualEmail(p) {
     if (String(users[i]['Email'] || '').toLowerCase() === userEmail) { user = users[i]; break; }
   }
   var prenom = user ? String(user['Prénom'] || '') : '';
-  _logEmail(userEmail, prenom, type, 'manuel');
+  _logEmail(userEmail, prenom, type, 'envoyé');
   return { status: 'success' };
 }
 
@@ -4110,6 +4112,260 @@ function markAllTest(p) {
     }
   }
   return { status: 'success', message: count + ' compte(s) marqué(s) IsTest=1.' };
+}
+
+// ════════════════════════════════════════════════════════════
+//  CHECKLIST QUOTIDIENNE
+//  Payload : { adminCode }
+//  Réponse : { status, items: [...], summary: {...} }
+// ════════════════════════════════════════════════════════════
+function getDailyChecklist(p) {
+  if (!verifyAdmin(String(p.adminCode || ''))) {
+    return { status: 'error', message: 'Accès refusé.' };
+  }
+
+  var ss    = SpreadsheetApp.getActiveSpreadsheet();
+  var today = Utilities.formatDate(new Date(), 'Europe/Paris', 'yyyy-MM-dd');
+
+  // ── 1. Charger Users ──────────────────────────────────────
+  var users = getRows(SH.USERS).filter(function(u) {
+    var adm = u['IsAdmin'];
+    var isAdm = adm === 1 || adm === true || String(adm) === '1' || String(adm).toUpperCase() === 'TRUE';
+    var isTst = u['IsTest'] === 1 || u['IsTest'] === true || String(u['IsTest']).toUpperCase() === 'TRUE' || String(u['IsTest']) === '1';
+    return !isAdm && !isTst;
+  });
+
+  // ── 2. Charger Emails envoyés ─────────────────────────────
+  var sentByUser = {};
+  if (sheetExists(SH.EMAILS)) {
+    var emailsRaw = getSheet(SH.EMAILS).getDataRange().getValues();
+    for (var ei = 1; ei < emailsRaw.length; ei++) {
+      var eEmail  = String(emailsRaw[ei][1] || '').trim().toLowerCase();
+      var eType   = String(emailsRaw[ei][3] || '').trim();
+      var eStatus = String(emailsRaw[ei][4] || '').trim();
+      if (!eEmail || eStatus !== 'envoyé') continue;
+      if (!sentByUser[eEmail]) sentByUser[eEmail] = {};
+      sentByUser[eEmail][eType] = true;
+    }
+  }
+
+  // ── 3. Charger DailyBoosts ────────────────────────────────
+  var boostsByCode = {};
+  getRows(SH.BOOSTS).forEach(function(b) {
+    var code = String(b['Code'] || '');
+    if (!code) return;
+    if (!boostsByCode[code]) boostsByCode[code] = [];
+    boostsByCode[code].push(b);
+  });
+
+  // ── 4. Charger Suivi ──────────────────────────────────────
+  var suiviByCode = {};
+  if (sheetExists(SH.SUIVI)) {
+    var suiviData = getSheet(SH.SUIVI).getDataRange().getValues();
+    for (var si = 1; si < suiviData.length; si++) {
+      var sc = String(suiviData[si][20] || '');
+      if (sc) suiviByCode[sc] = suiviData[si];
+    }
+  }
+
+  // ── 5. Charger Progress ───────────────────────────────────
+  var progressByCode = {};
+  getRows(SH.PROGRESS).forEach(function(pr) {
+    var code = String(pr['Code'] || '');
+    if (!code) return;
+    if (!progressByCode[code]) progressByCode[code] = [];
+    progressByCode[code].push(pr);
+  });
+
+  // ── 6. Construire les items de checklist ──────────────────
+  var items = [];
+
+  users.forEach(function(u) {
+    var code    = String(u['Code']    || '');
+    var prenom  = String(u['Prénom']  || '');
+    var email   = String(u['Email']   || '').toLowerCase();
+    var niveau  = String(u['Niveau']  || '');
+    var objectif= String(u['Objectif']|| '');
+    if (!code || !email) return;
+
+    var sent    = sentByUser[email] || {};
+    var boosts  = boostsByCode[code] || [];
+    var suiviRow= suiviByCode[code]  || null;
+    var progress= progressByCode[code] || [];
+
+    // Trial days
+    var trialStart = u['TrialStart'] ? String(u['TrialStart']).substring(0, 10) : '';
+    var trialDays  = trialStart
+      ? Math.floor((new Date(today) - new Date(trialStart)) / 86400000)
+      : 0;
+
+    // Last connection
+    var lastConn = suiviRow ? String(suiviRow[3] || '') : '';
+    var inactDays = 0;
+    if (lastConn) {
+      try { inactDays = Math.floor((new Date(today) - new Date(lastConn.substring(0,10))) / 86400000); }
+      catch(e) {}
+    }
+
+    // Boost state
+    var todayBoost = boosts.find(function(b) {
+      return String(b['Date'] || '').substring(0, 10) === today;
+    });
+    var sortedBoosts = boosts.slice().sort(function(a, b) {
+      return String(b['Date'] || '').localeCompare(String(a['Date'] || ''));
+    });
+    var lastBoost    = sortedBoosts[0];
+    var lastExosDone = lastBoost ? parseInt(lastBoost['ExosDone'] || 0) : 0;
+    var boostPending = !!suiviRow && String(suiviRow[18] || '').trim().length > 0;
+
+    // Chapitre terminé
+    var chapTermine = progress.some(function(pr) {
+      return parseInt(pr['NbExos'] || 0) >= 20 && String(pr['Statut'] || '') === 'maitrise';
+    });
+    var newChapPending = suiviRow && [6,9,12,15].some(function(idx) {
+      return String(suiviRow[idx] || '').trim().length > 0;
+    });
+
+    // Brevet pending
+    var pendingBrevet = String(u['PendingBrevet'] || '').trim();
+
+    // ── Générer les items ───────────────────────────────────
+
+    // 1. CONTENU — Boost terminé (priorité 1)
+    if (lastExosDone >= 5 && !boostPending && !todayBoost) {
+      items.push({
+        priority: 1, type: 'boost_a_preparer', icon: '⚡',
+        label: 'Préparer le prochain boost',
+        sublabel: 'Boost terminé (' + lastExosDone + '/5)',
+        code: code, prenom: prenom, niveau: niveau, email: email, objectif: objectif,
+        color: 'amber', doneKey: 'boost-prepare-' + code + '-' + today, autoCheck: true
+      });
+    }
+
+    // 2. CONTENU — Chapitre terminé (priorité 1)
+    if (chapTermine && !newChapPending) {
+      items.push({
+        priority: 1, type: 'chapitre_a_assigner', icon: '📚',
+        label: 'Assigner le prochain chapitre',
+        sublabel: '20 exos complétés',
+        code: code, prenom: prenom, niveau: niveau, email: email, objectif: objectif,
+        color: 'indigo', doneKey: 'chap-assigne-' + code + '-' + today, autoCheck: true
+      });
+    }
+
+    // 3. EMAIL — J+0 non envoyé (priorité 1)
+    if (!sent['J+0'] && !sent['J+0-manuel'] && trialDays === 0) {
+      items.push({
+        priority: 1, type: 'email_j0', icon: '📧',
+        label: 'Envoyer le mail de bienvenue (J+0)',
+        sublabel: 'Inscrit aujourd\'hui',
+        code: code, prenom: prenom, niveau: niveau, email: email, objectif: objectif,
+        color: 'green', doneKey: 'J+0-manuel', autoCheck: false
+      });
+    }
+
+    // 4. EMAIL — Séquence (priorité 2)
+    if (trialDays >= 3 && trialDays <= 6 && !sent['J+3'] && !sent['J+3-manuel']) {
+      items.push({
+        priority: 2, type: 'email_j3', icon: '📧',
+        label: 'Envoyer J+3', sublabel: 'J+' + trialDays + ' depuis inscription',
+        code: code, prenom: prenom, niveau: niveau, email: email, objectif: objectif,
+        color: 'orange', doneKey: 'J+3-manuel', autoCheck: false
+      });
+    }
+    if (trialDays >= 5 && trialDays <= 6 && !sent['J+5'] && !sent['J+5-manuel']) {
+      items.push({
+        priority: 2, type: 'email_j5', icon: '📧',
+        label: 'Envoyer J+5 — urgence fin trial', sublabel: 'Plus que ' + (7 - trialDays) + 'j d\'essai',
+        code: code, prenom: prenom, niveau: niveau, email: email, objectif: objectif,
+        color: 'red', doneKey: 'J+5-manuel', autoCheck: false
+      });
+    }
+    if (trialDays >= 7 && !sent['J+7'] && !sent['J+7-manuel']) {
+      items.push({
+        priority: 2, type: 'email_j7', icon: '📧',
+        label: 'Envoyer J+7 + lien Stripe', sublabel: 'Trial terminé',
+        code: code, prenom: prenom, niveau: niveau, email: email, objectif: objectif,
+        color: 'purple', doneKey: 'J+7-manuel', autoCheck: false
+      });
+    }
+
+    // 5. PARENT — Actions parent (priorité 2)
+    var firstBoostDone = lastExosDone >= 5;
+    if (firstBoostDone && trialDays <= 3 && !sent['parent-premier-boost-manuel']) {
+      items.push({
+        priority: 2, type: 'parent_feliciter', icon: '🎉',
+        label: 'Féliciter le parent', sublabel: 'Premier boost terminé',
+        code: code, prenom: prenom, niveau: niveau, email: email,
+        color: 'violet', doneKey: 'parent-premier-boost-manuel', autoCheck: false
+      });
+    }
+    if (inactDays >= 3 && inactDays < 7 && firstBoostDone && !sent['parent-relance-manuel']) {
+      items.push({
+        priority: 2, type: 'parent_relance', icon: '💬',
+        label: 'Relance douce parent', sublabel: 'Inactif depuis ' + inactDays + 'j',
+        code: code, prenom: prenom, niveau: niveau, email: email,
+        color: 'orange', doneKey: 'parent-relance-manuel', autoCheck: false
+      });
+    }
+
+    // 6. BREVET — Brevet à préparer (priorité 2)
+    if (pendingBrevet && niveau === '3EME') {
+      items.push({
+        priority: 2, type: 'brevet_a_faire', icon: '📝',
+        label: 'Publier un brevet blanc', sublabel: 'En attente depuis l\'admin',
+        code: code, prenom: prenom, niveau: niveau, email: email,
+        color: 'amber', doneKey: 'brevet-publie-' + code + '-' + today, autoCheck: true
+      });
+    }
+
+    // 7. SANS NOUVELLES (priorité 3)
+    if (inactDays >= 7 && !sent['parent-relance-7j-manuel']) {
+      items.push({
+        priority: 3, type: 'sans_nouvelles', icon: '💤',
+        label: 'Sans nouvelles depuis ' + inactDays + 'j', sublabel: 'Relance parent recommandée',
+        code: code, prenom: prenom, niveau: niveau, email: email,
+        color: 'slate', doneKey: 'parent-relance-7j-manuel', autoCheck: false
+      });
+    }
+  });
+
+  // Trier : priorité 1 d'abord, puis par prenom
+  items.sort(function(a, b) {
+    if (a.priority !== b.priority) return a.priority - b.priority;
+    return a.prenom.localeCompare(b.prenom);
+  });
+
+  // Rapport hebdo dimanche
+  var dayOfWeek = new Date().getDay();
+  var rapportHebdoDue = dayOfWeek === 0;
+
+  var summary = {
+    total:        items.length,
+    priority1:    items.filter(function(i) { return i.priority === 1; }).length,
+    priority2:    items.filter(function(i) { return i.priority === 2; }).length,
+    priority3:    items.filter(function(i) { return i.priority === 3; }).length,
+    rapportHebdo: rapportHebdoDue,
+    today:        today
+  };
+
+  return { status: 'success', items: items, summary: summary };
+}
+
+// ════════════════════════════════════════════════════════════
+//  ENVOI MANUEL DU RAPPORT HEBDO (depuis le dashboard admin)
+//  Payload : { adminCode }
+// ════════════════════════════════════════════════════════════
+function sendWeeklyReportNow(p) {
+  if (!verifyAdmin(String(p.adminCode || ''))) {
+    return { status: 'error', message: 'Accès refusé.' };
+  }
+  try {
+    var result = triggerWeeklyParentReport();
+    return { status: 'success', sent: result.sent || 0 };
+  } catch(e) {
+    return { status: 'error', message: e.toString() };
+  }
 }
 
 /**
