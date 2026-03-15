@@ -1,7 +1,7 @@
 # Notice fondateur — Matheux
 
 > Tout ce que tu dois savoir pour lancer et gérer Matheux au quotidien.
-> Mise à jour : 15 mars 2026 — GAS @73
+> Mise à jour : 15 mars 2026 — GAS @74
 
 ---
 
@@ -18,6 +18,7 @@ Matheux (matheux.fr) est un outil de soutien scolaire en maths, 6ème → 3ème 
 | Essai gratuit | 7 jours, accès complet, sans CB |
 | Limite bêta | 50 vrais élèves |
 | Tests QA | 74/74 unitaires + simulation 10 profils (111 appels API, 0 erreur) |
+| Messages | Système adaptatif `_msg()` — ~35 entrées, adapté niveau (6EME/3EME) + objectif |
 
 ---
 
@@ -81,8 +82,11 @@ L'admin affiche les emails en attente par élève :
 | J+3 | 3 jours après | Relance douce |
 | J+5 | 5 jours avant fin trial | Urgence "plus que 2 jours" |
 | J+7 | Fin du trial | Conversion avec lien Stripe |
+| Rapport hebdo | Dimanche 17h-18h | Bilan semaine avec stats réelles (nb exos, % réussite, chapitres maîtrisés) |
 
 Les boutons "Copier J+X" génèrent un email **adapté à l'objectif** de l'élève. Tu n'as qu'à coller et envoyer.
+
+Le **rapport parent hebdomadaire** (`triggerWeeklyParentReport`) envoie un bilan chiffré chaque dimanche aux parents d'élèves actifs (≤30j trial, ≥1 exo dans la semaine). À activer manuellement quand tu es prêt.
 
 ### Actions parent (nouveau @73)
 
@@ -103,6 +107,25 @@ Chaque bouton génère un email prêt à coller, signé "Nicolas · Prof de math
 À la fin de chaque boost, brevet blanc ou chapitre, l'élève voit une modale "Comment ça s'est passé ?" avec 4 choix (😤 Difficile / 😐 Moyen / 😊 Bien / 🔥 Top).
 
 Le feedback apparaît dans la fiche admin sous l'historique boost ("Ressenti élève"). Si 2 feedbacks "Difficile" consécutifs → allège le prochain boost.
+
+### Messages adaptatifs (nouveau @74)
+
+Tous les messages élève sont maintenant **adaptés au niveau** (6EME = enthousiaste, 3EME = focus résultats) :
+
+| Catégorie | Nombre | Adaptation |
+|---|---|---|
+| Bonne/mauvaise réponse | 16 variantes | Par mode (boost/chap) + par niveau |
+| Post-diagnostic | 3 headlines | 6EME/3EME/défaut |
+| Post-boost | 3 headlines | 6EME/3EME/défaut |
+| Streaks | 3 messages | 6EME/3EME/défaut |
+| Cours milestones | 5 messages | 6EME/3EME/défaut |
+| Coach marks | 3 messages | Premier indice, premier boost, brouillon |
+| Onboarding slide 3 | 4 variantes | Selon objectif (lacunes/brevet/etc.) |
+| Emails J+3/J+5/J+7 | Personnalisés | Selon objectif déclaré |
+
+**Coach marks** : la première fois que l'élève utilise les indices, le boost ou le brouillon, un toast d'explication apparaît. Persisté en localStorage (`mx_coach_v1`).
+
+Référence complète : [docs/messages.md](messages.md)
 
 ### Brevet blanc (3EME)
 
@@ -307,4 +330,4 @@ Le produit scale. La confiance reste.
 
 ---
 
-*Matheux — GAS @73 — 15 mars 2026*
+*Matheux — GAS @74 — 15 mars 2026*

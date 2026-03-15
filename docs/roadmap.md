@@ -15,6 +15,7 @@
 > ✅ **Admin panel upgrade le 15 mars 2026** — email modal éditable, coursNeeded, renommage BLOQUÉ→Sans nouvelles, dark mode onboarding, 6 profils test. GAS @69.
 > ✅ **Objectif élève post-quiz le 15 mars 2026** — overlay 4 choix après diagnostic, colonne Users N, emails J+5/J+7 personnalisés, badge admin. GAS @70.
 > ✅ **Simulation 10 profils le 15 mars 2026** — 111 appels GAS, 10/10 profils OK. Fix `ss is not defined` dans getAdminOverview + sw.js exclu de GAS. GAS @72.
+> ✅ **Message architecture system le 15 mars 2026** — `_msg()` adaptatif niveau, coach marks, _OK/_KO contextuels, onboarding objectif, emails J+3/J+5/J+7 personnalisés objectif, triggerWeeklyParentReport. GAS @74.
 
 | Dimension | État |
 |---|---|
@@ -23,10 +24,10 @@
 | Niveau 1ERE Spé | **10 chapitres expérimentaux** — backend prêt, frontend non modifié (connexion uniquement), 3 types SVG dédiés |
 | Juridique | Complet (5 pages + consentement parental + RGPD) |
 | Paiement | ⏳ Lien Stripe TEST actif — **à passer en PROD manuellement** |
-| Emails auto | ✅ J+0 auto + fallback manuel admin, J+3/J+5/J+7 code prêt — **trigger à activer manuellement** |
+| Emails auto | ✅ J+0 auto + J+3/J+5/J+7 personnalisés objectif — **trigger à activer manuellement** + rapport hebdo parent (`triggerWeeklyParentReport`) |
 | Analytics | ✅ GA4 RGPD-compliant |
 | Limite bêta | 50 vrais élèves (IsTest=0) |
-| Messages élèves | ✅ Streak alert, boost en cours, chapitre maîtrisé, milestones 3/7j |
+| Messages élèves | ✅ Système adaptatif `_msg()` — ~35 entrées, niveau, objectif, coach marks, _OK/_KO contextuels |
 | Admin smart | ✅ GAS @69 — email modal éditable, coursNeeded, Sans nouvelles, dark mode onboarding, 6 profils test |
 | Emails (@matheux.fr) | ⏳ **à créer manuellement** : contact@ + alias no-reply@ |
 
@@ -118,6 +119,7 @@
 - [x] **Profils test diversifiés** — `scripts/setup_test_profiles.py`, 6 comptes test (J+0/J+3/J+5/J+7/cours/inactif) créés automatiquement (15 mars 2026)
 - [x] Messages élèves : streak break alert, boost en cours nudge, chapitre maîtrisé, milestones streak 3j/7j
 - [x] Email J+5 "Encore 2 jours" dans séquence marketing
+- [x] **Message architecture system** — `_msg()` adaptatif niveau (6EME/3EME/def), coach marks (indice/boost/brouillon), _OK/_KO contextuels, onboarding slide 3 selon objectif, emails J+3/J+5/J+7 personnalisés objectif, rapport parent hebdo (15 mars 2026, @74)
 - [x] Validation inputs côté GAS (format email, longueur) — @63
 - [x] Rate limiting global dans doPost — @63
 - [x] **BUG-01→12** — bugfixes audit corrigés @60 (13 mars)
@@ -185,7 +187,7 @@
 - [ ] **Simulation test complète** — script Python 10 profils × tous les workflows, rapport friction. Prompt prêt (15 mars 2026)
 - [ ] **Profil d'apprentissage élève** — page dédiée montrant : 3 points forts identifiés, 2 lacunes en cours, vitesse de progression, streak record. Affiché avec cadenas dans l'overlay trial J+7 ("ces données disparaissent dans 48h")
 - [ ] **Automatisation boosts nuit** — agent qui tourne chaque nuit, lit les erreurs depuis Scores, génère le JSON boost, pousse dans Suivi sans intervention Nicolas. Déclencheur : rebuildSuivi détecte BOOST TERMINÉ → GAS génère automatiquement. Priorité : dès 30 clients actifs
-- [ ] **Rapport parent hebdo automatique** — email dimanche 18h, formulé comme bilan humain (not IA), données réelles : nb exos, score de confiance avant/après, chapitre débloqué, prochain objectif
+- [x] **Rapport parent hebdo automatique** — `triggerWeeklyParentReport` dimanche 17h-18h, stats réelles (nb exos, % réussite, chapitres maîtrisés), mot adapté au score. **Trigger à activer manuellement dans Apps Script** (15 mars 2026, @74)
 - [ ] Agent analyse lacunes quotidien automatique
 - [ ] **Migration Sheets → Supabase** — à déclencher à 80-100 clients payants (pas avant).
   Capacité actuelle estimée : ~15 connexions simultanées, ~8 save_score simultanés, 100 clients actifs confortables.

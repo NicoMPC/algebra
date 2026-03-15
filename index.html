@@ -2011,6 +2011,115 @@ function hideT() {
   if (_tt) clearTimeout(_tt);
 }
 
+// ── Message adapté au niveau ─────────────────────────────────
+var _MSGS = {
+  ctx_all_mastered_brevet: '🏆 Tous les chapitres maîtrisés — tu es prêt pour le brevet !',
+  ctx_all_mastered:        '🏆 Tous les chapitres maîtrisés — excellent travail !',
+  ctx_streak:              '🔥 {n} jours d\'affilée — continue, l\'habitude se forme !',
+  ctx_mastered_week:       '✓ {n} maîtrisé cette semaine — beau progrès !',
+  ctx_inactive:            'Ça fait {n} jours — 5 exercices suffisent pour reprendre',
+  diag_strong:      { '6EME': 'Super ! On va affiner les derniers points.',
+                      '3EME': 'Solides bases. On cible ce qui reste à travailler.',
+                      def:    'Solides bases {name}&nbsp;! On va renforcer les derniers points.' },
+  diag_mid:         { '6EME': 'Bon début {name}. On sait exactement quoi travailler !',
+                      '3EME': 'Bon niveau {name}. Les axes de travail sont identifiés.',
+                      def:    'Bon début {name}. Les points à renforcer sont ciblés.' },
+  diag_low:         { '6EME': 'On sait où ça coince {name}. C\'est le plus important !',
+                      '3EME': 'Diagnostic complet {name}. On attaque les lacunes prioritaires.',
+                      def:    'On sait exactement où travailler {name}. C\'est le plus important.' },
+  boost_perfect:    { '6EME': 'Parfait {name}&nbsp;! 100% — garde ce rythme 🔥',
+                      '3EME': 'Parfait {name}. {n}/{n} — aucune erreur aujourd\'hui 🔥',
+                      def:    'Parfait {name}&nbsp;! {n} sur {n} — garde ce rythme.' },
+  boost_good:       { '6EME': 'Beau travail {name}&nbsp;! {n} exos dans la boîte. Reviens demain !',
+                      '3EME': 'Bien joué {name}. {n} exercices maîtrisés aujourd\'hui.',
+                      def:    'Beau travail {name}. {n} exercice{s} dans la boîte aujourd\'hui.' },
+  boost_low:        { '6EME': 'Pas grave {name} — ton prochain boost sera encore plus ciblé !',
+                      '3EME': 'Quelques points à retravailler {name}. Le prochain boost sera ajusté.',
+                      def:    'Quelques notions à retravailler {name}. Ton prochain boost sera encore plus ciblé.' },
+  ok_boost:   ['Dans le mille ⚡','T\'as géré ça 💪','Maîtrisé ✅','Propre 🔥','GG 👌'],
+  ok_chap:    ['Carton plein 🎯','Trop fort(e) 🚀','Dans le mille ⚡','Maîtrisé ✅','Propre. Vraiment 🔥'],
+  ok_6eme:    ['Super ! 🎉','Exactement ! ✅','Bravo ! 💪','Bien vu ! 🔥','Parfait ! ⭐'],
+  ok_3eme:    ['Exact ✅','Maîtrisé 💪','Dans le mille ⚡','Propre 🔥','Bon calcul 🎯'],
+  ok_streak:  ['Streak actif — continue ! 🔥','Encore une ! ⚡','En forme aujourd\'hui 💪'],
+  ko_boost:   ['Pas celui-là — retiens la correction 👀','Ça arrive — regarde juste en dessous 💡','La prochaine tu l\'as 🎯'],
+  ko_chap:    ['Pas grave — la correction est là 📝','Difficile celui-là — retiens bien 🧠','C\'est ça qui fait monter de niveau 📈'],
+  ko_6eme:    ['Pas tout à fait — regarde la correction ! 👀','On va y arriver ! Regarde bien 💡','Pas grave — c\'est comme ça qu\'on apprend 😊'],
+  ko_3eme:    ['Pas bon — retiens la méthode 📝','Ça accroche là — regarde la correction 🧠','Erreur classique — à ne plus refaire 💡'],
+  streak_3:   { '6EME': '🔥 3 jours d\'affilée — super ! Continue comme ça !',
+                '3EME': '🔥 3 jours — une habitude qui paie. Continue !',
+                def:    '🔥 3 jours d\'affilée — une habitude commence. Continue !' },
+  streak_7:   { '6EME': '🏆 7 jours — tu es une star ! C\'est énorme !',
+                '3EME': '🏆 7 jours consécutifs — discipline de champion. C\'est sérieux ça.',
+                def:    '🏆 7 jours — tu es en mode champion. C\'est énorme !' },
+  streak_gen: { '6EME': '🔥 {n} jours d\'affilée — génial ! Reviens demain !',
+                '3EME': '🔥 Streak : {n} jours — ne le laisse pas tomber.',
+                def:    '🔥 Streak&nbsp;: {n} jour{s} consécutif{s} — reviens demain pour ne pas le perdre&nbsp;!' },
+  cours_5:    { '6EME': '📖 Ton cours est prêt ! Va le voir — c\'est pour toi !',
+                '3EME': '📖 Première section de cours disponible. Consulte-la.',
+                def:    '📖 Ton cours est prêt ! Consulte-le depuis le chapitre.' },
+  cours_10:   { '6EME': '📖 Ton cours s\'enrichit — de nouvelles choses à découvrir !',
+                '3EME': '📖 Nouvelles notions débloquées dans ton cours.',
+                def:    '📖 Ton cours s\'enrichit — nouvelles notions disponibles !' },
+  cours_15:   { '6EME': '📖 Points de vigilance débloqués — les pièges à éviter !',
+                '3EME': '📖 Cours avancé débloqué — les points de vigilance pour l\'exam.',
+                def:    '📖 Cours avancé débloqué — points de vigilance personnalisés.' },
+  cours_20:   { '6EME': '✨ Cours complet débloqué — tu as TOUT maîtrisé 🏆 Bravo !',
+                '3EME': '✨ Cours complet. Maîtrise confirmée — excellent travail 🏆',
+                def:    '✨ Cours complet ! Tu as tout maîtrisé 🏆' },
+  cours_prep: { '6EME': '🎉 Super ! Ton prof prépare ton cours — retrouve-le demain !',
+                '3EME': '🎉 Jalon atteint. Ton prof rédige ton cours personnalisé — disponible demain.',
+                def:    '🎉 Bravo ! Ton prof prépare ton cours personnalisé — retrouve-le demain !' },
+  chap_done:  { '6EME': '🏆 Chapitre terminé — super boulot ! Ton prochain chapitre arrive demain 📚',
+                '3EME': '🏆 Chapitre terminé. Ton prof prépare la suite — disponible demain.',
+                def:    '🏆 Chapitre terminé ! Ton prochain chapitre est en préparation, il sera disponible demain 📚' },
+  boost_ready:      '⚡ Ton Boost du jour est prêt !',
+  boost_preparing:  '✨ Ton prochain boost est en cours de préparation, il sera disponible demain !',
+  boost_in_progress:'Ton boost est en cours ⚡ — encore {n} exo{s} et c\'est dans la boîte !',
+  coach_hint:    'Psst — t\'as droit aux indices 💡 Hésite pas !',
+  coach_formula: 'La formule se révèle après réponse 📐 — clique dessus !',
+  coach_brouillon:'Le brouillon est en bas 📝 — utilise-le pour tes calculs !',
+  coach_boost_first: '⚡ C\'est ton Boost du jour — 5 exos, ~10 min. C\'est parti !',
+  pending_chapter:  'Ton prof prépare ton prochain chapitre personnalisé… reviens dans quelques heures !',
+  no_boost_yet:     'Ton boost du jour arrive bientôt — ton prof le prépare !',
+  revision_done:    'Révision terminée ! {easy}/{tot} réussis 🔁',
+  net_error:       'Erreur réseau — vérifie ta connexion 📡',
+  net_retry:       'Erreur réseau — réessaie',
+  save_offline:    'Résultats non sauvegardés (offline)',
+};
+
+function _msg(key, vars) {
+  var entry = _MSGS[key];
+  if (!entry) return key;
+  if (typeof entry === 'object' && !Array.isArray(entry)) {
+    var niv = S.niv || '';
+    entry = entry[niv] || entry['def'] || Object.values(entry)[0];
+  }
+  if (Array.isArray(entry)) {
+    entry = entry[Math.floor(Math.random() * entry.length)];
+  }
+  if (vars) {
+    Object.keys(vars).forEach(function(k) {
+      var val = vars[k];
+      entry = entry.replace(new RegExp('\\{' + k + '\\}', 'g'), val);
+    });
+    if (vars.n !== undefined) {
+      entry = entry.replace(/\{s\}/g, vars.n > 1 ? 's' : '');
+    }
+  }
+  entry = entry.replace(/\{s\}/g, '');
+  return entry;
+}
+
+// ── Coach marks — états "déjà montré" (persistés en localStorage) ──
+var _coachShown = (function() {
+  try { return JSON.parse(localStorage.getItem('mx_coach_v1') || '{}'); } catch(e) { return {}; }
+})();
+function _markCoach(key) {
+  _coachShown[key] = true;
+  try { localStorage.setItem('mx_coach_v1', JSON.stringify(_coachShown)); } catch(e) {}
+}
+function _needsCoach(key) { return !_coachShown[key]; }
+
 function alert2(t, m, ic) {
   ic = ic || '⚠️';
   document.getElementById('ai').innerText = ic;
@@ -3247,12 +3356,20 @@ var _onbSlides = [
 
 function showOnboarding(cb) {
   if (document.getElementById('onb-overlay')) {
-    // Déjà affiché — appel direct du callback
     if (cb) cb();
     return;
   }
   _onbSlide = 0;
   _onbCallback = cb || null;
+  // Adapter slide 3 selon objectif
+  var _s3Map = {
+    lacunes:         { emoji: '⚡', title: 'Ton Boost du jour t\'attend !',      body: 'Exercices ciblés sur tes vraies lacunes — pas celles de ta classe, les tiennes. 5 exos, 10 min. C\'est parti !' },
+    chapitre_jour:   { emoji: '📅', title: 'Un chapitre par jour',               body: 'Ton Boost du jour est prêt. Ensuite, tu avances dans tes chapitres à ton rythme. Régulier > intense.' },
+    brevet:          { emoji: '📝', title: 'La prépa brevet commence maintenant', body: 'Ton Boost cible les chapitres clés du brevet. Les exercices style examen arrivent au fur et à mesure.' },
+    toutes_matieres: { emoji: '🚀', title: 'Tout le programme est là',           body: 'Commence par ton Boost du jour, puis explore librement les 54 chapitres disponibles.' }
+  };
+  var _s3 = _s3Map[_flowObjectif] || _s3Map['lacunes'];
+  _onbSlides[2] = { emoji: _s3.emoji, title: _s3.title, body: _s3.body, color: 'linear-gradient(135deg,#1e1b4b 0%,#4338ca 100%)' };
   var ov = document.createElement('div');
   ov.id = 'onb-overlay';
   ov.style.cssText =
@@ -3379,7 +3496,7 @@ function initApp(d, skipRender) {
   var _beDone = d.boostExosDone || 0;
   if (_beDone > 0 && _beDone < 5) {
     setTimeout(function() {
-      showT('Ton boost est en cours ⚡ — encore ' + (5 - _beDone) + ' exo' + (5 - _beDone > 1 ? 's' : '') + ' et c\'est dans la boîte !', 5000, '⚡');
+      showT(_msg('boost_in_progress', {n: 5 - _beDone}), 5000, '⚡');
     }, 2500);
   }
 
@@ -3638,6 +3755,10 @@ function loadBoost() {
 // ══════════════════════════════════════════════════════════════
 async function handleBoost() {
   if (S.boostPreping || S.boostGen) return;
+  if (_needsCoach('boost_first')) {
+    _markCoach('boost_first');
+    setTimeout(function() { showT(_msg('coach_boost_first'), 4000, '⚡'); }, 500);
+  }
   S.boostGen = true;
   document.getElementById('m-boost').classList.remove('hidden');
   startTs();
@@ -3666,7 +3787,8 @@ async function boostFromDiag(errs) {
     var d = await r.json();
     if (d.status === 'success') {
       S.boost = d.boost; S.boostEx = true; loadBoost();
-      showT("⚡ Ton Boost du jour est prêt !", 4000, "⚡");
+      showT(_msg('boost_ready'), 4000, '⚡');
+      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
     } else { hideT(); }
   } catch(e) { hideT(); }
   finally { S.boostPreping = false; render(); }
@@ -3740,16 +3862,16 @@ window.checkOpt = function(cat, idx, oI, btn) {
     c.className = 'opt ' + (parseInt(c.getAttribute('data-oi')) === cI ? 'oc' : 'on');
   });
 
-  var _OK = ['Carton plein 🎯','T\'as géré ça 💪','Dans le mille ⚡','Propre. Vraiment 🔥','Maîtrisé ✅','Trop fort(e) 🚀','GG c\'est dans la boîte 👌'];
-  var _KO = ['Pas celui-là — la correction est juste en dessous 👀','Ça arrive — retiens la correction, c\'est comme ça qu\'on progresse 💡','Pas grave — la prochaine tu l\'as 🎯','Raté, mais regardé = déjà un progrès 👊','Difficile celui-là — retiens bien la correction 📝','Pas bon cette fois — tu vois la bonne réponse maintenant 🧠','C\'est ça qui fait monter de niveau 📈'];
+  var _okKey = (cat === 'BOOST') ? 'ok_boost' : (S.niv === '6EME') ? 'ok_6eme' : (S.niv === '3EME' || S.niv === '1ERE') ? 'ok_3eme' : 'ok_chap';
+  var _koKey = (cat === 'BOOST') ? 'ko_boost' : (S.niv === '6EME') ? 'ko_6eme' : (S.niv === '3EME' || S.niv === '1ERE') ? 'ko_3eme' : 'ko_chap';
   if (exo.options[oI] === exo.a) {
     btn.className = 'opt oc';
     showXP(100);
-    showT(_OK[Math.floor(Math.random()*_OK.length)], 1200, '⭐');
+    showT(_msg(_okKey), 1200, '⭐');
     setTimeout(function(){ mark(cat, idx, 'EASY', null); }, 700);
   } else {
     btn.className = 'opt ow';
-    showT(_KO[Math.floor(Math.random()*_KO.length)], 2200, '💡');
+    showT(_msg(_koKey), 2200, '💡');
     // Passe l'option erronée choisie + déploie aide automatiquement (pédagogique)
     setTimeout(function(){
       mark(cat, idx, 'HARD', exo.options[oI]);
@@ -3954,7 +4076,7 @@ function chkComp(cat) {
     } else {
       if (easy >= Math.ceil(tot * 0.7)) launchConfetti();
       // S5 — Chapitre terminé : confettis + toast + info prochain chapitre
-      showT('🏆 Chapitre terminé ! Ton prochain chapitre est en préparation, il sera disponible demain 📚', 6000, '🏆');
+      showT(_msg('chap_done'), 6000, '🏆');
       if (typeof _boostInsightConfetti === 'function') _boostInsightConfetti();
       setTimeout(function() { _showSessionFeedback('chapitre', cat, null); }, 3500);
       // Persister chapitre terminé dans localStorage
@@ -4778,18 +4900,16 @@ function renderProgress() {
   });
   var inactiveDays = lastPractice > 0 ? Math.floor((Date.now() - lastPractice) / 86400000) : 0;
 
-  if (mastered === keys.length) {
-    ctxMsg = is3eme ? '🏆 Tous les chapitres maîtrisés — prêt pour le brevet' : '🏆 Tous les chapitres maîtrisés — bravo !';
-    ctxBg = 'bg-emerald-50 border-emerald-200 text-emerald-800';
+  if (mastered === keys.length && is3eme) {
+    ctxMsg = _msg('ctx_all_mastered_brevet'); ctxBg = 'bg-emerald-50 border-emerald-200 text-emerald-700';
+  } else if (mastered === keys.length) {
+    ctxMsg = _msg('ctx_all_mastered'); ctxBg = 'bg-emerald-50 border-emerald-200 text-emerald-700';
   } else if (streak >= 3) {
-    ctxMsg = '🔥 ' + streak + ' jours d\'affilée — continue comme ça';
-    ctxBg = 'bg-amber-50 border-amber-200 text-amber-800';
+    ctxMsg = _msg('ctx_streak', {n: streak}); ctxBg = 'bg-amber-50 border-amber-200 text-amber-700';
   } else if (recentMastered) {
-    ctxMsg = '✓ ' + recentMastered + ' maîtrisé cette semaine';
-    ctxBg = 'bg-emerald-50 border-emerald-200 text-emerald-800';
+    ctxMsg = _msg('ctx_mastered_week', {n: recentMastered}); ctxBg = 'bg-indigo-50 border-indigo-200 text-indigo-700';
   } else if (inactiveDays >= 3) {
-    ctxMsg = 'Ça fait ' + inactiveDays + ' jours — 5 exercices suffisent pour reprendre';
-    ctxBg = 'bg-slate-50 border-slate-200 text-slate-600';
+    ctxMsg = _msg('ctx_inactive', {n: inactiveDays}); ctxBg = 'bg-slate-50 border-slate-200 text-slate-600';
   }
   if (ctxMsg) {
     html += '<div class="' + ctxBg + ' border rounded-2xl px-4 py-2.5 text-xs font-semibold text-center mb-3">' + ctxMsg + '</div>';
@@ -5125,9 +5245,9 @@ function renderDiagInsight() {
   var pct  = d.total > 0 ? Math.round(d.totalEasy / d.total * 100) : 0;
 
   var headline, emoji;
-  if (pct >= 75)      { headline = 'Solides bases ' + name + '&nbsp;! On va renforcer les derniers points.'; emoji = '💪'; }
-  else if (pct >= 50) { headline = 'Bon début ' + name + '. Les points à renforcer sont ciblés — on avance.'; emoji = '📈'; }
-  else                { headline = 'On sait exactement où travailler ' + name + '. C\'est le plus important.'; emoji = '🎯'; }
+  if (pct >= 75)      { headline = _msg('diag_strong', {name: name}); emoji = '💪'; }
+  else if (pct >= 50) { headline = _msg('diag_mid',    {name: name}); emoji = '📈'; }
+  else                { headline = _msg('diag_low',    {name: name}); emoji = '🎯'; }
 
   var chapHtml = '';
   Object.keys(S.diagChapResults).forEach(function(chap) {
@@ -5170,11 +5290,11 @@ function renderBoostInsight() {
 
   var headline, emoji;
   if (d.easy === d.total && d.total > 0) {
-    headline = 'Parfait ' + name + '&nbsp;! ' + d.total + ' sur ' + d.total + ' — garde ce rythme.'; emoji = '🔥';
-  } else if (d.easy >= 3) {
-    headline = 'Beau travail ' + name + '. ' + d.easy + ' exercice' + (d.easy > 1 ? 's' : '') + ' dans la boîte aujourd\'hui. Reviens demain&nbsp;!'; emoji = '💪';
+    headline = _msg('boost_perfect', {name: name, n: d.total}); emoji = '🔥';
+  } else if (d.easy >= Math.ceil(d.total * 0.6)) {
+    headline = _msg('boost_good', {name: name, n: d.easy}); emoji = '💪';
   } else {
-    headline = 'Quelques notions à retravailler ' + name + '. Ton prochain boost sera encore plus ciblé.'; emoji = '🎯';
+    headline = _msg('boost_low', {name: name}); emoji = '🎯';
   }
 
   // Comparaison avec le diagnostic sur le même chapitre
@@ -5191,13 +5311,13 @@ function renderBoostInsight() {
 
   var streakMsg, streakBg;
   if (streak === 3) {
-    streakMsg = '🔥 3 jours d\'affilée — une habitude commence. Continue !';
+    streakMsg = _msg('streak_3');
     streakBg  = 'bg-orange-50 border-orange-200 text-orange-800';
   } else if (streak === 7) {
-    streakMsg = '🏆 7 jours — tu es en mode champion. C\'est énorme !';
+    streakMsg = _msg('streak_7');
     streakBg  = 'bg-amber-50 border-amber-300 text-amber-900';
   } else {
-    streakMsg = '🔥 Streak&nbsp;: ' + streak + ' jour' + (streak > 1 ? 's' : '') + ' consécutif' + (streak > 1 ? 's' : '') + ' — reviens demain pour ne pas le perdre&nbsp;!';
+    streakMsg = _msg('streak_gen', {n: streak});
     streakBg  = 'bg-amber-50 border-amber-200 text-amber-800';
   }
 
@@ -5213,7 +5333,7 @@ function renderBoostInsight() {
     '</div>' +
     (progressHtml ? progressHtml : '') +
     '<div class="' + streakBg + ' border rounded-2xl px-4 py-3 text-sm font-semibold text-center">' + streakMsg + '</div>' +
-    '<div class="bg-indigo-50 border border-indigo-200 rounded-2xl px-4 py-3 text-sm font-semibold text-indigo-700 text-center">✨ Ton prochain boost est en cours de préparation, il sera disponible demain&nbsp;!</div>' +
+    '<div class="bg-indigo-50 border border-indigo-200 rounded-2xl px-4 py-3 text-sm font-semibold text-indigo-700 text-center">' + _msg('boost_preparing') + '</div>' +
     '<button onclick="dismissBoostInsight()" class="btn btn-ac btn-fw py-4 text-base">Voir mes chapitres 🏠</button>' +
     '<div id="boost-redirect-msg" class="text-center text-xs text-slate-400 mt-2">Retour automatique dans <span id="boost-redirect-count">5</span>s…</div>' +
     '</div>';
@@ -5862,15 +5982,10 @@ function _checkCoursMilestone(cat) {
       // Vérifier si le cours pour ce milestone est rédigé
       var hasSection = cm && cm.unlocked && cm.unlocked.some(function(s) { return s.unlock_at === m; });
       if (hasSection) {
-        var msgs = {
-          5:  '📖 Ton cours est prêt ! Consulte-le depuis le chapitre.',
-          10: '📖 Ton cours s\'enrichit — nouvelles notions disponibles !',
-          15: '📖 Cours avancé débloqué — points de vigilance personnalisés.',
-          20: '✨ Cours complet ! Tu as tout maîtrisé 🏆'
-        };
-        setTimeout(function() { showT(msgs[m], 5000, '📖'); }, 500);
+        var milestoneKeys = { 5: 'cours_5', 10: 'cours_10', 15: 'cours_15', 20: 'cours_20' };
+        setTimeout(function() { showT(_msg(milestoneKeys[m]), 5000, '📖'); }, 500);
       } else {
-        setTimeout(function() { showT('🎉 Bravo ! Ton prof prépare ton cours personnalisé — retrouve-le demain !', 5000, '📚'); }, 500);
+        setTimeout(function() { showT(_msg('cours_prep'), 5000, '📚'); }, 500);
       }
     }
   });
@@ -6169,6 +6284,10 @@ function renderDraftSymbols() {
 
 // Bascule entre onglets Brouillon / Calculette
 function switchDraftTab(tab) {
+  if (_needsCoach('brouillon')) {
+    _markCoach('brouillon');
+    setTimeout(function() { showT(_msg('coach_brouillon'), 3500, '📝'); }, 600);
+  }
   S.dTab = tab;
   var pd = document.getElementById('panel-draft');
   var pc = document.getElementById('panel-calc');
@@ -7245,6 +7364,10 @@ window.showHintInline = function(cat, idx, max) {
   S.hints[id] = S.hints[id] || 0;
   if (S.hints[id] >= max) return;
   S.hints[id]++;
+  if (_needsCoach('hint') && S.hints[id] === 1) {
+    _markCoach('hint');
+    setTimeout(function() { showT(_msg('coach_hint'), 3500, '💡'); }, 800);
+  }
   clearNudge(id);
   var exo  = LVL[S.niv].cats[cat][idx];
   var text = (exo.steps && exo.steps[S.hints[id]-1]) || '';

@@ -3934,7 +3934,8 @@ function _ensureWaitlistSheet() {
  * Envoie l'email marketing du jour `day` (0, 3 ou 7) à l'utilisateur.
  * Retourne { status: 'success' } ou { status: 'error', message: ... }
  */
-function sendMarketingSequence(email, prenom, day) {
+function sendMarketingSequence(email, prenom, day, objectif) {
+  objectif = objectif || 'lacunes';
   try {
     var subject, htmlBody;
     var unsubLink = 'https://matheux.fr/unsubscribe?email=' + encodeURIComponent(email);
@@ -3985,8 +3986,13 @@ function sendMarketingSequence(email, prenom, day) {
         '<div style="max-width:500px;margin:0 auto;font-family:sans-serif;background:#ffffff;padding:32px 24px;border-radius:12px;">' +
         '<h1 style="color:#4338ca;font-size:24px;margin-bottom:8px;">3 jours déjà !</h1>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Bonjour,</p>' +
-        '<p style="color:#374151;font-size:16px;line-height:1.6;">Cela fait 3 jours que ' + prenom + ' a rejoint Matheux. On espère que les premiers exercices se passent bien.</p>' +
-        '<p style="color:#374151;font-size:16px;line-height:1.6;">Pas d\'inquiétude si certaines notions semblent difficiles — c\'est normal, c\'est même l\'objectif : identifier ce qui accroche pour mieux le travailler.</p>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.6;">Cela fait 3 jours que ' + prenom + ' a rejoint Matheux.</p>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.6;">' + ({
+          lacunes: 'Les premiers exercices permettent de cibler précisément ce qui bloque ' + prenom + ' — pas les difficultés supposées, les vraies. C\'est là que le diagnostic devient utile.',
+          chapitre_jour: 'La régularité, c\'est la clé. Un chapitre par jour, 10 minutes — si ' + prenom + ' tient ce rythme cette semaine, les résultats suivront.',
+          brevet: 'Le brevet, ça se prépare dans la durée. Ces premiers jours posent les bases — les exercices style brevet arrivent au fur et à mesure de la progression.',
+          toutes_matieres: prenom + ' a accès à l\'intégralité du programme. L\'important à ce stade : trouver un rythme et rester régulier, même 10 minutes par jour.'
+        }[objectif] || 'Les premiers exercices permettent de cibler précisément ce qui bloque ' + prenom + ' — pas les difficultés supposées, les vraies.') + '</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;"><strong>Petit rappel :</strong> le boost quotidien (5 exercices, ~10 minutes) est la clé. Régulier vaut mieux qu\'intense.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">N\'hésitez pas à me faire un retour — un simple "ça va bien" ou "on galère sur les fractions" suffit. Je lis tous les messages.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Bon courage,<br><strong>Nicolas</strong></p>' +
@@ -3999,6 +4005,12 @@ function sendMarketingSequence(email, prenom, day) {
         '<h1 style="color:#4338ca;font-size:24px;margin-bottom:8px;">Plus que 2 jours d\'essai</h1>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Bonjour,</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Dans 2 jours, l\'essai de <strong>' + prenom + '</strong> se termine.</p>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.6;">' + ({
+          lacunes: 'En 5 jours, Matheux a déjà identifié les lacunes spécifiques de ' + prenom + '. Ce travail de ciblage est perdu si on s\'arrête maintenant.',
+          chapitre_jour: prenom + ' a commencé à prendre le rythme quotidien. 5 jours de régularité, c\'est plus que la plupart des élèves qui essaient.',
+          brevet: '144 exercices style brevet + des brevets blancs complets — tout est là pour une préparation sérieuse. Ces 5 jours n\'étaient que le début.',
+          toutes_matieres: '54 chapitres, du 6ème au lycée. ' + prenom + ' vient de démarrer — le vrai travail commence maintenant.'
+        }[objectif] || 'En 5 jours, Matheux a déjà identifié les lacunes spécifiques de ' + prenom + '. Ce travail de ciblage est perdu si on s\'arrête maintenant.') + '</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Si vous souhaitez continuer, c\'est <strong>19,99 €/mois</strong> — sans engagement, résiliable à tout moment.</p>' +
         '<div style="text-align:center;margin:28px 0 20px;">' +
         '<a href="https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00" style="background:linear-gradient(135deg,#4338ca,#6366f1);color:#ffffff;font-size:15px;font-weight:800;text-decoration:none;padding:14px 32px;border-radius:12px;display:inline-block;letter-spacing:-.2px;">Continuer avec Matheux →</a>' +
@@ -4016,9 +4028,12 @@ function sendMarketingSequence(email, prenom, day) {
         '<p style="color:#374151;font-size:16px;line-height:1.6;">La première semaine de ' + prenom + ' sur Matheux touche à sa fin. C\'est déjà beaucoup — le simple fait de commencer, c\'est 90 % du travail.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">En une semaine, ' + prenom + ' a :</p>' +
         '<ul style="color:#374151;font-size:16px;line-height:1.8;padding-left:20px;">' +
-        '<li>Identifié ses points forts et ses points à renforcer</li>' +
-        '<li>Travaillé avec des exercices adaptés à son niveau</li>' +
-        '<li>Posé des bases solides pour la suite</li>' +
+        ({
+          lacunes: '<li>Identifié ses lacunes précises — pas celles de sa classe, les siennes</li><li>Travaillé sur des exercices vraiment ciblés</li><li>Posé les bases d\'un rattrapage durable</li>',
+          chapitre_jour: '<li>Établi une routine quotidienne de travail</li><li>Progressé chapitre par chapitre à son rythme</li><li>Prouvé qu\'il pouvait tenir sur la durée</li>',
+          brevet: '<li>Fait ses premiers exercices style brevet</li><li>Identifié les chapitres à travailler en priorité</li><li>Posé des bases solides pour la préparation</li>',
+          toutes_matieres: '<li>Exploré plusieurs chapitres du programme</li><li>Repéré ses points forts et ses axes de travail</li><li>Pris ses premières marques sur Matheux</li>'
+        }[objectif] || '<li>Identifié ses lacunes précises — pas celles de sa classe, les siennes</li><li>Travaillé sur des exercices vraiment ciblés</li><li>Posé les bases d\'un rattrapage durable</li>') +
         '</ul>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Pour continuer sur cette lancée, vous pouvez <a href="https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00" style="color:#4338ca;font-weight:bold;">activer l\'abonnement</a> — 19,99 €/mois, sans engagement, résiliable à tout moment.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Si vous avez des questions avant de décider, répondez à cet email — je suis là.</p>' +
@@ -4115,6 +4130,7 @@ function triggerDailyMarketing() {
   var iEmail     = headers.indexOf('Email');
   var iPremium   = headers.indexOf('Premium');
   var iTrialStart = headers.indexOf('TrialStart');
+  var iObjectif   = headers.indexOf('Objectif');
 
   if (iTrialStart === -1) return; // colonne absente → rien à faire
 
@@ -4140,12 +4156,102 @@ function triggerDailyMarketing() {
 
     if (diffDays === 0 || diffDays === 3 || diffDays === 5 || diffDays === 7) {
       try {
-        sendMarketingSequence(email, prenom, diffDays);
+        var objectif = iObjectif >= 0 ? String(row[iObjectif] || 'lacunes') : 'lacunes';
+        sendMarketingSequence(email, prenom, diffDays, objectif);
       } catch (e) {
         Logger.log('triggerDailyMarketing error for ' + email + ' : ' + e.toString());
       }
     }
   }
+}
+
+// ════════════════════════════════════════════════════════════
+//  RAPPORT PARENT HEBDOMADAIRE — trigger dimanche 17h45-18h15
+//  Configuration : Apps Script → Déclencheurs → triggerWeeklyParentReport
+//  → Chaque semaine → Dimanche → 17h-18h
+// ════════════════════════════════════════════════════════════
+function triggerWeeklyParentReport() {
+  var users  = getRows(SH.USERS);
+  var scores = getRows(SH.SCORES);
+  var progress = getRows(SH.PROGRESS);
+  var td     = today();
+  var sent   = 0;
+
+  users.forEach(function(u) {
+    var email   = String(u['Email']   || '').toLowerCase();
+    var prenom  = String(u['Prénom']  || '');
+    var code    = String(u['Code']    || '');
+    var isAdmin = u['IsAdmin'] === 1 || u['IsAdmin'] === true || String(u['IsAdmin']).toUpperCase() === 'TRUE';
+    var isTest  = u['IsTest']  === 1 || u['IsTest']  === true || String(u['IsTest']).toUpperCase() === 'TRUE';
+    if (!email || !code || isAdmin || isTest) return;
+
+    var trialStart = u['TrialStart'] ? String(u['TrialStart']).substring(0, 10) : '';
+    if (!trialStart) return;
+    var trialDays = Math.floor((new Date(td) - new Date(trialStart)) / 86400000);
+    if (trialDays > 30) return;
+
+    // Stats semaine (7 derniers jours)
+    var weekScores = scores.filter(function(s) {
+      if (String(s['Code']) !== code) return false;
+      var d = String(s['Date'] || '').substring(0, 10);
+      var diff = Math.floor((new Date(td) - new Date(d)) / 86400000);
+      return diff <= 7 && String(s['Source'] || '') !== 'CALIBRAGE';
+    });
+
+    var nbExos     = weekScores.length;
+    if (nbExos === 0) return; // Pas d'activité → pas de rapport
+
+    var nbEasy     = weekScores.filter(function(s) { return String(s['Résultat']) === 'EASY'; }).length;
+    var pctSuccess = Math.round(nbEasy * 100 / nbExos);
+
+    var maitrise = progress.filter(function(p) { return String(p['Code']) === code && String(p['Statut']) === 'maitrise'; });
+    var nbMait   = maitrise.length;
+
+    var motEnc = pctSuccess >= 80
+      ? prenom + ' est en très bonne forme — les exercices de cette semaine ont été bien maîtrisés.'
+      : pctSuccess >= 60
+      ? 'Bonne progression cette semaine. Quelques notions nécessitent encore un peu de travail, mais la tendance est positive.'
+      : 'Cette semaine a permis d\'identifier des notions à consolider. C\'est justement le rôle du boost quotidien.';
+
+    var subject = 'Bilan de la semaine de ' + prenom + ' sur Matheux 📊';
+    var htmlBody =
+      '<div style="max-width:520px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;">' +
+      '<div style="background:linear-gradient(135deg,#312e81,#4338ca);padding:28px 24px;border-radius:12px 12px 0 0;text-align:center;">' +
+      '<div style="font-size:32px;margin-bottom:8px;">📊</div>' +
+      '<h1 style="color:#fff;font-size:18px;font-weight:900;margin:0;">Bilan semaine de ' + prenom + '</h1>' +
+      '<p style="color:rgba(255,255,255,.7);font-size:13px;margin:6px 0 0;">Matheux · ' + td + '</p>' +
+      '</div>' +
+      '<div style="background:#fff;padding:28px 24px;border-radius:0 0 12px 12px;box-shadow:0 4px 20px rgba(0,0,0,.07);">' +
+      '<p style="color:#374151;font-size:15px;line-height:1.7;">Bonjour,</p>' +
+      '<p style="color:#374151;font-size:15px;line-height:1.7;">' + motEnc + '</p>' +
+      '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px 20px;margin:16px 0;">' +
+      '<div style="display:flex;justify-content:space-around;text-align:center;">' +
+      '<div><div style="font-size:24px;font-weight:900;color:#4338ca;">' + nbExos + '</div><div style="font-size:11px;color:#64748b;font-weight:600;">exercices faits</div></div>' +
+      '<div><div style="font-size:24px;font-weight:900;color:#059669;">' + pctSuccess + '%</div><div style="font-size:11px;color:#64748b;font-weight:600;">de réussite</div></div>' +
+      '</div>' +
+      (nbMait > 0 ? '<div style="text-align:center;margin-top:12px;"><div style="font-size:18px;font-weight:800;color:#d97706;">' + nbMait + ' chapitre' + (nbMait > 1 ? 's' : '') + ' maîtrisé' + (nbMait > 1 ? 's' : '') + '</div></div>' : '') +
+      '</div>' +
+      '<p style="color:#374151;font-size:15px;line-height:1.7;">Si vous avez des questions ou des retours, répondez directement à cet email.</p>' +
+      '<p style="color:#374151;font-size:15px;line-height:1.7;">Bonne semaine,<br><strong>Nicolas</strong><br><span style="color:#6b7280;font-size:13px;">Prof de maths · Matheux</span></p>' +
+      '</div></div>';
+
+    try {
+      GmailApp.sendEmail(email, subject, '', {
+        htmlBody: htmlBody,
+        name: 'Nicolas · Matheux',
+        replyTo: 'nicolas@matheux.fr'
+      });
+      _logEmail(email, prenom, 'rapport-hebdo', 'envoyé');
+      sent++;
+      Utilities.sleep(500);
+    } catch(err) {
+      _logEmail(email, prenom, 'rapport-hebdo', 'erreur: ' + err.toString().substring(0, 60));
+      Logger.log('triggerWeeklyParentReport error for ' + email + ' : ' + err.toString());
+    }
+  });
+
+  Logger.log('triggerWeeklyParentReport : ' + sent + ' rapports envoyés');
+  return { status: 'success', sent: sent };
 }
 
 /**

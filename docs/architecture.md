@@ -24,8 +24,8 @@ NAVIGATEUR (index.html)              GOOGLE APPS SCRIPT (backend.js)
 
 | Composant | Technologie | Fichier | Taille |
 |---|---|---|---|
-| Frontend | HTML + CSS vars + Tailwind CDN + JS vanilla | `index.html` | ~8882 lignes |
-| Backend | Google Apps Script (V8) | `backend.js` | ~4633 lignes |
+| Frontend | HTML + CSS vars + Tailwind CDN + JS vanilla | `index.html` | ~9401 lignes |
+| Backend | Google Apps Script (V8) | `backend.js` | ~4823 lignes |
 | Base de données | Google Sheets | — | 13 onglets actifs |
 | Hébergement frontend | GitHub Pages | `matheux.fr` | Auto-deploy sur push |
 | Hébergement backend | Google Apps Script Web App | URL fixe via deployment ID | — |
@@ -94,7 +94,7 @@ const S = {
 - **Streak** : jours consécutifs d'activité
 - **Mastery ring** : cercle SVG de progression par chapitre
 - **Confettis** : animation post-boost terminé
-- **Messages** : ton ado "Game Boy Chill" (EASY×7 variantes, HARD×3)
+- **Messages adaptatifs** : système `_msg(key, vars)` avec `_MSGS` (~35 entrées), adaptation niveau (6EME/3EME/def), arrays aléatoires, substitution variables `{name}` `{n}` `{s}`. Coach marks persistés localStorage (`mx_coach_v1`). Voir [messages.md](messages.md)
 - **Brouillon contextuel + Calculette** : mobile = bottom sheet 50vh avec onglets (brouillon|calculette), desktop = panneau latéral droit 1/3 écran avec les 2 fusionnés (calculette en haut, brouillon en bas). Brouillon : symboles adaptés au chapitre via `getContextSymbols(niv, cat)`, mode quadrillé toggle. Calculette : adaptée par niveau/chapitre (trig si géo, π si aires/volumes, puissances si 5EME+, fractions si 6EME), mémoire M+/MR, copie vers brouillon.
 - **Figures géométriques SVG** : auto-détection depuis le texte de la question + catégorie. Moteur `autoDetectFigure(q, cat)` → `renderFig(fig)` → SVG inline animé. **18 types** : triangle rectangle, trigo, Thalès, cercle (+ mode diamètre), rectangle/carré, angle (3 lettres), parallèles/perpendiculaires, symétrie axiale/centrale (3 paires A/A'), cube/pavé, cylindre, cône, pyramide, sphère, section de solide, homothétie, triangles semblables, transformations, **vecteurs/produit scalaire** (1ERE), **repère orthonormé** (1ERE), **cercle trigonométrique** (1ERE). Lettres de points extraites dynamiquement de l'énoncé (`pts[]`). Filtrage `nonGeoChaps` (pas de figure sur algèbre/stats/probas). viewBox 280×210, `overflow:visible`. Champ `fig` optionnel dans les exercices JSON pour override manuel. Fallback safe : pas de figure si non détecté.
 
@@ -116,7 +116,7 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @64
+### Actions GAS — état @74
 
 > @64 : ajout niveau 1ERE Spé Maths (ALLOWED_LEVELS, niveauOrder). @63 : rate limiting global (60/min, 15/min login/register), validation inputs saveScore, 6 bugfixes simulation QA.
 
@@ -143,6 +143,7 @@ function doPost(e) {
 | `publish_admin_chapter` | Admin publie chapitre (→Nouveau Ch libre) + rebuildSuivi. Retourne `overwrite:true` si >4 chapitres en attente (toast ⚠️ côté frontend) | ✅ |
 | `log_manual_email` | Admin — logue un email envoyé manuellement dans l'onglet Emails. Params : `adminCode`, `userEmail`, `type` (ex: `J+0-manuel`). Vérifie admin, récupère prénom, appelle `_logEmail` | ✅ |
 | `check_trial_status` | Vérifie trial actif { trialActive, daysLeft, isPremium } | ✅ |
+| `triggerWeeklyParentReport` | Rapport parent hebdo dimanche 17h-18h (stats semaine, % réussite, chapitres maîtrisés) — trigger à activer manuellement | ✅ |
 | `import_chapters` | One-shot admin — pousse chapitres dans Curriculum_Officiel + DiagnosticExos | ✅ |
 | `send_test_email` | Admin — envoie email J+0 test | ✅ |
 | `mark_all_test` | Admin one-shot — marque tous comptes non-admin sans IsTest → IsTest=1 | ✅ |
@@ -239,7 +240,7 @@ Deux variantes convergentes : `_flowGuestRegister()` (guest complet) et `_doLogi
 | GitHub Pages | Frontend (index.html, pages légales) | Gratuit |
 | Google Apps Script | Backend API | Gratuit (quotas Google) |
 | Google Sheets | Base de données | Gratuit |
-| Gmail (GmailApp) | Emails auto (J+0, J+3, J+5, J+7) — alias no-reply@matheux.fr requis | Gratuit |
+| Gmail (GmailApp) | Emails auto (J+0, J+3, J+5, J+7 personnalisés objectif + rapport parent hebdo) — alias no-reply@matheux.fr requis | Gratuit |
 | Stripe | Paiement (TEST pour l'instant) | ~0,39€/transaction |
 | GA4 | Analytics | Gratuit |
 
@@ -291,4 +292,4 @@ Scripts archivés dans `scripts_archive/`.
 - Modales admin contextuelles (BOOST/CHAPITRE séparés)
 - Indicateurs emails J0/J3/J5/J7 smart dans modal admin (vert=envoyé, rose=DUE, gris=pas encore)
 - Onglet "📧 Suivi" : élèves avec actions secondaires (emails dus, inactifs, jamais commencés)
-- Messages élèves : streak break alert, boost en cours nudge, chapitre maîtrisé, milestones streak
+- Messages élèves adaptatifs : `_msg()` + `_MSGS` (~35 entrées), coach marks (indice/boost/brouillon), _OK/_KO contextuels par niveau/mode, onboarding dynamique selon objectif
