@@ -4,7 +4,7 @@
 
 ---
 
-## État global — 15 mars 2026
+## État global — 15 mars 2026 (dernière mise à jour : @77)
 
 **Matheux est fonctionnel à 100% côté code. Seuls manques : Stripe PROD + 2 actions manuelles.**
 
@@ -16,6 +16,7 @@
 > ✅ **Objectif élève post-quiz le 15 mars 2026** — overlay 4 choix après diagnostic, colonne Users N, emails J+5/J+7 personnalisés, badge admin. GAS @70.
 > ✅ **Simulation 10 profils le 15 mars 2026** — 111 appels GAS, 10/10 profils OK. Fix `ss is not defined` dans getAdminOverview + sw.js exclu de GAS. GAS @72.
 > ✅ **Message architecture system le 15 mars 2026** — `_msg()` adaptatif niveau, coach marks, _OK/_KO contextuels, onboarding objectif, emails J+3/J+5/J+7 personnalisés objectif, triggerWeeklyParentReport. GAS @74.
+> ✅ **Audit pédagogique + UX fixes le 15 mars 2026** — 1872 exos audités (score qualité 94,7%→~98%) : erreurs math corrigées, notation décimale française, 48 indices S1 reformulés, 14 doublons 1ERE réécrits. UX : mode nuit app (🌙 header, `body.app-night`, localStorage), guide "Commence par là" seulement après boost consommé, titres chapitres `font-weight:800`, boost terminé = nav Précédent/Suivant. @77.
 
 | Dimension | État |
 |---|---|
@@ -29,6 +30,8 @@
 | Limite bêta | 50 vrais élèves (IsTest=0) |
 | Messages élèves | ✅ Système adaptatif `_msg()` — ~35 entrées, niveau, objectif, coach marks, _OK/_KO contextuels |
 | Admin cockpit | ✅ GAS @76 — cockpit 3 onglets À FAIRE/FAIT/TEST, cartes inline, journal horodaté, log_contact |
+| Exercices | ✅ Audité + corrigé @77 — 1872 exos, score ~98%, notation FR, indices S1, doublons |
+| UX élève | ✅ @77 — mode nuit app, guide boost, titres gras, nav boost reopen |
 | Emails (@matheux.fr) | ⏳ **à créer manuellement** : contact@ + alias no-reply@ |
 
 ---
@@ -183,12 +186,18 @@
 - [x] **Documentation nettoyée** — CLAUDE.md épuré en point d'entrée, 7 rapports archivés, docs vivantes mises à jour (14 mars 2026)
 - [x] **PWA — Progressive Web App** — manifest.json, sw.js (Cache First + Network First GAS), offline.html, 11 icônes (72→512px + maskable + apple-touch), balises PWA head, bannière install Android (`beforeinstallprompt`), iOS hint 1x (localStorage) — code commité, **déploiement Netlify/GitHub Pages à valider** (14 mars 2026)
 - [x] **Landing refonte wording** — axe "empreinte cognitive + prof humain + FOMO rétention" : hero, stats, programme, étapes, nouvelle section "Ce que Matheux sait", 4ème témoignage, fondateur renforcé, prix, 2 FAQ, CTA final, sticky mobile. Aucune modif JS/CSS. (15 mars 2026)
-- [ ] **Objectif élève post-quiz** — slide 4 choix (lacunes/chapitre_jour/brevet/toutes_matieres), col N Users, emails J+5/J+7 personnalisés par objectif. Prompt prêt (15 mars 2026)
-- [ ] **Admin panel upgrade** — emails éditables avant copie, duplication supprimée, 💤 Sans nouvelles, action cours (coursNeeded), dark mode onboarding only, profils test diversifiés. Prompt prêt (15 mars 2026)
-- [ ] **Simulation test complète** — script Python 10 profils × tous les workflows, rapport friction. Prompt prêt (15 mars 2026)
+- [x] **Objectif élève post-quiz** — slide 4 choix (lacunes/chapitre_jour/brevet/toutes_matieres), col N Users, emails J+5/J+7 personnalisés par objectif (@70, 15 mars 2026)
+- [x] **Admin panel upgrade** — emails éditables avant copie, duplication supprimée, 💤 Sans nouvelles, action cours (coursNeeded), dark mode onboarding only, profils test diversifiés (@69, 15 mars 2026)
+- [x] **Simulation test complète** — script Python 10 profils × tous les workflows, 10/10 OK, 111 appels GAS (@72, 15 mars 2026)
 - [ ] **Profil d'apprentissage élève** — page dédiée montrant : 3 points forts identifiés, 2 lacunes en cours, vitesse de progression, streak record. Affiché avec cadenas dans l'overlay trial J+7 ("ces données disparaissent dans 48h")
 - [ ] **Automatisation boosts nuit** — agent qui tourne chaque nuit, lit les erreurs depuis Scores, génère le JSON boost, pousse dans Suivi sans intervention Nicolas. Déclencheur : rebuildSuivi détecte BOOST TERMINÉ → GAS génère automatiquement. Priorité : dès 30 clients actifs
 - [x] **Rapport parent hebdo automatique** — `triggerWeeklyParentReport` dimanche 17h-18h, stats réelles (nb exos, % réussite, chapitres maîtrisés), mot adapté au score. **Trigger à activer manuellement dans Apps Script** (15 mars 2026, @74)
+- [x] **Admin cockpit refonte** — 3 onglets À FAIRE/FAIT/TEST, cartes inline avec workflows, journal horodaté, `log_contact` (15 mars 2026, @76)
+- [x] **Mode nuit app** — bouton 🌙 header, `body.app-night`, localStorage `app_night` (15 mars 2026, @77)
+- [x] **Boost terminé — navigation** — Précédent/Suivant disponible après boost (15 mars 2026, @77)
+- [x] **Guide "Commence par là"** — corrigé : affiché uniquement après boost consommé (15 mars 2026, @77)
+- [x] **Titres chapitres gras** — `font-weight:800` explicite (15 mars 2026, @77)
+- [x] **Audit pédagogique complet** — 1872 exercices audités + corrigés : notation décimale FR, indices S1 reformulés, doublons 1ERE réécrits. Score qualité ~98% (15 mars 2026, @77)
 - [ ] Agent analyse lacunes quotidien automatique
 - [ ] **Migration Sheets → Supabase** — à déclencher à 80-100 clients payants (pas avant).
   Capacité actuelle estimée : ~15 connexions simultanées, ~8 save_score simultanés, 100 clients actifs confortables.
@@ -223,7 +232,7 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 ## Checklist "Prêt pour 50 élèves"
 
 ### Infrastructure
-- [x] GAS @64 stable — 28+ actions, bugfixes audit complets, niveau 1ERE
+- [x] GAS @77 stable — 29+ actions, bugfixes complets, niveau 1ERE, audit exercices
 - [x] Google Sheet prod
 - [x] Validation inputs GAS (register + saveScore — @63)
 - [x] Rate limiting doPost (global 60/min, sensibles 15/min — @63)

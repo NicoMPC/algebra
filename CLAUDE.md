@@ -4,8 +4,8 @@
 
 ## Projet
 
-SPA vanilla JS (`index.html` ~9000 lignes) + backend Google Apps Script (`backend.js` ~4637 lignes) sur Google Sheets.
-Outil pédagogique adaptatif maths 6ème→3ème + 1ère Spé Maths. MVP solo → 50 clients à 19,99 €/mois.
+SPA vanilla JS (`index.html` ~9700 lignes) + backend Google Apps Script (`backend.js` ~5100 lignes) sur Google Sheets.
+Outil pédagogique adaptatif maths 6ème→3ème + 1ère Spé Maths. MVP solo → 50 clients à 19,99 €/mois. **GAS @77** — 1872 exercices audités (score qualité ~98%).
 
 ## Documentation — `docs/`
 

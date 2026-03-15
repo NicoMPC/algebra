@@ -94,8 +94,9 @@ Personne ne peut copier ça facilement — ça demande Nicolas.
 - **Boost quotidien** : 5 exercices/jour = habitude, pas surcharge
 - **Indices progressifs** : 1-3 étapes + formule clé révélée après erreur
 - `lvl:1` = fondamental, `lvl:2` = avancé (type contrôle/brevet)
-- 54 chapitres × 20 exos = **1080 exercices** + 108 diagnostics + 540 boost + 144 brevet (3EME, 15 chap, format standard)
-- Couverture **~100%** programme collège officiel + 1ère Spé Maths (10 chapitres expérimentaux) — détail dans [programme-français-verif.md](programme-français-verif.md)
+- 54 chapitres × 20 exos = **1080 exercices** + 108 diagnostics + 540 boost + 144 brevet (3EME, 15 chap, format standard) = **1872 exercices au total**
+- **Audit qualité @77 (15 mars 2026)** : 1872 exercices audités et corrigés — score qualité ~98% (correction mathématique 100%, notation décimale française, indices S1 progressifs, doublons 1ERE réécrits)
+- Couverture **~100%** programme collège officiel + 1ère Spé Maths (10 chapitres expérimentaux) — conformité BO 2024-2026
 
 ---
 
@@ -166,6 +167,12 @@ Triple-clic sur le logo → Admin Panel (comptes `IsAdmin: true` uniquement).
 - Actions : publier boost, publier chapitre, publier brevet blanc (3EME), copier prompt Claude
 - 👨‍👩‍👧 Actions parent recommandées : félicitation premier boost, partage streak 7j, relance douce 3j, résultats brevet, bilan chapitre
 - 💬 Feedbacks de session élève : ressenti sur les 3 derniers boosts/chapitres/brevets
+
+### UX @77
+- **Mode nuit app** : bouton 🌙 dans le header — `body.app-night`, persisté `localStorage('app_night')`. Distinct du mode nuit landing (`land-night`) et du dark mode admin (`adm-dark`).
+- **Navigation boost reopen** : après boost terminé, navigation Précédent/Suivant disponible (identique aux chapitres)
+- **Guide "Commence par là"** : affiché uniquement après que l'élève a consommé son boost (pas au premier chargement)
+- **Titres chapitres** : `font-weight:800` explicite
 
 ### Vues élève
 - **📚 Chapitres** : boost quotidien + chapitres par progression

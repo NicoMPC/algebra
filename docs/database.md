@@ -291,4 +291,6 @@ Rapports ── standalone (archive)
 
 Total : **54 chapitres × 20 exos = 1080 exercices** + **54 × 10 = 540 boost (BoostExos)** + **54 × 2 = 108 diagnostics** + **15 chap × 8-16 = 144 brevet** (3EME uniquement)
 
+**Audit qualité @77 (15 mars 2026)** : 1872 exercices audités et corrigés. Score qualité global ~98% (correction mathématique 100%, notation française, indices S1 reformulés, doublons 1ERE réécrits). Voir `docs/archive/audit-exercices-2026-03.md` pour le détail complet.
+
 **Flux boost auto** : diagnostic ne teste que les chapitres sélectionnés → P5 filtre BoostExos aux mêmes chapitres → boost ciblé, pas de dispersion cross-chapitre.

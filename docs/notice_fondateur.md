@@ -2,7 +2,7 @@
 
 > Si tu lis ce document, c'est que tu reprends le projet.
 > Tout ce qu'il faut pour comprendre, maintenir et faire grandir Matheux est ici.
-> Mise a jour : 15 mars 2026 -- GAS @76
+> Mise a jour : 15 mars 2026 -- GAS @77
 
 ---
 
@@ -45,7 +45,7 @@ Matheux (matheux.fr) est un outil de soutien scolaire en maths pour les collegie
 |---|---|
 | Niveaux | 6EME, 5EME, 4EME, 3EME, 1ERE Spe Maths |
 | Chapitres | 54 (44 college + 10 lycee) |
-| Exercices | 1 872 au total (1 080 curriculum + 108 diagnostic + 540 boost + 144 brevet) |
+| Exercices | 1 872 au total (1 080 curriculum + 108 diagnostic + 540 boost + 144 brevet) -- audites et corriges, score qualite ~98% |
 | Prix | 19,99 EUR/mois |
 | Essai gratuit | 7 jours, acces complet, sans carte bancaire |
 | Limite beta | 50 vrais eleves |
@@ -118,11 +118,12 @@ Etape 8 : Premier Boost du jour
 
 ### Ce que l'eleve voit sur son ecran
 
-- **Mon Boost du jour** : carte principale avec 5 exercices
-- **Chapitres** : liste de tous les chapitres avec barre de progression
+- **Mon Boost du jour** : carte principale avec 5 exercices. Apres completion : navigation Precedent/Suivant pour revoir ses reponses.
+- **Chapitres** : liste de tous les chapitres avec barre de progression. Guide "Commence par la" apparu seulement apres le premier boost consomme.
 - **Cours** : debloques par paliers (5/10/15/20 exercices faits)
 - **Brevet Blanc** (3eme uniquement) : quiz sans indices, style Brevet reel
 - **Brouillon + Calculette** : outils contextuels (symboles adaptes au chapitre)
+- **Mode nuit** : bouton lune dans le header, persisté entre sessions
 
 ### La conversion a J+7
 
@@ -420,7 +421,7 @@ matheux.fr (le site)                    Google Apps Script (le serveur)
 
 | Fichier | Role |
 |---|---|
-| `index.html` | Tout le site web (~9 600 lignes) : HTML + CSS + JavaScript |
+| `index.html` | Tout le site web (~9 700 lignes) : HTML + CSS + JavaScript |
 | `backend.js` | Tout le backend (~5 100 lignes) : API + logique metier |
 | `deploy.sh` | Script de deploiement rapide (1 commande) |
 | `scripts/*.py` | Scripts utilitaires Python (tests, nettoyage, import) |
@@ -626,6 +627,22 @@ Un email court, signe du fondateur, envoye a toute la base. Une observation reel
 - **2 niveaux de difficulte** : lvl 1 = fondamental, lvl 2 = avance (type controle/brevet)
 - **Pas de note** : des scores de confiance (0-100), des barres de progression, des statuts (Fragile/En progres/Solide/Maitrise)
 
+### Qualite des exercices (audit mars 2026)
+
+1 872 exercices ont ete audites et corriges par une IA specialisee le 15 mars 2026 :
+
+| Dimension | Score |
+|---|---|
+| Correction mathematique | 100% |
+| Conformite programme officiel (BO 2024-2026) | 100% |
+| Notation decimale francaise ({,}) | ~99,5% |
+| Indices progressifs S1/S2/S3 | ~100% |
+| Qualite globale ponderee | **~98%** |
+
+Corrections appliquees : 270 notations decimales normalisees, 48 indices S1 reformules (ne donnent plus la reponse directement), 14 exercices 1ERE/Probabilites_Cond reencrits originaux, notations trigonometriques LaTeX standardisees.
+
+Les exercices couvrent **~100% du programme officiel** du college (BO Eduscol) + 1ere Specialite Maths (programme 2019).
+
 ---
 
 ## 15. Strategie de croissance
@@ -718,10 +735,10 @@ Un email court, signe du fondateur, envoye a toute la base. Une observation reel
 | **Prompt Claude** | Le texte qu'on copie dans Claude pour generer des exercices |
 | **Empreinte cognitive** | Le profil d'apprentissage unique accumule par l'eleve |
 | **MRR** | Monthly Recurring Revenue (revenu mensuel recurrent) |
-| **@75** | Numero de version du backend (incremente a chaque deploiement) |
+| **@77** | Numero de version actuel du backend (incremente a chaque deploiement) |
 
 ---
 
-*Matheux -- GAS @75 -- 15 mars 2026*
+*Matheux -- GAS @77 -- 15 mars 2026*
 *Document de reference pour la reprise du projet.*
 *Si tu as des questions, le code source et la documentation technique (dossier docs/) contiennent tous les details.*

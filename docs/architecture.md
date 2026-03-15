@@ -24,8 +24,8 @@ NAVIGATEUR (index.html)              GOOGLE APPS SCRIPT (backend.js)
 
 | Composant | Technologie | Fichier | Taille |
 |---|---|---|---|
-| Frontend | HTML + CSS vars + Tailwind CDN + JS vanilla | `index.html` | ~9401 lignes |
-| Backend | Google Apps Script (V8) | `backend.js` | ~4823 lignes |
+| Frontend | HTML + CSS vars + Tailwind CDN + JS vanilla | `index.html` | ~9700 lignes |
+| Backend | Google Apps Script (V8) | `backend.js` | ~5100 lignes |
 | Base de données | Google Sheets | — | 13 onglets actifs |
 | Hébergement frontend | GitHub Pages | `matheux.fr` | Auto-deploy sur push |
 | Hébergement backend | Google Apps Script Web App | URL fixe via deployment ID | — |
@@ -80,6 +80,8 @@ const S = {
 
 - `localStorage('boost_v23')` : `{ email, hash }` — auth uniquement
 - `localStorage('boost_loc_v23')` : `{ [code]: { stk, last } }` — streak local
+- `localStorage('app_night')` : `'1'` si mode nuit app actif — persisté entre sessions
+- `localStorage('mx_coach_v1')` : coach marks affichés (indice/boost/brouillon)
 - Toutes les données viennent du GAS à chaque login (pas de cache de données)
 
 ### Librairies externes (CDN)
@@ -116,8 +118,9 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @76
+### Actions GAS — état @77
 
+> @77 : mode nuit app (bouton 🌙 header, `body.app-night`, `localStorage app_night`), guide "Commence par là" seulement après boost consommé, titres chapitres `font-weight:800`, boost terminé = navigation Précédent/Suivant. Audit + correction 1872 exercices (score qualité ~98%).
 > @76 : refonte admin cockpit — 3 onglets (À FAIRE/FAIT/TEST), cartes inline avec workflows, journal horodaté, `log_contact` ajouté. Anciens onglets (Aujourd'hui/À faire/Suivi/Traité/Test/Cours) remplacés. Cours accessible depuis les cartes.
 > @64 : ajout niveau 1ERE Spé Maths (ALLOWED_LEVELS, niveauOrder). @63 : rate limiting global (60/min, 15/min login/register), validation inputs saveScore, 6 bugfixes simulation QA.
 
@@ -277,6 +280,7 @@ Scripts archivés dans `scripts_archive/`.
 > Ne pas toucher sans raison explicite.
 
 - CSS/UI complet, mobile-first, animations
+- **3 classes dark distinctes** : `land-night` (landing, toggle nav), `adm-dark` (admin cockpit), `app-night` (app élève, bouton 🌙 header, localStorage `app_night`)
 - Landing page : hero direct, 3 faits, prix seul, CTA final
 - Mode Brevet Blanc : onglet 🎓 Brevet (3EME), 120 exos, quiz sans indices, résultats détaillés
 - Mode Révision : admin assigne chapitres d'une autre année → badge 🔁 + toast élève (col M `RevisionChapters`)
@@ -297,3 +301,7 @@ Scripts archivés dans `scripts_archive/`.
 - Indicateurs emails J0/J3/J5/J7 smart dans modal admin (vert=envoyé, rose=DUE, gris=pas encore)
 - Onglet "📧 Suivi" : élèves avec actions secondaires (emails dus, inactifs, jamais commencés)
 - Messages élèves adaptatifs : `_msg()` + `_MSGS` (~35 entrées), coach marks (indice/boost/brouillon), _OK/_KO contextuels par niveau/mode, onboarding dynamique selon objectif
+- **Mode nuit app** : bouton 🌙 dans le header, `body.app-night`, persisté `localStorage('app_night')`
+- **Boost reopen nav** : navigation Précédent/Suivant après boost terminé (comme les chapitres)
+- **Guide "Commence par là"** : affiché uniquement après boost consommé (pas au premier chargement)
+- **Titres chapitres** : `font-weight:800` explicite pour cohérence visuelle
