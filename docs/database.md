@@ -67,6 +67,7 @@ Supprimés par `cleanup_all` le 14 mars 2026 : `_ARCHIVE_Queue`, `_ARCHIVE_Prere
 | K | IsTest | Number | `0` = vrai élève, `1` = compte test |
 | L | PendingBrevet | String | JSON `{chapitres:[], message, date}` quand admin publie un brevet blanc |
 | M | RevisionChapters | String | JSON `[{niveau:"5EME", categorie:"Fractions"}]` — chapitres d'une autre année assignés par l'admin. Auto-créée si absente. |
+| N | Objectif | String | Objectif déclaré post-quiz : lacunes / chapitre_jour / brevet / toutes_matieres |
 
 **Règles importantes :**
 - Emails `@matheux.fr` → `IsTest=1` automatiquement au `register()`

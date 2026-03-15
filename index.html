@@ -2222,6 +2222,7 @@ function updateLevelChapters() {
 // ══════════════════════════════════════════════════════════════
 var _flowLevel = '4EME';
 var _flowChaps = [];
+var _flowObjectif = ''; // 'lacunes' | 'chapitre_jour' | 'brevet' | 'toutes_matieres'
 var _flowQIdx  = 0;
 var _flowScore = 0;
 var _flowExos      = [];      // exos GAS retournés
@@ -2623,6 +2624,53 @@ window._flowShowFormula = function(idx) {
   typewriter(span, exo.f, function() { rMath(area); });
 };
 
+function _showObjectifPicker(callback) {
+  var ov = document.createElement('div');
+  ov.id = 'objectif-picker';
+  ov.style.cssText =
+    'position:fixed;inset:0;z-index:4000;display:flex;align-items:center;justify-content:center;' +
+    'padding:1.25rem;background:rgba(7,9,15,.92);overflow-y:auto';
+
+  var choices = [
+    { key: 'lacunes',        emoji: '\u{1F3AF}', label: 'Combler mes lacunes',           sub: 'Identifier et travailler mes points faibles' },
+    { key: 'chapitre_jour',  emoji: '\u{1F4C5}', label: 'Un chapitre par jour',           sub: 'Progresser r\u00e9guli\u00e8rement, chapitre apr\u00e8s chapitre' },
+    { key: 'brevet',         emoji: '\u{1F4DD}', label: 'Pr\u00e9parer le brevet',             sub: 'R\u00e9viser les notions cl\u00e9s et s\'entra\u00eener aux examens' },
+    { key: 'toutes_matieres',emoji: '\u{1F680}', label: 'Tout r\u00e9viser',                   sub: 'Revoir l\'ensemble du programme \u00e0 mon rythme' }
+  ];
+
+  var cardsHTML = choices.map(function(c) {
+    return '<button onclick="_selectObjectif(\'' + c.key + '\')" style="' +
+      'width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);' +
+      'border-radius:16px;padding:1rem 1.1rem;cursor:pointer;text-align:left;transition:all .15s;' +
+      'display:flex;align-items:center;gap:.9rem;margin-bottom:.6rem">' +
+      '<span style="font-size:1.6rem;flex-shrink:0">' + c.emoji + '</span>' +
+      '<div>' +
+        '<div style="font-family:Syne,sans-serif;font-weight:800;color:#fff;font-size:.95rem;line-height:1.2">' + c.label + '</div>' +
+        '<div style="color:rgba(255,255,255,.45);font-size:.78rem;margin-top:.2rem">' + c.sub + '</div>' +
+      '</div>' +
+    '</button>';
+  }).join('');
+
+  ov.innerHTML =
+    '<div style="width:100%;max-width:380px">' +
+      '<div style="text-align:center;margin-bottom:1.75rem">' +
+        '<div style="font-size:2.5rem;margin-bottom:.75rem">\u{1F4AC}</div>' +
+        '<div style="font-family:Syne,sans-serif;font-weight:900;color:#fff;font-size:1.25rem;margin-bottom:.4rem">Quel est ton objectif ?</div>' +
+        '<p style="color:rgba(255,255,255,.45);font-size:.85rem;line-height:1.5">Pour adapter ton parcours d\u00e8s le premier jour</p>' +
+      '</div>' +
+      cardsHTML +
+    '</div>';
+
+  document.body.appendChild(ov);
+
+  window._selectObjectif = function(key) {
+    _flowObjectif = key;
+    var el = document.getElementById('objectif-picker');
+    if (el) el.remove();
+    if (callback) callback();
+  };
+}
+
 function _flowActivateStep4Guest() {
   // Calculer le score pour affichage dans step 4
   var ok = _flowResults.filter(function(r) { return r.correct; }).length;
@@ -2643,7 +2691,7 @@ function _flowActivateStep4Guest() {
   if (btn) btn.setAttribute('onclick', '_flowGuestRegister()');
 
   if (pct >= 60) { try { launchConfetti(); } catch(e) {} }
-  _flowSetStep(4);
+  _showObjectifPicker(function() { _flowSetStep(4); });
 }
 
 async function _flowGuestRegister() {
@@ -2676,7 +2724,7 @@ async function _flowGuestRegister() {
 
   var r = await fetch(SU, { method: 'POST',
     body: JSON.stringify({ action: 'register', email: email.toLowerCase().trim(),
-      name: prenom, level: _flowLevel, password: hash })
+      name: prenom, level: _flowLevel, password: hash, objectif: _flowObjectif })
   }).then(function(x) { return x.json(); }).catch(function() { return { status: 'error' }; });
 
   var code, isExisting = false;
@@ -2885,7 +2933,7 @@ async function flowRegister() {
 
   try {
     var h    = await h256(pass, email);
-    var regR = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'register', name:name, email:email, level:_flowLevel, password:h }) });
+    var regR = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'register', name:name, email:email, level:_flowLevel, password:h, objectif:_flowObjectif }) });
     var regD = await regR.json();
 
     if (regD.status !== 'success') {
@@ -2999,7 +3047,7 @@ async function submitAuth() {
     var consentEl = document.getElementById('consent-auth');
     if (consentEl && !consentEl.checked) { alert2("Consentement requis","Veuillez accepter les CGU et la Politique de confidentialité pour continuer."); togLd(false); return; }
     try {
-      var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:"register", name:n, email:e, level:l, password:h }) });
+      var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:"register", name:n, email:e, level:l, password:h, objectif:_flowObjectif }) });
       var d = await r.json();
       if (d.status === 'success') {
         S.prof = d.profile; S.niv = d.profile.level;
@@ -7174,6 +7222,15 @@ function copyWelcomeEmail(code) {
     '5 exercices ciblés, chaque matin. 10 minutes suffisent. C\'est la clé.\n\n' +
     '📈 Une progression visible\n' +
     'Je suis les résultats en direct. Je vous envoie un point à J+3 et J+7.\n\n' +
+    (function() {
+      var _objIntros = {
+        lacunes:         'J\'ai vu les premières réponses de ' + prenom + ' — le diagnostic a ciblé ses vrais points faibles, pas ceux de la classe entière.',
+        chapitre_jour:   'L\'objectif de ' + prenom + ' : un chapitre par jour. 10 minutes suffisent pour créer l\'habitude.',
+        brevet:          prenom + ' prépare le brevet. Matheux inclut des exercices style brevet et des brevets blancs complets.',
+        toutes_matieres: prenom + ' veut revoir l\'ensemble du programme. 54 chapitres couvrent du 6ème à la 1ère Spé.'
+      };
+      return st.objectif && _objIntros[st.objectif] ? '\n' + _objIntros[st.objectif] + '\n\n' : '';
+    })() +
     '→ Démarrer maintenant : https://matheux.fr\n\n' +
     'L\'essai dure 7 jours, sans carte bancaire. Vous décidez ensuite, sans pression.\n\n' +
     'Des questions ? Répondez directement — je lis chaque message.\n\n' +
@@ -7218,6 +7275,7 @@ function copySequenceEmail(code, type) {
   var st = S._modalStudent;
   if (!st) return;
   var prenom = st.prenom || 'ton élève';
+  var objectif = st.objectif || '';
   var stripeLink = 'https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00';
   var subject = '', body = '';
 
@@ -7234,25 +7292,70 @@ function copySequenceEmail(code, type) {
       'Nicolas\n' +
       'Prof de maths · Matheux';
   } else if (type === 'J+5') {
-    subject = 'Encore 2 jours, ' + prenom + ' 📅';
-    body = 'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\nSi vous souhaitez continuer, c\'est 19,99 €/mois — sans engagement, résiliable à tout moment.\n→ ' + stripeLink + '\n\nSinon, pas de pression — ' + prenom + ' conserve ses résultats.\n\nDes questions ? Répondez directement à cet email.\n\nNicolas\nProf de maths · Matheux';
+    subject = 'Encore 2 jours, ' + prenom + ' — et ensuite ? 📅';
+
+    var j5Bodies = {
+      lacunes:
+        'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\n' +
+        'Ce qu\'on a fait ensemble : identifier précisément les notions qui posent problème, pas les lacunes supposées de la classe entière — les siennes.\n\n' +
+        'Pour continuer à les combler, c\'est 19,99 €/mois — sans engagement.\n→ ' + stripeLink + '\n\n' +
+        'Des questions ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux',
+
+      chapitre_jour:
+        'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\n' +
+        'Un chapitre par jour, 10 minutes — c\'est le rythme que ' + prenom + ' a commencé à prendre. Ce type de régularité, sur un trimestre, change vraiment les résultats.\n\n' +
+        'Pour continuer sur ce rythme, c\'est 19,99 €/mois — sans engagement.\n→ ' + stripeLink + '\n\n' +
+        'Des questions ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux',
+
+      brevet:
+        'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\n' +
+        'Le brevet, ça se prépare dans la durée. Matheux inclut 144 exercices style brevet + des brevets blancs complets pour s\'entraîner dans les conditions réelles.\n\n' +
+        'Pour continuer la préparation, c\'est 19,99 €/mois — sans engagement.\n→ ' + stripeLink + '\n\n' +
+        'Des questions ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux',
+
+      toutes_matieres:
+        'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\n' +
+        '54 chapitres couvrent l\'intégralité du programme de la 6ème à la 1ère Spé. ' + prenom + ' peut avancer à son rythme, sur tous les sujets qui l\'intéressent.\n\n' +
+        'Pour accéder à l\'ensemble du programme, c\'est 19,99 €/mois — sans engagement.\n→ ' + stripeLink + '\n\n' +
+        'Des questions ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux'
+    };
+
+    body = j5Bodies[objectif] || j5Bodies['lacunes'];
   } else if (type === 'J+7') {
-    subject = 'Le bilan de la semaine de ' + prenom + ' ✅';
-    body = 'Bonjour,\n\n' +
-      'La semaine d\'essai de ' + prenom + ' se termine aujourd\'hui.\n\n' +
-      'Ce que cette semaine a permis de faire :\n' +
-      '→ Identifier les chapitres prioritaires à retravailler\n' +
-      '→ Reprendre contact avec les exercices, sans pression\n' +
-      '→ Établir une base de départ fiable\n\n' +
-      'Le travail sérieux commence maintenant — et c\'est là que Matheux prend tout son sens.\n\n' +
-      'Pour continuer avec ' + prenom + ' :\n' +
-      '→ 19,99 €/mois · sans engagement · résiliable à tout moment\n' +
-      '→ ' + stripeLink + '\n\n' +
-      'Pour référence : un cours particulier coûte 30 à 50 €/heure.\n' +
-      'Matheux, c\'est un suivi quotidien personnalisé, à 66 centimes par jour.\n\n' +
-      'Des questions avant de décider ? Répondez à cet email.\n\n' +
-      'Nicolas\n' +
-      'Prof de maths · Matheux';
+    subject = 'Bilan de la semaine de ' + prenom + ' — et la suite ? ⭐';
+
+    var j7Bodies = {
+      lacunes:
+        'Bonjour,\n\nLa semaine d\'essai de ' + prenom + ' se termine aujourd\'hui.\n\n' +
+        'Ce qu\'on a fait : identifier ses vrais points faibles et commencer à les travailler un par un. ' +
+        'C\'est ce type de suivi ciblé — pas du tout-venant — qui change les résultats sur un trimestre.\n\n' +
+        'Pour continuer ce travail de fond :\n→ 19,99 €/mois · sans engagement · résiliable à tout moment\n→ ' + stripeLink + '\n\n' +
+        'Pour référence : un cours particulier coûte 30 à 50 €/heure. Matheux, c\'est un suivi quotidien personnalisé à 66 centimes par jour.\n\n' +
+        'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux',
+
+      chapitre_jour:
+        'Bonjour,\n\nLa semaine d\'essai de ' + prenom + ' se termine aujourd\'hui.\n\n' +
+        prenom + ' a commencé à prendre le rythme : un chapitre, un jour, 10 minutes. ' +
+        'Sur un trimestre, cette régularité représente des dizaines de notions consolidées.\n\n' +
+        'Pour que l\'habitude devienne des résultats :\n→ 19,99 €/mois · sans engagement · résiliable à tout moment\n→ ' + stripeLink + '\n\n' +
+        'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux',
+
+      brevet:
+        'Bonjour,\n\nLa semaine d\'essai de ' + prenom + ' se termine aujourd\'hui.\n\n' +
+        'Une semaine pour démarrer la préparation, c\'est bien — mais le brevet se gagne sur la durée. ' +
+        'Matheux permet de s\'entraîner sur l\'intégralité du programme 3ème + des brevets blancs complets.\n\n' +
+        'Pour terminer la préparation dans de bonnes conditions :\n→ 19,99 €/mois · sans engagement · résiliable à tout moment\n→ ' + stripeLink + '\n\n' +
+        'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux',
+
+      toutes_matieres:
+        'Bonjour,\n\nLa semaine d\'essai de ' + prenom + ' se termine aujourd\'hui.\n\n' +
+        'Une semaine pour explorer. ' + prenom + ' a maintenant accès à un aperçu de ce que Matheux propose : ' +
+        '54 chapitres, du 6ème au lycée, avec des exercices adaptés à son niveau réel — pas au niveau moyen de sa classe.\n\n' +
+        'Pour accéder à l\'ensemble du programme sans limite :\n→ 19,99 €/mois · sans engagement · résiliable à tout moment\n→ ' + stripeLink + '\n\n' +
+        'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux'
+    };
+
+    body = j7Bodies[objectif] || j7Bodies['lacunes'];
   }
 
   _openEmailModal(code, type, subject, body);
@@ -8167,12 +8270,20 @@ function _buildModalHTML(st) {
   }
 
   // 2. Emails séquence dus (J3/J5/J7)
+  var _objLabelsAz = {
+    lacunes:         { emoji: '\u{1F3AF}', label: 'Combler ses lacunes' },
+    chapitre_jour:   { emoji: '\u{1F4C5}', label: 'Un chapitre/jour' },
+    brevet:          { emoji: '\u{1F4DD}', label: 'Pr\u00e9parer le brevet' },
+    toutes_matieres: { emoji: '\u{1F680}', label: 'Tout r\u00e9viser' }
+  };
+  var _objAz = st.objectif ? (_objLabelsAz[st.objectif] || null) : null;
   if (_hasSeqDue) {
     _azHTML += '<div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 mb-3">' +
       '<div class="flex items-center gap-2 mb-2.5">' +
         '<span class="text-lg">📬</span>' +
         '<div class="text-amber-800 font-black text-sm">Email de relance à envoyer</div>' +
-      '</div>';
+      '</div>' +
+      (_objAz ? '<div style="font-size:.72rem;color:#92400e;margin-bottom:.5rem;padding:.4rem .6rem;background:#fef3c7;border-radius:8px">\u{1F4A1} Objectif d\u00e9clar\u00e9 : <strong>' + _objAz.emoji + ' ' + _objAz.label + '</strong> \u2014 le template sera adapt\u00e9</div>' : '');
     if (_j3Due) _azHTML +=
       '<button id="btn-seq-copy-' + st.code + '-J3" onclick="copySequenceEmail(\'' + st.code + '\',\'J+3\')" class="btn btn-fw py-2.5 text-sm mb-1" style="background:linear-gradient(135deg,#d97706,#f59e0b);color:white;border-radius:.75rem">📧 Copier J+3</button>' +
       '<button id="btn-seq-mark-' + st.code + '-J3" onclick="markSequenceEmailSent(\'' + st.code + '\',\'J+3\')" class="adm-copy-btn mb-1" style="background:#475569;display:none">✓ Marquer J+3 envoyé</button>';
@@ -8330,7 +8441,21 @@ function _buildModalHTML(st) {
         '<div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black syne text-xl shadow-md flex-shrink-0" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">' + st.prenom.charAt(0).toUpperCase() + '</div>' +
         '<div>' +
           '<div class="syne font-black text-slate-900">' + st.prenom + '</div>' +
-          '<div class="text-xs font-semibold text-slate-400">' + st.niveau + ' · ' + lastStr + '</div>' +
+          '<div class="flex items-center gap-1.5 flex-wrap mt-0.5">' +
+            '<span class="text-xs font-semibold text-slate-400">' + st.niveau + ' · ' + lastStr + '</span>' +
+            (function() {
+              var _objectifLabels = {
+                lacunes:         { emoji: '\u{1F3AF}', label: 'Combler ses lacunes' },
+                chapitre_jour:   { emoji: '\u{1F4C5}', label: 'Un chapitre/jour' },
+                brevet:          { emoji: '\u{1F4DD}', label: 'Pr\u00e9parer le brevet' },
+                toutes_matieres: { emoji: '\u{1F680}', label: 'Tout r\u00e9viser' }
+              };
+              var _obj = st.objectif ? (_objectifLabels[st.objectif] || null) : null;
+              return _obj
+                ? '<span style="background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;border-radius:99px;padding:.2rem .7rem;font-size:.7rem;font-weight:700">' + _obj.emoji + ' ' + _obj.label + '</span>'
+                : '<span style="background:#f8fafc;color:#94a3b8;border:1px solid #e2e8f0;border-radius:99px;padding:.2rem .7rem;font-size:.7rem;font-weight:600">objectif non renseign\u00e9</span>';
+            })() +
+          '</div>' +
         '</div>' +
       '</div>' +
       '<button onclick="closeStudentModal()" class="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 font-bold text-base hover:bg-slate-200 transition-colors flex-shrink-0">✕</button>' +

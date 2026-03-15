@@ -273,15 +273,16 @@ function register(p) {
   var code = uniqueCode();
   var now  = today();
 
-  // Users : Code | Prénom | Niveau | Email | PasswordHash | DateInscription | IsAdmin | Premium | TrialStart | PremiumEnd | IsTest
-  appendRow(SH.USERS, [code, name, level, email, hash, now, 0, 0, now, '', isTest ? 1 : 0]);
+  // Users : Code | Prénom | Niveau | Email | PasswordHash | DateInscription | IsAdmin | Premium | TrialStart | PremiumEnd | IsTest | PendingBrevet | RevisionChapters | Objectif
+  var objectif = (p.objectif || '').trim().substring(0, 50);
+  appendRow(SH.USERS, [code, name, level, email, hash, now, 0, 0, now, '', isTest ? 1 : 0, '', '', objectif]);
 
   // Email bienvenue J+0 (silencieux — ne bloque pas l'inscription si erreur)
   try { sendMarketingSequence(email, name, 0); } catch(e) {}
 
   return {
     status:  'success',
-    profile: { code: code, name: name, level: level, isAdmin: false, premium: false }
+    profile: { code: code, name: name, level: level, isAdmin: false, premium: false, objectif: objectif }
   };
 }
 
@@ -324,6 +325,7 @@ function login(p) {
   var _prm = user['Premium'];
   var premium = _prm === 1 || _prm === true || String(_prm) === '1' || String(_prm).toUpperCase() === 'TRUE';
   var trialStart = user['TrialStart'] ? String(user['TrialStart']) : '';
+  var objectif   = String(user['Objectif'] || '');
 
   // ── Curriculum officiel (chapitres du niveau) ─────────────
   var curriculumOfficiel = [];
@@ -561,7 +563,7 @@ function login(p) {
 
   return {
     status:             'success',
-    profile:            { code: code, name: name, level: level, isAdmin: isAdmin, premium: premium, trialStart: trialStart },
+    profile:            { code: code, name: name, level: level, isAdmin: isAdmin, premium: premium, trialStart: trialStart, objectif: objectif },
     curriculumOfficiel: curriculumOfficiel,
     diagExos:           diagExos,
     dailyBoost:         todayBoost,
@@ -3031,6 +3033,7 @@ function getAdminOverview(p) {
       var j0Sent = !!j0SentByEmail[email];
       var isTestUser = u['IsTest'] === 1 || u['IsTest'] === true || String(u['IsTest']).toUpperCase() === 'TRUE' || String(u['IsTest']) === '1';
       var trialStartAdmin = u['TrialStart'] ? String(u['TrialStart']) : '';
+      var objectifAdmin   = String(u['Objectif'] || '');
 
       // ── Brevet (3EME uniquement) ─────────────────────────
       var pendingBrevetAdmin = null;
@@ -3383,6 +3386,7 @@ function getAdminOverview(p) {
         secondaryActions:     secondaryActions,
         category:             category,
         coursNeeded:          coursNeeded,
+        objectif:             objectifAdmin,
       };
     })
     .sort(function(a, b) {

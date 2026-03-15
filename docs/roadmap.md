@@ -247,3 +247,19 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 | 3 | Arbres de probabilités post-réponse | Détection auto "arbre" dans l'énoncé → arbre pondéré SVG après réponse | 🟡 |
 | 4 | Types d'exercices enrichis — rollout | VF, fill, compléter — rollout progressif sur les nouveaux exercices générés | 🟡 |
 | 5 | Audit géométrie contextuelle | Exercices trop courts/abstraits à reformuler (voir audit-geo-context) | 🔵 |
+
+### Offres différenciées (données objectifs requises)
+
+> Décision basée sur les valeurs de la colonne `Objectif` après 10-15 clients.
+
+| Si majorité déclare | Offre envisagée |
+|---|---|
+| `lacunes` | Offre actuelle (19,99€/mois) — déjà adaptée |
+| `brevet` | Pack "Prépa Brevet" — accès prioritaire brevets blancs, peut justifier un prix légèrement supérieur |
+| `chapitre_jour` | Offre "Suivi annuel" — engagement 10 mois, prix réduit/mois |
+| `toutes_matieres` | Offre "Multi-niveaux" — accès tous niveaux pour fratrie |
+
+**Workflow de migration** : email personnalisé selon objectif déclaré → lien Stripe vers nouveau plan.
+Aucun client existant n'est verrouillé (pas de CB pendant le trial).
+
+**À faire quand** : quand N ≥ 10 clients, regarder la répartition des `Objectif` dans Users.
