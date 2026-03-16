@@ -1,6 +1,6 @@
 # État production — Matheux
 
-> Généré le 15 mars 2026 · GAS @81
+> Mis à jour le 16 mars 2026 · GAS @83
 
 ## Exercices
 
@@ -28,9 +28,11 @@ Note : les 11 "vrais élèves" incluent les profils de simulation (SIM01-SIM12) 
 
 ## Actions manuelles restantes avant lancement
 
-1. **Stripe TEST → PROD** — 3 fichiers à modifier — ⛔ Non fait
-2. **Alias email** — no-reply@ + contact@matheux.fr — ⛔ Non fait
-3. **Triggers Apps Script** — triggerDailyMarketing + triggerWeeklyParentReport — ⛔ Non fait
+1. ~~**Stripe TEST → PROD**~~ — ✅ Fait @82-@83 (16 mars 2026)
+2. ~~**contact@matheux.fr**~~ — ✅ Créé (Ionos, 16 mars 2026)
+3. **Alias no-reply@matheux.fr** — Gmail → Paramètres → Comptes — ⛔ Non fait
+4. **Triggers Apps Script** — triggerDailyMarketing + triggerWeeklyParentReport — ⛔ Non fait
+5. **Tester un vrai paiement CB** — ⛔ Non fait
 
 ## Taille fichiers clés
 

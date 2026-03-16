@@ -10,9 +10,9 @@
   - Gmail → Paramètres → Comptes → Ajouter adresse
   - Tester envoi depuis l'admin
 
-- [ ] **contact@matheux.fr**
-  - Créer sur hébergeur Ionos
-  - Vérifier que c'est affiché sur le site
+- [x] **contact@matheux.fr** — ✅ Fait (16 mars 2026)
+  - ~~Créer sur hébergeur Ionos~~ ✅
+  - ~~Vérifier que c'est affiché sur le site~~ ✅
 
 - [ ] **Triggers Apps Script**
   - `triggerDailyMarketing` (chaque jour, 9h-10h)
@@ -25,8 +25,8 @@
 - [ ] Admin HMD493 accessible (triple-clic logo)
 - [ ] Publier un boost depuis l'admin → visible élève
 - [ ] Email J+0 reçu dans la vraie boîte
-- [ ] Pages légales accessibles depuis footer (5 pages)
-- [ ] Prix 19,99€ cohérent partout (landing + overlay + CGV + emails)
+- [x] Pages légales accessibles depuis footer (5 pages) — ✅ + mention TVA art. 293 B CGI
+- [x] Prix 19,99€ cohérent partout (landing + overlay + CGV + emails) — ✅ vérifié @83
 
 ## Post-lancement J+1 (ne pas faire avant)
 

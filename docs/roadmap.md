@@ -24,7 +24,7 @@
 | Tests automatisés | **74/74 (100%)** + simulation 40 élèves **17/17 PASS** (1616 appels API, 0 erreur) |
 | Couverture programme | **~100%** — 54 chapitres (1080 exos curriculum + 108 diag + 540 boost + 144 brevet) — tous audités ✅ |
 | Niveau 1ERE Spé | **10 chapitres expérimentaux** — backend prêt, frontend non modifié (connexion uniquement), 3 types SVG dédiés |
-| Juridique | Complet (5 pages + consentement parental + RGPD) |
+| Juridique | Complet (5 pages + consentement parental + RGPD + TVA art. 293 B CGI) |
 | Paiement | ✅ Lien Stripe PROD actif (19,99/mois) |
 | Emails auto | ✅ J+0 auto + J+3/J+5/J+7 personnalisés objectif — **trigger à activer manuellement** + rapport hebdo parent (`triggerWeeklyParentReport`) |
 | Analytics | ✅ GA4 RGPD-compliant |
@@ -36,19 +36,19 @@
 | Profil cognitif | ✅ @81 — bouton "j'ai pas compris" + profil cognitif dans fiche admin |
 | Page teasing | ✅ @82 — countdown live, waitlist email (Teasing_Early), auto-switch 18 mars 9h, `?noteasing` pour dev |
 | Simulation 21j | ✅ @80 — 12 profils, 890 scores, 84 boosts, 0 erreur |
-| Emails (@matheux.fr) | ⏳ **à créer manuellement** : contact@ + alias no-reply@ |
+| Emails (@matheux.fr) | ✅ contact@matheux.fr créé — ⏳ alias no-reply@ à configurer Gmail |
 
 ---
 
 ## Semaine du lancement — 16-18 mars 2026
 
 ### Dimanche 16 mars (Nicolas)
-- [ ] Créer contact@matheux.fr (Ionos)
+- [x] Créer contact@matheux.fr (Ionos) ✅
 - [ ] Alias no-reply@matheux.fr (Gmail → Paramètres → Comptes)
 - [ ] Tester envoi email depuis admin
 
 ### Lundi 17 mars (Nicolas)
-- [ ] Stripe TEST → PROD (3 fichiers)
+- [x] Stripe TEST → PROD (3 fichiers) ✅ Fait @82-@83
 - [ ] Tester un vrai paiement CB
 - [ ] Activer triggers Apps Script (triggerDailyMarketing + triggerWeeklyParentReport)
 - [ ] Nettoyer base : supprimer comptes SIM01-SIM12
@@ -67,7 +67,7 @@
 | # | Action | Où | Priorité |
 |---|---|---|---|
 | 1 | ~~**Stripe TEST → PROD**~~ — ✅ Fait @82 (16 mars 2026) — lien PROD `cNicN7b0ebU9bOE9WTb3q01` | ✅ | 🟢 |
-| 2 | **Créer `contact@matheux.fr`** (adresse publique) + **alias `no-reply@matheux.fr`** dans Gmail (pour GmailApp) | Hébergeur email + Gmail Paramètres → Comptes | 🔴 |
+| 2 | ~~**Créer `contact@matheux.fr`**~~ ✅ + **alias `no-reply@matheux.fr`** dans Gmail (pour GmailApp) | Gmail Paramètres → Comptes | 🟡 |
 | 3 | **Activer trigger `triggerDailyMarketing`** → Apps Script UI → Déclencheurs → `triggerDailyMarketing` → Chaque jour → 9h-10h | Google Apps Script UI | 🔴 |
 | 4 | **Webhook Stripe → colonne `Premium`** dans Users | Stripe dashboard → Webhooks | 🟡 après Stripe PROD |
 | 5 | Vrais témoignages élèves/parents sur landing | À collecter après premiers clients | 🔵 |
@@ -172,7 +172,8 @@
 - [ ] replyTo: nicolas@matheux.fr sur J+3, J+7 et reset MDP
 - [x] Overlay trial → Stripe direct 19,99€/mois (lien TEST)
 - [x] Email J+7 → lien Stripe
-- [ ] **Créer alias `no-reply@matheux.fr`** (GmailApp) + `contact@matheux.fr` (public) — **⚠️ Manuel hébergeur**
+- [x] **`contact@matheux.fr`** créé (Ionos) — ✅ 16 mars 2026
+- [ ] **Alias `no-reply@matheux.fr`** (Gmail → Paramètres → Comptes) — ⚠️ Manuel
 - [x] **Stripe TEST → PROD** — ✅ Fait @82 (16 mars 2026)
 - [ ] **Webhook Stripe → colonne Premium** — **⚠️ Manuel Stripe dashboard**
 
