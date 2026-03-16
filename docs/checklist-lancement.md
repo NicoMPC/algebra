@@ -1,25 +1,26 @@
 # Checklist lancement — Matheux · 18 mars 2026
 
-## 1. Config emails (lundi 16 mars — 14h30)
+## 1. Config emails (lundi 16 mars — 14h30) ✅
 
 - [x] Boîtes mail créées sur Ionos : contact@, no-reply@, nicolas@ ✅
-- [ ] **1.1** Alias Gmail : ajouter `no-reply@matheux.fr` dans seopourvous (SMTP Ionos)
-- [ ] **1.2** Vérifier alias visible dans Gmail → Comptes → "Envoyer en tant que"
+- [x] **1.1** Alias Gmail : `no-reply@matheux.fr` ajouté dans seopourvous (SMTP Ionos port 465 SSL) ✅
+- [x] **1.2** Alias visible dans Gmail → Comptes → "Envoyer en tant que" ✅
 
-## 2. Code — fix emails + formulaire contact (lundi 16 mars — 14h50)
+## 2. Code — fix emails + formulaire contact + merge sécu (lundi 16 mars — 15h) ✅
 
-- [ ] **2.1** Fix backend L4707 : `from: 'no-reply@matheux.fr'` sur rapport parent hebdo
-- [ ] **2.2** Nouvelle action GAS `send_contact` → email à contact@matheux.fr + log onglet Contact
-- [ ] **2.3** Formulaire contact dans index.html (style du site, accessible depuis footer)
-- [ ] **2.4** Déployer backend : `./deploy.sh "fix emails + formulaire contact"`
-- [ ] **2.5** Déployer frontend : `git push origin main`
+- [x] **2.1** Fix backend L4707 : `from: 'no-reply@matheux.fr'` sur rapport parent hebdo ✅
+- [x] **2.2** Nouvelle action GAS `send_contact` → email à contact@matheux.fr + log onglet Contact ✅
+- [x] **2.3** Formulaire contact dans index.html (3 footers : teasing, landing, app) + `_toast()` ✅
+- [x] **2.4** Merge sécurité freelance (SECUmain → main) : Stripe webhook MAXIMAL PARANOID + Premium Guard ✅
+- [x] **2.5** GitHub Pages reconfiguré sur branche main ✅
+- [x] **2.6** Déployer backend (@88) + frontend ✅
 
-## 3. Tests (lundi 16 mars — 15h15)
+## 3. Tests emails (lundi 16 mars — 15h30) ✅
 
-- [ ] **3.1** Créer un compte test → email J+0 reçu ? Expéditeur = `no-reply@matheux.fr` ?
-- [ ] **3.2** Mot de passe oublié → email reset reçu ? Expéditeur = `no-reply@matheux.fr` ?
-- [ ] **3.3** Formulaire contact → email reçu sur `contact@matheux.fr` ?
-- [ ] **3.4** Apps Script → Déclencheurs → liste vide (aucun trigger automatique)
+- [x] **3.1** Compte test → email J+0 reçu depuis `no-reply@matheux.fr` ✅
+- [x] **3.2** Mot de passe oublié → email reset reçu depuis `no-reply@matheux.fr` ✅
+- [x] **3.3** Formulaire contact → email reçu sur `contact@matheux.fr` ✅
+- [x] **3.4** Apps Script → Déclencheurs → liste vide (aucun trigger automatique) ✅
 
 ## 4. Stripe (lundi 16 mars — 15h15)
 

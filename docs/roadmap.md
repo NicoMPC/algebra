@@ -37,24 +37,33 @@
 | Page teasing | ✅ @82 — countdown live, waitlist email (Teasing_Early), auto-switch 18 mars 9h, `?noteasing` pour dev |
 | Sécurité Stripe | ✅ @84-@85 — webhook handler (Premium auto) + premium guard client (vérif 5 min) |
 | Simulation 21j | ✅ @80 — 12 profils, 890 scores, 84 boosts, 0 erreur |
-| Emails (@matheux.fr) | ✅ contact@ + no-reply@ créés (Ionos) — ⏳ branchement Gmail + triggers à faire |
+| Emails (@matheux.fr) | ✅ contact@ + no-reply@ + nicolas@ créés (Ionos) — alias Gmail no-reply@ branché ✅ — formulaire contact ✅ — centralisation 3 boîtes jeudi 19 |
 
 ---
 
 ## Semaine du lancement — 16-18 mars 2026
 
-### Lundi 16 mars (Nicolas)
+### Lundi 16 mars (Nicolas) ✅
 - [x] Créer contact@matheux.fr (Ionos) ✅
 - [x] Créer no-reply@matheux.fr (Ionos) ✅
-- [ ] Brancher alias no-reply@matheux.fr dans Gmail (→ GmailApp backend)
-- [ ] Activer triggers Apps Script (triggerDailyMarketing + triggerWeeklyParentReport)
-- [x] Tester envoi email depuis admin ✅
+- [x] Alias no-reply@matheux.fr dans Gmail (SMTP Ionos port 465 SSL) ✅
+- [x] Fix backend : `from: 'no-reply@matheux.fr'` sur rapport parent ✅
+- [x] Action GAS `send_contact` + formulaire contact (3 footers) ✅
+- [x] Merge sécurité freelance SECUmain → main (Stripe MAXIMAL PARANOID + Premium Guard) ✅
+- [x] GitHub Pages reconfiguré sur main ✅
+- [x] Tests emails : J+0 ✅ / Reset MDP ✅ / Contact ✅ / Pas de triggers ✅
+- [ ] Stripe : CGU/CGV + vrai paiement CB (en cours)
 
 ### Mardi 17 mars (Nicolas)
-- [x] Stripe TEST → PROD (3 fichiers) ✅ Fait @82-@83
-- [ ] Tester un vrai paiement CB
-- [ ] Activer triggers Apps Script (triggerDailyMarketing + triggerWeeklyParentReport)
 - [ ] Nettoyer base : supprimer comptes SIM01-SIM12
+- [ ] Test rapport parent hebdo (manuel)
+- [ ] Checklist pré-lancement vérifs finales
+
+### Jeudi 19 mars (Nicolas)
+- [ ] Centraliser 3 mails matheux.fr (nicolas@, contact@, no-reply@) dans un seul endroit
+  - Option A : Thunderbird (IMAP imap.ionos.fr:993 SSL + SMTP smtp.ionos.fr:465 SSL)
+  - Option B : Alias Gmail (ajouter nicolas@ et contact@ comme no-reply@ déjà fait)
+  - Option C : Redirection Ionos → seopourvous@gmail.com (le plus simple)
 
 ### Mercredi 18 mars — LANCEMENT
 - [ ] Vérifier DNS + HTTPS
@@ -70,7 +79,7 @@
 | # | Action | Où | Priorité |
 |---|---|---|---|
 | 1 | ~~**Stripe TEST → PROD**~~ — ✅ Fait @82 (16 mars 2026) — lien PROD `cNicN7b0ebU9bOE9WTb3q01` | ✅ | 🟢 |
-| 2 | ~~**Créer `contact@matheux.fr`**~~ ✅ + **alias `no-reply@matheux.fr`** dans Gmail (pour GmailApp) | Gmail Paramètres → Comptes | 🟡 |
+| 2 | ~~**Créer `contact@matheux.fr`**~~ ✅ + ~~**alias `no-reply@matheux.fr`**~~ ✅ (SMTP Ionos port 465 SSL) | ✅ | 🟢 |
 | 3 | **Automatiser trigger `triggerDailyMarketing`** → dès 10 clients actifs (manuel via admin en attendant) | Google Apps Script UI | 🟡 |
 | 4 | **Webhook Stripe → colonne `Premium`** — code déployé @85, **endpoint Stripe à finaliser** | Stripe dashboard → Webhooks → créer destination | 🟡 |
 | 5 | Vrais témoignages élèves/parents sur landing | À collecter après premiers clients | 🔵 |
@@ -176,7 +185,11 @@
 - [x] Overlay trial → Stripe direct 19,99€/mois (lien TEST)
 - [x] Email J+7 → lien Stripe
 - [x] **`contact@matheux.fr`** créé (Ionos) — ✅ 16 mars 2026
-- [ ] **Alias `no-reply@matheux.fr`** (Gmail → Paramètres → Comptes) — ⚠️ Manuel
+- [x] **Alias `no-reply@matheux.fr`** (Gmail → SMTP Ionos port 465 SSL) ✅ 16 mars
+- [x] **Formulaire contact** — `send_contact` GAS + modal 3 footers + `_toast()` ✅ 16 mars
+- [x] **Merge sécurité freelance** (SECUmain → main) — Stripe MAXIMAL PARANOID + Premium Guard ✅ 16 mars
+- [x] **GitHub Pages** reconfiguré sur branche main ✅ 16 mars
+- [x] **Tests emails** — J+0 ✅ / Reset MDP ✅ / Contact ✅ / Pas de triggers ✅ 16 mars
 - [x] **Stripe TEST → PROD** — ✅ Fait @82 (16 mars 2026)
 - [x] **Webhook Stripe → colonne Premium** — code déployé @85 (security layer 1 + 2) — endpoint Stripe à finaliser manuellement
 
