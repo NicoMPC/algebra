@@ -166,7 +166,7 @@ python3 rebuild_sheet.py         # Reconstruire Suivi + Historique
 4. **Ne jamais créer** de doc inutile
 5. **Proposer la suppression** d'un document devenu obsolète
 
-### Structure docs/
+### Structure docs/ (7 fichiers vivants)
 
 ```
 CLAUDE.md                          → Document unique (ce fichier)
@@ -175,10 +175,8 @@ docs/database.md                   → Schéma Sheets (onglets + colonnes)
 docs/product.md                    → Produit (vision + parcours + business)
 docs/roadmap.md                    → Priorités + état d'avancement
 docs/messages.md                   → Voice & tone guide
-docs/agent.md                      → Fiche de mission agent IA
 docs/checklist-lancement.md        → Checklist lancement 18 mars
 docs/workflow-quotidien.md         → Workflow quotidien Nicolas
-docs/etat-prod.md                  → État production
 docs/archive/                      → Docs historiques (ne pas lire sauf besoin)
 ```
 
@@ -250,12 +248,10 @@ Profils simulation 21j : SIM01→SIM12 — MDP commun : `SimTest2026!`
 ### Utilitaires (scripts/)
 | Script | Description |
 |---|---|
-| `scripts/notice_to_pdf.py` | Notice fondateur → PDF |
 | `scripts/setup_test_profiles.py` | Setup 6 profils test admin |
-| `scripts/simulation_test.py` | Simulation 10 profils légère |
 
 ### Archivés (scripts/archive/)
-Scripts one-shot déjà exécutés : imports, migrations, anciens tests. Ne pas utiliser.
+Scripts one-shot déjà exécutés : imports, migrations, anciens tests, `security1.js`, `security2.js` (freelance, mergés dans backend.js + index.html). Ne pas utiliser.
 
 ---
 
