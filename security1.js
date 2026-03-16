@@ -8,7 +8,7 @@
   //   Events : checkout.session.completed, customer.subscription.deleted
   //   Copier le Webhook Signing Secret (whsec_...) → STRIPE_WEBHOOK_SECRET ci-dessous
 
-var STRIPE_WEBHOOK_SECRET = 'whsec_XXXXXXXXX'; // ← remplacer par le vrai secret
+var STRIPE_WEBHOOK_SECRET = 'whsec_XCaxVn2m9EUDQsWQOBxX4hObdgoZYCy2'; // ← remplacer par le vrai secret
 
 /**
  * Action : stripe_webhook
