@@ -26,7 +26,7 @@
 | Niveau 1ERE Spé | **10 chapitres expérimentaux** — backend prêt, frontend non modifié (connexion uniquement), 3 types SVG dédiés |
 | Juridique | Complet (5 pages + consentement parental + RGPD + TVA art. 293 B CGI) |
 | Paiement | ✅ Lien Stripe PROD actif (19,99/mois) |
-| Emails auto | ✅ J+0 auto + J+3/J+5/J+7 personnalisés objectif — **trigger à activer manuellement** + rapport hebdo parent (`triggerWeeklyParentReport`) |
+| Emails auto | ✅ J+0 auto (inscription) + reset MDP auto — J+3/J+5/J+7 et rapport parent = **manuels via admin** (automatisation prévue dès 10-20 clients) |
 | Analytics | ✅ GA4 RGPD-compliant |
 | Limite bêta | 50 vrais élèves (IsTest=0) |
 | Messages élèves | ✅ Système adaptatif `_msg()` — ~35 entrées, niveau, objectif, coach marks, _OK/_KO contextuels |
@@ -37,18 +37,20 @@
 | Page teasing | ✅ @82 — countdown live, waitlist email (Teasing_Early), auto-switch 18 mars 9h, `?noteasing` pour dev |
 | Sécurité Stripe | ✅ @84-@85 — webhook handler (Premium auto) + premium guard client (vérif 5 min) |
 | Simulation 21j | ✅ @80 — 12 profils, 890 scores, 84 boosts, 0 erreur |
-| Emails (@matheux.fr) | ✅ contact@matheux.fr créé — ⏳ alias no-reply@ à configurer Gmail |
+| Emails (@matheux.fr) | ✅ contact@ + no-reply@ créés (Ionos) — ⏳ branchement Gmail + triggers à faire |
 
 ---
 
 ## Semaine du lancement — 16-18 mars 2026
 
-### Dimanche 16 mars (Nicolas)
+### Lundi 16 mars (Nicolas)
 - [x] Créer contact@matheux.fr (Ionos) ✅
-- [ ] Alias no-reply@matheux.fr (Gmail → Paramètres → Comptes)
-- [ ] Tester envoi email depuis admin
+- [x] Créer no-reply@matheux.fr (Ionos) ✅
+- [ ] Brancher alias no-reply@matheux.fr dans Gmail (→ GmailApp backend)
+- [ ] Activer triggers Apps Script (triggerDailyMarketing + triggerWeeklyParentReport)
+- [x] Tester envoi email depuis admin ✅
 
-### Lundi 17 mars (Nicolas)
+### Mardi 17 mars (Nicolas)
 - [x] Stripe TEST → PROD (3 fichiers) ✅ Fait @82-@83
 - [ ] Tester un vrai paiement CB
 - [ ] Activer triggers Apps Script (triggerDailyMarketing + triggerWeeklyParentReport)
@@ -69,7 +71,7 @@
 |---|---|---|---|
 | 1 | ~~**Stripe TEST → PROD**~~ — ✅ Fait @82 (16 mars 2026) — lien PROD `cNicN7b0ebU9bOE9WTb3q01` | ✅ | 🟢 |
 | 2 | ~~**Créer `contact@matheux.fr`**~~ ✅ + **alias `no-reply@matheux.fr`** dans Gmail (pour GmailApp) | Gmail Paramètres → Comptes | 🟡 |
-| 3 | **Activer trigger `triggerDailyMarketing`** → Apps Script UI → Déclencheurs → `triggerDailyMarketing` → Chaque jour → 9h-10h | Google Apps Script UI | 🔴 |
+| 3 | **Automatiser trigger `triggerDailyMarketing`** → dès 10 clients actifs (manuel via admin en attendant) | Google Apps Script UI | 🟡 |
 | 4 | **Webhook Stripe → colonne `Premium`** — code déployé @85, **endpoint Stripe à finaliser** | Stripe dashboard → Webhooks → créer destination | 🟡 |
 | 5 | Vrais témoignages élèves/parents sur landing | À collecter après premiers clients | 🔵 |
 | 6 | **Design overhaul landing** — hero glow, social proof fold, CTA shimmer, glass stats, step numbers watermark, avatars+Vérifié, 0,66€/jour, guarantee badge, sticky mobile CTA | ✅ Fait @68 (14 mars 2026) | 🟢 |
@@ -185,7 +187,7 @@
 - [x] Landing vendeuse — refonte complète 13 mars (hero parent, programme Eduscol 4 niveaux, sur mesure + IA x humain, mockup scree.png, témoignages x3, fondateur "Ancien chef de projet Aérospatiale", FAQ accordion, compteurs animés 44/880/100%, chapitres sur mesure à l'infini, CTA "Les bons exercices")
 - [x] Email J+0 auto
 - [x] **Objectif élève post-quiz** — overlay 4 choix, colonne Users N, emails J+5/J+7 personnalisés selon objectif, badge dans fiche admin (@70, 15 mars 2026)
-- [ ] **Activer trigger `triggerDailyMarketing`** (J+3/J+5/J+7) — **⚠️ Manuel Apps Script UI → 9h-10h**
+- [ ] **Automatiser emails J+3/J+5/J+7** — trigger `triggerDailyMarketing` → **à activer plus tard (dès 10 clients)**, manuel via admin pour l'instant
 - [ ] Vrais témoignages élèves/parents
 
 ---

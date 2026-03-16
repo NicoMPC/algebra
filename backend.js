@@ -116,6 +116,7 @@ function doPost(e) {
       case 'log_pas_compris':            res = logPasCompris(p);           break;
       case 'add_teasing_early':          res = addTeasingEarly(p);         break;
       case 'stripe_webhook':             res = stripeWebhook(p);           break;
+      case 'send_contact':               res = sendContact(p);             break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -4144,6 +4145,48 @@ function addTeasingEarly(p) {
   return { status: 'success' };
 }
 
+// ════════════════════════════════════════════════════════════
+//  FORMULAIRE CONTACT — envoie à contact@matheux.fr + log onglet Contact
+// ════════════════════════════════════════════════════════════
+function sendContact(p) {
+  var name    = (p.name    || '').trim();
+  var email   = (p.email   || '').trim().toLowerCase();
+  var message = (p.message || '').trim();
+
+  if (!name || !email || !message) {
+    return { status: 'error', message: 'Tous les champs sont requis.' };
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+    return { status: 'error', message: 'Email invalide.' };
+  }
+  if (message.length > 2000) {
+    return { status: 'error', message: 'Message trop long (2000 caractères max).' };
+  }
+
+  // Log dans onglet Contact
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('Contact');
+  if (!sh) {
+    sh = ss.insertSheet('Contact');
+    sh.getRange(1, 1, 1, 4).setValues([['Date', 'Nom', 'Email', 'Message']]);
+    sh.getRange(1, 1, 1, 4).setFontWeight('bold');
+  }
+  sh.appendRow([today(), name, email, message]);
+
+  // Envoyer à contact@matheux.fr
+  try {
+    GmailApp.sendEmail('contact@matheux.fr',
+      '[Matheux] Contact de ' + name + ' (' + email + ')',
+      'De : ' + name + ' <' + email + '>\n\n' + message,
+      { from: 'no-reply@matheux.fr', name: 'Matheux', replyTo: email }
+    );
+  } catch (e) {
+    Logger.log('sendContact email error: ' + e.toString());
+  }
+
+  return { status: 'success' };
+}
+
 /**
  * Envoie l'email marketing du jour `day` (0, 3 ou 7) à l'utilisateur.
  * Retourne { status: 'success' } ou { status: 'error', message: ... }
@@ -4706,6 +4749,7 @@ function triggerWeeklyParentReport() {
     try {
       GmailApp.sendEmail(email, subject, '', {
         htmlBody: htmlBody,
+        from: 'no-reply@matheux.fr',
         name: 'Nicolas · Matheux',
         replyTo: 'nicolas@matheux.fr'
       });

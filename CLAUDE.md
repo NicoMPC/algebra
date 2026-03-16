@@ -220,8 +220,8 @@ Profils simulation 21j : SIM01→SIM12 — MDP commun : `SimTest2026!`
 | 2 | ~~contact@matheux.fr~~ (Ionos) | ✅ Fait |
 | 3 | ~~Sécurité Stripe~~ (webhook + premium guard) | ✅ Code déployé @85 |
 | 4 | ~~TVA art. 293 B CGI~~ dans CGV | ✅ Fait |
-| 5 | Alias `no-reply@matheux.fr` (Gmail → Paramètres → Comptes) | ⛔ À faire |
-| 6 | Triggers Apps Script (triggerDailyMarketing 9h + triggerWeeklyParentReport dim 17h) | ⛔ À faire |
+| 5 | Alias `no-reply@matheux.fr` — boîte créée Ionos ✅, **branchement Gmail à faire** | ⛔ À faire |
+| 6 | Triggers Apps Script — **pas maintenant**, automatiser dès 10-20 clients. Manuel via admin en attendant | 🟡 Plus tard |
 | 7 | Finaliser endpoint webhook Stripe (URL GAS + vérifier whsec_) | ⛔ À faire |
 | 8 | Tester un vrai paiement CB | ⛔ À faire |
 
