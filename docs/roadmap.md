@@ -54,11 +54,17 @@
 - [x] Tests emails : J+0 ✅ / Reset MDP ✅ / Contact ✅ / Pas de triggers ✅
 - [x] Stripe : CGV + confidentialité + TVA décochée + limite 50 paiements ✅
 - [x] Bandeau rappel limite Stripe dans admin dashboard ✅
-- [ ] Stripe : vrai paiement CB (quand webhook endpoint finalisé)
+- [x] Nettoyage base : SIM01-SIM12 + anciens profils supprimés, gardé admin+Auguste+Charlie ✅
+- [x] Test élève : 6EME ✅ / 5EME ✅ / 4EME ✅ — 15 frictions notées (3EME à finir dans le bus)
 
 ### Mardi 17 mars (Nicolas)
-- [ ] Nettoyer base : supprimer comptes SIM01-SIM12
-- [ ] Test rapport parent hebdo (manuel)
+- [ ] Finir test élève 3EME (si pas fini dans le bus)
+- [ ] 🔧 Fix frictions élève (15 items : mode nuit, LaTeX, messages, boost, chapitre, scroll, bouton "j'ai pas compris")
+- [ ] Test admin workflow en conditions → fix frictions
+- [ ] Test parent → fix frictions
+- [ ] Test admin ergonomie → fix frictions
+- [ ] Rapport parent hebdo test manuel
+- [ ] Landing page clarté parent
 - [ ] Checklist pré-lancement vérifs finales
 
 ### Jeudi 19 mars (Nicolas)
