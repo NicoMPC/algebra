@@ -3690,6 +3690,8 @@ function initApp(d, skipRender) {
     // Essai terminé et non premium — afficher overlay après init
     setTimeout(showTrialExpired, 300);
   }
+  // SECURITY LAYER 2 — Premium Guard
+  startPremiumGuard();
 
   // PATCH F : LK (boost_loc_v23) utilisé UNIQUEMENT pour streak UX (S.stk) — jamais pour S.res/S.stk depuis données élève
   var loc = JSON.parse(localStorage.getItem(LK) || '{}');
@@ -3918,6 +3920,47 @@ function initApp(d, skipRender) {
 }
 
 function logout() { localStorage.removeItem(SK); location.reload(); }
+
+// ══════════════════════════════════════════════════════════════
+// SECURITY LAYER 2 — Premium Guard (anti-tampering client)
+// ══════════════════════════════════════════════════════════════
+var _premiumCheckInterval = null;
+function startPremiumGuard() {
+  if (S.prof && S.prof.isAdmin) return;
+  _verifyPremiumStatus();
+  if (_premiumCheckInterval) clearInterval(_premiumCheckInterval);
+  _premiumCheckInterval = setInterval(_verifyPremiumStatus, 5 * 60 * 1000);
+}
+async function _verifyPremiumStatus() {
+  if (!S.prof || !S.prof.code) return;
+  try {
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'check_trial_status', code:S.prof.code }) });
+    var d = await r.json();
+    if (d.status === 'success') {
+      var serverPremium = !!d.isPremium;
+      var serverTrialActive = !!d.trialActive;
+      if (S.trial && S.trial.isPremium && !serverPremium) {
+        S.trial.isPremium = false; S.trial.trialActive = serverTrialActive; S.trial.daysLeft = d.daysLeft || 0;
+        renderTrialBadge();
+        if (!serverTrialActive) showTrialExpired();
+      }
+      if (S.trial && !S.trial.isPremium && serverPremium) {
+        S.trial.isPremium = true; S.prof.premium = true;
+        renderTrialBadge();
+        var ov = document.getElementById('trial-expired-overlay'); if (ov) ov.remove();
+        showT('Abonnement activé ! Accès illimité.', 4000, '🎉');
+      }
+      if (S.trial) { S.trial.daysLeft = d.daysLeft || S.trial.daysLeft; S.trial.trialActive = serverTrialActive; }
+    }
+  } catch (e) {}
+}
+function isPremiumOrTrialValid() {
+  if (!S.trial) return false;
+  if (S.prof && S.prof.isAdmin) return true;
+  if (S.trial.isPremium) return true;
+  if (S.trial.trialActive && S.trial.daysLeft > 0) return true;
+  return false;
+}
 
 function updH() {
   document.getElementById('ui-stk').innerText = S.stk;

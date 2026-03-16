@@ -115,6 +115,7 @@ function doPost(e) {
       case 'send_session_rapport':       res = sendSessionRapport(p);      break;
       case 'log_pas_compris':            res = logPasCompris(p);           break;
       case 'add_teasing_early':          res = addTeasingEarly(p);         break;
+      case 'stripe_webhook':             res = stripeWebhook(p);           break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -5363,4 +5364,61 @@ function _table(headers, rows) {
     return '<tr>'+tds+'</tr>';
   }).join('');
   return '<table style="width:100%;border-collapse:collapse;margin:0 0 8px"><tr>'+th+'</tr>'+trs+'</table>';
+}
+
+// ══════════════════════════════════════════════════════════════
+// SECURITY LAYER 1 — Stripe Webhook Handler
+// ══════════════════════════════════════════════════════════════
+
+var STRIPE_WEBHOOK_SECRET = 'whsec_XCaxVn2m9EUDQsWQOBxX4hObdgoZYCy2';
+
+function stripeWebhook(p) {
+  var SHARED_SECRET = 'MATHEUX_STRIPE_2026';
+  var eventType = p.type || '';
+  var obj = (p.data && p.data.object) ? p.data.object : {};
+
+  if (eventType === 'checkout.session.completed') {
+    var email = (obj.customer_email || (obj.customer_details && obj.customer_details.email) || '').toLowerCase().trim();
+    var metadata = obj.metadata || {};
+    if (metadata.secret !== SHARED_SECRET) { _logWebhook('BLOCKED','bad_secret',email,eventType); return {status:'error',message:'forbidden'}; }
+    if (!email) { _logWebhook('BLOCKED','no_email','',eventType); return {status:'error',message:'no_email'}; }
+    var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SH.USERS);
+    var data = sh.getDataRange().getValues();
+    var h = data[0];
+    var iE = h.indexOf('Email'), iP = h.indexOf('Premium'), iPE = h.indexOf('PremiumEnd');
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][iE]).toLowerCase().trim() === email) {
+        sh.getRange(i+1,iP+1).setValue(1);
+        var end = new Date(); end.setDate(end.getDate()+31);
+        sh.getRange(i+1,iPE+1).setValue(end.toISOString().slice(0,10));
+        _logWebhook('OK','premium_activated',email,eventType);
+        return {status:'success',message:'premium_activated'};
+      }
+    }
+    _logWebhook('WARN','email_not_found',email,eventType);
+    return {status:'error',message:'user_not_found'};
+  }
+
+  if (eventType === 'customer.subscription.deleted') {
+    var email2 = (obj.metadata && obj.metadata.email) ? obj.metadata.email.toLowerCase().trim() : '';
+    if (email2) {
+      var sh2 = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SH.USERS);
+      var d2 = sh2.getDataRange().getValues(); var h2 = d2[0];
+      var iE2 = h2.indexOf('Email'), iP2 = h2.indexOf('Premium');
+      for (var j = 1; j < d2.length; j++) {
+        if (String(d2[j][iE2]).toLowerCase().trim() === email2) { sh2.getRange(j+1,iP2+1).setValue(0); _logWebhook('OK','premium_deactivated',email2,eventType); break; }
+      }
+    }
+    return {status:'success'};
+  }
+
+  _logWebhook('SKIP','unhandled_event','',eventType);
+  return {status:'success',message:'ignored'};
+}
+
+function _logWebhook(status, detail, email, eventType) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('Webhook_Log');
+  if (!sh) { sh = ss.insertSheet('Webhook_Log'); sh.getRange(1,1,1,5).setValues([['Date','Status','Detail','Email','EventType']]); sh.getRange(1,1,1,5).setFontWeight('bold'); }
+  sh.appendRow([new Date(), status, detail, email, eventType]);
 }
