@@ -1,28 +1,45 @@
 # Scripts locaux — pas dans GAS
 deploy.sh
-watch_deploy.sh
 
 # Fichiers Python / clés / data
-sheets.py
-build_import.py
-setup_new_tabs.py
-__pycache__/
 *.py
 *.pyc
-*.png
+__pycache__/
 algebreboost-sheets-*.json
 
-# Docs / config locale
+# Docs
+docs/
+docs/**
+*.md
 CLAUDE.md
-PROMPT_LANCEMENT.md
-SHEET_STRUCTURE.md
+
+# Config locale
 .gitignore
+.claude/
 
 # SPA frontend — pas dans GAS
 index.html
 sw.js
 manifest.json
 offline.html
+cgu.html
+cgv.html
+mentions-legales.html
+politique-confidentialite.html
+politique-cookies.html
+premium.html
+CNAME
+robots.txt
+sitemap.xml
+
+# Assets
+icons/
+icons/**
+*.png
+*.jpg
+*.ico
+*.webp
+*.pdf
 
 # Git
 .git/
@@ -30,6 +47,10 @@ offline.html
 # Node modules
 node_modules/
 node_modules/**
+
+# Scripts
+scripts/
+scripts/**
 
 # Sous-répertoire imbriqué (clasp artifact)
 algebra/

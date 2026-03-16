@@ -1,22 +1,23 @@
 # Roadmap — Matheux
 
-> Priorités de développement par blocs. Voir aussi [claude.md](claude.md) pour les règles et [product.md](product.md) pour le produit.
+> Priorités de développement par blocs. Voir aussi [CLAUDE.md](../CLAUDE.md) pour les règles et [product.md](product.md) pour le produit.
 
 ---
 
-## État global — 15 mars 2026 (dernière mise à jour : @80)
+## État global — 16 mars 2026 (dernière mise à jour : @82)
 
 **Matheux est fonctionnel à 100% côté code. Seuls manques : Stripe PROD + 2 actions manuelles.**
+**Lancement prévu : mercredi 18 mars 2026.**
 
-> ✅ **Audit + bugfixes réalisés le 13 mars 2026** (simulation 7j × 5 profils sur GAS réel).
-> BUG-01 à BUG-12 corrigés dans backend.js @60.
-> ✅ **Simulation QA 40 élèves le 14 mars 2026** — 6 bugs corrigés (BUG-SIM-01→06) + **test live 1616 appels API : 0 erreur**. GAS @63.
-> ✅ **Niveau 1ERE Spé Maths ajouté le 14 mars 2026** — 10 chapitres, 330 exercices (200 curriculum + 20 diag + 100 boost + 10 restants), compte Auguste (AUG001) prêt pour visio. GAS @64.
-> ✅ **Admin panel upgrade le 15 mars 2026** — email modal éditable, coursNeeded, renommage BLOQUÉ→Sans nouvelles, dark mode onboarding, 6 profils test. GAS @69.
-> ✅ **Objectif élève post-quiz le 15 mars 2026** — overlay 4 choix après diagnostic, colonne Users N, emails J+5/J+7 personnalisés, badge admin. GAS @70.
-> ✅ **Simulation 10 profils le 15 mars 2026** — 111 appels GAS, 10/10 profils OK. Fix `ss is not defined` dans getAdminOverview + sw.js exclu de GAS. GAS @72.
-> ✅ **Message architecture system le 15 mars 2026** — `_msg()` adaptatif niveau, coach marks, _OK/_KO contextuels, onboarding objectif, emails J+3/J+5/J+7 personnalisés objectif, triggerWeeklyParentReport. GAS @74.
-> ✅ **Audit pédagogique + UX fixes le 15 mars 2026** — 1872 exos audités (score qualité 94,7%→~98%) : erreurs math corrigées, notation décimale française, 48 indices S1 reformulés, 14 doublons 1ERE réécrits. UX : mode nuit app (🌙 header, `body.app-night`, localStorage), guide "Commence par là" seulement après boost consommé, titres chapitres `font-weight:800`, boost terminé = nav Précédent/Suivant. @77.
+> ✅ **Bugfixes @60** — BUG-01 à BUG-12 corrigés (simulation 7j × 5 profils). 13 mars.
+> ✅ **Simulation 40 élèves @63** — 6 bugs corrigés + 1616 appels API, 0 erreur. 14 mars.
+> ✅ **1ERE Spé Maths @64** — 10 chapitres, 330 exercices, compte Auguste. 14 mars.
+> ✅ **Admin panel @69-@76** — email modal, cockpit 3 onglets, log_contact, 6 profils test. 15 mars.
+> ✅ **Messages _msg() @74** — adaptatif niveau, coach marks, emails personnalisés objectif. 15 mars.
+> ✅ **Audit pédagogique @77** — 1872 exos, score ~98%, UX mode nuit, nav boost. 15 mars.
+> ✅ **Simulation 21j @79-@80** — 12 profils SIM01-SIM12, 4 bugs corrigés, 0 erreur. 15 mars.
+> ✅ **Bouton "J'ai pas compris" + profil cognitif @81** — incompréhensions déclarées + profil admin. 15 mars.
+> ✅ **Page teasing pré-lancement @82** — countdown, waitlist email, accès bêta, auto-switch mercredi 9h. 16 mars.
 
 | Dimension | État |
 |---|---|
@@ -32,7 +33,31 @@
 | Admin cockpit | ✅ GAS @76 — cockpit 3 onglets À FAIRE/FAIT/TEST, cartes inline, journal horodaté, log_contact |
 | Exercices | ✅ Audité + corrigé @77 — 1872 exos, score ~98%, notation FR, indices S1, doublons |
 | UX élève | ✅ @77 — mode nuit app, guide boost, titres gras, nav boost reopen |
+| Profil cognitif | ✅ @81 — bouton "j'ai pas compris" + profil cognitif dans fiche admin |
+| Simulation 21j | ✅ @80 — 12 profils, 890 scores, 84 boosts, 0 erreur |
 | Emails (@matheux.fr) | ⏳ **à créer manuellement** : contact@ + alias no-reply@ |
+
+---
+
+## Semaine du lancement — 16-18 mars 2026
+
+### Dimanche 16 mars (Nicolas)
+- [ ] Créer contact@matheux.fr (Ionos)
+- [ ] Alias no-reply@matheux.fr (Gmail → Paramètres → Comptes)
+- [ ] Tester envoi email depuis admin
+
+### Lundi 17 mars (Nicolas)
+- [ ] Stripe TEST → PROD (3 fichiers)
+- [ ] Tester un vrai paiement CB
+- [ ] Activer triggers Apps Script (triggerDailyMarketing + triggerWeeklyParentReport)
+- [ ] Nettoyer base : supprimer comptes SIM01-SIM12
+
+### Mercredi 18 mars — LANCEMENT
+- [ ] Vérifier DNS + HTTPS
+- [ ] GA4 mode debug OK
+- [ ] Admin accessible
+- [ ] Publier premier boost test → visible élève
+- [ ] Annonce sur les réseaux
 
 ---
 

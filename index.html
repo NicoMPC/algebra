@@ -677,79 +677,6 @@
     }
     .sticky-sub { font-size:.6rem; color:rgba(255,255,255,.38); white-space:nowrap; text-align:right; line-height:1.4; }
 
-    /* ── MODE NUIT LANDING ─────────────────────────────────── */
-    #night-toggle {
-      background:none; border:1px solid rgba(255,255,255,.2);
-      border-radius:10px; padding:.4rem .55rem; cursor:pointer;
-      font-size:1rem; line-height:1; transition:all .2s;
-      color:rgba(255,255,255,.6);
-    }
-    #night-toggle:hover { border-color:rgba(255,255,255,.4); color:#fff; }
-    body.land-night #night-toggle { color:#fbbf24; border-color:rgba(251,191,36,.4); }
-
-    body.land-night #landing-screen { background:#0c0f1a; }
-    /* Sections claires → fond sombre */
-    body.land-night #landing-screen > div:not(.lhero) {
-      background:#0f1225 !important;
-    }
-    body.land-night .bg-white,
-    body.land-night [style*="background:#f5f7ff"],
-    body.land-night [style*="background:#f8faff"] {
-      background:#0f1225 !important;
-    }
-    body.land-night .bg-slate-50 { background:#0a0d19 !important; }
-    /* Textes */
-    body.land-night .text-slate-900,
-    body.land-night .syne.text-slate-900,
-    body.land-night [class*="font-black"].text-slate-900 { color:#e2e8f0 !important; }
-    body.land-night .text-slate-800 { color:#cbd5e1 !important; }
-    body.land-night .text-slate-700 { color:#94a3b8 !important; }
-    body.land-night .text-slate-600 { color:#94a3b8 !important; }
-    body.land-night .text-slate-500 { color:#64748b !important; }
-    body.land-night .text-slate-400 { color:#475569 !important; }
-    body.land-night .text-slate-300 { color:#334155 !important; }
-    /* Cards & bordures */
-    body.land-night .land-step,
-    body.land-night .land-benefit,
-    body.land-night .sp-quote,
-    body.land-night .faq-item {
-      background:#151933 !important; border-color:#1e2545 !important;
-    }
-    body.land-night .faq-item[open] { border-color:#4338ca !important; }
-    body.land-night .faq-q { color:#cbd5e1 !important; }
-    body.land-night .faq-a { color:#94a3b8 !important; }
-    /* Programme cards */
-    body.land-night #landing-screen [style*="background:#fff"] {
-      background:#151933 !important; border-color:#1e2545 !important;
-    }
-    body.land-night .prog-tag { background:#1e2545; border-color:#2d3566; color:#818cf8; }
-    body.land-night .prog-tag.brevet { background:#2d2206; border-color:#92400e; color:#fbbf24; }
-    body.land-night .prog-tag[style*="background:#f8fafc"] { background:#0f1225 !important; border-color:#1e2545 !important; color:#475569 !important; }
-    /* Stag */
-    body.land-night .stag { background:#1e2545; border-color:#2d3566; }
-    /* Fondateur card */
-    body.land-night [style*="background:linear-gradient(135deg,#f5f7ff,#faf5ff)"] {
-      background:linear-gradient(135deg,#151933,#1a1540) !important; border-color:#1e2545 !important;
-    }
-    /* CTA info box (880 exercices) */
-    body.land-night [style*="background:linear-gradient(135deg,#eef2ff,#f5f3ff)"] {
-      background:linear-gradient(135deg,#1e2545,#1a1540) !important; border-color:#2d3566 !important;
-    }
-    /* Footer */
-    body.land-night .bg-slate-50 .border-t { border-color:#1e2545 !important; }
-    body.land-night .bg-slate-50 a { color:#475569 !important; }
-    body.land-night .bg-slate-50 a:hover { color:#818cf8 !important; }
-    /* Séparateurs fondateur */
-    body.land-night [style*="width:1px;background:#e2e8f0"] { background:#1e2545 !important; }
-    /* Chap cards onboarding (dark bg already in trial flow) */
-    body.land-night .chap-card { background:#151933; border-color:#1e2545; color:#94a3b8; }
-    body.land-night .chap-card.selected { background:#1e2545; border-color:#818cf8; color:#818cf8; }
-    /* Flow inputs */
-    body.land-night .flow-inp { background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.12); color:#e2e8f0; }
-    /* Image mockup border */
-    body.land-night [style*="border:1.5px solid #e2e8f0;max-width:380px"] { border-color:#1e2545 !important; }
-    /* Border-top key stats */
-    body.land-night .border-t.border-slate-100 { border-color:#1e2545 !important; }
 
     /* ── ADMIN PANEL (DEV TOOLS) ─────────────────────────── */
     #admin-panel {
@@ -1046,9 +973,89 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
+     TEASING PAGE (avant 18 mars 2026 09:00 Europe/Paris)
+════════════════════════════════════════════════════════════ -->
+<div id="teasing-screen" class="fixed inset-0 z-50 overflow-y-auto" style="background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%)">
+  <div class="min-h-screen flex flex-col items-center justify-center px-5 py-12 relative">
+    <div class="grid-ov" style="opacity:.03"></div>
+
+    <!-- Logo -->
+    <div class="flex items-center gap-2.5 mb-12" style="animation:s1 .5s ease both">
+      <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-lg shadow-md">📐</div>
+      <span class="syne font-black text-white" style="font-size:1.4rem">Math<span style="color:#818cf8">eux</span></span>
+    </div>
+
+    <!-- Titre -->
+    <h1 class="syne text-3xl sm:text-5xl font-black text-white text-center leading-tight mb-4" style="animation:s1 .6s .05s ease both">
+      Les maths, enfin<br><span style="color:#818cf8">sur mesure.</span>
+    </h1>
+
+    <!-- Sous-titre -->
+    <p class="text-white/80 text-base sm:text-lg text-center max-w-md mb-10 leading-relaxed" style="animation:s1 .6s .1s ease both">
+      Matheux détecte les vraies lacunes de votre enfant et prépare ses exercices chaque jour.<br>
+      <span class="font-semibold text-white/90">Lancement mercredi.</span>
+    </p>
+
+    <!-- Countdown -->
+    <div style="animation:s1 .6s .15s ease both" class="mb-2">
+      <p class="text-white/50 text-xs font-semibold tracking-widest uppercase text-center mb-3">Ouverture dans</p>
+      <div id="teasing-countdown" class="flex gap-3 justify-center">
+        <div class="flex flex-col items-center">
+          <span id="cd-d" class="syne text-3xl sm:text-4xl font-black text-white bg-white/10 rounded-xl px-4 py-2 min-w-[3.5rem] text-center border border-white/10">--</span>
+          <span class="text-white/40 text-xs mt-1 font-semibold">JOURS</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <span id="cd-h" class="syne text-3xl sm:text-4xl font-black text-white bg-white/10 rounded-xl px-4 py-2 min-w-[3.5rem] text-center border border-white/10">--</span>
+          <span class="text-white/40 text-xs mt-1 font-semibold">HEURES</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <span id="cd-m" class="syne text-3xl sm:text-4xl font-black text-white bg-white/10 rounded-xl px-4 py-2 min-w-[3.5rem] text-center border border-white/10">--</span>
+          <span class="text-white/40 text-xs mt-1 font-semibold">MIN</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <span id="cd-s" class="syne text-3xl sm:text-4xl font-black text-white bg-white/10 rounded-xl px-4 py-2 min-w-[3.5rem] text-center border border-white/10">--</span>
+          <span class="text-white/40 text-xs mt-1 font-semibold">SEC</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message quand c'est ouvert (caché par défaut) -->
+    <div id="teasing-open" class="hidden text-center mb-6" style="animation:s1 .4s ease both">
+      <p class="syne text-2xl font-black text-emerald-400 mb-3">C'est ouvert !</p>
+      <button onclick="_teasingRevealLanding()" class="btn btn-ac shadow-xl" style="font-size:1rem;padding:1rem 2.5rem">
+        Découvrir Matheux →
+      </button>
+    </div>
+
+    <!-- Email waitlist -->
+    <div id="teasing-email-wrap" class="w-full max-w-md mt-8" style="animation:s1 .6s .2s ease both">
+      <div class="flex gap-2">
+        <input type="email" id="teasing-email" class="flex-1 px-4 py-3 rounded-xl text-sm font-medium bg-white/10 border border-white/20 text-white placeholder-white/40 outline-none focus:border-indigo-400 transition-colors" placeholder="Votre email">
+        <button onclick="_teasingSubmitEmail()" id="teasing-submit-btn" class="px-5 py-3 rounded-xl font-bold text-sm text-white bg-indigo-600 hover:bg-indigo-500 transition-colors whitespace-nowrap shadow-lg">
+          Me prévenir →
+        </button>
+      </div>
+      <p id="teasing-msg" class="hidden text-emerald-400 text-sm font-semibold text-center mt-3"></p>
+    </div>
+
+    <!-- Pills rassurance -->
+    <div class="flex flex-wrap justify-center gap-3 mt-10" style="animation:s1 .6s .25s ease both">
+      <span class="text-white/60 text-sm font-medium bg-white/5 border border-white/10 rounded-full px-4 py-1.5">10 min/jour</span>
+      <span class="text-white/60 text-sm font-medium bg-white/5 border border-white/10 rounded-full px-4 py-1.5">Exercices ciblés</span>
+      <span class="text-white/60 text-sm font-medium bg-white/5 border border-white/10 rounded-full px-4 py-1.5">Un vrai prof derrière</span>
+    </div>
+
+    <!-- Accès bêta -->
+    <button onclick="showAuth('login')" class="mt-10 text-white/30 hover:text-white/60 text-xs font-medium transition-colors underline" style="animation:s1 .6s .3s ease both">
+      Accès bêta
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
      LANDING PAGE
 ════════════════════════════════════════════════════════════ -->
-<div id="landing-screen" class="fixed inset-0 z-50 overflow-y-auto bg-white">
+<div id="landing-screen" class="fixed inset-0 z-50 overflow-y-auto bg-white hidden">
 
   <!-- Nav -->
   <nav class="lhero sticky top-0 z-20 flex justify-between items-center px-5 py-4 border-b border-white/10">
@@ -2338,15 +2345,86 @@ document.addEventListener('touchend', function(e){
 }, { passive:true });
 
 // ══════════════════════════════════════════════════════════════
+// TEASING PAGE — auto-switch mercredi 18 mars 2026 09:00 Europe/Paris
+// ══════════════════════════════════════════════════════════════
+(function() {
+  // Date cible : 18 mars 2026 09:00:00 Europe/Paris (UTC+1 = 08:00 UTC)
+  var LAUNCH_TS = new Date('2026-03-18T08:00:00Z').getTime();
+  var forceNoTeasing = location.search.indexOf('noteasing') !== -1;
+
+  function isBeforeLaunch() {
+    return Date.now() < LAUNCH_TS && !forceNoTeasing;
+  }
+
+  var teasingEl = document.getElementById('teasing-screen');
+  var landingEl = document.getElementById('landing-screen');
+  if (!teasingEl || !landingEl) return;
+
+  function showTeasing() {
+    teasingEl.classList.remove('hidden');
+    landingEl.classList.add('hidden');
+  }
+  function showLanding() {
+    teasingEl.classList.add('hidden');
+    landingEl.classList.remove('hidden');
+  }
+
+  // État initial
+  if (isBeforeLaunch()) {
+    showTeasing();
+    // Countdown
+    var cdInterval = setInterval(function() {
+      var diff = LAUNCH_TS - Date.now();
+      if (diff <= 0) {
+        clearInterval(cdInterval);
+        document.getElementById('teasing-countdown').classList.add('hidden');
+        document.getElementById('teasing-email-wrap').classList.add('hidden');
+        document.getElementById('teasing-open').classList.remove('hidden');
+        return;
+      }
+      var d = Math.floor(diff / 86400000);
+      var h = Math.floor((diff % 86400000) / 3600000);
+      var m = Math.floor((diff % 3600000) / 60000);
+      var s = Math.floor((diff % 60000) / 1000);
+      document.getElementById('cd-d').textContent = String(d).padStart(2, '0');
+      document.getElementById('cd-h').textContent = String(h).padStart(2, '0');
+      document.getElementById('cd-m').textContent = String(m).padStart(2, '0');
+      document.getElementById('cd-s').textContent = String(s).padStart(2, '0');
+    }, 1000);
+  } else {
+    showLanding();
+  }
+
+  // Fonction globale pour le bouton "Découvrir Matheux"
+  window._teasingRevealLanding = function() { showLanding(); };
+
+  // Email waitlist
+  window._teasingSubmitEmail = async function() {
+    var inp = document.getElementById('teasing-email');
+    var email = (inp.value || '').trim();
+    if (!email || email.indexOf('@') === -1) {
+      inp.style.borderColor = '#ef4444';
+      return;
+    }
+    inp.style.borderColor = '';
+    var btn = document.getElementById('teasing-submit-btn');
+    btn.textContent = '...';
+    btn.disabled = true;
+    try {
+      await fetch(SU, { method: 'POST', body: JSON.stringify({ action: 'add_teasing_early', email: email }) });
+    } catch(e) {}
+    var msg = document.getElementById('teasing-msg');
+    msg.textContent = "C'est noté ! On vous écrit mercredi.";
+    msg.classList.remove('hidden');
+    inp.value = '';
+    btn.textContent = 'Me prévenir →';
+    btn.disabled = false;
+  };
+})();
+
+// ══════════════════════════════════════════════════════════════
 // AUTH
 // ══════════════════════════════════════════════════════════════
-// Mode nuit landing
-function toggleLandNight() {
-  var on = document.body.classList.toggle('land-night');
-  localStorage.setItem('land_night', on ? '1' : '0');
-}
-// Restaurer au chargement
-if (localStorage.getItem('land_night') === '1') document.body.classList.add('land-night');
 
 // Mode nuit app
 function toggleAppNight() {
@@ -2366,19 +2444,36 @@ function toggleAppNight() {
   }
 })();
 
+var _authFromTeasing = false;
 function showAuth(tab) {
   // Ne pas interrompre le flow CTA si l'utilisateur est dedans
   var tf = document.getElementById('trial-flow');
   if (tf && !tf.classList.contains('hidden')) {
     return;
   }
-  document.getElementById('landing-screen').classList.add('hidden');
+  var teasingEl = document.getElementById('teasing-screen');
+  _authFromTeasing = teasingEl && !teasingEl.classList.contains('hidden');
+  if (_authFromTeasing) {
+    teasingEl.classList.add('hidden');
+    // Masquer onglet inscription + forcer login
+    tab = 'login';
+    document.getElementById('tab-r').style.display = 'none';
+  } else {
+    document.getElementById('tab-r').style.display = '';
+    document.getElementById('landing-screen').classList.add('hidden');
+  }
   document.getElementById('auth-screen').classList.remove('hidden');
   switchTab(tab);
 }
 function closeAuth() {
   document.getElementById('auth-screen').classList.add('hidden');
-  document.getElementById('landing-screen').classList.remove('hidden');
+  document.getElementById('tab-r').style.display = '';
+  if (_authFromTeasing) {
+    document.getElementById('teasing-screen').classList.remove('hidden');
+    _authFromTeasing = false;
+  } else {
+    document.getElementById('landing-screen').classList.remove('hidden');
+  }
 }
 function switchTab(tab) {
   currentTab = tab;
@@ -3490,9 +3585,6 @@ function _onbRender() {
     '</div>' +
     '<div style="padding:1.5rem;text-align:center">' +
     '<div style="display:flex;align-items:center;justify-content:center;gap:.4rem;margin-bottom:1.25rem">' + dots + '</div>' +
-    '<div style="text-align:center;margin-bottom:.75rem">' +
-      '<button onclick="toggleLandNight()" style="background:none;border:1px solid #e2e8f0;border-radius:99px;padding:.3rem .8rem;font-size:.8rem;color:#64748b;cursor:pointer">\uD83C\uDF19 Mode nuit</button>' +
-    '</div>' +
     (isLast
       ? '<button onclick="_onbNext()" class="pop-in" style="width:100%;padding:1rem;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer">C\'est parti →</button>'
       : '<button onclick="_onbNext()" style="width:100%;padding:1rem;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer">Suivant →</button>') +

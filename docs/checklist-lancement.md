@@ -1,0 +1,35 @@
+# Checklist lancement — Matheux · 18 mars 2026
+
+## Bloquant (sans ça pas de vrai client)
+
+- [ ] **Stripe TEST → PROD**
+  - Remplacer `test_14AdRacgw76N7vQcxqa3u00` dans 3 fichiers (index.html, backend.js, cgv.html)
+  - Tester un vrai paiement CB
+
+- [ ] **Alias no-reply@matheux.fr**
+  - Gmail → Paramètres → Comptes → Ajouter adresse
+  - Tester envoi depuis l'admin
+
+- [ ] **contact@matheux.fr**
+  - Créer sur hébergeur Ionos
+  - Vérifier que c'est affiché sur le site
+
+- [ ] **Triggers Apps Script**
+  - `triggerDailyMarketing` (chaque jour, 9h-10h)
+  - `triggerWeeklyParentReport` (dimanche, 17h-18h)
+
+## Important (à vérifier le jour J)
+
+- [ ] DNS + HTTPS OK (A records GitHub + CNAME www)
+- [ ] GA4 reçoit des events (mode debug Chrome)
+- [ ] Admin HMD493 accessible (triple-clic logo)
+- [ ] Publier un boost depuis l'admin → visible élève
+- [ ] Email J+0 reçu dans la vraie boîte
+- [ ] Pages légales accessibles depuis footer (5 pages)
+- [ ] Prix 19,99€ cohérent partout (landing + overlay + CGV + emails)
+
+## Post-lancement J+1 (ne pas faire avant)
+
+- [ ] Premier vrai boost préparé pour le premier vrai élève
+- [ ] Vérifier Suivi Sheets (rebuildSuivi correct)
+- [ ] Lire le mail J+0 reçu par le parent

@@ -114,6 +114,7 @@ function doPost(e) {
       case 'log_contact':                res = logContact(p);              break;
       case 'send_session_rapport':       res = sendSessionRapport(p);      break;
       case 'log_pas_compris':            res = logPasCompris(p);           break;
+      case 'add_teasing_early':          res = addTeasingEarly(p);         break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -4116,6 +4117,30 @@ function _ensureWaitlistSheet() {
     sh.getRange(1, 1, 1, 4).setFontWeight('bold');
   }
   return sh;
+}
+
+// ── Teasing Early (waitlist pré-lancement) ──────────────────
+function addTeasingEarly(p) {
+  var email = (p.email || '').trim().toLowerCase();
+  if (!email || email.indexOf('@') === -1) {
+    return { status: 'error', message: 'Email invalide' };
+  }
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('Teasing_Early');
+  if (!sh) {
+    sh = ss.insertSheet('Teasing_Early');
+    sh.getRange(1, 1, 1, 2).setValues([['Email', 'Date']]);
+    sh.getRange(1, 1, 1, 2).setFontWeight('bold');
+  }
+  // Doublon check
+  var data = sh.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][0]).toLowerCase() === email) {
+      return { status: 'success', message: 'already' };
+    }
+  }
+  sh.appendRow([email, today()]);
+  return { status: 'success' };
 }
 
 /**
