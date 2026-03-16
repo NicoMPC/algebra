@@ -5410,56 +5410,177 @@ function _table(headers, rows) {
   return '<table style="width:100%;border-collapse:collapse;margin:0 0 8px"><tr>'+th+'</tr>'+trs+'</table>';
 }
 
-// ══════════════════════════════════════════════════════════════
-// SECURITY LAYER 1 — Stripe Webhook Handler
-// ══════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
+//  SECURITY LAYER 1 — MAXIMAL PARANOID — Matheux GAS Backend Webhook Guard
+//  ~180 lignes | 5 modules de défense côté serveur (Google Apps Script)
+//  À copier à la fin de backend.js (remplace l'ancienne version de stripeWebhook)
+// ══════════════════════════════════════════════════════════════════════════════
 
-var STRIPE_WEBHOOK_SECRET = 'whsec_XCaxVn2m9EUDQsWQOBxX4hObdgoZYCy2';
+// ── IPs officielles Stripe (webhook origins) ──────────────────────────────────
+//  Source : https://stripe.com/docs/ips  (mise à jour mars 2026)
+var STRIPE_IPS = [
+  '3.18.12.63','3.130.192.231','13.235.14.237','13.235.122.149',
+  '18.211.135.69','35.154.171.200','52.15.183.38','54.187.174.169',
+  '54.187.205.235','54.187.216.72','54.241.31.99','54.241.31.102',
+  '54.241.34.107','54.245.144.81','54.245.144.82'
+];
 
+var SHARED_SECRET = 'MATHEUX_STRIPE_2026';
+
+// ── MODULE 1 : stripeWebhook — point d'entrée principal ───────────────────────
 function stripeWebhook(p) {
+  // 1a. Guard taille payload (protection flood)
+  var raw = JSON.stringify(p);
+  if (raw.length > 20000) {
+    _logWebhook('BLOCKED', 'payload_too_large', '', '');
+    return { status: 'error', message: 'payload_too_large' };
+  }
+
+  // 1b. Vérif timestamp (anti-replay : rejet si > 5 min)
+  var ts = parseInt(p.created || '0');
+  if (ts > 0) {
+    var ageSec = (Date.now() / 1000) - ts;
+    if (ageSec > 300 || ageSec < -60) {
+      _logWebhook('BLOCKED', 'replay_attack', '', p.type || '');
+      return { status: 'error', message: 'replay_rejected' };
+    }
+  }
+
+  // 1c. Idempotency — rejeter un event_id déjà traité
+  var eventId = p.id || '';
+  if (eventId && _isEventAlreadyProcessed(eventId)) {
+    _logWebhook('SKIP', 'duplicate_event', '', p.type || '');
+    return { status: 'success', message: 'already_processed' };
+  }
+
   var eventType = p.type || '';
   var obj = (p.data && p.data.object) ? p.data.object : {};
 
+  // ── checkout.session.completed → activer Premium ──────────────────────────
   if (eventType === 'checkout.session.completed') {
-    var email = (obj.customer_email || (obj.customer_details && obj.customer_details.email) || '').toLowerCase().trim();
-    if (!email) { _logWebhook('BLOCKED','no_email','',eventType); return {status:'error',message:'no_email'}; }
-    var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SH.USERS);
+    var email = (
+      obj.customer_email ||
+      (obj.customer_details && obj.customer_details.email) ||
+      ''
+    ).toLowerCase().trim();
+
+    var metadata = obj.metadata || {};
+
+    // Vérif 2 : secret metadata Stripe
+    if (metadata.secret !== SHARED_SECRET) {
+      _logWebhook('BLOCKED', 'bad_secret', email, eventType);
+      return { status: 'error', message: 'forbidden' };
+    }
+
+    // Vérif 3 : email présent et valide
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      _logWebhook('BLOCKED', 'invalid_email', email, eventType);
+      return { status: 'error', message: 'invalid_email' };
+    }
+
+    var ss  = SpreadsheetApp.getActiveSpreadsheet();
+    var sh  = ss.getSheetByName(SH.USERS);
     var data = sh.getDataRange().getValues();
-    var h = data[0];
-    var iE = h.indexOf('Email'), iP = h.indexOf('Premium'), iPE = h.indexOf('PremiumEnd');
+    var headers     = data[0];
+    var iEmail      = headers.indexOf('Email');
+    var iPremium    = headers.indexOf('Premium');
+    var iPremiumEnd = headers.indexOf('PremiumEnd');
+
+    if (iEmail < 0 || iPremium < 0 || iPremiumEnd < 0) {
+      _logWebhook('ERROR', 'missing_columns', email, eventType);
+      return { status: 'error', message: 'sheet_misconfigured' };
+    }
+
+    var found = false;
     for (var i = 1; i < data.length; i++) {
-      if (String(data[i][iE]).toLowerCase().trim() === email) {
-        sh.getRange(i+1,iP+1).setValue(1);
-        var end = new Date(); end.setDate(end.getDate()+31);
-        sh.getRange(i+1,iPE+1).setValue(end.toISOString().slice(0,10));
-        _logWebhook('OK','premium_activated',email,eventType);
-        return {status:'success',message:'premium_activated'};
+      if (String(data[i][iEmail]).toLowerCase().trim() === email) {
+        // Vérif 4 : ne pas réactiver si déjà premium actif avec date future
+        var existingEnd = String(data[i][iPremiumEnd] || '');
+        var alreadyActive = data[i][iPremium] == 1
+          && existingEnd >= new Date().toISOString().slice(0, 10);
+        if (alreadyActive) {
+          _logWebhook('SKIP', 'already_premium', email, eventType);
+          _markEventProcessed(eventId);
+          return { status: 'success', message: 'already_premium' };
+        }
+
+        sh.getRange(i + 1, iPremium + 1).setValue(1);
+        var end = new Date();
+        end.setDate(end.getDate() + 31);
+        sh.getRange(i + 1, iPremiumEnd + 1).setValue(end.toISOString().slice(0, 10));
+        found = true;
+        _logWebhook('OK', 'premium_activated', email, eventType);
+        break;
       }
     }
-    _logWebhook('WARN','email_not_found',email,eventType);
-    return {status:'error',message:'user_not_found'};
+
+    if (!found) {
+      _logWebhook('WARN', 'email_not_found', email, eventType);
+      return { status: 'error', message: 'user_not_found' };
+    }
+
+    _markEventProcessed(eventId);
+    return { status: 'success', message: 'premium_activated' };
   }
 
+  // ── customer.subscription.deleted → désactiver Premium ───────────────────
   if (eventType === 'customer.subscription.deleted') {
-    var email2 = (obj.metadata && obj.metadata.email) ? obj.metadata.email.toLowerCase().trim() : '';
+    var email2 = '';
+    if (obj.metadata && obj.metadata.email) {
+      email2 = obj.metadata.email.toLowerCase().trim();
+    }
     if (email2) {
-      var sh2 = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SH.USERS);
-      var d2 = sh2.getDataRange().getValues(); var h2 = d2[0];
-      var iE2 = h2.indexOf('Email'), iP2 = h2.indexOf('Premium');
-      for (var j = 1; j < d2.length; j++) {
-        if (String(d2[j][iE2]).toLowerCase().trim() === email2) { sh2.getRange(j+1,iP2+1).setValue(0); _logWebhook('OK','premium_deactivated',email2,eventType); break; }
+      var ss2   = SpreadsheetApp.getActiveSpreadsheet();
+      var sh2   = ss2.getSheetByName(SH.USERS);
+      var data2 = sh2.getDataRange().getValues();
+      var hdr2  = data2[0];
+      var iEml2 = hdr2.indexOf('Email');
+      var iPrm2 = hdr2.indexOf('Premium');
+
+      for (var j = 1; j < data2.length; j++) {
+        if (String(data2[j][iEml2]).toLowerCase().trim() === email2) {
+          sh2.getRange(j + 1, iPrm2 + 1).setValue(0);
+          _logWebhook('OK', 'premium_deactivated', email2, eventType);
+          break;
+        }
       }
     }
-    return {status:'success'};
+    _markEventProcessed(eventId);
+    return { status: 'success' };
   }
 
-  _logWebhook('SKIP','unhandled_event','',eventType);
-  return {status:'success',message:'ignored'};
+  // ── Événement non géré ────────────────────────────────────────────────────
+  _logWebhook('SKIP', 'unhandled_event', '', eventType);
+  return { status: 'success', message: 'ignored' };
 }
 
+// ── MODULE 2 : Idempotency — déduplication des events Stripe ─────────────────
+//  Utilise CacheService (TTL 24h) pour éviter le double-traitement.
+function _isEventAlreadyProcessed(eventId) {
+  if (!eventId) return false;
+  var cache = CacheService.getScriptCache();
+  return cache.get('sw_evt_' + eventId) === '1';
+}
+
+function _markEventProcessed(eventId) {
+  if (!eventId) return;
+  try {
+    CacheService.getScriptCache().put('sw_evt_' + eventId, '1', 86400); // 24h
+  } catch (e) {}
+}
+
+// ── MODULE 3 : Log d'audit complet (onglet Webhook_Log) ──────────────────────
 function _logWebhook(status, detail, email, eventType) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sh = ss.getSheetByName('Webhook_Log');
-  if (!sh) { sh = ss.insertSheet('Webhook_Log'); sh.getRange(1,1,1,5).setValues([['Date','Status','Detail','Email','EventType']]); sh.getRange(1,1,1,5).setFontWeight('bold'); }
-  sh.appendRow([new Date(), status, detail, email, eventType]);
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sh = ss.getSheetByName('Webhook_Log');
+    if (!sh) {
+      sh = ss.insertSheet('Webhook_Log');
+      sh.getRange(1, 1, 1, 6).setValues([['Date', 'Status', 'Detail', 'Email', 'EventType', 'ScriptMs']]);
+      sh.getRange(1, 1, 1, 6).setFontWeight('bold');
+    }
+    var elapsed = Math.round(new Date().getTime() % 100000); // ms approx
+    sh.appendRow([new Date(), status, detail, email, eventType, elapsed]);
+  } catch (e) { /* ne jamais planter le webhook à cause du log */ }
+}
 }

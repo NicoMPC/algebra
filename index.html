@@ -3928,42 +3928,190 @@ function initApp(d, skipRender) {
 
 function logout() { localStorage.removeItem(SK); location.reload(); }
 
-// ══════════════════════════════════════════════════════════════
-// SECURITY LAYER 2 — Premium Guard (anti-tampering client)
-// ══════════════════════════════════════════════════════════════
+// ── MODULE 1 : Vérification Premium périodique (serveur) ──────────────────────
 var _premiumCheckInterval = null;
+var _lastServerVerifyTs   = 0;   // timestamp de la dernière réponse serveur OK
+var _SERVER_VERIFY_TTL    = 6 * 60 * 1000; // 6 min max entre deux vérifs serveur
+
 function startPremiumGuard() {
   if (S.prof && S.prof.isAdmin) return;
+
+  // Sceller S.trial pour empêcher l'ajout de nouvelles propriétés
+  _sealTrial();
+
+  // Check immédiat + guards passifs
   _verifyPremiumStatus();
+  _startLocalIntegrityLoop();
+  _startVisibilityGuard();
+  _detectDevTools();
+  _startAntiDebugger();
+
   if (_premiumCheckInterval) clearInterval(_premiumCheckInterval);
   _premiumCheckInterval = setInterval(_verifyPremiumStatus, 5 * 60 * 1000);
 }
+
+// ── MODULE 2 : Vérification serveur (réseau) ──────────────────────────────────
 async function _verifyPremiumStatus() {
   if (!S.prof || !S.prof.code) return;
   try {
-    var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'check_trial_status', code:S.prof.code }) });
+    var r = await fetch(SU, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'check_trial_status', code: S.prof.code })
+    });
     var d = await r.json();
     if (d.status === 'success') {
-      var serverPremium = !!d.isPremium;
+      _lastServerVerifyTs = Date.now();
+      var serverPremium     = !!d.isPremium;
       var serverTrialActive = !!d.trialActive;
+
       if (S.trial && S.trial.isPremium && !serverPremium) {
-        S.trial.isPremium = false; S.trial.trialActive = serverTrialActive; S.trial.daysLeft = d.daysLeft || 0;
+        S.trial.isPremium    = false;
+        S.trial.trialActive  = serverTrialActive;
+        S.trial.daysLeft     = d.daysLeft || 0;
+        _updateIntegrityHash();
         renderTrialBadge();
         if (!serverTrialActive) showTrialExpired();
       }
+
       if (S.trial && !S.trial.isPremium && serverPremium) {
-        S.trial.isPremium = true; S.prof.premium = true;
+        S.trial.isPremium = true;
+        S.prof.premium    = true;
+        _updateIntegrityHash();
         renderTrialBadge();
-        var ov = document.getElementById('trial-expired-overlay'); if (ov) ov.remove();
+        var ov = document.getElementById('trial-expired-overlay');
+        if (ov) ov.remove();
         showT('Abonnement activé ! Accès illimité.', 4000, '🎉');
       }
-      if (S.trial) { S.trial.daysLeft = d.daysLeft || S.trial.daysLeft; S.trial.trialActive = serverTrialActive; }
+
+      if (S.trial) {
+        S.trial.daysLeft    = d.daysLeft || S.trial.daysLeft;
+        S.trial.trialActive = serverTrialActive;
+        _updateIntegrityHash();
+      }
+    }
+  } catch (e) { /* silencieux — pas de blocage réseau */ }
+}
+
+// ── MODULE 3 : Scellement de S.trial (empêche l'ajout de props) ───────────────
+function _sealTrial() {
+  try {
+    if (S.trial && typeof Object.seal === 'function') {
+      _updateIntegrityHash();
+      Object.seal(S.trial);
     }
   } catch (e) {}
 }
+
+// ── MODULE 4 : Hash d'intégrité localStorage ──────────────────────────────────
+//  Stocke un hash de isPremium+trialActive+daysLeft dans une clé obfusquée.
+//  Si un utilisateur édite localStorage directement, la clé sera incohérente.
+var _HASH_KEY = '_mx' + btoa('trial_seal').replace(/=/g, '');
+
+function _trialHash() {
+  if (!S.trial) return '0';
+  var raw = (S.trial.isPremium ? '1' : '0')
+          + (S.trial.trialActive ? '1' : '0')
+          + (S.trial.daysLeft || 0)
+          + (S.prof && S.prof.code ? S.prof.code : '');
+  var h = 0;
+  for (var i = 0; i < raw.length; i++) {
+    h = (Math.imul(31, h) + raw.charCodeAt(i)) | 0;
+  }
+  return String(h);
+}
+
+function _updateIntegrityHash() {
+  try { localStorage.setItem(_HASH_KEY, _trialHash()); } catch (e) {}
+}
+
+function _checkLocalIntegrity() {
+  try {
+    var stored = localStorage.getItem(_HASH_KEY);
+    if (stored !== null && stored !== _trialHash()) {
+      // Falsification détectée → reset et re-vérif serveur immédiate
+      S.trial.isPremium   = false;
+      S.trial.trialActive = false;
+      S.trial.daysLeft    = 0;
+      _updateIntegrityHash();
+      renderTrialBadge();
+      _verifyPremiumStatus(); // re-sync serveur
+    }
+  } catch (e) {}
+}
+
+// ── MODULE 5 : Boucle locale (30s) sans réseau ────────────────────────────────
+var _localIntegrityInterval = null;
+function _startLocalIntegrityLoop() {
+  if (_localIntegrityInterval) clearInterval(_localIntegrityInterval);
+  _localIntegrityInterval = setInterval(function() {
+    _checkLocalIntegrity();
+    // Si la dernière vérif serveur date de plus de 6 min, forcer une nouvelle
+    if (Date.now() - _lastServerVerifyTs > _SERVER_VERIFY_TTL) {
+      _verifyPremiumStatus();
+    }
+  }, 30 * 1000);
+}
+
+// ── MODULE 6 : Re-vérification au retour sur l'onglet ─────────────────────────
+function _startVisibilityGuard() {
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible') {
+      _checkLocalIntegrity();
+      // Si > 2min depuis la dernière vérif serveur, re-vérifier
+      if (Date.now() - _lastServerVerifyTs > 2 * 60 * 1000) {
+        _verifyPremiumStatus();
+      }
+    }
+  });
+}
+
+// ── MODULE 7 : Détection DevTools (heuristique) ───────────────────────────────
+//  Méthode : l'écart innerWidth/outerWidth révèle un panneau ouvert sur le côté.
+//  On ne bloque pas, on force une re-vérif serveur immédiate.
+var _devToolsOpen = false;
+function _detectDevTools() {
+  var threshold = 160;
+  setInterval(function() {
+    var widthOpen  = window.outerWidth  - window.innerWidth  > threshold;
+    var heightOpen = window.outerHeight - window.innerHeight > threshold;
+    if ((widthOpen || heightOpen) && !_devToolsOpen) {
+      _devToolsOpen = true;
+      _verifyPremiumStatus(); // re-sync immédiate quand DevTools s'ouvre
+    }
+    if (!widthOpen && !heightOpen) {
+      _devToolsOpen = false;
+    }
+  }, 2000);
+}
+
+// ── MODULE 8 : Anti-debugger passif ───────────────────────────────────────────
+//  N'affecte pas l'utilisateur normal (exécution quasi-instantanée).
+//  Ralentit fortement quelqu'un qui essaie de mettre un breakpoint en boucle.
+function _startAntiDebugger() {
+  setInterval(function() {
+    (function() { /* jshint ignore:start */ debugger; /* jshint ignore:end */ })();
+  }, 3000);
+}
+
+// ── MODULE 9 : Gate d'accès aux exercices (anti-tampering synchrone) ──────────
+/**
+ * À appeler AVANT tout save_score / accès à un exercice.
+ * Triple vérif : état mémoire + hash localStorage + fraîcheur vérif serveur.
+ */
 function isPremiumOrTrialValid() {
   if (!S.trial) return false;
   if (S.prof && S.prof.isAdmin) return true;
+
+  // Vérif locale d'intégrité avant de faire confiance à S.trial
+  _checkLocalIntegrity();
+
+  // Vérif fraîcheur : si > 6min depuis serveur et pas premium, bloquer
+  var serverFresh = (Date.now() - _lastServerVerifyTs) < _SERVER_VERIFY_TTL;
+  if (!serverFresh && !S.trial.isPremium) {
+    _verifyPremiumStatus(); // déclencher async, mais on ne peut pas attendre
+    return false; // conservateur : refuser jusqu'à réponse
+  }
+
   if (S.trial.isPremium) return true;
   if (S.trial.trialActive && S.trial.daysLeft > 0) return true;
   return false;
