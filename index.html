@@ -10172,6 +10172,13 @@ window._cookieConsent = function(choice) {
   </div>
 </div>
 <script>
+function _toast(msg, bg) {
+  var t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%);background:' + (bg||'#333') + ';color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;z-index:100000;box-shadow:0 4px 12px rgba(0,0,0,.3);transition:opacity .3s';
+  document.body.appendChild(t);
+  setTimeout(function() { t.style.opacity = '0'; setTimeout(function() { t.remove(); }, 300); }, 3000);
+}
 function openContactForm() {
   var ov = document.getElementById('contact-overlay');
   ov.style.display = 'flex';
