@@ -4226,7 +4226,7 @@ function sendMarketingSequence(email, prenom, day, objectif) {
         }[objectif] || 'En 5 jours, Matheux a déjà identifié les lacunes spécifiques de ' + prenom + '. Ce travail de ciblage est perdu si on s\'arrête maintenant.') + '</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Si vous souhaitez continuer, c\'est <strong>19,99 €/mois</strong> — sans engagement, résiliable à tout moment.</p>' +
         '<div style="text-align:center;margin:28px 0 20px;">' +
-        '<a href="https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00" style="background:linear-gradient(135deg,#4338ca,#6366f1);color:#ffffff;font-size:15px;font-weight:800;text-decoration:none;padding:14px 32px;border-radius:12px;display:inline-block;letter-spacing:-.2px;">Continuer avec Matheux →</a>' +
+        '<a href="https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01" style="background:linear-gradient(135deg,#4338ca,#6366f1);color:#ffffff;font-size:15px;font-weight:800;text-decoration:none;padding:14px 32px;border-radius:12px;display:inline-block;letter-spacing:-.2px;">Continuer avec Matheux →</a>' +
         '</div>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Sinon, pas de pression — <strong>' + prenom + '</strong> garde ses résultats et peut revenir quand il le souhaite.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Bon courage,<br><strong>Nicolas</strong></p>' +
@@ -4248,7 +4248,7 @@ function sendMarketingSequence(email, prenom, day, objectif) {
           toutes_matieres: '<li>Exploré plusieurs chapitres du programme</li><li>Repéré ses points forts et ses axes de travail</li><li>Pris ses premières marques sur Matheux</li>'
         }[objectif] || '<li>Identifié ses lacunes précises — pas celles de sa classe, les siennes</li><li>Travaillé sur des exercices vraiment ciblés</li><li>Posé les bases d\'un rattrapage durable</li>') +
         '</ul>' +
-        '<p style="color:#374151;font-size:16px;line-height:1.6;">Pour continuer sur cette lancée, vous pouvez <a href="https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00" style="color:#4338ca;font-weight:bold;">activer l\'abonnement</a> — 19,99 €/mois, sans engagement, résiliable à tout moment.</p>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.6;">Pour continuer sur cette lancée, vous pouvez <a href="https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01" style="color:#4338ca;font-weight:bold;">activer l\'abonnement</a> — 19,99 €/mois, sans engagement, résiliable à tout moment.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Si vous avez des questions avant de décider, répondez à cet email — je suis là.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Merci pour votre confiance,<br><strong>Nicolas</strong></p>' +
         footer + '</div>';
@@ -5327,7 +5327,7 @@ function sendSessionRapport(p) {
     '<h2 style="font-size:16px;font-weight:800;border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin:24px 0 16px">🗺️ Roadmap — seules actions manuelles restantes</h2>' +
     '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:16px 20px;margin:0 0 16px">' +
       '<strong>⚠️ Bloquantes avant lancement payant :</strong><br><br>' +
-      '1. <strong>Stripe TEST → PROD</strong> — remplacer test_14AdRacgw76N7vQcxqa3u00 (3 fichiers)<br>' +
+      '1. <strong>✅ Stripe PROD</strong> — actif (19,99€/mois)<br>' +
       '2. <strong>contact@matheux.fr</strong> + alias no-reply@ (Gmail → GmailApp)<br>' +
       '3. <strong>Apps Script</strong> → Déclencheurs → triggerDailyMarketing → 9h-10h' +
     '</div>' +

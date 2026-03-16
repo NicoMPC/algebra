@@ -2,9 +2,9 @@
 
 ## Bloquant (sans ça pas de vrai client)
 
-- [ ] **Stripe TEST → PROD**
-  - Remplacer `test_14AdRacgw76N7vQcxqa3u00` dans 3 fichiers (index.html, backend.js, cgv.html)
-  - Tester un vrai paiement CB
+- [x] **Stripe TEST → PROD** — ✅ Fait @82 (16 mars 2026)
+  - ~~Remplacer lien dans 3 fichiers~~ ✅
+  - [ ] Tester un vrai paiement CB
 
 - [ ] **Alias no-reply@matheux.fr**
   - Gmail → Paramètres → Comptes → Ajouter adresse

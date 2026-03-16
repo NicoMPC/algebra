@@ -192,7 +192,7 @@ docs/archive/                      → Docs historiques (ne pas lire sauf besoin
 | Deployment ID | `AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF` |
 | Sheet ID (prod) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
 | GitHub | `https://github.com/NicoMPC/algebra` |
-| Stripe TEST | `https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00` |
+| Stripe PROD | `https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01` |
 | Stripe PROD | ⚠️ À remplacer manuellement avant lancement |
 | GA4 | `G-7R2DW4585Y` |
 | Service account | `algebreboost-sheets-2595a71cadfb.json` (ignoré par git) |
@@ -216,10 +216,7 @@ Profils simulation 21j : SIM01→SIM12 — MDP commun : `SimTest2026!`
 
 ⚠️ Ces 3 actions bloquent la mise en prod :
 
-1. **Stripe TEST → PROD** — Remplacer `test_14AdRacgw76N7vQcxqa3u00` dans :
-   - `index.html` (1 occurrence)
-   - `backend.js` (1 occurrence)
-   - `cgv.html` (1 occurrence)
+1. ~~**Stripe TEST → PROD**~~ — ✅ Fait @82 (16 mars 2026)
 
 2. **Alias email**
    - `no-reply@matheux.fr` → alias GmailApp (Gmail → Paramètres → Comptes)

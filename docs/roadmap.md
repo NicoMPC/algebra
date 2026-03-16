@@ -25,7 +25,7 @@
 | Couverture programme | **~100%** — 54 chapitres (1080 exos curriculum + 108 diag + 540 boost + 144 brevet) — tous audités ✅ |
 | Niveau 1ERE Spé | **10 chapitres expérimentaux** — backend prêt, frontend non modifié (connexion uniquement), 3 types SVG dédiés |
 | Juridique | Complet (5 pages + consentement parental + RGPD) |
-| Paiement | ⏳ Lien Stripe TEST actif — **à passer en PROD manuellement** |
+| Paiement | ✅ Lien Stripe PROD actif (19,99/mois) |
 | Emails auto | ✅ J+0 auto + J+3/J+5/J+7 personnalisés objectif — **trigger à activer manuellement** + rapport hebdo parent (`triggerWeeklyParentReport`) |
 | Analytics | ✅ GA4 RGPD-compliant |
 | Limite bêta | 50 vrais élèves (IsTest=0) |
@@ -66,7 +66,7 @@
 
 | # | Action | Où | Priorité |
 |---|---|---|---|
-| 1 | **Stripe TEST → PROD** — remplacer `test_14AdRacgw76N7vQcxqa3u00` (3 occurrences : `index.html`, `backend.js`, `cgv.html`) | Stripe dashboard + éditeur | 🔴 |
+| 1 | ~~**Stripe TEST → PROD**~~ — ✅ Fait @82 (16 mars 2026) — lien PROD `cNicN7b0ebU9bOE9WTb3q01` | ✅ | 🟢 |
 | 2 | **Créer `contact@matheux.fr`** (adresse publique) + **alias `no-reply@matheux.fr`** dans Gmail (pour GmailApp) | Hébergeur email + Gmail Paramètres → Comptes | 🔴 |
 | 3 | **Activer trigger `triggerDailyMarketing`** → Apps Script UI → Déclencheurs → `triggerDailyMarketing` → Chaque jour → 9h-10h | Google Apps Script UI | 🔴 |
 | 4 | **Webhook Stripe → colonne `Premium`** dans Users | Stripe dashboard → Webhooks | 🟡 après Stripe PROD |
@@ -173,7 +173,7 @@
 - [x] Overlay trial → Stripe direct 19,99€/mois (lien TEST)
 - [x] Email J+7 → lien Stripe
 - [ ] **Créer alias `no-reply@matheux.fr`** (GmailApp) + `contact@matheux.fr` (public) — **⚠️ Manuel hébergeur**
-- [ ] **Passer Stripe TEST → PROD** (3 occurrences) — **⚠️ Manuel après lien Stripe PROD**
+- [x] **Stripe TEST → PROD** — ✅ Fait @82 (16 mars 2026)
 - [ ] **Webhook Stripe → colonne Premium** — **⚠️ Manuel Stripe dashboard**
 
 ---
@@ -268,7 +268,7 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 - [x] Landing + flow CTA + quiz inline + onboarding
 - [x] Trial 7j + badge J-X + overlay → Stripe
 - [x] Email J+0 auto (avec dédup cron/register)
-- [ ] **Stripe PROD** ⚠️ Manuel
+- [x] **Stripe PROD** ✅ Fait @82
 - [ ] **Séquences J+3/J+5/J+7 activées** ⚠️ Manuel (trigger Apps Script)
 
 ### Légal
