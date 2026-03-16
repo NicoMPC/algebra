@@ -42,6 +42,12 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 | `Rapports` | Rapports quotidiens 7h | Lecture seule |
 | `Cours` | Cours par chapitre rédigés par admin (4 sections × 54 chap) | ❌ Via admin panel uniquement |
 
+### Onglets temporaires
+
+| Onglet | Rôle | Modifier ? |
+|---|---|---|
+| `Teasing_Early` | Emails waitlist pré-lancement (action `add_teasing_early`) | Lecture seule |
+
 ### Onglets archivés
 
 Supprimés par `cleanup_all` le 14 mars 2026 : `_ARCHIVE_Queue`, `_ARCHIVE_Prerequisites`, `_ARCHIVE_Rapports`, `_ARCHIVE_Pending_Exos`, `Pending_Exos`, `Queue`, `Programme_Officiel`, `Waitlist`.

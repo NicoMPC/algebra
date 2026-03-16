@@ -34,6 +34,7 @@
 | Exercices | ✅ Audité + corrigé @77 — 1872 exos, score ~98%, notation FR, indices S1, doublons |
 | UX élève | ✅ @77 — mode nuit app, guide boost, titres gras, nav boost reopen |
 | Profil cognitif | ✅ @81 — bouton "j'ai pas compris" + profil cognitif dans fiche admin |
+| Page teasing | ✅ @82 — countdown live, waitlist email (Teasing_Early), auto-switch 18 mars 9h, `?noteasing` pour dev |
 | Simulation 21j | ✅ @80 — 12 profils, 890 scores, 84 boosts, 0 erreur |
 | Emails (@matheux.fr) | ⏳ **à créer manuellement** : contact@ + alias no-reply@ |
 
@@ -200,7 +201,7 @@
 - [x] **Auth modal protégé** — showAuth() gardé trial-flow + auto-login silencieux sans modale imposée (14 mars 2026)
 - [x] **Toast mobile responsive** — white-space normal, max-width 88vw, word-break, border-radius 18px (14 mars 2026)
 - [x] **Brouillon/Calculette desktop** — panneau latéral droit 1/3 écran, les 2 fusionnés (calc en haut, brouillon en bas). Mobile : bottom sheet 50vh (énoncé reste visible) (14 mars 2026)
-- [x] **Mode nuit landing** — toggle lune dans la nav, fond sombre sur toutes les sections claires, persisté localStorage (14 mars 2026)
+- [x] ~~**Mode nuit landing**~~ — supprimé @82 (16 mars 2026)
 - [x] **Brevet Blanc UX v2** — écran d'accueil enrichi (nb questions, durée estimée, conditions), chronomètre discret pendant le quiz, écran résultats refondu (mentions Très bien/Bien/Passable/À retravailler, chapitres faibles en rouge, bouton "Voir mes erreurs", temps écoulé) (14 mars 2026)
 - [x] **Progression enrichie** — tri chapitres par score ASC (faibles en premier), labels Fragile/En progrès/Solide/Maîtrisé, badge ⚠️ À reprendre si >7j inactif, accordéon chapitres maîtrisés, synthèse globale (nb chapitres, exos, streak) (14 mars 2026)
 - [x] **Figures géo v3 — système de confiance** — chaque figure a un score confidence (high/medium/low), figures low filtrées, triangle "à prouver rectangle" → triangle neutre, cercle sans rayon numérique → pas de figure, angle à calculer → pas de figure (14 mars 2026)
@@ -223,6 +224,7 @@
 - [x] **Guide "Commence par là"** — corrigé : affiché uniquement après boost consommé (15 mars 2026, @77)
 - [x] **Titres chapitres gras** — `font-weight:800` explicite (15 mars 2026, @77)
 - [x] **Audit pédagogique complet** — 1872 exercices audités + corrigés : notation décimale FR, indices S1 reformulés, doublons 1ERE réécrits. Score qualité ~98% (15 mars 2026, @77)
+- [x] **Page teasing pré-lancement** — `#teasing-screen` avec countdown live (18 mars 9h Paris), champ email waitlist (`add_teasing_early` → onglet `Teasing_Early`), lien "Accès bêta" (login only), auto-switch vers vraie landing à 9h, `?noteasing` pour dev. Mode nuit landing supprimé. (16 mars 2026, @82)
 - [ ] Agent analyse lacunes quotidien automatique
 - [ ] **Migration Sheets → Supabase** — à déclencher à 80-100 clients payants (pas avant).
   Capacité actuelle estimée : ~15 connexions simultanées, ~8 save_score simultanés, 100 clients actifs confortables.

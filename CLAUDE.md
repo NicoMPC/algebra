@@ -2,7 +2,7 @@
 
 > Document unique. Point d'entrée + manuel complet.
 > Mis à jour automatiquement à chaque session.
-> GAS @81 · Lancement 18 mars 2026
+> GAS @82 · Lancement 18 mars 2026
 
 ---
 
