@@ -5583,4 +5583,3 @@ function _logWebhook(status, detail, email, eventType) {
     sh.appendRow([new Date(), status, detail, email, eventType, elapsed]);
   } catch (e) { /* ne jamais planter le webhook à cause du log */ }
 }
-}
