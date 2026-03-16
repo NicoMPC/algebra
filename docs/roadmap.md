@@ -52,7 +52,9 @@
 - [x] Merge sécurité freelance SECUmain → main (Stripe MAXIMAL PARANOID + Premium Guard) ✅
 - [x] GitHub Pages reconfiguré sur main ✅
 - [x] Tests emails : J+0 ✅ / Reset MDP ✅ / Contact ✅ / Pas de triggers ✅
-- [ ] Stripe : CGU/CGV + vrai paiement CB (en cours)
+- [x] Stripe : CGV + confidentialité + TVA décochée + limite 50 paiements ✅
+- [x] Bandeau rappel limite Stripe dans admin dashboard ✅
+- [ ] Stripe : vrai paiement CB (quand webhook endpoint finalisé)
 
 ### Mardi 17 mars (Nicolas)
 - [ ] Nettoyer base : supprimer comptes SIM01-SIM12
@@ -81,7 +83,7 @@
 | 1 | ~~**Stripe TEST → PROD**~~ — ✅ Fait @82 (16 mars 2026) — lien PROD `cNicN7b0ebU9bOE9WTb3q01` | ✅ | 🟢 |
 | 2 | ~~**Créer `contact@matheux.fr`**~~ ✅ + ~~**alias `no-reply@matheux.fr`**~~ ✅ (SMTP Ionos port 465 SSL) | ✅ | 🟢 |
 | 3 | **Automatiser trigger `triggerDailyMarketing`** → dès 10 clients actifs (manuel via admin en attendant) | Google Apps Script UI | 🟡 |
-| 4 | **Webhook Stripe → colonne `Premium`** — code déployé @85, **endpoint Stripe à finaliser** | Stripe dashboard → Webhooks → créer destination | 🟡 |
+| 4 | **Webhook Stripe → colonne `Premium`** — code déployé @85, Payment Link configuré (CGV + confidentialité + limite 50 + TVA off), **endpoint Stripe à finaliser** | Stripe dashboard → Webhooks → créer destination | 🟡 |
 | 5 | Vrais témoignages élèves/parents sur landing | À collecter après premiers clients | 🔵 |
 | 6 | **Design overhaul landing** — hero glow, social proof fold, CTA shimmer, glass stats, step numbers watermark, avatars+Vérifié, 0,66€/jour, guarantee badge, sticky mobile CTA | ✅ Fait @68 (14 mars 2026) | 🟢 |
 

@@ -22,14 +22,17 @@
 - [x] **3.3** Formulaire contact → email reçu sur `contact@matheux.fr` ✅
 - [x] **3.4** Apps Script → Déclencheurs → liste vide (aucun trigger automatique) ✅
 
-## 4. Stripe (lundi 16 mars — 15h15)
+## 4. Stripe (lundi 16 mars — 16h) ✅ config
 
-- [ ] **4.1** Stripe Dashboard → Payment Links → ajouter lien CGU (matheux.fr/cgu.html)
-- [ ] **4.2** Stripe Dashboard → Payment Links → ajouter lien CGV (matheux.fr/cgv.html)
-- [ ] **4.3** Vrai paiement CB (19,99€)
-- [ ] **4.4** Vérifier : colonne Premium = 1 dans Users (webhook)
-- [ ] **4.5** Vérifier : élève voit statut Premium dans l'app
-- [ ] **4.6** Rembourser depuis Stripe Dashboard
+- [x] **4.1** Stripe Payment Link → CGV ajouté ✅
+- [x] **4.2** Stripe Payment Link → Politique de confidentialité ajoutée ✅
+- [x] **4.3** TVA décochée (art. 293 B CGI — exonéré) ✅
+- [x] **4.4** Limite 50 paiements activée sur le Payment Link ✅
+- [x] **4.5** Bandeau rappel limite Stripe ajouté dans admin dashboard ✅
+- [ ] **4.6** Vrai paiement CB (19,99€) → à tester quand webhook endpoint finalisé
+- [ ] **4.7** Vérifier : colonne Premium = 1 dans Users (webhook)
+- [ ] **4.8** Vérifier : élève voit statut Premium dans l'app
+- [ ] **4.9** Rembourser depuis Stripe Dashboard
 
 ## 5. Vérifs jour J (mercredi 18 mars)
 
