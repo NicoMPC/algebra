@@ -115,6 +115,7 @@ function doPost(e) {
       case 'send_session_rapport':       res = sendSessionRapport(p);      break;
       case 'log_pas_compris':            res = logPasCompris(p);           break;
       case 'add_teasing_early':          res = addTeasingEarly(p);         break;
+      case 'stripe_webhook':             res = stripeWebhook(p);           break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -4226,7 +4227,7 @@ function sendMarketingSequence(email, prenom, day, objectif) {
         }[objectif] || 'En 5 jours, Matheux a déjà identifié les lacunes spécifiques de ' + prenom + '. Ce travail de ciblage est perdu si on s\'arrête maintenant.') + '</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Si vous souhaitez continuer, c\'est <strong>19,99 €/mois</strong> — sans engagement, résiliable à tout moment.</p>' +
         '<div style="text-align:center;margin:28px 0 20px;">' +
-        '<a href="https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01" style="background:linear-gradient(135deg,#4338ca,#6366f1);color:#ffffff;font-size:15px;font-weight:800;text-decoration:none;padding:14px 32px;border-radius:12px;display:inline-block;letter-spacing:-.2px;">Continuer avec Matheux →</a>' +
+        '<a href="https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00" style="background:linear-gradient(135deg,#4338ca,#6366f1);color:#ffffff;font-size:15px;font-weight:800;text-decoration:none;padding:14px 32px;border-radius:12px;display:inline-block;letter-spacing:-.2px;">Continuer avec Matheux →</a>' +
         '</div>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Sinon, pas de pression — <strong>' + prenom + '</strong> garde ses résultats et peut revenir quand il le souhaite.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Bon courage,<br><strong>Nicolas</strong></p>' +
@@ -4248,7 +4249,7 @@ function sendMarketingSequence(email, prenom, day, objectif) {
           toutes_matieres: '<li>Exploré plusieurs chapitres du programme</li><li>Repéré ses points forts et ses axes de travail</li><li>Pris ses premières marques sur Matheux</li>'
         }[objectif] || '<li>Identifié ses lacunes précises — pas celles de sa classe, les siennes</li><li>Travaillé sur des exercices vraiment ciblés</li><li>Posé les bases d\'un rattrapage durable</li>') +
         '</ul>' +
-        '<p style="color:#374151;font-size:16px;line-height:1.6;">Pour continuer sur cette lancée, vous pouvez <a href="https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01" style="color:#4338ca;font-weight:bold;">activer l\'abonnement</a> — 19,99 €/mois, sans engagement, résiliable à tout moment.</p>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.6;">Pour continuer sur cette lancée, vous pouvez <a href="https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00" style="color:#4338ca;font-weight:bold;">activer l\'abonnement</a> — 19,99 €/mois, sans engagement, résiliable à tout moment.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Si vous avez des questions avant de décider, répondez à cet email — je suis là.</p>' +
         '<p style="color:#374151;font-size:16px;line-height:1.6;">Merci pour votre confiance,<br><strong>Nicolas</strong></p>' +
         footer + '</div>';
@@ -5327,7 +5328,7 @@ function sendSessionRapport(p) {
     '<h2 style="font-size:16px;font-weight:800;border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin:24px 0 16px">🗺️ Roadmap — seules actions manuelles restantes</h2>' +
     '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:16px 20px;margin:0 0 16px">' +
       '<strong>⚠️ Bloquantes avant lancement payant :</strong><br><br>' +
-      '1. <strong>✅ Stripe PROD</strong> — actif (19,99€/mois)<br>' +
+      '1. <strong>Stripe TEST → PROD</strong> — remplacer test_14AdRacgw76N7vQcxqa3u00 (3 fichiers)<br>' +
       '2. <strong>contact@matheux.fr</strong> + alias no-reply@ (Gmail → GmailApp)<br>' +
       '3. <strong>Apps Script</strong> → Déclencheurs → triggerDailyMarketing → 9h-10h' +
     '</div>' +
@@ -5363,4 +5364,50 @@ function _table(headers, rows) {
     return '<tr>'+tds+'</tr>';
   }).join('');
   return '<table style="width:100%;border-collapse:collapse;margin:0 0 8px"><tr>'+th+'</tr>'+trs+'</table>';
+}
+function stripeWebhook(p) {
+  var SHARED_SECRET = 'MATHEUX_STRIPE_2026';
+  var eventType = p.type || '';
+  var obj = (p.data && p.data.object) ? p.data.object : {};
+  if (eventType === 'checkout.session.completed') {
+    var email = (obj.customer_email || (obj.customer_details && obj.customer_details.email) || '').toLowerCase().trim();
+    var metadata = obj.metadata || {};
+    if (metadata.secret !== SHARED_SECRET) { _logWebhook('BLOCKED','bad_secret',email,eventType); return {status:'error',message:'forbidden'}; }
+    if (!email) { _logWebhook('BLOCKED','no_email','',eventType); return {status:'error',message:'no_email'}; }
+    var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SH.USERS);
+    var data = sh.getDataRange().getValues();
+    var h = data[0];
+    var iE = h.indexOf('Email'), iP = h.indexOf('Premium'), iPE = h.indexOf('PremiumEnd');
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][iE]).toLowerCase().trim() === email) {
+        sh.getRange(i+1,iP+1).setValue(1);
+        var end = new Date(); end.setDate(end.getDate()+31);
+        sh.getRange(i+1,iPE+1).setValue(end.toISOString().slice(0,10));
+        _logWebhook('OK','premium_activated',email,eventType);
+        return {status:'success',message:'premium_activated'};
+      }
+    }
+    _logWebhook('WARN','email_not_found',email,eventType);
+    return {status:'error',message:'user_not_found'};
+  }
+  if (eventType === 'customer.subscription.deleted') {
+    var email2 = (obj.metadata && obj.metadata.email) ? obj.metadata.email.toLowerCase().trim() : '';
+    if (email2) {
+      var sh2 = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SH.USERS);
+      var d2 = sh2.getDataRange().getValues(); var h2 = d2[0];
+      var iE2 = h2.indexOf('Email'), iP2 = h2.indexOf('Premium');
+      for (var j = 1; j < d2.length; j++) {
+        if (String(d2[j][iE2]).toLowerCase().trim() === email2) { sh2.getRange(j+1,iP2+1).setValue(0); _logWebhook('OK','premium_deactivated',email2,eventType); break; }
+      }
+    }
+    return {status:'success'};
+  }
+  _logWebhook('SKIP','unhandled_event','',eventType);
+  return {status:'success',message:'ignored'};
+}
+function _logWebhook(status, detail, email, eventType) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('Webhook_Log');
+  if (!sh) { sh = ss.insertSheet('Webhook_Log'); sh.getRange(1,1,1,5).setValues([['Date','Status','Detail','Email','EventType']]); sh.getRange(1,1,1,5).setFontWeight('bold'); }
+  sh.appendRow([new Date(), status, detail, email, eventType]);
 }

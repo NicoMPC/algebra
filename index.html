@@ -3657,7 +3657,7 @@ function showTrialExpired() {
 }
 
 window.__trialProlonger = function() {
-  window.open('https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01', '_blank');
+  window.open('https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00', '_blank');
 };
 window.__trialDismiss = function() {
   var ov = document.getElementById('trial-expired-overlay');
@@ -3686,6 +3686,7 @@ function initApp(d, skipRender) {
 
   // ── Essai 7 jours ──────────────────────────────────────
   S.trial = d.trial || { trialActive: true, daysLeft: 7, isPremium: false };
+startPremiumGuard();
   if (!S.trial.trialActive && !S.trial.isPremium) {
     // Essai terminé et non premium — afficher overlay après init
     setTimeout(showTrialExpired, 300);
@@ -7847,7 +7848,7 @@ function copySequenceEmail(code, type) {
   if (!st) return;
   var prenom = st.prenom || 'ton élève';
   var objectif = st.objectif || '';
-  var stripeLink = 'https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01';
+  var stripeLink = 'https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00';
   var subject = '', body = '';
 
   if (type === 'J+3') {
@@ -8902,7 +8903,7 @@ async function _adminMarkAllTest() {
 }
 
 function _adminOpenStripe() {
-  window.open('https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01', '_blank');
+  window.open('https://buy.stripe.com/test_14AdRacgw76N7vQcxqa3u00', '_blank');
 }
 
 async function _adminTestEmail() {
@@ -9949,7 +9950,94 @@ window._cookieConsent = function(choice) {
     </div>
   </div>
 </div>
+<!-- ══ SECURITY LAYER 2 — Premium Guard & Anti-Tampering ══════════════════ -->
+<script>
+// ════════════════════════════════════════════════════════════════════════════
+//  security2.js — Client-side Premium integrity guard
+//  Vérifie périodiquement auprès du GAS backend que le statut Premium
+//  n'a pas été falsifié côté client (localStorage, devtools, etc.)
+// ════════════════════════════════════════════════════════════════════════════
 
+var _premiumCheckInterval = null;
+
+/**
+ * Démarre la vérification anti-tampering Premium.
+ * Appeler APRÈS login réussi, une fois S.prof et S.trial initialisés.
+ *   → Check immédiat
+ *   → Puis toutes les 5 minutes
+ */
+function startPremiumGuard() {
+  // Admins exemptés
+  if (S.prof && S.prof.isAdmin) return;
+
+  _verifyPremiumStatus();
+
+  if (_premiumCheckInterval) clearInterval(_premiumCheckInterval);
+  _premiumCheckInterval = setInterval(_verifyPremiumStatus, 5 * 60 * 1000);
+}
+
+/**
+ * Vérifie l'état Premium auprès du backend GAS.
+ * Silencieux en cas d'erreur réseau (pas de blocage).
+ */
+async function _verifyPremiumStatus() {
+  if (!S.prof || !S.prof.code) return;
+  try {
+    var r = await fetch(SU, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'check_trial_status', code: S.prof.code })
+    });
+    var d = await r.json();
+    if (d.status !== 'success') return;
+
+    var serverPremium     = !!d.isPremium;
+    var serverTrialActive = !!d.trialActive;
+
+    // ── Falsification détectée : client dit Premium, serveur dit non ──────
+    if (S.trial && S.trial.isPremium && !serverPremium) {
+      S.trial.isPremium     = false;
+      S.trial.trialActive   = serverTrialActive;
+      S.trial.daysLeft      = d.daysLeft || 0;
+      if (typeof renderTrialBadge === 'function') renderTrialBadge();
+      if (!serverTrialActive) {
+        if (typeof showTrialExpired === 'function') showTrialExpired();
+      }
+    }
+
+    // ── Activation détectée (webhook Stripe a activé Premium côté GAS) ──
+    if (S.trial && !S.trial.isPremium && serverPremium) {
+      S.trial.isPremium = true;
+      S.prof.premium    = true;
+      if (typeof renderTrialBadge === 'function') renderTrialBadge();
+      var ov = document.getElementById('trial-expired-overlay');
+      if (ov) ov.remove();
+      if (typeof showT === 'function') showT('Abonnement activé ! Accès illimité.', 4000, '🎉');
+    }
+
+    // ── Synchro daysLeft ─────────────────────────────────────────────────
+    if (S.trial) {
+      S.trial.daysLeft    = d.daysLeft    || S.trial.daysLeft;
+      S.trial.trialActive = serverTrialActive;
+    }
+
+  } catch (e) {
+    // Silencieux — le réseau peut couper sans bloquer l'élève
+  }
+}
+
+/**
+ * Vérification rapide au moment critique (avant save_score, accès exercices).
+ * Remplace tout isPremiumOrTrialValid() défini précédemment.
+ * @returns {boolean}
+ */
+function isPremiumOrTrialValid() {
+  if (!S.trial) return false;
+  if (S.prof && S.prof.isAdmin) return true;
+  if (S.trial.isPremium) return true;
+  if (S.trial.trialActive && S.trial.daysLeft > 0) return true;
+  return false;
+}
+</script>
 <!-- PWA — Service Worker -->
 <script>
 if ('serviceWorker' in navigator) {
