@@ -1,6 +1,6 @@
 # État production — Matheux
 
-> Mis à jour le 16 mars 2026 · GAS @83
+> Mis à jour le 16 mars 2026 · GAS @85
 
 ## Exercices
 
@@ -33,6 +33,14 @@ Note : les 11 "vrais élèves" incluent les profils de simulation (SIM01-SIM12) 
 3. **Alias no-reply@matheux.fr** — Gmail → Paramètres → Comptes — ⛔ Non fait
 4. **Triggers Apps Script** — triggerDailyMarketing + triggerWeeklyParentReport — ⛔ Non fait
 5. **Tester un vrai paiement CB** — ⛔ Non fait
+6. **Finaliser endpoint webhook Stripe** — URL GAS + vérifier whsec_ — ⛔ Non fait
+
+## Sécurité
+
+| Couche | Description | Statut |
+|---|---|---|
+| Security Layer 1 (backend) | Webhook Stripe → Premium auto dans Users + log Webhook_Log | ✅ Code déployé @85 — endpoint Stripe à finaliser |
+| Security Layer 2 (frontend) | Premium Guard anti-tampering, vérif toutes les 5 min | ✅ Déployé @84 |
 
 ## Taille fichiers clés
 
@@ -44,16 +52,13 @@ Note : les 11 "vrais élèves" incluent les profils de simulation (SIM01-SIM12) 
 ## Derniers déploiements
 
 ```
+1c702e1 fix: remove shared secret check from webhook @85
+4253e7c feat: security layers — Stripe webhook + premium guard @84
+9cffac7 docs: TVA art. 293 B CGI + mise à jour checklist/roadmap/etat-prod
+2421273 up
+5e73cf9 fix: wording teasing — sur mesure, 15 min, IA + prof
+720a75d feat: page teasing pré-lancement + waitlist email @82
 0a9f6c1 feat: bouton "J'ai pas compris" + profil cognitif fiche admin @81
-9118806 docs: mise à jour références @77 → @80
-d01dd91 fix: 4 bugs GAS corrigés @79-@80 + simulation 21j complète
-e8e3ebe feat: send_session_rapport action GAS @78
-b89a6a1 seo: retirer 1ère Spé des meta tags — collège uniquement
-8974b81 seo: sitemap.xml + robots.txt + meta tags optimisés
-bce6376 docs: notice fondateur PDF régénéré @78
-218a9fa docs: mise à jour complète @77 — fusion, archive, notice fondateur
-78cda66 feat: dark mode app + guide boost fix + titres chapitres gras + boost reopen nav @77
-d966c31 docs: audit corrections applied — 39 fixes in Sheets (15 mars 2026)
 ```
 
 ## Scripts disponibles

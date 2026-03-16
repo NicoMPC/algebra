@@ -4,9 +4,9 @@
 
 ---
 
-## État global — 16 mars 2026 (dernière mise à jour : @82)
+## État global — 16 mars 2026 (dernière mise à jour : @85)
 
-**Matheux est fonctionnel à 100% côté code. Seuls manques : Stripe PROD + 2 actions manuelles.**
+**Matheux est fonctionnel à 100% côté code. Sécurité Stripe déployée. Reste : alias email + triggers + endpoint webhook.**
 **Lancement prévu : mercredi 18 mars 2026.**
 
 > ✅ **Bugfixes @60** — BUG-01 à BUG-12 corrigés (simulation 7j × 5 profils). 13 mars.
@@ -35,6 +35,7 @@
 | UX élève | ✅ @77 — mode nuit app, guide boost, titres gras, nav boost reopen |
 | Profil cognitif | ✅ @81 — bouton "j'ai pas compris" + profil cognitif dans fiche admin |
 | Page teasing | ✅ @82 — countdown live, waitlist email (Teasing_Early), auto-switch 18 mars 9h, `?noteasing` pour dev |
+| Sécurité Stripe | ✅ @84-@85 — webhook handler (Premium auto) + premium guard client (vérif 5 min) |
 | Simulation 21j | ✅ @80 — 12 profils, 890 scores, 84 boosts, 0 erreur |
 | Emails (@matheux.fr) | ✅ contact@matheux.fr créé — ⏳ alias no-reply@ à configurer Gmail |
 
@@ -69,7 +70,7 @@
 | 1 | ~~**Stripe TEST → PROD**~~ — ✅ Fait @82 (16 mars 2026) — lien PROD `cNicN7b0ebU9bOE9WTb3q01` | ✅ | 🟢 |
 | 2 | ~~**Créer `contact@matheux.fr`**~~ ✅ + **alias `no-reply@matheux.fr`** dans Gmail (pour GmailApp) | Gmail Paramètres → Comptes | 🟡 |
 | 3 | **Activer trigger `triggerDailyMarketing`** → Apps Script UI → Déclencheurs → `triggerDailyMarketing` → Chaque jour → 9h-10h | Google Apps Script UI | 🔴 |
-| 4 | **Webhook Stripe → colonne `Premium`** dans Users | Stripe dashboard → Webhooks | 🟡 après Stripe PROD |
+| 4 | **Webhook Stripe → colonne `Premium`** — code déployé @85, **endpoint Stripe à finaliser** | Stripe dashboard → Webhooks → créer destination | 🟡 |
 | 5 | Vrais témoignages élèves/parents sur landing | À collecter après premiers clients | 🔵 |
 | 6 | **Design overhaul landing** — hero glow, social proof fold, CTA shimmer, glass stats, step numbers watermark, avatars+Vérifié, 0,66€/jour, guarantee badge, sticky mobile CTA | ✅ Fait @68 (14 mars 2026) | 🟢 |
 
@@ -175,7 +176,7 @@
 - [x] **`contact@matheux.fr`** créé (Ionos) — ✅ 16 mars 2026
 - [ ] **Alias `no-reply@matheux.fr`** (Gmail → Paramètres → Comptes) — ⚠️ Manuel
 - [x] **Stripe TEST → PROD** — ✅ Fait @82 (16 mars 2026)
-- [ ] **Webhook Stripe → colonne Premium** — **⚠️ Manuel Stripe dashboard**
+- [x] **Webhook Stripe → colonne Premium** — code déployé @85 (security layer 1 + 2) — endpoint Stripe à finaliser manuellement
 
 ---
 

@@ -2,7 +2,7 @@
 
 > Document unique. Point d'entrée + manuel complet.
 > Mis à jour automatiquement à chaque session.
-> GAS @82 · Lancement 18 mars 2026
+> GAS @85 · Lancement 18 mars 2026
 
 ---
 
@@ -192,8 +192,8 @@ docs/archive/                      → Docs historiques (ne pas lire sauf besoin
 | Deployment ID | `AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF` |
 | Sheet ID (prod) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
 | GitHub | `https://github.com/NicoMPC/algebra` |
-| Stripe PROD | `https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01` |
-| Stripe PROD | ⚠️ À remplacer manuellement avant lancement |
+| Stripe PROD | `https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01` ✅ |
+| Stripe Webhook | Endpoint à finaliser dans Stripe Dashboard |
 | GA4 | `G-7R2DW4585Y` |
 | Service account | `algebreboost-sheets-2595a71cadfb.json` (ignoré par git) |
 
@@ -214,17 +214,16 @@ Profils simulation 21j : SIM01→SIM12 — MDP commun : `SimTest2026!`
 
 ## 8. Actions manuelles avant lancement
 
-⚠️ Ces 3 actions bloquent la mise en prod :
-
-1. ~~**Stripe TEST → PROD**~~ — ✅ Fait @82 (16 mars 2026)
-
-2. **Alias email**
-   - `no-reply@matheux.fr` → alias GmailApp (Gmail → Paramètres → Comptes)
-   - `contact@matheux.fr` → adresse publique (hébergeur Ionos)
-
-3. **Triggers Apps Script**
-   - `triggerDailyMarketing` → chaque jour → 9h-10h
-   - `triggerWeeklyParentReport` → dimanche → 17h-18h
+| # | Action | Statut |
+|---|---|---|
+| 1 | ~~Stripe TEST → PROD~~ | ✅ Fait @82 |
+| 2 | ~~contact@matheux.fr~~ (Ionos) | ✅ Fait |
+| 3 | ~~Sécurité Stripe~~ (webhook + premium guard) | ✅ Code déployé @85 |
+| 4 | ~~TVA art. 293 B CGI~~ dans CGV | ✅ Fait |
+| 5 | Alias `no-reply@matheux.fr` (Gmail → Paramètres → Comptes) | ⛔ À faire |
+| 6 | Triggers Apps Script (triggerDailyMarketing 9h + triggerWeeklyParentReport dim 17h) | ⛔ À faire |
+| 7 | Finaliser endpoint webhook Stripe (URL GAS + vérifier whsec_) | ⛔ À faire |
+| 8 | Tester un vrai paiement CB | ⛔ À faire |
 
 ---
 
