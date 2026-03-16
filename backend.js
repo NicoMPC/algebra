@@ -5373,14 +5373,11 @@ function _table(headers, rows) {
 var STRIPE_WEBHOOK_SECRET = 'whsec_XCaxVn2m9EUDQsWQOBxX4hObdgoZYCy2';
 
 function stripeWebhook(p) {
-  var SHARED_SECRET = 'MATHEUX_STRIPE_2026';
   var eventType = p.type || '';
   var obj = (p.data && p.data.object) ? p.data.object : {};
 
   if (eventType === 'checkout.session.completed') {
     var email = (obj.customer_email || (obj.customer_details && obj.customer_details.email) || '').toLowerCase().trim();
-    var metadata = obj.metadata || {};
-    if (metadata.secret !== SHARED_SECRET) { _logWebhook('BLOCKED','bad_secret',email,eventType); return {status:'error',message:'forbidden'}; }
     if (!email) { _logWebhook('BLOCKED','no_email','',eventType); return {status:'error',message:'no_email'}; }
     var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SH.USERS);
     var data = sh.getDataRange().getValues();
