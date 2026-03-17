@@ -8915,14 +8915,13 @@ function _buildActionWorkflow(st, action) {
 
   if (action.type === 'boost') {
     var topCat = (action.cat || 'Fractions').replace(/'/g, "\\'");
-    h += '<button onclick="_copyLastBoostContext(\'' + st.code + '\')" class="adm-copy-btn mb-2">\ud83d\udccb Copier dernier boost + r\u00e9sultats</button>';
-    h += '<button onclick="copyAdminPrompt(\'' + st.code + '\',\'boost\',\'' + topCat + '\')" class="adm-copy-btn mb-2 text-slate-400" style="font-size:10px">ou : Copier le prompt Claude classique</button>';
+    h += '<button onclick="_copyLastBoostContext(\'' + st.code + '\')" class="adm-copy-btn mb-2">\ud83d\udccb Copier JSON boost + r\u00e9sultats</button>';
     h += '<textarea id="ck-boost-json-' + st.code + '" class="adm-textarea mb-2" style="height:80px" placeholder="Coller le JSON ici..." oninput="_ckTogglePublish(\'' + st.code + '\',\'boost\')"></textarea>';
     h += '<button id="ck-btn-boost-' + st.code + '" onclick="_ckPublishBoost(\'' + st.code + '\')" disabled class="w-full bg-slate-300 text-white text-xs font-bold py-2.5 rounded-xl transition-colors cursor-not-allowed">\u26a1 Publier</button>';
 
   } else if (action.type === 'chapitre') {
     var topCat2 = (action.cat || '').replace(/'/g, "\\'");
-    h += '<button onclick="copyAdminPrompt(\'' + st.code + '\',\'chapitre\',\'' + topCat2 + '\')" class="adm-copy-btn mb-2">\ud83d\udccb Copier le prompt Claude</button>';
+    h += '<button onclick="_copyChapContext(\'' + st.code + '\')" class="adm-copy-btn mb-2">\ud83d\udccb Copier JSON chapitre + résultats</button>';
     h += '<textarea id="ck-chap-json-' + st.code + '" class="adm-textarea mb-2" style="height:80px" placeholder="Coller le JSON ici..." oninput="_ckTogglePublish(\'' + st.code + '\',\'chapitre\')"></textarea>';
     h += '<button id="ck-btn-chap-' + st.code + '" onclick="_ckPublishChapter(\'' + st.code + '\')" disabled class="w-full bg-slate-300 text-white text-xs font-bold py-2.5 rounded-xl transition-colors cursor-not-allowed">\ud83d\udcda Publier</button>';
 
@@ -9122,86 +9121,122 @@ function _copyLastBoostContext(code) {
 
   var bHistory = st.boostHistory || [];
   var lastDone = bHistory.find(function(b) { return b.exosDone >= 5; });
-  if (!lastDone) { showT('Aucun boost termin\u00e9', 3000, '\u26a0\ufe0f'); return; }
+  if (!lastDone) { showT('Aucun boost terminé', 3000, '\u26a0\ufe0f'); return; }
 
-  var lines = [];
-  lines.push('Tu g\u00e9n\u00e8res le prochain boost de 5 exercices pour ' + st.prenom + ' (' + st.niveau + ').');
-  lines.push('');
-  lines.push('=== DERNIER BOOST FAIT (le ' + lastDone.date + ') ===');
-  lines.push('');
-
+  // Récupérer les scores de l'élève pour ce boost
   var boostScores = [];
   (st.chapitresDetail || []).forEach(function(ch) {
     (ch.exosList || []).forEach(function(e) {
-      if (e.date === lastDone.date) boostScores.push(e);
+      if (e.date === lastDone.date && e.source === 'BOOST') boostScores.push(e);
     });
   });
 
-  (lastDone.exos || []).forEach(function(exo, i) {
+  var exosJson = (lastDone.exos || []).map(function(exo, i) {
     var score = boostScores[i] || null;
-    var icon = '\u2753';
+    var obj = {
+      q: exo.q,
+      a: exo.a,
+      options: exo.options || [],
+      steps: exo.steps || [],
+      f: exo.f || ''
+    };
     if (score) {
-      icon = score.res === 'SKIP' ? '\ud83e\udd37' : score.res === 'HARD' ? '\u274c' : score.res === 'EASY' ? '\u2705' : '\u26a0\ufe0f';
+      obj.resultat = score.res;
+      if (score.res === 'HARD' && score.wrongOpt) obj.reponse_eleve = score.wrongOpt;
+      if (score.res === 'SKIP') obj.reponse_eleve = '(passé)';
+      obj.temps_sec = score.temps || 0;
+      obj.indices_utilises = score.indices || 0;
+      obj.formule_consultee = !!score.formula;
     }
-    lines.push((i+1) + '. ' + icon + ' "' + exo.q + '"');
-    lines.push('   R\u00e9ponse correcte : ' + exo.a);
-    lines.push('   Options : ' + (exo.options || []).join(' | '));
-    if (exo.steps && exo.steps.length) lines.push('   Indices : ' + exo.steps.join(' \u2192 '));
-    if (exo.f) lines.push('   Formule : ' + exo.f);
-    if (score) {
-      var ctx = [];
-      if (score.res === 'HARD' && score.wrongOpt) ctx.push('A r\u00e9pondu : "' + score.wrongOpt + '"');
-      if (score.res === 'SKIP') ctx.push('A pass\u00e9 la question');
-      if (score.temps > 0) ctx.push('\u23f1 ' + score.temps + 's');
-      if (score.indices > 0) ctx.push('\ud83d\udca1 ' + score.indices + ' indice(s) utilis\u00e9(s)');
-      if (score.formula) ctx.push('\ud83d\udcd0 formule consult\u00e9e');
-      if (ctx.length) lines.push('   \u2192 \u00c9l\u00e8ve : ' + ctx.join(' | '));
-    }
-    lines.push('');
+    return obj;
   });
 
+  var data = {
+    eleve: st.prenom,
+    niveau: st.niveau,
+    type: 'boost',
+    date: lastDone.date,
+    exos: exosJson
+  };
+
   var pc = st.profilCognitif;
-  if (pc) {
-    if (pc.weakPoints && pc.weakPoints.length > 0) {
-      lines.push('=== POINTS FAIBLES ===');
-      pc.weakPoints.forEach(function(w, i) {
-        var line = (i+1) + '. ' + w.cat.replace(/_/g, ' ') + ' (score ' + w.score + '%)';
-        if (w.systematique && w.erreurDominante) line += ' \u2014 erreur syst\u00e9matique : "' + w.erreurDominante + '"';
-        lines.push(line);
-      });
-      lines.push('');
-    }
-    if (pc.comportement) {
-      lines.push('Comportement : ' + pc.comportement.tauxIndices + '% indices \u00b7 ' + pc.comportement.tauxFormule + '% formule \u00b7 ' + pc.comportement.tauxPasCompris + '% pas compris');
-      lines.push('');
-    }
+  if (pc && pc.weakPoints && pc.weakPoints.length > 0) {
+    data.points_faibles = pc.weakPoints.map(function(w) {
+      var o = { chapitre: w.cat, score: w.score };
+      if (w.systematique && w.erreurDominante) o.erreur_systematique = w.erreurDominante;
+      return o;
+    });
   }
 
-  lines.push('=== CONSIGNE ===');
-  lines.push('G\u00e9n\u00e8re EXACTEMENT 5 exercices de BOOST progressifs, cibl\u00e9s sur les erreurs ci-dessus.');
-  lines.push('Si l\'\u00e9l\u00e8ve a rat\u00e9 un exo \u2192 reprendre le m\u00eame concept avec des nombres diff\u00e9rents.');
-  lines.push('Si l\'\u00e9l\u00e8ve a r\u00e9ussi facilement \u2192 monter en difficult\u00e9 sur le m\u00eame th\u00e8me.');
-  lines.push('');
-  lines.push('Format JSON strict (copie uniquement le JSON, rien d\'autre) :');
-  lines.push('{');
-  lines.push('  "insight": "Message motivant de 1-2 phrases pour ' + st.prenom + '",');
-  lines.push('  "exos": [');
-  lines.push('    { "q": "...", "a": "...", "options": ["...", "...", "..."], "steps": ["...", "...", "..."], "f": "...", "lvl": 1 }');
-  lines.push('  ]');
-  lines.push('}');
-  lines.push('');
-  lines.push('R\u00e8gles : "a" DOIT \u00eatre dans "options" (3 options). 2-4 steps. lvl 1 ou 2. "f" max 60 chars.');
-
-  var prompt = lines.join('\n');
-  navigator.clipboard.writeText(prompt).then(function() {
-    showT('\ud83d\udccb Dernier boost + r\u00e9sultats copi\u00e9 ! Colle dans Claude.', 4000, '\u2705');
+  var json = JSON.stringify(data, null, 2);
+  navigator.clipboard.writeText(json).then(function() {
+    showT('\ud83d\udccb JSON boost complet copié !', 3000, '\u2705');
   }).catch(function() {
     var ta = document.createElement('textarea');
-    ta.value = prompt;
+    ta.value = json;
     ta.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:200px;z-index:9999;font-size:12px;padding:8px';
     document.body.appendChild(ta);
     ta.select();
-    showT('S\u00e9lectionne tout et copie', 5000, '\ud83d\udccb');
+    showT('Sélectionne tout et copie', 5000, '\ud83d\udccb');
+    setTimeout(function() { if (ta.parentNode) ta.parentNode.removeChild(ta); }, 6000);
+  });
+}
+
+// ── Copy chapter JSON + results ──────────────────────────────
+function _copyChapContext(code) {
+  var st = (S.adminStudents || []).find(function(s) { return s.code === code; });
+  if (!st) return;
+
+  // Trouver le chapitre terminé le plus récent (nbExos >= 20)
+  var chapDone = (st.chapitresDetail || [])
+    .filter(function(ch) { return ch.totalExos >= 20; })
+    .sort(function(a, b) { return (b.lastDate || '') > (a.lastDate || '') ? 1 : -1; })[0];
+
+  if (!chapDone) { showT('Aucun chapitre terminé', 3000, '\u26a0\ufe0f'); return; }
+
+  var exosJson = (chapDone.exosList || []).sort(function(a, b) { return (a.num || 0) - (b.num || 0); }).map(function(e) {
+    return {
+      num: e.num,
+      q: e.enonce,
+      resultat: e.res,
+      reponse_eleve: (e.res === 'HARD' && e.wrongOpt) ? e.wrongOpt : (e.res === 'SKIP' ? '(passé)' : '(correct)'),
+      temps_sec: e.temps || 0,
+      indices_utilises: e.indices || 0,
+      formule_consultee: !!e.formula,
+      date: e.date || ''
+    };
+  });
+
+  var data = {
+    eleve: st.prenom,
+    niveau: st.niveau,
+    type: 'chapitre',
+    chapitre: chapDone.cat,
+    total_exos: chapDone.totalExos,
+    taux_reussite: chapDone.rateSuccess + '%',
+    temps_moyen: chapDone.avgTime + 's',
+    exos: exosJson
+  };
+
+  var pc = st.profilCognitif;
+  if (pc && pc.weakPoints && pc.weakPoints.length > 0) {
+    data.points_faibles = pc.weakPoints.map(function(w) {
+      var o = { chapitre: w.cat, score: w.score };
+      if (w.systematique && w.erreurDominante) o.erreur_systematique = w.erreurDominante;
+      return o;
+    });
+  }
+
+  var json = JSON.stringify(data, null, 2);
+  navigator.clipboard.writeText(json).then(function() {
+    showT('\ud83d\udccb JSON chapitre complet copié !', 3000, '\u2705');
+  }).catch(function() {
+    var ta = document.createElement('textarea');
+    ta.value = json;
+    ta.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:200px;z-index:9999;font-size:12px;padding:8px';
+    document.body.appendChild(ta);
+    ta.select();
+    showT('Sélectionne tout et copie', 5000, '\ud83d\udccb');
     setTimeout(function() { if (ta.parentNode) ta.parentNode.removeChild(ta); }, 6000);
   });
 }
