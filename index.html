@@ -832,6 +832,10 @@
     body.app-night #main-app [style*="background:linear-gradient(135deg,#1e1b4b"] { opacity:.95; }
     /* Night — help pills */
     body.app-night #main-app .help-pill { background:#1e293b !important; border-color:#475569 !important; color:#cbd5e1 !important; }
+    /* Night — texte exercices + LaTeX */
+    body.app-night #main-app #app-c { color:#e2e8f0 !important; }
+    body.app-night #main-app .mc { color:#f1f5f9 !important; }
+    body.app-night #main-app .fill-input { background:#1e293b !important; border-color:#475569 !important; color:#f1f5f9 !important; }
     /* Night — hint steps */
     body.app-night #main-app [style*="background:#fef9c3"] { background:#1c1107 !important; border-color:#78350f !important; }
     body.app-night #main-app [style*="background:#e0e7ff"] { background:#1e1b4b !important; border-color:#4338ca !important; }
@@ -4365,6 +4369,7 @@ async function togCat(cat) {
   }
   Object.keys(S.exp).forEach(function(k){ S.exp[k] = false; });
   S.exp[cat] = !was;
+  S.rev = false; S.cid = null; // Reset pour éviter blocage exo 1
   if (!S.exp[cat]) { delete S.retroSess[cat]; S.retroBoost = null; if (cat === 'BOOST') delete S.retroExoIdx['BOOST']; }
   // Boost consommé : reprendre la révision depuis le Q1
   if (!was && cat === 'BOOST' && S.boostConsumed) S.qv['BOOST'] = 0;
@@ -5608,9 +5613,7 @@ function _renderRetroExo(exo, score, cat, idx) {
     html += '<div class="text-[11px] text-rose-500 mt-0.5 mc">→ répondu : <em>' + fmtL(score.mauvaise_option) + '</em></div>';
   }
   var meta = [];
-  if ((score.nb_indices || 0) > 0) meta.push('💡×' + score.nb_indices);
-  if (score.formule_vue) meta.push('📐 formule');
-  if (meta.length) html += '<div class="text-[10px] text-slate-400 mt-1">' + meta.join(' · ') + '</div>';
+  // Indices/formule retirés de l'affichage retro (info technique, pas utile élève)
   if (exo.steps && exo.steps.length || exo.f) html += _previewHelp(exo);
   html += '</div></div>';
   if (cat !== null && idx !== undefined) {
@@ -6125,7 +6128,7 @@ function render() {
   var html = '';
 
   // ── Bandeau premier jour ──────────────────────────────
-  if (S.isFirstDay) {
+  if (S.isFirstDay && !S.boost && !S.boostConsumed) {
     html += '<div class="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 flex items-center gap-3 mb-4 afu">' +
       '<div class="text-2xl flex-shrink-0">🎯</div>' +
       '<div><div class="syne font-black text-indigo-800 text-sm mb-0.5">Bienvenue !</div>' +
@@ -6161,11 +6164,12 @@ function render() {
         '<p class="text-indigo-200 text-sm font-medium">Exercices ciblés sur mes points à renforcer</p></div>' +
         '<div class="text-white/50 text-2xl font-light">›</div></div>';
     } else {
+      var _bName = S.prof ? S.prof.name : '';
       html += '<div class="rounded-2xl p-5 flex items-center gap-4 mb-4" style="background:linear-gradient(135deg,#1e1b4b,#312e81)">' +
-        '<div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/10" style="animation:lockPulse 2.5s ease-in-out infinite">🔒</div>' +
+        '<div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/10">✅</div>' +
         '<div class="flex-1 min-w-0">' +
-          '<div class="syne text-sm font-black text-white/80 mb-0.5">Prochain contenu</div>' +
-          '<p class="text-indigo-300 text-sm font-bold">Demain matin 🌅</p>' +
+          '<div class="syne text-sm font-black text-white mb-0.5">Bravo' + (_bName ? ' ' + _bName : '') + ', boost du jour terminé !</div>' +
+          '<p class="text-indigo-300 text-xs font-bold">Ton prochain boost arrive demain — il sera encore plus ciblé sur tes lacunes 🎯</p>' +
         '</div></div>';
     }
   }
@@ -6305,10 +6309,10 @@ function render() {
 
     if (isOpen) {
       // ── Bandeau reprise chapitre en cours ──
-      if (!isBoost && done > 0 && !comp) {
+      if (!isBoost && done >= 3 && !comp) {
         html += '<div class="mx-4 mb-3 bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-2.5 flex items-center gap-2">' +
           '<span class="text-sm flex-shrink-0">💪</span>' +
-          '<span class="text-xs font-bold text-indigo-700">Bon retour ! Continue là où tu t\'es arrêté.</span>' +
+          '<span class="text-xs font-bold text-indigo-700">Tu en es à ' + done + '/' + tot + ' — continue comme ça !</span>' +
           '</div>';
       }
       // B3 — bannière prérequis fragile
