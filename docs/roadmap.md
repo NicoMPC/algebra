@@ -7,7 +7,7 @@
 ## État global — 17 mars 2026
 
 **Matheux 100% prêt. Tests élève 5/5 ✅. Test parent ✅. 27 frictions fixées + cartes premium + messages perso. Landing GOD MODE déployée. GitHub privé (MatheuxApp).**
-**Reste : endpoint webhook Stripe + tests admin + 1 feature UX (Je ne sais pas). "Valider la réponse" ✅. Lancement confirmé : mercredi 18 mars 2026 à 9h.**
+**Reste : endpoint webhook Stripe + tests admin. "Valider la réponse" ✅. "Je ne sais pas" ✅. Lancement confirmé : mercredi 18 mars 2026 à 9h.**
 
 > ✅ **Bugfixes @60** — BUG-01 à BUG-12 corrigés (simulation 7j × 5 profils). 13 mars.
 > ✅ **Simulation 40 élèves @63** — 6 bugs corrigés + 1616 appels API, 0 erreur. 14 mars.
@@ -30,7 +30,7 @@
 | Analytics | ✅ GA4 RGPD-compliant |
 | Limite bêta | 50 vrais élèves (IsTest=0) |
 | Messages élèves | ✅ Système adaptatif `_msg()` — ~35 entrées, niveau, objectif, coach marks, _OK/_KO contextuels |
-| Admin cockpit | ✅ GAS @76 — cockpit 3 onglets À FAIRE/FAIT/TEST, cartes inline, journal horodaté, log_contact |
+| Admin cockpit | ✅ GAS @87 — cockpit 5 onglets À FAIRE/FAIT/MAILS/INACTIFS/RAPPORT, boost+chapitre uniquement dans À FAIRE, emails séparés, suivi inactifs, rapport dimanche |
 | Exercices | ✅ Audité + corrigé @77 — 1872 exos, score ~98%, notation FR, indices S1, doublons |
 | UX élève | ✅ @77 — mode nuit app, guide boost, titres gras, nav boost reopen |
 | Profil cognitif | ✅ @81 — bouton "j'ai pas compris" + profil cognitif dans fiche admin |
@@ -70,8 +70,8 @@
 ### Mardi 17 mars après-midi (Nicolas + Claude)
 - [x] 🔬 **Fix diagnostic + Boost J1** ✅ — 251 figures SVG ajoutées (Thalès/Trigo/Sections/Pythagore/Périmètres/Volumes/Homothétie), 14 reformulations ciblées (Thalès contextualisé, Trigo angle précisé, Sym Axiale vocabulaire, Sections "depuis sommet"), espaces LaTeX fixés, doublon Systèmes corrigé
 - [x] ✅ **Implémenter "Valider la réponse"** — selectOpt+validateAnswer, .os (selected), .validate-wrap sticky, .btn-validate disabled→enabled, mode nuit, reset goEx/togCat
-- [ ] 🤷 **Implémenter "Je ne sais pas"** — vrai bouton .opt-skip, resultat='SKIP' backend, remplace ancien lien (spec prête dans Calendar)
-- [ ] 🖥️ Test admin ergonomie → fix frictions
+- [x] ✅ **Implémenter "Je ne sais pas"** — bouton .opt-skip, resultat='SKIP' (traité comme HARD), supprimé ancien lien + log_pas_compris. 17 mars.
+- [x] 🖥️ **Refonte admin cockpit** ✅ — 5 onglets (À FAIRE/FAIT/MAILS/INACTIFS/RAPPORT), À FAIRE = boost+chapitre uniquement, bouton "Copier dernier boost + résultats", onglet MAILS séparé, onglet INACTIFS (>3j), onglet RAPPORT dimanche (copier JSON semaine + marquer envoyé). 17 mars.
 - [ ] 🎮 Test admin workflow en conditions → fix frictions
 - [ ] 🧪 Test réouverture user (Auguste, Charlie, Nicolas)
 

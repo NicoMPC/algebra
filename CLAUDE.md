@@ -2,7 +2,7 @@
 
 > Document unique. Point d'entrée + manuel complet.
 > Mis à jour automatiquement à chaque session.
-> GAS @85 · Lancement 18 mars 2026
+> GAS @87 · Lancement 18 mars 2026
 
 ---
 
@@ -255,7 +255,7 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 |---|---|---|
 | 1 | ✅ Fix diagnostic + Boost J1 | **FAIT** — 251 figures SVG (`fig` explicites dans ExosJSON), 14 reformulations (Thalès contextualisé, Trigo angle précisé, Sym Axiale vocabulaire, Sections "depuis sommet"), espaces LaTeX fixés, doublon Systèmes 3EME corrigé |
 | 2 | ✅ Implémenter "Valider la réponse" | **FAIT** — selectOpt+validateAnswer, .os/.validate-wrap/.btn-validate, sticky bottom, mode nuit, reset goEx/togCat |
-| 3 | 🤷 Implémenter "Je ne sais pas" | Vrai bouton .opt-skip, resultat='SKIP' backend, remplace l'ancien lien |
+| 3 | ✅ Implémenter "Je ne sais pas" | **FAIT** — bouton .opt-skip dashed sous options, skipAnswer(), resultat='SKIP' backend (traité comme HARD), supprimé _handlePasCompris + log_pas_compris + messages pas_compris, retro 🤷 "a passé la question", admin 🤷 |
 | 4 | 🖥️ Test admin ergonomie | 3 onglets, cartes, fiche élève, journal, mode nuit admin |
 | 5 | 🔧 Fix frictions admin ergo | Selon remarques test |
 | 6 | 🎮 Test admin workflow | En conditions réelles — boost, chapitre, email |

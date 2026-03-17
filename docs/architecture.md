@@ -57,7 +57,7 @@ Les vues sont des fonctions JS qui injectent du HTML dans `#main` :
 | Calibrage | `rSection('CALIBRAGE', ...)` | Diagnostic (quiz initial) |
 | Progression | `rSection('PROGRESSION', ...)` | Barres de progression par chapitre |
 | Brevet | `rSection('BREVET', ...)` | Mode brevet blanc (3EME only) |
-| Admin | `rSection('ADMIN', ...)` | Cockpit admin 3 onglets : À FAIRE / FAIT / TEST (@76) |
+| Admin | `rSection('ADMIN', ...)` | Cockpit admin 5 onglets : À FAIRE / FAIT / MAILS / INACTIFS / RAPPORT (@87) |
 
 ### Navigation
 
@@ -288,7 +288,7 @@ Scripts archivés dans `scripts_archive/`.
 - Auth register + login + auto-login silencieux (modale protégée contre interruption trial-flow CTA)
 - Scores enrichis : temps, wrongOpt, indices, formule
 - Swipe gauche → exercice suivant
-- Admin cockpit (triple-clic logo) : 3 onglets À FAIRE / FAIT / TEST, cartes élèves avec workflows inline (boost/chapitre/email/contact/cours/brevet), journal horodaté, dark mode admin, bouton rapport parents le dimanche
+- Admin cockpit (triple-clic logo) : 5 onglets À FAIRE / FAIT / MAILS / INACTIFS / RAPPORT — À FAIRE = boost+chapitre uniquement, emails dans onglet dédié, inactifs >3j visibles, rapport dimanche avec JSON semaine
 - Gamification : XP, streak, mastery ring SVG
 - KaTeX v0.16.9 (rendu maths), chrono par exercice
 - Nudge pills après 20s, tableau blanc maths

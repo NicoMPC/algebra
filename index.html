@@ -284,6 +284,17 @@
     .btn-validate:not(:disabled) { background:var(--grn); color:#fff; }
     body.app-night .btn-validate:disabled { background:#334155; color:#64748b; }
     body.app-night .btn-validate:not(:disabled) { background:#059669; }
+    .opt-skip {
+      width:100%; min-height:56px; padding:0.85rem 1rem; border:2px dashed #cbd5e1;
+      background:#f8fafc; color:#64748b; font-weight:500; font-size:0.9rem;
+      border-radius:var(--r); cursor:pointer; transition:all .15s;
+      display:flex; align-items:center; justify-content:center; gap:0.5rem;
+    }
+    .opt-skip:hover { border-color:var(--p); background:var(--pl); }
+    .opt-skip.os-skip { border:2px solid #f59e0b; background:#fffbeb; color:#92400e; }
+    body.app-night .opt-skip { background:#1e293b; border-color:#475569; color:#94a3b8; }
+    body.app-night .opt-skip:hover { border-color:#818cf8; background:#312e81; }
+    body.app-night .opt-skip.os-skip { border-color:#f59e0b; background:#422006; color:#fbbf24; }
     body.app-night .os { border-color:#818cf8!important; background:#312e81!important; box-shadow:0 0 0 2px #818cf8; }
 
     /* ── TABLEAU BLANC — BOTTOM SHEET (mobile) ─────────── */
@@ -2160,38 +2171,6 @@ var _MSGS = {
   net_error:       'Erreur réseau — vérifie ta connexion 📡',
   net_retry:       'Erreur réseau — réessaie',
   save_offline:    'Résultats non sauvegardés (offline)',
-  pas_compris: {
-    '6EME': [
-      "Noté ! On va y revenir dans ton boost 💪",
-      "Ok, c'est retenu — t'inquiète pas on va retravailler ça 👍",
-      "Compris ! Je vais te le redonner autrement 🔄"
-    ],
-    '5EME': [
-      "Noté ! On y reviendra dans un prochain exo 🔄",
-      "C'est enregistré — on va retravailler ce point 💪",
-      "Ok, je vais cibler ça dans ton boost 👍"
-    ],
-    '4EME': [
-      "Noté. On reviendra dessus dans un prochain exercice.",
-      "C'est retenu — je vais insister sur ce point.",
-      "Ok, ce sera dans ton prochain boost."
-    ],
-    '3EME': [
-      "Noté. On reviendra dessus dans un prochain exercice.",
-      "C'est enregistré — on insistera sur ce point.",
-      "Ok, je vais cibler ça dans ton prochain boost."
-    ],
-    '1ERE': [
-      "Noté. Ce point sera renforcé dans les prochains exercices.",
-      "Enregistré — on reprendra ce concept.",
-      "C'est pris en compte pour la suite."
-    ],
-    'def': [
-      "Noté ! On va y revenir 🔄",
-      "C'est enregistré — on insistera dessus.",
-      "Ok, je vais cibler ça dans ton boost 💪"
-    ]
-  },
 };
 
 function _msg(key, vars) {
@@ -4325,7 +4304,7 @@ function mark(cat, idx, status, wrongOpt) {
   S.res[id] = status;
   S.cid = id; S.rev = true;
   // (règle 1 chapitre/jour désactivée — tous les chapitres accessibles)
-  var xp = status === 'EASY' ? 100 : status === 'MEDIUM' ? 50 : 10;
+  var xp = status === 'EASY' ? 100 : status === 'MEDIUM' ? 50 : 10; // HARD + SKIP = 10
   S.xp += xp;
   // Streak : mise à jour locale au premier exercice du jour
   var _loc = JSON.parse(localStorage.getItem(LK) || '{}');
@@ -4443,7 +4422,7 @@ function chkComp(cat) {
     if (rs) done++;
     if (rs === 'EASY') easy++;
     else if (rs === 'MEDIUM') medium++;
-    else if (rs === 'HARD') { hard++; errs.push(exs[i].q); }
+    else if (rs === 'HARD' || rs === 'SKIP') { hard++; errs.push(exs[i].q); }
   }
   if (done !== tot || tot === 0) return false;
 
@@ -5597,16 +5576,18 @@ function renderArchiveSection(cat, exs) {
 // ── Carte retro d'un exercice (lecture seule) ──────────────────
 function _renderRetroExo(exo, score, cat, idx) {
   var result = (score && score.resultat) || '';
-  var isHard = result === 'HARD', isMed = result === 'MEDIUM', isEasy = result === 'EASY';
-  var icon = isEasy ? '✅' : isHard ? '❌' : isMed ? '🟡' : '⬜';
-  var borderColor = isEasy ? '#d1fae5' : isHard ? '#fee2e2' : isMed ? '#fef3c7' : '#f1f5f9';
+  var isHard = result === 'HARD', isMed = result === 'MEDIUM', isEasy = result === 'EASY', isSkip = result === 'SKIP';
+  var icon = isEasy ? '✅' : isSkip ? '🤷' : isHard ? '❌' : isMed ? '🟡' : '⬜';
+  var borderColor = isEasy ? '#d1fae5' : isSkip ? '#fef3c7' : isHard ? '#fee2e2' : isMed ? '#fef3c7' : '#f1f5f9';
   var html = '<div class="retro-exo-card" style="border-color:'+borderColor+'">';
   html += '<div class="flex items-start gap-2">';
   html += '<span class="flex-shrink-0 text-sm mt-0.5">'+icon+'</span>';
   html += '<div class="flex-1 min-w-0">';
   html += '<div class="text-xs font-semibold text-slate-700 leading-snug mc">' + fmtL(exo.q) + '</div>';
   if (exo.a) html += '<div class="text-[11px] font-bold text-emerald-600 mt-1 mc">✓ ' + fmtL(exo.a) + '</div>';
-  if ((isHard || isMed) && score.mauvaise_option) {
+  if (isSkip) {
+    html += '<div class="text-[11px] text-amber-600 mt-0.5">🤷 a passé la question</div>';
+  } else if ((isHard || isMed) && score.mauvaise_option) {
     html += '<div class="text-[11px] text-rose-500 mt-0.5 mc">→ répondu : <em>' + fmtL(score.mauvaise_option) + '</em></div>';
   }
   var meta = [];
@@ -6586,27 +6567,35 @@ function _previewHelp(exo) {
   return html;
 }
 
-function _handlePasCompris(cat, idx, exoQ) {
-  var wrap = document.getElementById('btn-pas-compris-wrap');
-  if (wrap) wrap.remove();
-  var pcKey = 'pc_' + (S.prof ? S.prof.code : '') + '_' + cat + '_' + idx;
-  sessionStorage.setItem(pcKey, '1');
-  showT(_msg('pas_compris'), 3500, '📝');
-  var srcLabel = cat === 'BOOST' ? 'boost' : cat === 'CALIBRAGE' ? 'calibrage' : 'chapitre';
-  var realCat = cat;
-  var cats = LVL[S.niv] ? LVL[S.niv].cats : {};
-  if (cats[cat] && cats[cat][idx] && cats[cat][idx].oC) realCat = cats[cat][idx].oC;
-  fetch(SU, {
-    method: 'POST',
-    body: JSON.stringify({
-      action:    'log_pas_compris',
-      code:      S.prof ? S.prof.code : '',
-      chapitre:  realCat,
-      enonce:    (exoQ || '').substring(0, 80),
-      source:    srcLabel
-    })
-  }).catch(function() {});
-}
+window.skipAnswer = function(cat, idx) {
+  if (S.rev) return;
+  var r  = res2(cat, idx);
+  var id = S.niv + '-' + r.rC + '-' + r.rI;
+  if (S.res[id]) return;
+  S._sel = null;
+  S.rev  = true;
+  S.cid  = id;
+  var exo = LVL[S.niv].cats[cat][idx];
+  var cI  = exo.options.indexOf(exo.a);
+  // Style skip button
+  var skipBtn = document.querySelector('.opt-skip');
+  if (skipBtn) skipBtn.classList.add('os-skip');
+  // Colorer les options : bonne en vert, reste faded
+  var grid = document.querySelector('.opt-grid');
+  if (grid) {
+    Array.from(grid.children).forEach(function(c){
+      if (c.classList.contains('opt-skip')) return;
+      c.className = 'opt ' + (parseInt(c.getAttribute('data-oi')) === cI ? 'oc' : 'on');
+    });
+  }
+  // Masquer bouton Valider
+  var vw = document.getElementById('validate-wrap');
+  if (vw) vw.style.display = 'none';
+  // Afficher aide automatiquement
+  S._pendingHelp = { cat: cat, idx: idx };
+  showT('Pas de souci — regarde la correction 👀', 2000, '🤷');
+  mark(cat, idx, 'SKIP', null);
+};
 
 // ══════════════════════════════════════════════════════════════
 // RENDER SECTION EXERCICE
@@ -6637,7 +6626,7 @@ function rSection(cat, data, idx, total, catDone) {
     var act = i === idx;
     var cls = 'pill ';
     if (s2 === 'EASY' || s2 === 'MEDIUM') cls += 'bg-emerald-500 text-white';
-    else if (s2 === 'HARD')               cls += 'bg-rose-400 text-white';
+    else if (s2 === 'HARD' || s2 === 'SKIP') cls += 'bg-rose-400 text-white';
     else                                   cls += 'bg-white border-2 border-slate-200 text-slate-500';
     if (act) cls += ' ring-2 ring-indigo-400 ring-offset-1';
     pills += '<button onclick="goEx(\''+cat+'\','+i+')" class="'+cls+'">'+(i+1)+'</button>';
@@ -6661,13 +6650,11 @@ function rSection(cat, data, idx, total, catDone) {
       '<button onclick="mark(\''+cat+'\','+idx+',\'EASY\',null)" class="btn-ok btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">✅</span>Acquis</button></div>';
   } else if (scored && !catDone) {
     // Exercice répondu : bouton suivant + aide inline pour autoShowHelp
-    var _pcKey = 'pc_' + (S.prof ? S.prof.code : '') + '_' + cat + '_' + idx;
     acts = '<div class="inline-help mc rdy" id="help-inline-'+id+'"></div>' +
       '<div class="flex gap-2 mt-4">' +
       (idx > 0 ? '<button onclick="goEx(\''+cat+'\','+(idx-1)+')" class="btn bg-slate-100 text-slate-500 py-4 px-4 rounded-xl font-bold text-sm">←</button>' : '') +
       '<button onclick="nextEx(\''+cat+'\')" class="btn btn-dk py-4 flex-1 flex items-center justify-center gap-2">SUIVANT <span class="text-slate-400 font-normal text-xs">(ou swipe ←)</span></button>' +
-      '</div>' +
-      (!sessionStorage.getItem(_pcKey) ? '<div id="btn-pas-compris-wrap" class="mt-2 text-center"><button onclick="_handlePasCompris(\''+cat+'\','+idx+',\''+((data.q||'').replace(/'/g,"\\'").substring(0,80))+'\')" class="text-xs text-slate-400 underline hover:text-slate-600 transition-colors bg-transparent border-none cursor-pointer">Je n\'ai pas compris</button></div>' : '');
+      '</div>';
   }
 
   // ── Options QCM (adaptatif 2/3/4 options) ──────────────────
@@ -6700,6 +6687,10 @@ function rSection(cat, data, idx, total, catDone) {
       opts += '<button data-oi="'+o.i+'" '+handler+' class="'+ocls.trim()+selCls+'"'+extraStyle+'><span class="mc flex-1">'+fmtL(o.t)+'</span></button>';
     });
     opts += '</div>';
+    // Bouton "Je ne sais pas" (sous la grille, avant validation)
+    if (!isRev && !scored) {
+      opts += '<button class="opt-skip mt-2" onclick="skipAnswer(\''+cat+'\','+idx+')">🤷 Je ne sais pas</button>';
+    }
     // Bouton Valider sticky (visible uniquement avant validation, pas en retro)
     if (!isRev && !scored) {
       var hasSel = S._sel && S._sel.cat===cat && S._sel.idx===idx;
@@ -6753,8 +6744,7 @@ function rSection(cat, data, idx, total, catDone) {
     '<div class="mc text-center font-bold text-base leading-relaxed w-full min-w-0">'+(exoType === 'fill' ? fmtL(data.q).replace(/___/g, '<span style="display:inline-block;min-width:5rem;border-bottom:3px solid #4338ca;background:#eef2ff;border-radius:4px;padding:2px 8px;margin:0 4px">…</span>') : fmtL(data.q))+'</div></div>' +
     opts + acts +
     (catDone && scored
-      ? '<div class="inline-help mc rdy" id="help-inline-'+id+'">'+_previewHelp(data)+'</div>' +
-        (!sessionStorage.getItem('pc_' + (S.prof ? S.prof.code : '') + '_' + cat + '_' + idx) ? '<div id="btn-pas-compris-wrap" class="mt-2 text-center"><button onclick="_handlePasCompris(\''+cat+'\','+idx+',\''+((data.q||'').replace(/'/g,"\\'").substring(0,80))+'\')" class="text-xs text-slate-400 underline hover:text-slate-600 transition-colors bg-transparent border-none cursor-pointer">Je n\'ai pas compris</button></div>' : '')
+      ? '<div class="inline-help mc rdy" id="help-inline-'+id+'">'+_previewHelp(data)+'</div>'
       : '<div class="flex gap-2 mt-4">' +
         '<button id="pill-hint-'+id+'" onclick="showHintInline(\''+cat+'\','+idx+','+maxH+')" class="help-pill pill-hint'+(shown >= maxH ? ' opacity-40 pointer-events-none' : (!scored ? ' pulse-hint' : ''))+'">' +
           (shown >= maxH ? '✓ Indices vus' : '💡 Indice') +
@@ -6763,8 +6753,7 @@ function rSection(cat, data, idx, total, catDone) {
           (fR ? '✓ Formule vue' : '👁 Formule') +
         '</button>' +
       '</div>' +
-      '<div class="inline-help mc" id="help-inline-'+id+'"></div>' +
-      (!scored && !sessionStorage.getItem('pc_' + (S.prof ? S.prof.code : '') + '_' + cat + '_' + idx) ? '<div id="btn-pas-compris-wrap" class="mt-3 text-center"><button onclick="_handlePasCompris(\''+cat+'\','+idx+',\''+((data.q||'').replace(/'/g,"\\'").substring(0,80))+'\')" class="text-xs text-slate-400 underline hover:text-slate-600 transition-colors bg-transparent border-none cursor-pointer">Je n\'ai pas compris</button></div>' : '')) +
+      '<div class="inline-help mc" id="help-inline-'+id+'"></div>') +
     '<div class="text-center mt-3"><button onclick="openFeedback(\''+cat+'\','+idx+')" class="text-[10px] text-slate-300 hover:text-slate-500 transition-colors underline">📢 Signaler une erreur</button></div>' +
     '</div></div>';
 }
@@ -8305,9 +8294,10 @@ function copyAdminPrompt(code, type, cat) {
       lines.push('');
       lines.push('=== HISTORIQUE COMPLET DES EXERCICES ===');
       allExos.forEach(function(e, i) {
-        var icon = e.res === 'HARD' ? '❌' : '✅';
+        var icon = e.res === 'SKIP' ? '🤷' : e.res === 'HARD' ? '❌' : '✅';
         var line = icon + ' "' + e.enonce + '"';
-        if (e.res === 'HARD' && e.wrongOpt) line += ' → répondu : "' + e.wrongOpt + '"';
+        if (e.res === 'SKIP') line += ' → a passé la question';
+        else if (e.res === 'HARD' && e.wrongOpt) line += ' → répondu : "' + e.wrongOpt + '"';
         lines.push((i + 1) + '. ' + line);
         var ctx = [];
         if (e.temps > 0)   ctx.push('⏱ ' + e.temps + 's');
@@ -8315,7 +8305,7 @@ function copyAdminPrompt(code, type, cat) {
         if (e.formula)     ctx.push('📐 formule consultée');
         if (ctx.length)    lines.push('   ' + ctx.join(' | '));
       });
-      var hardCount = allExos.filter(function(e) { return e.res === 'HARD'; }).length;
+      var hardCount = allExos.filter(function(e) { return e.res === 'HARD' || e.res === 'SKIP'; }).length;
       if (hardCount === 0) {
         lines.push('');
         lines.push('(Aucune erreur récente — génère des exercices variés de niveau mixte)');
@@ -8603,12 +8593,6 @@ function _computeActions(st) {
   var done = S._adminDoneActions || {};
   var detail = st.chapitresDetail || [];
 
-  // Rank 1: contact — inactif >7j ET score <40% partout
-  var allLow = detail.length > 0 && detail.every(function(ch) { return ch.rateSuccess < 40; });
-  if (st.inactivityDays > 7 && allLow && !done[st.code + '_contact']) {
-    actions.push({ rank: 1, type: 'contact', label: 'Contacter le parent', color: 'rose', icon: '\ud83d\udcde', detail: 'Inactif ' + st.inactivityDays + 'j \u00b7 scores <40%' });
-  }
-
   // Rank 2: boost — ExosDone=5, pas de boost pending
   var bHist = st.boostHistory || [];
   var lastBDone = bHist.length > 0 && bHist[0].exosDone >= 5;
@@ -8622,30 +8606,6 @@ function _computeActions(st) {
   if (st.chapTermine && (st.chapNewCount || 0) === 0 && !done[st.code + '_chapitre']) {
     actions.push({ rank: 3, type: 'chapitre', label: 'Chapitre termin\u00e9', color: 'indigo', icon: '\ud83d\udcda', detail: 'Assigner la suite', cat: detail.length ? detail[0].cat : '' });
   }
-
-  // Rank 4: cours — palier atteint, cours non rédigé
-  var cn = st.coursNeeded || [];
-  if (cn.length > 0 && !done[st.code + '_cours']) {
-    actions.push({ rank: 4, type: 'cours', label: 'Cours \u00e0 r\u00e9diger', color: 'cyan', icon: '\ud83d\udcd6', detail: cn.length + ' section(s)' });
-  }
-
-  // Rank 5: brevet — PendingBrevet + 3EME
-  if (st.pendingBrevet && st.niveau === '3EME' && !done[st.code + '_brevet']) {
-    actions.push({ rank: 5, type: 'brevet', label: 'Brevet en attente', color: 'purple', icon: '\ud83c\udf93', detail: '\u00c0 traiter' });
-  }
-
-  // Rank 6: email J+0
-  if (!st.j0Sent && !done[st.code + '_email_j0']) {
-    actions.push({ rank: 6, type: 'email_j0', label: 'Email J+0', color: 'orange', icon: '\ud83d\udce7', detail: 'Bienvenue non envoy\u00e9' });
-  }
-
-  // Rank 7: email J+3/J+5/J+7
-  (st.emailsDue || []).forEach(function(e) {
-    var key = 'email_' + e.replace('+', '');
-    if (!done[st.code + '_' + key]) {
-      actions.push({ rank: 7, type: key, emailType: e, label: 'Email ' + e, color: 'orange', icon: '\ud83d\udce7', detail: 'Relance \u00e0 envoyer' });
-    }
-  });
 
   return actions.sort(function(a, b) { return a.rank - b.rank; });
 }
@@ -8683,7 +8643,7 @@ function _renderAdminCards() {
 
   var realCount = S.adminRealCount !== undefined ? S.adminRealCount : realStudents.length;
   var activeTab = S.adminTab || 'todo';
-  if (activeTab !== 'todo' && activeTab !== 'done' && activeTab !== 'test' && activeTab !== 'cours') activeTab = 'todo';
+  if (['todo','done','emails','inactifs','rapport'].indexOf(activeTab) === -1) activeTab = 'todo';
   var journal = S._adminJournal || [];
 
   var html = '';
@@ -8703,7 +8663,6 @@ function _renderAdminCards() {
   html += '<div class="flex items-center gap-2">';
   var isDark = document.body.classList.contains('adm-dark');
   html += '<button onclick="_toggleAdmDark()" title="Mode nuit" class="w-9 h-9 rounded-xl flex items-center justify-center text-base transition-colors ' + (isDark ? 'bg-indigo-900 text-amber-300' : 'bg-slate-100 text-slate-400 hover:bg-slate-200') + '">' + (isDark ? '\u2600\ufe0f' : '\ud83c\udf19') + '</button>';
-  if (today.getDay() === 0) html += '<button onclick="_sendWeeklyReport()" id="btn-weekly-report" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-3 py-2 rounded-xl transition-colors">\ud83d\udce8 Rapport parents</button>';
   html += '<button onclick="renderAdminDashboard()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition-colors">\u21bb Actualiser</button>';
   html += '</div></div></div>';
 
@@ -8718,7 +8677,9 @@ function _renderAdminCards() {
   var _tabs = [
     { key: 'todo', label: '\u00c0 FAIRE', count: todoStudents.length, color: todoStudents.length > 0 ? '#ef4444' : '#059669' },
     { key: 'done', label: 'FAIT',         count: journal.length,       color: '#059669' },
-    { key: 'test', label: 'TEST',         count: testStudents.length,  color: '#94a3b8' }
+    { key: 'emails', label: '\ud83d\udce7 MAILS', count: _countEmailsDue(), color: '#f59e0b' },
+    { key: 'inactifs', label: '\ud83d\udca4 INACTIFS', count: _countInactifs(), color: '#ef4444' },
+    { key: 'rapport', label: '\ud83d\udcca RAPPORT', count: 0, color: '#6366f1' }
   ];
   html += '<div class="flex gap-2 mb-4">';
   _tabs.forEach(function(t) {
@@ -8775,22 +8736,104 @@ function _renderAdminCards() {
         });
       }
     }
-  } else if (activeTab === 'cours') {
-    html += '<button onclick="_adminSetTab(\'todo\')" class="text-xs text-indigo-600 font-bold mb-3 hover:underline">\u2190 Retour</button>';
-    html += _renderAdminCoursHTML();
-  } else {
-    // TEST tab
-    html += '<div class="bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 mb-3 text-[11px] text-slate-500 font-semibold">\ud83e\uddea Comptes de test \u2014 non comptabilis\u00e9s dans \u00c0 FAIRE</div>';
-    if (testStudents.length === 0) {
-      html += '<div class="text-center py-8 text-slate-400 text-sm font-semibold">Aucun compte test.</div>';
+  } else if (activeTab === 'emails') {
+    var emailStudents = (S.adminStudents || []).filter(function(st) {
+      if (st.isTest) return false;
+      return !st.j0Sent || (st.emailsDue || []).length > 0;
+    });
+    if (emailStudents.length === 0) {
+      html += '<div class="text-center py-12"><div class="text-4xl mb-3">\u2705</div><div class="syne font-black text-slate-700 text-base mb-1">Tous les emails sont \u00e0 jour</div></div>';
     } else {
-      html += '<div class="flex justify-end mb-2">';
-      html += '<button onclick="_adminMarkAllTest()" class="text-[10px] font-bold text-slate-400 hover:text-rose-500 underline transition-colors" id="mark-all-test-btn">Marquer tous comme test \u2192</button>';
-      html += '</div>';
-      testStudents.forEach(function(st) {
-        st._ckActions = _computeActions(st);
-        html += _buildCockpitCard(st);
+      html += '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Emails \u00e0 confirmer</div>';
+      emailStudents.forEach(function(st) {
+        var emails = [];
+        if (!st.j0Sent) emails.push('J+0');
+        (st.emailsDue || []).forEach(function(e) { emails.push(e); });
+        emails.forEach(function(eType) {
+          html += '<div class="bg-white border border-slate-100 rounded-xl px-3 py-2.5 mb-1.5 flex items-center gap-3">';
+          html += '<div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-sm flex-shrink-0" style="background:linear-gradient(135deg,#f59e0b,#d97706)">\ud83d\udce7</div>';
+          html += '<div class="flex-1 min-w-0">';
+          html += '<div class="flex items-center gap-1.5 flex-wrap">';
+          html += '<span class="text-xs font-bold text-slate-700">' + st.prenom + '</span>';
+          html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500">' + st.niveau + '</span>';
+          html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-600">' + eType + '</span>';
+          html += '</div>';
+          html += '<div class="text-[10px] text-slate-400">' + st.email + '</div>';
+          html += '</div>';
+          html += '<div class="flex gap-1.5 flex-shrink-0">';
+          html += '<button onclick="_ckOpenEmail(\'' + st.code + '\',\'' + eType + '\')" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-500 px-2 py-1 rounded-lg hover:bg-indigo-50">Voir</button>';
+          html += '<button onclick="_ckMarkEmail(\'' + st.code + '\',\'' + eType + '\')" class="text-[10px] font-bold text-white bg-emerald-500 hover:bg-emerald-600 px-2.5 py-1 rounded-lg">\u2713 Envoy\u00e9</button>';
+          html += '</div>';
+          html += '</div>';
+        });
       });
+    }
+  } else if (activeTab === 'inactifs') {
+    var inactifStudents = (S.adminStudents || []).filter(function(st) {
+      if (st.isTest) return false;
+      return st.inactivityDays >= 3 || (st.neverStarted && st.trialDays >= 1);
+    }).sort(function(a, b) { return b.inactivityDays - a.inactivityDays; });
+    if (inactifStudents.length === 0) {
+      html += '<div class="text-center py-12"><div class="text-4xl mb-3">\ud83c\udf89</div><div class="syne font-black text-slate-700 text-base mb-1">Tous les \u00e9l\u00e8ves sont actifs</div></div>';
+    } else {
+      html += '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">\u00c9l\u00e8ves inactifs ou jamais connect\u00e9s</div>';
+      inactifStudents.forEach(function(st) {
+        var lastStr = st.lastConnection ? relDateAdmin(st.lastConnection) : 'Jamais connect\u00e9';
+        var badge = st.neverStarted ? '\ud83d\ude80 Jamais commenc\u00e9' : '\ud83d\udca4 Inactif ' + st.inactivityDays + 'j';
+        var badgeColor = st.neverStarted ? 'bg-purple-100 text-purple-700' : (st.inactivityDays >= 7 ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700');
+        html += '<div class="bg-white border border-slate-100 rounded-xl px-3 py-2.5 mb-1.5 flex items-center gap-3">';
+        html += '<div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-sm flex-shrink-0" style="background:linear-gradient(135deg,#ef4444,#dc2626)">\ud83d\udca4</div>';
+        html += '<div class="flex-1 min-w-0">';
+        html += '<div class="flex items-center gap-1.5 flex-wrap">';
+        html += '<span class="text-xs font-bold text-slate-700">' + st.prenom + '</span>';
+        html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500">' + st.niveau + '</span>';
+        html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md ' + badgeColor + '">' + badge + '</span>';
+        html += '</div>';
+        html += '<div class="text-[10px] text-slate-400">' + st.email + ' \u00b7 ' + lastStr + '</div>';
+        html += '</div>';
+        html += '</div>';
+      });
+    }
+  } else if (activeTab === 'rapport') {
+    var isSunday = new Date().getDay() === 0;
+    if (!isSunday) {
+      html += '<div class="text-center py-12"><div class="text-4xl mb-3">\ud83d\udcca</div>';
+      html += '<div class="syne font-black text-slate-700 text-base mb-1">Rapport parents</div>';
+      html += '<div class="text-slate-400 text-sm">Disponible le dimanche \u2014 bilan hebdo de chaque \u00e9l\u00e8ve.</div></div>';
+    } else {
+      html += '<div class="mb-3"><button onclick="_sendWeeklyReport()" id="btn-weekly-report" class="w-full bg-amber-500 hover:bg-amber-600 text-white text-sm font-black py-3 rounded-xl transition-colors">\ud83d\udce8 Envoyer le rapport automatique \u00e0 tous les parents</button></div>';
+      var now = new Date();
+      var weekAgoStr = new Date(now.getTime() - 7 * 86400000).toISOString().substring(0, 10);
+      var activeWeek = (S.adminStudents || []).filter(function(st) {
+        if (st.isTest) return false;
+        return (st.boostHistory || []).some(function(b) { return b.date >= weekAgoStr && b.exosDone >= 5; });
+      });
+      if (activeWeek.length === 0) {
+        html += '<div class="text-center py-8 text-slate-400 text-sm font-semibold">Aucun \u00e9l\u00e8ve actif cette semaine.</div>';
+      } else {
+        html += '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">\u00c9l\u00e8ves actifs cette semaine (' + activeWeek.length + ')</div>';
+        activeWeek.forEach(function(st) {
+          var weekBoosts = (st.boostHistory || []).filter(function(b) { return b.date >= weekAgoStr && b.exosDone >= 5; });
+          var done = S._adminDoneActions || {};
+          var rapportDone = done[st.code + '_rapport'];
+          html += '<div class="bg-white border border-slate-100 rounded-xl px-4 py-3 mb-2">';
+          html += '<div class="flex items-center gap-3 mb-2">';
+          html += '<div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black syne text-base flex-shrink-0" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">' + st.prenom.charAt(0).toUpperCase() + '</div>';
+          html += '<div class="flex-1">';
+          html += '<div class="syne font-black text-slate-900 text-sm">' + st.prenom + ' <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500">' + st.niveau + '</span></div>';
+          html += '<div class="text-[10px] text-slate-400">' + weekBoosts.length + ' boost(s) termin\u00e9(s) cette semaine</div>';
+          html += '</div>';
+          if (rapportDone) html += '<span class="text-emerald-500 text-sm flex-shrink-0">\u2705</span>';
+          html += '</div>';
+          if (!rapportDone) {
+            html += '<div class="flex gap-2">';
+            html += '<button onclick="_copyWeekBoosts(\'' + st.code + '\')" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-bold py-2 rounded-xl transition-colors">\ud83d\udccb Copier JSON semaine</button>';
+            html += '<button onclick="_markRapportSent(\'' + st.code + '\')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold py-2 rounded-xl transition-colors">\u2705 Rapport envoy\u00e9</button>';
+            html += '</div>';
+          }
+          html += '</div>';
+        });
+      }
     }
   }
 
@@ -8873,12 +8916,10 @@ function _buildCockpitCard(st) {
 function _buildActionWorkflow(st, action) {
   var h = '';
 
-  if (action.type === 'contact') {
-    h += '<button onclick="_adminMarkContact(\'' + st.code + '\',\'' + st.prenom.replace(/'/g, "\\'") + '\',\'' + st.niveau + '\')" class="w-full bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">\u2713 Marquer contact\u00e9</button>';
-
-  } else if (action.type === 'boost') {
+  if (action.type === 'boost') {
     var topCat = (action.cat || 'Fractions').replace(/'/g, "\\'");
-    h += '<button onclick="copyAdminPrompt(\'' + st.code + '\',\'boost\',\'' + topCat + '\')" class="adm-copy-btn mb-2">\ud83d\udccb Copier le prompt Claude</button>';
+    h += '<button onclick="_copyLastBoostContext(\'' + st.code + '\')" class="adm-copy-btn mb-2">\ud83d\udccb Copier dernier boost + r\u00e9sultats</button>';
+    h += '<button onclick="copyAdminPrompt(\'' + st.code + '\',\'boost\',\'' + topCat + '\')" class="adm-copy-btn mb-2 text-slate-400" style="font-size:10px">ou : Copier le prompt Claude classique</button>';
     h += '<textarea id="ck-boost-json-' + st.code + '" class="adm-textarea mb-2" style="height:80px" placeholder="Coller le JSON ici..." oninput="_ckTogglePublish(\'' + st.code + '\',\'boost\')"></textarea>';
     h += '<button id="ck-btn-boost-' + st.code + '" onclick="_ckPublishBoost(\'' + st.code + '\')" disabled class="w-full bg-slate-300 text-white text-xs font-bold py-2.5 rounded-xl transition-colors cursor-not-allowed">\u26a1 Publier</button>';
 
@@ -8888,24 +8929,6 @@ function _buildActionWorkflow(st, action) {
     h += '<textarea id="ck-chap-json-' + st.code + '" class="adm-textarea mb-2" style="height:80px" placeholder="Coller le JSON ici..." oninput="_ckTogglePublish(\'' + st.code + '\',\'chapitre\')"></textarea>';
     h += '<button id="ck-btn-chap-' + st.code + '" onclick="_ckPublishChapter(\'' + st.code + '\')" disabled class="w-full bg-slate-300 text-white text-xs font-bold py-2.5 rounded-xl transition-colors cursor-not-allowed">\ud83d\udcda Publier</button>';
 
-  } else if (action.type === 'cours') {
-    h += '<button onclick="_adminSetTab(\'cours\')" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">\ud83d\udcd6 Aller aux cours \u2192</button>';
-
-  } else if (action.type === 'brevet') {
-    h += '<button onclick="openStudentModal(\'' + st.code + '\')" class="w-full bg-purple-500 hover:bg-purple-600 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">\ud83c\udf93 Ouvrir pour publier \u2192</button>';
-
-  } else if (action.type === 'email_j0') {
-    h += '<div class="flex gap-2">';
-    h += '<button onclick="_ckOpenEmail(\'' + st.code + '\',\'J+0\')" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">\ud83d\udce7 Voir le template</button>';
-    h += '<button onclick="_ckMarkEmail(\'' + st.code + '\',\'J+0\')" class="flex-1 bg-slate-400 hover:bg-slate-500 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">\u2713 Marquer envoy\u00e9</button>';
-    h += '</div>';
-
-  } else if (action.type.startsWith('email_')) {
-    var emailType = action.emailType || action.type.replace('email_J', 'J+');
-    h += '<div class="flex gap-2">';
-    h += '<button onclick="_ckOpenEmail(\'' + st.code + '\',\'' + emailType + '\')" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">\ud83d\udce7 Voir le template</button>';
-    h += '<button onclick="_ckMarkEmail(\'' + st.code + '\',\'' + emailType + '\')" class="flex-1 bg-slate-400 hover:bg-slate-500 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">\u2713 Marquer envoy\u00e9</button>';
-    h += '</div>';
   }
 
   return h;
@@ -9071,8 +9094,174 @@ function _ckMarkDone(code, type, label) {
 // ── Tab switcher ─────────────────────────────────────────────
 function _adminSetTab(tab) {
   S.adminTab = tab;
-  if (tab === 'cours' && !S.adminCoursData) _loadAdminCours();
   _renderAdminCards();
+}
+
+// ── Count emails due (for tab badge) ─────────────────────────
+function _countEmailsDue() {
+  var count = 0;
+  (S.adminStudents || []).forEach(function(st) {
+    if (st.isTest) return;
+    if (!st.j0Sent) count++;
+    count += (st.emailsDue || []).length;
+  });
+  return count;
+}
+
+// ── Count inactifs (for tab badge) ───────────────────────────
+function _countInactifs() {
+  var count = 0;
+  (S.adminStudents || []).forEach(function(st) {
+    if (st.isTest) return;
+    if (st.inactivityDays >= 3 || (st.neverStarted && st.trialDays >= 1)) count++;
+  });
+  return count;
+}
+
+// ── Copy last boost context with student results ─────────────
+function _copyLastBoostContext(code) {
+  var st = (S.adminStudents || []).find(function(s) { return s.code === code; });
+  if (!st) return;
+
+  var bHistory = st.boostHistory || [];
+  var lastDone = bHistory.find(function(b) { return b.exosDone >= 5; });
+  if (!lastDone) { showT('Aucun boost termin\u00e9', 3000, '\u26a0\ufe0f'); return; }
+
+  var lines = [];
+  lines.push('Tu g\u00e9n\u00e8res le prochain boost de 5 exercices pour ' + st.prenom + ' (' + st.niveau + ').');
+  lines.push('');
+  lines.push('=== DERNIER BOOST FAIT (le ' + lastDone.date + ') ===');
+  lines.push('');
+
+  var boostScores = [];
+  (st.chapitresDetail || []).forEach(function(ch) {
+    (ch.exosList || []).forEach(function(e) {
+      if (e.date === lastDone.date) boostScores.push(e);
+    });
+  });
+
+  (lastDone.exos || []).forEach(function(exo, i) {
+    var score = boostScores[i] || null;
+    var icon = '\u2753';
+    if (score) {
+      icon = score.res === 'SKIP' ? '\ud83e\udd37' : score.res === 'HARD' ? '\u274c' : score.res === 'EASY' ? '\u2705' : '\u26a0\ufe0f';
+    }
+    lines.push((i+1) + '. ' + icon + ' "' + exo.q + '"');
+    lines.push('   R\u00e9ponse correcte : ' + exo.a);
+    lines.push('   Options : ' + (exo.options || []).join(' | '));
+    if (exo.steps && exo.steps.length) lines.push('   Indices : ' + exo.steps.join(' \u2192 '));
+    if (exo.f) lines.push('   Formule : ' + exo.f);
+    if (score) {
+      var ctx = [];
+      if (score.res === 'HARD' && score.wrongOpt) ctx.push('A r\u00e9pondu : "' + score.wrongOpt + '"');
+      if (score.res === 'SKIP') ctx.push('A pass\u00e9 la question');
+      if (score.temps > 0) ctx.push('\u23f1 ' + score.temps + 's');
+      if (score.indices > 0) ctx.push('\ud83d\udca1 ' + score.indices + ' indice(s) utilis\u00e9(s)');
+      if (score.formula) ctx.push('\ud83d\udcd0 formule consult\u00e9e');
+      if (ctx.length) lines.push('   \u2192 \u00c9l\u00e8ve : ' + ctx.join(' | '));
+    }
+    lines.push('');
+  });
+
+  var pc = st.profilCognitif;
+  if (pc) {
+    if (pc.weakPoints && pc.weakPoints.length > 0) {
+      lines.push('=== POINTS FAIBLES ===');
+      pc.weakPoints.forEach(function(w, i) {
+        var line = (i+1) + '. ' + w.cat.replace(/_/g, ' ') + ' (score ' + w.score + '%)';
+        if (w.systematique && w.erreurDominante) line += ' \u2014 erreur syst\u00e9matique : "' + w.erreurDominante + '"';
+        lines.push(line);
+      });
+      lines.push('');
+    }
+    if (pc.comportement) {
+      lines.push('Comportement : ' + pc.comportement.tauxIndices + '% indices \u00b7 ' + pc.comportement.tauxFormule + '% formule \u00b7 ' + pc.comportement.tauxPasCompris + '% pas compris');
+      lines.push('');
+    }
+  }
+
+  lines.push('=== CONSIGNE ===');
+  lines.push('G\u00e9n\u00e8re EXACTEMENT 5 exercices de BOOST progressifs, cibl\u00e9s sur les erreurs ci-dessus.');
+  lines.push('Si l\'\u00e9l\u00e8ve a rat\u00e9 un exo \u2192 reprendre le m\u00eame concept avec des nombres diff\u00e9rents.');
+  lines.push('Si l\'\u00e9l\u00e8ve a r\u00e9ussi facilement \u2192 monter en difficult\u00e9 sur le m\u00eame th\u00e8me.');
+  lines.push('');
+  lines.push('Format JSON strict (copie uniquement le JSON, rien d\'autre) :');
+  lines.push('{');
+  lines.push('  "insight": "Message motivant de 1-2 phrases pour ' + st.prenom + '",');
+  lines.push('  "exos": [');
+  lines.push('    { "q": "...", "a": "...", "options": ["...", "...", "..."], "steps": ["...", "...", "..."], "f": "...", "lvl": 1 }');
+  lines.push('  ]');
+  lines.push('}');
+  lines.push('');
+  lines.push('R\u00e8gles : "a" DOIT \u00eatre dans "options" (3 options). 2-4 steps. lvl 1 ou 2. "f" max 60 chars.');
+
+  var prompt = lines.join('\n');
+  navigator.clipboard.writeText(prompt).then(function() {
+    showT('\ud83d\udccb Dernier boost + r\u00e9sultats copi\u00e9 ! Colle dans Claude.', 4000, '\u2705');
+  }).catch(function() {
+    var ta = document.createElement('textarea');
+    ta.value = prompt;
+    ta.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:200px;z-index:9999;font-size:12px;padding:8px';
+    document.body.appendChild(ta);
+    ta.select();
+    showT('S\u00e9lectionne tout et copie', 5000, '\ud83d\udccb');
+    setTimeout(function() { if (ta.parentNode) ta.parentNode.removeChild(ta); }, 6000);
+  });
+}
+
+// ── Copy all week's boost JSONs for rapport ──────────────────
+function _copyWeekBoosts(code) {
+  var st = (S.adminStudents || []).find(function(s) { return s.code === code; });
+  if (!st) return;
+
+  var now = new Date();
+  var weekAgo = new Date(now.getTime() - 7 * 86400000);
+  var weekAgoStr = weekAgo.toISOString().substring(0, 10);
+
+  var weekBoosts = (st.boostHistory || []).filter(function(b) {
+    return b.date >= weekAgoStr && b.exosDone >= 5;
+  });
+
+  if (weekBoosts.length === 0) { showT('Aucun boost termin\u00e9 cette semaine', 3000, '\u26a0\ufe0f'); return; }
+
+  var lines = [];
+  lines.push('=== RAPPORT HEBDO \u2014 ' + st.prenom + ' (' + st.niveau + ') ===');
+  lines.push('Semaine du ' + weekAgoStr + ' au ' + now.toISOString().substring(0, 10));
+  lines.push('Boosts termin\u00e9s : ' + weekBoosts.length);
+  lines.push('');
+
+  weekBoosts.forEach(function(b, bi) {
+    lines.push('--- Boost du ' + b.date + ' (' + b.exosDone + '/5 exos) ---');
+    (b.exos || []).forEach(function(exo, i) {
+      lines.push((i+1) + '. "' + exo.q + '"');
+      lines.push('   R\u00e9ponse : ' + exo.a);
+      if (exo.steps && exo.steps.length) lines.push('   Indices : ' + exo.steps.join(' \u2192 '));
+      if (exo.f) lines.push('   Formule : ' + exo.f);
+    });
+    lines.push('');
+  });
+
+  var detail = st.chapitresDetail || [];
+  if (detail.length) {
+    lines.push('=== CHAPITRES ===');
+    detail.forEach(function(ch) {
+      lines.push(ch.cat.replace(/_/g, ' ') + ' : ' + ch.nbExos + ' exos, ' + ch.rateSuccess + '% r\u00e9ussite');
+    });
+  }
+
+  navigator.clipboard.writeText(lines.join('\n')).then(function() {
+    showT('\ud83d\udccb Rapport semaine de ' + st.prenom + ' copi\u00e9 !', 4000, '\u2705');
+  }).catch(function() {
+    showT('Erreur copie', 3000, '\u274c');
+  });
+}
+
+// ── Mark weekly report as sent for a student ─────────────────
+function _markRapportSent(code) {
+  var st = (S.adminStudents || []).find(function(s) { return s.code === code; });
+  if (!st) return;
+  _ckMarkDone(code, 'rapport', '\ud83d\udcca Rapport envoy\u00e9 \u2014 ' + st.prenom);
+  showT('\u2705 Rapport marqu\u00e9 comme envoy\u00e9', 2500, '\u2705');
 }
 
 // ── Rapport hebdo parents (dimanche) ─────────────────────────
@@ -9309,7 +9498,7 @@ function _buildModalHTML(st) {
     var h = '';
     if (exos.length > 3) {
       h += '<details class="mb-1"' + (openByDef ? ' open' : '') + '>';
-      var errCnt = exos.filter(function(e){ return e.res === 'HARD'; }).length;
+      var errCnt = exos.filter(function(e){ return e.res === 'HARD' || e.res === 'SKIP'; }).length;
       h += '<summary class="text-[10px] font-semibold text-slate-500 cursor-pointer py-1 select-none">' +
         exos.length + ' exercices' +
         (errCnt > 0 ? ' · ' + errCnt + ' erreur' + (errCnt > 1 ? 's' : '') + ' ✗' : ' · voir le détail') +
@@ -9320,14 +9509,16 @@ function _buildModalHTML(st) {
       var isHard = e.res === 'HARD';
       var enonce = e.enonce || '—';
       h += '<div class="adm-exo-row">';
-      h += '<span style="font-size:.9rem;flex-shrink:0">' + (isHard ? '❌' : '✅') + '</span>';
+      var isSkip = e.res === 'SKIP';
+      h += '<span style="font-size:.9rem;flex-shrink:0">' + (isSkip ? '🤷' : isHard ? '❌' : '✅') + '</span>';
       h += '<div class="flex-1 min-w-0">';
       if (enonce.length > 60) {
         h += '<details><summary class="text-slate-600 leading-snug cursor-pointer">' + enonce.substring(0, 60) + '…</summary><span class="text-slate-600 leading-snug text-xs">' + enonce + '</span></details>';
       } else {
         h += '<div class="text-slate-600 leading-snug">' + enonce + '</div>';
       }
-      if (isHard && e.wrongOpt) h += '<div class="text-rose-400 font-semibold mt-0.5">→ répondu : <em>' + e.wrongOpt + '</em></div>';
+      if (isSkip) h += '<div class="text-amber-500 font-semibold mt-0.5">🤷 a passé la question</div>';
+      else if (isHard && e.wrongOpt) h += '<div class="text-rose-400 font-semibold mt-0.5">→ répondu : <em>' + e.wrongOpt + '</em></div>';
       h += '</div>';
       var pills = '';
       if (e.temps > 0)   pills += '<span class="adm-pill" style="background:#f1f5f9;color:#64748b">⏱' + e.temps + 's</span>';

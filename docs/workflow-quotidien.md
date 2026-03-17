@@ -3,61 +3,56 @@
 > Chaque matin entre 8h et 10h. Maximum 10 minutes.
 > Tout se passe dans l'admin (triple-clic logo sur matheux.fr).
 
-## Les 3 étapes
+## Les 5 onglets admin
 
-### 1. Ouvrir l'onglet À FAIRE (30 secondes)
+| Onglet | Contenu |
+|---|---|
+| **À FAIRE** | Boosts et chapitres terminés → préparer le suivant |
+| **FAIT** | Journal des actions traitées aujourd'hui |
+| **📧 MAILS** | Emails à confirmer (J+0/J+3/J+5/J+7) avec badge compteur |
+| **💤 INACTIFS** | Élèves inactifs >3j ou jamais connectés |
+| **📊 RAPPORT** | Dimanche : rapport hebdo par élève, copier JSON semaine |
 
-Les cartes sont triées par urgence.
-Contenu d'abord (contact, boost, chapitre, cours).
-Emails ensuite (J+0/J+3/J+5/J+7).
+## Workflow quotidien (5-8 min)
 
-### 2. Traiter dans l'ordre (5-8 minutes)
+### 1. Onglet À FAIRE — Boost et chapitres
 
 **Pour chaque boost à préparer :**
-1. Clic "Copier le prompt Claude"
-2. Coller dans claude.ai (ou Claude Code)
+1. Clic "📋 Copier dernier boost + résultats" → copie le dernier boost complet avec les résultats de l'élève (réponses, temps, indices, formule)
+2. Coller dans Claude → il génère le prochain boost adapté
 3. Copier le JSON retourné
-4. Coller dans le textarea "Coller le JSON ici"
-5. Clic "Publier" → carte passe en FAIT automatiquement
+4. Coller dans le textarea
+5. Clic "Publier" → carte passe en FAIT
 
 **Pour chaque chapitre à assigner :**
-Même workflow, JSON de 20 exercices.
+1. Clic "📋 Copier le prompt Claude"
+2. Même workflow, JSON de 20 exercices
 
-**Pour chaque cours à rédiger :**
-Même workflow, JSON des 4 sections (5/10/15/20 exos).
+### 2. Onglet MAILS — Confirmer les emails
 
-**Pour chaque email dû :**
-1. "Voir le template" → éditer si besoin (max 2 phrases)
-2. "Copier dans le presse-papier"
-3. Coller dans Gmail, envoyer
-4. "Marquer envoyé" → coche automatique
+Pour chaque email dû : "Voir" le template, puis "✓ Envoyé" après envoi.
+Badge compteur sur l'onglet si des emails sont en attente.
 
-**Pour un élève inactif :**
-"Marquer contacté" après avoir envoyé un message WhatsApp au parent.
+### 3. Onglet INACTIFS — Surveiller
 
-### 3. Vérifier l'onglet FAIT (10 secondes)
+Liste des élèves inactifs >3j avec email et dernière connexion.
+Pas d'action directe — juste un suivi visuel.
 
-Si tout est traité → "Tout est à jour"
-Sinon → revenir sur les cartes restantes.
+### 4. Onglet FAIT — Vérifier
 
-## Format du prompt Claude pour un boost
+Journal du jour + élèves à jour.
 
-Copié automatiquement par l'admin. Contient :
-- Prénom + niveau
-- Historique des exercices (réussi/raté avec temps et indices)
-- Points faibles prioritaires
-- Erreurs systématiques détectées
-- Incompréhensions déclarées ("j'ai pas compris")
-- Consigne : 5 exercices JSON format strict
+## Le dimanche — Onglet RAPPORT
 
-## Le dimanche
-
-Un bouton "Rapport parents" apparaît dans l'admin.
-Un clic → envoie automatiquement le bilan hebdo à tous les parents actifs.
+1. Pour chaque élève actif cette semaine :
+   - "📋 Copier JSON semaine" → copie tous les boosts de la semaine avec exercices, indices, formules
+   - Coller dans Claude → il rédige le rapport parent
+   - "✅ Rapport envoyé" une fois le mail parti
+2. Bouton "📨 Envoyer le rapport automatique" pour l'envoi groupé
 
 ## Ce qui se passe sans toi
 
-- Emails J+3/J+5/J+7 → automatiques (trigger 9h-10h)
 - Progression élève → mise à jour à chaque exercice
 - Streak → calculé automatiquement
 - Cours débloqués → automatique (paliers 5/10/15/20)
+- Emails J+3/J+5/J+7 → manuels pour l'instant (trigger à activer dès 10 clients)
