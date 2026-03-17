@@ -2,7 +2,7 @@
 
 > Document unique. Point d'entrée + manuel complet.
 > Mis à jour automatiquement à chaque session.
-> GAS @87 · Lancement 18 mars 2026
+> GAS @88 · Lancement 18 mars 2026
 
 ---
 
@@ -170,14 +170,14 @@ python3 rebuild_sheet.py         # Reconstruire Suivi + Historique
 
 ```
 CLAUDE.md                          → Document unique (ce fichier)
-docs/architecture.md               → Technique (frontend + backend + flux)
-docs/database.md                   → Schéma Sheets (onglets + colonnes)
+docs/architecture.md               → Technique @88 (frontend + backend + flux)
+docs/database.md                   → Schéma Sheets (16 onglets + colonnes)
 docs/product.md                    → Produit (vision + parcours + business)
-docs/roadmap.md                    → Priorités + état d'avancement
+docs/roadmap.md                    → Priorités + calendrier lancement
 docs/messages.md                   → Voice & tone guide
 docs/checklist-lancement.md        → Checklist lancement 18 mars
-docs/workflow-quotidien.md         → Workflow quotidien Nicolas
-docs/archive/                      → Docs historiques (ne pas lire sauf besoin)
+docs/workflow-quotidien.md         → Workflow quotidien Nicolas (5 onglets admin)
+docs/archive/                      → Docs historiques + audits + rapports (ne pas lire sauf besoin)
 ```
 
 ---
@@ -248,30 +248,48 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | 8 | Test parent parcours ✅ | Landing → CTA → diag → inscription → onboarding → boost → mail J+0 → admin |
 | 9 | Relecture exos quizz ✅ | Remarques diag 3EME/5EME notées (triangles nommés, formules, LaTeX) |
 | 10 | Audit diag+boost géo ✅ | 168 exos audités → `docs/auditdiagboost.md` — 93 figures SVG à ajouter, 16 reformulations |
+| 11 | **Audit final exercices** ✅ | 1728 exos × 3 scripts + 7 vérifs manuelles. 2 LaTeX fixés (1ERE/Second_Degre). 0 bloquant. Score 98,3%. |
 
 ### ⏳ Mardi 17 mars après-midi
 
 | # | Action | Détail |
 |---|---|---|
-| 1 | ✅ Fix diagnostic + Boost J1 | **FAIT** — 251 figures SVG (`fig` explicites dans ExosJSON), 14 reformulations (Thalès contextualisé, Trigo angle précisé, Sym Axiale vocabulaire, Sections "depuis sommet"), espaces LaTeX fixés, doublon Systèmes 3EME corrigé |
-| 2 | ✅ Implémenter "Valider la réponse" | **FAIT** — selectOpt+validateAnswer, .os/.validate-wrap/.btn-validate, sticky bottom, mode nuit, reset goEx/togCat |
-| 3 | ✅ Implémenter "Je ne sais pas" | **FAIT** — bouton .opt-skip dashed sous options, skipAnswer(), resultat='SKIP' backend (traité comme HARD), supprimé _handlePasCompris + log_pas_compris + messages pas_compris, retro 🤷 "a passé la question", admin 🤷 |
-| 4 | 🖥️ Test admin ergonomie | 3 onglets, cartes, fiche élève, journal, mode nuit admin |
-| 5 | 🔧 Fix frictions admin ergo | Selon remarques test |
+| 1 | ✅ Fix diagnostic + Boost J1 | **FAIT** — 251 figures SVG, 14 reformulations, espaces LaTeX fixés, doublon Systèmes 3EME corrigé |
+| 2 | ✅ Implémenter "Valider la réponse" | **FAIT** — selectOpt+validateAnswer, sticky bottom, mode nuit |
+| 3 | ✅ Implémenter "Je ne sais pas" | **FAIT** — bouton .opt-skip, resultat='SKIP' (traité comme HARD) |
+| 4 | ✅ Refonte admin cockpit @87-@88 | **FAIT** — 5 onglets, boutons JSON complet, 3 profils test |
+| 5 | ✅ Audit final exercices | **FAIT** — 1728 exos, 3 scripts + 7 vérifs manuelles, 2 LaTeX fixés, 0 bloquant, score 98,3% |
 | 6 | 🎮 Test admin workflow | En conditions réelles — boost, chapitre, email |
-| 7 | 🔧 Fix frictions admin workflow | Selon remarques test |
-| 8 | 🧪 Test réouverture user | Auguste + Charlie + Nicolas — vérif post-27 fixes |
+| 7 | 🧪 Test réouverture user | Auguste + Charlie + Nicolas — vérif post-27 fixes |
+| 8 | ✅ Audit pré-lancement complet | **FAIT** — 24 points (3 bloquants, 3 critiques, 7 importants, 8 frictions UX). Voir checklist-lancement.md §5b. 17 mars. |
+
+### ⛔ Bloquants audit (18 mars matin)
+
+| # | Action | Fichier |
+|---|---|---|
+| 1 | Fix prix 9,99€ → 19,99€ | cgu.html L54, premium.html L6/141/173 |
+| 2 | Supprimer alerte "bêta fermée 40 familles" | cgu.html L43-45 |
+| 3 | Fix triggerDailyMarketing Premium='1' string | backend.js L4635 |
+
+### 🔴 Critiques (avant J+7)
+
+| # | Action | Priorité |
+|---|---|---|
+| 1 | Webhook Stripe : implémenter vérif HMAC-SHA256 (`stripe-signature`) | ⛔ Avant J+7 |
+| 2 | Déplacer `SHARED_SECRET` vers `PropertiesService` (en clair L5404) | ⛔ Avant J+7 |
+| 3 | Tester un vrai paiement CB (19,99€ → vérifier Premium=1) | ⛔ Avant J+7 |
 
 ### 🟡 Avant ou après lancement
 
 | # | Action | Priorité |
 |---|---|---|
-| 1 | Finaliser endpoint webhook Stripe (URL GAS + vérifier `whsec_`) | ⛔ Avant J+7 |
-| 2 | Tester un vrai paiement CB (19,99€ → vérifier Premium=1) | ⛔ Avant J+7 |
-| 3 | Triggers Apps Script — automatiser dès 10-20 clients | 🟡 Plus tard |
-| 4 | Vidéo fondateur — tourner + intégrer section "Derrière Matheux" landing | 🟡 18 mars |
-| 5 | Cohérence messages génériques/circonstanciels après refonte landing | 🟡 Vendredi 20 mars (1h) |
-| 6 | Centraliser 3 mails matheux.fr (Thunderbird/alias/redirection) | 🟡 Jeudi 19 mars |
+| 1 | Triggers Apps Script — automatiser dès 10-20 clients | 🟡 Plus tard |
+| 2 | Vidéo fondateur — tourner + intégrer section "Derrière Matheux" landing | 🟡 18 mars |
+| 3 | Cohérence messages génériques/circonstanciels après refonte landing | 🟡 Vendredi 20 mars (1h) |
+| 4 | Centraliser 3 mails matheux.fr (Thunderbird/alias/redirection) | 🟡 Jeudi 19 mars |
+| 5 | Avertissement progressif trial expiry (toast J-3/J-2/J-1) | 🟡 Sprint 1 |
+| 6 | Inverser boutons Valider/Je ne sais pas (thumb zone mobile) | 🟡 Sprint 1 |
+| 7 | KaTeX fallback 3s → 1.5s + spinner | 🟡 Sprint 1 |
 
 ---
 
@@ -285,12 +303,9 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | `test_full_v2.py` | Suite de tests complète (74/74) |
 | `test_simulation_40.py` | Stress test 40 élèves × 15 jours |
 | `sim_21days.py` | Simulation 21j — 12 profils QA |
-| `sim_7days.py` | Simulation 7j — 5 profils |
 | `audit_exos.py` | Audit qualité exercices collège |
-| `audit_geo_context.py` | Audit contextualisation géométrie |
 | `verify_hints.py` | Audit qualité des indices |
 | `test_coherence_boost.py` | Test régression calibrage/boost |
-| `generate_icons.py` | Génération icônes PWA |
 
 ### Utilitaires (scripts/)
 | Script | Description |
@@ -298,7 +313,7 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | `scripts/setup_test_profiles.py` | Setup 6 profils test admin |
 
 ### Archivés (scripts/archive/)
-Scripts one-shot déjà exécutés : imports, migrations, anciens tests, `security1.js`, `security2.js` (freelance, mergés dans backend.js + index.html). Ne pas utiliser.
+Scripts one-shot déjà exécutés : imports, migrations, fix one-shot (`fix_diag_boost`, `fix_spaces`, `fix_thales_trigo`, `fix_double_prefix`), `cleanup_users`, `setup_3_test_profiles`, `notice_fondateur`, `generate_icons`, `audit_geo_context`, `sim_7days`, `security1.js`, `security2.js`. Ne pas utiliser.
 
 ---
 

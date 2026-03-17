@@ -42,15 +42,21 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 | `Rapports` | Rapports quotidiens 7h | Lecture seule |
 | `Cours` | Cours par chapitre rédigés par admin (4 sections × 54 chap) | ❌ Via admin panel uniquement |
 
-### Onglets temporaires
+### Onglets temporaires / secondaires
 
 | Onglet | Rôle | Modifier ? |
 |---|---|---|
 | `Teasing_Early` | Emails waitlist pré-lancement (action `add_teasing_early`) | Lecture seule |
+| `Contact` | Log des formulaires de contact (`send_contact`) | Lecture seule |
+| `Webhook_Log` | Log des webhooks Stripe reçus | Lecture seule |
 
 ### Onglets archivés
 
 Supprimés par `cleanup_all` le 14 mars 2026 : `_ARCHIVE_Queue`, `_ARCHIVE_Prerequisites`, `_ARCHIVE_Rapports`, `_ARCHIVE_Pending_Exos`, `Pending_Exos`, `Queue`, `Programme_Officiel`, `Waitlist`.
+
+### Références mortes dans backend.js (SH constant)
+
+`SH.PREREQS` (`Prerequisites`), `SH.QUEUE` (`Queue`), `SH.PENDING` (`Pending_Exos`) — onglets supprimés mais encore déclarés dans le code. Le helper `getSheet()` gère les tabs manquants sans erreur. À nettoyer dans un futur sprint.
 
 ---
 

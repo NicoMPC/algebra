@@ -30,8 +30,8 @@
 | Analytics | ✅ GA4 RGPD-compliant |
 | Limite bêta | 50 vrais élèves (IsTest=0) |
 | Messages élèves | ✅ Système adaptatif `_msg()` — ~35 entrées, niveau, objectif, coach marks, _OK/_KO contextuels |
-| Admin cockpit | ✅ GAS @87 — cockpit 5 onglets À FAIRE/FAIT/MAILS/INACTIFS/RAPPORT, boost+chapitre uniquement dans À FAIRE, emails séparés, suivi inactifs, rapport dimanche |
-| Exercices | ✅ Audité + corrigé @77 — 1872 exos, score ~98%, notation FR, indices S1, doublons |
+| Admin cockpit | ✅ GAS @88 — cockpit 5 onglets À FAIRE/FAIT/MAILS/INACTIFS/RAPPORT, boost+chapitre uniquement dans À FAIRE, boutons "Copier JSON complet" (exos+résultats+temps+indices+formule), profils test visibles, fix publish chapitre+JSON parse. 17 mars |
+| Exercices | ✅ Audit final 17 mars — 1728 exos vérifiés (3 onglets), 2 LaTeX fixés (1ERE/Second_Degre), 3 faux positifs calcul confirmés OK. Score 98,3%. 24 doublons 1ERE non bloquants. **0 bloquant.** |
 | UX élève | ✅ @77 — mode nuit app, guide boost, titres gras, nav boost reopen |
 | Profil cognitif | ✅ @81 — bouton "j'ai pas compris" + profil cognitif dans fiche admin |
 | Page teasing | ✅ @82 — countdown live, waitlist email (Teasing_Early), auto-switch 18 mars 9h, `?noteasing` pour dev |
@@ -71,22 +71,63 @@
 - [x] 🔬 **Fix diagnostic + Boost J1** ✅ — 251 figures SVG ajoutées (Thalès/Trigo/Sections/Pythagore/Périmètres/Volumes/Homothétie), 14 reformulations ciblées (Thalès contextualisé, Trigo angle précisé, Sym Axiale vocabulaire, Sections "depuis sommet"), espaces LaTeX fixés, doublon Systèmes corrigé
 - [x] ✅ **Implémenter "Valider la réponse"** — selectOpt+validateAnswer, .os (selected), .validate-wrap sticky, .btn-validate disabled→enabled, mode nuit, reset goEx/togCat
 - [x] ✅ **Implémenter "Je ne sais pas"** — bouton .opt-skip, resultat='SKIP' (traité comme HARD), supprimé ancien lien + log_pas_compris. 17 mars.
-- [x] 🖥️ **Refonte admin cockpit** ✅ — 5 onglets (À FAIRE/FAIT/MAILS/INACTIFS/RAPPORT), À FAIRE = boost+chapitre uniquement, bouton "Copier dernier boost + résultats", onglet MAILS séparé, onglet INACTIFS (>3j), onglet RAPPORT dimanche (copier JSON semaine + marquer envoyé). 17 mars.
+- [x] 🖥️ **Refonte admin cockpit** ✅ — 5 onglets (À FAIRE/FAIT/MAILS/INACTIFS/RAPPORT), À FAIRE = boost+chapitre uniquement, boutons "Copier JSON complet" (exos+résultats élève), onglet MAILS séparé, onglet INACTIFS (>3j), onglet RAPPORT dimanche. 17 mars.
+- [x] 🔧 **Fix admin @88** ✅ — profils test visibles dans À FAIRE (filtre isTest retiré), bouton Publier chapitre (ID mismatch), JSON parse "bad control character" (fallback nettoyage), 3 profils test créés (Léa 6E, Maxime 4E, Sofia 3E). 17 mars.
+- [x] 🔬 **Audit final exercices** ✅ — 1728 exos, 3 scripts + 7 vérifs manuelles (indices, figures, LaTeX, options, niveau, notation, doublons). 2 LaTeX cassés fixés (1ERE/Second_Degre "Non factorisable $"). 3 erreurs calcul = faux positifs. 24 doublons 1ERE = non bloquant. **Score 98,3% — 0 bloquant — GO PROD.** 17 mars.
 - [ ] 🎮 Test admin workflow en conditions → fix frictions
 - [ ] 🧪 Test réouverture user (Auguste, Charlie, Nicolas)
+- [x] 🔍 **Audit pré-lancement complet** ✅ — 24 points identifiés (3 bloquants, 3 critiques, 7 importants, 8 frictions UX, 3 cohérence). Voir `docs/checklist-lancement.md` §5b. 17 mars.
 
-### Jeudi 19 mars (Nicolas)
-- [ ] Centraliser 3 mails matheux.fr (nicolas@, contact@, no-reply@) dans un seul endroit
-  - Option A : Thunderbird (IMAP imap.ionos.fr:993 SSL + SMTP smtp.ionos.fr:465 SSL)
-  - Option B : Alias Gmail (ajouter nicolas@ et contact@ comme no-reply@ déjà fait)
-  - Option C : Redirection Ionos → seopourvous@gmail.com (le plus simple)
+### Jeudi 19 mars — J+1 SUIVI + STRATÉGIE
 
-### Mercredi 18 mars — LANCEMENT
-- [ ] Vérifier DNS + HTTPS
-- [ ] GA4 mode debug OK
-- [ ] Admin accessible
-- [ ] Publier premier boost test → visible élève
-- [ ] Annonce sur les réseaux
+**Matin**
+- [ ] 09:00 👀 Admin cockpit — inscrits + boosts + emails
+- [ ] 09:35 📧 Centraliser 3 mails matheux.fr
+- [ ] 10:10 📊 Stratégie marketing — cible + canal + message
+- [ ] 10:45 🤖 Réflexion automatisation (boosts, relances, agents)
+- [ ] 11:20 💼 Post LinkedIn lancement
+
+**Après-midi**
+- [ ] 14:15 📞 Relances + nouveaux contacts (one-to-one)
+- [ ] 14:50 🏫 Contact établissements + profs influenceurs
+- [ ] 15:25 👀 Surveiller réponses + GA4
+- [ ] 16:00 🏁 Bilan jour 2
+
+### Vendredi 20 mars — J+2 PRODUIT + CONTENU
+
+**Matin**
+- [ ] 09:30 👀 Admin cockpit matin
+- [ ] 10:05 🎬 Tuto onboarding élève (vidéo ou guide visuel)
+- [ ] 10:35 📱 Vérif PWA mobile (install + offline + icône)
+- [ ] 11:10 📧 Test rapport parent hebdo (trigger manuel + relecture)
+
+**Après-midi**
+- [ ] 12:00 🎯 Système de points — définir les règles
+- [ ] 12:35 🔐 Double confirmation mot de passe (dev)
+- [ ] 13:10 ✉️ Template email inscription
+- [ ] 13:45 ✉️ Template email rapport parent
+- [ ] 14:20 🔤 Cohérence messages génériques/circonstanciels
+
+### Mercredi 18 mars — JOUR J LANCEMENT
+
+**Matin — Audit fixes + tests + go live**
+- [ ] 09:00 ⛔ Fix 3 bloquants audit (prix cgu.html/premium.html L54/L6/141/173, alerte bêta cgu.html L43-45) — 10 min
+- [ ] 09:15 🔴 Fix triggerDailyMarketing Premium='1' string L4635 — 5 min
+- [ ] 09:25 🎮 Test admin workflow (simuler un matin d'admin)
+- [ ] 09:55 🧪 Test réouverture user (Auguste, Charlie, Nicolas)
+- [ ] 10:20 🔧 Fix frictions test (admin + user)
+- [ ] 10:45 💳 Test paiement CB Stripe (19,99€ → vérif Premium → rembourser)
+- [ ] 11:15 ✉️ Rédiger messages parents
+- [ ] 11:30 🔐 Décision webhook Stripe HMAC-SHA256 (avant ou après J+7)
+
+**Après-midi — GO LIVE + diffusion**
+- [ ] 14:00 🚀 GO LIVE — TEASING_MODE = false + push
+- [ ] 14:15 🎥 Vidéo fondateur + intégration landing
+- [ ] 14:50 📱 Diffusion cercle proche (SMS, WhatsApp, messages perso)
+- [ ] 15:25 📱 Diffusion réseaux (LinkedIn, Facebook, waitlist)
+- [ ] 16:00 🏫 Contact établissements + micro-influenceurs
+- [ ] 16:35 👀 Surveiller inscriptions + GA4 + répondre
+- [ ] 17:10 🏁 Bilan jour 1
 
 ---
 
@@ -97,12 +138,13 @@
 | 1 | ~~**Stripe TEST → PROD**~~ — ✅ Fait @82 (16 mars 2026) — lien PROD `cNicN7b0ebU9bOE9WTb3q01` | ✅ | 🟢 |
 | 2 | ~~**Créer `contact@matheux.fr`**~~ ✅ + ~~**alias `no-reply@matheux.fr`**~~ ✅ (SMTP Ionos port 465 SSL) | ✅ | 🟢 |
 | 3 | **Automatiser trigger `triggerDailyMarketing`** → dès 10 clients actifs (manuel via admin en attendant) | Google Apps Script UI | 🟡 |
-| 4 | **Webhook Stripe → colonne `Premium`** — code déployé @85, Payment Link configuré (CGV + confidentialité + limite 50 + TVA off), **endpoint Stripe à finaliser** | Stripe dashboard → Webhooks → créer destination | 🟡 |
+| 4 | **Webhook Stripe → colonne `Premium`** — code déployé @85, Payment Link configuré (CGV + confidentialité + limite 50 + TVA off), **endpoint Stripe à finaliser**. ⚠️ **Audit 17 mars** : aucune vérif HMAC-SHA256 Stripe, `SHARED_SECRET` en clair dans backend.js L5404 → à sécuriser avant J+7 | Stripe dashboard → Webhooks → créer destination | 🔴 |
 | 5 | Vrais témoignages élèves/parents sur landing | À collecter après premiers clients | 🔵 |
 | 6 | **Migration serveur + backend** — envisager après ~10 clients : remplacer GAS+Sheets par serveur dédié (Node/Python) + BDD (Postgres/Supabase). Limite GAS : 20 users simultanés, 6 min/appel, pas de cron fiable. Mode Brevet à déployer proprement après migration. | Architecture | 🟡 |
 | 6 | **Design overhaul landing** — ~~@68 (14 mars)~~ → **Refonte GOD MODE @86 (17 mars)** : 11 sections, section Problème, contraste 10min/jour, fondateur humain, pills engagement | ✅ Fait @86 | 🟢 |
 | 7 | **Vidéo fondateur** — tourner courte vidéo Nicolas pour section "Derrière Matheux" landing | 18 mars (lancement) | 🟡 |
 | 8 | **Cohérence messages** — vérifier wording génériques/circonstanciels après refonte landing | Vendredi 20 mars (1h) | 🟡 |
+| 9 | **UX sans boost** — ajouter bandeau "ton boost arrive bientôt" si aucun boost généré (actuellement : rien ne s'affiche, pas d'erreur). Nicolas génère manuellement en attendant. | Frontend index.html | 🟡 |
 
 ## Priorités code — prochaines sessions
 
@@ -114,7 +156,7 @@
 | 3 | **BUG-AUDIT-01** : `Systèmes_Équations 3EME exo#16` — réponse corrigée | ✅ Corrigé (déjà en prod) | 🟢 |
 | 4 | **BUG-AUDIT-02/03** : Boost `Transformations 5EME` + `Homothétie 4EME` — tiret unicode | ✅ Corrigé (déjà en prod) | 🟢 |
 | 5 | **BUG-AUDIT-04** : 5 doublons Boost/Curriculum collège | ✅ Corrigé (déjà en prod) | 🟢 |
-| 11 | **Doublons 1ERE** : 19 doublons Boost/Curriculum dans 6 chapitres 1ERE (insert_1ere.py) | ❌ À faire | 🟡 |
+| 11 | **Doublons 1ERE** : 24 doublons Diag/Boost/Curriculum dans chapitres 1ERE — non bloquant, élève voit même exo 2× | ❌ À faire (post-lancement) | 🟡 |
 | 10 | **BUG-1ERE-JSON** : `a ∉ options` dans `insert_1ere.py` — réponses marquées fausses même si correctes (Dérivation + 5 autres chapitres) | ✅ Corrigé 14 mars — assert guard ajouté dans `_exo()` | 🟢 |
 | 6 | **BUG-AUDIT-05** : BrevetExos convertis au format standard `{lvl, q, a, options, f, steps}` + 3 doublons fusionnés (18→15 chap) | ✅ Corrigé 14 mars | 🟢 |
 | 7 | **Figures géo SVG** : lettres dynamiques depuis l'énoncé, filtrage nonGeoChaps, 3 nouveaux types 1ERE (vectors, repere, trigo_circle), cercle diamètre, angle 3 lettres, symétries 3 paires | ✅ Corrigé @65 | 🟢 |

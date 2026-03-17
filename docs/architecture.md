@@ -24,9 +24,9 @@ NAVIGATEUR (index.html)              GOOGLE APPS SCRIPT (backend.js)
 
 | Composant | Technologie | Fichier | Taille |
 |---|---|---|---|
-| Frontend | HTML + CSS vars + Tailwind CDN + JS vanilla | `index.html` | ~9700 lignes |
-| Backend | Google Apps Script (V8) | `backend.js` | ~5100 lignes |
-| Base de données | Google Sheets | — | 13 onglets actifs |
+| Frontend | HTML + CSS vars + Tailwind CDN + JS vanilla | `index.html` | ~9900 lignes |
+| Backend | Google Apps Script (V8) | `backend.js` | ~5300 lignes |
+| Base de données | Google Sheets | — | 16 onglets actifs |
 | Hébergement frontend | GitHub Pages | `matheux.fr` | Auto-deploy sur push |
 | Hébergement backend | Google Apps Script Web App | URL fixe via deployment ID | — |
 | Auth | SHA-256 client-side | localStorage `boost_v23` | `email + '::' + password + '::AB22'` |
@@ -57,7 +57,7 @@ Les vues sont des fonctions JS qui injectent du HTML dans `#main` :
 | Calibrage | `rSection('CALIBRAGE', ...)` | Diagnostic (quiz initial) |
 | Progression | `rSection('PROGRESSION', ...)` | Barres de progression par chapitre |
 | Brevet | `rSection('BREVET', ...)` | Mode brevet blanc (3EME only) |
-| Admin | `rSection('ADMIN', ...)` | Cockpit admin 5 onglets : À FAIRE / FAIT / MAILS / INACTIFS / RAPPORT (@87) |
+| Admin | `rSection('ADMIN', ...)` | Cockpit admin @88 — 5 onglets : À FAIRE / FAIT / MAILS / INACTIFS / RAPPORT. Boutons "Copier JSON complet" (exos+résultats+temps+indices+formule). Profils test visibles. |
 
 ### Navigation
 
@@ -118,11 +118,12 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @80
+### Actions GAS — état @88
 
-> @77 : mode nuit app (bouton 🌙 header, `body.app-night`, `localStorage app_night`), guide "Commence par là" seulement après boost consommé, titres chapitres `font-weight:800`, boost terminé = navigation Précédent/Suivant. Audit + correction 1872 exercices (score qualité ~98%).
-> @76 : refonte admin cockpit — 3 onglets (À FAIRE/FAIT/TEST), cartes inline avec workflows, journal horodaté, `log_contact` ajouté. Anciens onglets (Aujourd'hui/À faire/Suivi/Traité/Test/Cours) remplacés. Cours accessible depuis les cartes.
-> @64 : ajout niveau 1ERE Spé Maths (ALLOWED_LEVELS, niveauOrder). @63 : rate limiting global (60/min, 15/min login/register), validation inputs saveScore, 6 bugfixes simulation QA.
+> @88 : admin cockpit 5 onglets (À FAIRE/FAIT/MAILS/INACTIFS/RAPPORT), boutons "Copier JSON complet", profils test visibles, fix publish chapitre + JSON parse.
+> @87 : bouton "Valider la réponse" (selectOpt+validateAnswer), bouton "Je ne sais pas" (resultat='SKIP'), 251 figures SVG ajoutées, 14 reformulations.
+> @77 : mode nuit app, guide "Commence par là", titres chapitres gras, nav boost reopen. Audit 1872 exercices (~98%).
+> @76 : refonte admin cockpit initial. @64 : 1ERE Spé Maths. @63 : rate limiting + validation inputs.
 
 | Action | Description | Statut |
 |---|---|---|
@@ -253,25 +254,44 @@ Deux variantes convergentes : `_flowGuestRegister()` (guest complet) et `_doLogi
 
 Commandes de déploiement : voir [claude.md](claude.md#déploiement).
 
+### Vulnérabilités connues — audit 17 mars 2026
+
+| Risque | Sévérité | Détail | Fix |
+|--------|----------|--------|-----|
+| Webhook Stripe sans HMAC-SHA256 | 🔴 CRITIQUE | Seule vérif = `metadata.secret` en clair → faux webhook possible | Implémenter `stripe-signature` header |
+| `SHARED_SECRET` hardcodé | 🔴 CRITIQUE | backend.js L5404 en plain text | → `PropertiesService` |
+| `triggerDailyMarketing` Premium='1' | 🟠 HAUTE | String '1' non détecté → emails relance aux payants | Ajouter `String(premium)==='1'` L4635 |
+| `ensureUsersCols` race condition | 🟡 MOYEN | 2 requêtes simultanées → colonnes dupliquées | Lock ou check post-insert |
+| `saveScore` DailyBoosts ExosDone | 🟡 MOYEN | Si row DailyBoosts pas encore créée → ExosDone=0 | Créer row si absente |
+| Rate limiting par email | 🟡 MOYEN | Changer email = reset compteur | Acceptable MVP |
+
 ---
 
 ## Scripts Python utilitaires
 
-| Script | Usage | Dangereux ? |
-|---|---|---|
-| `sheets.py` | Bibliothèque accès Google Sheets (staging) | Non |
-| `rebuild_sheet.py` | Reconstruit 👁 Suivi et 📋 Historique | Non |
-| `create_demo_student.py` | Crée profil démo + simule diagnostic + boost | Non |
-| `create_5_students.py` | Crée 5 profils variés (test scénarios) | Non |
-| `test_full_v2.py` | Suite de tests GAS complète (74/74) | Non |
-| `test_simulation_40.py` | Simulation 40 élèves × 15 jours (17/17, 1616 appels) | Non |
-| `cleanup_prod.py` | Nettoyage complet base prod | ⚠️ IRRÉVERSIBLE |
-| `fix_lucas_ines.py` | Ajuste profils démo spécifiques | Non |
-| `import_brevet_exos.py` | Pousse brevet_exos_3eme.json → BrevetExos | One-shot |
-| `push_boost_exos.py` | Pousse boost_exos.json → BoostExos (290 exos) | One-shot |
-| `insert_1ere.py` | Insère niveau 1ERE Spé Maths (330 exos) + compte Auguste | Idempotent |
+### Actifs (racine)
 
-Scripts archivés dans `scripts_archive/`.
+| Script | Usage |
+|---|---|
+| `sheets.py` | Bibliothèque accès Google Sheets (utilisée par tous les scripts) |
+| `rebuild_sheet.py` | Reconstruit 👁 Suivi + 📋 Historique |
+| `test_full_v2.py` | Suite de tests complète (74/74) |
+| `test_simulation_40.py` | Simulation 40 élèves × 15 jours (17/17, 1616 appels) |
+| `sim_21days.py` | Simulation 21j — 12 profils QA |
+| `audit_exos.py` | Audit qualité exercices collège |
+| `verify_hints.py` | Audit qualité des indices |
+| `test_coherence_boost.py` | Test régression calibrage/boost |
+| `deploy.sh` | Script de déploiement GAS (push + deploy) |
+
+### Utilitaires (scripts/)
+
+| Script | Usage |
+|---|---|
+| `scripts/setup_test_profiles.py` | Setup 6 profils test admin |
+
+### Archivés (scripts/archive/)
+
+Scripts one-shot déjà exécutés : imports, migrations, fix one-shot, anciens tests, sécurité freelance. Ne pas utiliser.
 
 ---
 

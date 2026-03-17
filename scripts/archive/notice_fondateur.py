@@ -182,6 +182,12 @@ HTML_CONTENT = """<!DOCTYPE html>
   }
   .callout strong { color: var(--blue-500); }
 
+  .callout-green {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border-left: 4px solid var(--emerald);
+  }
+  .callout-green strong { color: var(--emerald-dark); }
+
   .callout-amber {
     background: linear-gradient(135deg, #fffbeb, #fef3c7);
     border-left: 4px solid var(--amber-500);
@@ -207,14 +213,14 @@ HTML_CONTENT = """<!DOCTYPE html>
 <div class="header">
   <h1>matheux<span>.fr</span></h1>
   <div class="subtitle">Notice Fondateur — État du projet</div>
-  <div class="date">Lundi 16 mars 2026 — Lancement J-2</div>
+  <div class="date">Mardi 17 mars 2026 — Lancement J-1</div>
 </div>
 
 <!-- ═══════════════════════ CHIFFRES CLÉS ═══════════════════════ -->
 <div class="stats">
   <div class="stat-card">
     <div class="number">1 872</div>
-    <div class="label">exercices (score qualité ~98%)</div>
+    <div class="label">exercices (qualité ~98%)</div>
   </div>
   <div class="stat-card">
     <div class="number">54</div>
@@ -230,6 +236,12 @@ HTML_CONTENT = """<!DOCTYPE html>
   </div>
 </div>
 
+<div class="callout-green callout">
+  <strong>Lancement confirmé : mercredi 18 mars 2026 à 9h.</strong><br>
+  Code 100% prêt. Tests 5/5 niveaux ✅. Test parent ✅. 27 frictions fixées.
+  Landing GOD MODE déployée. GitHub privé (MatheuxApp org).
+</div>
+
 <!-- ═══════════════════════ PROJET ═══════════════════════ -->
 <h2>1. Le projet en bref</h2>
 <p><strong>Matheux</strong> est un outil de soutien scolaire en maths adaptatif, de la 6e à la 3e + 1re Spé Maths. L'app détecte les lacunes de l'élève via un diagnostic, puis prépare des exercices personnalisés chaque jour.</p>
@@ -243,10 +255,11 @@ HTML_CONTENT = """<!DOCTYPE html>
   <tr><th>Composant</th><th>Techno</th><th>Détail</th></tr>
   <tr><td>Frontend</td><td>HTML + CSS + JS vanilla</td><td>SPA ~9 900 lignes — GitHub Pages (matheux.fr)</td></tr>
   <tr><td>Backend</td><td>Google Apps Script (V8)</td><td>~5 300 lignes — 30 actions API via doPost</td></tr>
-  <tr><td>Base de données</td><td>Google Sheets</td><td>13 onglets — ~20 users simultanés max</td></tr>
-  <tr><td>Paiement</td><td>Stripe PROD</td><td>19,99€/mois — webhook + premium guard déployés</td></tr>
+  <tr><td>Base de données</td><td>Google Sheets</td><td>13+ onglets — ~20 users simultanés max</td></tr>
+  <tr><td>Paiement</td><td>Stripe PROD</td><td>19,99€/mois — webhook + premium guard @85</td></tr>
   <tr><td>Emails</td><td>GmailApp + Ionos SMTP</td><td>no-reply@, contact@, nicolas@matheux.fr</td></tr>
   <tr><td>Analytics</td><td>GA4</td><td>RGPD-compliant, consentement explicite</td></tr>
+  <tr><td>Repo</td><td>GitHub privé</td><td>MatheuxApp/algebra — Enterprise trial 30j</td></tr>
 </table>
 
 <!-- ═══════════════════════ CONTENU PÉDA ═══════════════════════ -->
@@ -258,8 +271,9 @@ HTML_CONTENT = """<!DOCTYPE html>
   <tr><td>Boost quotidien</td><td>540 exercices</td><td>54 chapitres × 10 — entraînement ciblé</td></tr>
   <tr><td>Brevet blanc</td><td>144 exercices</td><td>15 chapitres 3e — format épreuve</td></tr>
 </table>
-<p><strong>Niveaux couverts :</strong> 6e, 5e, 4e, 3e (collège complet) + 1re Spé Maths (10 chapitres expérimentaux).<br>
-<strong>Audit qualité :</strong> 1 872 exercices audités le 15 mars — score ~98%. Notation française, indices progressifs, doublons corrigés.</p>
+<p><strong>Niveaux :</strong> 6e, 5e, 4e, 3e + 1re Spé Maths (10 chapitres).<br>
+<strong>Audit qualité :</strong> 1 872 exercices audités — score ~98%. Notation française, indices progressifs, doublons corrigés.<br>
+<strong>Types :</strong> QCM (défaut), Vrai/Faux, trous à compléter. Figures géo SVG (18 types auto-détectés).</p>
 
 <!-- ═══════════════════════ FONCTIONNALITÉS ═══════════════════════ -->
 <h2>4. Fonctionnalités clés</h2>
@@ -267,105 +281,96 @@ HTML_CONTENT = """<!DOCTYPE html>
 <h3>Côté élève</h3>
 <ul>
   <li><strong>Boost du jour</strong> — 5 exercices ciblés, ~10 min/jour</li>
-  <li><strong>Chapitres libres</strong> — accessibles en permanence après le boost</li>
-  <li><strong>Brevet blanc</strong> (3e) — quiz sans indices, résultats détaillés, mentions</li>
-  <li><strong>Mode révision</strong> — chapitres d'une autre année assignés par l'admin</li>
+  <li><strong>Chapitres libres</strong> — accessibles en permanence, cartes premium (cadeau irisé), tri intelligent</li>
+  <li><strong>Brevet blanc</strong> (3e) — quiz sans indices, résultats avec mentions</li>
   <li><strong>Figures géo SVG</strong> — 18 types auto-détectés depuis l'énoncé</li>
-  <li><strong>Brouillon + Calculette</strong> — contextuel par chapitre/niveau</li>
-  <li><strong>Gamification</strong> — XP, streak, confettis, mastery ring, mode nuit</li>
-  <li><strong>Bouton "j'ai pas compris"</strong> — profil cognitif dans la fiche admin</li>
-  <li><strong>Types d'exercices</strong> — QCM, Vrai/Faux, trous à compléter</li>
+  <li><strong>Brouillon + Calculette</strong> — contextuel par chapitre/niveau (mobile : bottom sheet, desktop : panneau latéral)</li>
+  <li><strong>Gamification</strong> — XP, streak, confettis, mastery ring, mode nuit 🌙</li>
+  <li><strong>Signaler une erreur</strong> — bouton 📢 sur tous les modes</li>
+  <li><strong>Messages personnalisés</strong> — prénom, chapitre, palier, objectif</li>
 </ul>
 
 <h3>Côté admin (Nicolas)</h3>
 <ul>
-  <li><strong>Cockpit 3 onglets</strong> — À FAIRE / FAIT / TEST — cartes élèves triées par urgence</li>
-  <li><strong>Publish 1-clic</strong> — boost, chapitre, brevet blanc depuis la fiche élève</li>
+  <li><strong>Cockpit 3 onglets</strong> — À FAIRE / FAIT / TEST — cartes triées par urgence</li>
+  <li><strong>Publish 1-clic</strong> — boost, chapitre, brevet depuis la fiche élève</li>
   <li><strong>Emails marketing</strong> — J+0 auto, J+3/J+5/J+7 manuels (templates éditables)</li>
   <li><strong>Rapport parent hebdo</strong> — stats réelles, mot adapté au score</li>
-  <li><strong>Feedbacks élève</strong> — signalements, ressenti, incompréhensions</li>
-  <li><strong>Checklist quotidienne</strong> — items auto-cochés à chaque action</li>
+  <li><strong>Profil cognitif</strong> — incompréhensions déclarées, erreurs systématiques</li>
+  <li><strong>Journal horodaté</strong> — chaque action traitée est logée</li>
 </ul>
 
-<h3>Côté parent</h3>
-<ul>
-  <li><strong>Email J+0</strong> — bienvenue automatique, ton prof humain</li>
-  <li><strong>7 jours gratuits</strong> — accès complet sans carte bancaire</li>
-  <li><strong>Formulaire contact</strong> — accessible depuis le footer</li>
-</ul>
-
-<!-- ═══════════════════════ SÉCURITÉ & JURIDIQUE ═══════════════════════ -->
+<!-- ═══════════════════════ SÉCURITÉ ═══════════════════════ -->
 <h2>5. Sécurité & Juridique</h2>
 <table>
   <tr><th>Élément</th><th>État</th></tr>
   <tr><td>RGPD renforcé mineurs</td><td><span class="badge badge-green">✅ Complet</span></td></tr>
   <tr><td>Consentement parental obligatoire</td><td><span class="badge badge-green">✅ Formulaire</span></td></tr>
-  <tr><td>5 pages légales (mentions, CGU, CGV, confidentialité, cookies)</td><td><span class="badge badge-green">✅ En ligne</span></td></tr>
+  <tr><td>5 pages légales</td><td><span class="badge badge-green">✅ En ligne</span></td></tr>
   <tr><td>TVA art. 293 B CGI (exonéré)</td><td><span class="badge badge-green">✅ CGV</span></td></tr>
-  <tr><td>Hash MDP client SHA-256 (salted)</td><td><span class="badge badge-green">✅ Actif</span></td></tr>
-  <tr><td>Rate limiting GAS (60/min global, 15/min sensibles)</td><td><span class="badge badge-green">✅ Actif</span></td></tr>
-  <tr><td>Stripe webhook MAXIMAL PARANOID + Premium Guard</td><td><span class="badge badge-green">✅ Déployé @85</span></td></tr>
-  <tr><td>GA4 conditionné au consentement cookies</td><td><span class="badge badge-green">✅ Actif</span></td></tr>
+  <tr><td>Hash MDP client SHA-256</td><td><span class="badge badge-green">✅ Actif</span></td></tr>
+  <tr><td>Rate limiting GAS (60/min)</td><td><span class="badge badge-green">✅ Actif</span></td></tr>
+  <tr><td>Stripe webhook + Premium Guard</td><td><span class="badge badge-green">✅ Déployé @85</span></td></tr>
+  <tr><td>GA4 consentement cookies</td><td><span class="badge badge-green">✅ Actif</span></td></tr>
 </table>
 
 <!-- ═══════════════════════ BILAN 16 MARS ═══════════════════════ -->
-<h2>6. Bilan lundi 16 mars — 12 actions terminées</h2>
-
+<h2>6. Bilan lundi 16 mars — 12 actions</h2>
 <table>
   <tr><th>#</th><th>Action</th><th>Statut</th></tr>
   <tr><td>1</td><td>Stripe TEST → PROD (19,99€/mois, limite 50)</td><td><span class="badge badge-green">✅</span></td></tr>
   <tr><td>2</td><td>3 boîtes mail Ionos (contact@, no-reply@, nicolas@)</td><td><span class="badge badge-green">✅</span></td></tr>
   <tr><td>3</td><td>Alias Gmail no-reply@ (SMTP Ionos port 465 SSL)</td><td><span class="badge badge-green">✅</span></td></tr>
-  <tr><td>4</td><td>Sécurité Stripe déployée — webhook + premium guard</td><td><span class="badge badge-green">✅</span></td></tr>
+  <tr><td>4</td><td>Sécurité Stripe — webhook + premium guard @85</td><td><span class="badge badge-green">✅</span></td></tr>
   <tr><td>5</td><td>TVA art. 293 B CGI dans CGV</td><td><span class="badge badge-green">✅</span></td></tr>
   <tr><td>6</td><td>Formulaire contact (3 footers + toast)</td><td><span class="badge badge-green">✅</span></td></tr>
   <tr><td>7</td><td>Merge sécurité freelance → main + GitHub Pages</td><td><span class="badge badge-green">✅</span></td></tr>
   <tr><td>8</td><td>Tests emails (J+0, reset MDP, contact) tous OK</td><td><span class="badge badge-green">✅</span></td></tr>
-  <tr><td>9</td><td>Stripe config (CGV + confidentialité + TVA off + limite 50)</td><td><span class="badge badge-green">✅</span></td></tr>
+  <tr><td>9</td><td>Stripe config (CGV + confidentialité + TVA off + limite)</td><td><span class="badge badge-green">✅</span></td></tr>
   <tr><td>10</td><td>Bandeau rappel limite Stripe admin</td><td><span class="badge badge-green">✅</span></td></tr>
   <tr><td>11</td><td>Nettoyage base (SIM01-SIM12 supprimés)</td><td><span class="badge badge-green">✅</span></td></tr>
   <tr><td>12</td><td>Test élève 6e ✅ / 5e ✅ / 4e ✅ — 15 frictions notées</td><td><span class="badge badge-green">✅</span></td></tr>
 </table>
 
-<!-- ═══════════════════════ MARDI 17 ═══════════════════════ -->
-<h2>7. Mardi 17 mars matin — Plan d'action</h2>
-
-<div class="callout-amber callout">
-  <strong>Priorité absolue :</strong> Finir test 3e + fixer les 15 frictions élève avant le lancement.
-</div>
-
+<!-- ═══════════════════════ BILAN 17 MARS ═══════════════════════ -->
+<h2>7. Bilan mardi 17 mars — 10 actions matin</h2>
 <table>
   <tr><th>#</th><th>Action</th><th>Statut</th></tr>
-  <tr><td>1</td><td><strong>Test élève 3EME</strong> — dernier niveau à tester</td><td><span class="badge badge-amber">⏳ Mardi matin</span></td></tr>
-  <tr><td>2</td><td><strong>Fix 15 frictions</strong> — mode nuit, LaTeX×3, messages×3, boost×2, chapitre×4, scroll, bouton "j'ai pas compris" + frictions 3e</td><td><span class="badge badge-amber">⏳ Mardi</span></td></tr>
-  <tr><td>3</td><td>Test admin workflow en conditions réelles</td><td><span class="badge badge-amber">⏳ Mardi</span></td></tr>
-  <tr><td>4</td><td>Test parent parcours complet</td><td><span class="badge badge-amber">⏳ Mardi</span></td></tr>
-  <tr><td>5</td><td>Landing page — relecture parent, wording final</td><td><span class="badge badge-amber">⏳ Mardi</span></td></tr>
+  <tr><td>1</td><td>Test élève 3EME — dernier niveau validé (5/5)</td><td><span class="badge badge-green">✅</span></td></tr>
+  <tr><td>2</td><td>Fix 27 frictions élève (mode nuit, exo bloqué, bienvenue, retro, boost...)</td><td><span class="badge badge-green">✅</span></td></tr>
+  <tr><td>3</td><td>Cartes premium + messages personnalisés (prénom, chapitre, palier)</td><td><span class="badge badge-green">✅</span></td></tr>
+  <tr><td>4</td><td>Landing page refonte GOD MODE — 11 sections restructurées</td><td><span class="badge badge-green">✅</span></td></tr>
+  <tr><td>5</td><td>GitHub → MatheuxApp org (privé, Enterprise trial 30j)</td><td><span class="badge badge-green">✅</span></td></tr>
+  <tr><td>6</td><td>Fix final : min 2 chap diag + bandeau boost + polish UI</td><td><span class="badge badge-green">✅</span></td></tr>
+  <tr><td>7</td><td>Vérif boost auto : exos = chapitres choisis uniquement</td><td><span class="badge badge-green">✅</span></td></tr>
+  <tr><td>8</td><td>Test parent parcours complet (landing → admin)</td><td><span class="badge badge-green">✅</span></td></tr>
+  <tr><td>9</td><td>Relecture exos quizz (diag 3e/5e — remarques notées)</td><td><span class="badge badge-green">✅</span></td></tr>
+  <tr><td>10</td><td>Audit diag+boost géo — 168 exos, 93 figures SVG, 16 reformulations</td><td><span class="badge badge-green">✅</span></td></tr>
+</table>
+
+<!-- ═══════════════════════ APREM 17 MARS ═══════════════════════ -->
+<h2>8. Mardi 17 mars après-midi — Plan</h2>
+<table>
+  <tr><th>#</th><th>Action</th><th>Statut</th></tr>
+  <tr><td>1</td><td>🔬 Fix diagnostic + Boost J1 (figures SVG, reformulations, signaler erreur)</td><td><span class="badge badge-amber">⏳</span></td></tr>
+  <tr><td>2</td><td>⚡ Implémenter "Valider la réponse" (bouton sticky, sélection avant validation)</td><td><span class="badge badge-amber">⏳</span></td></tr>
+  <tr><td>3</td><td>🤷 Implémenter "Je ne sais pas" (vrai bouton, resultat=SKIP, remplace ancien)</td><td><span class="badge badge-amber">⏳</span></td></tr>
+  <tr><td>4</td><td>🖥️ Test admin ergonomie → fix frictions</td><td><span class="badge badge-amber">⏳</span></td></tr>
+  <tr><td>5</td><td>🎮 Test admin workflow en conditions → fix frictions</td><td><span class="badge badge-amber">⏳</span></td></tr>
+  <tr><td>6</td><td>🧪 Test réouverture user (Auguste, Charlie, Nicolas)</td><td><span class="badge badge-amber">⏳</span></td></tr>
 </table>
 
 <!-- ═══════════════════════ AVANT/APRÈS LANCEMENT ═══════════════════════ -->
-<h2>8. Avant / après lancement</h2>
+<h2>9. Actions avant / après lancement</h2>
 <table>
   <tr><th>Action</th><th>Deadline</th><th>Priorité</th></tr>
   <tr><td>Endpoint webhook Stripe (URL GAS + whsec_)</td><td>Avant J+7</td><td><span class="badge badge-red">⛔ Critique</span></td></tr>
   <tr><td>Vrai paiement CB test (19,99€ → Premium=1)</td><td>Avant J+7</td><td><span class="badge badge-red">⛔ Critique</span></td></tr>
-  <tr><td>Triggers Apps Script (emails auto J+3/J+5/J+7)</td><td>Dès 10 clients</td><td><span class="badge badge-amber">🟡 Plus tard</span></td></tr>
-  <tr><td>Centraliser 3 mails matheux.fr</td><td>Jeudi 19 mars</td><td><span class="badge badge-blue">🔵 Confort</span></td></tr>
+  <tr><td>Triggers Apps Script (emails auto)</td><td>Dès 10 clients</td><td><span class="badge badge-amber">🟡</span></td></tr>
+  <tr><td>Centraliser 3 mails matheux.fr</td><td>Jeudi 19 mars</td><td><span class="badge badge-blue">🔵</span></td></tr>
+  <tr><td>Vidéo fondateur pour landing</td><td>18 mars</td><td><span class="badge badge-amber">🟡</span></td></tr>
+  <tr><td>Cohérence messages post-refonte</td><td>Vendredi 20 mars</td><td><span class="badge badge-amber">🟡</span></td></tr>
 </table>
-
-<!-- ═══════════════════════ MERCREDI LANCEMENT ═══════════════════════ -->
-<h2>9. Mercredi 18 mars — Jour J</h2>
-<div class="callout">
-  <strong>Lancement confirmé : mercredi 18 mars 2026 à 9h.</strong><br>
-  La page teasing bascule automatiquement vers la vraie landing à 9h (heure de Paris).
-</div>
-<ul>
-  <li>Vérifier DNS + HTTPS sur matheux.fr</li>
-  <li>GA4 reçoit des events (mode debug Chrome)</li>
-  <li>Admin HMD493 accessible (triple-clic logo)</li>
-  <li>Publier un boost test → visible élève</li>
-  <li>Annonce sur les réseaux</li>
-</ul>
 
 <!-- ═══════════════════════ EMAILS ═══════════════════════ -->
 <h2>10. Architecture emails</h2>
@@ -377,17 +382,53 @@ HTML_CONTENT = """<!DOCTYPE html>
   <tr><td>J+3 / J+5 / J+7 marketing</td><td><span class="badge badge-amber">Manuel admin</span></td><td>—</td></tr>
   <tr><td>Rapport parent hebdo</td><td><span class="badge badge-amber">Manuel admin</span></td><td>—</td></tr>
 </table>
+<p><strong>Identité :</strong> no-reply@matheux.fr (Ionos SMTP) · Reply-to : nicolas@matheux.fr · Contact public : contact@matheux.fr<br>
+<strong>Ton :</strong> vouvoiement parents, tutoiement élèves · Signature : "Nicolas — Prof de maths — Matheux"</p>
+
+<!-- ═══════════════════════ JOUR J ═══════════════════════ -->
+<h2>11. Mercredi 18 mars — Jour J</h2>
+<div class="callout">
+  <strong>La page teasing bascule automatiquement vers la vraie landing à 9h (heure de Paris).</strong>
+</div>
+<ul>
+  <li>Vérifier DNS + HTTPS sur matheux.fr</li>
+  <li>GA4 reçoit des events (mode debug Chrome)</li>
+  <li>Admin HMD493 accessible (triple-clic logo)</li>
+  <li>Publier un boost test → visible élève</li>
+  <li>Annonce sur les réseaux</li>
+</ul>
 
 <!-- ═══════════════════════ SCALE ═══════════════════════ -->
-<h2>11. Roadmap après lancement</h2>
+<h2>12. Roadmap après lancement</h2>
 <table>
   <tr><th>Seuil</th><th>Action</th></tr>
   <tr><td>10 clients</td><td>Activer triggers emails auto (J+3/J+5/J+7)</td></tr>
-  <tr><td>15 clients</td><td>Analyser colonne Objectif → décider offres différenciées</td></tr>
+  <tr><td>15 clients</td><td>Analyser colonne Objectif → décider offres</td></tr>
   <tr><td>20 clients</td><td>Automatiser rapport parent hebdo</td></tr>
   <tr><td>30 clients</td><td>Automatiser boosts nuit + rapport matin</td></tr>
   <tr><td>50 clients</td><td>~1 000€ MRR — objectif atteint</td></tr>
-  <tr><td>80-100 clients</td><td>Migration Google Sheets → Supabase (PostgreSQL)</td></tr>
+  <tr><td>80-100 clients</td><td>Migration Sheets → Supabase (PostgreSQL)</td></tr>
+</table>
+
+<!-- ═══════════════════════ ACCÈS ═══════════════════════ -->
+<h2>13. Liens et accès</h2>
+<table>
+  <tr><th>Service</th><th>URL / ID</th></tr>
+  <tr><td>Site web</td><td>matheux.fr</td></tr>
+  <tr><td>Code source</td><td>github.com/MatheuxApp/algebra (privé)</td></tr>
+  <tr><td>Google Sheets</td><td>ID 1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4</td></tr>
+  <tr><td>Backend GAS</td><td>script.google.com (projet Matheux)</td></tr>
+  <tr><td>Stripe PROD</td><td>Lien cNicN7b0ebU9bOE9WTb3q01</td></tr>
+  <tr><td>GA4</td><td>G-7R2DW4585Y</td></tr>
+</table>
+
+<h3>Comptes de test</h3>
+<table>
+  <tr><th>Code</th><th>Prénom</th><th>Niveau</th><th>Email</th><th>MDP</th></tr>
+  <tr><td>AUG001</td><td>Auguste</td><td>1ERE</td><td>augustecapronm@icloud.com</td><td>auguste</td></tr>
+  <tr><td>PR3CMB</td><td>Nicolas</td><td>4EME</td><td>nico@nico.fr</td><td>niconcico</td></tr>
+  <tr><td>3M4ZAB</td><td>Charlie</td><td>3EME</td><td>charlieboitel6@gmail.com</td><td>charlie</td></tr>
+  <tr><td>HMD493</td><td>Admin</td><td>—</td><td>(admin)</td><td>—</td></tr>
 </table>
 
 <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
@@ -416,17 +457,16 @@ def send_email(smtp_password: str, to_email: str = "seopourvous@gmail.com"):
     msg = MIMEMultipart()
     msg["From"] = f"Matheux <{FROM}>"
     msg["To"] = to_email
-    msg["Subject"] = "Matheux — Notice Fondateur · Lancement J-2"
+    msg["Subject"] = "Matheux — Notice Fondateur · Lancement J-1"
 
     body = """Salut Nicolas,
 
-Voici ta Notice Fondateur Matheux à jour — bilan complet du projet au 16 mars 2026.
+Voici ta Notice Fondateur Matheux à jour — bilan complet au 17 mars 2026.
 
-12 actions terminées aujourd'hui, lancement confirmé mercredi 18 mars à 9h.
+22 actions terminées (12 lundi + 10 mardi matin).
+Lancement confirmé demain mercredi 18 mars à 9h.
 
-Demain matin : test 3EME + fix 15 frictions.
-
-Bonne soirée !
+Cet après-midi : fix diagnostic, "Valider la réponse", "Je ne sais pas", tests admin.
 
 —
 Matheux · matheux.fr
@@ -437,7 +477,7 @@ Matheux · matheux.fr
         part = MIMEBase("application", "pdf")
         part.set_payload(f.read())
         encoders.encode_base64(part)
-        part.add_header("Content-Disposition", "attachment", filename="Matheux_Notice_Fondateur_16mars2026.pdf")
+        part.add_header("Content-Disposition", "attachment", filename="Matheux_Notice_Fondateur_17mars2026.pdf")
         msg.attach(part)
 
     with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as server:

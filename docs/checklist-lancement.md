@@ -55,7 +55,28 @@
 - [ ] **5.3** Admin HMD493 accessible (triple-clic logo)
 - [ ] **5.4** Publier un boost depuis l'admin → visible élève
 - [x] Pages légales accessibles depuis footer (5 pages) ✅ + TVA art. 293 B CGI
-- [x] Prix 19,99€ cohérent partout ✅ vérifié @83
+- [ ] ~~Prix 19,99€ cohérent partout ✅ vérifié @83~~ **⛔ FAUX** — cgu.html dit 9,99€ (L54), premium.html dit 9,99€ (L6/141/173). À corriger.
+
+## 5b. Audit pré-lancement — 17 mars 2026 (Claude)
+
+### ⛔ BLOQUANTS (avant GO LIVE)
+- [ ] **5b.1** Fix prix cgu.html L54 : 9,99€ → 19,99€
+- [ ] **5b.2** Fix prix premium.html L6/141/173 : 9,99€ → 19,99€
+- [ ] **5b.3** Supprimer alerte "bêta fermée 40 familles" dans cgu.html L43-45
+
+### 🔴 CRITIQUES (avant J+7)
+- [ ] **5b.4** Webhook Stripe : implémenter vérif HMAC-SHA256 (`stripe-signature` header) — actuellement seul check = `metadata.secret === 'MATHEUX_STRIPE_2026'` en clair
+- [ ] **5b.5** Déplacer `SHARED_SECRET` de backend.js L5404 vers `PropertiesService.getScriptProperties()`
+- [ ] **5b.6** Fix `triggerDailyMarketing()` L4635 : ajouter `String(premium) === '1'` pour ne pas relancer les payants
+
+### 🟡 IMPORTANTS (sprint 1 post-lancement)
+- [ ] **5b.7** Avertissement progressif trial expiry (toast J-3/J-2/J-1 avant overlay bloquant)
+- [ ] **5b.8** Unifier messages boost : "demain" vs "bientôt" → un seul message clair
+- [ ] **5b.9** Inverser ordre boutons : "Valider" en bas (sticky) > "Je ne sais pas" au-dessus
+- [ ] **5b.10** Audit mode nuit : vérifier texte blanc sur fond clair sur tous éléments `.app-night`
+- [ ] **5b.11** KaTeX fallback : 3s → 1.5s + spinner "Chargement maths..."
+- [ ] **5b.12** Fix manifest.json : copier scree.png à la racine ou supprimer la ref
+- [ ] **5b.13** Supprimer ou mettre à jour premium.html (page orpheline, bouton Stripe commenté)
 
 ## 6. Post-lancement J+1
 

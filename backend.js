@@ -113,7 +113,6 @@ function doPost(e) {
       case 'send_weekly_report':         res = sendWeeklyReportNow(p);     break;
       case 'log_contact':                res = logContact(p);              break;
       case 'send_session_rapport':       res = sendSessionRapport(p);      break;
-      case 'log_pas_compris':            res = logPasCompris(p);           break;
       case 'add_teasing_early':          res = addTeasingEarly(p);         break;
       case 'stripe_webhook':             res = stripeWebhook(p);           break;
       case 'send_contact':               res = sendContact(p);             break;
@@ -606,9 +605,9 @@ function saveScore(p) {
   }
 
   // Validation inputs
-  var VALID_RESULTS = ['EASY', 'MEDIUM', 'HARD'];
+  var VALID_RESULTS = ['EASY', 'MEDIUM', 'HARD', 'SKIP'];
   if (VALID_RESULTS.indexOf(String(p.resultat)) === -1) {
-    return { status: 'error', message: 'Résultat invalide. Valeurs acceptées : EASY, MEDIUM, HARD.' };
+    return { status: 'error', message: 'Résultat invalide. Valeurs acceptées : EASY, MEDIUM, HARD, SKIP.' };
   }
   if (String(p.code).length !== 6) {
     return { status: 'error', message: 'Code élève invalide.' };
@@ -959,7 +958,7 @@ function generateDailyBoost(p) {
     var todayHard = getRows(SH.SCORES).filter(function(r) {
       return r['Code']     && String(r['Code'])     === code     &&
              r['Date']     && String(r['Date'])     === todayStr &&
-             r['Résultat'] && String(r['Résultat']) === 'HARD';
+             r['Résultat'] && (String(r['Résultat']) === 'HARD' || String(r['Résultat']) === 'SKIP');
     });
 
     // Compte les erreurs par chapitre, tri décroissant
@@ -1145,11 +1144,11 @@ function generateRemediation(p) {
     .filter(function(r) {
       return r['Code']     && String(r['Code'])     === code     &&
              r['Chapitre'] && String(r['Chapitre']) === category &&
-             r['Résultat'] && String(r['Résultat']) === 'HARD';
+             r['Résultat'] && (String(r['Résultat']) === 'HARD' || String(r['Résultat']) === 'SKIP');
     })
     .map(function(r) { return parseInt(r['NumExo']); });
 
-  // Priorité 1 : exos difficiles (HARD) → à retravailler en priorité
+  // Priorité 1 : exos difficiles (HARD/SKIP) → à retravailler en priorité
   // Priorité 2 : exos jamais vus
   // Priorité 3 : exos EASY (fallback si nécessaire)
   var hardExos  = allExos.filter(function(ex, i) { return hardIdxs.indexOf(i + 1) !== -1; });
@@ -1318,7 +1317,7 @@ function updateConfidenceScore(code, level, categorie, resultat, indicesVus, exo
     else              delta = indicesVus > 0 ? 5 : 10;
   } else if (resultat === 'MEDIUM') {
     delta = 1;
-  } else if (resultat === 'HARD') {
+  } else if (resultat === 'HARD' || resultat === 'SKIP') {
     delta = exoLvl === 1 ? -3 : -5;
     nbErreurs++;
   }
@@ -1360,7 +1359,7 @@ function buildChapterSummary(code, cat, niveau, catScores) {
   if (!catScores || catScores.length === 0) return '';
   var total = catScores.length;
   var easy  = catScores.filter(function(r) { return String(r['Résultat']) === 'EASY'; });
-  var hard  = catScores.filter(function(r) { return String(r['Résultat']) === 'HARD'; });
+  var hard  = catScores.filter(function(r) { var res = String(r['Résultat']); return res === 'HARD' || res === 'SKIP'; });
   var taux  = Math.round((easy.length / total) * 100);
 
   var erreurs = hard.slice(-5).map(function(r) {
@@ -1397,7 +1396,7 @@ function buildBoostSummary(boostScores) {
   if (!boostScores || boostScores.length === 0) return '';
   var total = boostScores.length;
   var easy  = boostScores.filter(function(r) { return String(r['Résultat']) === 'EASY'; });
-  var hard  = boostScores.filter(function(r) { return String(r['Résultat']) === 'HARD'; });
+  var hard  = boostScores.filter(function(r) { var res = String(r['Résultat']); return res === 'HARD' || res === 'SKIP'; });
 
   var erreurs = hard.slice(-5).map(function(r) {
     return {
@@ -1834,7 +1833,7 @@ function detectFragilePrerequisites(p) {
   }
 
   var hardCount = recent.filter(function(r) {
-    return String(r['Résultat']) === 'HARD';
+    var res = String(r['Résultat']); return res === 'HARD' || res === 'SKIP';
   }).length;
 
   if (hardCount / recent.length <= 0.6) {
@@ -2364,12 +2363,12 @@ function generateMorningReport() {
     }
     var c = s.chapters[chap];
     c.total++;
-    if (res === 'HARD')   { c.hard++; c.hardDates.push(date); }
+    if (res === 'HARD' || res === 'SKIP') { c.hard++; c.hardDates.push(date); }
     if (res === 'EASY')     c.easy++;
     if (res === 'MEDIUM')   c.medium++;
     c.sessionsOnChap[date] = true;
     var w = weekBucket(date, todayStr);
-    if (w >= 0 && w <= 2) { c.byWeek[w].total++; if (res === 'HARD') c.byWeek[w].hard++; }
+    if (w >= 0 && w <= 2) { c.byWeek[w].total++; if (res === 'HARD' || res === 'SKIP') c.byWeek[w].hard++; }
   });
 
   // ── 3. Enrichir avec Progress (score de confiance, statut) ─
@@ -2501,7 +2500,7 @@ function generateMorningReport() {
     var maxStreak = Math.max.apply(null, chapKeys.map(function(k){ return s.chapters[k].streak || 0; }).concat([0]));
     var nbErr7    = allScores.filter(function(r){
       return String(r['Code']||'') === code &&
-             String(r['Résultat']||'') === 'HARD' &&
+             (String(r['Résultat']||'') === 'HARD' || String(r['Résultat']||'') === 'SKIP') &&
              weekBucket(String(r['Date']||'').substring(0,10), todayStr) === 0;
     }).length;
 
@@ -2765,7 +2764,7 @@ function generatePendingExos(students) {
     var recentHard = {};
     getRows(SH.SCORES).filter(function(r) {
       return String(r['Code'] || '') === code &&
-             String(r['Résultat'] || '') === 'HARD' &&
+             (String(r['Résultat'] || '') === 'HARD' || String(r['Résultat'] || '') === 'SKIP') &&
              String(r['Date'] || '').substring(0, 10) >= cutoff7;
     }).forEach(function(r) {
       var chap = String(r['Chapitre'] || '');
@@ -3166,7 +3165,7 @@ function getAdminOverview(p) {
         // Calcul des stats sur les exos chapitre uniquement (PATCH 1)
         var cappedChap = chapExos.slice(0, CAP);
         var cappedN   = cappedChap.length || 1; // éviter division par 0
-        var hardExos  = cappedChap.filter(function(e) { return e.res === 'HARD'; });
+        var hardExos  = cappedChap.filter(function(e) { return e.res === 'HARD' || e.res === 'SKIP'; });
         var easyCount = cappedChap.filter(function(e) { return e.res === 'EASY'; }).length;
         var totalTime = cappedChap.reduce(function(s, e) { return s + e.temps;   }, 0);
         var totalIdx  = cappedChap.reduce(function(s, e) { return s + e.indices; }, 0);
@@ -4075,29 +4074,6 @@ function logManualEmail(p) {
   return { status: 'success' };
 }
 
-function logPasCompris(p) {
-  var code   = String(p.code     || '');
-  var chap   = String(p.chapitre || '');
-  var enonce = String(p.enonce   || '').substring(0, 80);
-  var source = String(p.source   || '');
-  if (!code) return { status: 'error', message: 'Code manquant.' };
-
-  var user = null;
-  var users = getRows(SH.USERS);
-  for (var i = 0; i < users.length; i++) {
-    if (String(users[i]['Code']) === code) { user = users[i]; break; }
-  }
-  var prenom = user ? String(user['Prénom'] || '') : '';
-  var niveau = user ? String(user['Niveau'] || '') : '';
-
-  var now = Utilities.formatDate(new Date(), 'Europe/Paris', 'yyyy-MM-dd HH:mm');
-  appendRow('Insights', [
-    now, code, prenom, niveau,
-    'pas_compris', '',
-    enonce, 0, source, chap
-  ]);
-  return { status: 'success' };
-}
 
 function logContact(p) {
   if (!verifyAdmin(String(p.adminCode || ''))) return { status: 'error', message: 'Accès refusé.' };
