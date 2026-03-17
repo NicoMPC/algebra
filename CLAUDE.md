@@ -241,7 +241,7 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | 2 | ~~Fix frictions + cartes premium~~ ✅ | 27 frictions + cartes chapitre premium (cadeau/découvert/invite), tri intelligent, messages personnalisés (prénom, chapitre, palier) |
 | 3 | Test admin workflow | En conditions réelles → fix frictions admin |
 | 4 | Test parent | Parcours complet parent → fix frictions |
-| 5 | Landing page clarté | Relecture parent, wording final |
+| 5 | ~~Landing page refonte GOD MODE~~ ✅ | 11 sections restructurées — section Problème, contraste 10min/jour, fondateur humain, pricing pills engagement. Teasing : "vraiment comprises", CTA "Être informé", pills 10min/suivi |
 
 ### 🟡 Avant ou après lancement
 
@@ -250,6 +250,8 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | 1 | Finaliser endpoint webhook Stripe (URL GAS + vérifier `whsec_`) | ⛔ Avant J+7 |
 | 2 | Tester un vrai paiement CB (19,99€ → vérifier Premium=1) | ⛔ Avant J+7 |
 | 3 | Triggers Apps Script — automatiser dès 10-20 clients | 🟡 Plus tard |
+| 4 | Vidéo fondateur — tourner + intégrer section "Derrière Matheux" landing | 🟡 18 mars |
+| 5 | Cohérence messages génériques/circonstanciels après refonte landing | 🟡 Vendredi 20 mars (1h) |
 
 ---
 

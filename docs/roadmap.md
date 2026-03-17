@@ -62,7 +62,7 @@
 - [x] 🔧 **Fix 27 frictions élève** ✅ — mode nuit, exo 1 bloqué, bienvenue, retro, bon retour, boost demain, lune, IA retiré, signaler erreur, onboarding responsive, cartes premium, tri intelligent, messages perso, cohérence onboarding, bouton retour trial flow
 - [ ] Test admin workflow en conditions → fix frictions
 - [ ] Test parent parcours complet → fix frictions
-- [ ] Landing page relecture parent, wording final
+- [x] **Refonte landing teasing + prod GOD MODE** ✅ — 11 sections restructurées, section Problème, contraste 10min/jour, fondateur court/humain, pricing pills engagement
 - [ ] Checklist pré-lancement vérifs finales
 
 ### Jeudi 19 mars (Nicolas)
@@ -90,7 +90,9 @@
 | 4 | **Webhook Stripe → colonne `Premium`** — code déployé @85, Payment Link configuré (CGV + confidentialité + limite 50 + TVA off), **endpoint Stripe à finaliser** | Stripe dashboard → Webhooks → créer destination | 🟡 |
 | 5 | Vrais témoignages élèves/parents sur landing | À collecter après premiers clients | 🔵 |
 | 6 | **Migration serveur + backend** — envisager après ~10 clients : remplacer GAS+Sheets par serveur dédié (Node/Python) + BDD (Postgres/Supabase). Limite GAS : 20 users simultanés, 6 min/appel, pas de cron fiable. Mode Brevet à déployer proprement après migration. | Architecture | 🟡 |
-| 6 | **Design overhaul landing** — hero glow, social proof fold, CTA shimmer, glass stats, step numbers watermark, avatars+Vérifié, 0,66€/jour, guarantee badge, sticky mobile CTA | ✅ Fait @68 (14 mars 2026) | 🟢 |
+| 6 | **Design overhaul landing** — ~~@68 (14 mars)~~ → **Refonte GOD MODE @86 (17 mars)** : 11 sections, section Problème, contraste 10min/jour, fondateur humain, pills engagement | ✅ Fait @86 | 🟢 |
+| 7 | **Vidéo fondateur** — tourner courte vidéo Nicolas pour section "Derrière Matheux" landing | 18 mars (lancement) | 🟡 |
+| 8 | **Cohérence messages** — vérifier wording génériques/circonstanciels après refonte landing | Vendredi 20 mars (1h) | 🟡 |
 
 ## Priorités code — prochaines sessions
 
