@@ -238,7 +238,7 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | # | Action | Détail |
 |---|---|---|
 | 1 | ~~Test élève 3EME~~ ✅ | Fait — remarques intégrées |
-| 2 | ~~Fix 27 frictions élève~~ ✅ | 20 initiales + 7 post-test : exo 1 bloqué (S.rev), night mode texte exos, bandeau bienvenue, retro indices, "Bon retour" seuil, boost demain wording, brevet lock |
+| 2 | ~~Fix frictions + cartes premium~~ ✅ | 27 frictions + cartes chapitre premium (cadeau/découvert/invite), tri intelligent, messages personnalisés (prénom, chapitre, palier) |
 | 3 | Test admin workflow | En conditions réelles → fix frictions admin |
 | 4 | Test parent | Parcours complet parent → fix frictions |
 | 5 | Landing page clarté | Relecture parent, wording final |

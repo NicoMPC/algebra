@@ -90,6 +90,7 @@
 | 3 | **Automatiser trigger `triggerDailyMarketing`** → dès 10 clients actifs (manuel via admin en attendant) | Google Apps Script UI | 🟡 |
 | 4 | **Webhook Stripe → colonne `Premium`** — code déployé @85, Payment Link configuré (CGV + confidentialité + limite 50 + TVA off), **endpoint Stripe à finaliser** | Stripe dashboard → Webhooks → créer destination | 🟡 |
 | 5 | Vrais témoignages élèves/parents sur landing | À collecter après premiers clients | 🔵 |
+| 6 | **Migration serveur + backend** — envisager après ~10 clients : remplacer GAS+Sheets par serveur dédié (Node/Python) + BDD (Postgres/Supabase). Limite GAS : 20 users simultanés, 6 min/appel, pas de cron fiable. Mode Brevet à déployer proprement après migration. | Architecture | 🟡 |
 | 6 | **Design overhaul landing** — hero glow, social proof fold, CTA shimmer, glass stats, step numbers watermark, avatars+Vérifié, 0,66€/jour, guarantee badge, sticky mobile CTA | ✅ Fait @68 (14 mars 2026) | 🟢 |
 
 ## Priorités code — prochaines sessions
