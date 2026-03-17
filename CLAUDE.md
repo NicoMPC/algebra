@@ -189,7 +189,7 @@ docs/archive/                      → Docs historiques (ne pas lire sauf besoin
 | GAS URL | `https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec` |
 | Deployment ID | `AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF` |
 | Sheet ID (prod) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
-| GitHub | `https://github.com/NicoMPC/algebra` |
+| GitHub | `https://github.com/MatheuxApp/algebra` (privé, org Enterprise trial) |
 | Stripe PROD | `https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01` ✅ |
 | Stripe Webhook | Endpoint à finaliser dans Stripe Dashboard |
 | GA4 | `G-7R2DW4585Y` |
@@ -210,11 +210,12 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 
 ---
 
-## 8. État pré-lancement — 16 mars 2026
+## 8. État pré-lancement — 17 mars 2026
 
 > **Lancement confirmé : mercredi 18 mars 2026 à 9h.**
-> Code 100% prêt. Sécurité Stripe déployée. Emails opérationnels.
-> Reste : test 3EME + fix 15 frictions + endpoint webhook Stripe.
+> Code 100% prêt. Tests 5/5 niveaux ✅. 27 frictions fixées. Landing GOD MODE déployée.
+> GitHub privé (MatheuxApp org, Enterprise trial). Stripe PROD actif.
+> Reste : endpoint webhook Stripe + tests admin + 2 features UX (Valider + Je ne sais pas).
 
 ### ✅ Fait (lundi 16 mars)
 
@@ -231,17 +232,35 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | 9 | Stripe config — CGV + confidentialité + TVA décochée + limite 50 paiements |
 | 10 | Bandeau rappel limite Stripe dans admin dashboard |
 | 11 | Nettoyage base — SIM01-SIM12 supprimés, gardé admin + Auguste + Charlie |
-| 12 | Test élève 6EME ✅ / 5EME ✅ / 4EME ✅ / 3EME ✅ — 27 frictions fixées (20+7) |
+| 12 | Test élève 6EME ✅ / 5EME ✅ / 4EME ✅ — 15 frictions notées |
 
-### ⏳ Mardi 17 mars matin (Nicolas)
+### ✅ Fait (mardi 17 mars)
 
 | # | Action | Détail |
 |---|---|---|
-| 1 | ~~Test élève 3EME~~ ✅ | Fait — remarques intégrées |
-| 2 | ~~Fix frictions + cartes premium~~ ✅ | 27 frictions + cartes chapitre premium (cadeau/découvert/invite), tri intelligent, messages personnalisés (prénom, chapitre, palier) |
-| 3 | Test admin workflow | En conditions réelles → fix frictions admin |
-| 4 | Test parent | Parcours complet parent → fix frictions |
-| 5 | ~~Landing page refonte GOD MODE~~ ✅ | 11 sections restructurées — section Problème, contraste 10min/jour, fondateur humain, pricing pills engagement. Teasing : "vraiment comprises", CTA "Être informé", pills 10min/suivi |
+| 1 | Test élève 3EME ✅ | Remarques intégrées |
+| 2 | Fix 27 frictions élève ✅ | Mode nuit, exo 1 bloqué, bienvenue, retro, bon retour, boost demain, signaler erreur, onboarding responsive |
+| 3 | Cartes premium + messages perso ✅ | Cartes cadeau/découvert/invite, tri intelligent, messages prénom/chapitre/palier |
+| 4 | Landing refonte GOD MODE ✅ | 11 sections — Problème, contraste 10min/jour, fondateur humain, pricing pills. Teasing : "vraiment comprises" |
+| 5 | GitHub → MatheuxApp org ✅ | Repo privé, Enterprise trial 30j, Pages OK, DNS OK |
+| 6 | Fix final pré-lancement ✅ | Min 2 chapitres diag, bandeau boost cohérent, polish UI |
+| 7 | Vérif boost auto ✅ | Exos = chapitres choisis élève uniquement (confirmé backend L895-915) |
+| 8 | Test parent parcours ✅ | Landing → CTA → diag → inscription → onboarding → boost → mail J+0 → admin |
+| 9 | Relecture exos quizz ✅ | Remarques diag 3EME/5EME notées (triangles nommés, formules, LaTeX) |
+| 10 | Audit diag+boost géo ✅ | 168 exos audités → `docs/auditdiagboost.md` — 93 figures SVG à ajouter, 16 reformulations |
+
+### ⏳ Mardi 17 mars après-midi
+
+| # | Action | Détail |
+|---|---|---|
+| 1 | ✅ Fix diagnostic + Boost J1 | **FAIT** — 251 figures SVG (`fig` explicites dans ExosJSON), 14 reformulations (Thalès contextualisé, Trigo angle précisé, Sym Axiale vocabulaire, Sections "depuis sommet"), espaces LaTeX fixés, doublon Systèmes 3EME corrigé |
+| 2 | ⚡ Implémenter "Valider la réponse" | Bouton sticky, sélection avant validation, split checkOpt → selectOpt+validateAnswer |
+| 3 | 🤷 Implémenter "Je ne sais pas" | Vrai bouton .opt-skip, resultat='SKIP' backend, remplace l'ancien lien |
+| 4 | 🖥️ Test admin ergonomie | 3 onglets, cartes, fiche élève, journal, mode nuit admin |
+| 5 | 🔧 Fix frictions admin ergo | Selon remarques test |
+| 6 | 🎮 Test admin workflow | En conditions réelles — boost, chapitre, email |
+| 7 | 🔧 Fix frictions admin workflow | Selon remarques test |
+| 8 | 🧪 Test réouverture user | Auguste + Charlie + Nicolas — vérif post-27 fixes |
 
 ### 🟡 Avant ou après lancement
 
@@ -252,6 +271,7 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | 3 | Triggers Apps Script — automatiser dès 10-20 clients | 🟡 Plus tard |
 | 4 | Vidéo fondateur — tourner + intégrer section "Derrière Matheux" landing | 🟡 18 mars |
 | 5 | Cohérence messages génériques/circonstanciels après refonte landing | 🟡 Vendredi 20 mars (1h) |
+| 6 | Centraliser 3 mails matheux.fr (Thunderbird/alias/redirection) | 🟡 Jeudi 19 mars |
 
 ---
 

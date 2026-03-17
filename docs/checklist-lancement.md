@@ -42,9 +42,11 @@
 - [x] **4b.4** Test élève 3EME ✅ (17 mars)
 - [x] **4b.5** Fix 27 frictions élève ✅ (17 mars) — 20 initiales + 7 post-test live (exo 1 bloqué, night mode texte, bandeau bienvenue, retro indices, seuil "Bon retour", boost demain, brevet lock)
 - [x] **4b.5b** Fix final : min 2 chapitres diag + bandeau boost cohérent + polish UI ✅ (17 mars)
-- [ ] **4b.6** Test admin workflow en conditions → **mardi 17**
-- [ ] **4b.7** Test parent parcours complet → **mardi 17**
-- [ ] **4b.8** Test admin ergonomie → **mardi 17**
+- [x] **4b.5c** Fix diagnostic + Boost géo ✅ (17 mars) — 251 figures SVG, 14 reformulations, espaces LaTeX, doublon Systèmes
+- [ ] **4b.6** Test admin workflow en conditions → **mardi 17 aprem**
+- [x] **4b.7** Test parent parcours complet ✅ (17 mars) — landing → diag → inscription → onboarding → boost → mail J+0 → admin
+- [ ] **4b.8** Test admin ergonomie → **mardi 17 aprem**
+- [ ] **4b.9** Test réouverture user (Auguste, Charlie, Nicolas) → **mardi 17 soir**
 
 ## 5. Vérifs jour J (mercredi 18 mars)
 

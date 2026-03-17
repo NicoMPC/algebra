@@ -6,8 +6,8 @@
 
 ## État global — 17 mars 2026
 
-**Matheux 100% prêt. Tests élève 5/5 ✅. 27 frictions fixées + cartes premium + messages perso + cohérence onboarding.**
-**Reste : endpoint webhook Stripe + tests admin/parent. Lancement confirmé : mercredi 18 mars 2026 à 9h.**
+**Matheux 100% prêt. Tests élève 5/5 ✅. Test parent ✅. 27 frictions fixées + cartes premium + messages perso. Landing GOD MODE déployée. GitHub privé (MatheuxApp).**
+**Reste : endpoint webhook Stripe + tests admin + 2 features UX (Valider la réponse + Je ne sais pas). Lancement confirmé : mercredi 18 mars 2026 à 9h.**
 
 > ✅ **Bugfixes @60** — BUG-01 à BUG-12 corrigés (simulation 7j × 5 profils). 13 mars.
 > ✅ **Simulation 40 élèves @63** — 6 bugs corrigés + 1616 appels API, 0 erreur. 14 mars.
@@ -57,13 +57,23 @@
 - [x] Nettoyage base : SIM01-SIM12 + anciens profils supprimés, gardé admin+Auguste+Charlie ✅
 - [x] Test élève : 6EME ✅ / 5EME ✅ / 4EME ✅ — 15 frictions notées (3EME à finir dans le bus)
 
-### Mardi 17 mars matin (Nicolas)
+### Mardi 17 mars matin (Nicolas) ✅
 - [x] **Test élève 3EME** ✅ — remarques intégrées
 - [x] 🔧 **Fix 27 frictions élève** ✅ — mode nuit, exo 1 bloqué, bienvenue, retro, bon retour, boost demain, lune, IA retiré, signaler erreur, onboarding responsive, cartes premium, tri intelligent, messages perso, cohérence onboarding, bouton retour trial flow
-- [ ] Test admin workflow en conditions → fix frictions
-- [ ] Test parent parcours complet → fix frictions
+- [x] **Test parent parcours complet** ✅ — landing → diag → inscription → onboarding → boost → mail J+0 → admin
 - [x] **Refonte landing teasing + prod GOD MODE** ✅ — 11 sections restructurées, section Problème, contraste 10min/jour, fondateur court/humain, pricing pills engagement
-- [ ] Checklist pré-lancement vérifs finales
+- [x] **Checklist fix final** ✅ — min 2 chapitres diag, bandeau boost cohérent, polish UI
+- [x] **GitHub → MatheuxApp** ✅ — repo privé, Enterprise trial 30j, Pages OK
+- [x] **Relecture exos quizz** ✅ — remarques diag 3EME/5EME (triangles, formules, LaTeX)
+- [x] **Audit diag+boost géo** ✅ — 168 exos, 93 figures SVG à ajouter, 16 reformulations
+
+### Mardi 17 mars après-midi (Nicolas + Claude)
+- [x] 🔬 **Fix diagnostic + Boost J1** ✅ — 251 figures SVG ajoutées (Thalès/Trigo/Sections/Pythagore/Périmètres/Volumes/Homothétie), 14 reformulations ciblées (Thalès contextualisé, Trigo angle précisé, Sym Axiale vocabulaire, Sections "depuis sommet"), espaces LaTeX fixés, doublon Systèmes corrigé
+- [ ] ⚡ **Implémenter "Valider la réponse"** — bouton sticky, sélection avant validation, split checkOpt (spec prête dans Calendar)
+- [ ] 🤷 **Implémenter "Je ne sais pas"** — vrai bouton .opt-skip, resultat='SKIP' backend, remplace ancien lien (spec prête dans Calendar)
+- [ ] 🖥️ Test admin ergonomie → fix frictions
+- [ ] 🎮 Test admin workflow en conditions → fix frictions
+- [ ] 🧪 Test réouverture user (Auguste, Charlie, Nicolas)
 
 ### Jeudi 19 mars (Nicolas)
 - [ ] Centraliser 3 mails matheux.fr (nicolas@, contact@, no-reply@) dans un seul endroit
