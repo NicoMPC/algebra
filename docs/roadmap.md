@@ -4,11 +4,10 @@
 
 ---
 
-## État global — 16 mars 2026 (dernière mise à jour : @85)
+## État global — 17 mars 2026
 
-**Matheux est fonctionnel à 100% côté code. Sécurité Stripe déployée. Emails opérationnels. Base nettoyée.**
-**Reste : endpoint webhook Stripe. Tests élève 5/5 ✅ + 20 frictions fixées ✅.**
-**Lancement confirmé : mercredi 18 mars 2026 à 9h.**
+**Matheux 100% prêt. Tests élève 5/5 ✅. 27 frictions fixées + cartes premium + messages perso + cohérence onboarding.**
+**Reste : endpoint webhook Stripe + tests admin/parent. Lancement confirmé : mercredi 18 mars 2026 à 9h.**
 
 > ✅ **Bugfixes @60** — BUG-01 à BUG-12 corrigés (simulation 7j × 5 profils). 13 mars.
 > ✅ **Simulation 40 élèves @63** — 6 bugs corrigés + 1616 appels API, 0 erreur. 14 mars.
@@ -59,8 +58,8 @@
 - [x] Test élève : 6EME ✅ / 5EME ✅ / 4EME ✅ — 15 frictions notées (3EME à finir dans le bus)
 
 ### Mardi 17 mars matin (Nicolas)
-- [ ] **Test élève 3EME** — dernier niveau à tester, noter les frictions
-- [ ] 🔧 **Fix 15 frictions élève** (mode nuit, LaTeX×3, messages×3, boost×2, chapitre×4, scroll, bouton "j'ai pas compris") + frictions 3EME
+- [x] **Test élève 3EME** ✅ — remarques intégrées
+- [x] 🔧 **Fix 27 frictions élève** ✅ — mode nuit, exo 1 bloqué, bienvenue, retro, bon retour, boost demain, lune, IA retiré, signaler erreur, onboarding responsive, cartes premium, tri intelligent, messages perso, cohérence onboarding, bouton retour trial flow
 - [ ] Test admin workflow en conditions → fix frictions
 - [ ] Test parent parcours complet → fix frictions
 - [ ] Landing page relecture parent, wording final
