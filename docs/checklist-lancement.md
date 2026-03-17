@@ -41,6 +41,7 @@
 - [x] **4b.3** Test élève 4EME ✅ (16 mars)
 - [x] **4b.4** Test élève 3EME ✅ (17 mars)
 - [x] **4b.5** Fix 27 frictions élève ✅ (17 mars) — 20 initiales + 7 post-test live (exo 1 bloqué, night mode texte, bandeau bienvenue, retro indices, seuil "Bon retour", boost demain, brevet lock)
+- [x] **4b.5b** Fix final : min 2 chapitres diag + bandeau boost cohérent + polish UI ✅ (17 mars)
 - [ ] **4b.6** Test admin workflow en conditions → **mardi 17**
 - [ ] **4b.7** Test parent parcours complet → **mardi 17**
 - [ ] **4b.8** Test admin ergonomie → **mardi 17**
