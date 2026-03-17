@@ -8932,8 +8932,9 @@ function _buildActionWorkflow(st, action) {
 
 // ── Toggle publish button enabled/disabled ───────────────────
 function _ckTogglePublish(code, type) {
-  var ta = document.getElementById('ck-' + type + '-json-' + code);
-  var btn = document.getElementById('ck-btn-' + type + '-' + code);
+  var key = type === 'chapitre' ? 'chap' : type;
+  var ta = document.getElementById('ck-' + key + '-json-' + code);
+  var btn = document.getElementById('ck-btn-' + key + '-' + code);
   if (!ta || !btn) return;
   var has = ta.value.trim().length > 0;
   btn.disabled = !has;
@@ -8948,7 +8949,9 @@ async function _ckPublishBoost(code) {
   var raw = ta ? ta.value.trim() : '';
   if (!raw) { showT('Colle le JSON du boost d\'abord', 3000, '\u26a0\ufe0f'); return; }
   var parsed;
-  try { parsed = JSON.parse(raw); } catch(e) { showT('JSON invalide : ' + e.message.substring(0, 50), 3500, '\u274c'); return; }
+  try { parsed = JSON.parse(raw); } catch(e) {
+    try { parsed = JSON.parse(raw.replace(/[\x00-\x1f\x7f]/g, function(c) { return c === '\n' || c === '\r' || c === '\t' ? c : ''; })); } catch(e2) { showT('JSON invalide : ' + e2.message.substring(0, 50), 3500, '\u274c'); return; }
+  }
   if (!parsed.exos || !Array.isArray(parsed.exos) || parsed.exos.length === 0) {
     showT('JSON invalide : exos[] vide', 3500, '\u274c'); return;
   }
@@ -8986,7 +8989,9 @@ async function _ckPublishChapter(code) {
   var raw = ta ? ta.value.trim() : '';
   if (!raw) { showT('Colle le JSON du chapitre d\'abord', 3000, '\u26a0\ufe0f'); return; }
   var parsed;
-  try { parsed = JSON.parse(raw); } catch(e) { showT('JSON invalide : ' + e.message.substring(0, 50), 3500, '\u274c'); return; }
+  try { parsed = JSON.parse(raw); } catch(e) {
+    try { parsed = JSON.parse(raw.replace(/[\x00-\x1f\x7f]/g, function(c) { return c === '\n' || c === '\r' || c === '\t' ? c : ''; })); } catch(e2) { showT('JSON invalide : ' + e2.message.substring(0, 50), 3500, '\u274c'); return; }
+  }
   if (!parsed.categorie || !parsed.exos || !Array.isArray(parsed.exos) || parsed.exos.length === 0) {
     showT('JSON invalide : categorie ou exos[] manquant', 3500, '\u274c'); return;
   }
