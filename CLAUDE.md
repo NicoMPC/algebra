@@ -231,14 +231,14 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | 9 | Stripe config — CGV + confidentialité + TVA décochée + limite 50 paiements |
 | 10 | Bandeau rappel limite Stripe dans admin dashboard |
 | 11 | Nettoyage base — SIM01-SIM12 supprimés, gardé admin + Auguste + Charlie |
-| 12 | Test élève 6EME ✅ / 5EME ✅ / 4EME ✅ / 3EME ✅ — 20 frictions fixées |
+| 12 | Test élève 6EME ✅ / 5EME ✅ / 4EME ✅ / 3EME ✅ — 27 frictions fixées (20+7) |
 
 ### ⏳ Mardi 17 mars matin (Nicolas)
 
 | # | Action | Détail |
 |---|---|---|
 | 1 | ~~Test élève 3EME~~ ✅ | Fait — remarques intégrées |
-| 2 | ~~Fix 20 frictions élève~~ ✅ | Night mode, LaTeX×3, double-clic, toast, indices exo1, fermer chap, prev/next, scroll, "j'ai pas compris", CTA boost shimmer, brevet lock |
+| 2 | ~~Fix 27 frictions élève~~ ✅ | 20 initiales + 7 post-test : exo 1 bloqué (S.rev), night mode texte exos, bandeau bienvenue, retro indices, "Bon retour" seuil, boost demain wording, brevet lock |
 | 3 | Test admin workflow | En conditions réelles → fix frictions admin |
 | 4 | Test parent | Parcours complet parent → fix frictions |
 | 5 | Landing page clarté | Relecture parent, wording final |
