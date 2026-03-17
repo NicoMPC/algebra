@@ -248,7 +248,7 @@ Deux variantes convergentes : `_flowGuestRegister()` (guest complet) et `_doLogi
 | Google Apps Script | Backend API | Gratuit (quotas Google) |
 | Google Sheets | Base de données | Gratuit |
 | Gmail (GmailApp) | Emails auto (J+0, J+3, J+5, J+7 personnalisés objectif + rapport parent hebdo) — alias no-reply@matheux.fr requis | Gratuit |
-| Stripe | Paiement (TEST pour l'instant) | ~0,39€/transaction |
+| Stripe | Paiement PROD (19,99€/mois, limite 50, webhook déployé @85) | ~0,39€/transaction |
 | GA4 | Analytics | Gratuit |
 
 Commandes de déploiement : voir [claude.md](claude.md#déploiement).

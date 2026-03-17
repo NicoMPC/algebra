@@ -81,7 +81,7 @@ Personne ne peut copier ça facilement — ça demande Nicolas.
 |---|---|
 | Prix | 19,99 €/mois |
 | Essai | 7 jours gratuits, accès complet, sans carte bancaire |
-| Paiement | Stripe — **lien TEST actif, à passer en PROD manuellement** (3 occurrences : `index.html`, `backend.js`, `cgv.html`) |
+| Paiement | Stripe PROD — lien actif `cNicN7b0ebU9bOE9WTb3q01` (19,99€/mois, limite 50 paiements) |
 | Cible | 50 clients = ~500 € MRR |
 | Offre flash | -50% premier mois (9,99€) envoyée manuellement à J+2/J+3 aux élèves engagés | Lien Stripe séparé, zéro code |
 | Offres futures | Basées sur données col Objectif — décision après 10-15 clients | Ne pas créer avant |
