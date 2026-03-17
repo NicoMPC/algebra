@@ -7,7 +7,7 @@
 ## État global — 17 mars 2026
 
 **Matheux 100% prêt. Tests élève 5/5 ✅. Test parent ✅. 27 frictions fixées + cartes premium + messages perso. Landing GOD MODE déployée. GitHub privé (MatheuxApp).**
-**Reste : endpoint webhook Stripe + tests admin + 2 features UX (Valider la réponse + Je ne sais pas). Lancement confirmé : mercredi 18 mars 2026 à 9h.**
+**Reste : endpoint webhook Stripe + tests admin + 1 feature UX (Je ne sais pas). "Valider la réponse" ✅. Lancement confirmé : mercredi 18 mars 2026 à 9h.**
 
 > ✅ **Bugfixes @60** — BUG-01 à BUG-12 corrigés (simulation 7j × 5 profils). 13 mars.
 > ✅ **Simulation 40 élèves @63** — 6 bugs corrigés + 1616 appels API, 0 erreur. 14 mars.
@@ -69,7 +69,7 @@
 
 ### Mardi 17 mars après-midi (Nicolas + Claude)
 - [x] 🔬 **Fix diagnostic + Boost J1** ✅ — 251 figures SVG ajoutées (Thalès/Trigo/Sections/Pythagore/Périmètres/Volumes/Homothétie), 14 reformulations ciblées (Thalès contextualisé, Trigo angle précisé, Sym Axiale vocabulaire, Sections "depuis sommet"), espaces LaTeX fixés, doublon Systèmes corrigé
-- [ ] ⚡ **Implémenter "Valider la réponse"** — bouton sticky, sélection avant validation, split checkOpt (spec prête dans Calendar)
+- [x] ✅ **Implémenter "Valider la réponse"** — selectOpt+validateAnswer, .os (selected), .validate-wrap sticky, .btn-validate disabled→enabled, mode nuit, reset goEx/togCat
 - [ ] 🤷 **Implémenter "Je ne sais pas"** — vrai bouton .opt-skip, resultat='SKIP' backend, remplace ancien lien (spec prête dans Calendar)
 - [ ] 🖥️ Test admin ergonomie → fix frictions
 - [ ] 🎮 Test admin workflow en conditions → fix frictions

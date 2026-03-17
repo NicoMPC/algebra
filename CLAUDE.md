@@ -254,7 +254,7 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | # | Action | Détail |
 |---|---|---|
 | 1 | ✅ Fix diagnostic + Boost J1 | **FAIT** — 251 figures SVG (`fig` explicites dans ExosJSON), 14 reformulations (Thalès contextualisé, Trigo angle précisé, Sym Axiale vocabulaire, Sections "depuis sommet"), espaces LaTeX fixés, doublon Systèmes 3EME corrigé |
-| 2 | ⚡ Implémenter "Valider la réponse" | Bouton sticky, sélection avant validation, split checkOpt → selectOpt+validateAnswer |
+| 2 | ✅ Implémenter "Valider la réponse" | **FAIT** — selectOpt+validateAnswer, .os/.validate-wrap/.btn-validate, sticky bottom, mode nuit, reset goEx/togCat |
 | 3 | 🤷 Implémenter "Je ne sais pas" | Vrai bouton .opt-skip, resultat='SKIP' backend, remplace l'ancien lien |
 | 4 | 🖥️ Test admin ergonomie | 3 onglets, cartes, fiche élève, journal, mode nuit admin |
 | 5 | 🔧 Fix frictions admin ergo | Selon remarques test |
