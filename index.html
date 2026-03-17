@@ -1750,12 +1750,12 @@
       <!-- STEP 2 : SÉLECTION CHAPITRES ONBOARDING -->
       <div id="auth-step-2" class="hidden">
         <p class="text-slate-500 font-medium mb-4 text-sm leading-relaxed">
-          Pour que l'IA ne te pose pas de questions sur des notions pas encore vues, sélectionne les chapitres que tu as
+          Pour ne pas tomber sur des notions pas encore vues en classe, sélectionne les chapitres que tu as
           <strong>déjà étudiés cette année</strong> :
         </p>
         <div class="grid grid-cols-2 gap-2.5 mb-6" id="onboarding-chaps"></div>
-        <button onclick="finalizeOnboarding()" id="btn-onboard" class="btn btn-dk btn-fw py-4">
-          <span id="onboard-text">Lancer mon Diagnostic IA 🎯</span>
+        <button onclick="finalizeOnboarding()" id="btn-onboard" class="btn btn-dk btn-fw py-4 boost-shimmer">
+          <span id="onboard-text">Lancer mon diagnostic 🎯</span>
           <span id="onboard-ld" class="ld hidden"></span>
         </button>
       </div><!-- /auth-step-2 -->
@@ -6631,7 +6631,6 @@ function rSection(cat, data, idx, total, catDone) {
       (idx > 0 ? '<button onclick="goEx(\''+cat+'\','+(idx-1)+')" class="btn bg-slate-100 text-slate-500 py-4 px-4 rounded-xl font-bold text-sm">←</button>' : '') +
       '<button onclick="nextEx(\''+cat+'\')" class="btn btn-dk py-4 flex-1 flex items-center justify-center gap-2">SUIVANT <span class="text-slate-400 font-normal text-xs">(ou swipe ←)</span></button>' +
       '</div>' +
-      '<div class="text-center mt-2"><button onclick="openFeedback(\''+cat+'\','+idx+')" class="text-[10px] text-slate-300 hover:text-slate-500 transition-colors underline">📢 Signaler une erreur dans cet exercice</button></div>' +
       (!sessionStorage.getItem(_pcKey) ? '<div id="btn-pas-compris-wrap" class="mt-2 text-center"><button onclick="_handlePasCompris(\''+cat+'\','+idx+',\''+((data.q||'').replace(/'/g,"\\'").substring(0,80))+'\')" class="text-xs text-slate-400 underline hover:text-slate-600 transition-colors bg-transparent border-none cursor-pointer">Je n\'ai pas compris</button></div>' : '');
   }
 
@@ -6721,6 +6720,7 @@ function rSection(cat, data, idx, total, catDone) {
       '</div>' +
       '<div class="inline-help mc" id="help-inline-'+id+'"></div>' +
       (!scored && !sessionStorage.getItem('pc_' + (S.prof ? S.prof.code : '') + '_' + cat + '_' + idx) ? '<div id="btn-pas-compris-wrap" class="mt-3 text-center"><button onclick="_handlePasCompris(\''+cat+'\','+idx+',\''+((data.q||'').replace(/'/g,"\\'").substring(0,80))+'\')" class="text-xs text-slate-400 underline hover:text-slate-600 transition-colors bg-transparent border-none cursor-pointer">Je n\'ai pas compris</button></div>' : '')) +
+    '<div class="text-center mt-3"><button onclick="openFeedback(\''+cat+'\','+idx+')" class="text-[10px] text-slate-300 hover:text-slate-500 transition-colors underline">📢 Signaler une erreur</button></div>' +
     '</div></div>';
 }
 
