@@ -8621,12 +8621,9 @@ function _renderAdminCards() {
     return;
   }
 
-  var realStudents = students.filter(function(s) { return !s.isTest; });
-  var testStudents = students.filter(function(s) { return s.isTest; });
-
   var todoStudents = [];
   var faitStudents = [];
-  realStudents.forEach(function(st) {
+  students.forEach(function(st) {
     st._ckActions = _computeActions(st);
     if (st._ckActions.length > 0) todoStudents.push(st);
     else faitStudents.push(st);
