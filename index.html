@@ -227,8 +227,9 @@
       border:2px solid var(--brd); border-radius:var(--r);
       background:#fff; width:100%; display:flex; align-items:center;
       cursor:pointer; font-weight:600; font-size:.9rem; min-height:56px;
-      transition:all .15s;
+      transition:all .15s; -webkit-tap-highlight-color:transparent;
     }
+    .opt:active:not(.oc):not(.ow):not(.on) { transform:scale(.98); }
     .opt::before {
       content:''; position:absolute; left:1rem; top:50%;
       transform:translateY(-50%); width:1.2rem; height:1.2rem;
@@ -344,7 +345,7 @@
     .retro-pill       { display:inline-block; font-size:.6rem; font-weight:900; font-family:'Syne',sans-serif; padding:.15rem .5rem; border-radius:6px; border:1px solid; margin-right:.3rem; }
 
     /* ── BARRE DE PROGRESSION ────────────────────────────── */
-    .pbar   { height:6px; background:var(--brd); border-radius:99px; overflow:hidden; width:100%; }
+    .pbar   { height:4px; background:var(--brd); border-radius:99px; overflow:hidden; width:100%; }
     .pfill  { height:100%; border-radius:99px; transition:width .5s cubic-bezier(.4,0,.2,1); }
     .pfp    { background:linear-gradient(90deg,var(--p),#818cf8); }
     .pfg    { background:linear-gradient(90deg,var(--grn),#34d399); }
@@ -853,7 +854,8 @@
     }
     .chap-discovered {
       background:#fff !important;
-      border-color:#e2e8f0 !important;
+      border-color:#f1f5f9 !important;
+      box-shadow:0 1px 3px rgba(0,0,0,.04) !important;
     }
     /* Post-boost invitation — pulse doux */
     @keyframes invitePulse { 0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,.25)} 50%{box-shadow:0 0 0 8px rgba(99,102,241,0)} }
@@ -2715,7 +2717,7 @@ function flowToggleChap(el, key) {
 }
 
 function flowToStep3() {
-  if (_flowChaps.length < 1) { showT('Sélectionne au moins 1 chapitre 😊', 2500, '⚠️'); return; }
+  if (_flowChaps.length < 2) { showT('Sélectionne au moins 2 chapitres pour un diagnostic fiable 😊', 3000, '⚠️'); return; }
   _flowQIdx = 0; _flowScore = 0;
   _flowSetStep(3);
   _flowStartDiag();
@@ -3440,6 +3442,7 @@ async function finalizeOnboarding() {
   var selChaps = Array.from(document.querySelectorAll('.chap-card.selected')).map(function(el){
     return el.getAttribute('data-chap');
   });
+  if (selChaps.length < 2) { showT('Sélectionne au moins 2 chapitres pour un diagnostic fiable 😊', 3000, '⚠️'); return; }
   document.getElementById('onboard-text').classList.add('hidden');
   document.getElementById('onboard-ld').classList.remove('hidden');
   showT("Génération du diagnostic...", 0, "🎯");
@@ -6108,7 +6111,7 @@ function render() {
         '<div class="flex-1 min-w-0"><div class="syne text-base font-black text-white mb-0.5">Mon Boost du jour</div>' +
         '<p class="text-indigo-200 text-sm font-medium">Exercices ciblés sur mes points à renforcer</p></div>' +
         '<div class="text-white/50 text-2xl font-light">›</div></div>';
-    } else {
+    } else if (S.boostConsumed) {
       var _bName = S.prof ? S.prof.name : '';
       var _bCatNames = Object.keys(_boostCats).slice(0, 2).map(function(c) { return (LVL[S.niv].names[c] || c).replace(/_/g, ' '); });
       var _bCatLabel = _bCatNames.length > 0 ? _bCatNames.join(' et ') : '';
@@ -6266,7 +6269,7 @@ function render() {
       : '';
 
     var cardPulseClass = (_isFirstGuide || _isBoostInvite) ? ' pulse-new-chap' : '';
-    html += '<div data-cat="'+cat+'" class="rounded-2xl border border-slate-200 overflow-hidden shadow-sm afu mb-3' + cardPulseClass + _cardClass + '" style="'+cs+'">';
+    html += '<div data-cat="'+cat+'" class="rounded-2xl border overflow-hidden afu mb-3' + cardPulseClass + _cardClass + '" style="'+cs+'">';
     html += '<div onclick="togCat(\''+cat+'\')" class="px-4 py-4 flex items-center gap-3 cursor-pointer select-none">';
     html += '<div class="chap-icon-wrap w-11 h-11 '+(isBoost?'bg-white/20':(_isUndiscovered ? '' : 'bg-slate-100'))+' rounded-xl flex items-center justify-center text-lg flex-shrink-0 '+iconPulse+'">'+(LVL[S.niv].icons[cat]||'📘')+'</div>';
     html += '<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1.5"><span class="syne font-black text-sm '+(isBoost?'text-white':'text-slate-900')+' truncate" style="font-weight:800">'+(LVL[S.niv].names[cat]||cat)+'</span>';
