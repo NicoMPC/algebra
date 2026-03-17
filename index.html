@@ -1215,7 +1215,7 @@
       <!-- STEP 1 — Classe -->
       <div id="flow-s1" class="flow-step">
         <h2 class="syne text-2xl font-black text-white text-center mb-2">Quelle classe ?</h2>
-        <p class="text-white/50 text-sm text-center mb-7">Le programme s'adapte au niveau de ton enfant</p>
+        <p class="text-white/50 text-sm text-center mb-7">Le programme s'adapte au niveau de l'élève</p>
         <div class="grid grid-cols-2 gap-3">
           <button onclick="flowSelectLevel('6EME')" class="lvl-btn" id="lvl-6EME">6<sup>ème</sup></button>
           <button onclick="flowSelectLevel('5EME')" class="lvl-btn" id="lvl-5EME">5<sup>ème</sup></button>
@@ -1230,6 +1230,7 @@
         <p class="text-white/50 text-sm text-center mb-5">Coche les chapitres déjà vus cette année</p>
         <div id="flow-chaps-grid" class="grid grid-cols-2 gap-2.5 mb-6"></div>
         <button onclick="flowToStep3()" class="btn btn-ac btn-fw py-4">Voir le diagnostic →</button>
+        <button onclick="_flowSetStep(1)" class="block w-full text-center text-xs text-white/40 hover:text-white/70 transition-colors mt-3 bg-transparent border-none cursor-pointer">← Changer de classe</button>
       </div>
 
       <!-- STEP 3 — Diagnostic GAS -->
@@ -1240,7 +1241,7 @@
         <div class="bg-white/10 border border-white/15 rounded-2xl p-6">
           <div class="w-14 h-14 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4">🎯</div>
           <h2 class="syne text-xl font-black text-white text-center mb-1">Diagnostic prêt !</h2>
-          <p class="text-white/55 text-sm text-center mb-6">Créez l'espace de votre enfant — 7 jours offerts, sans carte bancaire.</p>
+          <p class="text-white/55 text-sm text-center mb-6">Crée ton espace — 7 jours offerts, sans carte bancaire.</p>
           <div class="space-y-3">
             <input type="text"     id="fl-name"  class="flow-inp" placeholder="Prénom de l'élève" autocomplete="given-name">
             <input type="email"    id="fl-email" class="flow-inp" placeholder="Email (parent ou élève)" autocomplete="email">
@@ -1255,7 +1256,7 @@
             </span>
           </label>
           <button onclick="flowRegister()" id="fl-btn" class="btn btn-ac btn-fw py-4 mt-5">
-            <span id="fl-btn-txt">Créer l'espace de mon enfant →</span>
+            <span id="fl-btn-txt">C'est parti — créer mon espace →</span>
             <span id="fl-btn-ld" class="ld hidden"></span>
           </button>
           <p class="text-center text-white/35 text-xs mt-3">✓ 7 jours offerts · ✓ Aucune carte bancaire · ✓ Sans engagement</p>
@@ -1808,7 +1809,7 @@
           </div>
           <div class="flex items-center gap-1 mt-0.5">
             <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
-            <span class="text-[10px] font-semibold text-green-600">IA Active</span>
+            <span class="text-[10px] font-semibold text-green-600">En ligne</span>
           </div>
         </div>
       </div>
@@ -2658,7 +2659,7 @@ function updateLevelChapters() {
 // ══════════════════════════════════════════════════════════════
 var _flowLevel = '4EME';
 var _flowChaps = [];
-var _flowObjectif = ''; // 'lacunes' | 'chapitre_jour' | 'brevet' | 'toutes_matieres'
+var _flowObjectif = '';
 var _flowQIdx  = 0;
 var _flowScore = 0;
 var _flowExos      = [];      // exos GAS retournés
@@ -2722,7 +2723,7 @@ function startTrialFlow() {
   // Vérifier s'il y a un diagnostic abandonné à reprendre
   var saved = null;
   try { saved = JSON.parse(localStorage.getItem('guestDiag') || 'null'); } catch(e) {}
-  if (saved && saved.ts && (Date.now() - saved.ts) < 86400000 && saved.exos && saved.exos.length > 0 && !saved.complete) {
+  if (saved && saved.ts && (Date.now() - saved.ts) < 86400000 && saved.exos && saved.exos.length > 0 && !saved.complete && saved.niveau === _flowLevel) {
     _showResumeBanner(saved);
   }
 }
@@ -4227,14 +4228,14 @@ async function handleBoost() {
       if (S.motProfBoost) S._motProfScreen = 'boost';
       loadBoost(); render();
       window.scrollTo({ top:0, behavior:'smooth' });
-    } else { alert2("Oups","L'IA n'a pas pu générer le boost."); }
+    } else { alert2("Oups","Impossible de générer le boost. Réessaie dans quelques instants."); }
   } catch(e) { document.getElementById('m-boost').classList.add('hidden'); }
   finally { S.boostGen = false; }
 }
 
 async function boostFromDiag(errs) {
   S.boostPreping = true; render();
-  showT("L'IA analyse ton diagnostic...", 0, "🧠");
+  showT("Analyse de ton diagnostic en cours...", 0, "🧠");
   startTs();
   try {
     var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:"generate_daily_boost", code:S.prof.code, level:S.niv, errors:errs, chapters:_flowChaps }) });
@@ -6181,7 +6182,7 @@ function render() {
     html += '<div class="rounded-2xl p-5 flex items-center gap-4 shadow-lg mb-4" style="background:linear-gradient(135deg,#312e81,#4338ca)">' +
       '<div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0"><div class="ld"></div></div>' +
       '<div><div class="syne text-base font-black text-white mb-0.5">Mon Boost du jour en cours...</div>' +
-      '<p class="text-indigo-200 text-sm">L\'IA analyse ton diagnostic et crée tes exercices</p></div></div>';
+      '<p class="text-indigo-200 text-sm">Analyse en cours — tes exercices arrivent</p></div></div>';
 
   } else if (!S.boostEx && !S.calState) {
     if (S.isFirstDay) {
