@@ -258,6 +258,33 @@
       font-size:.7rem; font-weight:800;
     }
     .on { opacity:.35; pointer-events:none; }
+    .os {
+      border-color:var(--p)!important; background:var(--pl)!important;
+      box-shadow:0 0 0 2px var(--p);
+    }
+    .os::before {
+      background:var(--p)!important; border-color:var(--p)!important;
+      content:''; width:0.6rem; height:0.6rem; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .validate-wrap {
+      position:sticky; bottom:0; z-index:40;
+      padding:0.75rem 1rem; margin:0 -1rem -1rem;
+      background:rgba(255,255,255,0.97); backdrop-filter:blur(8px);
+      border-top:1px solid var(--brd);
+    }
+    body.app-night .validate-wrap { background:rgba(15,23,42,0.97); border-color:#334155; }
+    .btn-validate {
+      width:100%; padding:1rem; border-radius:var(--r); font-weight:800;
+      font-size:1rem; border:none; cursor:pointer; transition:all .15s;
+      min-height:56px; display:flex; align-items:center; justify-content:center; gap:.5rem;
+    }
+    .btn-validate:active:not(:disabled) { transform:scale(.97); }
+    .btn-validate:disabled { background:#e2e8f0; color:#94a3b8; cursor:default; pointer-events:none; }
+    .btn-validate:not(:disabled) { background:var(--grn); color:#fff; }
+    body.app-night .btn-validate:disabled { background:#334155; color:#64748b; }
+    body.app-night .btn-validate:not(:disabled) { background:#059669; }
+    body.app-night .os { border-color:#818cf8!important; background:#312e81!important; box-shadow:0 0 0 2px #818cf8; }
 
     /* ── TABLEAU BLANC — BOTTOM SHEET (mobile) ─────────── */
     #draft-drawer {
@@ -1897,7 +1924,7 @@
   ║  Changements v22 → v23 :                                 ║
   ║  • exoStartTime : chrono par exercice (→ time dans GAS)  ║
   ║  • sendScore enrichi : time + wrongOpt + draft           ║
-  ║  • checkOpt : passe wrongOpt sur erreur QCM              ║
+  ║  • selectOpt+validateAnswer : sélection puis validation   ║
   ║  • mark(cat, idx, status, wrongOpt) : nouveau paramètre  ║
   ╚══════════════════════════════════════════════════════════╝
 -->
@@ -4220,36 +4247,58 @@ window.revF = function(cat, idx) {
   render();
 };
 
-// ─── RÉPONSE QCM ────────────────────────────────────────────
-// NOUVEAU v23 : auto-EASY/HARD sur QCM. wrongOpt transmis à mark()
-// pour stockage et analyse misconceptions par l'Agent Superviseur.
-window.checkOpt = function(cat, idx, oI, btn) {
-  if (S.rev) return; // Guard double-clic
+// ─── SÉLECTION + VALIDATION QCM ─────────────────────────────
+// v23 refactor : selectOpt (sélection visuelle) + validateAnswer (validation)
+// Force la réflexion, empêche le tap impulsif.
+// S._sel = { cat, idx, oI } — sélection en attente de validation
+window.selectOpt = function(cat, idx, oI, btn) {
+  if (S.rev) return;
+  var r  = res2(cat, idx);
+  var id = S.niv + '-' + r.rC + '-' + r.rI;
+  if (S.res[id]) return;
+  // Stocker la sélection
+  S._sel = { cat: cat, idx: idx, oI: oI };
+  // Visuel : retirer .os de tous, ajouter sur le cliqué
+  Array.from(btn.parentElement.children).forEach(function(c){ c.classList.remove('os'); });
+  btn.classList.add('os');
+  // Activer le bouton Valider
+  var vb = document.getElementById('btn-validate');
+  if (vb) { vb.disabled = false; vb.textContent = 'Valider la r\u00e9ponse \u2713'; }
+};
+
+window.validateAnswer = function() {
+  if (!S._sel) return;
+  if (S.rev) return;
+  var cat = S._sel.cat, idx = S._sel.idx, oI = S._sel.oI;
+  S._sel = null;
   var r   = res2(cat, idx);
   var id  = S.niv + '-' + r.rC + '-' + r.rI;
-  if (S.res[id]) return; // Déjà scoré
+  if (S.res[id]) return;
   var exo = LVL[S.niv].cats[cat][idx];
   clearNudge(id);
   S.qans[id] = exo.options[oI];
   S.rev  = true;
   S.cid  = id;
   var cI = exo.options.indexOf(exo.a);
-
-  Array.from(btn.parentElement.children).forEach(function(c){
-    c.className = 'opt ' + (parseInt(c.getAttribute('data-oi')) === cI ? 'oc' : 'on');
-  });
+  // Colorer toutes les options (correct/incorrect/neutral)
+  var grid = document.querySelector('[data-cat="'+cat+'"] .opt-grid, .opt-grid');
+  if (grid) {
+    Array.from(grid.children).forEach(function(c){
+      c.className = 'opt ' + (parseInt(c.getAttribute('data-oi')) === cI ? 'oc' : (parseInt(c.getAttribute('data-oi')) === oI ? 'ow' : 'on'));
+    });
+  }
+  // Masquer le bouton Valider
+  var vw = document.getElementById('validate-wrap');
+  if (vw) vw.style.display = 'none';
 
   var _okKey = (cat === 'BOOST') ? 'ok_boost' : (S.niv === '6EME') ? 'ok_6eme' : (S.niv === '3EME' || S.niv === '1ERE') ? 'ok_3eme' : 'ok_chap';
   var _koKey = (cat === 'BOOST') ? 'ko_boost' : (S.niv === '6EME') ? 'ko_6eme' : (S.niv === '3EME' || S.niv === '1ERE') ? 'ko_3eme' : 'ko_chap';
   if (exo.options[oI] === exo.a) {
-    btn.className = 'opt oc';
     showXP(100);
-    showT(_msg(_okKey), 1200, '⭐');
+    showT(_msg(_okKey), 1200, '\u2B50');
     setTimeout(function(){ mark(cat, idx, 'EASY', null); }, 700);
   } else {
-    btn.className = 'opt ow';
-    showT(_msg(_koKey), 1500, '💡');
-    // Passe l'option erronée choisie + déploie aide automatiquement (pédagogique)
+    showT(_msg(_koKey), 1500, '\uD83D\uDCA1');
     setTimeout(function(){
       S._pendingHelp = { cat: cat, idx: idx };
       mark(cat, idx, 'HARD', exo.options[oI]);
@@ -4317,7 +4366,7 @@ async function togCat(cat) {
   }
   Object.keys(S.exp).forEach(function(k){ S.exp[k] = false; });
   S.exp[cat] = !was;
-  S.rev = false; S.cid = null; // Reset pour éviter blocage exo 1
+  S.rev = false; S.cid = null; S._sel = null; // Reset pour éviter blocage exo 1
   if (!S.exp[cat]) { delete S.retroSess[cat]; S.retroBoost = null; if (cat === 'BOOST') delete S.retroExoIdx['BOOST']; }
   // Boost consommé : reprendre la révision depuis le Q1
   if (!was && cat === 'BOOST' && S.boostConsumed) S.qv['BOOST'] = 0;
@@ -4371,7 +4420,7 @@ function goEx(cat, i) {
   }
 
   if (alreadyAnswered) { S.rev = true; S.cid = id; }
-  else { S.rev = false; S.cid = null; delete S.shuf[S.niv+'-'+cat+'-'+i]; }
+  else { S.rev = false; S.cid = null; S._sel = null; delete S.shuf[S.niv+'-'+cat+'-'+i]; }
   render();
 }
 
@@ -6640,16 +6689,25 @@ function rSection(cat, data, idx, total, catDone) {
     // Layout adaptatif selon nombre d'options
     var nOpts = sh.length;
     var gridCls = nOpts === 2 ? 'grid grid-cols-2 gap-2 mt-4' : nOpts === 4 ? 'grid grid-cols-2 gap-2 mt-4' : 'flex flex-col gap-2 mt-4';
-    opts = '<div class="'+gridCls+'">';
+    opts = '<div class="opt-grid '+gridCls+'">';
     sh.forEach(function(o){
       var ocls = 'opt ';
       if (isRev) { ocls += o.i===cI ? 'oc ' : (o.t===ans ? 'ow ' : 'on '); }
-      var handler = !isRev ? 'onclick="checkOpt(\''+cat+'\','+idx+','+o.i+',this)"' : '';
+      var selCls = (!isRev && S._sel && S._sel.cat===cat && S._sel.idx===idx && S._sel.oI===o.i) ? ' os' : '';
+      var handler = !isRev ? 'onclick="selectOpt(\''+cat+'\','+idx+','+o.i+',this)"' : '';
       // VF : boutons plus gros
       var extraStyle = (exoType === 'vf' && nOpts === 2) ? ' style="padding:1rem;font-size:1rem;font-weight:800"' : '';
-      opts += '<button data-oi="'+o.i+'" '+handler+' class="'+ocls.trim()+'"'+extraStyle+'><span class="mc flex-1">'+fmtL(o.t)+'</span></button>';
+      opts += '<button data-oi="'+o.i+'" '+handler+' class="'+ocls.trim()+selCls+'"'+extraStyle+'><span class="mc flex-1">'+fmtL(o.t)+'</span></button>';
     });
     opts += '</div>';
+    // Bouton Valider sticky (visible uniquement avant validation, pas en retro)
+    if (!isRev && !scored) {
+      var hasSel = S._sel && S._sel.cat===cat && S._sel.idx===idx;
+      opts += '<div class="validate-wrap" id="validate-wrap">' +
+        '<button id="btn-validate" class="btn-validate" onclick="validateAnswer()"' + (!hasSel ? ' disabled' : '') + '>' +
+        (hasSel ? 'Valider la r\u00e9ponse \u2713' : 'Choisis une r\u00e9ponse') +
+        '</button></div>';
+    }
     // Justification VF post-réponse
     if (exoType === 'vf' && data.justification && isRev) {
       opts += '<div class="bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2.5 text-xs text-indigo-800 font-medium mt-2"><span class="font-bold">Explication :</span> '+fmtL(data.justification)+'</div>';
