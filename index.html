@@ -841,6 +841,32 @@
     body.app-night #main-app [style*="background:#fef9c3"] { background:#1c1107 !important; border-color:#78350f !important; }
     body.app-night #main-app [style*="background:#e0e7ff"] { background:#1e1b4b !important; border-color:#4338ca !important; }
 
+    /* ── CARTE CHAPITRE "CADEAU" (jamais ouvert) ────────── */
+    .chap-undiscovered {
+      background:linear-gradient(135deg, #f8f7ff 0%, #f0ecff 50%, #f5f0ff 100%) !important;
+      border-color:#c7d2fe !important;
+      box-shadow:0 0 16px rgba(99,102,241,.1), 0 2px 8px rgba(0,0,0,.04) !important;
+    }
+    .chap-undiscovered .chap-icon-wrap {
+      background:linear-gradient(135deg, #eef2ff, #e0e7ff) !important;
+      border:1.5px solid #c7d2fe;
+    }
+    .chap-discovered {
+      background:#fff !important;
+      border-color:#e2e8f0 !important;
+    }
+    /* Post-boost invitation — pulse doux */
+    @keyframes invitePulse { 0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,.25)} 50%{box-shadow:0 0 0 8px rgba(99,102,241,0)} }
+    .chap-invite {
+      animation: invitePulse 2s ease-in-out 3;
+      border-color:#818cf8 !important;
+      background:linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%) !important;
+    }
+    /* Night variants */
+    body.app-night #main-app .chap-undiscovered { background:linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%) !important; border-color:#4338ca !important; box-shadow:0 0 16px rgba(99,102,241,.15) !important; }
+    body.app-night #main-app .chap-undiscovered .chap-icon-wrap { background:#312e81 !important; border-color:#4338ca; }
+    body.app-night #main-app .chap-invite { background:linear-gradient(135deg, #1e1b4b 0%, #312e81 100%) !important; border-color:#6366f1 !important; }
+
     /* ── BOOST SHIMMER CTA ─────────────────────────────── */
     .boost-shimmer {
       position:relative; overflow:hidden;
@@ -6166,20 +6192,38 @@ function render() {
         '<div class="text-white/50 text-2xl font-light">›</div></div>';
     } else {
       var _bName = S.prof ? S.prof.name : '';
+      var _bCatNames = Object.keys(_boostCats).slice(0, 2).map(function(c) { return (LVL[S.niv].names[c] || c).replace(/_/g, ' '); });
+      var _bCatLabel = _bCatNames.length > 0 ? _bCatNames.join(' et ') : '';
       html += '<div class="rounded-2xl p-5 flex items-center gap-4 mb-4" style="background:linear-gradient(135deg,#1e1b4b,#312e81)">' +
         '<div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/10">✅</div>' +
         '<div class="flex-1 min-w-0">' +
           '<div class="syne text-sm font-black text-white mb-0.5">Bravo' + (_bName ? ' ' + _bName : '') + ', boost du jour terminé !</div>' +
-          '<p class="text-indigo-300 text-xs font-bold">Ton prochain boost arrive demain — il sera encore plus ciblé sur tes lacunes 🎯</p>' +
+          '<p class="text-indigo-300 text-xs font-bold">' + (_bCatLabel ? 'Tu as travaillé ' + _bCatLabel + '. ' : '') + 'Ton prof prépare le prochain boost pour demain 🎯</p>' +
         '</div></div>';
     }
   }
 
-  // ── Rendu des chapitres (new first, then active, then archived) ───
-  var sortedKeys = keys.slice().sort(function(a, b) {
-    var aNew = S.isNew[a] ? 0 : 1, bNew = S.isNew[b] ? 0 : 1;
-    return aNew - bNew;
+  // ── Catégories ciblées par le boost (pour tri + invitation) ───
+  var _boostCats = {};
+  if (S.boost && S.boost.exos) {
+    S.boost.exos.forEach(function(ex) { if (ex._cat) _boostCats[ex._cat] = true; });
+  }
+  // Catégories touchées par l'élève (scores existants hors BOOST/CALIBRAGE)
+  var _touchedCats = {};
+  Object.keys(S.res).forEach(function(k) {
+    var parts = k.split('-');
+    if (parts.length >= 2 && parts[1] !== 'BOOST' && parts[1] !== 'CALIBRAGE') _touchedCats[parts[1]] = true;
   });
+
+  // ── Rendu des chapitres : BOOST/REVISION fixes, puis boost cats > new > touched > rest ───
+  var _fixedHead = keys.filter(function(k) { return k === 'BOOST' || k === 'REVISION'; });
+  var _sortable = keys.filter(function(k) { return k !== 'BOOST' && k !== 'REVISION'; });
+  _sortable.sort(function(a, b) {
+    var aR = S.isNew[a] ? 1 : (_boostCats[a] ? 2 : (_touchedCats[a] ? 3 : 4));
+    var bR = S.isNew[b] ? 1 : (_boostCats[b] ? 2 : (_touchedCats[b] ? 3 : 4));
+    return aR - bR;
+  });
+  var sortedKeys = _fixedHead.concat(_sortable);
 
   // Détection "premier chapitre" : aucun exo de chapitre fait encore (hors BOOST/CALIBRAGE)
   var _totalChapDone = 0;
@@ -6191,9 +6235,10 @@ function render() {
       if (S.res[S.niv+'-'+kr.rC+'-'+kr.rI]) _totalChapDone++;
     }
   });
-  // Afficher le guide "commence par là" seulement après que le boost est consommé
-  // (ou s'il n'y a pas de boost disponible) — évite de montrer le guide pendant que le boost attend
-  var _showFirstGuide = _totalChapDone === 0 && !S.boost && !S.boostConsumed;
+  // Invitation post-boost : boost consommé + 0 exo chapitre fait → premier chapitre boosté
+  var _showBoostInvite = _totalChapDone === 0 && S.boostConsumed;
+  // Guide premier chapitre : seulement si pas de boost du tout
+  var _showFirstGuide = _totalChapDone === 0 && !S.boost && !S.boostConsumed && !_showBoostInvite;
 
   sortedKeys.forEach(function(cat){
     var exs = cats[cat]; var tot = exs.length; var done = 0;
@@ -6277,24 +6322,39 @@ function render() {
     // Guide "premier chapitre" : première carte non-boost, non-done
     var _isFirstGuide = _showFirstGuide && !isBoost;
     if (_isFirstGuide) _showFirstGuide = false; // N'appliquer qu'au premier
+    // Invitation post-boost : premier chapitre ciblé par le boost, pas encore commencé
+    var _isBoostInvite = _showBoostInvite && !isBoost && _boostCats[cat] && done === 0;
+    if (_isBoostInvite) _showBoostInvite = false; // N'appliquer qu'au premier
 
-    if (_isFirstGuide) {
+    var _profName = S.prof ? S.prof.name : '';
+    if (_isBoostInvite) {
+      var _invChapName = (LVL[S.niv].names[cat] || cat).toLowerCase().replace(/_/g, ' ');
+      html += '<div class="flex items-center gap-2 bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-2.5 mb-2 afu">' +
+        '<span class="text-sm">🎯</span>' +
+        '<span class="text-xs font-bold text-indigo-700">' + (_profName ? _profName + ', ton' : 'Ton') + ' boost ciblait ' + _invChapName + ' — continue ici pour ancrer tes acquis</span>' +
+        '</div>';
+    } else if (_isFirstGuide) {
       html += '<div class="flex items-center gap-2 bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-2.5 mb-2 afu">' +
         '<span class="text-sm">👆</span>' +
-        '<span class="text-xs font-bold text-indigo-700">Commence par là — ton premier chapitre t\'attend</span>' +
+        '<span class="text-xs font-bold text-indigo-700">Ton prof te recommande de commencer par là</span>' +
         '</div>';
     }
 
+    // État visuel carte : cadeau (jamais ouvert) vs découvert (en cours)
+    var _isUndiscovered = !isBoost && done === 0;
+    var _cardClass = isBoost ? '' : (_isBoostInvite ? ' chap-invite' : (_isUndiscovered ? ' chap-undiscovered' : ' chap-discovered'));
     var cs = isBoost
       ? 'background:linear-gradient(135deg,#312e81,#4338ca);border:none'
-      : 'background:#fff';
+      : '';
 
-    var cardPulseClass = _isFirstGuide ? ' pulse-new-chap' : '';
-    html += '<div data-cat="'+cat+'" class="rounded-2xl border border-slate-200 overflow-hidden shadow-sm afu mb-3' + cardPulseClass + '" style="'+cs+'">';
+    var cardPulseClass = (_isFirstGuide || _isBoostInvite) ? ' pulse-new-chap' : '';
+    html += '<div data-cat="'+cat+'" class="rounded-2xl border border-slate-200 overflow-hidden shadow-sm afu mb-3' + cardPulseClass + _cardClass + '" style="'+cs+'">';
     html += '<div onclick="togCat(\''+cat+'\')" class="px-4 py-4 flex items-center gap-3 cursor-pointer select-none">';
-    html += '<div class="w-11 h-11 '+(isBoost?'bg-white/20':'bg-slate-100')+' rounded-xl flex items-center justify-center text-lg flex-shrink-0 '+iconPulse+'">'+(LVL[S.niv].icons[cat]||'📘')+'</div>';
+    html += '<div class="chap-icon-wrap w-11 h-11 '+(isBoost?'bg-white/20':(_isUndiscovered ? '' : 'bg-slate-100'))+' rounded-xl flex items-center justify-center text-lg flex-shrink-0 '+iconPulse+'">'+(LVL[S.niv].icons[cat]||'📘')+'</div>';
     html += '<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1.5"><span class="syne font-black text-sm '+(isBoost?'text-white':'text-slate-900')+' truncate" style="font-weight:800">'+(LVL[S.niv].names[cat]||cat)+'</span>';
     if (isNew) html += '<span class="text-[9px] syne font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-md">NEW</span>';
+    else if (_isUndiscovered && _boostCats[cat]) html += '<span class="text-[9px] syne font-black bg-indigo-100 text-indigo-600 border border-indigo-200 px-1.5 py-0.5 rounded-md">Recommandé</span>';
+    else if (_isUndiscovered) html += '<span class="text-[9px] syne font-black bg-slate-100 text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-md">À découvrir ✨</span>';
     if (S.remReq[cat]) html += '<span class="text-[9px] syne font-black bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md">🔄 Demain</span>';
     if (S.revisionCats && S.revisionCats.indexOf(cat) !== -1) html += '<span class="text-[9px] syne font-black bg-violet-100 text-violet-700 border border-violet-200 px-1.5 py-0.5 rounded-md">🔁 Révision</span>';
     html += '</div><div class="flex items-center gap-2"><div class="pbar flex-1" style="max-width:100px"><div class="pfill pfp" style="width:'+pct2+'%"></div></div>';
@@ -6310,10 +6370,15 @@ function render() {
 
     if (isOpen) {
       // ── Bandeau reprise chapitre en cours ──
-      if (!isBoost && done >= 3 && !comp) {
+      if (!isBoost && done > 0 && !comp) {
+        var _pn = S.prof ? S.prof.name : '';
+        var _chapMsg = '';
+        if (done >= Math.ceil(tot * 0.7)) _chapMsg = (_pn || 'Tu') + ', tu es à ' + done + '/' + tot + ' — la fin est proche, lâche rien !';
+        else if (done >= 3) _chapMsg = (_pn ? _pn + ', ' : '') + done + '/' + tot + ' exercices faits — continue sur ta lancée 🔥';
+        else _chapMsg = 'C\'est parti' + (_pn ? ' ' + _pn : '') + ' — ' + done + '/' + tot + ', chaque exo compte 💪';
         html += '<div class="mx-4 mb-3 bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-2.5 flex items-center gap-2">' +
-          '<span class="text-sm flex-shrink-0">💪</span>' +
-          '<span class="text-xs font-bold text-indigo-700">Tu en es à ' + done + '/' + tot + ' — continue comme ça !</span>' +
+          '<span class="text-sm flex-shrink-0">' + (done >= Math.ceil(tot * 0.7) ? '🏁' : '💪') + '</span>' +
+          '<span class="text-xs font-bold text-indigo-700">' + _chapMsg + '</span>' +
           '</div>';
       }
       // B3 — bannière prérequis fragile
