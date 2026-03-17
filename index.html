@@ -1085,7 +1085,7 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
-     TEASING PAGE (avant 18 mars 2026 09:00 Europe/Paris)
+     TEASING PAGE (avant 18 mars 2026 14:00 Europe/Paris)
 ════════════════════════════════════════════════════════════ -->
 <div id="teasing-screen" class="fixed inset-0 z-50 overflow-y-auto" style="background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%)">
   <div class="min-h-screen flex flex-col items-center justify-center px-5 py-12 relative">
@@ -2350,11 +2350,11 @@ document.addEventListener('touchend', function(e){
 }, { passive:true });
 
 // ══════════════════════════════════════════════════════════════
-// TEASING PAGE — auto-switch mercredi 18 mars 2026 09:00 Europe/Paris
+// TEASING PAGE — auto-switch mercredi 18 mars 2026 14:00 Europe/Paris
 // ══════════════════════════════════════════════════════════════
 (function() {
-  // Date cible : 18 mars 2026 09:00:00 Europe/Paris (UTC+1 = 08:00 UTC)
-  var LAUNCH_TS = new Date('2026-03-18T08:00:00Z').getTime();
+  // Date cible : 18 mars 2026 14:00:00 Europe/Paris (UTC+1 = 13:00 UTC)
+  var LAUNCH_TS = new Date('2026-03-18T13:00:00Z').getTime();
   var forceNoTeasing = location.search.indexOf('noteasing') !== -1;
 
   function isBeforeLaunch() {
