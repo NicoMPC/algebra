@@ -206,25 +206,50 @@ docs/archive/                      → Docs historiques (ne pas lire sauf besoin
 | 3M4ZAB | Charlie | 3EME | charlieboitel6@gmail.com | charlie |
 | HMD493 | Admin | — | (admin) | — |
 
-Profils simulation 21j : SIM01→SIM12 — MDP commun : `SimTest2026!`
+Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base pré-lancement).
 
 ---
 
-## 8. Actions manuelles avant lancement
+## 8. État pré-lancement — 16 mars 2026
 
-| # | Action | Statut |
+> **Lancement confirmé : mercredi 18 mars 2026 à 9h.**
+> Code 100% prêt. Sécurité Stripe déployée. Emails opérationnels.
+> Reste : test 3EME + fix 15 frictions + endpoint webhook Stripe.
+
+### ✅ Fait (lundi 16 mars)
+
+| # | Action |
+|---|---|
+| 1 | Stripe TEST → PROD — lien actif `cNicN7b0ebU9bOE9WTb3q01` |
+| 2 | 3 boîtes mail Ionos : `contact@`, `no-reply@`, `nicolas@matheux.fr` |
+| 3 | Alias Gmail `no-reply@matheux.fr` (SMTP Ionos port 465 SSL) |
+| 4 | Sécurité Stripe déployée @85 — webhook handler + premium guard client |
+| 5 | TVA art. 293 B CGI dans CGV |
+| 6 | Formulaire contact — `send_contact` GAS + modal 3 footers + `_toast()` |
+| 7 | Merge sécurité freelance (SECUmain → main) + GitHub Pages sur main |
+| 8 | Tests emails — J+0 ✅ / Reset MDP ✅ / Contact ✅ / Pas de triggers ✅ |
+| 9 | Stripe config — CGV + confidentialité + TVA décochée + limite 50 paiements |
+| 10 | Bandeau rappel limite Stripe dans admin dashboard |
+| 11 | Nettoyage base — SIM01-SIM12 supprimés, gardé admin + Auguste + Charlie |
+| 12 | Test élève 6EME ✅ / 5EME ✅ / 4EME ✅ / 3EME ✅ — 20 frictions fixées |
+
+### ⏳ Mardi 17 mars matin (Nicolas)
+
+| # | Action | Détail |
 |---|---|---|
-| 1 | ~~Stripe TEST → PROD~~ | ✅ Fait @82 |
-| 2 | ~~contact@matheux.fr~~ (Ionos) | ✅ Fait |
-| 3 | ~~Sécurité Stripe~~ (webhook + premium guard) | ✅ Code déployé @85 |
-| 4 | ~~TVA art. 293 B CGI~~ dans CGV | ✅ Fait |
-| 5 | ~~Alias `no-reply@matheux.fr`~~ — Gmail alias branché (SMTP Ionos port 465 SSL) | ✅ Fait 16 mars |
-| 6 | ~~Formulaire contact~~ — `send_contact` GAS + modal 3 footers + `_toast()` | ✅ Fait 16 mars |
-| 7 | ~~Merge sécurité freelance~~ (SECUmain → main) + GitHub Pages sur main | ✅ Fait 16 mars |
-| 8 | ~~Tests emails~~ — J+0 ✅ / Reset MDP ✅ / Contact ✅ / Pas de triggers ✅ | ✅ Fait 16 mars |
-| 9 | Triggers Apps Script — **pas maintenant**, automatiser dès 10-20 clients. Manuel via admin en attendant | 🟡 Plus tard |
-| 7 | Finaliser endpoint webhook Stripe (URL GAS + vérifier whsec_) | ⛔ À faire |
-| 8 | Tester un vrai paiement CB | ⛔ À faire |
+| 1 | ~~Test élève 3EME~~ ✅ | Fait — remarques intégrées |
+| 2 | ~~Fix 20 frictions élève~~ ✅ | Night mode, LaTeX×3, double-clic, toast, indices exo1, fermer chap, prev/next, scroll, "j'ai pas compris", CTA boost shimmer, brevet lock |
+| 3 | Test admin workflow | En conditions réelles → fix frictions admin |
+| 4 | Test parent | Parcours complet parent → fix frictions |
+| 5 | Landing page clarté | Relecture parent, wording final |
+
+### 🟡 Avant ou après lancement
+
+| # | Action | Priorité |
+|---|---|---|
+| 1 | Finaliser endpoint webhook Stripe (URL GAS + vérifier `whsec_`) | ⛔ Avant J+7 |
+| 2 | Tester un vrai paiement CB (19,99€ → vérifier Premium=1) | ⛔ Avant J+7 |
+| 3 | Triggers Apps Script — automatiser dès 10-20 clients | 🟡 Plus tard |
 
 ---
 

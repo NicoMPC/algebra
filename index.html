@@ -777,8 +777,8 @@
     body.app-night #main-app .text-slate-700 { color:#cbd5e1 !important; }
     body.app-night #main-app .text-slate-600 { color:#94a3b8 !important; }
     body.app-night #main-app .text-slate-500 { color:#64748b !important; }
-    body.app-night #main-app .text-slate-400 { color:#475569 !important; }
-    body.app-night #main-app .text-slate-300 { color:#334155 !important; }
+    body.app-night #main-app .text-slate-400 { color:#94a3b8 !important; }
+    body.app-night #main-app .text-slate-300 { color:#cbd5e1 !important; }
     body.app-night #main-app .text-indigo-600 { color:#818cf8 !important; }
     body.app-night #main-app .text-indigo-700 { color:#a5b4fc !important; }
     body.app-night #main-app .bg-white { background:#1e293b !important; }
@@ -795,7 +795,7 @@
     body.app-night #main-app .border-indigo-200 { border-color:#3730a3 !important; }
     body.app-night #main-app .border-amber-200 { border-color:#78350f !important; }
     body.app-night #main-app .pbar { background:#334155 !important; }
-    body.app-night #main-app footer a { color:#334155 !important; }
+    body.app-night #main-app footer a { color:#94a3b8 !important; }
     body.app-night #main-app .retro-exo-card { background:#1e293b !important; }
     body.app-night #main-app .shadow-sm { box-shadow:0 1px 3px rgba(0,0,0,.5) !important; }
     body.app-night #main-app #main-nav button:not(.bg-indigo-600) { background:#334155 !important; color:#94a3b8 !important; }
@@ -806,6 +806,47 @@
     body.app-night #app-c .chap-stack-ghost { filter:brightness(.3); }
     /* Night button active state */
     body.app-night #app-night-btn { background:#1e1b4b !important; border-color:#4f46e5 !important; color:#fbbf24 !important; }
+    /* Night — QCM options */
+    body.app-night #main-app .opt { background:#1e293b !important; border-color:#475569 !important; color:#e2e8f0 !important; }
+    body.app-night #main-app .opt.oc { background:#065f46 !important; border-color:#10b981 !important; color:#d1fae5 !important; }
+    body.app-night #main-app .opt.ow { background:#7f1d1d !important; border-color:#ef4444 !important; color:#fecaca !important; }
+    body.app-night #main-app .opt.on { background:#334155 !important; border-color:#475569 !important; color:#94a3b8 !important; }
+    /* Night — toast */
+    body.app-night #toast { background:#1e293b !important; border-color:#475569 !important; color:#e2e8f0 !important; }
+    /* Night — question box */
+    body.app-night #main-app .bg-slate-50.border.border-slate-200 { background:#0f172a !important; border-color:#334155 !important; }
+    body.app-night #main-app .bg-slate-50\/60 { background:rgba(15,23,42,.6) !important; }
+    /* Night — red/emerald text */
+    body.app-night #main-app .text-red-700 { color:#fca5a5 !important; }
+    body.app-night #main-app .text-emerald-700 { color:#6ee7b7 !important; }
+    body.app-night #main-app .text-emerald-600 { color:#34d399 !important; }
+    body.app-night #main-app .text-rose-600 { color:#fb7185 !important; }
+    body.app-night #main-app .text-amber-800,
+    body.app-night #main-app .text-amber-700 { color:#fbbf24 !important; }
+    /* Night — red/rose backgrounds */
+    body.app-night #main-app .bg-red-50 { background:#2d0a0a !important; }
+    body.app-night #main-app .border-red-200 { border-color:#991b1b !important; }
+    body.app-night #main-app .bg-rose-100 { background:#3b0d0d !important; }
+    body.app-night #main-app .border-rose-100 { border-color:#991b1b !important; }
+    /* Night — insight cards inline gradient */
+    body.app-night #main-app [style*="background:linear-gradient(135deg,#1e1b4b"] { opacity:.95; }
+    /* Night — help pills */
+    body.app-night #main-app .help-pill { background:#1e293b !important; border-color:#475569 !important; color:#cbd5e1 !important; }
+    /* Night — hint steps */
+    body.app-night #main-app [style*="background:#fef9c3"] { background:#1c1107 !important; border-color:#78350f !important; }
+    body.app-night #main-app [style*="background:#e0e7ff"] { background:#1e1b4b !important; border-color:#4338ca !important; }
+
+    /* ── BOOST SHIMMER CTA ─────────────────────────────── */
+    .boost-shimmer {
+      position:relative; overflow:hidden;
+    }
+    .boost-shimmer::after {
+      content:''; position:absolute; top:0; left:0; right:0; bottom:0;
+      background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,.35) 50%, transparent 100%);
+      background-size:400px 100%;
+      animation: shimmer 3s infinite;
+      pointer-events:none; border-radius:inherit;
+    }
 
     /* ── SYMBOLES TABLEAU BLANC ──────────────────────────── */
     .sym-btn {
@@ -4231,8 +4272,10 @@ window.revF = function(cat, idx) {
 // NOUVEAU v23 : auto-EASY/HARD sur QCM. wrongOpt transmis à mark()
 // pour stockage et analyse misconceptions par l'Agent Superviseur.
 window.checkOpt = function(cat, idx, oI, btn) {
+  if (S.rev) return; // Guard double-clic
   var r   = res2(cat, idx);
   var id  = S.niv + '-' + r.rC + '-' + r.rI;
+  if (S.res[id]) return; // Déjà scoré
   var exo = LVL[S.niv].cats[cat][idx];
   clearNudge(id);
   S.qans[id] = exo.options[oI];
@@ -4253,11 +4296,11 @@ window.checkOpt = function(cat, idx, oI, btn) {
     setTimeout(function(){ mark(cat, idx, 'EASY', null); }, 700);
   } else {
     btn.className = 'opt ow';
-    showT(_msg(_koKey), 2200, '💡');
+    showT(_msg(_koKey), 1500, '💡');
     // Passe l'option erronée choisie + déploie aide automatiquement (pédagogique)
     setTimeout(function(){
+      S._pendingHelp = { cat: cat, idx: idx };
       mark(cat, idx, 'HARD', exo.options[oI]);
-      autoShowHelp(cat, idx);
     }, 900);
   }
 };
@@ -4328,6 +4371,11 @@ async function togCat(cat) {
   if (S.isNew[cat]) S.isNew[cat] = false;
   if (S.exp[cat] && S.motProfChap[cat]) S._motProfScreen = cat;
   render();
+  // Scroll vers la carte ouverte
+  if (S.exp[cat]) setTimeout(function(){
+    var el = document.querySelector('[data-cat="'+cat+'"]');
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+  }, 100);
   // B3 — vérifie les prérequis fragiles à la première ouverture du chapitre
   if (S.exp[cat] && !(cat in S.prereqBanner) && cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') {
     S.prereqBanner[cat] = undefined; // en cours
@@ -4557,6 +4605,19 @@ function setView(v) {
 // ══════════════════════════════════════════════════════════════
 
 async function loadBrevet() {
+  // Mode Brevet verrouillé — teaser "bientôt disponible"
+  if (!S.brevPendingConfig) {
+    var c = document.getElementById('app-c');
+    if (c) c.innerHTML =
+      '<div class="afu" style="max-width:420px;margin:3rem auto;text-align:center;padding:2rem 1.5rem">' +
+        '<div style="font-size:3.5rem;margin-bottom:1rem">🔒</div>' +
+        '<div class="syne font-black text-lg text-slate-900 mb-2">Mode Brevet</div>' +
+        '<div class="text-sm text-slate-500 leading-relaxed mb-6">Cette fonctionnalité arrive très bientôt.<br>Tu pourras t\'entraîner sur des sujets type brevet, chapitre par chapitre.</div>' +
+        '<div class="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-xl px-4 py-2 text-xs font-bold text-amber-700">🚧 En cours de préparation</div>' +
+        '<div class="mt-6"><button onclick="setView(\'chapters\')" class="btn btn-dk btn-fw py-3">← Retour aux chapitres</button></div>' +
+      '</div>';
+    return;
+  }
   // Si brevet en attente depuis admin → pré-sélectionner les chapitres
   if (S.brevPendingConfig && S.brevPendingConfig.chapitres) {
     S.brevSelectedChaps = S.brevPendingConfig.chapitres.slice();
@@ -5526,6 +5587,7 @@ function renderArchiveSection(cat, exs) {
       if (!shown) html += '<div class="text-center text-xs text-slate-400 py-2">Historique non disponible.</div>';
     }
   }
+  html += '<button onclick="togCat(\''+cat+'\')" class="btn btn-fw py-3 mt-3 bg-slate-100 text-slate-500 font-bold rounded-xl text-xs">Fermer ✕</button>';
   html += '</div>';
   return html;
 }
@@ -5666,7 +5728,7 @@ function renderDiagInsight() {
     var ok = cr.total > 0 && (cr.easy / cr.total) >= 0.5;
     chapHtml += ok
       ? '<div class="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 text-sm font-semibold text-emerald-700">✅ ' + chapName + ' — tu maîtrises bien</div>'
-      : '<div class="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm font-semibold text-red-700">🔴 ' + chapName + ' — priorité dans ton boost</div>';
+      : '<div class="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm font-semibold text-amber-700">📘 ' + chapName + ' — on va travailler ça ensemble</div>';
   });
 
   c.innerHTML =
@@ -5683,7 +5745,7 @@ function renderDiagInsight() {
     '<div class="bg-indigo-50 border border-indigo-200 rounded-2xl px-4 py-3 text-sm font-semibold text-indigo-700 text-center">' +
       '⚡ Ton premier boost du jour est prêt — 5 exercices ciblés sur tes points faibles' +
     '</div>' +
-    '<button onclick="dismissDiagInsight()" class="btn btn-ac btn-fw py-4 text-base">Commencer mes chapitres 📚</button>' +
+    '<button onclick="dismissDiagInsight();togCat(\'BOOST\')" class="btn btn-ac btn-fw py-4 text-base boost-shimmer">Commencer mon boost du jour ⚡</button>' +
     '</div>';
 }
 
@@ -6006,7 +6068,7 @@ function render() {
   if (S.calState !== 'sel' && S.calState !== 'test') {
     if (S.view === 'progress') { renderProgress(); return; }
     if (S.view === 'brevet')   { renderBrevet();   return; }
-    if (S.diagInsight)    { renderDiagInsight();  return; }
+    if (S.diagInsight && !S.exp['BOOST'])    { renderDiagInsight();  return; }
     if (S.boostInsight)  { renderBoostInsight(); return; }
     if (S._motProfScreen){ renderMotProf();      return; }
   }
@@ -6126,7 +6188,7 @@ function render() {
   });
   // Afficher le guide "commence par là" seulement après que le boost est consommé
   // (ou s'il n'y a pas de boost disponible) — évite de montrer le guide pendant que le boost attend
-  var _showFirstGuide = _totalChapDone === 0 && (!S.boost || S.boostConsumed);
+  var _showFirstGuide = _totalChapDone === 0 && !S.boost && !S.boostConsumed;
 
   sortedKeys.forEach(function(cat){
     var exs = cats[cat]; var tot = exs.length; var done = 0;
@@ -6282,6 +6344,11 @@ function render() {
     var ap = document.querySelector('.pill.ring-2');
     if (ap) ap.scrollIntoView({ block:'nearest', inline:'center', behavior:'smooth' });
   }, 60);
+  // Pending help après erreur (fix: autoShowHelp post-render)
+  if (S._pendingHelp) {
+    var _ph = S._pendingHelp; S._pendingHelp = null;
+    setTimeout(function(){ autoShowHelp(_ph.cat, _ph.idx); }, 80);
+  }
 }
 
 // ── Génère le HTML hints+formule pour le mode révision boost ──
@@ -6553,9 +6620,13 @@ function rSection(cat, data, idx, total, catDone) {
       '<button onclick="mark(\''+cat+'\','+idx+',\'MEDIUM\',null)" class="btn-wn btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">🤔</span>Je doute</button>' +
       '<button onclick="mark(\''+cat+'\','+idx+',\'EASY\',null)" class="btn-ok btn flex-col gap-1 py-3 text-xs" style="border-radius:12px"><span class="text-lg">✅</span>Acquis</button></div>';
   } else if (scored && !catDone) {
-    // Exercice répondu : bouton suivant
+    // Exercice répondu : bouton suivant + aide inline pour autoShowHelp
     var _pcKey = 'pc_' + (S.prof ? S.prof.code : '') + '_' + cat + '_' + idx;
-    acts = '<button onclick="nextEx(\''+cat+'\')" class="btn btn-dk btn-fw py-4 mt-4 flex items-center justify-center gap-2">SUIVANT <span class="text-slate-400 font-normal text-xs">(ou swipe ←)</span></button>' +
+    acts = '<div class="inline-help mc rdy" id="help-inline-'+id+'"></div>' +
+      '<div class="flex gap-2 mt-4">' +
+      (idx > 0 ? '<button onclick="goEx(\''+cat+'\','+(idx-1)+')" class="btn bg-slate-100 text-slate-500 py-4 px-4 rounded-xl font-bold text-sm">←</button>' : '') +
+      '<button onclick="nextEx(\''+cat+'\')" class="btn btn-dk py-4 flex-1 flex items-center justify-center gap-2">SUIVANT <span class="text-slate-400 font-normal text-xs">(ou swipe ←)</span></button>' +
+      '</div>' +
       '<div class="text-center mt-2"><button onclick="openFeedback(\''+cat+'\','+idx+')" class="text-[10px] text-slate-300 hover:text-slate-500 transition-colors underline">📢 Signaler une erreur dans cet exercice</button></div>' +
       (!sessionStorage.getItem(_pcKey) ? '<div id="btn-pas-compris-wrap" class="mt-2 text-center"><button onclick="_handlePasCompris(\''+cat+'\','+idx+',\''+((data.q||'').replace(/'/g,"\\'").substring(0,80))+'\')" class="text-xs text-slate-400 underline hover:text-slate-600 transition-colors bg-transparent border-none cursor-pointer">Je n\'ai pas compris</button></div>' : '');
   }
@@ -6644,7 +6715,8 @@ function rSection(cat, data, idx, total, catDone) {
           (fR ? '✓ Formule vue' : '👁 Formule') +
         '</button>' +
       '</div>' +
-      '<div class="inline-help mc" id="help-inline-'+id+'"></div>') +
+      '<div class="inline-help mc" id="help-inline-'+id+'"></div>' +
+      (!scored && !sessionStorage.getItem('pc_' + (S.prof ? S.prof.code : '') + '_' + cat + '_' + idx) ? '<div id="btn-pas-compris-wrap" class="mt-3 text-center"><button onclick="_handlePasCompris(\''+cat+'\','+idx+',\''+((data.q||'').replace(/'/g,"\\'").substring(0,80))+'\')" class="text-xs text-slate-400 underline hover:text-slate-600 transition-colors bg-transparent border-none cursor-pointer">Je n\'ai pas compris</button></div>' : '')) +
     '</div></div>';
 }
 
@@ -7775,7 +7847,7 @@ function autoShowHelp(cat, idx) {
     steps.forEach(function(s, i) {
       html += '<div style="margin-bottom:.35rem;background:#fef9c3;border:1px solid #fbbf24;border-radius:8px;padding:.35rem .6rem">'
         + '<span style="font-size:.7rem;font-weight:900;color:#78350f;text-transform:uppercase;letter-spacing:.05em">Indice '+(i+1)+' : </span>'
-        + '<span style="color:#1e1b4b;font-weight:600">' + s + '</span>'
+        + '<span style="color:#1e1b4b;font-weight:600" class="mc">' + fmtL(s) + '</span>'
         + '</div>';
     });
     S.hints[id] = steps.length;
@@ -7787,7 +7859,7 @@ function autoShowHelp(cat, idx) {
     S.ftch[id] = true;
     html += '<div style="background:#e0e7ff;border:1px solid #818cf8;border-radius:8px;padding:.35rem .6rem">'
       + '<span style="font-size:.7rem;font-weight:900;color:#3730a3;text-transform:uppercase;letter-spacing:.05em">Formule : </span>'
-      + '<span style="color:#1e1b4b;font-weight:600">' + (exo.f||'') + '</span>'
+      + '<span style="color:#1e1b4b;font-weight:600" class="mc">' + fmtL(exo.f||'') + '</span>'
       + '</div>';
     var pf = document.getElementById('pill-form-'+id);
     if (pf) { pf.innerHTML = '✓ Formule vue'; pf.classList.remove('pulse-hint'); pf.classList.add('opacity-40','pointer-events-none'); }

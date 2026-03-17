@@ -6,8 +6,9 @@
 
 ## État global — 16 mars 2026 (dernière mise à jour : @85)
 
-**Matheux est fonctionnel à 100% côté code. Sécurité Stripe déployée. Reste : alias email + triggers + endpoint webhook.**
-**Lancement prévu : mercredi 18 mars 2026.**
+**Matheux est fonctionnel à 100% côté code. Sécurité Stripe déployée. Emails opérationnels. Base nettoyée.**
+**Reste : endpoint webhook Stripe. Tests élève 5/5 ✅ + 20 frictions fixées ✅.**
+**Lancement confirmé : mercredi 18 mars 2026 à 9h.**
 
 > ✅ **Bugfixes @60** — BUG-01 à BUG-12 corrigés (simulation 7j × 5 profils). 13 mars.
 > ✅ **Simulation 40 élèves @63** — 6 bugs corrigés + 1616 appels API, 0 erreur. 14 mars.
@@ -57,14 +58,12 @@
 - [x] Nettoyage base : SIM01-SIM12 + anciens profils supprimés, gardé admin+Auguste+Charlie ✅
 - [x] Test élève : 6EME ✅ / 5EME ✅ / 4EME ✅ — 15 frictions notées (3EME à finir dans le bus)
 
-### Mardi 17 mars (Nicolas)
-- [ ] Finir test élève 3EME (si pas fini dans le bus)
-- [ ] 🔧 Fix frictions élève (15 items : mode nuit, LaTeX, messages, boost, chapitre, scroll, bouton "j'ai pas compris")
+### Mardi 17 mars matin (Nicolas)
+- [ ] **Test élève 3EME** — dernier niveau à tester, noter les frictions
+- [ ] 🔧 **Fix 15 frictions élève** (mode nuit, LaTeX×3, messages×3, boost×2, chapitre×4, scroll, bouton "j'ai pas compris") + frictions 3EME
 - [ ] Test admin workflow en conditions → fix frictions
-- [ ] Test parent → fix frictions
-- [ ] Test admin ergonomie → fix frictions
-- [ ] Rapport parent hebdo test manuel
-- [ ] Landing page clarté parent
+- [ ] Test parent parcours complet → fix frictions
+- [ ] Landing page relecture parent, wording final
 - [ ] Checklist pré-lancement vérifs finales
 
 ### Jeudi 19 mars (Nicolas)

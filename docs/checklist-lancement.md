@@ -34,16 +34,16 @@
 - [ ] **4.8** Vérifier : élève voit statut Premium dans l'app
 - [ ] **4.9** Rembourser depuis Stripe Dashboard
 
-## 4b. Tests utilisateur (lundi 16 mars — 16h30) ⏳
+## 4b. Tests utilisateur (16-17 mars) ⏳
 
-- [x] **4b.1** Test élève 6EME ✅
-- [x] **4b.2** Test élève 5EME ✅
-- [x] **4b.3** Test élève 4EME ✅
-- [ ] **4b.4** Test élève 3EME (à finir dans le bus)
-- [ ] **4b.5** Fix 15 frictions élève (mode nuit, LaTeX×3, messages×3, boost×2, chapitre×4, scroll, bouton "j'ai pas compris")
-- [ ] **4b.6** Test admin workflow en conditions
-- [ ] **4b.7** Test parent parcours complet
-- [ ] **4b.8** Test admin ergonomie
+- [x] **4b.1** Test élève 6EME ✅ (16 mars)
+- [x] **4b.2** Test élève 5EME ✅ (16 mars)
+- [x] **4b.3** Test élève 4EME ✅ (16 mars)
+- [x] **4b.4** Test élève 3EME ✅ (17 mars)
+- [x] **4b.5** Fix 20 frictions élève ✅ (17 mars) — mode nuit, LaTeX×3, double-clic, toast, indices exo 1, fermer chapitre, prev/next, scroll, "j'ai pas compris", CTA boost, shimmer, brevet lock
+- [ ] **4b.6** Test admin workflow en conditions → **mardi 17**
+- [ ] **4b.7** Test parent parcours complet → **mardi 17**
+- [ ] **4b.8** Test admin ergonomie → **mardi 17**
 
 ## 5. Vérifs jour J (mercredi 18 mars)
 
