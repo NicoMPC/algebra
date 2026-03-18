@@ -4473,6 +4473,18 @@ function getDailyChecklist(p) {
 
     // ── Générer les items ───────────────────────────────────
 
+    // 0. NOUVEL INSCRIT — visible le jour même (priorité 0 = top)
+    if (trialDays === 0) {
+      var j0Auto = sent['J+0'] || sent['J+0-manuel'];
+      items.push({
+        priority: 0, type: 'nouvel_inscrit', icon: '🆕',
+        label: prenom + ' vient de s\'inscrire',
+        sublabel: niveau + (objectif ? ' · ' + objectif : '') + (j0Auto ? ' · Mail J+0 ✅' : ' · ⚠️ Mail J+0 non envoyé'),
+        code: code, prenom: prenom, niveau: niveau, email: email, objectif: objectif,
+        color: 'emerald', doneKey: 'vu-inscrit-' + code + '-' + today, autoCheck: false
+      });
+    }
+
     // 1. CONTENU — Boost terminé (priorité 1)
     if (lastExosDone >= 5 && !boostPending && !todayBoost) {
       items.push({
@@ -4495,14 +4507,14 @@ function getDailyChecklist(p) {
       });
     }
 
-    // 3. EMAIL — J+0 non envoyé (priorité 1)
+    // 3. EMAIL — J+0 fallback (seulement si l'envoi auto a échoué)
     if (!sent['J+0'] && !sent['J+0-manuel'] && trialDays === 0) {
       items.push({
-        priority: 1, type: 'email_j0', icon: '📧',
-        label: 'Envoyer le mail de bienvenue (J+0)',
-        sublabel: 'Inscrit aujourd\'hui',
+        priority: 1, type: 'email_j0', icon: '⚠️',
+        label: 'Mail J+0 non parti — renvoyer manuellement',
+        sublabel: 'L\'envoi automatique a échoué',
         code: code, prenom: prenom, niveau: niveau, email: email, objectif: objectif,
-        color: 'green', doneKey: 'J+0-manuel', autoCheck: false
+        color: 'red', doneKey: 'J+0-manuel', autoCheck: false
       });
     }
 
