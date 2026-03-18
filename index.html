@@ -3585,11 +3585,8 @@ async function _flowGuestRegister() {
     }
   } catch(e) {}
 
-  // Login final
-  var loginR = await fetch(SU, { method: 'POST',
-    body: JSON.stringify({ action: 'login', email: email.toLowerCase().trim(), password: hash })
-  }).then(function(x) { return x.json(); }).catch(function() { return { status: 'error' }; });
-
+  // register retourne déjà les données login — pas de 2e appel
+  var loginR = r;
   if (loginR.status === 'success') {
     loginR.isFirstDay = false;
 

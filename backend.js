@@ -302,9 +302,35 @@ function register(p) {
   // Email bienvenue J+0 (silencieux — ne bloque pas l'inscription si erreur)
   try { sendMarketingSequence(email, name, 0); } catch(e) {}
 
+  // Curriculum officiel (chapitres du niveau)
+  var curriculumOfficiel = [];
+  getRows(SH.CURRICULUM)
+    .filter(function(r) { return r['Niveau'] && r['Niveau'].toString().toUpperCase() === level; })
+    .forEach(function(r) {
+      curriculumOfficiel.push({
+        categorie: String(r['Categorie']), titre: String(r['Titre']),
+        icone: String(r['Icone']), exos: parseJSON(r['ExosJSON'])
+      });
+    });
+
   return {
-    status:  'success',
-    profile: { code: code, name: name, level: level, isAdmin: false, premium: false, objectif: objectif }
+    status:             'success',
+    profile:            { code: code, name: name, level: level, isAdmin: false, premium: false, trialStart: now, objectif: objectif },
+    curriculumOfficiel: curriculumOfficiel,
+    diagExos:           [],
+    dailyBoost:         null,
+    boostExistsInDB:    false,
+    boostExosDone:      0,
+    isFirstDay:         true,
+    history:            [],
+    boostHistory:       [],
+    coursData:          {},
+    dynamicChapters:    [],
+    nextChapter:        null,
+    nextBoost:          null,
+    pendingBrevet:      null,
+    revisionChapters:   [],
+    trial:              { active: true, daysLeft: 7, trialDays: 0 }
   };
 }
 
