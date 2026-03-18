@@ -2851,6 +2851,19 @@ function flowToggleChap(el, key) {
   else { _flowChaps = _flowChaps.filter(function(k){ return k !== key; }); }
 }
 
+function _flowAutoSelectChaps() {
+  var cards = document.querySelectorAll('#flow-chaps-grid .flow-chap');
+  var count = Math.ceil(cards.length * 0.65);
+  _flowChaps = [];
+  cards.forEach(function(el, i) {
+    if (i < count) {
+      el.classList.add('sel');
+      _flowChaps.push(el.getAttribute('data-key'));
+    }
+  });
+  showT('Chapitres sélectionnés — ajuste si besoin', 2500, '✅');
+}
+
 function flowToStep3() {
   if (_flowChaps.length < 1) { showT('Sélectionne au moins 1 chapitre 😊', 2500, '⚠️'); return; }
   _flowQIdx = 0; _flowScore = 0;
@@ -2949,17 +2962,13 @@ function _flowRenderQuestion(idx) {
   var pct = Math.round((idx / total) * 100);
   _flowStartTs = Date.now();
 
-  // Tutorial première question uniquement
+  // Tutorial première question uniquement — 1 ligne
   var tutorial = '';
   if (idx === 0) {
     tutorial =
-      '<div style="background:rgba(99,102,241,.15);border:1.5px solid rgba(129,140,248,.3);' +
-      'border-radius:12px;padding:.75rem 1rem;margin-bottom:1rem;' +
-      'color:rgba(255,255,255,.75);font-size:.8rem;font-weight:500;line-height:1.5">' +
-      '💡 <strong style="color:#a5b4fc">Comment ça marche :</strong> réponds honnêtement — ' +
-      'c\'est pas un exam. Chaque question a des <strong style="color:#a5b4fc">indices</strong> ' +
-      'et une <strong style="color:#a5b4fc">formule</strong> dans la vraie app si tu bloques.' +
-      '</div>';
+      '<p style="color:rgba(255,255,255,.55);font-size:.8rem;font-weight:500;text-align:center;margin-bottom:.75rem">' +
+      'Réponds comme tu peux — pas de piège, pas de note.' +
+      '</p>';
   }
 
   var opts = exo.options || exo.opts || [];
@@ -3163,26 +3172,104 @@ function _showObjectifPicker(callback) {
 }
 
 function _flowActivateStep4Guest() {
-  // Calculer le score pour affichage dans step 4
+  // Carte résultat diagnostic — rendue dans flow-s3
   var ok = _flowResults.filter(function(r) { return r.correct; }).length;
   var total = _flowResults.length;
   var pct = total > 0 ? Math.round((ok / total) * 100) : 0;
-  var scoreLabel = pct >= 80 ? "T'es solide 💪" : pct >= 50 ? "Bon niveau, on a repéré tes points faibles !" : "On a trouvé exactement où ça coince.";
 
-  // Adapter step 4 pour flow guest — le champ mot de passe reste visible
-  var passField = document.getElementById('fl-pass');
-  if (passField) passField.style.display = '';
+  // Grouper par chapitre
+  var chapResults = {};
+  _flowResults.forEach(function(r) {
+    var exo = _flowExos[r.idx];
+    if (!exo) return;
+    var cat = exo.oC || exo.categorie || 'Autre';
+    if (!chapResults[cat]) chapResults[cat] = { ok: 0, total: 0 };
+    chapResults[cat].total++;
+    if (r.correct) chapResults[cat].ok++;
+  });
+  var solidChaps = [], weakChaps = [];
+  Object.keys(chapResults).forEach(function(cat) {
+    var cr = chapResults[cat];
+    var label = cat.replace(/_/g, ' ');
+    if (cr.total > 0 && (cr.ok / cr.total) >= 0.5) solidChaps.push(label);
+    else weakChaps.push(label);
+  });
+
+  // Récit
+  var narrative;
+  if (weakChaps.length === 0) narrative = 'Toutes les bases sont solides. On va te pousser plus loin.';
+  else if (solidChaps.length === 0) narrative = 'On a trouvé exactement où reprendre. Ton programme est prêt.';
+  else narrative = solidChaps.length + ' base' + (solidChaps.length > 1 ? 's' : '') + ' solide' + (solidChaps.length > 1 ? 's' : '') + ' — et ' + weakChaps.length + ' point' + (weakChaps.length > 1 ? 's' : '') + ' à travailler.';
+
+  // Tags chapitres
+  var tagsHtml = '';
+  solidChaps.slice(0, 3).forEach(function(c) {
+    tagsHtml += '<span style="display:inline-block;background:rgba(16,185,129,.15);border:1px solid rgba(52,211,153,.35);color:#6ee7b7;border-radius:99px;padding:.3rem .75rem;font-size:.75rem;font-weight:700;margin:.2rem">\u2705 ' + c + '</span>';
+  });
+  weakChaps.slice(0, 3).forEach(function(c) {
+    tagsHtml += '<span style="display:inline-block;background:rgba(99,102,241,.15);border:1px solid rgba(129,140,248,.35);color:#a5b4fc;border-radius:99px;padding:.3rem .75rem;font-size:.75rem;font-weight:700;margin:.2rem">\u{1F3AF} ' + c + '</span>';
+  });
+
+  // Objectif choices intégrés dans la carte
+  var objChoices = [
+    { key: 'lacunes',        emoji: '\u{1F3AF}', label: 'Combler mes lacunes' },
+    { key: 'chapitre_jour',  emoji: '\u{1F4C5}', label: 'Avancer chapitre par chapitre' },
+    { key: 'brevet',         emoji: '\u{1F4DD}', label: 'Pr\u00e9parer le brevet' },
+    { key: 'toutes_matieres',emoji: '\u{1F680}', label: 'Tout r\u00e9viser' }
+  ];
+  var objHtml = objChoices.map(function(c) {
+    return '<button onclick="_flowGoToRegister(\'' + c.key + '\')" style="width:100%;padding:.55rem .85rem;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;color:rgba(255,255,255,.75);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;margin-bottom:.35rem;display:flex;align-items:center;gap:.6rem;text-align:left" onmouseover="this.style.borderColor=\'#818cf8\';this.style.background=\'rgba(99,102,241,.15)\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,.12)\';this.style.background=\'rgba(255,255,255,.06)\'">' +
+      '<span style="font-size:1.1rem;flex-shrink:0">' + c.emoji + '</span>' +
+      '<span>' + c.label + '</span></button>';
+  }).join('');
+
+  var container = document.getElementById('flow-s3');
+  if (!container) return;
+
+  container.innerHTML =
+    '<div style="text-align:center;animation:flowIn .4s ease-out">' +
+    '<div style="font-size:2.5rem;margin-bottom:.75rem">\u{1F3AF}</div>' +
+    '<div style="font-family:Syne,sans-serif;font-weight:900;font-size:1.5rem;color:#fff;margin-bottom:.5rem">Ton diagnostic</div>' +
+    '<div style="margin:1.25rem auto;max-width:260px">' +
+    '<div style="height:8px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden">' +
+    '<div id="flow-result-bar" style="height:100%;background:linear-gradient(90deg,#4338ca,#6366f1);border-radius:99px;width:0%;transition:width 1s ease-out"></div>' +
+    '</div>' +
+    '<div style="display:flex;justify-content:space-between;margin-top:.4rem">' +
+    '<span style="font-size:.7rem;color:rgba(255,255,255,.35)">0%</span>' +
+    '<span style="font-family:Syne,sans-serif;font-weight:900;font-size:1.1rem;color:#a5b4fc">' + pct + '%</span>' +
+    '<span style="font-size:.7rem;color:rgba(255,255,255,.35)">100%</span>' +
+    '</div></div>' +
+    '<p style="color:rgba(255,255,255,.7);font-size:.9rem;font-weight:500;line-height:1.6;margin-bottom:1rem">' + narrative + '</p>' +
+    '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:.3rem;margin-bottom:1.25rem">' + tagsHtml + '</div>' +
+    '<p style="color:rgba(255,255,255,.4);font-size:.78rem;font-weight:500;margin-bottom:1.25rem">Ton entra\u00eenement perso est d\u00e9j\u00e0 en pr\u00e9paration...</p>' +
+    '<div style="border-top:1px solid rgba(255,255,255,.08);padding-top:1rem;margin-bottom:.75rem">' +
+    '<p style="font-family:Syne,sans-serif;font-weight:800;color:rgba(255,255,255,.5);font-size:.75rem;letter-spacing:.05em;margin-bottom:.6rem">QUEL EST TON OBJECTIF ?</p>' +
+    objHtml +
+    '</div>' +
+    '<p style="color:rgba(255,255,255,.3);font-size:.72rem;margin-top:.5rem">\u2713 Gratuit 7 jours \u00b7 Sans carte bancaire</p>' +
+    '</div>';
+
+  // Animer la barre après rendu
+  setTimeout(function() {
+    var bar = document.getElementById('flow-result-bar');
+    if (bar) bar.style.width = pct + '%';
+  }, 100);
+  if (pct >= 60) { try { launchConfetti(); } catch(e) {} }
+}
+
+function _flowGoToRegister(objKey) {
+  _flowObjectif = objKey;
   var h2 = document.querySelector('#flow-s4 h2');
-  if (h2) h2.textContent = ok + '/' + total + ' — ' + pct + '%';
+  if (h2) h2.textContent = 'Cr\u00e9e ton espace';
+  var icon = document.querySelector('#flow-s4 .w-14');
+  if (icon) icon.textContent = '\u2728';
   var desc = document.querySelector('#flow-s4 p');
-  if (desc) { desc.textContent = scoreLabel + ' Résultats sauvegardés — 7 jours offerts, sans carte bancaire.'; }
+  if (desc) desc.textContent = 'R\u00e9sultats sauvegard\u00e9s \u2014 7 jours offerts, sans carte bancaire.';
   var btnTxt = document.getElementById('fl-btn-txt');
-  if (btnTxt) btnTxt.textContent = 'Continuer — c\'est gratuit →';
+  if (btnTxt) btnTxt.textContent = 'Continuer \u2014 c\'est gratuit \u2192';
   var btn = document.getElementById('fl-btn');
   if (btn) btn.setAttribute('onclick', '_flowGuestRegister()');
-
-  if (pct >= 60) { try { launchConfetti(); } catch(e) {} }
-  _showObjectifPicker(function() { _flowSetStep(4); });
+  _flowSetStep(4);
 }
 
 async function _flowGuestRegister() {
@@ -3302,15 +3389,10 @@ async function _flowGuestRegister() {
     // Générer boost en background
     boostFromDiag(_diagErrs.slice(0, 4));
 
-    // Onboarding adapté guest
+    // Onboarding adapté guest — 2 slides
     var _guestSlides = [
-      _onbSlides[0],
-      { emoji: '⚡', title: 'Ton entraînement du jour est prêt !',
-        body: 'On a analysé tes réponses et généré tes exercices perso. Lance ton premier boost dès maintenant 🔥',
-        color: 'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)' },
-      { emoji: '🔥', title: 'Une chose à faire aujourd\'hui',
-        body: 'Lance ton premier boost. 5 minutes, ciblé sur ce que t\'as raté. C\'est ça qui change.' ,
-        color: 'linear-gradient(135deg,#1e1b4b 0%,#4338ca 100%)' }
+      { emoji: '\u{1F389}', title: 'Ton espace est cr\u00e9\u00e9', body: '7 jours offerts. Acc\u00e8s complet. Sans carte bancaire.', color: 'linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)' },
+      { emoji: '\u26A1', title: 'Ton entra\u00eenement est pr\u00eat', body: '5 exercices cibl\u00e9s sur tes vrais points faibles. C\'est parti.', color: 'linear-gradient(135deg,#1e1b4b 0%,#4338ca 100%)' }
     ];
     var _savedSlides = _onbSlides;
     _onbSlides = _guestSlides;
@@ -3403,13 +3485,8 @@ async function flowRegister() {
         .filter(Boolean);
       boostFromDiag(_diagErrs2.slice(0, 4));
       var _guestSlides2 = [
-        _onbSlides[0],
-        { emoji: '⚡', title: 'Ton entraînement du jour est prêt !',
-          body: 'On a analysé tes réponses et généré tes exercices perso. Lance ton premier boost dès maintenant 🔥',
-          color: 'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)' },
-        { emoji: '🔥', title: 'Une chose à faire aujourd\'hui',
-          body: 'Lance ton premier boost. 5 minutes, ciblé sur ce que t\'as raté. C\'est ça qui change.',
-          color: 'linear-gradient(135deg,#1e1b4b 0%,#4338ca 100%)' }
+        { emoji: '\u{1F389}', title: 'Ton espace est cr\u00e9\u00e9', body: '7 jours offerts. Acc\u00e8s complet. Sans carte bancaire.', color: 'linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)' },
+        { emoji: '\u26A1', title: 'Ton entra\u00eenement est pr\u00eat', body: '5 exercices cibl\u00e9s sur tes vrais points faibles. C\'est parti.', color: 'linear-gradient(135deg,#1e1b4b 0%,#4338ca 100%)' }
       ];
       var _savedSlides2 = _onbSlides;
       _onbSlides = _guestSlides2;
@@ -3691,7 +3768,9 @@ function showOnboarding(cb) {
     toutes_matieres: { emoji: '🚀', title: 'Tout le programme est là',           body: 'Commence par ton Entraînement du jour, puis explore librement les 54 chapitres disponibles.' }
   };
   var _s3 = _s3Map[_flowObjectif] || _s3Map['lacunes'];
-  _onbSlides[2] = { emoji: _s3.emoji, title: _s3.title, body: _s3.body, color: 'linear-gradient(135deg,#1e1b4b 0%,#4338ca 100%)' };
+  if (_onbSlides.length > 2) {
+    _onbSlides[2] = { emoji: _s3.emoji, title: _s3.title, body: _s3.body, color: 'linear-gradient(135deg,#1e1b4b 0%,#4338ca 100%)' };
+  }
   var ov = document.createElement('div');
   ov.id = 'onb-overlay';
   ov.style.cssText =

@@ -192,17 +192,18 @@ Email sujet `[Matheux ⚡ ACTION]` si fragiles/bloquées.
 
 ### Inscription → premier boost
 
-**Flux A — Trial Flow (parcours principal, CTA landing)**
+**Flux A — Trial Flow (parcours principal, CTA landing) @92**
 ```
-1. Choix niveau (6EME→3EME) → sélection chapitres déjà vus
+1. Choix niveau (6EME→3EME) → sélection chapitres ("Je ne sais pas trop" = auto-select 65%)
 2. Quiz diagnostic inline guest (4-10 questions, AVANT inscription)
-3. Formulaire prénom + email + mdp → register() GAS
-4. GAS : crée Users + email J+0 auto
-5. Scores CALIBRAGE sauvés fire-and-forget
-6. calDone=true localStorage + suppression CALIBRAGE des cats
-7. boostFromDiag() en background → DailyBoosts
-8. Onboarding guest (3 slides : bienvenue + boost prêt + action)
-9. render() → élève voit son premier boost
+3. Carte résultat (barre animée + récit + tags chapitres solides/faibles + objectif picker intégré)
+4. Formulaire prénom + email + mdp → register() GAS
+5. GAS : crée Users + email J+0 auto
+6. Scores CALIBRAGE sauvés fire-and-forget
+7. calDone=true localStorage + suppression CALIBRAGE des cats
+8. boostFromDiag() en background → DailyBoosts
+9. Onboarding guest (2 slides : "Ton espace est créé" + "Ton entraînement est prêt")
+10. render() → élève voit son premier boost
 ```
 Deux variantes convergentes : `_flowGuestRegister()` (guest complet) et `_doLoginAndLaunch()` (via `flowRegister()`). Les deux suivent la même logique quand `_flowDiagDone=true`.
 

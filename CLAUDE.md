@@ -301,6 +301,17 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | 8 | Onglet Progression débloqué | `display:none` retiré — vue complète accessible |
 | 9 | Cohérence messages | "boost"→"entraînement", chap_done sans "disponible demain", mode nuit bg-orange/bg-blue |
 
+### ✅ Refonte Trial Flow UX — 18 mars @92
+
+| # | Feature | Détail |
+|---|---|---|
+| 1 | Step 2 "Je ne sais pas trop" | Auto-sélection ~65% chapitres, minimum 2→1, titre/sous-titre plus accueillants |
+| 2 | Tutorial allégé | 3 lignes → 1 ligne ("Réponds comme tu peux — pas de piège, pas de note.") |
+| 3 | Carte résultat dédiée | Écran dédié dans step 3 : barre animée + récit + tags chapitres (solides/à travailler) |
+| 4 | Objectif picker intégré | Les 4 choix d'objectif sont intégrés dans la carte résultat (plus de modal séparée) |
+| 5 | Onboarding 3→2 slides | Guest flow : "Ton espace est créé" + "Ton entraînement est prêt" — plus rapide |
+| 6 | `_flowGoToRegister()` | Nouvelle fonction : objectif → prépare step 4 (inscription) avec heading adapté |
+
 ### ✅ Tuto régressif — 18 mars @91
 
 8 micro-tips contextuels first-use (système `_needsCoach/_markCoach` existant) :

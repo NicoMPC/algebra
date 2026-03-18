@@ -32,7 +32,7 @@
 | Messages élèves | ✅ Système adaptatif `_msg()` — ~35 entrées, niveau, objectif, coach marks, _OK/_KO contextuels |
 | Admin cockpit | ✅ GAS @88 — cockpit 5 onglets À FAIRE/FAIT/MAILS/INACTIFS/RAPPORT, boost+chapitre uniquement dans À FAIRE, boutons "Copier JSON complet" (exos+résultats+temps+indices+formule), profils test visibles, fix publish chapitre+JSON parse. 17 mars |
 | Exercices | ✅ Audit final 17 mars — 1728 exos vérifiés (3 onglets), 2 LaTeX fixés (1ERE/Second_Degre), 3 faux positifs calcul confirmés OK. Score 98,3%. 24 doublons 1ERE non bloquants. **0 bloquant.** |
-| UX élève | ✅ @77 — mode nuit app, guide boost, titres gras, nav boost reopen |
+| UX élève | ✅ @92 — trial flow sans friction (carte résultat, auto-select chaps, onboarding 2 slides) |
 | Profil cognitif | ✅ @81 — bouton "j'ai pas compris" + profil cognitif dans fiche admin |
 | Page teasing | ✅ @82 — countdown live, waitlist email (Teasing_Early), auto-switch 18 mars 9h, `?noteasing` pour dev |
 | Sécurité Stripe | ✅ @84-@85 — webhook handler (Premium auto) + premium guard client (vérif 5 min) |
