@@ -30,7 +30,7 @@
 | Analytics | ✅ GA4 RGPD-compliant |
 | Limite bêta | 50 vrais élèves (IsTest=0) |
 | Messages élèves | ✅ Système adaptatif `_msg()` — ~35 entrées, niveau, objectif, coach marks, _OK/_KO contextuels. **Invariants figés @95** : toast mutex FIFO, hero cascade P1→P5, coach/ko exclusif, boostConsumed date-stamped. Simulation 7j : 0 incohérence. |
-| Admin cockpit | ✅ GAS @88 — cockpit 5 onglets À FAIRE/FAIT/MAILS/INACTIFS/RAPPORT, boost+chapitre uniquement dans À FAIRE, boutons "Copier JSON complet" (exos+résultats+temps+indices+formule), profils test visibles, fix publish chapitre+JSON parse. 17 mars |
+| Admin cockpit | ✅ GAS @88 — cockpit 6 onglets À FAIRE/NOUVEAU/FAIT/MAILS/INACTIFS/RAPPORT, boost+chapitre uniquement dans À FAIRE, boutons "Copier JSON complet" (exos+résultats+temps+indices+formule), profils test visibles, fix publish chapitre+JSON parse. 17 mars |
 | Exercices | ✅ Audit final 17 mars — 1728 exos vérifiés (3 onglets), 2 LaTeX fixés (1ERE/Second_Degre), 3 faux positifs calcul confirmés OK. Score 98,3%. 24 doublons 1ERE non bloquants. **0 bloquant.** |
 | UX élève | ✅ @93 — onboarding premium (stepper, animations, breathing screen, feedback quiz, résultat split, copy conversationnel) |
 | Profil cognitif | ✅ @81 — bouton "j'ai pas compris" + profil cognitif dans fiche admin |
@@ -71,7 +71,7 @@
 - [x] 🔬 **Fix diagnostic + Boost J1** ✅ — 251 figures SVG ajoutées (Thalès/Trigo/Sections/Pythagore/Périmètres/Volumes/Homothétie), 14 reformulations ciblées (Thalès contextualisé, Trigo angle précisé, Sym Axiale vocabulaire, Sections "depuis sommet"), espaces LaTeX fixés, doublon Systèmes corrigé
 - [x] ✅ **Implémenter "Valider la réponse"** — selectOpt+validateAnswer, .os (selected), .validate-wrap sticky, .btn-validate disabled→enabled, mode nuit, reset goEx/togCat
 - [x] ✅ **Implémenter "Je ne sais pas"** — bouton .opt-skip, resultat='SKIP' (traité comme HARD), supprimé ancien lien + log_pas_compris. 17 mars.
-- [x] 🖥️ **Refonte admin cockpit** ✅ — 5 onglets (À FAIRE/FAIT/MAILS/INACTIFS/RAPPORT), À FAIRE = boost+chapitre uniquement, boutons "Copier JSON complet" (exos+résultats élève), onglet MAILS séparé, onglet INACTIFS (>3j), onglet RAPPORT dimanche. 17 mars.
+- [x] 🖥️ **Refonte admin cockpit** ✅ — 6 onglets (À FAIRE/NOUVEAU/FAIT/MAILS/INACTIFS/RAPPORT), NOUVEAU = inscrits du jour + statut mail J+0, À FAIRE = boost+chapitre uniquement, boutons "Copier JSON complet" (exos+résultats élève), onglet MAILS séparé, onglet INACTIFS (>3j), onglet RAPPORT dimanche. 17 mars.
 - [x] 🔧 **Fix admin @88** ✅ — profils test visibles dans À FAIRE (filtre isTest retiré), bouton Publier chapitre (ID mismatch), JSON parse "bad control character" (fallback nettoyage), 3 profils test créés (Léa 6E, Maxime 4E, Sofia 3E). 17 mars.
 - [x] 🔬 **Audit final exercices** ✅ — 1728 exos, 3 scripts + 7 vérifs manuelles (indices, figures, LaTeX, options, niveau, notation, doublons). 2 LaTeX cassés fixés (1ERE/Second_Degre "Non factorisable $"). 3 erreurs calcul = faux positifs. 24 doublons 1ERE = non bloquant. **Score 98,3% — 0 bloquant — GO PROD.** 17 mars.
 - [ ] 🎮 Test admin workflow en conditions → fix frictions

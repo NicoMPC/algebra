@@ -189,7 +189,7 @@ docs/product.md                    → Produit (vision + parcours + business)
 docs/roadmap.md                    → Priorités + calendrier lancement
 docs/messages.md                   → Voice & tone guide
 docs/checklist-lancement.md        → Checklist lancement 18 mars
-docs/workflow-quotidien.md         → Workflow quotidien Nicolas (5 onglets admin)
+docs/workflow-quotidien.md         → Workflow quotidien Nicolas (6 onglets admin)
 docs/archive/                      → Docs historiques + audits + rapports (ne pas lire sauf besoin)
 ```
 
@@ -271,7 +271,7 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | 1 | ✅ Fix diagnostic + Boost J1 | **FAIT** — 251 figures SVG, 14 reformulations, espaces LaTeX fixés, doublon Systèmes 3EME corrigé |
 | 2 | ✅ Implémenter "Valider la réponse" | **FAIT** — selectOpt+validateAnswer, sticky bottom, mode nuit |
 | 3 | ✅ Implémenter "Je ne sais pas" | **FAIT** — bouton .opt-skip, resultat='SKIP' (traité comme HARD) |
-| 4 | ✅ Refonte admin cockpit @87-@88 | **FAIT** — 5 onglets, boutons JSON complet, 3 profils test |
+| 4 | ✅ Refonte admin cockpit @87-@88 | **FAIT** — 6 onglets (+ NOUVEAU @96), boutons JSON complet, 3 profils test |
 | 5 | ✅ Audit final exercices | **FAIT** — 1728 exos, 3 scripts + 7 vérifs manuelles, 2 LaTeX fixés, 0 bloquant, score 98,3% |
 | 6 | 🎮 Test admin workflow | En conditions réelles — boost, chapitre, email |
 | 7 | 🧪 Test réouverture user | Auguste + Charlie + Nicolas — vérif post-27 fixes |
