@@ -399,6 +399,13 @@ CSS : `.tour-overlay`, `.tour-highlight`, `.tour-tooltip`, animation `tourPop`.
 | 10 | Modale connexion login only | Onglet "Nouveau" masqué — inscription uniquement via CTA |
 | 11 | Bouton "Je ne sais pas" aéré | Sorti du sticky validate-wrap, pill discrète centrée, `mt-5` espace |
 
+### ✅ Fix onboarding — 18 mars @97
+
+| # | Fix | Détail |
+|---|-----|--------|
+| 1 | Toast "Génération des défis" persistant | ✅ `clearInterval(_tsIv)` dans `finally` de `genBoost()` + `boostFromDiag()` — le cycle TS s'arrête dès que le fetch termine |
+| 2 | Tour guidé : étape crayon ajoutée | ✅ Nouvelle étape 6/7 pointant `#fab-draft` — "Brouillon & calculette" avec tooltip au-dessus du FAB |
+
 ### 🔴 Reporté vendredi 20 mars (calendar)
 
 | # | Action | Priorité |
