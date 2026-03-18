@@ -1213,7 +1213,7 @@
       </p>
       <!-- Explication -->
       <p class="text-white/50 text-sm font-medium leading-[1.75] mb-9 max-w-md mx-auto" style="animation:s1 .6s .2s ease both">
-        Diagnostic gratuit en 5 minutes. Résultats immédiats.<br>Ensuite : 5 exercices ciblés par jour. C'est simple. Et ça fonctionne.
+        5 exercices ciblés par jour. C'est simple. Et ça fonctionne.
       </p>
       <button onclick="startTrialFlow()"
               class="btn btn-ac btn-fw shadow-xl" id="cta-hero" style="max-width:380px;font-size:1.1rem;padding:1.2rem;animation:s1 .6s .28s ease both">
@@ -1496,7 +1496,7 @@
         <div class="land-benefit reveal reveal-d2">
           <div style="font-size:1.5rem;margin-bottom:.5rem">🔒</div>
           <div class="syne font-black text-slate-900 text-sm mb-1">Vous voyez tout</div>
-          <p class="text-slate-500 text-xs leading-relaxed">Score par chapitre, évolution semaine après semaine. Pas une note floue — une progression concrète.</p>
+          <p class="text-slate-500 text-xs leading-relaxed">Un rapport envoyé chaque semaine. L'élève suit sa progression à chaque connexion.</p>
         </div>
       </div>
     </div>
@@ -1508,7 +1508,7 @@
       <div class="text-center mb-8 reveal">
         <div class="stag mx-auto mb-3">Exemple</div>
         <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900">Ce que ça donne concrètement</h2>
-        <p class="text-slate-500 text-sm max-w-md mx-auto mt-3">Exemple inspiré de cas réels. Chaque élève est différent, mais la progression suit une logique simple : identifier, cibler, répéter.</p>
+        <p class="text-slate-500 text-sm max-w-md mx-auto mt-3">Chaque élève est différent, mais la progression suit une logique simple : identifier, cibler, répéter.</p>
       </div>
       <div class="reveal" style="background:#fff;border:1.5px solid #e2e8f0;border-radius:20px;padding:1.5rem;overflow:hidden">
         <div class="flex items-center gap-3 mb-5">
@@ -1518,23 +1518,71 @@
             <div class="text-slate-400 text-xs">180 exercices sur mesure · 10 min/jour</div>
           </div>
         </div>
-        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Taux de réussite par chapitre</div>
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Avant / Après — 30 jours sur Matheux</div>
         <div style="display:flex;flex-direction:column;gap:.75rem">
           <div>
-            <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Calcul littéral</span><span class="text-xs font-bold"><span style="color:#ef4444">25%</span> → <span style="color:#22c55e">70%</span></span></div>
-            <div style="height:8px;border-radius:99px;background:#fee2e2;overflow:hidden;position:relative"><div style="position:absolute;left:0;top:0;height:100%;width:25%;background:#fca5a5;border-radius:99px"></div><div style="position:absolute;left:0;top:0;height:100%;width:70%;background:linear-gradient(90deg,#fca5a5,#4ade80);border-radius:99px;opacity:.6"></div></div>
+            <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Calcul littéral</span></div>
+            <div style="display:flex;gap:.5rem;align-items:center">
+              <div style="flex:1">
+                <div class="text-xs text-slate-400 mb-1">Avant</div>
+                <div style="height:8px;border-radius:99px;background:#fee2e2;overflow:hidden"><div style="height:100%;width:25%;background:#fca5a5;border-radius:99px"></div></div>
+                <div class="text-xs font-bold mt-1" style="color:#ef4444">25%</div>
+              </div>
+              <div style="font-size:1rem;color:#94a3b8;margin-top:.5rem">→</div>
+              <div style="flex:1">
+                <div class="text-xs text-slate-400 mb-1">Après</div>
+                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:70%;background:#4ade80;border-radius:99px"></div></div>
+                <div class="text-xs font-bold mt-1" style="color:#22c55e">70%</div>
+              </div>
+            </div>
           </div>
           <div>
-            <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Équations</span><span class="text-xs font-bold"><span style="color:#ef4444">35%</span> → <span style="color:#22c55e">75%</span></span></div>
-            <div style="height:8px;border-radius:99px;background:#fee2e2;overflow:hidden;position:relative"><div style="position:absolute;left:0;top:0;height:100%;width:35%;background:#fca5a5;border-radius:99px"></div><div style="position:absolute;left:0;top:0;height:100%;width:75%;background:linear-gradient(90deg,#fca5a5,#4ade80);border-radius:99px;opacity:.6"></div></div>
+            <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Équations</span></div>
+            <div style="display:flex;gap:.5rem;align-items:center">
+              <div style="flex:1">
+                <div class="text-xs text-slate-400 mb-1">Avant</div>
+                <div style="height:8px;border-radius:99px;background:#fee2e2;overflow:hidden"><div style="height:100%;width:35%;background:#fca5a5;border-radius:99px"></div></div>
+                <div class="text-xs font-bold mt-1" style="color:#ef4444">35%</div>
+              </div>
+              <div style="font-size:1rem;color:#94a3b8;margin-top:.5rem">→</div>
+              <div style="flex:1">
+                <div class="text-xs text-slate-400 mb-1">Après</div>
+                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:75%;background:#4ade80;border-radius:99px"></div></div>
+                <div class="text-xs font-bold mt-1" style="color:#22c55e">75%</div>
+              </div>
+            </div>
           </div>
           <div>
-            <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Fractions</span><span class="text-xs font-bold"><span style="color:#ef4444">30%</span> → <span style="color:#22c55e">65%</span></span></div>
-            <div style="height:8px;border-radius:99px;background:#fee2e2;overflow:hidden;position:relative"><div style="position:absolute;left:0;top:0;height:100%;width:30%;background:#fca5a5;border-radius:99px"></div><div style="position:absolute;left:0;top:0;height:100%;width:65%;background:linear-gradient(90deg,#fca5a5,#4ade80);border-radius:99px;opacity:.6"></div></div>
+            <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Fractions</span></div>
+            <div style="display:flex;gap:.5rem;align-items:center">
+              <div style="flex:1">
+                <div class="text-xs text-slate-400 mb-1">Avant</div>
+                <div style="height:8px;border-radius:99px;background:#fee2e2;overflow:hidden"><div style="height:100%;width:30%;background:#fca5a5;border-radius:99px"></div></div>
+                <div class="text-xs font-bold mt-1" style="color:#ef4444">30%</div>
+              </div>
+              <div style="font-size:1rem;color:#94a3b8;margin-top:.5rem">→</div>
+              <div style="flex:1">
+                <div class="text-xs text-slate-400 mb-1">Après</div>
+                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:65%;background:#4ade80;border-radius:99px"></div></div>
+                <div class="text-xs font-bold mt-1" style="color:#22c55e">65%</div>
+              </div>
+            </div>
           </div>
           <div>
-            <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Théorème de Pythagore</span><span class="text-xs font-bold"><span style="color:#ef4444">40%</span> → <span style="color:#22c55e">80%</span></span></div>
-            <div style="height:8px;border-radius:99px;background:#fee2e2;overflow:hidden;position:relative"><div style="position:absolute;left:0;top:0;height:100%;width:40%;background:#fca5a5;border-radius:99px"></div><div style="position:absolute;left:0;top:0;height:100%;width:80%;background:linear-gradient(90deg,#fca5a5,#4ade80);border-radius:99px;opacity:.6"></div></div>
+            <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Théorème de Pythagore</span></div>
+            <div style="display:flex;gap:.5rem;align-items:center">
+              <div style="flex:1">
+                <div class="text-xs text-slate-400 mb-1">Avant</div>
+                <div style="height:8px;border-radius:99px;background:#fee2e2;overflow:hidden"><div style="height:100%;width:40%;background:#fca5a5;border-radius:99px"></div></div>
+                <div class="text-xs font-bold mt-1" style="color:#ef4444">40%</div>
+              </div>
+              <div style="font-size:1rem;color:#94a3b8;margin-top:.5rem">→</div>
+              <div style="flex:1">
+                <div class="text-xs text-slate-400 mb-1">Après</div>
+                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:80%;background:#4ade80;border-radius:99px"></div></div>
+                <div class="text-xs font-bold mt-1" style="color:#22c55e">80%</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1558,7 +1606,7 @@
         <p class="text-slate-600 text-sm leading-relaxed mb-3" style="font-style:italic">"Des dizaines d'élèves accompagnés en maths."</p>
         <p class="text-slate-600 text-sm leading-relaxed mb-3">J'ai vu les mêmes blocages revenir encore et encore, souvent aux mêmes endroits. Ils comprennent en cours, puis oublient. Pas parce qu'ils sont nuls — parce qu'ils ne pratiquent pas au bon endroit.</p>
         <p class="text-slate-600 text-sm leading-relaxed mb-3">J'ai construit Matheux pour ça. Un système simple : identifier les trous, les combler un peu chaque jour, et suivre chaque élève.</p>
-        <p class="text-slate-600 text-sm leading-relaxed mb-4"><strong>Un système conçu et supervisé par un accompagnant expérimenté. Pas une IA toute seule — un outil puissant, piloté par quelqu'un qui connaît les blocages.</strong></p>
+        <p class="text-slate-600 text-sm leading-relaxed mb-4"><strong>Un système conçu et supervisé. Pas une IA toute seule — un outil puissant, piloté par quelqu'un qui connaît les blocages.</strong></p>
         <div style="border-top:1px solid #f1f5f9;padding-top:.75rem">
           <p class="syne font-black text-slate-700 text-sm">Nicolas Follezou — Fondateur de Matheux</p>
         </div>
@@ -1600,17 +1648,17 @@
           <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Entraînement quotidien ciblé — 10 minutes par jour</span></div>
           <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Accès libre à tout le programme (44 chapitres)</span></div>
           <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Brevet Blanc inclus pour les 3èmes</span></div>
-          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Suivi pédagogique structuré par un accompagnant</span></div>
+          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Suivi pédagogique structuré</span></div>
           <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Sans engagement · Résiliable à tout moment</span></div>
         </div>
         <button onclick="startTrialFlow()"
                 class="btn btn-ac btn-fw py-4 shadow-xl" style="font-size:1rem">
           Essayer 7 jours gratuit →
         </button>
-        <div class="guarantee-badge">🔒 Satisfait ou remboursé sous 14 jours — sans condition</div>
+        <div class="guarantee-badge"></div>
         <p class="text-indigo-300 text-xs mt-3">Sans carte bancaire · Sans engagement</p>
       </div>
-      <p class="text-slate-400 text-xs mt-5"><del class="text-slate-300">30-50 €/h en cours particulier</del> → <strong class="text-indigo-600">19,99 €/mois. Tous les jours. Suivi pédagogique inclus.</strong></p>
+      <p class="text-slate-400 text-xs mt-5"><del class="text-slate-300">30-50 €/h en cours particulier</del> → <strong class="text-indigo-600">19,99 €/mois. Tous les jours.</strong></p>
     </div>
   </div>
 
@@ -1670,7 +1718,7 @@
         5 minutes pour comprendre. 30 jours pour voir la différence.
       </p>
       <p class="text-white/40 text-xs font-medium mb-8 max-w-sm mx-auto">
-        Diagnostic gratuit. Résultats immédiats. Rien à payer, rien à installer.
+        Rien à payer, rien à installer.
       </p>
       <button onclick="startTrialFlow()"
               style="max-width:360px;font-size:1.05rem;padding:1.15rem;display:block;margin:0 auto"
