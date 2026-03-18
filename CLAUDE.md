@@ -301,6 +301,20 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | 8 | Onglet Progression débloqué | `display:none` retiré — vue complète accessible |
 | 9 | Cohérence messages | "boost"→"entraînement", chap_done sans "disponible demain", mode nuit bg-orange/bg-blue |
 
+### ✅ Refonte Onboarding UX — 18 mars @93
+
+| # | Feature | Détail |
+|---|---|---|
+| 1 | Stepper horizontal 4 étapes | Classe → Chapitres → Diagnostic → Inscription, dots ✓ quand complétés, labels masqués <380px |
+| 2 | Slide animations | Transition horizontale left/right entre steps (au lieu de fadeIn vertical) |
+| 3 | Micro-bounce niveau | Feedback visuel 300ms sur sélection de classe |
+| 4 | Écran respiration | "C'est parti ! X questions" avec auto-dismiss 2s avant le diagnostic |
+| 5 | Feedback diagnostic enrichi | Compteur ✓ bonnes réponses visible, +1 floating pop, encouragement mi-parcours |
+| 6 | Carte résultat en 2 écrans | Écran émotion (score animé + tags) → Écran décision (objectif) — séparation conversion |
+| 7 | Pourcentage animé | Counter 0→N% avec ease-out cubic + emoji contextuel (🎉/💪/🎯) |
+| 8 | Copy conversationnel | "En quelle classe es-tu ?", "Tu reconnais quoi ?", "Comment tu t'appelles ?" |
+| 9 | Reassurance améliorée | "Résiliable en 1 clic", placeholders plus naturels |
+
 ### ✅ Refonte Trial Flow UX — 18 mars @92
 
 | # | Feature | Détail |

@@ -32,7 +32,7 @@
 | Messages élèves | ✅ Système adaptatif `_msg()` — ~35 entrées, niveau, objectif, coach marks, _OK/_KO contextuels |
 | Admin cockpit | ✅ GAS @88 — cockpit 5 onglets À FAIRE/FAIT/MAILS/INACTIFS/RAPPORT, boost+chapitre uniquement dans À FAIRE, boutons "Copier JSON complet" (exos+résultats+temps+indices+formule), profils test visibles, fix publish chapitre+JSON parse. 17 mars |
 | Exercices | ✅ Audit final 17 mars — 1728 exos vérifiés (3 onglets), 2 LaTeX fixés (1ERE/Second_Degre), 3 faux positifs calcul confirmés OK. Score 98,3%. 24 doublons 1ERE non bloquants. **0 bloquant.** |
-| UX élève | ✅ @92 — trial flow sans friction (carte résultat, auto-select chaps, onboarding 2 slides) |
+| UX élève | ✅ @93 — onboarding premium (stepper, animations, breathing screen, feedback quiz, résultat split, copy conversationnel) |
 | Profil cognitif | ✅ @81 — bouton "j'ai pas compris" + profil cognitif dans fiche admin |
 | Page teasing | ✅ @82 — countdown live, waitlist email (Teasing_Early), auto-switch 18 mars 9h, `?noteasing` pour dev |
 | Sécurité Stripe | ✅ @84-@85 — webhook handler (Premium auto) + premium guard client (vérif 5 min) |
@@ -121,6 +121,7 @@
 - [ ] 11:30 🔐 Décision webhook Stripe HMAC-SHA256 (avant ou après J+7)
 - [x] ⚡ **Gamification MVP** ✅ @90 — XP visible + animation +XP, paliers maîtrise (6 niveaux), streak freeze 1j/semaine, milestones (6 événements célébrés), card "Session terminée", temps estimé hero, onglet Progression débloqué, mastery ring enrichi, passe cohérence messages, mode nuit couvert
 - [x] 📋 **Tuto régressif** ✅ @91 — 8 micro-tips contextuels first-use (sélection, erreur, indices, formule, brouillon, skip, XP, pills) — disparaissent après 1 affichage
+- [x] 🎨 **Refonte onboarding UX** ✅ @93 — Stepper 4 étapes, slide animations, micro-bounce, écran respiration pré-diagnostic, feedback ✓ pendant quiz, carte résultat split (émotion→décision), compteur % animé, copy conversationnel, reassurance
 
 **Après-midi — GO LIVE + diffusion**
 - [ ] 14:00 🚀 GO LIVE — TEASING_MODE = false + push
