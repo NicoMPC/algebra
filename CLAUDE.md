@@ -344,7 +344,7 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 Spotlight tutorial qui se déclenche 1 seule fois après les slides d'onboarding post-inscription (guest + flowRegister).
 Système : overlay sombre + highlight clip-path + tooltip positionné. Bouton "Passer" à chaque step.
 Guard : `_needsCoach('TOUR')` / `_markCoach('TOUR')` — namespacé par user, ne revient jamais.
-Compatible mode nuit. 6 étapes :
+Compatible mode nuit. 7 étapes :
 
 | # | Élément pointé | Message |
 |---|---|---|
@@ -353,7 +353,8 @@ Compatible mode nuit. 6 étapes :
 | 3 | 1ère carte chapitre | "Tous tes chapitres sont là, dans l'ordre que tu veux." |
 | 4 | XP header | "Chaque exercice te rapporte des XP — même les erreurs." |
 | 5 | Streak header | "Reviens chaque jour pour garder ta série active." |
-| 6 | Centré (aucun) | "C'est parti ! Lance ton premier entraînement." |
+| 6 | Bouton crayon (`#fab-draft`) | "Ce crayon ouvre ton brouillon et ta calculette — pose tes calculs, dessine, note tes idées." |
+| 7 | Centré (aucun) | "C'est parti ! Lance ton premier entraînement." |
 
 Fonctions : `_startTour()`, `_tourRender()`, `_tourNext()`, `_tourEnd()`.
 CSS : `.tour-overlay`, `.tour-highlight`, `.tour-tooltip`, animation `tourPop`.
