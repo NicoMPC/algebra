@@ -269,7 +269,7 @@
     }
     .validate-wrap {
       position:sticky; bottom:0; z-index:40;
-      padding:1rem 1rem 1.25rem; margin:0 -1rem -1rem;
+      padding:0.75rem 1rem; margin:0 -1rem -1rem;
       background:rgba(255,255,255,0.97); backdrop-filter:blur(8px);
       border-top:1px solid var(--brd);
     }
@@ -285,10 +285,10 @@
     body.app-night .btn-validate:disabled { background:#334155; color:#64748b; }
     body.app-night .btn-validate:not(:disabled) { background:#059669; }
     .opt-skip {
-      width:100%; min-height:56px; padding:0.85rem 1rem; border:2px dashed #cbd5e1;
-      background:#f8fafc; color:#64748b; font-weight:500; font-size:0.9rem;
-      border-radius:var(--r); cursor:pointer; transition:all .15s;
-      display:flex; align-items:center; justify-content:center; gap:0.5rem;
+      padding:0.6rem 1.5rem; border:1.5px dashed #e2e8f0;
+      background:#f8fafc; color:#94a3b8; font-weight:500; font-size:0.8rem;
+      border-radius:2rem; cursor:pointer; transition:all .15s;
+      display:inline-flex; align-items:center; justify-content:center; gap:0.4rem;
     }
     .opt-skip:hover { border-color:var(--p); background:var(--pl); }
     .opt-skip.os-skip { border:2px solid #f59e0b; background:#fffbeb; color:#92400e; }
@@ -7133,9 +7133,11 @@ window.skipAnswer = function(cat, idx) {
       c.className = 'opt ' + (parseInt(c.getAttribute('data-oi')) === cI ? 'oc' : 'on');
     });
   }
-  // Masquer bouton Valider
+  // Masquer bouton Valider + skip
   var vw = document.getElementById('validate-wrap');
   if (vw) vw.style.display = 'none';
+  var skipBtn2 = document.querySelector('.opt-skip');
+  if (skipBtn2 && skipBtn2.parentElement) skipBtn2.parentElement.style.display = 'none';
   // Afficher aide automatiquement
   S._pendingHelp = { cat: cat, idx: idx };
   showT('Pas de souci — regarde la correction 👀', 2000, '🤷');
@@ -7260,8 +7262,8 @@ function rSection(cat, data, idx, total, catDone) {
         '<button id="btn-validate" class="btn-validate" onclick="validateAnswer()"' + (!hasSel ? ' disabled' : '') + '>' +
         (hasSel ? 'Valider la r\u00e9ponse \u2713' : 'Choisis une r\u00e9ponse') +
         '</button>' +
-        '<button class="opt-skip mt-4" onclick="skipAnswer(\''+cat+'\','+idx+')">🤷 Je ne sais pas</button>' +
-        '</div>';
+        '</div>' +
+        '<div class="text-center mt-5 mb-2"><button class="opt-skip" onclick="skipAnswer(\''+cat+'\','+idx+')">🤷 Je ne sais pas</button></div>';
     }
     // Justification VF post-réponse
     if (exoType === 'vf' && data.justification && isRev) {
