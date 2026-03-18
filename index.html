@@ -2066,7 +2066,7 @@
     <!-- Onglets Brouillon / Calculette -->
     <div class="draft-tabs flex gap-1 bg-slate-200 rounded-xl p-0.5">
       <button id="tab-draft" onclick="switchDraftTab('draft')"
-              class="syne font-black text-sm px-3 py-1 rounded-[10px] bg-white shadow text-slate-800 transition-all">✏️ Brouillon</button>
+              class="syne font-black text-sm px-3 py-1 rounded-[10px] bg-white shadow text-slate-800 transition-all">✏️</button>
       <button id="tab-calc" onclick="switchDraftTab('calc')"
               class="syne font-black text-sm px-3 py-1 rounded-[10px] text-slate-500 transition-all">🔢 Calculette</button>
     </div>
@@ -3185,7 +3185,7 @@ function _flowRenderQuestion(idx) {
     helpPills += '<button id="flow-pill-form-' + idx + '" onclick="_flowShowFormula(' + idx + ')" class="help-pill pill-formula' + (!fSeen ? ' pulse-hint' : ' opacity-40 pointer-events-none') + '">' +
       (fSeen ? '✓ Formule vue' : '👁 Formule') + '</button>';
   }
-  helpPills += '<button onclick="toggleDraft()" class="help-pill" style="background:#f1f5f9;color:#475569;border-color:#cbd5e1">✏️ Brouillon</button>';
+  helpPills += '<button onclick="toggleDraft()" class="help-pill" style="background:#f1f5f9;color:#475569;border-color:#cbd5e1">✏️</button>';
   helpPills += '</div>';
   var helpArea = '<div class="inline-help mc" id="flow-help-inline-' + idx + '"></div>';
 
@@ -7811,7 +7811,7 @@ function rSection(cat, data, idx, total, catDone) {
         '<button id="pill-form-'+id+'" onclick="revFInline(\''+cat+'\','+idx+')" class="help-pill pill-formula'+(!fR ? ' pulse-hint' : ' opacity-40 pointer-events-none')+'">' +
           (fR ? '✓ Formule vue' : '👁 Formule') +
         '</button>' +
-        '<button onclick="toggleDraft()" class="help-pill" style="background:#f1f5f9;color:#475569;border-color:#cbd5e1">✏️ Brouillon</button>' +
+        '<button onclick="toggleDraft()" class="help-pill" style="background:#f1f5f9;color:#475569;border-color:#cbd5e1">✏️ </button>' +
       '</div>' +
       '<div class="inline-help mc" id="help-inline-'+id+'"></div>') +
     '<div class="text-center mt-3"><button onclick="openFeedback(\''+cat+'\','+idx+')" class="text-[10px] text-slate-300 hover:text-slate-500 transition-colors underline">📢 Signaler une erreur</button></div>' +
