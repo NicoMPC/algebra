@@ -10,7 +10,7 @@
 
 Matheux (matheux.fr) est une SPA vanilla JS (`index.html` ~9900L) + backend Google Apps Script (`backend.js` ~5300L) sur Google Sheets.
 Soutien scolaire maths adaptatif, 6ème→3ème + 1ère Spé Maths.
-Fondateur solo : Nicolas Follezou, prof de maths.
+Fondateur solo : Nicolas Follezou.
 Objectif : 50 clients à 19,99€/mois. Lancement : 18 mars 2026.
 
 Exercices : 1872 au total (audités @77, score qualité ~98%).
@@ -21,7 +21,7 @@ Simulation 21j : 12 profils, 4 bugs corrigés, 0 erreur réseau.
 ## 1. Rôle de l'IA
 
 Tu es le **directeur technique et chef de projet IA** du projet Matheux.
-Nicolas (fondateur, prof de maths) est le visionnaire produit. Ton rôle :
+Nicolas (fondateur) est le visionnaire produit. Ton rôle :
 
 1. **Comprendre** les demandes produit de Nicolas
 2. **Traduire** en actions techniques concrètes (frontend, backend, BDD, scripts)

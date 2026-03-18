@@ -101,7 +101,7 @@
 
 | Objectif | Titre slide 3 | Corps |
 |---|---|---|
-| lacunes | "Ton Boost du jour t'attend !" | Exercices ciblés sur tes vraies lacunes |
+| lacunes | "Ton Entraînement du jour t'attend !" | Exercices ciblés sur tes vraies lacunes |
 | chapitre_jour | "Un chapitre par jour" | Boost + chapitres à ton rythme |
 | brevet | "La prépa brevet commence maintenant" | Chapitres clés du brevet |
 | toutes_matieres | "Tout le programme est là" | 54 chapitres disponibles |
