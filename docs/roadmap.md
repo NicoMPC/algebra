@@ -4,10 +4,10 @@
 
 ---
 
-## État global — 17 mars 2026
+## État global — 18 mars 2026 (JOUR J)
 
-**Matheux 100% prêt. Tests élève 5/5 ✅. Test parent ✅. 27 frictions fixées + cartes premium + messages perso. Landing GOD MODE déployée. GitHub privé (MatheuxApp).**
-**Reste : endpoint webhook Stripe + tests admin. "Valider la réponse" ✅. "Je ne sais pas" ✅. Lancement confirmé : mercredi 18 mars 2026 à 9h.**
+**Matheux LANCÉ. Audit cohérence messages ✅. Simulation 7j ✅ (0 incohérence). Invariants figés @95. Landing GOD MODE + carrousel visio @94. Onboarding refonte @93. Gamification @90.**
+**Reste : webhook Stripe HMAC (avant J+7), test paiement CB réel, automatisation triggers dès 10 clients.**
 
 > ✅ **Bugfixes @60** — BUG-01 à BUG-12 corrigés (simulation 7j × 5 profils). 13 mars.
 > ✅ **Simulation 40 élèves @63** — 6 bugs corrigés + 1616 appels API, 0 erreur. 14 mars.
@@ -29,7 +29,7 @@
 | Emails auto | ✅ J+0 auto (inscription) + reset MDP auto — J+3/J+5/J+7 et rapport parent = **manuels via admin** (automatisation prévue dès 10-20 clients) |
 | Analytics | ✅ GA4 RGPD-compliant |
 | Limite bêta | 50 vrais élèves (IsTest=0) |
-| Messages élèves | ✅ Système adaptatif `_msg()` — ~35 entrées, niveau, objectif, coach marks, _OK/_KO contextuels |
+| Messages élèves | ✅ Système adaptatif `_msg()` — ~35 entrées, niveau, objectif, coach marks, _OK/_KO contextuels. **Invariants figés @95** : toast mutex FIFO, hero cascade P1→P5, coach/ko exclusif, boostConsumed date-stamped. Simulation 7j : 0 incohérence. |
 | Admin cockpit | ✅ GAS @88 — cockpit 5 onglets À FAIRE/FAIT/MAILS/INACTIFS/RAPPORT, boost+chapitre uniquement dans À FAIRE, boutons "Copier JSON complet" (exos+résultats+temps+indices+formule), profils test visibles, fix publish chapitre+JSON parse. 17 mars |
 | Exercices | ✅ Audit final 17 mars — 1728 exos vérifiés (3 onglets), 2 LaTeX fixés (1ERE/Second_Degre), 3 faux positifs calcul confirmés OK. Score 98,3%. 24 doublons 1ERE non bloquants. **0 bloquant.** |
 | UX élève | ✅ @93 — onboarding premium (stepper, animations, breathing screen, feedback quiz, résultat split, copy conversationnel) |
@@ -123,6 +123,11 @@
 - [x] 📋 **Tuto régressif** ✅ @91 — 8 micro-tips contextuels first-use (sélection, erreur, indices, formule, brouillon, skip, XP, pills) — disparaissent après 1 affichage
 - [x] 🎨 **Refonte onboarding UX** ✅ @93 — Stepper 4 étapes, slide animations, micro-bounce, écran respiration pré-diagnostic, feedback ✓ pendant quiz, carte résultat split (émotion→décision), compteur % animé, copy conversationnel, reassurance
 - [x] 📸 **Landing : carrousel visio + phrase "Imaginez…"** ✅ @94 — Section vidéo → carrousel 4 screenshots cours (auto-scroll 3.5s, swipe, dots), légende fondateur, nouvelle section transition "Imaginez un endroit…" entre Problème et Solution
+- [x] 🔍 **Audit cohérence messages** ✅ @95 — 19 points identifiés, 15 vrais fixes (toast mutex FIFO, boostConsumed date-stamped, coach tip/ko exclusif, hero CTA cascade P1→P5, streak dedup, milestones namespaced, pendingManual cleanup, dead code supprimé)
+- [x] 🧪 **Simulation 7j messages** ✅ @95 — 4 élèves réalistes (Lina/Samir/Jade/Nolan), 274 appels API, 267 messages trackés, 0 incohérence, 0 contradiction. Script : `sim_7days_messages.py`
+- [x] 🔒 **Invariants messages figés** ✅ @95 — 8 règles documentées dans CLAUDE.md, 4 blocs `═══ INVARIANTS ═══` dans le code, simulation comme garde-fou
+- [x] 🎨 **UX skip button aéré** ✅ @95 — "Je ne sais pas" sorti du validate-wrap sticky, pill centrée mt-5
+- [x] 🔐 **Login modal simplifié** ✅ @95 — Onglet "S'inscrire" masqué, inscription via CTA uniquement
 
 **Après-midi — GO LIVE + diffusion**
 - [ ] 14:00 🚀 GO LIVE — TEASING_MODE = false + push
@@ -147,7 +152,7 @@
 | 6 | **Migration serveur + backend** — envisager après ~10 clients : remplacer GAS+Sheets par serveur dédié (Node/Python) + BDD (Postgres/Supabase). Limite GAS : 20 users simultanés, 6 min/appel, pas de cron fiable. Mode Brevet à déployer proprement après migration. | Architecture | 🟡 |
 | 6 | **Design overhaul landing** — ~~@68 (14 mars)~~ → **Refonte GOD MODE @86 (17 mars)** : 11 sections, section Problème, contraste 10min/jour, fondateur humain, pills engagement | ✅ Fait @86 | 🟢 |
 | 7 | ~~**Vidéo fondateur**~~ → ✅ Remplacée par carrousel screenshots visio @94 (4 photos + légende + phrase "Imaginez…") | ✅ Fait @94 | 🟢 |
-| 8 | **Cohérence messages** — vérifier wording génériques/circonstanciels après refonte landing | Vendredi 20 mars (1h) | 🟡 |
+| 8 | ~~**Cohérence messages**~~ ✅ Fait @95 — audit 19 points, 15 fixes, simulation 7j 0 incohérence, invariants figés | ✅ Fait @95 | 🟢 |
 | 9 | **UX sans boost** — ajouter bandeau "ton boost arrive bientôt" si aucun boost généré (actuellement : rien ne s'affiche, pas d'erreur). Nicolas génère manuellement en attendant. | Frontend index.html | 🟡 |
 
 ## Priorités code — prochaines sessions
