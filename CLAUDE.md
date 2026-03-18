@@ -249,6 +249,7 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | 9 | Relecture exos quizz ✅ | Remarques diag 3EME/5EME notées (triangles nommés, formules, LaTeX) |
 | 10 | Audit diag+boost géo ✅ | 168 exos audités → `docs/auditdiagboost.md` — 93 figures SVG à ajouter, 16 reformulations |
 | 11 | **Audit final exercices** ✅ | 1728 exos × 3 scripts + 7 vérifs manuelles. 2 LaTeX fixés (1ERE/Second_Degre). 0 bloquant. Score 98,3%. |
+| 12 | **Fix doublons 1ERE** ✅ | 21 exos remplacés (Boost 19 + Diag 2) — 0 doublon restant entre Curriculum/Boost/Diag. 3 "erreurs calcul" = faux positifs script. |
 
 ### ⏳ Mardi 17 mars après-midi
 

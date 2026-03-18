@@ -1,21 +1,21 @@
-# Audit Hints — 2026-03-17
+# Audit Hints — 2026-03-18
 
-Total warnings: **1741** sur **934** exercices
+Total warnings: **1752** sur **933** exercices
 
 ## Résumé par type
 
 | Type | Count |
 |------|-------|
 | WARN_DUPLICATE | 2 |
-| WARN_HINT_IS_ANSWER | 572 |
-| WARN_HINT_IS_FORMULA | 886 |
-| WARN_HINT_TOO_SHORT | 281 |
+| WARN_HINT_IS_ANSWER | 579 |
+| WARN_HINT_IS_FORMULA | 904 |
+| WARN_HINT_TOO_SHORT | 267 |
 
 ## Par onglet
 
-- **BoostExos**: 228 warnings
+- **BoostExos**: 237 warnings
 - **Curriculum_Officiel**: 1310 warnings
-- **DiagnosticExos**: 203 warnings
+- **DiagnosticExos**: 205 warnings
 
 ## Détails
 
@@ -4615,14 +4615,16 @@ while n > 1:
 - `WARN_HINT_TOO_SHORT` step 3: _Conclure._
 
 ### DiagnosticExos — 1ERE / ? (row 50, exo 1)
-- **Q**: Que vaut $\cos(0)$?
-- **A**: $1$
-- `WARN_HINT_TOO_SHORT` step 3: _Conclure._
+- **Q**: Que vaut $\cos(2\pi/3)$?
+- **A**: $-1/2$
+- `WARN_HINT_IS_ANSWER` step 3: _$\cos(2\pi/3) = -1/2$._
+- `WARN_HINT_IS_FORMULA` step 3: _$\cos(2\pi/3) = -1/2$._
 
 ### DiagnosticExos — 1ERE / ? (row 50, exo 2)
-- **Q**: Résoudre $\cos(x) = \frac{1}{2}$ sur $[0; 2\pi]$.
-- **A**: $x = \pi/3$ ou $x = 5\pi/3$
-- `WARN_HINT_TOO_SHORT` step 3: _Conclure._
+- **Q**: Résoudre $\sin(x) = -1$ sur $[0; 2\pi]$.
+- **A**: $x = 3\pi/2$
+- `WARN_HINT_IS_ANSWER` step 3: _Il correspond à $x = 3\pi/2$._
+- `WARN_HINT_IS_FORMULA` step 3: _Il correspond à $x = 3\pi/2$._
 
 ### DiagnosticExos — 1ERE / ? (row 51, exo 1)
 - **Q**: $\vec{u}(7;8)$ et $\vec{v}(6;9)$. Calculer $\vec{u} \cdot \vec{v}$.
@@ -5166,6 +5168,24 @@ print(x)
 - `WARN_HINT_IS_FORMULA` step 1: _$u_{n+1} - u_n = 2n + 1 - 14$._
 - `WARN_HINT_IS_FORMULA` step 2: _$= 0$ quand $n = 6{,}5$._
 
+### BoostExos — 1ERE / ? (row 48, exo 3)
+- **Q**: Dériver $f(x) = 3x^4 - 2x$.
+- **A**: $f'(x) = 12x^3 - 2$
+- `WARN_HINT_IS_FORMULA` step 2: _$(3x^4)' = 12x^3$ et $(-2x)' = -2$._
+
+### BoostExos — 1ERE / ? (row 48, exo 4)
+- **Q**: Dériver $f(x) = \frac{2}{\sqrt{x}}$.
+- **A**: $f'(x) = -\frac{1}{x\sqrt{x}}$
+- `WARN_HINT_IS_FORMULA` step 1: _Réécrire $f(x) = 2x^{-1/2}$._
+- `WARN_HINT_IS_FORMULA` step 2: _Appliquer la formule : $f'(x) = 2 \times (-1/2) x^{-3/2}$._
+- `WARN_HINT_IS_FORMULA` step 3: _Simplifier : $f'(x) = -x^{-3/2} = -\frac{1}{x\sqrt{x}}$._
+
+### BoostExos — 1ERE / ? (row 48, exo 5)
+- **Q**: Dériver $f(x) = 5e^{2x}$.
+- **A**: $f'(x) = 10e^{2x}$
+- `WARN_HINT_IS_FORMULA` step 1: _Identifier $u = 2x$ donc $u' = 2$._
+- `WARN_HINT_IS_FORMULA` step 3: _$f'(x) = 5 \times 2 \times e^{2x} = 10e^{2x}$._
+
 ### BoostExos — 1ERE / ? (row 48, exo 6)
 - **Q**: Équation de la tangente à $f(x) = x^2$ en $x_0 = 11$.
 - **A**: $y = 22x - 121$
@@ -5180,12 +5200,11 @@ print(x)
 - `WARN_HINT_TOO_SHORT` step 1: _Dériver._
 
 ### BoostExos — 1ERE / ? (row 48, exo 8)
-- **Q**: $f(x) = xe^x$. Calculer $f'(x)$.
-- **A**: $(1+x)e^x$
-- `WARN_HINT_IS_ANSWER` step 3: _$f' = e^x + xe^x = (1+x)e^x$._
-- `WARN_HINT_IS_FORMULA` step 1: _$u=x$, $v=e^x$._
-- `WARN_HINT_IS_FORMULA` step 2: _$u'=1$, $v'=e^x$._
-- `WARN_HINT_IS_FORMULA` step 3: _$f' = e^x + xe^x = (1+x)e^x$._
+- **Q**: $f(x) = x^2 e^x$. Calculer $f'(x)$.
+- **A**: $f'(x) = (2x + x^2)e^x$
+- `WARN_HINT_IS_FORMULA` step 1: _Poser $u = x^2$ et $v = e^x$._
+- `WARN_HINT_IS_FORMULA` step 2: _$u' = 2x$ et $v' = e^x$._
+- `WARN_HINT_IS_FORMULA` step 3: _$(uv)' = 2xe^x + x^2 e^x = (2x + x^2)e^x$._
 
 ### BoostExos — 1ERE / ? (row 48, exo 9)
 - **Q**: $f(x) = \frac{x+11}{x-1}$. Calculer $f'(x)$.
@@ -5201,6 +5220,11 @@ print(x)
 - `WARN_HINT_IS_FORMULA` step 2: _$f'(x) = 0 \Rightarrow x = 12$._
 - `WARN_HINT_IS_FORMULA` step 3: _$a = -1 < 0$ → maximum._
 
+### BoostExos — 1ERE / ? (row 49, exo 3)
+- **Q**: Que vaut $e^1$?
+- **A**: $e \approx 2{,}718$
+- `WARN_HINT_IS_FORMULA` step 1: _Rappeler que $e^1 = e$._
+
 ### BoostExos — 1ERE / ? (row 49, exo 6)
 - **Q**: Résoudre $e^{2x} - 13e^x + 12 = 0$.
 - **A**: Poser $X = e^x$ et résoudre le trinôme
@@ -5212,58 +5236,45 @@ print(x)
 - `WARN_HINT_TOO_SHORT` step 3: _Conclure._
 
 ### BoostExos — 1ERE / ? (row 49, exo 8)
-- **Q**: Dériver $f(x) = x e^{-x}$.
-- **A**: $(1-x)e^{-x}$
-- `WARN_HINT_TOO_SHORT` step 3: _Conclure._
+- **Q**: Dériver $f(x) = (2x+1) e^{-x}$.
+- **A**: $f'(x) = (-2x+1)e^{-x}$
+- `WARN_HINT_IS_FORMULA` step 1: _Poser $u = 2x+1$ et $v = e^{-x}$._
+- `WARN_HINT_IS_FORMULA` step 2: _$u' = 2$ et $v' = -e^{-x}$._
+- `WARN_HINT_IS_FORMULA` step 3: _$(uv)' = 2e^{-x} + (2x+1)(-e^{-x}) = (-2x+1)e^{-x}$. Vérifier : $2 - 2x - 1 = -2x+1$. ✓_
 
 ### BoostExos — 1ERE / ? (row 49, exo 9)
 - **Q**: $f(x) = e^{2x} - 24e^x + 143$. Résoudre $f(x) = 0$.
 - **A**: $x = \ln(11)$ ou $x = \ln(13)$
 - `WARN_HINT_TOO_SHORT` step 3: _Conclure._
 
-### BoostExos — 1ERE / ? (row 49, exo 10)
-- **Q**: Montrer que $\lim_{x \to +\infty} xe^{-x} = 0$.
-- **A**: Croissance comparée :$e^x \gg x$
-- `WARN_HINT_TOO_SHORT` step 3: _Conclure._
-
-### BoostExos — 1ERE / ? (row 50, exo 1)
-- **Q**: Que vaut $\cos(0)$?
-- **A**: $1$
-- `WARN_HINT_TOO_SHORT` step 3: _Conclure._
-
 ### BoostExos — 1ERE / ? (row 50, exo 2)
-- **Q**: Que vaut $\sin(\pi/6)$?
+- **Q**: Que vaut $\sin(5\pi/6)$?
 - **A**: $1/2$
-- `WARN_HINT_TOO_SHORT` step 3: _Conclure._
-
-### BoostExos — 1ERE / ? (row 50, exo 3)
-- **Q**: Que vaut $\cos(\pi/4)$?
-- **A**: $\sqrt{2}/2$
-- `WARN_HINT_TOO_SHORT` step 3: _Conclure._
-
-### BoostExos — 1ERE / ? (row 50, exo 4)
-- **Q**: Que vaut $\sin(\pi/2)$?
-- **A**: $1$
-- `WARN_HINT_TOO_SHORT` step 3: _Conclure._
+- `WARN_HINT_IS_ANSWER` step 3: _$\sin(5\pi/6) = \sin(\pi/6) = 1/2$._
+- `WARN_HINT_IS_FORMULA` step 3: _$\sin(5\pi/6) = \sin(\pi/6) = 1/2$._
 
 ### BoostExos — 1ERE / ? (row 50, exo 5)
-- **Q**: Que vaut $\cos(\pi)$?
+- **Q**: Que vaut $\sin(3\pi/2)$?
 - **A**: $-1$
-- `WARN_HINT_TOO_SHORT` step 3: _Conclure._
+- `WARN_HINT_IS_ANSWER` step 3: _La coordonnée en ordonnée est $-1$._
 
 ### BoostExos — 1ERE / ? (row 50, exo 6)
-- **Q**: Résoudre $\cos(x) = \frac{1}{2}$ sur $[0; 2\pi]$.
-- **A**: $x = \pi/3$ ou $x = 5\pi/3$
-- `WARN_HINT_TOO_SHORT` step 3: _Conclure._
+- **Q**: Résoudre $\sin(x) = \frac{1}{2}$ sur $[0; 2\pi]$.
+- **A**: $x = \pi/6$ ou $x = 5\pi/6$
+- `WARN_HINT_IS_FORMULA` step 1: _Identifier la valeur remarquable : $\sin(\pi/6) = 1/2$._
 
 ### BoostExos — 1ERE / ? (row 50, exo 7)
-- **Q**: Résoudre $\sin(x) = \frac{\sqrt{2}}{2}$ sur $[0; 2\pi]$.
-- **A**: $x = \pi/4$ ou $x = 3\pi/4$
-- `WARN_HINT_TOO_SHORT` step 3: _Conclure._
+- **Q**: Résoudre $\cos(x) = -\frac{\sqrt{2}}{2}$ sur $[0; 2\pi]$.
+- **A**: $x = 3\pi/4$ ou $x = 5\pi/4$
+- `WARN_HINT_IS_FORMULA` step 1: _Identifier l'angle de référence : $\cos(\pi/4) = \sqrt{2}/2$._
 
 ### BoostExos — 1ERE / ? (row 50, exo 8)
-- **Q**: Simplifier $\cos^2(x) + \sin^2(x)$.
-- **A**: $1$
+- **Q**: Simplifier $1 - \sin^2(x)$.
+- **A**: $\cos^2(x)$
+- `WARN_HINT_IS_ANSWER` step 1: _Rappeler l'identité $\cos^2(x) + \sin^2(x) = 1$._
+- `WARN_HINT_IS_ANSWER` step 2: _Isoler $\cos^2(x) = 1 - \sin^2(x)$._
+- `WARN_HINT_IS_FORMULA` step 1: _Rappeler l'identité $\cos^2(x) + \sin^2(x) = 1$._
+- `WARN_HINT_IS_FORMULA` step 2: _Isoler $\cos^2(x) = 1 - \sin^2(x)$._
 - `WARN_HINT_TOO_SHORT` step 3: _Conclure._
 
 ### BoostExos — 1ERE / ? (row 50, exo 9)
@@ -5272,9 +5283,11 @@ print(x)
 - `WARN_HINT_TOO_SHORT` step 3: _Conclure._
 
 ### BoostExos — 1ERE / ? (row 50, exo 10)
-- **Q**: Exprimer $\cos(2x)$ en fonction de $\cos(x)$.
-- **A**: $2\cos^2(x) - 1$
-- `WARN_HINT_TOO_SHORT` step 3: _Conclure._
+- **Q**: Exprimer $\sin(2x)$ en fonction de $\sin(x)$ et $\cos(x)$.
+- **A**: $2\sin(x)\cos(x)$
+- `WARN_HINT_IS_ANSWER` step 3: _Avec $a = b = x$, on obtient $\sin(2x) = 2\sin(x)\cos(x)$._
+- `WARN_HINT_IS_FORMULA` step 2: _Rappeler $\sin(a+b) = \sin a \cos b + \cos a \sin b$._
+- `WARN_HINT_IS_FORMULA` step 3: _Avec $a = b = x$, on obtient $\sin(2x) = 2\sin(x)\cos(x)$._
 
 ### BoostExos — 1ERE / ? (row 51, exo 1)
 - **Q**: $\vec{u}(12;13)$ et $\vec{v}(11;14)$. Calculer $\vec{u} \cdot \vec{v}$.
@@ -5297,9 +5310,10 @@ print(x)
 - `WARN_HINT_TOO_SHORT` step 3: _Calculer._
 
 ### BoostExos — 1ERE / ? (row 51, exo 5)
-- **Q**: $\vec{AB} \cdot \vec{AC} = 0$. Que peut-on dire du triangle $ABC$?
-- **A**: Rectangle en $A$
-- `WARN_HINT_TOO_SHORT` step 3: _Calculer._
+- **Q**: $\vec{u}(3;4)$ et $\vec{v}(8;-6)$. Calculer l'angle entre $\vec{u}$ et $\vec{v}$
+- **A**: $90°$
+- `WARN_HINT_IS_ANSWER` step 3: _L'angle est donc $90°$._
+- `WARN_HINT_IS_FORMULA` step 1: _Calculer $\vec{u} \cdot \vec{v} = 3 \times 8 + 4 \times (-6) = 0$._
 
 ### BoostExos — 1ERE / ? (row 51, exo 6)
 - **Q**: Triangle $ABC$ avec $AB=13$, $AC=14$, $BC=15$. Calculer $\vec{AB} \cdot \vec{AC}
@@ -5458,12 +5472,10 @@ print(x)
 - `WARN_HINT_TOO_SHORT` step 3: _Calculer._
 
 ### BoostExos — 1ERE / ? (row 54, exo 10)
-- **Q**: $X$: valeurs $0,1,2,3$ avec probas $0{,}1, 0{,}3, 0{,}4, 0{,}2$. $V(X)$ = ?
-- **A**: $0{,}81$
-- `WARN_HINT_IS_ANSWER` step 3: _$V(X) = 3{,}7 - 1{,}7^2 = 0{,}81$._
-- `WARN_HINT_IS_FORMULA` step 1: _$E(X) = 1{,}7$._
-- `WARN_HINT_IS_FORMULA` step 2: _$E(X^2) = 3{,}7$._
-- `WARN_HINT_IS_FORMULA` step 3: _$V(X) = 3{,}7 - 1{,}7^2 = 0{,}81$._
+- **Q**: $X$ prend les valeurs $1, 2, 3$ avec probas $0{,}2, 0{,}5, 0{,}3$. Calculer $E(X
+- **A**: $2{,}1$
+- `WARN_HINT_IS_ANSWER` step 3: _$= 2{,}1$._
+- `WARN_HINT_IS_FORMULA` step 1: _$E(X) = 1 \times 0{,}2 + 2 \times 0{,}5 + 3 \times 0{,}3$._
 
 ### BoostExos — 1ERE / ? (row 55, exo 1)
 - **Q**: Que renvoie ce code ?
@@ -5515,11 +5527,6 @@ while n > 1:
 `L = [15, 11, 18, 13]`
 `L._
 - **A**: `sort()`
-- `WARN_HINT_TOO_SHORT` step 3: _Conclure._
-
-### BoostExos — 1ERE / ? (row 55, exo 9)
-- **Q**: Écrire une fonction `est_premier(n)` qui teste si $n$ est premier.
-- **A**: Boucle de $2$ à $\sqrt{n}$, tester `n % 
 - `WARN_HINT_TOO_SHORT` step 3: _Conclure._
 
 ### BoostExos — 1ERE / ? (row 55, exo 10)
