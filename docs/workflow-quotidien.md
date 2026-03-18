@@ -3,10 +3,11 @@
 > Chaque matin entre 8h et 10h. Maximum 10 minutes.
 > Tout se passe dans l'admin (triple-clic logo sur matheux.fr).
 
-## Les 5 onglets admin
+## Les 6 onglets admin
 
 | Onglet | Contenu |
 |---|---|
+| **NOUVEAU** | Inscrits du jour + statut mail J+0 |
 | **À FAIRE** | Boosts et chapitres terminés → préparer le suivant |
 | **FAIT** | Journal des actions traitées aujourd'hui |
 | **📧 MAILS** | Emails à confirmer (J+0/J+3/J+5/J+7) avec badge compteur |

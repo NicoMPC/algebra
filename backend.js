@@ -130,6 +130,7 @@ function doPost(e) {
       case 'send_contact':               res = sendContact(p);             break;
       case 'get_audit_exos':             res = getAuditExos(p);            break;
       case 'report_exo':                 res = reportExo(p);              break;
+      case 'save_calibration_batch':      res = saveCalibrationBatch(p);   break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -223,8 +224,8 @@ function generateCode() {
   return code;
 }
 
-function uniqueCode() {
-  var existing = getRows(SH.USERS).map(function(r) { return String(r['Code']); });
+function uniqueCode(usersCache) {
+  var existing = (usersCache || getRows(SH.USERS)).map(function(r) { return String(r['Code']); });
   var code;
   do { code = generateCode(); } while (existing.indexOf(code) !== -1);
   return code;
@@ -291,7 +292,7 @@ function register(p) {
   }
   // ─────────────────────────────────────────────────────────────────
 
-  var code = uniqueCode();
+  var code = uniqueCode(users);
   var now  = today();
 
   // Users : Code | Prénom | Niveau | Email | PasswordHash | DateInscription | IsAdmin | Premium | TrialStart | PremiumEnd | IsTest | PendingBrevet | RevisionChapters | Objectif
@@ -696,6 +697,43 @@ function saveScore(p) {
   try { writeToHistorique(p); } catch (e) {}
 
   return { status: 'success', streakAlert: streakAlert };
+}
+
+// ════════════════════════════════════════════════════════════
+//  3b. SAVE_CALIBRATION_BATCH
+//  Payload : { code, name, level, scores: [{ categorie, exercice_idx, q, resultat, temps, nbIndices, formule }] }
+//  Écrit toutes les lignes calibrage en un seul appel Sheets
+// ════════════════════════════════════════════════════════════
+
+function saveCalibrationBatch(p) {
+  if (!p.code || !p.scores || !p.scores.length) {
+    return { status: 'error', message: 'code et scores requis.' };
+  }
+  var code = String(p.code);
+  var name = String(p.name || '');
+  var level = String(p.level || '');
+  var now = today();
+  var sh = getSheet(SH.SCORES);
+
+  var rows = p.scores.map(function(s) {
+    return [
+      code, name, level,
+      String(s.categorie || 'CALIBRAGE'),
+      s.exercice_idx || 0,
+      String(s.q || '').substring(0, 80),
+      String(s.resultat || 'HARD'),
+      parseInt(s.temps || 0),
+      parseInt(s.nbIndices || 0),
+      s.formule ? 1 : 0,
+      '', '', now, 'CALIBRAGE'
+    ];
+  });
+
+  // Écriture batch : toutes les lignes en un seul setValues
+  var lastRow = sh.getLastRow();
+  sh.getRange(lastRow + 1, 1, rows.length, rows[0].length).setValues(rows);
+
+  return { status: 'success', saved: rows.length };
 }
 
 // ════════════════════════════════════════════════════════════

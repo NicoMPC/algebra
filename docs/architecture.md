@@ -57,7 +57,7 @@ Les vues sont des fonctions JS qui injectent du HTML dans `#main` :
 | Calibrage | `rSection('CALIBRAGE', ...)` | Diagnostic (quiz initial) |
 | Progression | `rSection('PROGRESSION', ...)` | Barres de progression par chapitre |
 | Brevet | `rSection('BREVET', ...)` | Mode brevet blanc (3EME only) |
-| Admin | `rSection('ADMIN', ...)` | Cockpit admin @88 — 5 onglets : À FAIRE / FAIT / MAILS / INACTIFS / RAPPORT. Boutons "Copier JSON complet" (exos+résultats+temps+indices+formule). Profils test visibles. |
+| Admin | `rSection('ADMIN', ...)` | Cockpit admin @88 — 6 onglets : À FAIRE / NOUVEAU / FAIT / MAILS / INACTIFS / RAPPORT. NOUVEAU = inscrits du jour + statut mail J+0. Boutons "Copier JSON complet" (exos+résultats+temps+indices+formule). Profils test visibles. |
 
 ### Navigation
 
@@ -118,12 +118,13 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @88
+### Actions GAS — état @97
 
-> @88 : admin cockpit 5 onglets (À FAIRE/FAIT/MAILS/INACTIFS/RAPPORT), boutons "Copier JSON complet", profils test visibles, fix publish chapitre + JSON parse.
-> @87 : bouton "Valider la réponse" (selectOpt+validateAnswer), bouton "Je ne sais pas" (resultat='SKIP'), 251 figures SVG ajoutées, 14 reformulations.
-> @77 : mode nuit app, guide "Commence par là", titres chapitres gras, nav boost reopen. Audit 1872 exercices (~98%).
-> @76 : refonte admin cockpit initial. @64 : 1ERE Spé Maths. @63 : rate limiting + validation inputs.
+> @97 : tour guidé 7 étapes + fix toast "Génération des défis" persistant.
+> @95 : invariants messages figés, toast mutex, simulation 7j 0 incohérence.
+> @93 : refonte onboarding UX (stepper, animations, carte résultat split).
+> @90 : gamification MVP (XP, paliers, streak freeze, milestones, tuto régressif).
+> @88 : admin cockpit 6 onglets, boutons "Copier JSON complet".
 
 | Action | Description | Statut |
 |---|---|---|
@@ -309,7 +310,7 @@ Scripts one-shot déjà exécutés : imports, migrations, fix one-shot, anciens 
 - Auth register + login + auto-login silencieux (modale protégée contre interruption trial-flow CTA)
 - Scores enrichis : temps, wrongOpt, indices, formule
 - Swipe gauche → exercice suivant
-- Admin cockpit (triple-clic logo) : 5 onglets À FAIRE / FAIT / MAILS / INACTIFS / RAPPORT — À FAIRE = boost+chapitre uniquement, emails dans onglet dédié, inactifs >3j visibles, rapport dimanche avec JSON semaine
+- Admin cockpit (triple-clic logo) : 6 onglets À FAIRE / NOUVEAU / FAIT / MAILS / INACTIFS / RAPPORT — À FAIRE = boost+chapitre uniquement, emails dans onglet dédié, inactifs >3j visibles, rapport dimanche avec JSON semaine
 - Gamification : XP, streak, mastery ring SVG
 - KaTeX v0.16.9 (rendu maths), chrono par exercice
 - Nudge pills après 20s, tableau blanc maths
