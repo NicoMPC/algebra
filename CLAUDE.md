@@ -350,6 +350,22 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | 3 | Légende fondateur | "C'est en donnant des cours que j'ai créé Matheux — pour rendre mes élèves autonomes. Conçu pour eux, avec eux." |
 | 4 | Phrase transition "Imaginez…" | Nouvelle section 2b entre Problème et Solution — "Imaginez un endroit où toutes les erreurs, toutes les hésitations, sont gardées en mémoire — pour faire progresser votre enfant là où ça fait mal." |
 
+### ✅ Audit cohérence messages + UX fixes — 18 mars @95
+
+| # | Fix | Détail |
+|---|-----|--------|
+| 1 | Toast queue anti-overlap | `_toastQueue` + `_toastBusy` mutex — max 1 toast visible, les suivants en file |
+| 2 | Milestones/coach par user | localStorage namespacé `mx_ms_{code}` / `mx_co_{code}` — plus de pollution cross-user |
+| 3 | `boostConsumed` date freshness | `boostConsumedDate` sauvé — expire si jour différent, plus de "session terminée" stale |
+| 4 | Coach tip avant aide | Tip "les indices s'affichent" AVANT le panel aide (plus après) |
+| 5 | Streak dedup milestone | Toast login skip si milestone streak_3/7 va fire — 0 doublon |
+| 6 | Trial badge J-5 | Badge visible dès J-5 (bleu discret), J-3 jaune, J-1 orange |
+| 7 | `pendingManual` cleanup | Effacé quand chapitre réel reçu (JSON ou string) |
+| 8 | Copy "demain" cohérent | `cours_prep` → "bientôt disponible", session terminée → "continue ou reviens demain" |
+| 9 | Dead code supprimé | `no_boost_yet` jamais utilisé → supprimé |
+| 10 | Modale connexion login only | Onglet "Nouveau" masqué — inscription uniquement via CTA |
+| 11 | Bouton "Je ne sais pas" aéré | Sorti du sticky validate-wrap, pill discrète centrée, `mt-5` espace |
+
 ### 🔴 Reporté vendredi 20 mars (calendar)
 
 | # | Action | Priorité |
