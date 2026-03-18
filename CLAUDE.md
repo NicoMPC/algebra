@@ -263,21 +263,38 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | 7 | 🧪 Test réouverture user | Auguste + Charlie + Nicolas — vérif post-27 fixes |
 | 8 | ✅ Audit pré-lancement complet | **FAIT** — 24 points (3 bloquants, 3 critiques, 7 importants, 8 frictions UX). Voir checklist-lancement.md §5b. 17 mars. |
 
-### ⛔ Bloquants audit (18 mars matin)
+### ✅ Bloquants audit — corrigés (18 mars @89)
 
-| # | Action | Fichier |
+| # | Action | Statut |
 |---|---|---|
-| 1 | Fix prix 9,99€ → 19,99€ | cgu.html L54, premium.html L6/141/173 |
-| 2 | Supprimer alerte "bêta fermée 40 familles" | cgu.html L43-45 |
-| 3 | Fix triggerDailyMarketing Premium='1' string | backend.js L4635 |
+| 1 | Fix prix 9,99€ → 19,99€ | ✅ cgu.html + premium.html |
+| 2 | Supprimer alerte "bêta fermée 40 familles" | ✅ cgu.html |
+| 3 | Fix triggerDailyMarketing Premium='1' string | ✅ backend.js |
+| 4 | Messages boost cohérents (demain/bientôt) | ✅ index.html |
+| 5 | ko_boost avec lien correction | ✅ index.html |
+| 6 | Transition vouvoiement→tutoiement onboarding | ✅ index.html |
+| 7 | Boutons Valider/Skip inversés (thumb zone) | ✅ index.html |
+| 8 | Pills navigation ✓/✗ | ✅ index.html |
+| 9 | KaTeX fallback 3s → 1.5s | ✅ index.html |
+| 10 | Trial expiry toast J-3/J-2/J-1 | ✅ index.html |
+| 11 | Mode nuit catch-all backgrounds blancs | ✅ index.html |
+| 12 | Indicateur offline persistant | ✅ index.html |
+| 13 | guestDiag localStorage purgé au login | ✅ index.html |
+| 14 | Rate limiting global 30/min auth | ✅ backend.js |
+| 15 | manifest.json screenshots supprimé | ✅ manifest.json |
+| 16 | premium.html nettoyée (Stripe PROD, mentions) | ✅ premium.html |
+| 17 | Contact form modal z-index | OK — z-index 5000, pas de bug |
+| 18 | Messages "pas de boost" cohérents | ✅ index.html |
 
-### 🔴 Critiques (avant J+7)
+### 🔴 Reporté vendredi 20 mars (calendar)
 
 | # | Action | Priorité |
 |---|---|---|
 | 1 | Webhook Stripe : implémenter vérif HMAC-SHA256 (`stripe-signature`) | ⛔ Avant J+7 |
 | 2 | Déplacer `SHARED_SECRET` vers `PropertiesService` (en clair L5404) | ⛔ Avant J+7 |
 | 3 | Tester un vrai paiement CB (19,99€ → vérifier Premium=1) | ⛔ Avant J+7 |
+| 4 | Race condition saveScore/ExosDone — LockService | ⛔ Avant J+7 |
+| 5 | Race condition ensureUsersCols | ⛔ Avant J+7 |
 
 ### 🟡 Avant ou après lancement
 
@@ -285,11 +302,7 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 |---|---|---|
 | 1 | Triggers Apps Script — automatiser dès 10-20 clients | 🟡 Plus tard |
 | 2 | Vidéo fondateur — tourner + intégrer section "Derrière Matheux" landing | 🟡 18 mars |
-| 3 | Cohérence messages génériques/circonstanciels après refonte landing | 🟡 Vendredi 20 mars (1h) |
-| 4 | Centraliser 3 mails matheux.fr (Thunderbird/alias/redirection) | 🟡 Jeudi 19 mars |
-| 5 | Avertissement progressif trial expiry (toast J-3/J-2/J-1) | 🟡 Sprint 1 |
-| 6 | Inverser boutons Valider/Je ne sais pas (thumb zone mobile) | 🟡 Sprint 1 |
-| 7 | KaTeX fallback 3s → 1.5s + spinner | 🟡 Sprint 1 |
+| 3 | Centraliser 3 mails matheux.fr (Thunderbird/alias/redirection) | 🟡 Jeudi 19 mars |
 
 ---
 
