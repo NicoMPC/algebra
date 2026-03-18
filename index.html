@@ -1091,8 +1091,8 @@
     .tour-overlay { position:fixed;inset:0;z-index:9000;pointer-events:none;transition:opacity .3s }
     .tour-overlay.active { pointer-events:auto }
     .tour-backdrop { position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9001;transition:opacity .3s }
-    .tour-highlight { position:absolute;z-index:9002;border-radius:16px;box-shadow:0 0 0 9999px rgba(0,0,0,.72);pointer-events:none;transition:all .35s cubic-bezier(.4,0,.2,1) }
-    .tour-tooltip { position:absolute;z-index:9003;background:#fff;border-radius:16px;padding:1.1rem 1.2rem;max-width:300px;box-shadow:0 8px 32px rgba(0,0,0,.25);animation:tourPop .3s ease-out both }
+    .tour-highlight { position:fixed;z-index:9002;border-radius:16px;box-shadow:0 0 0 9999px rgba(0,0,0,.72);pointer-events:none;transition:all .35s cubic-bezier(.4,0,.2,1) }
+    .tour-tooltip { position:fixed;z-index:9003;background:#fff;border-radius:16px;padding:1rem 1.1rem;max-width:min(300px,calc(100vw - 32px));box-sizing:border-box;box-shadow:0 8px 32px rgba(0,0,0,.25);animation:tourPop .3s ease-out both;word-wrap:break-word;overflow-wrap:break-word }
     .tour-tooltip .tour-arrow { position:absolute;width:14px;height:14px;background:#fff;transform:rotate(45deg);box-shadow:-2px -2px 4px rgba(0,0,0,.06) }
     .tour-tooltip .tour-title { font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;color:#1e1b4b;margin-bottom:.35rem }
     .tour-tooltip .tour-body { font-size:.85rem;color:#475569;line-height:1.45 }
@@ -4079,7 +4079,7 @@ function _tourRender() {
     // Centered tooltip (no spotlight)
     hl.style.display = 'none';
     document.getElementById('tour-bd').style.opacity = '1';
-    tip.innerHTML = '<div class="tour-tooltip" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;animation:tourPop .3s ease-out both">' +
+    tip.innerHTML = '<div class="tour-tooltip" style="top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">' +
       '<div style="font-size:2rem;margin-bottom:.5rem">' + step.emoji + '</div>' +
       '<div class="tour-title">' + step.title + '</div>' +
       '<div class="tour-body">' + step.body + '</div>' +
@@ -4092,33 +4092,33 @@ function _tourRender() {
     return;
   }
 
-  // Spotlight on element
+  // Scroll element into view first, then position after scroll settles
+  el.scrollIntoView({ behavior: 'instant', block: 'center' });
+
+  // Spotlight on element (fixed positioning — no scrollY needed)
   var r = el.getBoundingClientRect();
   var pad = 8;
   hl.style.display = 'block';
-  hl.style.top = (r.top - pad + window.scrollY) + 'px';
+  hl.style.position = 'fixed';
+  hl.style.top = (r.top - pad) + 'px';
   hl.style.left = (r.left - pad) + 'px';
   hl.style.width = (r.width + pad * 2) + 'px';
   hl.style.height = (r.height + pad * 2) + 'px';
 
-  // Scroll element into view
-  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-  // Position tooltip below or above
-  var tipTop, tipLeft, arrowStyle;
+  // Position tooltip below or above — clamped to viewport
   var tipW = Math.min(300, window.innerWidth - 32);
+  var tipLeft = Math.max(16, Math.min(r.left + r.width / 2 - tipW / 2, window.innerWidth - tipW - 16));
+  var tipTop, arrowStyle;
   if (step.pos === 'above') {
-    tipTop = (r.top + window.scrollY - pad - 16) + 'px';
-    tipLeft = Math.max(16, Math.min(r.left + r.width / 2 - tipW / 2, window.innerWidth - tipW - 16)) + 'px';
+    tipTop = Math.max(8, r.top - pad - 16);
     arrowStyle = 'bottom:-6px;left:50%;transform:translateX(-50%) rotate(45deg)';
   } else {
-    tipTop = (r.bottom + window.scrollY + pad + 16) + 'px';
-    tipLeft = Math.max(16, Math.min(r.left + r.width / 2 - tipW / 2, window.innerWidth - tipW - 16)) + 'px';
+    tipTop = Math.min(window.innerHeight - 60, r.bottom + pad + 16);
     arrowStyle = 'top:-6px;left:50%;transform:translateX(-50%) rotate(45deg)';
   }
 
   var transformExtra = step.pos === 'above' ? 'transform:translateY(-100%);' : '';
-  tip.innerHTML = '<div class="tour-tooltip" style="position:absolute;top:' + tipTop + ';left:' + tipLeft + ';width:' + tipW + 'px;' + transformExtra + '">' +
+  tip.innerHTML = '<div class="tour-tooltip" style="top:' + tipTop + 'px;left:' + tipLeft + 'px;width:' + tipW + 'px;' + transformExtra + '">' +
     '<div class="tour-arrow" style="' + arrowStyle + '"></div>' +
     '<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem"><span style="font-size:1.2rem">' + step.emoji + '</span><span class="tour-title" style="margin:0">' + step.title + '</span></div>' +
     '<div class="tour-body">' + step.body + '</div>' +
