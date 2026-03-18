@@ -330,7 +330,7 @@ function register(p) {
     nextBoost:          null,
     pendingBrevet:      null,
     revisionChapters:   [],
-    trial:              { active: true, daysLeft: 7, trialDays: 0 }
+    trial:              { trialActive: true, daysLeft: 7, isPremium: false }
   };
 }
 
