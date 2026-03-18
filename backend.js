@@ -42,7 +42,8 @@ var SH = {
   BREVET_EXOS:    'BrevetExos',
   BREVET_RESULTS: 'BrevetResults',
   BOOST_EXOS:     'BoostExos',
-  COURS:          'Cours'
+  COURS:          'Cours',
+  AUDIT:          'AuditExos'
 };
 
 // ════════════════════════════════════════════════════════════
@@ -127,6 +128,8 @@ function doPost(e) {
       case 'add_teasing_early':          res = addTeasingEarly(p);         break;
       case 'stripe_webhook':             res = stripeWebhook(p);           break;
       case 'send_contact':               res = sendContact(p);             break;
+      case 'get_audit_exos':             res = getAuditExos(p);            break;
+      case 'report_exo':                 res = reportExo(p);              break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -5569,4 +5572,78 @@ function _logWebhook(status, detail, email, eventType) {
     var elapsed = Math.round(new Date().getTime() % 100000); // ms approx
     sh.appendRow([new Date(), status, detail, email, eventType, elapsed]);
   } catch (e) { /* ne jamais planter le webhook à cause du log */ }
+}
+
+// ════════════════════════════════════════════════════════════
+//  AUDIT EXOS — Jérôme (WXHBJH) uniquement
+// ════════════════════════════════════════════════════════════
+
+var AUDITOR_CODE = 'WXHBJH';
+
+function getAuditExos(p) {
+  if (String(p.code) !== AUDITOR_CODE) return { status: 'error', message: 'Non autorisé.' };
+  var level  = (p.level  || '').toUpperCase();
+  var source = (p.source || '').toLowerCase(); // 'curriculum', 'diagnostic', 'boost'
+  if (!isValidLevel(level)) return { status: 'error', message: 'Niveau invalide.' };
+
+  var results = [];
+
+  if (source === 'diagnostic') {
+    var diagRows = getRows(SH.DIAG).filter(function(r) {
+      return r['Niveau'] && r['Niveau'].toString().toUpperCase() === level;
+    });
+    diagRows.forEach(function(r) {
+      var cat  = String(r['Categorie'] || '');
+      var exos = parseJSON(r['ExosJSON']);
+      exos.forEach(function(e, i) {
+        e.categorie = cat;
+        e._idx = i;
+        results.push(e);
+      });
+    });
+  } else if (source === 'boost') {
+    var boostRows = getRows(SH.BOOST_EXOS).filter(function(r) {
+      return r['Niveau'] && r['Niveau'].toString().toUpperCase() === level;
+    });
+    boostRows.forEach(function(r) {
+      var cat  = String(r['Categorie'] || '');
+      var exos = parseJSON(r['ExosJSON']);
+      exos.forEach(function(e, i) {
+        e.categorie = cat;
+        e._idx = i;
+        results.push(e);
+      });
+    });
+  } else {
+    // curriculum
+    var curRows = getRows(SH.CURRICULUM).filter(function(r) {
+      return r['Niveau'] && r['Niveau'].toString().toUpperCase() === level;
+    });
+    curRows.forEach(function(r) {
+      var cat  = String(r['Categorie'] || '');
+      var exos = parseJSON(r['ExosJSON']);
+      exos.forEach(function(e, i) {
+        e.categorie = cat;
+        e._idx = i;
+        results.push(e);
+      });
+    });
+  }
+
+  return { status: 'success', exos: results, count: results.length };
+}
+
+function reportExo(p) {
+  if (String(p.code) !== AUDITOR_CODE) return { status: 'error', message: 'Non autorisé.' };
+  var niveau     = String(p.niveau     || '');
+  var source     = String(p.source     || '');
+  var categorie  = String(p.categorie  || '');
+  var exoIndex   = p.exoIndex != null ? p.exoIndex : '';
+  var question   = String(p.question   || '').substring(0, 200);
+  var commentaire = String(p.commentaire || '').substring(0, 500);
+
+  if (!commentaire) return { status: 'error', message: 'Commentaire requis.' };
+
+  appendRow(SH.AUDIT, [today(), niveau, source, categorie, exoIndex, question, commentaire]);
+  return { status: 'success', message: 'Signalement enregistré.' };
 }

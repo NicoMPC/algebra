@@ -4212,6 +4212,7 @@ function initApp(d, skipRender) {
   try { localStorage.removeItem('guestDiag'); } catch(e) {}
   S.prof       = d.profile;
   S.niv        = d.profile.level;
+  S.isAuditor  = d.profile.code === 'WXHBJH';
   // Charger milestones + coach namespacés par user
   try { _milestoneShown = JSON.parse(localStorage.getItem('mx_ms_' + d.profile.code) || '{}'); } catch(e) { _milestoneShown = {}; }
   try { _coachShown = JSON.parse(localStorage.getItem('mx_co_' + d.profile.code) || '{}'); } catch(e) { _coachShown = {}; }
@@ -5221,13 +5222,26 @@ function updNav() {
   btnP.className = S.view === 'progress' ? ON : OFF;
   var btnB = document.getElementById('nav-brev');
   if (btnB) btnB.className = S.view === 'brevet' ? ON : OFF;
+  // Audit button — Jérôme uniquement
+  var btnA = document.getElementById('nav-audit');
+  if (S.isAuditor && !btnA) {
+    var ab = document.createElement('button');
+    ab.id = 'nav-audit';
+    ab.onclick = function(){ setView('audit'); };
+    nav.appendChild(ab);
+  }
+  btnA = document.getElementById('nav-audit');
+  if (btnA) btnA.className = S.view === 'audit' ? ON : OFF;
+  if (btnA) btnA.textContent = '🔍 Audit';
 }
 
 function setView(v) {
   S.view = v;
   updNav();
   renderTrialBadge();
-  if (v === 'admin') {
+  if (v === 'audit') {
+    renderAuditView();
+  } else if (v === 'admin') {
     renderAdminDashboard();
   } else if (v === 'progress' && !S.progressLoading) {
     loadProgress();
@@ -5236,6 +5250,243 @@ function setView(v) {
   } else {
     render();
   }
+}
+
+// ══════════════════════════════════════════════════════════════
+// VUE AUDIT — Jérôme (WXHBJH) uniquement
+// ══════════════════════════════════════════════════════════════
+
+var _auditExos = [];
+var _auditIdx = 0;
+var _auditLevel = '6EME';
+var _auditSource = 'curriculum';
+var _auditFilter = 'all'; // 'all' | 'figure'
+var _auditLoading = false;
+
+function renderAuditView() {
+  var c = document.getElementById('app-c');
+  if (!S.isAuditor) { render(); return; }
+
+  var LEVELS = ['6EME','5EME','4EME','3EME'];
+  var SOURCES = [
+    { key:'curriculum', label:'📚 Chapitres' },
+    { key:'diagnostic', label:'🎯 Diagnostic' },
+    { key:'boost', label:'⚡ Boost' }
+  ];
+
+  // Panel sélection
+  var html = '<div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 mb-4 afu">' +
+    '<h2 class="syne text-lg font-black text-slate-900 mb-3">🔍 Audit exercices</h2>' +
+    '<div class="flex gap-2 mb-3 flex-wrap">';
+  LEVELS.forEach(function(l) {
+    var cls = l === _auditLevel ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600';
+    html += '<button onclick="_auditSetLevel(\''+l+'\')" class="px-3 py-1.5 rounded-lg text-xs font-bold '+cls+'">'+l+'</button>';
+  });
+  html += '</div><div class="flex gap-2 mb-3 flex-wrap">';
+  SOURCES.forEach(function(s) {
+    var cls = s.key === _auditSource ? 'bg-purple-600 text-white' : 'bg-slate-100 text-slate-600';
+    html += '<button onclick="_auditSetSource(\''+s.key+'\')" class="px-3 py-1.5 rounded-lg text-xs font-bold '+cls+'">'+s.label+'</button>';
+  });
+  html += '</div>' +
+    '<div class="flex gap-2 items-center mb-3">' +
+    '<button onclick="_auditSetFilter(\'all\')" class="px-3 py-1.5 rounded-lg text-xs font-bold '+(_auditFilter==='all'?'bg-slate-800 text-white':'bg-slate-100 text-slate-600')+'">Tous</button>' +
+    '<button onclick="_auditSetFilter(\'figure\')" class="px-3 py-1.5 rounded-lg text-xs font-bold '+(_auditFilter==='figure'?'bg-blue-600 text-white':'bg-slate-100 text-slate-600')+'">📐 Avec figure</button>' +
+    '</div>' +
+    '<button onclick="_auditLoad()" class="btn btn-ac btn-fw py-3 text-sm">Charger les exercices</button>' +
+    '</div>';
+
+  // Exos chargés
+  if (_auditLoading) {
+    html += '<div class="text-center py-8 text-slate-400">Chargement...</div>';
+  } else if (_auditExos.length > 0) {
+    html += _renderAuditExo();
+  }
+
+  c.innerHTML = html;
+  rMath();
+}
+
+function _auditSetLevel(l) { _auditLevel = l; _auditExos = []; _auditIdx = 0; renderAuditView(); }
+function _auditSetSource(s) { _auditSource = s; _auditExos = []; _auditIdx = 0; renderAuditView(); }
+function _auditSetFilter(f) { _auditFilter = f; _auditIdx = 0; renderAuditView(); }
+
+async function _auditLoad() {
+  _auditLoading = true;
+  _auditIdx = 0;
+  renderAuditView();
+  try {
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'get_audit_exos', code:S.prof.code, level:_auditLevel, source:_auditSource }) });
+    var d = await r.json();
+    if (d.status === 'success') {
+      _auditExos = d.exos || [];
+    } else {
+      showT(d.message || 'Erreur', 2000, '❌');
+      _auditExos = [];
+    }
+  } catch(e) {
+    showT('Erreur réseau', 2000, '❌');
+    _auditExos = [];
+  }
+  _auditLoading = false;
+  renderAuditView();
+}
+
+function _auditFiltered() {
+  if (_auditFilter === 'all') return _auditExos;
+  return _auditExos.filter(function(e) {
+    var cat = e.categorie || e.oC || '';
+    var fig = e.fig || autoDetectFigure(e.q || '', cat);
+    return fig && fig.confidence !== 'low';
+  });
+}
+
+function _renderAuditExo() {
+  var exos = _auditFiltered();
+  if (exos.length === 0) return '<div class="text-center py-8 text-slate-400 text-sm">Aucun exercice' + (_auditFilter === 'figure' ? ' avec figure' : '') + '.</div>';
+  if (_auditIdx >= exos.length) _auditIdx = exos.length - 1;
+  if (_auditIdx < 0) _auditIdx = 0;
+  var e = exos[_auditIdx];
+  var cat = e.categorie || '';
+  var hasFig = false;
+  var figHtml = '';
+  if (e.q) {
+    var fig = e.fig || autoDetectFigure(e.q, cat);
+    if (fig && fig.confidence !== 'low') {
+      hasFig = true;
+      figHtml = renderFig(fig);
+    }
+  }
+
+  var borderCls = hasFig ? 'border-2 border-blue-400' : 'border border-slate-200';
+  var html = '<div class="bg-white rounded-2xl '+borderCls+' shadow-sm overflow-hidden afu">';
+
+  // Header
+  html += '<div class="px-4 py-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center">' +
+    '<div>' +
+    '<span class="text-xs font-bold text-slate-500">'+_auditLevel+' · '+_auditSource+'</span>' +
+    '<span class="text-xs text-slate-400 ml-2">'+cat+'</span>' +
+    (hasFig ? '<span class="ml-2 px-1.5 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold rounded">📐 Figure</span>' : '') +
+    '</div>' +
+    '<span class="text-xs font-bold text-slate-400">'+(_auditIdx+1)+' / '+exos.length+'</span>' +
+    '</div>';
+
+  // Question
+  html += '<div class="p-4">' +
+    '<div class="mc text-sm leading-relaxed text-slate-800 mb-3">'+fmtL(e.q || '(pas de question)')+'</div>';
+
+  // Figure
+  if (figHtml) {
+    html += '<div class="mb-3 flex justify-center">'+figHtml+'</div>';
+  }
+
+  // Options
+  if (e.options && e.options.length > 0) {
+    html += '<div class="space-y-1.5 mb-3">';
+    e.options.forEach(function(o, i) {
+      var isA = o === e.a;
+      var cls = isA ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'bg-slate-50 border-slate-200 text-slate-600';
+      html += '<div class="px-3 py-2 rounded-lg border text-xs font-medium '+cls+'">' +
+        (isA ? '✓ ' : '') + '<span class="mc">'+fmtL(o)+'</span></div>';
+    });
+    html += '</div>';
+  }
+
+  // Réponse
+  html += '<div class="text-xs text-slate-400 mb-3">Réponse : <span class="font-bold text-slate-600 mc">'+fmtL(e.a || '?')+'</span></div>';
+
+  // Indices
+  if (e.hints && e.hints.length > 0) {
+    html += '<details class="mb-3"><summary class="text-xs text-indigo-500 font-bold cursor-pointer">Indices ('+e.hints.length+')</summary>' +
+      '<div class="mt-1 space-y-1">';
+    e.hints.forEach(function(h) {
+      html += '<div class="text-xs text-slate-500 mc pl-2 border-l-2 border-indigo-200">'+fmtL(h)+'</div>';
+    });
+    html += '</div></details>';
+  }
+
+  // Formule
+  if (e.formule) {
+    html += '<div class="text-xs text-slate-400 mb-3">Formule : <span class="mc">'+fmtL(e.formule)+'</span></div>';
+  }
+
+  html += '</div>';
+
+  // Navigation + Signaler
+  html += '<div class="px-4 py-3 border-t border-slate-100 space-y-2">' +
+    '<div class="flex gap-2">' +
+    (_auditIdx > 0 ? '<button onclick="_auditNav(-1)" class="btn bg-slate-100 text-slate-600 py-2.5 px-4 rounded-xl text-sm font-bold">← Préc</button>' : '') +
+    '<button onclick="_auditNav(1)" class="btn bg-indigo-600 text-white py-2.5 flex-1 rounded-xl text-sm font-bold">Suivant →</button>' +
+    '</div>' +
+    '<button onclick="_auditReport()" class="w-full py-2.5 rounded-xl text-sm font-bold bg-amber-100 text-amber-800 border border-amber-300">⚠️ Signaler cet exercice</button>' +
+    '</div></div>';
+
+  return html;
+}
+
+function _auditNav(dir) {
+  var exos = _auditFiltered();
+  _auditIdx += dir;
+  if (_auditIdx < 0) _auditIdx = 0;
+  if (_auditIdx >= exos.length) _auditIdx = exos.length - 1;
+  renderAuditView();
+}
+
+function _auditReport() {
+  var exos = _auditFiltered();
+  var e = exos[_auditIdx];
+  if (!e) return;
+  var cat = e.categorie || '';
+  var qExtract = (e.q || '').substring(0, 200);
+
+  // Modal simple
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9000;display:flex;align-items:center;justify-content:center;padding:1rem';
+  overlay.innerHTML =
+    '<div style="background:#fff;border-radius:1rem;padding:1.5rem;max-width:400px;width:100%">' +
+    '<h3 style="font-weight:800;font-size:.95rem;margin-bottom:.5rem">⚠️ Signaler — '+cat+'</h3>' +
+    '<p style="font-size:.75rem;color:#64748b;margin-bottom:.75rem;line-height:1.4">'+qExtract.substring(0,80)+'…</p>' +
+    '<textarea id="audit-comment" rows="4" placeholder="Décris le problème…" style="width:100%;border:1.5px solid #e2e8f0;border-radius:.75rem;padding:.75rem;font-size:.85rem;resize:none;margin-bottom:.75rem"></textarea>' +
+    '<div style="display:flex;gap:.5rem">' +
+    '<button onclick="this.closest(\'div[style]\').remove()" style="flex:1;padding:.6rem;border-radius:.75rem;background:#f1f5f9;font-weight:700;font-size:.8rem;border:none;cursor:pointer">Annuler</button>' +
+    '<button onclick="_auditSendReport()" style="flex:1;padding:.6rem;border-radius:.75rem;background:#f59e0b;color:#fff;font-weight:700;font-size:.8rem;border:none;cursor:pointer">Envoyer</button>' +
+    '</div></div>';
+  document.body.appendChild(overlay);
+  overlay.querySelector('textarea').focus();
+}
+
+async function _auditSendReport() {
+  var ta = document.getElementById('audit-comment');
+  var comment = ta ? ta.value.trim() : '';
+  if (!comment) { showT('Écris un commentaire', 1500, '❌'); return; }
+
+  var exos = _auditFiltered();
+  var e = exos[_auditIdx];
+  var cat = e.categorie || '';
+
+  try {
+    var r = await fetch(SU, { method:'POST', body:JSON.stringify({
+      action: 'report_exo',
+      code: S.prof.code,
+      niveau: _auditLevel,
+      source: _auditSource,
+      categorie: cat,
+      exoIndex: e._idx != null ? e._idx : _auditIdx,
+      question: (e.q || '').substring(0, 200),
+      commentaire: comment
+    })});
+    var d = await r.json();
+    if (d.status === 'success') {
+      showT('Signalement envoyé ✓', 1500, '✅');
+    } else {
+      showT(d.message || 'Erreur', 2000, '❌');
+    }
+  } catch(err) {
+    showT('Erreur réseau', 2000, '❌');
+  }
+
+  // Fermer la modal
+  var overlays = document.querySelectorAll('div[style*="z-index:9000"]');
+  overlays.forEach(function(o) { o.remove(); });
 }
 
 
