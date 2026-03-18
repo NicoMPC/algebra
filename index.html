@@ -1274,9 +1274,10 @@
 
       <!-- STEP 2 — Chapitres -->
       <div id="flow-s2" class="flow-step hidden">
-        <h2 class="syne text-2xl font-black text-white text-center mb-2">Chapitres déjà vus ?</h2>
-        <p class="text-white/50 text-sm text-center mb-5">Coche les chapitres déjà vus cette année</p>
-        <div id="flow-chaps-grid" class="grid grid-cols-2 gap-2.5 mb-6"></div>
+        <h2 class="syne text-2xl font-black text-white text-center mb-2">Qu'est-ce que tu as vu en cours ?</h2>
+        <p class="text-white/50 text-sm text-center mb-5">Coche ce qui te parle — même vaguement</p>
+        <div id="flow-chaps-grid" class="grid grid-cols-2 gap-2.5 mb-4"></div>
+        <button onclick="_flowAutoSelectChaps()" class="block w-full text-center text-xs text-white/40 hover:text-white/70 transition-colors mb-5 bg-transparent border-none cursor-pointer py-2">Je ne sais pas trop — choisir pour moi</button>
         <button onclick="flowToStep3()" class="btn btn-ac btn-fw py-4">Voir le diagnostic →</button>
         <button onclick="_flowSetStep(1)" class="block w-full text-center text-xs text-white/40 hover:text-white/70 transition-colors mt-3 bg-transparent border-none cursor-pointer">← Changer de classe</button>
       </div>
@@ -2284,7 +2285,7 @@ var _MSGS = {
   boost_ready:      '⚡ Ton Entraînement du jour est prêt !',
   boost_preparing:  '✨ Ton prochain entraînement est en préparation — reviens demain !',
   boost_in_progress:'Ton entraînement est en cours ⚡ — encore {n} exo{s} et c\'est dans la boîte !',
-  coach_hint:    'Psst — t\'as droit aux indices 💡 Hésite pas !',
+  coach_hint:    'Les indices se dévoilent un par un — utilise-les avant de répondre 💡',
   coach_formula: 'La formule se révèle après réponse 📐 — clique dessus !',
   coach_brouillon:'Le brouillon est en bas 📝 — utilise-le pour tes calculs !',
   coach_boost_first: '⚡ C\'est ton Entraînement du jour — 5 exos, ~10 min. C\'est parti !',
@@ -2339,6 +2340,11 @@ function alert2(t, m, ic) {
 function closeAlert() { document.getElementById('m-alert').classList.add('hidden'); }
 
 function showXP(a) {
+  // T7 : Tip premier XP — explication
+  if (_needsCoach('tip_xp')) {
+    _markCoach('tip_xp');
+    setTimeout(function() { showT('Chaque r\u00e9ponse rapporte des XP \u2014 m\u00eame les erreurs comptent', 4000, '\uD83D\uDCCB'); }, 1500);
+  }
   var e = document.createElement('div');
   e.className = 'xpf';
   e.innerText = '+' + a;
@@ -2846,7 +2852,7 @@ function flowToggleChap(el, key) {
 }
 
 function flowToStep3() {
-  if (_flowChaps.length < 2) { showT('Sélectionne au moins 2 chapitres pour un diagnostic fiable 😊', 3000, '⚠️'); return; }
+  if (_flowChaps.length < 1) { showT('Sélectionne au moins 1 chapitre 😊', 2500, '⚠️'); return; }
   _flowQIdx = 0; _flowScore = 0;
   _flowSetStep(3);
   _flowStartDiag();
@@ -3571,7 +3577,7 @@ async function finalizeOnboarding() {
   var selChaps = Array.from(document.querySelectorAll('.chap-card.selected')).map(function(el){
     return el.getAttribute('data-chap');
   });
-  if (selChaps.length < 2) { showT('Sélectionne au moins 2 chapitres pour un diagnostic fiable 😊', 3000, '⚠️'); return; }
+  if (selChaps.length < 1) { showT('Sélectionne au moins 1 chapitre 😊', 2500, '⚠️'); return; }
   document.getElementById('onboard-text').classList.add('hidden');
   document.getElementById('onboard-ld').classList.remove('hidden');
   showT("Génération du diagnostic...", 0, "🎯");
@@ -4440,6 +4446,11 @@ window.validateAnswer = function() {
     setTimeout(function(){ mark(cat, idx, 'EASY', null); }, 700);
   } else {
     showT(_msg(_koKey), 1500, '\uD83D\uDCA1');
+    // T2 : Tip première erreur — les indices s'affichent
+    if (_needsCoach('tip_wrong')) {
+      _markCoach('tip_wrong');
+      setTimeout(function() { showT('Pas grave \u2014 les indices et la correction s\'affichent pour t\'aider', 4500, '\uD83D\uDCCB'); }, 2200);
+    }
     setTimeout(function(){
       S._pendingHelp = { cat: cat, idx: idx };
       mark(cat, idx, 'HARD', exo.options[oI]);
@@ -6902,6 +6913,21 @@ function rSection(cat, data, idx, total, catDone) {
       '💡 Réponds honnêtement — les <strong>indices</strong> et la <strong>formule</strong> sont là si tu bloques.' +
       '</div>';
   }
+  // T1 : Tip premier exercice — comment sélectionner + valider
+  if (cat !== 'CALIBRAGE' && idx === 0 && _needsCoach('tip_select')) {
+    _markCoach('tip_select');
+    setTimeout(function() { showT('Choisis ta réponse puis appuie sur Valider', 4500, '📋'); }, 600);
+  }
+  // T5 : Tip 3ème exercice — brouillon et calculette
+  if (cat !== 'CALIBRAGE' && idx === 2 && _needsCoach('tip_tools')) {
+    _markCoach('tip_tools');
+    setTimeout(function() { showT('Le brouillon et la calculette sont en bas — tape le crayon ✏️', 4500, '📋'); }, 600);
+  }
+  // T6 : Tip 2ème exercice — "Je ne sais pas" montre la correction
+  if (cat !== 'CALIBRAGE' && idx === 1 && _needsCoach('tip_skip')) {
+    _markCoach('tip_skip');
+    setTimeout(function() { showT('"Je ne sais pas" montre la correction — zéro jugement', 4000, '📋'); }, 5500);
+  }
   var r       = res2(cat, idx);
   var id      = S.niv+'-'+r.rC+'-'+r.rI;
   var ui      = S.niv+'-'+cat+'-'+idx;
@@ -6924,6 +6950,11 @@ function rSection(cat, data, idx, total, catDone) {
     pills += '<button onclick="goEx(\''+cat+'\','+i+')" class="'+cls+'">'+pillLabel+'</button>';
   }
   pills += '</div>';
+  // T8 : Tip pills navigation — après 2+ réponses
+  if (cat !== 'CALIBRAGE' && idx >= 2 && _needsCoach('tip_pills')) {
+    _markCoach('tip_pills');
+    setTimeout(function() { showT('Les pastilles en haut te permettent de revoir chaque question', 4000, '\uD83D\uDCCB'); }, 800);
+  }
 
   // ── Actions bas de page ──────────────────────────────
   var acts = '';
@@ -8191,6 +8222,11 @@ function autoShowHelp(cat, idx) {
       + '</div>';
     var pf = document.getElementById('pill-form-'+id);
     if (pf) { pf.innerHTML = '✓ Formule vue'; pf.classList.remove('pulse-hint'); pf.classList.add('opacity-40','pointer-events-none'); }
+    // T4 : Tip formule — explication
+    if (_needsCoach('tip_formula')) {
+      _markCoach('tip_formula');
+      setTimeout(function() { showT('La formule cl\u00e9 appara\u00eet apr\u00e8s ta r\u00e9ponse \u2014 retiens-la pour la suite', 4500, '\uD83D\uDCCB'); }, 500);
+    }
   }
 
   area.innerHTML = html;

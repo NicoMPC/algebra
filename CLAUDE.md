@@ -301,6 +301,21 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | 8 | Onglet Progression débloqué | `display:none` retiré — vue complète accessible |
 | 9 | Cohérence messages | "boost"→"entraînement", chap_done sans "disponible demain", mode nuit bg-orange/bg-blue |
 
+### ✅ Tuto régressif — 18 mars @91
+
+8 micro-tips contextuels first-use (système `_needsCoach/_markCoach` existant) :
+
+| # | Déclencheur | Tip |
+|---|---|---|
+| T1 | 1er exo non-calibrage | "Choisis ta réponse puis appuie sur Valider" |
+| T2 | 1ère mauvaise réponse | "Les indices et la correction s'affichent pour t'aider" |
+| T3 | 1er hint cliqué | "Les indices se dévoilent un par un — utilise-les avant de répondre" (enrichi) |
+| T4 | Formule auto-déployée | "La formule clé apparaît après ta réponse — retiens-la" |
+| T5 | 3ème exercice | "Le brouillon et la calculette sont en bas — tape le crayon" |
+| T6 | 2ème exercice | "Je ne sais pas montre la correction — zéro jugement" |
+| T7 | 1er +XP | "Chaque réponse rapporte des XP — même les erreurs comptent" |
+| T8 | Pills ≥2 réponses | "Les pastilles en haut te permettent de revoir chaque question" |
+
 ### 🔴 Reporté vendredi 20 mars (calendar)
 
 | # | Action | Priorité |

@@ -120,6 +120,7 @@
 - [ ] 11:15 ✉️ Rédiger messages parents
 - [ ] 11:30 🔐 Décision webhook Stripe HMAC-SHA256 (avant ou après J+7)
 - [x] ⚡ **Gamification MVP** ✅ @90 — XP visible + animation +XP, paliers maîtrise (6 niveaux), streak freeze 1j/semaine, milestones (6 événements célébrés), card "Session terminée", temps estimé hero, onglet Progression débloqué, mastery ring enrichi, passe cohérence messages, mode nuit couvert
+- [x] 📋 **Tuto régressif** ✅ @91 — 8 micro-tips contextuels first-use (sélection, erreur, indices, formule, brouillon, skip, XP, pills) — disparaissent après 1 affichage
 
 **Après-midi — GO LIVE + diffusion**
 - [ ] 14:00 🚀 GO LIVE — TEASING_MODE = false + push
