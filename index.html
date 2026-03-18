@@ -2658,12 +2658,16 @@ function showAuth(tab) {
   _authFromTeasing = teasingEl && !teasingEl.classList.contains('hidden');
   if (_authFromTeasing) {
     teasingEl.classList.add('hidden');
-    // Masquer onglet inscription + forcer login
     tab = 'login';
-    document.getElementById('tab-r').style.display = 'none';
   } else {
-    document.getElementById('tab-r').style.display = '';
     document.getElementById('landing-screen').classList.add('hidden');
+  }
+  // Modale connexion = login only (inscription via CTA)
+  var tabBar = document.querySelector('#auth-step-1 > .flex.bg-slate-100');
+  if (tab === 'login') {
+    tabBar.style.display = 'none';
+  } else {
+    tabBar.style.display = '';
   }
   document.getElementById('auth-screen').classList.remove('hidden');
   switchTab(tab);
@@ -2671,6 +2675,8 @@ function showAuth(tab) {
 function closeAuth() {
   document.getElementById('auth-screen').classList.add('hidden');
   document.getElementById('tab-r').style.display = '';
+  var tabBar = document.querySelector('#auth-step-1 > .flex.bg-slate-100');
+  if (tabBar) tabBar.style.display = '';
   if (_authFromTeasing) {
     document.getElementById('teasing-screen').classList.remove('hidden');
     _authFromTeasing = false;
