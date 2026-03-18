@@ -3046,12 +3046,11 @@ function flowToStep3() {
   _flowSetStep(3);
   // Breathing screen
   var container = document.getElementById('flow-s3');
-  var nbQ = _flowChaps.length <= 1 ? 4 : _flowChaps.length === 2 ? 6 : _flowChaps.length === 3 ? 8 : 10;
   container.innerHTML =
     '<div style="text-align:center;padding:2rem 0;animation:flowIn .4s ease-out">' +
     '<div class="flow-breathe-icon" style="font-size:3.5rem;margin-bottom:1rem">⚡</div>' +
     '<div style="font-family:Syne,sans-serif;font-weight:900;font-size:1.35rem;color:#fff;margin-bottom:.5rem">C\'est parti !</div>' +
-    '<p style="color:rgba(255,255,255,.55);font-size:.9rem;line-height:1.6">' + nbQ + ' questions — réponds comme tu peux.<br>Pas de piège, pas de note.</p>' +
+    '<p style="color:rgba(255,255,255,.55);font-size:.9rem;line-height:1.6">Quelques questions — réponds comme tu peux.<br>Pas de piège, pas de note.</p>' +
     '</div>';
   setTimeout(function() { _flowStartDiag(); }, 2000);
 }
@@ -5711,9 +5710,8 @@ function _brevCtaHTML() {
   if (n === 0) {
     return '<div class="text-center text-sm text-slate-400 py-3">Coche au moins un chapitre pour commencer</div>';
   }
-  var total = n * 3;
   return '<button onclick="startBrevetQuiz()" class="btn btn-ac btn-fw py-4">' +
-    '🎓 Commencer — ' + total + ' questions (~' + n + ' chapitres) →' +
+    '🎓 Commencer — ' + n + ' chapitre' + (n > 1 ? 's' : '') + ' →' +
     '</button>';
 }
 
