@@ -54,6 +54,19 @@ Nicolas (fondateur) est le visionnaire produit. Ton rôle :
 ```
 Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 
+### Messages & Toasts — INVARIANTS FIGÉS @95
+> **Ces règles sont prouvées par simulation (274 API calls, 267 messages, 0 incohérence).**
+> **Ne JAMAIS modifier sans relancer `python3 sim_7days_messages.py` après.**
+
+1. **Toast mutex** : `_toastBusy` + `_toastQueue` — jamais 2 toasts visibles. `dur=0` bypass (loading). `hideT()` reset tout.
+2. **Hero CTA exclusif** : cascade P1→P5 + fallback DONE. Exactement 1 hero par session. Chaque niveau a `if (!_hero)` + `break`.
+3. **`boostConsumed` date-stamped** : `boostConsumedDate` sauvé dans localStorage. Expire si `!== tod()`. Jamais stale le lendemain.
+4. **Coach tip vs toast ko** : `if/else` exclusif dans `validateAnswer`. Coach tip AVANT le panel aide (immédiat vs 900ms).
+5. **Milestones/Coach namespacés** : `mx_ms_{code}` / `mx_co_{code}` dans localStorage. Pas de pollution entre comptes.
+6. **Streak dedup** : toast login skip si `_stkMileDup` (milestone streak_3/7 va fire dans `_checkMilestone`).
+7. **"demain"** : uniquement dans `boost_preparing` (post-boost insight). Partout ailleurs → "bientôt" ou "continue tes chapitres".
+8. **`pendingManual` cleanup** : effacé dans les 3 branches de `nextChapter` (PENDING_MANUAL / JSON / string).
+
 ### Schéma Google Sheets
 - Ne **jamais** changer de colonnes sans documenter dans [database.md](docs/database.md)
 - Index de colonnes **hardcodés** dans le backend → toute modification non documentée casse tout

@@ -2272,6 +2272,14 @@ function fmtL(s) {
   return s;
 }
 
+// ═══════════════════════════════════════════════════════════════
+// TOAST SYSTEM — INVARIANTS (ne pas modifier sans relire)
+// ─────────────────────────────────────────────────────────────
+// 1. Mutex _toastBusy : jamais 2 toasts visibles simultanément
+// 2. Queue FIFO : si un toast arrive pendant un autre, il attend
+// 3. dur=0 (loading) bypass le mutex (état prioritaire)
+// 4. hideT() vide la queue ET le mutex (reset total)
+// ═══════════════════════════════════════════════════════════════
 var _tt = null;
 var _toastQueue = [];
 var _toastBusy = false;
@@ -2303,7 +2311,18 @@ function hideT() {
   _toastQueue = [];
 }
 
-// ── Message adapté au niveau ─────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// MESSAGES — DICTIONNAIRE & INVARIANTS (ne pas modifier sans relire)
+// ─────────────────────────────────────────────────────────────
+// 1. "demain" : uniquement dans boost_preparing (post-boost insight)
+//    Partout ailleurs → "bientôt" ou "continue tes chapitres"
+// 2. Coach tip (tip_wrong) : affiché AVANT le panel aide (immédiat)
+//    Jamais en même temps que le toast ko_* (if/else exclusif)
+// 3. Milestones : un seul par action mark() (cascade if/else)
+//    Namespacés par code élève (mx_ms_{code})
+// 4. Coach marks : namespacés par code (mx_co_{code})
+// 5. Streak toast login : skip si milestone streak_3/7 va fire
+// ═══════════════════════════════════════════════════════════════
 var _MSGS = {
   ctx_all_mastered_brevet: '🏆 Tous les chapitres maîtrisés — tu es prêt pour le brevet !',
   ctx_all_mastered:        '🏆 Tous les chapitres maîtrisés — excellent travail !',
@@ -4231,6 +4250,7 @@ function initApp(d, skipRender) {
         if (!injectedCats.has(cat)) S.chapDone[cat] = doneUser.chapDone[cat];
       });
     }
+    // INVARIANT : boostConsumed expire par date — jamais stale le lendemain
     if (doneUser.boostConsumed && !injectedCats.has('BOOST') && d.boostExistsInDB && doneUser.boostConsumedDate === tod()) {
       S.boostConsumed = true;
     }
@@ -4707,7 +4727,8 @@ window.validateAnswer = function() {
     showT(_msg(_okKey), 1200, '\u2B50');
     setTimeout(function(){ mark(cat, idx, 'EASY', null); }, 700);
   } else {
-    // T2 : Tip première erreur — les indices s'affichent (avant le panel aide)
+    // INVARIANT : coach tip OU toast ko — jamais les deux (if/else exclusif)
+    // Coach tip AVANT le panel aide (immédiat, aide arrive à 900ms)
     if (_needsCoach('tip_wrong')) {
       _markCoach('tip_wrong');
       showT('Pas grave \u2014 les indices et la correction s\'affichent pour t\'aider', 2500, '\uD83D\uDCCB');
@@ -6676,7 +6697,18 @@ function render() {
       '<p class="text-indigo-200 text-sm">Analyse en cours — tes exercices arrivent</p></div></div>';
   }
 
-  // ── HERO CTA — action principale ──────────────────────
+  // ═══════════════════════════════════════════════════════
+  // HERO CTA — INVARIANTS (ne pas modifier sans relire)
+  // ─────────────────────────────────────────────────────
+  // Cascade exclusive P1→P5 + fallback DONE :
+  //   P1: Boost non joué (bouton générer)
+  //   P2: Chapitre en cours (done>0, pas fini) → break
+  //   P3: Chapitre recommandé boost (boost fait) → break
+  //   P4: Chapitre NEW (assigné par Nicolas) → break
+  //   P5: Premier jour, 0 exos → premier chapitre → break
+  //   DONE: boostConsumed && !_hero → "Continue ou reviens"
+  // Résultat : exactement 1 hero OU 1 fallback. Jamais 0, jamais 2.
+  // ═══════════════════════════════════════════════════════
   if (!S.boostPreping) {
     var _heroName = S.prof ? S.prof.name : '';
     var _hero = null;
