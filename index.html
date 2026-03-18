@@ -1101,14 +1101,14 @@
     .tour-tooltip .tour-title { font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;color:#1e1b4b;margin-bottom:.35rem }
     .tour-tooltip .tour-body { font-size:.85rem;color:#475569;line-height:1.45 }
     .tour-tooltip .tour-actions { display:flex;align-items:center;justify-content:space-between;margin-top:.85rem }
-    .tour-tooltip .tour-btn { font-family:Syne,sans-serif;font-weight:800;font-size:.82rem;padding:.55rem 1.1rem;border:none;border-radius:11px;cursor:pointer;transition:transform .15s }
+    .tour-tooltip .tour-btn { font-family:Syne,sans-serif;font-weight:800;font-size:.82rem;padding:.55rem 1.1rem;border:none;border-radius:11px;cursor:pointer;transition:transform .15s;min-height:44px;min-width:44px }
     .tour-tooltip .tour-btn:active { transform:scale(.95) }
     .tour-tooltip .tour-btn-next { background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff }
     .tour-tooltip .tour-btn-skip { background:none;color:#94a3b8;font-size:.75rem;font-weight:600 }
-    .tour-dots { display:flex;gap:5px }
+    .tour-dots { display:flex;gap:5px;justify-content:center }
     .tour-dots span { width:7px;height:7px;border-radius:50%;background:#cbd5e1;transition:background .2s }
     .tour-dots span.active { background:#6366f1 }
-    @keyframes tourPop { from{opacity:0;transform:translateY(8px) scale(.95)} to{opacity:1;transform:none} }
+    @keyframes tourPop { from{opacity:0;scale:.95} to{opacity:1;scale:1} }
     body.app-night .tour-tooltip { background:#1e1b4b;box-shadow:0 8px 32px rgba(0,0,0,.5) }
     body.app-night .tour-tooltip .tour-arrow { background:#1e1b4b }
     body.app-night .tour-tooltip .tour-title { color:#e0e7ff }
@@ -4037,6 +4037,7 @@ var _tourSteps = [
   { el: null, emoji: '🚀', title: 'C\'est parti !', body: 'Lance ton premier entraînement. Bonne chance !', pos: 'center', last: true }
 ];
 var _tourIdx = 0;
+var _tourResizeHandler = null;
 
 function _startTour() {
   if (!_needsCoach('TOUR')) return;
@@ -4046,7 +4047,15 @@ function _startTour() {
   ov.className = 'tour-overlay active';
   ov.innerHTML = '<div class="tour-backdrop" id="tour-bd"></div><div class="tour-highlight" id="tour-hl" style="display:none"></div><div id="tour-tip"></div>';
   document.body.appendChild(ov);
+  _tourResizeHandler = function() { _tourRender(); };
+  window.addEventListener('resize', _tourResizeHandler);
   _tourRender();
+}
+
+function _tourBuildDots() {
+  var dots = '<div class="tour-dots">';
+  for (var i = 0; i < _tourSteps.length; i++) dots += '<span class="' + (i === _tourIdx ? 'active' : '') + '"></span>';
+  return dots + '</div>';
 }
 
 function _tourRender() {
@@ -4055,16 +4064,10 @@ function _tourRender() {
   var hl = document.getElementById('tour-hl');
   if (!tip || !hl) return;
 
-  // Dots
-  var dots = '<div class="tour-dots">';
-  for (var i = 0; i < _tourSteps.length; i++) dots += '<span class="' + (i === _tourIdx ? 'active' : '') + '"></span>';
-  dots += '</div>';
-
-  // Resolve element
+  var dots = _tourBuildDots();
   var el = step.el ? step.el() : null;
 
   if (!el || step.pos === 'center') {
-    // Centered tooltip (no spotlight)
     hl.style.display = 'none';
     document.getElementById('tour-bd').style.opacity = '1';
     tip.innerHTML = '<div class="tour-tooltip" style="top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">' +
@@ -4073,19 +4076,30 @@ function _tourRender() {
       '<div class="tour-body">' + step.body + '</div>' +
       '<div class="tour-actions" style="justify-content:center;gap:1rem">' +
       (!step.last ? '<button class="tour-btn tour-btn-skip" onclick="_tourEnd()">Passer</button>' : '') +
-      '<button class="tour-btn tour-btn-next" onclick="' + (step.last ? '_tourEnd()' : '_tourNext()') + '">' + (step.last ? 'C\'est parti ! →' : 'Suivant →') + '</button>' +
+      '<button class="tour-btn tour-btn-next" onclick="' + (step.last ? '_tourEnd()' : '_tourNext()') + '">' + (step.last ? 'C\'est parti !' : 'Suivant') + '</button>' +
       '</div>' +
       '<div style="margin-top:.7rem">' + dots + '</div>' +
       '</div>';
     return;
   }
 
-  // Scroll element into view first, then position after scroll settles
+  // Scroll element into view, then position after layout settles
   el.scrollIntoView({ behavior: 'instant', block: 'center' });
+  requestAnimationFrame(function() { _tourPosition(step, el, dots); });
+}
 
-  // Spotlight on element (fixed positioning — no scrollY needed)
+function _tourPosition(step, el, dots) {
+  var tip = document.getElementById('tour-tip');
+  var hl = document.getElementById('tour-hl');
+  if (!tip || !hl) return;
+
   var r = el.getBoundingClientRect();
   var pad = 8;
+  var vw = window.innerWidth;
+  var vh = window.innerHeight;
+  var margin = 12; // min margin from viewport edges
+
+  // Spotlight
   hl.style.display = 'block';
   hl.style.position = 'fixed';
   hl.style.top = (r.top - pad) + 'px';
@@ -4093,29 +4107,66 @@ function _tourRender() {
   hl.style.width = (r.width + pad * 2) + 'px';
   hl.style.height = (r.height + pad * 2) + 'px';
 
-  // Position tooltip below or above — clamped to viewport
-  var tipW = Math.min(300, window.innerWidth - 32);
-  var tipLeft = Math.max(16, Math.min(r.left + r.width / 2 - tipW / 2, window.innerWidth - tipW - 16));
-  var tipTop, arrowStyle;
-  if (step.pos === 'above') {
-    tipTop = Math.max(8, r.top - pad - 16);
-    arrowStyle = 'bottom:-6px;left:50%;transform:translateX(-50%) rotate(45deg)';
-  } else {
-    tipTop = Math.min(window.innerHeight - 60, r.bottom + pad + 16);
-    arrowStyle = 'top:-6px;left:50%;transform:translateX(-50%) rotate(45deg)';
-  }
-
-  var transformExtra = step.pos === 'above' ? 'transform:translateY(-100%);' : '';
-  tip.innerHTML = '<div class="tour-tooltip" style="top:' + tipTop + 'px;left:' + tipLeft + 'px;width:' + tipW + 'px;' + transformExtra + '">' +
-    '<div class="tour-arrow" style="' + arrowStyle + '"></div>' +
-    '<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem"><span style="font-size:1.2rem">' + step.emoji + '</span><span class="tour-title" style="margin:0">' + step.title + '</span></div>' +
+  // Build tooltip HTML (invisible first to measure)
+  var tipW = Math.min(300, vw - margin * 2);
+  var html = '<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem"><span style="font-size:1.2rem">' + step.emoji + '</span><span class="tour-title" style="margin:0">' + step.title + '</span></div>' +
     '<div class="tour-body">' + step.body + '</div>' +
     '<div class="tour-actions">' +
     '<button class="tour-btn tour-btn-skip" onclick="_tourEnd()">Passer</button>' +
-    '<button class="tour-btn tour-btn-next" onclick="_tourNext()">Suivant →</button>' +
+    '<button class="tour-btn tour-btn-next" onclick="_tourNext()">Suivant</button>' +
     '</div>' +
-    '<div style="margin-top:.5rem">' + dots + '</div>' +
-    '</div>';
+    '<div style="margin-top:.5rem">' + dots + '</div>';
+
+  // Insert off-screen to measure height
+  tip.innerHTML = '<div class="tour-tooltip" id="tour-measure" style="left:-9999px;top:0;width:' + tipW + 'px;visibility:hidden">' + html + '</div>';
+  var measureEl = document.getElementById('tour-measure');
+  var tipH = measureEl ? measureEl.offsetHeight : 150;
+
+  // Decide above vs below based on available space
+  var spaceBelow = vh - r.bottom - pad;
+  var spaceAbove = r.top - pad;
+  var gap = 14; // space between highlight and tooltip
+  var placement;
+
+  if (step.pos === 'above' && spaceAbove >= tipH + gap + margin) {
+    placement = 'above';
+  } else if (step.pos === 'below' && spaceBelow >= tipH + gap + margin) {
+    placement = 'below';
+  } else if (spaceBelow >= tipH + gap + margin) {
+    placement = 'below';
+  } else if (spaceAbove >= tipH + gap + margin) {
+    placement = 'above';
+  } else {
+    // Not enough space either way — center it
+    hl.style.display = 'none';
+    document.getElementById('tour-bd').style.opacity = '1';
+    tip.innerHTML = '<div class="tour-tooltip" style="top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;width:' + tipW + 'px">' +
+      '<div class="tour-arrow" style="display:none"></div>' + html + '</div>';
+    return;
+  }
+
+  var tipTop, arrowStyle;
+  if (placement === 'above') {
+    tipTop = r.top - pad - gap - tipH;
+    arrowStyle = 'bottom:-6px;left:50%;transform:translateX(-50%) rotate(45deg)';
+  } else {
+    tipTop = r.bottom + pad + gap;
+    arrowStyle = 'top:-6px;left:50%;transform:translateX(-50%) rotate(45deg)';
+  }
+
+  // Clamp vertically
+  tipTop = Math.max(margin, Math.min(tipTop, vh - tipH - margin));
+
+  // Clamp horizontally — center on element
+  var tipLeft = Math.max(margin, Math.min(r.left + r.width / 2 - tipW / 2, vw - tipW - margin));
+
+  // Clamp arrow to point at element center
+  var elCenterX = r.left + r.width / 2;
+  var arrowOffset = Math.max(20, Math.min(elCenterX - tipLeft, tipW - 20));
+  arrowStyle = arrowStyle.replace('left:50%', 'left:' + arrowOffset + 'px');
+
+  tip.innerHTML = '<div class="tour-tooltip" style="top:' + tipTop + 'px;left:' + tipLeft + 'px;width:' + tipW + 'px">' +
+    '<div class="tour-arrow" style="' + arrowStyle + '"></div>' + html + '</div>';
 }
 
 function _tourNext() {
@@ -4126,6 +4177,7 @@ function _tourNext() {
 
 function _tourEnd() {
   _markCoach('TOUR');
+  if (_tourResizeHandler) { window.removeEventListener('resize', _tourResizeHandler); _tourResizeHandler = null; }
   var ov = document.getElementById('tour-overlay');
   if (ov) { ov.style.opacity = '0'; setTimeout(function() { ov.remove(); }, 300); }
 }
