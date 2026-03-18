@@ -829,6 +829,12 @@
     body.app-night #main-app .bg-emerald-50 { background:#052e16 !important; }
     body.app-night #main-app .bg-amber-50 { background:#1c1107 !important; }
     body.app-night #main-app .bg-rose-50 { background:#2d0a0a !important; }
+    body.app-night #main-app .bg-orange-50 { background:#1a0f00 !important; }
+    body.app-night #main-app .bg-blue-50 { background:#0c1929 !important; }
+    body.app-night #main-app .text-orange-600 { color:#fb923c !important; }
+    body.app-night #main-app .text-blue-600 { color:#60a5fa !important; }
+    body.app-night #main-app .border-orange-200 { border-color:#7c2d12 !important; }
+    body.app-night #main-app .border-blue-200 { border-color:#1e3a5f !important; }
     body.app-night #main-app .border-slate-100 { border-color:#334155 !important; }
     body.app-night #main-app .border-slate-200 { border-color:#475569 !important; }
     body.app-night #main-app .border-emerald-200 { border-color:#065f46 !important; }
@@ -1912,7 +1918,6 @@
         📚 Chapitres
       </button>
       <button id="nav-prog" onclick="setView('progress')"
-              style="display:none"
               class="flex-1 py-2 rounded-xl text-xs font-black syne transition-colors bg-slate-100 text-slate-500">
         📊 Progression
       </button>
@@ -2273,12 +2278,12 @@ var _MSGS = {
   cours_prep: { '6EME': '🎉 Super ! Ton cours est en préparation — retrouve-le demain !',
                 '3EME': '🎉 Jalon atteint. Ton cours personnalisé est en préparation — disponible demain.',
                 def:    '🎉 Bravo ! Ton cours personnalisé est en préparation — retrouve-le demain !' },
-  chap_done:  { '6EME': '🏆 Chapitre terminé — super boulot ! Ton prochain chapitre arrive demain 📚',
-                '3EME': '🏆 Chapitre terminé. La suite est en préparation — disponible demain.',
-                def:    '🏆 Chapitre terminé ! Ton prochain chapitre est en préparation, il sera disponible demain 📚' },
+  chap_done:  { '6EME': '🏆 Chapitre terminé — super boulot ! Continue sur ta lancée 📚',
+                '3EME': '🏆 Chapitre terminé — bien joué. Choisis le suivant quand tu veux.',
+                def:    '🏆 Chapitre terminé — bien joué ! Choisis ton prochain chapitre 📚' },
   boost_ready:      '⚡ Ton Entraînement du jour est prêt !',
   boost_preparing:  '✨ Ton prochain entraînement est en préparation — reviens demain !',
-  boost_in_progress:'Ton boost est en cours ⚡ — encore {n} exo{s} et c\'est dans la boîte !',
+  boost_in_progress:'Ton entraînement est en cours ⚡ — encore {n} exo{s} et c\'est dans la boîte !',
   coach_hint:    'Psst — t\'as droit aux indices 💡 Hésite pas !',
   coach_formula: 'La formule se révèle après réponse 📐 — clique dessus !',
   coach_brouillon:'Le brouillon est en bas 📝 — utilise-le pour tes calculs !',
@@ -4044,7 +4049,7 @@ function initApp(d, skipRender) {
   // S2 — Streak break alert : si streak en cours et boost pas encore fait aujourd'hui
   if (S.stk >= 1 && !S.boostConsumed) {
     setTimeout(function() {
-      showT('🔥 Streak de ' + S.stk + ' jour' + (S.stk > 1 ? 's' : '') + ' — fais ton boost pour le garder !', 5000, '🔥');
+      showT('🔥 Streak de ' + S.stk + ' jour' + (S.stk > 1 ? 's' : '') + ' — fais ton entraînement pour le garder !', 5000, '🔥');
     }, 2000);
   }
 
@@ -4258,6 +4263,37 @@ function loadBoost() {
 }
 
 // ══════════════════════════════════════════════════════════════
+// MILESTONES
+// ══════════════════════════════════════════════════════════════
+var _milestoneShown = (function() {
+  try { return JSON.parse(localStorage.getItem('mx_milestones_v1') || '{}'); } catch(e) { return {}; }
+})();
+function _checkMilestone() {
+  var totalExos = Object.keys(S.res).length;
+  var totalChapDone = Object.keys(S.chapDone || {}).length;
+  var ms = null;
+  // Priorité : un seul milestone par session d'exercice
+  if (!_milestoneShown['first_boost'] && S.boostConsumed) {
+    ms = { id:'first_boost', msg:'Premier entraînement terminé — c\'est le plus dur', ic:'💪' };
+  } else if (!_milestoneShown['streak_3'] && S.stk === 3) {
+    ms = { id:'streak_3', msg:'3 jours d\'affilée — l\'habitude se crée !', ic:'🔥' };
+  } else if (!_milestoneShown['streak_7'] && S.stk === 7) {
+    ms = { id:'streak_7', msg:'Une semaine complète — tu es régulier, c\'est la clé', ic:'🏆' };
+  } else if (!_milestoneShown['exos_10'] && totalExos >= 10) {
+    ms = { id:'exos_10', msg:'10 exercices — tu prends le rythme', ic:'🔥' };
+  } else if (!_milestoneShown['first_chap'] && totalChapDone >= 1 && !_milestoneShown['first_boost_only']) {
+    ms = { id:'first_chap', msg:'Ton premier chapitre maîtrisé — la suite va aller plus vite', ic:'⭐' };
+  } else if (!_milestoneShown['exos_100'] && totalExos >= 100) {
+    ms = { id:'exos_100', msg:'100 exercices — tu as fait plus que la plupart des élèves', ic:'📈' };
+  }
+  if (ms) {
+    _milestoneShown[ms.id] = true;
+    try { localStorage.setItem('mx_milestones_v1', JSON.stringify(_milestoneShown)); } catch(e) {}
+    setTimeout(function() { showT(ms.msg, 4500, ms.ic); }, 800);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
 // BOOST
 // ══════════════════════════════════════════════════════════════
 async function handleBoost() {
@@ -4432,19 +4468,38 @@ function mark(cat, idx, status, wrongOpt) {
   // (règle 1 chapitre/jour désactivée — tous les chapitres accessibles)
   var xp = status === 'EASY' ? 100 : status === 'MEDIUM' ? 50 : 10; // HARD + SKIP = 10
   S.xp += xp;
-  // Streak : mise à jour locale au premier exercice du jour
+  showXP(xp);
+  // Streak : mise à jour locale au premier exercice du jour (avec freeze 1j/semaine)
   var _loc = JSON.parse(localStorage.getItem(LK) || '{}');
   var _me  = _loc[S.prof.code];
   if (_me && _me.last !== tod()) {
     // Premier exercice d'un nouveau jour
     var _yd = new Date(); _yd.setDate(_yd.getDate() - 1);
     var _yds = _yd.getFullYear() + '-' + String(_yd.getMonth()+1).padStart(2,'0') + '-' + String(_yd.getDate()).padStart(2,'0');
-    S.stk = _me.last === _yds ? (_me.stk || 1) + 1 : 1;
+    var _yd2 = new Date(); _yd2.setDate(_yd2.getDate() - 2);
+    var _yd2s = _yd2.getFullYear() + '-' + String(_yd2.getMonth()+1).padStart(2,'0') + '-' + String(_yd2.getDate()).padStart(2,'0');
+    if (_me.last === _yds) {
+      // Hier → streak continue normalement
+      S.stk = (_me.stk || 1) + 1;
+    } else if (_me.last === _yd2s && (_me.stk || 0) >= 2) {
+      // Avant-hier + streak ≥2 → freeze si pas utilisé cette semaine
+      var _weekId = Math.floor(Date.now() / (7*86400000));
+      if (_me.freezeWeek !== _weekId) {
+        S.stk = (_me.stk || 1) + 1;
+        _me.freezeWeek = _weekId;
+        showT('Jour de pause utilisé — ta série continue !', 3500, '🛡️');
+      } else {
+        S.stk = 1;
+      }
+    } else {
+      S.stk = 1;
+    }
     _me.stk = S.stk; _me.last = tod();
     localStorage.setItem(LK, JSON.stringify(_loc));
   }
   sendScore(r.rC, r.rI, status, xp, exo.q, wrongOpt || null, cat);
   updH();
+  _checkMilestone();
   if (cat !== 'CALIBRAGE' && cat !== 'BOOST' && cat !== 'BREVET' && cat !== 'REVISION') {
     _checkCoursMilestone(cat);
   }
@@ -4593,6 +4648,8 @@ function chkComp(cat) {
       boostExsList.forEach(function(ex) { var bc = ex._cat||''; if (bc) catCounts[bc]=(catCounts[bc]||0)+1; });
       var mainBoostCat = Object.keys(catCounts).sort(function(a,b){ return catCounts[b]-catCounts[a]; })[0] || '';
       S.boostInsight = { easy:easy, total:tot, boostCat:mainBoostCat };
+      // XP bonus boost complété
+      S.xp += 200; showXP(200);
       // Persister boost consommé dans localStorage
       S.boostConsumed = true;
       try {
@@ -4612,6 +4669,8 @@ function chkComp(cat) {
       showT('Révision terminée ! ' + easy + '/' + tot + ' réussis 🔁', 3500, '✅');
     } else {
       if (easy >= Math.ceil(tot * 0.7)) launchConfetti();
+      // XP bonus chapitre complété
+      S.xp += 300; showXP(300);
       // S5 — Chapitre terminé : confettis + toast + info prochain chapitre
       showT(_msg('chap_done'), 6000, '🏆');
       if (typeof _boostInsightConfetti === 'function') _boostInsightConfetti();
@@ -4629,6 +4688,28 @@ function chkComp(cat) {
   render(); return true;
 }
 
+
+// ══════════════════════════════════════════════════════════════
+// PALIERS DE MAÎTRISE
+// ══════════════════════════════════════════════════════════════
+function _chapTier(cat) {
+  var cats = LVL[S.niv] ? LVL[S.niv].cats : {};
+  var exs = cats[cat]; if (!exs) return null;
+  var tot = exs.length, done = 0, easy = 0;
+  exs.forEach(function(e, i) {
+    var r = res2(cat, i);
+    var rs = S.res[S.niv+'-'+r.rC+'-'+r.rI];
+    if (rs) done++;
+    if (rs === 'EASY') easy++;
+  });
+  if (done === 0) return { id:'undiscovered', label:'À découvrir', emoji:'✨', bg:'bg-slate-100', text:'text-slate-500', border:'border-slate-200' };
+  var easyPct = done > 0 ? easy / done : 0;
+  if (done === tot && easyPct >= 0.9) return { id:'expert', label:'Expert', emoji:'🏆', bg:'bg-amber-50', text:'text-amber-700', border:'border-amber-200' };
+  if (done >= 15 && easyPct >= 0.7) return { id:'mastered', label:'Maîtrisé', emoji:'⭐', bg:'bg-emerald-50', text:'text-emerald-700', border:'border-emerald-200' };
+  if (done >= 8 && easyPct >= 0.5) return { id:'solid', label:'Solide', emoji:'💪', bg:'bg-indigo-50', text:'text-indigo-600', border:'border-indigo-200' };
+  if (done >= 8) return { id:'progress', label:'En progrès', emoji:'🔧', bg:'bg-orange-50', text:'text-orange-600', border:'border-orange-200' };
+  return { id:'started', label:'En cours', emoji:'🌱', bg:'bg-blue-50', text:'text-blue-600', border:'border-blue-200' };
+}
 
 // ══════════════════════════════════════════════════════════════
 // RENDER — MASTERY RING
@@ -4656,6 +4737,31 @@ function rMastery() {
   var off  = circ - (pct/100)*circ;
   var w    = document.getElementById('mastery-w');
   if (!keys.length) { w.innerHTML = ''; return; }
+  // Comptage paliers
+  var _tCounts = { mastered:0, progress:0, undiscovered:0 };
+  keys.forEach(function(cat) {
+    var t = _chapTier(cat);
+    if (!t) return;
+    if (t.id === 'expert' || t.id === 'mastered') _tCounts.mastered++;
+    else if (t.id === 'undiscovered') _tCounts.undiscovered++;
+    else _tCounts.progress++;
+  });
+  var _tierLine = _tCounts.mastered + ' maîtrisé'+ (_tCounts.mastered>1?'s':'') +
+    ' · ' + _tCounts.progress + ' en cours' +
+    (_tCounts.undiscovered > 0 ? ' · ' + _tCounts.undiscovered + ' à découvrir' : '');
+  // Message retour contextuel
+  var _retMsg = '';
+  var _loc2 = JSON.parse(localStorage.getItem(LK) || '{}');
+  var _me2 = _loc2[S.prof ? S.prof.code : ''];
+  if (_me2 && _me2.last) {
+    var _daysSince = Math.floor((new Date(tod()) - new Date(_me2.last)) / 86400000);
+    var _pName = S.prof ? S.prof.name : '';
+    if (_daysSince === 0 && S.stk >= 2) _retMsg = 'Jour ' + S.stk + ' — continue comme ça' + (_pName ? ' ' + _pName : '') + ' !';
+    else if (_daysSince === 0) _retMsg = 'Content de te revoir' + (_pName ? ' ' + _pName : '') + ' — ton entraînement t\'attend';
+    else if (_daysSince <= 2) _retMsg = (_daysSince === 1 ? '1 jour' : _daysSince + ' jours') + ' sans pratiquer — reprends en douceur';
+    else if (_daysSince <= 7) _retMsg = 'Tu nous as manqué ! Reprends là où tu en étais';
+    else if (_daysSince > 7) _retMsg = 'Ça fait un moment — 5 exercices suffisent pour reprendre';
+  }
   w.innerHTML =
     '<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">' +
     '<div class="flex items-center gap-4">' +
@@ -4665,10 +4771,11 @@ function rMastery() {
     '</svg><div class="rpct">'+pct+'%</div></div>' +
     '<div class="flex-1 min-w-0">' +
     '<div class="syne font-black text-slate-900 text-sm mb-0.5">Maîtrise globale</div>' +
-    '<div class="text-slate-500 text-xs font-medium mb-2">'+master+' notion'+(master>1?'s':'')+' acquise'+(master>1?'s':'')+' sur '+tot+'</div>' +
+    '<div class="text-slate-500 text-xs font-medium mb-1">'+_tierLine+'</div>' +
     '<div class="pbar"><div class="pfill '+(pct===100?'pfg':'pfp')+'" style="width:'+pct+'%"></div></div>' +
     '</div></div>' +
-    (S.stk >= 3 ? '<div class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2 text-xs font-semibold text-amber-700"><span>🔥</span><span>'+S.stk+' jours consécutifs — continue comme ça !</span></div>' : '') +
+    (_retMsg ? '<div class="mt-3 pt-3 border-t border-slate-100 text-xs font-semibold text-indigo-600 text-center">'+_retMsg+'</div>' : '') +
+    (S.stk >= 3 && !_retMsg ? '<div class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2 text-xs font-semibold text-amber-700"><span>🔥</span><span>'+S.stk+' jours consécutifs — continue comme ça !</span></div>' : '') +
     '</div>';
 }
 
@@ -6306,7 +6413,7 @@ function render() {
       _hero = { action: 'handleBoost()', emoji: '⚡',
         title: _bSt && _bSt.done > 0 ? 'Continue ton entraînement' : 'Ton entraînement du jour',
         sub: _bSt && _bSt.done > 0 ? (_bSt.done + '/' + _bSt.tot + ' — encore ' + (_bSt.tot - _bSt.done) + ' exo' + ((_bSt.tot - _bSt.done) > 1 ? 's' : '')) : 'Exercices ciblés sur tes points à renforcer',
-        pct: _bPct };
+        pct: _bPct, _remain: _bSt ? (_bSt.tot - _bSt.done) : 5 };
     }
 
     // P2 : Chapitre en cours (done > 0, pas fini)
@@ -6322,7 +6429,7 @@ function render() {
             ? ('Plus que ' + (_hs.tot - _hs.done) + ' exo' + ((_hs.tot - _hs.done) > 1 ? 's' : '') + ' — la fin est proche !')
             : (_hs.done + '/' + _hs.tot + ' — chaque exo compte');
           _hero = { action: "togCat('" + _hk + "')", emoji: LVL[S.niv].icons[_hk] || '📘',
-            title: 'Continue ' + _hNm, sub: _hSub, pct: _hPct };
+            title: 'Continue ' + _hNm, sub: _hSub, pct: _hPct, _remain: _hs.tot - _hs.done };
           break;
         }
       }
@@ -6337,7 +6444,7 @@ function render() {
         if (_hs2 && _hs2.done === 0 && !_hs2.isDone && _boostCats[_hk2]) {
           var _hNm2 = (LVL[S.niv].names[_hk2] || _hk2).replace(/_/g, ' ');
           _hero = { action: "togCat('" + _hk2 + "')", emoji: LVL[S.niv].icons[_hk2] || '📘',
-            title: 'C\'est parti sur ' + _hNm2, sub: 'Ciblé par ton boost · ' + _hs2.tot + ' exos', pct: 0 };
+            title: 'C\'est parti sur ' + _hNm2, sub: 'Ciblé par ton boost · ' + _hs2.tot + ' exos', pct: 0, _remain: _hs2.tot };
           break;
         }
       }
@@ -6351,7 +6458,7 @@ function render() {
         if (S.isNew[_hk3] && _chapStats[_hk3] && !_chapStats[_hk3].isDone) {
           var _hNm3 = (LVL[S.niv].names[_hk3] || _hk3).replace(/_/g, ' ');
           _hero = { action: "togCat('" + _hk3 + "')", emoji: LVL[S.niv].icons[_hk3] || '📘',
-            title: 'Nouveau : ' + _hNm3, sub: 'Ton prof l\'a ajouté pour toi', pct: 0 };
+            title: 'Nouveau : ' + _hNm3, sub: 'Ton prof l\'a ajouté pour toi', pct: 0, _remain: _chapStats[_hk3].tot };
           break;
         }
       }
@@ -6365,7 +6472,7 @@ function render() {
         if (_chapStats[_hk4] && !_chapStats[_hk4].isDone) {
           var _hNm4 = (LVL[S.niv].names[_hk4] || _hk4).replace(/_/g, ' ');
           _hero = { action: "togCat('" + _hk4 + "')", emoji: LVL[S.niv].icons[_hk4] || '📘',
-            title: 'Commence par ' + _hNm4, sub: 'Ton prof te recommande de commencer ici', pct: 0 };
+            title: 'Commence par ' + _hNm4, sub: 'Ton prof te recommande de commencer ici', pct: 0, _remain: _chapStats[_hk4].tot };
           break;
         }
       }
@@ -6373,23 +6480,34 @@ function render() {
 
     // Rendu hero
     if (_hero) {
+      // Temps estimé : nb exos restants × 1.5 min
+      var _heroRemain = _hero._remain || 5;
+      var _heroTime = Math.max(2, Math.round(_heroRemain * 1.5));
       html += '<div onclick="' + _hero.action + '" class="pop-in rounded-2xl p-5 flex items-center gap-4 cursor-pointer active:scale-[.98] transition-transform shadow-lg mb-4" style="background:linear-gradient(135deg,#312e81 0%,#4338ca 55%,#6366f1 100%)">' +
         '<div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border border-white/20">' + _hero.emoji + '</div>' +
         '<div class="flex-1 min-w-0"><div class="syne text-base font-black text-white mb-0.5">' + _hero.title + '</div>' +
         '<p class="text-indigo-200 text-sm font-medium">' + _hero.sub + '</p>' +
+        '<p class="text-indigo-300/60 text-xs font-medium mt-1">≈ ' + _heroTime + ' min</p>' +
         (_hero.pct > 0 ? '<div class="mt-2 h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,.15)"><div class="h-full rounded-full transition-all" style="width:' + _hero.pct + '%;background:rgba(255,255,255,.5)"></div></div>' : '') +
         '</div>' +
         '<div class="text-white/50 text-2xl font-light">›</div></div>';
     }
 
-    // Boost terminé compact (quand pas de hero chapitre)
+    // Session terminée (boost fait, pas de hero chapitre actif)
     if (!_hero && S.boostConsumed) {
-      html += '<div class="rounded-2xl p-4 flex items-center gap-3 mb-4" style="background:linear-gradient(135deg,#1e1b4b,#312e81)">' +
+      var _sessXp = S.xp || 0;
+      html += '<div class="rounded-2xl p-5 mb-4" style="background:linear-gradient(135deg,#064e3b,#065f46)">' +
+        '<div class="flex items-center gap-3 mb-3">' +
         '<div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-lg flex-shrink-0">✅</div>' +
         '<div class="flex-1 min-w-0">' +
-        '<div class="syne text-sm font-black text-white">Entraînement terminé' + (_heroName ? ', ' + _heroName : '') + '</div>' +
-        '<p class="text-indigo-300 text-xs">Ton prof prépare le prochain pour demain</p>' +
-        '</div></div>';
+        '<div class="syne text-sm font-black text-white">Session terminée' + (_heroName ? ', ' + _heroName : '') + ' !</div>' +
+        '<p class="text-emerald-200 text-xs font-medium">Reviens demain pour continuer ta progression</p>' +
+        '</div></div>' +
+        '<div class="flex gap-2">' +
+        '<div class="flex-1 bg-white/10 rounded-xl px-3 py-2 text-center"><div class="syne font-black text-white text-sm">⚡ ' + _sessXp + '</div><div class="text-emerald-200/60 text-[10px] font-semibold">XP total</div></div>' +
+        (S.stk > 0 ? '<div class="flex-1 bg-white/10 rounded-xl px-3 py-2 text-center"><div class="syne font-black text-white text-sm">🔥 ' + S.stk + '</div><div class="text-emerald-200/60 text-[10px] font-semibold">jour' + (S.stk > 1 ? 's' : '') + ' de suite</div></div>' : '') +
+        '</div>' +
+        '</div>';
     }
   }
 
@@ -6464,9 +6582,10 @@ function render() {
     html += '<div onclick="togCat(\''+cat+'\')" class="px-4 py-4 flex items-center gap-3 cursor-pointer select-none">';
     html += '<div class="chap-icon-wrap w-11 h-11 '+(isBoost?'bg-white/20':(_isUndiscovered ? '' : 'bg-slate-100'))+' rounded-xl flex items-center justify-center text-lg flex-shrink-0 '+iconPulse+'">'+(LVL[S.niv].icons[cat]||'📘')+'</div>';
     html += '<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1.5"><span class="syne font-black text-sm '+(isBoost?'text-white':'text-slate-900')+' truncate" style="font-weight:800">'+(LVL[S.niv].names[cat]||cat)+'</span>';
+    var _tier = !isBoost ? _chapTier(cat) : null;
     if (isNew) html += '<span class="text-[9px] syne font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-md">NEW</span>';
     else if (_isUndiscovered && _boostCats[cat]) html += '<span class="text-[9px] syne font-black bg-indigo-100 text-indigo-600 border border-indigo-200 px-1.5 py-0.5 rounded-md">Recommandé</span>';
-    else if (_isUndiscovered) html += '<span class="text-[9px] syne font-black bg-slate-100 text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-md">À découvrir ✨</span>';
+    else if (_tier) html += '<span class="text-[9px] syne font-black '+_tier.bg+' '+_tier.text+' border '+_tier.border+' px-1.5 py-0.5 rounded-md">'+_tier.emoji+' '+_tier.label+'</span>';
     if (S.remReq[cat]) html += '<span class="text-[9px] syne font-black bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md">🔄 Demain</span>';
     if (S.revisionCats && S.revisionCats.indexOf(cat) !== -1) html += '<span class="text-[9px] syne font-black bg-violet-100 text-violet-700 border border-violet-200 px-1.5 py-0.5 rounded-md">🔁 Révision</span>';
     html += '</div><div class="flex items-center gap-2"><div class="pbar flex-1" style="max-width:100px"><div class="pfill pfp" style="width:'+pct2+'%"></div></div>';

@@ -287,6 +287,20 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | 17 | Contact form modal z-index | OK — z-index 5000, pas de bug |
 | 18 | Messages "pas de boost" cohérents | ✅ index.html |
 
+### ✅ Gamification MVP — 18 mars @90
+
+| # | Feature | Détail |
+|---|---|---|
+| 1 | XP visible header + animation +XP | `showXP()` branché dans `mark()`, +200 boost, +300 chapitre |
+| 2 | Paliers maîtrise (6 niveaux) | `_chapTier()` : À découvrir/En cours/En progrès/Solide/Maîtrisé/Expert — badge coloré sur cards |
+| 3 | Streak freeze 1j/semaine | Si avant-hier + streak ≥2 + pas de freeze cette semaine → série maintenue |
+| 4 | Milestones (6 événements) | Premier boost, 10 exos, streak 3j/7j, 1er chapitre, 100 exos — toasts célébrés |
+| 5 | Card "Session terminée" | Fond émeraude, XP total + streak, "Reviens demain" — remplace l'ancien compact gris |
+| 6 | Temps estimé hero CTA | `≈ Xmin` calculé depuis nb exos restants × 1.5 |
+| 7 | Mastery ring enrichi | Compteur paliers + message retour contextuel (inactivité, streak, bienvenue) |
+| 8 | Onglet Progression débloqué | `display:none` retiré — vue complète accessible |
+| 9 | Cohérence messages | "boost"→"entraînement", chap_done sans "disponible demain", mode nuit bg-orange/bg-blue |
+
 ### 🔴 Reporté vendredi 20 mars (calendar)
 
 | # | Action | Priorité |

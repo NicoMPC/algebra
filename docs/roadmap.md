@@ -102,23 +102,24 @@
 - [ ] 11:10 📧 Test rapport parent hebdo (trigger manuel + relecture)
 
 **Après-midi**
-- [ ] 12:00 🎯 Système de points — définir les règles
+- [x] 12:00 🎯 ~~Système de points~~ ✅ Fait @90 (XP + milestones + paliers)
 - [ ] 12:35 🔐 Double confirmation mot de passe (dev)
 - [ ] 13:10 ✉️ Template email inscription
 - [ ] 13:45 ✉️ Template email rapport parent
-- [ ] 14:20 🔤 Cohérence messages génériques/circonstanciels
+- [x] 14:20 🔤 ~~Cohérence messages~~ ✅ Fait @90 (boost→entraînement, chap_done corrigé, mode nuit)
 
 ### Mercredi 18 mars — JOUR J LANCEMENT
 
 **Matin — Audit fixes + tests + go live**
-- [ ] 09:00 ⛔ Fix 3 bloquants audit (prix cgu.html/premium.html L54/L6/141/173, alerte bêta cgu.html L43-45) — 10 min
-- [ ] 09:15 🔴 Fix triggerDailyMarketing Premium='1' string L4635 — 5 min
+- [x] 09:00 ⛔ Fix 18 bloquants audit pré-lancement ✅ @89
+- [x] 09:15 🔴 Fix triggerDailyMarketing Premium='1' string ✅ @89
 - [ ] 09:25 🎮 Test admin workflow (simuler un matin d'admin)
 - [ ] 09:55 🧪 Test réouverture user (Auguste, Charlie, Nicolas)
 - [ ] 10:20 🔧 Fix frictions test (admin + user)
 - [ ] 10:45 💳 Test paiement CB Stripe (19,99€ → vérif Premium → rembourser)
 - [ ] 11:15 ✉️ Rédiger messages parents
 - [ ] 11:30 🔐 Décision webhook Stripe HMAC-SHA256 (avant ou après J+7)
+- [x] ⚡ **Gamification MVP** ✅ @90 — XP visible + animation +XP, paliers maîtrise (6 niveaux), streak freeze 1j/semaine, milestones (6 événements célébrés), card "Session terminée", temps estimé hero, onglet Progression débloqué, mastery ring enrichi, passe cohérence messages, mode nuit couvert
 
 **Après-midi — GO LIVE + diffusion**
 - [ ] 14:00 🚀 GO LIVE — TEASING_MODE = false + push
