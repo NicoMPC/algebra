@@ -9217,11 +9217,6 @@ function _computeActions(st) {
   var done = S._adminDoneActions || {};
   var detail = st.chapitresDetail || [];
 
-  // Rank 1: nouvel inscrit J+0
-  if (st.trialDays === 0 && !done[st.code + '_inscrit']) {
-    actions.push({ rank: 1, type: 'inscrit', label: st.prenom + ' vient de s\'inscrire', color: 'emerald', icon: '\ud83c\udd95', detail: st.niveau + (st.j0Sent ? ' \u00b7 Mail J+0 \u2705' : ' \u00b7 \u26a0\ufe0f Mail J+0 non envoy\u00e9') });
-  }
-
   // Rank 2: boost — ExosDone=5, pas de boost pending
   var bHist = st.boostHistory || [];
   var lastBDone = bHist.length > 0 && bHist[0].exosDone >= 5;
@@ -9269,7 +9264,7 @@ function _renderAdminCards() {
 
   var realCount = S.adminRealCount !== undefined ? S.adminRealCount : realStudents.length;
   var activeTab = S.adminTab || 'todo';
-  if (['todo','done','emails','inactifs','rapport'].indexOf(activeTab) === -1) activeTab = 'todo';
+  if (['todo','done','nouveau','emails','inactifs','rapport'].indexOf(activeTab) === -1) activeTab = 'todo';
   var journal = S._adminJournal || [];
 
   var html = '';
@@ -9300,8 +9295,10 @@ function _renderAdminCards() {
   }
 
   // ── Tabs ───────────────────────────────────────────────────
+  var newStudents = (S.adminStudents || []).filter(function(st) { return !st.isTest && st.trialDays === 0; });
   var _tabs = [
     { key: 'todo', label: '\u00c0 FAIRE', count: todoStudents.length, color: todoStudents.length > 0 ? '#ef4444' : '#059669' },
+    { key: 'nouveau', label: '\ud83c\udd95 NOUVEAU', count: newStudents.length, color: '#059669' },
     { key: 'done', label: 'FAIT',         count: journal.length,       color: '#059669' },
     { key: 'emails', label: '\ud83d\udce7 MAILS', count: _countEmailsDue(), color: '#f59e0b' },
     { key: 'inactifs', label: '\ud83d\udca4 INACTIFS', count: _countInactifs(), color: '#ef4444' },
@@ -9327,6 +9324,26 @@ function _renderAdminCards() {
       html += '</div>';
     } else {
       todoStudents.forEach(function(st) { html += _buildCockpitCard(st); });
+    }
+  } else if (activeTab === 'nouveau') {
+    if (newStudents.length === 0) {
+      html += '<div class="text-center py-12"><div class="text-4xl mb-3">\ud83d\udce5</div>';
+      html += '<div class="syne font-black text-slate-700 text-base mb-1">Aucun nouvel inscrit aujourd\'hui</div></div>';
+    } else {
+      html += '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Inscrits aujourd\'hui</div>';
+      newStudents.forEach(function(st) {
+        html += '<div class="bg-white border border-slate-100 border-l-4 border-l-emerald-500 rounded-2xl px-4 py-3 mb-2">';
+        html += '<div class="flex items-center gap-3">';
+        html += '<div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black syne text-base flex-shrink-0" style="background:linear-gradient(135deg,#059669,#10b981)">' + st.prenom.charAt(0).toUpperCase() + '</div>';
+        html += '<div class="flex-1 min-w-0">';
+        html += '<div class="flex items-center gap-1.5 flex-wrap">';
+        html += '<span class="syne font-black text-slate-900 text-sm">' + st.prenom + '</span>';
+        html += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500">' + st.niveau + '</span>';
+        html += st.j0Sent ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700">Mail J+0 \u2705</span>' : '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-rose-100 text-rose-700">\u26a0\ufe0f Mail J+0 non envoy\u00e9</span>';
+        html += '</div>';
+        html += '<div class="text-[10px] text-slate-400 font-medium mt-0.5">' + st.email + (st.objectif ? ' \u00b7 Objectif : ' + st.objectif : '') + '</div>';
+        html += '</div></div></div>';
+      });
     }
   } else if (activeTab === 'done') {
     if (journal.length === 0 && faitStudents.length === 0) {
@@ -9475,8 +9492,7 @@ function _buildCockpitCard(st) {
   var borderCls = 'border-l-slate-200';
   if (actions.length > 0) {
     var r = actions[0].rank;
-    if (r === 1 && actions[0].type === 'inscrit') borderCls = 'border-l-emerald-500';
-    else if (r === 1) borderCls = 'border-l-rose-500';
+    if (r === 1) borderCls = 'border-l-rose-500';
     else if (r <= 5) borderCls = 'border-l-indigo-500';
     else borderCls = 'border-l-amber-500';
   }
@@ -9555,10 +9571,6 @@ function _buildActionWorkflow(st, action) {
     h += '<button onclick="_copyChapContext(\'' + st.code + '\')" class="adm-copy-btn mb-2">\ud83d\udccb Copier JSON chapitre + résultats</button>';
     h += '<textarea id="ck-chap-json-' + st.code + '" class="adm-textarea mb-2" style="height:80px" placeholder="Coller le JSON ici..." oninput="_ckTogglePublish(\'' + st.code + '\',\'chapitre\')"></textarea>';
     h += '<button id="ck-btn-chap-' + st.code + '" onclick="_ckPublishChapter(\'' + st.code + '\')" disabled class="w-full bg-slate-300 text-white text-xs font-bold py-2.5 rounded-xl transition-colors cursor-not-allowed">\ud83d\udcda Publier</button>';
-
-  } else if (action.type === 'inscrit') {
-    h += '<div class="text-xs text-slate-500 mb-2">' + (st.objectif ? 'Objectif : ' + st.objectif + ' \u00b7 ' : '') + 'Email : ' + st.email + '</div>';
-    h += '<button onclick="S._adminDoneActions[\''+st.code+'_inscrit\']=true;_renderAdminCards()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">\u2705 Vu</button>';
 
   }
 

@@ -4473,18 +4473,6 @@ function getDailyChecklist(p) {
 
     // ── Générer les items ───────────────────────────────────
 
-    // 0. NOUVEL INSCRIT — visible le jour même (priorité 0 = top)
-    if (trialDays === 0) {
-      var j0Auto = sent['J+0'] || sent['J+0-manuel'];
-      items.push({
-        priority: 0, type: 'nouvel_inscrit', icon: '🆕',
-        label: prenom + ' vient de s\'inscrire',
-        sublabel: niveau + (objectif ? ' · ' + objectif : '') + (j0Auto ? ' · Mail J+0 ✅' : ' · ⚠️ Mail J+0 non envoyé'),
-        code: code, prenom: prenom, niveau: niveau, email: email, objectif: objectif,
-        color: 'emerald', doneKey: 'vu-inscrit-' + code + '-' + today, autoCheck: false
-      });
-    }
-
     // 1. CONTENU — Boost terminé (priorité 1)
     if (lastExosDone >= 5 && !boostPending && !todayBoost) {
       items.push({
