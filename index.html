@@ -872,6 +872,10 @@
     body.app-night #main-app [style*="background:linear-gradient(135deg,#1e1b4b"] { opacity:.95; }
     /* Night — help pills */
     body.app-night #main-app .help-pill { background:#1e293b !important; border-color:#475569 !important; color:#cbd5e1 !important; }
+    /* Night — catch-all inline backgrounds blancs */
+    body.app-night #main-app [style*="background:#fff"] { background:#1e293b !important; }
+    body.app-night #main-app [style*="background: #fff"] { background:#1e293b !important; }
+    body.app-night #main-app [style*="background:white"] { background:#1e293b !important; }
     /* Night — texte exercices + LaTeX */
     body.app-night #main-app #app-c { color:#e2e8f0 !important; }
     body.app-night #main-app .mc { color:#f1f5f9 !important; }
@@ -2241,7 +2245,7 @@ var _MSGS = {
   ok_6eme:    ['Super ! 🎉','Exactement ! ✅','Bravo ! 💪','Bien vu ! 🔥','Parfait ! ⭐'],
   ok_3eme:    ['Exact ✅','Maîtrisé 💪','Dans le mille ⚡','Propre 🔥','Bon calcul 🎯'],
   ok_streak:  ['Streak actif — continue ! 🔥','Encore une ! ⚡','En forme aujourd\'hui 💪'],
-  ko_boost:   ['Pas celui-là — retiens la correction 👀','Ça arrive — regarde juste en dessous 💡','La prochaine tu l\'as 🎯'],
+  ko_boost:   ['Pas celui-là — regarde la correction en dessous 👀','Ça arrive — la méthode est juste en dessous 💡','La prochaine tu l\'as — retiens la correction 🎯'],
   ko_chap:    ['Pas grave — la correction est là 📝','Difficile celui-là — retiens bien 🧠','C\'est ça qui fait monter de niveau 📈'],
   ko_6eme:    ['Pas tout à fait — regarde la correction ! 👀','On va y arriver ! Regarde bien 💡','Pas grave — c\'est comme ça qu\'on apprend 😊'],
   ko_3eme:    ['Pas bon — retiens la méthode 📝','Ça accroche là — regarde la correction 🧠','Erreur classique — à ne plus refaire 💡'],
@@ -2273,14 +2277,14 @@ var _MSGS = {
                 '3EME': '🏆 Chapitre terminé. La suite est en préparation — disponible demain.',
                 def:    '🏆 Chapitre terminé ! Ton prochain chapitre est en préparation, il sera disponible demain 📚' },
   boost_ready:      '⚡ Ton Entraînement du jour est prêt !',
-  boost_preparing:  '✨ Ton prochain boost est en cours de préparation, il sera disponible demain !',
+  boost_preparing:  '✨ Ton prochain entraînement est en préparation — reviens demain !',
   boost_in_progress:'Ton boost est en cours ⚡ — encore {n} exo{s} et c\'est dans la boîte !',
   coach_hint:    'Psst — t\'as droit aux indices 💡 Hésite pas !',
   coach_formula: 'La formule se révèle après réponse 📐 — clique dessus !',
   coach_brouillon:'Le brouillon est en bas 📝 — utilise-le pour tes calculs !',
   coach_boost_first: '⚡ C\'est ton Entraînement du jour — 5 exos, ~10 min. C\'est parti !',
   pending_chapter:  'Ton prochain chapitre personnalisé est en préparation… reviens dans quelques heures !',
-  no_boost_yet:     'Ton entraînement du jour arrive bientôt !',
+  no_boost_yet:     'Ton entraînement du jour est en préparation — reviens dans quelques heures !',
   revision_done:    'Révision terminée ! {easy}/{tot} réussis 🔁',
   net_error:       'Erreur réseau — vérifie ta connexion 📡',
   net_retry:       'Erreur réseau — réessaie',
@@ -2381,10 +2385,10 @@ function rMath(el) {
     // KaTeX pas encore chargé — mettre en file d'attente
     if (!window._katexQueue) window._katexQueue = [];
     window._katexQueue.push(function(){ rMath(target); });
-    // Fallback 3s — afficher quand même si KaTeX ne charge jamais
+    // Fallback 1.5s — afficher quand même si KaTeX ne charge jamais
     setTimeout(function(){
       target.querySelectorAll('.mc:not(.rdy)').forEach(function(e){ e.classList.add('rdy'); });
-    }, 3000);
+    }, 1500);
   }
 }
 
@@ -3650,7 +3654,7 @@ var _onbSlides = [
   {
     emoji: '🎯',
     title: 'Un diagnostic sur mesure',
-    body: 'En quelques questions, Matheux identifie exactement où ton enfant bloque — pas les difficultés de la classe, les siennes.',
+    body: 'En quelques questions, on identifie exactement où tu bloques — pas les difficultés de la classe, les tiennes.',
     color: 'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)'
   },
   {
@@ -3789,6 +3793,8 @@ window.__trialDismiss = function() {
 // APP INIT
 // ══════════════════════════════════════════════════════════════
 function initApp(d, skipRender) {
+  // Purger guestDiag résiduel (inscription terminée)
+  try { localStorage.removeItem('guestDiag'); } catch(e) {}
   S.prof       = d.profile;
   S.niv        = d.profile.level;
   S.boost      = d.dailyBoost;
@@ -3809,6 +3815,12 @@ function initApp(d, skipRender) {
   if (!S.trial.trialActive && !S.trial.isPremium) {
     // Essai terminé et non premium — afficher overlay après init
     setTimeout(showTrialExpired, 300);
+  } else if (S.trial.trialActive && !S.trial.isPremium && S.trial.daysLeft <= 3 && S.trial.daysLeft > 0) {
+    // Avertissement progressif J-3/J-2/J-1
+    var _trialMsg = S.trial.daysLeft === 1
+      ? '⏰ Dernier jour d\'essai — profite bien de ta session !'
+      : '⏰ Plus que ' + S.trial.daysLeft + ' jours d\'essai gratuit';
+    setTimeout(function() { showT(_trialMsg, 5000, '⏰'); }, 1500);
   }
   // SECURITY LAYER 2 — Premium Guard
   startPremiumGuard();
@@ -6785,11 +6797,12 @@ function rSection(cat, data, idx, total, catDone) {
     var s2  = S.res[S.niv+'-'+r2.rC+'-'+r2.rI];
     var act = i === idx;
     var cls = 'pill ';
-    if (s2 === 'EASY' || s2 === 'MEDIUM') cls += 'bg-emerald-500 text-white';
-    else if (s2 === 'HARD' || s2 === 'SKIP') cls += 'bg-rose-400 text-white';
+    var pillLabel = (i+1);
+    if (s2 === 'EASY' || s2 === 'MEDIUM') { cls += 'bg-emerald-500 text-white'; pillLabel = '✓'; }
+    else if (s2 === 'HARD' || s2 === 'SKIP') { cls += 'bg-rose-400 text-white'; pillLabel = '✗'; }
     else                                   cls += 'bg-white border-2 border-slate-200 text-slate-500';
     if (act) cls += ' ring-2 ring-indigo-400 ring-offset-1';
-    pills += '<button onclick="goEx(\''+cat+'\','+i+')" class="'+cls+'">'+(i+1)+'</button>';
+    pills += '<button onclick="goEx(\''+cat+'\','+i+')" class="'+cls+'">'+pillLabel+'</button>';
   }
   pills += '</div>';
 
@@ -6847,17 +6860,15 @@ function rSection(cat, data, idx, total, catDone) {
       opts += '<button data-oi="'+o.i+'" '+handler+' class="'+ocls.trim()+selCls+'"'+extraStyle+'><span class="mc flex-1">'+fmtL(o.t)+'</span></button>';
     });
     opts += '</div>';
-    // Bouton "Je ne sais pas" (sous la grille, avant validation)
-    if (!isRev && !scored) {
-      opts += '<button class="opt-skip mt-2" onclick="skipAnswer(\''+cat+'\','+idx+')">🤷 Je ne sais pas</button>';
-    }
-    // Bouton Valider sticky (visible uniquement avant validation, pas en retro)
+    // Bouton Valider sticky + "Je ne sais pas" (Valider en bas = thumb zone mobile)
     if (!isRev && !scored) {
       var hasSel = S._sel && S._sel.cat===cat && S._sel.idx===idx;
       opts += '<div class="validate-wrap" id="validate-wrap">' +
         '<button id="btn-validate" class="btn-validate" onclick="validateAnswer()"' + (!hasSel ? ' disabled' : '') + '>' +
         (hasSel ? 'Valider la r\u00e9ponse \u2713' : 'Choisis une r\u00e9ponse') +
-        '</button></div>';
+        '</button>' +
+        '<button class="opt-skip mt-2" onclick="skipAnswer(\''+cat+'\','+idx+')">🤷 Je ne sais pas</button>' +
+        '</div>';
     }
     // Justification VF post-réponse
     if (exoType === 'vf' && data.justification && isRev) {
@@ -10749,6 +10760,22 @@ if ('serviceWorker' in navigator) {
       .catch(function(err) { console.log('SW non enregistré:', err); });
   });
 }
+
+// Indicateur offline persistant
+window.addEventListener('offline', function() {
+  var b = document.getElementById('offline-bar');
+  if (!b) {
+    b = document.createElement('div');
+    b.id = 'offline-bar';
+    b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#ef4444;color:#fff;text-align:center;padding:.4rem;font-size:.75rem;font-weight:700';
+    b.textContent = '📡 Hors connexion — les résultats seront sauvegardés au retour';
+    document.body.appendChild(b);
+  }
+});
+window.addEventListener('online', function() {
+  var b = document.getElementById('offline-bar');
+  if (b) b.remove();
+});
 
 // Gestion de l'invite d'installation PWA
 var _pwaPrompt = null;

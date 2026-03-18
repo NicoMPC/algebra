@@ -58,13 +58,24 @@ function doPost(e) {
     var p = JSON.parse(e.postData.contents);
     var res;
 
-    // Rate limiting global : max 60 req/min par identifiant (email ou code)
+    // Rate limiting par identifiant (email ou code) + global pour actions sensibles
+    var cache   = CacheService.getScriptCache();
+    var isSensitive = (p.action === 'register' || p.action === 'login' || p.action === 'forgot_password');
+
+    // Rate limit global sur les actions sensibles (toutes origines confondues) : 30/min
+    if (isSensitive) {
+      var glCount = parseInt(cache.get('rl_global_auth') || '0');
+      if (glCount >= 30) {
+        return json({ status: 'error', message: 'rate_limit' });
+      }
+      cache.put('rl_global_auth', String(glCount + 1), 60);
+    }
+
+    // Rate limit par identifiant
     var rlId = (p.email || p.code || p.adminCode || 'anon').toString().toLowerCase().replace(/[^a-z0-9@._-]/g, '');
     var rlKey   = 'rl_' + rlId;
-    var cache   = CacheService.getScriptCache();
     var count   = parseInt(cache.get(rlKey) || '0');
-    // Actions sensibles : limite plus stricte (15/min)
-    var rlLimit = (p.action === 'register' || p.action === 'login' || p.action === 'forgot_password') ? 15 : 60;
+    var rlLimit = isSensitive ? 15 : 60;
     if (count >= rlLimit) {
       return json({ status: 'error', message: 'rate_limit' });
     }
@@ -4632,7 +4643,7 @@ function triggerDailyMarketing() {
     var trialStart = row[iTrialStart];
 
     if (!email || !trialStart) continue;
-    if (premium === true || premium === 1 || premium === 'TRUE' || premium === 'true') continue;
+    if (premium === true || premium === 1 || premium === 'TRUE' || premium === 'true' || String(premium) === '1') continue;
 
     var startDate = new Date(trialStart);
     startDate.setHours(0, 0, 0, 0);
