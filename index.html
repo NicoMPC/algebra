@@ -285,16 +285,17 @@
     body.app-night .btn-validate:disabled { background:#334155; color:#64748b; }
     body.app-night .btn-validate:not(:disabled) { background:#059669; }
     .opt-skip {
-      width:100%; min-height:56px; padding:0.85rem 1rem; border:2px dashed #cbd5e1;
-      background:#f8fafc; color:#64748b; font-weight:500; font-size:0.9rem;
-      border-radius:var(--r); cursor:pointer; transition:all .15s;
-      display:flex; align-items:center; justify-content:center; gap:0.5rem;
+      width:auto; padding:0.5rem 1rem; border:none;
+      background:transparent; color:#94a3b8; font-weight:500; font-size:0.8rem;
+      cursor:pointer; transition:all .15s;
+      display:flex; align-items:center; justify-content:center; gap:0.4rem;
+      margin:0.5rem auto 0;
     }
-    .opt-skip:hover { border-color:var(--p); background:var(--pl); }
-    .opt-skip.os-skip { border:2px solid #f59e0b; background:#fffbeb; color:#92400e; }
-    body.app-night .opt-skip { background:#1e293b; border-color:#475569; color:#94a3b8; }
-    body.app-night .opt-skip:hover { border-color:#818cf8; background:#312e81; }
-    body.app-night .opt-skip.os-skip { border-color:#f59e0b; background:#422006; color:#fbbf24; }
+    .opt-skip:hover { color:var(--p); }
+    .opt-skip.os-skip { color:#f59e0b; font-weight:600; }
+    body.app-night .opt-skip { color:#64748b; }
+    body.app-night .opt-skip:hover { color:#818cf8; }
+    body.app-night .opt-skip.os-skip { color:#fbbf24; }
     body.app-night .os { border-color:#818cf8!important; background:#312e81!important; box-shadow:0 0 0 2px #818cf8; }
 
     /* ── TABLEAU BLANC — BOTTOM SHEET (mobile) ─────────── */
@@ -7254,7 +7255,7 @@ function rSection(cat, data, idx, total, catDone) {
         '<button id="btn-validate" class="btn-validate" onclick="validateAnswer()"' + (!hasSel ? ' disabled' : '') + '>' +
         (hasSel ? 'Valider la r\u00e9ponse \u2713' : 'Choisis une r\u00e9ponse') +
         '</button>' +
-        '<button class="opt-skip mt-2" onclick="skipAnswer(\''+cat+'\','+idx+')">🤷 Je ne sais pas</button>' +
+        '<button class="opt-skip" onclick="skipAnswer(\''+cat+'\','+idx+')">Je ne sais pas</button>' +
         '</div>';
     }
     // Justification VF post-réponse
