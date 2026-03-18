@@ -4751,7 +4751,7 @@ async function boostFromDiag(errs) {
     var d = await r.json();
     if (d.status === 'success') {
       S.boost = d.boost; S.boostEx = true; loadBoost();
-      showT(_msg('boost_ready'), 4000, '⚡');
+      hideT(); showT(_msg('boost_ready'), 4000, '⚡');
       if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
     } else { hideT(); }
   } catch(e) { hideT(); }
