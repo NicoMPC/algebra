@@ -1397,6 +1397,13 @@
     </div>
   </div>
 
+  <!-- ── 2b. TRANSITION IMAGINEZ ──────────────────────────── -->
+  <div style="background:linear-gradient(180deg,#0f172a 0%,#1e293b 100%)" class="px-5 py-14">
+    <div class="max-w-xl mx-auto text-center reveal">
+      <p class="syne text-lg sm:text-xl font-black text-white leading-relaxed" style="line-height:1.7">Imaginez un endroit où toutes les erreurs, toutes les hésitations, sont gardées en mémoire — <span style="color:#818cf8">pour faire progresser votre enfant là où ça fait mal.</span></p>
+    </div>
+  </div>
+
   <!-- ── 3. CE QUE FAIT MATHEUX (Solution) ─────────────────── -->
   <div class="bg-white px-5 py-16">
     <div class="max-w-2xl mx-auto">
@@ -2785,6 +2792,31 @@ var _flowStartTs   = 0;       // timestamp début exo (ms)
 var _flowDiagDone  = false;   // diagnostic terminé avant inscription
 var _flowHints        = {};   // { exoIdx: nbHintsShown } pour le quiz inline
 var _flowFormulaShown = {};  // { exoIdx: true } formules révélées
+
+// ── Carrousel screenshots visio ──
+var _visioIdx = 0, _visioTimer;
+function _visioGo(i) {
+  _visioIdx = i;
+  var track = document.getElementById('visio-track');
+  if (!track) return;
+  track.style.transform = 'translateX(-' + (i * 100) + '%)';
+  var dots = document.querySelectorAll('#visio-dots button');
+  dots.forEach(function(d, j) { d.style.background = j === i ? '#4338ca' : '#cbd5e1'; });
+  clearInterval(_visioTimer);
+  _visioTimer = setInterval(function() { _visioGo((_visioIdx + 1) % 4); }, 3500);
+}
+_visioTimer = setInterval(function() { _visioGo((_visioIdx + 1) % 4); }, 3500);
+// Swipe touch support
+(function(){
+  var track = document.getElementById('visio-track');
+  if (!track) return;
+  var sx;
+  track.addEventListener('touchstart', function(e) { sx = e.touches[0].clientX; }, {passive:true});
+  track.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - sx;
+    if (Math.abs(dx) > 40) _visioGo(dx > 0 ? Math.max(0, _visioIdx - 1) : Math.min(3, _visioIdx + 1));
+  }, {passive:true});
+})();
 
 // ── Scroll reveal (IntersectionObserver) ──
 (function(){

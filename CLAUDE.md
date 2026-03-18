@@ -341,6 +341,15 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | T7 | 1er +XP | "Chaque réponse rapporte des XP — même les erreurs comptent" |
 | T8 | Pills ≥2 réponses | "Les pastilles en haut te permettent de revoir chaque question" |
 
+### ✅ Landing carrousel + phrase "Imaginez…" — 18 mars @94
+
+| # | Feature | Détail |
+|---|---|---|
+| 1 | Carrousel screenshots visio | 4 photos cours (img/1-4.png), auto-scroll 3.5s, swipe tactile, dots navigation |
+| 2 | Section vidéo remplacée | Placeholder vidéo → carrousel + légende fondateur |
+| 3 | Légende fondateur | "C'est en donnant des cours que j'ai créé Matheux — pour rendre mes élèves autonomes. Conçu pour eux, avec eux." |
+| 4 | Phrase transition "Imaginez…" | Nouvelle section 2b entre Problème et Solution — "Imaginez un endroit où toutes les erreurs, toutes les hésitations, sont gardées en mémoire — pour faire progresser votre enfant là où ça fait mal." |
+
 ### 🔴 Reporté vendredi 20 mars (calendar)
 
 | # | Action | Priorité |
@@ -356,7 +365,7 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | # | Action | Priorité |
 |---|---|---|
 | 1 | Triggers Apps Script — automatiser dès 10-20 clients | 🟡 Plus tard |
-| 2 | Vidéo fondateur — tourner + intégrer section "Derrière Matheux" landing | 🟡 18 mars |
+| 2 | ~~Vidéo fondateur~~ → ✅ Remplacée par carrousel screenshots visio @94 | ✅ Fait |
 | 3 | Centraliser 3 mails matheux.fr (Thunderbird/alias/redirection) | 🟡 Jeudi 19 mars |
 
 ---

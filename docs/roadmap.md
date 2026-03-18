@@ -122,10 +122,11 @@
 - [x] ⚡ **Gamification MVP** ✅ @90 — XP visible + animation +XP, paliers maîtrise (6 niveaux), streak freeze 1j/semaine, milestones (6 événements célébrés), card "Session terminée", temps estimé hero, onglet Progression débloqué, mastery ring enrichi, passe cohérence messages, mode nuit couvert
 - [x] 📋 **Tuto régressif** ✅ @91 — 8 micro-tips contextuels first-use (sélection, erreur, indices, formule, brouillon, skip, XP, pills) — disparaissent après 1 affichage
 - [x] 🎨 **Refonte onboarding UX** ✅ @93 — Stepper 4 étapes, slide animations, micro-bounce, écran respiration pré-diagnostic, feedback ✓ pendant quiz, carte résultat split (émotion→décision), compteur % animé, copy conversationnel, reassurance
+- [x] 📸 **Landing : carrousel visio + phrase "Imaginez…"** ✅ @94 — Section vidéo → carrousel 4 screenshots cours (auto-scroll 3.5s, swipe, dots), légende fondateur, nouvelle section transition "Imaginez un endroit…" entre Problème et Solution
 
 **Après-midi — GO LIVE + diffusion**
 - [ ] 14:00 🚀 GO LIVE — TEASING_MODE = false + push
-- [ ] 14:15 🎥 Vidéo fondateur + intégration landing
+- [x] 14:15 🎥 ~~Vidéo fondateur~~ → ✅ Carrousel screenshots visio (4 photos cours) + phrase "Imaginez un endroit…" @94
 - [ ] 14:50 📱 Diffusion cercle proche (SMS, WhatsApp, messages perso)
 - [ ] 15:25 📱 Diffusion réseaux (LinkedIn, Facebook, waitlist)
 - [ ] 16:00 🏫 Contact établissements + micro-influenceurs
@@ -145,7 +146,7 @@
 | 5 | Vrais témoignages élèves/parents sur landing | À collecter après premiers clients | 🔵 |
 | 6 | **Migration serveur + backend** — envisager après ~10 clients : remplacer GAS+Sheets par serveur dédié (Node/Python) + BDD (Postgres/Supabase). Limite GAS : 20 users simultanés, 6 min/appel, pas de cron fiable. Mode Brevet à déployer proprement après migration. | Architecture | 🟡 |
 | 6 | **Design overhaul landing** — ~~@68 (14 mars)~~ → **Refonte GOD MODE @86 (17 mars)** : 11 sections, section Problème, contraste 10min/jour, fondateur humain, pills engagement | ✅ Fait @86 | 🟢 |
-| 7 | **Vidéo fondateur** — tourner courte vidéo Nicolas pour section "Derrière Matheux" landing | 18 mars (lancement) | 🟡 |
+| 7 | ~~**Vidéo fondateur**~~ → ✅ Remplacée par carrousel screenshots visio @94 (4 photos + légende + phrase "Imaginez…") | ✅ Fait @94 | 🟢 |
 | 8 | **Cohérence messages** — vérifier wording génériques/circonstanciels après refonte landing | Vendredi 20 mars (1h) | 🟡 |
 | 9 | **UX sans boost** — ajouter bandeau "ton boost arrive bientôt" si aucun boost généré (actuellement : rien ne s'affiche, pas d'erreur). Nicolas génère manuellement en attendant. | Frontend index.html | 🟡 |
 
