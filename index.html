@@ -290,6 +290,7 @@
     .opt-skip:hover { border-color:var(--p); background:var(--pl); }
     .opt-skip.os-skip { border:2px solid #f59e0b; background:#fffbeb; color:#92400e; }
     body.app-night .opt-skip { background:#1e293b; border-color:#475569; color:#94a3b8; }
+    .audit-tag { padding:.35rem .6rem;border-radius:.5rem;font-size:.72rem;font-weight:700;background:#f1f5f9;color:#475569;border:1.5px solid #e2e8f0;cursor:pointer;transition:all .15s; }
     body.app-night .opt-skip:hover { border-color:#818cf8; background:#312e81; }
     body.app-night .opt-skip.os-skip { border-color:#f59e0b; background:#422006; color:#fbbf24; }
     body.app-night .os { border-color:#818cf8!important; background:#312e81!important; box-shadow:0 0 0 2px #818cf8; }
@@ -5432,34 +5433,52 @@ function _auditNav(dir) {
   renderAuditView();
 }
 
+var _auditTag = '';
+
 function _auditReport() {
   var exos = _auditFiltered();
   var e = exos[_auditIdx];
   if (!e) return;
   var cat = e.categorie || '';
-  var qExtract = (e.q || '').substring(0, 200);
+  var qExtract = (e.q || '').substring(0, 80);
+  _auditTag = '';
 
-  // Modal simple
   var overlay = document.createElement('div');
+  overlay.id = 'audit-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9000;display:flex;align-items:center;justify-content:center;padding:1rem';
+  overlay.onclick = function(ev) { if (ev.target === overlay) overlay.remove(); };
   overlay.innerHTML =
     '<div style="background:#fff;border-radius:1rem;padding:1.5rem;max-width:400px;width:100%">' +
     '<h3 style="font-weight:800;font-size:.95rem;margin-bottom:.5rem">⚠️ Signaler — '+cat+'</h3>' +
-    '<p style="font-size:.75rem;color:#64748b;margin-bottom:.75rem;line-height:1.4">'+qExtract.substring(0,80)+'…</p>' +
-    '<textarea id="audit-comment" rows="4" placeholder="Décris le problème…" style="width:100%;border:1.5px solid #e2e8f0;border-radius:.75rem;padding:.75rem;font-size:.85rem;resize:none;margin-bottom:.75rem"></textarea>' +
+    '<p style="font-size:.75rem;color:#64748b;margin-bottom:.5rem;line-height:1.4">'+qExtract+'…</p>' +
+    '<div style="display:flex;gap:.4rem;margin-bottom:.75rem;flex-wrap:wrap">' +
+    '<button onclick="_auditSetTag(this,\'supprimer_figure\')" class="audit-tag">🗑 Supprimer figure</button>' +
+    '<button onclick="_auditSetTag(this,\'modifier_figure\')" class="audit-tag">✏️ Modifier figure</button>' +
+    '<button onclick="_auditSetTag(this,\'autre\')" class="audit-tag">📋 Autre</button>' +
+    '</div>' +
+    '<textarea id="audit-comment" rows="3" placeholder="Commentaire (optionnel si tag choisi)…" style="width:100%;border:1.5px solid #e2e8f0;border-radius:.75rem;padding:.75rem;font-size:.85rem;resize:none;margin-bottom:.75rem;box-sizing:border-box"></textarea>' +
     '<div style="display:flex;gap:.5rem">' +
-    '<button onclick="this.closest(\'div[style]\').remove()" style="flex:1;padding:.6rem;border-radius:.75rem;background:#f1f5f9;font-weight:700;font-size:.8rem;border:none;cursor:pointer">Annuler</button>' +
+    '<button onclick="document.getElementById(\'audit-overlay\').remove()" style="flex:1;padding:.6rem;border-radius:.75rem;background:#f1f5f9;font-weight:700;font-size:.8rem;border:none;cursor:pointer">Annuler</button>' +
     '<button onclick="_auditSendReport()" style="flex:1;padding:.6rem;border-radius:.75rem;background:#f59e0b;color:#fff;font-weight:700;font-size:.8rem;border:none;cursor:pointer">Envoyer</button>' +
     '</div></div>';
   document.body.appendChild(overlay);
   overlay.querySelector('textarea').focus();
 }
 
+function _auditSetTag(btn, tag) {
+  _auditTag = _auditTag === tag ? '' : tag;
+  btn.parentElement.querySelectorAll('.audit-tag').forEach(function(b) {
+    b.style.background = '#f1f5f9'; b.style.color = '#475569';
+  });
+  if (_auditTag) { btn.style.background = '#3b82f6'; btn.style.color = '#fff'; }
+}
+
 async function _auditSendReport() {
   var ta = document.getElementById('audit-comment');
   var comment = ta ? ta.value.trim() : '';
-  if (!comment) { showT('Écris un commentaire', 1500, '❌'); return; }
+  if (!comment && !_auditTag) { showT('Choisis un tag ou écris un commentaire', 1500, '❌'); return; }
 
+  var full = (_auditTag ? '[' + _auditTag + '] ' : '') + comment;
   var exos = _auditFiltered();
   var e = exos[_auditIdx];
   var cat = e.categorie || '';
@@ -5473,7 +5492,7 @@ async function _auditSendReport() {
       categorie: cat,
       exoIndex: e._idx != null ? e._idx : _auditIdx,
       question: (e.q || '').substring(0, 200),
-      commentaire: comment
+      commentaire: full
     })});
     var d = await r.json();
     if (d.status === 'success') {
@@ -5485,9 +5504,8 @@ async function _auditSendReport() {
     showT('Erreur réseau', 2000, '❌');
   }
 
-  // Fermer la modal
-  var overlays = document.querySelectorAll('div[style*="z-index:9000"]');
-  overlays.forEach(function(o) { o.remove(); });
+  var ov = document.getElementById('audit-overlay');
+  if (ov) ov.remove();
 }
 
 
