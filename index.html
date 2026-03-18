@@ -269,11 +269,8 @@
     }
     .validate-wrap {
       position:sticky; bottom:0; z-index:40;
-      padding:0.75rem 1rem; margin:0 -1rem -1rem;
-      background:rgba(255,255,255,0.97); backdrop-filter:blur(8px);
-      border-top:1px solid var(--brd);
+      padding:0.5rem 0; margin:0;
     }
-    body.app-night .validate-wrap { background:rgba(15,23,42,0.97); border-color:#334155; }
     .btn-validate {
       width:100%; padding:1rem; border-radius:var(--r); font-weight:800;
       font-size:1rem; border:none; cursor:pointer; transition:all .15s;
@@ -2276,18 +2273,34 @@ function fmtL(s) {
 }
 
 var _tt = null;
+var _toastQueue = [];
+var _toastBusy = false;
 function showT(msg, dur, ic) {
   dur = (dur === undefined) ? 3500 : dur;
   ic  = ic || '🧠';
+  if (_toastBusy && dur > 0) {
+    _toastQueue.push({ msg:msg, dur:dur, ic:ic });
+    return;
+  }
+  _toastBusy = true;
   document.getElementById('tm').innerText = msg;
   document.getElementById('ti').innerText = ic;
   document.getElementById('toast').classList.add('show');
   if (_tt) clearTimeout(_tt);
-  if (dur > 0) _tt = setTimeout(function(){ document.getElementById('toast').classList.remove('show'); }, dur);
+  if (dur > 0) _tt = setTimeout(function(){
+    document.getElementById('toast').classList.remove('show');
+    _toastBusy = false;
+    if (_toastQueue.length > 0) {
+      var nx = _toastQueue.shift();
+      setTimeout(function(){ showT(nx.msg, nx.dur, nx.ic); }, 300);
+    }
+  }, dur);
 }
 function hideT() {
   document.getElementById('toast').classList.remove('show');
   if (_tt) clearTimeout(_tt);
+  _toastBusy = false;
+  _toastQueue = [];
 }
 
 // ── Message adapté au niveau ─────────────────────────────────
@@ -2345,21 +2358,20 @@ var _MSGS = {
   cours_20:   { '6EME': '✨ Cours complet débloqué — tu as TOUT maîtrisé 🏆 Bravo !',
                 '3EME': '✨ Cours complet. Maîtrise confirmée — excellent travail 🏆',
                 def:    '✨ Cours complet ! Tu as tout maîtrisé 🏆' },
-  cours_prep: { '6EME': '🎉 Super ! Ton cours est en préparation — retrouve-le demain !',
-                '3EME': '🎉 Jalon atteint. Ton cours personnalisé est en préparation — disponible demain.',
-                def:    '🎉 Bravo ! Ton cours personnalisé est en préparation — retrouve-le demain !' },
+  cours_prep: { '6EME': '🎉 Super ! Ton cours est en préparation — bientôt disponible !',
+                '3EME': '🎉 Jalon atteint. Ton cours personnalisé est en préparation.',
+                def:    '🎉 Bravo ! Ton cours personnalisé est en préparation — bientôt disponible !' },
   chap_done:  { '6EME': '🏆 Chapitre terminé — super boulot ! Continue sur ta lancée 📚',
                 '3EME': '🏆 Chapitre terminé — bien joué. Choisis le suivant quand tu veux.',
                 def:    '🏆 Chapitre terminé — bien joué ! Choisis ton prochain chapitre 📚' },
   boost_ready:      '⚡ Ton Entraînement du jour est prêt !',
-  boost_preparing:  '✨ Ton prochain entraînement est en préparation — reviens demain !',
+  boost_preparing:  '✨ Prochain entraînement demain — ton boost sera encore plus ciblé !',
   boost_in_progress:'Ton entraînement est en cours ⚡ — encore {n} exo{s} et c\'est dans la boîte !',
   coach_hint:    'Les indices se dévoilent un par un — utilise-les avant de répondre 💡',
   coach_formula: 'La formule se révèle après réponse 📐 — clique dessus !',
   coach_brouillon:'Le brouillon est en bas 📝 — utilise-le pour tes calculs !',
   coach_boost_first: '⚡ C\'est ton Entraînement du jour — 5 exos, ~10 min. C\'est parti !',
   pending_chapter:  'Ton prochain chapitre personnalisé est en préparation… reviens dans quelques heures !',
-  no_boost_yet:     'Ton entraînement du jour est en préparation — reviens dans quelques heures !',
   revision_done:    'Révision terminée ! {easy}/{tot} réussis 🔁',
   net_error:       'Erreur réseau — vérifie ta connexion 📡',
   net_retry:       'Erreur réseau — réessaie',
@@ -2390,12 +2402,11 @@ function _msg(key, vars) {
 }
 
 // ── Coach marks — états "déjà montré" (persistés en localStorage) ──
-var _coachShown = (function() {
-  try { return JSON.parse(localStorage.getItem('mx_coach_v1') || '{}'); } catch(e) { return {}; }
-})();
+function _coKey() { return 'mx_co_' + (S.prof ? S.prof.code : 'anon'); }
+var _coachShown = {};
 function _markCoach(key) {
   _coachShown[key] = true;
-  try { localStorage.setItem('mx_coach_v1', JSON.stringify(_coachShown)); } catch(e) {}
+  try { localStorage.setItem(_coKey(), JSON.stringify(_coachShown)); } catch(e) {}
 }
 function _needsCoach(key) { return !_coachShown[key]; }
 
@@ -3993,13 +4004,15 @@ function renderTrialBadge() {
   if (!t.trialActive)    { el.classList.add('hidden'); return; }
 
   var days = t.daysLeft || 0;
-  // Badge visible uniquement les 3 derniers jours — ne pas stresser les parents dès J+1
-  if (days > 3) { el.classList.add('hidden'); return; }
+  // Badge visible les 5 derniers jours — rappel progressif
+  if (days > 5) { el.classList.add('hidden'); return; }
   var urgent = days <= 1;
   var color = urgent
     ? 'background:#fef3c7;border-color:#fcd34d;color:#92400e'
-    : 'background:#fef9c3;border-color:#fde047;color:#713f12';
-  var msg = days === 0 ? 'Essai terminé aujourd\'hui ⏰' : 'J-' + days + ' · Essai se termine bientôt';
+    : days <= 3
+      ? 'background:#fef9c3;border-color:#fde047;color:#713f12'
+      : 'background:#f0f9ff;border-color:#bae6fd;color:#0369a1';
+  var msg = days === 0 ? 'Essai terminé aujourd\'hui ⏰' : days <= 3 ? 'J-' + days + ' · Essai se termine bientôt' : 'Essai gratuit · J-' + days;
   el.innerHTML =
     '<div style="display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;' +
     'padding:.3rem .75rem;border-radius:99px;border:1.5px solid;' + color + '">' +
@@ -4051,6 +4064,9 @@ function initApp(d, skipRender) {
   try { localStorage.removeItem('guestDiag'); } catch(e) {}
   S.prof       = d.profile;
   S.niv        = d.profile.level;
+  // Charger milestones + coach namespacés par user
+  try { _milestoneShown = JSON.parse(localStorage.getItem('mx_ms_' + d.profile.code) || '{}'); } catch(e) { _milestoneShown = {}; }
+  try { _coachShown = JSON.parse(localStorage.getItem('mx_co_' + d.profile.code) || '{}'); } catch(e) { _coachShown = {}; }
   S.boost      = d.dailyBoost;
   S.boostEx    = d.boostExistsInDB;
   S.isFirstDay = d.isFirstDay || false;
@@ -4118,6 +4134,7 @@ function initApp(d, skipRender) {
       S.pendingManual = d.nextChapter.insight || '⏳ Ton prof prépare quelque chose pour toi. Reviens demain matin 🔥';
     } else if (typeof d.nextChapter === 'object' && d.nextChapter.categorie && d.nextChapter.exos && d.nextChapter.exos.length > 0) {
       // JSON complet valide : remplace le contenu du chapitre
+      S.pendingManual = null; // Chapitre réel reçu → effacer le bandeau "en préparation"
       var nc = d.nextChapter;
       var ncKey = nc.categorie;
       var ncLow2 = ncKey.toLowerCase();
@@ -4141,6 +4158,7 @@ function initApp(d, skipRender) {
       } catch (e) {}
     } else if (typeof d.nextChapter === 'string') {
       // Fallback : juste un badge NEW
+      S.pendingManual = null;
       var ncLow = d.nextChapter.toLowerCase();
       Object.keys(LVL[S.niv].cats || {}).forEach(function(k) {
         if (k.toLowerCase() === ncLow) S.isNew[k] = true;
@@ -4213,7 +4231,7 @@ function initApp(d, skipRender) {
         if (!injectedCats.has(cat)) S.chapDone[cat] = doneUser.chapDone[cat];
       });
     }
-    if (doneUser.boostConsumed && !injectedCats.has('BOOST') && d.boostExistsInDB) {
+    if (doneUser.boostConsumed && !injectedCats.has('BOOST') && d.boostExistsInDB && doneUser.boostConsumedDate === tod()) {
       S.boostConsumed = true;
     }
   } catch (e) {}
@@ -4296,7 +4314,9 @@ function initApp(d, skipRender) {
   updH();
 
   // S2 — Streak break alert : si streak en cours et boost pas encore fait aujourd'hui
-  if (S.stk >= 1 && !S.boostConsumed) {
+  // Skip si milestone streak_3 ou streak_7 va fire (évite doublon)
+  var _stkMileDup = (S.stk === 3 && !_milestoneShown['streak_3']) || (S.stk === 7 && !_milestoneShown['streak_7']);
+  if (S.stk >= 2 && !S.boostConsumed && !_stkMileDup) {
     setTimeout(function() {
       showT('🔥 Streak de ' + S.stk + ' jour' + (S.stk > 1 ? 's' : '') + ' — fais ton entraînement pour le garder !', 5000, '🔥');
     }, 2000);
@@ -4514,9 +4534,8 @@ function loadBoost() {
 // ══════════════════════════════════════════════════════════════
 // MILESTONES
 // ══════════════════════════════════════════════════════════════
-var _milestoneShown = (function() {
-  try { return JSON.parse(localStorage.getItem('mx_milestones_v1') || '{}'); } catch(e) { return {}; }
-})();
+function _msKey() { return 'mx_ms_' + (S.prof ? S.prof.code : 'anon'); }
+var _milestoneShown = {};
 function _checkMilestone() {
   var totalExos = Object.keys(S.res).length;
   var totalChapDone = Object.keys(S.chapDone || {}).length;
@@ -4537,7 +4556,7 @@ function _checkMilestone() {
   }
   if (ms) {
     _milestoneShown[ms.id] = true;
-    try { localStorage.setItem('mx_milestones_v1', JSON.stringify(_milestoneShown)); } catch(e) {}
+    try { localStorage.setItem(_msKey(), JSON.stringify(_milestoneShown)); } catch(e) {}
     setTimeout(function() { showT(ms.msg, 4500, ms.ic); }, 800);
   }
 }
@@ -4688,11 +4707,12 @@ window.validateAnswer = function() {
     showT(_msg(_okKey), 1200, '\u2B50');
     setTimeout(function(){ mark(cat, idx, 'EASY', null); }, 700);
   } else {
-    showT(_msg(_koKey), 1500, '\uD83D\uDCA1');
-    // T2 : Tip première erreur — les indices s'affichent
+    // T2 : Tip première erreur — les indices s'affichent (avant le panel aide)
     if (_needsCoach('tip_wrong')) {
       _markCoach('tip_wrong');
-      setTimeout(function() { showT('Pas grave \u2014 les indices et la correction s\'affichent pour t\'aider', 4500, '\uD83D\uDCCB'); }, 2200);
+      showT('Pas grave \u2014 les indices et la correction s\'affichent pour t\'aider', 2500, '\uD83D\uDCCB');
+    } else {
+      showT(_msg(_koKey), 1500, '\uD83D\uDCA1');
     }
     setTimeout(function(){
       S._pendingHelp = { cat: cat, idx: idx };
@@ -4910,6 +4930,7 @@ function chkComp(cat) {
         var ds4 = JSON.parse(localStorage.getItem(DK) || '{}');
         if (!ds4[S.prof.code]) ds4[S.prof.code] = {};
         ds4[S.prof.code].boostConsumed = true;
+        ds4[S.prof.code].boostConsumedDate = tod();
         localStorage.setItem(DK, JSON.stringify(ds4));
       } catch (e) {}
     } else if (cat === 'BREVET') {
