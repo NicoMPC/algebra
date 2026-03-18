@@ -1085,6 +1085,29 @@
       stroke-dasharray:var(--len);
       animation: figDraw .8s ease-out both;
     }
+
+    /* ── Tour guidé first-login ── */
+    .tour-overlay { position:fixed;inset:0;z-index:9000;pointer-events:none;transition:opacity .3s }
+    .tour-overlay.active { pointer-events:auto }
+    .tour-backdrop { position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9001;transition:opacity .3s }
+    .tour-highlight { position:absolute;z-index:9002;border-radius:16px;box-shadow:0 0 0 9999px rgba(0,0,0,.72);pointer-events:none;transition:all .35s cubic-bezier(.4,0,.2,1) }
+    .tour-tooltip { position:absolute;z-index:9003;background:#fff;border-radius:16px;padding:1.1rem 1.2rem;max-width:300px;box-shadow:0 8px 32px rgba(0,0,0,.25);animation:tourPop .3s ease-out both }
+    .tour-tooltip .tour-arrow { position:absolute;width:14px;height:14px;background:#fff;transform:rotate(45deg);box-shadow:-2px -2px 4px rgba(0,0,0,.06) }
+    .tour-tooltip .tour-title { font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;color:#1e1b4b;margin-bottom:.35rem }
+    .tour-tooltip .tour-body { font-size:.85rem;color:#475569;line-height:1.45 }
+    .tour-tooltip .tour-actions { display:flex;align-items:center;justify-content:space-between;margin-top:.85rem }
+    .tour-tooltip .tour-btn { font-family:Syne,sans-serif;font-weight:800;font-size:.82rem;padding:.55rem 1.1rem;border:none;border-radius:11px;cursor:pointer;transition:transform .15s }
+    .tour-tooltip .tour-btn:active { transform:scale(.95) }
+    .tour-tooltip .tour-btn-next { background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff }
+    .tour-tooltip .tour-btn-skip { background:none;color:#94a3b8;font-size:.75rem;font-weight:600 }
+    .tour-dots { display:flex;gap:5px }
+    .tour-dots span { width:7px;height:7px;border-radius:50%;background:#cbd5e1;transition:background .2s }
+    .tour-dots span.active { background:#6366f1 }
+    @keyframes tourPop { from{opacity:0;transform:translateY(8px) scale(.95)} to{opacity:1;transform:none} }
+    body.app-night .tour-tooltip { background:#1e1b4b;box-shadow:0 8px 32px rgba(0,0,0,.5) }
+    body.app-night .tour-tooltip .tour-arrow { background:#1e1b4b }
+    body.app-night .tour-tooltip .tour-title { color:#e0e7ff }
+    body.app-night .tour-tooltip .tour-body { color:#a5b4fc }
   </style>
 </head>
 <!--
@@ -3593,6 +3616,7 @@ async function _flowGuestRegister() {
     showOnboarding(function() {
       _onbSlides = _savedSlides;
       render();
+      setTimeout(_startTour, 600);
     });
   } else {
     showT('Connecte-toi depuis le menu 😊', 2500, '💡');
@@ -3687,6 +3711,7 @@ async function flowRegister() {
       showOnboarding(function() {
         _onbSlides = _savedSlides2;
         render();
+        setTimeout(_startTour, 600);
       });
     } else {
       showOnboarding(function() { startCal(); });
@@ -4009,6 +4034,110 @@ window._onbNext = function() {
     if (_onbCallback) { var cb = _onbCallback; _onbCallback = null; cb(); }
   }
 };
+
+// ══════════════════════════════════════════════════════════════
+// TOUR GUIDÉ — first-login spotlight tutorial
+// ══════════════════════════════════════════════════════════════
+var _tourSteps = [
+  { el: null, emoji: '👋', title: 'Bienvenue sur Matheux !', body: 'Petit tour rapide pour découvrir ton espace. Ça prend 20 secondes.', pos: 'center' },
+  { el: function(){ return document.querySelector('#main-app .pop-in.rounded-2xl'); }, emoji: '⚡', title: 'Ton entraînement du jour', body: 'Chaque jour, 5 exercices personnalisés t\'attendent ici. C\'est ton point de départ.', pos: 'below' },
+  { el: function(){ var cards = document.querySelectorAll('#main-app [data-cat]'); return cards.length > 0 ? cards[0] : null; }, emoji: '📘', title: 'Tes chapitres', body: 'Tous tes chapitres sont là. Tu peux les faire dans l\'ordre que tu veux, sans limite.', pos: 'below' },
+  { el: function(){ return document.getElementById('ui-xp') ? document.getElementById('ui-xp').parentElement : null; }, emoji: '💎', title: 'Tes XP', body: 'Chaque exercice te rapporte des XP — même quand tu te trompes.', pos: 'below' },
+  { el: function(){ return document.getElementById('stk-box'); }, emoji: '🔥', title: 'Ta série', body: 'Reviens chaque jour pour garder ta série active. La régularité paye.', pos: 'below' },
+  { el: null, emoji: '🚀', title: 'C\'est parti !', body: 'Lance ton premier entraînement. Bonne chance !', pos: 'center', last: true }
+];
+var _tourIdx = 0;
+
+function _startTour() {
+  if (!_needsCoach('TOUR')) return;
+  _tourIdx = 0;
+  var ov = document.createElement('div');
+  ov.id = 'tour-overlay';
+  ov.className = 'tour-overlay active';
+  ov.innerHTML = '<div class="tour-backdrop" id="tour-bd"></div><div class="tour-highlight" id="tour-hl" style="display:none"></div><div id="tour-tip"></div>';
+  document.body.appendChild(ov);
+  _tourRender();
+}
+
+function _tourRender() {
+  var step = _tourSteps[_tourIdx];
+  var tip = document.getElementById('tour-tip');
+  var hl = document.getElementById('tour-hl');
+  if (!tip || !hl) return;
+
+  // Dots
+  var dots = '<div class="tour-dots">';
+  for (var i = 0; i < _tourSteps.length; i++) dots += '<span class="' + (i === _tourIdx ? 'active' : '') + '"></span>';
+  dots += '</div>';
+
+  // Resolve element
+  var el = step.el ? step.el() : null;
+
+  if (!el || step.pos === 'center') {
+    // Centered tooltip (no spotlight)
+    hl.style.display = 'none';
+    document.getElementById('tour-bd').style.opacity = '1';
+    tip.innerHTML = '<div class="tour-tooltip" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;animation:tourPop .3s ease-out both">' +
+      '<div style="font-size:2rem;margin-bottom:.5rem">' + step.emoji + '</div>' +
+      '<div class="tour-title">' + step.title + '</div>' +
+      '<div class="tour-body">' + step.body + '</div>' +
+      '<div class="tour-actions" style="justify-content:center;gap:1rem">' +
+      (!step.last ? '<button class="tour-btn tour-btn-skip" onclick="_tourEnd()">Passer</button>' : '') +
+      '<button class="tour-btn tour-btn-next" onclick="' + (step.last ? '_tourEnd()' : '_tourNext()') + '">' + (step.last ? 'C\'est parti ! →' : 'Suivant →') + '</button>' +
+      '</div>' +
+      '<div style="margin-top:.7rem">' + dots + '</div>' +
+      '</div>';
+    return;
+  }
+
+  // Spotlight on element
+  var r = el.getBoundingClientRect();
+  var pad = 8;
+  hl.style.display = 'block';
+  hl.style.top = (r.top - pad + window.scrollY) + 'px';
+  hl.style.left = (r.left - pad) + 'px';
+  hl.style.width = (r.width + pad * 2) + 'px';
+  hl.style.height = (r.height + pad * 2) + 'px';
+
+  // Scroll element into view
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  // Position tooltip below or above
+  var tipTop, tipLeft, arrowStyle;
+  var tipW = Math.min(300, window.innerWidth - 32);
+  if (step.pos === 'above') {
+    tipTop = (r.top + window.scrollY - pad - 16) + 'px';
+    tipLeft = Math.max(16, Math.min(r.left + r.width / 2 - tipW / 2, window.innerWidth - tipW - 16)) + 'px';
+    arrowStyle = 'bottom:-6px;left:50%;transform:translateX(-50%) rotate(45deg)';
+  } else {
+    tipTop = (r.bottom + window.scrollY + pad + 16) + 'px';
+    tipLeft = Math.max(16, Math.min(r.left + r.width / 2 - tipW / 2, window.innerWidth - tipW - 16)) + 'px';
+    arrowStyle = 'top:-6px;left:50%;transform:translateX(-50%) rotate(45deg)';
+  }
+
+  tip.innerHTML = '<div class="tour-tooltip" style="position:absolute;top:' + tipTop + ';left:' + tipLeft + ';width:' + tipW + 'px">' +
+    '<div class="tour-arrow" style="' + arrowStyle + '"></div>' +
+    '<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem"><span style="font-size:1.2rem">' + step.emoji + '</span><span class="tour-title" style="margin:0">' + step.title + '</span></div>' +
+    '<div class="tour-body">' + step.body + '</div>' +
+    '<div class="tour-actions">' +
+    '<button class="tour-btn tour-btn-skip" onclick="_tourEnd()">Passer</button>' +
+    '<button class="tour-btn tour-btn-next" onclick="_tourNext()">Suivant →</button>' +
+    '</div>' +
+    '<div style="margin-top:.5rem">' + dots + '</div>' +
+    '</div>';
+}
+
+function _tourNext() {
+  _tourIdx++;
+  if (_tourIdx >= _tourSteps.length) { _tourEnd(); return; }
+  _tourRender();
+}
+
+function _tourEnd() {
+  _markCoach('TOUR');
+  var ov = document.getElementById('tour-overlay');
+  if (ov) { ov.style.opacity = '0'; setTimeout(function() { ov.remove(); }, 300); }
+}
 
 // ══════════════════════════════════════════════════════════════
 // ESSAI GRATUIT — badge + overlay

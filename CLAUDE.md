@@ -339,6 +339,25 @@ Profils simulation 21j : SIM01→SIM12 **supprimés** le 16 mars (nettoyage base
 | 5 | Onboarding 3→2 slides | Guest flow : "Ton espace est créé" + "Ton entraînement est prêt" — plus rapide |
 | 6 | `_flowGoToRegister()` | Nouvelle fonction : objectif → prépare step 4 (inscription) avec heading adapté |
 
+### ✅ Tour guidé first-login — 18 mars @96
+
+Spotlight tutorial qui se déclenche 1 seule fois après les slides d'onboarding post-inscription (guest + flowRegister).
+Système : overlay sombre + highlight clip-path + tooltip positionné. Bouton "Passer" à chaque step.
+Guard : `_needsCoach('TOUR')` / `_markCoach('TOUR')` — namespacé par user, ne revient jamais.
+Compatible mode nuit. 6 étapes :
+
+| # | Élément pointé | Message |
+|---|---|---|
+| 1 | Centré (aucun) | "Bienvenue sur Matheux ! Petit tour rapide, 20 secondes." |
+| 2 | Hero CTA (boost) | "Chaque jour, 5 exercices personnalisés t'attendent ici." |
+| 3 | 1ère carte chapitre | "Tous tes chapitres sont là, dans l'ordre que tu veux." |
+| 4 | XP header | "Chaque exercice te rapporte des XP — même les erreurs." |
+| 5 | Streak header | "Reviens chaque jour pour garder ta série active." |
+| 6 | Centré (aucun) | "C'est parti ! Lance ton premier entraînement." |
+
+Fonctions : `_startTour()`, `_tourRender()`, `_tourNext()`, `_tourEnd()`.
+CSS : `.tour-overlay`, `.tour-highlight`, `.tour-tooltip`, animation `tourPop`.
+
 ### ✅ Tuto régressif — 18 mars @91
 
 8 micro-tips contextuels first-use (système `_needsCoach/_markCoach` existant) :
