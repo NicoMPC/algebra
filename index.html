@@ -1624,7 +1624,7 @@
         </details>
         <details class="faq-item">
           <summary class="faq-q">Mon enfant a des difficultés depuis plusieurs années. Ça marche quand même ?</summary>
-          <p class="faq-a">C'est exactement pour ce cas que Matheux existe. Après le diagnostic, si votre enfant a des lacunes sur des notions d'une année précédente — des fractions de 5ème alors qu'il est en 4ème, par exemple — le prof les identifie et ouvre ces chapitres directement dans son espace. Le parcours est construit sur ce qui manque réellement, pas sur le niveau théorique.</p>
+          <p class="faq-a">C'est exactement pour ce cas que Matheux existe. Après le diagnostic, si votre enfant a des lacunes sur des notions d'une année précédente — des fractions de 5ème alors qu'il est en 4ème, par exemple — le système les identifie et ces chapitres sont ouverts directement dans son espace. Le parcours est construit sur ce qui manque réellement, pas sur le niveau théorique.</p>
         </details>
         <details class="faq-item">
           <summary class="faq-q">10 minutes par jour, c'est vraiment suffisant ?</summary>
@@ -2214,21 +2214,21 @@ var _MSGS = {
   cours_20:   { '6EME': '✨ Cours complet débloqué — tu as TOUT maîtrisé 🏆 Bravo !',
                 '3EME': '✨ Cours complet. Maîtrise confirmée — excellent travail 🏆',
                 def:    '✨ Cours complet ! Tu as tout maîtrisé 🏆' },
-  cours_prep: { '6EME': '🎉 Super ! Ton prof prépare ton cours — retrouve-le demain !',
-                '3EME': '🎉 Jalon atteint. Ton prof rédige ton cours personnalisé — disponible demain.',
-                def:    '🎉 Bravo ! Ton prof prépare ton cours personnalisé — retrouve-le demain !' },
+  cours_prep: { '6EME': '🎉 Super ! Ton cours est en préparation — retrouve-le demain !',
+                '3EME': '🎉 Jalon atteint. Ton cours personnalisé est en préparation — disponible demain.',
+                def:    '🎉 Bravo ! Ton cours personnalisé est en préparation — retrouve-le demain !' },
   chap_done:  { '6EME': '🏆 Chapitre terminé — super boulot ! Ton prochain chapitre arrive demain 📚',
-                '3EME': '🏆 Chapitre terminé. Ton prof prépare la suite — disponible demain.',
+                '3EME': '🏆 Chapitre terminé. La suite est en préparation — disponible demain.',
                 def:    '🏆 Chapitre terminé ! Ton prochain chapitre est en préparation, il sera disponible demain 📚' },
-  boost_ready:      '⚡ Ton Boost du jour est prêt !',
+  boost_ready:      '⚡ Ton Entraînement du jour est prêt !',
   boost_preparing:  '✨ Ton prochain boost est en cours de préparation, il sera disponible demain !',
   boost_in_progress:'Ton boost est en cours ⚡ — encore {n} exo{s} et c\'est dans la boîte !',
   coach_hint:    'Psst — t\'as droit aux indices 💡 Hésite pas !',
   coach_formula: 'La formule se révèle après réponse 📐 — clique dessus !',
   coach_brouillon:'Le brouillon est en bas 📝 — utilise-le pour tes calculs !',
-  coach_boost_first: '⚡ C\'est ton Boost du jour — 5 exos, ~10 min. C\'est parti !',
-  pending_chapter:  'Ton prof prépare ton prochain chapitre personnalisé… reviens dans quelques heures !',
-  no_boost_yet:     'Ton boost du jour arrive bientôt — ton prof le prépare !',
+  coach_boost_first: '⚡ C\'est ton Entraînement du jour — 5 exos, ~10 min. C\'est parti !',
+  pending_chapter:  'Ton prochain chapitre personnalisé est en préparation… reviens dans quelques heures !',
+  no_boost_yet:     'Ton entraînement du jour arrive bientôt !',
   revision_done:    'Révision terminée ! {easy}/{tot} réussis 🔁',
   net_error:       'Erreur réseau — vérifie ta connexion 📡',
   net_retry:       'Erreur réseau — réessaie',
@@ -3238,7 +3238,7 @@ async function _flowGuestRegister() {
     // Onboarding adapté guest
     var _guestSlides = [
       _onbSlides[0],
-      { emoji: '⚡', title: 'Ton boost du jour est prêt !',
+      { emoji: '⚡', title: 'Ton entraînement du jour est prêt !',
         body: 'On a analysé tes réponses et généré tes exercices perso. Lance ton premier boost dès maintenant 🔥',
         color: 'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)' },
       { emoji: '🔥', title: 'Une chose à faire aujourd\'hui',
@@ -3337,7 +3337,7 @@ async function flowRegister() {
       boostFromDiag(_diagErrs2.slice(0, 4));
       var _guestSlides2 = [
         _onbSlides[0],
-        { emoji: '⚡', title: 'Ton boost du jour est prêt !',
+        { emoji: '⚡', title: 'Ton entraînement du jour est prêt !',
           body: 'On a analysé tes réponses et généré tes exercices perso. Lance ton premier boost dès maintenant 🔥',
           color: 'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)' },
         { emoji: '🔥', title: 'Une chose à faire aujourd\'hui',
@@ -3603,8 +3603,8 @@ var _onbSlides = [
   },
   {
     emoji: '⚡',
-    title: 'Lance ton Boost du jour !',
-    body: 'Chaque jour, un <strong>Boost personnalisé</strong> t\'attend — des exercices ciblés sur tes vrais points faibles. Commence maintenant, ça prend 5 minutes.',
+    title: 'Lance ton Entraînement du jour !',
+    body: 'Chaque jour, un <strong>entraînement personnalisé</strong> t\'attend — des exercices ciblés sur tes vrais points faibles. Commence maintenant, ça prend 5 minutes.',
     color: 'linear-gradient(135deg,#1e1b4b 0%,#4338ca 100%)'
   }
 ];
@@ -3618,10 +3618,10 @@ function showOnboarding(cb) {
   _onbCallback = cb || null;
   // Adapter slide 3 selon objectif
   var _s3Map = {
-    lacunes:         { emoji: '⚡', title: 'Ton Boost du jour t\'attend !',      body: 'Exercices ciblés sur tes vraies lacunes — pas celles de ta classe, les tiennes. 5 exos, 10 min. C\'est parti !' },
-    chapitre_jour:   { emoji: '📅', title: 'Un chapitre par jour',               body: 'Ton Boost du jour est prêt. Ensuite, tu avances dans tes chapitres à ton rythme. Régulier > intense.' },
-    brevet:          { emoji: '📝', title: 'La prépa brevet commence maintenant', body: 'Ton Boost cible les chapitres clés du brevet. Les exercices style examen arrivent au fur et à mesure.' },
-    toutes_matieres: { emoji: '🚀', title: 'Tout le programme est là',           body: 'Commence par ton Boost du jour, puis explore librement les 54 chapitres disponibles.' }
+    lacunes:         { emoji: '⚡', title: 'Ton Entraînement du jour t\'attend !',      body: 'Exercices ciblés sur tes vraies lacunes — pas celles de ta classe, les tiennes. 5 exos, 10 min. C\'est parti !' },
+    chapitre_jour:   { emoji: '📅', title: 'Un chapitre par jour',               body: 'Ton Entraînement du jour est prêt. Ensuite, tu avances dans tes chapitres à ton rythme. Régulier > intense.' },
+    brevet:          { emoji: '📝', title: 'La prépa brevet commence maintenant', body: 'Ton entraînement cible les chapitres clés du brevet. Les exercices style examen arrivent au fur et à mesure.' },
+    toutes_matieres: { emoji: '🚀', title: 'Tout le programme est là',           body: 'Commence par ton Entraînement du jour, puis explore librement les 54 chapitres disponibles.' }
   };
   var _s3 = _s3Map[_flowObjectif] || _s3Map['lacunes'];
   _onbSlides[2] = { emoji: _s3.emoji, title: _s3.title, body: _s3.body, color: 'linear-gradient(135deg,#1e1b4b 0%,#4338ca 100%)' };
@@ -4188,7 +4188,7 @@ function updH() {
 function loadBoost() {
   if (!S.boost) return;
   LVL[S.niv].cats["BOOST"]  = S.boost.exos.map(function(e,i){ return Object.assign({},e,{oC:'BOOST',oI:i}); });
-  LVL[S.niv].names["BOOST"] = "Mon Boost du jour";
+  LVL[S.niv].names["BOOST"] = "Mon entraînement du jour";
   LVL[S.niv].icons["BOOST"] = "⚡";
   S.insights["BOOST"]        = S.boost.insight;
 }
@@ -5527,8 +5527,8 @@ function renderArchiveSection(cat, exs) {
   var html = '<div class="mx-4 mb-4">';
 
   if (isBoost) {
-    // ── Boost du jour terminé ─────────────────────────────
-    html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-emerald-700 text-center mb-3">Boost du jour : fait ✅ T\'es à jour. Reviens demain 🔥</div>';
+    // ── Entraînement du jour terminé ─────────────────────────────
+    html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-emerald-700 text-center mb-3">Entraînement du jour : fait ✅ T\'es à jour. Reviens demain 🔥</div>';
     // Collecter les exos répondus pour navigation Précédent/Suivant
     var _boostAnswered = [];
     exs.forEach(function(exo, idx) {
@@ -5561,7 +5561,7 @@ function renderArchiveSection(cat, exs) {
         html += '<div class="mb-2">';
         html += '<button onclick="_toggleRetroBoost('+bi+')" class="w-full flex items-center gap-3 bg-white border border-slate-100 rounded-xl px-4 py-2.5 text-left active:bg-slate-50">';
         html += '<span class="text-base flex-shrink-0">⚡</span>';
-        html += '<div class="flex-1 min-w-0"><div class="text-xs font-black text-slate-700">Boost du ' + _fmtRetroDate(b.date) + '</div>';
+        html += '<div class="flex-1 min-w-0"><div class="text-xs font-black text-slate-700">Entraînement du ' + _fmtRetroDate(b.date) + '</div>';
         html += '<div class="text-[10px] text-slate-400 font-medium">' + done + '/' + total + ' réussis</div></div>';
         var scoreColor = pct >= 70 ? '#16a34a' : pct >= 40 ? '#d97706' : '#dc2626';
         html += '<span style="font-size:.7rem;font-weight:900;color:'+scoreColor+'">'+pct+'%</span>';
@@ -5786,9 +5786,9 @@ function renderDiagInsight() {
     '</div>' +
     '<div class="space-y-2">' + chapHtml + '</div>' +
     '<div class="bg-indigo-50 border border-indigo-200 rounded-2xl px-4 py-3 text-sm font-semibold text-indigo-700 text-center">' +
-      '⚡ Ton premier boost du jour est prêt — 5 exercices ciblés sur tes points faibles' +
+      '⚡ Ton premier entraînement du jour est prêt — 5 exercices ciblés sur tes points faibles' +
     '</div>' +
-    '<button onclick="dismissDiagInsight();togCat(\'BOOST\')" class="btn btn-ac btn-fw py-4 text-base boost-shimmer">Commencer mon boost du jour ⚡</button>' +
+    '<button onclick="dismissDiagInsight();togCat(\'BOOST\')" class="btn btn-ac btn-fw py-4 text-base boost-shimmer">Commencer mon entraînement du jour ⚡</button>' +
     '</div>';
 }
 
@@ -5893,7 +5893,7 @@ function _showSessionFeedback(source, ref, callback) {
   if (S.prof && S.prof.isAdmin) { if (callback) callback(); return; }
 
   var labels = {
-    boost:    'Comment s\'est passé ton Boost du jour ?',
+    boost:    'Comment s\'est passé ton Entraînement du jour ?',
     brevet:   'Comment s\'est passé ce Brevet Blanc ?',
     chapitre: 'Comment s\'est passé ce chapitre ?'
   };
@@ -5968,26 +5968,26 @@ function _copyParentMessage(code, type) {
   var subject = '', body = '';
 
   if (type === 'parent-premier-boost') {
-    subject = prenom + ' a terminé son premier Boost Matheux 🎉';
-    body = 'Bonjour,\n\n' + prenom + ' vient de terminer son premier Boost du jour sur Matheux.\n\n' +
+    subject = prenom + ' a terminé son premier entraînement Matheux 🎉';
+    body = 'Bonjour,\n\n' + prenom + ' vient de terminer son premier Entraînement du jour sur Matheux.\n\n' +
       'C\'est une excellente nouvelle — le plus dur dans un nouvel outil, c\'est de commencer. ' + prenom + ' l\'a fait.\n\n' +
       'Les prochains jours sont importants : si le rythme s\'installe cette semaine, les résultats suivent. ' +
       'Je suis les exercices en direct et j\'ajuste le contenu selon ce que je vois.\n\n' +
-      'N\'hésitez pas à me répondre si vous avez des questions.\n\nNicolas\nProf de maths · Matheux';
+      'N\'hésitez pas à me répondre si vous avez des questions.\n\nNicolas\nFondateur · Matheux';
   } else if (type === 'parent-streak-7') {
     subject = prenom + ' travaille depuis 7 jours d\'affilée 🔥';
     body = 'Bonjour,\n\n' + prenom + ' a travaillé 7 jours consécutifs sur Matheux.\n\n' +
       'C\'est une vraie régularité — et c\'est ce qui fait la différence sur la durée. ' +
       'En mathématiques, la constance bat l\'intensité.\n\n' +
-      'Je voulais juste vous le signaler, parce que ça mérite d\'être remarqué.\n\nNicolas\nProf de maths · Matheux';
+      'Je voulais juste vous le signaler, parce que ça mérite d\'être remarqué.\n\nNicolas\nFondateur · Matheux';
   } else if (type === 'parent-relance') {
     subject = 'Un petit point sur ' + prenom + ' 💬';
     body = 'Bonjour,\n\n' +
-      'Je voulais prendre des nouvelles de ' + prenom + ' — je vois qu\'il/elle n\'a pas fait de Boost depuis quelques jours.\n\n' +
+      'Je voulais prendre des nouvelles de ' + prenom + ' — je vois qu\'il/elle n\'a pas fait d\'entraînement depuis quelques jours.\n\n' +
       'Pas d\'inquiétude — ça arrive à tout le monde de décrocher quelques jours. ' +
       'Si quelque chose bloque (les exercices trop difficiles, manque de motivation, planning chargé), ' +
       'dites-le moi — je peux adapter.\n\n' +
-      '5 minutes ce soir suffisent pour reprendre.\n\nNicolas\nProf de maths · Matheux';
+      '5 minutes ce soir suffisent pour reprendre.\n\nNicolas\nFondateur · Matheux';
   } else if (type === 'parent-brevet') {
     var bScore = st.lastBrevetResult ? (st.lastBrevetResult.score || 0) : 0;
     subject = 'Résultats du Brevet Blanc de ' + prenom + ' — ' + bScore + '%';
@@ -5996,13 +5996,13 @@ function _copyParentMessage(code, type) {
       (bScore >= 70 ? prenom + ' est sur la bonne voie. Les bases sont là — on va maintenant affiner les points faibles identifiés.' :
        bScore >= 50 ? 'Des progrès réels, des points à consolider. Je vais cibler les prochains boosts sur les chapitres faibles.' :
        'Ce brevet blanc est un bilan utile. On a identifié clairement ce qui reste à travailler — c\'est pour ça qu\'on le fait.') +
-      '\n\nSi vous avez des questions sur les résultats, répondez directement à cet email.\n\nNicolas\nProf de maths · Matheux';
+      '\n\nSi vous avez des questions sur les résultats, répondez directement à cet email.\n\nNicolas\nFondateur · Matheux';
   } else if (type === 'parent-chapitre') {
     subject = prenom + ' a terminé un chapitre complet 📚';
     body = 'Bonjour,\n\n' + prenom + ' vient de terminer un chapitre complet sur Matheux — 20 exercices validés.\n\n' +
       'C\'est un jalon concret : la notion est travaillée en profondeur, pas juste survolée. ' +
       'Je vais lui préparer la suite dans les prochains jours.\n\n' +
-      'Merci de votre confiance.\n\nNicolas\nProf de maths · Matheux';
+      'Merci de votre confiance.\n\nNicolas\nFondateur · Matheux';
   }
 
   _openEmailModal(code, type, subject, body);
@@ -6071,7 +6071,7 @@ window._simulateNextDay = function() {
 function renderMotProf() {
   var isBoost = S._motProfScreen === 'boost';
   var msg     = isBoost ? S.motProfBoost : (S.motProfChap[S._motProfScreen] || '');
-  var label   = isBoost ? '⚡ Ton boost du jour' : '📚 ' + (S._motProfScreen || '').replace(/_/g,' ');
+  var label   = isBoost ? '⚡ Ton entraînement du jour' : '📚 ' + (S._motProfScreen || '').replace(/_/g,' ');
   var c = document.getElementById('main-content');
   if (!c) return;
   c.innerHTML =
@@ -6226,7 +6226,7 @@ function render() {
   if (S.boostPreping) {
     html += '<div class="rounded-2xl p-5 flex items-center gap-4 shadow-lg mb-4" style="background:linear-gradient(135deg,#312e81,#4338ca)">' +
       '<div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0"><div class="ld"></div></div>' +
-      '<div><div class="syne text-base font-black text-white mb-0.5">Mon Boost du jour en cours...</div>' +
+      '<div><div class="syne text-base font-black text-white mb-0.5">Mon entraînement du jour en cours...</div>' +
       '<p class="text-indigo-200 text-sm">Analyse en cours — tes exercices arrivent</p></div></div>';
   }
 
@@ -6240,7 +6240,7 @@ function render() {
       var _bSt = _chapStats['BOOST'];
       var _bPct = _bSt ? Math.round((_bSt.done / _bSt.tot) * 100) : 0;
       _hero = { action: 'handleBoost()', emoji: '⚡',
-        title: _bSt && _bSt.done > 0 ? 'Continue ton Boost' : 'Ton Boost du jour',
+        title: _bSt && _bSt.done > 0 ? 'Continue ton entraînement' : 'Ton entraînement du jour',
         sub: _bSt && _bSt.done > 0 ? (_bSt.done + '/' + _bSt.tot + ' — encore ' + (_bSt.tot - _bSt.done) + ' exo' + ((_bSt.tot - _bSt.done) > 1 ? 's' : '')) : 'Exercices ciblés sur tes points à renforcer',
         pct: _bPct };
     }
@@ -6323,7 +6323,7 @@ function render() {
       html += '<div class="rounded-2xl p-4 flex items-center gap-3 mb-4" style="background:linear-gradient(135deg,#1e1b4b,#312e81)">' +
         '<div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-lg flex-shrink-0">✅</div>' +
         '<div class="flex-1 min-w-0">' +
-        '<div class="syne text-sm font-black text-white">Boost terminé' + (_heroName ? ', ' + _heroName : '') + '</div>' +
+        '<div class="syne text-sm font-black text-white">Entraînement terminé' + (_heroName ? ', ' + _heroName : '') + '</div>' +
         '<p class="text-indigo-300 text-xs">Ton prof prépare le prochain pour demain</p>' +
         '</div></div>';
     }
@@ -6357,7 +6357,7 @@ function render() {
       }
       _doneHtml += '<div data-cat="'+cat+'" onclick="togCat(\''+cat+'\')" class="rounded-2xl border border-emerald-200 flex items-center gap-3 py-3 px-4 cursor-pointer select-none" style="background:#f0fdf4;position:relative;z-index:2">';
       _doneHtml += '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-base flex-shrink-0">'+(isBoost?'⚡':(LVL[S.niv].icons[cat]||'📘'))+'</div>';
-      _doneHtml += '<div class="flex-1 min-w-0"><div class="syne font-black text-sm text-slate-800 truncate" style="font-weight:800">'+(isBoost?'Mon Boost ✓':(LVL[S.niv].names[cat]||cat))+'</div>';
+      _doneHtml += '<div class="flex-1 min-w-0"><div class="syne font-black text-sm text-slate-800 truncate" style="font-weight:800">'+(isBoost?'Mon entraînement ✓':(LVL[S.niv].names[cat]||cat))+'</div>';
       if (!isBoost && _sessCount > 1) _doneHtml += '<span class="text-[9px] font-bold text-emerald-600">×'+_sessCount+' passages</span>';
       _doneHtml += '</div>';
       _doneHtml += '<div class="flex items-center gap-1.5 flex-shrink-0">';
@@ -8200,12 +8200,12 @@ function copyWelcomeEmail(code) {
   var email  = st.email  || '';
   var subject = prenom + ' vient de démarrer son diagnostic Matheux 🎯';
   var body = 'Bonjour,\n\n' +
-    'Je m\'appelle Nicolas — prof de maths et fondateur de Matheux.\n\n' +
+    'Je m\'appelle Nicolas — fondateur de Matheux.\n\n' +
     'Le profil de ' + prenom + ' est actif. Son diagnostic vient d\'être lancé : en quelques questions, j\'identifie précisément les notions qui bloquent — pas celles de la classe entière, les siennes.\n\n' +
     'Ce qui attend ' + prenom + ' :\n\n' +
     '🎯 Un diagnostic personnalisé\n' +
     'Pas une liste de tout le programme — uniquement ce qui mérite d\'être retravaillé.\n\n' +
-    '⚡ Un Boost du jour\n' +
+    '⚡ Un Entraînement du jour\n' +
     '5 exercices ciblés, chaque matin. 10 minutes suffisent. C\'est la clé.\n\n' +
     '📈 Une progression visible\n' +
     'Je suis les résultats en direct. Je vous envoie un point à J+3 et J+7.\n\n' +
@@ -8222,7 +8222,7 @@ function copyWelcomeEmail(code) {
     'L\'essai dure 7 jours, sans carte bancaire. Vous décidez ensuite, sans pression.\n\n' +
     'Des questions ? Répondez directement — je lis chaque message.\n\n' +
     'Nicolas\n' +
-    'Prof de maths · Matheux';
+    'Fondateur · Matheux';
 
   _openEmailModal(code, 'J+0', subject, body);
 }
@@ -8273,11 +8273,11 @@ function copySequenceEmail(code, type) {
       'J\'ai pu voir ses premières réponses. Ce que je vois à ce stade est courant :\n' +
       'certaines notions semblent solides, d\'autres moins — c\'est exactement pour ça que le diagnostic existe.\n\n' +
       'Ce qui fait la différence à ce stade : la régularité.\n' +
-      'Pas besoin d\'heures de travail. Le Boost du jour — 5 exercices, 10 minutes — suffit à créer l\'habitude.\n\n' +
+      'Pas besoin d\'heures de travail. L\'entraînement du jour — 5 exercices, 10 minutes — suffit à créer l\'habitude.\n\n' +
       'Si ' + prenom + ' n\'a pas encore pris le rythme, c\'est normal. Il reste 4 jours d\'essai — c\'est amplement assez pour voir des résultats concrets.\n\n' +
       'Un retour sur comment ça se passe ? Répondez à cet email — je suis disponible.\n\n' +
       'Nicolas\n' +
-      'Prof de maths · Matheux';
+      'Fondateur · Matheux';
   } else if (type === 'J+5') {
     subject = 'Encore 2 jours, ' + prenom + ' — et ensuite ? 📅';
 
@@ -8286,25 +8286,25 @@ function copySequenceEmail(code, type) {
         'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\n' +
         'Ce qu\'on a fait ensemble : identifier précisément les notions qui posent problème, pas les lacunes supposées de la classe entière — les siennes.\n\n' +
         'Pour continuer à les combler, c\'est 19,99 €/mois — sans engagement.\n→ ' + stripeLink + '\n\n' +
-        'Des questions ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux',
+        'Des questions ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux',
 
       chapitre_jour:
         'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\n' +
         'Un chapitre par jour, 10 minutes — c\'est le rythme que ' + prenom + ' a commencé à prendre. Ce type de régularité, sur un trimestre, change vraiment les résultats.\n\n' +
         'Pour continuer sur ce rythme, c\'est 19,99 €/mois — sans engagement.\n→ ' + stripeLink + '\n\n' +
-        'Des questions ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux',
+        'Des questions ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux',
 
       brevet:
         'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\n' +
         'Le brevet, ça se prépare dans la durée. Matheux inclut 144 exercices style brevet + des brevets blancs complets pour s\'entraîner dans les conditions réelles.\n\n' +
         'Pour continuer la préparation, c\'est 19,99 €/mois — sans engagement.\n→ ' + stripeLink + '\n\n' +
-        'Des questions ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux',
+        'Des questions ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux',
 
       toutes_matieres:
         'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\n' +
         '54 chapitres couvrent l\'intégralité du programme de la 6ème à la 1ère Spé. ' + prenom + ' peut avancer à son rythme, sur tous les sujets qui l\'intéressent.\n\n' +
         'Pour accéder à l\'ensemble du programme, c\'est 19,99 €/mois — sans engagement.\n→ ' + stripeLink + '\n\n' +
-        'Des questions ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux'
+        'Des questions ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux'
     };
 
     body = j5Bodies[objectif] || j5Bodies['lacunes'];
@@ -8318,28 +8318,28 @@ function copySequenceEmail(code, type) {
         'C\'est ce type de suivi ciblé — pas du tout-venant — qui change les résultats sur un trimestre.\n\n' +
         'Pour continuer ce travail de fond :\n→ 19,99 €/mois · sans engagement · résiliable à tout moment\n→ ' + stripeLink + '\n\n' +
         'Pour référence : un cours particulier coûte 30 à 50 €/heure. Matheux, c\'est un suivi quotidien personnalisé à 66 centimes par jour.\n\n' +
-        'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux',
+        'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux',
 
       chapitre_jour:
         'Bonjour,\n\nLa semaine d\'essai de ' + prenom + ' se termine aujourd\'hui.\n\n' +
         prenom + ' a commencé à prendre le rythme : un chapitre, un jour, 10 minutes. ' +
         'Sur un trimestre, cette régularité représente des dizaines de notions consolidées.\n\n' +
         'Pour que l\'habitude devienne des résultats :\n→ 19,99 €/mois · sans engagement · résiliable à tout moment\n→ ' + stripeLink + '\n\n' +
-        'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux',
+        'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux',
 
       brevet:
         'Bonjour,\n\nLa semaine d\'essai de ' + prenom + ' se termine aujourd\'hui.\n\n' +
         'Une semaine pour démarrer la préparation, c\'est bien — mais le brevet se gagne sur la durée. ' +
         'Matheux permet de s\'entraîner sur l\'intégralité du programme 3ème + des brevets blancs complets.\n\n' +
         'Pour terminer la préparation dans de bonnes conditions :\n→ 19,99 €/mois · sans engagement · résiliable à tout moment\n→ ' + stripeLink + '\n\n' +
-        'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux',
+        'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux',
 
       toutes_matieres:
         'Bonjour,\n\nLa semaine d\'essai de ' + prenom + ' se termine aujourd\'hui.\n\n' +
         'Une semaine pour explorer. ' + prenom + ' a maintenant accès à un aperçu de ce que Matheux propose : ' +
         '54 chapitres, du 6ème au lycée, avec des exercices adaptés à son niveau réel — pas au niveau moyen de sa classe.\n\n' +
         'Pour accéder à l\'ensemble du programme sans limite :\n→ 19,99 €/mois · sans engagement · résiliable à tout moment\n→ ' + stripeLink + '\n\n' +
-        'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nProf de maths · Matheux'
+        'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux'
     };
 
     body = j7Bodies[objectif] || j7Bodies['lacunes'];
