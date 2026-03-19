@@ -90,17 +90,45 @@ Chaque chapitre affiche :
 - Le **nombre d'exercices faits** sur le total (ex : 12/20)
 - Des **étoiles de slots** pour les chapitres de 20 exercices (⭐⭐○○ = 10/20 faits)
 
+### Système de scoring
+
+Chaque exercice est évalué selon ta première réponse :
+
+| Résultat | Code | Compte comme réussi ? |
+|----------|------|-----------------------|
+| Correct du premier coup | EASY | ✅ Oui |
+| Correct après indices | MEDIUM ("hésitation") | ❌ Non |
+| Mauvaise réponse | HARD | ❌ Non |
+
+**Score % = nombre de EASY / total exercices × 100**
+
+Autrement dit, seules les réponses correctes sans aucune aide comptent dans ton pourcentage de réussite.
+
 ### Chapitres terminés
 
-Les chapitres terminés sont rangés dans un **accordéon "Terminés"** en bas de page. Chaque carte terminée affiche :
+Les chapitres terminés **restent visibles dans la liste principale** (pas cachés dans un accordéon). Chaque carte terminée affiche :
 - Le **dernier score en %** (coloré : vert ≥70%, ambre ≥40%, rose <40%)
 - Le **nombre de passages** (×2, ×3...)
-- Une **flèche de tendance** (↑ progression, → stable, ↓ régression)
+- Une **flèche de tendance agrandie** (.95rem) comparant le dernier passage vs l'avant-dernier (seuil 5%) : ↑ vert (amélioration), → ambre (stable), ↓ rouge (baisse)
+- Le message **"Tes prochains exos arrivent demain 🎯"** directement sur la carte fermée
 
-En ouvrant un chapitre terminé, tu peux :
-- Revoir tes **sessions passées par date** avec le score de chaque session
-- Naviguer question par question pour revoir tes réponses
-- Comparer tes sessions entre elles (ex : "14 mar · 42%" → "16 mar · 59%" ↑ +17%)
+**Ghost stack visuel** : les chapitres avec plusieurs passages ont des "cartes empilées" visuelles (2 passages = 1 ghost derrière, 3+ passages = 2 ghosts).
+
+### Vue retro d'un chapitre terminé
+
+En ouvrant un chapitre terminé, les exercices s'affichent en **mode lecture seule**, avec le même visuel que les exercices actifs :
+- Options QCM colorées : **vert** (bonne réponse), **rouge** (mauvaise réponse choisie), **gris** (autres options)
+- **Indices et formule déployés automatiquement**
+- **Barre de numéros cliquables** (dots colorés) pour navigation directe entre exercices
+- Navigation **Précédent/Suivant** en complément
+
+### Passages et historique
+
+Les exercices sont groupés par **passage** (un ensemble complet de 20 exos), pas par date :
+- **Un seul passage** : pas de pills, juste le score et les exercices
+- **Plusieurs passages** (chapitre réassigné) : pills avec dates, ex : "19 mar · 78% ↑"
+- La **flèche de tendance** compare le dernier passage vs l'avant-dernier
+- La **date affichée** est celle de fin du passage
 
 ---
 
@@ -121,9 +149,9 @@ Chaque jour, un entraînement personnalisé de **5 exercices** t'attend. Il cibl
 
 ### Après l'entraînement
 
-L'entraînement terminé passe dans la section "Terminés". Tu peux :
-- Revoir tes réponses
-- Voir tes boosts passés par date avec le score
+L'entraînement terminé reste visible. Tu peux :
+- Revoir tes réponses en mode lecture seule (même navigation que les chapitres terminés)
+- Les **boosts passés** s'affichent en **pills datées en haut** (même UI que les chapitres) avec score et navigation par numéros + Précédent/Suivant
 - Continuer sur les **chapitres** librement — aucune limite
 
 ---
@@ -399,7 +427,17 @@ Journal de tout ce qui a été traité aujourd'hui. Vérifier que rien n'a été
    d. Cliquer "✅ Rapport envoyé"
 ```
 
-## 4.6 Ce que l'admin voit par élève
+## 4.6 Scoring (rappel pour l'interprétation des résultats)
+
+| Code | Signification | Réussi ? |
+|------|---------------|----------|
+| EASY | Correct du premier coup | ✅ Oui |
+| MEDIUM | Correct après indices | ❌ Non |
+| HARD | Mauvaise réponse | ❌ Non |
+
+**Score % = EASY / total × 100.** Seules les réponses sans aide comptent.
+
+## 4.7 Ce que l'admin voit par élève
 
 En cliquant sur un élève, le modal affiche :
 
@@ -411,7 +449,7 @@ En cliquant sur un élève, le modal affiche :
 - **Feedbacks élève** : ressenti sur les 3 derniers boosts/chapitres/brevets
 - **Actions parent recommandées** : félicitation premier boost, partage streak, relance douce, etc.
 
-## 4.7 Actions disponibles par élève
+## 4.8 Actions disponibles par élève
 
 | Action | Bouton | Effet |
 |--------|--------|-------|
@@ -437,9 +475,12 @@ En cliquant sur un élève, le modal affiche :
 | **XP** | Points d'expérience gagnés en faisant des exercices |
 | **Slot** | Palier de 5 exercices dans un chapitre de 20 (5/10/15/20) |
 | **Daily goal** | Mission du jour : faire 5 exercices (tous types confondus) |
-| **Session** | Un passage sur un chapitre ou boost, identifié par sa date |
-| **Retro** | Mode relecture des exercices passés (revoir ses réponses) |
-| **Pill** | Bouton compact affichant la date et le score d'une session passée |
+| **Passage** | Ensemble complet d'exercices sur un chapitre (20 exos). Un chapitre réassigné crée un nouveau passage |
+| **Session** | Synonyme historique de passage, identifié par sa date de fin |
+| **Retro** | Mode relecture des exercices passés (lecture seule, options colorées, indices déployés) |
+| **Pill** | Bouton compact affichant la date et le score d'un passage passé |
+| **Ghost stack** | Effet visuel de cartes empilées sur les chapitres avec plusieurs passages |
+| **EASY / MEDIUM / HARD** | Codes de scoring : correct 1er coup / correct avec indices / mauvaise réponse |
 | **Hero** | Bandeau principal en haut de l'écran Chapitres (CTA prioritaire) |
 | **Toast** | Message court qui apparaît en haut de l'écran (3-6 secondes) |
 | **Coach tip** | Conseil contextuel affiché une seule fois (première utilisation) |

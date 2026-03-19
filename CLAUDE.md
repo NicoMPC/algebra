@@ -82,6 +82,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | P5 | **Nicolas assigne manuellement** | Prochain chapitre et prochain boost via admin |
 | P6 | **Indices progressifs** | 1-3 étapes + formule clé révélée après erreur |
 | P7 | **3 types d'exercices** | QCM (défaut), Vrai/Faux (`vf`), Trou à compléter (`fill`) |
+| P8 | **Scoring tri-niveau** | EASY = correct 1er essai (succès, compte pour le %). MEDIUM = correct après indices ("hésitation", ne compte PAS). HARD = mauvaise réponse (ne compte PAS). Score % = EASY / total exercices × 100. S'applique partout : scores chapitres, sessions retro, pills, flèches tendance, comparaison live |
 
 ### 3.2 Trial & Conversion
 
@@ -121,8 +122,8 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | G6 | **Tuto régressif** | 8 micro-tips first-use (T1-T8), `_needsCoach/_markCoach`, disparaissent après 1 affichage |
 | G7 | **Slots de 5** | Chapitres ≥20 exos découpés en 4 slots visuels (5/10/15/20). Overlay récompense +75 XP aux paliers 5/10/15. Palier 20 absorbé par `chkComp`. Chapitres <20 exos : pas de slots, +300 XP classique. Count-based (pas index-based) — fire au 5ème exo fait, quel que soit l'ordre. Absorbe `_checkCoursMilestone` quand un slot fire |
 | G8 | **Daily goal** | Mission du jour = 5 exos (tous types). Overlay +50 XP au 5ème exo. Absorbé dans le slot overlay si simultané. Absorbé silencieusement si `chkComp` fire. Compteur `🎯 n/5` dans le header. Reset quotidien via `mx_daily_{code}` localStorage |
-| G9 | **Sessions retro avec %** | Chapitres terminés : exercices groupés par **passage** (set complet de 20 exos). 1 seul passage → pas de pills, juste score + exercices. Plusieurs passages → pills "Passage 1 · 60%" / "Passage 2 · 78% ↑" avec flèche delta sur la pill active. Score % coloré (vert ≥70%, ambre ≥40%, rose <40%). Date de complétion affichée subtilement ("Terminé le 19 mars"). Carte fermée : dernier passage score % + flèche tendance (passage N vs N-1). Boosts restent date-based. Exercices retro affichés en read-only avec le même template visuel que les exercices actifs (coloration correct/wrong, indices et formule déployés) |
-| G10 | **Comparaison live** | Chapitre en cours (ouvert, `done > 0`, pas terminé) : bandeau gris `Session en cours — xx% (n/done) ↑ vs yy%`. Affiché uniquement si ≥1 passage historique complet existe. Compare le % instantané (EASY/done) vs le % du dernier passage complet |
+| G9 | **Sessions retro avec %** | Chapitres et boosts terminés : pills par **date** (pas "Passage N"). Score % coloré sur chaque pill (vert ≥70%, ambre ≥40%, rose <40%) + flèche `↑/↓/→` vs session précédente. Pas de ligne "Terminé le...". Carte fermée : dernier score % + `×N passages` + flèche tendance. Exercices retro affichés en read-only (même template visuel que les exercices actifs) avec **barre de numéros cliquable** (dots colorés : vert=EASY, ambre=MEDIUM, rouge=HARD, gris=non répondu) pour navigation directe. Système de pills unifié pour chapitres et boosts |
+| G10 | **Comparaison live** | Chapitre en cours (ouvert, `done > 0`, pas terminé) : bandeau gris `Session en cours — xx% (n/done) ↑ vs yy%`. Affiché uniquement si ≥1 passage complet existe. Compare le % instantané (EASY/done) vs le % du dernier passage complet |
 | G11 | **Message anticipation** | Post-complétion boost : "Tes prochains exos sur mesure arrivent demain matin 🔥". Post-complétion chapitre : "Tes prochains exos sur mesure arrivent demain matin 🎯". Crée l'anticipation du retour J+1 |
 
 ### 3.5 Admin
