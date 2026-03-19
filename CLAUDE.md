@@ -105,7 +105,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | M4 | **Coach tip vs toast ko** | `if/else` exclusif dans `validateAnswer`. Coach tip AVANT le panel aide |
 | M5 | **Milestones/Coach namespacés** | `mx_ms_{code}` / `mx_co_{code}` dans localStorage. Pas de pollution cross-user |
 | M6 | **Streak dedup** | Toast login skip si `_stkMileDup` (milestone streak_3/7 va fire) |
-| M7 | **"demain"** | Uniquement dans `boost_preparing`. Partout ailleurs → "bientôt" ou "continue tes chapitres" |
+| M7 | **"demain"** | Autorisé dans `boost_preparing` et les bandeaux post-complétion (hero vert, archive boost, archive chapitre). Interdit dans les toasts et coach tips |
 | M8 | **pendingManual cleanup** | Effacé dans les 3 branches de `nextChapter` (PENDING_MANUAL / JSON / string) |
 
 ### 3.4 Gamification
@@ -120,6 +120,9 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | G6 | **Tuto régressif** | 8 micro-tips first-use (T1-T8), `_needsCoach/_markCoach`, disparaissent après 1 affichage |
 | G7 | **Slots de 5** | Chapitres ≥20 exos découpés en 4 slots visuels (5/10/15/20). Overlay récompense +75 XP aux paliers 5/10/15. Palier 20 absorbé par `chkComp`. Chapitres <20 exos : pas de slots, +300 XP classique. Count-based (pas index-based) — fire au 5ème exo fait, quel que soit l'ordre. Absorbe `_checkCoursMilestone` quand un slot fire |
 | G8 | **Daily goal** | Mission du jour = 5 exos (tous types). Overlay +50 XP au 5ème exo. Absorbé dans le slot overlay si simultané. Absorbé silencieusement si `chkComp` fire. Compteur `🎯 n/5` dans le header. Reset quotidien via `mx_daily_{code}` localStorage |
+| G9 | **Sessions retro avec %** | Chapitres terminés : pills par date avec score % coloré (vert ≥70%, ambre ≥40%, rose <40%). Ligne résumé : % + `(n/tot)` + flèche `↑/↓/→` vs session précédente. Carte terminée : dernier score % + `×N passages`. Modal overflow idem |
+| G10 | **Comparaison live** | Chapitre en cours (ouvert, `done > 0`, pas terminé) : bandeau gris `Session en cours — xx% (n/done) ↑ vs yy%`. Affiché uniquement si ≥1 session historique existe. Compare le % instantané (EASY/done) vs le % de la dernière session |
+| G11 | **Message anticipation** | Post-complétion boost : "Tes prochains exos sur mesure arrivent demain matin 🔥". Post-complétion chapitre : "Tes prochains exos sur mesure arrivent demain matin 🎯". Crée l'anticipation du retour J+1 |
 
 ### 3.5 Admin
 

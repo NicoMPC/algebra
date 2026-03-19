@@ -2406,7 +2406,7 @@ function hideT() {
 // ═══════════════════════════════════════════════════════════════
 // MESSAGES — DICTIONNAIRE & INVARIANTS (ne pas modifier sans relire)
 // ─────────────────────────────────────────────────────────────
-// 1. "demain" : uniquement dans boost_preparing (post-boost insight)
+// 1. "demain" : autorisé dans boost_preparing + bandeaux post-complétion (hero vert, archive boost/chapitre). Interdit dans toasts/coach tips
 //    Partout ailleurs → "bientôt" ou "continue tes chapitres"
 // 2. Coach tip (tip_wrong) : affiché AVANT le panel aide (immédiat)
 //    Jamais en même temps que le toast ko_* (if/else exclusif)
@@ -6716,7 +6716,10 @@ function renderArchiveSection(cat, exs) {
 
   if (isBoost) {
     // ── Entraînement du jour terminé ─────────────────────────────
-    html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-emerald-700 text-center mb-3">Entraînement du jour : fait ✅ T\'es à jour. Reviens demain 🔥</div>';
+    html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 text-center mb-3">';
+    html += '<div class="text-xs font-black text-emerald-700 mb-0.5">Entraînement du jour : fait ✅</div>';
+    html += '<div class="text-[10px] font-medium text-emerald-600">Tes prochains exos sur mesure arrivent demain matin 🔥</div>';
+    html += '</div>';
     // Collecter les exos répondus pour navigation Précédent/Suivant
     var _boostAnswered = [];
     exs.forEach(function(exo, idx) {
@@ -6778,7 +6781,10 @@ function renderArchiveSection(cat, exs) {
       var showN = Math.min(sessions.length, MAX_PILLS);
       for (var pi = 0; pi < showN; pi++) {
         var isActive = pi === selIdx;
-        html += '<button onclick="_selectRetroSess(\''+cat+'\','+pi+')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border '+(isActive ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-500 border-slate-200 active:bg-slate-50')+'">' + _fmtRetroDate(sessions[pi].date) + '</button>';
+        var _pillEasy = sessions[pi].exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+        var _pillPct = sessions[pi].exos.length > 0 ? Math.round(_pillEasy / sessions[pi].exos.length * 100) : 0;
+        var _pillColor = isActive ? '' : (_pillPct >= 70 ? ' text-emerald-600 border-emerald-200' : _pillPct >= 40 ? ' text-amber-600 border-amber-200' : ' text-rose-500 border-rose-200');
+        html += '<button onclick="_selectRetroSess(\''+cat+'\','+pi+')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border '+(isActive ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white' + _pillColor + ' active:bg-slate-50')+'">' + _fmtRetroDate(sessions[pi].date) + ' · ' + _pillPct + '%</button>';
       }
       if (sessions.length > MAX_PILLS) {
         html += '<button onclick="_openRetroModal(\''+cat+'\')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border border-slate-200 bg-slate-50 text-slate-400">+' + (sessions.length - MAX_PILLS) + ' sessions →</button>';
@@ -6787,7 +6793,20 @@ function renderArchiveSection(cat, exs) {
       var sess = sessions[selIdx];
       var easy = sess.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
       var tot = sess.exos.length;
-      html += '<div class="text-[10px] font-semibold text-slate-400 mb-2 text-center">📅 ' + _fmtRetroDateLong(sess.date) + ' · ' + easy + '/' + tot + ' réussis</div>';
+      var _sessPct = tot > 0 ? Math.round(easy / tot * 100) : 0;
+      var _sessPctColor = _sessPct >= 70 ? 'text-emerald-600' : _sessPct >= 40 ? 'text-amber-600' : 'text-rose-500';
+      // Comparaison avec session précédente
+      var _sessDelta = '';
+      if (selIdx < sessions.length - 1) {
+        var _prevSess = sessions[selIdx + 1]; // sessions triées desc (récent d'abord)
+        var _prevEasy = _prevSess.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+        var _prevPct = _prevSess.exos.length > 0 ? Math.round(_prevEasy / _prevSess.exos.length * 100) : 0;
+        var _diff = _sessPct - _prevPct;
+        if (_diff > 0) _sessDelta = ' <span class="text-emerald-500">↑ +' + _diff + '%</span>';
+        else if (_diff < 0) _sessDelta = ' <span class="text-rose-500">↓ ' + _diff + '%</span>';
+        else _sessDelta = ' <span class="text-slate-400">→</span>';
+      }
+      html += '<div class="text-[10px] font-semibold text-slate-400 mb-2 text-center">📅 ' + _fmtRetroDateLong(sess.date) + ' · <span class="' + _sessPctColor + ' font-black">' + _sessPct + '%</span> (' + easy + '/' + tot + ')' + _sessDelta + '</div>';
       // Navigation exo par exo
       var exoNav = S.retroExoIdx[cat] || 0;
       if (exoNav >= sess.exos.length) exoNav = 0;
@@ -6805,7 +6824,10 @@ function renderArchiveSection(cat, exs) {
       html += '</div>';
     } else {
       // Fallback : vue plate (session courante)
-      html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-emerald-700 text-center mb-3">📅 Prochain contenu · Demain matin 🔥</div>';
+      html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 text-center mb-3">';
+      html += '<div class="text-xs font-black text-emerald-700 mb-0.5">Chapitre terminé ✅</div>';
+      html += '<div class="text-[10px] font-medium text-emerald-600">Tes prochains exos sur mesure arrivent demain matin 🎯</div>';
+      html += '</div>';
       var shown = 0;
       exs.forEach(function(exo, idx) {
         var r = res2(cat, idx);
@@ -7529,7 +7551,7 @@ function render() {
         '<div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-lg flex-shrink-0">✅</div>' +
         '<div class="flex-1 min-w-0">' +
         '<div class="syne text-sm font-black text-white">Entraînement du jour terminé' + (_heroName ? ', ' + _heroName : '') + ' !</div>' +
-        '<p class="text-emerald-200 text-xs font-medium">Continue sur tes chapitres ou reviens demain 💪</p>' +
+        '<p class="text-emerald-200 text-xs font-medium">Tes prochains exos sur mesure arrivent demain matin 🔥</p>' +
         '</div></div>' +
         '<div class="flex gap-2">' +
         '<div class="flex-1 bg-white/10 rounded-xl px-3 py-2 text-center"><div class="syne font-black text-white text-sm">⚡ ' + _sessXp + '</div><div class="text-emerald-200/60 text-[10px] font-semibold">XP total</div></div>' +
@@ -7568,7 +7590,15 @@ function render() {
       _doneHtml += '<div data-cat="'+cat+'" onclick="togCat(\''+cat+'\')" class="rounded-2xl border border-emerald-200 flex items-center gap-3 py-3 px-4 cursor-pointer select-none" style="background:#f0fdf4;position:relative;z-index:2">';
       _doneHtml += '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-base flex-shrink-0">'+(isBoost?'⚡':(LVL[S.niv].icons[cat]||'📘'))+'</div>';
       _doneHtml += '<div class="flex-1 min-w-0"><div class="syne font-black text-sm text-slate-800 truncate" style="font-weight:800">'+(isBoost?'Mon entraînement ✓':(LVL[S.niv].names[cat]||cat))+'</div>';
-      if (!isBoost && _sessCount > 1) _doneHtml += '<span class="text-[9px] font-bold text-emerald-600">×'+_sessCount+' passages</span>';
+      if (!isBoost && _sessCount > 0) {
+        var _lastSess = S.chapSessions[cat][0]; // plus récente
+        var _lastEasy = _lastSess.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+        var _lastPct = _lastSess.exos.length > 0 ? Math.round(_lastEasy / _lastSess.exos.length * 100) : 0;
+        var _lastPctColor = _lastPct >= 70 ? 'text-emerald-600' : _lastPct >= 40 ? 'text-amber-600' : 'text-rose-500';
+        _doneHtml += '<span class="text-[9px] font-bold ' + _lastPctColor + '">' + _lastPct + '%';
+        if (_sessCount > 1) _doneHtml += ' · ×' + _sessCount;
+        _doneHtml += '</span>';
+      }
       _doneHtml += '</div>';
       _doneHtml += '<div class="flex items-center gap-1.5 flex-shrink-0">';
       if (!isBoost) _doneHtml += _trendArrow(cat);
@@ -7649,6 +7679,32 @@ function render() {
           '<span class="text-sm flex-shrink-0">' + (done >= Math.ceil(tot * 0.7) ? '🏁' : '💪') + '</span>' +
           '<span class="text-xs font-bold text-indigo-700">' + _chapMsg + '</span>' +
           '</div>';
+      }
+      // ── Comparaison live vs dernière session ──
+      if (!isBoost && done > 0 && !comp) {
+        var _liveSessions = S.chapSessions && S.chapSessions[cat];
+        if (_liveSessions && _liveSessions.length > 0) {
+          var _liveLastSess = _liveSessions[0];
+          var _liveLastEasy = _liveLastSess.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+          var _liveLastPct = _liveLastSess.exos.length > 0 ? Math.round(_liveLastEasy / _liveLastSess.exos.length * 100) : 0;
+          // Calcul du % instantané session courante
+          var _liveEasy = 0;
+          for (var _li = 0; _li < tot; _li++) {
+            var _lr = res2(cat, _li);
+            var _lid = S.niv + '-' + _lr.rC + '-' + _lr.rI;
+            if (S.res[_lid] === 'EASY') _liveEasy++;
+          }
+          var _livePct = done > 0 ? Math.round(_liveEasy / done * 100) : 0;
+          var _liveDiff = _livePct - _liveLastPct;
+          var _liveArrow = _liveDiff > 0 ? '↑' : _liveDiff < 0 ? '↓' : '→';
+          var _liveArrowColor = _liveDiff > 0 ? 'text-emerald-500' : _liveDiff < 0 ? 'text-rose-500' : 'text-slate-400';
+          html += '<div class="mx-4 mb-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 flex items-center justify-between">';
+          html += '<span class="text-[10px] font-semibold text-slate-500">Session en cours</span>';
+          html += '<div class="flex items-center gap-2">';
+          html += '<span class="text-[11px] font-black text-slate-700">' + _livePct + '% <span class="font-medium text-slate-400">(' + _liveEasy + '/' + done + ')</span></span>';
+          html += '<span class="text-[10px] font-black ' + _liveArrowColor + '">' + _liveArrow + ' vs ' + _liveLastPct + '%</span>';
+          html += '</div></div>';
+        }
       }
       // B3 — bannière prérequis fragile
       var prereq = S.prereqBanner[cat];
