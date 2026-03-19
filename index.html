@@ -6712,7 +6712,7 @@ function renderProgress() {
 // ══════════════════════════════════════════════════════════════
 function renderArchiveSection(cat, exs) {
   var isBoost = cat === 'BOOST';
-  var html = '<div class="mx-4 mb-4">';
+  var html = '<div class="mx-4 mb-4" onclick="event.stopPropagation()" style="position:relative;z-index:3">';
 
   if (isBoost) {
     // ── Entraînement du jour terminé ─────────────────────────────
@@ -6772,6 +6772,7 @@ function renderArchiveSection(cat, exs) {
   } else {
     // ── Chapitres : vue sessions ──────────────────────────
     var sessions = S.chapSessions && S.chapSessions[cat];
+    console.log('[RETRO] cat='+cat+' sessions='+(sessions?sessions.length:'null')+' exs='+(exs?exs.length:'null'));
     if (sessions && sessions.length > 0) {
       var MAX_PILLS = 4;
       var selIdx = (S.retroSess[cat] !== undefined) ? S.retroSess[cat] : 0;
