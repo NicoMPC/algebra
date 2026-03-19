@@ -1267,7 +1267,7 @@
     </div>
   </nav>
 
-  <!-- Hero -->
+  <!-- SECTION 1 — HERO -->
   <div class="lhero px-5 pt-12 pb-16 relative">
     <div class="grid-ov"></div>
     <div class="hero-glow"></div>
@@ -1276,24 +1276,27 @@
         <span class="dot-live"></span>
         6ème à 3ème · Soutien scolaire maths adaptatif
       </div>
-      <!-- Insight — gros, centré, impact -->
-      <h1 class="syne font-black text-white leading-[1.15] mb-6 max-w-md mx-auto" style="font-size:clamp(1.6rem,5vw,2.4rem);animation:s1 .6s .02s ease both">
-        Le problème n'est pas qu'il ne comprend pas.<br>
-        <span style="color:#818cf8">C'est qu'il ne s'entraîne pas au bon endroit.</span>
+      <h1 class="syne font-black text-white leading-[1.15] mb-5 max-w-md mx-auto" style="font-size:clamp(1.6rem,5vw,2.4rem);animation:s1 .6s .02s ease both">
+        Il comprend en cours.<br>
+        <span style="color:#818cf8">Mais au contrôle, ça bloque.</span>
       </h1>
-      <!-- Solution — bold, respirant -->
-      <p class="text-white/90 text-base sm:text-lg font-bold mb-3 max-w-md mx-auto leading-relaxed" style="animation:s1 .6s .14s ease both">
-        On identifie précisément ses lacunes en maths.<br>Et on les corrige, 10 minutes par jour.
+      <p class="text-white/90 text-base sm:text-lg font-bold mb-2 max-w-md mx-auto leading-relaxed" style="animation:s1 .6s .1s ease both">
+        Ce n'est pas un problème d'intelligence.<br>C'est un problème d'entraînement.
       </p>
-      <!-- Explication -->
-      <p class="text-white/50 text-sm font-medium leading-[1.75] mb-9 max-w-md mx-auto" style="animation:s1 .6s .2s ease both">
-        5 exercices ciblés par jour. C'est simple. Et ça fonctionne.
+      <p class="text-white/55 text-sm font-medium leading-[1.75] mb-4 max-w-md mx-auto" style="animation:s1 .6s .16s ease both">
+        Matheux identifie précisément les lacunes en maths<br>et propose 5 exercices ciblés par jour.
       </p>
+      <p class="text-white/40 text-xs font-semibold mb-7" style="animation:s1 .6s .22s ease both">10 minutes par jour.</p>
       <button onclick="startTrialFlow()"
-              class="btn btn-ac btn-fw shadow-xl" id="cta-hero" style="max-width:380px;font-size:1.1rem;padding:1.2rem;animation:s1 .6s .28s ease both">
-        Trouver ses lacunes — c'est gratuit →
+              class="btn btn-ac btn-fw shadow-xl" id="cta-hero" style="max-width:420px;font-size:1.05rem;padding:1.2rem;animation:s1 .6s .28s ease both">
+        Faites le test avec votre enfant maintenant →
       </button>
-      <p class="text-white/40 text-xs mt-3" style="animation:s1 .6s .35s ease both">5 minutes · Sans carte bancaire · Résultats immédiats</p>
+      <p class="text-white/40 text-xs mt-3" style="animation:s1 .6s .35s ease both">5 minutes suffisent pour comprendre où ça bloque.</p>
+      <div class="flex justify-center gap-4 mt-5" style="animation:s1 .6s .42s ease both">
+        <span class="text-white/50 text-xs font-medium">Sans carte bancaire</span>
+        <span class="text-white/50 text-xs font-medium">Résultats visibles rapidement</span>
+        <span class="text-white/50 text-xs font-medium">Diagnostic en 5 min</span>
+      </div>
       <div id="pwa-install-banner" class="hidden mt-3 flex items-center gap-3
         bg-white/10 border border-white/20 rounded-2xl px-4 py-3 max-w-sm mx-auto"
         style="animation:s1 .6s .5s ease both">
@@ -1394,144 +1397,148 @@
     </div>
   </div><!-- /trial-flow -->
 
-  <!-- ── 2. PROBLÈME ─────────────────────────────────────────── -->
+  <!-- ── SECTION 2 — PREUVE VISUELLE (CAROUSEL) ────────── -->
+  <div class="bg-white px-5 py-16">
+    <div class="max-w-2xl mx-auto reveal">
+      <div style="position:relative;overflow:hidden;border-radius:20px">
+        <div id="visio-track" style="display:flex;transition:transform .6s cubic-bezier(.4,0,.2,1);will-change:transform">
+          <div style="min-width:100%;padding:0 8px;box-sizing:border-box"><img src="img/1.png" alt="Cours avec un élève" style="width:100%;border-radius:16px;aspect-ratio:16/10;object-fit:cover;box-shadow:0 8px 30px rgba(0,0,0,.12)"></div>
+          <div style="min-width:100%;padding:0 8px;box-sizing:border-box"><img src="img/2.png" alt="Ancienne version du produit" style="width:100%;border-radius:16px;aspect-ratio:16/10;object-fit:cover;box-shadow:0 8px 30px rgba(0,0,0,.12)"></div>
+          <div style="min-width:100%;padding:0 8px;box-sizing:border-box"><img src="img/3.png" alt="Élève sur la plateforme" style="width:100%;border-radius:16px;aspect-ratio:16/10;object-fit:cover;box-shadow:0 8px 30px rgba(0,0,0,.12)"></div>
+          <div style="min-width:100%;padding:0 8px;box-sizing:border-box"><img src="img/4.png" alt="Évolution de l'interface" style="width:100%;border-radius:16px;aspect-ratio:16/10;object-fit:cover;box-shadow:0 8px 30px rgba(0,0,0,.12)"></div>
+        </div>
+        <div id="visio-dots" style="display:flex;justify-content:center;gap:8px;margin-top:1rem">
+          <button onclick="_visioGo(0)" style="width:10px;height:10px;border-radius:50%;border:none;background:#4338ca;cursor:pointer;transition:all .3s"></button>
+          <button onclick="_visioGo(1)" style="width:10px;height:10px;border-radius:50%;border:none;background:#cbd5e1;cursor:pointer;transition:all .3s"></button>
+          <button onclick="_visioGo(2)" style="width:10px;height:10px;border-radius:50%;border:none;background:#cbd5e1;cursor:pointer;transition:all .3s"></button>
+          <button onclick="_visioGo(3)" style="width:10px;height:10px;border-radius:50%;border:none;background:#cbd5e1;cursor:pointer;transition:all .3s"></button>
+        </div>
+      </div>
+      <p class="text-slate-500 text-sm text-center mt-5" style="font-style:italic">Construit en situation réelle avec des élèves.</p>
+    </div>
+  </div>
+
+  <!-- ── SECTION 3 — PROBLÈME PARENTS ──────────────────────── -->
   <div style="background:#0f172a;border-top:1px solid rgba(255,255,255,.06)" class="px-5 py-16">
     <div class="max-w-xl mx-auto text-center">
       <div class="reveal">
-        <div class="stag mx-auto mb-5" style="background:rgba(225,29,72,.1);color:#fb7185;border-color:rgba(251,113,133,.25)">Le vrai problème</div>
-        <h2 class="syne text-2xl sm:text-3xl font-black text-white mb-4">Votre enfant comprend en cours.<br>Mais au contrôle, c'est la catastrophe.</h2>
-        <p class="text-white/60 text-base leading-relaxed mb-8">Ce n'est pas qu'il est nul. C'est qu'il ne pratique pas <strong class="text-white/80">au bon endroit, au bon moment.</strong></p>
+        <h2 class="syne text-2xl sm:text-3xl font-black text-white mb-3">Votre enfant n'est pas nul en maths.</h2>
+        <p class="text-xl sm:text-2xl font-bold mb-8" style="color:#818cf8">Mais quelque chose bloque.</p>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto mb-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto mb-10">
         <div class="reveal reveal-d1" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1rem;text-align:left">
-          <span class="text-white/80 text-sm font-medium">Il comprend… puis oublie</span>
+          <span class="text-white/80 text-sm font-medium">Les devoirs créent des tensions à la maison</span>
         </div>
         <div class="reveal reveal-d2" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1rem;text-align:left">
-          <span class="text-white/80 text-sm font-medium">Il ne s'entraîne pas assez</span>
+          <span class="text-white/80 text-sm font-medium">Vous avez essayé d'aider mais ça a empiré</span>
         </div>
         <div class="reveal reveal-d3" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1rem;text-align:left">
-          <span class="text-white/80 text-sm font-medium">Les lacunes s'empilent</span>
+          <span class="text-white/80 text-sm font-medium">Il comprend en cours mais rate les contrôles</span>
         </div>
         <div class="reveal reveal-d4" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1rem;text-align:left">
-          <span class="text-white/80 text-sm font-medium">La confiance s'effondre</span>
+          <span class="text-white/80 text-sm font-medium">Il était bon avant mais décroche cette année</span>
         </div>
       </div>
       <div class="reveal" style="transition-delay:.5s">
-        <p class="syne text-xl sm:text-2xl font-black" style="color:#818cf8">Et plus on attend, plus c'est dur à rattraper.</p>
+        <p class="text-white/50 text-sm font-medium mb-2">Le vrai problème :</p>
+        <p class="syne text-xl sm:text-2xl font-black" style="color:#818cf8">Personne n'identifie précisément où ça bloque.</p>
       </div>
     </div>
   </div>
 
-  <!-- ── 2b. TRANSITION IMAGINEZ ──────────────────────────── -->
-  <div style="background:linear-gradient(180deg,#0f172a 0%,#1e293b 100%)" class="px-5 py-14">
-    <div class="max-w-xl mx-auto text-center reveal">
-      <p class="syne text-lg sm:text-xl font-black text-white leading-relaxed" style="line-height:1.7">Imaginez un endroit où toutes les erreurs, toutes les hésitations, sont gardées en mémoire — <span style="color:#818cf8">pour faire progresser votre enfant là où ça fait mal.</span></p>
-    </div>
-  </div>
-
-  <!-- ── 3. CE QUE FAIT MATHEUX (Solution) ─────────────────── -->
+  <!-- ── SECTION 4 — POSITIONNEMENT PRODUIT ────────────────── -->
   <div class="bg-white px-5 py-16">
     <div class="max-w-2xl mx-auto">
       <div class="text-center mb-10 reveal">
-        <div class="stag mx-auto mb-3">La solution</div>
-        <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900">Matheux trouve les trous.<br>Et les comble.</h2>
+        <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900 mb-4">Matheux rend visible l'invisible.</h2>
+        <p class="text-slate-600 text-base leading-relaxed max-w-lg mx-auto mb-3">Le système analyse les réponses de l'élève et identifie les lacunes exactes.</p>
+        <p class="text-slate-500 text-sm leading-relaxed max-w-md mx-auto">Une cartographie du cerveau mathématique de votre enfant.</p>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
         <div class="land-step reveal reveal-d1">
           <div class="land-step-icon float-anim" style="background:#eef2ff">🔎</div>
-          <div class="syne font-black text-slate-900 mb-2">On trouve où ça bloque</div>
-          <p class="text-slate-500 text-sm leading-relaxed">Vous voyez précisément ce qu'il ne comprend pas. Chapitre par chapitre. En 5 minutes.</p>
+          <div class="syne font-black text-slate-900 mb-2">Détection des erreurs</div>
+          <p class="text-slate-500 text-sm leading-relaxed">Chaque réponse est analysée. Les erreurs récurrentes sont repérées automatiquement.</p>
         </div>
         <div class="land-step reveal reveal-d2">
           <div class="land-step-icon float-anim" style="background:#fef3c7;animation-delay:.4s">⚡</div>
-          <div class="syne font-black text-slate-900 mb-2">5 exos ciblés, chaque jour</div>
-          <p class="text-slate-500 text-sm leading-relaxed">10 minutes. Uniquement sur ce qu'il ne maîtrise pas. Pas de temps perdu.</p>
+          <div class="syne font-black text-slate-900 mb-2">Adaptation automatique</div>
+          <p class="text-slate-500 text-sm leading-relaxed">Le parcours s'ajuste en fonction des résultats. Plus besoin de deviner quoi réviser.</p>
         </div>
         <div class="land-step reveal reveal-d3">
-          <div class="land-step-icon float-anim" style="background:#d1fae5;animation-delay:.8s">📈</div>
-          <div class="syne font-black text-slate-900 mb-2">Suivi pédagogique structuré</div>
-          <p class="text-slate-500 text-sm leading-relaxed">Un accompagnant expérimenté voit les résultats et ajuste le parcours. Votre enfant n'est jamais seul.</p>
+          <div class="land-step-icon float-anim" style="background:#d1fae5;animation-delay:.8s">🎯</div>
+          <div class="syne font-black text-slate-900 mb-2">Exercices ciblés</div>
+          <p class="text-slate-500 text-sm leading-relaxed">Chaque exercice attaque une lacune précise. Pas de temps perdu sur ce qui est déjà acquis.</p>
         </div>
       </div>
+      <p class="text-slate-400 text-xs text-center mt-8 reveal">Un système supervisé par un professionnel — pas une IA toute seule.</p>
     </div>
   </div>
 
-  <!-- ── 4. POURQUOI 10 MIN/JOUR ──────────────────────────── -->
+  <!-- ── SECTION 5 — COMMENT ÇA MARCHE ─────────────────────── -->
   <div style="background:#f8faff" class="px-5 py-16">
-    <div class="max-w-2xl mx-auto">
-      <div class="text-center mb-8 reveal">
-        <div class="stag mx-auto mb-3">La clé</div>
-        <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900">1 heure par semaine ne suffit pas.<br>Votre enfant oublie entre les séances.</h2>
-        <p class="text-slate-500 text-sm max-w-md mx-auto mt-3">La régularité bat l'intensité. Toujours.</p>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-lg mx-auto mb-8">
-        <div class="reveal reveal-d1" style="background:#fff1f2;border:1.5px solid #fecaca;border-radius:18px;padding:1.5rem;text-align:center">
-          <div class="text-2xl mb-2">❌</div>
-          <div class="syne font-black text-slate-900 text-lg mb-1">1h / semaine</div>
-          <p class="text-slate-500 text-sm">Il comprend sur le moment. Puis oublie. Puis recommence à zéro.</p>
-        </div>
-        <div class="reveal reveal-d2" style="background:#d1fae5;border:1.5px solid #a7f3d0;border-radius:18px;padding:1.5rem;text-align:center">
-          <div class="text-2xl mb-2">✅</div>
-          <div class="syne font-black text-slate-900 text-lg mb-1">10 min / jour</div>
-          <p class="text-slate-500 text-sm">Chaque jour, les acquis se consolident. La progression devient mécanique.</p>
-        </div>
-      </div>
-      <div class="reveal text-center" style="transition-delay:.3s">
-        <p class="text-slate-700 text-base font-semibold" style="max-width:480px;margin:0 auto;line-height:1.7">10 minutes ciblées par jour > 2 heures de révisions le dimanche soir.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── 5. LE SYSTÈME (3 étapes) ─────────────────────────── -->
-  <div class="bg-white px-5 py-16">
     <div class="max-w-2xl mx-auto">
       <div class="text-center mb-10 reveal">
         <div class="stag mx-auto mb-3">Comment ça marche</div>
-        <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900">3 étapes. Rien de compliqué.</h2>
+        <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900">3 étapes. C'est tout.</h2>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
         <div class="land-step reveal reveal-d1">
-          <div class="land-step-icon float-anim" style="background:#eef2ff">🔎</div>
-          <div class="syne font-black text-slate-900 mb-2">1. L'entraînement du jour</div>
-          <p class="text-slate-500 text-sm leading-relaxed">Chaque matin, 5 exercices ciblés sur SES lacunes. 10 minutes. C'est le coeur du système.</p>
+          <div class="land-step-num">1</div>
+          <div class="syne font-black text-slate-900 mb-2">Diagnostic rapide</div>
+          <p class="text-slate-500 text-sm leading-relaxed">5 minutes pour identifier précisément où ça bloque.</p>
         </div>
         <div class="land-step reveal reveal-d2">
-          <div class="land-step-icon float-anim" style="background:#fef3c7;animation-delay:.4s">⚡</div>
-          <div class="syne font-black text-slate-900 mb-2">2. Accès libre illimité</div>
-          <p class="text-slate-500 text-sm leading-relaxed">44 chapitres, tout le programme, Brevet Blanc. Il veut s'entraîner plus ? Aucune limite.</p>
+          <div class="land-step-num">2</div>
+          <div class="syne font-black text-slate-900 mb-2">Entraînement quotidien</div>
+          <p class="text-slate-500 text-sm leading-relaxed">5 exercices ciblés par jour. 10 minutes. Sur ses lacunes exactes.</p>
         </div>
         <div class="land-step reveal reveal-d3">
-          <div class="land-step-icon float-anim" style="background:#d1fae5;animation-delay:.8s">📈</div>
-          <div class="syne font-black text-slate-900 mb-2">3. Parcours ajusté</div>
-          <p class="text-slate-500 text-sm leading-relaxed">Les résultats sont analysés. Le parcours s'adapte selon les progrès. Pas un algorithme seul — un système supervisé.</p>
+          <div class="land-step-num">3</div>
+          <div class="syne font-black text-slate-900 mb-2">Adaptation automatique</div>
+          <p class="text-slate-500 text-sm leading-relaxed">Le parcours évolue selon les progrès. Un accompagnant supervise.</p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ── 5b. SCREENSHOT APP ───────────────────────────────── -->
-  <div style="background:#f8faff" class="px-5 py-16">
-    <div class="max-w-xl mx-auto text-center reveal">
-      <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900 mb-3">Une interface simple.</h2>
-      <p class="text-slate-500 text-base mb-8">Pas de distraction. Juste ce qu'il faut pour progresser.</p>
-      <!-- SCREENSHOT APP A INSERER ICI -->
-      <div style="background:#e2e8f0;border-radius:20px;aspect-ratio:9/16;max-width:280px;margin:0 auto;display:flex;align-items:center;justify-content:center;box-shadow:0 20px 40px rgba(0,0,0,.1)">
-        <p class="text-slate-400 text-sm font-medium">Screenshot app</p>
+  <!-- ── SECTION 6 — COMPARAISON ───────────────────────────── -->
+  <div class="bg-white px-5 py-16">
+    <div class="max-w-lg mx-auto">
+      <div class="text-center mb-8 reveal">
+        <div class="stag mx-auto mb-3">Pourquoi ça marche</div>
+        <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900">La régularité bat l'intensité.</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+        <div class="reveal reveal-d1" style="background:#fff1f2;border:1.5px solid #fecaca;border-radius:18px;padding:1.5rem;text-align:center">
+          <div class="text-2xl mb-2">❌</div>
+          <div class="syne font-black text-slate-900 text-lg mb-1">Cours classique</div>
+          <p class="text-slate-500 text-sm mb-2">1h par semaine</p>
+          <p class="text-slate-400 text-xs">Comprend puis oublie.</p>
+        </div>
+        <div class="reveal reveal-d2" style="background:#d1fae5;border:1.5px solid #a7f3d0;border-radius:18px;padding:1.5rem;text-align:center">
+          <div class="text-2xl mb-2">✅</div>
+          <div class="syne font-black text-slate-900 text-lg mb-1">Matheux</div>
+          <p class="text-slate-500 text-sm mb-2">10 minutes par jour</p>
+          <p class="text-slate-400 text-xs">Progression continue.</p>
+        </div>
+      </div>
+      <div class="reveal text-center" style="transition-delay:.3s">
+        <p class="syne text-lg font-black" style="color:#818cf8">La régularité bat l'intensité.</p>
       </div>
     </div>
   </div>
 
-  <!-- ── 6. TÉMOIGNAGES ───────────────────────────────────── -->
+  <!-- ── SECTION 7 — TÉMOIGNAGES ───────────────────────────── -->
   <div style="background:#f8faff" class="px-5 py-16">
     <div class="max-w-2xl mx-auto">
       <div class="text-center mb-10 reveal">
-        <div class="stag mx-auto mb-3">Ce qui change</div>
+        <div class="stag mx-auto mb-3">Témoignages</div>
         <h2 class="syne text-2xl font-black text-slate-900 mb-2">Ce que les parents constatent.</h2>
-        <p class="text-slate-400 text-xs mt-1">Retours issus de phase de test</p>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="sp-quote reveal reveal-d1">
-          <p class="text-slate-600 text-sm leading-[1.8] mb-4">"Mon fils était bloqué en équations depuis 2 mois. En trois semaines avec Matheux, il a rattrapé tout le retard. Les exercices changent vraiment chaque jour — ça n'a rien à voir avec un cahier de vacances."</p>
+          <p class="text-slate-600 text-sm leading-[1.8] mb-4">"Mon fils était bloqué en équations depuis 2 mois. En trois semaines avec Matheux, il a rattrapé tout le retard. Les exercices changent vraiment chaque jour."</p>
           <div class="tm-author-row">
             <div class="tm-avatar" style="background:linear-gradient(135deg,#4338ca,#818cf8)">SM</div>
             <div>
@@ -1541,7 +1548,7 @@
           </div>
         </div>
         <div class="sp-quote reveal reveal-d2">
-          <p class="text-slate-600 text-sm leading-[1.8] mb-4">"En deux semaines, ma fille a retrouvé confiance. Elle fait ses 10 minutes sans que j'aie besoin de la relancer. Le diagnostic m'a montré que c'était différent dès le départ."</p>
+          <p class="text-slate-600 text-sm leading-[1.8] mb-4">"En deux semaines, ma fille a retrouvé confiance. Elle fait ses 10 minutes sans que j'aie besoin de la relancer."</p>
           <div class="tm-author-row">
             <div class="tm-avatar" style="background:linear-gradient(135deg,#059669,#34d399)">LB</div>
             <div>
@@ -1564,58 +1571,21 @@
     </div>
   </div>
 
-  <!-- ── 7. APRÈS 30 JOURS ───────────────────────────────── -->
+  <!-- ── SECTION 8 — RÉSULTATS CONCRETS ────────────────────── -->
   <div class="bg-white px-5 py-16">
-    <div class="max-w-2xl mx-auto">
-      <div class="text-center mb-10 reveal">
-        <div class="stag mx-auto mb-3">Les résultats</div>
-        <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900">
-          Après 30 jours, vous verrez<br>
-          <span style="color:#818cf8">la différence.</span>
-        </h2>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="land-benefit reveal reveal-d1">
-          <div style="font-size:1.5rem;margin-bottom:.5rem">🎯</div>
-          <div class="syne font-black text-slate-900 text-sm mb-1">Il comprend — pour de vrai</div>
-          <p class="text-slate-500 text-xs leading-relaxed">Plus "j'ai compris en cours mais j'ai oublié". Les lacunes sont comblées une par une, dans le bon ordre.</p>
-        </div>
-        <div class="land-benefit reveal reveal-d2">
-          <div style="font-size:1.5rem;margin-bottom:.5rem">⚡</div>
-          <div class="syne font-black text-slate-900 text-sm mb-1">Il pratique sans qu'on le force</div>
-          <p class="text-slate-500 text-xs leading-relaxed">10 minutes c'est court. C'est fait avant le petit-déjeuner. Plus besoin de négocier.</p>
-        </div>
-        <div class="land-benefit reveal reveal-d1">
-          <div style="font-size:1.5rem;margin-bottom:.5rem">📈</div>
-          <div class="syne font-black text-slate-900 text-sm mb-1">La confiance revient</div>
-          <p class="text-slate-500 text-xs leading-relaxed">Quand un élève voit qu'il progresse, il ose répondre en cours. Le cercle vertueux démarre.</p>
-        </div>
-        <div class="land-benefit reveal reveal-d2">
-          <div style="font-size:1.5rem;margin-bottom:.5rem">🔒</div>
-          <div class="syne font-black text-slate-900 text-sm mb-1">Vous voyez tout</div>
-          <p class="text-slate-500 text-xs leading-relaxed">Un rapport envoyé chaque semaine. L'élève suit sa progression à chaque connexion.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── 7b. EXEMPLE CONCRET ──────────────────────────────── -->
-  <div style="background:#f8faff" class="px-5 py-16">
     <div class="max-w-xl mx-auto">
       <div class="text-center mb-8 reveal">
-        <div class="stag mx-auto mb-3">Exemple</div>
+        <div class="stag mx-auto mb-3">Résultats</div>
         <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900">Ce que ça donne concrètement</h2>
-        <p class="text-slate-500 text-sm max-w-md mx-auto mt-3">Chaque élève est différent, mais la progression suit une logique simple : identifier, cibler, répéter.</p>
       </div>
       <div class="reveal" style="background:#fff;border:1.5px solid #e2e8f0;border-radius:20px;padding:1.5rem;overflow:hidden">
         <div class="flex items-center gap-3 mb-5">
           <div style="width:40px;height:40px;background:linear-gradient(135deg,#818cf8,#6366f1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;color:#fff">L</div>
           <div>
-            <div class="syne font-black text-slate-900 text-sm">Léa, 13 ans, 4ème</div>
-            <div class="text-slate-400 text-xs">180 exercices sur mesure · 10 min/jour</div>
+            <div class="syne font-black text-slate-900 text-sm">Léa — 4ème</div>
+            <div class="text-slate-400 text-xs">Progression en 30 jours</div>
           </div>
         </div>
-        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Avant / Après — 30 jours sur Matheux</div>
         <div style="display:flex;flex-direction:column;gap:.75rem">
           <div>
             <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Calcul littéral</span></div>
@@ -1683,14 +1653,22 @@
           </div>
         </div>
       </div>
+      <div class="reveal mt-8 text-center">
+        <p class="text-slate-600 text-sm font-medium mb-2">Tous les exercices sont alignés avec le programme officiel de l'Éducation Nationale 2026.</p>
+        <div class="flex justify-center gap-4 mt-4">
+          <span style="background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">+2500 exercices disponibles</span>
+          <span style="background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">Exercices sur mesure</span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ── 8. FONDATEUR ─────────────────────────────────────── -->
+  <!-- ── SECTION 9 — FONDATEUR ─────────────────────────────── -->
   <div style="background:#faf8f5" class="px-5 py-16">
     <div class="max-w-xl mx-auto reveal">
       <div class="text-center mb-6">
         <div class="stag mx-auto mb-3">Derrière Matheux</div>
+        <h2 class="syne text-2xl font-black text-slate-900 mb-4">Créé par un professeur qui a accompagné des dizaines d'élèves.</h2>
       </div>
       <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:24px;padding:2rem;position:relative">
         <div class="flex items-start gap-4 mb-4">
@@ -1700,10 +1678,9 @@
             <div class="text-xs font-semibold text-slate-400">Fondateur de Matheux</div>
           </div>
         </div>
-        <p class="text-slate-600 text-sm leading-relaxed mb-3" style="font-style:italic">"Des dizaines d'élèves accompagnés en maths."</p>
         <p class="text-slate-600 text-sm leading-relaxed mb-3">J'ai vu les mêmes blocages revenir encore et encore, souvent aux mêmes endroits. Ils comprennent en cours, puis oublient. Pas parce qu'ils sont nuls — parce qu'ils ne pratiquent pas au bon endroit.</p>
-        <p class="text-slate-600 text-sm leading-relaxed mb-3">J'ai construit Matheux pour ça. Un système simple : identifier les trous, les combler un peu chaque jour, et suivre chaque élève.</p>
-        <p class="text-slate-600 text-sm leading-relaxed mb-4"><strong>Un système conçu et supervisé. Pas une IA toute seule — un outil puissant, piloté par quelqu'un qui connaît les blocages.</strong></p>
+        <p class="text-slate-600 text-sm leading-relaxed mb-3">J'ai construit Matheux pour ça. Un système simple : identifier les trous, les combler un peu chaque jour, et suivre chaque élève de près.</p>
+        <p class="text-slate-600 text-sm leading-relaxed mb-4"><strong>Un outil supervisé par quelqu'un qui connaît les blocages — pas une IA toute seule.</strong></p>
         <div style="border-top:1px solid #f1f5f9;padding-top:.75rem">
           <p class="syne font-black text-slate-700 text-sm">Nicolas Follezou — Fondateur de Matheux</p>
         </div>
@@ -1711,31 +1688,7 @@
     </div>
   </div>
 
-  <!-- ── 8b. CARROUSEL SCREENSHOTS VISIO ───────────────────── -->
-  <div class="bg-white px-5 py-16">
-    <div class="max-w-2xl mx-auto reveal">
-      <div class="stag mx-auto mb-5 text-center">Les coulisses</div>
-      <h2 class="syne text-2xl sm:text-3xl font-black text-slate-900 mb-8 text-center">Là où tout a commencé</h2>
-      <div style="position:relative;overflow:hidden;border-radius:20px">
-        <div id="visio-track" style="display:flex;transition:transform .6s cubic-bezier(.4,0,.2,1);will-change:transform">
-          <div style="min-width:100%;padding:0 8px;box-sizing:border-box"><img src="img/1.png" alt="Cours visio 1" style="width:100%;border-radius:16px;aspect-ratio:16/10;object-fit:cover;box-shadow:0 8px 30px rgba(0,0,0,.12)"></div>
-          <div style="min-width:100%;padding:0 8px;box-sizing:border-box"><img src="img/2.png" alt="Cours visio 2" style="width:100%;border-radius:16px;aspect-ratio:16/10;object-fit:cover;box-shadow:0 8px 30px rgba(0,0,0,.12)"></div>
-          <div style="min-width:100%;padding:0 8px;box-sizing:border-box"><img src="img/3.png" alt="Cours visio 3" style="width:100%;border-radius:16px;aspect-ratio:16/10;object-fit:cover;box-shadow:0 8px 30px rgba(0,0,0,.12)"></div>
-          <div style="min-width:100%;padding:0 8px;box-sizing:border-box"><img src="img/4.png" alt="Cours visio 4" style="width:100%;border-radius:16px;aspect-ratio:16/10;object-fit:cover;box-shadow:0 8px 30px rgba(0,0,0,.12)"></div>
-        </div>
-        <div id="visio-dots" style="display:flex;justify-content:center;gap:8px;margin-top:1rem">
-          <button onclick="_visioGo(0)" style="width:10px;height:10px;border-radius:50%;border:none;background:#4338ca;cursor:pointer;transition:all .3s"></button>
-          <button onclick="_visioGo(1)" style="width:10px;height:10px;border-radius:50%;border:none;background:#cbd5e1;cursor:pointer;transition:all .3s"></button>
-          <button onclick="_visioGo(2)" style="width:10px;height:10px;border-radius:50%;border:none;background:#cbd5e1;cursor:pointer;transition:all .3s"></button>
-          <button onclick="_visioGo(3)" style="width:10px;height:10px;border-radius:50%;border:none;background:#cbd5e1;cursor:pointer;transition:all .3s"></button>
-        </div>
-      </div>
-      <p class="text-slate-600 text-sm sm:text-base text-center mt-6 leading-relaxed" style="font-style:italic;max-width:480px;margin-left:auto;margin-right:auto">"C'est en donnant des cours que j'ai créé Matheux — pour rendre mes élèves autonomes. Conçu pour eux, avec eux."</p>
-      <p class="text-slate-400 text-xs text-center mt-2">Nicolas Follezou — Fondateur</p>
-    </div>
-  </div>
-
-  <!-- ── 9. PRIX ──────────────────────────────────────────── -->
+  <!-- ── SECTION 10 — PRIX ─────────────────────────────────── -->
   <div class="bg-white px-5 py-16">
     <div class="max-w-sm mx-auto text-center reveal">
       <div class="stag mx-auto mb-5">Le prix</div>
@@ -1744,17 +1697,15 @@
         <span style="background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">Sans engagement</span>
       </div>
       <div style="background:linear-gradient(135deg,#4338ca,#6366f1);border:2px solid #818cf8;position:relative;overflow:hidden" class="rounded-3xl p-8 shadow-2xl">
-        <div style="position:absolute;top:.85rem;right:.85rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:99px;padding:.2rem .7rem;font-size:.6rem;font-weight:800;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.06em">Places limitées</div>
         <div class="text-indigo-200 text-xs font-bold uppercase tracking-widest mb-4 mt-2">Accès complet</div>
         <div class="syne text-5xl font-black text-white mb-1">19,99<span class="text-2xl font-bold text-indigo-300"> €</span></div>
-        <div class="text-indigo-300 text-sm mb-2">par mois — résiliable à tout moment</div>
+        <div class="text-indigo-300 text-sm mb-2">par mois</div>
         <div class="text-center mb-5"><span class="perday-badge">soit 0,66 € / jour</span></div>
         <div class="space-y-3 text-left mb-6">
-          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Entraînement quotidien ciblé — 10 minutes par jour</span></div>
-          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Accès libre à tout le programme (44 chapitres)</span></div>
-          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Brevet Blanc inclus pour les 3èmes</span></div>
-          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Suivi pédagogique structuré</span></div>
-          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Sans engagement · Résiliable à tout moment</span></div>
+          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Entraînement quotidien ciblé</span></div>
+          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">44 chapitres — tout le programme</span></div>
+          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Brevet Blanc inclus</span></div>
+          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Suivi pédagogique</span></div>
         </div>
         <button onclick="startTrialFlow()"
                 class="btn btn-ac btn-fw py-4 shadow-xl" style="font-size:1rem">
@@ -1763,74 +1714,61 @@
         <div class="guarantee-badge"></div>
         <p class="text-indigo-300 text-xs mt-3">Sans carte bancaire · Sans engagement</p>
       </div>
-      <p class="text-slate-400 text-xs mt-5"><del class="text-slate-300">30-50 €/h en cours particulier</del> → <strong class="text-indigo-600">19,99 €/mois. Tous les jours.</strong></p>
     </div>
   </div>
 
-  <!-- ── 10. FAQ ──────────────────────────────────────────── -->
+  <!-- ── SECTION 11 — CTA FINAL ────────────────────────────── -->
+  <div class="lhero px-5 py-16">
+    <div class="grid-ov"></div>
+    <div class="max-w-lg mx-auto relative z-10 text-center reveal">
+      <h2 class="syne text-2xl sm:text-3xl font-black text-white leading-tight mb-4">
+        Faites le test avec votre enfant maintenant.
+      </h2>
+      <p class="text-white/60 text-base font-medium mb-8 max-w-sm mx-auto">
+        Appelez-le et essayez ensemble.
+      </p>
+      <button onclick="startTrialFlow()"
+              style="max-width:400px;font-size:1.05rem;padding:1.15rem;display:block;margin:0 auto"
+              class="btn btn-ac btn-fw shadow-xl">
+        Voir ses lacunes gratuitement →
+      </button>
+      <p class="text-white/30 text-xs mt-4">5 minutes · Sans carte bancaire · Résultats immédiats</p>
+    </div>
+  </div>
+
+  <!-- ── SECTION 12 — FAQ ──────────────────────────────────── -->
   <div style="background:#f8faff" class="px-5 py-16">
     <div class="max-w-xl mx-auto">
       <div class="text-center mb-10 reveal">
         <div class="stag mx-auto mb-3">FAQ</div>
-        <h2 class="syne text-2xl font-black text-slate-900">Vos questions. Nos réponses.</h2>
+        <h2 class="syne text-2xl font-black text-slate-900">Vos questions.</h2>
       </div>
       <div class="space-y-3 reveal" style="transition-delay:.1s">
         <details class="faq-item">
-          <summary class="faq-q">Les exercices sont vraiment différents d'une session à l'autre ?</summary>
-          <p class="faq-a">Oui. Le système adapte chaque session en fonction des réponses précédentes. Les notions maîtrisées avancent. Les difficultés persistantes sont retravaillées avec une approche différente.</p>
+          <summary class="faq-q">Mon enfant est démotivé. Comment Matheux peut l'aider ?</summary>
+          <p class="faq-a">La démotivation vient souvent d'un sentiment d'impuissance. Quand un élève voit qu'il progresse sur des lacunes précises, la confiance revient. Et spoiler : les élèves passent en moyenne 17 minutes par jour sur Matheux — bien plus que les 10 minutes demandées.</p>
         </details>
         <details class="faq-item">
-          <summary class="faq-q">Mon enfant a des difficultés depuis plusieurs années. Ça marche quand même ?</summary>
-          <p class="faq-a">C'est exactement pour ce cas que Matheux existe. Après le diagnostic, si votre enfant a des lacunes sur des notions d'une année précédente — des fractions de 5ème alors qu'il est en 4ème, par exemple — le système les identifie et ces chapitres sont ouverts directement dans son espace. Le parcours est construit sur ce qui manque réellement, pas sur le niveau théorique.</p>
+          <summary class="faq-q">Est-ce que ça remplace un professeur ?</summary>
+          <p class="faq-a">Non. Matheux est un complément. Il fait ce qu'un professeur ne peut pas faire en cours : cibler les lacunes individuelles de chaque élève, chaque jour, et adapter les exercices en conséquence. Le tout supervisé par un accompagnant pédagogique.</p>
         </details>
         <details class="faq-item">
-          <summary class="faq-q">10 minutes par jour, c'est vraiment suffisant ?</summary>
-          <p class="faq-a">À condition que ces 10 minutes soient ciblées. 10 minutes sur exactement ce qui freine, tous les jours, produisent plus de résultats qu'1h de révisions génériques par semaine.</p>
+          <summary class="faq-q">Et s'il a des lacunes de l'année dernière ?</summary>
+          <p class="faq-a">C'est exactement pour ce cas que Matheux existe. Après le diagnostic, si votre enfant a des lacunes sur des notions d'une année précédente — des fractions de 5ème alors qu'il est en 4ème, par exemple — l'algorithme ouvre des chapitres temporaires pour combler ces lacunes anciennes. Le parcours est construit sur ce qui manque réellement.</p>
         </details>
         <details class="faq-item">
-          <summary class="faq-q">Comment suivre la progression de mon enfant ?</summary>
-          <p class="faq-a">Votre enfant voit ses scores évoluer en temps réel dans son espace. Si votre enfant est inactif plusieurs jours, vous recevez un email de rappel.</p>
+          <summary class="faq-q">Est-ce adapté au programme scolaire ?</summary>
+          <p class="faq-a">Oui. Tous les exercices sont alignés avec le programme officiel de l'Éducation Nationale 2026. 44 chapitres couvrent le programme de la 6ème à la 3ème, plus la 1ère Spé Maths.</p>
         </details>
         <details class="faq-item">
-          <summary class="faq-q">Comment sont choisis les exercices de mon enfant ?</summary>
-          <p class="faq-a">Le système analyse les résultats et génère des exercices adaptés. Un accompagnant pédagogique valide chaque parcours, prépare les contenus personnalisés et suit les progressions. Ce n'est pas un algorithme qui tourne seul : c'est un outil supervisé par un professionnel expérimenté, à une fraction du prix d'un cours particulier.</p>
+          <summary class="faq-q">Combien de temps par jour ?</summary>
+          <p class="faq-a">10 minutes suffisent. 5 exercices ciblés sur ses lacunes exactes. Mais après l'entraînement du jour, votre enfant peut continuer librement sur tout le programme — chapitres, révisions, Brevet Blanc. Aucune limite.</p>
         </details>
         <details class="faq-item">
-          <summary class="faq-q">Que se passe-t-il si on arrête l'abonnement ?</summary>
-          <p class="faq-a">Vous pouvez arrêter à tout moment, sans frais ni justification. Le profil de votre enfant — ses résultats, sa progression, son diagnostic — est conservé pendant 30 jours si vous souhaitez reprendre. Passé ce délai, les données sont supprimées conformément au RGPD.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">Mon enfant peut-il travailler plus de 10 minutes ?</summary>
-          <p class="faq-a">Bien sûr. L'entraînement du jour est le point de départ — 5 exercices ciblés, 10 minutes. Mais après, votre enfant accède librement à tout le programme : chapitres complets, révisions par notion, Brevet Blanc. Aucune limite.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">La résiliation est vraiment sans condition ?</summary>
-          <p class="faq-a">Oui. Pas de préavis. Résiliation en un clic, effective immédiatement. Et si vous êtes insatisfait dans les 14 jours suivant le premier paiement, on vous rembourse intégralement.</p>
+          <summary class="faq-q">Peut-il l'utiliser seul ?</summary>
+          <p class="faq-a">Oui. L'interface est conçue pour les collégiens. Indices progressifs, formules rappelées après une erreur, exercices adaptés au niveau. Votre enfant est guidé à chaque étape.</p>
         </details>
       </div>
-    </div>
-  </div>
-
-  <!-- ── 11. CTA FINAL ───────────────────────────────────── -->
-  <div class="lhero px-5 py-16">
-    <div class="grid-ov"></div>
-    <div class="max-w-lg mx-auto relative z-10 text-center reveal">
-      <h2 class="syne text-2xl sm:text-3xl font-black text-white leading-tight mb-3">
-        Votre enfant a des lacunes.<br>
-        <span style="color:#818cf8">On sait lesquelles dans 5 minutes.</span>
-      </h2>
-      <p class="text-white/55 text-sm font-medium mb-2 max-w-sm mx-auto">
-        5 minutes pour comprendre. 30 jours pour voir la différence.
-      </p>
-      <p class="text-white/40 text-xs font-medium mb-8 max-w-sm mx-auto">
-        Rien à payer, rien à installer.
-      </p>
-      <button onclick="startTrialFlow()"
-              style="max-width:360px;font-size:1.05rem;padding:1.15rem;display:block;margin:0 auto"
-              class="btn btn-ac btn-fw shadow-xl">
-        Commencer le diagnostic gratuit →
-      </button>
-      <p class="text-white/30 text-xs mt-4">✓ 7 jours offerts · ✓ Aucune carte bancaire · ✓ 5 minutes</p>
     </div>
   </div>
 
