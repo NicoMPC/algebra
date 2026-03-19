@@ -374,9 +374,9 @@
     .chap-stack-ghost { position:absolute; left:3px; right:3px; border-radius:1rem; pointer-events:none; }
     .chap-stack-badge { position:absolute; top:-5px; right:-5px; background:#6366f1; color:#fff; border-radius:99px; font-size:.6rem; font-weight:900; padding:.1rem .4rem; z-index:3; letter-spacing:.02em; border:2px solid #fff; }
     @keyframes lockPulse { 0%,100%{transform:scale(1);opacity:.9} 50%{transform:scale(1.08);opacity:1} }
-    .trend-arrow-up   { font-size:.65rem; font-weight:900; color:#16a34a; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px; padding:.1rem .35rem; margin-left:.3rem; }
-    .trend-arrow-flat { font-size:.65rem; font-weight:900; color:#d97706; background:#fffbeb; border:1px solid #fde68a; border-radius:6px; padding:.1rem .35rem; margin-left:.3rem; }
-    .trend-arrow-down { font-size:.65rem; font-weight:900; color:#dc2626; background:#fef2f2; border:1px solid #fecaca; border-radius:6px; padding:.1rem .35rem; margin-left:.3rem; }
+    .trend-arrow-up   { font-size:.95rem; font-weight:900; color:#16a34a; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:.15rem .4rem; margin-left:.3rem; }
+    .trend-arrow-flat { font-size:.95rem; font-weight:900; color:#d97706; background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:.15rem .4rem; margin-left:.3rem; }
+    .trend-arrow-down { font-size:.95rem; font-weight:900; color:#dc2626; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:.15rem .4rem; margin-left:.3rem; }
     .retro-exo-card   { background:#fff; border:1px solid #f1f5f9; border-radius:.85rem; padding:.75rem; margin-bottom:.5rem; }
     .retro-pill       { display:inline-block; font-size:.6rem; font-weight:900; font-family:'Syne',sans-serif; padding:.15rem .5rem; border-radius:6px; border:1px solid; margin-right:.3rem; }
 
@@ -7590,15 +7590,7 @@ function render() {
       html += '<div data-cat="'+cat+'" onclick="togCat(\''+cat+'\')" class="rounded-2xl border border-emerald-200 flex items-center gap-3 py-3 px-4 cursor-pointer select-none" style="background:#f0fdf4;position:relative;z-index:2">';
       html += '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-base flex-shrink-0">'+(isBoost?'⚡':(LVL[S.niv].icons[cat]||'📘'))+'</div>';
       html += '<div class="flex-1 min-w-0"><div class="syne font-black text-sm text-slate-800 truncate" style="font-weight:800">'+(isBoost?'Mon entraînement ✓':(LVL[S.niv].names[cat]||cat))+'</div>';
-      if (!isBoost && _sessCount > 0) {
-        var _lastSess = S.chapSessions[cat][0];
-        var _lastEasy = _lastSess.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
-        var _lastPct = _lastSess.exos.length > 0 ? Math.round(_lastEasy / _lastSess.exos.length * 100) : 0;
-        var _lastPctColor = _lastPct >= 70 ? 'text-emerald-600' : _lastPct >= 40 ? 'text-amber-600' : 'text-rose-500';
-        html += '<span class="text-[9px] font-bold ' + _lastPctColor + '">' + _lastPct + '%';
-        if (_sessCount > 1) html += ' · ×' + _sessCount;
-        html += '</span>';
-      }
+      html += '<div class="text-[9px] font-medium text-emerald-600">'+(isBoost?'Tes prochains exos arrivent demain matin 🔥':'Tes prochains exos arrivent demain 🎯')+'</div>';
       html += '</div>';
       html += '<div class="flex items-center gap-1.5 flex-shrink-0">';
       if (!isBoost) html += _trendArrow(cat);
