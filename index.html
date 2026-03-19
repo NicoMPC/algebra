@@ -6776,37 +6776,35 @@ function renderArchiveSection(cat, exs) {
       var MAX_PILLS = 4;
       var selIdx = (S.retroSess[cat] !== undefined) ? S.retroSess[cat] : 0;
       if (selIdx >= sessions.length) selIdx = 0;
+      // Pré-calcul delta par pill (vs session suivante chronologiquement = index+1)
+      var _pillDeltas = [];
+      for (var pd = 0; pd < sessions.length; pd++) {
+        var _pdEasy = sessions[pd].exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+        var _pdPct = sessions[pd].exos.length > 0 ? Math.round(_pdEasy / sessions[pd].exos.length * 100) : 0;
+        var _pdArrow = '';
+        if (pd < sessions.length - 1) {
+          var _pdPrevE = sessions[pd + 1].exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+          var _pdPrevPct = sessions[pd + 1].exos.length > 0 ? Math.round(_pdPrevE / sessions[pd + 1].exos.length * 100) : 0;
+          _pdArrow = _pdPct > _pdPrevPct ? ' ↑' : _pdPct < _pdPrevPct ? ' ↓' : ' →';
+        }
+        _pillDeltas.push({ pct: _pdPct, arrow: _pdArrow });
+      }
       // Pills de sessions
       html += '<div class="flex gap-1.5 flex-wrap mb-3">';
       var showN = Math.min(sessions.length, MAX_PILLS);
       for (var pi = 0; pi < showN; pi++) {
         var isActive = pi === selIdx;
-        var _pillEasy = sessions[pi].exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
-        var _pillPct = sessions[pi].exos.length > 0 ? Math.round(_pillEasy / sessions[pi].exos.length * 100) : 0;
+        var _pillPct = _pillDeltas[pi].pct;
+        var _pillArrow = isActive ? _pillDeltas[pi].arrow : '';
         var _pillColor = isActive ? '' : (_pillPct >= 70 ? ' text-emerald-600 border-emerald-200' : _pillPct >= 40 ? ' text-amber-600 border-amber-200' : ' text-rose-500 border-rose-200');
-        html += '<button onclick="_selectRetroSess(\''+cat+'\','+pi+')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border '+(isActive ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white' + _pillColor + ' active:bg-slate-50')+'">' + _fmtRetroDate(sessions[pi].date) + ' · ' + _pillPct + '%</button>';
+        html += '<button onclick="_selectRetroSess(\''+cat+'\','+pi+')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border '+(isActive ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white' + _pillColor + ' active:bg-slate-50')+'">' + _fmtRetroDate(sessions[pi].date) + ' · ' + _pillPct + '%' + _pillArrow + '</button>';
       }
       if (sessions.length > MAX_PILLS) {
         html += '<button onclick="_openRetroModal(\''+cat+'\')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border border-slate-200 bg-slate-50 text-slate-400">+' + (sessions.length - MAX_PILLS) + ' sessions →</button>';
       }
       html += '</div>';
       var sess = sessions[selIdx];
-      var easy = sess.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
       var tot = sess.exos.length;
-      var _sessPct = tot > 0 ? Math.round(easy / tot * 100) : 0;
-      var _sessPctColor = _sessPct >= 70 ? 'text-emerald-600' : _sessPct >= 40 ? 'text-amber-600' : 'text-rose-500';
-      // Comparaison avec session précédente
-      var _sessDelta = '';
-      if (selIdx < sessions.length - 1) {
-        var _prevSess = sessions[selIdx + 1]; // sessions triées desc (récent d'abord)
-        var _prevEasy = _prevSess.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
-        var _prevPct = _prevSess.exos.length > 0 ? Math.round(_prevEasy / _prevSess.exos.length * 100) : 0;
-        var _diff = _sessPct - _prevPct;
-        if (_diff > 0) _sessDelta = ' <span class="text-emerald-500">↑ +' + _diff + '%</span>';
-        else if (_diff < 0) _sessDelta = ' <span class="text-rose-500">↓ ' + _diff + '%</span>';
-        else _sessDelta = ' <span class="text-slate-400">→</span>';
-      }
-      html += '<div class="text-[10px] font-semibold text-slate-400 mb-2 text-center">📅 ' + _fmtRetroDateLong(sess.date) + ' · <span class="' + _sessPctColor + ' font-black">' + _sessPct + '%</span> (' + easy + '/' + tot + ')' + _sessDelta + '</div>';
       // Navigation exo par exo
       var exoNav = S.retroExoIdx[cat] || 0;
       if (exoNav >= sess.exos.length) exoNav = 0;
