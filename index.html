@@ -1225,6 +1225,63 @@
     .daily-fill { height:100%;background:#10b981;border-radius:2px;transition:width .4s ease }
     .daily-done-pulse { animation:dailyPulse 1.5s ease infinite }
     @keyframes dailyPulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+    /* ── TIMER EXERCICE ────────────────────────────────── */
+    .exo-timer {
+      display:inline-flex;align-items:center;gap:4px;
+      font-family:'Syne',sans-serif;font-weight:800;font-size:.7rem;
+      color:var(--p);transition:color .4s,opacity .4s;
+      user-select:none;cursor:pointer;
+    }
+    .exo-timer.overtime { color:var(--amb); }
+    .exo-timer.disabled { opacity:.35 }
+    .exo-timer svg { width:22px;height:22px }
+    .exo-timer-ring {
+      fill:none;stroke:var(--p);stroke-width:2.5;
+      stroke-linecap:round;stroke-dasharray:56.55;stroke-dashoffset:0;
+      transition:stroke .4s;transform:rotate(-90deg);transform-origin:center;
+    }
+    .exo-timer.overtime .exo-timer-ring { stroke:var(--amb) }
+    .exo-timer-bg { fill:none;stroke:#e2e8f0;stroke-width:2 }
+    @keyframes timerPulse {
+      0%,100% { opacity:1 }
+      50% { opacity:.6 }
+    }
+    .exo-timer.overtime .exo-timer-ring { animation:timerPulse 2s ease infinite }
+
+    /* ── MODE FLOW ─────────────────────────────────────── */
+    .flow-badge {
+      display:flex;align-items:center;gap:4px;
+      background:linear-gradient(135deg,#fef3c7,#fde68a);
+      border:1.5px solid #f59e0b;color:#92400e;
+      font-family:'Syne',sans-serif;font-weight:900;font-size:.7rem;
+      padding:4px 10px;border-radius:12px;
+      animation:flowPulse 1.5s ease infinite;
+    }
+    @keyframes flowPulse {
+      0%,100% { box-shadow:0 0 0 0 rgba(245,158,11,0);transform:scale(1) }
+      50% { box-shadow:0 0 0 6px rgba(245,158,11,.15);transform:scale(1.02) }
+    }
+    .flow-overlay {
+      position:fixed;inset:0;z-index:9990;
+      background:rgba(0,0,0,.6);
+      display:flex;align-items:center;justify-content:center;
+      animation:slotFadeIn .3s ease-out;
+      padding:1rem;
+    }
+    .flow-card {
+      background:#fff;border-radius:1.5rem;padding:2rem 1.5rem 1.5rem;
+      text-align:center;max-width:320px;width:100%;
+      animation:slotPop .4s cubic-bezier(.34,1.56,.64,1);
+      box-shadow:0 20px 60px rgba(0,0,0,.3);
+    }
+    body.app-night .flow-card { background:#0F172A;color:#DBEAFE }
+    body.app-night .flow-badge { background:linear-gradient(135deg,#78350f,#92400e);border-color:#d97706;color:#fde68a }
+    body.app-night .exo-timer { color:#60A5FA }
+    body.app-night .exo-timer.overtime { color:#fbbf24 }
+    body.app-night .exo-timer-ring { stroke:#60A5FA }
+    body.app-night .exo-timer.overtime .exo-timer-ring { stroke:#fbbf24 }
+    body.app-night .exo-timer-bg { stroke:#334155 }
   </style>
 </head>
 <!--
@@ -2123,6 +2180,7 @@
           🎯 <span id="ui-daily">0</span>/5
           <div class="daily-bar"><div id="daily-fill" class="daily-fill" style="width:0%"></div></div>
         </div>
+        <div id="flow-box" class="hidden flow-badge">⚡ ×2 <span id="ui-flow">0</span></div>
       </div>
     </div>
     <!-- Badge essai gratuit -->
@@ -2373,6 +2431,14 @@ let S = {
   coursMap:          {},      // { cat → {unlocked, locked, nbExos, nextMilestone} }
   coursView:         null,    // cat dont le cours est ouvert (overlay)
   _doneAccOpen:      false,   // accordéon chapitres terminés
+  // ── Timer & Flow Mode ──
+  _timerIv:          null,    // setInterval ID for active timer
+  _timerStart:       0,       // Date.now() when timer started for current exo
+  _timerExoId:       null,    // current exo id being timed
+  _flowStreak:       0,       // consecutive in-time answers
+  _flowActive:       false,   // flow mode on?
+  _flowRemaining:    0,       // exos left with ×2 bonus
+  _flowCat:          null,    // category where flow streak is building
 };
 
 const LVL = {};
@@ -4199,6 +4265,7 @@ var _tourSteps = [
   { el: function(){ return document.getElementById('ui-xp') ? document.getElementById('ui-xp').parentElement : null; }, emoji: '💎', title: 'Tes XP', body: 'Chaque exercice te rapporte des XP — même quand tu te trompes.', pos: 'below' },
   { el: function(){ return document.getElementById('stk-box'); }, emoji: '🔥', title: 'Ta série', body: 'Reviens chaque jour pour garder ta série active. La régularité paye.', pos: 'below' },
   { el: function(){ var pills = document.querySelectorAll('.help-pill'); for(var i=0;i<pills.length;i++){if(pills[i].textContent.indexOf('Brouillon')!==-1) return pills[i];} return document.getElementById('fab-draft'); }, emoji: '✏️', title: 'Brouillon & calculette', body: 'Ce bouton ouvre ton brouillon et ta calculette — pose tes calculs, dessine, note tes idées.', pos: 'above' },
+  { el: null, emoji: '⏱️', title: 'Le chrono', body: 'Chaque exercice a un chrono de 1 minute — juste pour t\'aider à prendre un bon rythme. Aucune pénalité si tu dépasses ! Et si tu réponds vite 5 fois d\'affilée, tu actives le Mode Flow : XP doublés.', pos: 'center' },
   { el: null, emoji: '🚀', title: 'C\'est parti !', body: 'Lance ton premier entraînement. Bonne chance !', pos: 'center', last: true }
 ];
 var _tourIdx = 0;
@@ -4924,6 +4991,16 @@ function updH() {
     if (dg.done) dBox.classList.add('daily-done-pulse');
     else dBox.classList.remove('daily-done-pulse');
   }
+  // Flow mode badge
+  var fBox = document.getElementById('flow-box');
+  if (fBox) {
+    if (S._flowActive && S._flowRemaining > 0) {
+      fBox.classList.remove('hidden');
+      document.getElementById('ui-flow').innerText = S._flowRemaining;
+    } else {
+      fBox.classList.add('hidden');
+    }
+  }
   renderTrialBadge();
 }
 
@@ -5286,10 +5363,14 @@ function mark(cat, idx, status, wrongOpt) {
   var exo = LVL[S.niv].cats[cat][idx];
   S.res[id] = status;
   S.cid = id; S.rev = true;
-  // (règle 1 chapitre/jour désactivée — tous les chapitres accessibles)
-  var xp = status === 'EASY' ? 100 : status === 'MEDIUM' ? 50 : 10; // HARD + SKIP = 10
+  // ── Timer & Flow ──
+  var _mul = _flowXPMultiplier(); // capture BEFORE flow check (so last flow exo still gets bonus)
+  _checkFlowOnAnswer(status);
+  _stopTimer();
+  var xp = (status === 'EASY' ? 100 : status === 'MEDIUM' ? 50 : 10) * _mul; // HARD + SKIP = 10
   S.xp += xp;
   showXP(xp);
+  if (_mul > 1) showT('XP ×' + _mul + ' — Mode Flow !', 1200, '🔥');
   // Streak : mise à jour locale au premier exercice du jour (avec freeze 1j/semaine)
   var _loc = JSON.parse(localStorage.getItem(LK) || '{}');
   var _me  = _loc[S.prof.code];
@@ -5409,6 +5490,10 @@ function goEx(cat, i) {
     localStorage.setItem('draft_' + S.cid, _textarea.value);
   }
 
+  // Reset flow streak si changement de catégorie
+  if (S._flowCat && S._flowCat !== cat) { S._flowStreak = 0; if (!S._flowActive) S._flowCat = null; }
+  S._flowCat = cat;
+
   S.qv[cat] = parseInt(i);
   var r     = res2(cat, i);
   var id    = S.niv + '-' + r.rC + '-' + r.rI;
@@ -5420,8 +5505,8 @@ function goEx(cat, i) {
     setTimeout(function() { startNudge(id); }, 0);
   }
 
-  if (alreadyAnswered) { S.rev = true; S.cid = id; }
-  else { S.rev = false; S.cid = null; S._sel = null; delete S.shuf[S.niv+'-'+cat+'-'+i]; }
+  if (alreadyAnswered) { S.rev = true; S.cid = id; _stopTimer(); }
+  else { S.rev = false; S.cid = null; S._sel = null; delete S.shuf[S.niv+'-'+cat+'-'+i]; if (cat !== 'CALIBRAGE' && cat !== 'BREVET') setTimeout(function() { _startTimer(id); }, 50); }
   render();
 }
 
@@ -8154,6 +8239,7 @@ window.skipAnswer = function(cat, idx) {
   var r  = res2(cat, idx);
   var id = S.niv + '-' + r.rC + '-' + r.rI;
   if (S.res[id]) return;
+  _stopTimer();
   S._sel = null;
   S.rev  = true;
   S.cid  = id;
@@ -8344,7 +8430,7 @@ function rSection(cat, data, idx, total, catDone) {
     '<div class="p-4 sm:p-5">' +
     '<div class="flex justify-between items-center mb-3">' +
     '<span class="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full '+((data.lvl||1)===1?'bg-indigo-100 text-indigo-700':'bg-amber-100 text-amber-700')+'">Niv. '+(data.lvl||1)+'</span>' +
-    '<span class="text-[11px] font-bold text-slate-500" style="animation:counterPop .3s ease both">'+(idx+1)+' / '+total+'</span>' +
+    '<span class="flex items-center gap-2"><span class="text-[11px] font-bold text-slate-500" style="animation:counterPop .3s ease both">'+(idx+1)+' / '+total+'</span>' + (!isRev && !scored && cat !== 'CALIBRAGE' && cat !== 'BREVET' ? _renderTimerSVG() : '') + '</span>' +
     '</div>' +
     getExoFigure(data, cat) +
     '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 sm:p-5 mb-3 min-h-[60px] flex items-center justify-center" style="overflow-wrap:break-word;word-break:break-word">' +
@@ -9596,6 +9682,128 @@ function clearNudge(id) {
   var pf = document.getElementById('pill-form-'+id);
   if (ph) ph.classList.remove('pill-nudge');
   if (pf) pf.classList.remove('pill-nudge');
+}
+
+// ══════════════════════════════════════════════════════════════
+// TIMER EXERCICE — 60s doux + Mode Flow
+// ══════════════════════════════════════════════════════════════
+var TIMER_DURATION = 60; // secondes
+var FLOW_THRESHOLD = 5;  // exos consécutifs in-time pour activer
+var FLOW_BONUS_EXOS = 5; // nb exos avec XP ×2
+
+function _timerKey() { return 'mx_timer_' + (S.prof ? S.prof.code : 'anon'); }
+function _isTimerOn() {
+  try { var v = localStorage.getItem(_timerKey()); return v !== 'off'; } catch(e) { return true; }
+}
+function _toggleTimer() {
+  var on = _isTimerOn();
+  try { localStorage.setItem(_timerKey(), on ? 'off' : 'on'); } catch(e) {}
+  _stopTimer();
+  render();
+}
+
+function _startTimer(exoId) {
+  _stopTimer();
+  if (!_isTimerOn()) return;
+  S._timerExoId = exoId;
+  S._timerStart = S.exoStartTime[exoId] || Date.now();
+  // Coach tip première fois
+  if (_needsCoach('tip_timer')) {
+    _markCoach('tip_timer');
+    setTimeout(function() {
+      showT('Le chrono t\'aide à prendre un bon rythme — aucune pénalité si tu dépasses', 5000, '⏱️');
+    }, 1200);
+  }
+  S._timerIv = setInterval(function() { _tickTimer(); }, 1000);
+  _tickTimer(); // immediate first tick
+}
+
+function _stopTimer() {
+  if (S._timerIv) { clearInterval(S._timerIv); S._timerIv = null; }
+  S._timerExoId = null;
+}
+
+function _tickTimer() {
+  var el = document.getElementById('exo-timer-display');
+  if (!el) return;
+  var elapsed = Math.floor((Date.now() - S._timerStart) / 1000);
+  var remaining = Math.max(0, TIMER_DURATION - elapsed);
+  var mins = Math.floor(remaining / 60);
+  var secs = remaining % 60;
+  // Update text
+  var txt = el.querySelector('.exo-timer-txt');
+  if (txt) txt.textContent = remaining > 0 ? mins + ':' + String(secs).padStart(2, '0') : '+' + Math.floor((elapsed - TIMER_DURATION) / 60) + ':' + String((elapsed - TIMER_DURATION) % 60).padStart(2, '0');
+  // Update SVG ring (circumference = 2*PI*9 ≈ 56.55)
+  var ring = el.querySelector('.exo-timer-ring');
+  if (ring) {
+    var pct = remaining > 0 ? remaining / TIMER_DURATION : 0;
+    ring.style.strokeDashoffset = (56.55 * (1 - pct)).toFixed(2);
+  }
+  // Overtime visual
+  if (remaining <= 0) el.classList.add('overtime');
+  else el.classList.remove('overtime');
+}
+
+function _getTimerElapsed() {
+  if (!S._timerExoId || !S._timerStart) return 999;
+  return Math.floor((Date.now() - S._timerStart) / 1000);
+}
+
+function _checkFlowOnAnswer(status) {
+  if (!_isTimerOn()) return;
+  var elapsed = _getTimerElapsed();
+  var _justActivated = false;
+  if (status === 'EASY' && elapsed <= TIMER_DURATION) {
+    S._flowStreak++;
+    if (S._flowStreak >= FLOW_THRESHOLD && !S._flowActive) {
+      S._flowActive = true;
+      S._flowRemaining = FLOW_BONUS_EXOS;
+      _justActivated = true;
+      _showFlowActivated();
+    }
+  } else {
+    // Reset streak on wrong/skip/overtime — sauf si flow déjà actif
+    if (!S._flowActive) S._flowStreak = 0;
+  }
+  // Decrement flow remaining (skip the activation exo — bonus starts NEXT exo)
+  if (S._flowActive && S._flowRemaining > 0 && !_justActivated) {
+    S._flowRemaining--;
+    if (S._flowRemaining <= 0) {
+      S._flowActive = false;
+      S._flowStreak = 0;
+      showT('Mode Flow terminé — bravo pour cette série !', 3000, '🏁');
+    }
+  }
+}
+
+function _flowXPMultiplier() {
+  return S._flowActive ? 2 : 1;
+}
+
+function _showFlowActivated() {
+  var ov = document.createElement('div');
+  ov.className = 'flow-overlay';
+  ov.id = 'flow-ov';
+  ov.innerHTML =
+    '<div class="flow-card">' +
+    '<div style="font-size:2.5rem;margin-bottom:.5rem">⚡🔥⚡</div>' +
+    '<div style="font-family:Syne,sans-serif;font-weight:900;font-size:1.3rem;color:#92400e;margin-bottom:.25rem">Mode Flow activé !</div>' +
+    '<div style="font-size:.85rem;color:#78350f;margin-bottom:.75rem">' + FLOW_BONUS_EXOS + ' réponses correctes d\'affilée en moins d\'1 minute — tes <strong>XP sont doublés</strong> pour les ' + FLOW_BONUS_EXOS + ' prochains exercices !</div>' +
+    '<button onclick="document.getElementById(\'flow-ov\').remove()" class="slot-btn" style="background:linear-gradient(135deg,#f59e0b,#d97706)">On continue ! 🔥</button>' +
+    '</div>';
+  document.body.appendChild(ov);
+  setTimeout(function() { var o = document.getElementById('flow-ov'); if (o) o.remove(); }, 8000);
+}
+
+function _renderTimerSVG() {
+  if (!_isTimerOn()) {
+    return '<span id="exo-timer-display" class="exo-timer disabled" onclick="_toggleTimer()" title="Timer désactivé — clique pour réactiver">' +
+      '<svg viewBox="0 0 22 22"><circle class="exo-timer-bg" cx="11" cy="11" r="9"/><line x1="5" y1="5" x2="17" y2="17" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/></svg>' +
+      '<span class="exo-timer-txt" style="font-size:.6rem">OFF</span></span>';
+  }
+  return '<span id="exo-timer-display" class="exo-timer" onclick="_toggleTimer()" title="Clique pour désactiver le timer">' +
+    '<svg viewBox="0 0 22 22"><circle class="exo-timer-bg" cx="11" cy="11" r="9"/><circle class="exo-timer-ring" cx="11" cy="11" r="9"/></svg>' +
+    '<span class="exo-timer-txt">1:00</span></span>';
 }
 
 function clrText() {
