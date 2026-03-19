@@ -2995,7 +2995,7 @@ var _flowHints        = {};   // { exoIdx: nbHintsShown } pour le quiz inline
 var _flowFormulaShown = {};  // { exoIdx: true } formules révélées
 
 // ── Carrousel screenshots visio ──
-var _visioIdx = 0, _visioTimer, _visioTotal = 3;
+var _visioIdx = 0, _visioTimer, _visioTotal = 3, _visioAutoStop = false;
 var _visioCaptions = [
   'Tout a commencé par des cours en visio, un élève à la fois.',
   'Les mêmes blocages revenaient — j\u2019ai voulu automatiser ce qui marchait.',
@@ -3015,7 +3015,8 @@ function _visioGo(i) {
   var back = document.getElementById('visio-back');
   if (back) back.style.display = i > 0 ? 'block' : 'none';
   clearInterval(_visioTimer);
-  if (i < _visioTotal - 1) {
+  if (i >= _visioTotal - 1) _visioAutoStop = true;
+  if (!_visioAutoStop && i < _visioTotal - 1) {
     _visioTimer = setInterval(function() { _visioGo(_visioIdx + 1); }, 1800);
   }
 }
