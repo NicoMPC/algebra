@@ -6755,7 +6755,7 @@ function renderArchiveSection(cat, exs) {
     html += '<div class="text-xs font-black text-emerald-700 mb-0.5">Entraînement du jour : fait ✅</div>';
     html += '<div class="text-[10px] font-medium text-emerald-600">Tes prochains exos sur mesure arrivent demain matin 🔥</div>';
     html += '</div>';
-    // Collecter les exos répondus pour navigation Précédent/Suivant
+    // ── Build unified boost list: [0]=today, [1..N]=past boosts ──
     var _boostAnswered = [];
     exs.forEach(function(exo, idx) {
       var r = res2(cat, idx);
@@ -6763,46 +6763,73 @@ function renderArchiveSection(cat, exs) {
       var result = S.res[id];
       if (result) _boostAnswered.push({ exo: exo, idx: idx, id: id, result: result });
     });
+    var _boostEntries = []; // [{label, pct, exos: [{exo, score}]}]
+    // Today's boost
     if (_boostAnswered.length > 0) {
-      var _bNav = S.retroExoIdx['BOOST'] || 0;
-      if (_bNav >= _boostAnswered.length) _bNav = 0;
-      var _bItem = _boostAnswered[_bNav];
-      html += _renderRetroExo(_bItem.exo, { resultat: _bItem.result, mauvaise_option: S.qans[_bItem.id] || '', nb_indices: S.hints[_bItem.id] || 0, formule_vue: !!S.ftch[_bItem.id] }, cat, _bItem.idx);
-      // Barre nav
-      html += '<div class="flex items-center justify-between mt-3 gap-2">';
-      html += '<button onclick="_retroNavBoost(-1)" class="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-black text-slate-400 bg-white ' + (_bNav === 0 ? 'opacity-30 pointer-events-none' : 'active:bg-slate-50') + '">← Précédent</button>';
-      html += '<span class="text-[11px] font-black text-slate-500 flex-shrink-0">' + (_bNav + 1) + ' / ' + _boostAnswered.length + '</span>';
-      html += '<button onclick="_retroNavBoost(1)" class="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-black text-slate-400 bg-white ' + (_bNav === _boostAnswered.length - 1 ? 'opacity-30 pointer-events-none' : 'active:bg-slate-50') + '">Suivant →</button>';
-      html += '</div>';
+      var _todayEasy = _boostAnswered.filter(function(b) { return b.result === 'EASY'; }).length;
+      var _todayPct = Math.round(_todayEasy / _boostAnswered.length * 100);
+      _boostEntries.push({
+        label: _fmtRetroDate(tod()) + ' · ' + _todayPct + '%',
+        pct: _todayPct,
+        items: _boostAnswered.map(function(b) {
+          return { exo: b.exo, score: { resultat: b.result, mauvaise_option: S.qans[b.id] || '', nb_indices: S.hints[b.id] || 0, formule_vue: !!S.ftch[b.id] }, idx: b.idx };
+        })
+      });
     }
-    // ── Boosts passés ──────────────────────────────────────
+    // Past boosts
     if (S.boostHistory && S.boostHistory.length > 0) {
-      html += '<div class="mt-4 mb-2 flex items-center gap-2"><div class="flex-1 h-px bg-slate-100"></div><span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Mes boosts passés</span><div class="flex-1 h-px bg-slate-100"></div></div>';
-      S.boostHistory.forEach(function(b, bi) {
+      S.boostHistory.forEach(function(b) {
         if (!b.boost || !b.boost.exos) return;
-        var done = b.exosDone || 0;
-        var total = b.boost.exos.length;
-        var pct = total > 0 ? Math.round(done / total * 100) : 0;
-        var isOpenB = S.retroBoost === bi;
-        html += '<div class="mb-2">';
-        html += '<button onclick="_toggleRetroBoost('+bi+')" class="w-full flex items-center gap-3 bg-white border border-slate-100 rounded-xl px-4 py-2.5 text-left active:bg-slate-50">';
-        html += '<span class="text-base flex-shrink-0">⚡</span>';
-        html += '<div class="flex-1 min-w-0"><div class="text-xs font-black text-slate-700">Entraînement du ' + _fmtRetroDate(b.date) + '</div>';
-        html += '<div class="text-[10px] text-slate-400 font-medium">' + done + '/' + total + ' réussis</div></div>';
-        var scoreColor = pct >= 70 ? '#16a34a' : pct >= 40 ? '#d97706' : '#dc2626';
-        html += '<span style="font-size:.7rem;font-weight:900;color:'+scoreColor+'">'+pct+'%</span>';
-        html += '<div class="text-slate-300 text-base ml-1">'+(isOpenB ? '▾' : '▸')+'</div>';
-        html += '</button>';
-        if (isOpenB) {
-          html += '<div class="mt-1 space-y-1 px-1">';
-          b.boost.exos.forEach(function(exo, ei) {
-            var matchScore = b.scores.find(function(s) { return parseInt(s.exercice_idx) - 1 === ei; });
-            html += _renderRetroExo(exo, matchScore || { resultat: '', mauvaise_option: '' }, null, ei);
-          });
-          html += '</div>';
+        var bEasy = (b.scores || []).filter(function(s) { return s.resultat === 'EASY'; }).length;
+        var bTotal = b.boost.exos.length;
+        var bPct = bTotal > 0 ? Math.round(bEasy / bTotal * 100) : 0;
+        _boostEntries.push({
+          label: _fmtRetroDate(b.date) + ' · ' + bPct + '%',
+          pct: bPct,
+          items: b.boost.exos.map(function(exo, ei) {
+            var matchScore = (b.scores || []).find(function(s) { return parseInt(s.exercice_idx) - 1 === ei; });
+            return { exo: exo, score: matchScore || { resultat: '', mauvaise_option: '' }, idx: ei };
+          })
+        });
+      });
+    }
+    if (_boostEntries.length > 0) {
+      var _bSel = S.retroBoost || 0;
+      if (_bSel >= _boostEntries.length) _bSel = 0;
+      // Pills (only if more than 1 entry)
+      if (_boostEntries.length > 1) {
+        html += '<div class="flex gap-1.5 flex-wrap mb-3">';
+        for (var _bpi = 0; _bpi < _boostEntries.length; _bpi++) {
+          var _bpActive = _bpi === _bSel;
+          var _bpPct = _boostEntries[_bpi].pct;
+          var _bpColor = _bpActive ? '' : (_bpPct >= 70 ? ' text-emerald-600 border-emerald-200' : _bpPct >= 40 ? ' text-amber-600 border-amber-200' : ' text-rose-500 border-rose-200');
+          html += '<button onclick="_selectRetroBoost('+_bpi+')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border '+(_bpActive ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white' + _bpColor + ' active:bg-slate-50')+'">' + _boostEntries[_bpi].label + '</button>';
         }
         html += '</div>';
-      });
+      }
+      // Number bar (Fix 4)
+      var _bEntry = _boostEntries[_bSel];
+      var _bNav = S.retroExoIdx['BOOST'] || 0;
+      if (_bNav >= _bEntry.items.length) _bNav = 0;
+      html += '<div class="flex gap-1 flex-wrap justify-center mb-3">';
+      for (var _bni = 0; _bni < _bEntry.items.length; _bni++) {
+        var _bnRes = _bEntry.items[_bni].score.resultat || '';
+        var _bnBg = _bnRes === 'EASY' ? 'bg-emerald-100 text-emerald-700' : _bnRes === 'HARD' ? 'bg-red-100 text-red-700' : _bnRes === 'MEDIUM' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-400';
+        var _bnBorder = _bni === _bNav ? 'border-indigo-600' : 'border-transparent';
+        html += '<button onclick="_retroJump(\'BOOST\','+_bni+')" class="w-6 h-6 rounded-full text-[9px] font-black '+_bnBg+' border-2 '+_bnBorder+'">'+(_bni+1)+'</button>';
+      }
+      html += '</div>';
+      // Render selected exercise
+      var _bItem = _bEntry.items[_bNav];
+      if (_bItem && _bItem.exo) {
+        html += _renderRetroExo(_bItem.exo, _bItem.score, cat, _bItem.idx);
+      }
+      // Nav buttons
+      html += '<div class="flex items-center justify-between mt-3 gap-2">';
+      html += '<button onclick="_retroNavBoost(-1)" class="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-black text-slate-400 bg-white ' + (_bNav === 0 ? 'opacity-30 pointer-events-none' : 'active:bg-slate-50') + '">← Précédent</button>';
+      html += '<span class="text-[11px] font-black text-slate-500 flex-shrink-0">' + (_bNav + 1) + ' / ' + _bEntry.items.length + '</span>';
+      html += '<button onclick="_retroNavBoost(1)" class="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-black text-slate-400 bg-white ' + (_bNav === _bEntry.items.length - 1 ? 'opacity-30 pointer-events-none' : 'active:bg-slate-50') + '">Suivant →</button>';
+      html += '</div>';
     }
   } else {
     // ── Chapitres : vue sessions ──────────────────────────
@@ -6834,7 +6861,7 @@ function renderArchiveSection(cat, exs) {
           var _pillPct = _pillDeltas[pi].pct;
           var _pillArrow = isActive ? _pillDeltas[pi].arrow : '';
           var _pillColor = isActive ? '' : (_pillPct >= 70 ? ' text-emerald-600 border-emerald-200' : _pillPct >= 40 ? ' text-amber-600 border-amber-200' : ' text-rose-500 border-rose-200');
-          var _pillLabel = _isChapRetro ? ('Passage ' + (sessions.length - pi) + ' · ' + _pillPct + '%' + _pillArrow) : (_fmtRetroDate(sessions[pi].date) + ' · ' + _pillPct + '%' + _pillArrow);
+          var _pillLabel = _fmtRetroDate(sessions[pi].endDate || sessions[pi].date) + ' · ' + _pillPct + '%' + _pillArrow;
           html += '<button onclick="_selectRetroSess(\''+cat+'\','+pi+')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border '+(isActive ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white' + _pillColor + ' active:bg-slate-50')+'">' + _pillLabel + '</button>';
         }
         if (sessions.length > MAX_PILLS) {
@@ -6842,20 +6869,45 @@ function renderArchiveSection(cat, exs) {
         }
         html += '</div>';
       }
-      // Date de complétion du passage sélectionné (chapitres uniquement)
-      if (_isChapRetro && sessions[selIdx] && sessions[selIdx].endDate) {
-        html += '<div class="text-center text-[10px] text-slate-400 mb-2">Terminé le ' + _fmtRetroDateLong(sessions[selIdx].endDate) + '</div>';
-      }
+      // (date now shown in pill label)
       var sess = sessions[selIdx];
       var tot = sess.exos.length;
+      // ── Number bar (clickable dots) ──
+      var _nbExoNav = S.retroExoIdx[cat] || 0;
+      if (_nbExoNav >= tot) _nbExoNav = 0;
+      html += '<div class="flex gap-1 flex-wrap justify-center mb-3">';
+      for (var _nbi = 0; _nbi < tot; _nbi++) {
+        var _nbScore = sess.exos[_nbi];
+        var _nbRes = (_nbScore && _nbScore.resultat) || '';
+        var _nbBg = _nbRes === 'EASY' ? 'bg-emerald-100 text-emerald-700' : _nbRes === 'HARD' ? 'bg-red-100 text-red-700' : _nbRes === 'MEDIUM' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-400';
+        var _nbBorder = _nbi === _nbExoNav ? 'border-indigo-600' : 'border-transparent';
+        html += '<button onclick="_retroJump(\''+cat+'\','+_nbi+')" class="w-6 h-6 rounded-full text-[9px] font-black '+_nbBg+' border-2 '+_nbBorder+'">'+(_nbi+1)+'</button>';
+      }
+      html += '</div>';
       // Navigation exo par exo
       var exoNav = S.retroExoIdx[cat] || 0;
       if (exoNav >= sess.exos.length) exoNav = 0;
-      var score = sess.exos[exoNav];
-      if (score) {
-        var exoIdx = parseInt(score.exercice_idx) - 1;
-        var exo = exs[exoIdx];
-        if (exo) html += _renderRetroExo(exo, score, cat, exoIdx);
+      // Find a valid exercise (skip scores with undefined exo)
+      var score = null, exo = null, exoIdx = -1;
+      for (var _tryIdx = exoNav; _tryIdx < sess.exos.length; _tryIdx++) {
+        var _tryScore = sess.exos[_tryIdx];
+        if (!_tryScore) continue;
+        var _tryExoIdx = parseInt(_tryScore.exercice_idx) - 1;
+        var _tryExo = exs[_tryExoIdx];
+        if (_tryExo) { score = _tryScore; exo = _tryExo; exoIdx = _tryExoIdx; if (_tryIdx !== exoNav) S.retroExoIdx[cat] = _tryIdx; exoNav = _tryIdx; break; }
+      }
+      // If not found forward, try from beginning
+      if (!exo) {
+        for (var _tryIdx2 = 0; _tryIdx2 < exoNav; _tryIdx2++) {
+          var _tryScore2 = sess.exos[_tryIdx2];
+          if (!_tryScore2) continue;
+          var _tryExoIdx2 = parseInt(_tryScore2.exercice_idx) - 1;
+          var _tryExo2 = exs[_tryExoIdx2];
+          if (_tryExo2) { score = _tryScore2; exo = _tryExo2; exoIdx = _tryExoIdx2; S.retroExoIdx[cat] = _tryIdx2; exoNav = _tryIdx2; break; }
+        }
+      }
+      if (exo && score) {
+        html += _renderRetroExo(exo, score, cat, exoIdx);
       }
       // Barre de navigation prev/next
       html += '<div class="flex items-center justify-between mt-3 gap-2">';
@@ -6994,14 +7046,23 @@ function _retroNav(cat, dir) {
 }
 function _retroNavBoost(dir) {
   if (!S.retroExoIdx) S.retroExoIdx = {};
-  // Calculer le total des exos boost répondus pour borner la navigation
+  // Compute total from selected boost entry
+  var _bSel = S.retroBoost || 0;
   var _bTotal = 0;
-  if (S.boost && S.boost.exos) {
+  if (_bSel === 0 && S.boost && S.boost.exos) {
+    // today's boost: count answered
     S.boost.exos.forEach(function(_, i) {
       var r = res2('BOOST', i);
       if (S.res[S.niv + '-' + r.rC + '-' + r.rI]) _bTotal++;
     });
+  } else {
+    // past boost
+    var _bhi = _bSel - 1;
+    if (S.boostHistory && S.boostHistory[_bhi] && S.boostHistory[_bhi].boost) {
+      _bTotal = S.boostHistory[_bhi].boost.exos.length;
+    }
   }
+  if (_bTotal === 0) return;
   var cur = S.retroExoIdx['BOOST'] || 0;
   cur = Math.max(0, Math.min(_bTotal - 1, cur + dir));
   S.retroExoIdx['BOOST'] = cur;
@@ -7009,6 +7070,15 @@ function _retroNavBoost(dir) {
 }
 function _toggleRetroBoost(idx) {
   S.retroBoost = (S.retroBoost === idx) ? null : idx;
+  render();
+}
+function _selectRetroBoost(idx) {
+  S.retroBoost = idx;
+  S.retroExoIdx['BOOST'] = 0;
+  render();
+}
+function _retroJump(cat, idx) {
+  S.retroExoIdx[cat] = idx;
   render();
 }
 
@@ -7031,8 +7101,8 @@ function _openRetroModal(cat) {
     html += '<button onclick="_closeRetroModal();_selectRetroSess(\''+cat+'\','+i+')" style="display:flex;align-items:center;gap:.75rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:1rem;padding:.75rem 1rem;margin-bottom:.5rem;width:100%;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent">';
     var _isBoostModal = cat === 'BOOST';
     html += '<div style="width:2.5rem;height:2.5rem;background:#eef2ff;border-radius:.75rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0">' + (_isBoostModal ? '📅' : '🔁') + '</div>';
-    html += '<div style="flex:1;min-width:0"><div style="font-size:.75rem;font-weight:900;color:#0f172a;font-family:Syne,sans-serif">' + (_isBoostModal ? 'Session du ' + _fmtRetroDateLong(sess.date) : 'Passage ' + (sessions.length - i)) + '</div>';
-    html += '<div style="font-size:.65rem;font-weight:600;color:#94a3b8">' + total + ' exercices · ' + easy + ' réussis' + (!_isBoostModal && sess.endDate ? ' · ' + _fmtRetroDate(sess.endDate) : '') + '</div></div>';
+    html += '<div style="flex:1;min-width:0"><div style="font-size:.75rem;font-weight:900;color:#0f172a;font-family:Syne,sans-serif">' + (_isBoostModal ? 'Session du ' + _fmtRetroDateLong(sess.date) : _fmtRetroDateLong(sess.endDate || sess.date)) + '</div>';
+    html += '<div style="font-size:.65rem;font-weight:600;color:#94a3b8">' + total + ' exercices · ' + easy + ' réussis</div></div>';
     html += '<div style="font-size:.85rem;font-weight:900;color:'+bar+'">' + pct + '%</div>';
     html += '</button>';
   });
