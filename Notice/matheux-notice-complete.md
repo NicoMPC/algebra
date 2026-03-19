@@ -261,6 +261,31 @@ Après paiement : accès illimité, pas de changement dans l'app.
 
 ---
 
+## 2.8 Questions fréquentes (Élève)
+
+**Q : Pourquoi ce chapitre est en bleu en haut ?**
+R : C'est le hero CTA. Après ton boost, Matheux te recommande automatiquement le chapitre le plus pertinent. La logique : d'abord ton entraînement du jour, puis le chapitre que tu as déjà commencé, puis un chapitre ciblé par ton boost.
+
+**Q : C'est quoi "hésitation" ?**
+R : Tu as trouvé la bonne réponse mais en utilisant les indices. Ça compte comme compris mais pas maîtrisé (MEDIUM). Seules les réponses du premier coup (EASY) comptent dans ton score %.
+
+**Q : Pourquoi mon score est 80% alors que j'ai fait qu'une erreur ?**
+R : Le score compte les EASY (bon du premier coup). Si tu as 16 EASY + 3 MEDIUM + 1 HARD sur 20 exos = 16/20 = 80%. Les MEDIUM (indices utilisés) ne comptent pas comme réussis.
+
+**Q : Comment fonctionne la mission du jour (🎯) ?**
+R : Chaque exercice que tu fais (boost ou chapitre) compte. 5 exercices dans la journée = mission accomplie (+50 XP). Le compteur se reset chaque jour.
+
+**Q : Pourquoi je vois plusieurs dates quand j'ouvre un chapitre terminé ?**
+R : Chaque date correspond à un passage complet (20 exercices). Si ton prof te réassigne le chapitre, tu fais un nouveau passage. La flèche ↑↓ compare tes passages entre eux.
+
+**Q : C'est quoi les petits ronds colorés ?**
+R : La barre de numéros. Vert = réussi du premier coup, ambre = réussi avec aide, rouge = raté. Tu peux cliquer sur un numéro pour revoir directement cet exercice.
+
+**Q : Pourquoi "Tes prochains exos arrivent demain" ?**
+R : Ton prof prépare chaque jour un nouvel entraînement personnalisé basé sur tes résultats. Il est publié le matin.
+
+---
+
 # 3. Notice Fondateur
 
 ## 3.1 Ton rôle
@@ -345,6 +370,23 @@ Chaque dimanche : email personnalisé avec stats de la semaine (exercices faits,
 | PR3CMB | Nicolas | 4EME | nico@nico.fr | niconcico |
 | 3M4ZAB | Charlie | 3EME | charlieboitel6@gmail.com | charlie |
 | MOK3ME | Léo | 3EME | moke@up.fr | (à vérifier) |
+
+## 3.7 Questions fréquentes (Fondateur / Admin)
+
+**Q : Comment est choisi le chapitre recommandé à l'élève ?**
+R : Cascade P1→P5 : 1) Boost du jour non fait, 2) Premier chapitre entamé (dans l'ordre curriculum), 3) Chapitre ciblé par le boost, 4) Chapitre NEW assigné manuellement, 5) Premier chapitre disponible. Jamais d'aléatoire.
+
+**Q : Faiblesse connue sur la cascade ?**
+R : P2 prend le premier chapitre entamé dans l'ordre du curriculum, pas le plus avancé. À revoir semaine du 23 mars.
+
+**Q : Comment le score % est calculé ?**
+R : EASY / total × 100. MEDIUM (indices) et HARD (erreur) ne comptent pas. Un élève avec 1 erreur et 3 indices a 80% (16 EASY / 20).
+
+**Q : Le daily goal compte quoi ?**
+R : Tout exercice validé (boost, chapitre, diagnostic). 5 exos/jour = mission. Stocké en localStorage, pas en BDD.
+
+**Q : Pourquoi un élève simulé a des données bizarres ?**
+R : Les données injectées directement en BDD ne passent pas par les mêmes chemins que l'app (pas de localStorage, pas de _dailyInc, scores boost avec Chapitre≠BOOST). Toujours tester avec le vrai flow app pour valider.
 
 ---
 
