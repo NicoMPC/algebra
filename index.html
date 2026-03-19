@@ -6772,7 +6772,6 @@ function renderArchiveSection(cat, exs) {
   } else {
     // ── Chapitres : vue sessions ──────────────────────────
     var sessions = S.chapSessions && S.chapSessions[cat];
-    console.log('[RETRO] cat='+cat+' sessions='+(sessions?sessions.length:'null')+' exs='+(exs?exs.length:'null'));
     if (sessions && sessions.length > 0) {
       var MAX_PILLS = 4;
       var selIdx = (S.retroSess[cat] !== undefined) ? S.retroSess[cat] : 0;
