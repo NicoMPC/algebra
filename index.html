@@ -6843,30 +6843,74 @@ function renderArchiveSection(cat, exs) {
   return html;
 }
 
-// ── Carte retro d'un exercice (lecture seule) ──────────────────
+// ── Carte retro d'un exercice (lecture seule, même format que l'exo actif) ──
 function _renderRetroExo(exo, score, cat, idx) {
   var result = (score && score.resultat) || '';
   var isHard = result === 'HARD', isMed = result === 'MEDIUM', isEasy = result === 'EASY', isSkip = result === 'SKIP';
   var icon = isEasy ? '✅' : isSkip ? '🤷' : isHard ? '❌' : isMed ? '🟡' : '⬜';
   var borderColor = isEasy ? '#d1fae5' : isSkip ? '#fef3c7' : isHard ? '#fee2e2' : isMed ? '#fef3c7' : '#f1f5f9';
+  var exoType = exo.type || 'qcm';
+
   var html = '<div class="retro-exo-card" style="border-color:'+borderColor+'">';
-  html += '<div class="flex items-start gap-2">';
-  html += '<span class="flex-shrink-0 text-sm mt-0.5">'+icon+'</span>';
-  html += '<div class="flex-1 min-w-0">';
-  html += '<div class="text-xs font-semibold text-slate-700 leading-snug mc">' + fmtL(exo.q) + '</div>';
-  if (exo.a) html += '<div class="text-[11px] font-bold text-emerald-600 mt-1 mc">✓ ' + fmtL(exo.a) + '</div>';
+
+  // ── Résultat badge ──
+  html += '<div class="flex justify-between items-center mb-3">';
+  html += '<span class="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full '+((exo.lvl||1)===1?'bg-indigo-100 text-indigo-700':'bg-amber-100 text-amber-700')+'">Niv. '+(exo.lvl||1)+'</span>';
+  html += '<span class="text-xs font-bold">'+icon+' '+(isEasy?'Acquis':isSkip?'Passé':isHard?'À revoir':isMed?'Hésitation':'')+'</span>';
+  html += '</div>';
+
+  // ── Figure (si applicable) ──
+  html += getExoFigure(exo, cat);
+
+  // ── Énoncé (même style que l'exo actif) ──
+  var qHtml = exoType === 'fill'
+    ? fmtL(exo.q).replace(/___/g, '<span style="display:inline-block;min-width:5rem;border-bottom:3px solid #4338ca;background:#eef2ff;border-radius:4px;padding:2px 8px;margin:0 4px">…</span>')
+    : fmtL(exo.q);
+  html += '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 sm:p-5 mb-3 min-h-[60px] flex items-center justify-center" style="overflow-wrap:break-word;word-break:break-word">';
+  html += '<div class="mc text-center font-bold text-sm sm:text-base leading-relaxed w-full min-w-0" style="overflow-x:auto">'+qHtml+'</div></div>';
+
+  // ── Options QCM / VF (read-only, colorées) ──
+  if (exo.options && exo.options.length) {
+    var cI = exo.options.indexOf(exo.a);
+    var nOpts = exo.options.length;
+    var gridCls = nOpts === 2 ? 'grid grid-cols-2 gap-2 mt-3' : nOpts === 4 ? 'grid grid-cols-2 gap-2 mt-3' : 'flex flex-col gap-2 mt-3';
+    html += '<div class="opt-grid '+gridCls+'">';
+    exo.options.forEach(function(o, i) {
+      var cls = 'opt ';
+      if (i === cI) { cls += 'oc '; }
+      else if (o === score.mauvaise_option) { cls += 'ow '; }
+      else { cls += 'on '; }
+      var extraStyle = (exoType === 'vf' && nOpts === 2) ? ' style="padding:1rem;font-size:1rem;font-weight:800;pointer-events:none"' : ' style="pointer-events:none"';
+      html += '<button class="'+cls.trim()+'"'+extraStyle+'><span class="mc flex-1">'+fmtL(o)+'</span></button>';
+    });
+    html += '</div>';
+    // Justification VF
+    if (exoType === 'vf' && exo.justification) {
+      html += '<div class="bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2.5 text-xs text-indigo-800 font-medium mt-2"><span class="font-bold">Explication :</span> '+fmtL(exo.justification)+'</div>';
+    }
+  } else if (exoType === 'fill') {
+    // Fill : afficher la bonne réponse + éventuellement la mauvaise
+    html += '<div class="mt-3">';
+    html += '<div class="text-xs font-bold text-emerald-600 mc bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2">✓ Réponse : '+fmtL(exo.a)+'</div>';
+    if ((isHard || isMed) && score.mauvaise_option) {
+      html += '<div class="text-xs text-rose-500 mt-1 mc bg-rose-50 border border-rose-200 rounded-xl px-3 py-2">✗ Répondu : '+fmtL(score.mauvaise_option)+'</div>';
+    }
+    html += '</div>';
+  }
+
+  // ── Skip indicator ──
   if (isSkip) {
-    html += '<div class="text-[11px] text-amber-600 mt-0.5">🤷 a passé la question</div>';
-  } else if ((isHard || isMed) && score.mauvaise_option) {
-    html += '<div class="text-[11px] text-rose-500 mt-0.5 mc">→ répondu : <em>' + fmtL(score.mauvaise_option) + '</em></div>';
+    html += '<div class="text-xs text-amber-600 mt-2 text-center font-semibold">🤷 A passé la question</div>';
   }
-  var meta = [];
-  // Indices/formule retirés de l'affichage retro (info technique, pas utile élève)
-  if (exo.steps && exo.steps.length || exo.f) html += _previewHelp(exo);
-  html += '</div></div>';
+
+  // ── Indices (tous déployés) ──
+  html += '<div class="inline-help mc rdy mt-4">'+_previewHelp(exo)+'</div>';
+
+  // ── Signaler une erreur ──
   if (cat !== null && idx !== undefined) {
-    html += '<div class="text-right mt-1"><button onclick="openFeedback(\''+cat+'\','+idx+')" class="text-[10px] text-slate-300 underline">📢 Signaler une erreur</button></div>';
+    html += '<div class="text-center mt-3"><button onclick="openFeedback(\''+cat+'\','+idx+')" class="text-[10px] text-slate-300 hover:text-slate-500 transition-colors underline">📢 Signaler une erreur</button></div>';
   }
+
   html += '</div>';
   return html;
 }
