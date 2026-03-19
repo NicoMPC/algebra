@@ -2844,10 +2844,10 @@ function _visioGo(i) {
   dots.forEach(function(d, j) { d.style.background = j === i ? '#4338ca' : '#cbd5e1'; });
   clearInterval(_visioTimer);
   if (i < _visioTotal - 1) {
-    _visioTimer = setInterval(function() { _visioGo(_visioIdx + 1); }, 3500);
+    _visioTimer = setInterval(function() { _visioGo(_visioIdx + 1); }, 1800);
   }
 }
-_visioTimer = setInterval(function() { _visioGo(_visioIdx + 1); }, 3500);
+_visioTimer = setInterval(function() { _visioGo(_visioIdx + 1); }, 1800);
 // Swipe touch support
 (function(){
   var track = document.getElementById('visio-track');
