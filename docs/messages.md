@@ -89,6 +89,22 @@
 | Boost en cours | `boost_in_progress` |
 | Chapitre terminé | `chap_done` (adaptatif) |
 
+### 5b. Slot rewards (chapitres ≥20 exos, overlay +75 XP)
+
+| Palier | Clé _MSGS | Niveaux | Notes |
+|---|---|---|---|
+| 5 exos faits | `slot_1` (2 variantes) | 6EME/3EME/def | Absorbe `cours_5` si slot fire |
+| 10 exos faits | `slot_2` (2 variantes) | 6EME/3EME/def | Absorbe `cours_10` si slot fire |
+| 15 exos faits | `slot_3` (2 variantes) | 6EME/3EME/def | Absorbe `cours_15` si slot fire |
+| 20 exos = chapitre | — | — | Absorbé par `chkComp` existant |
+
+### 5c. Daily goal (mission du jour, overlay +50 XP)
+
+| Situation | Clé _MSGS | Notes |
+|---|---|---|
+| 5ème exo du jour | `daily_done` (2 variantes) | 6EME/3EME/def — intégré dans slot overlay si simultané |
+| Après le 5ème | `daily_bonus` | Message unique, pas d'overlay |
+
 ### 6. Coach marks (première fois, persistés localStorage `mx_coach_v1`)
 
 | Feature | Clé _MSGS | Déclencheur |

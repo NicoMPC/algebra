@@ -112,12 +112,14 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 
 | # | Règle | Détail |
 |---|-------|--------|
-| G1 | **XP** | +200 boost, +300 chapitre — même les erreurs comptent |
+| G1 | **XP** | +200 boost, +300 chapitre (4×75 par slot si ≥20 exos) — même les erreurs comptent |
 | G2 | **6 paliers maîtrise** | À découvrir / En cours / En progrès / Solide / Maîtrisé / Expert |
 | G3 | **Streak freeze** | 1j/semaine si streak ≥2 et avant-hier actif |
 | G4 | **6 milestones** | Premier boost, 10 exos, streak 3j/7j, 1er chapitre, 100 exos |
 | G5 | **Tour guidé** | 7 étapes, 1 seule fois post-inscription, guard `_needsCoach('TOUR')` / `_markCoach('TOUR')` |
 | G6 | **Tuto régressif** | 8 micro-tips first-use (T1-T8), `_needsCoach/_markCoach`, disparaissent après 1 affichage |
+| G7 | **Slots de 5** | Chapitres ≥20 exos découpés en 4 slots visuels (5/10/15/20). Overlay récompense +75 XP aux paliers 5/10/15. Palier 20 absorbé par `chkComp`. Chapitres <20 exos : pas de slots, +300 XP classique. Count-based (pas index-based) — fire au 5ème exo fait, quel que soit l'ordre. Absorbe `_checkCoursMilestone` quand un slot fire |
+| G8 | **Daily goal** | Mission du jour = 5 exos (tous types). Overlay +50 XP au 5ème exo. Absorbé dans le slot overlay si simultané. Absorbé silencieusement si `chkComp` fire. Compteur `🎯 n/5` dans le header. Reset quotidien via `mx_daily_{code}` localStorage |
 
 ### 3.5 Admin
 

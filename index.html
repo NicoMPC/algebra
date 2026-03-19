@@ -1147,6 +1147,59 @@
     body.app-night .tour-tooltip .tour-arrow { background:#1e1b4b }
     body.app-night .tour-tooltip .tour-title { color:#e0e7ff }
     body.app-night .tour-tooltip .tour-body { color:#a5b4fc }
+
+    /* ── SLOT REWARD OVERLAY ─────────────────────────── */
+    .slot-overlay {
+      position:fixed;inset:0;z-index:9990;
+      background:rgba(0,0,0,.6);
+      display:flex;align-items:center;justify-content:center;
+      animation:slotFadeIn .3s ease-out;
+      padding:1rem;
+    }
+    .slot-card {
+      background:#fff;border-radius:1.5rem;padding:2rem 1.5rem 1.5rem;
+      text-align:center;max-width:320px;width:100%;
+      animation:slotPop .4s cubic-bezier(.34,1.56,.64,1);
+      box-shadow:0 20px 60px rgba(0,0,0,.3);
+    }
+    body.app-night .slot-card { background:#1e1b4b;color:#e0e7ff }
+    .slot-stars { font-size:2.2rem;margin-bottom:.75rem;line-height:1 }
+    .slot-star {
+      display:inline-block;
+      animation:starPop .4s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    .slot-star:nth-child(2) { animation-delay:.15s }
+    .slot-star:nth-child(3) { animation-delay:.3s }
+    .slot-dots { display:flex;gap:8px;justify-content:center;margin:.75rem 0 }
+    .slot-dot {
+      width:14px;height:14px;border-radius:50%;
+      border:2px solid #c7d2fe;background:#fff;transition:all .3s;
+    }
+    .slot-dot.filled { background:#4f46e5;border-color:#4f46e5 }
+    body.app-night .slot-dot { border-color:#4338ca;background:#1e1b4b }
+    body.app-night .slot-dot.filled { background:#6366f1;border-color:#6366f1 }
+    .slot-btn {
+      margin-top:1rem;background:linear-gradient(135deg,#4338ca,#6366f1);
+      color:#fff;border:none;border-radius:12px;padding:.75rem 2rem;
+      font-weight:800;font-size:.9rem;cursor:pointer;
+      font-family:'Syne',sans-serif;
+      transition:transform .15s;
+    }
+    .slot-btn:active { transform:scale(.96) }
+    .slot-cours-link {
+      display:inline-block;margin-top:.5rem;
+      font-size:.78rem;font-weight:700;color:#4338ca;cursor:pointer;
+    }
+    body.app-night .slot-cours-link { color:#a5b4fc }
+    @keyframes slotFadeIn { from{opacity:0} to{opacity:1} }
+    @keyframes slotPop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+    @keyframes starPop { from{transform:scale(0) rotate(-20deg)} to{transform:scale(1) rotate(0)} }
+
+    /* ── DAILY GOAL ──────────────────────────────────── */
+    .daily-bar { height:4px;border-radius:2px;background:#e2e8f0;overflow:hidden;flex:1;max-width:60px }
+    .daily-fill { height:100%;background:#10b981;border-radius:2px;transition:width .4s ease }
+    .daily-done-pulse { animation:dailyPulse 1.5s ease infinite }
+    @keyframes dailyPulse { 0%,100%{opacity:1} 50%{opacity:.6} }
   </style>
 </head>
 <!--
@@ -1971,6 +2024,10 @@
         <div class="flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 font-black text-sm px-2.5 py-1.5 rounded-xl syne">
           💎 <span id="ui-xp">0</span>
         </div>
+        <div id="daily-box" class="hidden flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 text-emerald-700 font-black text-sm px-2.5 py-1.5 rounded-xl syne">
+          🎯 <span id="ui-daily">0</span>/5
+          <div class="daily-bar"><div id="daily-fill" class="daily-fill" style="width:0%"></div></div>
+        </div>
       </div>
     </div>
     <!-- Badge essai gratuit -->
@@ -2393,6 +2450,21 @@ var _MSGS = {
   net_error:       'Erreur réseau — vérifie ta connexion 📡',
   net_retry:       'Erreur réseau — réessaie',
   save_offline:    'Résultats non sauvegardés (offline)',
+  // ── Slot rewards ──
+  slot_1: { '6EME': ['Bien lancé {name} — les 5 premiers sont faits ! 💪', 'Super début {name} — continue comme ça ! 🎯'],
+            '3EME': ['5 dans la boîte {name} — bon rythme 🎯', 'Premier palier atteint — la suite t\'attend 💪'],
+            def:    ['Bien lancé {name} — les 5 premiers sont faits ! 💪', '5 exos en poche {name} — continue 🎯'] },
+  slot_2: { '6EME': ['La moitié {name} ! T\'es en forme 🔥', 'Mi-parcours — t\'assures {name} ! 🚀'],
+            '3EME': ['Mi-parcours {name} — le rythme est bon 🔥', '10 faits — solide {name}. Continue 💪'],
+            def:    ['Mi-parcours {name} — t\'es chaud(e) 🔥', 'La moitié ! Continue comme ça {name} 🚀'] },
+  slot_3: { '6EME': ['Plus que 5 {name} ! La fin est proche 🏁', '15 exos — tu gères {name} ! ⚡'],
+            '3EME': ['15/20 {name} — dernier effort 🏁', 'Le niveau monte — et toi aussi {name} ⚡'],
+            def:    ['Plus que 5 {name} — lâche rien ! 🏁', '15 exos faits — le dernier sprint {name} ⚡'] },
+  // ── Daily goal ──
+  daily_done:  { '6EME': ['Mission du jour terminée {name} ! Bravo 🎯', '5/5 — objectif atteint {name} ! 🏆'],
+                 '3EME': ['Objectif du jour atteint {name} — bien joué 🎯', 'Mission accomplie. {name}, tu gères 🏆'],
+                 def:    ['Mission du jour terminée {name} ! 🎯', 'Objectif atteint — bien joué {name} 🏆'] },
+  daily_bonus: 'Mode bonus — chaque exo compte double en fierté 🔥',
 };
 
 function _msg(key, vars) {
@@ -4710,6 +4782,17 @@ function updH() {
   document.getElementById('ui-stk').innerText = S.stk;
   document.getElementById('ui-xp').innerText  = S.xp;
   if (S.stk >= 3) document.getElementById('stk-box').style.animation = 'remPulse 2s ease infinite';
+  // Daily goal UI
+  var dg = _dailyGoal();
+  var dBox = document.getElementById('daily-box');
+  if (dBox) {
+    dBox.classList.remove('hidden');
+    var cnt = Math.min(dg.count, 5);
+    document.getElementById('ui-daily').innerText = cnt;
+    document.getElementById('daily-fill').style.width = (cnt / 5 * 100) + '%';
+    if (dg.done) dBox.classList.add('daily-done-pulse');
+    else dBox.classList.remove('daily-done-pulse');
+  }
   renderTrialBadge();
 }
 
@@ -4749,6 +4832,148 @@ function _checkMilestone() {
     try { localStorage.setItem(_msKey(), JSON.stringify(_milestoneShown)); } catch(e) {}
     setTimeout(function() { showT(ms.msg, 4500, ms.ic); }, 800);
   }
+}
+
+// ══════════════════════════════════════════════════════════════
+// DAILY GOAL — mission du jour (5 exos tous types confondus)
+// ══════════════════════════════════════════════════════════════
+var _DG_KEY = 'mx_daily_';
+function _dailyGoal() {
+  var key = _DG_KEY + (S.prof ? S.prof.code : 'anon');
+  var raw = null;
+  try { raw = JSON.parse(localStorage.getItem(key)); } catch(e) {}
+  if (!raw || raw.date !== tod()) raw = { date: tod(), count: 0, done: false };
+  return raw;
+}
+function _dailyInc() {
+  var key = _DG_KEY + (S.prof ? S.prof.code : 'anon');
+  var dg = _dailyGoal();
+  dg.count++;
+  if (dg.count >= 5 && !dg.done) {
+    dg.done = true;
+    dg.justDone = true;
+  } else {
+    dg.justDone = false;
+  }
+  try { localStorage.setItem(key, JSON.stringify(dg)); } catch(e) {}
+  return dg;
+}
+
+// ══════════════════════════════════════════════════════════════
+// SLOT REWARDS — paliers de 5 dans les chapitres (count-based)
+// ══════════════════════════════════════════════════════════════
+var _slotRewardShowing = false;
+
+function _slotCount(cat) {
+  var exs = LVL[S.niv] && LVL[S.niv].cats[cat];
+  if (!exs) return 0;
+  var n = 0;
+  for (var i = 0; i < exs.length; i++) {
+    var r = res2(cat, i);
+    if (S.res[S.niv + '-' + r.rC + '-' + r.rI]) n++;
+  }
+  return n;
+}
+
+function _checkSlotReward(cat) {
+  // Guard : chapitres normaux uniquement, 20 exos
+  var exs = LVL[S.niv] && LVL[S.niv].cats[cat];
+  if (!exs || exs.length < 20) return false;
+  if (cat === 'CALIBRAGE' || cat === 'BOOST' || cat === 'BREVET' || cat === 'REVISION') return false;
+  var n = _slotCount(cat);
+  // Slots à 5, 10, 15 (pas 20 — absorbé par chkComp)
+  var slotNum = 0;
+  if (n === 5) slotNum = 1;
+  else if (n === 10) slotNum = 2;
+  else if (n === 15) slotNum = 3;
+  else return false;
+  // Guard : pas deux fois par session
+  var sk = '_slotShown_' + cat + '_' + slotNum;
+  if (sessionStorage.getItem(sk)) return false;
+  sessionStorage.setItem(sk, '1');
+  return slotNum;
+}
+
+function _showSlotReward(cat, slotNum, dailyJustDone) {
+  _slotRewardShowing = true;
+  var name = (S.prof && S.prof.name) ? S.prof.name : '';
+  var msg = _msg('slot_' + slotNum, { name: name });
+  var total = (LVL[S.niv].cats[cat] || []).length;
+  var done = _slotCount(cat);
+
+  // XP bonus slot
+  S.xp += 75; showXP(75);
+
+  // Stars
+  var starsHtml = '';
+  for (var i = 0; i < slotNum; i++) starsHtml += '<span class="slot-star">⭐</span>';
+
+  // Dots
+  var dotsHtml = '';
+  for (var d = 1; d <= 3; d++) {
+    dotsHtml += '<span class="slot-dot' + (d <= slotNum ? ' filled' : '') + '"></span>';
+  }
+
+  // Cours intégré ?
+  var coursHtml = '';
+  if (S.coursMap && S.coursMap[cat]) {
+    var cm = S.coursMap[cat];
+    var hasSection = cm && cm.unlocked && cm.unlocked.some(function(s) { return s.unlock_at === done; });
+    if (hasSection) {
+      coursHtml = '<div style="margin-top:.5rem;font-size:.78rem;font-weight:700;color:#4338ca">📖 Nouvelle section de cours débloquée !</div>' +
+        '<span class="slot-cours-link" onclick="document.querySelector(\'.slot-overlay\').remove();_slotRewardShowing=false;openCours(\'' + cat + '\')">Voir le cours →</span>';
+    }
+  }
+
+  // Daily goal intégré ?
+  var dailyHtml = '';
+  if (dailyJustDone) {
+    S.xp += 50; showXP(50);
+    dailyHtml = '<div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid #e2e8f0">' +
+      '<div style="font-size:.85rem;font-weight:800;color:#10b981">🎯 Mission du jour accomplie ! +50 XP</div>' +
+      '<div style="font-size:.75rem;color:#64748b;margin-top:.25rem">' + _msg('daily_done', { name: name }) + '</div>' +
+      '</div>';
+  }
+
+  var ov = document.createElement('div');
+  ov.className = 'slot-overlay';
+  ov.innerHTML =
+    '<div class="slot-card">' +
+      '<div class="slot-stars">' + starsHtml + '</div>' +
+      '<div class="syne" style="font-size:1.1rem;font-weight:900;color:#1e1b4b;margin-bottom:.25rem">' + done + '/' + total + '</div>' +
+      '<div style="font-size:.85rem;font-weight:600;color:#475569;line-height:1.5">' + msg + '</div>' +
+      coursHtml +
+      '<div class="slot-dots">' + dotsHtml + '</div>' +
+      '<div style="font-size:.75rem;font-weight:700;color:#4f46e5">+75 XP</div>' +
+      dailyHtml +
+      '<button class="slot-btn" onclick="this.closest(\'.slot-overlay\').remove();_slotRewardShowing=false;render()">Continuer →</button>' +
+    '</div>';
+  document.body.appendChild(ov);
+  // Auto-dismiss after 10s
+  setTimeout(function() { if (ov.parentNode) { ov.remove(); _slotRewardShowing = false; } }, 10000);
+}
+
+function _showDailyReward() {
+  // Daily goal overlay standalone (quand pas de slot en même temps)
+  var name = (S.prof && S.prof.name) ? S.prof.name : '';
+  var msg = _msg('daily_done', { name: name });
+
+  // XP bonus daily
+  S.xp += 50; showXP(50);
+
+  var ov = document.createElement('div');
+  ov.className = 'slot-overlay';
+  ov.innerHTML =
+    '<div class="slot-card">' +
+      '<div style="font-size:2.5rem;margin-bottom:.5rem">🎯</div>' +
+      '<div class="syne" style="font-size:1.1rem;font-weight:900;color:#1e1b4b;margin-bottom:.25rem">Mission du jour accomplie !</div>' +
+      '<div style="font-size:.85rem;font-weight:600;color:#475569;line-height:1.5">' + msg + '</div>' +
+      '<div style="margin-top:.5rem;font-size:.75rem;font-weight:700;color:#10b981">+50 XP</div>' +
+      '<div style="margin-top:.5rem;font-size:.75rem;color:#64748b">' + _msg('daily_bonus') + '</div>' +
+      '<button class="slot-btn" style="background:linear-gradient(135deg,#059669,#10b981)" onclick="this.closest(\'.slot-overlay\').remove();render()">Continuer →</button>' +
+    '</div>';
+  document.body.appendChild(ov);
+  setTimeout(function() { if (ov.parentNode) ov.remove(); }, 10000);
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -4963,16 +5188,36 @@ function mark(cat, idx, status, wrongOpt) {
     localStorage.setItem(LK, JSON.stringify(_loc));
   }
   sendScore(r.rC, r.rI, status, xp, exo.q, wrongOpt || null, cat);
-  updH();
   _checkMilestone();
+  // Daily goal — increment pour tout type d'exercice
+  var _dg = _dailyInc();
+  // Slot reward — chapitres normaux de 20 exos uniquement
+  var _slotNum = _checkSlotReward(cat);
   if (cat !== 'CALIBRAGE' && cat !== 'BOOST' && cat !== 'BREVET' && cat !== 'REVISION') {
-    _checkCoursMilestone(cat);
+    // Skip coursMilestone si un slot vient de fire (le slot intègre l'info cours)
+    if (!_slotNum) _checkCoursMilestone(cat);
   }
   var done = chkComp(cat);
   if (!done) {
-    if (status === 'EASY') { setTimeout(function(){ nextEx(cat); }, 600); }
-    else { render(); }
+    // Afficher slot reward (absorbe cours milestone + daily si simultané)
+    if (_slotNum) {
+      setTimeout(function() { _showSlotReward(cat, _slotNum, _dg.justDone); }, 1200);
+    } else if (_dg.justDone) {
+      // Daily goal standalone (pas de slot en même temps, pas de chkComp)
+      setTimeout(function() { _showDailyReward(); }, 1200);
+    }
+    if (!_slotNum) {
+      if (status === 'EASY') { setTimeout(function(){ nextEx(cat); }, 600); }
+      else { render(); }
+    } else {
+      // Slot overlay va s'afficher — on render quand même pour updater les pills
+      render();
+    }
+  } else {
+    // chkComp a fire — daily goal silencieux (pas d'overlay, juste le count)
+    // Le flow chkComp (confettis + toast + feedback) prend le relai
   }
+  updH();
 }
 
 async function togCat(cat) {
@@ -5135,8 +5380,10 @@ function chkComp(cat) {
       showT('Révision terminée ! ' + easy + '/' + tot + ' réussis 🔁', 3500, '✅');
     } else {
       if (easy >= Math.ceil(tot * 0.7)) launchConfetti();
-      // XP bonus chapitre complété
-      S.xp += 300; showXP(300);
+      // XP bonus chapitre complété — si 20+ exos : slot 4 = +75 (les 3 slots donnent 3×75=225, total=300)
+      // Si < 20 exos : pas de slots intermédiaires → on donne le bonus complet +300
+      var _chapXpBonus = (tot >= 20) ? 75 : 300;
+      S.xp += _chapXpBonus; showXP(_chapXpBonus);
       // S5 — Chapitre terminé : confettis + toast + info prochain chapitre
       showT(_msg('chap_done'), 6000, '🏆');
       if (typeof _boostInsightConfetti === 'function') _boostInsightConfetti();
@@ -7332,8 +7579,18 @@ function render() {
     else if (_tier) html += '<span class="text-[9px] syne font-black '+_tier.bg+' '+_tier.text+' border '+_tier.border+' px-1.5 py-0.5 rounded-md">'+_tier.emoji+' '+_tier.label+'</span>';
     if (S.remReq[cat]) html += '<span class="text-[9px] syne font-black bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md">🔄 Demain</span>';
     if (S.revisionCats && S.revisionCats.indexOf(cat) !== -1) html += '<span class="text-[9px] syne font-black bg-violet-100 text-violet-700 border border-violet-200 px-1.5 py-0.5 rounded-md">🔁 Révision</span>';
-    html += '</div><div class="flex items-center gap-2"><div class="pbar flex-1" style="max-width:100px"><div class="pfill pfp" style="width:'+pct2+'%"></div></div>';
-    html += '<span class="text-[11px] font-bold '+(isBoost?'text-white/60':'text-slate-400')+'">'+done+'/'+tot+'</span>'+(isBoost?'':_trendArrow(cat))+'</div></div>';
+    // Slot dots (⭐/○) pour chapitres 20 exos, sinon barre classique
+    if (!isBoost && tot >= 20) {
+      var _slotDotsHtml = '';
+      for (var _sl = 0; _sl < 4; _sl++) {
+        _slotDotsHtml += '<span style="font-size:.7rem">' + (done >= (_sl + 1) * 5 ? '⭐' : '○') + '</span>';
+      }
+      html += '</div><div class="flex items-center gap-1.5">' + _slotDotsHtml;
+      html += '<span class="text-[11px] font-bold text-slate-400 ml-1">'+done+'/'+tot+'</span>'+_trendArrow(cat)+'</div></div>';
+    } else {
+      html += '</div><div class="flex items-center gap-2"><div class="pbar flex-1" style="max-width:100px"><div class="pfill pfp" style="width:'+pct2+'%"></div></div>';
+      html += '<span class="text-[11px] font-bold '+(isBoost?'text-white/60':'text-slate-400')+'">'+done+'/'+tot+'</span>'+(isBoost?'':_trendArrow(cat))+'</div></div>';
+    }
     // Teaser cours (3-4 exos restants avant déblocage)
     if (!isBoost && S.coursMap[cat]) {
       var _cm = S.coursMap[cat]; var _nexM = _cm.nextMilestone;
@@ -7673,6 +7930,10 @@ function rSection(cat, data, idx, total, catDone) {
   // ── Pills de navigation ──────────────────────────────
   var pills = '<div class="flex overflow-x-auto gap-1.5 px-4 py-3 border-t border-slate-100 bg-slate-50/60 no-sb">';
   for (var i = 0; i < total; i++) {
+    // Séparateurs visuels entre slots (groupes de 5) pour chapitres 20 exos
+    if (total >= 20 && i > 0 && i % 5 === 0) {
+      pills += '<span style="width:2px;min-width:2px;height:20px;background:#cbd5e1;border-radius:1px;margin:0 2px;flex-shrink:0"></span>';
+    }
     var r2  = res2(cat, i);
     var s2  = S.res[S.niv+'-'+r2.rC+'-'+r2.rI];
     var act = i === idx;
