@@ -7580,41 +7580,41 @@ function render() {
       _doneCount++;
       var _sessCount = isBoost ? (S.boostHistory ? S.boostHistory.length + 1 : 1) : ((S.chapSessions && S.chapSessions[cat]) ? S.chapSessions[cat].length : 0);
       var _numGhosts = !isBoost && _sessCount >= 3 ? 2 : (!isBoost && _sessCount === 2 ? 1 : 0);
-      _doneHtml += '<div class="chap-stack mb-2">';
+      html += '<div class="chap-stack mb-3">';
       if (_numGhosts >= 2) {
-        _doneHtml += '<div class="chap-stack-ghost" style="bottom:-9px;left:7px;right:7px;height:calc(100% + 2px);background:#a7f3d0;border:1px solid #6ee7b7;z-index:0"></div>';
+        html += '<div class="chap-stack-ghost" style="bottom:-9px;left:7px;right:7px;height:calc(100% + 2px);background:#a7f3d0;border:1px solid #6ee7b7;z-index:0"></div>';
       }
       if (_numGhosts >= 1) {
-        _doneHtml += '<div class="chap-stack-ghost" style="bottom:-5px;left:4px;right:4px;height:calc(100% + 2px);background:#d1fae5;border:1px solid #a7f3d0;z-index:1"></div>';
+        html += '<div class="chap-stack-ghost" style="bottom:-5px;left:4px;right:4px;height:calc(100% + 2px);background:#d1fae5;border:1px solid #a7f3d0;z-index:1"></div>';
       }
-      _doneHtml += '<div data-cat="'+cat+'" onclick="togCat(\''+cat+'\')" class="rounded-2xl border border-emerald-200 flex items-center gap-3 py-3 px-4 cursor-pointer select-none" style="background:#f0fdf4;position:relative;z-index:2">';
-      _doneHtml += '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-base flex-shrink-0">'+(isBoost?'⚡':(LVL[S.niv].icons[cat]||'📘'))+'</div>';
-      _doneHtml += '<div class="flex-1 min-w-0"><div class="syne font-black text-sm text-slate-800 truncate" style="font-weight:800">'+(isBoost?'Mon entraînement ✓':(LVL[S.niv].names[cat]||cat))+'</div>';
+      html += '<div data-cat="'+cat+'" onclick="togCat(\''+cat+'\')" class="rounded-2xl border border-emerald-200 flex items-center gap-3 py-3 px-4 cursor-pointer select-none" style="background:#f0fdf4;position:relative;z-index:2">';
+      html += '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-base flex-shrink-0">'+(isBoost?'⚡':(LVL[S.niv].icons[cat]||'📘'))+'</div>';
+      html += '<div class="flex-1 min-w-0"><div class="syne font-black text-sm text-slate-800 truncate" style="font-weight:800">'+(isBoost?'Mon entraînement ✓':(LVL[S.niv].names[cat]||cat))+'</div>';
       if (!isBoost && _sessCount > 0) {
-        var _lastSess = S.chapSessions[cat][0]; // plus récente
+        var _lastSess = S.chapSessions[cat][0];
         var _lastEasy = _lastSess.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
         var _lastPct = _lastSess.exos.length > 0 ? Math.round(_lastEasy / _lastSess.exos.length * 100) : 0;
         var _lastPctColor = _lastPct >= 70 ? 'text-emerald-600' : _lastPct >= 40 ? 'text-amber-600' : 'text-rose-500';
-        _doneHtml += '<span class="text-[9px] font-bold ' + _lastPctColor + '">' + _lastPct + '%';
-        if (_sessCount > 1) _doneHtml += ' · ×' + _sessCount;
-        _doneHtml += '</span>';
+        html += '<span class="text-[9px] font-bold ' + _lastPctColor + '">' + _lastPct + '%';
+        if (_sessCount > 1) html += ' · ×' + _sessCount;
+        html += '</span>';
       }
-      _doneHtml += '</div>';
-      _doneHtml += '<div class="flex items-center gap-1.5 flex-shrink-0">';
-      if (!isBoost) _doneHtml += _trendArrow(cat);
-      _doneHtml += '<span class="text-[9px] font-black text-emerald-700 bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-full">✅</span>';
-      _doneHtml += '<span class="text-slate-300 text-lg font-light" style="transition:transform .2s;transform:rotate('+(isOpen?90:0)+'deg)">›</span>';
-      _doneHtml += '</div></div>';
-      _doneHtml += '</div>';
+      html += '</div>';
+      html += '<div class="flex items-center gap-1.5 flex-shrink-0">';
+      if (!isBoost) html += _trendArrow(cat);
+      html += '<span class="text-[9px] font-black text-emerald-700 bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-full">✅</span>';
+      html += '<span class="text-slate-300 text-lg font-light" style="transition:transform .2s;transform:rotate('+(isOpen?90:0)+'deg)">›</span>';
+      html += '</div></div>';
       if (isOpen) {
-        _doneHtml += renderArchiveSection(cat, exs);
+        html += renderArchiveSection(cat, exs);
       }
       if (!isBoost && S.coursMap[cat] && S.coursMap[cat].unlocked && S.coursMap[cat].unlocked.length > 0) {
-        _doneHtml += '<div class="mb-2"><button onclick="event.stopPropagation();openCoursView(\''+cat+'\')" class="text-[10px] font-black text-indigo-600 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-xl w-full active:bg-indigo-100">📖 Mon cours</button></div>';
+        html += '<div class="mb-2"><button onclick="event.stopPropagation();openCoursView(\''+cat+'\')" class="text-[10px] font-black text-indigo-600 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-xl w-full active:bg-indigo-100">📖 Mon cours</button></div>';
       }
       if (isBoost && window.location.search.includes('sim=1')) {
-        _doneHtml += '<button onclick="_simulateNextDay()" class="mb-2 text-[8px] font-bold text-indigo-400 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full active:opacity-70">🔮 Simuler demain</button>';
+        html += '<button onclick="_simulateNextDay()" class="mb-2 text-[8px] font-bold text-indigo-400 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full active:opacity-70">🔮 Simuler demain</button>';
       }
+      html += '</div>';
       return;
     }
 
@@ -7729,16 +7729,7 @@ function render() {
     html += '</div>';
   });
 
-  // ── Accordéon chapitres terminés ──────────────────────
-  if (_doneCount > 0) {
-    html += '<div class="mt-4">';
-    html += '<div onclick="S._doneAccOpen=!S._doneAccOpen;render()" class="flex items-center gap-2 py-2 px-1 cursor-pointer select-none">';
-    html += '<span class="text-slate-400 text-sm font-light transition-transform" style="display:inline-block;transform:rotate('+(S._doneAccOpen?90:0)+'deg)">›</span>';
-    html += '<span class="syne font-black text-xs text-slate-400">Terminés ('+_doneCount+')</span>';
-    html += '</div>';
-    if (S._doneAccOpen) html += _doneHtml;
-    html += '</div>';
-  }
+  // ── Chapitres terminés : rendus inline dans la liste principale ──
 
   c.innerHTML = html || '<div class="text-center text-slate-400 font-semibold py-12 text-sm">Aucun exercice disponible pour ce niveau.</div>';
   rMath();
