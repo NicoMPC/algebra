@@ -4546,7 +4546,8 @@ function initApp(d, skipRender) {
       S.res[key] = r.resultat;
       S.xp += parseInt(r.xp) || 0;
       S.sent.add(S.prof.code + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1));
-      // ── Grouper par (cat, date) pour retro mode ──
+      // ── Grouper pour retro mode ──
+      // BOOST : par date (inchangé). Chapitres : par passage (batch de 20 exos)
       if (r.categorie !== 'CALIBRAGE') {
         var day = String(r.date || '').substring(0, 10);
         if (day) {
@@ -4558,10 +4559,44 @@ function initApp(d, skipRender) {
       }
     });
     Object.keys(_sessBuf).forEach(function(cat) {
-      var days = Object.keys(_sessBuf[cat]).sort().reverse();
-      S.chapSessions[cat] = days.map(function(day) {
-        return { date: day, exos: _sessBuf[cat][day] };
-      });
+      if (cat === 'BOOST') {
+        // BOOST reste date-based
+        var days = Object.keys(_sessBuf[cat]).sort().reverse();
+        S.chapSessions[cat] = days.map(function(day) {
+          return { date: day, exos: _sessBuf[cat][day] };
+        });
+      } else {
+        // Chapitres : grouper par passage (détection via NumExo répété)
+        // 1. Collecter tous les scores chronologiquement, exclure source=BOOST
+        var allScores = [];
+        Object.keys(_sessBuf[cat]).sort().forEach(function(day) {
+          _sessBuf[cat][day].forEach(function(r) {
+            if (r.source === 'BOOST') return;
+            allScores.push(r);
+          });
+        });
+        // 2. Découper en passages : quand un NumExo déjà vu réapparaît → nouveau passage
+        var passages = [];
+        var curPassage = [];
+        var seenIdx = {};
+        allScores.forEach(function(r) {
+          var idx = String(r.exercice_idx);
+          if (seenIdx[idx]) {
+            // Nouveau passage
+            if (curPassage.length > 0) passages.push(curPassage);
+            curPassage = [];
+            seenIdx = {};
+          }
+          seenIdx[idx] = true;
+          curPassage.push(r);
+        });
+        if (curPassage.length > 0) passages.push(curPassage);
+        // 3. Convertir en format { exos, startDate, endDate }
+        S.chapSessions[cat] = passages.map(function(p) {
+          var dates = p.map(function(r) { return String(r.date || '').substring(0, 10); }).filter(Boolean).sort();
+          return { exos: p, startDate: dates[0] || '', endDate: dates[dates.length - 1] || '', date: dates[dates.length - 1] || '' };
+        }).reverse(); // plus récent d'abord
+      }
     });
   }
   // ── Cours data ────────────────────────────────────────────────
@@ -6776,6 +6811,7 @@ function renderArchiveSection(cat, exs) {
       var MAX_PILLS = 4;
       var selIdx = (S.retroSess[cat] !== undefined) ? S.retroSess[cat] : 0;
       if (selIdx >= sessions.length) selIdx = 0;
+      var _isChapRetro = cat !== 'BOOST';
       // Pré-calcul delta par pill (vs session suivante chronologiquement = index+1)
       var _pillDeltas = [];
       for (var pd = 0; pd < sessions.length; pd++) {
@@ -6789,20 +6825,27 @@ function renderArchiveSection(cat, exs) {
         }
         _pillDeltas.push({ pct: _pdPct, arrow: _pdArrow });
       }
-      // Pills de sessions
-      html += '<div class="flex gap-1.5 flex-wrap mb-3">';
-      var showN = Math.min(sessions.length, MAX_PILLS);
-      for (var pi = 0; pi < showN; pi++) {
-        var isActive = pi === selIdx;
-        var _pillPct = _pillDeltas[pi].pct;
-        var _pillArrow = isActive ? _pillDeltas[pi].arrow : '';
-        var _pillColor = isActive ? '' : (_pillPct >= 70 ? ' text-emerald-600 border-emerald-200' : _pillPct >= 40 ? ' text-amber-600 border-amber-200' : ' text-rose-500 border-rose-200');
-        html += '<button onclick="_selectRetroSess(\''+cat+'\','+pi+')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border '+(isActive ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white' + _pillColor + ' active:bg-slate-50')+'">' + _fmtRetroDate(sessions[pi].date) + ' · ' + _pillPct + '%' + _pillArrow + '</button>';
+      // Pills : chapitres avec 1 seul passage → pas de pills
+      if (!(_isChapRetro && sessions.length === 1)) {
+        html += '<div class="flex gap-1.5 flex-wrap mb-3">';
+        var showN = Math.min(sessions.length, MAX_PILLS);
+        for (var pi = 0; pi < showN; pi++) {
+          var isActive = pi === selIdx;
+          var _pillPct = _pillDeltas[pi].pct;
+          var _pillArrow = isActive ? _pillDeltas[pi].arrow : '';
+          var _pillColor = isActive ? '' : (_pillPct >= 70 ? ' text-emerald-600 border-emerald-200' : _pillPct >= 40 ? ' text-amber-600 border-amber-200' : ' text-rose-500 border-rose-200');
+          var _pillLabel = _isChapRetro ? ('Passage ' + (sessions.length - pi) + ' · ' + _pillPct + '%' + _pillArrow) : (_fmtRetroDate(sessions[pi].date) + ' · ' + _pillPct + '%' + _pillArrow);
+          html += '<button onclick="_selectRetroSess(\''+cat+'\','+pi+')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border '+(isActive ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white' + _pillColor + ' active:bg-slate-50')+'">' + _pillLabel + '</button>';
+        }
+        if (sessions.length > MAX_PILLS) {
+          html += '<button onclick="_openRetroModal(\''+cat+'\')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border border-slate-200 bg-slate-50 text-slate-400">+' + (sessions.length - MAX_PILLS) + ' passages →</button>';
+        }
+        html += '</div>';
       }
-      if (sessions.length > MAX_PILLS) {
-        html += '<button onclick="_openRetroModal(\''+cat+'\')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border border-slate-200 bg-slate-50 text-slate-400">+' + (sessions.length - MAX_PILLS) + ' sessions →</button>';
+      // Date de complétion du passage sélectionné (chapitres uniquement)
+      if (_isChapRetro && sessions[selIdx] && sessions[selIdx].endDate) {
+        html += '<div class="text-center text-[10px] text-slate-400 mb-2">Terminé le ' + _fmtRetroDateLong(sessions[selIdx].endDate) + '</div>';
       }
-      html += '</div>';
       var sess = sessions[selIdx];
       var tot = sess.exos.length;
       // Navigation exo par exo
@@ -6986,9 +7029,10 @@ function _openRetroModal(cat) {
     var pct = total > 0 ? Math.round(easy / total * 100) : 0;
     var bar = pct >= 70 ? '#16a34a' : pct >= 40 ? '#d97706' : '#dc2626';
     html += '<button onclick="_closeRetroModal();_selectRetroSess(\''+cat+'\','+i+')" style="display:flex;align-items:center;gap:.75rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:1rem;padding:.75rem 1rem;margin-bottom:.5rem;width:100%;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent">';
-    html += '<div style="width:2.5rem;height:2.5rem;background:#eef2ff;border-radius:.75rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0">📅</div>';
-    html += '<div style="flex:1;min-width:0"><div style="font-size:.75rem;font-weight:900;color:#0f172a;font-family:Syne,sans-serif">Session du ' + _fmtRetroDateLong(sess.date) + '</div>';
-    html += '<div style="font-size:.65rem;font-weight:600;color:#94a3b8">' + total + ' exercices · ' + easy + ' réussis</div></div>';
+    var _isBoostModal = cat === 'BOOST';
+    html += '<div style="width:2.5rem;height:2.5rem;background:#eef2ff;border-radius:.75rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0">' + (_isBoostModal ? '📅' : '🔁') + '</div>';
+    html += '<div style="flex:1;min-width:0"><div style="font-size:.75rem;font-weight:900;color:#0f172a;font-family:Syne,sans-serif">' + (_isBoostModal ? 'Session du ' + _fmtRetroDateLong(sess.date) : 'Passage ' + (sessions.length - i)) + '</div>';
+    html += '<div style="font-size:.65rem;font-weight:600;color:#94a3b8">' + total + ' exercices · ' + easy + ' réussis' + (!_isBoostModal && sess.endDate ? ' · ' + _fmtRetroDate(sess.endDate) : '') + '</div></div>';
     html += '<div style="font-size:.85rem;font-weight:900;color:'+bar+'">' + pct + '%</div>';
     html += '</button>';
   });
@@ -7913,12 +7957,11 @@ function _chapTrend(cat) {
     var easy = s.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
     return s.exos.length > 0 ? easy / s.exos.length : 0;
   };
+  // Compare last passage (index 0) vs second-to-last passage (index 1)
   var recent = rate(sessions[0]);
-  var olderSum = 0;
-  for (var i = 1; i < sessions.length; i++) olderSum += rate(sessions[i]);
-  var olderAvg = olderSum / (sessions.length - 1);
-  if (recent > olderAvg + 0.15) return 'up';
-  if (recent < olderAvg - 0.15) return 'down';
+  var prev = rate(sessions[1]);
+  if (recent > prev + 0.05) return 'up';
+  if (recent < prev - 0.05) return 'down';
   return 'flat';
 }
 function _trendArrow(cat) {

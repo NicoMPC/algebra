@@ -34,6 +34,7 @@ Nicolas (fondateur) est le visionnaire produit. Ton rôle :
 - `index.html` ~9900 lignes → **ne jamais diviser**
 - Vanilla JS, pas de framework, pas de bundler
 - Modifier **uniquement** la fonction concernée par la tâche
+- Ghost divs z-index : `renderArchiveSection` content needs `position:relative;z-index:3` to render above `.chap-stack-ghost` elements
 
 ### CORS GAS — critique
 ```
@@ -120,8 +121,8 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | G6 | **Tuto régressif** | 8 micro-tips first-use (T1-T8), `_needsCoach/_markCoach`, disparaissent après 1 affichage |
 | G7 | **Slots de 5** | Chapitres ≥20 exos découpés en 4 slots visuels (5/10/15/20). Overlay récompense +75 XP aux paliers 5/10/15. Palier 20 absorbé par `chkComp`. Chapitres <20 exos : pas de slots, +300 XP classique. Count-based (pas index-based) — fire au 5ème exo fait, quel que soit l'ordre. Absorbe `_checkCoursMilestone` quand un slot fire |
 | G8 | **Daily goal** | Mission du jour = 5 exos (tous types). Overlay +50 XP au 5ème exo. Absorbé dans le slot overlay si simultané. Absorbé silencieusement si `chkComp` fire. Compteur `🎯 n/5` dans le header. Reset quotidien via `mx_daily_{code}` localStorage |
-| G9 | **Sessions retro avec %** | Chapitres terminés : pills par date avec score % coloré (vert ≥70%, ambre ≥40%, rose <40%). Ligne résumé : % + `(n/tot)` + flèche `↑/↓/→` vs session précédente. Carte terminée : dernier score % + `×N passages`. Modal overflow idem |
-| G10 | **Comparaison live** | Chapitre en cours (ouvert, `done > 0`, pas terminé) : bandeau gris `Session en cours — xx% (n/done) ↑ vs yy%`. Affiché uniquement si ≥1 session historique existe. Compare le % instantané (EASY/done) vs le % de la dernière session |
+| G9 | **Sessions retro avec %** | Chapitres terminés : exercices groupés par **passage** (set complet de 20 exos). 1 seul passage → pas de pills, juste score + exercices. Plusieurs passages → pills "Passage 1 · 60%" / "Passage 2 · 78% ↑" avec flèche delta sur la pill active. Score % coloré (vert ≥70%, ambre ≥40%, rose <40%). Date de complétion affichée subtilement ("Terminé le 19 mars"). Carte fermée : dernier passage score % + flèche tendance (passage N vs N-1). Boosts restent date-based. Exercices retro affichés en read-only avec le même template visuel que les exercices actifs (coloration correct/wrong, indices et formule déployés) |
+| G10 | **Comparaison live** | Chapitre en cours (ouvert, `done > 0`, pas terminé) : bandeau gris `Session en cours — xx% (n/done) ↑ vs yy%`. Affiché uniquement si ≥1 passage historique complet existe. Compare le % instantané (EASY/done) vs le % du dernier passage complet |
 | G11 | **Message anticipation** | Post-complétion boost : "Tes prochains exos sur mesure arrivent demain matin 🔥". Post-complétion chapitre : "Tes prochains exos sur mesure arrivent demain matin 🎯". Crée l'anticipation du retour J+1 |
 
 ### 3.5 Admin
