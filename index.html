@@ -8239,6 +8239,7 @@ window.skipAnswer = function(cat, idx) {
   var r  = res2(cat, idx);
   var id = S.niv + '-' + r.rC + '-' + r.rI;
   if (S.res[id]) return;
+  _checkFlowOnAnswer('SKIP');
   _stopTimer();
   S._sel = null;
   S.rev  = true;
@@ -9788,7 +9789,7 @@ function _showFlowActivated() {
     '<div class="flow-card">' +
     '<div style="font-size:2.5rem;margin-bottom:.5rem">⚡🔥⚡</div>' +
     '<div style="font-family:Syne,sans-serif;font-weight:900;font-size:1.3rem;color:#92400e;margin-bottom:.25rem">Mode Flow activé !</div>' +
-    '<div style="font-size:.85rem;color:#78350f;margin-bottom:.75rem">' + FLOW_BONUS_EXOS + ' réponses correctes d\'affilée en moins d\'1 minute — tes <strong>XP sont doublés</strong> pour les ' + FLOW_BONUS_EXOS + ' prochains exercices !</div>' +
+    '<div style="font-size:.85rem;color:#78350f;margin-bottom:.75rem">' + FLOW_THRESHOLD + ' réponses correctes d\'affilée en moins d\'1 minute — tes <strong>XP sont doublés</strong> pour les ' + FLOW_BONUS_EXOS + ' prochains exercices !</div>' +
     '<button onclick="document.getElementById(\'flow-ov\').remove()" class="slot-btn" style="background:linear-gradient(135deg,#f59e0b,#d97706)">On continue ! 🔥</button>' +
     '</div>';
   document.body.appendChild(ov);
