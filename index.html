@@ -1289,9 +1289,10 @@
       <p class="text-white/40 text-xs font-semibold mb-7" style="animation:s1 .6s .22s ease both">10 minutes par jour.</p>
       <button onclick="startTrialFlow()"
               class="btn btn-ac btn-fw shadow-xl" id="cta-hero" style="max-width:420px;font-size:1.05rem;padding:1.2rem;animation:s1 .6s .28s ease both">
-        Faites le test avec votre enfant maintenant →
+        Tester avec votre enfant →
       </button>
-      <p class="text-white/40 text-xs mt-3" style="animation:s1 .6s .35s ease both">5 minutes suffisent pour comprendre où ça bloque.</p>
+      <p class="text-white/50 text-xs mt-3 font-medium" style="animation:s1 .6s .35s ease both">5 minutes · Vous pouvez arrêter à tout moment</p>
+      <p class="text-white/30 text-xs mt-1" style="animation:s1 .6s .38s ease both">Aucune pression. Juste comprendre.</p>
       <div class="flex justify-center gap-4 mt-5" style="animation:s1 .6s .42s ease both">
         <span class="text-white/50 text-xs font-medium">Sans carte bancaire</span>
         <span class="text-white/50 text-xs font-medium">Résultats visibles rapidement</span>
@@ -1345,7 +1346,8 @@
       <!-- STEP 1 — Classe -->
       <div id="flow-s1" class="flow-step">
         <h2 class="syne text-2xl font-black text-white text-center mb-2">En quelle classe es-tu ?</h2>
-        <p class="text-white/50 text-sm text-center mb-7">On adapte tout à ton niveau</p>
+        <p class="text-white/50 text-sm text-center mb-2">On adapte tout en temps réel à ton niveau.</p>
+        <p class="text-white/30 text-xs text-center mb-7">Tu peux te tromper, ce n'est pas grave.</p>
         <div class="grid grid-cols-2 gap-3">
           <button onclick="flowSelectLevel('6EME')" class="lvl-btn" id="lvl-6EME">6<sup>ème</sup></button>
           <button onclick="flowSelectLevel('5EME')" class="lvl-btn" id="lvl-5EME">5<sup>ème</sup></button>
@@ -1359,8 +1361,10 @@
         <h2 class="syne text-2xl font-black text-white text-center mb-2">Tu reconnais quoi ?</h2>
         <p class="text-white/50 text-sm text-center mb-5">Coche ce qui te parle — même vaguement, c'est parfait</p>
         <div id="flow-chaps-grid" class="grid grid-cols-2 gap-2.5 mb-4"></div>
+        <p class="text-white/40 text-xs text-center mb-3">Plus tu coches, plus c'est précis.</p>
         <button onclick="_flowAutoSelectChaps()" class="block w-full text-center text-xs text-white/40 hover:text-white/70 transition-colors mb-5 bg-transparent border-none cursor-pointer py-2">Je ne sais pas trop — choisir pour moi</button>
         <button onclick="flowToStep3()" class="btn btn-ac btn-fw py-4">Voir le diagnostic →</button>
+        <p class="text-white/30 text-xs text-center mt-2">On ajuste automatiquement ensuite.</p>
         <button onclick="_flowSetStep(1)" class="block w-full text-center text-xs text-white/40 hover:text-white/70 transition-colors mt-3 bg-transparent border-none cursor-pointer">← Changer de classe</button>
       </div>
 
@@ -1390,12 +1394,20 @@
             <span id="fl-btn-txt">Créer mon espace →</span>
             <span id="fl-btn-ld" class="ld hidden"></span>
           </button>
-          <p class="text-center text-white/35 text-xs mt-3">✓ 7 jours gratuits · ✓ Sans carte bancaire · ✓ Résiliable en 1 clic</p>
+          <p class="text-center text-white/35 text-xs mt-3">Tes résultats sont sauvegardés immédiatement</p>
+          <p class="text-center text-white/25 text-xs mt-1">✓ 7 jours gratuits · ✓ Sans carte bancaire · ✓ Résiliable en 1 clic</p>
         </div>
       </div>
 
     </div>
   </div><!-- /trial-flow -->
+
+  <!-- ── MICRO-BLOC PROMESSE ─────────────────────────────── -->
+  <div style="background:linear-gradient(180deg,var(--ink) 0%,#0f172a 100%)" class="px-5 py-10">
+    <div class="max-w-lg mx-auto text-center reveal">
+      <p class="syne text-lg sm:text-xl font-black text-white leading-relaxed">En 5 minutes, vous saurez exactement <span style="color:#818cf8">où votre enfant bloque.</span></p>
+    </div>
+  </div>
 
   <!-- ── SECTION 2 — PREUVE VISUELLE (CAROUSEL) ────────── -->
   <div class="bg-white px-5 py-16">
@@ -1423,7 +1435,8 @@
     <div class="max-w-xl mx-auto text-center">
       <div class="reveal">
         <h2 class="syne text-2xl sm:text-3xl font-black text-white mb-3">Votre enfant n'est pas nul en maths.</h2>
-        <p class="text-xl sm:text-2xl font-bold mb-8" style="color:#818cf8">Mais quelque chose bloque.</p>
+        <p class="text-xl sm:text-2xl font-bold mb-4" style="color:#818cf8">Mais quelque chose bloque.</p>
+        <p class="text-white/45 text-sm leading-relaxed mb-8" style="max-width:360px;margin-left:auto;margin-right:auto">Vous avez déjà essayé de l'aider...<br>Et ça s'est mal passé.</p>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto mb-10">
         <div class="reveal reveal-d1" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1rem;text-align:left">
@@ -1721,18 +1734,19 @@
   <div class="lhero px-5 py-16">
     <div class="grid-ov"></div>
     <div class="max-w-lg mx-auto relative z-10 text-center reveal">
-      <h2 class="syne text-2xl sm:text-3xl font-black text-white leading-tight mb-4">
-        Faites le test avec votre enfant maintenant.
+      <h2 class="syne text-2xl sm:text-3xl font-black text-white leading-tight mb-3">
+        Appelez votre enfant maintenant.<br>
+        <span style="color:#818cf8">Testez ensemble en 5 minutes.</span>
       </h2>
-      <p class="text-white/60 text-base font-medium mb-8 max-w-sm mx-auto">
-        Appelez-le et essayez ensemble.
+      <p class="text-white/55 text-sm font-medium mb-8 max-w-sm mx-auto">
+        Vous saurez exactement où il bloque.
       </p>
       <button onclick="startTrialFlow()"
               style="max-width:400px;font-size:1.05rem;padding:1.15rem;display:block;margin:0 auto"
               class="btn btn-ac btn-fw shadow-xl">
-        Voir ses lacunes gratuitement →
+        Tester avec mon enfant →
       </button>
-      <p class="text-white/30 text-xs mt-4">5 minutes · Sans carte bancaire · Résultats immédiats</p>
+      <p class="text-white/30 text-xs mt-4">5 minutes · Sans carte bancaire · Aucune pression</p>
     </div>
   </div>
 
@@ -1774,8 +1788,8 @@
 
   <!-- Mobile sticky CTA bar -->
   <div id="sticky-cta" aria-hidden="true">
-    <button id="sticky-cta-btn" onclick="startTrialFlow()">Diagnostic gratuit — 5 minutes →</button>
-    <div class="sticky-sub">Sans carte<br>bancaire</div>
+    <button id="sticky-cta-btn" onclick="startTrialFlow()">Tester avec mon enfant →</button>
+    <div class="sticky-sub">5 min · gratuit</div>
   </div>
 
   <!-- Footer landing -->
@@ -2993,6 +3007,7 @@ function flowToStep3() {
     '<div class="flow-breathe-icon" style="font-size:3.5rem;margin-bottom:1rem">⚡</div>' +
     '<div style="font-family:Syne,sans-serif;font-weight:900;font-size:1.35rem;color:#fff;margin-bottom:.5rem">C\'est parti !</div>' +
     '<p style="color:rgba(255,255,255,.55);font-size:.9rem;line-height:1.6">Quelques questions — réponds comme tu peux.<br>Pas de piège, pas de note.</p>' +
+    '<p style="color:rgba(255,255,255,.3);font-size:.75rem;margin-top:.75rem">Ça prend moins de 2 minutes.</p>' +
     '</div>';
   setTimeout(function() { _flowStartDiag(); }, 2000);
 }
@@ -3030,8 +3045,10 @@ function _flowStartDiag() {
     container.innerHTML =
       '<div class="text-center py-8">' +
       '<div style="font-size:2.5rem;animation:spin .75s linear infinite;display:inline-block">⚡</div>' +
-      '<p class="mt-3 text-white/60 text-sm font-medium">Préparation de ton diagnostic...</p>' +
+      '<p class="mt-3 text-white/60 text-sm font-medium">On prépare un diagnostic personnalisé pour toi...</p>' +
+      '<p id="flow-fake-progress" class="text-white/35 text-xs mt-2">Analyse des réponses...</p>' +
       '</div>';
+    setTimeout(function() { var fp = document.getElementById('flow-fake-progress'); if (fp) fp.textContent = 'Création du parcours...'; }, 1200);
   }
 
   // Appel GAS : envoyer les chapitres sélectionnés par l'élève
@@ -3135,7 +3152,7 @@ function _flowRenderQuestion(idx) {
     '<span style="font-size:.75rem;font-weight:800;color:#4338ca;font-family:Syne,sans-serif;letter-spacing:.03em">🎯 DIAGNOSTIC</span>' +
     '<div style="display:flex;align-items:center;gap:.5rem">' +
     (_flowCorrectCount > 0 ? '<span style="font-size:.7rem;font-weight:700;color:#059669;background:#d1fae5;padding:.15rem .5rem;border-radius:99px">' + _flowCorrectCount + ' ✓</span>' : '') +
-    '<span style="font-size:.75rem;font-weight:700;color:#6366f1;background:#e0e7ff;padding:.2rem .65rem;border-radius:99px">' + (idx+1) + ' / ' + total + '</span>' +
+    '<span style="font-size:.75rem;font-weight:700;color:#6366f1;background:#e0e7ff;padding:.2rem .65rem;border-radius:99px">' + (total - idx > 1 ? 'Encore ' + (total - idx) : 'Dernière !') + '</span>' +
     '</div>' +
     '</div>' +
     '<div style="height:4px;background:#e0e7ff;border-radius:99px">' +
@@ -3148,7 +3165,8 @@ function _flowRenderQuestion(idx) {
     helpPills +
     helpArea +
     '</div>' +
-    '</div>';
+    '</div>' +
+    '<p style="text-align:center;color:rgba(255,255,255,.3);font-size:.7rem;margin-top:.75rem">On s\'adapte à tes réponses en direct.</p>';
 
   rMath(container);
   // Scroll stable — haut du conteneur fullscreen
@@ -3190,10 +3208,14 @@ function _flowAnswerOpt(optIdx) {
     }
   });
 
+  // Dopamine 1st answer
+  if (_flowExoIdx === 1) {
+    showT('On commence à voir quelque chose 👀', 1800, '🧠');
+  }
   // Mid-quiz encouragement
   var half = Math.floor(_flowExos.length / 2);
-  if (_flowExoIdx === half - 1 && _flowExos.length >= 6) {
-    showT(_flowCorrectCount > 0 ? 'Bien joué — plus que ' + (_flowExos.length - _flowExoIdx - 1) + ' !' : 'Continue, tu gères !', 1800, '💪');
+  if (_flowExoIdx === half && _flowExos.length >= 6) {
+    showT('Tu es déjà à la moitié 👏', 1800, '💪');
   }
 
   // Sauvegarder progression (abandon recovery)
@@ -3376,10 +3398,12 @@ function _flowActivateStep4Guest() {
     '</div>' +
     '<div style="font-family:Syne,sans-serif;font-weight:900;font-size:1.8rem;color:#a5b4fc;margin-top:.6rem" id="flow-result-pct">0%</div>' +
     '</div>' +
-    '<p style="color:rgba(255,255,255,.7);font-size:.9rem;font-weight:500;line-height:1.6;margin-bottom:1rem">' + narrative + '</p>' +
+    '<p style="color:rgba(255,255,255,.7);font-size:.9rem;font-weight:500;line-height:1.6;margin-bottom:.5rem">' + narrative + '</p>' +
+    (weakChaps.length > 0 ? '<p style="color:#a5b4fc;font-size:.82rem;font-weight:600;margin-bottom:.5rem">On a identifié ' + weakChaps.length + ' point' + (weakChaps.length > 1 ? 's' : '') + ' à travailler en priorité.</p>' : '') +
+    '<p style="color:rgba(255,255,255,.45);font-size:.78rem;margin-bottom:1rem">Si tu travailles ces points, tu peux progresser rapidement.</p>' +
     '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:.3rem;margin-bottom:1.5rem">' + tagsHtml + '</div>' +
-    '<button onclick="_flowShowObjectifScreen()" style="width:100%;padding:.9rem 1.25rem;background:linear-gradient(135deg,#4338ca,#6366f1);border:none;border-radius:14px;color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:1rem;cursor:pointer;transition:transform .15s" onmouseover="this.style.transform=\'scale(1.03)\'" onmouseout="this.style.transform=\'none\'">Voir mon programme →</button>' +
-    '<p style="color:rgba(255,255,255,.3);font-size:.72rem;margin-top:.75rem">✓ Gratuit 7 jours · Sans carte bancaire</p>' +
+    '<button onclick="_flowShowObjectifScreen()" style="width:100%;padding:.9rem 1.25rem;background:linear-gradient(135deg,#4338ca,#6366f1);border:none;border-radius:14px;color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:1rem;cursor:pointer;transition:transform .15s" onmouseover="this.style.transform=\'scale(1.03)\'" onmouseout="this.style.transform=\'none\'">Voir mon programme personnalisé →</button>' +
+    '<p style="color:rgba(255,255,255,.3);font-size:.72rem;margin-top:.75rem">Créé automatiquement à partir de tes réponses</p>' +
     '</div>';
 
   // Animate bar + counter
@@ -3413,7 +3437,8 @@ function _flowShowObjectifScreen() {
     '<div style="text-align:center;animation:flowSlideIn .32s ease-out">' +
     '<div style="font-size:2.5rem;margin-bottom:.75rem">💬</div>' +
     '<div style="font-family:Syne,sans-serif;font-weight:900;color:#fff;font-size:1.25rem;margin-bottom:.4rem">Quel est ton objectif ?</div>' +
-    '<p style="color:rgba(255,255,255,.45);font-size:.85rem;line-height:1.5;margin-bottom:1.25rem">On adapte ton parcours dès le premier jour</p>' +
+    '<p style="color:rgba(255,255,255,.45);font-size:.85rem;line-height:1.5;margin-bottom:.4rem">On adapte ton parcours dès le premier jour</p>' +
+    '<p style="color:rgba(255,255,255,.25);font-size:.72rem;margin-bottom:1.25rem">Ça nous permet de personnaliser encore plus ton parcours.</p>' +
     (window._flowObjHtml || '') +
     '<p style="color:rgba(255,255,255,.25);font-size:.7rem;margin-top:1rem">Tu pourras changer à tout moment</p>' +
     '</div>';
@@ -3422,11 +3447,11 @@ function _flowShowObjectifScreen() {
 function _flowGoToRegister(objKey) {
   _flowObjectif = objKey;
   var h2 = document.getElementById('fl-heading');
-  if (h2) h2.textContent = 'Cr\u00e9e ton espace';
+  if (h2) h2.textContent = 'Ton programme est pr\u00eat.';
   var desc = document.getElementById('fl-desc');
-  if (desc) desc.textContent = 'R\u00e9sultats sauvegard\u00e9s \u2014 7 jours offerts, sans carte bancaire.';
+  if (desc) desc.textContent = 'On a d\u00e9j\u00e0 identifi\u00e9 tes lacunes \u2014 ne perds pas \u00e7a.';
   var btnTxt = document.getElementById('fl-btn-txt');
-  if (btnTxt) btnTxt.textContent = 'Continuer \u2014 c\'est gratuit \u2192';
+  if (btnTxt) btnTxt.textContent = 'Continuer et voir mon programme \u2192';
   var btn = document.getElementById('fl-btn');
   if (btn) btn.setAttribute('onclick', '_flowGuestRegister()');
   _flowSetStep(4);
