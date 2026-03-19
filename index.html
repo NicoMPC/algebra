@@ -988,6 +988,7 @@
     /* Night variants */
     body.app-night #main-app .chap-undiscovered { background:linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%) !important; border-color:#4338ca !important; box-shadow:0 0 16px rgba(99,102,241,.15) !important; }
     body.app-night #main-app .chap-undiscovered .chap-icon-wrap { background:#312e81 !important; border-color:#4338ca; }
+    body.app-night #main-app .chap-discovered { background:#1e293b !important; border-color:#334155 !important; box-shadow:0 1px 3px rgba(0,0,0,.2) !important; }
     body.app-night #main-app .chap-invite { background:linear-gradient(135deg, #1e1b4b 0%, #312e81 100%) !important; border-color:#6366f1 !important; }
 
     /* ── BOOST SHIMMER CTA ─────────────────────────────── */
@@ -1964,10 +1965,12 @@
           </div>
         </div>
       </div>
-      <button id="app-night-btn" onclick="toggleAppNight()"
-              class="w-9 h-9 bg-slate-100 border border-slate-200 text-slate-400 rounded-xl flex items-center justify-center text-base hover:bg-slate-200 transition-colors mr-1.5" title="Mode nuit">🌙</button>
-      <button onclick="logout()"
-              class="w-9 h-9 bg-rose-50 border border-rose-100 text-rose-400 rounded-xl flex items-center justify-center text-base hover:bg-rose-100 transition-colors">✕</button>
+      <div class="flex items-center gap-1.5 flex-shrink-0">
+        <button id="app-night-btn" onclick="toggleAppNight()"
+                class="w-9 h-9 bg-slate-100 border border-slate-200 text-slate-400 rounded-xl flex items-center justify-center text-base hover:bg-slate-200 transition-colors" title="Mode nuit">🌙</button>
+        <button onclick="logout()"
+                class="w-9 h-9 bg-rose-50 border border-rose-100 text-rose-400 rounded-xl flex items-center justify-center text-base hover:bg-rose-100 transition-colors">✕</button>
+      </div>
     </div>
     <div id="gamif-row" class="flex items-center justify-between px-4 py-2.5 gap-3">
       <div class="flex gap-2">
