@@ -1336,7 +1336,7 @@
 <div id="landing-screen" class="fixed inset-0 z-50 overflow-y-auto bg-white hidden">
 
   <!-- Connexion flottant -->
-  <button onclick="showAuth('login')" class="text-white/60 hover:text-white text-xs font-semibold px-4 py-2 transition-colors" style="position:absolute;top:1rem;right:1.25rem;z-index:30">Déjà inscrit ? <span class="underline">Connexion</span></button>
+  <button onclick="showAuth('login')" class="text-white/60 hover:text-white text-xs font-semibold px-4 py-2 transition-colors" style="position:absolute;top:1rem;right:1.25rem;z-index:30"><span class="underline">Connexion</span></button>
 
   <!-- SECTION 1 — HERO -->
   <div class="lhero px-5 pt-10 pb-20 relative">
@@ -1799,6 +1799,19 @@
     </div>
   </div>
 
+  <!-- ── BANDEAU RAPPORT PARENT ─────────────────────────────── -->
+  <div style="background:#f0fdf4;border-top:1px solid #bbf7d0;border-bottom:1px solid #bbf7d0" class="px-5 py-6">
+    <div class="max-w-lg mx-auto flex items-center gap-4 reveal">
+      <div style="flex-shrink:0;width:44px;height:44px;background:#d1fae5;border-radius:12px;display:flex;align-items:center;justify-content:center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <div>
+        <p style="font-weight:700;font-size:.9rem;color:#065f46;margin:0 0 .15rem">Rapport hebdo envoyé aux parents</p>
+        <p style="font-size:.78rem;color:#047857;margin:0;line-height:1.45">Chaque semaine, recevez un bilan clair : chapitres travaillés, points forts, lacunes corrigées.</p>
+      </div>
+    </div>
+  </div>
+
   <!-- ── SECTION 11 — CTA FINAL ────────────────────────────── -->
   <div class="lhero px-5 py-16">
     <div class="grid-ov"></div>
@@ -1882,7 +1895,7 @@
      AUTH SCREEN (bottom sheet)
 ════════════════════════════════════════════════════════════ -->
 <div id="auth-screen"
-     class="hidden fixed inset-0 z-[60] flex items-end sm:items-center justify-center"
+     class="hidden fixed inset-0 z-[60] flex items-center justify-center"
      style="background:rgba(15,23,42,.65)">
   <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl abi overflow-hidden flex flex-col"
        style="max-height:92vh">
