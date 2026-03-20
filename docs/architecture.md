@@ -132,7 +132,7 @@ function doPost(e) {
 |---|---|---|
 | `register` | Inscription élève. TrialStart = TODAY, email J+0 auto (si alias Gmail opérationnel) | ✅ |
 | `login` | Connexion. Retourne trial, boostExosDone, pendingBrevet, nextChapter, nextBoostTopic, **revisionChapters** | ✅ |
-| `save_score` | Sauvegarde réponse. MAJ Progress + rebuildSuivi + writeToHistorique + ExosDone si BOOST. Persiste `source` (col N Scores) | ✅ |
+| `save_score` | Sauvegarde réponse. **LockService** (tryLock 10s) + MAJ Progress + rebuildSuivi + writeToHistorique + ExosDone si BOOST. Persiste `source` (col N Scores) | ✅ |
 | `save_boost` | Sauvegarde fin de boost. ExosDone + rebuildSuivi | ✅ |
 | `generate_diagnostic` | Génère diagnostic. Mode guest (sans code) pour landing flow | ✅ |
 | `generate_daily_boost` | Génère boost quotidien depuis BoostExos (fallback Curriculum_Officiel), ciblé sur chapitres sélectionnés par l'élève | ✅ |
@@ -146,7 +146,7 @@ function doPost(e) {
 | `generate_revision` | Révision niveau inférieur — UI désactivé | ✅ |
 | `submit_feedback` | Feedback élève → onglet Insights. Types : signalement erreur (general) ou feedback session (boost/brevet/chapitre). Champs : source, ref, rating (1-5), type (difficile/moyen/bien/super) | ✅ |
 | `generateMorningReport` | Rapport matin 7h (génération IA désactivée) | ✅ |
-| `get_admin_overview` | Vue admin complète. Retourne `email` + `j0Sent` + `emailsDue` + `secondaryActions` + `category` + `trialDays` + `inactivityDays` + `neverStarted` + **`revisionChapters`** par élève + **`allChapsByLevel`** global. boostPendingContent alimenté depuis col S si élève n'a pas encore récupéré le boost | ✅ |
+| `get_admin_overview` | Vue admin complète. Retourne `email` + `j0Sent` + `emailsDue` + `secondaryActions` + `category` + `trialDays` + `inactivityDays` + `neverStarted` + **`revisionChapters`** par élève + **`allChapsByLevel`** global. boostPendingContent alimenté depuis col S. `neverStarted` promu en `actionPriority` si aucune autre action (ghost → "🚀 Jamais commencé"). Dates normalisées via `_toDateStr()` | ✅ |
 | `publish_admin_boost` | Admin publie boost (→Nouveau Boost col 18) + rebuildSuivi | ✅ |
 | `publish_admin_chapter` | Admin publie chapitre (→Nouveau Ch libre) + rebuildSuivi. Retourne `overwrite:true` si >4 chapitres en attente (toast ⚠️ côté frontend) | ✅ |
 | `log_manual_email` | Admin — logue un email envoyé manuellement dans l'onglet Emails. Params : `adminCode`, `userEmail`, `type` (ex: `J+0-manuel`). Statut='envoyé' (fix @75) | ✅ |
@@ -172,7 +172,8 @@ function doPost(e) {
 |---|---|
 | `rebuildSuivi(code)` | Recalcule la ligne 👁 Suivi de l'élève (appelé dans save_score, save_boost) |
 | `writeToHistorique(p)` | Insère en ligne 2 de 📋 Historique (récent en haut) |
-| `updateConfidenceScore(...)` | Met à jour Progress après chaque réponse |
+| `updateConfidenceScore(...)` | Met à jour Progress après chaque réponse. **Score ≠ P8** : score adaptatif cumulatif (delta +5/+10/-3/-5 par réponse, décroissance >14j inactivité), pas EASY/total×100. P8 appliqué côté frontend uniquement (pills, sessions retro) |
+| `_toDateStr(val)` | Normalise Date object / string longue / yyyy-MM-dd → `yyyy-MM-dd`. Utilisé dans `getAdminOverview` et `rebuildSuivi` |
 | `_pickDiagExos(exos, chapCount)` | Smart count diagnostic : 1ch→4q, 2ch→6q, 3ch→8q, 4+→10q |
 
 ### Rapport matin (generateMorningReport)

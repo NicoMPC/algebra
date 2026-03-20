@@ -6,7 +6,7 @@
 
 ## État global — 18 mars 2026
 
-**Matheux LANCÉ.** GAS @97. Tests 74/74. 54 chapitres, 1872 exercices (score 98,3%). Gamification @90. Onboarding @93. Landing @94. Invariants messages @95. Tour guidé @96.
+**Matheux LANCÉ.** GAS @97. Tests 74/74. 54 chapitres, 1872 exercices (score 98,3%). Gamification @90. Onboarding @93. Landing @94. Invariants messages @95. Tour guidé @96. **Audit 10 élèves** (2026-03-20) : 3 bugs fixés (LockService V3, inactivityDays parsing, ghost actionPriority).
 
 **Reste** : webhook Stripe HMAC (avant J+7), test paiement CB réel, automatisation triggers dès 10 clients.
 

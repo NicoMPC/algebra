@@ -3590,6 +3590,7 @@ function _flowAnswerOpt(optIdx) {
       _flowRenderQuestion(_flowExoIdx);
     } else {
       _flowDiagDone = true;
+      _track('tutorial_complete');
       _flowActivateStep4Guest();
     }
   }, 800);
@@ -4073,6 +4074,7 @@ async function flowRegister() {
 
     S.prof = regD.profile; S.niv = _flowLevel;
     S.tmpEmail = email; S.tmpHash = h;
+    _track('sign_up');
 
     // Si diagnostic déjà fait dans le flow → skip generate_diagnostic API
     var diagExos;

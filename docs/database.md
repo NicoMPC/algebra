@@ -112,7 +112,7 @@ Supprimés par `cleanup_all` le 14 mars 2026 : `_ARCHIVE_Queue`, `_ARCHIVE_Prere
 | A | Code | String | FK → Users |
 | B | Niveau | String | |
 | C | Chapitre | String | Identifiant catégorie |
-| D | Score | Number | Score de confiance 0-100 |
+| D | Score | Number | Score de confiance adaptatif 0-100. **≠ P8** : calculé par `updateConfidenceScore()` avec delta cumulatif (+5/+10/-3/-5 par réponse) + décroissance >14j inactivité. Le score P8 (EASY/total×100) est calculé côté frontend pour pills/sessions retro |
 | E | NbExos | Number | Nombre total d'exercices faits |
 | F | NbErreurs | Number | Nombre d'erreurs (HARD) |
 | G | DernierePratique | Date | Date du dernier exercice |
