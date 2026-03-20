@@ -10689,8 +10689,21 @@ function _renderAdminCards() {
     html += '<div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-3 text-xs text-amber-700 font-semibold">\ud83d\udcb3 Stripe : ' + realCount + '/50 paiements utilis\u00e9s — limite configur\u00e9e sur le Payment Link.</div>';
   }
 
-  // ── Tabs ───────────────────────────────────────────────────
+  // ── KPI bandeau — inscriptions ────────────────────────────
   var newStudents = (S.adminStudents || []).filter(function(st) { return !st.isTest && st.trialDays === 0; });
+  var totalStudents = (S.adminStudents || []).filter(function(st) { return !st.isTest; }).length;
+  html += '<div class="flex gap-2 mb-3">';
+  html += '<div class="flex-1 bg-white border border-slate-100 rounded-xl px-3 py-2.5 text-center">';
+  html += '<div class="syne font-black text-lg leading-none ' + (newStudents.length > 0 ? 'text-emerald-600' : 'text-slate-300') + '">' + newStudents.length + '</div>';
+  html += '<div class="text-[10px] font-bold text-slate-400 mt-0.5">Inscrit' + (newStudents.length > 1 ? 's' : '') + ' aujourd\'hui</div>';
+  html += '</div>';
+  html += '<div class="flex-1 bg-white border border-slate-100 rounded-xl px-3 py-2.5 text-center">';
+  html += '<div class="syne font-black text-lg leading-none text-indigo-600">' + totalStudents + '</div>';
+  html += '<div class="text-[10px] font-bold text-slate-400 mt-0.5">Inscrits total</div>';
+  html += '</div>';
+  html += '</div>';
+
+  // ── Tabs ───────────────────────────────────────────────────
   var _tabs = [
     { key: 'todo', label: '\u00c0 FAIRE', count: todoStudents.length, color: todoStudents.length > 0 ? '#ef4444' : '#059669' },
     { key: 'nouveau', label: '\ud83c\udd95 NOUVEAU', count: newStudents.length, color: '#059669' },
