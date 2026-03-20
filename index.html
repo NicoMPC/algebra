@@ -1320,20 +1320,20 @@
     /* ── TIMER EXERCICE ────────────────────────────────── */
     .exo-timer {
       display:inline-flex;align-items:center;gap:4px;
-      font-family:'Syne',sans-serif;font-weight:800;font-size:.7rem;
-      color:var(--p);transition:color .4s,opacity .4s;
+      font-family:'Syne',sans-serif;font-weight:800;font-size:.75rem;
+      color:#0f172a;transition:color .4s,opacity .4s;
       user-select:none;cursor:pointer;
     }
-    .exo-timer.overtime { color:var(--amb); }
+    .exo-timer.overtime { color:#b45309; }
     .exo-timer.disabled { opacity:.35 }
-    .exo-timer svg { width:22px;height:22px }
+    .exo-timer svg { width:26px;height:26px }
     .exo-timer-ring {
-      fill:none;stroke:var(--p);stroke-width:2.5;
+      fill:none;stroke:#1E40AF;stroke-width:3;
       stroke-linecap:round;stroke-dasharray:56.55;stroke-dashoffset:0;
       transition:stroke .4s;transform:rotate(-90deg);transform-origin:center;
     }
-    .exo-timer.overtime .exo-timer-ring { stroke:var(--amb) }
-    .exo-timer-bg { fill:none;stroke:#e2e8f0;stroke-width:2 }
+    .exo-timer.overtime .exo-timer-ring { stroke:#b45309 }
+    .exo-timer-bg { fill:none;stroke:#cbd5e1;stroke-width:2.5 }
     @keyframes timerPulse {
       0%,100% { opacity:1 }
       50% { opacity:.6 }
@@ -1368,11 +1368,11 @@
     }
     body.app-night .flow-card { background:#0F172A;color:#DBEAFE }
     body.app-night .flow-badge { background:linear-gradient(135deg,#78350f,#92400e);border-color:#d97706;color:#fde68a }
-    body.app-night .exo-timer { color:#60A5FA }
+    body.app-night .exo-timer { color:#93C5FD }
     body.app-night .exo-timer.overtime { color:#fbbf24 }
-    body.app-night .exo-timer-ring { stroke:#60A5FA }
+    body.app-night .exo-timer-ring { stroke:#93C5FD }
     body.app-night .exo-timer.overtime .exo-timer-ring { stroke:#fbbf24 }
-    body.app-night .exo-timer-bg { stroke:#334155 }
+    body.app-night .exo-timer-bg { stroke:#475569 }
   </style>
 </head>
 <!--
@@ -3621,6 +3621,7 @@ function _showObjectifPicker(callback) {
     { key: 'brevet',         emoji: '\u{1F4DD}', label: 'Pr\u00e9parer le brevet',             sub: 'R\u00e9viser les notions cl\u00e9s et s\'entra\u00eener aux examens' },
     { key: 'toutes_matieres',emoji: '\u{1F680}', label: 'Tout r\u00e9viser',                   sub: 'Revoir l\'ensemble du programme \u00e0 mon rythme' }
   ];
+  if (_flowLevel !== '3EME') choices = choices.filter(function(c) { return c.key !== 'brevet'; });
 
   var cardsHTML = choices.map(function(c) {
     return '<button onclick="_selectObjectif(\'' + c.key + '\')" style="' +
@@ -3701,6 +3702,7 @@ function _flowActivateStep4Guest() {
     { key: 'brevet',         emoji: '\u{1F4DD}', label: 'Pr\u00e9parer le brevet' },
     { key: 'toutes_matieres',emoji: '\u{1F680}', label: 'Tout r\u00e9viser' }
   ];
+  if (_flowLevel !== '3EME') objChoices = objChoices.filter(function(c) { return c.key !== 'brevet'; });
   var objHtml = objChoices.map(function(c) {
     return '<button onclick="_flowGoToRegister(\'' + c.key + '\')" style="width:100%;padding:.55rem .85rem;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;color:rgba(255,255,255,.75);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;margin-bottom:.35rem;display:flex;align-items:center;gap:.6rem;text-align:left" onmouseover="this.style.borderColor=\'#60A5FA\';this.style.background=\'rgba(99,102,241,.15)\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,.12)\';this.style.background=\'rgba(255,255,255,.06)\'">' +
       '<span style="font-size:1.1rem;flex-shrink:0">' + c.emoji + '</span>' +
