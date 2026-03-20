@@ -1267,8 +1267,8 @@
     /* ── Tour guidé first-login ── */
     .tour-overlay { position:fixed;inset:0;z-index:9000;pointer-events:none;transition:opacity .3s }
     .tour-overlay.active { pointer-events:auto }
-    .tour-backdrop { position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9001;transition:opacity .3s }
-    .tour-highlight { position:fixed;z-index:9002;border-radius:16px;box-shadow:0 0 0 9999px rgba(0,0,0,.72);pointer-events:none;transition:all .35s cubic-bezier(.4,0,.2,1) }
+    .tour-backdrop { position:fixed;inset:0;background:rgba(255,255,255,.82);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);z-index:9001;transition:opacity .3s }
+    .tour-highlight { position:fixed;z-index:9002;border-radius:16px;box-shadow:0 0 0 9999px rgba(255,255,255,.82),0 0 0 3px #3B82F6,0 0 20px 4px rgba(59,130,246,.25);pointer-events:none;transition:all .35s cubic-bezier(.4,0,.2,1) }
     .tour-tooltip { position:fixed;z-index:9003;background:#fff;border-radius:16px;padding:1rem 1.1rem;max-width:min(300px,calc(100vw - 32px));box-sizing:border-box;box-shadow:0 8px 32px rgba(0,0,0,.25);animation:tourPop .3s ease-out both;word-wrap:break-word;overflow-wrap:break-word }
     .tour-tooltip .tour-arrow { position:absolute;width:14px;height:14px;background:#fff;transform:rotate(45deg);box-shadow:-2px -2px 4px rgba(0,0,0,.06) }
     .tour-tooltip .tour-title { font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;color:#0F172A;margin-bottom:.35rem }
@@ -1282,7 +1282,7 @@
     .tour-dots span { width:7px;height:7px;border-radius:50%;background:#cbd5e1;transition:background .2s }
     .tour-dots span.active { background:#3B82F6 }
     @keyframes tourPop { from{opacity:0;scale:.95} to{opacity:1;scale:1} }
-    body.app-night .tour-highlight { box-shadow:0 0 0 9999px rgba(0,0,0,.82),0 0 30px 8px rgba(99,102,241,.45);border:2px solid rgba(129,140,248,.5) }
+    body.app-night .tour-highlight { box-shadow:0 0 0 9999px rgba(15,10,40,.85),0 0 0 3px #818cf8,0 0 20px 4px rgba(129,140,248,.35);border:none }
     body.app-night .tour-tooltip { background:#1e1b4b;border:1.5px solid #818cf8;box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 20px rgba(99,102,241,.2) }
     body.app-night .tour-tooltip .tour-arrow { background:#1e1b4b }
     body.app-night .tour-tooltip .tour-title { color:#e0e7ff }
@@ -2128,7 +2128,7 @@
     </div>
     <div class="p-6 overflow-y-auto no-sb flex-1">
       <div class="flex justify-between items-center mb-5">
-        <h2 id="auth-title" class="syne text-xl font-black text-slate-900">Rejoins l'arène</h2>
+        <h2 id="auth-title" class="syne text-xl font-black text-slate-900">C'est parti</h2>
         <button onclick="closeAuth()" class="w-9 h-9 bg-slate-100 rounded-full font-bold text-slate-500 flex items-center justify-center text-lg leading-none">✕</button>
       </div>
 
@@ -2250,7 +2250,7 @@
         <button id="app-night-btn" onclick="toggleAppNight()"
                 class="w-9 h-9 bg-slate-100 border border-slate-200 text-slate-400 rounded-xl flex items-center justify-center text-base hover:bg-slate-200 transition-colors" title="Mode nuit">🌙</button>
         <button onclick="logout()"
-                class="w-9 h-9 bg-rose-50 border border-rose-100 text-rose-400 rounded-xl flex items-center justify-center text-base hover:bg-rose-100 transition-colors">✕</button>
+                class="w-9 h-9 bg-rose-50 border border-rose-200 text-rose-500 rounded-xl flex items-center justify-center text-base hover:bg-rose-100 transition-colors" title="Se déconnecter">⏻</button>
       </div>
     </div>
     <div id="gamif-row" class="flex items-center px-4 py-2.5 gap-3 overflow-hidden">
@@ -3041,7 +3041,7 @@ function switchTab(tab) {
   var base = 'flex-1 py-2.5 font-bold text-sm rounded-lg transition-all syne';
   document.getElementById('tab-r').className = base + (tab==='register' ? ' bg-white shadow-sm text-slate-900' : ' text-slate-400');
   document.getElementById('tab-l').className = base + (tab==='login'    ? ' bg-white shadow-sm text-slate-900' : ' text-slate-400');
-  document.getElementById('auth-text').innerText = tab==='register' ? "Continuer 🚀" : "Entrer dans l'arène ⚡";
+  document.getElementById('auth-text').innerText = tab==='register' ? "Continuer 🚀" : "C'est parti ⚡";
   // Mot de passe oublié : visible seulement en mode login
   var fw = document.getElementById('forgot-wrap');
   if (fw) fw.classList.toggle('hidden', tab !== 'login');
@@ -3835,6 +3835,9 @@ async function _flowGuestRegister() {
   if (btn) { btn.disabled = true; }
   var btnTxt = document.getElementById('fl-btn-txt');
   if (btnTxt) btnTxt.textContent = 'Création du compte...';
+  var _regMsgs = ['Préparation de tes exercices...','On peaufine tout...','C\'est presque bon...'];
+  var _regMsgI = 0;
+  var _regMsgTimer = setInterval(function(){ if(btnTxt && _regMsgI < _regMsgs.length) btnTxt.textContent = _regMsgs[_regMsgI++]; else clearInterval(_regMsgTimer); }, 1500);
 
   // Spinner visuel
   var flowStep4 = document.getElementById('flow-s4');
@@ -3863,6 +3866,7 @@ async function _flowGuestRegister() {
       code = r2.profile ? r2.profile.code : r2.code;
       showT("T'as déjà un compte — on t'a retrouvé 🔥", 3000, '🎉');
     } else {
+      clearInterval(_regMsgTimer);
       var sp2 = document.getElementById('flow-register-spin'); if (sp2) sp2.remove();
       if (btn) { btn.disabled = false; }
       if (btnTxt) btnTxt.textContent = 'Continuer — c\'est gratuit →';
@@ -3870,6 +3874,7 @@ async function _flowGuestRegister() {
       return;
     }
   } else {
+    clearInterval(_regMsgTimer);
     var sp4 = document.getElementById('flow-register-spin'); if (sp4) sp4.remove();
     if (btn) { btn.disabled = false; }
     if (btnTxt) btnTxt.textContent = 'Continuer — c\'est gratuit →';
