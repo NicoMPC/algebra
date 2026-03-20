@@ -1443,24 +1443,11 @@
         Matheux identifie précisément les lacunes en maths<br>et propose 5 exercices ciblés par jour.
       </p>
       <p class="text-white/35 text-xs font-semibold mb-8" style="animation:s1 .6s .22s ease both;letter-spacing:.05em">10 MINUTES PAR JOUR</p>
-      <!-- REAL CTA — uncomment to restore
       <button onclick="startTrialFlow()"
               class="btn btn-ac btn-fw shadow-xl" id="cta-hero" style="max-width:420px;font-size:1.05rem;padding:1.15rem 1.5rem;border-radius:var(--l-radius);animation:s1 .6s .28s ease both">
         Faites le test avec votre enfant
       </button>
       <p class="text-white/45 text-xs mt-4 font-medium" style="animation:s1 .6s .35s ease both">5 minutes · Sans carte bancaire</p>
-      -->
-      <!-- TEMP: WAITING LIST BLOCK — remove when ready to accept students -->
-      <div style="max-width:420px;margin:0 auto;animation:s1 .6s .28s ease both">
-        <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:var(--l-radius);padding:1.5rem 1.25rem;text-align:center">
-          <p class="syne font-bold text-white" style="font-size:1rem;margin:0 0 .5rem">Victime de son succès, Matheux ne peut pas accueillir de nouveaux élèves pour le moment.</p>
-          <p class="text-white/50 text-sm font-medium" style="margin:0 0 1rem">Laisse ton email pour être prévenu dès qu'une place se libère 👇</p>
-          <div class="flex gap-2" id="waitlist-hero">
-            <input type="email" id="waitlist-hero-email" class="flex-1 px-4 py-3 rounded-xl text-sm font-medium bg-white/10 border border-white/20 text-white placeholder-white/40 outline-none focus:border-indigo-400 transition-colors" placeholder="Votre email">
-            <button onclick="document.getElementById('waitlist-hero').innerHTML='<p class=\'text-emerald-400 text-sm font-semibold py-3\'>Merci ! Tu seras prévenu dès qu\'une place se libère 🎯</p>'" class="px-3 py-2.5 rounded-xl font-bold text-xs text-white bg-emerald-600 hover:bg-emerald-500 transition-colors shadow-lg leading-tight text-center flex-shrink-0">Rejoindre la<br>liste d'attente</button>
-          </div>
-        </div>
-      </div>
       <div id="pwa-install-banner" class="hidden mt-3 flex items-center gap-3
         bg-white/10 border border-white/20 rounded-2xl px-4 py-3 max-w-sm mx-auto"
         style="animation:s1 .6s .5s ease both">
@@ -1908,22 +1895,12 @@
           <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Parcours vérifié et ajusté chaque soir</span></div>
           <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Exercices uniques, créés sur mesure</span></div>
         </div>
-        <!-- REAL CTA — uncomment to restore
         <button onclick="startTrialFlow()"
                 class="btn btn-ac btn-fw py-4 shadow-xl" style="font-size:1rem;border-radius:var(--l-radius)">
           Essayer 7 jours gratuit
         </button>
         <div class="guarantee-badge"></div>
         <p class="text-slate-400 text-xs mt-3">Sans carte bancaire · Sans engagement</p>
-        -->
-        <!-- TEMP: WAITING LIST BLOCK — remove when ready to accept students -->
-        <div style="text-align:center">
-          <p class="text-white/70 text-sm font-semibold" style="margin:0 0 .75rem">Plus de places disponibles pour le moment</p>
-          <div class="flex gap-2" id="waitlist-pricing">
-            <input type="email" id="waitlist-pricing-email" class="flex-1 px-4 py-3 rounded-xl text-sm font-medium bg-white/10 border border-white/20 text-white placeholder-white/40 outline-none focus:border-indigo-400 transition-colors" placeholder="Votre email">
-            <button onclick="document.getElementById('waitlist-pricing').innerHTML='<p class=\'text-emerald-400 text-sm font-semibold py-3\'>Merci ! Tu seras prévenu 🎯</p>'" class="px-5 py-3 rounded-xl font-bold text-sm text-white bg-emerald-600 hover:bg-emerald-500 transition-colors whitespace-nowrap shadow-lg">Liste d'attente</button>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -1952,15 +1929,11 @@
       <p class="text-white/55 text-sm font-medium mb-8 max-w-sm mx-auto">
         Vous saurez exactement où il bloque.
       </p>
-      <!-- REAL CTA — uncomment to restore
       <button onclick="startTrialFlow()"
               style="max-width:400px;font-size:1.05rem;padding:1.15rem;display:block;margin:0 auto;border-radius:var(--l-radius)"
               class="btn btn-ac btn-fw shadow-xl">
         Faites le test avec votre enfant
       </button>
-      -->
-      <!-- TEMP: WAITING LIST BLOCK — remove when ready to accept students -->
-      <p class="text-white/50 text-sm font-semibold text-center">Plus de places disponibles — laissez votre email ci-dessus ☝️</p>
       <p class="text-white/30 text-xs mt-4">5 minutes · Sans carte bancaire · Aucune pression</p>
     </div>
   </div>
@@ -2002,15 +1975,9 @@
   </div>
 
   <!-- Mobile sticky CTA bar -->
-  <!-- REAL CTA — uncomment to restore
   <div id="sticky-cta" aria-hidden="true">
     <button id="sticky-cta-btn" onclick="startTrialFlow()">Tester avec mon enfant →</button>
     <div class="sticky-sub">5 min · gratuit</div>
-  </div>
-  -->
-  <!-- TEMP: WAITING LIST BLOCK — remove when ready to accept students -->
-  <div id="sticky-cta" aria-hidden="true" style="text-align:center">
-    <div style="font-size:.85rem;font-weight:700;color:white;padding:.6rem 1rem">Plus de places · Laissez votre email ☝️</div>
   </div>
 
   <!-- Footer landing -->
@@ -3776,11 +3743,6 @@ async function _flowGuestRegister() {
       showT('Email déjà utilisé avec un autre mot de passe — connecte-toi depuis le menu', 3500, '⚠️');
       return;
     }
-  } else if (r.status === 'waitlist') {
-    var sp3 = document.getElementById('flow-register-spin'); if (sp3) sp3.remove();
-    if (btn) { btn.disabled = false; }
-    if (btnTxt) btnTxt.textContent = 'Continuer — c\'est gratuit →';
-    showT('Bêta complète · ton email est sur liste d\'attente 📋', 0, '⏳'); return;
   } else {
     var sp4 = document.getElementById('flow-register-spin'); if (sp4) sp4.remove();
     if (btn) { btn.disabled = false; }
@@ -3977,14 +3939,6 @@ async function flowRegister() {
           return;
         }
       }
-      if (regD.status === 'waitlist') {
-        hideT();
-        showT('Bêta complète · ton email est sur liste d\'attente 📋', 0, '⏳');
-        document.getElementById('fl-btn-txt').textContent = '📋 Sur liste d\'attente';
-        document.getElementById('fl-btn-ld').classList.add('hidden');
-        if (btn) btn.disabled = true;
-        return;
-      }
       showT('❌ ' + (regD.message || 'Erreur inscription'), 4000, '❌');
       document.getElementById('fl-btn-txt').classList.remove('hidden');
       document.getElementById('fl-btn-ld').classList.add('hidden');
@@ -4067,8 +4021,6 @@ async function submitAuth() {
           var key = c.replace(/[^\w\sÀ-ÿ]/g,'').trim().replace(/\s+/g,'_');
           return '<div onclick="this.classList.toggle(\'selected\')" class="chap-card syne" data-chap="'+key+'">'+c+'</div>';
         }).join('');
-      } else if (d.status === 'waitlist') {
-        alert2("Liste d'attente 📋", "Matheux est en bêta privée (40 familles). Ton email est enregistré — Nicolas te contacte dès qu'une place se libère.", '⏳');
       } else { alert2("Erreur", d.message); }
     } catch(err) { alert2("Erreur réseau","Vérifie ta connexion.","📡"); }
     finally { togLd(false); }
