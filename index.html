@@ -5877,6 +5877,7 @@ var _auditFilter = 'all'; // 'all' | 'figure'
 var _auditCategorie = 'all';
 var _auditLoading = false;
 var _auditRemarks = [];
+var _auditSeen = {}; // clé: "level-source-cat-idx" → true si consulté
 
 function renderAuditView() {
   var c = document.getElementById('app-c');
@@ -5939,8 +5940,8 @@ function renderAuditView() {
   rMath();
 }
 
-function _auditSetLevel(l) { _auditLevel = l; _auditExos = []; _auditIdx = 0; _auditCategorie = 'all'; renderAuditView(); }
-function _auditSetSource(s) { _auditSource = s; _auditExos = []; _auditIdx = 0; _auditCategorie = 'all'; renderAuditView(); }
+function _auditSetLevel(l) { _auditLevel = l; _auditExos = []; _auditIdx = 0; _auditCategorie = 'all'; _auditSeen = {}; renderAuditView(); }
+function _auditSetSource(s) { _auditSource = s; _auditExos = []; _auditIdx = 0; _auditCategorie = 'all'; _auditSeen = {}; renderAuditView(); }
 function _auditSetFilter(f) { _auditFilter = f; _auditIdx = 0; renderAuditView(); }
 function _auditSetCat(c) { _auditCategorie = c; _auditIdx = 0; renderAuditView(); }
 
@@ -5967,8 +5968,18 @@ async function _auditLoad() {
     var d2 = await r2.json();
     if (d2.status === 'success') _auditRemarks = d2.remarks || [];
   } catch(e2) {}
+  // Pré-marquer les exos annotés comme "vus"
+  _auditRemarks.forEach(function(r) {
+    if (r.niveau === _auditLevel && r.source === _auditSource) {
+      _auditSeen[r.niveau + '-' + r.source + '-' + r.categorie + '-' + r.exoIndex] = true;
+    }
+  });
   _auditLoading = false;
   renderAuditView();
+}
+
+function _auditSeenKey(e) {
+  return _auditLevel + '-' + _auditSource + '-' + (e.categorie || '') + '-' + (e._idx != null ? e._idx : '');
 }
 
 function _auditFiltered() {
@@ -6001,6 +6012,10 @@ function _renderAuditExo() {
   if (_auditIdx < 0) _auditIdx = 0;
   var e = exos[_auditIdx];
   var cat = e.categorie || '';
+
+  // Marquer l'exo courant comme vu
+  _auditSeen[_auditSeenKey(e)] = true;
+
   var hasFig = false;
   var figHtml = '';
   if (e.q) {
@@ -6014,8 +6029,26 @@ function _renderAuditExo() {
   var borderCls = hasFig ? 'border-2 border-blue-400' : 'border border-slate-200';
   var html = '<div class="bg-white rounded-2xl '+borderCls+' shadow-sm afu">';
 
+  // Pills navigation
+  html += '<div class="flex overflow-x-auto gap-1.5 px-4 py-3 border-b border-slate-100 bg-slate-50/60 rounded-t-2xl no-sb">';
+  for (var pi = 0; pi < exos.length; pi++) {
+    var pe = exos[pi];
+    var pk = _auditSeenKey(pe);
+    var isSeen = !!_auditSeen[pk];
+    var isAnnot = _auditHasRemark(pe);
+    var isAct = pi === _auditIdx;
+    var pcls = 'pill ';
+    if (isAnnot) pcls += 'bg-emerald-500 text-white';
+    else if (isSeen) pcls += 'bg-emerald-200 text-emerald-800';
+    else pcls += 'bg-white border-2 border-slate-200 text-slate-500';
+    if (isAct) pcls += ' ring-2 ring-indigo-400 ring-offset-1';
+    var pillLabel = (pi + 1) + (isAnnot ? ' 📝' : '');
+    html += '<button onclick="_auditGoTo('+pi+')" class="'+pcls+'" style="min-width:2rem;font-size:.7rem">'+pillLabel+'</button>';
+  }
+  html += '</div>';
+
   // Header
-  html += '<div class="px-4 py-3 bg-slate-50 border-b border-slate-100 rounded-t-2xl flex justify-between items-center">' +
+  html += '<div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center">' +
     '<div>' +
     '<span class="text-xs font-bold text-slate-500">'+_auditLevel+' · '+_auditSource+'</span>' +
     '<span class="text-xs text-slate-400 ml-2">'+cat+'</span>' +
@@ -6085,6 +6118,8 @@ function _auditNav(dir) {
   if (_auditIdx >= exos.length) _auditIdx = exos.length - 1;
   renderAuditView();
 }
+
+function _auditGoTo(i) { _auditIdx = i; renderAuditView(); }
 
 var _auditTag = '';
 
