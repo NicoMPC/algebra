@@ -2,7 +2,7 @@
 
 > Document unique. Point d'entrée + règles métier + contraintes techniques.
 > Tout ce qui n'est pas ici est dans docs/ ou dans le code.
-> GAS @97 · Lancé le 18 mars 2026
+> GAS @98 · Lancé le 18 mars 2026
 
 ---
 
@@ -93,6 +93,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | T3 | **Badge trial progressif** | J-5 bleu → J-3 jaune → J-1 orange |
 | T4 | **J+7 overlay bloquant** | Lien Stripe direct |
 | T5 | **Emails séquencés** | J+0 auto, J+3/J+5/J+7 manuels (trigger à activer dès 10 clients) |
+| T6 | **Désinscription emails** | `unsubscribe.html` + action GAS `unsubscribe` → log UNSUB dans onglet Emails. Check `_isUnsubscribed()` avant chaque envoi marketing |
 
 ### 3.3 Messages — invariants figés @95
 
