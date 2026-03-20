@@ -1267,7 +1267,7 @@
     /* ── Tour guidé first-login ── */
     .tour-overlay { position:fixed;inset:0;z-index:9000;pointer-events:none;transition:opacity .3s }
     .tour-overlay.active { pointer-events:auto }
-    .tour-backdrop { position:fixed;inset:0;background:rgba(255,255,255,.82);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);z-index:9001;transition:opacity .3s }
+    .tour-backdrop { position:fixed;inset:0;background:rgba(255,255,255,.82);z-index:9001;transition:opacity .3s }
     .tour-highlight { position:fixed;z-index:9002;border-radius:16px;box-shadow:0 0 0 9999px rgba(255,255,255,.82),0 0 0 3px #3B82F6,0 0 20px 4px rgba(59,130,246,.25);pointer-events:none;transition:all .35s cubic-bezier(.4,0,.2,1) }
     .tour-tooltip { position:fixed;z-index:9003;background:#fff;border-radius:16px;padding:1rem 1.1rem;max-width:min(300px,calc(100vw - 32px));box-sizing:border-box;box-shadow:0 8px 32px rgba(0,0,0,.25);animation:tourPop .3s ease-out both;word-wrap:break-word;overflow-wrap:break-word }
     .tour-tooltip .tour-arrow { position:absolute;width:14px;height:14px;background:#fff;transform:rotate(45deg);box-shadow:-2px -2px 4px rgba(0,0,0,.06) }
@@ -2250,7 +2250,7 @@
         <button id="app-night-btn" onclick="toggleAppNight()"
                 class="w-9 h-9 bg-slate-100 border border-slate-200 text-slate-400 rounded-xl flex items-center justify-center text-base hover:bg-slate-200 transition-colors" title="Mode nuit">🌙</button>
         <button onclick="logout()"
-                class="w-9 h-9 bg-rose-50 border border-rose-200 text-rose-500 rounded-xl flex items-center justify-center text-base hover:bg-rose-100 transition-colors" title="Se déconnecter">⏻</button>
+                class="w-9 h-9 bg-rose-50 border border-rose-200 text-rose-500 rounded-xl flex items-center justify-center text-base hover:bg-rose-100 transition-colors" title="Se déconnecter">🚪</button>
       </div>
     </div>
     <div id="gamif-row" class="flex items-center px-4 py-2.5 gap-3 overflow-hidden">
@@ -2590,6 +2590,8 @@ var _compCooldown = 0; // timestamp — supprime toasts redondants post-complét
 function showT(msg, dur, ic) {
   dur = (dur === undefined) ? 3500 : dur;
   ic  = ic || '🧠';
+  // Bloquer les toasts pendant le tour guidé
+  if (document.getElementById('tour-overlay') && dur > 0) return;
   // Post-complétion cooldown : drop les toasts non-critiques pendant 3s
   if (_compCooldown && dur > 0 && (Date.now() - _compCooldown) < 3000) return;
   if (_toastBusy && dur > 0) {
@@ -4364,7 +4366,7 @@ var _tourSteps = [
   { el: function(){ return document.getElementById('ui-xp') ? document.getElementById('ui-xp').parentElement : null; }, emoji: '💎', title: 'Tes XP', body: 'Chaque exercice te rapporte des XP — même quand tu te trompes.', pos: 'below' },
   { el: function(){ return document.getElementById('stk-box'); }, emoji: '🔥', title: 'Ta série', body: 'Reviens chaque jour pour garder ta série active. La régularité paye.', pos: 'below' },
   { el: function(){ var pills = document.querySelectorAll('.help-pill'); for(var i=0;i<pills.length;i++){if(pills[i].textContent.indexOf('Brouillon')!==-1) return pills[i];} return document.getElementById('fab-draft'); }, emoji: '✏️', title: 'Brouillon & calculette', body: 'Ce bouton ouvre ton brouillon et ta calculette — pose tes calculs, dessine, note tes idées.', pos: 'above' },
-  { el: null, emoji: '⏱️', title: 'Le chrono', body: 'Chaque exercice a un chrono de 1 minute — juste pour t\'aider à prendre un bon rythme. Aucune pénalité si tu dépasses ! Et si tu réponds vite 5 fois d\'affilée, tu actives le Mode Flow : XP doublés.', pos: 'center' },
+  { el: null, emoji: '⏱️', title: 'Le chrono', body: '1 minute par exercice, zéro pénalité. Réponds vite 5 fois → Mode Flow, XP doublés ⚡', pos: 'center' },
   { el: null, emoji: '🚀', title: 'C\'est parti !', body: 'Lance ton premier entraînement. Bonne chance !', pos: 'center', last: true }
 ];
 var _tourIdx = 0;
