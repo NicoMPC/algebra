@@ -129,6 +129,7 @@ function doPost(e) {
       case 'stripe_webhook':             res = stripeWebhook(p);           break;
       case 'send_contact':               res = sendContact(p);             break;
       case 'get_audit_exos':             res = getAuditExos(p);            break;
+      case 'get_audit_remarks':          res = getAuditRemarks(p);        break;
       case 'report_exo':                 res = reportExo(p);              break;
       case 'save_calibration_batch':      res = saveCalibrationBatch(p);   break;
       default:
@@ -5695,6 +5696,21 @@ function getAuditExos(p) {
   }
 
   return { status: 'success', exos: results, count: results.length };
+}
+
+function getAuditRemarks(p) {
+  if (String(p.code) !== AUDITOR_CODE) return { status: 'error', message: 'Non autorisé.' };
+  var rows = getRows(SH.AUDIT);
+  var remarks = rows.map(function(r) {
+    return {
+      niveau: r['Niveau'] || '',
+      source: r['Source'] || '',
+      categorie: r['Categorie'] || '',
+      exoIndex: r['ExoIndex'] != null ? String(r['ExoIndex']) : '',
+      commentaire: r['Commentaire'] || ''
+    };
+  });
+  return { status: 'success', remarks: remarks };
 }
 
 function reportExo(p) {

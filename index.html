@@ -5713,13 +5713,15 @@ var _auditIdx = 0;
 var _auditLevel = '6EME';
 var _auditSource = 'curriculum';
 var _auditFilter = 'all'; // 'all' | 'figure'
+var _auditCategorie = 'all';
 var _auditLoading = false;
+var _auditRemarks = [];
 
 function renderAuditView() {
   var c = document.getElementById('app-c');
   if (!S.isAuditor) { render(); return; }
 
-  var LEVELS = ['6EME','5EME','4EME','3EME'];
+  var LEVELS = ['6EME','5EME','4EME','3EME','1ERE'];
   var SOURCES = [
     { key:'curriculum', label:'📚 Chapitres' },
     { key:'diagnostic', label:'🎯 Diagnostic' },
@@ -5743,8 +5745,26 @@ function renderAuditView() {
     '<div class="flex gap-2 items-center mb-3">' +
     '<button onclick="_auditSetFilter(\'all\')" class="px-3 py-1.5 rounded-lg text-xs font-bold '+(_auditFilter==='all'?'bg-slate-800 text-white':'bg-slate-100 text-slate-600')+'">Tous</button>' +
     '<button onclick="_auditSetFilter(\'figure\')" class="px-3 py-1.5 rounded-lg text-xs font-bold '+(_auditFilter==='figure'?'bg-blue-600 text-white':'bg-slate-100 text-slate-600')+'">📐 Avec figure</button>' +
-    '</div>' +
-    '<button onclick="_auditLoad()" class="btn btn-ac btn-fw py-3 text-sm">Charger les exercices</button>' +
+    '</div>';
+
+  // Filtre chapitre (si exos chargés)
+  if (_auditExos.length > 0) {
+    var cats = [];
+    _auditExos.forEach(function(e) {
+      var c = e.categorie || '(sans)';
+      if (cats.indexOf(c) === -1) cats.push(c);
+    });
+    cats.sort();
+    html += '<div class="flex gap-2 items-center mb-3 flex-wrap">' +
+      '<button onclick="_auditSetCat(\'all\')" class="px-3 py-1.5 rounded-lg text-xs font-bold '+(_auditCategorie==='all'?'bg-slate-800 text-white':'bg-slate-100 text-slate-600')+'">Tous chapitres</button>';
+    cats.forEach(function(c) {
+      var cls = c === _auditCategorie ? 'bg-teal-600 text-white' : 'bg-slate-100 text-slate-600';
+      html += '<button onclick="_auditSetCat(\''+c.replace(/'/g,"\\'")+'\')" class="px-3 py-1.5 rounded-lg text-xs font-bold '+cls+'">'+c.replace(/_/g,' ')+'</button>';
+    });
+    html += '</div>';
+  }
+
+  html += '<button onclick="_auditLoad()" class="btn btn-ac btn-fw py-3 text-sm">Charger les exercices</button>' +
     '</div>';
 
   // Exos chargés
@@ -5758,9 +5778,10 @@ function renderAuditView() {
   rMath();
 }
 
-function _auditSetLevel(l) { _auditLevel = l; _auditExos = []; _auditIdx = 0; renderAuditView(); }
-function _auditSetSource(s) { _auditSource = s; _auditExos = []; _auditIdx = 0; renderAuditView(); }
+function _auditSetLevel(l) { _auditLevel = l; _auditExos = []; _auditIdx = 0; _auditCategorie = 'all'; renderAuditView(); }
+function _auditSetSource(s) { _auditSource = s; _auditExos = []; _auditIdx = 0; _auditCategorie = 'all'; renderAuditView(); }
 function _auditSetFilter(f) { _auditFilter = f; _auditIdx = 0; renderAuditView(); }
+function _auditSetCat(c) { _auditCategorie = c; _auditIdx = 0; renderAuditView(); }
 
 async function _auditLoad() {
   _auditLoading = true;
@@ -5779,16 +5800,36 @@ async function _auditLoad() {
     showT('Erreur réseau', 2000, '❌');
     _auditExos = [];
   }
+  // Charger les remarques existantes
+  try {
+    var r2 = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'get_audit_remarks', code:S.prof.code }) });
+    var d2 = await r2.json();
+    if (d2.status === 'success') _auditRemarks = d2.remarks || [];
+  } catch(e2) {}
   _auditLoading = false;
   renderAuditView();
 }
 
 function _auditFiltered() {
-  if (_auditFilter === 'all') return _auditExos;
-  return _auditExos.filter(function(e) {
-    var cat = e.categorie || e.oC || '';
-    var fig = e.fig || autoDetectFigure(e.q || '', cat);
-    return fig && fig.confidence !== 'low';
+  var out = _auditExos;
+  if (_auditCategorie !== 'all') {
+    out = out.filter(function(e) { return (e.categorie || '(sans)') === _auditCategorie; });
+  }
+  if (_auditFilter === 'figure') {
+    out = out.filter(function(e) {
+      var cat = e.categorie || e.oC || '';
+      var fig = e.fig || autoDetectFigure(e.q || '', cat);
+      return fig && fig.confidence !== 'low';
+    });
+  }
+  return out;
+}
+
+function _auditHasRemark(e) {
+  var cat = e.categorie || '';
+  var idx = e._idx != null ? String(e._idx) : String(_auditIdx);
+  return _auditRemarks.some(function(r) {
+    return r.niveau === _auditLevel && r.source === _auditSource && r.categorie === cat && r.exoIndex === idx;
   });
 }
 
@@ -5818,6 +5859,7 @@ function _renderAuditExo() {
     '<span class="text-xs font-bold text-slate-500">'+_auditLevel+' · '+_auditSource+'</span>' +
     '<span class="text-xs text-slate-400 ml-2">'+cat+'</span>' +
     (hasFig ? '<span class="ml-2 px-1.5 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold rounded">📐 Figure</span>' : '') +
+    (_auditHasRemark(e) ? '<span class="ml-2 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded">✅ Annoté</span>' : '') +
     '</div>' +
     '<span class="text-xs font-bold text-slate-400">'+(_auditIdx+1)+' / '+exos.length+'</span>' +
     '</div>';
@@ -5869,7 +5911,7 @@ function _renderAuditExo() {
     (_auditIdx > 0 ? '<button onclick="_auditNav(-1)" class="btn bg-slate-100 text-slate-600 py-2.5 px-4 rounded-xl text-sm font-bold">← Préc</button>' : '') +
     '<button onclick="_auditNav(1)" class="btn bg-indigo-600 text-white py-2.5 flex-1 rounded-xl text-sm font-bold">Suivant →</button>' +
     '</div>' +
-    '<button onclick="_auditReport()" class="w-full py-2.5 rounded-xl text-sm font-bold bg-amber-100 text-amber-800 border border-amber-300">⚠️ Signaler cet exercice</button>' +
+    '<button onclick="_auditReport()" class="w-full py-2.5 rounded-xl text-sm font-bold bg-amber-100 text-amber-800 border border-amber-300">📝 Remarque</button>' +
     '</div></div>';
 
   return html;
@@ -5900,7 +5942,7 @@ function _auditReport() {
   overlay.innerHTML =
     '<div style="background:#fff;border-radius:1rem;padding:1.5rem;max-width:400px;width:100%;position:relative">' +
     '<button onclick="document.getElementById(\'audit-overlay\').remove()" style="position:absolute;top:.75rem;right:.75rem;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#94a3b8;line-height:1">✕</button>' +
-    '<h3 style="font-weight:800;font-size:.95rem;margin-bottom:.5rem">⚠️ Signaler — '+cat+'</h3>' +
+    '<h3 style="font-weight:800;font-size:.95rem;margin-bottom:.5rem">📝 Remarque — '+cat+'</h3>' +
     '<p style="font-size:.75rem;color:#64748b;margin-bottom:.5rem;line-height:1.4">'+qExtract+'…</p>' +
     '<div style="display:flex;gap:.4rem;margin-bottom:.75rem;flex-wrap:wrap">' +
     '<button onclick="_auditSetTag(this,\'supprimer_figure\')" class="audit-tag">🗑 Supprimer figure</button>' +
@@ -5947,7 +5989,8 @@ async function _auditSendReport() {
     })});
     var d = await r.json();
     if (d.status === 'success') {
-      showT('Signalement envoyé ✓', 1500, '✅');
+      showT('Remarque enregistrée ✓', 1500, '✅');
+      _auditRemarks.push({ niveau: _auditLevel, source: _auditSource, categorie: cat, exoIndex: String(e._idx != null ? e._idx : _auditIdx), commentaire: full });
     } else {
       showT(d.message || 'Erreur', 2000, '❌');
     }
@@ -5957,6 +6000,7 @@ async function _auditSendReport() {
 
   var ov = document.getElementById('audit-overlay');
   if (ov) ov.remove();
+  renderAuditView();
 }
 
 
