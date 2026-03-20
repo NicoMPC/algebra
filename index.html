@@ -10727,16 +10727,51 @@ function _renderAdminCards() {
     } else {
       html += '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Inscrits aujourd\'hui</div>';
       newStudents.forEach(function(st) {
-        html += '<div class="bg-white border border-slate-100 border-l-4 border-l-emerald-500 rounded-2xl px-4 py-3 mb-2">';
+        // ── Détection progression J0 ──
+        var hasDiag = (st.chapitresDetail || []).some(function(ch) { return ch.diagExos && ch.diagExos.length > 0; });
+        var boostStarted = st.boostInProgress || (st.currentBoostExosDone || 0) > 0;
+        var boostFinished = st.boostDone || (st.currentBoostExosDone || 0) >= 5;
+        var chapStarted = st.chapInProgress || (st.currentChapExosDone || 0) > 0;
+        var chapFinished = st.chapTermine;
+        var connected = !!st.lastConnection;
+
+        // ── Barre de progression ──
+        var steps = [];
+        if (!connected) {
+          steps.push('<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-rose-100 text-rose-600">⚠️ Jamais connecté</span>');
+        } else {
+          // Diag
+          steps.push(hasDiag
+            ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700">✅ Diag</span>'
+            : '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-600">⏳ Diag</span>');
+          // Boost
+          if (boostFinished) {
+            steps.push('<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700">✅ Boost</span>');
+          } else if (boostStarted) {
+            steps.push('<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-blue-100 text-blue-600">⏳ Boost ' + (st.currentBoostExosDone || 0) + '/5</span>');
+          }
+          // Chapitre
+          if (chapFinished) {
+            steps.push('<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700">✅ Chapitre</span>');
+          } else if (chapStarted) {
+            steps.push('<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-blue-100 text-blue-600">⏳ Chapitre ' + (st.currentChapExosDone || 0) + '/20</span>');
+          }
+        }
+
+        // ── Couleur bordure selon avancement ──
+        var borderColor = !connected ? '#ef4444' : hasDiag ? '#059669' : '#f59e0b';
+
+        html += '<div class="bg-white border border-slate-100 border-l-4 rounded-2xl px-4 py-3 mb-2" style="border-left-color:' + borderColor + '">';
         html += '<div class="flex items-center gap-3">';
         html += '<div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black syne text-base flex-shrink-0" style="background:linear-gradient(135deg,#059669,#10b981)">' + st.prenom.charAt(0).toUpperCase() + '</div>';
         html += '<div class="flex-1 min-w-0">';
         html += '<div class="flex items-center gap-1.5 flex-wrap">';
         html += '<span class="syne font-black text-slate-900 text-sm">' + st.prenom + '</span>';
         html += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500">' + st.niveau + '</span>';
-        html += st.j0Sent ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700">Mail J+0 \u2705</span>' : '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-rose-100 text-rose-700">\u26a0\ufe0f Mail J+0 non envoy\u00e9</span>';
+        html += st.j0Sent ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700">J+0 ✉️</span>' : '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-rose-100 text-rose-700">⚠️ Mail J+0</span>';
         html += '</div>';
-        html += '<div class="text-[10px] text-slate-400 font-medium mt-0.5">' + st.email + (st.objectif ? ' \u00b7 Objectif : ' + st.objectif : '') + '</div>';
+        html += '<div class="text-[10px] text-slate-400 font-medium mt-0.5">' + st.email + (st.objectif ? ' · Objectif : ' + st.objectif : '') + '</div>';
+        html += '<div class="flex gap-1 mt-1.5 flex-wrap">' + steps.join('') + '</div>';
         html += '</div></div></div>';
       });
     }
