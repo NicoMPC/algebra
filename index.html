@@ -8760,6 +8760,8 @@ function autoDetectFigure(q, cat) {
   if (/cercle\s*trigono/i.test(t) && !/trigono/i.test(cat)) return null;
   if (/(triangle\s*de\s*pascal|inégalité\s*triangulaire)/i.test(t) && !/triangle|géomét|pythagore/i.test(cat)) return null;
   if (/python|algorithme|boucle\b|liste\b/i.test(t) && /algorith/i.test(cat)) return null;
+  // Pas de figure pour les questions V/F et questions de cours
+  if (/vrai.*faux|quel\s+(est\s+le\s+)?th[eé]or[eè]me|[eé]noncer|citer|d[eé]finition|compl[eè]t/i.test(q)) return null;
 
   // ── Extraction des lettres de points depuis l'énoncé ──
   var pts = [];
@@ -8768,25 +8770,27 @@ function autoDetectFigure(q, cat) {
     ptMatch.forEach(function(p){ if(pts.indexOf(p)<0 && (p!=='I'&&p!=='J'&&p!=='L'&&p!=='O'||/triangle|cercle|carré/i.test(q))) pts.push(p); });
   }
 
+  var _fbPts = pts.length === 0;
+
   // ── Triangle rectangle (Pythagore / Trigonométrie) ──
   if (/triangle\s*rectangle|pythagore|hypoténuse/i.test(t)) {
     var a=n[0]||3, b=n[1]||4, c=n[2]||null;
     // Si on demande de PROUVER que c'est rectangle → triangle neutre sans angle droit marqué
     if (/prouver|montrer|démontrer|vérifier.*rectangle/i.test(t)) {
-      return {type:'triangle', a:a, b:b, c:c||5, cat:cat, pts:pts, confidence:'medium'};
+      return {type:'triangle', a:a, b:b, c:c||5, cat:cat, pts:pts, _fb:_fbPts, confidence:'medium'};
     }
-    return {type:'tri_rect', a:a, b:b, c:c, cat:cat, pts:pts, confidence: n.length>=2 ? 'high' : 'medium'};
+    return {type:'tri_rect', a:a, b:b, c:c, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=2 ? 'high' : 'medium'};
   }
   // ── Trigonométrie (sin/cos/tan d'un angle) ──
   if (/trigono|sin\b|cos\b|tan\b|adjacent|opposé|angle.*triangle/i.test(t) && !/théorème.*thalès/i.test(t)) {
     var angle = null; nums && nums.forEach(function(x){var v=parseFloat(x.replace(',','.')); if(v>10&&v<90) angle=v;});
-    return {type:'tri_trigo', angle:angle||35, a:n[0]||5, b:n[1]||null, cat:cat, pts:pts, confidence: n.length>=1 ? 'high' : 'medium'};
+    return {type:'tri_trigo', angle:angle||35, a:n[0]||5, b:n[1]||null, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
   }
   // ── Thalès (configuration) ──
   if (/thalès/i.test(t)) {
     // Pas de figure si simple rapport sans config géométrique
     if (!/droite|parallèle|point|triangle/i.test(t) && n.length < 2) return null;
-    return {type:'thales', a:n[0]||4, b:n[1]||6, c:n[2]||3, d:n[3]||null, cat:cat, pts:pts, confidence: n.length>=2 ? 'high' : 'medium'};
+    return {type:'thales', a:n[0]||4, b:n[1]||6, c:n[2]||3, d:n[3]||null, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=2 ? 'high' : 'medium'};
   }
   // ── Cercle (rayon, diamètre, aire, périmètre) ──
   if (/cercle|rayon|diamètre|disque/i.test(t) && !/demi.cercle/i.test(t)) {
@@ -8794,89 +8798,91 @@ function autoDetectFigure(q, cat) {
     var r = n[0]||5;
     if (/diamètre/i.test(t) && r>2) r = r/2;
     // Seulement si rayon/diamètre donné numériquement
-    return {type:'circle', r:r, cat:cat, pts:pts, confidence: n.length>=1 ? 'high' : 'low'};
+    return {type:'circle', r:r, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'low'};
   }
   // ── Rectangle / Carré ──
   if (/rectangle|longueur.*largeur|largeur.*longueur/i.test(t)) {
-    return {type:'rect', w:n[0]||8, h:n[1]||n[0]||5, cat:cat, pts:pts, confidence: n.length>=1 ? 'high' : 'medium'};
+    return {type:'rect', w:n[0]||8, h:n[1]||n[0]||5, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
   }
   if (/carré|côté.*carré/i.test(t) && !/racine/i.test(t)) {
     var s=n[0]||5;
-    return {type:'rect', w:s, h:s, square:true, cat:cat, pts:pts, confidence: n.length>=1 ? 'high' : 'medium'};
+    return {type:'rect', w:s, h:s, square:true, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
   }
   // ── Angle ──
   if ((/angle|mesure.*°|degrés/i.test(t)) && /angle/i.test(cat)) {
     var deg = null; n.forEach(function(v){if(v>5&&v<180) deg=v;});
     // Ne pas afficher si l'angle est à calculer (divulguerait la réponse)
     if (!deg && /calcul|trouv|détermin/i.test(t)) return null;
-    return {type:'angle', deg:deg||60, cat:cat, pts:pts, confidence: deg ? 'high' : 'low'};
+    // Angles opposés par le sommet : la figure révèle la réponse
+    if (/oppos[eé].*sommet|sommet.*oppos[eé]/i.test(q)) return null;
+    return {type:'angle', deg:deg||60, cat:cat, pts:pts, _fb:_fbPts, confidence: deg ? 'high' : 'low'};
   }
   // ── Parallèles / perpendiculaires ──
   if (/parallèle|perpendiculaire/i.test(t) && /géomét/i.test(cat)) {
-    return {type:'parallel', perp:/perpendiculaire/i.test(t), cat:cat, pts:pts, confidence:'medium'};
+    return {type:'parallel', perp:/perpendiculaire/i.test(t), cat:cat, pts:pts, _fb:_fbPts, confidence:'medium'};
   }
   // ── Symétrie axiale ──
   if (/symétrie\s*axiale|axe\s*de\s*symétrie/i.test(t)) {
-    return {type:'sym_axial', cat:cat, pts:pts, confidence:'medium'};
+    return {type:'sym_axial', cat:cat, pts:pts, _fb:_fbPts, confidence:'medium'};
   }
   // ── Symétrie centrale ──
   if (/symétrie\s*centrale|centre\s*de\s*symétrie/i.test(t)) {
-    return {type:'sym_central', cat:cat, pts:pts, confidence:'medium'};
+    return {type:'sym_central', cat:cat, pts:pts, _fb:_fbPts, confidence:'medium'};
   }
   // ── Solides 3D ──
   if (/cube|pavé|parallélépipède/i.test(t)) {
-    return {type:'cube', a:n[0]||4, b:n[1]||n[0]||3, c:n[2]||n[0]||2, isCube:/cube/i.test(t), cat:cat, pts:pts, confidence: n.length>=1 ? 'high' : 'medium'};
+    return {type:'cube', a:n[0]||4, b:n[1]||n[0]||3, c:n[2]||n[0]||2, isCube:/cube/i.test(t), cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
   }
   if (/cylindre/i.test(t)) {
-    return {type:'cylinder', r:n[0]||3, h:n[1]||6, cat:cat, pts:pts, confidence: n.length>=1 ? 'high' : 'medium'};
+    return {type:'cylinder', r:n[0]||3, h:n[1]||6, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
   }
   if (/cône/i.test(t)) {
-    return {type:'cone', r:n[0]||3, h:n[1]||6, cat:cat, pts:pts, confidence: n.length>=1 ? 'high' : 'medium'};
+    return {type:'cone', r:n[0]||3, h:n[1]||6, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
   }
   if (/pyramide/i.test(t)) {
-    return {type:'pyramid', a:n[0]||4, h:n[1]||6, cat:cat, pts:pts, confidence: n.length>=1 ? 'high' : 'medium'};
+    return {type:'pyramid', a:n[0]||4, h:n[1]||6, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
   }
   if (/sphère|boule/i.test(t)) {
-    return {type:'sphere', r:n[0]||4, cat:cat, pts:pts, confidence: n.length>=1 ? 'high' : 'medium'};
+    return {type:'sphere', r:n[0]||4, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
   }
   // ── Section de solide ──
   if (/section/i.test(t) && /solide|section/i.test(cat)) {
-    return {type:'section_solid', cat:cat, pts:pts, confidence:'medium'};
+    return {type:'section_solid', cat:cat, pts:pts, _fb:_fbPts, confidence:'medium'};
   }
   // ── Homothétie ──
   if (/homothétie|agrandissement|réduction|rapport.*k|k\s*=/i.test(t)) {
     var k=null; n.forEach(function(v){if(v>0&&v<10&&v!==1) k=v;});
-    return {type:'homothety', k:k||2, cat:cat, pts:pts, confidence: k ? 'high' : 'medium'};
+    return {type:'homothety', k:k||2, cat:cat, pts:pts, _fb:_fbPts, confidence: k ? 'high' : 'medium'};
   }
   // ── Triangles semblables ──
   if (/semblable|similaire/i.test(t)) {
-    return {type:'similar_tri', a:n[0]||3, b:n[1]||4, c:n[2]||5, cat:cat, pts:pts, confidence: n.length>=2 ? 'high' : 'medium'};
+    return {type:'similar_tri', a:n[0]||3, b:n[1]||4, c:n[2]||5, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=2 ? 'high' : 'medium'};
   }
   // ── Périmètre / Aire générique (si pas déjà matché) ──
   if (/périmètre|aire|surface/i.test(t) && n.length>=1) {
     if (/triangle/i.test(t)) {
-      return {type:'triangle', a:n[0]||5, b:n[1]||4, c:n[2]||6, cat:cat, pts:pts, confidence: n.length>=2 ? 'high' : 'medium'};
+      return {type:'triangle', a:n[0]||5, b:n[1]||4, c:n[2]||6, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=2 ? 'high' : 'medium'};
     }
   }
   // ── Volumes génériques ──
   if (/volume/i.test(t) && !/cube|pavé|cylindre|cône|pyramide|sphère/i.test(t)) {
-    return {type:'cube', a:n[0]||4, b:n[1]||3, c:n[2]||2, isCube:false, cat:cat, pts:pts, confidence: n.length>=1 ? 'high' : 'low'};
+    return {type:'cube', a:n[0]||4, b:n[1]||3, c:n[2]||2, isCube:false, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'low'};
   }
   // ── Transformations ──
   if (/translation|rotation/i.test(t)) {
-    return {type:'transform', isRotation:/rotation/i.test(t), cat:cat, pts:pts, confidence:'medium'};
+    return {type:'transform', isRotation:/rotation/i.test(t), cat:cat, pts:pts, _fb:_fbPts, confidence:'medium'};
   }
   // ── Produit scalaire (1ERE) ──
   if (/produit\s*scalaire|vecteur.*orthogon|orthogon.*vecteur|\bu\s*[·•]\s*v\b/i.test(t) && /produit_scal/i.test(cat)) {
-    return {type:'vectors', pts:pts, cat:cat, confidence:'high'};
+    return {type:'vectors', pts:pts, _fb:_fbPts, cat:cat, confidence:'high'};
   }
   // ── Géométrie repérée (1ERE) ──
   if (/équation.*droite|droite.*équation|équation.*cercle|repère/i.test(t) && /geometrie_repere/i.test(cat)) {
-    return {type:'repere', pts:pts, cat:cat, confidence:'high'};
+    return {type:'repere', pts:pts, _fb:_fbPts, cat:cat, confidence:'high'};
   }
   // ── Cercle trigonométrique (1ERE) ──
   if (/cercle\s*trigono|cos.*[θα]|sin.*[θα]|valeur.*remarquable.*cos|valeur.*remarquable.*sin/i.test(t) && /trigono/i.test(cat)) {
-    return {type:'trigo_circle', pts:pts, cat:cat, confidence:'high'};
+    return {type:'trigo_circle', pts:pts, _fb:_fbPts, cat:cat, confidence:'high'};
   }
   return null;
 }
