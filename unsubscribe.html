@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Se désinscrire — Matheux</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #f7f8fc; color: #07090f; line-height: 1.7; min-height: 100vh; display: flex; flex-direction: column; }
+    nav { background: #1e1b4b; padding: 1rem 1.25rem; display: flex; align-items: center; gap: .75rem; }
+    .logo { font-family: 'Syne', sans-serif; font-weight: 800; color: #fff; font-size: 1.1rem; text-decoration: none; }
+    .logo span { color: #818cf8; }
+    .wrap { max-width: 480px; margin: 3rem auto; padding: 0 1.25rem; text-align: center; flex: 1; }
+    h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem; margin-bottom: 1rem; color: #1e1b4b; }
+    p { color: #334155; font-size: .95rem; margin-bottom: 1rem; }
+    .card { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 2rem; margin: 1.5rem 0; box-shadow: 0 4px 16px rgba(0,0,0,.05); }
+    .email-display { background: #f1f5f9; border-radius: 10px; padding: .6rem 1rem; font-weight: 600; color: #1e293b; font-size: .95rem; margin: 1rem 0; display: inline-block; }
+    .btn { display: inline-block; padding: .85rem 2rem; border-radius: 12px; font-weight: 700; font-size: .95rem; border: none; cursor: pointer; transition: all .2s; }
+    .btn-unsub { background: #fee2e2; color: #991b1b; border: 1.5px solid #fca5a5; }
+    .btn-unsub:hover { background: #fecaca; }
+    .btn-back { background: #1E40AF; color: #fff; text-decoration: none; margin-top: .75rem; }
+    .btn-back:hover { background: #1e3a8a; }
+    .success { display: none; }
+    .error { display: none; color: #dc2626; font-size: .85rem; margin-top: .5rem; }
+    .loading { display: none; }
+    .subtle { color: #9ca3af; font-size: .8rem; margin-top: 1.5rem; }
+    footer { text-align: center; padding: 1.5rem; color: #9ca3af; font-size: .75rem; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="logo">Matheux<span>.</span></a>
+  </nav>
+
+  <div class="wrap">
+    <!-- État 1 : confirmation -->
+    <div id="confirm-view" class="card">
+      <h1>Se désinscrire des emails</h1>
+      <p>Vous ne recevrez plus les emails de suivi de Matheux (bilans, rappels, conseils).</p>
+      <p>Votre compte reste actif — seuls les emails marketing s'arrêtent.</p>
+      <div id="email-show" class="email-display"></div>
+      <br><br>
+      <button onclick="doUnsub()" class="btn btn-unsub" id="btn-unsub">Confirmer la désinscription</button>
+      <span class="loading" id="loading"> Traitement...</span>
+      <p class="error" id="error-msg"></p>
+      <p class="subtle">Vous pourrez vous réinscrire à tout moment depuis votre espace Matheux.</p>
+    </div>
+
+    <!-- État 2 : succès -->
+    <div id="success-view" class="card success">
+      <div style="font-size:2.5rem;margin-bottom:.75rem">✅</div>
+      <h1>C'est fait.</h1>
+      <p>Vous ne recevrez plus d'emails marketing de Matheux.</p>
+      <p style="color:#6b7280;font-size:.85rem">Si c'est une erreur, contactez-nous à <a href="mailto:contact@matheux.fr" style="color:#4338ca">contact@matheux.fr</a></p>
+      <br>
+      <a href="/" class="btn btn-back">Retour sur Matheux</a>
+    </div>
+  </div>
+
+  <footer>© 2026 Matheux · Nicolas Follezou · contact@matheux.fr</footer>
+
+  <script>
+    var GAS_URL = 'https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec';
+    var params = new URLSearchParams(window.location.search);
+    var email = params.get('email') || '';
+
+    // Afficher l'email
+    var show = document.getElementById('email-show');
+    if (email) {
+      show.textContent = email;
+    } else {
+      show.textContent = '(email non trouvé)';
+      document.getElementById('btn-unsub').disabled = true;
+      document.getElementById('btn-unsub').style.opacity = '.4';
+    }
+
+    function doUnsub() {
+      if (!email) return;
+      var btn = document.getElementById('btn-unsub');
+      var ld  = document.getElementById('loading');
+      var err = document.getElementById('error-msg');
+      btn.disabled = true;
+      btn.style.opacity = '.5';
+      ld.style.display = 'inline';
+      err.style.display = 'none';
+
+      fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'unsubscribe', email: email })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.status === 'success') {
+          document.getElementById('confirm-view').style.display = 'none';
+          document.getElementById('success-view').style.display = 'block';
+        } else {
+          err.textContent = d.message || 'Une erreur est survenue.';
+          err.style.display = 'block';
+          btn.disabled = false;
+          btn.style.opacity = '1';
+          ld.style.display = 'none';
+        }
+      })
+      .catch(function() {
+        err.textContent = 'Erreur réseau — réessayez.';
+        err.style.display = 'block';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        ld.style.display = 'none';
+      });
+    }
+  </script>
+</body>
+</html>

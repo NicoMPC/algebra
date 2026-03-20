@@ -132,6 +132,7 @@ function doPost(e) {
       case 'get_audit_remarks':          res = getAuditRemarks(p);        break;
       case 'report_exo':                 res = reportExo(p);              break;
       case 'save_calibration_batch':      res = saveCalibrationBatch(p);   break;
+      case 'unsubscribe':                 res = unsubscribeEmail(p);       break;
       default:
         res = { status: 'error', message: 'Action inconnue : ' + p.action };
     }
@@ -187,6 +188,18 @@ function updateCell(name, row, col, value) {
 
 function today() {
   return Utilities.formatDate(new Date(), 'Europe/Paris', 'yyyy-MM-dd');
+}
+
+// Normalise une valeur date (Date object, string longue, ou yyyy-MM-dd) en yyyy-MM-dd
+function _toDateStr(val) {
+  if (!val) return '';
+  if (val instanceof Date) return Utilities.formatDate(val, 'Europe/Paris', 'yyyy-MM-dd');
+  var s = String(val);
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0, 10);
+  // Fallback: parse string longue type "Fri Mar 20 2026..."
+  var d = new Date(s);
+  if (isNaN(d.getTime())) return s.substring(0, 10);
+  return Utilities.formatDate(d, 'Europe/Paris', 'yyyy-MM-dd');
 }
 
 function formatDateFR(dateStr) {
@@ -639,6 +652,18 @@ function login(p) {
 // ════════════════════════════════════════════════════════════
 
 function saveScore(p) {
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) {
+    return { status: 'error', message: 'Serveur occupé, réessayez.' };
+  }
+  try {
+  return _saveScoreInner(p);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function _saveScoreInner(p) {
   var required = ['code', 'name', 'level', 'categorie', 'exercice_idx', 'resultat'];
   for (var i = 0; i < required.length; i++) {
     if (!p[required[i]] && p[required[i]] !== 0) {
@@ -1617,7 +1642,7 @@ function rebuildSuivi(code) {
   var inactif7j = false;
   if (lastDate) {
     try {
-      var daysInact7 = Math.floor((new Date(todayStr) - new Date(lastDate.substring(0,10))) / 86400000);
+      var daysInact7 = Math.floor((new Date(todayStr) - new Date(_toDateStr(lastDate))) / 86400000);
       if (daysInact7 > 7) inactif7j = true;
     } catch(e) {}
   } else {
@@ -1742,7 +1767,7 @@ function rebuildSuivi(code) {
   // Gris si inactif > 3j (override visuel)
   if (lastDate) {
     try {
-      var daysInact = Math.floor((new Date(todayStr) - new Date(lastDate.substring(0,10))) / 86400000);
+      var daysInact = Math.floor((new Date(todayStr) - new Date(_toDateStr(lastDate))) / 86400000);
       if (daysInact > 3 && actions.length === 0) acColor = GRAY;
     } catch (e) {}
   }
@@ -3404,7 +3429,7 @@ function getAdminOverview(p) {
       var inactif7jAdmin = false;
       if (lastConnection) {
         try {
-          var lastConnDate = lastConnection.substring(0, 10);
+          var lastConnDate = _toDateStr(lastConnection);
           var daysIn = Math.floor((new Date(todayStrAdmin) - new Date(lastConnDate)) / 86400000);
           if (daysIn > 7) inactif7jAdmin = true;
         } catch (e) { inactif7jAdmin = true; }
@@ -3444,7 +3469,7 @@ function getAdminOverview(p) {
       var inactivityDays = 0;
       if (lastConnection) {
         try {
-          var lcd = lastConnection.substring(0, 10);
+          var lcd = _toDateStr(lastConnection);
           inactivityDays = Math.floor((new Date(todayStrAdmin) - new Date(lcd)) / 86400000);
         } catch(e) {}
       } else {
@@ -3453,6 +3478,11 @@ function getAdminOverview(p) {
 
       // neverStarted : n'a jamais fait un seul boost
       var neverStarted = userBoosts.length === 0;
+
+      // Promouvoir ghost en action principale si aucune autre action
+      if (neverStarted && trialDays >= 1 && actionPriority === '👍 RAS') {
+        actionPriority = '🚀 Jamais commencé · J+' + trialDays;
+      }
 
       // secondaryActions : toutes les actions secondaires
       var secondaryActions = [];
@@ -4242,12 +4272,37 @@ function sendContact(p) {
   return { status: 'success' };
 }
 
+// ── Désinscription emails marketing ──────────────────────────
+function unsubscribeEmail(p) {
+  var email = String(p.email || '').trim().toLowerCase();
+  if (!email) return { status: 'error', message: 'Email manquant.' };
+  // Dédup : ne pas logger 2 fois
+  if (_isUnsubscribed(email)) return { status: 'success', message: 'Déjà désinscrit.' };
+  var sh = _ensureEmailsSheet();
+  var now = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm');
+  sh.appendRow([now, email, '', 'UNSUB', 'désinscrit']);
+  return { status: 'success', message: 'Désinscription enregistrée.' };
+}
+
+function _isUnsubscribed(email) {
+  if (!email) return false;
+  email = email.toLowerCase();
+  try {
+    var rows = getRows(SH.EMAILS);
+    return rows.some(function(r) {
+      return String(r['Email'] || '').toLowerCase() === email && r['Type'] === 'UNSUB';
+    });
+  } catch(e) { return false; }
+}
+
 /**
  * Envoie l'email marketing du jour `day` (0, 3 ou 7) à l'utilisateur.
  * Retourne { status: 'success' } ou { status: 'error', message: ... }
  */
 function sendMarketingSequence(email, prenom, day, objectif) {
   objectif = objectif || 'lacunes';
+  // Check désinscription
+  if (_isUnsubscribed(email)) return { status: 'success', message: 'Utilisateur désinscrit.' };
   try {
     var subject, htmlBody;
     var unsubLink = 'https://matheux.fr/unsubscribe?email=' + encodeURIComponent(email);
