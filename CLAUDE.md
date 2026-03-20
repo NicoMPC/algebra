@@ -264,6 +264,8 @@ docs/archive/                → Docs historiques + audits + rapports
 | `sim_21days.py` | Simulation 21j — 12 profils QA |
 | `sim_7days_messages.py` | Simulation messages — 274 API calls, 0 incohérence |
 | `audit_exos.py` | Audit qualité exercices |
+| `audit_latex.py` | Audit rendu LaTeX/KaTeX sur tous les exercices (q, a, options, steps, f) |
+| `fix_latex.py` | Fix automatique des formules LaTeX sans `$...$` (`--apply` pour écrire) |
 | `verify_hints.py` | Audit qualité des indices |
 | `test_coherence_boost.py` | Test régression calibrage/boost |
 | `deploy.sh` | Push + deploy GAS en une commande |

@@ -55,13 +55,23 @@
 
 ### Améliorations exercices — sprints suivants
 
-> Score global ~98% après audits. Détail dans docs/archive/.
+> Score global 6.3/10 (audit 2026-03-19). Techniquement solide (9/10 intégrité, 10/10 structure). À améliorer : qualité pédagogique + diversité types.
+
+**Fait (audit 2026-03-19/20) :**
+- ✅ 22 indices révélateurs reformulés (guidants sans dévoiler)
+- ✅ 11 formules manquantes complétées
+- ✅ 1 doublon corrigé (6EME/Volumes BoostExos)
+- ✅ 3 garde-fous figures géométriques : filtre V/F, exclusion angles opposés, labels fallback masqués (31 figures parasites + 128 labels nettoyés)
+- ✅ 3 "erreurs de calcul" vérifiées → faux positifs du script audit
+
+**Reste :**
 
 | Priorité | Action | Chapitres concernés | Volume |
 |---|---|---|---|
-| 1 | **AMÉLIO-01** : Réécrire indices révélateurs (guidants sans dévoiler) | Homothétie 4EME, Agrandissement_Réduction 6EME, Conversions_Unités 6EME, Racines_Carrées 5EME, Triangles_Semblables 5EME, Fonctions 3EME, Inéquations 3EME | ~103 exos |
+| 1 | **AMÉLIO-01** : Diversifier types d'exercices (objectif 60% QCM, 20% V/F, 20% fill) | Tous — actuellement 100% QCM | ~280 exos à convertir |
 | 2 | **AMÉLIO-02** : Ajouter 3ème indice aux exos à 1 seul indice | Fonctions 3EME, Puissances 5EME, Calcul_Littéral 5EME | ~20 exos |
 | 3 | **AMÉLIO-03** : Contextualisation (2% → 20% d'exos en situation réelle) | Priorité 5EME + 3EME | long terme |
+| 4 | **AMÉLIO-04** : Mode "résolution guidée" step-by-step (nouveau type exercice) | À définir — priorité fractions/équations | conception |
 
 ---
 
