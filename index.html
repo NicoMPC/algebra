@@ -2959,9 +2959,9 @@ function toggleAppNight() {
   if (btn) btn.textContent = on ? '☀️' : '🌙';
 }
 (function() {
-  if (localStorage.getItem('app_night') === '1') {
+  // Night mode par défaut — désactivable via toggle (stocke '0')
+  if (localStorage.getItem('app_night') !== '0') {
     document.body.classList.add('app-night');
-    // Le bouton sera mis à jour au render, mais on peut le faire ici aussi
     document.addEventListener('DOMContentLoaded', function() {
       var btn = document.getElementById('app-night-btn');
       if (btn) btn.textContent = '☀️';
