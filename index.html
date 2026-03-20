@@ -1339,6 +1339,12 @@
       50% { opacity:.6 }
     }
     .exo-timer.overtime .exo-timer-ring { animation:timerPulse 2s ease infinite }
+    .exo-timer.timer-waiting { animation:timerBreath 2s ease-in-out infinite }
+    .exo-timer.timer-waiting .exo-timer-txt { opacity:.5 }
+    @keyframes timerBreath {
+      0%,100% { opacity:.45 }
+      50% { opacity:1 }
+    }
 
     /* ── MODE FLOW ─────────────────────────────────────── */
     .flow-badge {
@@ -1373,6 +1379,7 @@
     body.app-night .exo-timer-ring { stroke:#93C5FD }
     body.app-night .exo-timer.overtime .exo-timer-ring { stroke:#fbbf24 }
     body.app-night .exo-timer-bg { stroke:#475569 }
+    body.app-night .exo-timer.timer-waiting { animation:timerBreath 2s ease-in-out infinite }
   </style>
 </head>
 <!--
@@ -5540,8 +5547,8 @@ function goEx(cat, i) {
   var id    = S.niv + '-' + r.rC + '-' + r.rI;
   var alreadyAnswered = !!S.res[id] || !!S.qans[id];
 
-  // 2. Démarre le chrono uniquement pour les exercices non encore répondus
-  if (!alreadyAnswered && !S.exoStartTime[id]) {
+  // 2. Reset chrono + nudge pour les exercices non encore répondus
+  if (!alreadyAnswered) {
     S.exoStartTime[id] = Date.now();
     setTimeout(function() { startNudge(id); }, 0);
   }
@@ -9800,7 +9807,10 @@ function _startTimer(exoId) {
   _stopTimer();
   if (!_isTimerOn()) return;
   S._timerExoId = exoId;
-  S._timerStart = S.exoStartTime[exoId] || Date.now();
+  // Toujours reset à maintenant — chaque question repart à 0
+  S.exoStartTime[exoId] = Date.now();
+  S._timerStart = Date.now();
+  S._timerWaiting = true; // délai lecture 5s
   // Coach tip première fois
   if (_needsCoach('tip_timer')) {
     _markCoach('tip_timer');
@@ -9808,12 +9818,25 @@ function _startTimer(exoId) {
       showT('Le chrono t\'aide à prendre un bon rythme — aucune pénalité si tu dépasses', 5000, '⏱️');
     }, 1200);
   }
-  S._timerIv = setInterval(function() { _tickTimer(); }, 1000);
-  _tickTimer(); // immediate first tick
+  // Animation pulse douce pendant le délai de lecture
+  var el = document.getElementById('exo-timer-display');
+  if (el) el.classList.add('timer-waiting');
+  // Après 5s, lancer le vrai décompte
+  S._timerWaitTO = setTimeout(function() {
+    S._timerWaiting = false;
+    S._timerStart = Date.now();
+    S.exoStartTime[exoId] = Date.now();
+    var el2 = document.getElementById('exo-timer-display');
+    if (el2) el2.classList.remove('timer-waiting');
+    S._timerIv = setInterval(function() { _tickTimer(); }, 1000);
+    _tickTimer();
+  }, 5000);
 }
 
 function _stopTimer() {
+  if (S._timerWaitTO) { clearTimeout(S._timerWaitTO); S._timerWaitTO = null; }
   if (S._timerIv) { clearInterval(S._timerIv); S._timerIv = null; }
+  S._timerWaiting = false;
   S._timerExoId = null;
 }
 
@@ -9840,6 +9863,7 @@ function _tickTimer() {
 
 function _getTimerElapsed() {
   if (!S._timerExoId || !S._timerStart) return 999;
+  if (S._timerWaiting) return 0; // encore en délai lecture
   return Math.floor((Date.now() - S._timerStart) / 1000);
 }
 
