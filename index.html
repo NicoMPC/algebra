@@ -4858,6 +4858,16 @@ function initApp(d, skipRender) {
 
   document.getElementById('fab-draft').classList.remove('hidden');
 
+  // ── Mode auditeur : accès direct à la vue Audit, pas de flow élève ──
+  if (S.isAuditor) {
+    S.calState = null;
+    S.view = 'audit';
+    document.getElementById('main-nav').classList.remove('hidden');
+    updNav();
+    renderAuditView();
+    return;
+  }
+
   if (S.calState !== 'test') {
     // calDone : état UX local (diagnostic fait) — lu depuis LK
     var _calDone = loc[d.profile.code] ? loc[d.profile.code].calDone : false;
