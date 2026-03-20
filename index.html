@@ -427,6 +427,29 @@
     }
     #draft-bd.show { opacity:1; pointer-events:auto; }
 
+    /* ── Barre énoncé dans le drawer (mobile) ─── */
+    .draft-exo-bar {
+      padding:.5rem .75rem;border-bottom:1px solid #e2e8f0;
+      background:#eef2ff;flex-shrink:0;cursor:pointer;
+      transition:max-height .3s ease;overflow:hidden;
+    }
+    .draft-exo-bar .exo-q {
+      font-size:.78rem;font-weight:600;color:#1e293b;
+      line-height:1.5;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+    }
+    .draft-exo-bar.expanded .exo-q {
+      -webkit-line-clamp:unset;
+    }
+    .draft-exo-bar .exo-q-label {
+      font-size:.65rem;font-weight:800;color:#6366f1;
+      text-transform:uppercase;letter-spacing:.06em;margin-bottom:.15rem;
+    }
+    body.app-night .draft-exo-bar { background:#1e293b;border-color:#334155; }
+    body.app-night .draft-exo-bar .exo-q { color:#e2e8f0; }
+    body.app-night .draft-exo-bar .exo-q-label { color:#818cf8; }
+    @media (min-width:1024px) { .draft-exo-bar { display:none !important; } }
+
     /* ── TABLEAU BLANC — SIDE PANEL (desktop ≥1024px) ─── */
     @media (min-width:1024px) {
       #draft-drawer {
@@ -2316,6 +2339,8 @@
       Fermer ✕
     </button>
   </div>
+  <!-- Barre énoncé mobile -->
+  <div id="draft-exo-bar" class="draft-exo-bar hidden"></div>
 
   <!-- PANEL BROUILLON -->
   <div id="panel-draft" class="flex flex-col flex-1 overflow-hidden">
@@ -5543,6 +5568,7 @@ function goEx(cat, i) {
   S._flowCat = cat;
 
   S.qv[cat] = parseInt(i);
+  S._curCat = cat; S._curIdx = parseInt(i);
   var r     = res2(cat, i);
   var id    = S.niv + '-' + r.rC + '-' + r.rI;
   var alreadyAnswered = !!S.res[id] || !!S.qans[id];
@@ -8645,6 +8671,26 @@ function switchDraftTab(tab) {
   }
 }
 
+function _updateDraftExoBar() {
+  var bar = document.getElementById('draft-exo-bar');
+  if (!bar) return;
+  var cat = S._curCat;
+  var idx = S._curIdx;
+  if (cat == null || idx == null || !LVL[S.niv] || !LVL[S.niv].cats[cat] || !LVL[S.niv].cats[cat][idx]) {
+    bar.classList.add('hidden'); return;
+  }
+  var exo = LVL[S.niv].cats[cat][idx];
+  var label = cat === 'BOOST' ? 'Entraînement du jour' : cat.replace(/_/g, ' ');
+  bar.classList.remove('hidden', 'expanded');
+  bar.innerHTML = '<div class="exo-q-label">📐 ' + label + ' — exo ' + (idx + 1) + '</div>' +
+    '<div class="exo-q mc">' + fmtL(exo.q) + '</div>';
+  bar.onclick = function() { bar.classList.toggle('expanded'); };
+  // Re-render KaTeX dans la barre
+  if (typeof renderMathInElement === 'function') {
+    try { renderMathInElement(bar, {delimiters:[{left:'$',right:'$',display:false}],throwOnError:false}); } catch(e){}
+  }
+}
+
 function toggleDraft() {
   S.dOpen = !S.dOpen;
   var d = document.getElementById('draft-drawer');
@@ -8657,6 +8703,8 @@ function toggleDraft() {
     if (ta && S.cid) ta.value = (S.drafts[S.cid] && S.drafts[S.cid].txt) || localStorage.getItem('draft_' + S.cid) || '';
     // Restaurer mode quadrillé
     if (ta) { var g = localStorage.getItem('draft_grid') === '1'; ta.classList.toggle('grid-on', g); var gb = document.getElementById('btn-grid'); if (gb) gb.style.color = g ? '#3B82F6' : ''; }
+    // Barre énoncé mobile
+    _updateDraftExoBar();
     if (isDesktop) {
       // Desktop fusionné : afficher les 2 panels + rendre les 2
       renderCalcButtons();
