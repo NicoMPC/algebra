@@ -10592,8 +10592,19 @@ async function renderAdminDashboard() {
 // ADMIN COCKPIT — À FAIRE / FAIT / TEST
 // ══════════════════════════════════════════════════════════════
 
-if (!S._adminJournal) S._adminJournal = [];
+// ── Admin journal : persisté dans localStorage ──────────────
+(function() {
+  var raw = localStorage.getItem('mx_admin_journal');
+  var stored = [];
+  if (raw) { try { stored = JSON.parse(raw); } catch(e) {} }
+  // Garder uniquement les 7 derniers jours
+  var cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 7); cutoff.setHours(0,0,0,0);
+  stored = stored.filter(function(e) { return new Date(e.date) >= cutoff; });
+  S._adminJournal = stored;
+  localStorage.setItem('mx_admin_journal', JSON.stringify(stored));
+})();
 if (!S._adminDoneActions) S._adminDoneActions = {};
+if (!S._adminDoneFilter) S._adminDoneFilter = 'today';
 
 // ── Compute actions per student with priority ranks ──────────
 function _computeActions(st) {
@@ -10683,7 +10694,7 @@ function _renderAdminCards() {
   var _tabs = [
     { key: 'todo', label: '\u00c0 FAIRE', count: todoStudents.length, color: todoStudents.length > 0 ? '#ef4444' : '#059669' },
     { key: 'nouveau', label: '\ud83c\udd95 NOUVEAU', count: newStudents.length, color: '#059669' },
-    { key: 'done', label: 'FAIT',         count: journal.length,       color: '#059669' },
+    { key: 'done', label: 'FAIT',         count: journal.filter(function(e) { var df = S._adminDoneFilter || 'today'; return df === 'today' ? e.date === new Date().toISOString().slice(0,10) : true; }).length, color: '#059669' },
     { key: 'emails', label: '\ud83d\udce7 MAILS', count: _countEmailsDue(), color: '#f59e0b' },
     { key: 'inactifs', label: '\ud83d\udca4 INACTIFS', count: _countInactifs(), color: '#ef4444' },
     { key: 'rapport', label: '\ud83d\udcca RAPPORT', count: 0, color: '#3B82F6' }
@@ -10730,25 +10741,39 @@ function _renderAdminCards() {
       });
     }
   } else if (activeTab === 'done') {
-    if (journal.length === 0 && faitStudents.length === 0) {
-      html += '<div class="text-center py-12 text-slate-400 text-sm font-semibold">Aucune action trait\u00e9e pour le moment.</div>';
+    var doneFilter = S._adminDoneFilter || 'today';
+    var todayStr = new Date().toISOString().slice(0, 10);
+    var filteredJournal = journal.filter(function(e) {
+      if (doneFilter === 'today') return e.date === todayStr;
+      return true; // 7j déjà purgé au chargement
+    });
+
+    // ── Toggle aujourd'hui / 7 jours ──
+    html += '<div class="flex gap-1.5 mb-3 px-1">';
+    html += '<button onclick="S._adminDoneFilter=\'today\';_renderAdminCards()" class="text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all ' + (doneFilter === 'today' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200') + '">Aujourd\'hui</button>';
+    html += '<button onclick="S._adminDoneFilter=\'week\';_renderAdminCards()" class="text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all ' + (doneFilter === 'week' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200') + '">7 derniers jours</button>';
+    html += '</div>';
+
+    if (filteredJournal.length === 0 && (doneFilter === 'today' ? faitStudents.length === 0 : true)) {
+      html += '<div class="text-center py-12 text-slate-400 text-sm font-semibold">Aucune action ' + (doneFilter === 'today' ? 'aujourd\'hui' : 'cette semaine') + '.</div>';
     } else {
-      if (journal.length > 0) {
-        html += '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Journal du jour</div>';
-        journal.slice().reverse().forEach(function(entry) {
+      if (filteredJournal.length > 0) {
+        html += '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Actions ' + (doneFilter === 'today' ? 'du jour' : 'des 7 derniers jours') + ' (' + filteredJournal.length + ')</div>';
+        filteredJournal.slice().reverse().forEach(function(entry) {
+          var datePrefix = doneFilter === 'week' && entry.date !== todayStr ? '<span class="text-[9px] text-slate-300 mr-1">' + entry.date.slice(5) + '</span>' : '';
           html += '<div class="bg-white border border-slate-100 rounded-xl px-3 py-2 mb-1.5 flex items-center gap-3">';
           html += '<div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-sm flex-shrink-0" style="background:linear-gradient(135deg,#1E40AF,#3B82F6)">' + entry.prenom.charAt(0).toUpperCase() + '</div>';
           html += '<div class="flex-1 min-w-0">';
           html += '<span class="text-xs font-bold text-slate-700">' + entry.prenom + '</span>';
           html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded ml-1.5 bg-slate-100 text-slate-400">' + entry.niveau + '</span>';
-          html += '<div class="text-[10px] text-slate-400 font-medium">' + entry.label + ' \u00b7 ' + entry.time + '</div>';
+          html += '<div class="text-[10px] text-slate-400 font-medium">' + datePrefix + entry.label + ' · ' + entry.time + '</div>';
           html += '</div>';
           html += '<span class="text-emerald-500 text-base flex-shrink-0">✅</span>';
           html += '</div>';
         });
       }
-      if (faitStudents.length > 0) {
-        html += '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 mt-4 px-1">\u00c9l\u00e8ves \u00e0 jour (' + faitStudents.length + ')</div>';
+      if (doneFilter === 'today' && faitStudents.length > 0) {
+        html += '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 mt-4 px-1">Élèves à jour (' + faitStudents.length + ')</div>';
         faitStudents.forEach(function(st) {
           var lastStr = relDateAdmin(st.lastConnection);
           html += '<div class="bg-white border border-slate-100 rounded-xl px-3 py-2 mb-1.5 flex items-center gap-3 opacity-70">';
@@ -10758,7 +10783,7 @@ function _renderAdminCards() {
           html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded ml-1.5 bg-slate-100 text-slate-400">' + st.niveau + '</span>';
           html += '<div class="text-[10px] text-slate-400">' + lastStr + '</div>';
           html += '</div>';
-          html += '<span class="text-emerald-500 text-sm flex-shrink-0">\u2713 RAS</span>';
+          html += '<span class="text-emerald-500 text-sm flex-shrink-0">✓ RAS</span>';
           html += '</div>';
         });
       }
@@ -11130,13 +11155,16 @@ function _ckMarkDone(code, type, label) {
   if (!S._adminDoneActions) S._adminDoneActions = {};
   S._adminDoneActions[code + '_' + type] = true;
   if (!S._adminJournal) S._adminJournal = [];
+  var now = new Date();
   S._adminJournal.push({
-    time: new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' }),
+    date: now.toISOString().slice(0, 10),
+    time: now.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' }),
     code: code,
     prenom: st ? st.prenom : code,
     niveau: st ? st.niveau : '',
     label: label
   });
+  localStorage.setItem('mx_admin_journal', JSON.stringify(S._adminJournal));
   _renderAdminCards();
 }
 
