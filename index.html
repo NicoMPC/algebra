@@ -1282,10 +1282,11 @@
     .tour-dots span { width:7px;height:7px;border-radius:50%;background:#cbd5e1;transition:background .2s }
     .tour-dots span.active { background:#3B82F6 }
     @keyframes tourPop { from{opacity:0;scale:.95} to{opacity:1;scale:1} }
-    body.app-night .tour-tooltip { background:#0F172A;box-shadow:0 8px 32px rgba(0,0,0,.5) }
-    body.app-night .tour-tooltip .tour-arrow { background:#0F172A }
-    body.app-night .tour-tooltip .tour-title { color:#DBEAFE }
-    body.app-night .tour-tooltip .tour-body { color:#93C5FD }
+    body.app-night .tour-highlight { box-shadow:0 0 0 9999px rgba(0,0,0,.82),0 0 30px 8px rgba(99,102,241,.45);border:2px solid rgba(129,140,248,.5) }
+    body.app-night .tour-tooltip { background:#1e1b4b;border:1.5px solid #818cf8;box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 20px rgba(99,102,241,.2) }
+    body.app-night .tour-tooltip .tour-arrow { background:#1e1b4b }
+    body.app-night .tour-tooltip .tour-title { color:#e0e7ff }
+    body.app-night .tour-tooltip .tour-body { color:#c7d2fe }
 
     /* ── SLOT REWARD OVERLAY ─────────────────────────── */
     .slot-overlay {
@@ -2585,9 +2586,12 @@ function fmtL(s) {
 var _tt = null;
 var _toastQueue = [];
 var _toastBusy = false;
+var _compCooldown = 0; // timestamp — supprime toasts redondants post-complétion
 function showT(msg, dur, ic) {
   dur = (dur === undefined) ? 3500 : dur;
   ic  = ic || '🧠';
+  // Post-complétion cooldown : drop les toasts non-critiques pendant 3s
+  if (_compCooldown && dur > 0 && (Date.now() - _compCooldown) < 3000) return;
   if (_toastBusy && dur > 0) {
     _toastQueue.push({ msg:msg, dur:dur, ic:ic });
     return;
@@ -5627,7 +5631,7 @@ function chkComp(cat) {
     S.diagInsight = { totalEasy: easy, total: tot };
 
     boostFromDiag(errs.slice(0,4));
-    render(); return true;
+    _compCooldown = Date.now(); render(); return true;
   }
 
   if (!S.chapDone[cat]) {
@@ -5663,7 +5667,7 @@ function chkComp(cat) {
       // Brevet terminé → écran score dédié
       if (easy >= Math.ceil(tot * 0.6)) launchConfetti();
       S.brevetMode = 'done';
-      renderBrevet(); return true;
+      _compCooldown = Date.now(); renderBrevet(); return true;
     } else if (cat === 'REVISION') {
       // Révision terminée → toast simple, pas de localStorage
       if (easy >= Math.ceil(tot * 0.7)) launchConfetti();
@@ -5688,7 +5692,7 @@ function chkComp(cat) {
       } catch (e) {}
     }
   }
-  render(); return true;
+  _compCooldown = Date.now(); render(); return true;
 }
 
 
@@ -9858,7 +9862,7 @@ function _startTimer(exoId) {
   // Toujours reset à maintenant — chaque question repart à 0
   S.exoStartTime[exoId] = Date.now();
   S._timerStart = Date.now();
-  S._timerWaiting = true; // délai lecture 5s
+  S._timerWaiting = true; // délai lecture 2s
   // Coach tip première fois
   if (_needsCoach('tip_timer')) {
     _markCoach('tip_timer');
@@ -9869,7 +9873,7 @@ function _startTimer(exoId) {
   // Animation pulse douce pendant le délai de lecture
   var el = document.getElementById('exo-timer-display');
   if (el) el.classList.add('timer-waiting');
-  // Après 5s, lancer le vrai décompte
+  // Après 2s, lancer le vrai décompte
   S._timerWaitTO = setTimeout(function() {
     S._timerWaiting = false;
     S._timerStart = Date.now();
@@ -9878,7 +9882,7 @@ function _startTimer(exoId) {
     if (el2) el2.classList.remove('timer-waiting');
     S._timerIv = setInterval(function() { _tickTimer(); }, 1000);
     _tickTimer();
-  }, 5000);
+  }, 2000);
 }
 
 function _stopTimer() {
