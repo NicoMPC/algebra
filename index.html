@@ -10569,6 +10569,10 @@ async function renderAdminDashboard() {
   var c = document.getElementById('app-c');
   if (!c) return;
   updNav();
+  // Admin : mode clair forcé, footer masqué
+  document.body.classList.remove('adm-dark');
+  var appFooter = document.querySelector('#main-app > footer');
+  if (appFooter) appFooter.style.display = 'none';
 
   // Squelette de chargement
   c.innerHTML =
@@ -10687,8 +10691,6 @@ function _renderAdminCards() {
   html += '<div class="text-xs text-slate-400 font-medium mt-0.5">' + dateStr + ' \u00b7 ' + realCount + '/50 \u00e9l\u00e8ves</div>';
   html += '</div>';
   html += '<div class="flex items-center gap-2">';
-  var isDark = document.body.classList.contains('adm-dark');
-  html += '<button onclick="_toggleAdmDark()" title="Mode nuit" class="w-9 h-9 rounded-xl flex items-center justify-center text-base transition-colors ' + (isDark ? 'bg-indigo-900 text-amber-300' : 'bg-slate-100 text-slate-400 hover:bg-slate-200') + '">' + (isDark ? '\u2600\ufe0f' : '\ud83c\udf19') + '</button>';
   html += '<button onclick="renderAdminDashboard()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition-colors">\u21bb Actualiser</button>';
   html += '</div></div></div>';
 
