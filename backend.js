@@ -4264,31 +4264,56 @@ function sendMarketingSequence(email, prenom, day, objectif) {
           && r['Statut'] === 'envoyé';
       });
       if (alreadySentJ0) return { status: 'success', message: 'J+0 déjà envoyé.' };
-      subject  = prenom + ' vient de rejoindre Matheux — voici la suite 🚀';
+      subject  = prenom + ' vient de commencer — voici ce qui va changer';
       htmlBody =
-        '<div style="max-width:520px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;background:#f8fafc;padding:0;">' +
-        // ── Header
-        '<div style="background:linear-gradient(135deg,#312e81,#4338ca);padding:36px 32px 28px;border-radius:16px 16px 0 0;text-align:center;">' +
-        '<div style="font-size:42px;margin-bottom:10px;">⚡</div>' +
-        '<h1 style="color:#ffffff;font-size:22px;font-weight:900;margin:0;letter-spacing:-.3px;">Bienvenue, ' + prenom + '&nbsp;!</h1>' +
-        '<p style="color:rgba(255,255,255,.7);font-size:14px;margin:8px 0 0;">Profil créé — tout est prêt</p>' +
+        '<div style="max-width:520px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;background:#0f172a;padding:0;border-radius:16px;overflow:hidden;">' +
+        // ── Header dark avec logo
+        '<div style="background:linear-gradient(135deg,#0f172a,#1e293b);padding:32px 32px 24px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08);">' +
+        '<img src="https://matheux.fr/logo-matheux.png" alt="Matheux" width="140" style="display:block;margin:0 auto 16px;filter:brightness(0) invert(1);" />' +
+        '<h1 style="color:#ffffff;font-size:20px;font-weight:900;margin:0;letter-spacing:-.3px;">' + prenom + ' vient de commencer sur Matheux</h1>' +
+        '<p style="color:#60A5FA;font-size:14px;font-weight:600;margin:8px 0 0;">Ses premi\u00e8res lacunes sont d\u00e9j\u00e0 identifi\u00e9es.</p>' +
         '</div>' +
         // ── Corps
-        '<div style="background:#ffffff;padding:32px;border-radius:0 0 16px 16px;box-shadow:0 4px 24px rgba(0,0,0,.07);">' +
-        '<p style="color:#374151;font-size:15px;line-height:1.7;margin-top:0;">Bonjour,</p>' +
-        '<p style="color:#374151;font-size:15px;line-height:1.7;">Je suis <strong>Nicolas</strong>, prof de maths et fondateur de Matheux. Je viens de créer le profil de <strong>' + prenom + '</strong> — tout est configuré pour lui.</p>' +
-        '<p style="color:#374151;font-size:15px;line-height:1.7;margin-bottom:6px;">Voici ce qui va se passer :</p>' +
-        // ── Steps
-        '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:18px 20px;margin:12px 0;">' +
-        '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;"><div style="font-size:20px;flex-shrink:0;">🎯</div><div><strong style="color:#166534;font-size:14px;">Étape 1 — Diagnostic (5 min)</strong><br><span style="color:#374151;font-size:13px;line-height:1.5;">8 questions pour identifier exactement ce que ' + prenom + ' sait et ce qu\'il faut travailler en priorité. Sans jugement, sans note.</span></div></div>' +
-        '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;"><div style="font-size:20px;flex-shrink:0;">⚡</div><div><strong style="color:#166534;font-size:14px;">Étape 2 — Boost quotidien (10 min/jour)</strong><br><span style="color:#374151;font-size:13px;line-height:1.5;">Chaque matin, 5 exercices ciblés sur les vraies lacunes. Indices et formules disponibles si besoin. Régulier &gt; intense.</span></div></div>' +
-        '<div style="display:flex;align-items:flex-start;gap:12px;"><div style="font-size:20px;flex-shrink:0;">📈</div><div><strong style="color:#166534;font-size:14px;">Étape 3 — Progression visible</strong><br><span style="color:#374151;font-size:13px;line-height:1.5;">XP, streak, taux de réussite. Je suis les progrès en temps réel et j\'adapte les exercices chaque semaine.</span></div></div>' +
+        '<div style="background:#ffffff;padding:32px 28px;">' +
+        '<p style="color:#374151;font-size:15px;line-height:1.8;margin-top:0;">Bonjour,</p>' +
+        // ── Ce qui va se passer
+        '<p style="color:#1e293b;font-size:15px;line-height:1.8;font-weight:700;margin-bottom:4px;">Concr\u00e8tement, voil\u00e0 ce qui va se passer :</p>' +
+        '<div style="background:#f8fafc;border-left:3px solid #1E40AF;border-radius:0 10px 10px 0;padding:16px 18px;margin:12px 0;">' +
+        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 8px;">Chaque jour, <strong>5 exercices cibl\u00e9s</strong> uniquement sur ce qu\'il ne ma\u00eetrise pas</p>' +
+        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 8px;"><strong>10 minutes</strong> suffisent</p>' +
+        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0;">Le parcours <strong>s\'adapte automatiquement</strong> \u00e0 ses r\u00e9ponses</p>' +
         '</div>' +
+        '<p style="color:#6b7280;font-size:13px;line-height:1.6;margin:12px 0 20px;">Pas de surcharge. Pas de perte de temps.</p>' +
+        // ── Ce que le parent va observer
+        '<p style="color:#1e293b;font-size:15px;line-height:1.8;font-weight:700;margin-bottom:4px;">Ce que vous allez observer dans les prochains jours :</p>' +
+        '<div style="margin:12px 0 20px;">' +
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:28px;height:28px;background:#eef2ff;border-radius:8px;text-align:center;line-height:28px;font-size:13px;flex-shrink:0;">\u2705</div><span style="color:#374151;font-size:14px;">Moins d\'h\u00e9sitation</span></div>' +
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:28px;height:28px;background:#eef2ff;border-radius:8px;text-align:center;line-height:28px;font-size:13px;flex-shrink:0;">\u2705</div><span style="color:#374151;font-size:14px;">Plus de r\u00e9gularit\u00e9</span></div>' +
+        '<div style="display:flex;align-items:center;gap:10px;"><div style="width:28px;height:28px;background:#eef2ff;border-radius:8px;text-align:center;line-height:28px;font-size:13px;flex-shrink:0;">\u2705</div><span style="color:#374151;font-size:14px;">Et surtout\u2026 <strong>plus de confiance</strong></span></div>' +
+        '</div>' +
+        // ── Demain matin
+        '<div style="background:linear-gradient(135deg,#eef2ff,#e0e7ff);border:1px solid #c7d2fe;border-radius:12px;padding:16px 18px;margin:20px 0;text-align:center;">' +
+        '<p style="color:#1E40AF;font-size:15px;font-weight:800;margin:0;">D\u00e8s demain matin, un nouvel entra\u00eenement sur mesure l\'attend.</p>' +
+        '</div>' +
+        // ── Bilan hebdo
+        '<p style="color:#374151;font-size:14px;line-height:1.7;">Et chaque semaine, vous recevrez un <strong>bilan clair de sa progression</strong> : ce qui est acquis, ce qui bloque encore, et ce qui a \u00e9volu\u00e9.</p>' +
         // ── CTA
-        '<div style="text-align:center;margin:28px 0 20px;">' +
-        '<a href="https://matheux.fr" style="background:linear-gradient(135deg,#4338ca,#6366f1);color:#ffffff;font-size:15px;font-weight:800;text-decoration:none;padding:14px 32px;border-radius:12px;display:inline-block;letter-spacing:-.2px;">Commencer le diagnostic →</a>' +
+        '<div style="text-align:center;margin:28px 0 24px;">' +
+        '<a href="https://matheux.fr" style="background:linear-gradient(135deg,#1E40AF,#3B82F6);color:#ffffff;font-size:15px;font-weight:800;text-decoration:none;padding:14px 36px;border-radius:12px;display:inline-block;letter-spacing:-.2px;">Ouvrir Matheux \u2192</a>' +
         '</div>' +
-        '<p style="color:#6b7280;font-size:13px;line-height:1.6;border-top:1px solid #e5e7eb;padding-top:18px;margin-bottom:0;">Des questions ? Répondez directement à cet email — je lis tous les messages personnellement.<br><strong style="color:#374151;">Nicolas</strong> · Prof de maths &amp; fondateur de Matheux</p>' +
+        // ── Storytelling fondateur
+        '<div style="border-top:1px solid #e5e7eb;padding-top:20px;margin-top:8px;">' +
+        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">J\'ai cr\u00e9\u00e9 Matheux apr\u00e8s avoir vu les m\u00eames blocages revenir chez mes \u00e9l\u00e8ves, encore et encore.</p>' +
+        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">Le probl\u00e8me n\'est presque jamais la compr\u00e9hension. <strong>C\'est l\'entra\u00eenement.</strong></p>' +
+        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0;">Matheux corrige \u00e7a, simplement.</p>' +
+        '</div>' +
+        // ── PS humour
+        '<p style="color:#9ca3af;font-size:13px;font-style:italic;line-height:1.6;margin:24px 0 0;"><em>P.S. \u2014 Il se pourrait que ' + prenom + ' passe un peu plus de temps sur son t\u00e9l\u00e9phone\u2026<br>Bonne nouvelle : cette fois, \u00e7a lui sera utile.</em></p>' +
+        '</div>' +
+        // ── Footer signature
+        '<div style="background:#0f172a;padding:24px 28px;text-align:center;">' +
+        '<p style="color:#f1f5f9;font-size:14px;font-weight:700;margin:0 0 2px;">Nicolas</p>' +
+        '<p style="color:#64748b;font-size:12px;margin:0;">Fondateur de Matheux</p>' +
         '</div>' +
         footer + '</div>';
 
