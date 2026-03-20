@@ -4031,6 +4031,15 @@ async function flowRegister() {
     var regR = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'register', name:name, email:email, level:_flowLevel, password:h, objectif:_flowObjectif }) });
     var regD = await regR.json();
 
+    if (regD.status === 'waitlist') {
+      hideT();
+      document.getElementById('fl-btn-txt').classList.remove('hidden');
+      document.getElementById('fl-btn-ld').classList.add('hidden');
+      if (btn) btn.disabled = false;
+      alert2('Liste d\'attente 🎯', regD.message || 'Matheux est complet pour le moment — tu es sur liste d\'attente !');
+      _track('waitlist');
+      return;
+    }
     if (regD.status !== 'success') {
       // Détecter mail existant → switch login silencieux
       var msg = regD.message || '';
@@ -4137,6 +4146,12 @@ async function submitAuth() {
     try {
       var r = await fetch(SU, { method:'POST', body:JSON.stringify({ action:"register", name:n, email:e, level:l, password:h, objectif:_flowObjectif }) });
       var d = await r.json();
+      if (d.status === 'waitlist') {
+        alert2('Liste d\'attente 🎯', d.message || 'Matheux est complet pour le moment — tu es sur liste d\'attente !');
+        _track('waitlist');
+        togLd(false);
+        return;
+      }
       if (d.status === 'success') {
         S.prof = d.profile; S.niv = d.profile.level;
         S.tmpEmail = e; S.tmpHash = h;
@@ -10749,36 +10764,53 @@ function _renderAdminCards() {
       }
     }
   } else if (activeTab === 'emails') {
-    var emailStudents = (S.adminStudents || []).filter(function(st) {
-      if (st.isTest) return false;
-      return !st.j0Sent || (st.emailsDue || []).length > 0;
+    // ── Emails du jour : uniquement les J+0 des inscriptions d'aujourd'hui ──
+    var todayStudents = (S.adminStudents || []).filter(function(st) {
+      return !st.isTest && st.trialDays === 0;
     });
-    if (emailStudents.length === 0) {
-      html += '<div class="text-center py-12"><div class="text-4xl mb-3">✅</div><div class="syne font-black text-slate-700 text-base mb-1">Tous les emails sont \u00e0 jour</div></div>';
+    var j0Sent = todayStudents.filter(function(st) { return st.j0Sent; });
+    var j0Missing = todayStudents.filter(function(st) { return !st.j0Sent; });
+
+    if (todayStudents.length === 0) {
+      html += '<div class="text-center py-12"><div class="text-4xl mb-3">📭</div><div class="syne font-black text-slate-700 text-base mb-1">Aucune inscription aujourd\'hui</div><div class="text-[11px] text-slate-400">Les emails J+0 apparaîtront ici à chaque nouvelle inscription</div></div>';
     } else {
-      html += '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Emails \u00e0 confirmer</div>';
-      emailStudents.forEach(function(st) {
-        var emails = [];
-        if (!st.j0Sent) emails.push('J+0');
-        (st.emailsDue || []).forEach(function(e) { emails.push(e); });
-        emails.forEach(function(eType) {
-          html += '<div class="bg-white border border-slate-100 rounded-xl px-3 py-2.5 mb-1.5 flex items-center gap-3">';
-          html += '<div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-sm flex-shrink-0" style="background:linear-gradient(135deg,#f59e0b,#d97706)">\ud83d\udce7</div>';
+      // ── J+0 envoyés ✅ ──
+      if (j0Sent.length > 0) {
+        html += '<div class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2 px-1">✅ J+0 envoyé aujourd\'hui (' + j0Sent.length + ')</div>';
+        j0Sent.forEach(function(st) {
+          html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5 mb-1.5 flex items-center gap-3">';
+          html += '<div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-sm flex-shrink-0" style="background:linear-gradient(135deg,#059669,#047857)">✅</div>';
           html += '<div class="flex-1 min-w-0">';
           html += '<div class="flex items-center gap-1.5 flex-wrap">';
           html += '<span class="text-xs font-bold text-slate-700">' + st.prenom + '</span>';
           html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500">' + st.niveau + '</span>';
-          html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-600">' + eType + '</span>';
+          html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700">J+0 ✓</span>';
+          html += '</div>';
+          html += '<div class="text-[10px] text-slate-400">' + st.email + '</div>';
+          html += '</div>';
+          html += '</div>';
+        });
+      }
+      // ── J+0 manquants ⚠️ ──
+      if (j0Missing.length > 0) {
+        html += '<div class="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-2 mt-3 px-1">⚠️ J+0 non envoyé (' + j0Missing.length + ')</div>';
+        j0Missing.forEach(function(st) {
+          html += '<div class="bg-rose-50 border border-rose-200 rounded-xl px-3 py-2.5 mb-1.5 flex items-center gap-3">';
+          html += '<div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-sm flex-shrink-0" style="background:linear-gradient(135deg,#ef4444,#dc2626)">⚠️</div>';
+          html += '<div class="flex-1 min-w-0">';
+          html += '<div class="flex items-center gap-1.5 flex-wrap">';
+          html += '<span class="text-xs font-bold text-slate-700">' + st.prenom + '</span>';
+          html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500">' + st.niveau + '</span>';
+          html += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-rose-100 text-rose-600">J+0 manquant</span>';
           html += '</div>';
           html += '<div class="text-[10px] text-slate-400">' + st.email + '</div>';
           html += '</div>';
           html += '<div class="flex gap-1.5 flex-shrink-0">';
-          html += '<button onclick="_ckOpenEmail(\'' + st.code + '\',\'' + eType + '\')" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-500 px-2 py-1 rounded-lg hover:bg-indigo-50">Voir</button>';
-          html += '<button onclick="_ckMarkEmail(\'' + st.code + '\',\'' + eType + '\')" class="text-[10px] font-bold text-white bg-emerald-500 hover:bg-emerald-600 px-2.5 py-1 rounded-lg">\u2713 Envoy\u00e9</button>';
+          html += '<button onclick="_ckMarkEmail(\'' + st.code + '\',\'J+0\')" class="text-[10px] font-bold text-white bg-emerald-500 hover:bg-emerald-600 px-2.5 py-1 rounded-lg">✓ Envoyé</button>';
           html += '</div>';
           html += '</div>';
         });
-      });
+      }
     }
   } else if (activeTab === 'inactifs') {
     var inactifStudents = (S.adminStudents || []).filter(function(st) {
@@ -11114,13 +11146,12 @@ function _adminSetTab(tab) {
   _renderAdminCards();
 }
 
-// ── Count emails due (for tab badge) ─────────────────────────
+// ── Count emails due (for tab badge) — J+0 du jour uniquement ──
 function _countEmailsDue() {
   var count = 0;
   (S.adminStudents || []).forEach(function(st) {
     if (st.isTest) return;
-    if (!st.j0Sent) count++;
-    count += (st.emailsDue || []).length;
+    if (st.trialDays === 0) count++; // inscription du jour (envoyé ou non)
   });
   return count;
 }
