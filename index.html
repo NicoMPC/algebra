@@ -150,6 +150,19 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
           onload="window._katexReady=true;if(window._katexQueue){window._katexQueue.forEach(function(fn){fn()});window._katexQueue=null}"></script>
+  <script>
+  // KaTeX retry — CDN alternatif si jsdelivr échoue (réseau faible mobile)
+  setTimeout(function(){
+    if(window._katexReady) return;
+    var s1=document.createElement('script');s1.src='https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js';
+    s1.onload=function(){
+      var s2=document.createElement('script');s2.src='https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js';
+      s2.onload=function(){window._katexReady=true;if(window._katexQueue){window._katexQueue.forEach(function(fn){fn()});window._katexQueue=null}};
+      document.head.appendChild(s2);
+    };
+    document.head.appendChild(s1);
+  }, 3000);
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
@@ -2818,10 +2831,13 @@ function rMath(el) {
     // KaTeX pas encore chargé — mettre en file d'attente
     if (!window._katexQueue) window._katexQueue = [];
     window._katexQueue.push(function(){ rMath(target); });
-    // Fallback 1.5s — afficher quand même si KaTeX ne charge jamais
+    // Fallback : afficher brut après 1.5s, retenter rendu après 5s (CDN retry aura chargé)
     setTimeout(function(){
       target.querySelectorAll('.mc:not(.rdy)').forEach(function(e){ e.classList.add('rdy'); });
     }, 1500);
+    setTimeout(function(){
+      if (typeof renderMathInElement === 'function') { try { _doKatex(target); } catch(e){} }
+    }, 5000);
   }
 }
 
@@ -9024,8 +9040,8 @@ function autoDetectFigure(q, cat) {
   if (/cercle\s*trigono/i.test(t) && !/trigono/i.test(cat)) return null;
   if (/(triangle\s*de\s*pascal|inégalité\s*triangulaire)/i.test(t) && !/triangle|géomét|pythagore/i.test(cat)) return null;
   if (/python|algorithme|boucle\b|liste\b/i.test(t) && /algorith/i.test(cat)) return null;
-  // Pas de figure pour les questions V/F et questions de cours
-  if (/vrai.*faux|quel\s+(est\s+le\s+)?th[eé]or[eè]me|[eé]noncer|citer|d[eé]finition|compl[eè]t/i.test(q)) return null;
+  // Pas de figure pour les questions V/F, questions de cours et erreurs conceptuelles
+  if (/vrai.*faux|quel\s+(est\s+le\s+)?th[eé]or[eè]me|[eé]noncer|citer|d[eé]finition|compl[eè]t|o[uù]\s+est\s+l.erreur/i.test(q)) return null;
 
   // ── Extraction des lettres de points depuis l'énoncé ──
   var pts = [];
@@ -9219,6 +9235,7 @@ function renderFig(fig) {
     var p1 = (fig.pts && fig.pts[1]) || 'B';
     var p2 = (fig.pts && fig.pts[2]) || 'M';
     var p3 = (fig.pts && fig.pts[3]) || 'N';
+    var pSommet = (fig.pts && fig.pts[4]) || 'O';
     var ox=130,oy=30;
     var ax=50,ay=170,bx=210,by=170;
     var mx=70,my=110,nx=190,ny=110;
@@ -9227,7 +9244,7 @@ function renderFig(fig) {
       '<line x1="'+ox+'" y1="'+oy+'" x2="'+bx+'" y2="'+by+'" class="geo-line"/>' +
       '<line x1="'+ax+'" y1="'+ay+'" x2="'+bx+'" y2="'+by+'" class="geo-line"/>' +
       '<line x1="'+mx+'" y1="'+my+'" x2="'+nx+'" y2="'+ny+'" class="geo-line geo-dash" style="stroke:#3B82F6"/>' +
-      '<text x="'+(ox+4)+'" y="'+(oy-6)+'" class="geo-label" dominant-baseline="central">O</text>' +
+      '<text x="'+(ox+4)+'" y="'+(oy-6)+'" class="geo-label" dominant-baseline="central">'+pSommet+'</text>' +
       '<text x="'+(ax-16)+'" y="'+(ay+4)+'" class="geo-label" dominant-baseline="central">'+p0+'</text>' +
       '<text x="'+(bx+6)+'" y="'+(by+4)+'" class="geo-label" dominant-baseline="central">'+p1+'</text>' +
       '<text x="'+(mx-18)+'" y="'+(my+4)+'" class="geo-label" dominant-baseline="central">'+p2+'</text>' +
@@ -9260,7 +9277,7 @@ function renderFig(fig) {
         '<line x1="'+cx0+'" y1="'+cy0+'" x2="'+(cx0+r0)+'" y2="'+cy0+'" class="geo-dash" style="stroke:#059669;stroke-dasharray:5 3;stroke-width:2"/>' +
         '<circle cx="'+(cx0+r0)+'" cy="'+cy0+'" class="geo-dot"/>') +
       '<circle cx="'+cx0+'" cy="'+cy0+'" class="geo-dot"/>' +
-      '<text x="'+(cx0-8)+'" y="'+(cy0-10)+'" class="geo-label" dominant-baseline="central">O</text>' +
+      '<text x="'+(cx0-8)+'" y="'+(cy0-10)+'" class="geo-label" dominant-baseline="central">'+((fig.pts && fig.pts[2]) || 'O')+'</text>' +
       (!isDiam ? '<text x="'+((cx0+cx0+r0)/2)+'" y="'+(cy0-10)+'" text-anchor="middle" class="geo-val">r = '+fig.r+'</text>' : '<text x="'+cx0+'" y="'+(cy0-r0-8)+'" text-anchor="middle" class="geo-val">d = '+(fig.r*2)+'</text>') +
       '</svg>';
     break;
@@ -9374,7 +9391,7 @@ function renderFig(fig) {
     var p2c = (fig.pts && fig.pts[2]) || 'C';
     svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" overflow="visible">' +
       '<circle cx="140" cy="105" r="5" style="fill:#a855f7"/>' +
-      '<text x="148" y="103" class="geo-label" style="fill:#a855f7" dominant-baseline="central">O</text>' +
+      '<text x="148" y="103" class="geo-label" style="fill:#a855f7" dominant-baseline="central">'+((fig.pts && fig.pts[3]) || 'O')+'</text>' +
       '<polygon points="55,50 105,80 75,115" class="geo-fill"/>' +
       '<polygon points="225,160 175,130 205,95" class="geo-fill2"/>' +
       '<line x1="55" y1="50" x2="225" y2="160" class="geo-dash"/>' +
@@ -9483,7 +9500,7 @@ function renderFig(fig) {
       '<ellipse cx="'+scx+'" cy="'+scy+'" rx="'+sr+'" ry="'+(sr*0.3)+'" class="geo-dash" style="stroke:#3B82F6;opacity:.5"/>' +
       '<line x1="'+scx+'" y1="'+scy+'" x2="'+(scx+sr)+'" y2="'+scy+'" class="geo-dash" style="stroke:#059669;stroke-dasharray:none;stroke-width:2"/>' +
       '<circle cx="'+scx+'" cy="'+scy+'" class="geo-dot"/>' +
-      '<text x="'+(scx-8)+'" y="'+(scy-8)+'" class="geo-label">O</text>' +
+      '<text x="'+(scx-8)+'" y="'+(scy-8)+'" class="geo-label">'+((fig.pts && fig.pts[0]) || 'O')+'</text>' +
       '<text x="'+((scx+scx+sr)/2)+'" y="'+(scy-8)+'" text-anchor="middle" class="geo-val">r='+fig.r+'</text>' +
       '</svg>';
     break;
