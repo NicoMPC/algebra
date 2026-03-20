@@ -8891,6 +8891,8 @@ function renderFig(fig) {
   if (!fig) return '';
   var svg = '';
   var W = 280, H = 210;
+  // Hide fallback labels (A,B,C) when not extracted from the question
+  var _lbl = function(v,fb){ return fig._fb ? '' : (v || fb); };
 
   switch(fig.type) {
 
