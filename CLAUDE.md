@@ -246,6 +246,8 @@ docs/product.md              → Produit (vision + parcours + business)
 docs/roadmap.md              → Priorités + calendrier
 docs/messages.md             → Voice & tone guide
 docs/workflow-quotidien.md   → Workflow quotidien Nicolas (6 onglets admin)
+docs/prompt-generation-exos.md → Prompt unique pour générer des exercices (v1.0)
+docs/logs/                   → Traces de chaque session de travail
 docs/archive/                → Docs historiques + audits + rapports
 ```
 
