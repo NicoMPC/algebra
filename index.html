@@ -1086,6 +1086,7 @@
     body.app-night #app-c .chap-stack-ghost { filter:brightness(.3); }
     /* Night button active state */
     body.app-night #app-night-btn { background:#0F172A !important; border-color:#1E40AF !important; color:#fbbf24 !important; }
+    body.app-night .btn-dk { background:#3B82F6 !important; color:#fff !important; }
     /* Night — QCM options */
     body.app-night #main-app .opt { background:#1e293b !important; border-color:#475569 !important; color:#e2e8f0 !important; }
     body.app-night #main-app .opt.oc { background:#065f46 !important; border-color:#10b981 !important; color:#d1fae5 !important; }
@@ -1253,32 +1254,26 @@
     /* ══════════════════════════════════════════════════════
        FIGURES GÉOMÉTRIQUES SVG
     ══════════════════════════════════════════════════════ */
-    .geo-fig {
-      display:flex; justify-content:center; margin-bottom:.75rem;
-      animation: figFadeIn .5s ease both;
-    }
-    .geo-fig svg {
-      max-width:260px; width:100%; height:auto;
-      filter: drop-shadow(0 1px 3px rgba(0,0,0,.08));
-    }
-    .geo-fig text {
-      font-family:'DM Sans',sans-serif; font-weight:700;
-    }
-    .geo-fig .geo-label { fill:#1E40AF; font-size:13px; }
-    .geo-fig .geo-val   { fill:#059669; font-size:12px; font-weight:800; }
-    .geo-fig .geo-unknown { fill:#dc2626; font-size:13px; font-weight:800; }
-    .geo-fig .geo-line  { stroke:#334155; stroke-width:2; fill:none; stroke-linecap:round; }
-    .geo-fig .geo-fill  { fill:#eef2ff; stroke:#3B82F6; stroke-width:1.5; }
-    .geo-fig .geo-fill2 { fill:#f0fdf4; stroke:#22c55e; stroke-width:1.5; }
-    .geo-fig .geo-angle  { fill:none; stroke:#f59e0b; stroke-width:1.5; }
-    .geo-fig .geo-right  { fill:none; stroke:#3B82F6; stroke-width:1.5; }
-    .geo-fig .geo-dash  { stroke:#94a3b8; stroke-width:1.5; stroke-dasharray:6,4; fill:none; }
-    .geo-fig .geo-axis  { stroke:#c084fc; stroke-width:1.5; stroke-dasharray:8,4; fill:none; }
-    .geo-fig .geo-dot   { fill:#1E40AF; r:3; }
-    .geo-fig .geo-3d-edge   { stroke:#334155; stroke-width:1.5; fill:none; stroke-linejoin:round; }
-    .geo-fig .geo-3d-hidden { stroke:#94a3b8; stroke-width:1; stroke-dasharray:5,4; fill:none; }
-    .geo-fig .geo-3d-face   { stroke:#3B82F6; stroke-width:1; fill:#eef2ff; opacity:.5; }
-    .geo-fig .geo-3d-face2  { stroke:#22c55e; stroke-width:1; fill:#f0fdf4; opacity:.4; }
+    /* ── Figures géométriques exercices ── */
+    .exo-fig { display:flex; justify-content:center; margin-bottom:.75rem; }
+    .exo-fig svg { max-height:140px; width:auto; }
+    .exo-fig text { font-family:'DM Sans',sans-serif; font-weight:700; font-size:13px; }
+    .exo-fig .fg-line { stroke:var(--fig-line); stroke-width:2.5; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+    .exo-fig .fg-fill { fill:var(--fig-fill); stroke:var(--fig-label); stroke-width:1.5; }
+    .exo-fig .fg-fill2 { fill:var(--fig-fill2); stroke:var(--fig-val); stroke-width:1.5; }
+    .exo-fig .fg-dash { stroke:var(--fig-val); stroke-width:2; stroke-dasharray:6 4; fill:none; }
+    .exo-fig .fg-label { fill:var(--fig-label); font-size:14px; }
+    .exo-fig .fg-val { fill:var(--fig-val); font-size:13px; font-weight:800; }
+    .exo-fig .fg-unk { fill:var(--fig-unk); font-size:14px; font-weight:800; }
+    .exo-fig .fg-unk-bg { fill:var(--fig-unk); opacity:0.12; rx:4; }
+    .exo-fig .fg-right { fill:none; stroke:var(--fig-label); stroke-width:1.5; }
+    .exo-fig .fg-angle { fill:none; stroke:#f59e0b; stroke-width:2; }
+    .exo-fig .fg-dot { fill:var(--fig-label); r:3.5; }
+    .exo-fig .fg-3d-face { stroke:var(--fig-label); stroke-width:1; fill:var(--fig-fill); opacity:.5; }
+    .exo-fig .fg-3d-hidden { stroke:var(--fig-line); stroke-width:1; stroke-dasharray:5 4; fill:none; opacity:.4; }
+    .exo-fig .fg-section { fill:#fbbf24; opacity:.25; stroke:#f59e0b; stroke-width:1.5; }
+    :root { --fig-line:#1e293b; --fig-label:#1E40AF; --fig-val:#059669; --fig-unk:#dc2626; --fig-fill:rgba(238,242,255,0.5); --fig-fill2:rgba(240,253,244,0.5); }
+    body.app-night { --fig-line:#e2e8f0; --fig-label:#93c5fd; --fig-val:#6ee7b7; --fig-unk:#fca5a5; --fig-fill:rgba(30,58,95,0.5); --fig-fill2:rgba(6,78,59,0.3); }
     /* Brouillon quadrillé */
     #draft-text.grid-on {
       background-image:
@@ -1287,12 +1282,6 @@
       background-size: 24px 24px;
       font-family: 'DM Sans', monospace;
       line-height: 24px;
-    }
-    @keyframes figFadeIn { from{opacity:0;transform:translateY(8px) scale(.96)} to{opacity:1;transform:none} }
-    @keyframes figDraw { from{stroke-dashoffset:var(--len)} to{stroke-dashoffset:0} }
-    .geo-fig .geo-draw {
-      stroke-dasharray:var(--len);
-      animation: figDraw .8s ease-out both;
     }
 
     /* ── Tour guidé first-login ── */
@@ -2347,6 +2336,7 @@
         class="hidden fixed bottom-5 right-4 z-[80] w-14 h-14 bg-slate-900 text-white rounded-full shadow-2xl
                flex items-center justify-center text-xl transition-transform active:scale-90
                border-2 border-slate-700"
+        style="display:none"
         title="Ouvrir le tableau blanc">✏️</button>
 
 <!-- Fond obscur du drawer -->
@@ -6102,13 +6092,6 @@ function _auditFiltered() {
   if (_auditCategorie !== 'all') {
     out = out.filter(function(e) { return (e.categorie || '(sans)') === _auditCategorie; });
   }
-  if (_auditFilter === 'figure') {
-    out = out.filter(function(e) {
-      var cat = e.categorie || e.oC || '';
-      var fig = e.fig || autoDetectFigure(e.q || '', cat);
-      return fig && fig.confidence !== 'low';
-    });
-  }
   return out;
 }
 
@@ -6131,17 +6114,7 @@ function _renderAuditExo() {
   // Marquer l'exo courant comme vu
   _auditSeen[_auditSeenKey(e)] = true;
 
-  var hasFig = false;
-  var figHtml = '';
-  if (e.q) {
-    var fig = e.fig || autoDetectFigure(e.q, cat);
-    if (fig && fig.confidence !== 'low') {
-      hasFig = true;
-      figHtml = renderFig(fig);
-    }
-  }
-
-  var borderCls = hasFig ? 'border-2 border-blue-400' : 'border border-slate-200';
+  var borderCls = 'border border-slate-200';
   var html = '<div class="bg-white rounded-2xl '+borderCls+' shadow-sm afu">';
 
   // Pills navigation
@@ -6167,7 +6140,6 @@ function _renderAuditExo() {
     '<div>' +
     '<span class="text-xs font-bold text-slate-500">'+_auditLevel+' · '+_auditSource+'</span>' +
     '<span class="text-xs text-slate-400 ml-2">'+cat+'</span>' +
-    (hasFig ? '<span class="ml-2 px-1.5 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold rounded">📐 Figure</span>' : '') +
     (_auditHasRemark(e) ? '<span class="ml-2 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded">✅ Annoté</span>' : '') +
     '</div>' +
     '<span class="text-xs font-bold text-slate-400">'+(_auditIdx+1)+' / '+exos.length+'</span>' +
@@ -6176,11 +6148,6 @@ function _renderAuditExo() {
   // Question
   html += '<div class="p-4">' +
     '<div class="mc text-sm leading-relaxed text-slate-800 mb-3">'+fmtL(e.q || '(pas de question)')+'</div>';
-
-  // Figure
-  if (figHtml) {
-    html += '<div class="mb-3 flex justify-center">'+figHtml+'</div>';
-  }
 
   // Options
   if (e.options && e.options.length > 0) {
@@ -7402,9 +7369,7 @@ function _renderRetroExo(exo, score, cat, idx) {
   html += '<span class="text-xs font-bold">'+icon+' '+(isEasy?'Acquis':isSkip?'Passé':isHard?'À revoir':isMed?'Hésitation':'')+'</span>';
   html += '</div>';
 
-  // ── Figure (si applicable) ──
   html += getExoFigure(exo, cat);
-
   // ── Énoncé (même style que l'exo actif) ──
   var qHtml = exoType === 'fill'
     ? fmtL(exo.q).replace(/___/g, '<span style="display:inline-block;min-width:5rem;border-bottom:3px solid #1E40AF;background:#eef2ff;border-radius:4px;padding:2px 8px;margin:0 4px">…</span>')
@@ -8768,7 +8733,7 @@ function rSection(cat, data, idx, total, catDone) {
     '<span class="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full '+((data.lvl||1)===1?'bg-indigo-100 text-indigo-700':'bg-amber-100 text-amber-700')+'">Niv. '+(data.lvl||1)+'</span>' +
     '<span class="flex items-center gap-2"><span class="text-[11px] font-bold text-slate-500" style="animation:counterPop .3s ease both">'+(idx+1)+' / '+total+'</span>' + (!isRev && !scored && cat !== 'CALIBRAGE' && cat !== 'BREVET' ? _renderTimerSVG() : '') + '</span>' +
     '</div>' +
-    getExoFigure(data, cat) +
+    getExoFigure(data, cat, scored) +
     '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 sm:p-5 mb-3 min-h-[60px] flex items-center justify-center" style="overflow-wrap:break-word;word-break:break-word">' +
     '<div class="mc text-center font-bold text-sm sm:text-base leading-relaxed w-full min-w-0" style="overflow-x:auto">'+(exoType === 'fill' ? fmtL(data.q).replace(/___/g, '<span style="display:inline-block;min-width:5rem;border-bottom:3px solid #1E40AF;background:#eef2ff;border-radius:4px;padding:2px 8px;margin:0 4px">…</span>') : fmtL(data.q))+'</div></div>' +
     opts + acts +
@@ -9151,679 +9116,277 @@ function calcFrac() {
   if (disp) disp.textContent = S.calc.expr;
 }
 
-// ══════════════════════════════════════════════════════════════
-// FIGURES GÉOMÉTRIQUES SVG — AUTO-DÉTECTION + RENDU
-// ══════════════════════════════════════════════════════════════
+function autoDetectFigure(q, cat) { return null; }
+function renderFig(fig) { return ''; }
+function isGeoCat(cat) { return false; }
 
-function autoDetectFigure(q, cat) {
-  if (!q || !cat) return null;
-  var t = (q + ' ' + cat).toLowerCase().replace(/\$/g,'').replace(/\{,\}/g,'.').replace(/\\,/g,'');
-  var nums = t.match(/\d+(?:[.,]\d+)?/g);
-  var n = nums ? nums.map(function(x){return parseFloat(x.replace(',','.'))}) : [];
-
-  // ── Filtrage strict : pas de figure pour ces chapitres ──
-  var nonGeoChaps = /calcul_litt|fraction|statistiq|probabilit|nombre|puissance|algorith|suite|exponent|variable_al|probabilites_cond|notation_sci/i;
-  if (nonGeoChaps.test(cat)) return null;
-  // Faux positifs
-  if (/cercle\s*trigono/i.test(t) && !/trigono/i.test(cat)) return null;
-  if (/(triangle\s*de\s*pascal|inégalité\s*triangulaire)/i.test(t) && !/triangle|géomét|pythagore/i.test(cat)) return null;
-  if (/python|algorithme|boucle\b|liste\b/i.test(t) && /algorith/i.test(cat)) return null;
-  // Pas de figure pour les questions V/F, questions de cours et erreurs conceptuelles
-  if (/vrai.*faux|quel\s+(est\s+le\s+)?th[eé]or[eè]me|[eé]noncer|citer|d[eé]finition|compl[eè]t|o[uù]\s+est\s+l.erreur/i.test(q)) return null;
-
-  // ── Extraction des lettres de points depuis l'énoncé ──
-  var pts = [];
-  var ptMatch = q.match(/\b([A-Z])\b(?!')/g);
-  if (ptMatch) {
-    ptMatch.forEach(function(p){ if(pts.indexOf(p)<0 && (p!=='I'&&p!=='J'&&p!=='L'&&p!=='O'||/triangle|cercle|carré/i.test(q))) pts.push(p); });
-  }
-
-  var _fbPts = pts.length === 0;
-
-  // ── Triangle rectangle (Pythagore / Trigonométrie) ──
-  if (/triangle\s*rectangle|pythagore|hypoténuse/i.test(t)) {
-    var a=n[0]||3, b=n[1]||4, c=n[2]||null;
-    // Si on demande de PROUVER que c'est rectangle → triangle neutre sans angle droit marqué
-    if (/prouver|montrer|démontrer|vérifier.*rectangle/i.test(t)) {
-      return {type:'triangle', a:a, b:b, c:c||5, cat:cat, pts:pts, _fb:_fbPts, confidence:'medium'};
-    }
-    return {type:'tri_rect', a:a, b:b, c:c, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=2 ? 'high' : 'medium'};
-  }
-  // ── Trigonométrie (sin/cos/tan d'un angle) ──
-  if (/trigono|sin\b|cos\b|tan\b|adjacent|opposé|angle.*triangle/i.test(t) && !/théorème.*thalès/i.test(t)) {
-    var angle = null; nums && nums.forEach(function(x){var v=parseFloat(x.replace(',','.')); if(v>10&&v<90) angle=v;});
-    return {type:'tri_trigo', angle:angle||35, a:n[0]||5, b:n[1]||null, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
-  }
-  // ── Thalès (configuration) ──
-  if (/thalès/i.test(t)) {
-    // Pas de figure si simple rapport sans config géométrique
-    if (!/droite|parallèle|point|triangle/i.test(t) && n.length < 2) return null;
-    return {type:'thales', a:n[0]||4, b:n[1]||6, c:n[2]||3, d:n[3]||null, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=2 ? 'high' : 'medium'};
-  }
-  // ── Cercle (rayon, diamètre, aire, périmètre) ──
-  if (/cercle|rayon|diamètre|disque/i.test(t) && !/demi.cercle/i.test(t)) {
-    if (/cercle\s*trigono/i.test(t)) return null; // → type trigo_circle, pas circle
-    var r = n[0]||5;
-    if (/diamètre/i.test(t) && r>2) r = r/2;
-    // Seulement si rayon/diamètre donné numériquement
-    return {type:'circle', r:r, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'low'};
-  }
-  // ── Rectangle / Carré ──
-  if (/rectangle|longueur.*largeur|largeur.*longueur/i.test(t)) {
-    return {type:'rect', w:n[0]||8, h:n[1]||n[0]||5, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
-  }
-  if (/carré|côté.*carré/i.test(t) && !/racine/i.test(t)) {
-    var s=n[0]||5;
-    return {type:'rect', w:s, h:s, square:true, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
-  }
-  // ── Angle ──
-  if ((/angle|mesure.*°|degrés/i.test(t)) && /angle/i.test(cat)) {
-    var deg = null; n.forEach(function(v){if(v>5&&v<180) deg=v;});
-    // Ne pas afficher si l'angle est à calculer (divulguerait la réponse)
-    if (!deg && /calcul|trouv|détermin/i.test(t)) return null;
-    // Angles opposés par le sommet : la figure révèle la réponse
-    if (/oppos[eé].*sommet|sommet.*oppos[eé]/i.test(q)) return null;
-    return {type:'angle', deg:deg||60, cat:cat, pts:pts, _fb:_fbPts, confidence: deg ? 'high' : 'low'};
-  }
-  // ── Parallèles / perpendiculaires ──
-  if (/parallèle|perpendiculaire/i.test(t) && /géomét/i.test(cat)) {
-    return {type:'parallel', perp:/perpendiculaire/i.test(t), cat:cat, pts:pts, _fb:_fbPts, confidence:'medium'};
-  }
-  // ── Symétrie axiale ──
-  if (/symétrie\s*axiale|axe\s*de\s*symétrie/i.test(t)) {
-    return {type:'sym_axial', cat:cat, pts:pts, _fb:_fbPts, confidence:'medium'};
-  }
-  // ── Symétrie centrale ──
-  if (/symétrie\s*centrale|centre\s*de\s*symétrie/i.test(t)) {
-    return {type:'sym_central', cat:cat, pts:pts, _fb:_fbPts, confidence:'medium'};
-  }
-  // ── Solides 3D ──
-  if (/cube|pavé|parallélépipède/i.test(t)) {
-    return {type:'cube', a:n[0]||4, b:n[1]||n[0]||3, c:n[2]||n[0]||2, isCube:/cube/i.test(t), cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
-  }
-  if (/cylindre/i.test(t)) {
-    return {type:'cylinder', r:n[0]||3, h:n[1]||6, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
-  }
-  if (/cône/i.test(t)) {
-    return {type:'cone', r:n[0]||3, h:n[1]||6, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
-  }
-  if (/pyramide/i.test(t)) {
-    return {type:'pyramid', a:n[0]||4, h:n[1]||6, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
-  }
-  if (/sphère|boule/i.test(t)) {
-    return {type:'sphere', r:n[0]||4, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'medium'};
-  }
-  // ── Section de solide ──
-  if (/section/i.test(t) && /solide|section/i.test(cat)) {
-    return {type:'section_solid', cat:cat, pts:pts, _fb:_fbPts, confidence:'medium'};
-  }
-  // ── Homothétie ──
-  if (/homothétie|agrandissement|réduction|rapport.*k|k\s*=/i.test(t)) {
-    var k=null; n.forEach(function(v){if(v>0&&v<10&&v!==1) k=v;});
-    return {type:'homothety', k:k||2, cat:cat, pts:pts, _fb:_fbPts, confidence: k ? 'high' : 'medium'};
-  }
-  // ── Triangles semblables ──
-  if (/semblable|similaire/i.test(t)) {
-    return {type:'similar_tri', a:n[0]||3, b:n[1]||4, c:n[2]||5, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=2 ? 'high' : 'medium'};
-  }
-  // ── Périmètre / Aire générique (si pas déjà matché) ──
-  if (/périmètre|aire|surface/i.test(t) && n.length>=1) {
-    if (/triangle/i.test(t)) {
-      return {type:'triangle', a:n[0]||5, b:n[1]||4, c:n[2]||6, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=2 ? 'high' : 'medium'};
-    }
-  }
-  // ── Volumes génériques ──
-  if (/volume/i.test(t) && !/cube|pavé|cylindre|cône|pyramide|sphère/i.test(t)) {
-    return {type:'cube', a:n[0]||4, b:n[1]||3, c:n[2]||2, isCube:false, cat:cat, pts:pts, _fb:_fbPts, confidence: n.length>=1 ? 'high' : 'low'};
-  }
-  // ── Transformations ──
-  if (/translation|rotation/i.test(t)) {
-    return {type:'transform', isRotation:/rotation/i.test(t), cat:cat, pts:pts, _fb:_fbPts, confidence:'medium'};
-  }
-  // ── Produit scalaire (1ERE) ──
-  if (/produit\s*scalaire|vecteur.*orthogon|orthogon.*vecteur|\bu\s*[·•]\s*v\b/i.test(t) && /produit_scal/i.test(cat)) {
-    return {type:'vectors', pts:pts, _fb:_fbPts, cat:cat, confidence:'high'};
-  }
-  // ── Géométrie repérée (1ERE) ──
-  if (/équation.*droite|droite.*équation|équation.*cercle|repère/i.test(t) && /geometrie_repere/i.test(cat)) {
-    return {type:'repere', pts:pts, _fb:_fbPts, cat:cat, confidence:'high'};
-  }
-  // ── Cercle trigonométrique (1ERE) ──
-  if (/cercle\s*trigono|cos.*[θα]|sin.*[θα]|valeur.*remarquable.*cos|valeur.*remarquable.*sin/i.test(t) && /trigono/i.test(cat)) {
-    return {type:'trigo_circle', pts:pts, _fb:_fbPts, cat:cat, confidence:'high'};
-  }
-  return null;
+// ── Système de figures paramétrées ──
+function getExoFigure(data, cat, revealed) {
+  if (!data || !data.fig) return '';
+  return renderFigure(data.fig, revealed);
 }
 
-function renderFig(fig) {
-  if (!fig) return '';
+function renderFigure(fig, revealed) {
+  if (!fig || !fig.t) return '';
   var svg = '';
-  var W = 280, H = 210;
-  // Hide fallback point labels when not extracted from the question
-  if (fig._fb) fig.pts = [' ',' ',' ',' ',' '];
-
-  switch(fig.type) {
-
-  // ═══ TRIANGLE RECTANGLE ═══
-  case 'tri_rect':
-    var ax=40,ay=170, bx=220,by=170, cx=40,cy=40;
-    var sa=fig.a, sb=fig.b, sc=fig.c;
-    var p0 = (fig.pts && fig.pts[0]) || 'A';
-    var p1 = (fig.pts && fig.pts[1]) || 'B';
-    var p2 = (fig.pts && fig.pts[2]) || 'C';
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" overflow="visible">' +
-      '<polygon points="'+ax+','+ay+' '+bx+','+by+' '+cx+','+cy+'" class="geo-fill"/>' +
-      '<line x1="'+ax+'" y1="'+ay+'" x2="'+bx+'" y2="'+by+'" class="geo-line geo-draw" style="--len:200"/>' +
-      '<line x1="'+bx+'" y1="'+by+'" x2="'+cx+'" y2="'+cy+'" class="geo-line geo-draw" style="--len:220"/>' +
-      '<line x1="'+cx+'" y1="'+cy+'" x2="'+ax+'" y2="'+ay+'" class="geo-line geo-draw" style="--len:140"/>' +
-      '<rect x="'+ax+'" y="'+(ay-16)+'" width="16" height="16" class="geo-right"/>' +
-      '<circle cx="'+ax+'" cy="'+ay+'" class="geo-dot"/>' +
-      '<circle cx="'+bx+'" cy="'+by+'" class="geo-dot"/>' +
-      '<circle cx="'+cx+'" cy="'+cy+'" class="geo-dot"/>' +
-      '<text x="'+(ax-8)+'" y="'+(ay+16)+'" class="geo-label" dominant-baseline="central">'+p0+'</text>' +
-      '<text x="'+(bx+6)+'" y="'+(by+16)+'" class="geo-label" dominant-baseline="central">'+p1+'</text>' +
-      '<text x="'+(cx-12)+'" y="'+(cy-8)+'" class="geo-label" dominant-baseline="central">'+p2+'</text>' +
-      '<text x="'+((ax+bx)/2)+'" y="'+(ay+18)+'" text-anchor="middle" class="geo-val">'+sa+'</text>' +
-      '<text x="'+(ax-18)+'" y="'+((ay+cy)/2)+'" text-anchor="middle" class="geo-val">'+sb+'</text>' +
-      (sc ? '<text x="'+((bx+cx)/2+14)+'" y="'+((by+cy)/2)+'" class="geo-val">'+sc+'</text>' :
-             '<text x="'+((bx+cx)/2+14)+'" y="'+((by+cy)/2)+'" class="geo-unknown">?</text>') +
-      '</svg>';
-    break;
-
-  // ═══ TRIANGLE TRIGONOMÉTRIE ═══
-  case 'tri_trigo':
-    var ax=40,ay=170,bx=220,by=170,cx=40,cy=50;
-    var angRad = fig.angle*Math.PI/180;
-    var arcR = 30;
-    var arcX = bx-arcR*Math.cos(Math.atan2(by-cy,bx-cx));
-    var arcY = by-arcR*Math.sin(Math.atan2(by-cy,bx-cx));
-    var p0 = (fig.pts && fig.pts[0]) || 'A';
-    var p1 = (fig.pts && fig.pts[1]) || 'B';
-    var p2 = (fig.pts && fig.pts[2]) || 'C';
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" overflow="visible">' +
-      '<polygon points="'+ax+','+ay+' '+bx+','+by+' '+cx+','+cy+'" class="geo-fill"/>' +
-      '<line x1="'+ax+'" y1="'+ay+'" x2="'+bx+'" y2="'+by+'" class="geo-line"/>' +
-      '<line x1="'+bx+'" y1="'+by+'" x2="'+cx+'" y2="'+cy+'" class="geo-line"/>' +
-      '<line x1="'+cx+'" y1="'+cy+'" x2="'+ax+'" y2="'+ay+'" class="geo-line"/>' +
-      '<rect x="'+ax+'" y="'+(ay-16)+'" width="16" height="16" class="geo-right"/>' +
-      '<path d="M '+(bx-30)+','+by+' A 30,30 0 0,1 '+(bx-20)+','+(by-22)+'" class="geo-angle"/>' +
-      '<text x="'+(bx-44)+'" y="'+(by-10)+'" class="geo-val" style="font-size:11px">'+fig.angle+'°</text>' +
-      '<text x="'+((ax+bx)/2)+'" y="'+(ay+18)+'" text-anchor="middle" class="geo-label" style="font-size:11px">adjacent</text>' +
-      '<text x="'+(ax-10)+'" y="'+((ay+cy)/2)+'" class="geo-label" style="font-size:11px;writing-mode:tb">opposé</text>' +
-      '<text x="'+((bx+cx)/2+12)+'" y="'+((by+cy)/2)+'" class="geo-label" style="font-size:11px">hyp.</text>' +
-      '<circle cx="'+ax+'" cy="'+ay+'" class="geo-dot"/>' +
-      '<circle cx="'+bx+'" cy="'+by+'" class="geo-dot"/>' +
-      '<circle cx="'+cx+'" cy="'+cy+'" class="geo-dot"/>' +
-      '</svg>';
-    break;
-
-  // ═══ THALÈS ═══
-  case 'thales':
-    var p0 = (fig.pts && fig.pts[0]) || 'A';
-    var p1 = (fig.pts && fig.pts[1]) || 'B';
-    var p2 = (fig.pts && fig.pts[2]) || 'M';
-    var p3 = (fig.pts && fig.pts[3]) || 'N';
-    var pSommet = (fig.pts && fig.pts[4]) || 'O';
-    var ox=130,oy=30;
-    var ax=50,ay=170,bx=210,by=170;
-    var mx=70,my=110,nx=190,ny=110;
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" overflow="visible">' +
-      '<line x1="'+ox+'" y1="'+oy+'" x2="'+ax+'" y2="'+ay+'" class="geo-line"/>' +
-      '<line x1="'+ox+'" y1="'+oy+'" x2="'+bx+'" y2="'+by+'" class="geo-line"/>' +
-      '<line x1="'+ax+'" y1="'+ay+'" x2="'+bx+'" y2="'+by+'" class="geo-line"/>' +
-      '<line x1="'+mx+'" y1="'+my+'" x2="'+nx+'" y2="'+ny+'" class="geo-line geo-dash" style="stroke:#3B82F6"/>' +
-      '<text x="'+(ox+4)+'" y="'+(oy-6)+'" class="geo-label" dominant-baseline="central">'+pSommet+'</text>' +
-      '<text x="'+(ax-16)+'" y="'+(ay+4)+'" class="geo-label" dominant-baseline="central">'+p0+'</text>' +
-      '<text x="'+(bx+6)+'" y="'+(by+4)+'" class="geo-label" dominant-baseline="central">'+p1+'</text>' +
-      '<text x="'+(mx-18)+'" y="'+(my+4)+'" class="geo-label" dominant-baseline="central">'+p2+'</text>' +
-      '<text x="'+(nx+6)+'" y="'+(ny+4)+'" class="geo-label" dominant-baseline="central">'+p3+'</text>' +
-      '<text x="'+((ox+mx)/2-16)+'" y="'+((oy+my)/2)+'" class="geo-val">'+fig.a+'</text>' +
-      '<text x="'+((ox+nx)/2+8)+'" y="'+((oy+ny)/2)+'" class="geo-val">'+fig.b+'</text>' +
-      '<text x="'+((mx+nx)/2)+'" y="'+(my-6)+'" text-anchor="middle" class="geo-val">'+fig.c+'</text>' +
-      (fig.d ? '<text x="'+((ax+bx)/2)+'" y="'+(ay+16)+'" text-anchor="middle" class="geo-val">'+fig.d+'</text>' :
-               '<text x="'+((ax+bx)/2)+'" y="'+(ay+16)+'" text-anchor="middle" class="geo-unknown">?</text>') +
-      '<circle cx="'+ox+'" cy="'+oy+'" class="geo-dot"/>' +
-      '<circle cx="'+ax+'" cy="'+ay+'" class="geo-dot"/>' +
-      '<circle cx="'+bx+'" cy="'+by+'" class="geo-dot"/>' +
-      '<circle cx="'+mx+'" cy="'+my+'" class="geo-dot"/>' +
-      '<circle cx="'+nx+'" cy="'+ny+'" class="geo-dot"/>' +
-      '</svg>';
-    break;
-
-  // ═══ CERCLE ═══
-  case 'circle':
-    var cx0=140,cy0=110,r0=70;
-    var cPts0 = (fig.pts && fig.pts[0]) || '';
-    var cPts1 = (fig.pts && fig.pts[1]) || '';
-    var isDiam = /diamètre/i.test(fig.cat||'');
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" overflow="visible">' +
-      '<circle cx="'+cx0+'" cy="'+cy0+'" r="'+r0+'" class="geo-fill geo-draw" style="--len:440"/>' +
-      (isDiam ? '<line x1="'+(cx0-r0)+'" y1="'+cy0+'" x2="'+(cx0+r0)+'" y2="'+cy0+'" class="geo-line" style="stroke:#059669;stroke-width:2"/>' +
-        '<circle cx="'+(cx0-r0)+'" cy="'+cy0+'" class="geo-dot"/><circle cx="'+(cx0+r0)+'" cy="'+cy0+'" class="geo-dot"/>' +
-        (cPts0 ? '<text x="'+(cx0-r0-10)+'" y="'+(cy0+16)+'" class="geo-label" dominant-baseline="central">'+cPts0+'</text>' : '') +
-        (cPts1 ? '<text x="'+(cx0+r0+6)+'" y="'+(cy0+16)+'" class="geo-label" dominant-baseline="central">'+cPts1+'</text>' : '') :
-        '<line x1="'+cx0+'" y1="'+cy0+'" x2="'+(cx0+r0)+'" y2="'+cy0+'" class="geo-dash" style="stroke:#059669;stroke-dasharray:5 3;stroke-width:2"/>' +
-        '<circle cx="'+(cx0+r0)+'" cy="'+cy0+'" class="geo-dot"/>') +
-      '<circle cx="'+cx0+'" cy="'+cy0+'" class="geo-dot"/>' +
-      '<text x="'+(cx0-8)+'" y="'+(cy0-10)+'" class="geo-label" dominant-baseline="central">'+((fig.pts && fig.pts[2]) || 'O')+'</text>' +
-      (!isDiam ? '<text x="'+((cx0+cx0+r0)/2)+'" y="'+(cy0-10)+'" text-anchor="middle" class="geo-val">r = '+fig.r+'</text>' : '<text x="'+cx0+'" y="'+(cy0-r0-8)+'" text-anchor="middle" class="geo-val">d = '+(fig.r*2)+'</text>') +
-      '</svg>';
-    break;
-
-  // ═══ RECTANGLE / CARRÉ ═══
-  case 'rect':
-    var rx=40,ry=50,rw=180,rh=110;
-    if(fig.square) rh=rw=140;
-    var rxe=rx+rw, rye=ry+rh;
-    var p0 = (fig.pts && fig.pts[0]) || 'A';
-    var p1 = (fig.pts && fig.pts[1]) || 'B';
-    var p2 = (fig.pts && fig.pts[2]) || 'C';
-    var p3 = (fig.pts && fig.pts[3]) || 'D';
-    var showLabels = (fig.pts && fig.pts.length >= 4) || true;
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" overflow="visible">' +
-      '<rect x="'+rx+'" y="'+ry+'" width="'+rw+'" height="'+rh+'" rx="2" class="geo-fill geo-draw" style="--len:'+(2*rw+2*rh)+'"/>' +
-      '<circle cx="'+rx+'" cy="'+ry+'" class="geo-dot"/>' +
-      '<circle cx="'+rxe+'" cy="'+ry+'" class="geo-dot"/>' +
-      '<circle cx="'+rxe+'" cy="'+rye+'" class="geo-dot"/>' +
-      '<circle cx="'+rx+'" cy="'+rye+'" class="geo-dot"/>' +
-      '<text x="'+((rx+rxe)/2)+'" y="'+(ry-8)+'" text-anchor="middle" class="geo-val">'+fig.w+'</text>' +
-      (fig.square ? '' : '<text x="'+(rxe+8)+'" y="'+((ry+rye)/2+4)+'" class="geo-val">'+fig.h+'</text>') +
-      '<text x="'+(rx-8)+'" y="'+(ry-4)+'" class="geo-label" dominant-baseline="central">'+p0+'</text>' +
-      '<text x="'+(rxe+4)+'" y="'+(ry-4)+'" class="geo-label" dominant-baseline="central">'+p1+'</text>' +
-      '<text x="'+(rxe+4)+'" y="'+(rye+14)+'" class="geo-label" dominant-baseline="central">'+p2+'</text>' +
-      '<text x="'+(rx-8)+'" y="'+(rye+14)+'" class="geo-label" dominant-baseline="central">'+p3+'</text>' +
-      (fig.square ? '<rect x="'+rx+'" y="'+(rye-12)+'" width="12" height="12" class="geo-right"/>' : '') +
-      '</svg>';
-    break;
-
-  // ═══ ANGLE ═══
-  case 'angle':
-    var ox2=70,oy2=170;
-    var p0a = (fig.pts && fig.pts[0]) || '';
-    var p1a = (fig.pts && fig.pts[1]) || 'O';
-    var p2a = (fig.pts && fig.pts[2]) || '';
-    var deg2=fig.deg, rad2=deg2*Math.PI/180;
-    var len2=140;
-    var ex2=ox2+len2, ey2=oy2;
-    var fx2=ox2+len2*Math.cos(rad2), fy2=oy2-len2*Math.sin(rad2);
-    var arcR2=45;
-    var large2=deg2>180?1:0;
-    var aex=ox2+arcR2, aey=oy2;
-    var afx=ox2+arcR2*Math.cos(rad2), afy=oy2-arcR2*Math.sin(rad2);
-    var labelR=arcR2*0.65;
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" overflow="visible">' +
-      '<line x1="'+ox2+'" y1="'+oy2+'" x2="'+ex2+'" y2="'+ey2+'" class="geo-line"/>' +
-      '<line x1="'+ox2+'" y1="'+oy2+'" x2="'+fx2.toFixed(1)+'" y2="'+fy2.toFixed(1)+'" class="geo-line"/>' +
-      '<path d="M '+aex+','+aey+' A '+arcR2+','+arcR2+' 0 '+large2+',0 '+afx.toFixed(1)+','+afy.toFixed(1)+'" class="geo-angle" style="stroke-width:2"/>' +
-      '<text x="'+(ox2+labelR*Math.cos(rad2/2)).toFixed(0)+'" y="'+(oy2-labelR*Math.sin(rad2/2)).toFixed(0)+'" class="geo-val" text-anchor="middle" dominant-baseline="central">'+deg2+'°</text>' +
-      '<circle cx="'+ox2+'" cy="'+oy2+'" class="geo-dot"/>' +
-      '<text x="'+(ox2-12)+'" y="'+(oy2+16)+'" class="geo-label" dominant-baseline="central">'+p1a+'</text>' +
-      (p0a ? '<text x="'+(ex2+6)+'" y="'+(ey2+4)+'" class="geo-label" dominant-baseline="central">'+p0a+'</text>' : '') +
-      (p2a ? '<text x="'+(fx2+6).toFixed(0)+'" y="'+(fy2-6).toFixed(0)+'" class="geo-label" dominant-baseline="central">'+p2a+'</text>' : '') +
-      '</svg>';
-    break;
-
-  // ═══ DROITES PARALLÈLES / PERPENDICULAIRES ═══
-  case 'parallel':
-    if (fig.perp) {
-      svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
-        '<line x1="30" y1="100" x2="230" y2="100" class="geo-line"/>' +
-        '<line x1="130" y1="30" x2="130" y2="180" class="geo-line"/>' +
-        '<rect x="130" y="100" width="14" height="14" transform="translate(0,-14)" class="geo-right"/>' +
-        '<text x="235" y="104" class="geo-label">(d₁)</text>' +
-        '<text x="134" y="26" class="geo-label">(d₂)</text>' +
-        '<text x="148" y="92" class="geo-val" style="font-size:11px">⊥</text>' +
-        '</svg>';
-    } else {
-      svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
-        '<line x1="30" y1="70" x2="230" y2="70" class="geo-line"/>' +
-        '<line x1="30" y1="130" x2="230" y2="130" class="geo-line"/>' +
-        '<text x="235" y="74" class="geo-label">(d₁)</text>' +
-        '<text x="235" y="134" class="geo-label">(d₂)</text>' +
-        '<text x="130" y="106" text-anchor="middle" class="geo-val" style="font-size:11px">∥</text>' +
-        '<path d="M 80,70 L 74,82 M 86,70 L 80,82" class="geo-angle"/>' +
-        '<path d="M 80,130 L 74,142 M 86,130 L 80,142" class="geo-angle"/>' +
-        '</svg>';
-    }
-    break;
-
-  // ═══ SYMÉTRIE AXIALE ═══
-  case 'sym_axial':
-    var p0s = (fig.pts && fig.pts[0]) || 'A';
-    var p1s = (fig.pts && fig.pts[1]) || 'B';
-    var p2s = (fig.pts && fig.pts[2]) || 'C';
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" overflow="visible">' +
-      '<line x1="140" y1="10" x2="140" y2="200" class="geo-axis" style="stroke-dasharray:8 4;stroke-width:2"/>' +
-      '<text x="144" y="20" class="geo-label" style="fill:#a855f7;font-size:11px">(d)</text>' +
-      '<polygon points="55,60 95,150 75,150" class="geo-fill"/>' +
-      '<polygon points="225,60 185,150 205,150" class="geo-fill2"/>' +
-      '<line x1="55" y1="60" x2="225" y2="60" class="geo-dash"/>' +
-      '<line x1="95" y1="150" x2="185" y2="150" class="geo-dash"/>' +
-      '<line x1="75" y1="150" x2="205" y2="150" class="geo-dash"/>' +
-      '<circle cx="55" cy="60" class="geo-dot"/><circle cx="225" cy="60" class="geo-dot"/>' +
-      '<circle cx="95" cy="150" class="geo-dot"/><circle cx="185" cy="150" class="geo-dot"/>' +
-      '<circle cx="75" cy="150" class="geo-dot"/><circle cx="205" cy="150" class="geo-dot"/>' +
-      '<text x="42" y="54" class="geo-label" dominant-baseline="central">'+p0s+'</text>' +
-      '<text x="229" y="54" class="geo-label" style="fill:#22c55e" dominant-baseline="central">'+p0s+'\'</text>' +
-      '<text x="95" y="166" class="geo-label" dominant-baseline="central">'+p1s+'</text>' +
-      '<text x="178" y="166" class="geo-label" style="fill:#22c55e" dominant-baseline="central">'+p1s+'\'</text>' +
-      '<text x="62" y="166" class="geo-label" dominant-baseline="central">'+p2s+'</text>' +
-      '<text x="209" y="166" class="geo-label" style="fill:#22c55e" dominant-baseline="central">'+p2s+'\'</text>' +
-      '</svg>';
-    break;
-
-  // ═══ SYMÉTRIE CENTRALE ═══
-  case 'sym_central':
-    var p0c = (fig.pts && fig.pts[0]) || 'A';
-    var p1c = (fig.pts && fig.pts[1]) || 'B';
-    var p2c = (fig.pts && fig.pts[2]) || 'C';
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" overflow="visible">' +
-      '<circle cx="140" cy="105" r="5" style="fill:#a855f7"/>' +
-      '<text x="148" y="103" class="geo-label" style="fill:#a855f7" dominant-baseline="central">'+((fig.pts && fig.pts[3]) || 'O')+'</text>' +
-      '<polygon points="55,50 105,80 75,115" class="geo-fill"/>' +
-      '<polygon points="225,160 175,130 205,95" class="geo-fill2"/>' +
-      '<line x1="55" y1="50" x2="225" y2="160" class="geo-dash"/>' +
-      '<line x1="105" y1="80" x2="175" y2="130" class="geo-dash"/>' +
-      '<line x1="75" y1="115" x2="205" y2="95" class="geo-dash"/>' +
-      '<circle cx="55" cy="50" class="geo-dot"/><circle cx="225" cy="160" class="geo-dot"/>' +
-      '<circle cx="105" cy="80" class="geo-dot"/><circle cx="175" cy="130" class="geo-dot"/>' +
-      '<circle cx="75" cy="115" class="geo-dot"/><circle cx="205" cy="95" class="geo-dot"/>' +
-      '<text x="41" y="48" class="geo-label" dominant-baseline="central">'+p0c+'</text>' +
-      '<text x="231" y="162" class="geo-label" style="fill:#22c55e" dominant-baseline="central">'+p0c+'\'</text>' +
-      '<text x="93" y="76" class="geo-label" dominant-baseline="central">'+p1c+'</text>' +
-      '<text x="177" y="144" class="geo-label" style="fill:#22c55e" dominant-baseline="central">'+p1c+'\'</text>' +
-      '<text x="60" y="128" class="geo-label" dominant-baseline="central">'+p2c+'</text>' +
-      '<text x="209" y="88" class="geo-label" style="fill:#22c55e" dominant-baseline="central">'+p2c+'\'</text>' +
-      '</svg>';
-    break;
-
-  // ═══ CUBE / PAVÉ DROIT ═══
-  case 'cube':
-    var dx=30,dy=20; // décalage iso
-    var x0=50,y0=140,w3=120,h3=90;
-    if(fig.isCube) {w3=100;h3=100;}
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
-      // Face arrière
-      '<polygon points="'+(x0+dx)+','+(y0-h3-dy)+' '+(x0+w3+dx)+','+(y0-h3-dy)+' '+(x0+w3)+','+(y0-h3)+' '+(x0)+','+(y0-h3)+'" class="geo-3d-face2"/>' +
-      '<line x1="'+(x0+dx)+'" y1="'+(y0-h3-dy)+'" x2="'+(x0+w3+dx)+'" y2="'+(y0-h3-dy)+'" class="geo-3d-hidden"/>' +
-      '<line x1="'+(x0+w3+dx)+'" y1="'+(y0-h3-dy)+'" x2="'+(x0+w3+dx)+'" y2="'+(y0-dy)+'" class="geo-3d-hidden"/>' +
-      '<line x1="'+(x0+dx)+'" y1="'+(y0-h3-dy)+'" x2="'+(x0+dx)+'" y2="'+(y0-dy)+'" class="geo-3d-hidden"/>' +
-      // Face avant
-      '<rect x="'+x0+'" y="'+(y0-h3)+'" width="'+w3+'" height="'+h3+'" class="geo-3d-face"/>' +
-      // Face droite
-      '<polygon points="'+(x0+w3)+','+(y0-h3)+' '+(x0+w3+dx)+','+(y0-h3-dy)+' '+(x0+w3+dx)+','+(y0-dy)+' '+(x0+w3)+','+y0+'" class="geo-3d-face" style="opacity:.35"/>' +
-      // Face dessus
-      '<polygon points="'+x0+','+(y0-h3)+' '+(x0+dx)+','+(y0-h3-dy)+' '+(x0+w3+dx)+','+(y0-h3-dy)+' '+(x0+w3)+','+(y0-h3)+'" class="geo-3d-face" style="opacity:.25"/>' +
-      // Arêtes visibles
-      '<line x1="'+x0+'" y1="'+y0+'" x2="'+(x0+w3)+'" y2="'+y0+'" class="geo-3d-edge"/>' +
-      '<line x1="'+x0+'" y1="'+(y0-h3)+'" x2="'+(x0+w3)+'" y2="'+(y0-h3)+'" class="geo-3d-edge"/>' +
-      '<line x1="'+x0+'" y1="'+y0+'" x2="'+x0+'" y2="'+(y0-h3)+'" class="geo-3d-edge"/>' +
-      '<line x1="'+(x0+w3)+'" y1="'+y0+'" x2="'+(x0+w3)+'" y2="'+(y0-h3)+'" class="geo-3d-edge"/>' +
-      '<line x1="'+(x0+w3)+'" y1="'+y0+'" x2="'+(x0+w3+dx)+'" y2="'+(y0-dy)+'" class="geo-3d-edge"/>' +
-      '<line x1="'+(x0+w3)+'" y1="'+(y0-h3)+'" x2="'+(x0+w3+dx)+'" y2="'+(y0-h3-dy)+'" class="geo-3d-edge"/>' +
-      '<line x1="'+x0+'" y1="'+(y0-h3)+'" x2="'+(x0+dx)+'" y2="'+(y0-h3-dy)+'" class="geo-3d-edge"/>' +
-      '<line x1="'+(x0+dx)+'" y1="'+(y0-h3-dy)+'" x2="'+(x0+w3+dx)+'" y2="'+(y0-h3-dy)+'" class="geo-3d-edge"/>' +
-      '<line x1="'+(x0+w3+dx)+'" y1="'+(y0-h3-dy)+'" x2="'+(x0+w3+dx)+'" y2="'+(y0-dy)+'" class="geo-3d-edge"/>' +
-      // Labels
-      '<text x="'+((x0+x0+w3)/2)+'" y="'+(y0+16)+'" text-anchor="middle" class="geo-val">'+fig.a+'</text>' +
-      (fig.isCube?'':'<text x="'+(x0+w3+dx+8)+'" y="'+((y0-h3+y0)/2)+'" class="geo-val">'+fig.b+'</text>') +
-      (fig.isCube?'':'<text x="'+((x0+w3+x0+w3+dx)/2+4)+'" y="'+(y0-h3-dy-4)+'" text-anchor="middle" class="geo-val">'+fig.c+'</text>') +
-      '</svg>';
-    break;
-
-  // ═══ CYLINDRE ═══
-  case 'cylinder':
-    var cx1=130,top=40,bot=155,rx1=60,ry1=18;
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
-      '<ellipse cx="'+cx1+'" cy="'+bot+'" rx="'+rx1+'" ry="'+ry1+'" class="geo-3d-face"/>' +
-      '<line x1="'+(cx1-rx1)+'" y1="'+top+'" x2="'+(cx1-rx1)+'" y2="'+bot+'" class="geo-3d-edge"/>' +
-      '<line x1="'+(cx1+rx1)+'" y1="'+top+'" x2="'+(cx1+rx1)+'" y2="'+bot+'" class="geo-3d-edge"/>' +
-      '<ellipse cx="'+cx1+'" cy="'+top+'" rx="'+rx1+'" ry="'+ry1+'" class="geo-3d-face" style="opacity:.6"/>' +
-      '<line x1="'+cx1+'" y1="'+top+'" x2="'+(cx1+rx1)+'" y2="'+top+'" class="geo-dash" style="stroke:#059669"/>' +
-      '<text x="'+((cx1+cx1+rx1)/2)+'" y="'+(top-6)+'" text-anchor="middle" class="geo-val">r='+fig.r+'</text>' +
-      '<text x="'+(cx1+rx1+10)+'" y="'+((top+bot)/2+4)+'" class="geo-val">h='+fig.h+'</text>' +
-      '</svg>';
-    break;
-
-  // ═══ CÔNE ═══
-  case 'cone':
-    var cx2=130,tipY=35,baseY=160,rx2=60,ry2=16;
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
-      '<ellipse cx="'+cx2+'" cy="'+baseY+'" rx="'+rx2+'" ry="'+ry2+'" class="geo-3d-face"/>' +
-      '<line x1="'+(cx2-rx2)+'" y1="'+baseY+'" x2="'+cx2+'" y2="'+tipY+'" class="geo-3d-edge"/>' +
-      '<line x1="'+(cx2+rx2)+'" y1="'+baseY+'" x2="'+cx2+'" y2="'+tipY+'" class="geo-3d-edge"/>' +
-      '<line x1="'+cx2+'" y1="'+tipY+'" x2="'+cx2+'" y2="'+baseY+'" class="geo-dash" style="stroke:#059669"/>' +
-      '<circle cx="'+cx2+'" cy="'+tipY+'" class="geo-dot"/>' +
-      '<text x="'+(cx2+8)+'" y="'+((tipY+baseY)/2)+'" class="geo-val">h='+fig.h+'</text>' +
-      '<text x="'+((cx2+cx2+rx2)/2)+'" y="'+(baseY+16)+'" text-anchor="middle" class="geo-val">r='+fig.r+'</text>' +
-      '</svg>';
-    break;
-
-  // ═══ PYRAMIDE ═══
-  case 'pyramid':
-    var px0=130,ptip=30,pbl=60,pbr=200,pfl=80,pfr=180,pby=170;
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
-      '<polygon points="'+pbl+','+pby+' '+pbr+','+pby+' '+(pbr-15)+','+(pby-25)+' '+(pbl+15)+','+(pby-25)+'" class="geo-3d-face" style="opacity:.3"/>' +
-      '<line x1="'+pbl+'" y1="'+pby+'" x2="'+px0+'" y2="'+ptip+'" class="geo-3d-edge"/>' +
-      '<line x1="'+pbr+'" y1="'+pby+'" x2="'+px0+'" y2="'+ptip+'" class="geo-3d-edge"/>' +
-      '<line x1="'+(pbl+15)+'" y1="'+(pby-25)+'" x2="'+px0+'" y2="'+ptip+'" class="geo-3d-hidden"/>' +
-      '<line x1="'+(pbr-15)+'" y1="'+(pby-25)+'" x2="'+px0+'" y2="'+ptip+'" class="geo-3d-edge"/>' +
-      '<line x1="'+pbl+'" y1="'+pby+'" x2="'+pbr+'" y2="'+pby+'" class="geo-3d-edge"/>' +
-      '<line x1="'+pbr+'" y1="'+pby+'" x2="'+(pbr-15)+'" y2="'+(pby-25)+'" class="geo-3d-edge"/>' +
-      '<line x1="'+pbl+'" y1="'+pby+'" x2="'+(pbl+15)+'" y2="'+(pby-25)+'" class="geo-3d-hidden"/>' +
-      '<line x1="'+(pbl+15)+'" y1="'+(pby-25)+'" x2="'+(pbr-15)+'" y2="'+(pby-25)+'" class="geo-3d-hidden"/>' +
-      '<line x1="'+px0+'" y1="'+ptip+'" x2="'+px0+'" y2="'+pby+'" class="geo-dash" style="stroke:#059669"/>' +
-      '<circle cx="'+px0+'" cy="'+ptip+'" class="geo-dot"/>' +
-      '<text x="'+(px0+8)+'" y="'+((ptip+pby)/2)+'" class="geo-val">h='+fig.h+'</text>' +
-      '<text x="'+((pbl+pbr)/2)+'" y="'+(pby+16)+'" text-anchor="middle" class="geo-val">'+fig.a+'</text>' +
-      '</svg>';
-    break;
-
-  // ═══ SPHÈRE ═══
-  case 'sphere':
-    var scx=130,scy=100,sr=70;
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
-      '<defs><radialGradient id="sg" cx="40%" cy="35%"><stop offset="0%" stop-color="#BFDBFE"/><stop offset="100%" stop-color="#eef2ff"/></radialGradient></defs>' +
-      '<circle cx="'+scx+'" cy="'+scy+'" r="'+sr+'" fill="url(#sg)" stroke="#3B82F6" stroke-width="1.5"/>' +
-      '<ellipse cx="'+scx+'" cy="'+scy+'" rx="'+sr+'" ry="'+(sr*0.3)+'" class="geo-dash" style="stroke:#3B82F6;opacity:.5"/>' +
-      '<line x1="'+scx+'" y1="'+scy+'" x2="'+(scx+sr)+'" y2="'+scy+'" class="geo-dash" style="stroke:#059669;stroke-dasharray:none;stroke-width:2"/>' +
-      '<circle cx="'+scx+'" cy="'+scy+'" class="geo-dot"/>' +
-      '<text x="'+(scx-8)+'" y="'+(scy-8)+'" class="geo-label">'+((fig.pts && fig.pts[0]) || 'O')+'</text>' +
-      '<text x="'+((scx+scx+sr)/2)+'" y="'+(scy-8)+'" text-anchor="middle" class="geo-val">r='+fig.r+'</text>' +
-      '</svg>';
-    break;
-
-  // ═══ SECTION DE SOLIDE ═══
-  case 'section_solid':
-    var dx3=30,dy3=20;
-    var x3=50,y3=150,w4=110,h4=95;
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
-      // Pavé simplifié
-      '<rect x="'+x3+'" y="'+(y3-h4)+'" width="'+w4+'" height="'+h4+'" class="geo-3d-face"/>' +
-      '<line x1="'+x3+'" y1="'+y3+'" x2="'+(x3+w4)+'" y2="'+y3+'" class="geo-3d-edge"/>' +
-      '<line x1="'+x3+'" y1="'+(y3-h4)+'" x2="'+(x3+w4)+'" y2="'+(y3-h4)+'" class="geo-3d-edge"/>' +
-      '<line x1="'+x3+'" y1="'+y3+'" x2="'+x3+'" y2="'+(y3-h4)+'" class="geo-3d-edge"/>' +
-      '<line x1="'+(x3+w4)+'" y1="'+y3+'" x2="'+(x3+w4)+'" y2="'+(y3-h4)+'" class="geo-3d-edge"/>' +
-      '<line x1="'+(x3+w4)+'" y1="'+y3+'" x2="'+(x3+w4+dx3)+'" y2="'+(y3-dy3)+'" class="geo-3d-edge"/>' +
-      '<line x1="'+(x3+w4)+'" y1="'+(y3-h4)+'" x2="'+(x3+w4+dx3)+'" y2="'+(y3-h4-dy3)+'" class="geo-3d-edge"/>' +
-      '<line x1="'+x3+'" y1="'+(y3-h4)+'" x2="'+(x3+dx3)+'" y2="'+(y3-h4-dy3)+'" class="geo-3d-edge"/>' +
-      '<line x1="'+(x3+dx3)+'" y1="'+(y3-h4-dy3)+'" x2="'+(x3+w4+dx3)+'" y2="'+(y3-h4-dy3)+'" class="geo-3d-edge"/>' +
-      '<line x1="'+(x3+w4+dx3)+'" y1="'+(y3-h4-dy3)+'" x2="'+(x3+w4+dx3)+'" y2="'+(y3-dy3)+'" class="geo-3d-edge"/>' +
-      // Plan de section (diagonale colorée)
-      '<polygon points="'+x3+','+(y3-h4*0.6)+' '+(x3+w4)+','+(y3-h4*0.3)+' '+(x3+w4+dx3)+','+(y3-h4*0.3-dy3)+' '+(x3+dx3)+','+(y3-h4*0.6-dy3)+'" style="fill:#fde68a;stroke:#f59e0b;stroke-width:2;opacity:.45"/>' +
-      '<text x="'+((x3+x3+w4)/2+dx3/2)+'" y="'+(y3-h4*0.45-dy3/2-6)+'" text-anchor="middle" class="geo-val" style="fill:#d97706;font-size:11px">section</text>' +
-      '</svg>';
-    break;
-
-  // ═══ HOMOTHÉTIE ═══
-  case 'homothety':
-    var p0 = (fig.pts && fig.pts[0]) || 'A';
-    var hox=50,hoy=160;
-    var hax=100,hay=100,hbx=140,hby=100,hcx=120,hcy=60;
-    var k2=fig.k>1?fig.k:1/fig.k;
-    var hax2=hox+(hax-hox)*k2, hay2=hoy+(hay-hoy)*k2;
-    var hbx2=hox+(hbx-hox)*k2, hby2=hoy+(hby-hoy)*k2;
-    var hcx2=hox+(hcx-hox)*k2, hcy2=hoy+(hcy-hoy)*k2;
-    // Clamp to viewBox
-    if(hax2>250||hbx2>250||hcx2>250) {k2=1.5; hax2=hox+(hax-hox)*k2; hay2=hoy+(hay-hoy)*k2; hbx2=hox+(hbx-hox)*k2; hby2=hoy+(hby-hoy)*k2; hcx2=hox+(hcx-hox)*k2; hcy2=hoy+(hcy-hoy)*k2;}
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" overflow="visible">' +
-      '<polygon points="'+hax+','+hay+' '+hbx+','+hby+' '+hcx+','+hcy+'" class="geo-fill"/>' +
-      '<polygon points="'+hax2.toFixed(0)+','+hay2.toFixed(0)+' '+hbx2.toFixed(0)+','+hby2.toFixed(0)+' '+hcx2.toFixed(0)+','+hcy2.toFixed(0)+'" class="geo-fill2"/>' +
-      '<line x1="'+hox+'" y1="'+hoy+'" x2="'+hax2.toFixed(0)+'" y2="'+hay2.toFixed(0)+'" class="geo-dash"/>' +
-      '<line x1="'+hox+'" y1="'+hoy+'" x2="'+hbx2.toFixed(0)+'" y2="'+hby2.toFixed(0)+'" class="geo-dash"/>' +
-      '<line x1="'+hox+'" y1="'+hoy+'" x2="'+hcx2.toFixed(0)+'" y2="'+hcy2.toFixed(0)+'" class="geo-dash"/>' +
-      '<circle cx="'+hox+'" cy="'+hoy+'" r="4" style="fill:#a855f7"/>' +
-      '<text x="'+(hox-10)+'" y="'+(hoy+16)+'" class="geo-label" style="fill:#a855f7" dominant-baseline="central">'+((fig.pts && fig.pts[1]) || 'O')+'</text>' +
-      '<text x="'+hax+'" y="'+(hay-6)+'" class="geo-label" dominant-baseline="central">'+p0+'</text>' +
-      '<text x="'+hax2.toFixed(0)+'" y="'+(hay2-6)+'" class="geo-label" style="fill:#22c55e" dominant-baseline="central">'+p0+'\'</text>' +
-      '<text x="'+(hox+30)+'" y="'+(hoy-8)+'" class="geo-val" style="font-size:11px">k='+fig.k+'</text>' +
-      '</svg>';
-    break;
-
-  // ═══ TRIANGLES SEMBLABLES ═══
-  case 'similar_tri':
-    var p0 = (fig.pts && fig.pts[0]) || 'A';
-    var p1 = (fig.pts && fig.pts[1]) || 'B';
-    var p2 = (fig.pts && fig.pts[2]) || 'C';
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" overflow="visible">' +
-      '<polygon points="30,160 130,160 80,80" class="geo-fill"/>' +
-      '<polygon points="150,160 230,160 190,110" class="geo-fill2"/>' +
-      '<circle cx="30" cy="160" class="geo-dot"/><circle cx="130" cy="160" class="geo-dot"/><circle cx="80" cy="80" class="geo-dot"/>' +
-      '<circle cx="150" cy="160" class="geo-dot"/><circle cx="230" cy="160" class="geo-dot"/><circle cx="190" cy="110" class="geo-dot"/>' +
-      '<text x="22" y="176" class="geo-label" dominant-baseline="central">'+p0+'</text><text x="132" y="176" class="geo-label" dominant-baseline="central">'+p1+'</text><text x="74" y="74" class="geo-label" dominant-baseline="central">'+p2+'</text>' +
-      '<text x="142" y="176" class="geo-label" style="fill:#22c55e" dominant-baseline="central">'+p0+'\'</text><text x="232" y="176" class="geo-label" style="fill:#22c55e" dominant-baseline="central">'+p1+'\'</text><text x="194" y="106" class="geo-label" style="fill:#22c55e" dominant-baseline="central">'+p2+'\'</text>' +
-      '<text x="80" y="176" text-anchor="middle" class="geo-val">'+fig.a+'</text>' +
-      '<text x="190" y="176" text-anchor="middle" class="geo-val" style="fill:#22c55e">?</text>' +
-      '<path d="M 52,160 A 22,22 0 0,1 58,143" class="geo-angle"/>' +
-      '<path d="M 170,160 A 18,18 0 0,1 175,146" class="geo-angle"/>' +
-      '</svg>';
-    break;
-
-  // ═══ TRIANGLE QUELCONQUE ═══
-  case 'triangle':
-    var p0 = (fig.pts && fig.pts[0]) || 'A';
-    var p1 = (fig.pts && fig.pts[1]) || 'B';
-    var p2 = (fig.pts && fig.pts[2]) || 'C';
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" overflow="visible">' +
-      '<polygon points="40,170 220,170 130,40" class="geo-fill"/>' +
-      '<line x1="40" y1="170" x2="220" y2="170" class="geo-line"/>' +
-      '<line x1="220" y1="170" x2="130" y2="40" class="geo-line"/>' +
-      '<line x1="130" y1="40" x2="40" y2="170" class="geo-line"/>' +
-      '<circle cx="40" cy="170" class="geo-dot"/><circle cx="220" cy="170" class="geo-dot"/><circle cx="130" cy="40" class="geo-dot"/>' +
-      '<text x="32" y="186" class="geo-label" dominant-baseline="central">'+p0+'</text><text x="224" y="186" class="geo-label" dominant-baseline="central">'+p1+'</text><text x="124" y="34" class="geo-label" dominant-baseline="central">'+p2+'</text>' +
-      '<text x="130" y="186" text-anchor="middle" class="geo-val">'+fig.a+'</text>' +
-      (fig.b?'<text x="180" y="100" class="geo-val">'+fig.b+'</text>':'') +
-      (fig.c?'<text x="76" y="100" class="geo-val">'+fig.c+'</text>':'') +
-      '</svg>';
-    break;
-
-  // ═══ TRANSFORMATION (translation/rotation) ═══
-  case 'transform':
-    if (fig.isRotation) {
-      svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
-        '<circle cx="130" cy="110" r="4" style="fill:#a855f7"/>' +
-        '<text x="138" y="114" class="geo-label" style="fill:#a855f7">'+((fig.pts && fig.pts[0]) || 'O')+'</text>' +
-        '<polygon points="60,70 110,50 90,90" class="geo-fill"/>' +
-        '<polygon points="150,150 200,130 180,170" class="geo-fill2"/>' +
-        '<path d="M 100,80 A 50,50 0 0,1 160,140" class="geo-dash" style="stroke:#a855f7" marker-end="url(#arrowR)"/>' +
-        '<defs><marker id="arrowR" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#a855f7"/></marker></defs>' +
-        '<text x="170" y="100" class="geo-val" style="fill:#a855f7;font-size:11px">rotation</text>' +
-        '</svg>';
-    } else {
-      svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
-        '<polygon points="40,60 100,40 80,100" class="geo-fill"/>' +
-        '<polygon points="140,110 200,90 180,150" class="geo-fill2"/>' +
-        '<line x1="40" y1="60" x2="140" y2="110" class="geo-dash" style="stroke:#3B82F6" marker-end="url(#arrowT)"/>' +
-        '<line x1="100" y1="40" x2="200" y2="90" class="geo-dash" style="stroke:#3B82F6" marker-end="url(#arrowT)"/>' +
-        '<line x1="80" y1="100" x2="180" y2="150" class="geo-dash" style="stroke:#3B82F6" marker-end="url(#arrowT)"/>' +
-        '<defs><marker id="arrowT" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#3B82F6"/></marker></defs>' +
-        '<text x="120" y="70" class="geo-val" style="font-size:11px">vecteur</text>' +
-        '</svg>';
-    }
-    break;
-
-  // ═══ VECTEURS / PRODUIT SCALAIRE (1ERE) ═══
-  case 'vectors':
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" overflow="visible">' +
-      '<defs><marker id="arrowV" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#3B82F6"/></marker></defs>' +
-      '<line x1="50" y1="160" x2="230" y2="160" class="geo-line" marker-end="url(#arrowV)"/>' +
-      '<line x1="50" y1="160" x2="180" y2="60" class="geo-line" marker-end="url(#arrowV)"/>' +
-      '<path d="M 90,160 A 45,45 0 0,0 82,135" class="geo-angle" style="stroke-width:2;stroke:#f59e0b"/>' +
-      '<circle cx="50" cy="160" r="3" style="fill:#3B82F6"/>' +
-      '<text x="38" y="176" class="geo-label" dominant-baseline="central">O</text>' +
-      '<text x="232" y="164" class="geo-label" dominant-baseline="central" style="font-style:italic">u\u20D7</text>' +
-      '<text x="178" y="52" class="geo-label" dominant-baseline="central" style="font-style:italic">v\u20D7</text>' +
-      '<text x="98" y="146" class="geo-val" style="font-size:12px;fill:#f59e0b" dominant-baseline="central">\u03B8</text>' +
-      '</svg>';
-    break;
-
-  // ═══ REPÈRE ORTHONORMÉ (1ERE) ═══
-  case 'repere':
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" overflow="visible">' +
-      '<defs><marker id="arrowAx" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#374151"/></marker></defs>' +
-      '<line x1="20" y1="150" x2="260" y2="150" class="geo-line" style="stroke-width:1.5" marker-end="url(#arrowAx)"/>' +
-      '<line x1="50" y1="195" x2="50" y2="15" class="geo-line" style="stroke-width:1.5" marker-end="url(#arrowAx)"/>' +
-      '<text x="262" y="154" class="geo-label" dominant-baseline="central">x</text>' +
-      '<text x="42" y="12" class="geo-label" dominant-baseline="central">y</text>' +
-      '<text x="38" y="164" class="geo-label" dominant-baseline="central">O</text>' +
-      '<line x1="30" y1="30" x2="240" y2="180" class="geo-line" style="stroke:#3B82F6;stroke-width:2"/>' +
-      '<text x="242" y="180" class="geo-val" style="font-size:11px;fill:#3B82F6" dominant-baseline="central">(d)</text>' +
-      '</svg>';
-    break;
-
-  // ═══ CERCLE TRIGONOMÉTRIQUE (1ERE) ═══
-  case 'trigo_circle':
-    var tcx=140,tcy=110,tcr=80;
-    var tcAngle = 0.7; // ~40 degrees
-    var tmx = tcx+tcr*Math.cos(tcAngle), tmy = tcy-tcr*Math.sin(tcAngle);
-    svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" overflow="visible">' +
-      '<defs><marker id="arrowTC" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5" fill="#374151"/></marker></defs>' +
-      '<line x1="30" y1="'+tcy+'" x2="260" y2="'+tcy+'" class="geo-line" style="stroke-width:1" marker-end="url(#arrowTC)"/>' +
-      '<line x1="'+tcx+'" y1="200" x2="'+tcx+'" y2="15" class="geo-line" style="stroke-width:1" marker-end="url(#arrowTC)"/>' +
-      '<circle cx="'+tcx+'" cy="'+tcy+'" r="'+tcr+'" class="geo-fill" style="fill:none;stroke:#3B82F6;stroke-width:2"/>' +
-      '<line x1="'+tcx+'" y1="'+tcy+'" x2="'+tmx.toFixed(1)+'" y2="'+tmy.toFixed(1)+'" class="geo-line" style="stroke:#059669;stroke-width:2"/>' +
-      '<circle cx="'+tmx.toFixed(1)+'" cy="'+tmy.toFixed(1)+'" r="3" style="fill:#059669"/>' +
-      '<text x="'+(tmx+6).toFixed(0)+'" y="'+(tmy-8).toFixed(0)+'" class="geo-label" style="fill:#059669" dominant-baseline="central">M</text>' +
-      '<line x1="'+tmx.toFixed(1)+'" y1="'+tmy.toFixed(1)+'" x2="'+tmx.toFixed(1)+'" y2="'+tcy+'" class="geo-dash" style="stroke:#f59e0b;stroke-dasharray:4 3"/>' +
-      '<line x1="'+tmx.toFixed(1)+'" y1="'+tmy.toFixed(1)+'" x2="'+tcx+'" y2="'+tmy.toFixed(1)+'" class="geo-dash" style="stroke:#ef4444;stroke-dasharray:4 3"/>' +
-      '<text x="'+tmx.toFixed(0)+'" y="'+(tcy+14)+'" class="geo-val" text-anchor="middle" style="font-size:10px;fill:#f59e0b" dominant-baseline="central">cos \u03B8</text>' +
-      '<text x="'+(tcx-24)+'" y="'+tmy.toFixed(0)+'" class="geo-val" text-anchor="middle" style="font-size:10px;fill:#ef4444" dominant-baseline="central">sin \u03B8</text>' +
-      '<path d="M '+(tcx+25)+','+tcy+' A 25,25 0 0,0 '+(tcx+25*Math.cos(tcAngle)).toFixed(1)+','+(tcy-25*Math.sin(tcAngle)).toFixed(1)+'" class="geo-angle" style="stroke-width:2"/>' +
-      '<text x="'+(tcx+34)+'" y="'+(tcy-10)+'" class="geo-val" style="font-size:11px" dominant-baseline="central">\u03B8</text>' +
-      '<circle cx="'+tcx+'" cy="'+tcy+'" r="2" style="fill:#374151"/>' +
-      '<text x="'+(tcx-12)+'" y="'+(tcy+14)+'" class="geo-label" dominant-baseline="central">O</text>' +
-      '<text x="'+(tcx+tcr+6)+'" y="'+(tcy+14)+'" class="geo-label" dominant-baseline="central">I</text>' +
-      '<text x="'+(tcx+6)+'" y="'+(tcy-tcr-4)+'" class="geo-label" dominant-baseline="central">J</text>' +
-      '</svg>';
-    break;
-
-  default:
-    return '';
+  switch(fig.t) {
+    case 'tri_rect': svg = _figTriRect(fig, revealed); break;
+    case 'tri_trigo': svg = _figTriTrigo(fig, revealed); break;
+    case 'thales': svg = _figThales(fig, revealed); break;
+    case 'angle': svg = _figAngle(fig, revealed); break;
+    case 'cube3d': svg = _figCube3D(fig, revealed); break;
+    case 'triangle': svg = _figTriangle(fig, revealed); break;
+    case 'parallel': svg = _figParallel(fig, revealed); break;
+    default: return '';
   }
-
-  return svg ? '<div class="geo-fig">' + svg + '</div>' : '';
+  var alt = fig.alt || '';
+  return '<div class="exo-fig"><svg viewBox="0 0 280 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+alt+'" style="overflow:visible">'+svg+'</svg></div>';
 }
 
-// Vérifie si un chapitre est géométrique
-function isGeoCat(cat) {
-  return /géomét|angle|triangle|périmètre|aire|pythagore|trigono|homothét|similaire|semblable|section|transformation|symétrie|volume|agrandissement|thalès/i.test(cat||'');
+function _figScale(sides, maxW, maxH) {
+  var mx = Math.max.apply(null, sides.filter(function(s){return s>0}));
+  var sc = Math.min(maxW / mx, maxH / mx, 40);
+  return Math.max(sc, 8);
 }
 
-// Point d'entrée : génère la figure pour un exercice
-function getExoFigure(data, cat) {
-  if (!data || !data.q) return '';
-  // Vérifier si c'est un chapitre géométrique
-  var realCat = cat;
-  if (cat === 'BOOST' || cat === 'CALIBRAGE' || cat === 'REVISION' || cat === 'BREVET') {
-    // Pour les modes spéciaux, utiliser la catégorie originale
-    realCat = data.oC || cat;
+function _figValLabel(x, y, val, revealed, ans, anchor) {
+  anchor = anchor || 'middle';
+  if (val !== null && val !== undefined) {
+    return '<text x="'+x+'" y="'+y+'" text-anchor="'+anchor+'" dominant-baseline="central" class="fg-val">'+val+'</text>';
   }
-  if (!isGeoCat(realCat)) return '';
-  // Tenter auto-détection avec filtre de confiance
-  var fig = data.fig || autoDetectFigure(data.q, realCat);
-  if (fig && fig.confidence === 'low') return ''; // Confiance trop faible → pas de figure
-  return renderFig(fig);
+  var display = revealed && ans ? ans : '?';
+  var cls = revealed && ans ? 'fg-val' : 'fg-unk';
+  var bg = revealed ? '' : '<rect x="'+(x-14)+'" y="'+(y-10)+'" width="28" height="20" class="fg-unk-bg" rx="4"/>';
+  return bg + '<text x="'+x+'" y="'+y+'" text-anchor="'+anchor+'" dominant-baseline="central" class="'+cls+'">'+display+'</text>';
 }
+
+function _figTriRect(fig, revealed) {
+  var pts = fig.pts || ['A','B','C'];
+  var s = fig.sides || [3,4,5];
+  var rightIdx = pts.indexOf(fig.right || pts[1]);
+  if (rightIdx < 0) rightIdx = 1;
+  var a0 = s[0] || 0, a1 = s[1] || 0, a2 = s[2] || 0;
+  var known = [a0||5, a1||5, a2||7];
+  var sc = _figScale(known, 180, 130);
+  var leg1, leg2;
+  if (rightIdx === 0) { leg1 = known[0] < known[1] ? known[1] : known[0]; leg2 = known[0] < known[1] ? known[0] : known[1]; }
+  else if (rightIdx === 1) { leg1 = known[0]; leg2 = known[1]; }
+  else { leg1 = known[1]; leg2 = known[2]; }
+  var padL = 50, padB = 160;
+  var rw = Math.min(leg1 * sc, 180);
+  var rh = Math.min(leg2 * sc, 120);
+  var Rx = padL, Ry = padB;
+  var Bx = padL + rw, By = padB;
+  var Tx = padL, Ty = padB - rh;
+  var ctxSvg = '';
+  if (fig.ctx === 'ladder') {
+    for (var hi = 1; hi < 5; hi++) {
+      var hy = Ry - hi * (rh/5);
+      ctxSvg += '<line x1="'+(Rx-6)+'" y1="'+hy+'" x2="'+(Rx+2)+'" y2="'+(hy-4)+'" style="stroke:var(--fig-line);stroke-width:1;opacity:.3"/>';
+    }
+    ctxSvg += '<line x1="'+(Rx-10)+'" y1="'+Ry+'" x2="'+(Bx+15)+'" y2="'+Ry+'" style="stroke:var(--fig-line);stroke-width:1.5;opacity:.4"/>';
+  } else if (fig.ctx === 'screen') {
+    ctxSvg += '<rect x="'+(Rx-3)+'" y="'+(Ty-3)+'" width="'+(rw+6)+'" height="'+(rh+6)+'" rx="4" style="stroke:var(--fig-line);stroke-width:2;fill:none;opacity:.3"/>';
+  }
+  var sqSz = 12;
+  var rightSvg = '<path d="M '+Rx+','+(Ry-sqSz)+' L '+(Rx+sqSz)+','+(Ry-sqSz)+' L '+(Rx+sqSz)+','+Ry+'" class="fg-right"/>';
+  var pR = pts[rightIdx];
+  var pOther = pts.filter(function(_,i){return i!==rightIdx});
+  var svg = ctxSvg +
+    '<polygon points="'+Rx+','+Ry+' '+Bx+','+By+' '+Tx+','+Ty+'" class="fg-fill"/>' +
+    '<line x1="'+Rx+'" y1="'+Ry+'" x2="'+Bx+'" y2="'+By+'" class="fg-line"/>' +
+    '<line x1="'+Bx+'" y1="'+By+'" x2="'+Tx+'" y2="'+Ty+'" class="fg-line"/>' +
+    '<line x1="'+Tx+'" y1="'+Ty+'" x2="'+Rx+'" y2="'+Ry+'" class="fg-line"/>' +
+    rightSvg +
+    '<circle cx="'+Rx+'" cy="'+Ry+'" class="fg-dot"/>' +
+    '<circle cx="'+Bx+'" cy="'+By+'" class="fg-dot"/>' +
+    '<circle cx="'+Tx+'" cy="'+Ty+'" class="fg-dot"/>' +
+    '<text x="'+(Rx-10)+'" y="'+(Ry+14)+'" class="fg-label">'+pR+'</text>' +
+    '<text x="'+(Bx+8)+'" y="'+(By+14)+'" class="fg-label">'+pOther[0]+'</text>' +
+    '<text x="'+(Tx-10)+'" y="'+(Ty-8)+'" class="fg-label">'+pOther[1]+'</text>' +
+    _figValLabel((Rx+Bx)/2, Ry+16, s[0], revealed, fig.ans, 'middle') +
+    _figValLabel(Rx-18, (Ry+Ty)/2, s[1], revealed, fig.ans, 'middle') +
+    _figValLabel((Bx+Tx)/2+14, (By+Ty)/2, s[2], revealed, fig.ans, 'middle');
+  return svg;
+}
+
+function _figTriTrigo(fig, revealed) {
+  var pts = fig.pts || ['A','B','C'];
+  var s = fig.sides || [null, null, null];
+  var angle = fig.angle || 35;
+  var padL = 50, padB = 160;
+  var rw = 170, rh = 110;
+  var Rx = padL, Ry = padB;
+  var Bx = padL + rw, By = padB;
+  var Tx = padL, Ty = padB - rh;
+  var rightSvg = '<path d="M '+Rx+','+(Ry-12)+' L '+(Rx+12)+','+(Ry-12)+' L '+(Rx+12)+','+Ry+'" class="fg-right"/>';
+  var arcR = 28;
+  var angRad = Math.PI - Math.atan2(rh, rw);
+  var arcEndX = Bx - arcR;
+  var arcEndY = By;
+  var arcTopX = Bx + arcR * Math.cos(angRad);
+  var arcTopY = By + arcR * Math.sin(angRad);
+  var angleSvg = '<path d="M '+arcEndX+','+arcEndY+' A '+arcR+','+arcR+' 0 0,0 '+arcTopX.toFixed(1)+','+arcTopY.toFixed(1)+'" class="fg-angle"/>' +
+    '<text x="'+(Bx-40)+'" y="'+(By-10)+'" class="fg-val" style="font-size:11px;fill:#f59e0b">'+angle+'°</text>';
+  var svg = '<polygon points="'+Rx+','+Ry+' '+Bx+','+By+' '+Tx+','+Ty+'" class="fg-fill"/>' +
+    '<line x1="'+Rx+'" y1="'+Ry+'" x2="'+Bx+'" y2="'+By+'" class="fg-line"/>' +
+    '<line x1="'+Bx+'" y1="'+By+'" x2="'+Tx+'" y2="'+Ty+'" class="fg-line"/>' +
+    '<line x1="'+Tx+'" y1="'+Ty+'" x2="'+Rx+'" y2="'+Ry+'" class="fg-line"/>' +
+    rightSvg + angleSvg +
+    '<circle cx="'+Rx+'" cy="'+Ry+'" class="fg-dot"/>' +
+    '<circle cx="'+Bx+'" cy="'+By+'" class="fg-dot"/>' +
+    '<circle cx="'+Tx+'" cy="'+Ty+'" class="fg-dot"/>' +
+    '<text x="'+(Rx-10)+'" y="'+(Ry+14)+'" class="fg-label">'+pts[1]+'</text>' +
+    '<text x="'+(Bx+8)+'" y="'+(By+14)+'" class="fg-label">'+pts[0]+'</text>' +
+    '<text x="'+(Tx-10)+'" y="'+(Ty-8)+'" class="fg-label">'+pts[2]+'</text>' +
+    _figValLabel((Rx+Bx)/2, Ry+16, s[0], revealed, fig.ans, 'middle') +
+    _figValLabel(Rx-18, (Ry+Ty)/2, s[1], revealed, fig.ans, 'middle') +
+    _figValLabel((Bx+Tx)/2+14, (By+Ty)/2, s[2], revealed, fig.ans, 'middle') +
+    '<text x="'+((Rx+Bx)/2)+'" y="'+(Ry+28)+'" text-anchor="middle" style="font-size:10px;fill:var(--fig-line);opacity:.6">adj.</text>' +
+    '<text x="'+(Rx-14)+'" y="'+((Ry+Ty)/2+14)+'" text-anchor="middle" style="font-size:10px;fill:var(--fig-line);opacity:.6">opp.</text>' +
+    '<text x="'+((Bx+Tx)/2+24)+'" y="'+((By+Ty)/2+14)+'" style="font-size:10px;fill:var(--fig-line);opacity:.6">hyp.</text>';
+  return svg;
+}
+
+function _figThales(fig, revealed) {
+  var pts = fig.pts || ['A','B','M','N','O'];
+  var s = fig.sides || [null,null,null,null];
+  var ox=140,oy=25;
+  var ax=45,ay=165,bx=235,by=165;
+  var mx=75,my=105,nx=205,ny=105;
+  var svg = '<line x1="'+ox+'" y1="'+oy+'" x2="'+ax+'" y2="'+ay+'" class="fg-line"/>' +
+    '<line x1="'+ox+'" y1="'+oy+'" x2="'+bx+'" y2="'+by+'" class="fg-line"/>' +
+    '<line x1="'+ax+'" y1="'+ay+'" x2="'+bx+'" y2="'+by+'" class="fg-line"/>' +
+    '<line x1="'+mx+'" y1="'+my+'" x2="'+nx+'" y2="'+ny+'" class="fg-dash"/>' +
+    '<circle cx="'+ox+'" cy="'+oy+'" class="fg-dot"/>' +
+    '<circle cx="'+ax+'" cy="'+ay+'" class="fg-dot"/>' +
+    '<circle cx="'+bx+'" cy="'+by+'" class="fg-dot"/>' +
+    '<circle cx="'+mx+'" cy="'+my+'" class="fg-dot"/>' +
+    '<circle cx="'+nx+'" cy="'+ny+'" class="fg-dot"/>' +
+    '<text x="'+(ox+5)+'" y="'+(oy-8)+'" class="fg-label">'+pts[4]+'</text>' +
+    '<text x="'+(ax-14)+'" y="'+(ay+4)+'" class="fg-label">'+pts[0]+'</text>' +
+    '<text x="'+(bx+6)+'" y="'+(by+4)+'" class="fg-label">'+pts[1]+'</text>' +
+    '<text x="'+(mx-16)+'" y="'+(my+4)+'" class="fg-label">'+pts[2]+'</text>' +
+    '<text x="'+(nx+6)+'" y="'+(ny+4)+'" class="fg-label">'+pts[3]+'</text>' +
+    _figValLabel((ox+mx)/2-16, (oy+my)/2, s[0], revealed, fig.ans) +
+    _figValLabel((ox+nx)/2+12, (oy+ny)/2, s[1], revealed, fig.ans) +
+    _figValLabel((mx+nx)/2, my-8, s[2], revealed, fig.ans) +
+    _figValLabel((ax+bx)/2, ay+16, s[3], revealed, fig.ans);
+  return svg;
+}
+
+function _figAngle(fig, revealed) {
+  var pts = fig.pts || ['','O',''];
+  var deg = fig.deg || 60;
+  var rad = deg * Math.PI / 180;
+  var ox=65, oy=160, len=150;
+  var ex = ox+len, ey = oy;
+  var fx = ox + len*Math.cos(rad), fy = oy - len*Math.sin(rad);
+  var arcR = 40;
+  var aex = ox+arcR, aey = oy;
+  var afx = ox + arcR*Math.cos(rad), afy = oy - arcR*Math.sin(rad);
+  var large = deg > 180 ? 1 : 0;
+  var labelR = arcR * 0.6;
+  var valDisplay = fig.hide_angle ? null : deg;
+  var svg = '<line x1="'+ox+'" y1="'+oy+'" x2="'+ex+'" y2="'+ey+'" class="fg-line"/>' +
+    '<line x1="'+ox+'" y1="'+oy+'" x2="'+fx.toFixed(1)+'" y2="'+fy.toFixed(1)+'" class="fg-line"/>' +
+    '<path d="M '+aex+','+aey+' A '+arcR+','+arcR+' 0 '+large+',0 '+afx.toFixed(1)+','+afy.toFixed(1)+'" class="fg-angle"/>' +
+    _figValLabel(
+      Math.round(ox + labelR*Math.cos(rad/2)),
+      Math.round(oy - labelR*Math.sin(rad/2)),
+      valDisplay, revealed, fig.ans
+    ) +
+    '<circle cx="'+ox+'" cy="'+oy+'" class="fg-dot"/>' +
+    '<text x="'+(ox-12)+'" y="'+(oy+16)+'" class="fg-label">'+pts[1]+'</text>' +
+    (pts[0] ? '<text x="'+(ex+6)+'" y="'+(ey+4)+'" class="fg-label">'+pts[0]+'</text>' : '') +
+    (pts[2] ? '<text x="'+(fx+6).toFixed(0)+'" y="'+(fy-6).toFixed(0)+'" class="fg-label">'+pts[2]+'</text>' : '');
+  return svg;
+}
+
+function _figCube3D(fig, revealed) {
+  var dims = fig.dims || [4,3,2];
+  var x0=55, y0=145, dx=28, dy=18;
+  var sc = Math.min(160/Math.max(dims[0],dims[1]), 100/dims[2], 30);
+  var w = dims[0]*sc, h = dims[2]*sc, d = dims[1]*sc*0.4;
+  var svg =
+    '<polygon points="'+(x0+dx)+','+(y0-h-dy)+' '+(x0+w+dx)+','+(y0-h-dy)+' '+(x0+w)+','+(y0-h)+' '+x0+','+(y0-h)+'" class="fg-3d-face" style="opacity:.25"/>' +
+    '<line x1="'+(x0+dx)+'" y1="'+(y0-h-dy)+'" x2="'+(x0+w+dx)+'" y2="'+(y0-h-dy)+'" class="fg-3d-hidden"/>' +
+    '<line x1="'+(x0+w+dx)+'" y1="'+(y0-h-dy)+'" x2="'+(x0+w+dx)+'" y2="'+(y0-dy)+'" class="fg-3d-hidden"/>' +
+    '<line x1="'+(x0+dx)+'" y1="'+(y0-h-dy)+'" x2="'+(x0+dx)+'" y2="'+(y0-dy)+'" class="fg-3d-hidden"/>' +
+    '<rect x="'+x0+'" y="'+(y0-h)+'" width="'+w+'" height="'+h+'" class="fg-3d-face"/>' +
+    '<polygon points="'+(x0+w)+','+(y0-h)+' '+(x0+w+dx)+','+(y0-h-dy)+' '+(x0+w+dx)+','+(y0-dy)+' '+(x0+w)+','+y0+'" class="fg-3d-face" style="opacity:.35"/>' +
+    '<polygon points="'+x0+','+(y0-h)+' '+(x0+dx)+','+(y0-h-dy)+' '+(x0+w+dx)+','+(y0-h-dy)+' '+(x0+w)+','+(y0-h)+'" class="fg-3d-face" style="opacity:.2"/>';
+  if (fig.section) {
+    var sec = fig.section;
+    if (sec === 'horizontal') {
+      var sy = y0 - h/2;
+      svg += '<polygon points="'+x0+','+sy+' '+(x0+dx)+','+(sy-dy)+' '+(x0+w+dx)+','+(sy-dy)+' '+(x0+w)+','+sy+'" class="fg-section"/>';
+    } else if (sec === 'diagonal') {
+      svg += '<polygon points="'+x0+','+(y0-h)+' '+(x0+w)+','+(y0-h)+' '+(x0+w)+','+y0+' '+x0+','+y0+'" class="fg-section" style="opacity:.15"/>';
+    }
+  }
+  svg += _figValLabel(x0+w/2, y0+14, fig.labels ? fig.labels[0] : dims[0], revealed, fig.ans) +
+    _figValLabel(x0+w+12, y0-h/2, fig.labels ? fig.labels[1] : dims[2], revealed, fig.ans) +
+    (dims[1] ? _figValLabel(x0+w+dx/2+8, y0-dy/2+4, fig.labels ? fig.labels[2] : dims[1], revealed, fig.ans) : '');
+  return svg;
+}
+
+function _figTriangle(fig, revealed) {
+  var pts = fig.pts || ['A','B','C'];
+  var s = fig.sides || [null,null,null];
+  var angles = fig.angles || [null,null,null];
+  var Ax=40, Ay=160, Bx=230, By=160, Cx=120, Cy=35;
+  var svg = '<polygon points="'+Ax+','+Ay+' '+Bx+','+By+' '+Cx+','+Cy+'" class="fg-fill"/>' +
+    '<line x1="'+Ax+'" y1="'+Ay+'" x2="'+Bx+'" y2="'+By+'" class="fg-line"/>' +
+    '<line x1="'+Bx+'" y1="'+By+'" x2="'+Cx+'" y2="'+Cy+'" class="fg-line"/>' +
+    '<line x1="'+Cx+'" y1="'+Cy+'" x2="'+Ax+'" y2="'+Ay+'" class="fg-line"/>' +
+    '<circle cx="'+Ax+'" cy="'+Ay+'" class="fg-dot"/>' +
+    '<circle cx="'+Bx+'" cy="'+By+'" class="fg-dot"/>' +
+    '<circle cx="'+Cx+'" cy="'+Cy+'" class="fg-dot"/>' +
+    '<text x="'+(Ax-10)+'" y="'+(Ay+14)+'" class="fg-label">'+pts[0]+'</text>' +
+    '<text x="'+(Bx+6)+'" y="'+(By+14)+'" class="fg-label">'+pts[1]+'</text>' +
+    '<text x="'+(Cx-4)+'" y="'+(Cy-10)+'" class="fg-label">'+pts[2]+'</text>';
+  if (s[0] !== undefined) svg += _figValLabel((Ax+Bx)/2, Ay+16, s[0], revealed, fig.ans);
+  if (s[1] !== undefined) svg += _figValLabel((Bx+Cx)/2+12, (By+Cy)/2, s[1], revealed, fig.ans);
+  if (s[2] !== undefined) svg += _figValLabel((Ax+Cx)/2-14, (Ay+Cy)/2, s[2], revealed, fig.ans);
+  for (var ai = 0; ai < 3; ai++) {
+    if (angles[ai]) {
+      var apts = [[Ax,Ay],[Bx,By],[Cx,Cy]];
+      var p = apts[ai];
+      svg += '<text x="'+(p[0]+(ai===0?14:ai===1?-18:0))+'" y="'+(p[1]+(ai===2?18:-14))+'" class="fg-val" style="font-size:11px">'+angles[ai]+'°</text>';
+    }
+  }
+  return svg;
+}
+
+function _figParallel(fig, revealed) {
+  if (fig.perp) {
+    return '<line x1="30" y1="95" x2="250" y2="95" class="fg-line"/>' +
+      '<line x1="140" y1="25" x2="140" y2="165" class="fg-line"/>' +
+      '<path d="M 140,83 L 152,83 L 152,95" class="fg-right"/>' +
+      '<text x="255" y="99" class="fg-label">(d₁)</text>' +
+      '<text x="144" y="22" class="fg-label">(d₂)</text>';
+  }
+  var svg = '<line x1="20" y1="55" x2="260" y2="55" class="fg-line"/>' +
+    '<line x1="20" y1="135" x2="260" y2="135" class="fg-line"/>' +
+    '<text x="262" y="59" class="fg-label">(d₁)</text>' +
+    '<text x="262" y="139" class="fg-label">(d₂)</text>';
+  svg += '<path d="M 90,55 L 84,67 M 96,55 L 90,67" style="stroke:var(--fig-val);stroke-width:1.5;fill:none"/>' +
+    '<path d="M 90,135 L 84,147 M 96,135 L 90,147" style="stroke:var(--fig-val);stroke-width:1.5;fill:none"/>';
+  if (fig.deg || fig.secant) {
+    svg += '<line x1="80" y1="20" x2="200" y2="170" class="fg-line" style="opacity:.7"/>' +
+      '<text x="75" y="16" class="fg-label">(Δ)</text>';
+    if (fig.deg) {
+      svg += '<path d="M 108,55 A 20,20 0 0,1 96,42" class="fg-angle"/>';
+      svg += _figValLabel(120, 40, fig.deg, revealed, fig.ans);
+    }
+  }
+  return svg;
+}
+
+// ══════════════════════════════════════════════════════════════
+// (Figures géométriques SVG supprimées)
+// ══════════════════════════════════════════════════════════════
 
 // ══════════════════════════════════════════════════════════════
 // VISUALISATION POST-RÉPONSE (courbes, arbres, droites)
