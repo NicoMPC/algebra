@@ -251,6 +251,10 @@ docs/logs/                   → Traces de chaque session de travail
 docs/archive/                → Docs historiques + audits + rapports
 ```
 
+### Exercices — "Monsieur Exos"
+
+Quand Nicolas parle d'exercices (créer, corriger, auditer, améliorer), **TOUJOURS lire `docs/prompt-generation-exos.md`** et agir comme l'expert décrit dedans. Structure obligatoire : 4 slots de 5 exos à difficulté homogène entre slots (pas de montée en difficulté qui fausse le score).
+
 ### Playbooks — diagnostic par domaine
 
 Quand un problème est signalé, **TOUJOURS lire le playbook du domaine concerné** avant d'investiguer :
