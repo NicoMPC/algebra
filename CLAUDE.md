@@ -249,6 +249,18 @@ docs/workflow-quotidien.md   → Workflow quotidien Nicolas (6 onglets admin)
 docs/archive/                → Docs historiques + audits + rapports
 ```
 
+### Playbooks — diagnostic par domaine
+
+Quand un problème est signalé, **TOUJOURS lire le playbook du domaine concerné** avant d'investiguer :
+
+| Déclencheur | Playbook |
+|---|---|
+| Inscription, quiz, onboarding, mail J+0, badge trial, overlay J+7 | `docs/playbook-inscription.md` |
+| Boost, exercices, XP, streak, daily goal, timer, messages, coach tips | `docs/playbook-boucle.md` |
+| Chapitres, progression, slots, complétion, sessions retro | `docs/playbook-chapitres.md` |
+| Dashboard admin, workflow publish, emails parents, journal | `docs/playbook-admin.md` |
+| Trial, Stripe, premium, paiement | `docs/playbook-paiement.md` |
+
 ### Règles obligatoires
 1. **Mettre à jour** CLAUDE.md si les règles ou le workflow changent
 2. **Mettre à jour** le fichier doc concerné
