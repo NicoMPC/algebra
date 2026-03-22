@@ -288,6 +288,7 @@ Quand un problème est signalé, **TOUJOURS lire le playbook du domaine concern�
 | `sim_7days_messages.py` | Simulation messages — 274 API calls, 0 incohérence |
 | `audit_exos.py` | Audit qualité exercices |
 | `audit_latex.py` | Audit rendu LaTeX/KaTeX sur tous les exercices (q, a, options, steps, f) |
+| `validate_exos.py` | Gate qualité bloquant — valide JSON avant injection Sheet. Usage : `python3 validate_exos.py exos.json` ou `--sheet TAB NIVEAU CAT` |
 | `fix_latex.py` | Fix automatique des formules LaTeX sans `$...$` (`--apply` pour écrire) |
 | `verify_hints.py` | Audit qualité des indices |
 | `test_coherence_boost.py` | Test régression calibrage/boost |
