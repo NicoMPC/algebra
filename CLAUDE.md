@@ -224,8 +224,8 @@ python3 rebuild_sheet.py        # Reconstruire Suivi + Historique
 
 | # | Risque | Sévérité | Fix |
 |---|--------|----------|-----|
-| V1 | Webhook Stripe sans HMAC-SHA256 | 🔴 CRITIQUE | Implémenter `stripe-signature` header |
-| V2 | `SHARED_SECRET` hardcodé backend.js | 🔴 CRITIQUE | → `PropertiesService` |
+| V1 | ~~Webhook Stripe sans HMAC-SHA256~~ | ✅ FIXÉ | `_verifyWebhookHmac()` + fallback metadata.secret. GAS n'expose pas les headers HTTP → HMAC via `_sig/_ts` payload (2026-03-22) |
+| V2 | ~~`SHARED_SECRET` hardcodé backend.js~~ | ✅ FIXÉ | `PropertiesService.getScriptProperties()` — configurer dans Apps Script → Paramètres → Propriétés de script (2026-03-22) |
 | V3 | ~~Race condition saveScore/ExosDone~~ | ✅ FIXÉ | LockService.tryLock(10000) dans saveScore (2026-03-20) |
 | V4 | Race condition ensureUsersCols | 🟡 MOYEN | Lock ou check post-insert |
 | V5 | Rate limiting par email (changeable) | 🟡 MOYEN | Acceptable MVP |

@@ -5586,7 +5586,35 @@ var STRIPE_IPS = [
   '54.241.34.107','54.245.144.81','54.245.144.82'
 ];
 
-var SHARED_SECRET = 'MATHEUX_STRIPE_2026';
+// ── Secrets via PropertiesService (jamais hardcodés) ─────────────────────────
+// Config requise : Apps Script → Paramètres → Propriétés de script :
+//   SHARED_SECRET        = MATHEUX_STRIPE_2026
+//   STRIPE_WEBHOOK_SECRET = whsec_... (depuis dashboard Stripe → Webhooks → Signing secret)
+var SHARED_SECRET = PropertiesService.getScriptProperties().getProperty('SHARED_SECRET') || '';
+var STRIPE_WEBHOOK_SECRET = PropertiesService.getScriptProperties().getProperty('STRIPE_WEBHOOK_SECRET') || '';
+
+// ── HMAC helper — vérification signature URL ou metadata ─────────────────────
+// GAS ne donne PAS accès aux headers HTTP dans doPost() → impossible de vérifier
+// Stripe-Signature (HMAC du body). Alternative : Stripe envoie le webhook vers
+// l'URL GAS avec ?sig=HMAC-SHA256(timestamp.secret, STRIPE_WEBHOOK_SECRET)
+// configuré via Stripe → Webhooks → Endpoint URL.
+// Si STRIPE_WEBHOOK_SECRET n'est pas configuré, fallback sur metadata.secret.
+function _verifyWebhookHmac(p) {
+  // Méthode 1 : sig dans le payload (ajouté par un proxy ou par Stripe metadata)
+  if (STRIPE_WEBHOOK_SECRET && p._sig && p._ts) {
+    var expected = Utilities.computeHmacSha256Signature(p._ts + '.' + STRIPE_WEBHOOK_SECRET, STRIPE_WEBHOOK_SECRET);
+    var hex = expected.map(function(b) { return ('0' + (b < 0 ? b + 256 : b).toString(16)).slice(-2); }).join('');
+    if (hex !== String(p._sig)) return 'bad_hmac';
+    var age = (Date.now() / 1000) - parseInt(p._ts || '0');
+    if (age > 300 || age < -60) return 'hmac_expired';
+    return 'ok';
+  }
+  // Méthode 2 (fallback actuel) : secret dans metadata Stripe
+  var metadata = (p.data && p.data.object && p.data.object.metadata) || {};
+  if (!SHARED_SECRET) return 'no_secret_configured';
+  if (metadata.secret !== SHARED_SECRET) return 'bad_secret';
+  return 'ok';
+}
 
 // ── MODULE 1 : stripeWebhook — point d'entrée principal ───────────────────────
 function stripeWebhook(p) {
@@ -5625,11 +5653,10 @@ function stripeWebhook(p) {
       ''
     ).toLowerCase().trim();
 
-    var metadata = obj.metadata || {};
-
-    // Vérif 2 : secret metadata Stripe
-    if (metadata.secret !== SHARED_SECRET) {
-      _logWebhook('BLOCKED', 'bad_secret', email, eventType);
+    // Vérif 2 : HMAC ou secret metadata
+    var hmacResult = _verifyWebhookHmac(p);
+    if (hmacResult !== 'ok') {
+      _logWebhook('BLOCKED', hmacResult, email, eventType);
       return { status: 'error', message: 'forbidden' };
     }
 

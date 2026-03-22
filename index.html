@@ -7851,6 +7851,9 @@ window.dismissMotProf = function() {
 // RENDER PRINCIPAL
 // ══════════════════════════════════════════════════════════════
 function render() {
+  // Clear all nudge timers on view change to avoid stale "Psst" toasts
+  Object.keys(_nudgeTimers).forEach(function(k) { clearNudge(k); });
+
   // Sync icône mode nuit
   var _nightBtn = document.getElementById('app-night-btn');
   if (_nightBtn) _nightBtn.textContent = document.body.classList.contains('app-night') ? '☀️' : '🌙';
