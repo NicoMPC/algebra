@@ -690,6 +690,10 @@ function _saveScoreInner(p) {
   if (String(p.code).length !== 6) {
     return { status: 'error', message: 'Code élève invalide.' };
   }
+  // C2 security: verify email matches student code
+  if (!_verifyStudentEmail(String(p.code), String(p.email || ''))) {
+    return { status: 'error', message: 'Identité non vérifiée.' };
+  }
   if (!isValidLevel(String(p.level || '').toUpperCase())) {
     return { status: 'error', message: 'Niveau invalide.' };
   }
@@ -779,6 +783,10 @@ function saveCalibrationBatch(p) {
     return { status: 'error', message: 'code et scores requis.' };
   }
   var code = String(p.code);
+  // C2 security: verify email matches student code
+  if (!_verifyStudentEmail(code, String(p.email || ''))) {
+    return { status: 'error', message: 'Identité non vérifiée.' };
+  }
   var name = String(p.name || '');
   var level = String(p.level || '');
   var now = today();
@@ -817,6 +825,10 @@ function saveBoost(p) {
   }
 
   var code     = String(p.code);
+  // C2 security: verify email matches student code
+  if (!_verifyStudentEmail(code, String(p.email || ''))) {
+    return { status: 'error', message: 'Identité non vérifiée.' };
+  }
   var todayStr = today();
   var sh       = getSheet(SH.BOOSTS);
   var data     = sh.getDataRange().getValues();
@@ -3003,6 +3015,19 @@ function processPendingAtLogin(code) {
 //  Vérifie qu'un code correspond bien à un utilisateur IsAdmin=1.
 // ════════════════════════════════════════════════════════════
 
+// C2 security fix: verify student identity (code + email match)
+// Returns true if email matches the stored email for this code, or if email is empty (graceful degradation for old clients).
+function _verifyStudentEmail(code, email) {
+  if (!email) return true; // graceful degradation — old frontend versions don't send email
+  var users = getRows(SH.USERS);
+  for (var i = 0; i < users.length; i++) {
+    if (String(users[i]['Code']) === code) {
+      return String(users[i]['Email'] || '').toLowerCase() === String(email).toLowerCase();
+    }
+  }
+  return false; // code not found
+}
+
 function verifyAdmin(adminCode) {
   if (!adminCode) return false;
   var users = getRows(SH.USERS);
@@ -5065,6 +5090,10 @@ function importChapters(p) {
 //  Utilisé depuis le bouton "🔮 Simuler demain" (?sim=1 dans l'URL).
 // ════════════════════════════════════════════════════════════
 function simulateNextDay(p) {
+  // C1 security fix: admin-only action
+  if (!verifyAdmin(String(p.adminCode || ''))) {
+    return { status: 'error', message: 'Accès refusé.' };
+  }
   var code = String(p.code || '').trim();
   if (!code) return { status: 'error', message: 'code requis.' };
 
@@ -5497,7 +5526,9 @@ function getCoursAdmin(p) {
 
 // ── Rapport session pour le fondateur ───────────────────────
 function sendSessionRapport(p) {
-  if (p.secret !== 'matheux_rapport_77') return { status: 'error', message: 'Unauthorized' };
+  // C3 security fix: secret moved to PropertiesService (key: RAPPORT_SECRET)
+  var rapportSecret = PropertiesService.getScriptProperties().getProperty('RAPPORT_SECRET') || '';
+  if (!rapportSecret || p.secret !== rapportSecret) return { status: 'error', message: 'Unauthorized' };
   var today = Utilities.formatDate(new Date(), 'Europe/Paris', 'dd/MM/yyyy');
   var html =
     '<div style="font-family:Arial,sans-serif;max-width:700px;margin:0 auto;color:#1e293b">' +
@@ -5776,7 +5807,8 @@ function _logWebhook(status, detail, email, eventType) {
 //  AUDIT EXOS — Jérôme (WXHBJH) uniquement
 // ════════════════════════════════════════════════════════════
 
-var AUDITOR_CODE = 'WXHBJH';
+// C3 security fix: auditor code moved to PropertiesService (key: AUDITOR_CODE)
+var AUDITOR_CODE = PropertiesService.getScriptProperties().getProperty('AUDITOR_CODE') || '';
 
 function getAuditExos(p) {
   if (String(p.code) !== AUDITOR_CODE) return { status: 'error', message: 'Non autorisé.' };

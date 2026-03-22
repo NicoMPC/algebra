@@ -146,9 +146,9 @@
   </script>
 
   <!-- KaTeX — rendu maths rapide -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
           onload="window._katexReady=true;if(window._katexQueue){window._katexQueue.forEach(function(fn){fn()});window._katexQueue=null}"></script>
   <script>
   // KaTeX retry — CDN alternatif si jsdelivr échoue (réseau faible mobile)
@@ -163,6 +163,8 @@
     document.head.appendChild(s1);
   }, 3000);
   </script>
+  <!-- E2: Tailwind Play CDN is dynamic (generates CSS at runtime) — SRI not possible -->
+  <!-- E3: CSP headers not feasible with GAS hosting (no server-side header control) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
@@ -2547,6 +2549,7 @@ let S = {
   _flowActive:       false,   // flow mode on?
   _flowRemaining:    0,       // exos left with ×2 bonus
   _flowCat:          null,    // category where flow streak is building
+  _pendingTimerExo:  null,    // timer deferred while overlay showing
 };
 
 const LVL = {};
@@ -2582,6 +2585,8 @@ async function h256(pw, em) {
     alert2('Connexion impossible 🔒', 'Ouvre le site en HTTPS (cadenas dans la barre d\'adresse) : https://matheux.fr');
     throw new Error('crypto.subtle indisponible — HTTPS requis');
   }
+  // ⚠️ C4 KNOWN ISSUE: Static salt 'AB22' — migrate to per-user salt + bcrypt in future version.
+  // DO NOT change without migrating all existing password hashes in the Users sheet.
   var s = (em || '').toLowerCase() + '::' + pw + '::AB22';
   var b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
   return Array.from(new Uint8Array(b)).map(function(x){ return x.toString(16).padStart(2,'0'); }).join('');
@@ -2868,9 +2873,11 @@ function sendScore(cat, idx, status, xp, q, wrongOpt, sourceCat) {
     : 0;
   var draftData = S.drafts[id] || {};
 
+  var _creds = {}; try { _creds = JSON.parse(localStorage.getItem(SK) || '{}'); } catch(e) {}
   var p = {
     action:       "save_score",
     code:         S.prof.code,
+    email:        _creds.email || '',
     name:         S.prof.name,
     level:        S.niv,
     categorie:    cat,
@@ -3939,7 +3946,7 @@ async function _flowGuestRegister() {
     };
   });
   fetch(SU, { method: 'POST',
-    body: JSON.stringify({ action: 'save_calibration_batch', code: code, name: prenom, level: _flowLevel, scores: calScores })
+    body: JSON.stringify({ action: 'save_calibration_batch', code: code, email: (document.getElementById('le') || {}).value || '', name: prenom, level: _flowLevel, scores: calScores })
   }).catch(function() {});
 
   // Nettoyer
@@ -4035,7 +4042,7 @@ async function flowRegister() {
           temps: res.time || 0, nbIndices: 0, formule: false };
       });
       fetch(SU, { method: 'POST',
-        body: JSON.stringify({ action: 'save_calibration_batch', code: newCode, name: newPrenom, level: _flowLevel, scores: _bs2 })
+        body: JSON.stringify({ action: 'save_calibration_batch', code: newCode, email: (document.getElementById('le') || {}).value || '', name: newPrenom, level: _flowLevel, scores: _bs2 })
       }).catch(function() {});
       // Marquer la queue guestDiag comme complète
       try {
@@ -5315,11 +5322,11 @@ function _showSlotReward(cat, slotNum, dailyJustDone) {
       '<div class="slot-dots">' + dotsHtml + '</div>' +
       '<div style="font-size:.75rem;font-weight:700;color:#1E40AF">+75 XP</div>' +
       dailyHtml +
-      '<button class="slot-btn" onclick="this.closest(\'.slot-overlay\').remove();_slotRewardShowing=false;render()">Continuer →</button>' +
+      '<button class="slot-btn" onclick="this.closest(\'.slot-overlay\').remove();_slotRewardShowing=false;render();if(S._pendingTimerExo){_startTimer(S._pendingTimerExo);S._pendingTimerExo=null;}">Continuer →</button>' +
     '</div>';
   document.body.appendChild(ov);
   // Auto-dismiss after 10s
-  setTimeout(function() { if (ov.parentNode) { ov.remove(); _slotRewardShowing = false; } }, 10000);
+  setTimeout(function() { if (ov.parentNode) { ov.remove(); _slotRewardShowing = false; if(S._pendingTimerExo){_startTimer(S._pendingTimerExo);S._pendingTimerExo=null;} } }, 10000);
 }
 
 function _showDailyReward() {
@@ -5339,10 +5346,10 @@ function _showDailyReward() {
       '<div style="font-size:.85rem;font-weight:600;color:#475569;line-height:1.5">' + msg + '</div>' +
       '<div style="margin-top:.5rem;font-size:.75rem;font-weight:700;color:#10b981">+50 XP</div>' +
       '<div style="margin-top:.5rem;font-size:.75rem;color:#64748b">' + _msg('daily_bonus') + '</div>' +
-      '<button class="slot-btn" style="background:linear-gradient(135deg,#059669,#10b981)" onclick="this.closest(\'.slot-overlay\').remove();render()">Continuer →</button>' +
+      '<button class="slot-btn" style="background:linear-gradient(135deg,#059669,#10b981)" onclick="this.closest(\'.slot-overlay\').remove();render();if(S._pendingTimerExo){_startTimer(S._pendingTimerExo);S._pendingTimerExo=null;}">Continuer →</button>' +
     '</div>';
   document.body.appendChild(ov);
-  setTimeout(function() { if (ov.parentNode) ov.remove(); }, 10000);
+  setTimeout(function() { if (ov.parentNode) { ov.remove(); if(S._pendingTimerExo){_startTimer(S._pendingTimerExo);S._pendingTimerExo=null;} } }, 10000);
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -9635,6 +9642,7 @@ function _toggleTimer() {
 function _startTimer(exoId) {
   _stopTimer();
   if (!_isTimerOn()) return;
+  if (_slotRewardShowing) { S._pendingTimerExo = exoId; return; }
   S._timerExoId = exoId;
   // Toujours reset à maintenant — chaque question repart à 0
   S.exoStartTime[exoId] = Date.now();
@@ -9673,6 +9681,14 @@ function _tickTimer() {
   var el = document.getElementById('exo-timer-display');
   if (!el) return;
   var elapsed = Math.floor((Date.now() - S._timerStart) / 1000);
+  // Cap overtime at +5:00 — stop updating beyond that
+  if (elapsed > TIMER_DURATION + 300) {
+    clearInterval(S._timerIv); S._timerIv = null;
+    var txt0 = el.querySelector('.exo-timer-txt');
+    if (txt0) txt0.textContent = '+5:00';
+    el.classList.add('overtime');
+    return;
+  }
   var remaining = Math.max(0, TIMER_DURATION - elapsed);
   var mins = Math.floor(remaining / 60);
   var secs = remaining % 60;
