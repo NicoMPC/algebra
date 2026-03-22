@@ -404,6 +404,12 @@
       position:sticky; bottom:0; z-index:40;
       padding:0.5rem 0; margin:0;
     }
+    .fill-input {
+      width:100%; padding:1rem; border-radius:var(--r); font-weight:700;
+      font-size:1.1rem; border:2px solid #cbd5e1; background:#f8fafc;
+      text-align:center; outline:none; transition:border-color .2s;
+    }
+    .fill-input:focus { border-color:#1E40AF; background:#fff; }
     .btn-validate {
       width:100%; padding:1rem; border-radius:var(--r); font-weight:800;
       font-size:1rem; border:none; cursor:pointer; transition:all .15s;
@@ -5444,6 +5450,12 @@ window.revF = function(cat, idx) {
   render();
 };
 
+// ─── NORMALISATION FILL ──────────────────────────────────────
+// Compare la réponse élève vs la bonne réponse (tolérant espaces, $, virgules)
+function _normFill(s) {
+  return String(s).replace(/\$/g,'').replace(/\\,/g,'').replace(/\s+/g,'').replace(/,/g,'.').toLowerCase().trim();
+}
+
 // ─── SÉLECTION + VALIDATION QCM ─────────────────────────────
 // v23 refactor : selectOpt (sélection visuelle) + validateAnswer (validation)
 // Force la réflexion, empêche le tap impulsif.
@@ -5464,8 +5476,55 @@ window.selectOpt = function(cat, idx, oI, btn) {
 };
 
 window.validateAnswer = function() {
-  if (!S._sel) return;
   if (S.rev) return;
+
+  // ── Fill : branche dédiée ──
+  var _fillExo = null;
+  if (!S._sel) {
+    // Pas de sélection QCM → chercher un fill actif
+    var _fCat = S._activeCat, _fIdx = S._activeIdx;
+    if (_fCat !== undefined && _fIdx !== undefined) {
+      var _fExo = LVL[S.niv].cats[_fCat] && LVL[S.niv].cats[_fCat][_fIdx];
+      if (_fExo && (_fExo.type === 'fill')) _fillExo = { cat: _fCat, idx: _fIdx, exo: _fExo };
+    }
+    if (!_fillExo) return; // ni sélection QCM ni fill actif
+  }
+
+  if (_fillExo) {
+    var cat = _fillExo.cat, idx = _fillExo.idx, exo = _fillExo.exo;
+    var r   = res2(cat, idx);
+    var id  = S.niv + '-' + r.rC + '-' + r.rI;
+    if (S.res[id]) return;
+    var inp = document.getElementById('fill-input-'+id);
+    var val = inp ? inp.value.trim() : '';
+    if (!val) return;
+    clearNudge(id);
+    S.qans[id] = val;
+    S.rev  = true;
+    S.cid  = id;
+    var isCorrect = _normFill(val) === _normFill(exo.a);
+    var _okKey = (cat === 'BOOST') ? 'ok_boost' : (S.niv === '6EME') ? 'ok_6eme' : (S.niv === '3EME' || S.niv === '1ERE') ? 'ok_3eme' : 'ok_chap';
+    var _koKey = (cat === 'BOOST') ? 'ko_boost' : (S.niv === '6EME') ? 'ko_6eme' : (S.niv === '3EME' || S.niv === '1ERE') ? 'ko_3eme' : 'ko_chap';
+    if (isCorrect) {
+      showXP(100);
+      showT(_msg(_okKey), 1200, '\u2B50');
+      setTimeout(function(){ mark(cat, idx, 'EASY', null); }, 700);
+    } else {
+      if (_needsCoach('tip_wrong')) {
+        _markCoach('tip_wrong');
+        showT('Pas grave \u2014 les indices et la correction s\'affichent pour t\'aider', 2500, '\uD83D\uDCCB');
+      } else {
+        showT(_msg(_koKey), 1500, '\uD83D\uDCA1');
+      }
+      setTimeout(function(){
+        S._pendingHelp = { cat: cat, idx: idx };
+        mark(cat, idx, 'HARD', val);
+      }, 900);
+    }
+    return;
+  }
+
+  // ── QCM / VF : flow existant ──
   var cat = S._sel.cat, idx = S._sel.idx, oI = S._sel.oI;
   S._sel = null;
   var r   = res2(cat, idx);
@@ -8526,6 +8585,8 @@ window.skipAnswer = function(cat, idx) {
 // ══════════════════════════════════════════════════════════════
 function rSection(cat, data, idx, total, catDone) {
   if (!data) return '';
+  // Track active exo pour fill validation
+  S._activeCat = cat; S._activeIdx = idx;
   // Tutorial première question diagnostic
   var _tutorialBanner = '';
   if (cat === 'CALIBRAGE' && idx === 0) {
@@ -8650,6 +8711,27 @@ function rSection(cat, data, idx, total, catDone) {
     if (exoType === 'vf' && data.justification && isRev) {
       opts += '<div class="bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2.5 text-xs text-indigo-800 font-medium mt-2"><span class="font-bold">Explication :</span> '+fmtL(data.justification)+'</div>';
     }
+  } else if (exoType === 'fill' && !isRev && !scored) {
+    // ── Fill : champ de saisie libre ──
+    opts = '<div class="mt-4">' +
+      '<input type="text" id="fill-input-'+id+'" class="fill-input" placeholder="Ta réponse..." autocomplete="off" autocorrect="off" spellcheck="false" ' +
+        'oninput="var v=this.value.trim();var b=document.getElementById(\'btn-validate-fill\');if(b){b.disabled=!v;b.textContent=v?\'Valider la réponse ✓\':\'Écris ta réponse\'}" ' +
+        'onkeydown="if(event.key===\'Enter\'){event.preventDefault();validateAnswer()}">' +
+      '<div class="validate-wrap" id="validate-wrap">' +
+        '<button id="btn-validate-fill" class="btn-validate" onclick="validateAnswer()" disabled>Écris ta réponse</button>' +
+      '</div>' +
+      '<div class="text-center mt-5 mb-2"><button class="opt-skip" onclick="skipAnswer(\''+cat+'\','+idx+')">🤷 Je ne sais pas</button></div>' +
+    '</div>';
+  } else if (exoType === 'fill' && (isRev || scored)) {
+    // ── Fill post-réponse : afficher la bonne réponse ──
+    var fillAns = S.qans[id];
+    var fillOk = fillAns && _normFill(fillAns) === _normFill(data.a);
+    opts = '<div class="mt-3">';
+    opts += '<div class="text-xs font-bold mc bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 ' + (fillOk ? 'text-emerald-600' : '') + '">✓ Réponse : '+fmtL(data.a)+'</div>';
+    if (!fillOk && fillAns) {
+      opts += '<div class="text-xs text-rose-500 mt-1 mc bg-rose-50 border border-rose-200 rounded-xl px-3 py-2">✗ Répondu : '+fmtL(fillAns)+'</div>';
+    }
+    opts += '</div>';
   }
 
   // ── Indices ──────────────────────────────────────────

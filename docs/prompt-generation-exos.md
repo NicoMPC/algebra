@@ -178,7 +178,7 @@ produit scalaire, géométrie repérée, variables aléatoires.
 - **VÉRIFICATION OBLIGATOIRE** : refaire le calcul à la main avant de valider
 - Une réponse fausse = un élève qui perd confiance. C'est inacceptable.
 
-### Options (exactement 4 pour QCM)
+### Options (exactement 3 pour QCM — le frontend ajoute "Je ne sais pas" en 4ème choix)
 - Chaque distracteur = une **erreur de calcul plausible et identifiable** :
   - Oublier un signe négatif
   - Additionner les dénominateurs au lieu de chercher le PPCM
@@ -316,7 +316,7 @@ Les steps doivent guider vers la démarche, pas vers la réponse.
 | Options en double | "$0$" apparaît 2 fois | Réponse triviale |
 | Steps copiés-collés | step2 === step3 sur 71 exos Brevet | Indices inutiles |
 | Steps hors sujet | "Identifie le triangle rectangle" sur un exo de Thalès | Confusion |
-| 3 options au lieu de 4 | Manque un distracteur | QCM trop facile |
+| 2 options au lieu de 3 | Manque un distracteur | QCM trop facile |
 | LaTeX cassé | `x ^2` au lieu de `x^2` | Rendu moche |
 | Unicode mélangé | `×` Unicode avec `$\times$` LaTeX | Rendu incohérent |
 

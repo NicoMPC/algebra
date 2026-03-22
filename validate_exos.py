@@ -59,10 +59,14 @@ def validate_exo(exo, idx, errors, warnings):
     prefix = f"Exo #{idx+1}"
 
     # ── Champs obligatoires ──
-    for field in ['q', 'a', 'options', 'steps']:
+    for field in ['q', 'a', 'steps']:
         if field not in exo or not exo[field]:
             errors.append(f"{prefix} — Champ obligatoire manquant : '{field}'")
             return
+    # options obligatoire sauf pour fill
+    if exo.get('type') != 'fill' and (not exo.get('options')):
+        errors.append(f"{prefix} — Champ obligatoire manquant : 'options'")
+        return
 
     q = str(exo.get('q', ''))
     a = str(exo.get('a', ''))
@@ -73,7 +77,11 @@ def validate_exo(exo, idx, errors, warnings):
     exo_type = exo.get('type', '')
 
     # ── a ∈ options ──
-    if a not in options:
+    if exo_type == 'fill':
+        # Fill : pas d'options, juste vérifier que a existe et est non vide
+        if not a.strip():
+            errors.append(f"{prefix} — Fill sans réponse (a vide)")
+    elif a not in options:
         # Essai tolérant (strip)
         stripped_opts = [o.strip() for o in options]
         if a.strip() not in stripped_opts:
@@ -88,10 +96,10 @@ def validate_exo(exo, idx, errors, warnings):
     elif exo_type == 'fill':
         pass  # fill n'a pas d'options
     else:
-        if len(options) < 4:
-            errors.append(f"{prefix} — QCM doit avoir 4 options, trouvé {len(options)}")
+        if len(options) < 3:
+            errors.append(f"{prefix} — QCM doit avoir au moins 3 options, trouvé {len(options)}")
         if len(options) > 4:
-            warnings.append(f"{prefix} — {len(options)} options (attendu 4)")
+            warnings.append(f"{prefix} — {len(options)} options (attendu 3 ou 4)")
 
     # ── Doublons d'options ──
     if len(options) != len(set(options)):
