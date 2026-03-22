@@ -212,6 +212,8 @@
       --mx-card-bg: #1E293B;
       --mx-card-shadow: 0 4px 20px rgba(0,0,0,0.3);
       --mx-border: #334155;
+    }
+    body.app-night #main-app {
       --ink: #f1f5f9;
       --ink2: #e2e8f0;
     }
@@ -4943,7 +4945,7 @@ function initApp(d, skipRender) {
   if (!skipRender) { render(); flushQ(); }
 }
 
-function logout() { localStorage.removeItem(SK); location.reload(); }
+function logout() { localStorage.removeItem(SK); localStorage.setItem('app_night','0'); location.reload(); }
 
 // ── MODULE 1 : Vérification Premium périodique (serveur) ──────────────────────
 var _premiumCheckInterval = null;
