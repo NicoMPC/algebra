@@ -4812,6 +4812,7 @@ function initApp(d, skipRender) {
   } catch (e) {}
 
   S.res = {}; S.xp = 0; S.sent = new Set();
+  S.chapTouched = {}; // chapitres réellement entamés (hors CALIBRAGE/BOOST)
   S.chapSessions = {}; S.retroSess = {}; S.retroBoost = null;
   var _today = tod();
   if (d.history) {
@@ -4822,9 +4823,13 @@ function initApp(d, skipRender) {
       S.res[key] = r.resultat;
       S.xp += parseInt(r.xp) || 0;
       S.sent.add(S.prof.code + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1));
+      // Marquer chapitre réellement entamé (hors calibrage/boost)
+      if (r.source !== 'CALIBRAGE' && r.source !== 'BOOST' && r.categorie !== 'CALIBRAGE' && r.categorie !== 'BOOST') {
+        S.chapTouched[r.categorie] = true;
+      }
       // ── Grouper pour retro mode ──
       // BOOST : par date (inchangé). Chapitres : par passage (batch de 20 exos)
-      if (r.categorie !== 'CALIBRAGE') {
+      if (r.categorie !== 'CALIBRAGE' && r.source !== 'CALIBRAGE') {
         var day = String(r.date || '').substring(0, 10);
         if (day) {
           var _k = r.categorie;
@@ -7929,16 +7934,16 @@ function render() {
   });
 
   // ── Tri chapitres ─────────────────────────────────────
-  // Ordre : BOOST (fixe) → entamés → révision → pas commencés → terminés
+  // Ordre : BOOST (fixe) → entamés (hors calibrage) → révision → pas commencés → terminés
   var _fixedHead = keys.filter(function(k) { return k === 'BOOST'; });
   var _sortable = keys.filter(function(k) { return k !== 'BOOST'; });
   var _isRevision = {};
   (S.revisionCats || []).forEach(function(c) { _isRevision[c] = true; });
   _sortable.sort(function(a, b) {
-    var aStarted = _touchedCats[a] && !S.chapDone[a];
-    var bStarted = _touchedCats[b] && !S.chapDone[b];
-    var aR = aStarted ? 0 : (_isRevision[a] ? 1 : (_touchedCats[a] ? 3 : 2));
-    var bR = bStarted ? 0 : (_isRevision[b] ? 1 : (_touchedCats[b] ? 3 : 2));
+    var aStarted = S.chapTouched[a] && !S.chapDone[a];
+    var bStarted = S.chapTouched[b] && !S.chapDone[b];
+    var aR = aStarted ? 0 : (_isRevision[a] ? 1 : (S.chapDone[a] ? 3 : 2));
+    var bR = bStarted ? 0 : (_isRevision[b] ? 1 : (S.chapDone[b] ? 3 : 2));
     return aR - bR;
   });
   var sortedKeys = _fixedHead.concat(_sortable);

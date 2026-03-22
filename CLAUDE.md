@@ -228,6 +228,7 @@ python3 rebuild_sheet.py        # Reconstruire Suivi + Historique
 | V4 | Race condition ensureUsersCols | 🟡 MOYEN | Lock ou check post-insert |
 | V5 | Rate limiting par email (changeable) | 🟡 MOYEN | Acceptable MVP |
 | V6 | ~~Scores perdus si réseau instable~~ | ✅ FIXÉ | flushQ retry+backoff, answeredAt client→backend (2026-03-22) |
+| V7 | ~~Calibrage pollue tri chapitres + flèches tendance~~ | ✅ FIXÉ | `S.chapTouched` + filtre `r.source !== 'CALIBRAGE'` dans sessions (2026-03-22) |
 
 ---
 
