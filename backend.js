@@ -414,10 +414,11 @@ function login(p) {
   var boostRows   = getRows(SH.BOOSTS);
   var todayBoost  = null;
   var boostExosDone = 0;
+  var lastUnfinishedBoost = null;
+  var lastUnfinishedExosDone = 0;
   for (var b = 0; b < boostRows.length; b++) {
     var br = boostRows[b];
     if (!br['Code'] || String(br['Code']) !== code) continue;
-    // La colonne Date peut être un objet Date (Sheets auto-converti) ou une string
     var brDate = br['Date'];
     var brDateStr = (brDate instanceof Date)
       ? Utilities.formatDate(brDate, 'Europe/Paris', 'yyyy-MM-dd')
@@ -427,6 +428,16 @@ function login(p) {
       boostExosDone = parseInt(br['ExosDone'] || 0);
       break;
     }
+    // Garder le dernier boost non terminé (fallback si rien aujourd'hui)
+    if (parseInt(br['ExosDone'] || 0) < 5 && !lastUnfinishedBoost) {
+      lastUnfinishedBoost = parseJSON(br['BoostJSON']);
+      lastUnfinishedExosDone = parseInt(br['ExosDone'] || 0);
+    }
+  }
+  // Fallback : servir le dernier boost non terminé si aucun boost aujourd'hui
+  if (!todayBoost && lastUnfinishedBoost) {
+    todayBoost = lastUnfinishedBoost;
+    boostExosDone = lastUnfinishedExosDone;
   }
   var boostExistsInDB = todayBoost !== null;
 
@@ -739,6 +750,12 @@ function _saveScoreInner(p) {
         if (String(bData[bi][0]) === bCode && bDateStr === bToday) {
           var curExosDone = parseInt(bData[bi][3] || 0) || 0;
           bSh.getRange(bi + 1, 4).setValue(curExosDone + 1);
+          break;
+        }
+        // Fallback : dernier boost non terminé (rattrapage J+N)
+        if (String(bData[bi][0]) === bCode && parseInt(bData[bi][3] || 0) < 5) {
+          var curExosDone2 = parseInt(bData[bi][3] || 0) || 0;
+          bSh.getRange(bi + 1, 4).setValue(curExosDone2 + 1);
           break;
         }
       }
@@ -3369,7 +3386,9 @@ function getAdminOverview(p) {
           .sort(function(a, b) {
             var da = a.dernierePratique || '';
             var db = b.dernierePratique || '';
-            return db > da ? 1 : db < da ? -1 : 0;
+            if (db > da) return 1;
+            if (db < da) return -1;
+            return (b.nbExos || 0) - (a.nbExos || 0);
           })[0];
         if (mostRecentChap) {
           chapExosDoneFlag = mostRecentChap.nbExos;

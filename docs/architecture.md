@@ -139,7 +139,7 @@ function doPost(e) {
 | `generate_diagnostic` | Génère diagnostic. Mode guest (sans code) pour landing flow | ✅ |
 | `generate_daily_boost` | Génère boost quotidien depuis BoostExos (fallback Curriculum_Officiel), ciblé sur chapitres sélectionnés par l'élève | ✅ |
 | `generate_remediation` | ⏸️ Désactivé — return success immédiat | ⏸️ |
-| `get_progress` | Récupère progression par chapitre | ✅ |
+| `get_progress` | Récupère progression par chapitre. Boost : sert le boost du jour, ou le dernier non terminé (rattrapage P9) | ✅ |
 | `detect_fragile_prereqs` | Détection prérequis fragiles (archivé → false) | ✅ |
 | `get_prerequisites` | Liste prérequis | ✅ |
 | `enqueue` | File d'attente (archivée → erreur propre) | ✅ |

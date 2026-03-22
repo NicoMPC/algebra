@@ -83,6 +83,8 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | P6 | **Indices progressifs** | 1-3 étapes + formule clé révélée après erreur |
 | P7 | **3 types d'exercices** | QCM (défaut), Vrai/Faux (`vf`), Trou à compléter (`fill`) |
 | P8 | **Scoring tri-niveau** | EASY = correct 1er essai (succès, compte pour le %). MEDIUM = correct après indices ("hésitation", ne compte PAS). HARD = mauvaise réponse (ne compte PAS). Score % = EASY / total exercices × 100. S'applique partout : scores chapitres, sessions retro, pills, flèches tendance, comparaison live |
+| P9 | **Boost rattrapage** | Si aucun boost aujourd'hui, servir le dernier boost non terminé (ExosDone < 5). Le save_score incrémente la bonne ligne. Un boost n'est jamais perdu silencieusement |
+| P10 | **Chapitre terminé — tri stable** | Quand plusieurs chapitres ont la même DernierePratique, celui avec le plus d'exos (≥20 = terminé) est prioritaire. Évite qu'un chapitre en cours masque un chapitre terminé dans l'admin |
 
 ### 3.2 Trial & Conversion
 
