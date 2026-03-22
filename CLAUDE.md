@@ -227,6 +227,7 @@ python3 rebuild_sheet.py        # Reconstruire Suivi + Historique
 | V3 | ~~Race condition saveScore/ExosDone~~ | ✅ FIXÉ | LockService.tryLock(10000) dans saveScore (2026-03-20) |
 | V4 | Race condition ensureUsersCols | 🟡 MOYEN | Lock ou check post-insert |
 | V5 | Rate limiting par email (changeable) | 🟡 MOYEN | Acceptable MVP |
+| V6 | ~~Scores perdus si réseau instable~~ | ✅ FIXÉ | flushQ retry+backoff, answeredAt client→backend (2026-03-22) |
 
 ---
 

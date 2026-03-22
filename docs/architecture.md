@@ -98,6 +98,7 @@ const S = {
 - **Confettis** : animation post-boost terminé
 - **Timer exercice** : cercle SVG 60s par exercice (pas CALIBRAGE/BREVET). Doux, ambre après dépassement, désactivable. `_isTimerOn()`, `_startTimer(id)`, `_stopTimer()`. Persisté `mx_timer_{code}`
 - **Mode Flow** : 5 EASY consécutifs en ≤60s → XP ×2 pendant 5 exos. `_checkFlowOnAnswer()`, `_flowXPMultiplier()`. Badge ⚡×2 dans gamif-row. Overlay activation
+- **Tri chapitres dashboard** : BOOST (fixe en tête) → entamés (exos faits, pas terminés) → révision (cross-niveau) → pas commencés → terminés
 - **Messages adaptatifs** : système `_msg(key, vars)` avec `_MSGS` (~35 entrées), adaptation niveau (6EME/3EME/def), arrays aléatoires, substitution variables `{name}` `{n}` `{s}`. Coach marks persistés localStorage (`mx_coach_v1`). Voir [messages.md](messages.md)
 - **Brouillon contextuel + Calculette** : mobile = bottom sheet 50vh avec onglets (brouillon|calculette), desktop = panneau latéral droit 1/3 écran avec les 2 fusionnés (calculette en haut, brouillon en bas). Brouillon : symboles adaptés au chapitre via `getContextSymbols(niv, cat)`, mode quadrillé toggle. Calculette : adaptée par niveau/chapitre (trig si géo, π si aires/volumes, puissances si 5EME+, fractions si 6EME), mémoire M+/MR, copie vers brouillon.
 - **Figures géométriques SVG** : auto-détection depuis le texte de la question + catégorie. Moteur `autoDetectFigure(q, cat)` → `renderFig(fig)` → SVG inline animé. **18 types** : triangle rectangle, trigo, Thalès, cercle (+ mode diamètre), rectangle/carré, angle (3 lettres), parallèles/perpendiculaires, symétrie axiale/centrale (3 paires A/A'), cube/pavé, cylindre, cône, pyramide, sphère, section de solide, homothétie, triangles semblables, transformations, **vecteurs/produit scalaire** (1ERE), **repère orthonormé** (1ERE), **cercle trigonométrique** (1ERE). Lettres de points extraites dynamiquement de l'énoncé (`pts[]`). Filtrage `nonGeoChaps` (pas de figure sur algèbre/stats/probas). viewBox 280×210, `overflow:visible`. Champ `fig` optionnel dans les exercices JSON pour override manuel. Fallback safe : pas de figure si non détecté. **3 garde-fous anti-fuite** (@audit 2026-03-19) : (1) filtre V/F + questions de cours (regex vrai/faux, théorème, définition, énoncer, citer, compléter → `return null`), (2) exclusion angles opposés par le sommet (la figure révèle visuellement la réponse), (3) labels fallback masqués — quand aucun point n'est extrait de l'énoncé, `_fb:true` → `pts` remplacés par espaces pour ne pas afficher A/B/C génériques.
@@ -224,10 +225,13 @@ Deux variantes convergentes : `_flowGuestRegister()` (guest complet) et `_doLogi
 
 ```
 1. Élève répond à un exercice
-2. Frontend → save_score(code, categorie, resultat, temps, ...)
-3. GAS : écrit Scores + updateConfidenceScore(Progress) + rebuildSuivi(code) + writeToHistorique
-4. 👁 Suivi mis à jour → ACTION NICOLAS recalculé
-5. Nicolas voit l'action dans le dashboard admin
+2. Frontend → sendScore() ajoute le payload (avec answeredAt = date client) dans S.scoreQueue (persisté localStorage['sq'])
+3. flushQ() envoie un par un → vérifie response.ok + json.status === 'success' avant de retirer de la queue
+4. Si échec réseau/serveur : retry backoff exponentiel (2s→30s) + flush périodique toutes les 30s
+5. GAS saveScore() : utilise p.answeredAt (date réelle de la réponse) au lieu de today()
+6. GAS : écrit Scores + updateConfidenceScore(Progress) + rebuildSuivi(code) + writeToHistorique
+7. 👁 Suivi mis à jour → ACTION NICOLAS recalculé
+8. Nicolas voit l'action dans le dashboard admin
 ```
 
 ### Publication boost (admin)

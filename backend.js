@@ -698,7 +698,7 @@ function _saveScoreInner(p) {
     p.formule ? 1 : 0,
     String(p.wrongOpt || ''),
     String(p.draft    || ''),
-    today(),
+    p.answeredAt && /^\d{4}-\d{2}-\d{2}$/.test(p.answeredAt) ? p.answeredAt : today(),
     String(p.source   || '')  // col N — 'BOOST' / 'CALIBRAGE' / '' (curriculum)
   ]);
 
