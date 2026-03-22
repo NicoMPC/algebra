@@ -10740,6 +10740,11 @@ function _computeActions(st) {
   return actions.sort(function(a, b) { return a.rank - b.rank; });
 }
 
+function _toggleStudentList() {
+  var el = document.getElementById('admin-student-list');
+  if (el) el.classList.toggle('hidden');
+}
+
 // ── Main dashboard renderer — 3 tabs ─────────────────────────
 function _renderAdminCards() {
   var c = document.getElementById('app-c');
@@ -10806,11 +10811,37 @@ function _renderAdminCards() {
   html += '<div class="syne font-black text-lg leading-none ' + (newStudents.length > 0 ? 'text-emerald-600' : 'text-slate-300') + '">' + newStudents.length + '</div>';
   html += '<div class="text-[10px] font-bold text-slate-400 mt-0.5">Inscrit' + (newStudents.length > 1 ? 's' : '') + ' aujourd\'hui</div>';
   html += '</div>';
-  html += '<div class="flex-1 bg-white border border-slate-100 rounded-xl px-3 py-2.5 text-center">';
+  html += '<div class="flex-1 bg-white border border-slate-100 rounded-xl px-3 py-2.5 text-center cursor-pointer hover:border-indigo-300 transition-colors" onclick="_toggleStudentList()">';
   html += '<div class="syne font-black text-lg leading-none text-indigo-600">' + totalStudents + '</div>';
   html += '<div class="text-[10px] font-bold text-slate-400 mt-0.5">Inscrits total</div>';
   html += '</div>';
   html += '</div>';
+
+  // ── Panneau liste inscrits (toggle) ──────────────────────
+  html += '<div id="admin-student-list" class="hidden mb-3">';
+  html += '<div class="bg-white border border-slate-100 rounded-xl overflow-hidden">';
+  html += '<div class="px-4 py-2.5 bg-indigo-50 border-b border-slate-100 flex items-center justify-between">';
+  html += '<div class="syne font-black text-sm text-indigo-700">Tous les inscrits</div>';
+  html += '<button onclick="_toggleStudentList()" class="text-xs font-bold text-slate-400 hover:text-slate-600">✕</button>';
+  html += '</div>';
+  var _stList = (S.adminStudents || []).filter(function(st) { return !st.isTest; })
+    .sort(function(a, b) { return (b.activeDays || 0) - (a.activeDays || 0); });
+  _stList.forEach(function(st) {
+    var d = st.trialStart ? st.trialStart.substring(0, 10) : '—';
+    var ad = st.activeDays || 0;
+    html += '<div class="px-4 py-2.5 border-b border-slate-50 flex items-center gap-3">';
+    html += '<div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-black text-indigo-600">' + (st.prenom || '?').charAt(0).toUpperCase() + '</div>';
+    html += '<div class="flex-1 min-w-0">';
+    html += '<div class="font-bold text-sm text-slate-800 truncate">' + (st.prenom || '—') + ' <span class="text-xs font-semibold text-indigo-500">' + (st.niveau || '') + '</span></div>';
+    html += '<div class="text-[10px] text-slate-400 font-medium truncate">' + (st.email || '—') + '</div>';
+    html += '</div>';
+    html += '<div class="text-right flex-shrink-0">';
+    html += '<div class="text-xs font-bold text-slate-700">' + ad + ' jour' + (ad > 1 ? 's' : '') + '</div>';
+    html += '<div class="text-[10px] text-slate-400">depuis ' + d + '</div>';
+    html += '</div></div>';
+  });
+  if (!_stList.length) html += '<div class="px-4 py-6 text-center text-sm text-slate-400">Aucun inscrit</div>';
+  html += '</div></div>';
 
   // ── Tabs ───────────────────────────────────────────────────
   var _tabs = [

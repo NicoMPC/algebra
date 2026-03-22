@@ -3066,12 +3066,18 @@ function getAdminOverview(p) {
   // ── Scores (30 derniers jours, TOUS résultats) ───────────
   var cutoff30 = dateOffset(-30);
   var scoresByCode = {};  // code → { cat → { exos:[] } }
+  var activeDatesByCode = {}; // code → Set de dates distinctes (toutes sources)
   getRows(SH.SCORES).forEach(function(r) {
     var code = String(r['Code']     || '');
     var cat  = String(r['Chapitre'] || '');
     var res  = String(r['Résultat'] || '');
     var date = String(r['Date']     || '').substring(0, 10);
     var src  = String(r['Source']   || '');
+    // Compteur jours actifs — toutes sources, pas de cutoff
+    if (code && date) {
+      if (!activeDatesByCode[code]) activeDatesByCode[code] = {};
+      activeDatesByCode[code][date] = true;
+    }
     if (!code || !cat || cat === 'CALIBRAGE' || cat === 'BOOST' || src === 'BOOST') return;
     if (date < cutoff30) return;
     if (!scoresByCode[code])      scoresByCode[code]      = {};
@@ -3715,6 +3721,7 @@ function getAdminOverview(p) {
         sessionFeedbacks:     (insightsBySess[code] || []).slice(-10),
         parentActions:        parentActions,
         profilCognitif:       profilCognitif,
+        activeDays:           Object.keys(activeDatesByCode[code] || {}).length,
       };
     })
     .sort(function(a, b) {
