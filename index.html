@@ -4945,7 +4945,7 @@ function initApp(d, skipRender) {
   if (!skipRender) { render(); flushQ(); }
 }
 
-function logout() { localStorage.removeItem(SK); localStorage.setItem('app_night','0'); location.reload(); }
+function logout() { localStorage.removeItem(SK); location.reload(); }
 
 // ── MODULE 1 : Vérification Premium périodique (serveur) ──────────────────────
 var _premiumCheckInterval = null;
