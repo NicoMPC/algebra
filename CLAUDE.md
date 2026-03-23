@@ -105,7 +105,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | # | Invariant | Détail |
 |---|-----------|--------|
 | M1 | **Toast mutex** | `_toastBusy` + `_toastQueue` — jamais 2 toasts visibles. `dur=0` bypass (loading). `hideT()` reset tout |
-| M2 | **Hero CTA exclusif** | Cascade P1→P5 + fallback DONE. Exactement 1 hero par session. Chaque niveau a `if (!_hero)` + `break` |
+| M2 | **Hero CTA exclusif** | Cascade P1→P4→P4b→P5 + fallback DONE. Exactement 1 hero par session. Chaque niveau a `if (!_hero)` + `break`. **P4b** : chapitres `assignedByProf` (persisté `mx_assigned_{code}` localStorage) → hero "Ton prof te recommande" même après refresh/re-login |
 | M3 | **boostConsumed date-stamped** | `boostConsumedDate` dans localStorage. Expire si `!== tod()`. Jamais stale le lendemain |
 | M4 | **Coach tip vs toast ko** | `if/else` exclusif dans `validateAnswer`. Coach tip AVANT le panel aide |
 | M5 | **Milestones/Coach namespacés** | `mx_ms_{code}` / `mx_co_{code}` dans localStorage. Pas de pollution cross-user |
@@ -169,6 +169,20 @@ python3 sim_21days.py           # Simulation 21j — 12 profils
 python3 sim_7days_messages.py   # Simulation messages — 0 incohérence
 python3 rebuild_sheet.py        # Reconstruire Suivi + Historique
 ```
+
+### Setup élève existant (bypass onboarding)
+
+Quand Nicolas veut ajouter un élève déjà connu (visio en cours) **sans lui faire passer le quiz diagnostic** :
+
+1. **Créer le user** dans `Users` via `sheets.py` (ou via inscription normale)
+2. **Injecter 1 score CALIBRAGE minimal** dans `Scores` (chapitre ≠ celui qu'on veut vierge) → `history.length > 0` → bypass le quiz diagnostic (condition ligne ~4939 : `d.history.length === 0 ? 'sel' : null`)
+3. **Injecter le chapitre prioritaire** dans `👁 Suivi` col G (JSON complet avec `categorie`, `titre`, `icone`, `exos`, `insight`) → au login, le backend le consomme via `nextChapter` + vide la cellule. Le frontend set `S.assignedByProf` + persiste dans `mx_assigned_{code}` localStorage
+4. **Le boost du jour** doit rester à `ExosDone=0` pour que l'élève ait son entraînement à faire
+
+⚠️ **Pièges** :
+- `nextChapter` est **one-shot** : le backend le consomme au premier login et vide Suivi col G. Si on doit réinjecter, remettre le JSON dans col G
+- Les scores CALIBRAGE sur un chapitre X comptent dans le `n/20` de ce chapitre → injecter le score CALIBRAGE sur un **autre** chapitre que celui qu'on veut à 0
+- `assignedByProf` est persisté dans localStorage (`mx_assigned_{code}`) → survit aux refresh. Le hero P4b l'utilise pour afficher "Ton prof te recommande"
 
 ### Tokens
 ⚠️ Toujours estimer avant génération massive → présenter options → attendre validation.
