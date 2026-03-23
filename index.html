@@ -10437,6 +10437,14 @@ function _computeActions(st) {
     actions.push({ rank: 3, type: 'chapitre', label: 'Chapitre termin\u00e9', color: 'indigo', icon: '\ud83d\udcda', detail: 'Assigner la suite', cat: detail.length ? detail[0].cat : '' });
   }
 
+  // Rank 1.5: contenu pré-rempli à valider (aperçu + publier)
+  if ((st.chapNewCount || 0) > 0 && !done[st.code + '_chapitre']) {
+    actions.push({ rank: 1.5, type: 'chapitre', label: 'Chapitre \u00e0 valider', color: 'blue', icon: '\ud83d\udce6', detail: 'Aper\u00e7u + publier', cat: '' });
+  }
+  if (st.boostNew && !done[st.code + '_boost']) {
+    actions.push({ rank: 1.5, type: 'boost', label: 'Boost \u00e0 valider', color: 'blue', icon: '\ud83d\udce6', detail: 'Aper\u00e7u + publier', cat: '' });
+  }
+
   return actions.sort(function(a, b) { return a.rank - b.rank; });
 }
 

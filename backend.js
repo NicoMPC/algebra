@@ -3475,8 +3475,14 @@ function getAdminOverview(p) {
       if (hasChapTermineAdmin) {
         actionsAdmin.push('✅ CHAPITRE TERMINÉ → assigner la suite');
       }
+      if (chapNewCount > 0) {
+        actionsAdmin.push('📦 CHAPITRE À VALIDER → aperçu + publier');
+      }
       if (userBoosts.length >= 1 && lastBoostExosDoneAdmin >= 5 && !boostNewPending && !boostPendingFlag && !boostInProgressFlag) {
         actionsAdmin.push('⚡ BOOST TERMINÉ → préparer le suivant');
+      }
+      if (boostNewPending) {
+        actionsAdmin.push('📦 BOOST À VALIDER → aperçu + publier');
       }
       // Sans nouvelles : inactif > 7j ET tous scores bas
       var inactif7jAdmin = false;
