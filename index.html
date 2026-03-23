@@ -10888,7 +10888,17 @@ function _buildActionWorkflow(st, action) {
   } else if (action.type === 'chapitre') {
     var topCat2 = (action.cat || '').replace(/'/g, "\\'");
     h += '<button onclick="_copyChapContext(\'' + st.code + '\')" class="adm-copy-btn mb-2">\ud83d\udccb Copier JSON chapitre + résultats</button>';
-    h += '<textarea id="ck-chap-json-' + st.code + '" class="adm-textarea mb-2" style="height:80px" placeholder="Coller le JSON ici..." oninput="_ckTogglePublish(\'' + st.code + '\',\'chapitre\');_ckUpdateDiag(\'' + st.code + '\')"></textarea>';
+    // Pré-remplir si un draft existe dans Suivi
+    var _draftJSON = '';
+    if (st.chapitres) {
+      for (var _dci = 0; _dci < st.chapitres.length; _dci++) {
+        if (st.chapitres[_dci].pendingJSON) { _draftJSON = st.chapitres[_dci].pendingJSON; break; }
+      }
+    }
+    h += '<textarea id="ck-chap-json-' + st.code + '" class="adm-textarea mb-2" style="height:80px" placeholder="Coller le JSON ici..." oninput="_ckTogglePublish(\'' + st.code + '\',\'chapitre\');_ckUpdateDiag(\'' + st.code + '\')">' + (_draftJSON ? _draftJSON.replace(/</g,'&lt;') : '') + '</textarea>';
+    if (_draftJSON) {
+      h += '<script>setTimeout(function(){_ckTogglePublish(\'' + st.code + '\',\'chapitre\');_ckUpdateDiag(\'' + st.code + '\')},200)<\/script>';
+    }
     h += '<details class="mt-2 mb-2"><summary style="cursor:pointer;font-size:.75rem;font-weight:700;color:#1E40AF">\ud83d\udccb Pourquoi ces exercices ?</summary>';
     h += '<div id="ck-diag-' + st.code + '" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:.75rem;margin-top:.5rem;font-size:.78rem;color:#475569;line-height:1.6"><em>Colle le JSON pour voir le diagnostic...</em></div>';
     h += '</details>';
