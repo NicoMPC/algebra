@@ -145,6 +145,21 @@ def validate_exo(exo, idx, errors, warnings):
         if dollar_count % 2 != 0:
             errors.append(f"{prefix} — LaTeX non fermé dans {field_name} (nombre impair de $)")
 
+    # LaTeX brut hors $...$ (commandes LaTeX sans délimiteurs)
+    latex_brut_re = re.compile(
+        r'\\(?:frac|dfrac|sqrt|times|div|cdot|pm|leq|geq|neq|approx|'
+        r'sin|cos|tan|log|ln|exp|lim|alpha|beta|pi|theta|sigma|omega|'
+        r'left|right|text|overrightarrow|vec|overline|begin|end|cases)\b'
+    )
+    all_fields = [('q', q), ('a', a), ('f', f)] + \
+        [('options[{}]'.format(i), str(o)) for i, o in enumerate(options)] + \
+        [('steps[{}]'.format(i), str(s)) for i, s in enumerate(steps)]
+    for field_name, field_val in all_fields:
+        outside = re.sub(r'\$[^$]*\$', '', str(field_val))
+        found = latex_brut_re.findall(outside)
+        if found:
+            errors.append(f"{prefix} — LATEX BRUT dans {field_name} : commandes hors $...$ → {', '.join(found[:3])}")
+
     # ── Formule ──
     if f and a == f:
         warnings.append(f"{prefix} — Formule identique à la réponse (f devrait être générale)")

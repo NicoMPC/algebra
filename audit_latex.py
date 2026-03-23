@@ -16,7 +16,7 @@ from sheets import sh
 # ONGLETS À SCANNER
 # ══════════════════════════════════════════════════════════════
 
-ONGLETS_EXOS = ["Curriculum_Officiel", "DiagnosticExos", "BrevetExos"]
+ONGLETS_EXOS = ["Curriculum_Officiel", "DiagnosticExos", "BrevetExos", "BoostExos"]
 
 # ══════════════════════════════════════════════════════════════
 # RÈGLES DE DÉTECTION LATEX

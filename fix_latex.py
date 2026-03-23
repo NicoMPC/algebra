@@ -12,7 +12,7 @@ import json, re, sys
 from sheets import sh
 
 APPLY = "--apply" in sys.argv
-ONGLETS = ["Curriculum_Officiel", "DiagnosticExos", "BrevetExos"]
+ONGLETS = ["Curriculum_Officiel", "DiagnosticExos", "BrevetExos", "BoostExos"]
 
 LATEX_CMDS = re.compile(
     r'\\(?:frac|dfrac|sqrt|times|div|cdot|pm|mp|leq|geq|neq|approx|equiv|'
