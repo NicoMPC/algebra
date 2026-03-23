@@ -3271,10 +3271,12 @@ function getAdminOverview(p) {
       chapSlots.forEach(function(sl) {
         var cat = row ? String(row[sl.catIdx] || '') : '';
         if (!cat) return;
+        var _pendingRaw = row ? String(row[sl.newIdx] || '').trim() : '';
         chapitres.push({
           cat:        cat,
           statut:     row ? String(row[sl.statIdx] || '') : '',
-          pendingNew: row ? (String(row[sl.newIdx] || '').trim() !== '') : false
+          pendingNew: _pendingRaw !== '',
+          pendingJSON: _pendingRaw || ''
         });
       });
 
