@@ -7386,7 +7386,7 @@ function _renderRetroExo(exo, score, cat, idx) {
   html += getExoFigure(exo, cat);
   // ── Énoncé (même style que l'exo actif) ──
   var qHtml = exoType === 'fill'
-    ? (function(q){ q = q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace').replace(/___/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace'); return fmtL(q); })(exo.q)
+    ? fmtL(exo.q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace')).replace(/___/g, '<span style="display:inline-block;min-width:5rem;border-bottom:3px solid #1E40AF;background:#eef2ff;border-radius:4px;padding:2px 8px;margin:0 4px">\u2026</span>')
     : fmtL(exo.q);
   html += '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 sm:p-5 mb-3 min-h-[60px] flex items-center justify-center" style="overflow-wrap:break-word;word-break:break-word">';
   html += '<div class="mc text-center font-bold text-base sm:text-lg leading-relaxed w-full min-w-0" style="overflow-x:auto">'+qHtml+'</div></div>';
@@ -8751,7 +8751,7 @@ function rSection(cat, data, idx, total, catDone) {
     '</div>' +
     getExoFigure(data, cat, scored) +
     '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 sm:p-5 mb-3 min-h-[60px] flex items-center justify-center" style="overflow-wrap:break-word;word-break:break-word">' +
-    '<div class="mc text-center font-bold text-base sm:text-lg leading-relaxed w-full min-w-0" style="overflow-x:auto">'+(exoType === 'fill' ? (function(q){ q = q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace').replace(/___/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace'); return fmtL(q); })(data.q) : fmtL(data.q))+'</div></div>' +
+    '<div class="mc text-center font-bold text-base sm:text-lg leading-relaxed w-full min-w-0" style="overflow-x:auto">'+(exoType === 'fill' ? fmtL(data.q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace')).replace(/___/g, '<span style="display:inline-block;min-width:5rem;border-bottom:3px solid #1E40AF;background:#eef2ff;border-radius:4px;padding:2px 8px;margin:0 4px">\u2026</span>') : fmtL(data.q))+'</div></div>' +
     opts + acts +
     (catDone && scored
       ? '<div class="inline-help mc rdy" id="help-inline-'+id+'">'+_previewHelp(data)+'</div>'
