@@ -8084,7 +8084,22 @@ function render() {
       }
     }
 
-    // P3 : Chapitre recommandé (ciblé par boost, pas commencé)
+    // P3 : Chapitre assigné par le prof (prioritaire sur boost)
+    // — assignedByProf persisté localStorage, survit aux refresh
+    if (!_hero) {
+      for (var _hi3b = 0; _hi3b < sortedKeys.length; _hi3b++) {
+        var _hk3b = sortedKeys[_hi3b];
+        if (_hk3b === 'BOOST') continue;
+        if (S.assignedByProf && S.assignedByProf[_hk3b] && _chapStats[_hk3b] && !_chapStats[_hk3b].isDone) {
+          var _hNm3b = (LVL[S.niv].names[_hk3b] || _hk3b).replace(/_/g, ' ');
+          _hero = { action: "togCat('" + _hk3b + "')", emoji: LVL[S.niv].icons[_hk3b] || '📘',
+            title: 'Commence par ' + _hNm3b, sub: 'Ton prof te recommande de commencer ici', pct: 0, _remain: _chapStats[_hk3b].tot };
+          break;
+        }
+      }
+    }
+
+    // P4 : Chapitre recommandé (ciblé par boost, pas commencé)
     if (!_hero && S.boostConsumed) {
       for (var _hi2 = 0; _hi2 < sortedKeys.length; _hi2++) {
         var _hk2 = sortedKeys[_hi2];
@@ -8099,7 +8114,7 @@ function render() {
       }
     }
 
-    // P4 : Chapitre NEW (assigné par Nicolas)
+    // P4b : Chapitre NEW (assigné par Nicolas, flag isNew)
     if (!_hero) {
       for (var _hi3 = 0; _hi3 < sortedKeys.length; _hi3++) {
         var _hk3 = sortedKeys[_hi3];
@@ -8108,20 +8123,6 @@ function render() {
           var _hNm3 = (LVL[S.niv].names[_hk3] || _hk3).replace(/_/g, ' ');
           _hero = { action: "togCat('" + _hk3 + "')", emoji: LVL[S.niv].icons[_hk3] || '📘',
             title: 'Commence par ' + _hNm3, sub: 'Ton prof te recommande de commencer ici', pct: 0, _remain: _chapStats[_hk3].tot };
-          break;
-        }
-      }
-    }
-
-    // P4b : Chapitre assignedByProf (persisté localStorage) — même si isNew expiré
-    if (!_hero) {
-      for (var _hi3b = 0; _hi3b < sortedKeys.length; _hi3b++) {
-        var _hk3b = sortedKeys[_hi3b];
-        if (_hk3b === 'BOOST') continue;
-        if (S.assignedByProf && S.assignedByProf[_hk3b] && _chapStats[_hk3b] && !_chapStats[_hk3b].isDone) {
-          var _hNm3b = (LVL[S.niv].names[_hk3b] || _hk3b).replace(/_/g, ' ');
-          _hero = { action: "togCat('" + _hk3b + "')", emoji: LVL[S.niv].icons[_hk3b] || '📘',
-            title: 'Commence par ' + _hNm3b, sub: 'Ton prof te recommande de commencer ici', pct: 0, _remain: _chapStats[_hk3b].tot };
           break;
         }
       }

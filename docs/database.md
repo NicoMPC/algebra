@@ -66,7 +66,7 @@ Supprimés par `cleanup_all` le 14 mars 2026 : `_ARCHIVE_Queue`, `_ARCHIVE_Prere
 
 | Col | Nom | Type | Description |
 |---|---|---|---|
-| A | Code | String | Identifiant unique 6 chars (ex: `FP48QF`) |
+| A | Code | String | ⚠️ **CLÉ PRIMAIRE** — identifiant unique 6 chars (ex: `FP48QF`). FK utilisée par Scores, Progress, DailyBoosts, Suivi. Si cette colonne disparaît, le backend renvoie `history=[]` → quiz diagnostic forcé pour tous les élèves |
 | B | Prénom | String | |
 | C | Niveau | String | `6EME` / `5EME` / `4EME` / `3EME` / `1ERE` |
 | D | Email | String | lowercase, trimmed |
