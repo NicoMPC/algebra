@@ -562,48 +562,48 @@
 
     /* ── LANDING DESIGN SYSTEM ──────────────────────────── */
     #landing-screen {
-      --l-primary: #0F172A;
-      --l-secondary: #1E40AF;
-      --l-cta: #10B981;
-      --l-cta-hover: #059669;
-      --l-bg: #F8FAFC;
+      --l-primary: #1C1917;
+      --l-secondary: #EA580C;
+      --l-cta: #EA580C;
+      --l-cta-hover: #C2410C;
+      --l-bg: #FFFBF5;
       --l-card: #FFFFFF;
-      --l-text: #334155;
-      --l-text-light: #64748b;
-      --l-border: #E2E8F0;
+      --l-text: #44403C;
+      --l-text-light: #78716C;
+      --l-border: #E7E5E4;
       --l-radius: 16px;
-      --l-shadow: 0 10px 30px rgba(15,23,42,0.06);
-      --l-shadow-lg: 0 20px 50px rgba(15,23,42,0.10);
-      font-family: 'Inter', sans-serif;
+      --l-shadow: 0 10px 30px rgba(28,25,23,0.06);
+      --l-shadow-lg: 0 20px 50px rgba(28,25,23,0.10);
+      font-family: 'DM Sans', sans-serif;
     }
     #landing-screen h1, #landing-screen h2, #landing-screen h3,
-    #landing-screen .syne { font-family: 'Inter', sans-serif; }
+    #landing-screen .syne { font-family: 'Syne', sans-serif; }
 
-    /* ── CTA vert confiance ─────────────────────────────── */
+    /* ── CTA terracotta ────────────────────────────────── */
     #landing-screen .btn-ac {
       background: var(--l-cta);
-      box-shadow: 0 4px 20px rgba(16,185,129,.30);
+      box-shadow: 0 4px 20px rgba(234,88,12,.25);
     }
     #landing-screen .btn-ac:hover {
       background: var(--l-cta-hover);
-      box-shadow: 0 6px 28px rgba(16,185,129,.40);
+      box-shadow: 0 6px 28px rgba(234,88,12,.35);
       transform: translateY(-1px);
     }
 
-    .lhero   { background:var(--ink); position:relative; overflow:hidden; }
+    .lhero   { background:#FFFBF5; position:relative; overflow:hidden; }
     .grid-ov {
       position:absolute; inset:0;
       background-image:
-        linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
-      background-size:48px 48px; pointer-events:none;
+        radial-gradient(circle at 20% 50%, rgba(234,88,12,.04) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(251,146,60,.05) 0%, transparent 40%);
+      pointer-events:none;
     }
     .stag {
       display:inline-flex; align-items:center; gap:.4rem;
       font-size:.7rem; font-weight:700; letter-spacing:.08em;
-      text-transform:uppercase; color:var(--l-secondary, var(--p));
-      background:#EFF6FF; padding:.35rem .75rem;
-      border-radius:99px; border:1px solid #BFDBFE;
+      text-transform:uppercase; color:#EA580C;
+      background:#FFF7ED; padding:.35rem .75rem;
+      border-radius:99px; border:1px solid #FDBA74;
     }
     .ccard {
       background:#fff; border:1.5px solid var(--brd);
@@ -668,7 +668,7 @@
     /* Fullscreen overlay mode — masque la landing */
     #trial-flow.flow-fs {
       position:fixed; inset:0; z-index:200;
-      background:var(--ink); overflow-y:auto;
+      background:#1C1917; overflow-y:auto;
       display:flex; align-items:center; justify-content:center;
       padding:1.5rem 1rem; margin:0;
     }
@@ -785,11 +785,11 @@
     }
     .land-step-num {
       width:30px; height:30px;
-      background:linear-gradient(135deg,#1E40AF,#3B82F6);
+      background:linear-gradient(135deg,#EA580C,#FB923C);
       color:#fff; border-radius:50%;
       display:flex; align-items:center; justify-content:center;
-      font-family:'Inter',sans-serif; font-weight:900; font-size:.8rem;
-      margin:0 auto .6rem; box-shadow:0 4px 12px rgba(30,64,175,.25);
+      font-family:'Syne',sans-serif; font-weight:900; font-size:.8rem;
+      margin:0 auto .6rem; box-shadow:0 4px 12px rgba(234,88,12,.25);
     }
     .land-step-icon {
       width:56px; height:56px; border-radius:18px;
@@ -801,7 +801,7 @@
 
     /* ── LANDING BENEFIT CARDS ──────────────────────────── */
     .land-benefit {
-      background:#fff; border:1.5px solid #e2e8f0; border-radius:16px;
+      background:#fff; border:1.5px solid #E7E5E4; border-radius:16px;
       padding:1.5rem; transition:transform .2s,box-shadow .2s;
     }
     .land-benefit:hover {
@@ -812,9 +812,9 @@
     /* ── HERO BADGE ────────────────────────────────────── */
     .hero-badge {
       display:inline-flex; align-items:center; gap:.5rem;
-      background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1);
+      background:#FFF7ED; border:1px solid #FDBA74;
       border-radius:99px; padding:.4rem 1rem;
-      font-size:.78rem; font-weight:600; color:rgba(255,255,255,.65);
+      font-size:.78rem; font-weight:600; color:#EA580C;
       margin-bottom:1.25rem;
     }
     .hero-badge .dot-live {
@@ -830,8 +830,8 @@
 
     /* ── LANDING PROGRAMME TAGS ─────────────────────────────── */
     .prog-tag {
-      display:block; font-size:.72rem; font-weight:600; color:#1E40AF;
-      background:#eef2ff; border:1px solid #BFDBFE;
+      display:block; font-size:.72rem; font-weight:600; color:#EA580C;
+      background:#FFF7ED; border:1px solid #FDBA74;
       border-radius:8px; padding:.3rem .6rem; line-height:1.3;
     }
     .prog-tag.brevet {
@@ -839,10 +839,10 @@
     }
     /* ── FAQ ACCORDION ───────────────────────────────────────── */
     .faq-item {
-      border:1.5px solid #e2e8f0; border-radius:14px;
+      border:1.5px solid #E7E5E4; border-radius:14px;
       overflow:hidden; transition:border-color .2s;
     }
-    .faq-item[open] { border-color:#BFDBFE; }
+    .faq-item[open] { border-color:#FDBA74; }
     .faq-q {
       list-style:none; cursor:pointer;
       padding:1rem 1.25rem; font-family:'Syne',sans-serif;
@@ -850,7 +850,7 @@
       display:flex; justify-content:space-between; align-items:center;
       gap:.75rem; user-select:none;
     }
-    .faq-q::after { content:'＋'; color:#60A5FA; font-size:1.1rem; flex-shrink:0; transition:transform .25s; }
+    .faq-q::after { content:'＋'; color:#EA580C; font-size:1.1rem; flex-shrink:0; transition:transform .25s; }
     .faq-item[open] .faq-q::after { transform:rotate(45deg); }
     .faq-q::-webkit-details-marker { display:none; }
     .faq-a { padding:0 1.25rem 1rem; font-size:.875rem; color:#64748b; line-height:1.7; }
@@ -859,7 +859,7 @@
     .hero-glow {
       position:absolute; top:-80px; left:50%; transform:translateX(-50%);
       width:700px; height:480px; pointer-events:none; z-index:0;
-      background:radial-gradient(ellipse at 50% 40%,rgba(30,64,175,.32) 0%,rgba(30,64,175,.12) 42%,transparent 70%);
+      background:radial-gradient(ellipse at 50% 40%,rgba(234,88,12,.08) 0%,rgba(251,146,60,.04) 42%,transparent 70%);
       filter:blur(48px);
     }
 
@@ -867,7 +867,7 @@
     .sp-row { display:flex; align-items:center; justify-content:center; gap:.65rem; }
     .sp-avatars { display:flex; }
     .sp-av {
-      width:26px; height:26px; border-radius:50%; border:2px solid #07090f;
+      width:26px; height:26px; border-radius:50%; border:2px solid #FFFBF5;
       display:flex; align-items:center; justify-content:center;
       font-size:.55rem; font-weight:800; color:#fff; margin-left:-7px; flex-shrink:0;
     }
@@ -898,15 +898,15 @@
 
     /* ── PRICING PER-DAY + GUARANTEE ────────────────────────── */
     .perday-badge {
-      font-size:.78rem; font-weight:700; color:#10B981;
-      background:rgba(16,185,129,.1); border:1px solid rgba(16,185,129,.2);
+      font-size:.78rem; font-weight:700; color:#EA580C;
+      background:rgba(234,88,12,.08); border:1px solid rgba(234,88,12,.2);
       border-radius:99px; padding:.25rem .8rem; display:inline-block; margin-bottom:1.25rem;
     }
     .guarantee-badge {
       margin-top:.875rem; padding:.55rem 1rem;
-      background:rgba(16,185,129,.1); border:1px solid rgba(16,185,129,.2);
+      background:rgba(234,88,12,.06); border:1px solid rgba(234,88,12,.15);
       border-radius:12px; display:flex; align-items:center; justify-content:center;
-      gap:.4rem; font-size:.72rem; font-weight:600; color:#10B981;
+      gap:.4rem; font-size:.72rem; font-weight:600; color:#EA580C;
     }
 
     /* ── STEP NUMBER WATERMARK ───────────────────────────────── */
@@ -1562,7 +1562,7 @@
 <div id="landing-screen" class="fixed inset-0 z-50 overflow-y-auto bg-white hidden" style="overflow-x:hidden">
 
   <!-- Connexion flottant -->
-  <button onclick="showAuth('login')" class="text-white/60 hover:text-white text-xs font-semibold px-4 py-2 transition-colors" style="position:absolute;top:1rem;right:1.25rem;z-index:30"><span class="underline">Connexion</span></button>
+  <button onclick="showAuth('login')" class="text-stone-400 hover:text-stone-700 text-xs font-semibold px-4 py-2 transition-colors" style="position:absolute;top:1rem;right:1.25rem;z-index:30"><span class="underline">Connexion</span></button>
 
   <!-- SECTION 1 — HERO -->
   <div class="lhero px-5 pt-10 pb-20 relative">
@@ -1570,45 +1570,45 @@
     <div class="hero-glow"></div>
     <div class="max-w-lg mx-auto relative z-10 text-center">
       <div onclick="triggerAdmin()" class="flex justify-center mb-8" style="animation:s1 .5s ease both;cursor:default">
-        <img src="logo-matheux.png" alt="Matheux" style="height:6rem;filter:brightness(0) invert(1)" class="drop-shadow-lg">
+        <img src="logo-matheux.png" alt="Matheux" style="height:6rem" class="drop-shadow-lg">
       </div>
       <div class="hero-badge" style="animation:s1 .5s .05s ease both">
         <span class="dot-live"></span>
         Maths adaptatif · 6e à 3e
       </div>
-      <h1 class="font-black text-white leading-[1.12] mb-5 max-w-md mx-auto" style="font-size:clamp(1.8rem,5.5vw,2.6rem);animation:s1 .6s .02s ease both;letter-spacing:-.02em">
-        En 5 minutes, vous saurez exactement <span style="color:#60A5FA">où votre enfant bloque en maths.</span>
+      <h1 class="font-black text-stone-900 leading-[1.12] mb-5 max-w-md mx-auto" style="font-size:clamp(1.8rem,5.5vw,2.6rem);animation:s1 .6s .02s ease both;letter-spacing:-.02em">
+        En 5 minutes, vous saurez exactement <span style="color:#EA580C">où votre enfant bloque en maths.</span>
       </h1>
-      <p class="text-white/90 text-base sm:text-lg font-semibold mb-4 max-w-md mx-auto" style="line-height:1.7;animation:s1 .6s .1s ease both">
+      <p class="text-stone-600 text-base sm:text-lg font-semibold mb-4 max-w-md mx-auto" style="line-height:1.7;animation:s1 .6s .1s ease both">
         On trouve où ça coince, il s'entraîne uniquement là-dessus. Et tout s'aligne enfin.
       </p>
-      <p class="text-white/35 text-xs font-semibold mb-8" style="animation:s1 .6s .22s ease both;letter-spacing:.05em">10 MINUTES PAR JOUR</p>
+      <p class="text-stone-400 text-xs font-semibold mb-8" style="animation:s1 .6s .22s ease both;letter-spacing:.05em">10 MINUTES PAR JOUR</p>
       <button onclick="startTrialFlow()"
               class="btn btn-ac btn-fw shadow-xl" id="cta-hero" style="max-width:420px;font-size:1.05rem;padding:1.15rem 1.5rem;border-radius:var(--l-radius);animation:s1 .6s .28s ease both">
         Faites le test avec votre enfant
       </button>
-      <p class="text-white/45 text-xs mt-4 font-medium" style="animation:s1 .6s .35s ease both">5 minutes · Sans carte bancaire</p>
+      <p class="text-stone-400 text-xs mt-4 font-medium" style="animation:s1 .6s .35s ease both">5 minutes · Sans carte bancaire</p>
       <div id="pwa-install-banner" class="hidden mt-3 flex items-center gap-3
-        bg-white/10 border border-white/20 rounded-2xl px-4 py-3 max-w-sm mx-auto"
-        style="animation:s1 .6s .5s ease both">
+        rounded-2xl px-4 py-3 max-w-sm mx-auto"
+        style="animation:s1 .6s .5s ease both;background:rgba(28,25,23,.05);border:1.5px solid #E7E5E4">
         <span class="text-2xl flex-shrink-0">📲</span>
         <div class="flex-1 min-w-0">
-          <div class="text-white font-bold text-sm">Installer l'app</div>
-          <div class="text-white/60 text-xs">Accès direct depuis ton écran d'accueil</div>
+          <div class="text-stone-800 font-bold text-sm">Installer l'app</div>
+          <div class="text-stone-400 text-xs">Accès direct depuis ton écran d'accueil</div>
         </div>
         <button onclick="_installPWA()"
-          class="bg-white text-indigo-700 font-black text-xs px-3 py-1.5 rounded-xl
-          flex-shrink-0 active:scale-95 transition-transform">
+          class="font-black text-xs px-3 py-1.5 rounded-xl
+          flex-shrink-0 active:scale-95 transition-transform" style="background:#EA580C;color:#fff">
           Installer
         </button>
         <button onclick="document.getElementById('pwa-install-banner').classList.add('hidden')"
-          class="text-white/40 text-lg leading-none flex-shrink-0 p-1">✕</button>
+          class="text-stone-300 text-lg leading-none flex-shrink-0 p-1">✕</button>
       </div>
     </div>
   </div>
 
   <!-- ── TRIAL FLOW INLINE ────────────────────────────────── -->
-  <div id="trial-flow" class="hidden lhero px-5 pb-14 -mt-2">
+  <div id="trial-flow" class="hidden px-5 pb-14 -mt-2" style="background:#1C1917">
     <div class="max-w-lg mx-auto">
       <!-- Stepper progress -->
       <div class="flow-stepper" id="flow-stepper">
@@ -1694,9 +1694,9 @@
   </div><!-- /trial-flow -->
 
   <!-- ── MICRO-BLOC PROMESSE ─────────────────────────────── -->
-  <div style="background:linear-gradient(180deg,var(--ink) 0%,#0f172a 100%)" class="px-5 py-12">
+  <div style="background:linear-gradient(180deg,#FFFBF5 0%,#FFF7ED 100%)" class="px-5 py-12">
     <div class="max-w-lg mx-auto text-center reveal">
-      <p class="text-lg sm:text-xl font-extrabold text-white" style="line-height:1.7;letter-spacing:-.01em">Quelques questions, et <span style="color:#60A5FA">tout devient clair.</span></p>
+      <p class="text-lg sm:text-xl font-extrabold text-stone-800" style="line-height:1.7;letter-spacing:-.01em">Quelques questions, et <span style="color:#EA580C">tout devient clair.</span></p>
     </div>
   </div>
 
@@ -1711,7 +1711,7 @@
         </div>
         <button id="visio-back" onclick="_visioGo(_visioIdx-1)" style="display:none;position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:5;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.7);backdrop-filter:blur(4px);color:#334155;font-size:18px;cursor:pointer;transition:opacity .3s">‹</button>
         <div id="visio-dots" style="display:flex;justify-content:center;gap:8px;margin-top:1rem">
-          <button onclick="_visioGo(0)" style="width:10px;height:10px;border-radius:50%;border:none;background:#1E40AF;cursor:pointer;transition:all .3s"></button>
+          <button onclick="_visioGo(0)" style="width:10px;height:10px;border-radius:50%;border:none;background:#EA580C;cursor:pointer;transition:all .3s"></button>
           <button onclick="_visioGo(1)" style="width:10px;height:10px;border-radius:50%;border:none;background:#cbd5e1;cursor:pointer;transition:all .3s"></button>
           <button onclick="_visioGo(2)" style="width:10px;height:10px;border-radius:50%;border:none;background:#cbd5e1;cursor:pointer;transition:all .3s"></button>
         </div>
@@ -1721,30 +1721,30 @@
   </div>
 
   <!-- ── SECTION 3 — PROBLÈME PARENTS ──────────────────────── -->
-  <div style="background:#0f172a;border-top:1px solid rgba(255,255,255,.06)" class="px-5 py-16">
+  <div style="background:#FFF7ED;border-top:1px solid #FDBA74" class="px-5 py-16">
     <div class="max-w-xl mx-auto text-center">
       <div class="reveal">
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-3" style="letter-spacing:-.02em">Votre enfant n'est pas nul en maths.</h2>
-        <p class="text-xl sm:text-2xl font-bold mb-4" style="color:#60A5FA">Mais quelque chose bloque.</p>
-        <p class="text-white/45 text-sm leading-relaxed mb-8" style="max-width:360px;margin-left:auto;margin-right:auto">Vous avez déjà essayé de l'aider...<br>Et ça s'est mal passé.</p>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-stone-900 mb-3" style="letter-spacing:-.02em">Votre enfant n'est pas nul en maths.</h2>
+        <p class="text-xl sm:text-2xl font-bold mb-4" style="color:#EA580C">Mais quelque chose bloque.</p>
+        <p class="text-stone-500 text-sm leading-relaxed mb-8" style="max-width:360px;margin-left:auto;margin-right:auto">Vous avez déjà essayé de l'aider...<br>Et ça s'est mal passé.</p>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto mb-10">
-        <div class="reveal reveal-d1" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1rem;text-align:left">
-          <span class="text-white/80 text-sm font-medium">Les devoirs créent des tensions à la maison</span>
+        <div class="reveal reveal-d1" style="background:#fff;border:1.5px solid #E7E5E4;border-radius:14px;padding:1rem;text-align:left">
+          <span class="text-stone-700 text-sm font-medium">Les devoirs créent des tensions à la maison</span>
         </div>
-        <div class="reveal reveal-d2" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1rem;text-align:left">
-          <span class="text-white/80 text-sm font-medium">Vous avez essayé d'aider mais ça a empiré</span>
+        <div class="reveal reveal-d2" style="background:#fff;border:1.5px solid #E7E5E4;border-radius:14px;padding:1rem;text-align:left">
+          <span class="text-stone-700 text-sm font-medium">Vous avez essayé d'aider mais ça a empiré</span>
         </div>
-        <div class="reveal reveal-d3" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1rem;text-align:left">
-          <span class="text-white/80 text-sm font-medium">Il comprend en cours mais rate les contrôles</span>
+        <div class="reveal reveal-d3" style="background:#fff;border:1.5px solid #E7E5E4;border-radius:14px;padding:1rem;text-align:left">
+          <span class="text-stone-700 text-sm font-medium">Il comprend en cours mais rate les contrôles</span>
         </div>
-        <div class="reveal reveal-d4" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1rem;text-align:left">
-          <span class="text-white/80 text-sm font-medium">Il était bon avant mais décroche cette année</span>
+        <div class="reveal reveal-d4" style="background:#fff;border:1.5px solid #E7E5E4;border-radius:14px;padding:1rem;text-align:left">
+          <span class="text-stone-700 text-sm font-medium">Il était bon avant mais décroche cette année</span>
         </div>
       </div>
       <div class="reveal" style="transition-delay:.5s">
-        <p class="text-white/50 text-sm font-medium mb-2">Le vrai problème :</p>
-        <p class="text-xl sm:text-2xl font-extrabold" style="color:#60A5FA;letter-spacing:-.01em">Personne n'identifie précisément où ça bloque.</p>
+        <p class="text-stone-500 text-sm font-medium mb-2">Le vrai problème :</p>
+        <p class="text-xl sm:text-2xl font-extrabold" style="color:#EA580C;letter-spacing:-.01em">Personne n'identifie précisément où ça bloque.</p>
       </div>
     </div>
   </div>
@@ -1759,7 +1759,7 @@
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
         <div class="land-step reveal reveal-d1">
-          <div class="land-step-icon float-anim" style="background:#eef2ff">🔎</div>
+          <div class="land-step-icon float-anim" style="background:#FFF7ED">🔎</div>
           <div class="syne font-black text-slate-900 mb-2">Détection des erreurs</div>
           <p class="text-slate-500 text-sm leading-relaxed">Chaque réponse est analysée. Les erreurs récurrentes sont repérées automatiquement.</p>
         </div>
@@ -1779,7 +1779,7 @@
   </div>
 
   <!-- ── SECTION 5 — COMMENT ÇA MARCHE ─────────────────────── -->
-  <div style="background:#f8faff" class="px-5 py-16">
+  <div style="background:#FFFBF5" class="px-5 py-16">
     <div class="max-w-2xl mx-auto">
       <div class="text-center mb-10 reveal">
         <div class="stag mx-auto mb-3">Comment ça marche</div>
@@ -1827,13 +1827,13 @@
         </div>
       </div>
       <div class="reveal text-center" style="transition-delay:.3s">
-        <p class="text-lg font-extrabold" style="color:#1E40AF">La régularité bat l'intensité.</p>
+        <p class="text-lg font-extrabold" style="color:#EA580C">La régularité bat l'intensité.</p>
       </div>
     </div>
   </div>
 
   <!-- ── SECTION 7 — TÉMOIGNAGES ───────────────────────────── -->
-  <div style="background:#f8faff" class="px-5 py-16">
+  <div style="background:#FFFBF5" class="px-5 py-16">
     <div class="max-w-2xl mx-auto">
       <div class="text-center mb-10 reveal">
         <div class="stag mx-auto mb-3">Témoignages</div>
@@ -1843,7 +1843,7 @@
         <div class="sp-quote reveal reveal-d1">
           <p class="text-slate-600 text-sm leading-[1.8] mb-4">"Mon fils était bloqué en équations depuis 2 mois. En trois semaines avec Matheux, il a rattrapé tout le retard. Les exercices changent vraiment chaque jour."</p>
           <div class="tm-author-row">
-            <div class="tm-avatar" style="background:linear-gradient(135deg,#1E40AF,#60A5FA)">SM</div>
+            <div class="tm-avatar" style="background:linear-gradient(135deg,#EA580C,#FB923C)">SM</div>
             <div>
               <div class="text-slate-700 text-xs font-semibold">Sophie M. — mère, 4ème</div>
               <div class="text-slate-400 text-xs">Paris</div>
@@ -1853,7 +1853,7 @@
         <div class="sp-quote reveal reveal-d2">
           <p class="text-slate-600 text-sm leading-[1.8] mb-4">"En deux semaines, ma fille a retrouvé confiance. Elle fait ses 10 minutes sans que j'aie besoin de la relancer."</p>
           <div class="tm-author-row">
-            <div class="tm-avatar" style="background:linear-gradient(135deg,#059669,#34d399)">LB</div>
+            <div class="tm-avatar" style="background:linear-gradient(135deg,#D97706,#FBBF24)">LB</div>
             <div>
               <div class="text-slate-700 text-xs font-semibold">Laurent B. — père, 5ème</div>
               <div class="text-slate-400 text-xs">Lyon</div>
@@ -1863,7 +1863,7 @@
         <div class="sp-quote reveal reveal-d3">
           <p class="text-slate-600 text-sm leading-[1.8] mb-4">"Ce qui m'a convaincue : quelqu'un regarde vraiment le parcours de mon fils, et il s'adapte chaque jour. Ça change tout."</p>
           <div class="tm-author-row">
-            <div class="tm-avatar" style="background:linear-gradient(135deg,#3B82F6,#a78bfa)">NC</div>
+            <div class="tm-avatar" style="background:linear-gradient(135deg,#C2410C,#EA580C)">NC</div>
             <div>
               <div class="text-slate-700 text-xs font-semibold">Nadia C. — mère, 3ème</div>
               <div class="text-slate-400 text-xs">Toulouse</div>
@@ -1883,7 +1883,7 @@
       </div>
       <div class="reveal" style="background:#fff;border:1.5px solid #e2e8f0;border-radius:20px;padding:1.5rem;overflow:hidden">
         <div class="flex items-center gap-3 mb-5">
-          <div style="width:40px;height:40px;background:linear-gradient(135deg,#60A5FA,#3B82F6);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;color:#fff">L</div>
+          <div style="width:40px;height:40px;background:linear-gradient(135deg,#FB923C,#EA580C);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;color:#fff">L</div>
           <div>
             <div class="syne font-black text-slate-900 text-sm">Léa — 4ème</div>
             <div class="text-slate-400 text-xs">Progression en 30 jours</div>
@@ -1960,15 +1960,15 @@
         <div id="res-slide-0" style="transition:opacity .5s ease;opacity:1">
           <p class="text-slate-600 text-sm font-medium mb-2">Tous les exercices sont alignés avec le programme officiel de l'Éducation Nationale 2026.</p>
           <div class="flex flex-wrap justify-center gap-2 mt-4">
-            <span style="background:#eef2ff;color:#1E40AF;border:1px solid #BFDBFE;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">+2500 exercices disponibles</span>
-            <span style="background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">Exercices sur mesure</span>
+            <span style="background:#FFF7ED;color:#EA580C;border:1px solid #FDBA74;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">+2500 exercices disponibles</span>
+            <span style="background:#FEF3C7;color:#92400e;border:1px solid #FCD34D;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">Exercices sur mesure</span>
           </div>
         </div>
         <div id="res-slide-1" style="transition:opacity .5s ease;opacity:0;position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
-          <p class="text-slate-600 text-sm font-medium" style="max-width:340px">En moyenne, Léa a utilisé Matheux <strong style="color:#1E40AF">15 minutes par jour</strong>, pendant <strong style="color:#1E40AF">30 jours consécutifs</strong>.</p>
+          <p class="text-slate-600 text-sm font-medium" style="max-width:340px">En moyenne, Léa a utilisé Matheux <strong style="color:#EA580C">15 minutes par jour</strong>, pendant <strong style="color:#EA580C">30 jours consécutifs</strong>.</p>
         </div>
         <div class="flex justify-center gap-2 mt-5">
-          <span id="res-dot-0" style="width:8px;height:8px;border-radius:99px;background:#1E40AF;transition:background .3s"></span>
+          <span id="res-dot-0" style="width:8px;height:8px;border-radius:99px;background:#EA580C;transition:background .3s"></span>
           <span id="res-dot-1" style="width:8px;height:8px;border-radius:99px;background:#cbd5e1;transition:background .3s"></span>
         </div>
       </div>
@@ -1982,8 +1982,8 @@
           cur=1-cur;
           s0.style.opacity=cur===0?'1':'0';
           s1.style.opacity=cur===1?'1':'0';
-          d0.style.background=cur===0?'#1E40AF':'#cbd5e1';
-          d1.style.background=cur===1?'#1E40AF':'#cbd5e1';
+          d0.style.background=cur===0?'#EA580C':'#cbd5e1';
+          d1.style.background=cur===1?'#EA580C':'#cbd5e1';
         },4000);
       })();
       </script>
@@ -1991,7 +1991,7 @@
   </div>
 
   <!-- ── SECTION 9 — FONDATEUR ─────────────────────────────── -->
-  <div style="background:#faf8f5" class="px-5 py-16">
+  <div style="background:#FFFBF5" class="px-5 py-16">
     <div class="max-w-xl mx-auto reveal">
       <div class="text-center mb-6">
         <div class="stag mx-auto mb-3">Derrière Matheux</div>
@@ -1999,7 +1999,7 @@
       </div>
       <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:24px;padding:2rem;position:relative">
         <div class="flex items-start gap-4 mb-4">
-          <div style="width:56px;height:56px;background:linear-gradient(135deg,#1E40AF,#3B82F6);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;box-shadow:0 8px 24px rgba(30,64,175,.2)">👨‍🏫</div>
+          <div style="width:56px;height:56px;background:linear-gradient(135deg,#EA580C,#FB923C);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;box-shadow:0 8px 24px rgba(234,88,12,.2)">👨‍🏫</div>
           <div>
             <div class="syne font-black text-slate-900">Nicolas</div>
             <div class="text-xs font-semibold text-slate-400">Fondateur de Matheux</div>
@@ -2020,27 +2020,27 @@
     <div class="max-w-sm mx-auto text-center reveal">
       <div class="stag mx-auto mb-5">Le prix</div>
       <div class="flex flex-wrap justify-center gap-2 mb-5">
-        <span style="background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">Moins de 1€ par jour</span>
-        <span style="background:#eef2ff;color:#1E40AF;border:1px solid #BFDBFE;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">Sans engagement</span>
+        <span style="background:#FFF7ED;color:#EA580C;border:1px solid #FDBA74;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">Moins de 1€ par jour</span>
+        <span style="background:#FFF7ED;color:#EA580C;border:1px solid #FDBA74;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">Sans engagement</span>
       </div>
-      <div style="background:linear-gradient(135deg,#0F172A,#1E293B);border:2px solid #334155;position:relative;overflow:hidden" class="rounded-3xl p-8 shadow-2xl">
-        <div class="text-blue-300 text-xs font-bold uppercase tracking-widest mb-4 mt-2">Accès complet</div>
-        <div class="text-5xl font-black text-white mb-1" style="font-family:Inter,sans-serif">19,99<span class="text-2xl font-bold text-blue-300"> €</span></div>
-        <div class="text-slate-400 text-sm mb-2">par mois</div>
+      <div style="background:#fff;border:2.5px solid #EA580C;position:relative;overflow:hidden" class="rounded-3xl p-8 shadow-2xl">
+        <div class="text-xs font-bold uppercase tracking-widest mb-4 mt-2" style="color:#EA580C">Accès complet</div>
+        <div class="text-5xl font-black text-stone-900 mb-1" style="font-family:Syne,sans-serif">19,99<span class="text-2xl font-bold" style="color:#EA580C"> €</span></div>
+        <div class="text-stone-400 text-sm mb-2">par mois</div>
         <div class="text-center mb-5"><span class="perday-badge">soit 0,66 € / jour</span></div>
         <div class="space-y-3 text-left mb-6">
-          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Entraînement quotidien ciblé</span></div>
-          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">44 chapitres — tout le programme</span></div>
-          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Brevet Blanc inclus</span></div>
-          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Parcours vérifié et ajusté chaque soir</span></div>
-          <div class="flex items-center gap-3"><span class="text-green-400 text-base">✓</span><span class="text-white/90 text-sm font-medium">Exercices uniques, créés sur mesure</span></div>
+          <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">Entraînement quotidien ciblé</span></div>
+          <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">44 chapitres — tout le programme</span></div>
+          <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">Brevet Blanc inclus</span></div>
+          <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">Parcours vérifié et ajusté chaque soir</span></div>
+          <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">Exercices uniques, créés sur mesure</span></div>
         </div>
         <button onclick="startTrialFlow()"
                 class="btn btn-ac btn-fw py-4 shadow-xl" style="font-size:1rem;border-radius:var(--l-radius)">
           Essayer 7 jours gratuit
         </button>
         <div class="guarantee-badge"></div>
-        <p class="text-slate-400 text-xs mt-3">Sans carte bancaire · Sans engagement</p>
+        <p class="text-stone-400 text-xs mt-3">Sans carte bancaire · Sans engagement</p>
       </div>
     </div>
   </div>
@@ -2059,14 +2059,13 @@
   </div>
 
   <!-- ── SECTION 11 — CTA FINAL ────────────────────────────── -->
-  <div class="lhero px-5 py-16">
-    <div class="grid-ov"></div>
+  <div class="px-5 py-16" style="background:#FFF7ED">
     <div class="max-w-lg mx-auto relative z-10 text-center reveal">
-      <h2 class="text-2xl sm:text-3xl font-extrabold text-white leading-tight mb-3" style="letter-spacing:-.02em">
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-stone-900 leading-tight mb-3" style="letter-spacing:-.02em">
         Appelez votre enfant maintenant.<br>
-        <span style="color:#60A5FA">Testez ensemble en 5 minutes.</span>
+        <span style="color:#EA580C">Testez ensemble en 5 minutes.</span>
       </h2>
-      <p class="text-white/55 text-sm font-medium mb-8 max-w-sm mx-auto">
+      <p class="text-stone-500 text-sm font-medium mb-8 max-w-sm mx-auto">
         Vous saurez exactement où il bloque.
       </p>
       <button onclick="startTrialFlow()"
@@ -2074,12 +2073,12 @@
               class="btn btn-ac btn-fw shadow-xl">
         Faites le test avec votre enfant
       </button>
-      <p class="text-white/30 text-xs mt-4">5 minutes · Sans carte bancaire · Aucune pression</p>
+      <p class="text-stone-400 text-xs mt-4">5 minutes · Sans carte bancaire · Aucune pression</p>
     </div>
   </div>
 
   <!-- ── SECTION 12 — FAQ ──────────────────────────────────── -->
-  <div style="background:#f8faff" class="px-5 py-16">
+  <div style="background:#FFFBF5" class="px-5 py-16">
     <div class="max-w-xl mx-auto">
       <div class="text-center mb-10 reveal">
         <div class="stag mx-auto mb-3">FAQ</div>
@@ -3219,7 +3218,7 @@ function _visioGo(i) {
   if (!track) return;
   track.style.transform = 'translateX(-' + (i * 100) + '%)';
   var dots = document.querySelectorAll('#visio-dots button');
-  dots.forEach(function(d, j) { d.style.background = j === i ? '#1E40AF' : '#cbd5e1'; });
+  dots.forEach(function(d, j) { d.style.background = j === i ? '#EA580C' : '#cbd5e1'; });
   var cap = document.getElementById('visio-caption');
   if (cap) { cap.style.opacity = '0'; setTimeout(function() { cap.textContent = _visioCaptions[i]; cap.style.opacity = '1'; }, 200); }
   var back = document.getElementById('visio-back');
