@@ -4643,6 +4643,7 @@ function initApp(d, skipRender) {
   // Charger milestones + coach namespacés par user
   try { _milestoneShown = JSON.parse(localStorage.getItem('mx_ms_' + d.profile.code) || '{}'); } catch(e) { _milestoneShown = {}; }
   try { _coachShown = JSON.parse(localStorage.getItem('mx_co_' + d.profile.code) || '{}'); } catch(e) { _coachShown = {}; }
+  try { S.assignedByProf = JSON.parse(localStorage.getItem('mx_assigned_' + d.profile.code) || '{}'); } catch(e) { S.assignedByProf = {}; }
   S.boost      = d.dailyBoost;
   S.boostEx    = d.boostExistsInDB;
   S.isFirstDay = d.isFirstDay || false;
@@ -4724,6 +4725,7 @@ function initApp(d, skipRender) {
       S.isNew[ncKey] = true;
       S.assignedByProf = S.assignedByProf || {};
       S.assignedByProf[ncKey] = true;
+      try { localStorage.setItem('mx_assigned_' + d.profile.code, JSON.stringify(S.assignedByProf)); } catch(e) {}
       S.exp[ncKey] = true;  // auto-déplie le nouveau chapitre
       if (nc.motProf) S.motProfChap[ncKey] = nc.motProf;
       delete S.chapDone[ncKey];
@@ -8106,6 +8108,20 @@ function render() {
           var _hNm3 = (LVL[S.niv].names[_hk3] || _hk3).replace(/_/g, ' ');
           _hero = { action: "togCat('" + _hk3 + "')", emoji: LVL[S.niv].icons[_hk3] || '📘',
             title: 'Commence par ' + _hNm3, sub: 'Ton prof te recommande de commencer ici', pct: 0, _remain: _chapStats[_hk3].tot };
+          break;
+        }
+      }
+    }
+
+    // P4b : Chapitre assignedByProf (persisté localStorage) — même si isNew expiré
+    if (!_hero) {
+      for (var _hi3b = 0; _hi3b < sortedKeys.length; _hi3b++) {
+        var _hk3b = sortedKeys[_hi3b];
+        if (_hk3b === 'BOOST') continue;
+        if (S.assignedByProf && S.assignedByProf[_hk3b] && _chapStats[_hk3b] && !_chapStats[_hk3b].isDone) {
+          var _hNm3b = (LVL[S.niv].names[_hk3b] || _hk3b).replace(/_/g, ' ');
+          _hero = { action: "togCat('" + _hk3b + "')", emoji: LVL[S.niv].icons[_hk3b] || '📘',
+            title: 'Commence par ' + _hNm3b, sub: 'Ton prof te recommande de commencer ici', pct: 0, _remain: _chapStats[_hk3b].tot };
           break;
         }
       }
