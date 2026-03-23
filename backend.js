@@ -4373,7 +4373,7 @@ function sendMarketingSequence(email, prenom, day, objectif) {
       subject  = '\u2705 Inscription confirm\u00e9e \u2014 ce qui attend ' + prenom + ' d\u00e8s demain';
       htmlBody =
         // ── Preheader invisible (preview text Gmail/Outlook)
-        '<span style="display:none;font-size:0;color:transparent;max-height:0;overflow:hidden;">Ses 5 premiers exercices sur mesure arrivent demain matin.' + '\u00a0\u200c'.repeat(30) + '</span>' +
+        '<span style="display:none;font-size:0;color:transparent;max-height:0;overflow:hidden;">Ses 5 premiers exercices sur mesure arrivent demain matin.\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0</span>' +
         // ── Wrapper table (Outlook-safe)
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f1f5f9;"><tr><td align="center" style="padding:24px 12px;">' +
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" style="max-width:520px;width:100%;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Helvetica,Arial,sans-serif;">' +
