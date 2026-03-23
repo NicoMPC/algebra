@@ -7980,10 +7980,12 @@ function render() {
   var _isRevision = {};
   (S.revisionCats || []).forEach(function(c) { _isRevision[c] = true; });
   _sortable.sort(function(a, b) {
+    var aNew = S.isNew[a] && !S.chapDone[a];
+    var bNew = S.isNew[b] && !S.chapDone[b];
     var aStarted = S.chapTouched[a] && !S.chapDone[a];
     var bStarted = S.chapTouched[b] && !S.chapDone[b];
-    var aR = aStarted ? 0 : (_isRevision[a] ? 1 : (S.chapDone[a] ? 3 : 2));
-    var bR = bStarted ? 0 : (_isRevision[b] ? 1 : (S.chapDone[b] ? 3 : 2));
+    var aR = aNew ? -1 : (aStarted ? 0 : (_isRevision[a] ? 1 : (S.chapDone[a] ? 3 : 2)));
+    var bR = bNew ? -1 : (bStarted ? 0 : (_isRevision[b] ? 1 : (S.chapDone[b] ? 3 : 2)));
     return aR - bR;
   });
   var sortedKeys = _fixedHead.concat(_sortable);
@@ -8098,7 +8100,7 @@ function render() {
         if (S.isNew[_hk3] && _chapStats[_hk3] && !_chapStats[_hk3].isDone) {
           var _hNm3 = (LVL[S.niv].names[_hk3] || _hk3).replace(/_/g, ' ');
           _hero = { action: "togCat('" + _hk3 + "')", emoji: LVL[S.niv].icons[_hk3] || '📘',
-            title: 'Nouveau : ' + _hNm3, sub: 'Ton prof l\'a ajouté pour toi', pct: 0, _remain: _chapStats[_hk3].tot };
+            title: 'Commence par ' + _hNm3, sub: 'Ton prof te recommande de commencer ici', pct: 0, _remain: _chapStats[_hk3].tot };
           break;
         }
       }
