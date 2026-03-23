@@ -4722,6 +4722,8 @@ function initApp(d, skipRender) {
       });
       injectedCats.add(ncKey);
       S.isNew[ncKey] = true;
+      S.assignedByProf = S.assignedByProf || {};
+      S.assignedByProf[ncKey] = true;
       S.exp[ncKey] = true;  // auto-déplie le nouveau chapitre
       if (nc.motProf) S.motProfChap[ncKey] = nc.motProf;
       delete S.chapDone[ncKey];
@@ -7980,12 +7982,12 @@ function render() {
   var _isRevision = {};
   (S.revisionCats || []).forEach(function(c) { _isRevision[c] = true; });
   _sortable.sort(function(a, b) {
-    var aNew = S.isNew[a] && !S.chapDone[a];
-    var bNew = S.isNew[b] && !S.chapDone[b];
+    var aPinned = S.assignedByProf && S.assignedByProf[a] && !S.chapDone[a];
+    var bPinned = S.assignedByProf && S.assignedByProf[b] && !S.chapDone[b];
     var aStarted = S.chapTouched[a] && !S.chapDone[a];
     var bStarted = S.chapTouched[b] && !S.chapDone[b];
-    var aR = aNew ? -1 : (aStarted ? 0 : (_isRevision[a] ? 1 : (S.chapDone[a] ? 3 : 2)));
-    var bR = bNew ? -1 : (bStarted ? 0 : (_isRevision[b] ? 1 : (S.chapDone[b] ? 3 : 2)));
+    var aR = aPinned ? -1 : (aStarted ? 0 : (_isRevision[a] ? 1 : (S.chapDone[a] ? 3 : 2)));
+    var bR = bPinned ? -1 : (bStarted ? 0 : (_isRevision[b] ? 1 : (S.chapDone[b] ? 3 : 2)));
     return aR - bR;
   });
   var sortedKeys = _fixedHead.concat(_sortable);
