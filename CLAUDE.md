@@ -138,7 +138,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | A1 | **Triple-clic logo** | Accès admin (comptes IsAdmin uniquement) |
 | A2 | **6 onglets** | À FAIRE / NOUVEAU / FAIT / MAILS / INACTIFS / RAPPORT |
 | A3 | **4 statuts ACTION** | 🔴 BLOQUÉ (inactif >7j + <40%) / ⚡ BOOST TERMINÉ / ✅ CHAPITRE TERMINÉ / 👍 RAS |
-| A4 | **Workflow boost/chapitre** | Copier résultats → Claude → JSON → publier |
+| A4 | **Workflow boost/chapitre** | Semi-auto : IA analyse + génère → admin "📦 À VALIDER" → aperçu élève → publier. Fallback manuel : Copier JSON → Claude → coller → publier |
 | A5 | **Limite bêta** | 50 vrais élèves (IsTest=0) |
 
 ---

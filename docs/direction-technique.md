@@ -243,11 +243,90 @@ Ce process est aujourd'hui manuel (Nicolas + IA). Les étapes automatisables :
 
 1. ✅ `direction-technique.md` — process documenté (fait 2026-03-23)
 2. ✅ Boutons "Aperçu élève" + "Publier" dans l'admin pour chapitres ET boosts (fait 2026-03-23)
-3. ✅ Explication "Pourquoi ces exos" visible dans la carte admin — chapitres ET boosts (fait 2026-03-23)
-4. ✅ Pré-remplissage textarea admin depuis Suivi — le JSON injecté en amont remonte automatiquement dans l'admin avec diagnostic + aperçu prêts (fait 2026-03-23)
-5. ✅ Action "📦 À VALIDER" dans l'admin — quand un chapitre/boost est pré-rempli dans Suivi, l'admin affiche une action dédiée (fait 2026-03-23)
-6. 🔜 **`prescribe.py`** — script qui analyse automatiquement les Scores d'un élève quand un chapitre est terminé, génère le brief (diagnostic + slots + exos déjà vus), et le stocke comme draft dans l'admin. Nicolas n'a plus qu'à valider + aperçu + publier. L'objectif : réduire le workflow de 8 étapes à 3 (voir brief → aperçu → publier).
-7. 🔜 Génération auto des exos depuis le brief (Claude API) — Nicolas valide toujours avant publish
+3. ✅ Explication "Pourquoi ces exos" visible dans la carte admin — diagnostic auto-rempli au chargement (fait 2026-03-23)
+4. ✅ Pré-remplissage textarea admin depuis Suivi — le JSON injecté en amont remonte via `pendingJSON`/`boostPendingJSON` dans la réponse `get_admin_overview` (fait 2026-03-23)
+5. ✅ Action "📦 À VALIDER" dans l'admin — quand un chapitre/boost est pré-rempli, l'admin affiche une action dédiée dans "À FAIRE" (fait 2026-03-23)
+6. ✅ Masquage "Copier JSON" quand draft pré-rempli — l'ancien workflow manuel est masqué automatiquement (fait 2026-03-23)
+7. 🔜 **`prescribe.py`** — script qui analyse automatiquement les Scores d'un élève quand un chapitre est terminé, génère le brief + les exos, et les injecte dans Suivi. Nicolas n'a plus qu'à ouvrir l'admin → aperçu → publier. Objectif : workflow en 3 clics.
+8. 🔜 Génération auto des exos depuis le brief (Claude API) — Nicolas valide toujours avant publish
+
+---
+
+## 8. Workflow admin — état actuel
+
+### Ce que Nicolas fait aujourd'hui (semi-auto)
+
+```
+Nicolas : "[Prénom] a fini [chapitre]. Prépare-lui la suite."
+  → IA analyse les Scores (patterns, erreurs, indices, formule, temps)
+    → IA présente le brief (diagnostic + slots)
+      → Nicolas valide
+        → IA génère les exos (anti-doublon) + injecte dans Suivi
+          → Admin affiche "📦 À VALIDER" avec :
+            - Textarea pré-rempli (JSON)
+            - "📋 Pourquoi ces exercices ?" (diagnostic auto)
+            - "👁 Aperçu élève" (rendu KaTeX identique élève)
+            - "📚 Publier" (1 clic → Suivi → prêt au login)
+```
+
+### Anatomie d'une carte admin "À VALIDER"
+
+| Element | Source | Quand visible |
+|---|---|---|
+| Badge "📦 Chapitre/Boost à valider" | `chapNewCount > 0` ou `boostNew` | Suivi col G/J/M/P ou S non vide |
+| Textarea pré-rempli | `pendingJSON` / `boostPendingJSON` depuis backend | Suivi col non vide |
+| "📋 Pourquoi ces exercices ?" | Champ `diagnostic` dans le JSON (resume, erreurs, slots) | JSON contient un objet `diagnostic` |
+| "👁 Aperçu élève" | `_adminPreviewChapter()` — overlay KaTeX read-only | Toujours (si textarea non vide) |
+| "📚 Publier" | `publish_admin_chapter` / `publish_admin_boost` GAS | Textarea non vide + JSON valide |
+| "📋 Copier JSON + résultats" | Ancien workflow manuel | Masqué quand draft pré-rempli |
+
+### Format JSON avec diagnostic (chapitres)
+
+```json
+{
+  "categorie": "Calcul_Littéral",
+  "titre": "Calcul littéral",
+  "icone": "📝",
+  "insight": "On reprend les identités remarquables...",
+  "diagnostic": {
+    "resume": "Formule-dépendant : sait factoriser avec la formule, confond (2x)² et 2x² sans aide.",
+    "erreurs": [
+      "Exo #8 : pense que (3x)² = 3x²",
+      "Exo #19 : erreur de signe sur le double produit"
+    ],
+    "slots": [
+      "Slot 1 : Double distributivité — confiance",
+      "Slot 2 : Identités SANS formule — restitution",
+      "Slot 3 : Preuves et développements",
+      "Slot 4 : V/F pièges"
+    ]
+  },
+  "exos": [ ... ]
+}
+```
+
+### Format JSON avec diagnostic (boosts)
+
+```json
+{
+  "insight": "Tes exos du jour ciblent le double produit et les fractions.",
+  "diagnostic": {
+    "resume": "Double produit oublié + division fractions inversée",
+    "erreurs": ["(2x+1)² = 4x²+2x+1 au lieu de 4x²+4x+1", "3÷(3/5) → multiplie au lieu de diviser"],
+    "slots": ["Exo 1: confiance", "Exo 2: double produit", "Exo 3: division fractions", "Exo 4: équation", "Exo 5: consolidation"]
+  },
+  "exos": [ ... ]
+}
+```
+
+### Règles métier admin
+
+| Règle | Détail |
+|---|---|
+| **Pas de chapitre V2 avant 20/20** | Ne jamais générer un nouveau chapitre tant que l'actuel n'est pas terminé (20 exos), sauf contre-indication Nicolas |
+| **Nicolas valide toujours** | L'IA propose, Nicolas dispose. Jamais de publish auto |
+| **One-shot** | Le login consomme le contenu Suivi et vide la cellule. Si on veut réinjecter, remettre le JSON |
+| **Anti-doublon cumulatif** | L'agent vérifie TOUS les Scores passés (pas juste le dernier passage) pour éviter de re-servir un exo |
 
 ---
 
@@ -256,3 +335,4 @@ Ce process est aujourd'hui manuel (Nicolas + IA). Les étapes automatisables :
 | Date | Changement |
 |---|---|
 | 2026-03-23 | Création — basé sur analyse réelle de Charlie (Calcul Littéral + Fonctions) |
+| 2026-03-23 | Workflow admin semi-auto complet : pré-remplissage, diagnostic, aperçu, publish. Premier cas réel : Charlie (chapitre V2) + Noam (boost ciblé) |
