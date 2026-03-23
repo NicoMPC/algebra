@@ -8,7 +8,8 @@
   //   Events : checkout.session.completed, customer.subscription.deleted
   //   Copier le Webhook Signing Secret (whsec_...) → STRIPE_WEBHOOK_SECRET ci-dessous
 
-var STRIPE_WEBHOOK_SECRET = 'whsec_XCaxVn2m9EUDQsWQOBxX4hObdgoZYCy2'; // ← remplacer par le vrai secret
+// C3 security fix: secret removed from archive code — use PropertiesService in production
+var STRIPE_WEBHOOK_SECRET = ''; // REMOVED — was hardcoded, now in PropertiesService
 
 /**
  * Action : stripe_webhook
