@@ -106,6 +106,14 @@ def validate_exo(exo, idx, errors, warnings):
         dupes = [o for o in set(options) if options.count(o) > 1]
         errors.append(f"{prefix} — OPTIONS EN DOUBLE : {dupes}")
 
+    # ── Simulation validation backend GAS ──
+    # Reproduit exactement les checks de publishAdminChapter/publishAdminBoost
+    if exo_type != 'fill':
+        if not isinstance(options, list) or len(options) == 0:
+            errors.append(f"{prefix} — BACKEND REFUSERA : options[] vide pour type={exo_type or 'qcm'}")
+        elif a not in options:
+            errors.append(f"{prefix} — BACKEND REFUSERA : a absent des options")
+
     # ── Steps ──
     if len(steps) == 0:
         errors.append(f"{prefix} — Aucun step (indice)")
