@@ -361,7 +361,7 @@
       position:relative; padding:.875rem 1rem .875rem 3rem;
       border:2px solid var(--brd); border-radius:var(--r);
       background:#fff; width:100%; display:flex; align-items:center;
-      cursor:pointer; font-weight:600; font-size:.9rem; min-height:56px;
+      cursor:pointer; font-weight:600; font-size:1rem; min-height:56px;
       transition:all .15s; -webkit-tap-highlight-color:transparent;
     }
     .opt:active:not(.oc):not(.ow):not(.on) { transform:scale(.98); }
@@ -683,7 +683,7 @@
     @media (max-width:640px) {
       #main-app { padding-left:.75rem; padding-right:.75rem; }
       #app-c .rounded-3xl, #app-c .rounded-2xl { margin-left:auto; margin-right:auto; }
-      .opt { padding:.7rem .8rem .7rem 2.5rem; font-size:.82rem; min-height:44px; }
+      .opt { padding:.7rem .8rem .7rem 2.5rem; font-size:.9rem; min-height:44px; }
       .opt::before { left:.7rem; width:1rem; height:1rem; }
       .btn-validate { padding:.8rem; font-size:.9rem; min-height:48px; }
       .help-pill { padding:.3rem .65rem; font-size:.7rem; }
@@ -7389,7 +7389,7 @@ function _renderRetroExo(exo, score, cat, idx) {
     ? fmtL(exo.q).replace(/___/g, '<span style="display:inline-block;min-width:5rem;border-bottom:3px solid #1E40AF;background:#eef2ff;border-radius:4px;padding:2px 8px;margin:0 4px">…</span>')
     : fmtL(exo.q);
   html += '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 sm:p-5 mb-3 min-h-[60px] flex items-center justify-center" style="overflow-wrap:break-word;word-break:break-word">';
-  html += '<div class="mc text-center font-bold text-sm sm:text-base leading-relaxed w-full min-w-0" style="overflow-x:auto">'+qHtml+'</div></div>';
+  html += '<div class="mc text-center font-bold text-base sm:text-lg leading-relaxed w-full min-w-0" style="overflow-x:auto">'+qHtml+'</div></div>';
 
   // ── Options QCM / VF (read-only, colorées) ──
   if (exo.options && exo.options.length) {
@@ -7413,9 +7413,9 @@ function _renderRetroExo(exo, score, cat, idx) {
   } else if (exoType === 'fill') {
     // Fill : afficher la bonne réponse + éventuellement la mauvaise
     html += '<div class="mt-3">';
-    html += '<div class="text-xs font-bold text-emerald-600 mc bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2">✓ Réponse : '+fmtL(exo.a)+'</div>';
+    html += '<div class="text-sm font-bold text-emerald-600 mc bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5">✓ Réponse : '+fmtL(exo.a)+'</div>';
     if ((isHard || isMed) && score.mauvaise_option) {
-      html += '<div class="text-xs text-rose-500 mt-1 mc bg-rose-50 border border-rose-200 rounded-xl px-3 py-2">✗ Répondu : '+fmtL(score.mauvaise_option)+'</div>';
+      html += '<div class="text-sm text-rose-500 mt-1 mc bg-rose-50 border border-rose-200 rounded-xl px-3 py-2.5">✗ Répondu : '+fmtL(score.mauvaise_option)+'</div>';
     }
     html += '</div>';
   }
@@ -8708,9 +8708,9 @@ function rSection(cat, data, idx, total, catDone) {
     var fillAns = S.qans[id];
     var fillOk = fillAns && _normFill(fillAns) === _normFill(data.a);
     opts = '<div class="mt-3">';
-    opts += '<div class="text-xs font-bold mc bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 ' + (fillOk ? 'text-emerald-600' : '') + '">✓ Réponse : '+fmtL(data.a)+'</div>';
+    opts += '<div class="text-sm font-bold mc bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5 ' + (fillOk ? 'text-emerald-600' : '') + '">✓ Réponse : '+fmtL(data.a)+'</div>';
     if (!fillOk && fillAns) {
-      opts += '<div class="text-xs text-rose-500 mt-1 mc bg-rose-50 border border-rose-200 rounded-xl px-3 py-2">✗ Répondu : '+fmtL(fillAns)+'</div>';
+      opts += '<div class="text-sm text-rose-500 mt-1 mc bg-rose-50 border border-rose-200 rounded-xl px-3 py-2.5">✗ Répondu : '+fmtL(fillAns)+'</div>';
     }
     opts += '</div>';
   }
@@ -8751,7 +8751,7 @@ function rSection(cat, data, idx, total, catDone) {
     '</div>' +
     getExoFigure(data, cat, scored) +
     '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 sm:p-5 mb-3 min-h-[60px] flex items-center justify-center" style="overflow-wrap:break-word;word-break:break-word">' +
-    '<div class="mc text-center font-bold text-sm sm:text-base leading-relaxed w-full min-w-0" style="overflow-x:auto">'+(exoType === 'fill' ? fmtL(data.q).replace(/___/g, '<span style="display:inline-block;min-width:5rem;border-bottom:3px solid #1E40AF;background:#eef2ff;border-radius:4px;padding:2px 8px;margin:0 4px">…</span>') : fmtL(data.q))+'</div></div>' +
+    '<div class="mc text-center font-bold text-base sm:text-lg leading-relaxed w-full min-w-0" style="overflow-x:auto">'+(exoType === 'fill' ? fmtL(data.q).replace(/___/g, '<span style="display:inline-block;min-width:5rem;border-bottom:3px solid #1E40AF;background:#eef2ff;border-radius:4px;padding:2px 8px;margin:0 4px">…</span>') : fmtL(data.q))+'</div></div>' +
     opts + acts +
     (catDone && scored
       ? '<div class="inline-help mc rdy" id="help-inline-'+id+'">'+_previewHelp(data)+'</div>'
