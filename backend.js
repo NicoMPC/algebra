@@ -4370,58 +4370,75 @@ function sendMarketingSequence(email, prenom, day, objectif) {
           && r['Statut'] === 'envoyé';
       });
       if (alreadySentJ0) return { status: 'success', message: 'J+0 déjà envoyé.' };
-      subject  = prenom + ' vient de commencer — voici ce qui va changer';
+      subject  = '\u2705 Inscription confirm\u00e9e \u2014 ce qui attend ' + prenom + ' d\u00e8s demain';
       htmlBody =
-        '<div style="max-width:520px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;background:#0f172a;padding:0;border-radius:16px;overflow:hidden;">' +
-        // ── Header dark avec logo
-        '<div style="background:linear-gradient(135deg,#0f172a,#1e293b);padding:32px 32px 24px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08);">' +
-        '<img src="https://matheux.fr/logo-matheux.png" alt="Matheux" width="140" style="display:block;margin:0 auto 16px;filter:brightness(0) invert(1);" />' +
-        '<h1 style="color:#ffffff;font-size:20px;font-weight:900;margin:0;letter-spacing:-.3px;">' + prenom + ' vient de commencer sur Matheux</h1>' +
-        '<p style="color:#60A5FA;font-size:14px;font-weight:600;margin:8px 0 0;">Ses premi\u00e8res lacunes sont d\u00e9j\u00e0 identifi\u00e9es.</p>' +
-        '</div>' +
-        // ── Corps
-        '<div style="background:#ffffff;padding:32px 28px;">' +
-        '<p style="color:#374151;font-size:15px;line-height:1.8;margin-top:0;">Bonjour,</p>' +
+        // ── Preheader invisible (preview text Gmail/Outlook)
+        '<span style="display:none;font-size:0;color:transparent;max-height:0;overflow:hidden;">Ses 5 premiers exercices sur mesure arrivent demain matin.' + '\u00a0\u200c'.repeat(30) + '</span>' +
+        // ── Wrapper table (Outlook-safe)
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f1f5f9;"><tr><td align="center" style="padding:24px 12px;">' +
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" style="max-width:520px;width:100%;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Helvetica,Arial,sans-serif;">' +
+        // ── Header
+        '<tr><td style="background:#0f172a;padding:28px 32px 24px;text-align:center;border-radius:12px 12px 0 0;">' +
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="center">' +
+        '<p style="font-size:22px;font-weight:900;color:#ffffff;margin:0 0 4px;letter-spacing:-.5px;">M</p>' +
+        '<p style="font-size:11px;font-weight:700;color:#60A5FA;letter-spacing:3px;text-transform:uppercase;margin:0;">MATHEUX</p>' +
+        '</td></tr></table>' +
+        '</td></tr>' +
+        // ── Bandeau bleu
+        '<tr><td style="background:#1E40AF;padding:20px 32px;text-align:center;">' +
+        '<p style="color:#ffffff;font-size:18px;font-weight:800;margin:0;line-height:1.4;">' + prenom + ' est inscrit. Ses premiers exercices arrivent demain.</p>' +
+        '</td></tr>' +
+        // ── Corps blanc
+        '<tr><td style="background:#ffffff;padding:32px 28px;">' +
+        '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 20px;">Bonjour,</p>' +
         // ── Ce qui va se passer
-        '<p style="color:#1e293b;font-size:15px;line-height:1.8;font-weight:700;margin-bottom:4px;">Concr\u00e8tement, voil\u00e0 ce qui va se passer :</p>' +
-        '<div style="background:#f8fafc;border-left:3px solid #1E40AF;border-radius:0 10px 10px 0;padding:16px 18px;margin:12px 0;">' +
-        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 8px;">Chaque jour, <strong>5 exercices cibl\u00e9s</strong> uniquement sur ce qu\'il ne ma\u00eetrise pas</p>' +
-        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 8px;"><strong>10 minutes</strong> suffisent</p>' +
-        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0;">Le parcours <strong>s\'adapte automatiquement</strong> \u00e0 ses r\u00e9ponses</p>' +
-        '</div>' +
-        '<p style="color:#6b7280;font-size:13px;line-height:1.6;margin:12px 0 20px;">Pas de surcharge. Pas de perte de temps.</p>' +
+        '<p style="color:#1e293b;font-size:15px;line-height:1.8;font-weight:700;margin:0 0 12px;">Concr\u00e8tement, voil\u00e0 comment \u00e7a fonctionne :</p>' +
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 20px;">' +
+        '<tr><td style="padding:12px 16px;background:#f8fafc;border-left:3px solid #1E40AF;">' +
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">' +
+        '<tr><td style="padding:4px 0;color:#374151;font-size:14px;line-height:1.8;"><strong style="color:#1E40AF;">1.</strong> Chaque jour, <strong>5 exercices cibl\u00e9s</strong> sur ses lacunes</td></tr>' +
+        '<tr><td style="padding:4px 0;color:#374151;font-size:14px;line-height:1.8;"><strong style="color:#1E40AF;">2.</strong> <strong>10 minutes</strong> suffisent \u2014 pas de surcharge</td></tr>' +
+        '<tr><td style="padding:4px 0;color:#374151;font-size:14px;line-height:1.8;"><strong style="color:#1E40AF;">3.</strong> Le parcours <strong>s\u2019adapte</strong> automatiquement \u00e0 ses r\u00e9ponses</td></tr>' +
+        '</table>' +
+        '</td></tr></table>' +
         // ── Ce que le parent va observer
-        '<p style="color:#1e293b;font-size:15px;line-height:1.8;font-weight:700;margin-bottom:4px;">Ce que vous allez observer dans les prochains jours :</p>' +
-        '<div style="margin:12px 0 20px;">' +
-        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:28px;height:28px;background:#eef2ff;border-radius:8px;text-align:center;line-height:28px;font-size:13px;flex-shrink:0;">\u2705</div><span style="color:#374151;font-size:14px;">Moins d\'h\u00e9sitation</span></div>' +
-        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:28px;height:28px;background:#eef2ff;border-radius:8px;text-align:center;line-height:28px;font-size:13px;flex-shrink:0;">\u2705</div><span style="color:#374151;font-size:14px;">Plus de r\u00e9gularit\u00e9</span></div>' +
-        '<div style="display:flex;align-items:center;gap:10px;"><div style="width:28px;height:28px;background:#eef2ff;border-radius:8px;text-align:center;line-height:28px;font-size:13px;flex-shrink:0;">\u2705</div><span style="color:#374151;font-size:14px;">Et surtout\u2026 <strong>plus de confiance</strong></span></div>' +
-        '</div>' +
-        // ── Demain matin
-        '<div style="background:linear-gradient(135deg,#eef2ff,#e0e7ff);border:1px solid #c7d2fe;border-radius:12px;padding:16px 18px;margin:20px 0;text-align:center;">' +
-        '<p style="color:#1E40AF;font-size:15px;font-weight:800;margin:0;">D\u00e8s demain matin, un nouvel entra\u00eenement sur mesure l\'attend.</p>' +
-        '</div>' +
+        '<p style="color:#1e293b;font-size:15px;line-height:1.8;font-weight:700;margin:0 0 12px;">Ce que vous allez observer :</p>' +
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 20px;">' +
+        '<tr><td width="32" valign="top" style="padding:6px 0;font-size:14px;">\u2705</td><td style="padding:6px 0;color:#374151;font-size:14px;line-height:1.6;">Il sait mieux par o\u00f9 commencer</td></tr>' +
+        '<tr><td width="32" valign="top" style="padding:6px 0;font-size:14px;">\u2705</td><td style="padding:6px 0;color:#374151;font-size:14px;line-height:1.6;">Il travaille r\u00e9guli\u00e8rement, sans qu\u2019on le pousse</td></tr>' +
+        '<tr><td width="32" valign="top" style="padding:6px 0;font-size:14px;">\u2705</td><td style="padding:6px 0;color:#374151;font-size:14px;line-height:1.6;">Et surtout\u2026 <strong>il reprend confiance</strong></td></tr>' +
+        '</table>' +
+        // ── Encart demain
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;"><tr>' +
+        '<td style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:10px;padding:16px 20px;text-align:center;">' +
+        '<p style="color:#1E40AF;font-size:15px;font-weight:800;margin:0;">D\u00e8s demain matin, son premier entra\u00eenement sur mesure l\u2019attend.</p>' +
+        '</td></tr></table>' +
         // ── Bilan hebdo
-        '<p style="color:#374151;font-size:14px;line-height:1.7;">Et chaque semaine, vous recevrez un <strong>bilan clair de sa progression</strong> : ce qui est acquis, ce qui bloque encore, et ce qui a \u00e9volu\u00e9.</p>' +
-        // ── CTA
-        '<div style="text-align:center;margin:28px 0 24px;">' +
-        '<a href="https://matheux.fr" style="background:linear-gradient(135deg,#1E40AF,#3B82F6);color:#ffffff;font-size:15px;font-weight:800;text-decoration:none;padding:14px 36px;border-radius:12px;display:inline-block;letter-spacing:-.2px;">Ouvrir Matheux \u2192</a>' +
-        '</div>' +
+        '<p style="color:#374151;font-size:14px;line-height:1.7;margin:0 0 24px;">Chaque semaine, vous recevrez un <strong>bilan clair</strong> : ce qui est acquis, ce qui bloque, et ce qui progresse.</p>' +
+        // ── CTA bouton (Outlook-safe avec padding trick)
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="center" style="padding:4px 0 28px;">' +
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>' +
+        '<td style="background:#1E40AF;border-radius:10px;text-align:center;">' +
+        '<a href="https://matheux.fr" style="display:inline-block;padding:14px 36px;color:#ffffff;font-size:15px;font-weight:800;text-decoration:none;letter-spacing:-.2px;">Ouvrir Matheux \u2192</a>' +
+        '</td></tr></table>' +
+        '</td></tr></table>' +
         // ── Storytelling fondateur
-        '<div style="border-top:1px solid #e5e7eb;padding-top:20px;margin-top:8px;">' +
-        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">J\'ai cr\u00e9\u00e9 Matheux apr\u00e8s avoir vu les m\u00eames blocages revenir chez mes \u00e9l\u00e8ves, encore et encore.</p>' +
-        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">Le probl\u00e8me n\'est presque jamais la compr\u00e9hension. <strong>C\'est l\'entra\u00eenement.</strong></p>' +
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td style="border-top:1px solid #e5e7eb;padding-top:20px;">' +
+        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">J\u2019ai cr\u00e9\u00e9 Matheux apr\u00e8s avoir vu les m\u00eames blocages revenir chez mes \u00e9l\u00e8ves, encore et encore.</p>' +
+        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">Le probl\u00e8me n\u2019est presque jamais la compr\u00e9hension. <strong>C\u2019est l\u2019entra\u00eenement.</strong></p>' +
         '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0;">Matheux corrige \u00e7a, simplement.</p>' +
-        '</div>' +
-        // ── PS humour
-        '<p style="color:#9ca3af;font-size:13px;font-style:italic;line-height:1.6;margin:24px 0 0;"><em>P.S. \u2014 Il se pourrait que ' + prenom + ' passe un peu plus de temps sur son t\u00e9l\u00e9phone\u2026<br>Bonne nouvelle : cette fois, \u00e7a lui sera utile.</em></p>' +
-        '</div>' +
+        '</td></tr></table>' +
+        // ── PS
+        '<p style="color:#9ca3af;font-size:13px;font-style:italic;line-height:1.6;margin:24px 0 0;">P.S. \u2014 Il se pourrait que ' + prenom + ' passe un peu plus de temps sur son t\u00e9l\u00e9phone\u2026 Bonne nouvelle : cette fois, \u00e7a lui sera utile.</p>' +
+        '</td></tr>' +
         // ── Footer signature
-        '<div style="background:#0f172a;padding:24px 28px;text-align:center;">' +
+        '<tr><td style="background:#0f172a;padding:20px 28px;text-align:center;border-radius:0 0 12px 12px;">' +
         '<p style="color:#f1f5f9;font-size:14px;font-weight:700;margin:0 0 2px;">Nicolas</p>' +
-        '<p style="color:#64748b;font-size:12px;margin:0;">Fondateur de Matheux</p>' +
-        '</div>' +
-        footer + '</div>';
+        '<p style="color:#64748b;font-size:12px;margin:0 0 12px;">Fondateur de Matheux</p>' +
+        '<p style="font-size:11px;color:#475569;margin:0;"><a href="' + unsubLink + '" style="color:#475569;text-decoration:underline;">Se d\u00e9sinscrire</a></p>' +
+        '</td></tr>' +
+        '</table>' +
+        '</td></tr></table>';
 
     } else if (day === 3) {
       subject  = 'Comment ça se passe pour ' + prenom + ' ? 💪';
