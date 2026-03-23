@@ -262,8 +262,6 @@ docs/messages.md               → Voice & tone guide
 docs/workflow-quotidien.md     → Workflow quotidien Nicolas (6 onglets admin)
 docs/prompt-generation-exos.md → Prompt unique pour générer des exercices (v2.0)
 docs/direction-technique.md    → Direction technique : analyse élève → prescription → anti-doublon
-docs/logs/                     → Traces de chaque session de travail
-docs/archive/                  → Docs historiques + audits + rapports
 ```
 
 ### Exercices — "Monsieur Exos"
