@@ -10882,8 +10882,21 @@ function _buildActionWorkflow(st, action) {
   if (action.type === 'boost') {
     var topCat = (action.cat || 'Fractions').replace(/'/g, "\\'");
     h += '<button onclick="_copyLastBoostContext(\'' + st.code + '\')" class="adm-copy-btn mb-2">\ud83d\udccb Copier JSON boost + r\u00e9sultats</button>';
-    h += '<textarea id="ck-boost-json-' + st.code + '" class="adm-textarea mb-2" style="height:80px" placeholder="Coller le JSON ici..." oninput="_ckTogglePublish(\'' + st.code + '\',\'boost\')"></textarea>';
-    h += '<button id="ck-btn-boost-' + st.code + '" onclick="_ckPublishBoost(\'' + st.code + '\')" disabled class="w-full bg-slate-300 text-white text-xs font-bold py-2.5 rounded-xl transition-colors cursor-not-allowed">\u26a1 Publier</button>';
+    var _draftBoost = st.boostPendingJSON || '';
+    h += '<textarea id="ck-boost-json-' + st.code + '" class="adm-textarea mb-2" style="height:80px" placeholder="Coller le JSON ici..." oninput="_ckTogglePublish(\'' + st.code + '\',\'boost\')">' + (_draftBoost ? _draftBoost.replace(/</g,'&lt;') : '') + '</textarea>';
+    if (_draftBoost) {
+      h += '<script>setTimeout(function(){_ckTogglePublish(\'' + st.code + '\',\'boost\')},200)<\/script>';
+    }
+    h += '<details class="mt-2 mb-2"><summary style="cursor:pointer;font-size:.75rem;font-weight:700;color:#1E40AF">\ud83d\udccb Pourquoi ces exercices ?</summary>';
+    h += '<div id="ck-diag-boost-' + st.code + '" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:.75rem;margin-top:.5rem;font-size:.78rem;color:#475569;line-height:1.6"><em>Colle le JSON pour voir le diagnostic...</em></div>';
+    h += '</details>';
+    if (_draftBoost) {
+      h += '<script>setTimeout(function(){var ta=document.getElementById("ck-boost-json-"+\'' + st.code + '\');if(ta){try{var p=JSON.parse(ta.value);var el=document.getElementById("ck-diag-boost-"+\'' + st.code + '\');if(el&&p){var h2="";if(p.diagnostic){if(p.diagnostic.resume)h2+="<div style=\\"font-weight:700;margin-bottom:.4rem\\">"+p.diagnostic.resume+"</div>";if(p.diagnostic.erreurs){h2+="<div style=\\"font-weight:600\\">Erreurs ciblées :</div><ul style=\\"margin:.2rem 0 .4rem 1.2rem\\">";p.diagnostic.erreurs.forEach(function(e){h2+="<li style=\\"list-style:disc\\">"+e+"</li>"});h2+="</ul>"}if(p.diagnostic.slots){p.diagnostic.slots.forEach(function(s){h2+="<div>"+s+"</div>"})}}if(p.insight)h2+="<div style=\\"margin-top:.4rem;padding:.5rem;background:#eef2ff;border-radius:8px;border:1px solid #c7d2fe\\">"+p.insight+"</div>";if(h2)el.innerHTML=h2}}catch(e){}}},300)<\/script>';
+    }
+    h += '<div class="flex gap-2">';
+    h += '<button onclick="_ckPreviewBoost(\'' + st.code + '\')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-200">\ud83d\udc41 Aper\u00e7u</button>';
+    h += '<button id="ck-btn-boost-' + st.code + '" onclick="_ckPublishBoost(\'' + st.code + '\')" disabled class="flex-1 bg-slate-300 text-white text-xs font-bold py-2.5 rounded-xl transition-colors cursor-not-allowed">\u26a1 Publier</button>';
+    h += '</div>';
 
   } else if (action.type === 'chapitre') {
     var topCat2 = (action.cat || '').replace(/'/g, "\\'");
@@ -11043,6 +11056,16 @@ function _ckUpdateDiag(code) {
 }
 
 // ── Preview chapter as student overlay ───────────────────────
+function _ckPreviewBoost(code) {
+  var ta = document.getElementById('ck-boost-json-' + code);
+  var raw = ta ? ta.value.trim() : '';
+  if (!raw) { showT('Colle le JSON d\'abord', 3000, '\u26a0\ufe0f'); return; }
+  var parsed;
+  try { parsed = JSON.parse(raw); } catch(e) { showT('JSON invalide', 3000, '\u274c'); return; }
+  if (!parsed.exos || !parsed.exos.length) { showT('Pas d\'exercices', 3000, '\u26a0\ufe0f'); return; }
+  _adminPreviewChapter(JSON.stringify(parsed), 'Boost personnalisé');
+}
+
 function _ckPreviewChapter(code) {
   var ta = document.getElementById('ck-chap-json-' + code);
   var raw = ta ? ta.value.trim() : '';

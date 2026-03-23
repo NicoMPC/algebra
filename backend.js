@@ -3285,7 +3285,8 @@ function getAdminOverview(p) {
         : 0;
 
       var boostActuel = row ? String(row[16] || '—') : '—';
-      var boostNew    = row ? (String(row[BOOST_NEW_IDX] || '').trim() !== '') : false;
+      var _boostNewRaw = row ? String(row[BOOST_NEW_IDX] || '').trim() : '';
+      var boostNew    = _boostNewRaw !== '';
 
       // Détail par chapitre (depuis Scores 30j) — TOUS les exos, pas de cap
       // Enrichi avec nbExos et dernierePratique depuis Progress (source de vérité)
@@ -3736,6 +3737,7 @@ function getAdminOverview(p) {
         chapNewCount:         chapNewCount,
         boostActuel:          boostActuel,
         boostNew:             boostNew,
+        boostPendingJSON:     _boostNewRaw || '',
         chapitresDetail:      chapitresDetail,
         boostHistory:         boostHistory,
         currentBoostExosDone: currentBoostExosDone,
