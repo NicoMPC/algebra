@@ -5450,7 +5450,14 @@ window.revF = function(cat, idx) {
 // ─── NORMALISATION FILL ──────────────────────────────────────
 // Compare la réponse élève vs la bonne réponse (tolérant espaces, $, virgules)
 function _normFill(s) {
-  return String(s).replace(/\$/g,'').replace(/\\,/g,'').replace(/\s+/g,'').replace(/,/g,'.').toLowerCase().trim();
+  var v = String(s).replace(/\$/g,'').replace(/\\,/g,'').replace(/\s+/g,'').replace(/,/g,'.').toLowerCase().trim();
+  // Normaliser \frac{a}{b} → a/b (et \dfrac)
+  v = v.replace(/\\d?frac\{([^}]*)\}\{([^}]*)\}/g, '$1/$2');
+  // Normaliser \times → ×, \cdot → ·, \div → ÷
+  v = v.replace(/\\times/g,'×').replace(/\\cdot/g,'·').replace(/\\div/g,'÷');
+  // Retirer les commandes LaTeX résiduelles (\text{...} → contenu, \left \right etc.)
+  v = v.replace(/\\text\{([^}]*)\}/g,'$1').replace(/\\(left|right|displaystyle|,|;|!|quad)/g,'');
+  return v;
 }
 
 // ─── SÉLECTION + VALIDATION QCM ─────────────────────────────
@@ -8615,10 +8622,13 @@ function rSection(cat, data, idx, total, catDone) {
     setTimeout(function() { showT('Les pastilles en haut te permettent de revoir chaque question', 4000, '\uD83D\uDCCB'); }, 800);
   }
 
+  // ── Type exercice ──────────────────────────────
+  var exoType = data.type || 'qcm';
+
   // ── Actions bas de page ──────────────────────────────
   var acts = '';
-  if (!isRev && !hasOpt) {
-    // Flashcard : bouton révéler
+  if (!isRev && !hasOpt && exoType !== 'fill') {
+    // Flashcard : bouton révéler (pas pour fill qui a son propre input)
     acts = '<button onclick="verify(\''+cat+'\','+idx+')" class="btn btn-dk btn-fw py-4 mt-4">Révéler la réponse</button>';
   } else if (isRev && !scored && !hasOpt) {
     // Flashcard révélée : auto-évaluation manuelle
@@ -8640,7 +8650,6 @@ function rSection(cat, data, idx, total, catDone) {
   }
 
   // ── Options QCM (adaptatif 2/3/4 options) ──────────────────
-  var exoType = data.type || 'qcm';
   var opts = '';
   if (hasOpt) {
     // Mélange des options (une seule fois par exercice)
