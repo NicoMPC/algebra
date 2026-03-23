@@ -10872,8 +10872,14 @@ function _buildActionWorkflow(st, action) {
   } else if (action.type === 'chapitre') {
     var topCat2 = (action.cat || '').replace(/'/g, "\\'");
     h += '<button onclick="_copyChapContext(\'' + st.code + '\')" class="adm-copy-btn mb-2">\ud83d\udccb Copier JSON chapitre + résultats</button>';
-    h += '<textarea id="ck-chap-json-' + st.code + '" class="adm-textarea mb-2" style="height:80px" placeholder="Coller le JSON ici..." oninput="_ckTogglePublish(\'' + st.code + '\',\'chapitre\')"></textarea>';
-    h += '<button id="ck-btn-chap-' + st.code + '" onclick="_ckPublishChapter(\'' + st.code + '\')" disabled class="w-full bg-slate-300 text-white text-xs font-bold py-2.5 rounded-xl transition-colors cursor-not-allowed">\ud83d\udcda Publier</button>';
+    h += '<textarea id="ck-chap-json-' + st.code + '" class="adm-textarea mb-2" style="height:80px" placeholder="Coller le JSON ici..." oninput="_ckTogglePublish(\'' + st.code + '\',\'chapitre\');_ckUpdateDiag(\'' + st.code + '\')"></textarea>';
+    h += '<details class="mt-2 mb-2"><summary style="cursor:pointer;font-size:.75rem;font-weight:700;color:#1E40AF">\ud83d\udccb Pourquoi ces exercices ?</summary>';
+    h += '<div id="ck-diag-' + st.code + '" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:.75rem;margin-top:.5rem;font-size:.78rem;color:#475569;line-height:1.6"><em>Colle le JSON pour voir le diagnostic...</em></div>';
+    h += '</details>';
+    h += '<div class="flex gap-2">';
+    h += '<button id="ck-btn-preview-' + st.code + '" onclick="_ckPreviewChapter(\'' + st.code + '\')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-200">\ud83d\udc41 Aper\u00e7u \u00e9l\u00e8ve</button>';
+    h += '<button id="ck-btn-chap-' + st.code + '" onclick="_ckPublishChapter(\'' + st.code + '\')" disabled class="flex-1 bg-slate-300 text-white text-xs font-bold py-2.5 rounded-xl transition-colors cursor-not-allowed">\ud83d\udcda Publier</button>';
+    h += '</div>';
 
   }
 
@@ -10971,6 +10977,155 @@ async function _ckPublishChapter(code) {
     showT('\u274c Erreur r\u00e9seau', 3000, '\u274c');
     if (btn) { btn.innerHTML = '\ud83d\udcda Publier'; btn.disabled = false; }
   }
+}
+
+// ── Update diagnostic block when JSON is pasted ──────────────
+function _ckUpdateDiag(code) {
+  var ta = document.getElementById('ck-chap-json-' + code);
+  var el = document.getElementById('ck-diag-' + code);
+  if (!ta || !el) return;
+  var raw = ta.value.trim();
+  if (!raw) { el.innerHTML = '<em>Colle le JSON pour voir le diagnostic...</em>'; return; }
+  var parsed;
+  try { parsed = JSON.parse(raw); } catch(e) {
+    try { parsed = JSON.parse(raw.replace(/[\x00-\x1f\x7f]/g, function(c) { return c === '\n' || c === '\r' || c === '\t' ? c : ''; })); } catch(e2) { el.innerHTML = '<em style="color:#ef4444">JSON invalide</em>'; return; }
+  }
+  var html = '';
+  if (parsed.diagnostic) {
+    var diag = parsed.diagnostic;
+    if (diag.resume) html += '<div style="font-weight:700;margin-bottom:.4rem">Diagnostic : ' + diag.resume + '</div>';
+    if (diag.erreurs && diag.erreurs.length) {
+      html += '<div style="font-weight:600;margin-top:.3rem">Erreurs cibl\u00e9es :</div><ul style="margin:.2rem 0 .4rem 1.2rem;padding:0">';
+      diag.erreurs.forEach(function(e) { html += '<li style="list-style:disc">' + e + '</li>'; });
+      html += '</ul>';
+    }
+    if (diag.slots && diag.slots.length) {
+      diag.slots.forEach(function(s, i) { html += '<div><strong>Slot ' + (i+1) + ' :</strong> ' + s + '</div>'; });
+    }
+  }
+  if (parsed.insight) {
+    html += '<div style="margin-top:.4rem;padding:.5rem;background:#eef2ff;border-radius:8px;border:1px solid #c7d2fe">' + parsed.insight + '</div>';
+  }
+  if (!html) html = '<em>Pas de diagnostic dans ce JSON</em>';
+  el.innerHTML = html;
+  if (parsed.exos) {
+    var n = parsed.exos.length;
+    var cat = parsed.categorie || '?';
+    html += '<div style="margin-top:.5rem;font-size:.7rem;color:#94a3b8">' + n + ' exercices \u00b7 ' + cat + '</div>';
+    el.innerHTML = html;
+  }
+}
+
+// ── Preview chapter as student overlay ───────────────────────
+function _ckPreviewChapter(code) {
+  var ta = document.getElementById('ck-chap-json-' + code);
+  var raw = ta ? ta.value.trim() : '';
+  if (!raw) { showT('Colle le JSON d\'abord', 3000, '\u26a0\ufe0f'); return; }
+  var parsed;
+  try { parsed = JSON.parse(raw); } catch(e) {
+    try { parsed = JSON.parse(raw.replace(/[\x00-\x1f\x7f]/g, function(c) { return c === '\n' || c === '\r' || c === '\t' ? c : ''; })); } catch(e2) { showT('JSON invalide', 3000, '\u274c'); return; }
+  }
+  if (!parsed.exos || !parsed.exos.length) { showT('Pas d\'exercices dans le JSON', 3000, '\u26a0\ufe0f'); return; }
+  _adminPreviewChapter(JSON.stringify(parsed), parsed.categorie || 'Chapitre');
+}
+
+function _adminPreviewChapter(jsonStr, title) {
+  var parsed = JSON.parse(jsonStr);
+  var exos = parsed.exos || [];
+  var n = exos.length;
+
+  // Remove existing overlay
+  var old = document.getElementById('admin-preview-overlay');
+  if (old) old.remove();
+
+  var ov = document.createElement('div');
+  ov.id = 'admin-preview-overlay';
+  ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);overflow-y:auto;-webkit-overflow-scrolling:touch';
+
+  var html = '<div style="max-width:480px;margin:1rem auto;background:#fff;border-radius:1.2rem;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)">';
+
+  // Header
+  html += '<div style="background:linear-gradient(135deg,#1E40AF,#3B82F6);color:white;padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between">';
+  html += '<div><div style="font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;opacity:.8">Aper\u00e7u \u00e9l\u00e8ve</div>';
+  html += '<div style="font-size:1rem;font-weight:900;font-family:Syne,sans-serif">' + (title || 'Chapitre') + ' (' + n + ' exos)</div></div>';
+  html += '<button onclick="document.getElementById(\'admin-preview-overlay\').remove()" style="background:rgba(255,255,255,.2);border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:1.2rem;cursor:pointer;font-weight:bold">\u2715</button>';
+  html += '</div>';
+
+  // Dot navigation
+  html += '<div id="adm-prev-dots" style="padding:.75rem 1rem;display:flex;gap:6px;flex-wrap:wrap;background:#f8fafc;border-bottom:1px solid #e2e8f0">';
+  exos.forEach(function(ex, i) {
+    var lvlColor = (ex.lvl || 1) === 1 ? '#3B82F6' : '#f59e0b';
+    html += '<button onclick="_admPrevScroll(' + i + ')" style="width:28px;height:28px;border-radius:50%;border:2px solid ' + lvlColor + ';background:white;font-size:.7rem;font-weight:800;color:' + lvlColor + ';cursor:pointer;transition:all .15s" onmouseover="this.style.background=\'' + lvlColor + '\';this.style.color=\'white\'" onmouseout="this.style.background=\'white\';this.style.color=\'' + lvlColor + '\'">' + (i+1) + '</button>';
+  });
+  html += '</div>';
+
+  // Exercises
+  html += '<div style="padding:1rem">';
+  exos.forEach(function(ex, i) {
+    var exoType = ex.type || 'qcm';
+    var lvlBg = (ex.lvl || 1) === 1 ? 'background:#eef2ff;color:#3B82F6;border:1px solid #c7d2fe' : 'background:#fef3c7;color:#d97706;border:1px solid #fde68a';
+
+    html += '<div id="adm-prev-exo-' + i + '" style="margin-bottom:1.2rem;border:1px solid #e2e8f0;border-radius:.85rem;padding:.75rem;background:#fff">';
+
+    // Level + number
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">';
+    html += '<span style="font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:6px;' + lvlBg + '">Niv. ' + (ex.lvl || 1) + '</span>';
+    html += '<span style="font-size:.7rem;font-weight:700;color:#94a3b8">Q' + (i+1) + '/' + n + '</span>';
+    html += '</div>';
+
+    // Question
+    var qHtml = exoType === 'fill'
+      ? fmtL(ex.q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace')).replace(/___/g, '<span style="display:inline-block;min-width:5rem;border-bottom:3px solid #1E40AF;background:#eef2ff;border-radius:4px;padding:2px 8px;margin:0 4px">\u2026</span>')
+      : fmtL(ex.q);
+    html += '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.85rem;padding:.75rem;margin-bottom:.5rem;min-height:50px;display:flex;align-items:center;justify-content:center">';
+    html += '<div class="mc" style="text-align:center;font-weight:700;font-size:.95rem;line-height:1.6;width:100%;overflow-x:auto">' + qHtml + '</div></div>';
+
+    // Options
+    if (ex.options && ex.options.length) {
+      var nOpts = ex.options.length;
+      var gridStyle = nOpts <= 2 ? 'display:grid;grid-template-columns:1fr 1fr;gap:8px' : nOpts === 4 ? 'display:grid;grid-template-columns:1fr 1fr;gap:8px' : 'display:flex;flex-direction:column;gap:8px';
+      html += '<div style="' + gridStyle + ';margin-top:.5rem">';
+      ex.options.forEach(function(o, oi) {
+        var isCorrect = o === ex.a;
+        var optStyle = 'width:100%;text-align:left;padding:.7rem .8rem;border-radius:.75rem;border:1.5px solid ' + (isCorrect ? '#10b981' : '#e2e8f0') + ';background:' + (isCorrect ? '#d1fae5' : '#f8fafc') + ';font-size:.85rem;cursor:default;pointer-events:none';
+        if (exoType === 'vf' && nOpts === 2) optStyle += ';padding:1rem;font-size:1rem;font-weight:800';
+        html += '<button style="' + optStyle + '"><span class="mc">' + fmtL(o) + '</span>' + (isCorrect ? ' <span style="color:#059669;font-weight:700">\u2713</span>' : '') + '</button>';
+      });
+      html += '</div>';
+    } else if (exoType === 'fill') {
+      html += '<div style="margin-top:.5rem;padding:.6rem .8rem;background:#d1fae5;border:1px solid #6ee7b7;border-radius:.75rem;font-size:.85rem;font-weight:700;color:#065f46" class="mc">\u2713 R\u00e9ponse : ' + fmtL(ex.a) + '</div>';
+    }
+
+    // Hints preview
+    if (ex.indices && ex.indices.length) {
+      html += '<details style="margin-top:.5rem"><summary style="cursor:pointer;font-size:.7rem;font-weight:700;color:#6366f1">\ud83d\udca1 ' + ex.indices.length + ' indice(s)</summary>';
+      html += '<div style="margin-top:.3rem;font-size:.78rem;color:#475569;line-height:1.5" class="mc">';
+      ex.indices.forEach(function(hint, hi) { html += '<div style="padding:.3rem 0;border-bottom:1px solid #f1f5f9">' + fmtL(hint) + '</div>'; });
+      html += '</div></details>';
+    }
+
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // Footer
+  html += '<div style="padding:.75rem 1rem;background:#f8fafc;border-top:1px solid #e2e8f0;text-align:center">';
+  html += '<button onclick="document.getElementById(\'admin-preview-overlay\').remove()" style="background:#1E40AF;color:white;border:none;padding:.6rem 2rem;border-radius:.75rem;font-size:.85rem;font-weight:700;cursor:pointer">Fermer l\'aper\u00e7u</button>';
+  html += '</div></div>';
+
+  ov.innerHTML = html;
+  ov.addEventListener('click', function(e) { if (e.target === ov) ov.remove(); });
+  document.body.appendChild(ov);
+
+  // Render KaTeX
+  setTimeout(function() {
+    try { rMath(ov); } catch(e) {}
+  }, 50);
+}
+
+function _admPrevScroll(i) {
+  var el = document.getElementById('adm-prev-exo-' + i);
+  if (el) el.scrollIntoView({ behavior:'smooth', block:'center' });
 }
 
 // ── Mark contact as done ─────────────────────────────────────
