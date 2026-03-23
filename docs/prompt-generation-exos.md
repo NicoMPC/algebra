@@ -215,6 +215,13 @@ produit scalaire, géométrie repérée, variables aléatoires.
 
 ### Quand Nicolas demande "génère des exos pour [chapitre] [niveau]"
 
+**Étape 0 — Analyse élève (si chapitre V2+)**
+Si c'est un re-travail pour un élève existant, **TOUJOURS lire `docs/direction-technique.md`** d'abord :
+1. Analyser les Scores de l'élève (pattern, indices, formule, erreurs exactes)
+2. Rédiger le brief de prescription (diagnostic + slots ciblés)
+3. Lister les exercices déjà vus (énoncés + valeurs) → **ne jamais les reproduire**
+4. Présenter le brief à Nicolas AVANT de générer
+
 **Étape 1 — Comprendre**
 1. Identifier le niveau et le chapitre dans le programme officiel
 2. Décomposer en 4 sous-compétences (slots)
@@ -304,6 +311,24 @@ Chaque exercice doit :
 
 Les steps doivent guider vers la démarche, pas vers la réponse.
 ```
+
+---
+
+## Règle anti-doublon — JAMAIS le même exo deux fois
+
+Un élève qui refait un chapitre ne doit JAMAIS retomber sur un exercice identique.
+Entre V1 et V2, **obligatoirement** changer :
+- Les **valeurs numériques** (toujours)
+- Le **contexte / prénoms** (toujours)
+- Le **type de question** si possible (QCM → V/F → Fill)
+
+Peuvent rester identiques :
+- La **formule générale** (f) — c'est un rappel théorique
+- La **compétence testée** — on peut re-tester la même sous-compétence avec un angle différent
+- La **structure des steps** — schéma 3 étapes identique
+
+Avant injection, **toujours** lister les énoncés V1 depuis Scores et vérifier qu'aucun V2 ne les reproduit.
+Détail complet : voir `docs/direction-technique.md` §4.
 
 ---
 

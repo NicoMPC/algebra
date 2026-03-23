@@ -6976,8 +6976,11 @@ function renderProgress() {
   var avgScore = scoredCount > 0 ? Math.round(totalScore / scoredCount) : 0;
   var streak = S.stk || 0;
 
-  // Tri : en cours triés par score ASC (faibles en premier), puis maîtrisés, puis non commencés
+  // Tri : assignedByProf en premier, puis en cours (score ASC), puis maîtrisés, puis non commencés
   chapData.sort(function(a, b) {
+    var aPin = S.assignedByProf && S.assignedByProf[a.cat] && !a.isMast ? -1 : 0;
+    var bPin = S.assignedByProf && S.assignedByProf[b.cat] && !b.isMast ? -1 : 0;
+    if (aPin !== bPin) return aPin - bPin;
     var oa = a.isStart ? (a.isMast ? 1 : 0) : 2;
     var ob = b.isStart ? (b.isMast ? 1 : 0) : 2;
     if (oa !== ob) return oa - ob;
@@ -10723,6 +10726,19 @@ function _renderAdminCards() {
       });
     }
   } else if (activeTab === 'rapport') {
+    // Retention banner
+    var _rstAll = (S.adminStudents || []).filter(function(s) { return !s.isTest; });
+    var _rstTotal = _rstAll.length;
+    if (_rstTotal > 0) {
+      var _rstToday = _rstAll.filter(function(s) { return (parseInt(s.inactivityDays) || 999) === 0; }).length;
+      var _rstYest = _rstAll.filter(function(s) { return (parseInt(s.inactivityDays) || 999) <= 1; }).length;
+      var _rstWeek = _rstAll.filter(function(s) { return (parseInt(s.inactivityDays) || 999) <= 7; }).length;
+      var _rstPct = Math.round(_rstToday / _rstTotal * 100);
+      html += '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px;margin-bottom:12px">';
+      html += '<div style="font-size:12px;font-weight:700;color:#334155;margin-bottom:6px">Aujourd\'hui : ' + _rstToday + '/' + _rstTotal + ' actifs (' + _rstPct + '%) | Hier : ' + _rstYest + '/' + _rstTotal + ' (' + Math.round(_rstYest/_rstTotal*100) + '%) | 7j : ' + _rstWeek + '/' + _rstTotal + ' (' + Math.round(_rstWeek/_rstTotal*100) + '%)</div>';
+      html += '<div style="height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden"><div style="height:100%;width:' + _rstPct + '%;background:linear-gradient(90deg,#22c55e,#3b82f6);border-radius:3px"></div></div>';
+      html += '</div>';
+    }
     var isSunday = new Date().getDay() === 0;
     if (!isSunday) {
       html += '<div class="text-center py-12"><div class="text-4xl mb-3">\ud83d\udcca</div>';
@@ -10807,7 +10823,9 @@ function _buildCockpitCard(st) {
   h += '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500">' + st.niveau + '</span>';
   if (streak > 1) h += '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-600">\ud83d\udd25 ' + streak + 'j</span>';
   h += '</div>';
-  h += '<div class="text-[10px] text-slate-400 font-medium mt-0.5">Derni\u00e8re co : ' + lastStr + ' \u00b7 ' + st.code + '</div>';
+  var _inaDays = parseInt(st.inactivityDays) || 0;
+  var _dotClr = _inaDays === 0 ? '#22c55e' : _inaDays === 1 ? '#eab308' : _inaDays < 7 ? '#ef4444' : '#9ca3af';
+  h += '<div class="text-[10px] text-slate-400 font-medium mt-0.5"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + _dotClr + ';margin-right:4px;vertical-align:middle"></span>Derni\u00e8re co : ' + lastStr + ' \u00b7 ' + st.code + '</div>';
   h += '</div></div></div>';
 
   // Actions

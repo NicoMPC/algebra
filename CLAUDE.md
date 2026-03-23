@@ -239,16 +239,17 @@ python3 rebuild_sheet.py        # Reconstruire Suivi + Historique
 ### Structure docs/
 
 ```
-CLAUDE.md                    → Ce fichier (règles du jeu)
-docs/architecture.md         → Technique (frontend + backend + flux)
-docs/database.md             → Schéma Sheets (16 onglets + colonnes)
-docs/product.md              → Produit (vision + parcours + business)
-docs/roadmap.md              → Priorités + calendrier
-docs/messages.md             → Voice & tone guide
-docs/workflow-quotidien.md   → Workflow quotidien Nicolas (6 onglets admin)
-docs/prompt-generation-exos.md → Prompt unique pour générer des exercices (v1.0)
-docs/logs/                   → Traces de chaque session de travail
-docs/archive/                → Docs historiques + audits + rapports
+CLAUDE.md                      → Ce fichier (règles du jeu)
+docs/architecture.md           → Technique (frontend + backend + flux)
+docs/database.md               → Schéma Sheets (16 onglets + colonnes)
+docs/product.md                → Produit (vision + parcours + business)
+docs/roadmap.md                → Priorités + calendrier
+docs/messages.md               → Voice & tone guide
+docs/workflow-quotidien.md     → Workflow quotidien Nicolas (6 onglets admin)
+docs/prompt-generation-exos.md → Prompt unique pour générer des exercices (v2.0)
+docs/direction-technique.md    → Direction technique : analyse élève → prescription → anti-doublon
+docs/logs/                     → Traces de chaque session de travail
+docs/archive/                  → Docs historiques + audits + rapports
 ```
 
 ### Exercices — "Monsieur Exos"
