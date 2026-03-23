@@ -242,10 +242,12 @@ Ce process est aujourd'hui manuel (Nicolas + IA). Les étapes automatisables :
 **Étapes d'automatisation (par priorité) :**
 
 1. ✅ `direction-technique.md` — process documenté (fait 2026-03-23)
-2. ✅ Boutons "Aperçu élève" + "Publier" dans l'admin (fait 2026-03-23)
-3. ✅ Explication "Pourquoi ces exos" visible dans la carte admin (fait 2026-03-23)
-4. 🔜 **`prescribe.py`** — script qui analyse automatiquement les Scores d'un élève quand un chapitre est terminé, génère le brief (diagnostic + slots + exos déjà vus), et le stocke comme draft dans l'admin. Nicolas n'a plus qu'à valider + aperçu + publier. L'objectif : réduire le workflow de 8 étapes à 3 (voir brief → aperçu → publier).
-5. 🔜 Génération auto des exos depuis le brief (Claude API) — Nicolas valide toujours avant publish
+2. ✅ Boutons "Aperçu élève" + "Publier" dans l'admin pour chapitres ET boosts (fait 2026-03-23)
+3. ✅ Explication "Pourquoi ces exos" visible dans la carte admin — chapitres ET boosts (fait 2026-03-23)
+4. ✅ Pré-remplissage textarea admin depuis Suivi — le JSON injecté en amont remonte automatiquement dans l'admin avec diagnostic + aperçu prêts (fait 2026-03-23)
+5. ✅ Action "📦 À VALIDER" dans l'admin — quand un chapitre/boost est pré-rempli dans Suivi, l'admin affiche une action dédiée (fait 2026-03-23)
+6. 🔜 **`prescribe.py`** — script qui analyse automatiquement les Scores d'un élève quand un chapitre est terminé, génère le brief (diagnostic + slots + exos déjà vus), et le stocke comme draft dans l'admin. Nicolas n'a plus qu'à valider + aperçu + publier. L'objectif : réduire le workflow de 8 étapes à 3 (voir brief → aperçu → publier).
+7. 🔜 Génération auto des exos depuis le brief (Claude API) — Nicolas valide toujours avant publish
 
 ---
 
