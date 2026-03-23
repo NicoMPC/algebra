@@ -3853,11 +3853,16 @@ function publishAdminBoost(p) {
       if (typeof ex.a !== 'string' || !ex.a.trim()) {
         return { status: 'error', message: 'Exo ' + (i + 1) + ' invalide : champ "a" manquant.' };
       }
-      if (!Array.isArray(ex.options) || ex.options.length === 0) {
-        return { status: 'error', message: 'Exo ' + (i + 1) + ' invalide : options[] manquant.' };
-      }
-      if (ex.options.indexOf(ex.a) === -1) {
-        return { status: 'error', message: 'Exo ' + (i + 1) + ' invalide : "a" absent des options.' };
+      var exType2 = String(ex.type || 'qcm');
+      if (exType2 === 'fill') {
+        if (!Array.isArray(ex.options)) ex.options = [];
+      } else {
+        if (!Array.isArray(ex.options) || ex.options.length === 0) {
+          return { status: 'error', message: 'Exo ' + (i + 1) + ' invalide : options[] manquant.' };
+        }
+        if (ex.options.indexOf(ex.a) === -1) {
+          return { status: 'error', message: 'Exo ' + (i + 1) + ' invalide : "a" absent des options.' };
+        }
       }
     }
   } catch (e) {
@@ -3941,11 +3946,17 @@ function publishAdminChapter(p) {
       if (typeof ex.a !== 'string' || !ex.a.trim()) {
         return { status: 'error', message: 'Exo ' + (i + 1) + ' invalide : "a" manquant.' };
       }
-      if (!Array.isArray(ex.options) || ex.options.length === 0) {
-        return { status: 'error', message: 'Exo ' + (i + 1) + ' invalide : options[] manquant.' };
-      }
-      if (ex.options.indexOf(ex.a) === -1) {
-        return { status: 'error', message: 'Exo ' + (i + 1) + ' : "a" absent des options.' };
+      var exType = String(ex.type || 'qcm');
+      if (exType === 'fill') {
+        // Fill : options vide autorisé, réponse vérifiée via _normFill() côté frontend
+        if (!Array.isArray(ex.options)) ex.options = [];
+      } else {
+        if (!Array.isArray(ex.options) || ex.options.length === 0) {
+          return { status: 'error', message: 'Exo ' + (i + 1) + ' invalide : options[] manquant.' };
+        }
+        if (ex.options.indexOf(ex.a) === -1) {
+          return { status: 'error', message: 'Exo ' + (i + 1) + ' : "a" absent des options.' };
+        }
       }
     }
   } catch (e) {
