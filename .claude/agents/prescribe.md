@@ -244,44 +244,94 @@ Si **warnings** → évaluer et corriger si nécessaire.
 
 ---
 
-## 6. Injecter — écrire dans la base
+## 6. Injecter — écrire le BROUILLON dans Suivi
+
+**⚠️ RÈGLE CRITIQUE : l'agent écrit un BROUILLON avec `"draft": true`.**
+**Nicolas clique "Publier" dans l'admin pour rendre les exos live + les persister.**
+
+L'agent n'appelle JAMAIS `publish_admin_chapter` / `publish_admin_boost`.
+L'agent écrit DIRECTEMENT dans la cellule Suivi via `sheets.py`.
+
+### Pourquoi le flag `draft` ?
+
+Le backend `login()` **ignore** les entrées avec `"draft": true`.
+→ L'élève ne reçoit rien tant que Nicolas n'a pas cliqué "Publier".
+→ Le brouillon reste en place indéfiniment si Nicolas oublie (pas de perte).
+→ Quand Nicolas clique "Publier", le backend écrit la version propre (sans draft) + persiste dans RemediationChapters.
 
 ### Pour un chapitre :
 
 ```python
-import json, urllib.request
+from sheets import sh
+import json
 
-URL = 'https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec'
+# Construire le JSON complet avec draft flag
+draft = {
+    "categorie": "Nom_Chapitre",
+    "insight": "Message élève...",
+    "diagnostic": {
+        "resume": "Diagnostic prof détaillé...",
+        "erreurs": ["Erreur 1...", "Erreur 2..."],
+        "slots": ["Slot 1 : ...", "Slot 2 : ..."]
+    },
+    "exos": [ ... ],
+    "draft": True  # ← CRUCIAL : le backend ignorera ce JSON au login
+}
 
-payload = json.dumps({
-    'action': 'publish_admin_chapter',
-    'adminCode': 'HMD493',
-    'targetCode': code_eleve,
-    'categorie': data['categorie'],
-    'exos': data['exos'],
-    'insight': data['insight']
-}).encode()
-
-req = urllib.request.Request(URL, data=payload, method='POST')
-resp = urllib.request.urlopen(req, timeout=60)
-result = json.loads(resp.read().decode())
+# Trouver la ligne de l'élève dans Suivi et écrire dans le premier slot libre
+# Slots → Nouveau Ch : col G=7, J=10, M=13, P=16 (1-based)
+SLOTS = [7, 10, 13, 16]
+suivi_raw = sh.read_raw('👁 Suivi')
+for i, r in enumerate(suivi_raw[1:], start=2):
+    if len(r) > 20 and r[20] == code_eleve:
+        # D'abord chercher un slot avec la même catégorie → écraser
+        written = False
+        for slot_0, slot_1 in zip([6, 9, 12, 15], SLOTS):
+            val = r[slot_0] if slot_0 < len(r) else ''
+            if val:
+                try:
+                    existing = json.loads(val)
+                    if existing.get('categorie') == draft['categorie']:
+                        sh.update_cell('👁 Suivi', i, slot_1, json.dumps(draft))
+                        written = True
+                        break
+                except: pass
+        # Sinon premier slot libre
+        if not written:
+            for slot_0, slot_1 in zip([6, 9, 12, 15], SLOTS):
+                val = r[slot_0] if slot_0 < len(r) else ''
+                if not str(val).strip():
+                    sh.update_cell('👁 Suivi', i, slot_1, json.dumps(draft))
+                    written = True
+                    break
+        break
 ```
 
 ### Pour un boost :
 
 ```python
-payload = json.dumps({
-    'action': 'publish_admin_boost',
-    'adminCode': 'HMD493',
-    'targetCode': code_eleve,
-    'exos': data['exos'],
-    'insight': data['insight']
-}).encode()
+draft = {
+    "insight": "Message élève...",
+    "diagnostic": { ... },
+    "exos": [ ... ],
+    "draft": True
+}
+
+# Écrire dans → Nouveau Boost (col S = 19, 1-based)
+sh.update_cell('👁 Suivi', row_eleve, 19, json.dumps(draft))
 ```
 
-Après injection, mettre à jour le JSON dans Suivi pour inclure le champ `diagnostic` (le publish_admin_chapter n'envoie pas le diagnostic — il faut l'écrire directement dans la cellule Suivi via sheets.py).
+### Après injection
 
-**⚠️ NE JAMAIS tester le login d'un élève après injection** — ça consomme le one-shot et vide Suivi.
+Dire à Nicolas :
+```
+✅ Brouillon injecté pour [Prénom].
+👉 Ouvre l'admin → aperçu → publier.
+L'élève ne recevra RIEN tant que tu n'as pas cliqué Publier.
+```
+
+**⚠️ NE JAMAIS appeler `publish_admin_chapter` / `publish_admin_boost` depuis l'agent.**
+**⚠️ NE JAMAIS tester le login d'un élève** — même sans draft, ça consommerait le one-shot.
 
 ---
 
@@ -312,10 +362,11 @@ Après avoir traité tous les élèves, présenter un résumé :
 1. **JAMAIS générer sans validation Nicolas du brief** — tu proposes, il dispose
 2. **JAMAIS reproduire un exo déjà vu** — vérifier Scores + RemediationChapters + BoostExos
 3. **JAMAIS de ton culpabilisant** dans l'insight élève
-4. **JAMAIS publier automatiquement** — injecter dans Suivi "À VALIDER", Nicolas publie
-5. **JAMAIS tester le login** après injection (consomme le one-shot)
-6. **TOUJOURS vérifier chaque calcul** — une réponse fausse = un élève qui perd confiance
-7. **TOUJOURS passer validate_exos.py** avant injection
-8. **TOUJOURS lire les deux bibles** au début de chaque session
-9. **Diagnostic = prof à prof** (chiffres, erreurs exactes, justification slots)
-10. **Insight = élève** (encourageant, précis, Game Boy Chill)
+4. **JAMAIS appeler `publish_admin_chapter` / `publish_admin_boost`** — l'agent écrit des BROUILLONS (`draft: true`) via sheets.py. Nicolas publie depuis l'admin.
+5. **JAMAIS tester le login d'un élève** — ça consomme le one-shot et vide Suivi
+6. **TOUJOURS ajouter `"draft": true`** dans le JSON écrit en Suivi — le backend l'ignorera au login, l'élève ne reçoit rien tant que Nicolas n'a pas publié
+7. **TOUJOURS vérifier chaque calcul** — une réponse fausse = un élève qui perd confiance
+8. **TOUJOURS passer validate_exos.py** avant injection
+9. **TOUJOURS lire les deux bibles** au début de chaque session
+10. **Diagnostic = prof à prof** (chiffres, erreurs exactes, justification slots)
+11. **Insight = élève** (encourageant, précis, Game Boy Chill, nomme ce qu'on travaille)
