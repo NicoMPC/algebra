@@ -404,6 +404,30 @@ function login(p) {
       });
     });
 
+  // ── Overrides per-student (RemediationChapters) ──────────
+  var exerciseOverrides = {};
+  if (sheetExists(SH.REMEDIATION)) {
+    getRows(SH.REMEDIATION)
+      .filter(function(r) { return String(r['Code']) === code; })
+      .forEach(function(r) {
+        var cat = String(r['Categorie'] || '');
+        var overrideDate = String(r['Date'] || '');
+        var overrideExos = parseJSON(r['ExosJSON']);
+        if (cat && overrideExos && overrideExos.length > 0) {
+          // Remplacer les exos dans curriculumOfficiel
+          var found = false;
+          for (var ci = 0; ci < curriculumOfficiel.length; ci++) {
+            if (curriculumOfficiel[ci].categorie === cat) {
+              curriculumOfficiel[ci].exos = overrideExos;
+              found = true;
+              break;
+            }
+          }
+          exerciseOverrides[cat] = overrideDate;
+        }
+      });
+  }
+
   // ── diagExos : généré à la demande via generate_diagnostic ──
   //  (le login ne pré-charge plus rien — la colonne Categorie est
   //   maintenant la clé de filtrage dans DiagnosticExos)
@@ -651,6 +675,7 @@ function login(p) {
     nextBoost:          nextBoost,
     pendingBrevet:      pendingBrevet,
     revisionChapters:   revisionChapters,
+    exerciseOverrides:  exerciseOverrides,
     trial:              checkTrialStatus({ code: code })
   };
 }
@@ -4015,6 +4040,29 @@ function publishAdminChapter(p) {
   }
 
   if (!found) return { status: 'error', message: 'Élève introuvable dans le Suivi.' };
+
+  // ── Persister dans RemediationChapters (survit aux re-logins) ──
+  if (sheetExists(SH.REMEDIATION)) {
+    var remRows = getRows(SH.REMEDIATION);
+    var existingRow = -1;
+    var remSh = getSheet(SH.REMEDIATION);
+    var remData = remSh.getDataRange().getValues();
+    var maxVersion = 0;
+    for (var ri = 1; ri < remData.length; ri++) {
+      if (String(remData[ri][0]) === targetCode && String(remData[ri][1]) === categorie) {
+        existingRow = ri;
+        var v = parseInt(remData[ri][2]) || 0;
+        if (v > maxVersion) maxVersion = v;
+      }
+    }
+    var newVersion = maxVersion + 1;
+    if (existingRow > 0) {
+      // Upsert : écraser la ligne existante
+      remSh.getRange(existingRow + 1, 1, 1, 6).setValues([[targetCode, categorie, newVersion, JSON.stringify(exos), insight, today()]]);
+    } else {
+      appendRow(SH.REMEDIATION, [targetCode, categorie, newVersion, JSON.stringify(exos), insight, today()]);
+    }
+  }
 
   try { rebuildSuivi(targetCode); } catch (e) {}
 

@@ -4820,15 +4820,21 @@ function initApp(d, skipRender) {
   S.res = {}; S.xp = 0; S.sent = new Set();
   S.chapTouched = {}; // chapitres réellement entamés (hors CALIBRAGE/BOOST)
   S.chapSessions = {}; S.retroSess = {}; S.retroBoost = null;
+  S.exOverrides = d.exerciseOverrides || {}; // dates d'override per-student
   var _today = tod();
   if (d.history) {
     var _sessBuf = {};
     d.history.forEach(function(r){
       if (injectedCats.has(r.categorie)) return;  // skip chapitres injectés
-      var key = r.niveau + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1);
-      S.res[key] = r.resultat;
-      S.xp += parseInt(r.xp) || 0;
-      S.sent.add(S.prof.code + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1));
+      // Scores antérieurs à un override → retro seulement, pas dans S.res
+      var _ovDate = S.exOverrides[r.categorie];
+      var _isOldPassage = _ovDate && String(r.date || '') < _ovDate;
+      if (!_isOldPassage) {
+        var key = r.niveau + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1);
+        S.res[key] = r.resultat;
+        S.xp += parseInt(r.xp) || 0;
+        S.sent.add(S.prof.code + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1));
+      }
       // Marquer chapitre réellement entamé (hors calibrage/boost)
       if (r.source !== 'CALIBRAGE' && r.source !== 'BOOST' && r.categorie !== 'CALIBRAGE' && r.categorie !== 'BOOST') {
         S.chapTouched[r.categorie] = true;
