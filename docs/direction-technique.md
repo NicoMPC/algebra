@@ -282,7 +282,7 @@ Ce process est aujourd'hui manuel (Nicolas + IA). Les étapes automatisables :
 4. L'élève se connecte
    → nextChapter consommé depuis Suivi (one-shot)
    → RemediationChapters sert les exos aux logins suivants
-   → Anciens exercices visibles dans "Série précédente" (retro complet)
+   → Anciens exercices visibles dans "Série précédente" (retro complet, filtré par date d'override — seules les sessions V1 apparaissent)
 
 ⚠️ L'élève ne reçoit RIEN tant que Nicolas n'a pas cliqué "Publier"
    (le flag draft:true protège au login)
