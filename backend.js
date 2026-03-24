@@ -411,7 +411,10 @@ function login(p) {
       .filter(function(r) { return String(r['Code']) === code; })
       .forEach(function(r) {
         var cat = String(r['Categorie'] || '');
-        var overrideDate = String(r['Date'] || '');
+        var _rd = r['Date'];
+        var overrideDate = (_rd instanceof Date)
+          ? Utilities.formatDate(_rd, 'Europe/Paris', 'yyyy-MM-dd')
+          : String(_rd || '').substring(0, 10);
         var overrideExos = parseJSON(r['ExosJSON']);
         if (cat && overrideExos && overrideExos.length > 0) {
           // Remplacer les exos dans curriculumOfficiel
