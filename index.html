@@ -8258,6 +8258,7 @@ function render() {
     if (isNew || (S.assignedByProf && S.assignedByProf[cat] && _isUndiscovered)) html += '<span class="text-[9px] syne font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-md">🆕 Ton prof</span>';
     else if (_isUndiscovered && _boostCats[cat]) html += '<span class="text-[9px] syne font-black bg-indigo-100 text-indigo-600 border border-indigo-200 px-1.5 py-0.5 rounded-md">Recommandé</span>';
     else if (_tier) html += '<span class="text-[9px] syne font-black '+_tier.bg+' '+_tier.text+' border '+_tier.border+' px-1.5 py-0.5 rounded-md">'+_tier.emoji+' '+_tier.label+'</span>';
+    if (S.exOverrides && S.exOverrides[cat] && S.chapSessions && S.chapSessions[cat] && S.chapSessions[cat].length > 0) html += '<span class="text-[9px] syne font-black bg-slate-100 text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-md">Série ' + (S.chapSessions[cat].length + 1) + '</span>';
     if (S.remReq[cat]) html += '<span class="text-[9px] syne font-black bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md">🔄 Demain</span>';
     if (S.revisionCats && S.revisionCats.indexOf(cat) !== -1) html += '<span class="text-[9px] syne font-black bg-violet-100 text-violet-700 border border-violet-200 px-1.5 py-0.5 rounded-md">🔁 Révision</span>';
     // Slot dots (⭐/○) pour chapitres 20 exos, sinon barre classique
@@ -8343,6 +8344,58 @@ function render() {
     }
     if (S.insights[cat] && isOpen) {
       html += '<div class="mx-4 mb-4 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs font-medium text-blue-700 leading-relaxed">💡 '+S.insights[cat]+'</div>';
+    }
+    // ── Passages précédents (chapitres overridés avec historique) ──
+    if (isOpen && !isBoost && S.exOverrides && S.exOverrides[cat] && S.chapSessions && S.chapSessions[cat] && S.chapSessions[cat].length > 0) {
+      var _prevSessions = S.chapSessions[cat];
+      html += '<div class="mx-4 mb-4" onclick="event.stopPropagation()" style="position:relative;z-index:3">';
+      html += '<details><summary class="cursor-pointer text-[11px] font-black text-slate-500 mb-2">📂 Passages précédents (' + _prevSessions.length + ')</summary>';
+      html += '<div class="mt-2">';
+      // Pills des sessions passées
+      var _prevSelIdx = (S.retroSess[cat] !== undefined) ? S.retroSess[cat] : 0;
+      if (_prevSelIdx >= _prevSessions.length) _prevSelIdx = 0;
+      if (_prevSessions.length > 1) {
+        html += '<div class="flex gap-1.5 flex-wrap mb-3">';
+        for (var _ppi = 0; _ppi < _prevSessions.length; _ppi++) {
+          var _ppEasy = _prevSessions[_ppi].exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+          var _ppPct = _prevSessions[_ppi].exos.length > 0 ? Math.round(_ppEasy / _prevSessions[_ppi].exos.length * 100) : 0;
+          var _ppActive = _ppi === _prevSelIdx;
+          var _ppColor = _ppActive ? '' : (_ppPct >= 70 ? ' text-emerald-600 border-emerald-200' : _ppPct >= 40 ? ' text-amber-600 border-amber-200' : ' text-rose-500 border-rose-200');
+          html += '<button onclick="_selectRetroSess(\''+cat+'\','+_ppi+')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border '+(_ppActive ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white' + _ppColor)+'">' + _fmtRetroDate(_prevSessions[_ppi].endDate || _prevSessions[_ppi].date) + ' · ' + _ppPct + '%</button>';
+        }
+        html += '</div>';
+      }
+      // Dots + exercice retro de la session sélectionnée
+      var _prevSess = _prevSessions[_prevSelIdx];
+      var _prevNav = S.retroExoIdx[cat] || 0;
+      if (_prevNav >= _prevSess.exos.length) _prevNav = 0;
+      html += '<div class="flex gap-1 flex-wrap justify-center mb-3">';
+      for (var _pni = 0; _pni < _prevSess.exos.length; _pni++) {
+        var _pnRes = (_prevSess.exos[_pni] && _prevSess.exos[_pni].resultat) || '';
+        var _pnBg = _pnRes === 'EASY' ? 'bg-emerald-100 text-emerald-700' : _pnRes === 'HARD' ? 'bg-red-100 text-red-700' : _pnRes === 'MEDIUM' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-400';
+        var _pnBorder = _pni === _prevNav ? 'border-indigo-600' : 'border-transparent';
+        html += '<button onclick="_retroJump(\''+cat+'\','+_pni+')" class="w-6 h-6 rounded-full text-[9px] font-black '+_pnBg+' border-2 '+_pnBorder+'">'+(_pni+1)+'</button>';
+      }
+      html += '</div>';
+      var _prevScore = _prevSess.exos[_prevNav];
+      if (_prevScore) {
+        var _prevExoIdx = parseInt(_prevScore.exercice_idx) - 1;
+        // Les anciens exos ne sont plus dans le tableau actuel (overridé) — render inline
+        html += '<div class="border border-slate-200 rounded-xl p-3 mb-2 bg-slate-50">';
+        var _prevIcon = _prevScore.resultat === 'EASY' ? '✅' : _prevScore.resultat === 'HARD' ? '❌' : _prevScore.resultat === 'MEDIUM' ? '🟡' : '⬜';
+        html += '<div class="flex items-center gap-2 mb-2"><span>' + _prevIcon + '</span><span class="text-[10px] font-black text-slate-500">Exo ' + (_prevExoIdx + 1) + '</span></div>';
+        if (_prevScore.categorie) html += '<div class="text-xs font-bold text-slate-700 mb-1 mc">' + fmtL(_prevScore.categorie.replace(/_/g, ' ')) + '</div>';
+        html += '<div class="text-[11px] text-slate-500">Résultat : <strong>' + (_prevScore.resultat || '—') + '</strong></div>';
+        if (_prevScore.mauvaise_option) html += '<div class="text-[11px] text-rose-500">Réponse donnée : ' + _prevScore.mauvaise_option + '</div>';
+        html += '</div>';
+      }
+      // Nav
+      html += '<div class="flex items-center justify-between mt-2 gap-2">';
+      html += '<button onclick="_retroNav(\''+cat+'\',-1)" class="flex-1 py-1.5 rounded-xl border border-slate-200 text-[10px] font-black text-slate-400 bg-white '+(_prevNav === 0 ? 'opacity-30 pointer-events-none' : '')+'">← Préc.</button>';
+      html += '<span class="text-[10px] font-black text-slate-400">' + (_prevNav + 1) + '/' + _prevSess.exos.length + '</span>';
+      html += '<button onclick="_retroNav(\''+cat+'\',1)" class="flex-1 py-1.5 rounded-xl border border-slate-200 text-[10px] font-black text-slate-400 bg-white '+(_prevNav === _prevSess.exos.length - 1 ? 'opacity-30 pointer-events-none' : '')+'">Suiv. →</button>';
+      html += '</div>';
+      html += '</div></details></div>';
     }
     html += '</div>';
   });
