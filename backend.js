@@ -513,6 +513,7 @@ function login(p) {
           if (!val) continue;
           try {
             var parsed = JSON.parse(val);
+            if (parsed && parsed.draft) continue;  // brouillon agent — skip, attendre Publier
             if (parsed && parsed.categorie && parsed.exos && parsed.exos.length > 0) {
               nextChapter = parsed;
               suiviSh.getRange(si + 1, chapIndices[sk] + 1).setValue('');
@@ -538,7 +539,8 @@ function login(p) {
         if (boostVal) {
           try {
             var boostParsed = JSON.parse(boostVal);
-            if (boostParsed && boostParsed.exos && boostParsed.exos.length > 0) {
+            if (boostParsed && boostParsed.draft) { /* brouillon agent — skip */ }
+            else if (boostParsed && boostParsed.exos && boostParsed.exos.length > 0) {
               nextBoost = boostParsed;
               suiviSh.getRange(si + 1, 19).setValue('');
               // Créer entrée DailyBoosts exosDone=0 → admin voit "⏳ En attente"
@@ -4012,13 +4014,29 @@ function publishAdminChapter(p) {
   for (var si = 1; si < suiviData.length; si++) {
     if (String(suiviData[si][20]) !== targetCode) continue;
 
-    // Trouver le premier slot libre
+    // D'abord : chercher un slot existant avec la MÊME catégorie (draft ou publié) → écraser
     var written = false;
     for (var ci = 0; ci < SLOTS_0.length; ci++) {
-      if (!String(suiviData[si][SLOTS_0[ci]] || '').trim()) {
-        suiviSh.getRange(si + 1, SLOTS_1[ci]).setValue(chapJSON);
-        written = true;
-        break;
+      var slotVal = String(suiviData[si][SLOTS_0[ci]] || '').trim();
+      if (slotVal) {
+        try {
+          var slotParsed = JSON.parse(slotVal);
+          if (slotParsed && slotParsed.categorie === categorie) {
+            suiviSh.getRange(si + 1, SLOTS_1[ci]).setValue(chapJSON);
+            written = true;
+            break;
+          }
+        } catch (e) { /* slot non-JSON, ignorer */ }
+      }
+    }
+    // Sinon : premier slot libre
+    if (!written) {
+      for (var ci2 = 0; ci2 < SLOTS_0.length; ci2++) {
+        if (!String(suiviData[si][SLOTS_0[ci2]] || '').trim()) {
+          suiviSh.getRange(si + 1, SLOTS_1[ci2]).setValue(chapJSON);
+          written = true;
+          break;
+        }
       }
     }
     if (!written) {
