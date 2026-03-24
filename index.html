@@ -10936,7 +10936,8 @@ function _buildActionWorkflow(st, action) {
     h += '<div id="ck-diag-boost-' + st.code + '" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:.75rem;margin-top:.5rem;font-size:.78rem;color:#475569;line-height:1.6"><em>Colle le JSON pour voir le diagnostic...</em></div>';
     h += '</details>';
     h += '<div class="flex gap-2">';
-    h += '<button onclick="_ckPreviewBoost(\'' + st.code + '\')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-200">\ud83d\udc41 Aper\u00e7u</button>';
+    h += '<button onclick="_ckPreviewBoost(\'' + st.code + '\')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-200">\ud83d\udc41 Aper\u00e7u exos</button>';
+    h += '<button onclick="_ckPreviewJ1(\'' + st.code + '\',\'boost\')" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-xs font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-indigo-200">\ud83d\udd2e Vue J+1</button>';
     h += '<button id="ck-btn-boost-' + st.code + '" onclick="_ckPublishBoost(\'' + st.code + '\')" disabled class="flex-1 bg-slate-300 text-white text-xs font-bold py-2.5 rounded-xl transition-colors cursor-not-allowed">\u26a1 Publier</button>';
     h += '</div>';
 
@@ -10957,7 +10958,8 @@ function _buildActionWorkflow(st, action) {
     h += '<div id="ck-diag-' + st.code + '" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:.75rem;margin-top:.5rem;font-size:.78rem;color:#475569;line-height:1.6"><em>Colle le JSON pour voir le diagnostic...</em></div>';
     h += '</details>';
     h += '<div class="flex gap-2">';
-    h += '<button id="ck-btn-preview-' + st.code + '" onclick="_ckPreviewChapter(\'' + st.code + '\')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-200">\ud83d\udc41 Aper\u00e7u \u00e9l\u00e8ve</button>';
+    h += '<button id="ck-btn-preview-' + st.code + '" onclick="_ckPreviewChapter(\'' + st.code + '\')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-200">\ud83d\udc41 Aper\u00e7u exos</button>';
+    h += '<button onclick="_ckPreviewJ1(\'' + st.code + '\',\'chapitre\')" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-xs font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-indigo-200">\ud83d\udd2e Vue J+1</button>';
     h += '<button id="ck-btn-chap-' + st.code + '" onclick="_ckPublishChapter(\'' + st.code + '\')" disabled class="flex-1 bg-slate-300 text-white text-xs font-bold py-2.5 rounded-xl transition-colors cursor-not-allowed">\ud83d\udcda Publier</button>';
     h += '</div>';
 
@@ -11216,6 +11218,149 @@ function _adminPreviewChapter(jsonStr, title) {
 function _admPrevScroll(i) {
   var el = document.getElementById('adm-prev-exo-' + i);
   if (el) el.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+// ── Vue J+1 — simule ce que l'élève verra au prochain login ──
+function _ckPreviewJ1(code, type) {
+  // Récupérer le JSON depuis la textarea
+  var taId = type === 'boost' ? 'ck-boost-json-' + code : 'ck-chap-json-' + code;
+  var ta = document.getElementById(taId);
+  var raw = ta ? ta.value.trim() : '';
+  if (!raw) { showT('Colle le JSON d\'abord', 3000, '\u26a0\ufe0f'); return; }
+  var parsed;
+  try { parsed = JSON.parse(raw); } catch(e) {
+    try { parsed = JSON.parse(raw.replace(/[\x00-\x1f\x7f]/g, function(c) { return c === '\n' || c === '\r' || c === '\t' ? c : ''; })); } catch(e2) { showT('JSON invalide', 3000, '\u274c'); return; }
+  }
+  if (!parsed.exos || !parsed.exos.length) { showT('Pas d\'exercices', 3000, '\u26a0\ufe0f'); return; }
+
+  // Trouver l'élève dans les données admin
+  var st = null;
+  for (var i = 0; i < S.adminStudents.length; i++) {
+    if (S.adminStudents[i].code === code) { st = S.adminStudents[i]; break; }
+  }
+  var prenom = st ? st.prenom : code;
+  var niveau = st ? st.niveau : '';
+  var nExos = parsed.exos.length;
+  var isBoost = type === 'boost';
+  var categorie = parsed.categorie || 'Boost';
+  var catName = isBoost ? 'Entra\u00eenement du jour' : (categorie.replace(/_/g, ' '));
+  var insight = parsed.insight || '';
+  var heroTime = Math.max(2, Math.round(nExos * 1.5));
+
+  // Remove existing overlay
+  var old = document.getElementById('admin-j1-overlay');
+  if (old) old.remove();
+
+  var ov = document.createElement('div');
+  ov.id = 'admin-j1-overlay';
+  ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#f0f4f8;overflow-y:auto;-webkit-overflow-scrolling:touch';
+
+  var html = '';
+
+  // ── Barre admin (rappel que c'est un aperçu) ──
+  html += '<div style="background:#1E40AF;color:white;padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10">';
+  html += '<div style="font-size:.75rem;font-weight:800;letter-spacing:.05em">\ud83d\udd2e VUE J+1 \u2014 ' + prenom + ' (' + niveau + ')</div>';
+  html += '<button onclick="document.getElementById(\'admin-j1-overlay\').remove()" style="background:rgba(255,255,255,.2);border:none;color:white;padding:.3rem .8rem;border-radius:8px;font-size:.8rem;font-weight:700;cursor:pointer">Fermer \u2715</button>';
+  html += '</div>';
+
+  // ── Container mobile (max 480px comme l'app) ──
+  html += '<div style="max-width:480px;margin:0 auto;padding:1rem">';
+
+  // ── Header élève simulé ──
+  html += '<div style="text-align:center;margin-bottom:1rem">';
+  html += '<div style="font-family:Syne,sans-serif;font-size:1.1rem;font-weight:900;color:#0F172A">Espace de ' + prenom + '</div>';
+  html += '<div style="font-size:.75rem;color:#64748b;margin-top:.2rem">' + niveau + '</div>';
+  html += '</div>';
+
+  // ── Hero CTA ──
+  var heroEmoji = isBoost ? '\u26a1' : '\ud83d\udcd8';
+  var heroTitle = isBoost ? 'Ton entra\u00eenement du jour' : 'Commence par ' + catName;
+  var heroSub = isBoost ? 'Exercices cibl\u00e9s sur tes points \u00e0 renforcer' : 'Ton prof te recommande de commencer ici';
+  html += '<div class="rounded-2xl p-5 flex items-center gap-4 shadow-lg mb-4" style="background:linear-gradient(135deg,#0F172A 0%,#1E40AF 55%,#3B82F6 100%)">';
+  html += '<div style="width:56px;height:56px;background:rgba(255,255,255,.2);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;border:1px solid rgba(255,255,255,.2)">' + heroEmoji + '</div>';
+  html += '<div style="flex:1;min-width:0"><div style="font-family:Syne,sans-serif;font-size:1rem;font-weight:900;color:white;margin-bottom:2px">' + heroTitle + '</div>';
+  html += '<p style="color:#a5b4fc;font-size:.85rem;font-weight:500">' + heroSub + '</p>';
+  html += '<p style="color:rgba(165,180,252,.5);font-size:.75rem;font-weight:500;margin-top:4px">\u2248 ' + heroTime + ' min</p>';
+  html += '</div>';
+  html += '<div style="color:rgba(255,255,255,.4);font-size:1.5rem;font-weight:300">\u203a</div></div>';
+
+  // ── Insight (message personnalisé) ──
+  if (insight) {
+    html += '<div style="background:white;border:1px solid #e2e8f0;border-radius:16px;padding:1rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,.04)">';
+    html += '<div style="font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#6366f1;margin-bottom:.4rem">\ud83d\udcac Message de ton prof</div>';
+    html += '<p style="font-size:.85rem;color:#334155;line-height:1.6" class="mc">' + fmtL(insight) + '</p>';
+    html += '</div>';
+  }
+
+  // ── Carte chapitre / boost ──
+  html += '<div style="background:white;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:1rem">';
+  // Header carte
+  html += '<div style="padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f1f5f9">';
+  html += '<div style="display:flex;align-items:center;gap:.5rem">';
+  html += '<span style="font-size:1.2rem">' + (isBoost ? '\u26a1' : (parsed.icone || '\ud83d\udcd8')) + '</span>';
+  html += '<span style="font-weight:800;font-size:.9rem;color:#0F172A">' + catName + '</span>';
+  html += '</div>';
+  html += '<span style="font-size:.75rem;font-weight:700;color:#94a3b8">0/' + nExos + '</span>';
+  html += '</div>';
+  // Barre de progression (vide)
+  html += '<div style="padding:0 1rem;margin:.5rem 0"><div style="height:6px;background:#f1f5f9;border-radius:3px"><div style="height:100%;width:0%;background:#3B82F6;border-radius:3px"></div></div></div>';
+  // Slots preview (4 slots de 5 pour chapitres)
+  if (!isBoost && nExos >= 20) {
+    html += '<div style="padding:.5rem 1rem .75rem;display:flex;gap:.5rem">';
+    for (var sl = 0; sl < 4; sl++) {
+      html += '<div style="flex:1;text-align:center;padding:.3rem;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0">';
+      html += '<div style="font-size:.65rem;font-weight:700;color:#94a3b8">Slot ' + (sl+1) + '</div>';
+      html += '<div style="font-size:.75rem;font-weight:800;color:#cbd5e1">0/5</div>';
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+
+  // ── Premier exercice (aperçu) ──
+  var ex1 = parsed.exos[0];
+  html += '<div style="background:white;border:1px solid #e2e8f0;border-radius:16px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:1rem">';
+  html += '<div style="font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#3B82F6;margin-bottom:.5rem">Exercice 1/' + nExos + '</div>';
+  var q1Html = (ex1.type === 'fill')
+    ? fmtL(ex1.q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace')).replace(/___/g, '<span style="display:inline-block;min-width:4rem;border-bottom:3px solid #1E40AF;background:#eef2ff;border-radius:4px;padding:2px 6px;margin:0 3px">\u2026</span>')
+    : fmtL(ex1.q);
+  html += '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:.75rem;margin-bottom:.75rem;min-height:50px;display:flex;align-items:center;justify-content:center">';
+  html += '<div class="mc" style="text-align:center;font-weight:700;font-size:.95rem;line-height:1.6">' + q1Html + '</div></div>';
+  // Options du premier exo
+  if (ex1.options && ex1.options.length) {
+    var grid = ex1.options.length <= 2 ? 'display:grid;grid-template-columns:1fr 1fr;gap:8px' : 'display:flex;flex-direction:column;gap:8px';
+    html += '<div style="' + grid + '">';
+    ex1.options.forEach(function(o) {
+      html += '<button style="width:100%;text-align:left;padding:.7rem .8rem;border-radius:12px;border:2px solid #e2e8f0;background:white;font-size:.85rem;cursor:default;font-weight:600;color:#334155"><span class="mc">' + fmtL(o) + '</span></button>';
+    });
+    // "Je ne sais pas"
+    html += '<button style="width:100%;text-align:center;padding:.7rem .8rem;border-radius:12px;border:2px dashed #e2e8f0;background:#f8fafc;font-size:.82rem;cursor:default;font-weight:600;color:#94a3b8">Je ne sais pas</button>';
+    html += '</div>';
+  } else if (ex1.type === 'fill') {
+    html += '<div style="background:#f8fafc;border:2px dashed #c7d2fe;border-radius:12px;padding:.75rem;text-align:center;color:#6366f1;font-weight:700;font-size:.85rem">Tape ta r\u00e9ponse ici...</div>';
+  }
+  html += '</div>';
+
+  // ── Note admin ──
+  html += '<div style="background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:.75rem;margin-bottom:1rem">';
+  html += '<div style="font-size:.7rem;font-weight:800;color:#92400e">\ud83d\udd2e Aper\u00e7u uniquement</div>';
+  html += '<p style="font-size:.78rem;color:#78350f;margin-top:.3rem">Ceci est une simulation de ce que ' + prenom + ' verra \u00e0 son prochain login apr\u00e8s publication. Aucune donn\u00e9e n\'est modifi\u00e9e.</p>';
+  html += '</div>';
+
+  // ── Bouton voir tous les exos ──
+  html += '<button onclick="document.getElementById(\'admin-j1-overlay\').remove();' + (isBoost ? '_ckPreviewBoost(\'' + code + '\')' : '_ckPreviewChapter(\'' + code + '\')') + '" style="width:100%;background:white;border:1px solid #e2e8f0;padding:.75rem;border-radius:12px;font-size:.85rem;font-weight:700;color:#1E40AF;cursor:pointer;margin-bottom:1rem">\ud83d\udc41 Voir les ' + nExos + ' exercices en d\u00e9tail</button>';
+
+  // Fermer
+  html += '<button onclick="document.getElementById(\'admin-j1-overlay\').remove()" style="width:100%;background:#1E40AF;color:white;border:none;padding:.75rem;border-radius:12px;font-size:.85rem;font-weight:700;cursor:pointer">Fermer l\'aper\u00e7u</button>';
+
+  html += '</div>'; // fin container
+
+  ov.innerHTML = html;
+  ov.addEventListener('click', function(e) { if (e.target === ov) ov.remove(); });
+  document.body.appendChild(ov);
+
+  // Render KaTeX
+  setTimeout(function() { try { rMath(ov); } catch(e) {} }, 50);
 }
 
 // ── Mark contact as done ─────────────────────────────────────
