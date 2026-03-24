@@ -7540,11 +7540,169 @@ function _retroJump(cat, idx) {
   render();
 }
 
-function _scrollToPrevRetro(cat) {
-  setTimeout(function() {
-    var el = document.querySelector('[data-cat="'+cat+'"] details[open]');
-    if (el) el.scrollIntoView({ behavior:'instant', block:'nearest' });
-  }, 30);
+function _scrollToPrevRetro(cat) {} // deprecated — modale remplace
+
+// ── Modale "Série précédente" — navigation autonome, pas de render() ──
+function _openPrevRetroModal(cat) {
+  var sessions = S.chapSessions && S.chapSessions[cat];
+  if (!sessions || sessions.length === 0) return;
+  var prevExs = (S.prevExos && S.prevExos[cat]) ? S.prevExos[cat] : null;
+  var catName = (LVL[S.niv].names[cat] || cat).replace(/_/g, ' ');
+
+  var old = document.getElementById('prev-retro-modal');
+  if (old) old.remove();
+
+  var ov = document.createElement('div');
+  ov.id = 'prev-retro-modal';
+  ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);overflow-y:auto;-webkit-overflow-scrolling:touch';
+
+  var _state = { sessIdx: 0, exoIdx: 0 };
+
+  function _rebuild() {
+    var sess = sessions[_state.sessIdx];
+    if (!sess) return;
+    var score = sess.exos[_state.exoIdx];
+    var exoIdx = score ? parseInt(score.exercice_idx) - 1 : _state.exoIdx;
+    var exo = prevExs ? prevExs[exoIdx] : null;
+    if (!exo && score && score.q) exo = { q: score.q, a: '', options: [], steps: [], f: '' };
+
+    var h = '<div style="max-width:480px;margin:0 auto;min-height:100vh;background:#fff">';
+
+    // Header sticky
+    h += '<div style="background:#0F172A;color:white;padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10">';
+    h += '<div><div style="font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;opacity:.7">Série précédente</div>';
+    h += '<div style="font-size:.9rem;font-weight:900;font-family:Syne,sans-serif">' + catName + '</div></div>';
+    h += '<button onclick="document.getElementById(\'prev-retro-modal\').remove()" style="background:rgba(255,255,255,.15);border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:1.1rem;cursor:pointer;font-weight:bold">\u2715</button>';
+    h += '</div>';
+
+    // Pills par date
+    if (sessions.length > 1) {
+      h += '<div style="padding:.75rem 1rem .25rem;display:flex;gap:6px;flex-wrap:wrap;background:#f8fafc;border-bottom:1px solid #e2e8f0">';
+      for (var pi = 0; pi < sessions.length; pi++) {
+        var pEasy = sessions[pi].exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+        var pPct = sessions[pi].exos.length > 0 ? Math.round(pEasy / sessions[pi].exos.length * 100) : 0;
+        var pActive = pi === _state.sessIdx;
+        var pColor = pActive ? 'background:#1E40AF;color:white;border-color:#1E40AF' : (pPct >= 70 ? 'color:#059669;border-color:#a7f3d0' : pPct >= 40 ? 'color:#d97706;border-color:#fde68a' : 'color:#e11d48;border-color:#fecdd3');
+        h += '<button data-pill="'+pi+'" style="font-size:10px;font-weight:800;padding:4px 10px;border-radius:12px;border:1.5px solid;cursor:pointer;' + pColor + '">' + _fmtRetroDate(sessions[pi].endDate || sessions[pi].date) + ' · ' + pPct + '%</button>';
+      }
+      h += '</div>';
+    }
+
+    // Dots
+    h += '<div style="padding:.75rem 1rem;display:flex;gap:4px;flex-wrap:wrap;justify-content:center">';
+    for (var di = 0; di < sess.exos.length; di++) {
+      var dRes = (sess.exos[di] && sess.exos[di].resultat) || '';
+      var dBg = dRes === 'EASY' ? '#d1fae5' : dRes === 'HARD' ? '#fee2e2' : dRes === 'MEDIUM' ? '#fef3c7' : '#f1f5f9';
+      var dTxt = dRes === 'EASY' ? '#065f46' : dRes === 'HARD' ? '#991b1b' : dRes === 'MEDIUM' ? '#92400e' : '#94a3b8';
+      var dBorder = di === _state.exoIdx ? '2px solid #1E40AF' : '2px solid transparent';
+      h += '<button data-dot="'+di+'" style="width:28px;height:28px;border-radius:50%;font-size:10px;font-weight:800;background:'+dBg+';color:'+dTxt+';border:'+dBorder+';cursor:pointer">'+(di+1)+'</button>';
+    }
+    h += '</div>';
+
+    // Exercice
+    if (exo && score) {
+      var result = score.resultat || '';
+      var icon = result === 'EASY' ? '\u2705' : result === 'HARD' ? '\u274c' : result === 'MEDIUM' ? '\ud83d\udfe1' : '';
+      var resBg = result === 'EASY' ? '#d1fae5' : result === 'HARD' ? '#fee2e2' : '#fef3c7';
+      var resTxt = result === 'EASY' ? '#065f46' : result === 'HARD' ? '#991b1b' : '#92400e';
+      var resLabel = result === 'EASY' ? 'Réussi du 1er coup' : result === 'MEDIUM' ? 'Réussi avec indices' : result === 'HARD' ? 'Pas réussi' : '';
+
+      h += '<div style="padding:0 1rem">';
+      // Result badge
+      h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">';
+      h += '<span style="font-size:11px;font-weight:800;color:#64748b">Exo ' + (exoIdx + 1) + '</span>';
+      h += '<span style="font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:'+resBg+';color:'+resTxt+'">' + icon + ' ' + resLabel + '</span>';
+      h += '</div>';
+
+      // Question
+      h += '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:.85rem;margin-bottom:.75rem;min-height:50px;display:flex;align-items:center;justify-content:center">';
+      var qH = (exo.type === 'fill') ? fmtL(exo.q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace')).replace(/___/g, '<span style="display:inline-block;min-width:4rem;border-bottom:3px solid #1E40AF;background:#eef2ff;border-radius:4px;padding:2px 6px">\u2026</span>') : fmtL(exo.q);
+      h += '<div class="mc" style="text-align:center;font-weight:700;font-size:.95rem;line-height:1.6;width:100%">' + qH + '</div></div>';
+
+      // Options
+      if (exo.options && exo.options.length > 0) {
+        var nOpts = exo.options.length;
+        var gridSt = nOpts <= 2 ? 'display:grid;grid-template-columns:1fr 1fr;gap:8px' : 'display:flex;flex-direction:column;gap:8px';
+        h += '<div style="' + gridSt + ';margin-bottom:.75rem">';
+        exo.options.forEach(function(o) {
+          var isCorrect = o === exo.a;
+          var isWrong = score.mauvaise_option && o === score.mauvaise_option;
+          var optBorder = isCorrect ? '#10b981' : isWrong ? '#ef4444' : '#e2e8f0';
+          var optBg = isCorrect ? '#d1fae5' : isWrong ? '#fee2e2' : '#f8fafc';
+          var suffix = isCorrect ? ' \u2713' : isWrong ? ' \u2717' : '';
+          var suffixColor = isCorrect ? 'color:#059669' : 'color:#ef4444';
+          h += '<div style="width:100%;text-align:left;padding:.65rem .8rem;border-radius:12px;border:1.5px solid '+optBorder+';background:'+optBg+';font-size:.85rem;font-weight:600">';
+          h += '<span class="mc">' + fmtL(o) + '</span>';
+          if (suffix) h += ' <span style="font-weight:800;'+suffixColor+'">' + suffix + '</span>';
+          h += '</div>';
+        });
+        h += '</div>';
+      } else if (exo.type === 'fill' && exo.a) {
+        h += '<div style="margin-bottom:.75rem;padding:.6rem .8rem;background:#d1fae5;border:1px solid #6ee7b7;border-radius:12px;font-size:.85rem;font-weight:700;color:#065f46" class="mc">\u2713 Réponse : ' + fmtL(exo.a) + '</div>';
+        if (result === 'HARD' && score.mauvaise_option) {
+          h += '<div style="margin-bottom:.75rem;padding:.6rem .8rem;background:#fee2e2;border:1px solid #fecaca;border-radius:12px;font-size:.85rem;font-weight:600;color:#991b1b" class="mc">\u2717 Ta réponse : ' + fmtL(score.mauvaise_option) + '</div>';
+        }
+      }
+
+      // Steps
+      if (exo.steps && exo.steps.length > 0) {
+        h += '<details style="margin-bottom:.75rem"><summary style="cursor:pointer;font-size:11px;font-weight:800;color:#6366f1">\ud83d\udca1 ' + exo.steps.length + ' indice' + (exo.steps.length > 1 ? 's' : '') + '</summary>';
+        h += '<div style="margin-top:.4rem;font-size:12px;color:#475569;line-height:1.6">';
+        exo.steps.forEach(function(step, si) {
+          h += '<div style="padding:.4rem 0;border-bottom:1px solid #f1f5f9" class="mc"><strong style="color:#6366f1">' + (si+1) + '.</strong> ' + fmtL(step) + '</div>';
+        });
+        h += '</div></details>';
+      }
+
+      // Formule
+      if (exo.f) {
+        h += '<div style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:10px;padding:.5rem .75rem;margin-bottom:.75rem;font-size:12px;font-weight:600;color:#4338ca;text-align:center" class="mc">\ud83d\udccc ' + fmtL(exo.f) + '</div>';
+      }
+
+      // Méta
+      if (score.nb_indices > 0 || score.formule_vue) {
+        h += '<div style="display:flex;gap:8px;margin-bottom:.5rem">';
+        if (score.nb_indices > 0) h += '<span style="font-size:10px;font-weight:600;color:#94a3b8">\ud83d\udca1 ' + score.nb_indices + ' indice' + (score.nb_indices > 1 ? 's' : '') + '</span>';
+        if (score.formule_vue) h += '<span style="font-size:10px;font-weight:600;color:#94a3b8">\ud83d\udccc Formule consultée</span>';
+        h += '</div>';
+      }
+
+      h += '</div>';
+    }
+
+    // Navigation
+    h += '<div style="padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #e2e8f0;margin-top:.5rem">';
+    h += '<button data-nav="-1" style="flex:1;padding:10px;border-radius:12px;border:1px solid #e2e8f0;font-size:12px;font-weight:800;color:#64748b;background:white;cursor:pointer' + (_state.exoIdx === 0 ? ';opacity:.3;pointer-events:none' : '') + '">\u2190 Préc.</button>';
+    h += '<span style="font-size:11px;font-weight:800;color:#94a3b8">' + (_state.exoIdx + 1) + '/' + sess.exos.length + '</span>';
+    h += '<button data-nav="1" style="flex:1;padding:10px;border-radius:12px;border:1px solid #e2e8f0;font-size:12px;font-weight:800;color:#64748b;background:white;cursor:pointer' + (_state.exoIdx === sess.exos.length - 1 ? ';opacity:.3;pointer-events:none' : '') + '">Suiv. \u2192</button>';
+    h += '</div>';
+
+    h += '</div>';
+    ov.innerHTML = h;
+
+    // Event delegation — pas de render()
+    ov.onclick = function(e) {
+      if (e.target === ov) { ov.remove(); return; }
+      var pill = e.target.closest('[data-pill]');
+      if (pill) { _state.sessIdx = parseInt(pill.dataset.pill); _state.exoIdx = 0; _rebuild(); return; }
+      var dot = e.target.closest('[data-dot]');
+      if (dot) { _state.exoIdx = parseInt(dot.dataset.dot); _rebuild(); return; }
+      var nav = e.target.closest('[data-nav]');
+      if (nav) {
+        var dir = parseInt(nav.dataset.nav);
+        var maxIdx = sessions[_state.sessIdx].exos.length - 1;
+        _state.exoIdx = Math.max(0, Math.min(maxIdx, _state.exoIdx + dir));
+        _rebuild();
+        return;
+      }
+    };
+
+    // KaTeX
+    setTimeout(function() { try { rMath(ov); } catch(e) {} }, 50);
+  }
+
+  document.body.appendChild(ov);
+  _rebuild();
 }
 
 // ── Modal "voir toutes les sessions" ──────────────────────────
@@ -8386,69 +8544,17 @@ function render() {
     if (S.insights[cat] && isOpen) {
       html += '<div class="mx-4 mb-4 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs font-medium text-blue-700 leading-relaxed">💡 '+S.insights[cat]+'</div>';
     }
-    // ── Passages précédents (chapitres overridés avec historique) ──
+    // ── Passages précédents — bouton ouvre une modale ──
     if (isOpen && !isBoost && S.exOverrides && S.exOverrides[cat] && S.chapSessions && S.chapSessions[cat] && S.chapSessions[cat].length > 0) {
-      var _prevSessions = S.chapSessions[cat];
-      // Calculer le % global de la série précédente
-      var _prevAllExos = [];
-      _prevSessions.forEach(function(s) { _prevAllExos = _prevAllExos.concat(s.exos); });
-      var _prevAllEasy = _prevAllExos.filter(function(e) { return e.resultat === 'EASY'; }).length;
-      var _prevGlobalPct = _prevAllExos.length > 0 ? Math.round(_prevAllEasy / _prevAllExos.length * 100) : 0;
-      var _prevPctColor = _prevGlobalPct >= 70 ? 'text-emerald-600' : _prevGlobalPct >= 40 ? 'text-amber-600' : 'text-rose-500';
+      var _prevAllExos2 = [];
+      S.chapSessions[cat].forEach(function(s) { _prevAllExos2 = _prevAllExos2.concat(s.exos); });
+      var _prevAllEasy2 = _prevAllExos2.filter(function(e) { return e.resultat === 'EASY'; }).length;
+      var _prevGlobalPct2 = _prevAllExos2.length > 0 ? Math.round(_prevAllEasy2 / _prevAllExos2.length * 100) : 0;
+      var _prevPctColor2 = _prevGlobalPct2 >= 70 ? 'text-emerald-600' : _prevGlobalPct2 >= 40 ? 'text-amber-600' : 'text-rose-500';
       html += '<div class="mx-4 mb-4" onclick="event.stopPropagation()" style="position:relative;z-index:3">';
-      var _prevIsOpen = S._prevRetroOpen === '_prev_' + cat;
-      html += '<details' + (_prevIsOpen ? ' open' : '') + '><summary class="cursor-pointer flex items-center gap-2 mb-2">';
-      html += '<span class="text-[11px] font-black text-slate-500">📂 Série précédente</span>';
-      html += '<span class="text-[10px] font-black ' + _prevPctColor + '">' + _prevGlobalPct + '% · ' + _prevAllExos.length + ' exos</span>';
-      html += '</summary>';
-      html += '<div class="mt-2 bg-slate-50 border border-slate-200 rounded-xl p-3">';
-      // Pills par date — namespace _prev_ pour ne pas interférer avec la nav des exos actifs
-      var _pKey = '_prev_' + cat;
-      var _prevSelIdx = (S.retroSess[_pKey] !== undefined) ? S.retroSess[_pKey] : 0;
-      if (_prevSelIdx >= _prevSessions.length) _prevSelIdx = 0;
-      if (_prevSessions.length > 1) {
-        html += '<div class="flex gap-1.5 flex-wrap mb-3">';
-        for (var _ppi = 0; _ppi < _prevSessions.length; _ppi++) {
-          var _ppEasy = _prevSessions[_ppi].exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
-          var _ppPct = _prevSessions[_ppi].exos.length > 0 ? Math.round(_ppEasy / _prevSessions[_ppi].exos.length * 100) : 0;
-          var _ppActive = _ppi === _prevSelIdx;
-          var _ppColor = _ppActive ? '' : (_ppPct >= 70 ? ' text-emerald-600 border-emerald-200' : _ppPct >= 40 ? ' text-amber-600 border-amber-200' : ' text-rose-500 border-rose-200');
-          html += '<button onclick="_selectRetroSess(\''+_pKey+'\','+_ppi+')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border '+(_ppActive ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white' + _ppColor)+'">' + _fmtRetroDate(_prevSessions[_ppi].endDate || _prevSessions[_ppi].date) + ' · ' + _ppPct + '%</button>';
-        }
-        html += '</div>';
-      }
-      // Dots colorés de la session sélectionnée
-      var _prevSess = _prevSessions[_prevSelIdx];
-      var _prevNav = S.retroExoIdx[_pKey] || 0;
-      if (_prevNav >= _prevSess.exos.length) _prevNav = 0;
-      html += '<div class="flex gap-1 flex-wrap justify-center mb-3">';
-      for (var _pni = 0; _pni < _prevSess.exos.length; _pni++) {
-        var _pnRes = (_prevSess.exos[_pni] && _prevSess.exos[_pni].resultat) || '';
-        var _pnBg = _pnRes === 'EASY' ? 'bg-emerald-100 text-emerald-700' : _pnRes === 'HARD' ? 'bg-red-100 text-red-700' : _pnRes === 'MEDIUM' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-400';
-        var _pnBorder = _pni === _prevNav ? 'border-indigo-600' : 'border-transparent';
-        html += '<button onclick="_retroJump(\''+_pKey+'\','+_pni+')" class="w-6 h-6 rounded-full text-[9px] font-black '+_pnBg+' border-2 '+_pnBorder+'">'+(_pni+1)+'</button>';
-      }
-      html += '</div>';
-      // Exercice sélectionné — utiliser prevExos pour le rendu complet (options, steps, formule)
-      var _prevScore = _prevSess.exos[_prevNav];
-      if (_prevScore) {
-        var _prevExoIdx = parseInt(_prevScore.exercice_idx) - 1;
-        var _prevRetroExs = (S.prevExos && S.prevExos[cat]) ? S.prevExos[cat] : null;
-        var _prevExo = _prevRetroExs ? _prevRetroExs[_prevExoIdx] : null;
-        if (!_prevExo && _prevScore.q) {
-          _prevExo = { q: _prevScore.q, a: '', options: [], steps: [], f: '' };
-        }
-        if (_prevExo) {
-          html += _renderRetroExo(_prevExo, _prevScore, cat, _prevExoIdx);
-        }
-      }
-      // Navigation — namespace _prev_ pour ne pas interférer
-      html += '<div class="flex items-center justify-between mt-2 gap-2">';
-      html += '<button onclick="_retroNav(\''+_pKey+'\',-1)" class="flex-1 py-1.5 rounded-xl border border-slate-200 text-[10px] font-black text-slate-400 bg-white '+(_prevNav === 0 ? 'opacity-30 pointer-events-none' : '')+'">← Préc.</button>';
-      html += '<span class="text-[10px] font-black text-slate-400">' + (_prevNav + 1) + '/' + _prevSess.exos.length + '</span>';
-      html += '<button onclick="_retroNav(\''+_pKey+'\',1)" class="flex-1 py-1.5 rounded-xl border border-slate-200 text-[10px] font-black text-slate-400 bg-white '+(_prevNav === _prevSess.exos.length - 1 ? 'opacity-30 pointer-events-none' : '')+'">Suiv. →</button>';
-      html += '</div>';
-      html += '</div></details></div>';
+      html += '<button onclick="_openPrevRetroModal(\''+cat+'\')" class="w-full py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-[11px] font-black text-slate-500 active:bg-slate-100 flex items-center justify-center gap-2">';
+      html += '<span>📂 Série précédente</span><span class="' + _prevPctColor2 + '">' + _prevGlobalPct2 + '% · ' + _prevAllExos2.length + ' exos</span><span class="text-slate-300">›</span>';
+      html += '</button></div>';
     }
     html += '</div>';
   });
