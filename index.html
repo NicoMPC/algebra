@@ -4825,17 +4825,16 @@ function initApp(d, skipRender) {
   if (d.history) {
     var _sessBuf = {};
     d.history.forEach(function(r){
-      if (injectedCats.has(r.categorie)) return;  // skip chapitres injectés
-      // Scores antérieurs à un override → retro seulement, pas dans S.res
+      // Scores d'un chapitre overridé ou injecté → retro seulement, pas dans S.res/S.xp/S.sent
       var _ovDate = S.exOverrides[r.categorie];
-      var _isOldPassage = _ovDate && String(r.date || '') < _ovDate;
+      var _isOldPassage = injectedCats.has(r.categorie) || (_ovDate && String(r.date || '') < _ovDate);
       if (!_isOldPassage) {
         var key = r.niveau + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1);
         S.res[key] = r.resultat;
         S.xp += parseInt(r.xp) || 0;
         S.sent.add(S.prof.code + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1));
       }
-      // Marquer chapitre réellement entamé (hors calibrage/boost)
+      // Marquer chapitre réellement entamé (hors calibrage/boost) — même pour anciens passages
       if (r.source !== 'CALIBRAGE' && r.source !== 'BOOST' && r.categorie !== 'CALIBRAGE' && r.categorie !== 'BOOST') {
         S.chapTouched[r.categorie] = true;
       }
@@ -5869,6 +5868,7 @@ function _chapTier(cat) {
     if (rs) done++;
     if (rs === 'EASY') easy++;
   });
+  if (done === 0 && S.assignedByProf && S.assignedByProf[cat]) return { id:'assigned', label:'Recommandé', emoji:'🆕', bg:'bg-indigo-50', text:'text-indigo-600', border:'border-indigo-300' };
   if (done === 0) return { id:'undiscovered', label:'À découvrir', emoji:'✨', bg:'bg-slate-100', text:'text-slate-500', border:'border-slate-200' };
   var easyPct = done > 0 ? easy / done : 0;
   if (done === tot && easyPct >= 0.9) return { id:'expert', label:'Expert', emoji:'🏆', bg:'bg-amber-50', text:'text-amber-700', border:'border-amber-200' };
@@ -8051,8 +8051,10 @@ function render() {
   // Cascade exclusive P1→P5 + fallback DONE :
   //   P1: Boost non joué (bouton générer)
   //   P2: Chapitre en cours (done>0, pas fini) → break
-  //   P3: Chapitre recommandé boost (boost fait) → break
-  //   P4: Chapitre NEW (assigné par Nicolas) → break
+  //   P2: Chapitre assigné par le prof → break (décision intentionnelle du prof)
+  //   P3: Chapitre en cours (done > 0, pas fini) → break
+  //   P4: Chapitre recommandé boost (boost fait) → break
+  //   P4b: Chapitre NEW (flag isNew) → break
   //   P5: Premier jour, 0 exos → premier chapitre → break
   //   DONE: boostConsumed && !_hero → "Continue ou reviens"
   // Résultat : exactement 1 hero OU 1 fallback. Jamais 0, jamais 2.
@@ -8071,7 +8073,22 @@ function render() {
         pct: _bPct, _remain: _bSt ? (_bSt.tot - _bSt.done) : 5 };
     }
 
-    // P2 : Chapitre en cours (done > 0, pas fini)
+    // P2 : Chapitre assigné par le prof (décision intentionnelle, prioritaire sur tout sauf boost)
+    // — assignedByProf persisté localStorage, survit aux refresh
+    if (!_hero) {
+      for (var _hi3b = 0; _hi3b < sortedKeys.length; _hi3b++) {
+        var _hk3b = sortedKeys[_hi3b];
+        if (_hk3b === 'BOOST') continue;
+        if (S.assignedByProf && S.assignedByProf[_hk3b] && _chapStats[_hk3b] && !_chapStats[_hk3b].isDone) {
+          var _hNm3b = (LVL[S.niv].names[_hk3b] || _hk3b).replace(/_/g, ' ');
+          _hero = { action: "togCat('" + _hk3b + "')", emoji: LVL[S.niv].icons[_hk3b] || '📘',
+            title: 'Commence par ' + _hNm3b, sub: 'Ton prof te recommande de commencer ici', pct: 0, _remain: _chapStats[_hk3b].tot };
+          break;
+        }
+      }
+    }
+
+    // P3 : Chapitre en cours (done > 0, pas fini)
     if (!_hero) {
       for (var _hi = 0; _hi < sortedKeys.length; _hi++) {
         var _hk = sortedKeys[_hi];
@@ -8085,21 +8102,6 @@ function render() {
             : (_hs.done + '/' + _hs.tot + ' — chaque exo compte');
           _hero = { action: "togCat('" + _hk + "')", emoji: LVL[S.niv].icons[_hk] || '📘',
             title: 'Continue ' + _hNm, sub: _hSub, pct: _hPct, _remain: _hs.tot - _hs.done };
-          break;
-        }
-      }
-    }
-
-    // P3 : Chapitre assigné par le prof (prioritaire sur boost)
-    // — assignedByProf persisté localStorage, survit aux refresh
-    if (!_hero) {
-      for (var _hi3b = 0; _hi3b < sortedKeys.length; _hi3b++) {
-        var _hk3b = sortedKeys[_hi3b];
-        if (_hk3b === 'BOOST') continue;
-        if (S.assignedByProf && S.assignedByProf[_hk3b] && _chapStats[_hk3b] && !_chapStats[_hk3b].isDone) {
-          var _hNm3b = (LVL[S.niv].names[_hk3b] || _hk3b).replace(/_/g, ' ');
-          _hero = { action: "togCat('" + _hk3b + "')", emoji: LVL[S.niv].icons[_hk3b] || '📘',
-            title: 'Commence par ' + _hNm3b, sub: 'Ton prof te recommande de commencer ici', pct: 0, _remain: _chapStats[_hk3b].tot };
           break;
         }
       }
@@ -8253,7 +8255,7 @@ function render() {
     html += '<div class="chap-icon-wrap w-11 h-11 '+(isBoost?'bg-white/20':(_isUndiscovered ? '' : 'bg-slate-100'))+' rounded-xl flex items-center justify-center text-lg flex-shrink-0 '+iconPulse+'">'+(LVL[S.niv].icons[cat]||'📘')+'</div>';
     html += '<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1.5"><span class="syne font-black text-sm '+(isBoost?'text-white':'text-slate-900')+' truncate" style="font-weight:800">'+(LVL[S.niv].names[cat]||cat)+'</span>';
     var _tier = !isBoost ? _chapTier(cat) : null;
-    if (isNew) html += '<span class="text-[9px] syne font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-md">NEW</span>';
+    if (isNew || (S.assignedByProf && S.assignedByProf[cat] && _isUndiscovered)) html += '<span class="text-[9px] syne font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-md">🆕 Ton prof</span>';
     else if (_isUndiscovered && _boostCats[cat]) html += '<span class="text-[9px] syne font-black bg-indigo-100 text-indigo-600 border border-indigo-200 px-1.5 py-0.5 rounded-md">Recommandé</span>';
     else if (_tier) html += '<span class="text-[9px] syne font-black '+_tier.bg+' '+_tier.text+' border '+_tier.border+' px-1.5 py-0.5 rounded-md">'+_tier.emoji+' '+_tier.label+'</span>';
     if (S.remReq[cat]) html += '<span class="text-[9px] syne font-black bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md">🔄 Demain</span>';
@@ -8278,6 +8280,10 @@ function render() {
       }
     }
     html += '<div class="'+(isBoost?'text-white/40':'text-slate-300')+' text-xl font-light select-none" style="transition:transform .2s;transform:rotate('+(isOpen?90:0)+'deg)">›</div></div>';
+    // Insight prof visible sur carte fermée pour chapitres assignedByProf non commencés
+    if (!isBoost && S.assignedByProf && S.assignedByProf[cat] && done === 0 && S.insights[cat]) {
+      html += '<div class="mx-4 mb-3 bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-2.5 text-xs font-medium text-indigo-700 leading-relaxed" style="margin-top:-4px">💬 '+S.insights[cat]+'</div>';
+    }
 
     if (isOpen) {
       // ── Bandeau reprise chapitre en cours ──

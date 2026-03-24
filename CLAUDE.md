@@ -106,7 +106,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | # | Invariant | Détail |
 |---|-----------|--------|
 | M1 | **Toast mutex** | `_toastBusy` + `_toastQueue` — jamais 2 toasts visibles. `dur=0` bypass (loading). `hideT()` reset tout |
-| M2 | **Hero CTA exclusif** | Cascade P1→P2→P3→P4→P4b→P5 + fallback DONE. Exactement 1 hero par session. Chaque niveau a `if (!_hero)` + `break`. **P3** (ex-P4b) : chapitres `assignedByProf` (persisté `mx_assigned_{code}` localStorage) → hero "Ton prof te recommande" **prioritaire sur le boost** même après refresh/re-login. P4 : chapitre ciblé par boost. P4b : chapitre NEW (isNew flag) |
+| M2 | **Hero CTA exclusif** | Cascade P1→P2→P3→P4→P4b→P5 + fallback DONE. Exactement 1 hero par session. Chaque niveau a `if (!_hero)` + `break`. **P2** : chapitres `assignedByProf` (persisté `mx_assigned_{code}` localStorage) → hero "Ton prof te recommande" **prioritaire sur chapitres en cours et boost**. P3 : chapitre en cours (done > 0). P4 : chapitre ciblé par boost. P4b : chapitre NEW (isNew flag) |
 | M3 | **boostConsumed date-stamped** | `boostConsumedDate` dans localStorage. Expire si `!== tod()`. Jamais stale le lendemain |
 | M4 | **Coach tip vs toast ko** | `if/else` exclusif dans `validateAnswer`. Coach tip AVANT le panel aide |
 | M5 | **Milestones/Coach namespacés** | `mx_ms_{code}` / `mx_co_{code}` dans localStorage. Pas de pollution cross-user |
