@@ -406,6 +406,7 @@ function login(p) {
 
   // ── Overrides per-student (RemediationChapters) ──────────
   var exerciseOverrides = {};
+  var prevExos = {};  // exercices originaux AVANT override — pour retro
   if (sheetExists(SH.REMEDIATION)) {
     getRows(SH.REMEDIATION)
       .filter(function(r) { return String(r['Code']) === code; })
@@ -417,12 +418,11 @@ function login(p) {
           : String(_rd || '').substring(0, 10);
         var overrideExos = parseJSON(r['ExosJSON']);
         if (cat && overrideExos && overrideExos.length > 0) {
-          // Remplacer les exos dans curriculumOfficiel
-          var found = false;
           for (var ci = 0; ci < curriculumOfficiel.length; ci++) {
             if (curriculumOfficiel[ci].categorie === cat) {
+              // Archiver les exercices originaux avant de les écraser
+              prevExos[cat] = curriculumOfficiel[ci].exos;
               curriculumOfficiel[ci].exos = overrideExos;
-              found = true;
               break;
             }
           }
@@ -682,6 +682,7 @@ function login(p) {
     pendingBrevet:      pendingBrevet,
     revisionChapters:   revisionChapters,
     exerciseOverrides:  exerciseOverrides,
+    prevExos:           prevExos,
     trial:              checkTrialStatus({ code: code })
   };
 }

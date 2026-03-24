@@ -4821,6 +4821,7 @@ function initApp(d, skipRender) {
   S.chapTouched = {}; // chapitres réellement entamés (hors CALIBRAGE/BOOST)
   S.chapSessions = {}; S.retroSess = {}; S.retroBoost = null;
   S.exOverrides = d.exerciseOverrides || {}; // dates d'override per-student
+  S.prevExos = d.prevExos || {}; // exercices originaux avant override — pour retro
   var _today = tod();
   if (d.history) {
     var _sessBuf = {};
@@ -7333,16 +7334,17 @@ function renderArchiveSection(cat, exs) {
       // Navigation exo par exo
       var exoNav = S.retroExoIdx[cat] || 0;
       if (exoNav >= sess.exos.length) exoNav = 0;
-      // Find exercise for this score — use exs[idx] if available, fallback to score.q for overridden chapters
+      // Find exercise for this score
+      // Pour chapitres overridés : utiliser S.prevExos[cat] (exercices V1 complets) au lieu de exs (V2)
       var score = null, exo = null, exoIdx = -1;
       var _isOverridden = S.exOverrides && S.exOverrides[cat];
+      var _retroExs = (_isOverridden && S.prevExos && S.prevExos[cat]) ? S.prevExos[cat] : exs;
       for (var _tryIdx = exoNav; _tryIdx < sess.exos.length; _tryIdx++) {
         var _tryScore = sess.exos[_tryIdx];
         if (!_tryScore) continue;
         var _tryExoIdx = parseInt(_tryScore.exercice_idx) - 1;
-        var _tryExo = exs[_tryExoIdx];
-        // Pour les chapitres overridés : si l'exo actuel ne correspond pas (V2 vs V1), construire depuis score.q
-        if (!_tryExo && _isOverridden && _tryScore.q) {
+        var _tryExo = _retroExs[_tryExoIdx];
+        if (!_tryExo && _tryScore.q) {
           _tryExo = { q: _tryScore.q, a: '', options: [], steps: [], f: '' };
         }
         if (_tryExo) { score = _tryScore; exo = _tryExo; exoIdx = _tryExoIdx; if (_tryIdx !== exoNav) S.retroExoIdx[cat] = _tryIdx; exoNav = _tryIdx; break; }
@@ -7352,8 +7354,8 @@ function renderArchiveSection(cat, exs) {
           var _tryScore2 = sess.exos[_tryIdx2];
           if (!_tryScore2) continue;
           var _tryExoIdx2 = parseInt(_tryScore2.exercice_idx) - 1;
-          var _tryExo2 = exs[_tryExoIdx2];
-          if (!_tryExo2 && _isOverridden && _tryScore2.q) {
+          var _tryExo2 = _retroExs[_tryExoIdx2];
+          if (!_tryExo2 && _tryScore2.q) {
             _tryExo2 = { q: _tryScore2.q, a: '', options: [], steps: [], f: '' };
           }
           if (_tryExo2) { score = _tryScore2; exo = _tryExo2; exoIdx = _tryExoIdx2; S.retroExoIdx[cat] = _tryIdx2; exoNav = _tryIdx2; break; }
@@ -8414,35 +8416,18 @@ function render() {
         html += '<button onclick="_retroJump(\''+_pKey+'\','+_pni+')" class="w-6 h-6 rounded-full text-[9px] font-black '+_pnBg+' border-2 '+_pnBorder+'">'+(_pni+1)+'</button>';
       }
       html += '</div>';
-      // Exercice sélectionné — rendu avec énoncé depuis history.q
+      // Exercice sélectionné — utiliser prevExos pour le rendu complet (options, steps, formule)
       var _prevScore = _prevSess.exos[_prevNav];
       if (_prevScore) {
-        var _prevExoNum = parseInt(_prevScore.exercice_idx) || (_prevNav + 1);
-        var _prevIcon = _prevScore.resultat === 'EASY' ? '✅' : _prevScore.resultat === 'HARD' ? '❌' : _prevScore.resultat === 'MEDIUM' ? '🟡' : '⬜';
-        var _prevResultLabel = _prevScore.resultat === 'EASY' ? 'Réussi du premier coup' : _prevScore.resultat === 'MEDIUM' ? 'Réussi avec indices' : _prevScore.resultat === 'HARD' ? 'Pas réussi' : '';
-        var _prevResultColor = _prevScore.resultat === 'EASY' ? 'text-emerald-600 bg-emerald-50 border-emerald-200' : _prevScore.resultat === 'HARD' ? 'text-rose-600 bg-rose-50 border-rose-200' : 'text-amber-600 bg-amber-50 border-amber-200';
-        html += '<div class="border border-slate-200 rounded-xl overflow-hidden bg-white mb-2">';
-        // Header exo
-        html += '<div class="flex items-center justify-between px-3 py-2 bg-slate-50 border-b border-slate-100">';
-        html += '<span class="text-[10px] font-black text-slate-500">Exo ' + _prevExoNum + '</span>';
-        html += '<span class="text-[9px] font-black px-2 py-0.5 rounded-full border ' + _prevResultColor + '">' + _prevIcon + ' ' + _prevResultLabel + '</span>';
-        html += '</div>';
-        // Énoncé (depuis history.q)
-        if (_prevScore.q) {
-          html += '<div class="px-3 py-3"><div class="mc text-sm font-semibold text-slate-800 leading-relaxed">' + fmtL(_prevScore.q) + '</div></div>';
+        var _prevExoIdx = parseInt(_prevScore.exercice_idx) - 1;
+        var _prevRetroExs = (S.prevExos && S.prevExos[cat]) ? S.prevExos[cat] : null;
+        var _prevExo = _prevRetroExs ? _prevRetroExs[_prevExoIdx] : null;
+        if (!_prevExo && _prevScore.q) {
+          _prevExo = { q: _prevScore.q, a: '', options: [], steps: [], f: '' };
         }
-        // Mauvaise réponse si HARD
-        if (_prevScore.resultat === 'HARD' && _prevScore.mauvaise_option) {
-          html += '<div class="px-3 pb-3"><div class="text-[11px] font-medium text-rose-500 bg-rose-50 border border-rose-100 rounded-lg px-3 py-2">Ta réponse : <span class="mc">' + fmtL(_prevScore.mauvaise_option) + '</span></div></div>';
+        if (_prevExo) {
+          html += _renderRetroExo(_prevExo, _prevScore, cat, _prevExoIdx);
         }
-        // Indices utilisés
-        if (_prevScore.nb_indices > 0) {
-          html += '<div class="px-3 pb-2"><span class="text-[10px] font-medium text-slate-400">💡 ' + _prevScore.nb_indices + ' indice' + (_prevScore.nb_indices > 1 ? 's' : '') + ' utilisé' + (_prevScore.nb_indices > 1 ? 's' : '') + '</span></div>';
-        }
-        if (_prevScore.formule_vue) {
-          html += '<div class="px-3 pb-2"><span class="text-[10px] font-medium text-slate-400">📐 Formule consultée</span></div>';
-        }
-        html += '</div>';
       }
       // Navigation — namespace _prev_ pour ne pas interférer
       html += '<div class="flex items-center justify-between mt-2 gap-2">';
