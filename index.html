@@ -5841,6 +5841,11 @@ function chkComp(cat) {
       showT(_msg('chap_done'), 6000, '🏆');
       if (typeof _boostInsightConfetti === 'function') _boostInsightConfetti();
       setTimeout(function() { _showSessionFeedback('chapitre', cat, null); }, 3500);
+      // Nettoyer assignedByProf pour ce chapitre (permet au flag d'être "frais" pour une V3)
+      if (S.assignedByProf && S.assignedByProf[cat]) {
+        delete S.assignedByProf[cat];
+        try { localStorage.setItem('mx_assigned_' + S.prof.code, JSON.stringify(S.assignedByProf)); } catch(e) {}
+      }
       // Persister chapitre terminé dans localStorage
       try {
         var ds5 = JSON.parse(localStorage.getItem(DK) || '{}');
@@ -7328,22 +7333,29 @@ function renderArchiveSection(cat, exs) {
       // Navigation exo par exo
       var exoNav = S.retroExoIdx[cat] || 0;
       if (exoNav >= sess.exos.length) exoNav = 0;
-      // Find a valid exercise (skip scores with undefined exo)
+      // Find exercise for this score — use exs[idx] if available, fallback to score.q for overridden chapters
       var score = null, exo = null, exoIdx = -1;
+      var _isOverridden = S.exOverrides && S.exOverrides[cat];
       for (var _tryIdx = exoNav; _tryIdx < sess.exos.length; _tryIdx++) {
         var _tryScore = sess.exos[_tryIdx];
         if (!_tryScore) continue;
         var _tryExoIdx = parseInt(_tryScore.exercice_idx) - 1;
         var _tryExo = exs[_tryExoIdx];
+        // Pour les chapitres overridés : si l'exo actuel ne correspond pas (V2 vs V1), construire depuis score.q
+        if (!_tryExo && _isOverridden && _tryScore.q) {
+          _tryExo = { q: _tryScore.q, a: '', options: [], steps: [], f: '' };
+        }
         if (_tryExo) { score = _tryScore; exo = _tryExo; exoIdx = _tryExoIdx; if (_tryIdx !== exoNav) S.retroExoIdx[cat] = _tryIdx; exoNav = _tryIdx; break; }
       }
-      // If not found forward, try from beginning
       if (!exo) {
         for (var _tryIdx2 = 0; _tryIdx2 < exoNav; _tryIdx2++) {
           var _tryScore2 = sess.exos[_tryIdx2];
           if (!_tryScore2) continue;
           var _tryExoIdx2 = parseInt(_tryScore2.exercice_idx) - 1;
           var _tryExo2 = exs[_tryExoIdx2];
+          if (!_tryExo2 && _isOverridden && _tryScore2.q) {
+            _tryExo2 = { q: _tryScore2.q, a: '', options: [], steps: [], f: '' };
+          }
           if (_tryExo2) { score = _tryScore2; exo = _tryExo2; exoIdx = _tryExoIdx2; S.retroExoIdx[cat] = _tryIdx2; exoNav = _tryIdx2; break; }
         }
       }
@@ -8150,6 +8162,21 @@ function render() {
       }
     }
 
+    // P6 : Fallback — chapitres non entamés restants (évite hero vide)
+    if (!_hero) {
+      for (var _hi5 = 0; _hi5 < sortedKeys.length; _hi5++) {
+        var _hk5 = sortedKeys[_hi5];
+        if (_hk5 === 'BOOST' || _hk5 === 'REVISION') continue;
+        var _hs5 = _chapStats[_hk5];
+        if (_hs5 && _hs5.done === 0 && !_hs5.isDone) {
+          var _hNm5 = (LVL[S.niv].names[_hk5] || _hk5).replace(/_/g, ' ');
+          _hero = { action: "togCat('" + _hk5 + "')", emoji: LVL[S.niv].icons[_hk5] || '📘',
+            title: 'Explore ' + _hNm5, sub: 'Un nouveau chapitre t\'attend', pct: 0, _remain: _hs5.tot };
+          break;
+        }
+      }
+    }
+
     // Rendu hero
     if (_hero) {
       // Temps estimé : nb exos restants × 1.5 min
@@ -8258,7 +8285,7 @@ function render() {
     if (isNew || (S.assignedByProf && S.assignedByProf[cat] && _isUndiscovered)) html += '<span class="text-[9px] syne font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-md">🆕 Ton prof</span>';
     else if (_isUndiscovered && _boostCats[cat]) html += '<span class="text-[9px] syne font-black bg-indigo-100 text-indigo-600 border border-indigo-200 px-1.5 py-0.5 rounded-md">Recommandé</span>';
     else if (_tier) html += '<span class="text-[9px] syne font-black '+_tier.bg+' '+_tier.text+' border '+_tier.border+' px-1.5 py-0.5 rounded-md">'+_tier.emoji+' '+_tier.label+'</span>';
-    if (S.exOverrides && S.exOverrides[cat] && S.chapSessions && S.chapSessions[cat] && S.chapSessions[cat].length > 0) html += '<span class="text-[9px] syne font-black bg-slate-100 text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-md">Série ' + (S.chapSessions[cat].length + 1) + '</span>';
+    if (S.exOverrides && S.exOverrides[cat]) html += '<span class="text-[9px] syne font-black bg-slate-100 text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-md">Série 2</span>';
     if (S.remReq[cat]) html += '<span class="text-[9px] syne font-black bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md">🔄 Demain</span>';
     if (S.revisionCats && S.revisionCats.indexOf(cat) !== -1) html += '<span class="text-[9px] syne font-black bg-violet-100 text-violet-700 border border-violet-200 px-1.5 py-0.5 rounded-md">🔁 Révision</span>';
     // Slot dots (⭐/○) pour chapitres 20 exos, sinon barre classique
@@ -8360,8 +8387,9 @@ function render() {
       html += '<span class="text-[10px] font-black ' + _prevPctColor + '">' + _prevGlobalPct + '% · ' + _prevAllExos.length + ' exos</span>';
       html += '</summary>';
       html += '<div class="mt-2 bg-slate-50 border border-slate-200 rounded-xl p-3">';
-      // Pills par date
-      var _prevSelIdx = (S.retroSess[cat] !== undefined) ? S.retroSess[cat] : 0;
+      // Pills par date — namespace _prev_ pour ne pas interférer avec la nav des exos actifs
+      var _pKey = '_prev_' + cat;
+      var _prevSelIdx = (S.retroSess[_pKey] !== undefined) ? S.retroSess[_pKey] : 0;
       if (_prevSelIdx >= _prevSessions.length) _prevSelIdx = 0;
       if (_prevSessions.length > 1) {
         html += '<div class="flex gap-1.5 flex-wrap mb-3">';
@@ -8370,20 +8398,20 @@ function render() {
           var _ppPct = _prevSessions[_ppi].exos.length > 0 ? Math.round(_ppEasy / _prevSessions[_ppi].exos.length * 100) : 0;
           var _ppActive = _ppi === _prevSelIdx;
           var _ppColor = _ppActive ? '' : (_ppPct >= 70 ? ' text-emerald-600 border-emerald-200' : _ppPct >= 40 ? ' text-amber-600 border-amber-200' : ' text-rose-500 border-rose-200');
-          html += '<button onclick="_selectRetroSess(\''+cat+'\','+_ppi+')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border '+(_ppActive ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white' + _ppColor)+'">' + _fmtRetroDate(_prevSessions[_ppi].endDate || _prevSessions[_ppi].date) + ' · ' + _ppPct + '%</button>';
+          html += '<button onclick="_selectRetroSess(\''+_pKey+'\','+_ppi+')" class="text-[10px] font-black syne px-2.5 py-1 rounded-xl border '+(_ppActive ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white' + _ppColor)+'">' + _fmtRetroDate(_prevSessions[_ppi].endDate || _prevSessions[_ppi].date) + ' · ' + _ppPct + '%</button>';
         }
         html += '</div>';
       }
       // Dots colorés de la session sélectionnée
       var _prevSess = _prevSessions[_prevSelIdx];
-      var _prevNav = S.retroExoIdx[cat] || 0;
+      var _prevNav = S.retroExoIdx[_pKey] || 0;
       if (_prevNav >= _prevSess.exos.length) _prevNav = 0;
       html += '<div class="flex gap-1 flex-wrap justify-center mb-3">';
       for (var _pni = 0; _pni < _prevSess.exos.length; _pni++) {
         var _pnRes = (_prevSess.exos[_pni] && _prevSess.exos[_pni].resultat) || '';
         var _pnBg = _pnRes === 'EASY' ? 'bg-emerald-100 text-emerald-700' : _pnRes === 'HARD' ? 'bg-red-100 text-red-700' : _pnRes === 'MEDIUM' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-400';
         var _pnBorder = _pni === _prevNav ? 'border-indigo-600' : 'border-transparent';
-        html += '<button onclick="_retroJump(\''+cat+'\','+_pni+')" class="w-6 h-6 rounded-full text-[9px] font-black '+_pnBg+' border-2 '+_pnBorder+'">'+(_pni+1)+'</button>';
+        html += '<button onclick="_retroJump(\''+_pKey+'\','+_pni+')" class="w-6 h-6 rounded-full text-[9px] font-black '+_pnBg+' border-2 '+_pnBorder+'">'+(_pni+1)+'</button>';
       }
       html += '</div>';
       // Exercice sélectionné — rendu avec énoncé depuis history.q
@@ -8416,11 +8444,11 @@ function render() {
         }
         html += '</div>';
       }
-      // Navigation
+      // Navigation — namespace _prev_ pour ne pas interférer
       html += '<div class="flex items-center justify-between mt-2 gap-2">';
-      html += '<button onclick="_retroNav(\''+cat+'\',-1)" class="flex-1 py-1.5 rounded-xl border border-slate-200 text-[10px] font-black text-slate-400 bg-white '+(_prevNav === 0 ? 'opacity-30 pointer-events-none' : '')+'">← Préc.</button>';
+      html += '<button onclick="_retroNav(\''+_pKey+'\',-1)" class="flex-1 py-1.5 rounded-xl border border-slate-200 text-[10px] font-black text-slate-400 bg-white '+(_prevNav === 0 ? 'opacity-30 pointer-events-none' : '')+'">← Préc.</button>';
       html += '<span class="text-[10px] font-black text-slate-400">' + (_prevNav + 1) + '/' + _prevSess.exos.length + '</span>';
-      html += '<button onclick="_retroNav(\''+cat+'\',1)" class="flex-1 py-1.5 rounded-xl border border-slate-200 text-[10px] font-black text-slate-400 bg-white '+(_prevNav === _prevSess.exos.length - 1 ? 'opacity-30 pointer-events-none' : '')+'">Suiv. →</button>';
+      html += '<button onclick="_retroNav(\''+_pKey+'\',1)" class="flex-1 py-1.5 rounded-xl border border-slate-200 text-[10px] font-black text-slate-400 bg-white '+(_prevNav === _prevSess.exos.length - 1 ? 'opacity-30 pointer-events-none' : '')+'">Suiv. →</button>';
       html += '</div>';
       html += '</div></details></div>';
     }
