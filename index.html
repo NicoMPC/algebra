@@ -7483,11 +7483,15 @@ function _fmtRetroDateLong(dateStr) {
 function _selectRetroSess(cat, idx) {
   if (!S.retroSess) S.retroSess = {};
   S.retroSess[cat] = idx;
-  S.retroExoIdx[cat] = 0; // reset à la 1ère question
+  S.retroExoIdx[cat] = 0;
+  if (cat.indexOf('_prev_') === 0) S._prevRetroOpen = cat;
   render();
 }
 function _retroNav(cat, dir) {
-  var sessions = S.chapSessions && S.chapSessions[cat];
+  // Résoudre le vrai nom de catégorie pour les passages précédents (_prev_ prefix)
+  var realCat = cat.indexOf('_prev_') === 0 ? cat.substring(6) : cat;
+  var sessions = S.chapSessions && S.chapSessions[realCat];
+  if (!sessions) { sessions = S.chapSessions && S.chapSessions[cat]; }
   if (!sessions) return;
   var selIdx = S.retroSess[cat] || 0;
   var sess = sessions[selIdx];
@@ -7495,6 +7499,7 @@ function _retroNav(cat, dir) {
   var cur = S.retroExoIdx[cat] || 0;
   cur = Math.max(0, Math.min(sess.exos.length - 1, cur + dir));
   S.retroExoIdx[cat] = cur;
+  if (cat.indexOf('_prev_') === 0) S._prevRetroOpen = cat;
   render();
 }
 function _retroNavBoost(dir) {
@@ -7532,6 +7537,7 @@ function _selectRetroBoost(idx) {
 }
 function _retroJump(cat, idx) {
   S.retroExoIdx[cat] = idx;
+  if (cat.indexOf('_prev_') === 0) S._prevRetroOpen = cat;
   render();
 }
 
@@ -8384,7 +8390,8 @@ function render() {
       var _prevGlobalPct = _prevAllExos.length > 0 ? Math.round(_prevAllEasy / _prevAllExos.length * 100) : 0;
       var _prevPctColor = _prevGlobalPct >= 70 ? 'text-emerald-600' : _prevGlobalPct >= 40 ? 'text-amber-600' : 'text-rose-500';
       html += '<div class="mx-4 mb-4" onclick="event.stopPropagation()" style="position:relative;z-index:3">';
-      html += '<details><summary class="cursor-pointer flex items-center gap-2 mb-2">';
+      var _prevIsOpen = S._prevRetroOpen === '_prev_' + cat;
+      html += '<details' + (_prevIsOpen ? ' open' : '') + '><summary class="cursor-pointer flex items-center gap-2 mb-2">';
       html += '<span class="text-[11px] font-black text-slate-500">📂 Série précédente</span>';
       html += '<span class="text-[10px] font-black ' + _prevPctColor + '">' + _prevGlobalPct + '% · ' + _prevAllExos.length + ' exos</span>';
       html += '</summary>';
