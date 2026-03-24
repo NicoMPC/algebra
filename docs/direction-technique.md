@@ -247,26 +247,45 @@ Ce process est aujourd'hui manuel (Nicolas + IA). Les étapes automatisables :
 4. ✅ Pré-remplissage textarea admin depuis Suivi — le JSON injecté en amont remonte via `pendingJSON`/`boostPendingJSON` dans la réponse `get_admin_overview` (fait 2026-03-23)
 5. ✅ Action "📦 À VALIDER" dans l'admin — quand un chapitre/boost est pré-rempli, l'admin affiche une action dédiée dans "À FAIRE" (fait 2026-03-23)
 6. ✅ Masquage "Copier JSON" quand draft pré-rempli — l'ancien workflow manuel est masqué automatiquement (fait 2026-03-23)
-7. 🔜 **`prescribe.py`** — script qui analyse automatiquement les Scores d'un élève quand un chapitre est terminé, génère le brief + les exos, et les injecte dans Suivi. Nicolas n'a plus qu'à ouvrir l'admin → aperçu → publier. Objectif : workflow en 3 clics.
-8. 🔜 Génération auto des exos depuis le brief (Claude API) — Nicolas valide toujours avant publish
+7. ✅ **Agent "Monsieur Exos"** (`.claude/agents/prescribe.md`) — agent Claude Code qui analyse les Scores, génère le brief + les exos, et injecte en brouillon (`draft:true`) dans Suivi. Nicolas ouvre l'admin → aperçu → publier. Workflow en 3 clics. (fait 2026-03-24)
+8. ✅ **Agent "UX Engineer"** (`.claude/agents/ux-audit.md`) — agent Claude Code qui vérifie la cohérence états/affichage après chaque session de code. Paranoïaque : simule chaque état élève, vérifie les données disponibles, bloque si données manquantes. (fait 2026-03-24)
+9. ✅ **Système draft** — l'agent écrit `draft:true` dans Suivi. Le backend ignore les drafts au login. Nicolas clique "Publier" pour rendre live + persister dans RemediationChapters. L'élève ne reçoit RIEN tant que Nicolas n'a pas publié. (fait 2026-03-24)
+10. ✅ **RemediationChapters** — persistance per-student des exercices overridés. Survit aux re-logins. `prevExos` archive les exercices V1 pour le retro. (fait 2026-03-24)
+11. 🔜 Génération auto des exos via Claude API (remplace l'agent conversationnel) — Nicolas valide toujours avant publish
 
 ---
 
 ## 8. Workflow admin — état actuel
 
-### Ce que Nicolas fait aujourd'hui (semi-auto)
+### Ce que Nicolas fait aujourd'hui
 
 ```
-Nicolas : "[Prénom] a fini [chapitre]. Prépare-lui la suite."
-  → IA analyse les Scores (patterns, erreurs, indices, formule, temps)
-    → IA présente le brief (diagnostic + slots)
-      → Nicolas valide
-        → IA génère les exos (anti-doublon) + injecte dans Suivi
-          → Admin affiche "📦 À VALIDER" avec :
-            - Textarea pré-rempli (JSON)
-            - "📋 Pourquoi ces exercices ?" (diagnostic auto)
-            - "👁 Aperçu élève" (rendu KaTeX identique élève)
-            - "📚 Publier" (1 clic → Suivi → prêt au login)
+1. Nicolas lance l'agent Monsieur Exos : /agent prescribe
+   → L'agent scanne le Suivi, trouve les actions en attente
+   → Analyse les Scores de chaque élève (patterns, erreurs)
+   → Présente le brief (diagnostic prof + insight élève + slots)
+   → ATTEND validation Nicolas
+
+2. Nicolas valide le brief
+   → L'agent génère les exos + validate_exos.py
+   → Injecte en BROUILLON (draft:true) dans Suivi via sheets.py
+   → "Ouvre l'admin pour aperçu + publier"
+
+3. Nicolas ouvre l'admin
+   → Voit "📦 À VALIDER" avec :
+     - Textarea pré-rempli (JSON avec diagnostic)
+     - "📋 Pourquoi ces exercices ?" (diagnostic auto)
+     - "👁 Aperçu exos" (rendu KaTeX)
+     - "🔮 Vue J+1" (simulation complète vue élève)
+     - "📚 Publier" → RemediationChapters (persistance) + Suivi (livraison)
+
+4. L'élève se connecte
+   → nextChapter consommé depuis Suivi (one-shot)
+   → RemediationChapters sert les exos aux logins suivants
+   → Anciens exercices visibles dans "Série précédente" (retro complet)
+
+⚠️ L'élève ne reçoit RIEN tant que Nicolas n'a pas cliqué "Publier"
+   (le flag draft:true protège au login)
 ```
 
 ### Anatomie d'une carte admin "À VALIDER"
@@ -325,8 +344,10 @@ Nicolas : "[Prénom] a fini [chapitre]. Prépare-lui la suite."
 |---|---|
 | **Pas de chapitre V2 avant 20/20** | Ne jamais générer un nouveau chapitre tant que l'actuel n'est pas terminé (20 exos), sauf contre-indication Nicolas |
 | **Nicolas valide toujours** | L'IA propose, Nicolas dispose. Jamais de publish auto |
-| **One-shot** | Le login consomme le contenu Suivi et vide la cellule. Si on veut réinjecter, remettre le JSON |
+| **One-shot + persistance** | Le login consomme Suivi (one-shot) ET sert RemediationChapters (persistance). `prevExos` archive les V1 pour le retro |
+| **Draft protège l'élève** | L'agent écrit `draft:true` → le backend ignore au login → l'élève ne reçoit rien tant que Nicolas n'a pas cliqué Publier |
 | **Anti-doublon cumulatif** | L'agent vérifie TOUS les Scores passés (pas juste le dernier passage) pour éviter de re-servir un exo |
+| **UX audit post-code** | Après chaque session de modifs front, lancer `/agent ux-audit` pour vérifier la cohérence états/affichage |
 
 ---
 
@@ -335,4 +356,5 @@ Nicolas : "[Prénom] a fini [chapitre]. Prépare-lui la suite."
 | Date | Changement |
 |---|---|
 | 2026-03-23 | Création — basé sur analyse réelle de Charlie (Calcul Littéral + Fonctions) |
-| 2026-03-23 | Workflow admin semi-auto complet : pré-remplissage, diagnostic, aperçu, publish. Premier cas réel : Charlie (chapitre V2) + Noam (boost ciblé) |
+| 2026-03-23 | Workflow admin semi-auto complet : pré-remplissage, diagnostic, aperçu, publish |
+| 2026-03-24 | Agent Monsieur Exos + Agent UX Engineer + système draft + RemediationChapters + prevExos retro + Vue J+1 admin |

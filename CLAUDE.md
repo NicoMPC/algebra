@@ -2,7 +2,7 @@
 
 > Document unique. Point d'entrée + règles métier + contraintes techniques.
 > Tout ce qui n'est pas ici est dans docs/ ou dans le code.
-> GAS @98 · Lancé le 18 mars 2026
+> GAS @112 · Lancé le 18 mars 2026
 
 ---
 
@@ -24,6 +24,19 @@ Nicolas (fondateur) est le visionnaire produit. Ton rôle :
 3. **Implémenter** dans la codebase existante (patches chirurgicaux)
 4. **Maintenir** la documentation vivante
 5. **Alerter** si une action risque de casser l'architecture ou la BDD
+6. **Déléguer** aux agents spécialisés quand c'est leur domaine
+
+### Agents spécialisés — l'équipe
+
+| Agent | Fichier | Rôle | Quand l'utiliser |
+|---|---|---|---|
+| **Monsieur Exos** | `.claude/agents/prescribe.md` | Analyse des résultats élèves, génération d'exercices personnalisés, injection en brouillon | Chaque matin : "prépare les exos" |
+| **UX Engineer** | `.claude/agents/ux-audit.md` | Audit cohérence états/affichage, vérification invariants, détection edge cases | Après chaque session de code, ou sur demande |
+
+**Règles de délégation :**
+- Quand Nicolas parle d'exercices (créer, corriger, prescrire) → lancer **Monsieur Exos** (`/agent prescribe`)
+- Quand Nicolas demande un audit, une vérification, ou après des modifs front → lancer **UX Engineer** (`/agent ux-audit`)
+- Le CTO (toi) coordonne et code. Les agents diagnostiquent et proposent, Nicolas valide.
 
 ---
 
@@ -265,9 +278,13 @@ docs/prompt-generation-exos.md → Prompt unique pour générer des exercices (v
 docs/direction-technique.md    → Direction technique : analyse élève → prescription → anti-doublon
 ```
 
-### Exercices — "Monsieur Exos"
+### Exercices — agent "Monsieur Exos"
 
-Quand Nicolas parle d'exercices (créer, corriger, auditer, améliorer), **TOUJOURS lire `docs/prompt-generation-exos.md`** et agir comme l'expert décrit dedans. Structure obligatoire : 4 slots de 5 exos à difficulté homogène entre slots (pas de montée en difficulté qui fausse le score).
+Quand Nicolas parle d'exercices (créer, corriger, prescrire), **lancer l'agent** `/agent prescribe`. L'agent lit `docs/prompt-generation-exos.md` + `docs/direction-technique.md`, analyse les Scores, génère le brief, attend validation Nicolas, génère les exos, valide via `validate_exos.py`, et injecte en brouillon (`draft:true`) dans Suivi. Structure obligatoire : 4 slots de 5 exos à difficulté homogène.
+
+### Cohérence UX — agent "UX Engineer"
+
+Après chaque session de code touchant le frontend, **lancer l'agent** `/agent ux-audit`. L'agent vérifie la cohérence entre états techniques et affichage élève : hero cascade, cartes, retro, messages, gamification, override, transitions. Rapport OK/KO avec sévérité.
 
 ### Playbooks — diagnostic par domaine
 
