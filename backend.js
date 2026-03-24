@@ -487,6 +487,7 @@ function login(p) {
         resultat:        res,
         xp:              res === 'EASY' ? 100 : res === 'MEDIUM' ? 50 : 10,
         date:            String(r['Date']            || ''),
+        q:               String(r['Énoncé']          || ''),
         mauvaise_option: String(r['MauvaiseOption']  || ''),
         nb_indices:      parseInt(r['NbIndices'])     || 0,
         formule_vue:     r['FormuleVue'] === 1 || r['FormuleVue'] === '1' || r['FormuleVue'] === true,

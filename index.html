@@ -8348,10 +8348,19 @@ function render() {
     // ── Passages précédents (chapitres overridés avec historique) ──
     if (isOpen && !isBoost && S.exOverrides && S.exOverrides[cat] && S.chapSessions && S.chapSessions[cat] && S.chapSessions[cat].length > 0) {
       var _prevSessions = S.chapSessions[cat];
+      // Calculer le % global de la série précédente
+      var _prevAllExos = [];
+      _prevSessions.forEach(function(s) { _prevAllExos = _prevAllExos.concat(s.exos); });
+      var _prevAllEasy = _prevAllExos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+      var _prevGlobalPct = _prevAllExos.length > 0 ? Math.round(_prevAllEasy / _prevAllExos.length * 100) : 0;
+      var _prevPctColor = _prevGlobalPct >= 70 ? 'text-emerald-600' : _prevGlobalPct >= 40 ? 'text-amber-600' : 'text-rose-500';
       html += '<div class="mx-4 mb-4" onclick="event.stopPropagation()" style="position:relative;z-index:3">';
-      html += '<details><summary class="cursor-pointer text-[11px] font-black text-slate-500 mb-2">📂 Passages précédents (' + _prevSessions.length + ')</summary>';
-      html += '<div class="mt-2">';
-      // Pills des sessions passées
+      html += '<details><summary class="cursor-pointer flex items-center gap-2 mb-2">';
+      html += '<span class="text-[11px] font-black text-slate-500">📂 Série précédente</span>';
+      html += '<span class="text-[10px] font-black ' + _prevPctColor + '">' + _prevGlobalPct + '% · ' + _prevAllExos.length + ' exos</span>';
+      html += '</summary>';
+      html += '<div class="mt-2 bg-slate-50 border border-slate-200 rounded-xl p-3">';
+      // Pills par date
       var _prevSelIdx = (S.retroSess[cat] !== undefined) ? S.retroSess[cat] : 0;
       if (_prevSelIdx >= _prevSessions.length) _prevSelIdx = 0;
       if (_prevSessions.length > 1) {
@@ -8365,7 +8374,7 @@ function render() {
         }
         html += '</div>';
       }
-      // Dots + exercice retro de la session sélectionnée
+      // Dots colorés de la session sélectionnée
       var _prevSess = _prevSessions[_prevSelIdx];
       var _prevNav = S.retroExoIdx[cat] || 0;
       if (_prevNav >= _prevSess.exos.length) _prevNav = 0;
@@ -8377,19 +8386,37 @@ function render() {
         html += '<button onclick="_retroJump(\''+cat+'\','+_pni+')" class="w-6 h-6 rounded-full text-[9px] font-black '+_pnBg+' border-2 '+_pnBorder+'">'+(_pni+1)+'</button>';
       }
       html += '</div>';
+      // Exercice sélectionné — rendu avec énoncé depuis history.q
       var _prevScore = _prevSess.exos[_prevNav];
       if (_prevScore) {
-        var _prevExoIdx = parseInt(_prevScore.exercice_idx) - 1;
-        // Les anciens exos ne sont plus dans le tableau actuel (overridé) — render inline
-        html += '<div class="border border-slate-200 rounded-xl p-3 mb-2 bg-slate-50">';
+        var _prevExoNum = parseInt(_prevScore.exercice_idx) || (_prevNav + 1);
         var _prevIcon = _prevScore.resultat === 'EASY' ? '✅' : _prevScore.resultat === 'HARD' ? '❌' : _prevScore.resultat === 'MEDIUM' ? '🟡' : '⬜';
-        html += '<div class="flex items-center gap-2 mb-2"><span>' + _prevIcon + '</span><span class="text-[10px] font-black text-slate-500">Exo ' + (_prevExoIdx + 1) + '</span></div>';
-        if (_prevScore.categorie) html += '<div class="text-xs font-bold text-slate-700 mb-1 mc">' + fmtL(_prevScore.categorie.replace(/_/g, ' ')) + '</div>';
-        html += '<div class="text-[11px] text-slate-500">Résultat : <strong>' + (_prevScore.resultat || '—') + '</strong></div>';
-        if (_prevScore.mauvaise_option) html += '<div class="text-[11px] text-rose-500">Réponse donnée : ' + _prevScore.mauvaise_option + '</div>';
+        var _prevResultLabel = _prevScore.resultat === 'EASY' ? 'Réussi du premier coup' : _prevScore.resultat === 'MEDIUM' ? 'Réussi avec indices' : _prevScore.resultat === 'HARD' ? 'Pas réussi' : '';
+        var _prevResultColor = _prevScore.resultat === 'EASY' ? 'text-emerald-600 bg-emerald-50 border-emerald-200' : _prevScore.resultat === 'HARD' ? 'text-rose-600 bg-rose-50 border-rose-200' : 'text-amber-600 bg-amber-50 border-amber-200';
+        html += '<div class="border border-slate-200 rounded-xl overflow-hidden bg-white mb-2">';
+        // Header exo
+        html += '<div class="flex items-center justify-between px-3 py-2 bg-slate-50 border-b border-slate-100">';
+        html += '<span class="text-[10px] font-black text-slate-500">Exo ' + _prevExoNum + '</span>';
+        html += '<span class="text-[9px] font-black px-2 py-0.5 rounded-full border ' + _prevResultColor + '">' + _prevIcon + ' ' + _prevResultLabel + '</span>';
+        html += '</div>';
+        // Énoncé (depuis history.q)
+        if (_prevScore.q) {
+          html += '<div class="px-3 py-3"><div class="mc text-sm font-semibold text-slate-800 leading-relaxed">' + fmtL(_prevScore.q) + '</div></div>';
+        }
+        // Mauvaise réponse si HARD
+        if (_prevScore.resultat === 'HARD' && _prevScore.mauvaise_option) {
+          html += '<div class="px-3 pb-3"><div class="text-[11px] font-medium text-rose-500 bg-rose-50 border border-rose-100 rounded-lg px-3 py-2">Ta réponse : <span class="mc">' + fmtL(_prevScore.mauvaise_option) + '</span></div></div>';
+        }
+        // Indices utilisés
+        if (_prevScore.nb_indices > 0) {
+          html += '<div class="px-3 pb-2"><span class="text-[10px] font-medium text-slate-400">💡 ' + _prevScore.nb_indices + ' indice' + (_prevScore.nb_indices > 1 ? 's' : '') + ' utilisé' + (_prevScore.nb_indices > 1 ? 's' : '') + '</span></div>';
+        }
+        if (_prevScore.formule_vue) {
+          html += '<div class="px-3 pb-2"><span class="text-[10px] font-medium text-slate-400">📐 Formule consultée</span></div>';
+        }
         html += '</div>';
       }
-      // Nav
+      // Navigation
       html += '<div class="flex items-center justify-between mt-2 gap-2">';
       html += '<button onclick="_retroNav(\''+cat+'\',-1)" class="flex-1 py-1.5 rounded-xl border border-slate-200 text-[10px] font-black text-slate-400 bg-white '+(_prevNav === 0 ? 'opacity-30 pointer-events-none' : '')+'">← Préc.</button>';
       html += '<span class="text-[10px] font-black text-slate-400">' + (_prevNav + 1) + '/' + _prevSess.exos.length + '</span>';
