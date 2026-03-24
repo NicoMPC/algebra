@@ -7484,11 +7484,10 @@ function _selectRetroSess(cat, idx) {
   if (!S.retroSess) S.retroSess = {};
   S.retroSess[cat] = idx;
   S.retroExoIdx[cat] = 0;
-  if (cat.indexOf('_prev_') === 0) S._prevRetroOpen = cat;
+  if (cat.indexOf('_prev_') === 0) { S._prevRetroOpen = cat; render(); _scrollToPrevRetro(cat.substring(6)); return; }
   render();
 }
 function _retroNav(cat, dir) {
-  // Résoudre le vrai nom de catégorie pour les passages précédents (_prev_ prefix)
   var realCat = cat.indexOf('_prev_') === 0 ? cat.substring(6) : cat;
   var sessions = S.chapSessions && S.chapSessions[realCat];
   if (!sessions) { sessions = S.chapSessions && S.chapSessions[cat]; }
@@ -7499,7 +7498,7 @@ function _retroNav(cat, dir) {
   var cur = S.retroExoIdx[cat] || 0;
   cur = Math.max(0, Math.min(sess.exos.length - 1, cur + dir));
   S.retroExoIdx[cat] = cur;
-  if (cat.indexOf('_prev_') === 0) S._prevRetroOpen = cat;
+  if (cat.indexOf('_prev_') === 0) { S._prevRetroOpen = cat; render(); _scrollToPrevRetro(realCat); return; }
   render();
 }
 function _retroNavBoost(dir) {
@@ -7537,8 +7536,15 @@ function _selectRetroBoost(idx) {
 }
 function _retroJump(cat, idx) {
   S.retroExoIdx[cat] = idx;
-  if (cat.indexOf('_prev_') === 0) S._prevRetroOpen = cat;
+  if (cat.indexOf('_prev_') === 0) { S._prevRetroOpen = cat; render(); _scrollToPrevRetro(cat.substring(6)); return; }
   render();
+}
+
+function _scrollToPrevRetro(cat) {
+  setTimeout(function() {
+    var el = document.querySelector('[data-cat="'+cat+'"] details[open]');
+    if (el) el.scrollIntoView({ behavior:'instant', block:'nearest' });
+  }, 30);
 }
 
 // ── Modal "voir toutes les sessions" ──────────────────────────
