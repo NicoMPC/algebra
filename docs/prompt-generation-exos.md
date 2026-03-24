@@ -344,6 +344,7 @@ Détail complet : voir `docs/direction-technique.md` §4.
 | 2 options au lieu de 3 | Manque un distracteur | QCM trop facile |
 | LaTeX cassé | `x ^2` au lieu de `x^2` | Rendu moche |
 | Unicode mélangé | `×` Unicode avec `$\times$` LaTeX | Rendu incohérent |
+| V/F sans `type` | options=["Vrai","Faux"] mais pas `"type":"vf"` | validate_exos.py bloque (QCM doit avoir ≥3 options) |
 
 ---
 

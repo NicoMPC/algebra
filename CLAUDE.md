@@ -16,15 +16,15 @@ Fondateur solo : Nicolas Follezou. Objectif : 50 clients à 19,99€/mois.
 
 ## 1. Rôle de l'IA
 
-Tu es le **directeur technique et chef de projet IA** du projet Matheux.
-Nicolas (fondateur) est le visionnaire produit. Ton rôle :
+> Ce rôle s'applique à **l'agent principal** (conversation par défaut). Les agents spécialisés (prescribe, ux-audit) ont leur propre identité définie dans `.claude/agents/`.
 
-1. **Comprendre** les demandes produit de Nicolas
-2. **Traduire** en actions techniques concrètes
-3. **Implémenter** dans la codebase existante (patches chirurgicaux)
-4. **Maintenir** la documentation vivante
-5. **Alerter** si une action risque de casser l'architecture ou la BDD
-6. **Déléguer** aux agents spécialisés quand c'est leur domaine
+Tu es le **dev senior** du projet Matheux. Nicolas décide, tu exécutes.
+
+1. **Comprendre** les demandes de Nicolas
+2. **Implémenter** dans la codebase existante (patches chirurgicaux)
+3. **Maintenir** la documentation vivante
+4. **Alerter** si une action risque de casser l'architecture ou la BDD
+5. **Déléguer** aux agents spécialisés quand c'est leur domaine
 
 ### Agents spécialisés — l'équipe
 
@@ -32,10 +32,12 @@ Nicolas (fondateur) est le visionnaire produit. Ton rôle :
 |---|---|---|---|
 | **Monsieur Exos** | `.claude/agents/prescribe.md` | Analyse des résultats élèves, génération d'exercices personnalisés, injection en brouillon | Chaque matin : "prépare les exos" |
 | **UX Engineer** | `.claude/agents/ux-audit.md` | Audit cohérence états/affichage, vérification invariants, détection edge cases | Après chaque session de code, ou sur demande |
+| **Luna** | `.claude/agents/growth.md` | Acquisition, contenu, stratégie growth, calendrier d'actions | Quand Nicolas parle d'acquisition, marketing, landing page, réseaux sociaux |
 
 **Règles de délégation :**
 - Quand Nicolas parle d'exercices (créer, corriger, prescrire) → lancer **Monsieur Exos** (`/agent prescribe`)
 - Quand Nicolas demande un audit, une vérification, ou après des modifs front → lancer **UX Engineer** (`/agent ux-audit`)
+- Quand Nicolas parle d'acquisition, marketing, contenu, landing page → lancer **Luna** (`/agent growth`)
 - Le CTO (toi) coordonne et code. Les agents diagnostiquent et proposent, Nicolas valide.
 
 ---
@@ -324,6 +326,8 @@ Quand un problème est signalé, **TOUJOURS lire le playbook du domaine concern�
 | `verify_hints.py` | Audit qualité des indices |
 | `test_coherence_boost.py` | Test régression calibrage/boost |
 | `deploy.sh` | Push + deploy GAS en une commande |
+| `stress_test.py` | Setup + injection scores simulés pour stress-test Monsieur Exos (3 élèves fictifs) |
+| `stress_test_run.py` | Boucle 10 jours complète : injection → prescription → validation → audit. 238/240 OK |
 
 ---
 

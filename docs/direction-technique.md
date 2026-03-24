@@ -181,6 +181,8 @@ Avant d'injecter un chapitre V2, **toujours** :
 1. Lister les énoncés du V1 (extraire de Scores via `Énoncé`)
 2. Vérifier qu'aucun exo V2 n'a le même énoncé ou les mêmes valeurs
 3. Si la même compétence est retestée, varier au minimum le type ET les valeurs
+4. **Vérifier `"type":"vf"`** sur chaque exo avec options `["Vrai","Faux"]` — sinon validate_exos.py bloque (QCM ≥3 options)
+5. **Injection en masse** : utiliser batch append (pas append_row en boucle) — rate limit Sheets = 60 writes/min
 
 ---
 
@@ -358,3 +360,4 @@ Ce process est aujourd'hui manuel (Nicolas + IA). Les étapes automatisables :
 | 2026-03-23 | Création — basé sur analyse réelle de Charlie (Calcul Littéral + Fonctions) |
 | 2026-03-23 | Workflow admin semi-auto complet : pré-remplissage, diagnostic, aperçu, publish |
 | 2026-03-24 | Agent Monsieur Exos + Agent UX Engineer + système draft + RemediationChapters + prevExos retro + Vue J+1 admin |
+| 2026-03-24 | Stress-test 10j×3 élèves : 238/240 OK (99%), 130 exos uniques, 0 doublon. Leçons : toujours `"type":"vf"` sur V/F, batcher les écritures Sheets (60 writes/min) |

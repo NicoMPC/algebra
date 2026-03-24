@@ -7576,7 +7576,7 @@ function _openPrevRetroModal(cat) {
     h += '<div style="background:#0F172A;color:white;padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10">';
     h += '<div><div style="font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;opacity:.7">Série précédente</div>';
     h += '<div style="font-size:.9rem;font-weight:900;font-family:Syne,sans-serif">' + catName + '</div></div>';
-    h += '<button onclick="document.getElementById(\'prev-retro-modal\').remove()" style="background:rgba(255,255,255,.15);border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:1.1rem;cursor:pointer;font-weight:bold">\u2715</button>';
+    h += '<button onclick="history.back()" style="background:rgba(255,255,255,.15);border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:1.1rem;cursor:pointer;font-weight:bold">\u2715</button>';
     h += '</div>';
 
     // Pills par date
@@ -7686,7 +7686,7 @@ function _openPrevRetroModal(cat) {
 
     // Event delegation — pas de render()
     ov.onclick = function(e) {
-      if (e.target === ov) { ov.remove(); return; }
+      if (e.target === ov) { history.back(); return; }
       var pill = e.target.closest('[data-pill]');
       if (pill) { _state.sessIdx = parseInt(pill.dataset.pill); _state.exoIdx = 0; _rebuild(); return; }
       var dot = e.target.closest('[data-dot]');
@@ -7707,6 +7707,15 @@ function _openPrevRetroModal(cat) {
 
   document.body.appendChild(ov);
   _rebuild();
+
+  // Bouton retour mobile → ferme la modale
+  history.pushState({ prevRetroModal: true }, '');
+  function _onPopPrevRetro() {
+    var m = document.getElementById('prev-retro-modal');
+    if (m) m.remove();
+    window.removeEventListener('popstate', _onPopPrevRetro);
+  }
+  window.addEventListener('popstate', _onPopPrevRetro);
 }
 
 // ── Modal "voir toutes les sessions" ──────────────────────────
@@ -8550,15 +8559,19 @@ function render() {
     }
     // ── Passages précédents — bouton ouvre une modale ──
     if (isOpen && !isBoost && S.exOverrides && S.exOverrides[cat] && S.chapSessions && S.chapSessions[cat] && S.chapSessions[cat].length > 0) {
-      var _prevAllExos2 = [];
-      S.chapSessions[cat].forEach(function(s) { _prevAllExos2 = _prevAllExos2.concat(s.exos); });
-      var _prevAllEasy2 = _prevAllExos2.filter(function(e) { return e.resultat === 'EASY'; }).length;
-      var _prevGlobalPct2 = _prevAllExos2.length > 0 ? Math.round(_prevAllEasy2 / _prevAllExos2.length * 100) : 0;
-      var _prevPctColor2 = _prevGlobalPct2 >= 70 ? 'text-emerald-600' : _prevGlobalPct2 >= 40 ? 'text-amber-600' : 'text-rose-500';
-      html += '<div class="mx-4 mb-4" onclick="event.stopPropagation()" style="position:relative;z-index:3">';
-      html += '<button onclick="_openPrevRetroModal(\''+cat+'\')" class="w-full py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-[11px] font-black text-slate-500 active:bg-slate-100 flex items-center justify-center gap-2">';
-      html += '<span>📂 Série précédente</span><span class="' + _prevPctColor2 + '">' + _prevGlobalPct2 + '% · ' + _prevAllExos2.length + ' exos</span><span class="text-slate-300">›</span>';
-      html += '</button></div>';
+      var _ovDate2 = S.exOverrides[cat];
+      var _prevSess2 = S.chapSessions[cat].filter(function(s) { return (s.endDate || s.date) < _ovDate2; });
+      if (_prevSess2.length > 0) {
+        var _prevAllExos2 = [];
+        _prevSess2.forEach(function(s) { _prevAllExos2 = _prevAllExos2.concat(s.exos); });
+        var _prevAllEasy2 = _prevAllExos2.filter(function(e) { return e.resultat === 'EASY'; }).length;
+        var _prevGlobalPct2 = _prevAllExos2.length > 0 ? Math.round(_prevAllEasy2 / _prevAllExos2.length * 100) : 0;
+        var _prevPctColor2 = _prevGlobalPct2 >= 70 ? 'text-emerald-600' : _prevGlobalPct2 >= 40 ? 'text-amber-600' : 'text-rose-500';
+        html += '<div class="mx-4 mb-4" onclick="event.stopPropagation()" style="position:relative;z-index:3">';
+        html += '<button onclick="_openPrevRetroModal(\''+cat+'\')" class="w-full py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-[11px] font-black text-slate-500 active:bg-slate-100 flex items-center justify-center gap-2">';
+        html += '<span>📂 Série précédente</span><span class="' + _prevPctColor2 + '">' + _prevGlobalPct2 + '% · ' + _prevAllExos2.length + ' exos</span><span class="text-slate-300">›</span>';
+        html += '</button></div>';
+      }
     }
     html += '</div>';
   });
