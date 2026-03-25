@@ -1586,7 +1586,7 @@
         On trouve où ça coince, il s'entraîne uniquement là-dessus. Et tout s'aligne enfin.
       </p>
       <p class="text-stone-400 text-xs font-semibold mb-8" style="animation:s1 .6s .22s ease both;letter-spacing:.05em">10 MINUTES PAR JOUR</p>
-      <button onclick="startTrialFlow()"
+      <button onclick="startTrialFlow('hero')"
               class="btn btn-ac btn-fw shadow-xl" id="cta-hero" style="max-width:420px;font-size:1.05rem;padding:1.15rem 1.5rem;border-radius:var(--l-radius);animation:s1 .6s .28s ease both">
         Faites le test avec votre enfant
       </button>
@@ -2038,7 +2038,7 @@
           <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">Parcours vérifié et ajusté chaque soir</span></div>
           <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">Exercices uniques, créés sur mesure</span></div>
         </div>
-        <button onclick="startTrialFlow()"
+        <button onclick="startTrialFlow('pricing')"
                 class="btn btn-ac btn-fw py-4 shadow-xl" style="font-size:1rem;border-radius:var(--l-radius)">
           Essayer 7 jours gratuit
         </button>
@@ -2071,7 +2071,7 @@
       <p class="text-stone-500 text-sm font-medium mb-8 max-w-sm mx-auto">
         Vous saurez exactement où il bloque.
       </p>
-      <button onclick="startTrialFlow()"
+      <button onclick="startTrialFlow('bottom')"
               style="max-width:400px;font-size:1.05rem;padding:1.15rem;display:block;margin:0 auto;border-radius:var(--l-radius)"
               class="btn btn-ac btn-fw shadow-xl">
         Faites le test avec votre enfant
@@ -2118,7 +2118,7 @@
 
   <!-- Mobile sticky CTA bar -->
   <div id="sticky-cta" aria-hidden="true">
-    <button id="sticky-cta-btn" onclick="startTrialFlow()">Tester avec mon enfant →</button>
+    <button id="sticky-cta-btn" onclick="startTrialFlow('sticky')">Tester avec mon enfant →</button>
     <div class="sticky-sub">5 min · gratuit</div>
   </div>
 
@@ -3288,7 +3288,8 @@ function _animCounter(el) {
   requestAnimationFrame(step);
 }
 
-function startTrialFlow() {
+function startTrialFlow(src) {
+  _track('cta_click', { source: src || 'hero' });
   var tf = document.getElementById('trial-flow');
   tf.classList.remove('hidden');
   tf.classList.add('flow-fs');
