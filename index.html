@@ -121,6 +121,9 @@
   <!-- REMPLACER G-XXXXXXXXXX par votre Measurement ID Google Analytics 4 -->
   <script>
     (function(){
+      // ?notrack dans l'URL → pose un flag permanent, GA4 ne charge plus
+      if (location.search.indexOf('notrack') !== -1) localStorage.setItem('mx_notrack','1');
+      if (localStorage.getItem('mx_notrack') === '1') return;
       var GA4_ID = 'G-7R2DW4585Y';
       function loadGA4() {
         if (window._ga4Loaded) return;
