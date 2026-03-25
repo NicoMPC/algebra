@@ -4479,10 +4479,29 @@ function sendMarketingSequence(email, prenom, day, objectif) {
         '<tr><td style="background:#ffffff;padding:24px 28px 32px;">' +
         // ── Accroche
         '<p style="color:#1e293b;font-size:20px;font-weight:800;line-height:1.4;margin:0 0 20px;">' + prenom + ' est inscrit. Demain matin, 5\u00a0exercices sur mesure l\u2019attendent.</p>' +
-        // ── Explication courte
-        '<p style="color:#374151;font-size:16px;line-height:1.8;margin:0 0 8px;">Chaque jour, <strong>5 exercices cibl\u00e9s</strong> sur ses lacunes.</p>' +
-        '<p style="color:#374151;font-size:16px;line-height:1.8;margin:0 0 8px;"><strong>10 minutes</strong> suffisent \u2014 pas de surcharge.</p>' +
-        '<p style="color:#374151;font-size:16px;line-height:1.8;margin:0 0 24px;">Le parcours <strong>s\u2019adapte</strong> automatiquement \u00e0 ses r\u00e9ponses.</p>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.8;margin:0 0 24px;">Bonjour,</p>' +
+        // ── Comment \u00e7a marche
+        '<p style="color:#1e293b;font-size:16px;line-height:1.8;font-weight:700;margin:0 0 12px;">Concr\u00e8tement, voil\u00e0 comment \u00e7a fonctionne :</p>' +
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;">' +
+        '<tr><td style="padding:12px 16px;background:#f8fafc;border-left:3px solid #1E40AF;border-radius:0 6px 6px 0;">' +
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">' +
+        '<tr><td style="padding:4px 0;color:#374151;font-size:15px;line-height:1.8;"><strong style="color:#1E40AF;">1.</strong> Chaque jour, <strong>5 exercices cibl\u00e9s</strong> sur ses lacunes</td></tr>' +
+        '<tr><td style="padding:4px 0;color:#374151;font-size:15px;line-height:1.8;"><strong style="color:#1E40AF;">2.</strong> <strong>10 minutes</strong> suffisent \u2014 pas de surcharge</td></tr>' +
+        '<tr><td style="padding:4px 0;color:#374151;font-size:15px;line-height:1.8;"><strong style="color:#1E40AF;">3.</strong> Le parcours <strong>s\u2019adapte</strong> automatiquement \u00e0 ses r\u00e9ponses</td></tr>' +
+        '</table>' +
+        '</td></tr></table>' +
+        // ── Ce que le parent va observer
+        '<p style="color:#1e293b;font-size:16px;line-height:1.8;font-weight:700;margin:0 0 12px;">Ce que vous allez observer :</p>' +
+        '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 6px;">\u2714\uFE0F Il sait mieux par o\u00f9 commencer</p>' +
+        '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 6px;">\u2714\uFE0F Il travaille r\u00e9guli\u00e8rement, sans qu\u2019on le pousse</p>' +
+        '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 24px;">\u2714\uFE0F Et surtout\u2026 <strong>il reprend confiance</strong></p>' +
+        // ── Encart demain
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;"><tr>' +
+        '<td style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:8px;padding:16px 20px;text-align:center;">' +
+        '<p style="color:#1E40AF;font-size:15px;font-weight:800;margin:0;">D\u00e8s demain matin, son premier entra\u00eenement sur mesure l\u2019attend.</p>' +
+        '</td></tr></table>' +
+        // ── Bilan hebdo
+        '<p style="color:#374151;font-size:15px;line-height:1.7;margin:0 0 28px;">Chaque semaine, vous recevrez un <strong>bilan clair</strong> : ce qui est acquis, ce qui bloque, et ce qui progresse.</p>' +
         // ── CTA bouton
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="center" style="padding:0 0 28px;">' +
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>' +
@@ -4490,8 +4509,15 @@ function sendMarketingSequence(email, prenom, day, objectif) {
         '<a href="https://matheux.fr" style="display:inline-block;padding:12px 28px;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;">Ouvrir Matheux \u2192</a>' +
         '</td></tr></table>' +
         '</td></tr></table>' +
-        // ── Signature
+        // ── Storytelling fondateur
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td style="border-top:1px solid #e5e7eb;padding-top:20px;">' +
+        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">J\u2019ai cr\u00e9\u00e9 Matheux apr\u00e8s des ann\u00e9es \u00e0 donner des cours de maths. Le m\u00eame constat revenait \u00e0 chaque fois : les \u00e9l\u00e8ves comprennent en cours, mais ne s\u2019entra\u00eenent pas assez entre les s\u00e9ances.</p>' +
+        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">Le probl\u00e8me n\u2019est presque jamais la compr\u00e9hension. <strong>C\u2019est la pratique.</strong></p>' +
+        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 16px;">Matheux corrige \u00e7a : un entra\u00eenement quotidien, court et cibl\u00e9, qui s\u2019adapte \u00e0 chaque \u00e9l\u00e8ve.</p>' +
+        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 4px;">Une question ? <strong>R\u00e9pondez \u00e0 cet email</strong>, je lis tout personnellement.</p>' +
+        '</td></tr></table>' +
+        // ── Signature
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:20px;"><tr><td>' +
         '<p style="color:#1e293b;font-size:15px;font-weight:700;margin:0 0 2px;">Nicolas</p>' +
         '<p style="color:#6b7280;font-size:13px;margin:0;">Prof de maths \u2014 Fondateur de Matheux</p>' +
         '</td></tr></table>' +
