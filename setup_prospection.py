@@ -12,23 +12,25 @@ TAB = "Prospection"
 
 # ── Templates ──
 MSG_A = (
-    "Salut __NOM__ ! J'ai vu ton annonce pour les cours de maths. "
-    "Je suis Nicolas, entrepreneur — j'ai accompagné des dizaines d'élèves en maths ces dernières années. "
-    "J'ai créé matheux.fr, un outil d'entraînement quotidien qui complète les cours particuliers : "
-    "entre tes séances, tes élèves s'entraînent 10 min/jour sur des exos ciblés sur leurs lacunes. "
-    "Toi tu reçois un rapport hebdo pour voir exactement où ils galèrent → tu arrives à ta prochaine séance "
-    "en sachant quoi bosser. C'est pas fait pour te remplacer, c'est fait pour que tes élèves progressent "
-    "plus vite grâce à toi. Tu voudrais le tester gratuitement et me dire ce que t'en penses ? 🙏"
+    "Bonjour __NOM__,\n\n"
+    "Je suis prof de maths et j'ai développé matheux.fr — un outil d'entraînement quotidien "
+    "pour les collégiens et lycéens (5 exos personnalisés/jour, adaptés au niveau réel de l'élève).\n\n"
+    "Plusieurs profs particuliers l'utilisent en complément de leurs cours : l'élève s'entraîne "
+    "10 min/jour entre les séances, et vous arrivez en cours en sachant exactement où il bloque.\n\n"
+    "C'est gratuit 7 jours, sans carte bancaire.\n"
+    "Est-ce que ça pourrait intéresser certains de vos élèves ?\n\n"
+    "Nicolas\nmatheux.fr"
 )
 
 MSG_B = (
-    "Hello __NOM__ ! Je suis Nicolas, entrepreneur — j'ai accompagné des dizaines d'élèves en maths ces dernières années "
-    "et j'ai créé matheux.fr, un complément aux cours particuliers. "
-    "Le principe : entre tes séances, chaque élève reçoit 5 exos personnalisés par jour, adaptés à ses vraies lacunes. "
-    "Toi, tu reçois un rapport chaque semaine avec leurs points faibles → tu prépares tes cours en sachant exactement "
-    "quoi cibler. Ça remplace pas tes cours, au contraire : les parents voient que leur enfant bosse tous les jours "
-    "ET qu'il a un prof qui suit tout. Résultat, ils te gardent plus longtemps. "
-    "7 jours gratuits, sans CB. Tu veux jeter un œil ?"
+    "Bonjour __NOM__,\n\n"
+    "Je suis Nicolas, prof de maths. J'ai créé matheux.fr pour que les élèves s'entraînent "
+    "entre les cours particuliers — 5 exos ciblés par jour, 10 minutes, adaptés à leurs lacunes.\n\n"
+    "L'idée : vos élèves arrivent mieux préparés à chaque séance, et les parents voient "
+    "du travail régulier entre les cours. Tout le monde y gagne.\n\n"
+    "Gratuit 7 jours, sans CB : matheux.fr\n"
+    "Qu'en pensez-vous ?\n\n"
+    "Nicolas"
 )
 
 MSG_C = (
@@ -39,14 +41,17 @@ MSG_C = (
 )
 
 MSG_D = (
-    "Salut __NOM__ ! Je suis Nicolas, entrepreneur — j'ai accompagné des dizaines d'élèves en maths ces dernières années "
-    "et j'ai créé matheux.fr, un outil d'entraînement quotidien pour les collégiens "
-    "(5 exos perso/jour ciblés sur leurs lacunes). Je te propose un deal simple : "
-    "tu recommandes matheux.fr aux parents de tes élèves comme complément à tes cours. "
-    "Chaque élève qui s'abonne, tu touches 10€. 5 élèves = 50€ direct. "
-    "Les parents voient que leur enfant bosse entre tes séances, toi tu reçois un rapport hebdo "
-    "sur leurs points faibles → tout le monde y gagne. Je te crée un code perso PROF-__NOM_MAJ__ pour tracker. "
-    "7 jours gratuits pour tester toi-même avant. Ça t'intéresse ?"
+    "Bonjour __NOM__,\n\n"
+    "Je suis Nicolas, prof de maths. J'ai créé matheux.fr — entraînement quotidien adaptatif "
+    "pour collégiens et lycéens (5 exos perso/jour ciblés sur leurs lacunes).\n\n"
+    "Je propose un partenariat simple aux profs particuliers : vous recommandez matheux.fr "
+    "comme complément entre vos séances → 10 € par élève qui s'abonne. "
+    "Je vous crée un code perso PROF-__NOM_MAJ__.\n\n"
+    "Les parents voient du travail régulier, vos élèves progressent plus vite, "
+    "et vous êtes rémunéré. Tout le monde y gagne.\n\n"
+    "7 jours gratuits pour tester vous-même : matheux.fr\n"
+    "Ça vous intéresse ?\n\n"
+    "Nicolas"
 )
 
 # ── Créer l'onglet si besoin ──

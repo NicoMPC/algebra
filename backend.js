@@ -4462,72 +4462,43 @@ function sendMarketingSequence(email, prenom, day, objectif) {
           && r['Statut'] === 'envoyé';
       });
       if (alreadySentJ0) return { status: 'success', message: 'J+0 déjà envoyé.' };
-      subject  = '\u2705 Inscription confirm\u00e9e \u2014 ce qui attend ' + prenom + ' d\u00e8s demain';
+      subject  = prenom + ' est inscrit \u2014 ses premiers exos arrivent demain';
       htmlBody =
         // ── Preheader invisible (preview text Gmail/Outlook)
-        '<span style="display:none;font-size:0;color:transparent;max-height:0;overflow:hidden;">Ses 5 premiers exercices sur mesure arrivent demain matin.\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0</span>' +
+        '<span style="display:none;font-size:0;color:transparent;max-height:0;overflow:hidden;">5 exercices sur mesure, 10 minutes, adapt\u00e9s \u00e0 son niveau.\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0</span>' +
         // ── Wrapper table (Outlook-safe)
-        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f1f5f9;"><tr><td align="center" style="padding:24px 12px;">' +
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#ffffff;"><tr><td align="center" style="padding:0;">' +
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" style="max-width:520px;width:100%;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Helvetica,Arial,sans-serif;">' +
-        // ── Header
-        '<tr><td style="background:#0f172a;padding:28px 32px 24px;text-align:center;border-radius:12px 12px 0 0;">' +
-        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="center">' +
-        '<p style="font-size:22px;font-weight:900;color:#ffffff;margin:0 0 4px;letter-spacing:-.5px;">M</p>' +
-        '<p style="font-size:11px;font-weight:700;color:#60A5FA;letter-spacing:3px;text-transform:uppercase;margin:0;">MATHEUX</p>' +
-        '</td></tr></table>' +
+        // ── Ligne bleue top
+        '<tr><td style="background:#1E40AF;height:4px;font-size:0;line-height:0;">&nbsp;</td></tr>' +
+        // ── Logo discret
+        '<tr><td style="padding:24px 28px 0;background:#ffffff;">' +
+        '<p style="font-size:13px;font-weight:800;color:#1E40AF;letter-spacing:2px;text-transform:uppercase;margin:0;">MATHEUX</p>' +
         '</td></tr>' +
-        // ── Bandeau bleu
-        '<tr><td style="background:#1E40AF;padding:20px 32px;text-align:center;">' +
-        '<p style="color:#ffffff;font-size:18px;font-weight:800;margin:0;line-height:1.4;">' + prenom + ' est inscrit. Ses premiers exercices arrivent demain.</p>' +
-        '</td></tr>' +
-        // ── Corps blanc
-        '<tr><td style="background:#ffffff;padding:32px 28px;">' +
-        '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 20px;">Bonjour,</p>' +
-        // ── Ce qui va se passer
-        '<p style="color:#1e293b;font-size:15px;line-height:1.8;font-weight:700;margin:0 0 12px;">Concr\u00e8tement, voil\u00e0 comment \u00e7a fonctionne :</p>' +
-        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 20px;">' +
-        '<tr><td style="padding:12px 16px;background:#f8fafc;border-left:3px solid #1E40AF;">' +
-        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">' +
-        '<tr><td style="padding:4px 0;color:#374151;font-size:14px;line-height:1.8;"><strong style="color:#1E40AF;">1.</strong> Chaque jour, <strong>5 exercices cibl\u00e9s</strong> sur ses lacunes</td></tr>' +
-        '<tr><td style="padding:4px 0;color:#374151;font-size:14px;line-height:1.8;"><strong style="color:#1E40AF;">2.</strong> <strong>10 minutes</strong> suffisent \u2014 pas de surcharge</td></tr>' +
-        '<tr><td style="padding:4px 0;color:#374151;font-size:14px;line-height:1.8;"><strong style="color:#1E40AF;">3.</strong> Le parcours <strong>s\u2019adapte</strong> automatiquement \u00e0 ses r\u00e9ponses</td></tr>' +
-        '</table>' +
-        '</td></tr></table>' +
-        // ── Ce que le parent va observer
-        '<p style="color:#1e293b;font-size:15px;line-height:1.8;font-weight:700;margin:0 0 12px;">Ce que vous allez observer :</p>' +
-        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 20px;">' +
-        '<tr><td width="32" valign="top" style="padding:6px 0;font-size:14px;">\u2705</td><td style="padding:6px 0;color:#374151;font-size:14px;line-height:1.6;">Il sait mieux par o\u00f9 commencer</td></tr>' +
-        '<tr><td width="32" valign="top" style="padding:6px 0;font-size:14px;">\u2705</td><td style="padding:6px 0;color:#374151;font-size:14px;line-height:1.6;">Il travaille r\u00e9guli\u00e8rement, sans qu\u2019on le pousse</td></tr>' +
-        '<tr><td width="32" valign="top" style="padding:6px 0;font-size:14px;">\u2705</td><td style="padding:6px 0;color:#374151;font-size:14px;line-height:1.6;">Et surtout\u2026 <strong>il reprend confiance</strong></td></tr>' +
-        '</table>' +
-        // ── Encart demain
-        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;"><tr>' +
-        '<td style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:10px;padding:16px 20px;text-align:center;">' +
-        '<p style="color:#1E40AF;font-size:15px;font-weight:800;margin:0;">D\u00e8s demain matin, son premier entra\u00eenement sur mesure l\u2019attend.</p>' +
-        '</td></tr></table>' +
-        // ── Bilan hebdo
-        '<p style="color:#374151;font-size:14px;line-height:1.7;margin:0 0 24px;">Chaque semaine, vous recevrez un <strong>bilan clair</strong> : ce qui est acquis, ce qui bloque, et ce qui progresse.</p>' +
-        // ── CTA bouton (Outlook-safe avec padding trick)
-        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="center" style="padding:4px 0 28px;">' +
+        // ── Corps
+        '<tr><td style="background:#ffffff;padding:24px 28px 32px;">' +
+        // ── Accroche
+        '<p style="color:#1e293b;font-size:20px;font-weight:800;line-height:1.4;margin:0 0 20px;">' + prenom + ' est inscrit. Demain matin, 5\u00a0exercices sur mesure l\u2019attendent.</p>' +
+        // ── Explication courte
+        '<p style="color:#374151;font-size:16px;line-height:1.8;margin:0 0 8px;">Chaque jour, <strong>5 exercices cibl\u00e9s</strong> sur ses lacunes.</p>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.8;margin:0 0 8px;"><strong>10 minutes</strong> suffisent \u2014 pas de surcharge.</p>' +
+        '<p style="color:#374151;font-size:16px;line-height:1.8;margin:0 0 24px;">Le parcours <strong>s\u2019adapte</strong> automatiquement \u00e0 ses r\u00e9ponses.</p>' +
+        // ── CTA bouton
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="center" style="padding:0 0 28px;">' +
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>' +
-        '<td style="background:#1E40AF;border-radius:10px;text-align:center;">' +
-        '<a href="https://matheux.fr" style="display:inline-block;padding:14px 36px;color:#ffffff;font-size:15px;font-weight:800;text-decoration:none;letter-spacing:-.2px;">Ouvrir Matheux \u2192</a>' +
+        '<td style="background:#1E40AF;border-radius:8px;text-align:center;">' +
+        '<a href="https://matheux.fr" style="display:inline-block;padding:12px 28px;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;">Ouvrir Matheux \u2192</a>' +
         '</td></tr></table>' +
         '</td></tr></table>' +
-        // ── Storytelling fondateur
+        // ── Signature
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td style="border-top:1px solid #e5e7eb;padding-top:20px;">' +
-        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">J\u2019ai cr\u00e9\u00e9 Matheux apr\u00e8s avoir vu les m\u00eames blocages revenir chez mes \u00e9l\u00e8ves, encore et encore.</p>' +
-        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">Le probl\u00e8me n\u2019est presque jamais la compr\u00e9hension. <strong>C\u2019est l\u2019entra\u00eenement.</strong></p>' +
-        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0;">Matheux corrige \u00e7a, simplement.</p>' +
+        '<p style="color:#1e293b;font-size:15px;font-weight:700;margin:0 0 2px;">Nicolas</p>' +
+        '<p style="color:#6b7280;font-size:13px;margin:0;">Prof de maths \u2014 Fondateur de Matheux</p>' +
         '</td></tr></table>' +
-        // ── PS
-        '<p style="color:#9ca3af;font-size:13px;font-style:italic;line-height:1.6;margin:24px 0 0;">P.S. \u2014 Il se pourrait que ' + prenom + ' passe un peu plus de temps sur son t\u00e9l\u00e9phone\u2026 Bonne nouvelle : cette fois, \u00e7a lui sera utile.</p>' +
         '</td></tr>' +
-        // ── Footer signature
-        '<tr><td style="background:#0f172a;padding:20px 28px;text-align:center;border-radius:0 0 12px 12px;">' +
-        '<p style="color:#f1f5f9;font-size:14px;font-weight:700;margin:0 0 2px;">Nicolas</p>' +
-        '<p style="color:#64748b;font-size:12px;margin:0 0 12px;">Fondateur de Matheux</p>' +
-        '<p style="font-size:11px;color:#475569;margin:0;"><a href="' + unsubLink + '" style="color:#475569;text-decoration:underline;">Se d\u00e9sinscrire</a></p>' +
+        // ── Footer d\u00e9sinscription
+        '<tr><td style="padding:16px 28px;text-align:center;background:#ffffff;">' +
+        '<p style="font-size:11px;color:#9ca3af;margin:0;"><a href="' + unsubLink + '" style="color:#9ca3af;text-decoration:underline;">Se d\u00e9sinscrire</a></p>' +
         '</td></tr>' +
         '</table>' +
         '</td></tr></table>';
@@ -4625,9 +4596,23 @@ function sendTestEmail(p) {
     String(user['IsAdmin']).toUpperCase() === 'TRUE';
   if (!isAdmin) return { status: 'error', message: 'Accès refusé.' };
 
-  var email  = String(user['Email'] || '').trim();
-  var prenom = String(user['Prénom'] || 'Nicolas').trim();
-  var result = sendMarketingSequence(email, prenom, 0);
+  var email  = (p.targetEmail || '').trim() || String(user['Email'] || '').trim();
+  var prenom = (p.targetPrenom || '').trim() || String(user['Prénom'] || 'Nicolas').trim();
+  var day    = (typeof p.day === 'number') ? p.day : 0;
+  // Bypass dédup pour les tests : supprimer les anciens logs J+0 pour cet email
+  if (p.targetEmail) {
+    try {
+      var emailSheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SH.EMAILS);
+      var emailData  = emailSheet.getDataRange().getValues();
+      for (var r = emailData.length - 1; r >= 1; r--) {
+        if (String(emailData[r][1] || '').toLowerCase() === email.toLowerCase()
+            && String(emailData[r][2]) === 'J+' + day) {
+          emailSheet.deleteRow(r + 1);
+        }
+      }
+    } catch(e) {}
+  }
+  var result = sendMarketingSequence(email, prenom, day);
   if (result.status === 'success') {
     return { status: 'success', to: email };
   }
