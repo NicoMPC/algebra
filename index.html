@@ -7582,7 +7582,7 @@ function _openPrevRetroModal(cat) {
   if (!sessions || sessions.length === 0) return;
   // Filtrer : ne garder que les sessions V1 (avant la date d'override)
   var ovDate = S.exOverrides && S.exOverrides[cat];
-  if (ovDate) sessions = sessions.filter(function(s) { return (s.endDate || s.date) < ovDate; });
+  if (ovDate) sessions = sessions.filter(function(s) { return (s.endDate || s.date) <= ovDate; });
   if (sessions.length === 0) return;
   var prevExs = (S.prevExos && S.prevExos[cat]) ? S.prevExos[cat] : null;
   var catName = (LVL[S.niv].names[cat] || cat).replace(/_/g, ' ');
