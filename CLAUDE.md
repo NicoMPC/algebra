@@ -268,6 +268,7 @@ Quand Nicolas veut ajouter un élève déjà connu (visio en cours) **sans lui f
 | V6 | ~~Scores perdus si réseau instable~~ | ✅ FIXÉ | flushQ retry+backoff, answeredAt client→backend (2026-03-22) |
 | V7 | ~~Calibrage pollue tri chapitres + flèches tendance~~ | ✅ FIXÉ | `S.chapTouched` + filtre `r.source !== 'CALIBRAGE'` dans sessions (2026-03-22) |
 | V8 | ~~Doublons scores (retry réseau + bypass adminMode)~~ | ✅ FIXÉ | Backend dedup (code+cat+idx+date) dans `_saveScoreInner` + retiré bypass `!S.adminMode` dans `sendScore` frontend (2026-03-26) |
+| V9 | ~~Override same-day : V1 scores non filtrés~~ | ✅ FIXÉ | `<` → `<=` sur 3 occurrences de comparaison `date <= ovDate` (score loading, retro sessions, prev retro modal). Grep 0 restant (2026-03-26) |
 
 ---
 
