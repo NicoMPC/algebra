@@ -8510,7 +8510,7 @@ function render() {
           var _psPrevPct = _psPrev.exos.length > 0 ? Math.round(_psPrevEasy / _psPrev.exos.length * 100) : 0;
           _psArrow = _psPct > _psPrevPct + 5 ? ' <span class="trend-arrow-up">↑</span>' : _psPct < _psPrevPct - 5 ? ' <span class="trend-arrow-down">↓</span>' : ' <span class="trend-arrow-flat">→</span>';
         }
-        html += '<span class="text-[9px] font-bold ' + _psColor + '">' + _fmtRetroDate(_ps.date || _ps.endDate) + ' · ' + _psPct + '%' + _psArrow + '</span>';
+        html += '<span class="text-[9px] font-bold ' + _psColor + '">' + _fmtRetroDate(_ps.endDate || _ps.date) + ' · ' + _psPct + '%' + _psArrow + '</span>';
         if (_pi < _maxPills - 1) html += '<span class="text-[8px] text-slate-300">·</span>';
       }
       html += '</div></div>';
