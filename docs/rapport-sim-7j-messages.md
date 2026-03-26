@@ -1,6 +1,6 @@
 # Rapport Simulation 7 jours — Audit Messages
 
-Date : 2026-03-25 11:49
+Date : 2026-03-26 10:17
 
 ## Stats
 - API calls : 274
@@ -18,12 +18,12 @@ Date : 2026-03-25 11:49
 - `[hero_cta]` hero → [P5] Commence par Nombres_entiers
 - `[guide]` banner → Commence par là
 - `[toast]` boost_start → ⚡ C'est ton Entraînement du jour — 5 exos, ~10 min. C'est parti !
-- `[toast]` boost_exo_1 → Pas grave — les indices et la correction s'affichent pour t'aider
-- `[toast]` boost_exo_2 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_2 → +100 XP
-- `[toast]` boost_exo_3 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_3 → +100 XP
-- `[toast]` boost_exo_4 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_1 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_1 → +100 XP
+- `[toast]` boost_exo_2 → Pas grave — les indices et la correction s'affichent pour t'aider
+- `[toast]` boost_exo_3 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_4 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_4 → +100 XP
 - `[toast]` boost_exo_5 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_5 → +100 XP
 - `[insight]` boost_complete → Beau travail. 3 exercices dans la boîte aujourd'hui.
@@ -33,39 +33,20 @@ Date : 2026-03-25 11:49
 
 **J1:**
 - `[hero_cta]` hero → [P2] Continue Nombres_entiers
-- `[toast]` boost_exo_1 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_1 → +100 XP
+- `[toast]` boost_exo_1 → Mauvaise réponse (ko_*)
 - `[milestone]` boost_exo_1 → 10 exercices — tu prends le rythme 🔥
 - `[toast]` boost_exo_2 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_2 → +100 XP
 - `[toast]` boost_exo_3 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_3 → +100 XP
 - `[toast]` boost_exo_4 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_5 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_5 → +100 XP
-- `[insight]` boost_complete → Beau travail. 4 exercices dans la boîte aujourd'hui.
+- `[toast]` boost_exo_5 → Mauvaise réponse (ko_*)
+- `[insight]` boost_complete → Quelques notions à retravailler. Ton prochain boost sera encore plus ciblé.
 - `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
 - `[hero_cta]` hero_post_boost → [P2] Continue Nombres_entiers
 
 **J2:**
 - `[hero_cta]` hero → [P2] Continue Nombres_entiers
-- `[toast]` boost_exo_1 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_1 → +100 XP
-- `[toast]` boost_exo_2 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_2 → +100 XP
-- `[toast]` boost_exo_3 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_3 → +100 XP
-- `[toast]` boost_exo_4 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_5 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_5 → +100 XP
-- `[insight]` boost_complete → Beau travail. 4 exercices dans la boîte aujourd'hui.
-- `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
-- `[hero_cta]` hero_post_boost → [P2] Continue Nombres_entiers
-- `[toast]` chap_complete → 🏆 Chapitre terminé — bien joué !
-- `[milestone]` chap_complete → Ton premier chapitre maîtrisé — la suite va aller plus vite ⭐
-
-**J3:**
-- `[hero_cta]` hero → [P2] Continue Angles
 - `[toast]` boost_exo_1 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_1 → +100 XP
 - `[toast]` boost_exo_2 → Bonne réponse (ok_*)
@@ -77,9 +58,39 @@ Date : 2026-03-25 11:49
 - `[xp]` boost_exo_5 → +100 XP
 - `[insight]` boost_complete → Beau travail. 4 exercices dans la boîte aujourd'hui.
 - `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
-- `[hero_cta]` hero_post_boost → [P2] Continue Angles
+- `[hero_cta]` hero_post_boost → [P2] Continue Nombres_entiers
+- `[toast]` chap_complete → 🏆 Chapitre terminé — bien joué !
+- `[milestone]` chap_complete → Ton premier chapitre maîtrisé — la suite va aller plus vite ⭐
+
+**J3:**
+- `[hero_cta]` hero → [P3] C'est parti sur Fractions
+- `[toast]` boost_exo_1 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_2 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_2 → +100 XP
+- `[toast]` boost_exo_3 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_4 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_4 → +100 XP
+- `[toast]` boost_exo_5 → Mauvaise réponse (ko_*)
+- `[insight]` boost_complete → Quelques notions à retravailler. Ton prochain boost sera encore plus ciblé.
+- `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
+- `[hero_cta]` hero_post_boost → [P3] C'est parti sur Fractions
 
 **J4:**
+- `[hero_cta]` hero → [P2] Continue Fractions
+- `[toast]` boost_exo_1 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_1 → +100 XP
+- `[toast]` boost_exo_2 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_3 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_3 → +100 XP
+- `[toast]` boost_exo_4 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_4 → +100 XP
+- `[toast]` boost_exo_5 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_5 → +100 XP
+- `[insight]` boost_complete → Beau travail. 4 exercices dans la boîte aujourd'hui.
+- `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
+- `[hero_cta]` hero_post_boost → [P2] Continue Fractions
+
+**J5:**
 - `[hero_cta]` hero → [P2] Continue Fractions
 - `[toast]` boost_exo_1 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_1 → +100 XP
@@ -94,34 +105,22 @@ Date : 2026-03-25 11:49
 - `[insight]` boost_complete → Parfait ! 5/5 — garde ce rythme 🔥
 - `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
 - `[hero_cta]` hero_post_boost → [P2] Continue Fractions
+- `[toast]` chap_complete → 🏆 Chapitre terminé — bien joué !
 
-**J5:**
-- `[hero_cta]` hero → [P2] Continue Fractions
+**J6:**
+- `[hero_cta]` hero → [P3] C'est parti sur Proportionnalité
 - `[toast]` boost_exo_1 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_1 → +100 XP
 - `[toast]` boost_exo_2 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_2 → +100 XP
-- `[toast]` boost_exo_3 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_3 → +100 XP
-- `[toast]` boost_exo_4 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_5 → Mauvaise réponse (ko_*)
-- `[insight]` boost_complete → Beau travail. 3 exercices dans la boîte aujourd'hui.
-- `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
-- `[hero_cta]` hero_post_boost → [P2] Continue Fractions
-- `[toast]` chap_complete → 🏆 Chapitre terminé — bien joué !
-
-**J6:**
-- `[hero_cta]` hero → [P2] Continue Angles
-- `[toast]` boost_exo_1 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_2 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_3 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_3 → +100 XP
+- `[toast]` boost_exo_3 → Mauvaise réponse (ko_*)
 - `[toast]` boost_exo_4 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_4 → +100 XP
-- `[toast]` boost_exo_5 → Mauvaise réponse (ko_*)
-- `[insight]` boost_complete → Quelques notions à retravailler. Ton prochain boost sera encore plus ciblé.
+- `[toast]` boost_exo_5 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_5 → +100 XP
+- `[insight]` boost_complete → Beau travail. 4 exercices dans la boîte aujourd'hui.
 - `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
-- `[hero_cta]` hero_post_boost → [P2] Continue Angles
+- `[hero_cta]` hero_post_boost → [P3] C'est parti sur Proportionnalité
 
 ### Samir (WK02, 4EME, irregulier)
 
@@ -131,12 +130,13 @@ Irrégulier — J0-J1 actif, J2-J3 absent, J4 retour, J5 actif, J6 absent
 - `[hero_cta]` hero → [P5] Commence par Puissances
 - `[guide]` banner → Commence par là
 - `[toast]` boost_start → ⚡ C'est ton Entraînement du jour — 5 exos, ~10 min. C'est parti !
-- `[toast]` boost_exo_1 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_1 → +100 XP
-- `[toast]` boost_exo_2 → Pas grave — les indices et la correction s'affichent pour t'aider
+- `[toast]` boost_exo_1 → Pas grave — les indices et la correction s'affichent pour t'aider
+- `[toast]` boost_exo_2 → Mauvaise réponse (ko_*)
 - `[toast]` boost_exo_3 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_4 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_5 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_4 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_4 → +100 XP
+- `[toast]` boost_exo_5 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_5 → +100 XP
 - `[insight]` boost_complete → Quelques notions à retravailler. Ton prochain boost sera encore plus ciblé.
 - `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
 - `[milestone]` boost_complete → Premier entraînement terminé — c'est le plus dur 💪
@@ -147,8 +147,7 @@ Irrégulier — J0-J1 actif, J2-J3 absent, J4 retour, J5 actif, J6 absent
 - `[toast]` boost_exo_1 → Mauvaise réponse (ko_*)
 - `[milestone]` boost_exo_1 → 10 exercices — tu prends le rythme 🔥
 - `[toast]` boost_exo_2 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_3 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_3 → +100 XP
+- `[toast]` boost_exo_3 → Mauvaise réponse (ko_*)
 - `[toast]` boost_exo_4 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_4 → +100 XP
 - `[toast]` boost_exo_5 → Mauvaise réponse (ko_*)
@@ -161,28 +160,28 @@ Irrégulier — J0-J1 actif, J2-J3 absent, J4 retour, J5 actif, J6 absent
 
 **J4:**
 - `[hero_cta]` hero → [P2] Continue Puissances
-- `[toast]` boost_exo_1 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_1 → +100 XP
-- `[toast]` boost_exo_2 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_2 → +100 XP
-- `[toast]` boost_exo_3 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_4 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_5 → Mauvaise réponse (ko_*)
-- `[insight]` boost_complete → Quelques notions à retravailler. Ton prochain boost sera encore plus ciblé.
+- `[toast]` boost_exo_1 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_2 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_3 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_3 → +100 XP
+- `[toast]` boost_exo_4 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_4 → +100 XP
+- `[toast]` boost_exo_5 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_5 → +100 XP
+- `[insight]` boost_complete → Beau travail. 3 exercices dans la boîte aujourd'hui.
 - `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
 - `[hero_cta]` hero_post_boost → [P2] Continue Puissances
 
 **J5:**
 - `[hero_cta]` hero → [P2] Continue Puissances
-- `[toast]` boost_exo_1 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_1 → +100 XP
+- `[toast]` boost_exo_1 → Mauvaise réponse (ko_*)
 - `[toast]` boost_exo_2 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_2 → +100 XP
-- `[toast]` boost_exo_3 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_3 → +100 XP
-- `[toast]` boost_exo_4 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_3 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_4 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_4 → +100 XP
 - `[toast]` boost_exo_5 → Mauvaise réponse (ko_*)
-- `[insight]` boost_complete → Beau travail. 3 exercices dans la boîte aujourd'hui.
+- `[insight]` boost_complete → Quelques notions à retravailler. Ton prochain boost sera encore plus ciblé.
 - `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
 - `[hero_cta]` hero_post_boost → [P2] Continue Puissances
 - `[toast]` chap_complete → 🏆 Chapitre terminé — bien joué !
@@ -201,37 +200,39 @@ Sérieuse — trial complet, convertit J+5, admin lui assigne chapitre J+3
 - `[toast]` boost_start → ⚡ C'est ton Entraînement du jour — 5 exos, ~10 min. C'est parti !
 - `[toast]` boost_exo_1 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_1 → +100 XP
-- `[toast]` boost_exo_2 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_2 → +100 XP
-- `[toast]` boost_exo_3 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_3 → +100 XP
-- `[toast]` boost_exo_4 → Pas grave — les indices et la correction s'affichent pour t'aider
+- `[toast]` boost_exo_2 → Pas grave — les indices et la correction s'affichent pour t'aider
+- `[toast]` boost_exo_3 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_4 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_4 → +100 XP
 - `[toast]` boost_exo_5 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_5 → +100 XP
-- `[insight]` boost_complete → Beau travail. 4 exercices dans la boîte aujourd'hui.
+- `[insight]` boost_complete → Beau travail. 3 exercices dans la boîte aujourd'hui.
 - `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
 - `[milestone]` boost_complete → Premier entraînement terminé — c'est le plus dur 💪
 - `[hero_cta]` hero_post_boost → [P3] C'est parti sur Calcul_Littéral
 
 **J1:**
 - `[hero_cta]` hero → [P2] Continue Calcul_Littéral
-- `[toast]` boost_exo_1 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_1 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_1 → +100 XP
 - `[milestone]` boost_exo_1 → 10 exercices — tu prends le rythme 🔥
 - `[toast]` boost_exo_2 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_3 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_4 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_3 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_3 → +100 XP
+- `[toast]` boost_exo_4 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_4 → +100 XP
 - `[toast]` boost_exo_5 → Mauvaise réponse (ko_*)
-- `[insight]` boost_complete → Quelques notions à retravailler. Ton prochain boost sera encore plus ciblé.
+- `[insight]` boost_complete → Beau travail. 3 exercices dans la boîte aujourd'hui.
 - `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
 - `[hero_cta]` hero_post_boost → [P2] Continue Calcul_Littéral
 
 **J2:**
 - `[hero_cta]` hero → [P2] Continue Calcul_Littéral
-- `[toast]` boost_exo_1 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_1 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_1 → +100 XP
 - `[toast]` boost_exo_2 → Mauvaise réponse (ko_*)
 - `[toast]` boost_exo_3 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_4 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_4 → +100 XP
+- `[toast]` boost_exo_4 → Mauvaise réponse (ko_*)
 - `[toast]` boost_exo_5 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_5 → +100 XP
 - `[insight]` boost_complete → Quelques notions à retravailler. Ton prochain boost sera encore plus ciblé.
@@ -244,12 +245,11 @@ Sérieuse — trial complet, convertit J+5, admin lui assigne chapitre J+3
 - `[xp]` boost_exo_1 → +100 XP
 - `[toast]` boost_exo_2 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_2 → +100 XP
-- `[toast]` boost_exo_3 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_3 → +100 XP
+- `[toast]` boost_exo_3 → Mauvaise réponse (ko_*)
 - `[toast]` boost_exo_4 → Mauvaise réponse (ko_*)
 - `[toast]` boost_exo_5 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_5 → +100 XP
-- `[insight]` boost_complete → Beau travail. 4 exercices dans la boîte aujourd'hui.
+- `[insight]` boost_complete → Beau travail. 3 exercices dans la boîte aujourd'hui.
 - `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
 - `[hero_cta]` hero_post_boost → [P2] Continue Calcul_Littéral
 - `[toast]` chap_complete → 🏆 Chapitre terminé — bien joué !
@@ -257,25 +257,28 @@ Sérieuse — trial complet, convertit J+5, admin lui assigne chapitre J+3
 
 **J4:**
 - `[hero_cta]` hero → [P2] Continue Fonctions
-- `[toast]` boost_exo_1 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_1 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_1 → +100 XP
 - `[toast]` boost_exo_2 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_2 → +100 XP
-- `[toast]` boost_exo_3 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_4 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_3 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_3 → +100 XP
+- `[toast]` boost_exo_4 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_4 → +100 XP
 - `[toast]` boost_exo_5 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_5 → +100 XP
-- `[insight]` boost_complete → Quelques notions à retravailler. Ton prochain boost sera encore plus ciblé.
+- `[insight]` boost_complete → Parfait ! 5/5 — garde ce rythme 🔥
 - `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
 - `[hero_cta]` hero_post_boost → [P2] Continue Fonctions
 
 **J5:**
 - `[hero_cta]` hero → [P2] Continue Équations
 - `[toast]` boost_exo_1 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_2 → Mauvaise réponse (ko_*)
+- `[toast]` boost_exo_2 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_2 → +100 XP
 - `[toast]` boost_exo_3 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_3 → +100 XP
-- `[toast]` boost_exo_4 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_4 → +100 XP
+- `[toast]` boost_exo_4 → Mauvaise réponse (ko_*)
 - `[toast]` boost_exo_5 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_5 → +100 XP
 - `[insight]` boost_complete → Beau travail. 3 exercices dans la boîte aujourd'hui.
@@ -284,14 +287,15 @@ Sérieuse — trial complet, convertit J+5, admin lui assigne chapitre J+3
 
 **J6:**
 - `[hero_cta]` hero → [P2] Continue Équations
-- `[toast]` boost_exo_1 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_1 → +100 XP
+- `[toast]` boost_exo_1 → Mauvaise réponse (ko_*)
 - `[toast]` boost_exo_2 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_2 → +100 XP
 - `[toast]` boost_exo_3 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_4 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_5 → Mauvaise réponse (ko_*)
-- `[insight]` boost_complete → Quelques notions à retravailler. Ton prochain boost sera encore plus ciblé.
+- `[toast]` boost_exo_4 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_4 → +100 XP
+- `[toast]` boost_exo_5 → Bonne réponse (ok_*)
+- `[xp]` boost_exo_5 → +100 XP
+- `[insight]` boost_complete → Beau travail. 3 exercices dans la boîte aujourd'hui.
 - `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
 - `[hero_cta]` hero_post_boost → [P2] Continue Équations
 - `[toast]` chap_complete → 🏆 Chapitre terminé — bien joué !
@@ -306,14 +310,12 @@ Fait le diag + J0, puis abandonne — jamais de boost après J+1
 - `[toast]` boost_start → ⚡ C'est ton Entraînement du jour — 5 exos, ~10 min. C'est parti !
 - `[toast]` boost_exo_1 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_1 → +100 XP
-- `[toast]` boost_exo_2 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_2 → +100 XP
-- `[toast]` boost_exo_3 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_3 → +100 XP
+- `[toast]` boost_exo_2 → Pas grave — les indices et la correction s'affichent pour t'aider
+- `[toast]` boost_exo_3 → Mauvaise réponse (ko_*)
 - `[toast]` boost_exo_4 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_4 → +100 XP
-- `[toast]` boost_exo_5 → Pas grave — les indices et la correction s'affichent pour t'aider
-- `[insight]` boost_complete → Beau travail. 4 exercices dans la boîte aujourd'hui.
+- `[toast]` boost_exo_5 → Mauvaise réponse (ko_*)
+- `[insight]` boost_complete → Quelques notions à retravailler. Ton prochain boost sera encore plus ciblé.
 - `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
 - `[milestone]` boost_complete → Premier entraînement terminé — c'est le plus dur 💪
 - `[hero_cta]` hero_post_boost → [P3] C'est parti sur Fractions
@@ -324,13 +326,11 @@ Fait le diag + J0, puis abandonne — jamais de boost après J+1
 - `[xp]` boost_exo_1 → +100 XP
 - `[milestone]` boost_exo_1 → 10 exercices — tu prends le rythme 🔥
 - `[toast]` boost_exo_2 → Mauvaise réponse (ko_*)
-- `[toast]` boost_exo_3 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_3 → +100 XP
+- `[toast]` boost_exo_3 → Mauvaise réponse (ko_*)
 - `[toast]` boost_exo_4 → Bonne réponse (ok_*)
 - `[xp]` boost_exo_4 → +100 XP
-- `[toast]` boost_exo_5 → Bonne réponse (ok_*)
-- `[xp]` boost_exo_5 → +100 XP
-- `[insight]` boost_complete → Beau travail. 4 exercices dans la boîte aujourd'hui.
+- `[toast]` boost_exo_5 → Mauvaise réponse (ko_*)
+- `[insight]` boost_complete → Quelques notions à retravailler. Ton prochain boost sera encore plus ciblé.
 - `[insight]` boost_complete → ✨ Prochain entraînement demain — ton boost sera encore plus ciblé !
 - `[hero_cta]` hero_post_boost → [P2] Continue Fractions
 

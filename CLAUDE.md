@@ -126,7 +126,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | M4 | **Coach tip vs toast ko** | `if/else` exclusif dans `validateAnswer`. Coach tip AVANT le panel aide |
 | M5 | **Milestones/Coach namespacés** | `mx_ms_{code}` / `mx_co_{code}` dans localStorage. Pas de pollution cross-user |
 | M6 | **Streak dedup** | Toast login skip si `_stkMileDup` (milestone streak_3/7 va fire) |
-| M7 | **"demain"** | Autorisé dans `boost_preparing` et les bandeaux post-complétion (hero vert, archive boost, archive chapitre). Interdit dans les toasts et coach tips |
+| M7 | **"demain"** | Autorisé dans `boost_preparing` et les bandeaux post-complétion boost (hero vert, archive boost). Interdit dans les messages chapitre post-complétion, toasts et coach tips |
 | M8 | **pendingManual cleanup** | Effacé dans les 3 branches de `nextChapter` (PENDING_MANUAL / JSON / string) |
 
 ### 3.4 Gamification
@@ -143,7 +143,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | G8 | **Daily goal** | Mission du jour = 5 exos (tous types). Overlay +50 XP au 5ème exo. Absorbé dans le slot overlay si simultané. Absorbé silencieusement si `chkComp` fire. Compteur `🎯 n/5` dans le header. Reset quotidien via `mx_daily_{code}` localStorage |
 | G9 | **Sessions retro avec %** | Chapitres et boosts terminés : pills par **date** (pas "Passage N"). Score % coloré sur chaque pill (vert ≥70%, ambre ≥40%, rose <40%) + flèche `↑/↓/→` vs session précédente. Pas de ligne "Terminé le...". Carte fermée : dernier score % + `×N passages` + flèche tendance. Exercices retro affichés en read-only (même template visuel que les exercices actifs) avec **barre de numéros cliquable** (dots colorés : vert=EASY, ambre=MEDIUM, rouge=HARD, gris=non répondu) pour navigation directe. Système de pills unifié pour chapitres et boosts |
 | G10 | **Comparaison live** | Chapitre en cours (ouvert, `done > 0`, pas terminé) : bandeau gris `Session en cours — xx% (n/done) ↑ vs yy%`. Affiché uniquement si ≥1 passage complet existe. Compare le % instantané (EASY/done) vs le % du dernier passage complet |
-| G11 | **Message anticipation** | Post-complétion boost : "Tes prochains exos sur mesure arrivent demain matin 🔥". Post-complétion chapitre : "Tes prochains exos sur mesure arrivent demain matin 🎯". Crée l'anticipation du retour J+1 |
+| G11 | **Message anticipation** | Post-complétion boost : "Tes prochains exos sur mesure arrivent demain matin 🔥" (rendez-vous quotidien). Post-complétion chapitre : "Ton prof prépare la suite sur mesure 🎯" (visible dès que prêt, pas de promesse de date) |
 | G12 | **Timer exercice** | 60s par exercice, cercle SVG animé. Doux (bleu→ambre après 60s), aucune pénalité. Désactivable via clic toggle (persisté `mx_timer_{code}`). Pas affiché sur CALIBRAGE. Coach tip `tip_timer` au premier usage |
 | G13 | **Mode Flow** | 5 exos EASY consécutifs répondus en ≤60s → XP ×2 pendant 5 exos. Overlay activation. Badge ⚡×2 dans gamif-row. Multiplie uniquement les XP exercices (pas slot/daily/chapitre). Reset streak si HARD/SKIP/overtime (sauf si flow déjà actif) |
 

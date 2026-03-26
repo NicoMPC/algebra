@@ -2650,7 +2650,7 @@ function hideT() {
 // ═══════════════════════════════════════════════════════════════
 // MESSAGES — DICTIONNAIRE & INVARIANTS (ne pas modifier sans relire)
 // ─────────────────────────────────────────────────────────────
-// 1. "demain" : autorisé dans boost_preparing + bandeaux post-complétion (hero vert, archive boost/chapitre). Interdit dans toasts/coach tips
+// 1. "demain" : autorisé dans boost_preparing + bandeaux post-complétion boost (hero vert, archive boost). Interdit dans messages chapitre post-complétion, toasts/coach tips
 //    Partout ailleurs → "bientôt" ou "continue tes chapitres"
 // 2. Coach tip (tip_wrong) : affiché AVANT le panel aide (immédiat)
 //    Jamais en même temps que le toast ko_* (if/else exclusif)
@@ -4712,7 +4712,7 @@ function initApp(d, skipRender) {
   if (d.nextChapter) {
     if (typeof d.nextChapter === 'object' && d.nextChapter.categorie === 'PENDING_MANUAL') {
       // Prof prépare le contenu — afficher message doux, pas de crash
-      S.pendingManual = d.nextChapter.insight || '⏳ Ton prof prépare quelque chose pour toi. Reviens demain matin 🔥';
+      S.pendingManual = d.nextChapter.insight || '⏳ Ton prof prépare quelque chose pour toi 🔥';
     } else if (typeof d.nextChapter === 'object' && d.nextChapter.categorie && d.nextChapter.exos && d.nextChapter.exos.length > 0) {
       // JSON complet valide : remplace le contenu du chapitre
       S.pendingManual = null; // Chapitre réel reçu → effacer le bandeau "en préparation"
@@ -7378,7 +7378,7 @@ function renderArchiveSection(cat, exs) {
       // Fallback : vue plate (session courante)
       html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 text-center mb-3">';
       html += '<div class="text-xs font-black text-emerald-700 mb-0.5">Chapitre terminé ✅</div>';
-      html += '<div class="text-[10px] font-medium text-emerald-600">Tes prochains exos sur mesure arrivent demain matin 🎯</div>';
+      html += '<div class="text-[10px] font-medium text-emerald-600">Ton prof prépare la suite sur mesure 🎯</div>';
       html += '</div>';
       var shown = 0;
       exs.forEach(function(exo, idx) {
@@ -8428,7 +8428,7 @@ function render() {
       html += '<div data-cat="'+cat+'" onclick="togCat(\''+cat+'\')" class="rounded-2xl border border-emerald-200 flex items-center gap-3 py-3 px-4 cursor-pointer select-none" style="background:#f0fdf4;position:relative;z-index:2">';
       html += '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-base flex-shrink-0">'+(isBoost?'⚡':(LVL[S.niv].icons[cat]||'📘'))+'</div>';
       html += '<div class="flex-1 min-w-0"><div class="syne font-black text-sm text-slate-800 truncate" style="font-weight:800">'+(isBoost?'Mon entraînement ✓':(LVL[S.niv].names[cat]||cat))+'</div>';
-      html += '<div class="text-[9px] font-medium text-emerald-600">'+(isBoost?'Tes prochains exos arrivent demain matin 🔥':'Tes prochains exos arrivent demain 🎯')+'</div>';
+      html += '<div class="text-[9px] font-medium text-emerald-600">'+(isBoost?'Tes prochains exos arrivent demain matin 🔥':'Ton prof prépare la suite sur mesure 🎯')+'</div>';
       html += '</div>';
       html += '<div class="flex items-center gap-1.5 flex-shrink-0">';
       if (!isBoost) html += _trendArrow(cat);
