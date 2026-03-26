@@ -4828,7 +4828,7 @@ function initApp(d, skipRender) {
     d.history.forEach(function(r){
       // Scores d'un chapitre overridé ou injecté → retro seulement, pas dans S.res/S.xp/S.sent
       var _ovDate = S.exOverrides[r.categorie];
-      var _isOldPassage = injectedCats.has(r.categorie) || (_ovDate && String(r.date || '') < _ovDate);
+      var _isOldPassage = injectedCats.has(r.categorie) || (_ovDate && String(r.date || '') <= _ovDate);
       if (!_isOldPassage) {
         var key = r.niveau + '-' + r.categorie + '-' + (parseInt(r.exercice_idx)-1);
         S.res[key] = r.resultat;
@@ -8638,7 +8638,7 @@ function render() {
     // ── Passages précédents — bouton ouvre une modale ──
     if (isOpen && !isBoost && S.exOverrides && S.exOverrides[cat] && S.chapSessions && S.chapSessions[cat] && S.chapSessions[cat].length > 0) {
       var _ovDate2 = S.exOverrides[cat];
-      var _prevSess2 = S.chapSessions[cat].filter(function(s) { return (s.endDate || s.date) < _ovDate2; });
+      var _prevSess2 = S.chapSessions[cat].filter(function(s) { return (s.endDate || s.date) <= _ovDate2; });
       if (_prevSess2.length > 0) {
         var _prevAllExos2 = [];
         _prevSess2.forEach(function(s) { _prevAllExos2 = _prevAllExos2.concat(s.exos); });
