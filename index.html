@@ -2866,7 +2866,7 @@ function sendScore(cat, idx, status, xp, q, wrongOpt, sourceCat) {
   // REVISION : exercices temporaires de révision — pas de tracking serveur
   if (cat === 'REVISION') return;
   var k = S.prof.code + '-' + cat + '-' + idx;
-  if (S.sent.has(k) && !S.adminMode) return;
+  if (S.sent.has(k)) return;
   S.sent.add(k);
 
   var id       = S.niv + '-' + cat + '-' + idx;
