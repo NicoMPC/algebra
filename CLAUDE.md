@@ -2,7 +2,7 @@
 
 > Document unique. Point d'entrée + règles métier + contraintes techniques.
 > Tout ce qui n'est pas ici est dans docs/ ou dans le code.
-> GAS @112 · Lancé le 18 mars 2026
+> GAS @117 · Lancé le 18 mars 2026
 
 ---
 
@@ -247,6 +247,9 @@ Quand Nicolas veut ajouter un élève déjà connu (visio en cours) **sans lui f
 | AUG001 | Auguste | 1ERE | augustecapronm@icloud.com | auguste |
 | PR3CMB | Nicolas | 4EME | nico@nico.fr | niconcico |
 | 3M4ZAB | Charlie | 3EME | charlieboitel6@gmail.com | charlie |
+| 6OCZ3G | Léo | 4EME | leoiozzia2012@gmail.com | — |
+| DUFE96 | Stev | 3EME | prosbonnet@gmail.com | — |
+| WXHBJH | Jérôme | 3EME | savoye.jer@gmail.com | — |
 | HMD493 | Admin | — | (admin) | — |
 
 ---
@@ -332,6 +335,7 @@ Quand un problème est signalé, **TOUJOURS lire le playbook du domaine concern�
 | `deploy.sh` | Push + deploy GAS en une commande |
 | `stress_test.py` | Setup + injection scores simulés pour stress-test Monsieur Exos (3 élèves fictifs) |
 | `stress_test_run.py` | Boucle 10 jours complète : injection → prescription → validation → audit. 238/240 OK |
+| `check_students.py` | Health check données élèves — 5 checks (doublons, compteurs, overrides, boosts, champs). Lancé en fin de session |
 
 ---
 
