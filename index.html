@@ -464,10 +464,6 @@
     .draft-exo-bar .exo-q {
       font-size:.78rem;font-weight:600;color:#1e293b;
       line-height:1.5;
-      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-    }
-    .draft-exo-bar.expanded .exo-q {
-      -webkit-line-clamp:unset;
     }
     .draft-exo-bar .exo-q-label {
       font-size:.65rem;font-weight:800;color:#6366f1;
@@ -9231,10 +9227,9 @@ function _updateDraftExoBar() {
   }
   var exo = LVL[S.niv].cats[cat][idx];
   var label = cat === 'BOOST' ? 'Entraînement du jour' : cat.replace(/_/g, ' ');
-  bar.classList.remove('hidden', 'expanded');
+  bar.classList.remove('hidden');
   bar.innerHTML = '<div class="exo-q-label">📐 ' + label + ' — exo ' + (idx + 1) + '</div>' +
     '<div class="exo-q mc">' + fmtL(exo.q) + '</div>';
-  bar.onclick = function() { bar.classList.toggle('expanded'); };
   // Re-render KaTeX dans la barre
   if (typeof renderMathInElement === 'function') {
     try { renderMathInElement(bar, {delimiters:[{left:'$',right:'$',display:false}],throwOnError:false}); } catch(e){}
