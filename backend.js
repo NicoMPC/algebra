@@ -730,6 +730,19 @@ function _saveScoreInner(p) {
     return { status: 'error', message: 'Niveau invalide.' };
   }
 
+  // ── Dedup : rejeter si (code, categorie, exercice_idx, date) existe déjà ──
+  var dedupDate = p.answeredAt && /^\d{4}-\d{2}-\d{2}$/.test(p.answeredAt) ? p.answeredAt : today();
+  var scSh = getSheet(SH.SCORES);
+  var scData = scSh.getDataRange().getValues();
+  for (var di = 1; di < scData.length; di++) {
+    if (String(scData[di][0]) === String(p.code) &&
+        String(scData[di][3]) === String(p.categorie) &&
+        String(scData[di][4]) === String(p.exercice_idx) &&
+        String(scData[di][12]) === dedupDate) {
+      return { status: 'success', message: 'Score déjà enregistré (dedup).' };
+    }
+  }
+
   // Scores : Code | Prénom | Niveau | Chapitre | NumExo | Énoncé |
   //          Résultat | Temps(sec) | NbIndices | FormuleVue | MauvaiseOption | Draft | Date | Source
   appendRow(SH.SCORES, [
@@ -771,7 +784,7 @@ function _saveScoreInner(p) {
 
   // ── MAJ ExosDone dans DailyBoosts si source=BOOST ────────
   // Incrémente ExosDone de 1 à chaque exercice boost sauvegardé.
-  // Le frontend déduplique via S.sent → chaque exo passe exactement 1 fois.
+  // Double protection : frontend S.sent + backend dedup (code+cat+idx+date).
   if (source === 'BOOST') {
     try {
       var bCode = String(p.code);
