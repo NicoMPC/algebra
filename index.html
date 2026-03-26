@@ -2301,7 +2301,7 @@
               class="flex-1 py-2 rounded-xl text-xs font-black syne transition-colors bg-indigo-600 text-white">
         📚 Chapitres
       </button>
-      <button id="nav-prog" onclick="setView('progress')"
+      <button id="nav-prog" onclick="setView('progress')" style="display:none"
               class="flex-1 py-2 rounded-xl text-xs font-black syne transition-colors bg-slate-100 text-slate-500">
         📊 Progression
       </button>
@@ -5331,6 +5331,21 @@ function _showSlotReward(cat, slotNum, dailyJustDone) {
       '<div class="slot-stars">' + starsHtml + '</div>' +
       '<div class="syne" style="font-size:1.1rem;font-weight:900;color:#0F172A;margin-bottom:.25rem">' + done + '/' + total + '</div>' +
       '<div style="font-size:.85rem;font-weight:600;color:#475569;line-height:1.5">' + msg + '</div>' +
+      (function() {
+        var _ss = S.chapSessions && S.chapSessions[cat];
+        if (!_ss || !_ss.length) return '';
+        var _lastS = _ss[0];
+        var _lastE = _lastS.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+        var _lastP = _lastS.exos.length > 0 ? Math.round(_lastE / _lastS.exos.length * 100) : 0;
+        var _nowE = 0;
+        var _exs = LVL[S.niv] && LVL[S.niv].cats[cat] || [];
+        for (var i = 0; i < _exs.length; i++) { var r = res2(cat, i); if (S.res[S.niv+'-'+r.rC+'-'+r.rI] === 'EASY') _nowE++; }
+        var _nowP = done > 0 ? Math.round(_nowE / done * 100) : 0;
+        var _d = _nowP - _lastP;
+        var _arrow = _d > 0 ? '📈' : _d < 0 ? '📉' : '➡️';
+        var _col = _d > 0 ? '#059669' : _d < 0 ? '#e11d48' : '#64748b';
+        return '<div style="margin-top:.5rem;font-size:.78rem;font-weight:700;color:'+_col+'">'+_arrow+' '+_nowP+'% vs '+_lastP+'% précédent</div>';
+      })() +
       coursHtml +
       '<div class="slot-dots">' + dotsHtml + '</div>' +
       '<div style="font-size:.75rem;font-weight:700;color:#1E40AF">+75 XP</div>' +
@@ -8477,8 +8492,52 @@ function render() {
     if (S.exOverrides && S.exOverrides[cat]) html += '<span class="text-[9px] syne font-black bg-slate-100 text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-md">Série 2</span>';
     if (S.remReq[cat]) html += '<span class="text-[9px] syne font-black bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md">🔄 Demain</span>';
     if (S.revisionCats && S.revisionCats.indexOf(cat) !== -1) html += '<span class="text-[9px] syne font-black bg-violet-100 text-violet-700 border border-violet-200 px-1.5 py-0.5 rounded-md">🔁 Révision</span>';
-    // Slot dots (⭐/○) pour chapitres 20 exos, sinon barre classique
-    if (!isBoost && tot >= 20) {
+    // ── Progression : pills historique si passages terminés, sinon slots/barre ──
+    var _cardSessions = !isBoost && comp && S.chapSessions && S.chapSessions[cat];
+    if (_cardSessions && _cardSessions.length > 0) {
+      // Chapitre terminé avec historique → afficher derniers passages (max 3)
+      html += '</div><div class="flex items-center gap-1.5 flex-wrap" style="margin-top:2px">';
+      var _maxPills = Math.min(_cardSessions.length, 3);
+      for (var _pi = 0; _pi < _maxPills; _pi++) {
+        var _ps = _cardSessions[_pi];
+        var _psEasy = _ps.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+        var _psPct = _ps.exos.length > 0 ? Math.round(_psEasy / _ps.exos.length * 100) : 0;
+        var _psColor = _psPct >= 70 ? 'text-emerald-600' : _psPct >= 40 ? 'text-amber-600' : 'text-rose-500';
+        var _psArrow = '';
+        if (_pi < _cardSessions.length - 1) {
+          var _psPrev = _cardSessions[_pi + 1];
+          var _psPrevEasy = _psPrev.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+          var _psPrevPct = _psPrev.exos.length > 0 ? Math.round(_psPrevEasy / _psPrev.exos.length * 100) : 0;
+          _psArrow = _psPct > _psPrevPct + 5 ? ' <span class="trend-arrow-up">↑</span>' : _psPct < _psPrevPct - 5 ? ' <span class="trend-arrow-down">↓</span>' : ' <span class="trend-arrow-flat">→</span>';
+        }
+        html += '<span class="text-[9px] font-bold ' + _psColor + '">' + _fmtRetroDate(_ps.date || _ps.endDate) + ' · ' + _psPct + '%' + _psArrow + '</span>';
+        if (_pi < _maxPills - 1) html += '<span class="text-[8px] text-slate-300">·</span>';
+      }
+      html += '</div></div>';
+    } else if (!isBoost && done > 0 && !comp && S.chapSessions && S.chapSessions[cat] && S.chapSessions[cat].length > 0) {
+      // En cours + historique → slots/barre + comparaison inline
+      var _prevSess = S.chapSessions[cat][0];
+      var _prevEasy = _prevSess.exos.filter(function(e) { return e.resultat === 'EASY'; }).length;
+      var _prevPct = _prevSess.exos.length > 0 ? Math.round(_prevEasy / _prevSess.exos.length * 100) : 0;
+      var _curEasy = 0;
+      for (var _ci = 0; _ci < tot; _ci++) { var _cr = res2(cat, _ci); if (S.res[S.niv + '-' + _cr.rC + '-' + _cr.rI] === 'EASY') _curEasy++; }
+      var _curPct = done > 0 ? Math.round(_curEasy / done * 100) : 0;
+      var _cmpDiff = _curPct - _prevPct;
+      var _cmpArrow = _cmpDiff > 0 ? '<span class="trend-arrow-up">↑</span>' : _cmpDiff < 0 ? '<span class="trend-arrow-down">↓</span>' : '<span class="trend-arrow-flat">→</span>';
+      var _cmpColor = _cmpDiff > 0 ? 'text-emerald-600' : _cmpDiff < 0 ? 'text-rose-500' : 'text-slate-400';
+      if (tot >= 20) {
+        var _slotDotsHtml = '';
+        for (var _sl = 0; _sl < 4; _sl++) _slotDotsHtml += '<span style="font-size:.7rem">' + (done >= (_sl + 1) * 5 ? '⭐' : '○') + '</span>';
+        html += '</div><div class="flex items-center gap-1.5">' + _slotDotsHtml;
+        html += '<span class="text-[11px] font-bold text-slate-400 ml-1">'+done+'/'+tot+'</span>';
+      } else {
+        html += '</div><div class="flex items-center gap-2"><div class="pbar flex-1" style="max-width:100px"><div class="pfill pfp" style="width:'+pct2+'%"></div></div>';
+        html += '<span class="text-[11px] font-bold text-slate-400">'+done+'/'+tot+'</span>';
+      }
+      html += '<span class="text-[9px] font-bold ' + _cmpColor + ' ml-1">' + _curPct + '% ' + _cmpArrow + ' vs ' + _prevPct + '%</span>';
+      html += '</div></div>';
+    } else if (!isBoost && tot >= 20) {
+      // Slot dots classique (pas d'historique)
       var _slotDotsHtml = '';
       for (var _sl = 0; _sl < 4; _sl++) {
         _slotDotsHtml += '<span style="font-size:.7rem">' + (done >= (_sl + 1) * 5 ? '⭐' : '○') + '</span>';
