@@ -32,12 +32,13 @@ Tu es le **dev senior** du projet Matheux. Nicolas décide, tu exécutes.
 |---|---|---|---|
 | **Monsieur Exos** | `.claude/agents/prescribe.md` | Analyse des résultats élèves, génération d'exercices personnalisés, injection en brouillon | Chaque matin : "prépare les exos" |
 | **UX Engineer** | `.claude/agents/ux-audit.md` | Audit cohérence états/affichage, vérification invariants, détection edge cases | Après chaque session de code, ou sur demande |
-| **Luna** | `.claude/agents/growth.md` | Acquisition, contenu, stratégie growth, calendrier d'actions | Quand Nicolas parle d'acquisition, marketing, landing page, réseaux sociaux |
+| **Luna** | `.claude/agents/growth.md` | Acquisition, contenu, stratégie growth, calendrier d'actions, **avis produit/UX** quand impact rétention | Quand Nicolas parle d'acquisition, marketing, landing page, réseaux sociaux, ou **choix produit impactant l'engagement/rétention** |
 
 **Règles de délégation :**
 - Quand Nicolas parle d'exercices (créer, corriger, prescrire) → lancer **Monsieur Exos** (`/agent prescribe`)
 - Quand Nicolas demande un audit, une vérification, ou après des modifs front → lancer **UX Engineer** (`/agent ux-audit`)
 - Quand Nicolas parle d'acquisition, marketing, contenu, landing page → lancer **Luna** (`/agent growth`)
+- Quand un choix technique impacte la rétention/engagement (ex: timing de visibilité, comportement post-complétion) → demander l'avis de **Luna** avant de trancher
 - Le CTO (toi) coordonne et code. Les agents diagnostiquent et proposent, Nicolas valide.
 
 ---
@@ -97,6 +98,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | P4 | **Tous les chapitres accessibles** | Pas de verrou, pas de limite 1/jour |
 | P5 | **Nicolas assigne manuellement** | Prochain chapitre et prochain boost via admin |
 | P6 | **Indices progressifs** | 1-3 étapes + formule clé révélée après erreur |
+| P11 | **Skip = différé, pas abandonné** | "⏭️ Passer" reporte la question en fin de chapitre (pas de correction, pas de score). "🤷 Je ne sais pas" = définitif (montre correction, marque SKIP, auto-avance 2.5s). `S.deferred[cat]` tracke les différés. `nextEx()` ignore les différés puis les reprend quand tout le reste est fait. `chkComp` ne fire pas tant qu'il reste des différés |
 | P7 | **3 types d'exercices** | QCM (défaut), Vrai/Faux (`vf`), Trou à compléter (`fill`). Fill : rendu `___` en 2 temps — `\text{___}` dans LaTeX → `\boxed{\phantom{xx}}` avant KaTeX, puis `___` texte brut → span HTML stylé après KaTeX. Comparaison réponse via `_normFill()` : normalise `\frac{a}{b}` → `a/b`, `\times` → `×`, supprime `$`, espaces, `\text{}`. Pas de bouton "Révéler la réponse" sur les fill (guard `exoType !== 'fill'`) |
 | P8 | **Scoring tri-niveau** | EASY = correct 1er essai (succès, compte pour le %). MEDIUM = correct après indices ("hésitation", ne compte PAS). HARD = mauvaise réponse (ne compte PAS). Score % = EASY / total exercices × 100. S'applique partout : scores chapitres, sessions retro, pills, flèches tendance, comparaison live |
 | P9 | **Boost rattrapage** | Si aucun boost aujourd'hui, servir le dernier boost non terminé (ExosDone < 5). Le save_score incrémente la bonne ligne. Un boost n'est jamais perdu silencieusement |
