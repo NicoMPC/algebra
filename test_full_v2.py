@@ -573,6 +573,110 @@ def scenario_full_week():
     print(f"  → S9 terminé\n")
 
 
+# ── S10 : Override same-day (V2 injecté le même jour que V1) ────
+def scenario_override_sameday():
+    """
+    Scénario critique : un élève fait un chapitre V1, le prof génère V2 le même jour.
+    Vérifie que V2 est bien frais au login (V1 scores filtrés).
+    Bug historique 2026-03-26 : < au lieu de <= filtrait mal les scores same-day.
+    """
+    print("\n📌 S10 — Override same-day (V2 frais après injection J+0)")
+
+    admin = admin_login()
+    if not admin:
+        log("Admin login impossible — skip", "WARN")
+        return
+    admin_code = admin["code"]
+
+    # 1. Créer élève
+    stu = Student("Enzo", "4EME")
+    if not stu.register():
+        log("Register Enzo failed", "FAIL"); return
+    log(f"Enzo inscrit ({stu.code})", "STEP")
+
+    # 2. Injecter un score CALIBRAGE pour bypass diagnostic
+    gas({
+        "action": "save_score",
+        "code": stu.code, "name": "Enzo", "level": "4EME",
+        "categorie": "Calcul_Litteral", "exercice_idx": 1,
+        "q": "calibrage", "resultat": "EASY",
+        "temps": 30, "nbIndices": 0, "formule": False,
+        "source": "CALIBRAGE"
+    })
+
+    # 3. Faire 20 exos d'un chapitre (V1)
+    test_cat = "Statistiques"
+    done = stu.do_chapter(test_cat, 20)
+    check(done == 20, f"V1 : {done}/20 exos faits")
+
+    # 4. Login → vérifier que le chapitre est terminé
+    r1 = stu.login()
+    check(r1 is not None, "Login post-V1 OK")
+    v1_scores = [h for h in r1.get("history", []) if h.get("categorie") == test_cat]
+    check(len(v1_scores) == 20, f"V1 : {len(v1_scores)}/20 scores dans history")
+
+    # 5. Nicolas publie un V2 (override) le MÊME JOUR
+    v2_exos = []
+    for i in range(20):
+        v2_exos.append({
+            "q": f"V2 exo {i+1} — Statistiques avancé",
+            "a": "42", "options": ["42", "24", "12"],
+            "steps": ["Étape 1"], "f": "Formule", "lvl": 1
+        })
+
+    pub = nicolas_publish_chapter(admin_code, stu.code, {
+        "categorie": test_cat,
+        "exos": v2_exos,
+        "insight": "V2 test override same-day"
+    })
+    check(pub, "V2 publié same-day")
+
+    # 6. Login → V2 doit être FRAIS (V1 scores filtrés)
+    time.sleep(2)
+    r2 = stu.login()
+    check(r2 is not None, "Login post-V2 OK")
+
+    # Vérifier exerciseOverrides
+    ov = r2.get("exerciseOverrides", {})
+    check(test_cat in ov, f"exerciseOverrides contient {test_cat}")
+    ov_date = ov.get(test_cat, "")
+    log(f"Override date: {ov_date}", "INFO")
+
+    # V1 scores dans history doivent avoir date <= override date
+    v1_in_hist = [h for h in r2.get("history", []) if h.get("categorie") == test_cat]
+    v1_dates = set(h.get("date", "") for h in v1_in_hist)
+    log(f"V1 scores dates: {v1_dates}, override date: {ov_date}", "INFO")
+
+    # Le frontend doit filtrer : tout score avec date <= ov_date → retro only
+    all_old = all(str(h.get("date", "")) <= str(ov_date) for h in v1_in_hist)
+    check(all_old, f"Tous les V1 scores ({len(v1_in_hist)}) ont date <= override → frontend les filtre")
+
+    # Les exercices V2 doivent être dans le curriculum
+    cats = r2.get("categories", [])
+    v2_cat = [c for c in cats if c.get("categorie") == test_cat]
+    if v2_cat:
+        v2_exos_count = len(v2_cat[0].get("exos", []))
+        check(v2_exos_count == 20, f"V2 : {v2_exos_count}/20 exos dans categories")
+        first_q = v2_cat[0]["exos"][0].get("q", "")
+        check("V2" in first_q, f"Premier exo est bien V2 : '{first_q[:50]}'")
+    else:
+        check(False, f"{test_cat} absent des categories après override")
+
+    # 7. Cleanup
+    from sheets import Sheets
+    s = Sheets()
+    for tab in ['Users', 'Scores', 'DailyBoosts', 'RemediationChapters']:
+        raw = s.read_raw(tab)
+        clean = [raw[0]] + [r for r in raw[1:] if len(r) == 0 or r[0] != stu.code]
+        s.write_rows(tab, clean)
+    raw_sv = s.read_raw('👁 Suivi')
+    h_sv = raw_sv[0]
+    ci = h_sv.index('Code') if 'Code' in h_sv else -1
+    clean_sv = [h_sv] + [r for r in raw_sv[1:] if ci < 0 or len(r) <= ci or r[ci] != stu.code]
+    s.write_rows('👁 Suivi', clean_sv)
+    log("Cleanup Enzo OK", "OK")
+
+
 # ─────────────────────────────────────────────────────────────
 # MAIN
 # ─────────────────────────────────────────────────────────────
@@ -601,6 +705,7 @@ def main():
         "diag":     scenario_diagnostic,
         "feedback": scenario_feedback,
         "week":     scenario_full_week,
+        "override_sameday": scenario_override_sameday,
     }
 
     if args.scenario == "all":
@@ -635,3 +740,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

@@ -31,12 +31,13 @@ Tu es le **dev senior** du projet Matheux. Nicolas décide, tu exécutes.
 | Agent | Fichier | Rôle | Quand l'utiliser |
 |---|---|---|---|
 | **Monsieur Exos** | `.claude/agents/prescribe.md` | Analyse des résultats élèves, génération d'exercices personnalisés, injection en brouillon | Chaque matin : "prépare les exos" |
-| **UX Engineer** | `.claude/agents/ux-audit.md` | Audit cohérence états/affichage, vérification invariants, détection edge cases | Après chaque session de code, ou sur demande |
+| **UX Engineer** | `.claude/agents/ux-audit.md` | Audit cohérence états/affichage, vérification invariants, détection edge cases, **audit données élèves réels** | Après chaque session de code, après injection manuelle pour un élève, ou sur demande |
 | **Luna** | `.claude/agents/growth.md` | Acquisition, contenu, stratégie growth, calendrier d'actions, **avis produit/UX** quand impact rétention | Quand Nicolas parle d'acquisition, marketing, landing page, réseaux sociaux, ou **choix produit impactant l'engagement/rétention** |
 
 **Règles de délégation :**
 - Quand Nicolas parle d'exercices (créer, corriger, prescrire) → lancer **Monsieur Exos** (`/agent prescribe`)
 - Quand Nicolas demande un audit, une vérification, ou après des modifs front → lancer **UX Engineer** (`/agent ux-audit`)
+- **Après chaque injection manuelle** (chapitre V2, boost) pour un vrai élève → lancer **UX Engineer** avec les données de cet élève pour vérifier cohérence
 - Quand Nicolas parle d'acquisition, marketing, contenu, landing page → lancer **Luna** (`/agent growth`)
 - Quand un choix technique impacte la rétention/engagement (ex: timing de visibilité, comportement post-complétion) → demander l'avis de **Luna** avant de trancher
 - Le CTO (toi) coordonne et code. Les agents diagnostiquent et proposent, Nicolas valide.
@@ -181,7 +182,7 @@ git add index.html && git commit -m "feat: ..." && git push origin main
 
 ### Tests
 ```bash
-python3 test_full_v2.py          # Suite complète — 74/74 (100%)
+python3 test_full_v2.py          # Suite complète — 74/74 (100%) + S10 override same-day
 python3 test_simulation_40.py   # Simulation 40 élèves × 15 jours — 17/17
 python3 sim_21days.py           # Simulation 21j — 12 profils
 python3 sim_7days_messages.py   # Simulation messages — 0 incohérence
