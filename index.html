@@ -1573,18 +1573,18 @@
       </div>
       <div class="hero-badge" style="animation:s1 .5s .05s ease both">
         <span class="dot-live"></span>
-        Maths adaptatif · 6e à 3e
+        <span id="hero-badge-txt">Maths adaptatif · 6e à 3e</span>
       </div>
-      <h1 class="font-black text-stone-900 leading-[1.12] mb-5 max-w-md mx-auto" style="font-size:clamp(1.8rem,5.5vw,2.6rem);animation:s1 .6s .02s ease both;letter-spacing:-.02em">
+      <h1 id="hero-h1" class="font-black text-stone-900 leading-[1.12] mb-5 max-w-md mx-auto" style="font-size:clamp(1.8rem,5.5vw,2.6rem);animation:s1 .6s .02s ease both;letter-spacing:-.02em">
         En 5 minutes, vous saurez exactement <span style="color:#EA580C">où votre enfant bloque en maths.</span>
       </h1>
-      <p class="text-stone-600 text-base sm:text-lg font-semibold mb-4 max-w-md mx-auto" style="line-height:1.7;animation:s1 .6s .1s ease both">
+      <p id="hero-sub" class="text-stone-600 text-base sm:text-lg font-semibold mb-4 max-w-md mx-auto" style="line-height:1.7;animation:s1 .6s .1s ease both">
         On trouve où ça coince, il s'entraîne uniquement là-dessus. Et tout s'aligne enfin.
       </p>
-      <p class="text-stone-400 text-xs font-semibold mb-8" style="animation:s1 .6s .22s ease both;letter-spacing:.05em">10 MINUTES PAR JOUR</p>
+      <p id="hero-mention" class="text-stone-400 text-xs font-semibold mb-8" style="animation:s1 .6s .22s ease both;letter-spacing:.05em">10 MINUTES PAR JOUR</p>
       <button onclick="startTrialFlow('hero')"
               class="btn btn-ac btn-fw shadow-xl" id="cta-hero" style="max-width:420px;font-size:1.05rem;padding:1.15rem 1.5rem;border-radius:var(--l-radius);animation:s1 .6s .28s ease both">
-        Faites le test avec votre enfant
+        <span id="hero-cta-txt">Faites le test avec votre enfant</span>
       </button>
       <p class="text-stone-400 text-xs mt-4 font-medium" style="animation:s1 .6s .35s ease both">5 minutes · Sans carte bancaire</p>
       <div id="pwa-install-banner" class="hidden mt-3 flex items-center gap-3
@@ -1655,7 +1655,7 @@
         <button onclick="_flowAutoSelectChaps()" class="block w-full text-center text-sm font-semibold transition-colors mb-5 cursor-pointer py-2" style="background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;color:rgba(255,255,255,.6)">Je ne sais pas trop — choisir pour moi</button>
         <button onclick="flowToStep3()" class="btn btn-ac btn-fw py-4">Voir le diagnostic →</button>
         <p class="text-white/30 text-xs text-center mt-2">On ajuste automatiquement ensuite.</p>
-        <button onclick="_flowSetStep(1)" class="block w-full text-center text-xs text-white/40 hover:text-white/70 transition-colors mt-3 bg-transparent border-none cursor-pointer">← Changer de classe</button>
+        <button onclick="_flowSetStep(1)" class="block w-full text-center text-xs text-white/40 hover:text-white/70 transition-colors mt-3 bg-transparent border-none cursor-pointer" id="flow-back-class">← Changer de classe</button>
       </div>
 
       <!-- STEP 3 — Diagnostic GAS -->
@@ -2060,17 +2060,17 @@
   <!-- ── SECTION 11 — CTA FINAL ────────────────────────────── -->
   <div class="px-5 py-16" style="background:#FFF7ED">
     <div class="max-w-lg mx-auto relative z-10 text-center reveal">
-      <h2 class="text-2xl sm:text-3xl font-extrabold text-stone-900 leading-tight mb-3" style="letter-spacing:-.02em">
+      <h2 id="bottom-h2" class="text-2xl sm:text-3xl font-extrabold text-stone-900 leading-tight mb-3" style="letter-spacing:-.02em">
         Appelez votre enfant maintenant.<br>
         <span style="color:#EA580C">Testez ensemble en 5 minutes.</span>
       </h2>
-      <p class="text-stone-500 text-sm font-medium mb-8 max-w-sm mx-auto">
+      <p id="bottom-sub" class="text-stone-500 text-sm font-medium mb-8 max-w-sm mx-auto">
         Vous saurez exactement où il bloque.
       </p>
       <button onclick="startTrialFlow('bottom')"
               style="max-width:400px;font-size:1.05rem;padding:1.15rem;display:block;margin:0 auto;border-radius:var(--l-radius)"
               class="btn btn-ac btn-fw shadow-xl">
-        Faites le test avec votre enfant
+        <span id="bottom-cta-txt">Faites le test avec votre enfant</span>
       </button>
       <p class="text-stone-400 text-xs mt-4">5 minutes · Sans carte bancaire · Aucune pression</p>
     </div>
@@ -2114,7 +2114,7 @@
 
   <!-- Mobile sticky CTA bar -->
   <div id="sticky-cta" aria-hidden="true">
-    <button id="sticky-cta-btn" onclick="startTrialFlow('sticky')">Tester avec mon enfant →</button>
+    <button id="sticky-cta-btn" onclick="startTrialFlow('sticky')"><span id="sticky-cta-txt">Tester avec mon enfant →</span></button>
     <div class="sticky-sub">5 min · gratuit</div>
   </div>
 
@@ -3189,7 +3189,45 @@ function updateLevelChapters() {
 // ══════════════════════════════════════════════════════════════
 // TRIAL FLOW INLINE (landing → register sans modal)
 // ══════════════════════════════════════════════════════════════
-var _flowLevel = '4EME';
+var _isBrevet = location.search.indexOf('from=brevet') !== -1;
+if (_isBrevet) sessionStorage.setItem('mx_from','brevet');
+if (sessionStorage.getItem('mx_from')==='brevet') _isBrevet = true;
+
+// ── Landing brevet : swap hero + CTAs ──
+if (_isBrevet) {
+  _track('landing_brevet_view');
+  document.addEventListener('DOMContentLoaded', function() {
+    var b = document.getElementById('hero-badge-txt');
+    if (b) b.textContent = 'Brevet 2026 · Programme officiel';
+    var h1 = document.getElementById('hero-h1');
+    if (h1) h1.innerHTML = "T'es prêt pour le brevet de maths ? <span style='color:#EA580C'>Vérifie en 5 minutes.</span>";
+    var sub = document.getElementById('hero-sub');
+    if (sub) sub.textContent = "On détecte tes lacunes, tu t'entraînes uniquement là-dessus. 10 min par jour, c'est tout.";
+    var mention = document.getElementById('hero-mention');
+    if (mention) mention.textContent = 'PROGRAMME OFFICIEL 2026';
+    var heroCta = document.getElementById('hero-cta-txt');
+    if (heroCta) heroCta.textContent = 'Je teste mon niveau →';
+    var bottomH2 = document.getElementById('bottom-h2');
+    if (bottomH2) bottomH2.innerHTML = "Tu veux être prêt pour le brevet ?<br><span style='color:#EA580C'>Teste-toi en 5 minutes.</span>";
+    var bottomSub = document.getElementById('bottom-sub');
+    if (bottomSub) bottomSub.textContent = "Tu sauras exactement où bosser.";
+    var bottomCta = document.getElementById('bottom-cta-txt');
+    if (bottomCta) bottomCta.textContent = 'Je teste mon niveau →';
+    var stickyCta = document.getElementById('sticky-cta-txt');
+    if (stickyCta) stickyCta.textContent = 'Je teste mon niveau →';
+    // Step 2 wording
+    var s2h = document.querySelector('#flow-s2 h2');
+    if (s2h) s2h.textContent = 'Quels chapitres tu reconnais ?';
+    // Step 4 wording
+    var flDesc = document.getElementById('fl-desc');
+    if (flDesc) flDesc.textContent = "Ton programme personnalisé t'attend — 7 jours offerts, sans carte bancaire.";
+    // Masquer "← Changer de classe" (step 1 skippé)
+    var backBtn = document.getElementById('flow-back-class');
+    if (backBtn) backBtn.style.display = 'none';
+  });
+}
+
+var _flowLevel = _isBrevet ? '3EME' : '4EME';
 var _flowChaps = [];
 var _flowObjectif = '';
 var _flowQIdx  = 0;
@@ -3285,12 +3323,12 @@ function _animCounter(el) {
 }
 
 function startTrialFlow(src) {
-  _track('cta_click', { source: src || 'hero' });
+  _track('cta_click', { source: src || 'hero', from: _isBrevet ? 'brevet' : 'default' });
   var tf = document.getElementById('trial-flow');
   tf.classList.remove('hidden');
   tf.classList.add('flow-fs');
   document.getElementById('cta-hero').classList.add('hidden');
-  _flowSetStep(1);
+  if (_isBrevet) { flowSelectLevel('3EME'); } else { _flowSetStep(1); }
   tf.scrollTop = 0;
   // Vérifier s'il y a un diagnostic abandonné à reprendre
   var saved = null;
