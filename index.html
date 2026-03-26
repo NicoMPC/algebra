@@ -4821,7 +4821,7 @@ function initApp(d, skipRender) {
     }
   } catch (e) {}
 
-  S.res = {}; S.xp = 0; S.sent = new Set();
+  S.res = {}; S.xp = 0; S.sent = new Set(); S.deferred = {};
   S.chapTouched = {}; // chapitres réellement entamés (hors CALIBRAGE/BOOST)
   S.chapSessions = {}; S.retroSess = {}; S.retroBoost = null;
   S.exOverrides = d.exerciseOverrides || {}; // dates d'override per-student
@@ -5619,6 +5619,8 @@ function mark(cat, idx, status, wrongOpt) {
   var exo = LVL[S.niv].cats[cat][idx];
   S.res[id] = status;
   S.cid = id; S.rev = true;
+  // Nettoyer deferred si l'exo est répondu définitivement
+  if (S.deferred[cat]) delete S.deferred[cat][idx];
   // ── Timer & Flow ──
   var _mul = _flowXPMultiplier(); // capture BEFORE flow check (so last flow exo still gets bonus)
   _checkFlowOnAnswer(status);
@@ -5676,6 +5678,7 @@ function mark(cat, idx, status, wrongOpt) {
     }
     if (!_slotNum) {
       if (status === 'EASY') { setTimeout(function(){ nextEx(cat); }, 600); }
+      else if (status === 'SKIP') { setTimeout(function(){ nextEx(cat); }, 2500); render(); }
       else { render(); }
     } else {
       // Slot overlay va s'afficher — on render quand même pour updater les pills
@@ -5769,12 +5772,28 @@ function goEx(cat, i) {
 
 function nextEx(cat) {
   var exs = LVL[S.niv].cats[cat];
+  var def = S.deferred[cat] || {};
+  // 1. Chercher le prochain non-répondu ET non-différé
   for (var i = 0; i < exs.length; i++) {
     var r = res2(cat, i);
-    if (!S.res[S.niv+'-'+r.rC+'-'+r.rI]) { goEx(cat, i); return; }
+    var id = S.niv+'-'+r.rC+'-'+r.rI;
+    if (!S.res[id] && !def[i]) { goEx(cat, i); return; }
+  }
+  // 2. Tous faits ou différés → reprendre le premier différé
+  for (var j = 0; j < exs.length; j++) {
+    if (def[j]) { delete def[j]; goEx(cat, j); return; }
   }
   goEx(cat, 0);
 }
+
+window.deferExo = function(cat, idx) {
+  if (S.rev) return;
+  _stopTimer();
+  if (!S.deferred[cat]) S.deferred[cat] = {};
+  S.deferred[cat][idx] = true;
+  showT('Question reportée à la fin 👍', 1500, '⏭️');
+  nextEx(cat);
+};
 
 function chkComp(cat) {
   var exs = LVL[S.niv].cats[cat];
@@ -9013,7 +9032,10 @@ function rSection(cat, data, idx, total, catDone) {
         (hasSel ? 'Valider la r\u00e9ponse \u2713' : 'Choisis une r\u00e9ponse') +
         '</button>' +
         '</div>' +
-        '<div class="text-center mt-5 mb-2"><button class="opt-skip" onclick="skipAnswer(\''+cat+'\','+idx+')">🤷 Je ne sais pas</button></div>';
+        '<div class="flex justify-center gap-3 mt-5 mb-2">' +
+        '<button class="opt-skip" style="flex:1;max-width:160px" onclick="deferExo(\''+cat+'\','+idx+')">⏭️ Passer</button>' +
+        '<button class="opt-skip" style="flex:1;max-width:160px" onclick="skipAnswer(\''+cat+'\','+idx+')">🤷 Je ne sais pas</button>' +
+        '</div>';
     }
     // Justification VF post-réponse
     if (exoType === 'vf' && data.justification && isRev) {
@@ -9028,7 +9050,10 @@ function rSection(cat, data, idx, total, catDone) {
       '<div class="validate-wrap" id="validate-wrap">' +
         '<button id="btn-validate-fill" class="btn-validate" onclick="validateAnswer()" disabled>Écris ta réponse</button>' +
       '</div>' +
-      '<div class="text-center mt-5 mb-2"><button class="opt-skip" onclick="skipAnswer(\''+cat+'\','+idx+')">🤷 Je ne sais pas</button></div>' +
+      '<div class="flex justify-center gap-3 mt-5 mb-2">' +
+      '<button class="opt-skip" style="flex:1;max-width:160px" onclick="deferExo(\''+cat+'\','+idx+')">⏭️ Passer</button>' +
+      '<button class="opt-skip" style="flex:1;max-width:160px" onclick="skipAnswer(\''+cat+'\','+idx+')">🤷 Je ne sais pas</button>' +
+      '</div>' +
     '</div>';
   } else if (exoType === 'fill' && (isRev || scored)) {
     // ── Fill post-réponse : afficher la bonne réponse ──
