@@ -123,6 +123,9 @@
     (function(){
       // ?notrack dans l'URL → pose un flag permanent, GA4 ne charge plus
       if (location.search.indexOf('notrack') !== -1) localStorage.setItem('mx_notrack','1');
+      window._track = function(eventName, params) {
+        if (typeof gtag === 'function') gtag('event', eventName, params || {});
+      };
       if (localStorage.getItem('mx_notrack') === '1') return;
       var GA4_ID = 'G-7R2DW4585Y';
       function loadGA4() {
@@ -137,10 +140,6 @@
         gtag('js', new Date());
         gtag('config', GA4_ID, { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
       }
-      // Helpers analytics — appelés depuis le JS de la page
-      window._track = function(eventName, params) {
-        if (typeof gtag === 'function') gtag('event', eventName, params || {});
-      };
       // Vérifier le consentement stocké
       var consent = localStorage.getItem('mx_cookie_consent');
       if (consent === 'accepted') loadGA4();
