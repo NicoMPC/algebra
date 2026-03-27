@@ -1,0 +1,265 @@
+{
+  "niveau": "3EME",
+  "categorie": "Trigonometrie_Brevet",
+  "titre": "Trigonométrie",
+  "icone": "📐",
+  "exos": [
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Dans un triangle $ABC$ rectangle en $A$, $AB = 7$ cm et $\\widehat{ABC} = 35°$. Calcule $AC$ (arrondi au dixième).",
+      "a": "4,9",
+      "options": [],
+      "steps": [
+        "On cherche le côté opposé ($AC$) à l'angle $\\widehat{ABC}$, en connaissant le côté adjacent ($AB = 7$). On utilise la tangente.",
+        "$\\tan(35°) = \\frac{AC}{AB}$, donc $AC = 7 \\times \\tan(35°) = 7 \\times 0{,}700$.",
+        "$AC = 4{,}900 \\approx\\;?$ cm."
+      ],
+      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$",
+      "fig": {"t": "tri_trigo", "pts": ["A","B","C"], "sides": [7, null, null], "angles": [90, 35, 55], "unknown": "AC"}
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Dans un triangle $MNP$ rectangle en $N$, $MP = 10$ cm et $\\widehat{NMP} = 40°$. Calcule $MN$ (arrondi au dixième).",
+      "a": "7,7",
+      "options": [],
+      "steps": [
+        "On cherche le côté adjacent ($MN$) à l'angle $\\widehat{NMP}$, en connaissant l'hypoténuse ($MP = 10$). On utilise le cosinus.",
+        "$\\cos(40°) = \\frac{MN}{MP}$, donc $MN = 10 \\times \\cos(40°) = 10 \\times 0{,}766$.",
+        "$MN \\approx\\;?$ cm."
+      ],
+      "f": "$\\cos(\\alpha) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+      "fig": {"t": "tri_trigo", "pts": ["M","N","P"], "sides": [null, null, 10], "angles": [null, 90, null], "unknown": "MN"}
+    },
+    {
+      "lvl": 1,
+      "q": "Dans un triangle $RST$ rectangle en $R$, $ST = 8$ cm et $\\widehat{RST} = 30°$. Quelle est la longueur de $RS$ (arrondi au dixième) ?",
+      "a": "$6{,}9$ cm",
+      "options": ["$6{,}9$ cm", "$4{,}0$ cm", "$9{,}2$ cm"],
+      "steps": [
+        "On cherche le côté adjacent ($RS$) à l'angle $\\widehat{RST}$, en connaissant l'hypoténuse ($ST = 8$). On utilise le cosinus.",
+        "$\\cos(30°) = \\frac{RS}{ST}$, donc $RS = 8 \\times \\cos(30°) = 8 \\times 0{,}866$.",
+        "$RS \\approx\\;?$ cm."
+      ],
+      "f": "$\\cos(\\alpha) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+      "fig": {"t": "tri_trigo", "pts": ["R","S","T"], "sides": [null, null, 8], "angles": [90, 30, 60], "unknown": "RS"}
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Dans un triangle $DEF$ rectangle en $D$, $DE = 6$ cm et $\\widehat{DEF} = 60°$. Calcule $EF$ (arrondi au dixième).",
+      "a": "12",
+      "options": [],
+      "steps": [
+        "On cherche l'hypoténuse ($EF$) en connaissant le côté adjacent ($DE = 6$) et l'angle $\\widehat{DEF} = 60°$. On utilise le cosinus.",
+        "$\\cos(60°) = \\frac{DE}{EF}$, donc $EF = \\frac{DE}{\\cos(60°)} = \\frac{6}{0{,}5}$.",
+        "$EF = \\;?$ cm."
+      ],
+      "f": "$\\cos(\\alpha) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$"
+    },
+    {
+      "lvl": 1,
+      "q": "Dans un triangle $GHI$ rectangle en $G$, $HI = 9$ cm et $\\widehat{GHI} = 45°$. Quelle est la longueur de $GI$ (arrondi au dixième) ?",
+      "a": "$6{,}4$ cm",
+      "options": ["$6{,}4$ cm", "$9{,}0$ cm", "$12{,}7$ cm"],
+      "steps": [
+        "On cherche le côté opposé ($GI$) à l'angle $\\widehat{GHI}$, en connaissant l'hypoténuse ($HI = 9$). On utilise le sinus.",
+        "$\\sin(45°) = \\frac{GI}{HI}$, donc $GI = 9 \\times \\sin(45°) = 9 \\times 0{,}707$.",
+        "$GI \\approx\\;?$ cm."
+      ],
+      "f": "$\\sin(\\alpha) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Dans un triangle $KLM$ rectangle en $K$, $KL = 8$ cm et $KM = 6$ cm. Calcule $\\widehat{KLM}$ (arrondi au degré).",
+      "a": "37",
+      "options": [],
+      "steps": [
+        "On connaît le côté opposé ($KM = 6$) et le côté adjacent ($KL = 8$) à l'angle $\\widehat{KLM}$. On utilise la tangente.",
+        "$\\tan(\\widehat{KLM}) = \\frac{KM}{KL} = \\frac{6}{8} = 0{,}75$.",
+        "$\\widehat{KLM} = \\arctan(0{,}75) \\approx\\;?°$."
+      ],
+      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$",
+      "fig": {"t": "tri_trigo", "pts": ["K","L","M"], "sides": [8, 6, null], "angles": [90, null, null], "unknown": "\\widehat{KLM}"}
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Dans un triangle $PQR$ rectangle en $P$, $PQ = 5$ cm et $QR = 10$ cm. Calcule $\\widehat{PQR}$ (arrondi au degré).",
+      "a": "60",
+      "options": [],
+      "steps": [
+        "On connaît le côté adjacent ($PQ = 5$) et l'hypoténuse ($QR = 10$) par rapport à l'angle $\\widehat{PQR}$. On utilise le cosinus.",
+        "$\\cos(\\widehat{PQR}) = \\frac{PQ}{QR} = \\frac{5}{10} = 0{,}5$.",
+        "$\\widehat{PQR} = \\arccos(0{,}5) = \\;?°$."
+      ],
+      "f": "$\\cos(\\alpha) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+      "fig": {"t": "tri_trigo", "pts": ["P","Q","R"], "sides": [5, null, 10], "angles": [90, null, null], "unknown": "\\widehat{PQR}"}
+    },
+    {
+      "lvl": 1,
+      "q": "Dans un triangle $XYZ$ rectangle en $X$, $XZ = 5$ cm et $YZ = 10$ cm. Que vaut $\\widehat{XYZ}$ (arrondi au degré) ?",
+      "a": "$30°$",
+      "options": ["$30°$", "$45°$", "$60°$"],
+      "steps": [
+        "On connaît le côté opposé ($XZ = 5$) et l'hypoténuse ($YZ = 10$) par rapport à l'angle $\\widehat{XYZ}$. On utilise le sinus.",
+        "$\\sin(\\widehat{XYZ}) = \\frac{XZ}{YZ} = \\frac{5}{10} = 0{,}5$.",
+        "$\\widehat{XYZ} = \\arcsin(0{,}5) = \\;?°$."
+      ],
+      "f": "$\\sin(\\alpha) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$"
+    },
+    {
+      "lvl": 2,
+      "q": "Dans un triangle $UVW$ rectangle en $U$, $UV = 4$ cm et $UW = 7$ cm. Que vaut $\\widehat{UVW}$ (arrondi au degré) ?",
+      "a": "$60°$",
+      "options": ["$60°$", "$30°$", "$55°$"],
+      "steps": [
+        "On connaît le côté adjacent ($UV = 4$) et le côté opposé ($UW = 7$) à l'angle $\\widehat{UVW}$. On utilise la tangente.",
+        "$\\tan(\\widehat{UVW}) = \\frac{UW}{UV} = \\frac{7}{4} = 1{,}75$.",
+        "$\\widehat{UVW} = \\arctan(1{,}75) \\approx\\;?°$."
+      ],
+      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$"
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "Dans un triangle $EFG$ rectangle en $E$, $EF = 3$ cm et $EG = 7$ cm. Calcule $\\widehat{EFG}$ (arrondi au degré).",
+      "a": "67",
+      "options": [],
+      "steps": [
+        "On connaît le côté adjacent ($EF = 3$) et le côté opposé ($EG = 7$) à l'angle $\\widehat{EFG}$. On utilise la tangente.",
+        "$\\tan(\\widehat{EFG}) = \\frac{EG}{EF} = \\frac{7}{3} \\approx 2{,}333$.",
+        "$\\widehat{EFG} = \\arctan(2{,}333) \\approx\\;?°$."
+      ],
+      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$"
+    },
+    {
+      "lvl": 1,
+      "q": "Dans un triangle rectangle, on connaît un angle aigu et le côté adjacent à cet angle. On veut calculer le côté opposé. Quel rapport trigonométrique faut-il utiliser ?",
+      "a": "La tangente",
+      "options": ["La tangente", "Le cosinus", "Le sinus"],
+      "steps": [
+        "On identifie : côté adjacent (connu) et côté opposé (cherché) par rapport à l'angle.",
+        "Le rapport qui relie opposé et adjacent est $\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$.",
+        "On utilise donc la tangente pour trouver le côté opposé."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "type": "vf",
+      "q": "$\\cos(\\alpha) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$.",
+      "a": "Faux",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "On rappelle les trois rapports : $\\cos = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$, $\\sin = \\frac{\\text{opposé}}{\\text{hypoténuse}}$, $\\tan = \\frac{\\text{opposé}}{\\text{adjacent}}$.",
+        "L'énoncé dit $\\cos = \\frac{\\text{opposé}}{\\text{hypoténuse}}$ : c'est la définition du sinus, pas du cosinus.",
+        "Que peut-on en conclure ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "q": "Dans un triangle rectangle, on connaît l'hypoténuse et un angle aigu. On veut calculer le côté opposé à cet angle. Quel rapport trigonométrique faut-il utiliser ?",
+      "a": "Le sinus",
+      "options": ["Le sinus", "Le cosinus", "La tangente"],
+      "steps": [
+        "On identifie : hypoténuse (connue) et côté opposé (cherché) par rapport à l'angle.",
+        "Le rapport qui relie opposé et hypoténuse est $\\sin(\\alpha) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$.",
+        "On utilise donc le sinus."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "$\\tan(\\alpha) = \\frac{\\text{adjacent}}{\\text{opposé}}$.",
+      "a": "Faux",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "La tangente est définie par $\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$, et non l'inverse.",
+        "L'énoncé inverse numérateur et dénominateur : c'est faux.",
+        "Que peut-on en conclure ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "Dans un triangle $ABC$ rectangle en $A$, pour calculer $AB$ en connaissant $\\widehat{ABC} = 50°$ et $BC = 12$ cm, Jade utilise le sinus. A-t-elle raison ?",
+      "a": "Faux",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "Par rapport à l'angle $\\widehat{ABC}$ : $AB$ est le côté adjacent et $BC$ est l'hypoténuse.",
+        "Le rapport adjacent/hypoténuse est le cosinus, pas le sinus. Le sinus donnerait le côté opposé $AC$.",
+        "Que peut-on en conclure ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Un randonneur se tient à $50$ m de la base d'un arbre. Il mesure un angle d'élévation de $25°$ vers le sommet. Quelle est la hauteur de l'arbre (arrondi au dixième) ?",
+      "a": "23,3",
+      "options": [],
+      "steps": [
+        "On a un triangle rectangle : la distance au sol ($50$ m) est le côté adjacent et la hauteur de l'arbre est le côté opposé à l'angle de $25°$.",
+        "$\\tan(25°) = \\frac{h}{50}$, donc $h = 50 \\times \\tan(25°) = 50 \\times 0{,}466$.",
+        "$h \\approx\\;?$ m."
+      ],
+      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$"
+    },
+    {
+      "lvl": 2,
+      "q": "Le randonneur aperçoit le sommet d'une montagne sous un angle d'élévation de $35°$. Le sommet est à $1\\,200$ m d'altitude au-dessus de lui. À quelle distance horizontale se trouve-t-il de la base du sommet (arrondi au mètre) ?",
+      "a": "$1\\,714$ m",
+      "options": ["$1\\,714$ m", "$688$ m", "$983$ m"],
+      "steps": [
+        "On connaît le côté opposé (dénivelé $= 1\\,200$ m) et on cherche le côté adjacent (distance horizontale). On utilise la tangente.",
+        "$\\tan(35°) = \\frac{1\\,200}{d}$, donc $d = \\frac{1\\,200}{\\tan(35°)} = \\frac{1\\,200}{0{,}700}$.",
+        "$d \\approx\\;?$ m."
+      ],
+      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "Le randonneur affirme : « Un sentier incliné à $30°$ par rapport à l'horizontale a une pente de $30\\%$. »",
+      "a": "Faux",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "La pente en pourcentage se calcule avec la tangente : $\\text{pente} = \\tan(30°) \\times 100$.",
+        "$\\tan(30°) \\approx 0{,}577$, donc la pente est d'environ $57{,}7\\%$, pas $30\\%$.",
+        "Que peut-on en conclure ?"
+      ],
+      "f": "$\\text{pente (\\%)} = \\tan(\\alpha) \\times 100$"
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "Le randonneur veut mesurer la largeur d'une rivière. Depuis un point $A$ sur la rive, il repère un rocher $B$ sur l'autre rive, exactement en face. Il recule de $20$ m jusqu'à un point $C$. L'angle $\\widehat{ACB} = 50°$. Quelle est la largeur $AB$ de la rivière (arrondi au dixième) ?",
+      "a": "23,8",
+      "options": [],
+      "steps": [
+        "Le triangle $ABC$ est rectangle en $A$ (le rocher est en face). $AC = 20$ m est le côté adjacent à $\\widehat{ACB}$ et $AB$ est le côté opposé.",
+        "$\\tan(50°) = \\frac{AB}{AC} = \\frac{AB}{20}$, donc $AB = 20 \\times \\tan(50°) = 20 \\times 1{,}192$.",
+        "$AB \\approx\\;?$ m."
+      ],
+      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$"
+    },
+    {
+      "lvl": 2,
+      "q": "En fin de randonnée, le randonneur se tient à $30$ m d'une falaise. Il mesure un angle d'élévation de $60°$ vers le sommet. Ses yeux sont à $1{,}7$ m du sol. Quelle est la hauteur totale de la falaise (arrondi au dixième) ?",
+      "a": "$53{,}7$ m",
+      "options": ["$53{,}7$ m", "$52{,}0$ m", "$51{,}0$ m"],
+      "steps": [
+        "La partie de la falaise au-dessus des yeux forme un triangle rectangle : côté adjacent $= 30$ m, angle $= 60°$, côté opposé $= h$.",
+        "$h = 30 \\times \\tan(60°) = 30 \\times 1{,}732 = 52{,}0$ m. On ajoute la hauteur des yeux : $52{,}0 + 1{,}7$.",
+        "Hauteur totale $\\approx\\;?$ m."
+      ],
+      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$"
+    }
+  ]
+}

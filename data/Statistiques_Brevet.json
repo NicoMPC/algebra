@@ -1,0 +1,244 @@
+{
+  "niveau": "3EME",
+  "categorie": "Statistiques_Brevet",
+  "titre": "Statistiques",
+  "icone": "📊",
+  "exos": [
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Calcule la moyenne de la série : $8$ ; $12$ ; $15$ ; $9$ ; $11$. ___",
+      "a": "11",
+      "options": [],
+      "steps": [
+        "On additionne toutes les valeurs : $8 + 12 + 15 + 9 + 11 = 55$.",
+        "On divise par le nombre de valeurs : $\\frac{55}{5} = $ ?"
+      ],
+      "f": "$\\bar{x} = \\frac{\\sum x_i}{n}$"
+    },
+    {
+      "lvl": 1,
+      "q": "Les notes d'Inès sont : $7$ ; $13$ ; $10$ ; $14$ ; $16$ ; $9$ ; $15$. Quelle est sa moyenne ?",
+      "a": "$12$",
+      "options": ["$12$", "$11$", "$13$"],
+      "steps": [
+        "Somme : $7 + 13 + 10 + 14 + 16 + 9 + 15 = 84$.",
+        "Il y a $7$ notes. Moyenne : $\\frac{84}{7} = $ ?"
+      ],
+      "f": "$\\bar{x} = \\frac{\\sum x_i}{n}$"
+    },
+    {
+      "lvl": 1,
+      "q": "Dans un club de sport, $10$ membres ont $14$ ans, $15$ membres ont $15$ ans et $5$ membres ont $16$ ans. Quelle est la moyenne d'âge ?",
+      "a": "$14{,}83$",
+      "options": ["$14{,}83$", "$15$", "$14{,}5$"],
+      "steps": [
+        "On calcule la somme pondérée : $10 \\times 14 + 15 \\times 15 + 5 \\times 16 = 140 + 225 + 80 = 445$.",
+        "Effectif total : $10 + 15 + 5 = 30$. Moyenne : $\\frac{445}{30} \\approx $ ?",
+        "$\\frac{445}{30} \\approx 14{,}83$."
+      ],
+      "f": "$\\bar{x} = \\frac{\\sum n_i \\times x_i}{\\sum n_i}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "La moyenne d'une classe de $30$ élèves est $12{,}5$. Les $18$ filles ont une moyenne de $13$. Quelle est la moyenne des garçons ? ___",
+      "a": "11,75",
+      "options": [],
+      "steps": [
+        "Total des points de la classe : $30 \\times 12{,}5 = 375$. Total des filles : $18 \\times 13 = 234$.",
+        "Total des garçons : $375 - 234 = 141$. Il y a $12$ garçons. Moyenne : $\\frac{141}{12} = $ ?"
+      ],
+      "f": "$\\bar{x} = \\frac{\\sum x_i}{n}$"
+    },
+    {
+      "lvl": 1,
+      "q": "Hugo a obtenu les notes suivantes avec les coefficients indiqués : $8$ (coeff $2$), $14$ (coeff $3$), $11$ (coeff $1$). Quelle est sa moyenne pondérée ?",
+      "a": "$11{,}5$",
+      "options": ["$11{,}5$", "$11$", "$12$"],
+      "steps": [
+        "Somme pondérée : $8 \\times 2 + 14 \\times 3 + 11 \\times 1 = 16 + 42 + 11 = 69$.",
+        "Somme des coefficients : $2 + 3 + 1 = 6$. Moyenne : $\\frac{69}{6} = $ ?",
+        "$\\frac{69}{6} = 11{,}5$."
+      ],
+      "f": "$\\bar{x} = \\frac{\\sum n_i \\times x_i}{\\sum n_i}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Voici une série ordonnée de $7$ valeurs : $3$ ; $5$ ; $8$ ; $11$ ; $14$ ; $17$ ; $20$. Quelle est la médiane ? ___",
+      "a": "11",
+      "options": [],
+      "steps": [
+        "La série a $7$ valeurs (impair). La médiane est la valeur centrale, en position $\\frac{7+1}{2} = 4$.",
+        "La $4$ème valeur est $11$."
+      ],
+      "f": "$\\text{Médiane} = \\text{valeur centrale si } n \\text{ impair}$"
+    },
+    {
+      "lvl": 1,
+      "q": "Série ordonnée : $4$ ; $7$ ; $9$ ; $12$ ; $15$ ; $18$. Quelle est la médiane ?",
+      "a": "$10{,}5$",
+      "options": ["$10{,}5$", "$9$", "$12$"],
+      "steps": [
+        "La série a $6$ valeurs (pair). La médiane est la moyenne des deux valeurs centrales, en positions $3$ et $4$.",
+        "$\\frac{9 + 12}{2} = $ ?"
+      ],
+      "f": "$\\text{Médiane} = \\frac{x_{n/2} + x_{n/2+1}}{2} \\text{ si } n \\text{ pair}$"
+    },
+    {
+      "lvl": 1,
+      "q": "Voici les tailles (en cm) de $9$ élèves : $152$ ; $158$ ; $161$ ; $164$ ; $165$ ; $168$ ; $170$ ; $173$ ; $180$. Quelle est l'étendue de cette série ?",
+      "a": "$28$ cm",
+      "options": ["$28$ cm", "$165$ cm", "$18$ cm"],
+      "steps": [
+        "L'étendue est la différence entre la plus grande et la plus petite valeur.",
+        "$180 - 152 = $ ?"
+      ],
+      "f": "$\\text{Étendue} = x_{\\max} - x_{\\min}$"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "La médiane d'une série est toujours égale à la moyenne.",
+      "a": "Faux",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "Contre-exemple : la série $1$ ; $2$ ; $9$ a pour médiane $2$ et pour moyenne $\\frac{12}{3} = 4$.",
+        "Médiane et moyenne ne coïncident que pour certaines séries symétriques. Que peut-on en conclure ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "Les notes de Léa sont : $6$ ; $14$ ; $8$ ; $11$ ; $13$ ; $10$ ; $16$ ; $9$ ; $7$. La médiane de cette série est $11$.",
+      "a": "Faux",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "Série ordonnée : $6$ ; $7$ ; $8$ ; $9$ ; $10$ ; $11$ ; $13$ ; $14$ ; $16$. Il y a $9$ valeurs, la médiane est en position $5$.",
+        "La $5$ème valeur est $10$, pas $11$. L'erreur vient d'un mauvais classement ou d'un mauvais comptage. Que peut-on en conclure ?"
+      ],
+      "f": "$\\text{Médiane} = \\text{valeur centrale si } n \\text{ impair}$"
+    },
+    {
+      "lvl": 1,
+      "q": "Série ordonnée de $11$ valeurs : $2$ ; $5$ ; $7$ ; $8$ ; $10$ ; $12$ ; $14$ ; $16$ ; $18$ ; $20$ ; $23$. Quel est le premier quartile $Q_1$ ?",
+      "a": "$7$",
+      "options": ["$7$", "$5$", "$8$"],
+      "steps": [
+        "La médiane est la $6$ème valeur : $12$. La sous-série inférieure est $2$ ; $5$ ; $7$ ; $8$ ; $10$ ($5$ valeurs).",
+        "$Q_1$ est la médiane de cette sous-série, en position $3$ : la $3$ème valeur est ?"
+      ],
+      "f": "$Q_1 = \\text{médiane de la moitié inférieure}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Même série : $2$ ; $5$ ; $7$ ; $8$ ; $10$ ; $12$ ; $14$ ; $16$ ; $18$ ; $20$ ; $23$. Calcule le troisième quartile $Q_3$. ___",
+      "a": "18",
+      "options": [],
+      "steps": [
+        "La sous-série supérieure est $14$ ; $16$ ; $18$ ; $20$ ; $23$ ($5$ valeurs).",
+        "$Q_3$ est la médiane de cette sous-série, en position $3$ : la $3$ème valeur est ?"
+      ],
+      "f": "$Q_3 = \\text{médiane de la moitié supérieure}$"
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "Pour la série $2$ ; $5$ ; $7$ ; $8$ ; $10$ ; $12$ ; $14$ ; $16$ ; $18$ ; $20$ ; $23$, calcule l'intervalle interquartile $Q_3 - Q_1$. ___",
+      "a": "11",
+      "options": [],
+      "steps": [
+        "On a calculé $Q_1 = 7$ et $Q_3 = 18$.",
+        "L'intervalle interquartile : $Q_3 - Q_1 = 18 - 7 = $ ?"
+      ],
+      "f": "$\\text{IQR} = Q_3 - Q_1$"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "$50\\%$ des valeurs d'une série sont comprises entre $Q_1$ et $Q_3$.",
+      "a": "Vrai",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "Par définition, $Q_1$ sépare les $25\\%$ les plus bas et $Q_3$ sépare les $25\\%$ les plus hauts.",
+        "Entre $Q_1$ et $Q_3$ se trouvent donc les $50\\%$ centraux. Que peut-on en conclure ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "q": "Une boîte à moustaches a les caractéristiques suivantes : minimum $= 3$, $Q_1 = 8$, médiane $= 12$, $Q_3 = 15$, maximum $= 20$. Quelle est l'étendue de cette série ?",
+      "a": "$17$",
+      "options": ["$17$", "$7$", "$12$"],
+      "steps": [
+        "L'étendue est la différence entre le maximum et le minimum.",
+        "$20 - 3 = $ ?",
+        "L'intervalle interquartile ($Q_3 - Q_1 = 7$) est différent de l'étendue."
+      ],
+      "f": "$\\text{Étendue} = x_{\\max} - x_{\\min}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Lors d'une course, les temps (en secondes) de $15$ coureurs au $100$ m sont : $11{,}4$ ; $11{,}6$ ; $11{,}8$ ; $12{,}0$ ; $12{,}2$ ; $12{,}4$ ; $12{,}6$ ; $12{,}8$ ; $13{,}0$ ; $13{,}2$ ; $13{,}4$ ; $13{,}6$ ; $13{,}8$ ; $14{,}0$ ; $14{,}2$. Calcule la moyenne des temps. ___",
+      "a": "12,8",
+      "options": [],
+      "steps": [
+        "Somme de tous les temps : $11{,}4 + 11{,}6 + \\cdots + 14{,}2 = 192$.",
+        "Moyenne : $\\frac{192}{15} = $ ?"
+      ],
+      "f": "$\\bar{x} = \\frac{\\sum x_i}{n}$"
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "Mêmes temps des $15$ coureurs (série ordonnée) : $11{,}4$ ; $11{,}6$ ; $11{,}8$ ; $12{,}0$ ; $12{,}2$ ; $12{,}4$ ; $12{,}6$ ; $12{,}8$ ; $13{,}0$ ; $13{,}2$ ; $13{,}4$ ; $13{,}6$ ; $13{,}8$ ; $14{,}0$ ; $14{,}2$. Quelle est la médiane ? ___",
+      "a": "12,8",
+      "options": [],
+      "steps": [
+        "Il y a $15$ valeurs (impair). La médiane est en position $\\frac{15+1}{2} = 8$.",
+        "La $8$ème valeur de la série ordonnée est ?"
+      ],
+      "f": "$\\text{Médiane} = \\text{valeur en position } \\frac{n+1}{2}$"
+    },
+    {
+      "lvl": 2,
+      "q": "Toujours la même série de $15$ coureurs. Quels sont les quartiles $Q_1$ et $Q_3$ ?",
+      "a": "$Q_1 = 12{,}0$ et $Q_3 = 13{,}6$",
+      "options": ["$Q_1 = 12{,}0$ et $Q_3 = 13{,}6$", "$Q_1 = 11{,}8$ et $Q_3 = 13{,}8$", "$Q_1 = 12{,}2$ et $Q_3 = 13{,}4$"],
+      "steps": [
+        "Sous-série inférieure (positions 1 à 7) : $11{,}4$ ; $11{,}6$ ; $11{,}8$ ; $12{,}0$ ; $12{,}2$ ; $12{,}4$ ; $12{,}6$. $Q_1$ = valeur centrale = $4$ème = $12{,}0$.",
+        "Sous-série supérieure (positions 9 à 15) : $13{,}0$ ; $13{,}2$ ; $13{,}4$ ; $13{,}6$ ; $13{,}8$ ; $14{,}0$ ; $14{,}2$. $Q_3$ = valeur centrale = $4$ème = ?",
+        "$Q_1 = 12{,}0$ et $Q_3 = 13{,}6$."
+      ],
+      "f": "$Q_1 = \\text{médiane moitié inf.} \\quad Q_3 = \\text{médiane moitié sup.}$"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "Avec la même série de $15$ coureurs (médiane $= 12{,}8$ s), on peut affirmer : « Plus de la moitié des coureurs ont fait moins de $13$ s. »",
+      "a": "Vrai",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "La médiane est $12{,}8$ s. Cela signifie qu'au moins la moitié des coureurs ont un temps $\\leq 12{,}8$ s.",
+        "$12{,}8 < 13$ : tous ceux qui sont sous la médiane sont aussi sous $13$ s. De plus le $9$ème coureur ($13{,}0$ s) n'est pas sous $13$ s, mais les $8$ premiers le sont. Que peut-on en conclure ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "Un $16$ème coureur rejoint la course avec un temps de $11{,}2$ s. La moyenne initiale des $15$ coureurs était $12{,}8$ s. Calcule la nouvelle moyenne des $16$ coureurs. ___",
+      "a": "12,7",
+      "options": [],
+      "steps": [
+        "Somme initiale : $15 \\times 12{,}8 = 192$. Nouvelle somme : $192 + 11{,}2 = 203{,}2$.",
+        "Nouvelle moyenne : $\\frac{203{,}2}{16} = $ ?"
+      ],
+      "f": "$\\bar{x} = \\frac{\\sum x_i}{n}$"
+    }
+  ]
+}

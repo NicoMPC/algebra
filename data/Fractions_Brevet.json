@@ -1,0 +1,252 @@
+{
+  "niveau": "3EME",
+  "categorie": "Fractions_Brevet",
+  "titre": "Fractions",
+  "icone": "\ud83d\udd22",
+  "exos": [
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Calcule : $\\frac{5}{7} + \\frac{2}{7} = $ ___",
+      "a": "1",
+      "options": [],
+      "steps": [
+        "Les d\u00e9nominateurs sont identiques : on additionne les num\u00e9rateurs. $\\frac{5+2}{7} = \\frac{7}{7}$.",
+        "$\\frac{7}{7} = 1$. Le r\u00e9sultat simplifi\u00e9 est $1$."
+      ],
+      "f": "$\\frac{a}{b} + \\frac{c}{b} = \\frac{a+c}{b}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Calcule : $\\frac{11}{9} - \\frac{4}{9} = $ ___",
+      "a": "7/9",
+      "options": [],
+      "steps": [
+        "M\u00eame d\u00e9nominateur : on soustrait les num\u00e9rateurs. $\\frac{11 - 4}{9} = \\frac{7}{9}$.",
+        "$\\text{PGCD}(7, 9) = 1$ : la fraction est d\u00e9j\u00e0 irr\u00e9ductible."
+      ],
+      "f": "$\\frac{a}{b} - \\frac{c}{b} = \\frac{a-c}{b}$"
+    },
+    {
+      "lvl": 1,
+      "q": "Calcule $\\frac{3}{4} + \\frac{5}{6}$. Donne le r\u00e9sultat sous forme irr\u00e9ductible.",
+      "a": "$\\frac{19}{12}$",
+      "options": ["$\\frac{19}{12}$", "$\\frac{8}{10}$", "$\\frac{19}{24}$"],
+      "steps": [
+        "D\u00e9nominateur commun : $\\text{PPCM}(4, 6) = 12$. On convertit : $\\frac{3}{4} = \\frac{9}{12}$ et $\\frac{5}{6} = \\frac{10}{12}$.",
+        "$\\frac{9}{12} + \\frac{10}{12} = \\frac{19}{12}$.",
+        "$\\text{PGCD}(19, 12) = 1$ : la fraction $\\frac{19}{12}$ est irr\u00e9ductible."
+      ],
+      "f": "$\\frac{a}{b} + \\frac{c}{d} = \\frac{a \\times d + c \\times b}{b \\times d}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Calcule : $\\frac{7}{3} - \\frac{2}{5} = $ ___",
+      "a": "29/15",
+      "options": [],
+      "steps": [
+        "D\u00e9nominateur commun : $\\text{PPCM}(3, 5) = 15$. On convertit : $\\frac{7}{3} = \\frac{35}{15}$ et $\\frac{2}{5} = \\frac{6}{15}$.",
+        "$\\frac{35}{15} - \\frac{6}{15} = \\frac{29}{15}$.",
+        "$\\text{PGCD}(29, 15) = 1$ : le r\u00e9sultat est $\\frac{29}{15}$."
+      ],
+      "f": "$\\frac{a}{b} - \\frac{c}{d} = \\frac{a \\times d - c \\times b}{b \\times d}$"
+    },
+    {
+      "lvl": 1,
+      "q": "Calcule $\\frac{1}{2} + \\frac{1}{3} + \\frac{1}{4}$. Donne le r\u00e9sultat sous forme irr\u00e9ductible.",
+      "a": "$\\frac{13}{12}$",
+      "options": ["$\\frac{13}{12}$", "$\\frac{3}{9}$", "$\\frac{9}{12}$"],
+      "steps": [
+        "D\u00e9nominateur commun : $\\text{PPCM}(2, 3, 4) = 12$. On convertit : $\\frac{1}{2} = \\frac{6}{12}$, $\\frac{1}{3} = \\frac{4}{12}$, $\\frac{1}{4} = \\frac{3}{12}$.",
+        "$\\frac{6}{12} + \\frac{4}{12} + \\frac{3}{12} = \\frac{13}{12}$.",
+        "$\\text{PGCD}(13, 12) = 1$ : le r\u00e9sultat est $\\frac{13}{12}$."
+      ],
+      "f": "$\\frac{a}{b} + \\frac{c}{d} = \\frac{a \\times d + c \\times b}{b \\times d}$"
+    },
+
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Calcule : $\\frac{5}{8} \\times \\frac{4}{3} = $ ___",
+      "a": "5/6",
+      "options": [],
+      "steps": [
+        "On multiplie num\u00e9rateurs entre eux et d\u00e9nominateurs entre eux : $\\frac{5 \\times 4}{8 \\times 3} = \\frac{20}{24}$.",
+        "On simplifie : $\\text{PGCD}(20, 24) = 4$, donc $\\frac{20}{24} = \\frac{5}{6}$."
+      ],
+      "f": "$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{a \\times c}{b \\times d}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Calcule : $\\frac{7}{5} \\div \\frac{3}{2} = $ ___",
+      "a": "14/15",
+      "options": [],
+      "steps": [
+        "Diviser par $\\frac{3}{2}$, c'est multiplier par son inverse $\\frac{2}{3}$. Donc $\\frac{7}{5} \\times \\frac{2}{3} = \\frac{14}{15}$.",
+        "$\\text{PGCD}(14, 15) = 1$ : le r\u00e9sultat est $\\frac{14}{15}$."
+      ],
+      "f": "$\\frac{a}{b} \\div \\frac{c}{d} = \\frac{a}{b} \\times \\frac{d}{c}$"
+    },
+    {
+      "lvl": 1,
+      "type": "vf",
+      "q": "Pour diviser par une fraction, on multiplie par son inverse.",
+      "a": "Vrai",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "Diviser par $\\frac{c}{d}$ revient \u00e0 multiplier par $\\frac{d}{c}$, c'est-\u00e0-dire l'inverse de la fraction.",
+        "Exemple : $\\frac{3}{4} \\div \\frac{2}{5} = \\frac{3}{4} \\times \\frac{5}{2} = \\frac{15}{8}$. La r\u00e8gle est bien correcte."
+      ],
+      "f": "$\\frac{a}{b} \\div \\frac{c}{d} = \\frac{a}{b} \\times \\frac{d}{c}$"
+    },
+    {
+      "lvl": 2,
+      "q": "Pour une recette, Karim doit utiliser $\\frac{2}{3}$ d'un paquet de $\\frac{3}{4}$ kg de sucre. Quelle masse de sucre utilise-t-il ?",
+      "a": "$\\frac{1}{2}$ kg",
+      "options": ["$\\frac{1}{2}$ kg", "$\\frac{3}{4}$ kg", "$\\frac{5}{7}$ kg"],
+      "steps": [
+        "On calcule $\\frac{2}{3}$ de $\\frac{3}{4}$ kg, soit $\\frac{2}{3} \\times \\frac{3}{4}$.",
+        "$\\frac{2 \\times 3}{3 \\times 4} = \\frac{6}{12} = \\frac{1}{2}$.",
+        "Karim utilise $\\frac{1}{2}$ kg de sucre."
+      ],
+      "f": "$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{a \\times c}{b \\times d}$"
+    },
+    {
+      "lvl": 2,
+      "q": "Nadia partage $\\frac{5}{6}$ d'un g\u00e2teau entre $\\frac{5}{3}$ de part. Quelle fraction du g\u00e2teau chaque part repr\u00e9sente-t-elle ?",
+      "a": "$\\frac{1}{2}$",
+      "options": ["$\\frac{1}{2}$", "$\\frac{25}{18}$", "$\\frac{3}{10}$"],
+      "steps": [
+        "On divise $\\frac{5}{6}$ par $\\frac{5}{3}$ : $\\frac{5}{6} \\div \\frac{5}{3} = \\frac{5}{6} \\times \\frac{3}{5}$.",
+        "$\\frac{5 \\times 3}{6 \\times 5} = \\frac{15}{30} = \\frac{1}{2}$.",
+        "Chaque part repr\u00e9sente $\\frac{1}{2}$ du g\u00e2teau."
+      ],
+      "f": "$\\frac{a}{b} \\div \\frac{c}{d} = \\frac{a}{b} \\times \\frac{d}{c}$"
+    },
+
+    {
+      "lvl": 1,
+      "type": "vf",
+      "q": "La fraction $\\frac{18}{24}$ est irr\u00e9ductible.",
+      "a": "Faux",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "$\\text{PGCD}(18, 24) = 6$. Comme le PGCD est diff\u00e9rent de $1$, la fraction n'est pas irr\u00e9ductible.",
+        "$\\frac{18}{24} = \\frac{18 \\div 6}{24 \\div 6} = \\frac{3}{4}$. Que peut-on en conclure ?"
+      ],
+      "f": "$\\frac{a}{b}$ est irr\u00e9ductible si $\\text{PGCD}(a, b) = 1$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "R\u00e9duis $\\frac{42}{56}$ \u00e0 sa forme irr\u00e9ductible : ___",
+      "a": "3/4",
+      "options": [],
+      "steps": [
+        "On cherche le PGCD de $42$ et $56$. $42 = 2 \\times 3 \\times 7$ et $56 = 2^3 \\times 7$. Donc $\\text{PGCD}(42, 56) = 2 \\times 7 = 14$.",
+        "$\\frac{42}{56} = \\frac{42 \\div 14}{56 \\div 14} = \\frac{3}{4}$."
+      ],
+      "f": "$\\frac{a}{b}$ est irr\u00e9ductible si $\\text{PGCD}(a, b) = 1$"
+    },
+    {
+      "lvl": 2,
+      "q": "Sofiane doit calculer $\\frac{2}{3}$ de $\\frac{3}{5}$ de $120$. Quel r\u00e9sultat obtient-il ?",
+      "a": "$48$",
+      "options": ["$48$", "$72$", "$40$"],
+      "steps": [
+        "On calcule d'abord $\\frac{3}{5}$ de $120$ : $\\frac{3}{5} \\times 120 = \\frac{360}{5} = 72$.",
+        "Puis $\\frac{2}{3}$ de $72$ : $\\frac{2}{3} \\times 72 = \\frac{144}{3} = 48$.",
+        "On peut aussi calculer directement : $\\frac{2}{3} \\times \\frac{3}{5} \\times 120 = \\frac{2}{5} \\times 120 = 48$."
+      ],
+      "f": "$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{a \\times c}{b \\times d}$"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "$\\frac{2}{3}$ de $\\frac{3}{4}$ est \u00e9gal \u00e0 $\\frac{1}{2}$.",
+      "a": "Vrai",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "$\\frac{2}{3}$ de $\\frac{3}{4}$ signifie $\\frac{2}{3} \\times \\frac{3}{4} = \\frac{6}{12}$.",
+        "$\\frac{6}{12} = \\frac{1}{2}$. Que peut-on en conclure ?"
+      ],
+      "f": "$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{a \\times c}{b \\times d}$"
+    },
+    {
+      "lvl": 2,
+      "q": "Quelle est la forme irr\u00e9ductible de $\\frac{45}{60}$ ?",
+      "a": "$\\frac{3}{4}$",
+      "options": ["$\\frac{3}{4}$", "$\\frac{9}{12}$", "$\\frac{15}{20}$"],
+      "steps": [
+        "D\u00e9composition : $45 = 3^2 \\times 5$ et $60 = 2^2 \\times 3 \\times 5$. Donc $\\text{PGCD}(45, 60) = 3 \\times 5 = 15$.",
+        "$\\frac{45}{60} = \\frac{45 \\div 15}{60 \\div 15} = \\frac{3}{4}$.",
+        "Les distracteurs $\\frac{9}{12}$ et $\\frac{15}{20}$ sont \u00e9gaux \u00e0 $\\frac{3}{4}$ mais ne sont pas irr\u00e9ductibles."
+      ],
+      "f": "$\\frac{a}{b}$ est irr\u00e9ductible si $\\text{PGCD}(a, b) = 1$"
+    },
+
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "In\u00e8s pr\u00e9pare un g\u00e2teau. La recette demande $\\frac{3}{4}$ L de lait. Elle veut faire $\\frac{2}{3}$ de la recette. Combien de litres de lait lui faut-il ? ___",
+      "a": "1/2",
+      "options": [],
+      "steps": [
+        "On calcule $\\frac{2}{3}$ de $\\frac{3}{4}$ L : $\\frac{2}{3} \\times \\frac{3}{4} = \\frac{6}{12}$.",
+        "$\\frac{6}{12} = \\frac{1}{2}$. Il lui faut $\\frac{1}{2}$ L de lait."
+      ],
+      "f": "$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{a \\times c}{b \\times d}$"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "In\u00e8s a exactement $\\frac{1}{2}$ L de lait dans son frigo. Elle a assez de lait pour ses $\\frac{2}{3}$ de recette.",
+      "a": "Vrai",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "On a calcul\u00e9 qu'il faut $\\frac{1}{2}$ L. In\u00e8s a $\\frac{1}{2}$ L.",
+        "$\\frac{1}{2} \\geq \\frac{1}{2}$ : elle a tout juste assez. Que peut-on en conclure ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "q": "Le g\u00e2teau d'In\u00e8s est coup\u00e9 en parts \u00e9gales. Elle le partage entre $5$ amis. Si le g\u00e2teau repr\u00e9sente $\\frac{2}{3}$ de la recette compl\u00e8te, quelle fraction de la recette compl\u00e8te chaque ami re\u00e7oit-il ?",
+      "a": "$\\frac{2}{15}$",
+      "options": ["$\\frac{2}{15}$", "$\\frac{2}{5}$", "$\\frac{1}{15}$"],
+      "steps": [
+        "On divise $\\frac{2}{3}$ par $5$ : $\\frac{2}{3} \\div 5 = \\frac{2}{3} \\times \\frac{1}{5} = \\frac{2}{15}$.",
+        "$\\text{PGCD}(2, 15) = 1$ : la fraction est irr\u00e9ductible.",
+        "Chaque ami re\u00e7oit $\\frac{2}{15}$ de la recette compl\u00e8te."
+      ],
+      "f": "$\\frac{a}{b} \\div n = \\frac{a}{b \\times n}$"
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "Chaque ami re\u00e7oit $\\frac{1}{5}$ du g\u00e2teau d'In\u00e8s. Apr\u00e8s que $4$ amis se sont servis, quelle fraction du g\u00e2teau reste-t-il ? ___",
+      "a": "1/5",
+      "options": [],
+      "steps": [
+        "$4$ amis prennent chacun $\\frac{1}{5}$, soit $4 \\times \\frac{1}{5} = \\frac{4}{5}$ du g\u00e2teau distribu\u00e9.",
+        "Il reste $1 - \\frac{4}{5} = \\frac{5}{5} - \\frac{4}{5} = \\frac{1}{5}$ du g\u00e2teau."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "q": "In\u00e8s veut tripler la recette originale. Il faut $\\frac{3}{4}$ L de lait et $\\frac{1}{3}$ L de cr\u00e8me par recette. Quelle quantit\u00e9 totale de liquide lui faut-il pour la recette tripl\u00e9e ?",
+      "a": "$\\frac{13}{4}$",
+      "options": ["$\\frac{13}{4}$", "$\\frac{69}{20}$", "$\\frac{10}{3}$"],
+      "steps": [
+        "Pour une recette : $\\frac{3}{4} + \\frac{1}{3}$. D\u00e9nominateur commun $12$ : $\\frac{9}{12} + \\frac{4}{12} = \\frac{13}{12}$.",
+        "Pour la recette tripl\u00e9e : $3 \\times \\frac{13}{12} = \\frac{39}{12} = \\frac{13}{4}$.",
+        "Il faut $\\frac{13}{4}$ L de liquide, soit $3{,}25$ L au total."
+      ],
+      "f": "$\\frac{a}{b} + \\frac{c}{d} = \\frac{a \\times d + c \\times b}{b \\times d}$"
+    }
+  ]
+}
