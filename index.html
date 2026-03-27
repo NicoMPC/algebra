@@ -4765,6 +4765,7 @@ function initApp(d, skipRender) {
       try { localStorage.setItem('mx_assigned_' + d.profile.code, JSON.stringify(S.assignedByProf)); } catch(e) {}
       S.exp[ncKey] = true;  // auto-déplie le nouveau chapitre
       if (nc.motProf) S.motProfChap[ncKey] = nc.motProf;
+      if (nc.insight) S.insights[ncKey] = nc.insight;
       delete S.chapDone[ncKey];
       try {
         var doneStore2 = JSON.parse(localStorage.getItem(DK) || '{}');
