@@ -316,6 +316,16 @@ function register(p) {
   // Email bienvenue J+0 (silencieux — ne bloque pas l'inscription si erreur)
   try { sendMarketingSequence(email, name, 0); } catch(e) {}
 
+  // Notification fondateur — nouvelle inscription
+  if (!isTest) {
+    try {
+      GmailApp.sendEmail(FOUNDER_EMAIL,
+        '[Matheux] Nouvelle inscription : ' + name + ' (' + level + ')',
+        name + ' (' + level + ') vient de s\'inscrire.\nEmail parent : ' + email + '\nCode : ' + code + '\nObjectif : ' + (objectif || '—')
+      );
+    } catch(e) {}
+  }
+
   // Curriculum officiel (chapitres du niveau)
   var curriculumOfficiel = [];
   getRows(SH.CURRICULUM)
@@ -469,13 +479,14 @@ function login(p) {
   var boostExistsInDB = todayBoost !== null;
 
   // ── Historique des scores ─────────────────────────────────
+  var _hasCalibration = false;
   var history = getRows(SH.SCORES)
     .filter(function(r) {
       if (!r['Code'] || String(r['Code']) !== code) return false;
       // Exclure CALIBRAGE (diagnostic) : ces scores ne doivent pas alimenter S.res
       // car ils collidaient avec les index des exercices curriculum (chapitres "entamés" fantômes)
       var chap = String(r['Chapitre'] || '');
-      if (chap === 'CALIBRAGE') return false;
+      if (chap === 'CALIBRAGE') { _hasCalibration = true; return false; }
       return true;
     })
     .map(function(r) {
@@ -683,6 +694,7 @@ function login(p) {
     revisionChapters:   revisionChapters,
     exerciseOverrides:  exerciseOverrides,
     prevExos:           prevExos,
+    hasCalibration:     _hasCalibration,
     trial:              checkTrialStatus({ code: code })
   };
 }

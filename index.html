@@ -4982,7 +4982,7 @@ function initApp(d, skipRender) {
   if (S.calState !== 'test') {
     // calDone : état UX local (diagnostic fait) — lu depuis LK
     var _calDone = loc[d.profile.code] ? loc[d.profile.code].calDone : false;
-    S.calState = _calDone ? null : (d.history.length === 0 ? 'sel' : null);
+    S.calState = (_calDone || d.hasCalibration) ? null : (d.history.length === 0 ? 'sel' : null);
   }
 
   if (S.boostEx && S.boost) loadBoost();
