@@ -1,0 +1,301 @@
+{
+  "niveau": "3EME",
+  "categorie": "Transformations_Brevet",
+  "titre": "Transformations",
+  "icone": "🔄",
+  "exos": [
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "L'image du point $A$ par l'homothétie de centre $O$ et de rapport $2$. Si $OA = 5$ cm, alors $OA' = $ ___ cm.",
+      "a": "10",
+      "options": [],
+      "steps": [
+        "Dans une homothétie de rapport $k$, on a $OA' = k \\times OA$.",
+        "Ici $k = 2$ et $OA = 5$, donc $OA' = 2 \\times 5 = $ ?",
+        "$OA' = 10$ cm. Le point $A'$ est deux fois plus loin de $O$ que $A$."
+      ],
+      "f": "$OA' = k \\times OA$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Le rapport d'une homothétie de centre $O$ est $k = -3$. Si $OA = 4$ cm, alors $OA' = $ ___ cm.",
+      "a": "12",
+      "options": [],
+      "steps": [
+        "Dans une homothétie de rapport $k$, on a $OA' = |k| \\times OA$. Si $k < 0$, $A'$ est de l'autre côté de $O$.",
+        "$OA' = |-3| \\times 4 = 3 \\times 4 = $ ?",
+        "$OA' = 12$ cm, et $A'$ se trouve du côté opposé à $A$ par rapport à $O$."
+      ],
+      "f": "$OA' = |k| \\times OA$"
+    },
+    {
+      "lvl": 1,
+      "type": "vf",
+      "q": "Une homothétie de rapport $1$ est l'identité : chaque point est sa propre image.",
+      "a": "Vrai",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "Si $k = 1$, alors $OA' = 1 \\times OA = OA$, donc $A' = A$.",
+        "Chaque point reste à sa place : c'est bien la transformation identité. Que peut-on en conclure ?"
+      ],
+      "f": "$OA' = k \\times OA$"
+    },
+    {
+      "lvl": 1,
+      "type": "vf",
+      "q": "Une homothétie de rapport négatif inverse l'orientation de la figure.",
+      "a": "Vrai",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "Quand $k < 0$, chaque point image se retrouve de l'autre côté du centre par rapport au point d'origine.",
+        "Le sens de parcours d'un polygone est inversé. Que peut-on en conclure ?"
+      ],
+      "f": "$OA' = k \\times OA$"
+    },
+    {
+      "lvl": 1,
+      "q": "Deux triangles sont semblables : le petit a des côtés de $3$ cm, $4$ cm et $5$ cm, le grand de $6$ cm, $8$ cm et $10$ cm. Quel est le rapport de l'homothétie qui envoie le petit sur le grand ?",
+      "a": "$2$",
+      "options": [
+        "$2$",
+        "$\\frac{1}{2}$",
+        "$3$"
+      ],
+      "steps": [
+        "On identifie le rapport en divisant un côté du grand triangle par le côté correspondant du petit.",
+        "$\\frac{6}{3} = 2$, $\\frac{8}{4} = 2$, $\\frac{10}{5} = 2$ : le rapport est constant.",
+        "Le rapport d'homothétie est $k = 2$."
+      ],
+      "f": "$k = \\frac{\\text{longueur image}}{\\text{longueur originale}}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Un plan est à l'échelle $\\frac{1}{50}$. Une pièce mesure $8$ cm sur le plan. En réalité, elle mesure ___ cm.",
+      "a": "400",
+      "options": [],
+      "steps": [
+        "L'échelle $\\frac{1}{50}$ signifie que $1$ cm sur le plan correspond à $50$ cm en réalité.",
+        "$8 \\times 50 = $ ?",
+        "La pièce mesure $400$ cm en réalité, soit $4$ m."
+      ],
+      "f": "$\\text{distance réelle} = \\text{distance plan} \\times \\text{dénominateur échelle}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Un agrandissement a un rapport $k = 3$. L'aire de la figure est multipliée par ___.",
+      "a": "9",
+      "options": [],
+      "steps": [
+        "Quand on agrandit une figure par un rapport $k$, les longueurs sont multipliées par $k$, mais les aires par $k^2$.",
+        "$k^2 = 3^2 = $ ?",
+        "L'aire est multipliée par $9$."
+      ],
+      "f": "$\\text{Aire image} = k^2 \\times \\text{Aire originale}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Une réduction a un rapport $k = 2$. Le volume d'un solide est multiplié par ___.",
+      "a": "8",
+      "options": [],
+      "steps": [
+        "Les longueurs sont multipliées par $k$, les aires par $k^2$, et les volumes par $k^3$.",
+        "$k^3 = 2^3 = $ ?",
+        "Le volume est multiplié par $8$."
+      ],
+      "f": "$\\text{Volume image} = k^3 \\times \\text{Volume original}$"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "Si le rapport d'agrandissement est $k = \\frac{1}{2}$, alors l'aire de l'image est la moitié de l'aire originale.",
+      "a": "Faux",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "L'aire n'est pas multipliée par $k$ mais par $k^2$.",
+        "$k^2 = \\left(\\frac{1}{2}\\right)^2 = \\frac{1}{4}$. L'aire est le quart de l'originale, pas la moitié. Que peut-on en conclure ?"
+      ],
+      "f": "$\\text{Aire image} = k^2 \\times \\text{Aire originale}$"
+    },
+    {
+      "lvl": 2,
+      "q": "Une maquette est au $\\frac{1}{100}$. L'aire réelle d'un terrain est $500$ m$^2$. Quelle est l'aire sur la maquette ?",
+      "a": "$500$ cm$^2$",
+      "options": [
+        "$500$ cm$^2$",
+        "$50$ cm$^2$",
+        "$5\\,000$ cm$^2$"
+      ],
+      "steps": [
+        "Le rapport d'échelle est $k = \\frac{1}{100}$. Les aires sont multipliées par $k^2 = \\frac{1}{10\\,000}$.",
+        "Aire maquette $= 500 \\times \\frac{1}{10\\,000} = 0{,}05$ m$^2$.",
+        "$0{,}05$ m$^2$ $= 0{,}05 \\times 10\\,000$ cm$^2$ $= 500$ cm$^2$."
+      ],
+      "f": "$\\text{Aire image} = k^2 \\times \\text{Aire originale}$"
+    },
+    {
+      "lvl": 1,
+      "type": "vf",
+      "q": "La symétrie axiale conserve les longueurs et les angles.",
+      "a": "Vrai",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "La symétrie axiale est une isométrie : elle conserve les distances entre les points.",
+        "Si les distances sont conservées, les angles le sont aussi. Que peut-on en conclure ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "type": "vf",
+      "q": "Une translation modifie la taille de la figure.",
+      "a": "Faux",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "Une translation déplace chaque point de la même distance et dans la même direction.",
+        "Les distances entre les points sont conservées : la figure garde sa forme et sa taille. Que peut-on en conclure ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "q": "L'image du point $A(2 \\,;\\, 3)$ par la translation de vecteur $\\vec{u}(4 \\,;\\, -1)$ est :",
+      "a": "$(6 \\,;\\, 2)$",
+      "options": [
+        "$(6 \\,;\\, 2)$",
+        "$(6 \\,;\\, 4)$",
+        "$(-2 \\,;\\, 4)$"
+      ],
+      "steps": [
+        "Pour trouver l'image par une translation, on ajoute les coordonnées du vecteur à celles du point.",
+        "$x' = 2 + 4 = 6$ et $y' = 3 + (-1) = 2$.",
+        "L'image est le point $(6 \\,;\\, 2)$."
+      ],
+      "f": "$A'(x + a \\,;\\, y + b)$ pour $\\vec{u}(a \\,;\\, b)$"
+    },
+    {
+      "lvl": 2,
+      "q": "L'image du point $B(1 \\,;\\, 0)$ par la rotation de centre $O(0 \\,;\\, 0)$ et d'angle $90°$ dans le sens direct est :",
+      "a": "$(0 \\,;\\, 1)$",
+      "options": [
+        "$(0 \\,;\\, 1)$",
+        "$(-1 \\,;\\, 0)$",
+        "$(0 \\,;\\, -1)$"
+      ],
+      "steps": [
+        "Une rotation de $90°$ dans le sens direct (antihoraire) envoie $(x \\,;\\, y)$ sur $(-y \\,;\\, x)$.",
+        "Pour $B(1 \\,;\\, 0)$ : $x' = -0 = 0$ et $y' = 1$.",
+        "L'image est $(0 \\,;\\, 1)$."
+      ],
+      "f": "$\\text{Rotation } 90° : (x \\,;\\, y) \\mapsto (-y \\,;\\, x)$"
+    },
+    {
+      "lvl": 2,
+      "q": "Quelle transformation conserve les longueurs ET les aires ?",
+      "a": "La symétrie centrale",
+      "options": [
+        "La symétrie centrale",
+        "L'homothétie de rapport $2$",
+        "L'homothétie de rapport $\\frac{1}{3}$"
+      ],
+      "steps": [
+        "Les isométries (symétries, translations, rotations) conservent toutes les longueurs et donc les aires.",
+        "L'homothétie de rapport $k \\neq 1$ multiplie les longueurs par $|k|$ et les aires par $k^2$.",
+        "Parmi les trois propositions, seule la symétrie centrale est une isométrie."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Un graphiste possède un logo de $4$ cm $\\times$ $6$ cm. Il l'agrandit avec un rapport $k = 3$. Les nouvelles dimensions sont ___ cm $\\times$ ___ cm.",
+      "a": "12 x 18",
+      "options": [],
+      "steps": [
+        "On multiplie chaque dimension par le rapport $k = 3$.",
+        "$4 \\times 3 = 12$ et $6 \\times 3 = 18$.",
+        "Le logo agrandi mesure $12$ cm $\\times$ $18$ cm."
+      ],
+      "f": "$\\text{dimension image} = k \\times \\text{dimension originale}$"
+    },
+    {
+      "lvl": 2,
+      "q": "Le logo original du graphiste a une aire de $24$ cm$^2$. Après agrandissement de rapport $k = 3$, quelle est l'aire du logo agrandi ?",
+      "a": "$216$ cm$^2$",
+      "options": [
+        "$216$ cm$^2$",
+        "$72$ cm$^2$",
+        "$648$ cm$^2$"
+      ],
+      "steps": [
+        "L'aire est multipliée par $k^2$ lors d'un agrandissement de rapport $k$.",
+        "$k^2 = 3^2 = 9$. Aire agrandie $= 24 \\times 9 = $ ?",
+        "L'aire du logo agrandi est $216$ cm$^2$."
+      ],
+      "f": "$\\text{Aire image} = k^2 \\times \\text{Aire originale}$"
+    },
+    {
+      "lvl": 2,
+      "q": "Le logo de $4$ cm $\\times$ $6$ cm doit tenir dans un cadre de $20$ cm $\\times$ $30$ cm. Quel est le rapport d'agrandissement maximal ?",
+      "a": "$5$",
+      "options": [
+        "$5$",
+        "$4$",
+        "$6$"
+      ],
+      "steps": [
+        "On calcule le rapport maximal pour chaque dimension : $\\frac{20}{4} = 5$ et $\\frac{30}{6} = 5$.",
+        "Les deux rapports sont égaux : le logo peut être agrandi exactement $5$ fois pour remplir le cadre.",
+        "Le rapport maximal est $k = 5$."
+      ],
+      "f": "$k = \\frac{\\text{dimension cadre}}{\\text{dimension logo}}$"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "Un agrandissement de rapport $5$ multiplie le périmètre par $25$.",
+      "a": "Faux",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "Le périmètre est une longueur : il est multiplié par $k$, pas par $k^2$.",
+        "Ici $k = 5$, donc le périmètre est multiplié par $5$. C'est l'aire qui est multipliée par $25 = 5^2$. Que peut-on en conclure ?"
+      ],
+      "f": "$\\text{Aire image} = k^2 \\times \\text{Aire originale}$"
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "Le graphiste imprime le logo en version 3D. Le volume original est $8$ cm$^3$. Après agrandissement de rapport $k = 3$, le volume est de ___ cm$^3$.",
+      "a": "216",
+      "options": [],
+      "steps": [
+        "Le volume est multiplié par $k^3$ lors d'un agrandissement de rapport $k$.",
+        "$k^3 = 3^3 = 27$. Volume agrandi $= 8 \\times 27 = $ ?",
+        "Le volume du logo agrandi est $216$ cm$^3$."
+      ],
+      "f": "$\\text{Volume image} = k^3 \\times \\text{Volume original}$"
+    }
+  ]
+}

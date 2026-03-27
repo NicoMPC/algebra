@@ -1,0 +1,301 @@
+{
+  "niveau": "3EME",
+  "categorie": "Arithmetique_Brevet",
+  "titre": "Arithmétique",
+  "icone": "🔑",
+  "exos": [
+    {
+      "lvl": 1,
+      "type": "vf",
+      "q": "$91$ est-il un nombre premier ?",
+      "a": "Faux",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "On teste la divisibilité par les nombres premiers : $2$, $3$, $5$, $7$...",
+        "$91 \\div 7 = 13$. Donc $91 = 7 \\times 13$.",
+        "$91$ a d'autres diviseurs que $1$ et lui-même : ce n'est pas un nombre premier."
+      ],
+      "f": "$\\text{Un nombre premier n'a que deux diviseurs : } 1 \\text{ et lui-même.}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Quel est le plus petit nombre premier strictement supérieur à $20$ ? ___",
+      "a": "23",
+      "options": [],
+      "steps": [
+        "$21 = 3 \\times 7$, $22 = 2 \\times 11$ : ni l'un ni l'autre n'est premier.",
+        "$23$ : on teste $2$, $3$ (car $3^2 = 9 < 23 < 25 = 5^2$). Aucun ne divise $23$.",
+        "$23$ est le plus petit nombre premier supérieur à $20$."
+      ],
+      "f": "$\\text{Un nombre premier n'a que deux diviseurs : } 1 \\text{ et lui-même.}$"
+    },
+    {
+      "lvl": 1,
+      "q": "Parmi ces trois nombres, lequel n'est PAS un nombre premier : $37$, $39$, $41$ ?",
+      "a": "$39$",
+      "options": [
+        "$39$",
+        "$37$",
+        "$41$"
+      ],
+      "steps": [
+        "On teste chaque nombre. $37$ : divisible par $2$, $3$, $5$ ? Non → premier. $41$ : idem → premier.",
+        "$39 \\div 3 = 13$. Donc $39 = 3 \\times 13$.",
+        "$39$ n'est pas premier car il admet $3$ et $13$ comme diviseurs."
+      ],
+      "f": "$\\text{Un nombre premier n'a que deux diviseurs : } 1 \\text{ et lui-même.}$"
+    },
+    {
+      "lvl": 1,
+      "q": "Quelle est la décomposition en facteurs premiers de $60$ ?",
+      "a": "$2^2 \\times 3 \\times 5$",
+      "options": [
+        "$2^2 \\times 3 \\times 5$",
+        "$2 \\times 3 \\times 10$",
+        "$2^2 \\times 15$"
+      ],
+      "steps": [
+        "On divise par les nombres premiers successifs : $60 \\div 2 = 30$, $30 \\div 2 = 15$.",
+        "$15 \\div 3 = 5$, et $5$ est premier.",
+        "$60 = 2 \\times 2 \\times 3 \\times 5 = 2^2 \\times 3 \\times 5$."
+      ],
+      "f": "$\\text{Tout entier } \\geq 2 \\text{ se décompose en produit de facteurs premiers.}$"
+    },
+    {
+      "lvl": 1,
+      "type": "vf",
+      "q": "$2$ est le seul nombre premier pair.",
+      "a": "Vrai",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "Un nombre pair est divisible par $2$.",
+        "Si un nombre pair est supérieur à $2$, il a au moins trois diviseurs : $1$, $2$ et lui-même.",
+        "Donc aucun nombre pair supérieur à $2$ ne peut être premier. Que peut-on en conclure ?"
+      ],
+      "f": "$\\text{Un nombre premier n'a que deux diviseurs : } 1 \\text{ et lui-même.}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Décompose $84$ en produit de facteurs premiers : $84 = $ ___",
+      "a": "$2^2 \\times 3 \\times 7$",
+      "options": [],
+      "steps": [
+        "$84 \\div 2 = 42$, puis $42 \\div 2 = 21$.",
+        "$21 \\div 3 = 7$, et $7$ est premier.",
+        "$84 = 2 \\times 2 \\times 3 \\times 7 = 2^2 \\times 3 \\times 7$."
+      ],
+      "f": "$\\text{Tout entier } \\geq 2 \\text{ se décompose en produit de facteurs premiers.}$"
+    },
+    {
+      "lvl": 1,
+      "q": "Quelle est la décomposition en facteurs premiers de $150$ ?",
+      "a": "$2 \\times 3 \\times 5^2$",
+      "options": [
+        "$2 \\times 3 \\times 5^2$",
+        "$2 \\times 3^2 \\times 5$",
+        "$2 \\times 5^3$"
+      ],
+      "steps": [
+        "$150 \\div 2 = 75$. Puis $75 \\div 3 = 25$.",
+        "$25 \\div 5 = 5$, et $5$ est premier.",
+        "$150 = 2 \\times 3 \\times 5 \\times 5 = 2 \\times 3 \\times 5^2$."
+      ],
+      "f": "$\\text{Tout entier } \\geq 2 \\text{ se décompose en produit de facteurs premiers.}$"
+    },
+    {
+      "lvl": 1,
+      "q": "Quelle est la décomposition en facteurs premiers de $360$ ?",
+      "a": "$2^3 \\times 3^2 \\times 5$",
+      "options": [
+        "$2^3 \\times 3^2 \\times 5$",
+        "$2^2 \\times 3^2 \\times 10$",
+        "$2^3 \\times 3 \\times 15$"
+      ],
+      "steps": [
+        "$360 \\div 2 = 180$, $180 \\div 2 = 90$, $90 \\div 2 = 45$.",
+        "$45 \\div 3 = 15$, $15 \\div 3 = 5$, et $5$ est premier.",
+        "$360 = 2^3 \\times 3^2 \\times 5$."
+      ],
+      "f": "$\\text{Tout entier } \\geq 2 \\text{ se décompose en produit de facteurs premiers.}$"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "$120 = 2^3 \\times 3 \\times 5$.",
+      "a": "Vrai",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "On calcule le produit : $2^3 = 8$.",
+        "$8 \\times 3 = 24$, puis $24 \\times 5 = 120$.",
+        "Le produit donne bien $120$. Que peut-on en conclure ?"
+      ],
+      "f": "$\\text{Tout entier } \\geq 2 \\text{ se décompose en produit de facteurs premiers.}$"
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "Le nombre $2^2 \\times 5 \\times 7$ vaut : ___",
+      "a": "140",
+      "options": [],
+      "steps": [
+        "$2^2 = 4$.",
+        "$4 \\times 5 = 20$, puis $20 \\times 7 = $ ?",
+        "On obtient $140$."
+      ],
+      "f": "$\\text{Tout entier } \\geq 2 \\text{ se décompose en produit de facteurs premiers.}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Calcule $\\text{PGCD}(84\\, ;\\, 126)$ en utilisant la décomposition en facteurs premiers. ___",
+      "a": "42",
+      "options": [],
+      "steps": [
+        "$84 = 2^2 \\times 3 \\times 7$ et $126 = 2 \\times 3^2 \\times 7$.",
+        "On prend le minimum de chaque exposant : $2^1 \\times 3^1 \\times 7^1$.",
+        "$\\text{PGCD}(84\\, ;\\, 126) = 2 \\times 3 \\times 7 = $ ?"
+      ],
+      "f": "$\\text{PGCD}(a, b) = \\text{produit des facteurs premiers communs avec le plus petit exposant}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Calcule $\\text{PGCD}(48\\, ;\\, 36)$. ___",
+      "a": "12",
+      "options": [],
+      "steps": [
+        "$48 = 2^4 \\times 3$ et $36 = 2^2 \\times 3^2$.",
+        "Facteurs communs : $2$ (exposant min $2$) et $3$ (exposant min $1$).",
+        "$\\text{PGCD}(48\\, ;\\, 36) = 2^2 \\times 3 = 4 \\times 3 = $ ?"
+      ],
+      "f": "$\\text{PGCD}(a, b) = \\text{produit des facteurs premiers communs avec le plus petit exposant}$"
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "On veut découper un terrain rectangulaire de $84$ m par $126$ m en parcelles carrées identiques les plus grandes possible. Quel est le côté de chaque parcelle ? ___ m",
+      "a": "42",
+      "options": [],
+      "steps": [
+        "Le côté doit diviser à la fois $84$ et $126$ : on cherche le $\\text{PGCD}(84\\, ;\\, 126)$.",
+        "$84 = 2^2 \\times 3 \\times 7$ et $126 = 2 \\times 3^2 \\times 7$. $\\text{PGCD} = 2 \\times 3 \\times 7$.",
+        "Le côté de chaque parcelle mesure $2 \\times 3 \\times 7 = $ ? m."
+      ],
+      "f": "$\\text{PGCD}(a, b) = \\text{produit des facteurs premiers communs avec le plus petit exposant}$"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "Si $\\text{PGCD}(a\\, ;\\, b) = 1$, alors $a$ et $b$ sont premiers entre eux.",
+      "a": "Vrai",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "Deux nombres sont premiers entre eux si leur seul diviseur commun est $1$.",
+        "Le $\\text{PGCD}$ est le plus grand diviseur commun. S'il vaut $1$, le seul diviseur commun est $1$.",
+        "C'est exactement la définition. Que peut-on en conclure ?"
+      ],
+      "f": "$\\text{PGCD}(a, b) = 1 \\Leftrightarrow a \\text{ et } b \\text{ sont premiers entre eux}$"
+    },
+    {
+      "lvl": 2,
+      "q": "$\\text{PGCD}(15\\, ;\\, 25) = $ ?",
+      "a": "$5$",
+      "options": [
+        "$5$",
+        "$15$",
+        "$1$"
+      ],
+      "steps": [
+        "$15 = 3 \\times 5$ et $25 = 5^2$.",
+        "Seul facteur commun : $5$ (exposant min $1$).",
+        "$\\text{PGCD}(15\\, ;\\, 25) = 5$."
+      ],
+      "f": "$\\text{PGCD}(a, b) = \\text{produit des facteurs premiers communs avec le plus petit exposant}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Inès prépare des sachets identiques avec $48$ bonbons rouges et $36$ bonbons verts. Quel est le nombre maximum de sachets qu'elle peut faire ? ___",
+      "a": "12",
+      "options": [],
+      "steps": [
+        "Chaque sachet doit contenir le même nombre de rouges ET de verts. On cherche $\\text{PGCD}(48\\, ;\\, 36)$.",
+        "$48 = 2^4 \\times 3$ et $36 = 2^2 \\times 3^2$. $\\text{PGCD} = 2^2 \\times 3 = 12$.",
+        "Inès peut faire au maximum ? sachets."
+      ],
+      "f": "$\\text{PGCD}(a, b) = \\text{produit des facteurs premiers communs avec le plus petit exposant}$"
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "Inès fait $12$ sachets avec ses $48$ bonbons rouges et $36$ bonbons verts. Combien de bonbons rouges y a-t-il dans chaque sachet ? ___",
+      "a": "4",
+      "options": [],
+      "steps": [
+        "Il y a $12$ sachets et $48$ bonbons rouges au total.",
+        "$48 \\div 12 = $ ?",
+        "Chaque sachet contient ? bonbons rouges (et $36 \\div 12 = 3$ bonbons verts)."
+      ],
+      "f": "$\\text{PGCD}(a, b) = \\text{produit des facteurs premiers communs avec le plus petit exposant}$"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "Inès ajoute $24$ bonbons bleus à ses $48$ rouges et $36$ verts. Le nombre maximum de sachets identiques reste $12$.",
+      "a": "Vrai",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "On calcule $\\text{PGCD}(48\\, ;\\, 36\\, ;\\, 24)$. On connaît $\\text{PGCD}(48\\, ;\\, 36) = 12$.",
+        "$24 = 2^3 \\times 3$. $\\text{PGCD}(12\\, ;\\, 24) = 12$ car $12$ divise $24$.",
+        "Le $\\text{PGCD}$ des trois nombres est $12$. Que peut-on en conclure ?"
+      ],
+      "f": "$\\text{PGCD}(a, b) = \\text{produit des facteurs premiers communs avec le plus petit exposant}$"
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "Noé dispose de $60$ bonbons rouges et $45$ bonbons verts. Quel est le nombre maximum de sachets identiques ? ___",
+      "a": "15",
+      "options": [],
+      "steps": [
+        "On cherche $\\text{PGCD}(60\\, ;\\, 45)$. $60 = 2^2 \\times 3 \\times 5$ et $45 = 3^2 \\times 5$.",
+        "Facteurs communs : $3$ (exposant min $1$) et $5$ (exposant min $1$).",
+        "$\\text{PGCD}(60\\, ;\\, 45) = 3 \\times 5 = $ ? sachets."
+      ],
+      "f": "$\\text{PGCD}(a, b) = \\text{produit des facteurs premiers communs avec le plus petit exposant}$"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "La fraction $\\dfrac{48}{36}$ est irréductible.",
+      "a": "Faux",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "Une fraction est irréductible si $\\text{PGCD}(\\text{numérateur}\\, ;\\, \\text{dénominateur}) = 1$.",
+        "$\\text{PGCD}(48\\, ;\\, 36) = 12 \\neq 1$. On peut simplifier : $\\dfrac{48}{36} = \\dfrac{48 \\div 12}{36 \\div 12} = \\dfrac{4}{3}$.",
+        "La fraction n'est pas irréductible, sa forme simplifiée est $\\dfrac{4}{3}$. Que peut-on en conclure ?"
+      ],
+      "f": "$\\text{PGCD}(a, b) = 1 \\Leftrightarrow \\dfrac{a}{b} \\text{ est irréductible}$"
+    }
+  ]
+}

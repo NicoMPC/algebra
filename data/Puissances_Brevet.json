@@ -1,0 +1,240 @@
+{
+  "niveau": "3EME",
+  "categorie": "Puissances_Brevet",
+  "titre": "Puissances",
+  "icone": "🔢",
+  "exos": [
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Complète : $2^3 \\times 2^5 = 2^{\\text{___}}$",
+      "a": "8",
+      "options": [],
+      "steps": [
+        "Quand on multiplie deux puissances de même base, on additionne les exposants : $a^n \\times a^m = a^{n+m}$.",
+        "$2^3 \\times 2^5 = 2^{3+5} = 2^{?}$."
+      ],
+      "f": "$a^n \\times a^m = a^{n+m}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Complète : $(3^2)^4 = 3^{\\text{___}}$",
+      "a": "8",
+      "options": [],
+      "steps": [
+        "Quand on élève une puissance à une puissance, on multiplie les exposants : $(a^n)^m = a^{n \\times m}$.",
+        "$(3^2)^4 = 3^{2 \\times 4} = 3^{?}$."
+      ],
+      "f": "$(a^n)^m = a^{n \\times m}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Complète : $5^{-2} = $ ___",
+      "a": "$\\frac{1}{25}$",
+      "options": [],
+      "steps": [
+        "Un exposant négatif signifie qu'on passe au dénominateur : $a^{-n} = \\frac{1}{a^n}$.",
+        "$5^{-2} = \\frac{1}{5^2} = \\frac{1}{?}$."
+      ],
+      "f": "$a^{-n} = \\frac{1}{a^n}$"
+    },
+    {
+      "lvl": 1,
+      "type": "vf",
+      "q": "$2^3 \\times 3^3 = 6^3$",
+      "a": "Vrai",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "On utilise la règle $a^n \\times b^n = (a \\times b)^n$ : quand les exposants sont identiques, on peut regrouper les bases.",
+        "$2^3 \\times 3^3 = (2 \\times 3)^3 = 6^3$. Vérifions : $8 \\times 27 = 216$ et $6^3 = 216$. Que peut-on en conclure ?"
+      ],
+      "f": "$a^n \\times b^n = (a \\times b)^n$"
+    },
+    {
+      "lvl": 1,
+      "q": "Simplifie $\\frac{7^5}{7^2}$.",
+      "a": "$7^3$",
+      "options": ["$7^3$", "$7^7$", "$7^{10}$"],
+      "steps": [
+        "Quand on divise deux puissances de même base, on soustrait les exposants : $\\frac{a^n}{a^m} = a^{n-m}$.",
+        "$\\frac{7^5}{7^2} = 7^{5-2} = 7^{?}$."
+      ],
+      "f": "$\\frac{a^n}{a^m} = a^{n-m}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Complète : $10^3 \\times 10^{-5} = 10^{\\text{___}}$",
+      "a": "-2",
+      "options": [],
+      "steps": [
+        "On additionne les exposants : $10^3 \\times 10^{-5} = 10^{3+(-5)}$.",
+        "$3 + (-5) = 3 - 5 = ?$."
+      ],
+      "f": "$a^n \\times a^m = a^{n+m}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Écris en notation scientifique : $0{,}00042 = $ ___",
+      "a": "$4{,}2 \\times 10^{-4}$",
+      "options": [],
+      "steps": [
+        "La notation scientifique s'écrit $a \\times 10^n$ avec $1 \\leq a < 10$. Ici $a = 4{,}2$.",
+        "On compte le nombre de rangs pour passer de $0{,}00042$ à $4{,}2$ : la virgule se déplace de $4$ rangs vers la droite, donc $n = ?$."
+      ],
+      "f": "$a \\times 10^n$ avec $1 \\leq a < 10$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Écris en notation scientifique : $35\\,400 = $ ___",
+      "a": "$3{,}54 \\times 10^4$",
+      "options": [],
+      "steps": [
+        "On identifie $a = 3{,}54$ (entre $1$ et $10$).",
+        "Pour passer de $3{,}54$ à $35\\,400$, on déplace la virgule de $4$ rangs vers la droite : $3{,}54 \\times 10^{?}$."
+      ],
+      "f": "$a \\times 10^n$ avec $1 \\leq a < 10$"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "$3{,}5 \\times 10^2 = 350$",
+      "a": "Vrai",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "$10^2 = 100$. On calcule $3{,}5 \\times 100$.",
+        "$3{,}5 \\times 100 = 350$. Que peut-on en conclure ?"
+      ],
+      "f": "$a \\times 10^n$ avec $1 \\leq a < 10$"
+    },
+    {
+      "lvl": 2,
+      "q": "Quel nombre est le plus grand ?",
+      "a": "$6{,}1 \\times 10^5$",
+      "options": ["$6{,}1 \\times 10^5$", "$9{,}8 \\times 10^4$", "$5{,}3 \\times 10^6$"],
+      "steps": [
+        "Pour comparer des nombres en notation scientifique, on regarde d'abord la puissance de $10$ : $10^6 > 10^5 > 10^4$.",
+        "$5{,}3 \\times 10^6 = 5\\,300\\,000$, $6{,}1 \\times 10^5 = 610\\,000$, $9{,}8 \\times 10^4 = 98\\,000$. Le plus grand est donc $5{,}3 \\times 10^6$."
+      ],
+      "f": "$a \\times 10^n$ avec $1 \\leq a < 10$"
+    },
+    {
+      "lvl": 1,
+      "q": "La distance Terre-Lune est d'environ $384\\,000$ km. Quel est l'ordre de grandeur de cette distance ?",
+      "a": "$10^5$ km",
+      "options": ["$10^5$ km", "$10^6$ km", "$10^4$ km"],
+      "steps": [
+        "L'ordre de grandeur est la puissance de $10$ la plus proche. $384\\,000$ est entre $10^5 = 100\\,000$ et $10^6 = 1\\,000\\,000$.",
+        "$384\\,000$ est plus proche de $10^5$ que de $10^6$ (car $384\\,000 < 500\\,000$). L'ordre de grandeur est donc $10^{?}$ km."
+      ],
+      "f": "$a \\times 10^n$ avec $1 \\leq a < 10$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Un globule rouge mesure $7 \\times 10^{-6}$ m. En micromètres ($\\mu$m), cela fait ___ $\\mu$m.",
+      "a": "7",
+      "options": [],
+      "steps": [
+        "Un micromètre vaut $10^{-6}$ m, donc $1\\;\\mu\\text{m} = 10^{-6}$ m.",
+        "$7 \\times 10^{-6}\\;\\text{m} = 7 \\times 1\\;\\mu\\text{m} = ?\\;\\mu\\text{m}$."
+      ],
+      "f": "$1\\;\\mu\\text{m} = 10^{-6}\\;\\text{m}$"
+    },
+    {
+      "lvl": 2,
+      "q": "La distance Terre-Soleil est d'environ $1{,}5 \\times 10^8$ km et la distance Terre-Lune est d'environ $3{,}8 \\times 10^5$ km. Combien de fois le Soleil est-il plus loin que la Lune (ordre de grandeur) ?",
+      "a": "Environ $400$ fois",
+      "options": ["Environ $400$ fois", "Environ $40$ fois", "Environ $4\\,000$ fois"],
+      "steps": [
+        "On divise : $\\frac{1{,}5 \\times 10^8}{3{,}8 \\times 10^5} = \\frac{1{,}5}{3{,}8} \\times 10^{8-5}$.",
+        "$\\frac{1{,}5}{3{,}8} \\approx 0{,}39$ et $10^3 = 1000$. Donc $0{,}39 \\times 1000 \\approx ?$."
+      ],
+      "f": "$\\frac{a \\times 10^n}{b \\times 10^m} = \\frac{a}{b} \\times 10^{n-m}$"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "$10^{-3}$ est plus grand que $10^{-5}$.",
+      "a": "Vrai",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "$10^{-3} = 0{,}001$ et $10^{-5} = 0{,}00001$.",
+        "$0{,}001 > 0{,}00001$. Plus l'exposant négatif est proche de $0$, plus le nombre est grand. Que peut-on en conclure ?"
+      ],
+      "f": "$a^{-n} = \\frac{1}{a^n}$"
+    },
+    {
+      "lvl": 2,
+      "q": "Un cheveu humain a un diamètre d'environ $70\\;\\mu$m. Exprime ce diamètre en mètres, en notation scientifique.",
+      "a": "$7 \\times 10^{-5}$ m",
+      "options": ["$7 \\times 10^{-5}$ m", "$7 \\times 10^{-4}$ m", "$70 \\times 10^{-6}$ m"],
+      "steps": [
+        "$70\\;\\mu\\text{m} = 70 \\times 10^{-6}\\;\\text{m}$. Mais $70 \\times 10^{-6}$ n'est pas en notation scientifique car $70 \\geq 10$.",
+        "On écrit $70 = 7 \\times 10^1$, donc $70 \\times 10^{-6} = 7 \\times 10^{1+(-6)} = 7 \\times 10^{?}$ m."
+      ],
+      "f": "$1\\;\\mu\\text{m} = 10^{-6}\\;\\text{m}$"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "La distance Terre-Soleil est d'environ $150$ millions de km. En notation scientifique : ___ km.",
+      "a": "$1{,}5 \\times 10^8$",
+      "options": [],
+      "steps": [
+        "$150$ millions $= 150\\,000\\,000$. On cherche $a \\times 10^n$ avec $1 \\leq a < 10$.",
+        "$a = 1{,}5$ et la virgule se déplace de $8$ rangs : $1{,}5 \\times 10^{?}$."
+      ],
+      "f": "$a \\times 10^n$ avec $1 \\leq a < 10$"
+    },
+    {
+      "lvl": 2,
+      "q": "Le diamètre d'un atome d'hydrogène est environ $1{,}2 \\times 10^{-10}$ m et le diamètre de la Terre est environ $1{,}3 \\times 10^7$ m. Quel est l'ordre de grandeur du rapport $\\frac{\\text{diamètre Terre}}{\\text{diamètre atome}}$ ?",
+      "a": "$10^{17}$",
+      "options": ["$10^{17}$", "$10^{7}$", "$10^{-3}$"],
+      "steps": [
+        "On calcule $\\frac{1{,}3 \\times 10^7}{1{,}2 \\times 10^{-10}} = \\frac{1{,}3}{1{,}2} \\times 10^{7-(-10)}$.",
+        "$\\frac{1{,}3}{1{,}2} \\approx 1{,}08$ et $10^{7+10} = 10^{17}$. Le rapport est donc de l'ordre de $10^{?}$."
+      ],
+      "f": "$\\frac{a \\times 10^n}{b \\times 10^m} = \\frac{a}{b} \\times 10^{n-m}$"
+    },
+    {
+      "lvl": 2,
+      "q": "La lumière parcourt $3 \\times 10^5$ km par seconde. Quelle distance parcourt-elle en une heure ?",
+      "a": "$1{,}08 \\times 10^9$ km",
+      "options": ["$1{,}08 \\times 10^9$ km", "$1{,}8 \\times 10^7$ km", "$3 \\times 10^8$ km"],
+      "steps": [
+        "Une heure = $3600$ secondes $= 3{,}6 \\times 10^3$ s. La distance $= 3 \\times 10^5 \\times 3{,}6 \\times 10^3$.",
+        "$3 \\times 3{,}6 = 10{,}8$ et $10^5 \\times 10^3 = 10^8$. Donc $10{,}8 \\times 10^8 = 1{,}08 \\times 10^{?}$ km."
+      ],
+      "f": "$a^n \\times a^m = a^{n+m}$"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "L'ordre de grandeur de $6{,}2 \\times 10^{23}$ (nombre d'Avogadro) est $10^{24}$.",
+      "a": "Vrai",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "L'ordre de grandeur de $a \\times 10^n$ dépend de $a$ : si $a \\geq 5$, l'ordre de grandeur est $10^{n+1}$ ; si $a < 5$, c'est $10^n$.",
+        "$a = 6{,}2 \\geq 5$, donc l'ordre de grandeur est $10^{23+1} = 10^{24}$. Que peut-on en conclure ?"
+      ],
+      "f": "$a \\times 10^n$ avec $1 \\leq a < 10$"
+    },
+    {
+      "lvl": 2,
+      "q": "La lumière du Soleil met environ $8$ minutes à atteindre la Terre. Sachant que la vitesse de la lumière est $3 \\times 10^5$ km/s, retrouve la distance Terre-Soleil.",
+      "a": "$1{,}44 \\times 10^8$ km",
+      "options": ["$1{,}44 \\times 10^8$ km", "$2{,}4 \\times 10^7$ km", "$1{,}44 \\times 10^6$ km"],
+      "steps": [
+        "On convertit $8$ minutes en secondes : $8 \\times 60 = 480$ s $= 4{,}8 \\times 10^2$ s.",
+        "Distance $= v \\times t = 3 \\times 10^5 \\times 4{,}8 \\times 10^2 = 14{,}4 \\times 10^7 = 1{,}44 \\times 10^{?}$ km."
+      ],
+      "f": "$d = v \\times t$"
+    }
+  ]
+}

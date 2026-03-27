@@ -1,0 +1,297 @@
+{
+  "niveau": "3EME",
+  "categorie": "Inequations_Brevet",
+  "titre": "Inéquations",
+  "icone": "⚖️",
+  "exos": [
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Resous l'inequation $2x - 3 > 7$. La solution est $x > $ ___",
+      "a": "5",
+      "options": [],
+      "steps": [
+        "On isole le terme en $x$ : $2x > 7 + 3$, soit $2x > 10$.",
+        "On divise par $2$ (positif, le sens ne change pas) : $x > \\frac{10}{2}$.",
+        "Donc $x > $ ?"
+      ],
+      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Resous l'inequation $-4x + 1 \\leq 9$. La solution est $x \\geq $ ___",
+      "a": "-2",
+      "options": [],
+      "steps": [
+        "On isole le terme en $x$ : $-4x \\leq 9 - 1$, soit $-4x \\leq 8$.",
+        "On divise par $-4$ : attention, on divise par un nombre negatif, donc l'inegalite change de sens ! $x \\geq \\frac{8}{-4}$.",
+        "Donc $x \\geq $ ?"
+      ],
+      "f": "$ax + b \\leq c \\Leftrightarrow x \\geq \\frac{c - b}{a}$ (si $a < 0$, le sens change)"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Resous l'inequation $5x + 2 < 3x + 10$. La solution est $x < $ ___",
+      "a": "4",
+      "options": [],
+      "steps": [
+        "On regroupe les termes en $x$ a gauche : $5x - 3x < 10 - 2$, soit $2x < 8$.",
+        "On divise par $2$ (positif, le sens ne change pas) : $x < \\frac{8}{2}$.",
+        "Donc $x < $ ?"
+      ],
+      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
+    },
+    {
+      "lvl": 1,
+      "type": "vf",
+      "q": "Si on multiplie les deux membres d'une inegalite par un nombre negatif, alors l'inegalite change de sens.",
+      "a": "Vrai",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "Prenons un exemple : $3 < 5$. Multiplions par $-1$ : $-3$ et $-5$.",
+        "On obtient $-3 > -5$ : l'inegalite a bien change de sens.",
+        "C'est une regle fondamentale : multiplier ou diviser par un negatif inverse le sens. Que peut-on en conclure ?"
+      ],
+      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
+    },
+    {
+      "lvl": 1,
+      "q": "Resous l'inequation $\\frac{x}{3} - 2 \\geq 1$. Quelle est la solution ?",
+      "a": "$x \\geq 9$",
+      "options": [
+        "$x \\geq 9$",
+        "$x \\geq 3$",
+        "$x \\leq 9$"
+      ],
+      "steps": [
+        "On isole $\\frac{x}{3}$ : $\\frac{x}{3} \\geq 1 + 2$, soit $\\frac{x}{3} \\geq 3$.",
+        "On multiplie par $3$ (positif, le sens ne change pas) : $x \\geq 3 \\times 3$.",
+        "Donc $x \\geq 9$."
+      ],
+      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
+    },
+    {
+      "lvl": 1,
+      "q": "L'ensemble des solutions de $x > 3$ est :",
+      "a": "$]3 ; +\\infty[$",
+      "options": [
+        "$]3 ; +\\infty[$",
+        "$[3 ; +\\infty[$",
+        "$]-\\infty ; 3[$"
+      ],
+      "steps": [
+        "L'inegalite est stricte ($>$, pas $\\geq$) : $3$ n'est pas inclus dans les solutions.",
+        "Le crochet ouvert $]$ signifie que la borne n'est pas incluse. Le crochet ferme $[$ signifie qu'elle est incluse.",
+        "Les solutions sont tous les nombres strictement superieurs a $3$ : $]3 ; +\\infty[$."
+      ],
+      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
+    },
+    {
+      "lvl": 1,
+      "q": "L'ensemble des solutions de $x \\leq -2$ est :",
+      "a": "$]-\\infty ; -2]$",
+      "options": [
+        "$]-\\infty ; -2]$",
+        "$]-\\infty ; -2[$",
+        "$[-2 ; +\\infty[$"
+      ],
+      "steps": [
+        "L'inegalite est large ($\\leq$) : $-2$ est inclus dans les solutions.",
+        "Le crochet ferme $]$ du cote de $-2$ signifie que $-2$ fait partie de l'ensemble.",
+        "Les solutions sont tous les nombres inferieurs ou egaux a $-2$ : $]-\\infty ; -2]$."
+      ],
+      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
+    },
+    {
+      "lvl": 1,
+      "type": "vf",
+      "q": "$x = 5$ est solution de l'inequation $x > 5$.",
+      "a": "Faux",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "L'inegalite $x > 5$ est stricte : on demande que $x$ soit strictement superieur a $5$.",
+        "Or $5 > 5$ est faux, car $5 = 5$ (egalite, pas superieur strict).",
+        "Que peut-on en conclure sur la difference entre $>$ et $\\geq$ ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "$x = -2$ est solution de l'inequation $x \\geq -2$.",
+      "a": "Vrai",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "L'inegalite $x \\geq -2$ est large : on demande que $x$ soit superieur ou egal a $-2$.",
+        "Or $-2 \\geq -2$ est vrai, car $-2 = -2$ (l'egalite est acceptee).",
+        "Que peut-on en conclure ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "Le plus petit entier solution de $x > 3{,}5$ est ___ .",
+      "a": "4",
+      "options": [],
+      "steps": [
+        "On cherche le plus petit nombre entier qui soit strictement superieur a $3{,}5$.",
+        "Les entiers sont $\\ldots, 2, 3, 4, 5, \\ldots$ Le premier qui depasse $3{,}5$ est $4$."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Un cinema propose des places a $8$ euros. Jade dispose de $50$ euros. Combien de places peut-elle acheter au maximum ? ___",
+      "a": "6",
+      "options": [],
+      "steps": [
+        "On pose l'inequation : $8x \\leq 50$, ou $x$ est le nombre de places.",
+        "On divise : $x \\leq \\frac{50}{8} = 6{,}25$.",
+        "Comme $x$ doit etre un nombre entier de places, on prend la partie entiere : $x = $ ?"
+      ],
+      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Un reservoir de $40$ L se vide a $3$ L par minute. Apres combien de minutes au maximum reste-t-il au moins $10$ L ? ___",
+      "a": "10",
+      "options": [],
+      "steps": [
+        "Apres $t$ minutes, il reste $40 - 3t$ litres. On veut $40 - 3t \\geq 10$.",
+        "On isole $t$ : $-3t \\geq 10 - 40$, soit $-3t \\geq -30$. On divise par $-3$ (negatif !) : le sens change, $t \\leq 10$.",
+        "Le reservoir contient au moins $10$ L tant que $t \\leq $ ? minutes."
+      ],
+      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
+    },
+    {
+      "lvl": 2,
+      "q": "Hugo a $30$ euros. Il veut acheter des cahiers a $3{,}50$ euros et un stylo a $2$ euros. Quelle inequation modelise le nombre maximal de cahiers $n$ qu'il peut acheter ?",
+      "a": "$3{,}5n + 2 \\leq 30$",
+      "options": [
+        "$3{,}5n + 2 \\leq 30$",
+        "$3{,}5n \\leq 30$",
+        "$3{,}5n + 2 \\geq 30$"
+      ],
+      "steps": [
+        "Le cout total est : prix des cahiers + prix du stylo = $3{,}5 \\times n + 2$.",
+        "Ce cout doit etre inferieur ou egal au budget de $30$ euros : $3{,}5n + 2 \\leq 30$.",
+        "On obtient $3{,}5n \\leq 28$, soit $n \\leq 8$. Hugo peut acheter $8$ cahiers maximum."
+      ],
+      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "Ines affirme que $x = 7$ est solution de $-3x + 5 > -20$. A-t-elle raison ?",
+      "a": "Vrai",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "On remplace $x$ par $7$ : $-3 \\times 7 + 5 = -21 + 5 = -16$.",
+        "On verifie : $-16 > -20$ ? Oui, car $-16$ est plus grand que $-20$ sur la droite des nombres.",
+        "Que peut-on en conclure ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "Adam s'entraine a la course. Il veut courir au moins $10$ km cette semaine. Il a deja couru $3{,}5$ km. Combien de kilometres lui reste-t-il a parcourir au minimum ? ___",
+      "a": "6.5",
+      "options": [],
+      "steps": [
+        "Soit $d$ la distance restante. On veut : $3{,}5 + d \\geq 10$.",
+        "On isole $d$ : $d \\geq 10 - 3{,}5 = 6{,}5$.",
+        "Adam doit parcourir au moins $6{,}5$ km."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "Une sortie scolaire coute $200$ euros de bus plus $12$ euros par eleve pour l'entree. Le budget maximum est de $500$ euros. Combien d'eleves peuvent participer au maximum ? ___",
+      "a": "25",
+      "options": [],
+      "steps": [
+        "On pose l'inequation : $200 + 12x \\leq 500$, ou $x$ est le nombre d'eleves.",
+        "On isole $x$ : $12x \\leq 500 - 200 = 300$, soit $x \\leq \\frac{300}{12} = 25$.",
+        "Donc $x \\leq $ ? eleves au maximum."
+      ],
+      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "La sortie scolaire coute $200$ euros de bus, $12$ euros d'entree et $8$ euros de cantine par eleve. Avec un budget de $500$ euros, combien d'eleves au maximum ? ___",
+      "a": "15",
+      "options": [],
+      "steps": [
+        "Le cout par eleve est $12 + 8 = 20$ euros. L'inequation devient $200 + 20x \\leq 500$.",
+        "On isole $x$ : $20x \\leq 300$, soit $x \\leq \\frac{300}{20} = 15$.",
+        "Au maximum ? eleves peuvent participer."
+      ],
+      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
+    },
+    {
+      "lvl": 2,
+      "q": "Avec le bus ($200$ euros), l'entree ($12$ euros/eleve) et la cantine ($8$ euros/eleve), et la contrainte qu'il faut au moins $10$ eleves pour que le bus parte, quel est l'encadrement du nombre $x$ d'eleves possibles (budget $500$ euros) ?",
+      "a": "$10 \\leq x \\leq 15$",
+      "options": [
+        "$10 \\leq x \\leq 15$",
+        "$10 \\leq x \\leq 25$",
+        "$10 < x < 15$"
+      ],
+      "steps": [
+        "Contrainte budget : $200 + 20x \\leq 500$, soit $x \\leq 15$.",
+        "Contrainte minimum : $x \\geq 10$ (le bus ne part pas en dessous).",
+        "En combinant : $10 \\leq x \\leq 15$."
+      ],
+      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "La sortie scolaire coute $200$ euros de bus, $12$ euros d'entree et $8$ euros de cantine par eleve. Avec $20$ eleves et un budget de $500$ euros, le budget est depasse.",
+      "a": "Vrai",
+      "options": [
+        "Vrai",
+        "Faux"
+      ],
+      "steps": [
+        "Cout total : $200 + 20 \\times 20 = 200 + 400 = 600$ euros.",
+        "On compare : $600 > 500$, donc le budget de $500$ euros est bien depasse.",
+        "Que peut-on en conclure ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "Pour la sortie scolaire, le bus coute $200$ euros et la cantine $8$ euros par eleve. On veut emmener $20$ eleves avec un budget de $500$ euros. Quel est le prix maximum par entree $p$ (en euros) ? ___",
+      "a": "7",
+      "options": [],
+      "steps": [
+        "Cout total : $200 + 8 \\times 20 + 20p = 200 + 160 + 20p = 360 + 20p$.",
+        "On veut $360 + 20p \\leq 500$, soit $20p \\leq 140$, donc $p \\leq 7$.",
+        "Le prix maximum par entree est de ? euros."
+      ],
+      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
+    }
+  ]
+}
