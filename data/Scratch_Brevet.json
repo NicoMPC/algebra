@@ -1,0 +1,256 @@
+{
+  "niveau": "3EME",
+  "categorie": "Scratch_Brevet",
+  "titre": "Scratch et algorithmique",
+  "icone": "🐱",
+  "exos": [
+    {
+      "lvl": 1,
+      "q": "On exécute le script suivant :\n$x \\leftarrow 7$\n$x \\leftarrow x \\times 3 - 1$\nQue vaut $x$ à la fin ?",
+      "a": "$20$",
+      "options": ["$20$", "$22$", "$18$"],
+      "steps": [
+        "On part de $x = 7$. L'instruction suivante remplace $x$ par $x \\times 3 - 1$.",
+        "$x \\times 3 = 7 \\times 3 = 21$, puis $21 - 1 = \\;?$.",
+        "On obtient $x = 20$."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "q": "Voici un script :\n$a \\leftarrow 4$\n$b \\leftarrow a + 3$\n$a \\leftarrow b \\times 2$\nQue vaut $a$ à la fin ?",
+      "a": "$14$",
+      "options": ["$11$", "$14$", "$8$"],
+      "steps": [
+        "On suit les instructions dans l'ordre : $a = 4$, puis $b = 4 + 3 = 7$.",
+        "Ensuite $a$ est remplacé par $b \\times 2 = 7 \\times 2 = \\;?$.",
+        "Attention : $a$ a changé de valeur. On obtient $a = 14$."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "On exécute :\n$n \\leftarrow 10$\n$n \\leftarrow n - 3$\n$n \\leftarrow n \\times 2$\nQue vaut $n$ ? Complète : $n =$ ___",
+      "a": "14",
+      "options": [],
+      "steps": [
+        "On part de $n = 10$. La deuxième ligne donne $n = 10 - 3 = 7$.",
+        "La troisième ligne donne $n = 7 \\times 2 = \\;?$.",
+        "On obtient $n = 14$."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "q": "Jade exécute ce programme de calcul :\nChoisir un nombre $x$.\nLe multiplier par $5$.\nAjouter $2$.\nElle choisit $x = 3$. Quel résultat obtient-elle ?",
+      "a": "$17$",
+      "options": ["$17$", "$25$", "$13$"],
+      "steps": [
+        "On suit les étapes : $x = 3$, puis on multiplie par $5$ : $3 \\times 5 = 15$.",
+        "On ajoute $2$ : $15 + 2 = \\;?$.",
+        "Le résultat est $17$."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "type": "vf",
+      "q": "On exécute le script :\n$x \\leftarrow 2$\n$x \\leftarrow x \\times x$\n$x \\leftarrow x + 1$\nAffirmation : \"$x$ vaut $6$ à la fin.\"",
+      "a": "Faux",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "On part de $x = 2$. La deuxième ligne donne $x = 2 \\times 2 = 4$.",
+        "La troisième ligne donne $x = 4 + 1 = 5$, pas $6$.",
+        "Quelle est l'erreur ? On a confondu $x \\times x$ avec $x \\times 2$ peut-être."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "q": "On exécute :\n$s \\leftarrow 0$\nRépéter $3$ fois :\n  $s \\leftarrow s + 4$\nQue vaut $s$ à la fin ?",
+      "a": "$12$",
+      "options": ["$12$", "$4$", "$7$"],
+      "steps": [
+        "On part de $s = 0$. La boucle s'exécute $3$ fois, et à chaque tour on ajoute $4$.",
+        "Tour 1 : $s = 0 + 4 = 4$. Tour 2 : $s = 4 + 4 = 8$. Tour 3 : $s = 8 + 4 = \\;?$.",
+        "Après $3$ tours, $s = 12$."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "type": "fill",
+      "q": "On exécute :\n$c \\leftarrow 1$\nRépéter $4$ fois :\n  $c \\leftarrow c \\times 2$\nQue vaut $c$ ? Complète : $c =$ ___",
+      "a": "16",
+      "options": [],
+      "steps": [
+        "On part de $c = 1$. À chaque tour, $c$ est multiplié par $2$.",
+        "Tour 1 : $c = 2$. Tour 2 : $c = 4$. Tour 3 : $c = 8$. Tour 4 : $c = \\;?$.",
+        "On double $4$ fois : $1 \\to 2 \\to 4 \\to 8 \\to 16$."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "q": "Lucas exécute ce script :\n$n \\leftarrow 5$\nRépéter $3$ fois :\n  $n \\leftarrow n + n$\nQue vaut $n$ à la fin ?",
+      "a": "$40$",
+      "options": ["$15$", "$40$", "$20$"],
+      "steps": [
+        "On part de $n = 5$. L'instruction $n \\leftarrow n + n$ double la valeur de $n$ à chaque tour.",
+        "Tour 1 : $n = 10$. Tour 2 : $n = 20$. Tour 3 : $n = \\;?$.",
+        "Attention : $n + n$ est un doublement, pas une addition de $5$. On obtient $n = 40$."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "q": "On exécute :\n$k \\leftarrow 0$\n$i \\leftarrow 1$\nRépéter $5$ fois :\n  $k \\leftarrow k + i$\n  $i \\leftarrow i + 1$\nQue vaut $k$ à la fin ?",
+      "a": "$15$",
+      "options": ["$15$", "$10$", "$5$"],
+      "steps": [
+        "Deux variables : $k$ accumule une somme et $i$ augmente de $1$ à chaque tour.",
+        "Tour 1 : $k = 0 + 1 = 1$, $i = 2$. Tour 2 : $k = 1 + 2 = 3$, $i = 3$. Tour 3 : $k = 3 + 3 = 6$, $i = 4$. Tour 4 : $k = 6 + 4 = 10$, $i = 5$.",
+        "Tour 5 : $k = 10 + 5 = \\;?$. Ce script calcule $1 + 2 + 3 + 4 + 5$."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "On exécute :\n$t \\leftarrow 1$\nRépéter $6$ fois :\n  $t \\leftarrow t + 2$\nAffirmation : \"$t$ vaut $12$ à la fin.\"",
+      "a": "Faux",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "On part de $t = 1$ et on ajoute $2$ six fois.",
+        "Après $6$ tours : $t = 1 + 6 \\times 2 = 1 + 12 = 13$, pas $12$.",
+        "L'erreur serait d'oublier la valeur initiale $t = 1$ et de penser que $t$ part de $0$. Que peut-on en conclure ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "q": "On exécute :\n$x \\leftarrow 15$\nSi $x > 10$ alors\n  $x \\leftarrow x - 5$\nSinon\n  $x \\leftarrow x + 5$\nQue vaut $x$ à la fin ?",
+      "a": "$10$",
+      "options": ["$10$", "$20$", "$5$"],
+      "steps": [
+        "On teste la condition : $x = 15 > 10$ ? Oui, donc on entre dans le bloc \"alors\".",
+        "$x \\leftarrow 15 - 5 = \\;?$.",
+        "On obtient $x = 10$. Le bloc \"sinon\" n'est pas exécuté."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "q": "Emma exécute ce script avec l'entrée $n = 3$ :\nSi $n \\times n > 10$ alors\n  Afficher \"Grand\"\nSinon\n  Afficher \"Petit\"\nQu'affiche le script ?",
+      "a": "Petit",
+      "options": ["Grand", "Petit", "Rien"],
+      "steps": [
+        "On calcule $n \\times n = 3 \\times 3 = 9$. On teste : $9 > 10$ ?",
+        "Non, $9 < 10$, donc on entre dans le bloc \"sinon\".",
+        "Le script affiche \"Petit\". Pour afficher \"Grand\", il faudrait $n \\geq 4$ (car $4^2 = 16 > 10$)."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "On exécute :\n$p \\leftarrow 0$\nPour $i$ allant de $1$ à $4$ :\n  Si $i$ est pair alors\n    $p \\leftarrow p + i$\nQue vaut $p$ ? Complète : $p =$ ___",
+      "a": "6",
+      "options": [],
+      "steps": [
+        "On parcourt $i = 1, 2, 3, 4$. On n'ajoute $i$ à $p$ que si $i$ est pair.",
+        "$i = 1$ : impair, on passe. $i = 2$ : pair, $p = 0 + 2 = 2$. $i = 3$ : impair, on passe. $i = 4$ : pair, $p = 2 + 4 = \\;?$.",
+        "On obtient $p = 6$, la somme des nombres pairs de $1$ à $4$."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "On exécute le script suivant avec $x = -2$ :\nSi $x > 0$ alors\n  $r \\leftarrow x \\times 2$\nSinon\n  $r \\leftarrow x \\times (-1)$\nAffirmation : \"Le script affiche toujours un nombre positif ou nul.\"",
+      "a": "Vrai",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "Si $x > 0$ : $r = x \\times 2 > 0$ (positif). Si $x \\leq 0$ : $r = x \\times (-1) = -x \\geq 0$ (positif ou nul).",
+        "Avec $x = -2$ : on entre dans le \"sinon\", $r = (-2) \\times (-1) = 2 > 0$.",
+        "Dans tous les cas, $r \\geq 0$. Que peut-on en conclure sur le rôle de ce script ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "q": "Noé exécute ce script :\n$m \\leftarrow 100$\nRépéter $3$ fois :\n  Si $m > 50$ alors\n    $m \\leftarrow m - 30$\n  Sinon\n    $m \\leftarrow m + 10$\nQue vaut $m$ à la fin ?",
+      "a": "$50$",
+      "options": ["$50$", "$40$", "$10$"],
+      "steps": [
+        "Tour 1 : $m = 100 > 50$ ? Oui, $m = 100 - 30 = 70$. Tour 2 : $m = 70 > 50$ ? Oui, $m = 70 - 30 = 40$.",
+        "Tour 3 : $m = 40 > 50$ ? Non, $m = 40 + 10 = \\;?$.",
+        "On obtient $m = 50$. Le branchement change au tour 3 car $40 \\leq 50$."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 1,
+      "q": "Un lutin part de l'origine. Il exécute :\nRépéter $4$ fois :\n  Avancer de $10$ pas\n  Tourner de $90°$ vers la droite\nQuelle figure le lutin trace-t-il ?",
+      "a": "Un carré",
+      "options": ["Un triangle", "Un carré", "Un hexagone"],
+      "steps": [
+        "Le lutin avance de $10$ pas puis tourne de $90°$, et il répète ça $4$ fois.",
+        "$4$ segments de même longueur avec des angles de $90°$ : c'est la définition d'un carré.",
+        "Un carré a $4$ côtés égaux et $4$ angles droits ($90°$)."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "type": "fill",
+      "q": "Le lutin trace un polygone régulier en exécutant :\nRépéter $n$ fois :\n  Avancer de $10$ pas\n  Tourner de $90°$ vers la droite\nCombien de fois doit-il répéter pour revenir exactement au point de départ ? Complète : $n =$ ___",
+      "a": "4",
+      "options": [],
+      "steps": [
+        "Pour revenir au départ, le lutin doit tourner de $360°$ au total.",
+        "À chaque tour il tourne de $90°$. On cherche $n$ tel que $n \\times 90 = 360$.",
+        "$n = 360 \\div 90 = \\;?$."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "q": "On modifie le script du lutin : l'angle passe à $60°$ au lieu de $90°$.\nRépéter $6$ fois :\n  Avancer de $10$ pas\n  Tourner de $60°$ vers la droite\nQuelle figure le lutin trace-t-il ?",
+      "a": "Un hexagone régulier",
+      "options": ["Un triangle équilatéral", "Un hexagone régulier", "Un pentagone régulier"],
+      "steps": [
+        "Le lutin tourne de $60°$ à chaque étape et répète $6$ fois : $6 \\times 60° = 360°$, il revient au départ.",
+        "$6$ côtés de même longueur avec des angles de $60°$ entre chaque segment : c'est un hexagone régulier.",
+        "Pour un triangle équilatéral, l'angle extérieur serait $120°$ (pas $60°$). Pour un pentagone, il faudrait $72°$."
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "type": "vf",
+      "q": "Un lutin exécute :\nRépéter $3$ fois :\n  Avancer de $10$ pas\n  Tourner de $90°$ vers la droite\nAffirmation : \"Le lutin revient à son point de départ.\"",
+      "a": "Faux",
+      "options": ["Vrai", "Faux"],
+      "steps": [
+        "Le lutin fait $3$ segments de $10$ pas avec des virages de $90°$. Il tourne au total de $3 \\times 90° = 270°$.",
+        "Pour revenir au point de départ, il faut tourner de $360°$ au total, soit $4$ répétitions (car $4 \\times 90° = 360°$).",
+        "Avec seulement $3$ répétitions, le lutin a tracé $3$ côtés d'un carré mais ne revient pas au départ. Que peut-on en conclure ?"
+      ],
+      "f": ""
+    },
+    {
+      "lvl": 2,
+      "q": "Inès traduit ce script Scratch en formule algébrique :\nChoisir un nombre $x$\n$x \\leftarrow x + 3$\n$x \\leftarrow x \\times 2$\n$x \\leftarrow x - 6$\nAfficher $x$\nQuelle expression donne le résultat en fonction du nombre de départ $x$ ?",
+      "a": "$2x$",
+      "options": ["$2x$", "$2x + 6$", "$2x - 3$"],
+      "steps": [
+        "On suit les transformations : départ $x$, puis $x + 3$, puis $(x + 3) \\times 2 = 2x + 6$, puis $2x + 6 - 6 = 2x$.",
+        "On développe : $2(x + 3) - 6 = 2x + 6 - 6 = \\;?$.",
+        "La formule simplifiée est $2x$. Ce programme de calcul revient à doubler le nombre de départ."
+      ],
+      "f": ""
+    }
+  ]
+}
