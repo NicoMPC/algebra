@@ -53,8 +53,8 @@ Les vues sont des fonctions JS qui injectent du HTML dans `#main` :
 | Landing | Rendu directement dans le HTML | Page d'accueil marketing |
 | Trial Flow | `startTrialFlow()` → overlay fullscreen (`#trial-flow.flow-fs`) | Quiz diagnostic inline pre-inscription, 4 steps (classe → chapitres → quiz → inscription) |
 | Chapitres | `rSection('CHAPITRES', ...)` | Liste des chapitres + "Mon Boost du jour" |
-| Exercice | `rSection('EXERCICE', ...)` | Quiz MCQ avec indices/formule |
-| Calibrage | `rSection('CALIBRAGE', ...)` | Diagnostic (quiz initial) |
+| Exercice | `rSection('EXERCICE', ...)` | Quiz avec indices/formule. Format v4 : contexte parapluie sticky (`data._ctx`), tables HTML (`data.table`), consigne dessin (`data.draw`), formule masquable (`data.f_disabled`) |
+| Calibrage | `rSection('CALIBRAGE', ...)` | Diagnostic express (5 questions, ~1 min). Banque 54 questions dans DiagnosticExos |
 | Progression | `rSection('PROGRESSION', ...)` | Barres de progression par chapitre |
 | Brevet | `rSection('BREVET', ...)` | Mode brevet blanc (3EME only) |
 | Admin | `rSection('ADMIN', ...)` | Cockpit admin @88 — 6 onglets : À FAIRE / NOUVEAU / FAIT / MAILS / INACTIFS / RAPPORT. NOUVEAU = inscrits du jour + statut mail J+0. Boutons "Copier JSON complet" (exos+résultats+temps+indices+formule). Profils test visibles. |

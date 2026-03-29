@@ -46,7 +46,7 @@ Argument commercial principal : "Un système supervisé par un accompagnant exp�
 1. Parent arrive sur matheux.fr → hero ciblé parent → 11 sections (problème, solution, fondateur, prix, FAQ, CTA)
 2. CTA "Voir où en est mon enfant →" → overlay fullscreen (masque la landing, focus total)
 3. Step 1 : choix classe (6e-3e) → Step 2 : "Qu'est-ce que tu as vu en cours ?" (bouton "Je ne sais pas trop" = auto-select 65%, min 1 chapitre)
-4. Step 3 : quiz diagnostic inline (4-10 questions, box stable sans jump)
+4. Step 3 : quiz diagnostic express — **5 questions, ~1 min** (banque de 54 questions, 3 par chapitre, piochées aléatoirement). Message : "5 questions express, 1 minute chrono"
 5. Carte résultat : barre animée + récit ("2 bases solides, 1 point à travailler") + tags chapitres + objectif picker intégré (4 choix)
 6. Step 4 : formulaire inscription (prénom + email + MDP + consentement parental)
 7. Compte créé → code 6 chars → accès immédiat

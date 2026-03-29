@@ -39,8 +39,8 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 | `Progress` | Score/statut par chapitre par élève | ❌ |
 | `Scores` | Toutes les réponses individuelles | ❌ |
 | `DailyBoosts` | Historique des boosts quotidiens | Lecture + admin panel |
-| `Curriculum_Officiel` | Exercices par chapitre (1080 exos) | ❌ Via scripts Python seulement |
-| `DiagnosticExos` | Exercices de diagnostic (108 exos) | ❌ Via scripts Python seulement |
+| `Curriculum_Officiel` | Exercices par chapitre (440 exos, format parapluie v4 aplati) | ❌ Via scripts Python seulement |
+| `DiagnosticExos` | Exercices de diagnostic (54 exos, 3 par chapitre × 18 chapitres) | ❌ Via scripts Python seulement |
 | `RemediationChapters` | Chapitres de remédiation (désactivé) | ❌ |
 | `BrevetExos` | Exercices brevet 3EME (144 exos, 15 chap, format standard) | ❌ Via script Python seulement |
 | `BrevetResults` | Résultats brevets blancs | ❌ |
