@@ -220,6 +220,15 @@ function parseJSON(str) {
   try { return JSON.parse(str || '[]'); } catch (e) { return []; }
 }
 
+// Security: prevent Google Sheets formula injection in user-supplied text
+function _sanitizeSheetCell(val) {
+  var s = String(val);
+  if (s.charAt(0) === '=' || s.charAt(0) === '+' || s.charAt(0) === '-' || s.charAt(0) === '@') {
+    return "'" + s;
+  }
+  return s;
+}
+
 function shuffle(arr) {
   var a = arr.slice();
   for (var i = a.length - 1; i > 0; i--) {
@@ -765,6 +774,19 @@ function _saveScoreInner(p) {
   if (!isValidLevel(String(p.level || '').toUpperCase())) {
     return { status: 'error', message: 'Niveau invalide.' };
   }
+  // C3 security: block expired trial users from submitting scores
+  var _userRows = getRows(SH.USERS).filter(function(r){ return String(r['Code']) === String(p.code); });
+  if (_userRows.length > 0) {
+    var _u = _userRows[0];
+    var _prem = String(_u['Premium'] || '0');
+    if (_prem !== '1' && _u['TrialStart']) {
+      var _trialStart = new Date(_u['TrialStart']);
+      var _daysSince = Math.floor((Date.now() - _trialStart.getTime()) / 86400000);
+      if (_daysSince > 7) {
+        return { status: 'error', message: 'Essai terminé. Passe à l\'abonnement pour continuer.' };
+      }
+    }
+  }
 
   // ── Dedup : rejeter si (code, categorie, exercice_idx, date) existe déjà ──
   var dedupDate = p.answeredAt && /^\d{4}-\d{2}-\d{2}$/.test(p.answeredAt) ? p.answeredAt : today();
@@ -787,13 +809,13 @@ function _saveScoreInner(p) {
     String(p.level),
     String(p.categorie),
     p.exercice_idx,
-    String(p.q        || ''),
+    _sanitizeSheetCell(String(p.q || '')),
     String(p.resultat),
     parseInt(p.time   || 0),
     parseInt(p.indices || 0),
     p.formule ? 1 : 0,
-    String(p.wrongOpt || ''),
-    String(p.draft    || ''),
+    _sanitizeSheetCell(String(p.wrongOpt || '')),
+    _sanitizeSheetCell(String(p.draft    || '')),
     p.answeredAt && /^\d{4}-\d{2}-\d{2}$/.test(p.answeredAt) ? p.answeredAt : today(),
     String(p.source   || '')  // col N — 'BOOST' / 'CALIBRAGE' / '' (curriculum)
   ]);
@@ -3098,7 +3120,7 @@ function processPendingAtLogin(code) {
 // C2 security fix: verify student identity (code + email match)
 // Returns true if email matches the stored email for this code, or if email is empty (graceful degradation for old clients).
 function _verifyStudentEmail(code, email) {
-  if (!email) return true; // graceful degradation — old frontend versions don't send email
+  if (!email) return false; // SECURITY: email required — blocks unauthenticated score injection
   var users = getRows(SH.USERS);
   for (var i = 0; i < users.length; i++) {
     if (String(users[i]['Code']) === code) {

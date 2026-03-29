@@ -2514,7 +2514,7 @@ let S = {
   trial: null,            // { trialActive, daysLeft, isPremium } — depuis GAS login()
   drafts: {},          // { exoId → { img, txt } }
   sent: new Set(),
-  scoreQueue: JSON.parse(localStorage.getItem('sq') || '[]'),
+  scoreQueue: (function(){ try { return JSON.parse(localStorage.getItem('sq') || '[]'); } catch(e) { localStorage.removeItem('sq'); return []; } })(),
   adminMode: false, timeOffset: 0, forceFail: false,
   adminStudents: [], adminTab: 'todo', adminCoursData: null, _adminBrevChaps: [], _adminChapsByLevel: {},
   tmpEmail: '', tmpHash: '',
@@ -2887,7 +2887,7 @@ async function flushQ() {
     var json = await resp.json().catch(function(){ return {}; });
     if (resp.ok && json.status === 'success') {
       S.scoreQueue.shift();
-      localStorage.setItem('sq', JSON.stringify(S.scoreQueue));
+      try { localStorage.setItem('sq', JSON.stringify(S.scoreQueue)); } catch(e) {}
       _flushRetry = 0;
       if (S.scoreQueue.length) setTimeout(flushQ, 400);
     } else {
@@ -4961,7 +4961,7 @@ function initApp(d, skipRender) {
 
   if (!loc[S.prof.code]) loc[S.prof.code] = { stk:1, last:tod() };
   S.stk = loc[S.prof.code].stk || 1;
-  localStorage.setItem(LK, JSON.stringify(loc));
+  try { localStorage.setItem(LK, JSON.stringify(loc)); } catch(e) {}
 
   document.getElementById('landing-screen').classList.add('hidden');
   document.getElementById('auth-screen').classList.add('hidden');
