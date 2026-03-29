@@ -1662,7 +1662,7 @@
         <div class="bg-white/10 border border-white/15 rounded-2xl p-6">
           <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4" style="background:linear-gradient(135deg,#1E40AF,#3B82F6)">✨</div>
           <h2 class="text-xl font-extrabold text-white text-center mb-1" id="fl-heading" style="letter-spacing:-.02em">Plus qu'une étape</h2>
-          <p class="text-white/55 text-sm text-center mb-6" id="fl-desc">Son programme personnalisé l'attend — 7 jours offerts, sans carte bancaire.</p>
+          <p class="text-white/55 text-sm text-center mb-6" id="fl-desc">Ton programme personnalisé t'attend — 7 jours offerts, sans carte bancaire.</p>
           <div class="space-y-3">
             <input type="text"     id="fl-name"  class="flow-inp" placeholder="Comment tu t'appelles ?" autocomplete="given-name">
             <input type="email"    id="fl-email" class="flow-inp" placeholder="Email du parent" autocomplete="email">
@@ -3830,7 +3830,7 @@ function _flowActivateStep3Guest() {
   container.innerHTML =
     '<div style="text-align:center;animation:flowIn .4s ease-out">' +
     '<div style="font-size:3rem;margin-bottom:.5rem">' + (pct >= 70 ? '🎉' : pct >= 40 ? '💪' : '🎯') + '</div>' +
-    '<div style="font-family:Inter,sans-serif;font-weight:800;font-size:1.4rem;color:#fff;margin-bottom:.75rem;letter-spacing:-.02em">Voici exactement où il en est</div>' +
+    '<div style="font-family:Inter,sans-serif;font-weight:800;font-size:1.4rem;color:#fff;margin-bottom:.75rem;letter-spacing:-.02em">Voici exactement où tu en es</div>' +
     '<div style="margin:1rem auto;max-width:260px">' +
     '<div style="height:8px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden">' +
     '<div id="flow-result-bar" style="height:100%;background:linear-gradient(90deg,#1E40AF,#3B82F6);border-radius:99px;width:0%;transition:width 1s ease-out"></div>' +
@@ -3841,8 +3841,8 @@ function _flowActivateStep3Guest() {
     (weakChaps.length > 0 ? '<p style="color:#60A5FA;font-size:.82rem;font-weight:600;margin-bottom:.5rem">On a identifié ' + weakChaps.length + ' point' + (weakChaps.length > 1 ? 's' : '') + ' à travailler en priorité.</p>' : '') +
     '<p style="color:rgba(255,255,255,.45);font-size:.78rem;margin-bottom:1rem">En 2 semaines, ça peut déjà changer.</p>' +
     '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:.3rem;margin-bottom:1.5rem">' + tagsHtml + '</div>' +
-    '<button onclick="_flowShowObjectifScreen()" style="width:100%;padding:1rem 1.25rem;background:#10B981;border:none;border-radius:var(--l-radius,14px);color:#fff;font-family:Inter,sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:all .15s;box-shadow:0 4px 16px rgba(16,185,129,.3)" onmouseover="this.style.transform=\'scale(1.02)\'" onmouseout="this.style.transform=\'none\'">Voir son programme personnalisé</button>' +
-    '<p style="color:rgba(255,255,255,.3);font-size:.72rem;margin-top:.75rem">Créé automatiquement à partir de ses réponses</p>' +
+    '<button onclick="_flowShowObjectifScreen()" style="width:100%;padding:1rem 1.25rem;background:#10B981;border:none;border-radius:var(--l-radius,14px);color:#fff;font-family:Inter,sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:all .15s;box-shadow:0 4px 16px rgba(16,185,129,.3)" onmouseover="this.style.transform=\'scale(1.02)\'" onmouseout="this.style.transform=\'none\'">Voir mon programme personnalisé</button>' +
+    '<p style="color:rgba(255,255,255,.3);font-size:.72rem;margin-top:.75rem">Créé automatiquement à partir de tes réponses</p>' +
     '</div>';
 
   // Animate bar + counter
@@ -3875,8 +3875,8 @@ function _flowShowObjectifScreen() {
   container.innerHTML =
     '<div style="text-align:center;animation:flowSlideIn .32s ease-out">' +
     '<div style="font-size:2.5rem;margin-bottom:.75rem">💬</div>' +
-    '<div style="font-family:Inter,sans-serif;font-weight:800;color:#fff;font-size:1.2rem;margin-bottom:.4rem;letter-spacing:-.02em">Quel est son objectif principal ?</div>' +
-    '<p style="color:rgba(255,255,255,.45);font-size:.85rem;line-height:1.5;margin-bottom:1.25rem">Cela nous permet de personnaliser son parcours dès le premier jour.</p>' +
+    '<div style="font-family:Inter,sans-serif;font-weight:800;color:#fff;font-size:1.2rem;margin-bottom:.4rem;letter-spacing:-.02em">Quel est ton objectif principal ?</div>' +
+    '<p style="color:rgba(255,255,255,.45);font-size:.85rem;line-height:1.5;margin-bottom:1.25rem">Ça nous permet de personnaliser ton parcours dès le premier jour.</p>' +
     (window._flowObjHtml || '') +
     '<p style="color:rgba(255,255,255,.25);font-size:.7rem;margin-top:1rem">Tu pourras changer à tout moment</p>' +
     '</div>';
@@ -3885,11 +3885,11 @@ function _flowShowObjectifScreen() {
 function _flowGoToRegister(objKey) {
   _flowObjectif = objKey;
   var h2 = document.getElementById('fl-heading');
-  if (h2) h2.textContent = 'Son programme est pr\u00eat.';
+  if (h2) h2.textContent = 'Ton programme est pr\u00eat.';
   var desc = document.getElementById('fl-desc');
-  if (desc) desc.textContent = 'On a identifi\u00e9 ses lacunes \u2014 ne perdez pas ces r\u00e9sultats.';
+  if (desc) desc.textContent = 'On a identifi\u00e9 tes lacunes \u2014 ne perds pas ces r\u00e9sultats.';
   var btnTxt = document.getElementById('fl-btn-txt');
-  if (btnTxt) btnTxt.textContent = 'Continuer et voir son programme';
+  if (btnTxt) btnTxt.textContent = 'Continuer et voir mon programme';
   var btn = document.getElementById('fl-btn');
   if (btn) btn.setAttribute('onclick', '_flowGuestRegister()');
   _flowSetStep(3);
