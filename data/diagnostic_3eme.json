@@ -1,798 +1,858 @@
 [
   {
-    "niveau": "3EME",
-    "categorie": "Fractions_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "Calcule $\\frac{2}{3} + \\frac{5}{6}$.",
-        "a": "$\\frac{3}{2}$",
-        "options": [
-          "$\\frac{7}{6}$",
-          "$\\frac{3}{2}$",
-          "$\\frac{7}{9}$"
-        ],
-        "steps": [
-          "On cherche un dénominateur commun pour $3$ et $6$ : c'est $6$.",
-          "$\\frac{2}{3} = \\frac{4}{6}$, donc $\\frac{4}{6} + \\frac{5}{6} = \\frac{9}{6}$.",
-          "$\\frac{9}{6}$ se simplifie en divisant par $3$ : on obtient $\\frac{?}{?}$."
-        ],
-        "f": "$\\frac{a}{b} + \\frac{c}{d} = \\frac{a \\times d + c \\times b}{b \\times d}$"
-      },
-      {
-        "lvl": 2,
-        "q": "Calcule $\\frac{3}{4} \\div \\frac{9}{8}$.",
-        "a": "$\\frac{2}{3}$",
-        "options": [
-          "$\\frac{2}{3}$",
-          "$\\frac{27}{32}$",
-          "$\\frac{3}{2}$"
-        ],
-        "steps": [
-          "Diviser par une fraction revient à multiplier par son inverse : $\\frac{3}{4} \\times \\frac{8}{9}$.",
-          "On multiplie : $\\frac{3 \\times 8}{4 \\times 9} = \\frac{24}{36}$.",
-          "On simplifie par $12$ : $\\frac{24}{36} = \\frac{?}{?}$."
-        ],
-        "f": "$\\frac{a}{b} \\div \\frac{c}{d} = \\frac{a}{b} \\times \\frac{d}{c}$"
-      }
-    ]
+    "q": "Quel est le plus grand diviseur commun de $60$ et $96$ ?",
+    "a": "$12$",
+    "type": "qcm",
+    "options": [
+      "$12$",
+      "$6$",
+      "$24$"
+    ],
+    "steps": [
+      "On décompose : $60 = 2^2 \\times 3 \\times 5$ et $96 = 2^5 \\times 3$.",
+      "Le PGCD prend le minimum de chaque exposant commun : $2^2 \\times 3^1$.",
+      "$4 \\times 3 = ?$."
+    ],
+    "f": "",
+    "lvl": 1,
+    "categorie": "Arithmetique_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Puissances_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "Simplifie $\\frac{10^5}{10^2}$.",
-        "a": "$10^3$",
-        "options": [
-          "$10^3$",
-          "$10^7$",
-          "$10^{2,5}$"
-        ],
-        "steps": [
-          "Quand on divise des puissances de même base, on soustrait les exposants.",
-          "$\\frac{10^5}{10^2} = 10^{5-2}$.",
-          "On obtient $10^{?}$."
-        ],
-        "f": "$\\frac{a^m}{a^n} = a^{m-n}$"
-      },
-      {
-        "lvl": 2,
-        "q": "Écris $0{,}00042$ en notation scientifique.",
-        "a": "$4{,}2 \\times 10^{-4}$",
-        "options": [
-          "$4{,}2 \\times 10^{-4}$",
-          "$42 \\times 10^{-5}$",
-          "$4{,}2 \\times 10^{-3}$"
-        ],
-        "steps": [
-          "La notation scientifique s'écrit $a \\times 10^n$ avec $1 \\leq a < 10$.",
-          "On déplace la virgule de $4$ rangs vers la droite pour obtenir $4{,}2$.",
-          "Donc $0{,}00042 = 4{,}2 \\times 10^{?}$."
-        ],
-        "f": "$a \\times 10^n \\text{ avec } 1 \\leq a < 10$"
-      }
-    ]
+    "q": "$119$ est un nombre premier.",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "steps": [
+      "On teste les diviseurs premiers : $2, 3, 5, 7, 11$...",
+      "$119 \\div 7 = 17$ : la division tombe juste."
+    ],
+    "f": "",
+    "lvl": 1,
+    "categorie": "Arithmetique_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Racines_Carrees_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "Simplifie $\\sqrt{50}$.",
-        "a": "$5\\sqrt{2}$",
-        "options": [
-          "$5\\sqrt{2}$",
-          "$25\\sqrt{2}$",
-          "$\\sqrt{25}$"
-        ],
-        "steps": [
-          "On cherche le plus grand carré parfait qui divise $50$ : $50 = 25 \\times 2$.",
-          "$\\sqrt{50} = \\sqrt{25 \\times 2} = \\sqrt{25} \\times \\sqrt{2}$.",
-          "$\\sqrt{25} = 5$, donc $\\sqrt{50} = ?\\sqrt{2}$."
-        ],
-        "f": "$\\sqrt{a \\times b} = \\sqrt{a} \\times \\sqrt{b}$"
-      },
-      {
-        "lvl": 2,
-        "q": "Calcule $\\sqrt{12} + \\sqrt{27}$.",
-        "a": "$5\\sqrt{3}$",
-        "options": [
-          "$5\\sqrt{3}$",
-          "$\\sqrt{39}$",
-          "$3\\sqrt{3}$"
-        ],
-        "steps": [
-          "On simplifie chaque racine : $\\sqrt{12} = \\sqrt{4 \\times 3} = 2\\sqrt{3}$ et $\\sqrt{27} = \\sqrt{9 \\times 3} = 3\\sqrt{3}$.",
-          "On additionne : $2\\sqrt{3} + 3\\sqrt{3}$.",
-          "On obtient $?\\sqrt{3}$."
-        ],
-        "f": "$\\sqrt{a \\times b} = \\sqrt{a} \\times \\sqrt{b}$"
-      }
-    ]
+    "q": "On veut répartir $108$ billes et $144$ cartes en paquets identiques (même nombre de billes, même nombre de cartes). Quel est le nombre maximal de paquets ?",
+    "a": "$36$",
+    "type": "qcm",
+    "options": [
+      "$36$",
+      "$12$",
+      "$18$"
+    ],
+    "steps": [
+      "Le nombre maximal de paquets est le PGCD de $108$ et $144$.",
+      "$108 = 2^2 \\times 3^3$ et $144 = 2^4 \\times 3^2$. PGCD $= 2^2 \\times 3^2$.",
+      "$4 \\times 9 = ?$."
+    ],
+    "f": "",
+    "lvl": 2,
+    "categorie": "Arithmetique_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Arithmetique_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "type": "vf",
-        "q": "$91$ est un nombre premier.",
-        "a": "Faux",
-        "options": [
-          "Vrai",
-          "Faux"
-        ],
-        "steps": [
-          "On teste la divisibilité de $91$ par les nombres premiers $2, 3, 5, 7$...",
-          "$91 \\div 7 = 13$ : c'est une division exacte."
-        ],
-        "f": ""
-      },
-      {
-        "lvl": 2,
-        "q": "Quel est le PGCD de $84$ et $126$ ?",
-        "a": "$42$",
-        "options": [
-          "$42$",
-          "$14$",
-          "$21$"
-        ],
-        "steps": [
-          "On décompose : $84 = 2^2 \\times 3 \\times 7$ et $126 = 2 \\times 3^2 \\times 7$.",
-          "Le PGCD prend le minimum de chaque exposant : $2^1 \\times 3^1 \\times 7^1$.",
-          "$2 \\times 3 \\times 7 = ?$."
-        ],
-        "f": ""
-      }
-    ]
+    "q": "Calcule $\\frac{5}{6} - \\frac{3}{4}$.",
+    "a": "$\\frac{1}{12}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{1}{12}$",
+      "$\\frac{2}{2}$",
+      "$\\frac{1}{6}$"
+    ],
+    "steps": [
+      "Dénominateur commun de $6$ et $4$ : c'est $12$.",
+      "$\\frac{5}{6} = \\frac{10}{12}$ et $\\frac{3}{4} = \\frac{9}{12}$.",
+      "$\\frac{10}{12} - \\frac{9}{12} = \\frac{?}{12}$."
+    ],
+    "f": "$\\frac{a}{b} - \\frac{c}{d} = \\frac{a \\times d - c \\times b}{b \\times d}$",
+    "lvl": 1,
+    "categorie": "Fractions_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Calcul_Litteral_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "Développe $(x + 3)(x - 5)$.",
-        "a": "$x^2 - 2x - 15$",
-        "options": [
-          "$x^2 - 2x - 15$",
-          "$x^2 + 2x - 15$",
-          "$x^2 - 8x - 15$"
-        ],
-        "steps": [
-          "On applique la double distributivité : $x \\times x + x \\times (-5) + 3 \\times x + 3 \\times (-5)$.",
-          "$= x^2 - 5x + 3x - 15$.",
-          "On regroupe : $x^2 + (-5+3)x - 15 = x^2 + ?x - 15$."
-        ],
-        "f": "$(a+b)(c+d) = ac + ad + bc + bd$"
-      },
-      {
-        "lvl": 2,
-        "q": "Factorise $9x^2 - 16$.",
-        "a": "$(3x - 4)(3x + 4)$",
-        "options": [
-          "$(3x - 4)(3x + 4)$",
-          "$(9x - 4)(x + 4)$",
-          "$(3x - 4)^2$"
-        ],
-        "steps": [
-          "On reconnaît une différence de deux carrés : $9x^2 = (3x)^2$ et $16 = 4^2$.",
-          "On applique $a^2 - b^2 = (a-b)(a+b)$ avec $a = 3x$ et $b = 4$.",
-          "On obtient $(? - ?)(? + ?)$."
-        ],
-        "f": "$a^2 - b^2 = (a-b)(a+b)$"
-      }
-    ]
+    "q": "Dans une classe de $32$ élèves, les $\\frac{3}{8}$ pratiquent un sport. Combien d'élèves sportifs ?",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "On calcule $\\frac{3}{8}$ de $32$ : $\\frac{3}{8} \\times 32 = \\frac{3 \\times 32}{8}$.",
+      "$\\frac{96}{8} = ?$."
+    ],
+    "f": "",
+    "lvl": 1,
+    "categorie": "Fractions_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Equations_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "Résous $3x + 7 = 22$.",
-        "a": "$x = 5$",
-        "options": [
-          "$x = 5$",
-          "$x = 3$",
-          "$x = \\frac{29}{3}$"
-        ],
-        "steps": [
-          "On isole le terme en $x$ : $3x = 22 - 7 = 15$.",
-          "On divise par $3$ : $x = \\frac{15}{3}$.",
-          "$x = ?$."
-        ],
-        "f": ""
-      },
-      {
-        "lvl": 2,
-        "q": "Résous $5(x - 2) = 3x + 4$.",
-        "a": "$x = 7$",
-        "options": [
-          "$x = 7$",
-          "$x = 3$",
-          "$x = -3$"
-        ],
-        "steps": [
-          "On développe le membre de gauche : $5x - 10 = 3x + 4$.",
-          "On regroupe : $5x - 3x = 4 + 10$, soit $2x = 14$.",
-          "$x = ?$."
-        ],
-        "f": ""
-      }
-    ]
+    "q": "Calcule $\\frac{7}{9} \\times \\frac{3}{14}$.",
+    "a": "$\\frac{1}{6}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{1}{6}$",
+      "$\\frac{21}{126}$",
+      "$\\frac{7}{42}$"
+    ],
+    "steps": [
+      "On multiplie : $\\frac{7 \\times 3}{9 \\times 14} = \\frac{21}{126}$.",
+      "On simplifie par $21$ : $\\frac{21}{126} = \\frac{1}{?}$."
+    ],
+    "f": "$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{a \\times c}{b \\times d}$",
+    "lvl": 2,
+    "categorie": "Fractions_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Inequations_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "Résous $2x - 3 > 7$.",
-        "a": "$x > 5$",
-        "options": [
-          "$x > 5$",
-          "$x > 2$",
-          "$x < 5$"
-        ],
-        "steps": [
-          "On isole $x$ : $2x > 7 + 3 = 10$.",
-          "On divise par $2$ (positif, le sens ne change pas) : $x > ?$."
-        ],
-        "f": ""
-      },
-      {
-        "lvl": 2,
-        "q": "Résous $-4x + 1 \\leq 9$.",
-        "a": "$x \\geq -2$",
-        "options": [
-          "$x \\geq -2$",
-          "$x \\leq -2$",
-          "$x \\geq 2$"
-        ],
-        "steps": [
-          "On isole $x$ : $-4x \\leq 9 - 1 = 8$.",
-          "On divise par $-4$ : attention, on INVERSE le sens de l'inégalité.",
-          "$x \\geq \\frac{8}{-4} = ?$."
-        ],
-        "f": ""
-      }
-    ]
+    "q": "Simplifie $10^3 \\times 10^{-5}$.",
+    "a": "$10^{-2}$",
+    "type": "qcm",
+    "options": [
+      "$10^{-2}$",
+      "$10^{-15}$",
+      "$10^8$"
+    ],
+    "steps": [
+      "Quand on multiplie des puissances de même base, on additionne les exposants.",
+      "$10^{3+(-5)} = 10^{?}$."
+    ],
+    "f": "$a^m \\times a^n = a^{m+n}$",
+    "lvl": 1,
+    "categorie": "Puissances_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Fonctions_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "Soit $f(x) = 2x - 3$. Quelle est l'image de $4$ par $f$ ?",
-        "a": "$5$",
-        "options": [
-          "$5$",
-          "$11$",
-          "$1$"
-        ],
-        "steps": [
-          "L'image de $4$, c'est $f(4)$.",
-          "$f(4) = 2 \\times 4 - 3 = 8 - 3$.",
-          "$f(4) = ?$."
-        ],
-        "f": ""
-      },
-      {
-        "lvl": 2,
-        "q": "Soit $g(x) = -x^2 + 4$. Quel est l'antécédent positif de $0$ par $g$ ?",
-        "a": "$2$",
-        "options": [
-          "$2$",
-          "$4$",
-          "$-2$"
-        ],
-        "steps": [
-          "On résout $g(x) = 0$, soit $-x^2 + 4 = 0$.",
-          "$x^2 = 4$, donc $x = 2$ ou $x = -2$.",
-          "L'antécédent positif est $x = ?$."
-        ],
-        "f": ""
-      }
-    ]
+    "q": "La distance Terre-Soleil est d'environ $150\\,000\\,000$ km. En notation scientifique, cela s'écrit $1{,}5 \\times 10^n$. Que vaut $n$ ?",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "On compte le nombre de rangs pour passer de $1{,}5$ à $150\\,000\\,000$.",
+      "La virgule se déplace de $?$ rangs vers la droite."
+    ],
+    "f": "$a \\times 10^n \\text{ avec } 1 \\leq a < 10$",
+    "lvl": 1,
+    "categorie": "Puissances_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Fonctions_Affines_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "type": "vf",
-        "q": "La fonction $f(x) = 3x - 1$ est une fonction affine.",
-        "a": "Vrai",
-        "options": [
-          "Vrai",
-          "Faux"
-        ],
-        "steps": [
-          "Une fonction affine est de la forme $f(x) = ax + b$.",
-          "Ici $a = 3$ et $b = -1$ : c'est bien cette forme."
-        ],
-        "f": "$f(x) = ax + b$"
-      },
-      {
-        "lvl": 2,
-        "q": "Une droite passe par $A(1 ; 4)$ et $B(3 ; 10)$. Quel est le coefficient directeur ?",
-        "a": "$3$",
-        "options": [
-          "$3$",
-          "$6$",
-          "$7$"
-        ],
-        "steps": [
-          "Le coefficient directeur est $\\frac{y_B - y_A}{x_B - x_A}$.",
-          "$\\frac{10 - 4}{3 - 1} = \\frac{6}{2}$.",
-          "On obtient $?$."
-        ],
-        "f": "$a = \\frac{y_B - y_A}{x_B - x_A}$"
-      }
-    ]
+    "q": "Calcule $\\frac{3 \\times 10^4}{6 \\times 10^{-2}}$ et donne le résultat en notation scientifique.",
+    "a": "$5 \\times 10^5$",
+    "type": "qcm",
+    "options": [
+      "$5 \\times 10^5$",
+      "$0{,}5 \\times 10^6$",
+      "$5 \\times 10^2$"
+    ],
+    "steps": [
+      "On sépare les coefficients et les puissances : $\\frac{3}{6} \\times \\frac{10^4}{10^{-2}}$.",
+      "$\\frac{3}{6} = 0{,}5$ et $10^{4-(-2)} = 10^6$.",
+      "$0{,}5 \\times 10^6 = ? \\times 10^?$ en notation scientifique."
+    ],
+    "f": "$\\frac{a^m}{a^n} = a^{m-n}$",
+    "lvl": 2,
+    "categorie": "Puissances_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Proportionnalite_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "type": "fill",
-        "q": "Un article coûte $80$ euros. Après une réduction de $15\\%$, quel est le nouveau prix en euros ?",
-        "a": "68",
-        "options": [],
-        "steps": [
-          "La réduction vaut $80 \\times \\frac{15}{100} = 12$ euros.",
-          "Le nouveau prix est $80 - 12 = ?$ euros."
-        ],
-        "f": ""
-      },
-      {
-        "lvl": 2,
-        "q": "Un cycliste parcourt $45$ km en $1$ h $30$ min. Quelle est sa vitesse moyenne en km/h ?",
-        "a": "$30$",
-        "options": [
-          "$30$",
-          "$45$",
-          "$22{,}5$"
-        ],
-        "steps": [
-          "$1$ h $30$ min $= 1{,}5$ h.",
-          "La vitesse est $v = \\frac{d}{t} = \\frac{45}{1{,}5}$.",
-          "$v = ?$ km/h."
-        ],
-        "f": "$v = \\frac{d}{t}$"
-      }
-    ]
+    "q": "Simplifie $\\sqrt{75}$.",
+    "a": "$5\\sqrt{3}$",
+    "type": "qcm",
+    "options": [
+      "$5\\sqrt{3}$",
+      "$3\\sqrt{5}$",
+      "$25\\sqrt{3}$"
+    ],
+    "steps": [
+      "On cherche le plus grand carré parfait qui divise $75$ : $75 = 25 \\times 3$.",
+      "$\\sqrt{75} = \\sqrt{25} \\times \\sqrt{3} = ?\\sqrt{3}$."
+    ],
+    "f": "$\\sqrt{a \\times b} = \\sqrt{a} \\times \\sqrt{b}$",
+    "lvl": 1,
+    "categorie": "Racines_Carrees_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Pythagore_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "Un triangle rectangle a des côtés de l'angle droit de $6$ cm et $8$ cm. Quelle est la longueur de l'hypoténuse ?",
-        "a": "$10$ cm",
-        "options": [
-          "$10$ cm",
-          "$14$ cm",
-          "$\\sqrt{48}$ cm"
-        ],
-        "steps": [
-          "D'après le théorème de Pythagore : $c^2 = 6^2 + 8^2 = 36 + 64 = 100$.",
-          "$c = \\sqrt{100}$.",
-          "$c = ?$ cm."
-        ],
-        "f": "$a^2 + b^2 = c^2$"
-      },
-      {
-        "lvl": 2,
-        "q": "Un triangle a des côtés de $7$ cm, $24$ cm et $25$ cm. Est-il rectangle ?",
-        "a": "Vrai",
-        "type": "vf",
-        "options": [
-          "Vrai",
-          "Faux"
-        ],
-        "steps": [
-          "On vérifie si $25^2 = 7^2 + 24^2$ : $625 = 49 + 576 = 625$.",
-          "L'égalité est vérifiée. Que peut-on en conclure ?"
-        ],
-        "f": "$a^2 + b^2 = c^2$"
-      }
-    ]
+    "q": "$\\sqrt{9 \\times 16} = \\sqrt{9} \\times \\sqrt{16}$.",
+    "a": "Vrai",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "steps": [
+      "La propriété $\\sqrt{a \\times b} = \\sqrt{a} \\times \\sqrt{b}$ est valable pour $a \\geq 0$ et $b \\geq 0$.",
+      "Vérifions : $\\sqrt{144} = 12$ et $3 \\times 4 = 12$. Les deux sont-ils égaux ?"
+    ],
+    "f": "$\\sqrt{a \\times b} = \\sqrt{a} \\times \\sqrt{b}$",
+    "lvl": 1,
+    "categorie": "Racines_Carrees_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Thales_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "Dans un triangle, une droite parallèle à un côté coupe les deux autres. On a $\\frac{AM}{AB} = \\frac{2}{5}$ et $AC = 15$ cm. Combien vaut $AN$ ?",
-        "a": "$6$ cm",
-        "options": [
-          "$6$ cm",
-          "$10$ cm",
-          "$7{,}5$ cm"
-        ],
-        "steps": [
-          "D'après le théorème de Thalès : $\\frac{AM}{AB} = \\frac{AN}{AC}$.",
-          "$\\frac{2}{5} = \\frac{AN}{15}$, donc $AN = \\frac{2 \\times 15}{5}$.",
-          "$AN = ?$ cm."
-        ],
-        "f": "$\\frac{AM}{AB} = \\frac{AN}{AC} = \\frac{MN}{BC}$"
-      },
-      {
-        "lvl": 2,
-        "q": "Sur la figure, $(MN) \\parallel (BC)$. On a $AM = 4$, $AB = 10$, $MN = 3$. Quelle est la longueur $BC$ ?",
-        "a": "$7{,}5$",
-        "options": [
-          "$7{,}5$",
-          "$12$",
-          "$1{,}2$"
-        ],
-        "steps": [
-          "Par le théorème de Thalès : $\\frac{AM}{AB} = \\frac{MN}{BC}$.",
-          "$\\frac{4}{10} = \\frac{3}{BC}$, donc $BC = \\frac{3 \\times 10}{4}$.",
-          "$BC = ?$."
-        ],
-        "f": "$\\frac{AM}{AB} = \\frac{AN}{AC} = \\frac{MN}{BC}$"
-      }
-    ]
+    "q": "Calcule $3\\sqrt{2} \\times 4\\sqrt{2}$.",
+    "a": "$24$",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "On multiplie les coefficients : $3 \\times 4 = 12$.",
+      "On multiplie les racines : $\\sqrt{2} \\times \\sqrt{2} = 2$.",
+      "$12 \\times 2 = ?$."
+    ],
+    "f": "$\\sqrt{a} \\times \\sqrt{a} = a$",
+    "lvl": 2,
+    "categorie": "Racines_Carrees_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Trigonometrie_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "Dans un triangle rectangle, l'angle $\\hat{A} = 30°$ et l'hypoténuse mesure $10$ cm. Quel est le côté opposé à $\\hat{A}$ ?",
-        "a": "$5$ cm",
-        "options": [
-          "$5$ cm",
-          "$8{,}66$ cm",
-          "$10$ cm"
-        ],
-        "steps": [
-          "Le côté opposé à un angle est lié à l'hypoténuse par le sinus : $\\sin(30°) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$.",
-          "$\\sin(30°) = 0{,}5$, donc opposé $= 0{,}5 \\times 10$.",
-          "Le côté opposé mesure $?$ cm."
-        ],
-        "f": "$\\sin(\\alpha) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$"
-      },
-      {
-        "lvl": 2,
-        "q": "Dans un triangle rectangle en $C$, $BC = 5$ cm et $AC = 12$ cm. Quelle est la valeur de $\\tan(\\hat{A})$ ?",
-        "a": "$\\frac{5}{12}$",
-        "options": [
-          "$\\frac{5}{12}$",
-          "$\\frac{12}{5}$",
-          "$\\frac{5}{13}$"
-        ],
-        "steps": [
-          "L'angle $\\hat{A}$ a pour côté opposé $BC$ et pour côté adjacent $AC$.",
-          "$\\tan(\\hat{A}) = \\frac{\\text{opposé}}{\\text{adjacent}} = \\frac{BC}{AC}$.",
-          "$\\tan(\\hat{A}) = \\frac{?}{?}$."
-        ],
-        "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$"
-      }
-    ]
+    "q": "Un pantalon affiché à $65$ euros est soldé à $-20\\%$. Quel est le prix soldé en euros ?",
+    "a": "52",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "La réduction vaut $65 \\times \\frac{20}{100} = 13$ euros.",
+      "Le prix soldé est $65 - 13 = ?$ euros."
+    ],
+    "f": "",
+    "lvl": 1,
+    "categorie": "Proportionnalite_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Geometrie_Espace_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "Quel est le volume d'un cylindre de rayon $3$ cm et de hauteur $10$ cm ? (Laisser en fonction de $\\pi$.)",
-        "a": "$90\\pi$ cm$^3$",
-        "options": [
-          "$90\\pi$ cm$^3$",
-          "$30\\pi$ cm$^3$",
-          "$60\\pi$ cm$^3$"
-        ],
-        "steps": [
-          "Le volume d'un cylindre est $V = \\pi r^2 h$.",
-          "$V = \\pi \\times 3^2 \\times 10 = \\pi \\times 9 \\times 10$.",
-          "$V = ?\\pi$ cm$^3$."
-        ],
-        "f": "$V = \\pi r^2 h$"
-      },
-      {
-        "lvl": 2,
-        "q": "Un cône a un rayon de $6$ cm et une hauteur de $9$ cm. Quel est son volume en fonction de $\\pi$ ?",
-        "a": "$108\\pi$ cm$^3$",
-        "options": [
-          "$108\\pi$ cm$^3$",
-          "$324\\pi$ cm$^3$",
-          "$54\\pi$ cm$^3$"
-        ],
-        "steps": [
-          "Le volume d'un cône est $V = \\frac{1}{3} \\pi r^2 h$.",
-          "$V = \\frac{1}{3} \\times \\pi \\times 6^2 \\times 9 = \\frac{1}{3} \\times \\pi \\times 36 \\times 9 = \\frac{324\\pi}{3}$.",
-          "$V = ?\\pi$ cm$^3$."
-        ],
-        "f": "$V = \\frac{1}{3} \\pi r^2 h$"
-      }
-    ]
+    "q": "$4$ kg de pommes coûtent $6$ euros. Combien coûtent $10$ kg ?",
+    "a": "$15$ euros",
+    "type": "qcm",
+    "options": [
+      "$15$ euros",
+      "$12$ euros",
+      "$24$ euros"
+    ],
+    "steps": [
+      "Le prix est proportionnel à la masse. Le prix au kg est $\\frac{6}{4} = 1{,}5$ euros.",
+      "Pour $10$ kg : $10 \\times 1{,}5 = ?$ euros."
+    ],
+    "f": "",
+    "lvl": 1,
+    "categorie": "Proportionnalite_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Transformations_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "Par une homothétie de centre $O$ et de rapport $2$, un segment de $5$ cm a pour image un segment de :",
-        "a": "$10$ cm",
-        "options": [
-          "$10$ cm",
-          "$7$ cm",
-          "$2{,}5$ cm"
-        ],
-        "steps": [
-          "Dans une homothétie de rapport $k$, les longueurs sont multipliées par $|k|$.",
-          "Ici $k = 2$, donc la longueur image $= 5 \\times 2$.",
-          "Le segment image mesure $?$ cm."
-        ],
-        "f": ""
-      },
-      {
-        "lvl": 2,
-        "q": "Par une homothétie de rapport $k = -\\frac{1}{3}$, un triangle d'aire $54$ cm$^2$ a pour image un triangle d'aire :",
-        "a": "$6$ cm$^2$",
-        "options": [
-          "$6$ cm$^2$",
-          "$18$ cm$^2$",
-          "$27$ cm$^2$"
-        ],
-        "steps": [
-          "Dans une homothétie de rapport $k$, les aires sont multipliées par $k^2$.",
-          "$k^2 = \\left(-\\frac{1}{3}\\right)^2 = \\frac{1}{9}$.",
-          "L'aire image $= 54 \\times \\frac{1}{9} = ?$ cm$^2$."
-        ],
-        "f": ""
-      }
-    ]
+    "q": "Un article passe de $120$ euros à $150$ euros. Quel est le pourcentage d'augmentation ?",
+    "a": "$25\\%$",
+    "type": "qcm",
+    "options": [
+      "$25\\%$",
+      "$20\\%$",
+      "$30\\%$"
+    ],
+    "steps": [
+      "L'augmentation est $150 - 120 = 30$ euros.",
+      "Le taux est $\\frac{30}{120} = \\frac{1}{4} = 0{,}25$.",
+      "$0{,}25 \\times 100 = ?\\%$."
+    ],
+    "f": "$\\text{taux} = \\frac{\\text{variation}}{\\text{valeur initiale}}$",
+    "lvl": 2,
+    "categorie": "Proportionnalite_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Statistiques_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "Les notes d'un élève sont : $8, 12, 14, 10, 16$. Quelle est la moyenne ?",
-        "a": "$12$",
-        "options": [
-          "$12$",
-          "$14$",
-          "$10$"
-        ],
-        "steps": [
-          "On additionne : $8 + 12 + 14 + 10 + 16 = 60$.",
-          "On divise par le nombre de notes : $\\frac{60}{5}$.",
-          "La moyenne est $?$."
-        ],
-        "f": "$\\bar{x} = \\frac{\\sum x_i}{n}$"
-      },
-      {
-        "lvl": 2,
-        "q": "Voici une série ordonnée de $9$ valeurs : $3, 5, 7, 8, 10, 12, 14, 15, 20$. Quelle est la médiane ?",
-        "a": "$10$",
-        "options": [
-          "$10$",
-          "$8$",
-          "$12$"
-        ],
-        "steps": [
-          "La série a $9$ valeurs (nombre impair). La médiane est la valeur centrale.",
-          "La position centrale est la $\\frac{9+1}{2} = 5$ème valeur.",
-          "La $5$ème valeur est $?$."
-        ],
-        "f": ""
-      }
-    ]
+    "lvl": 1,
+    "q": "Développe $3(2x - 5)$.",
+    "a": "$6x - 15$",
+    "type": "qcm",
+    "options": [
+      "$6x - 15$",
+      "$6x - 5$",
+      "$5x - 15$"
+    ],
+    "steps": [
+      "On distribue le $3$ sur chaque terme de la parenthèse.",
+      "$3 \\times 2x = 6x$ et $3 \\times (-5) = ?$.",
+      "On obtient $6x - ?$."
+    ],
+    "f": "$k(a + b) = ka + kb$",
+    "categorie": "Calcul_Litteral_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Probabilites_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "On lance un dé équilibré à $6$ faces. Quelle est la probabilité d'obtenir un nombre pair ?",
-        "a": "$\\frac{1}{2}$",
-        "options": [
-          "$\\frac{1}{2}$",
-          "$\\frac{1}{3}$",
-          "$\\frac{2}{3}$"
-        ],
-        "steps": [
-          "Les nombres pairs sur un dé sont $2, 4, 6$ : il y en a $3$.",
-          "Le nombre total d'issues est $6$.",
-          "$P = \\frac{3}{6} = \\frac{?}{?}$."
-        ],
-        "f": "$P(A) = \\frac{\\text{cas favorables}}{\\text{cas possibles}}$"
-      },
-      {
-        "lvl": 2,
-        "q": "Dans une urne, il y a $4$ boules rouges et $6$ boules bleues. On tire $2$ boules successivement sans remise. Quelle est la probabilité que la première soit rouge ET la deuxième soit bleue ?",
-        "a": "$\\frac{4}{15}$",
-        "options": [
-          "$\\frac{4}{15}$",
-          "$\\frac{24}{100}$",
-          "$\\frac{6}{25}$"
-        ],
-        "steps": [
-          "La probabilité de tirer rouge en premier : $\\frac{4}{10} = \\frac{2}{5}$.",
-          "Si la première est rouge, il reste $9$ boules dont $6$ bleues : $\\frac{6}{9} = \\frac{2}{3}$.",
-          "$P = \\frac{2}{5} \\times \\frac{2}{3} = \\frac{4}{?}$."
-        ],
-        "f": "$P(A \\cap B) = P(A) \\times P(B|A)$"
-      }
-    ]
+    "lvl": 1,
+    "q": "Factorise $4x + 12$.",
+    "a": "$4(x + 3)$",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "Quel est le plus grand facteur commun de $4x$ et $12$ ?",
+      "On met $4$ en facteur : $4 \\times x + 4 \\times ? = 4(x + ?)$.",
+      "Complète le terme manquant."
+    ],
+    "f": "$ka + kb = k(a + b)$",
+    "categorie": "Calcul_Litteral_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Scratch_Brevet",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "Un script Scratch initialise $x$ à $2$ puis répète $3$ fois : $x \\leftarrow x \\times 2$. Quelle est la valeur finale de $x$ ?",
-        "a": "$16$",
-        "options": [
-          "$16$",
-          "$8$",
-          "$12$"
-        ],
-        "steps": [
-          "On simule : début $x = 2$. Tour 1 : $x = 2 \\times 2 = 4$. Tour 2 : $x = 4 \\times 2 = 8$.",
-          "Tour 3 : $x = 8 \\times 2 = ?$."
-        ],
-        "f": ""
-      },
-      {
-        "lvl": 2,
-        "q": "Un script initialise $n$ à $50$ et répète tant que $n > 1$ : si $n$ est pair alors $n \\leftarrow n \\div 2$, sinon $n \\leftarrow n - 1$. Combien de fois la boucle s'exécute-t-elle ?",
-        "a": "$7$",
-        "options": [
-          "$7$",
-          "$6$",
-          "$50$"
-        ],
-        "steps": [
-          "On simule pas à pas : $50$(pair)$\\to 25$(impair)$\\to 24$(pair)$\\to 12$(pair)$\\to 6$(pair)$\\to 3$(impair)$\\to 2$(pair)$\\to 1$.",
-          "On compte $7$ passages dans la boucle. À $n = 1$, la condition $n > 1$ est fausse : la boucle s'arrête."
-        ],
-        "f": ""
-      }
-    ]
+    "lvl": 2,
+    "q": "$(x + 3)^2 = x^2 + 6x + 9$.",
+    "a": "Vrai",
+    "type": "vf",
+    "options": [],
+    "steps": [
+      "L'identité remarquable $(a+b)^2 = a^2 + 2ab + b^2$.",
+      "Ici $a = x$ et $b = 3$, donc $2ab = 2 \\times x \\times 3 = ?$.",
+      "Compare avec le terme du milieu proposé."
+    ],
+    "f": "$(a + b)^2 = a^2 + 2ab + b^2$",
+    "categorie": "Calcul_Litteral_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Auto_Calcul",
-    "exos": [
-      {
-        "lvl": 1,
-        "type": "fill",
-        "q": "Calcule de tête : $\\frac{3}{4} \\times 8 = $ ___",
-        "a": "6",
-        "options": [],
-        "steps": [
-          "$\\frac{3}{4} \\times 8 = \\frac{3 \\times 8}{4} = \\frac{24}{4} = ?$."
-        ],
-        "f": ""
-      },
-      {
-        "lvl": 2,
-        "type": "fill",
-        "q": "Calcule : $(-3)^3 = $ ___",
-        "a": "-27",
-        "options": [],
-        "steps": [
-          "$(-3)^3 = (-3) \\times (-3) \\times (-3) = 9 \\times (-3) = ?$."
-        ],
-        "f": ""
-      }
-    ]
+    "lvl": 1,
+    "q": "Résous $3x + 7 = 22$.",
+    "a": "$x = 5$",
+    "type": "qcm",
+    "options": [
+      "$x = 5$",
+      "$x = 3$",
+      "$x = 7$"
+    ],
+    "steps": [
+      "On isole le terme en $x$ : $3x = 22 - 7$.",
+      "$3x = 15$, donc $x = \\frac{15}{?}$.",
+      "Divise pour trouver la valeur de $x$."
+    ],
+    "f": "$ax + b = c \\Rightarrow x = \\frac{c - b}{a}$",
+    "categorie": "Equations_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Auto_Litteral",
-    "exos": [
-      {
-        "lvl": 1,
-        "type": "fill",
-        "q": "Si $x = 4$, alors $3x - 7 = $ ___",
-        "a": "5",
-        "options": [],
-        "steps": [
-          "$3 \\times 4 - 7 = 12 - 7 = ?$."
-        ],
-        "f": ""
-      },
-      {
-        "lvl": 2,
-        "type": "fill",
-        "q": "Développe de tête : $(x+2)^2 = x^2 + $ ___ $x + 4$",
-        "a": "4",
-        "options": [],
-        "steps": [
-          "$(x+2)^2 = x^2 + 2 \\times x \\times 2 + 4 = x^2 + ?x + 4$."
-        ],
-        "f": ""
-      }
-    ]
+    "lvl": 1,
+    "q": "Un nombre augmenté de $8$ donne $35$. Quel est ce nombre ?",
+    "a": "27",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "On appelle $x$ le nombre cherché. L'équation est $x + 8 = ?$.",
+      "On résout : $x = 35 - ?$.",
+      "Calcule la soustraction."
+    ],
+    "f": "$x + b = c \\Rightarrow x = c - b$",
+    "categorie": "Equations_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Auto_Geometrie",
-    "exos": [
-      {
-        "lvl": 1,
-        "q": "Pour calculer un côté dans un triangle rectangle, on utilise :",
-        "a": "Le théorème de Pythagore",
-        "options": [
-          "Le théorème de Pythagore",
-          "Le théorème de Thalès",
-          "La trigonométrie uniquement"
-        ],
-        "steps": [
-          "Pythagore relie les trois côtés d'un triangle rectangle : $a^2 + b^2 = c^2$."
-        ],
-        "f": ""
-      },
-      {
-        "lvl": 2,
-        "q": "Le volume d'une boule de rayon $r$ est :",
-        "a": "$\\frac{4}{3}\\pi r^3$",
-        "options": [
-          "$\\frac{4}{3}\\pi r^3$",
-          "$4\\pi r^2$",
-          "$\\frac{4}{3}\\pi r^2$"
-        ],
-        "steps": [
-          "La formule du volume d'une boule fait intervenir $r^3$ (pas $r^2$, qui serait une aire)."
-        ],
-        "f": ""
-      }
-    ]
+    "lvl": 2,
+    "q": "Résous $(x - 4)(2x + 6) = 0$.",
+    "a": "$x = 4$ ou $x = -3$",
+    "type": "qcm",
+    "options": [
+      "$x = 4$ ou $x = -3$",
+      "$x = -4$ ou $x = 3$",
+      "$x = 4$ ou $x = 3$"
+    ],
+    "steps": [
+      "Un produit est nul si l'un de ses facteurs est nul.",
+      "$x - 4 = 0 \\Rightarrow x = ?$ et $2x + 6 = 0 \\Rightarrow 2x = -6 \\Rightarrow x = ?$.",
+      "Il y a deux solutions."
+    ],
+    "f": "$A \\times B = 0 \\Rightarrow A = 0$ ou $B = 0$",
+    "categorie": "Equations_Brevet"
   },
   {
-    "niveau": "3EME",
-    "categorie": "Auto_Stats_Probas",
-    "exos": [
-      {
-        "lvl": 1,
-        "type": "fill",
-        "q": "La moyenne de $10$ et $20$ est ___",
-        "a": "15",
-        "options": [],
-        "steps": [
-          "$\\frac{10 + 20}{2} = \\frac{30}{2} = ?$."
-        ],
-        "f": ""
-      },
-      {
-        "lvl": 2,
-        "q": "Dans une classe de $30$ élèves, $12$ ont choisi espagnol. Quel pourcentage cela représente-t-il ?",
-        "a": "$40\\%$",
-        "options": [
-          "$40\\%$",
-          "$36\\%$",
-          "$25\\%$"
-        ],
-        "steps": [
-          "$\\frac{12}{30} = \\frac{2}{5} = 0{,}4$.",
-          "$0{,}4 \\times 100 = ?\\%$."
-        ],
-        "f": ""
-      }
-    ]
+    "lvl": 1,
+    "q": "Résous $2x - 3 < 7$.",
+    "a": "$x < 5$",
+    "type": "qcm",
+    "options": [
+      "$x < 5$",
+      "$x > 5$",
+      "$x < 2$"
+    ],
+    "steps": [
+      "On isole $2x$ : $2x < 7 + 3$.",
+      "$2x < 10$, donc $x < \\frac{10}{?}$.",
+      "Divise par $2$ (positif, le sens ne change pas)."
+    ],
+    "f": "$ax + b < c \\Rightarrow x < \\frac{c - b}{a}$ (si $a > 0$)",
+    "categorie": "Inequations_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "L'ensemble des solutions de $x \\geq -2$ est représenté par une demi-droite partant de $-2$ vers la droite (inclus).",
+    "a": "Vrai",
+    "type": "vf",
+    "options": [],
+    "steps": [
+      "$x \\geq -2$ signifie que $x$ peut valoir $-2$ ou plus.",
+      "Sur une droite graduée, on part de $-2$ et on va vers les nombres plus grands.",
+      "Le crochet est fermé en $-2$ car $-2$ est inclus. Vrai ou faux ?"
+    ],
+    "f": "$x \\geq a$ : demi-droite $[a ; +\\infty[$",
+    "categorie": "Inequations_Brevet"
+  },
+  {
+    "lvl": 2,
+    "q": "Un cinéma propose des places a $8$ euros. Avec un budget de $50$ euros, combien de places peut-on acheter au maximum ?",
+    "a": "6",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "On cherche $n$ tel que $8n \\leq 50$.",
+      "$n \\leq \\frac{50}{8} = ?$ (calcule la division).",
+      "$n$ doit etre un nombre entier. Quel est le plus grand entier qui convient ?"
+    ],
+    "f": "$8n \\leq 50 \\Rightarrow n \\leq 6{,}25$",
+    "categorie": "Inequations_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "Dans un triangle rectangle, les deux côtés de l'angle droit mesurent $6$ cm et $8$ cm. Quelle est la longueur de l'hypoténuse ?",
+    "a": "$10$ cm",
+    "type": "qcm",
+    "options": [
+      "$10$ cm",
+      "$14$ cm",
+      "$\\sqrt{48}$ cm"
+    ],
+    "steps": [
+      "On applique le théorème de Pythagore : $h^2 = 6^2 + 8^2$.",
+      "$h^2 = 36 + 64 = 100$.",
+      "$h = \\sqrt{?}$"
+    ],
+    "f": "$\\text{hyp}^2 = a^2 + b^2$",
+    "categorie": "Pythagore_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "Un triangle rectangle a une hypoténuse de $13$ cm et un côté de $5$ cm. Quelle est la longueur du troisième côté ?",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "On isole le côté inconnu : $c^2 = 13^2 - 5^2$.",
+      "$c^2 = 169 - 25 = 144$.",
+      "$c = \\sqrt{?}$"
+    ],
+    "f": "$c^2 = \\text{hyp}^2 - a^2$",
+    "categorie": "Pythagore_Brevet"
+  },
+  {
+    "lvl": 2,
+    "q": "Un triangle a des côtés de $9$ cm, $12$ cm et $15$ cm. Est-il rectangle ?",
+    "a": "Vrai",
+    "type": "vf",
+    "options": [],
+    "steps": [
+      "On vérifie si $15^2 = 9^2 + 12^2$ (réciproque de Pythagore).",
+      "$225 = 81 + 144 = 225$.",
+      "L'égalité est vérifiée, donc le triangle est… ?"
+    ],
+    "f": "$\\text{Si } a^2 + b^2 = c^2 \\text{, le triangle est rectangle}$",
+    "categorie": "Pythagore_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "Dans un triangle $ABC$, $M \\in [AB]$ et $N \\in [AC]$ avec $(MN) \\parallel (BC)$. On a $AM = 4$ cm, $AB = 10$ cm et $BC = 15$ cm. Quelle est la longueur de $MN$ ?",
+    "a": "$6$ cm",
+    "type": "qcm",
+    "options": [
+      "$6$ cm",
+      "$8$ cm",
+      "$7{,}5$ cm"
+    ],
+    "steps": [
+      "Par le théorème de Thalès : $\\frac{AM}{AB} = \\frac{MN}{BC}$.",
+      "$\\frac{4}{10} = \\frac{MN}{15}$.",
+      "$MN = 15 \\times \\frac{4}{?}$"
+    ],
+    "f": "$\\frac{AM}{AB} = \\frac{AN}{AC} = \\frac{MN}{BC}$",
+    "categorie": "Thales_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "Deux droites sécantes sont coupées par deux parallèles. On a $\\frac{OA}{OB} = \\frac{3}{5}$ et $OB = 10$ cm. Combien mesure $OA$ ?",
+    "a": "6",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "On utilise le rapport donné : $\\frac{OA}{10} = \\frac{3}{5}$.",
+      "$OA = 10 \\times \\frac{3}{5}$.",
+      "$OA = ?$ cm"
+    ],
+    "f": "$\\frac{OA}{OB} = \\frac{OC}{OD}$",
+    "categorie": "Thales_Brevet"
+  },
+  {
+    "lvl": 2,
+    "q": "Configuration papillon : deux droites se coupent en $O$. On a $OA = 3$, $OB = 6$, $OC = 4$, $OD = 8$. Les droites $(AC)$ et $(BD)$ sont-elles parallèles ?",
+    "a": "Vrai",
+    "type": "vf",
+    "options": [],
+    "steps": [
+      "On compare les rapports : $\\frac{OA}{OB} = \\frac{3}{6} = \\frac{1}{2}$ et $\\frac{OC}{OD} = \\frac{4}{8} = \\frac{1}{2}$.",
+      "Les rapports sont égaux et les points sont de part et d'autre de $O$.",
+      "Par la réciproque de Thalès, les droites sont… ?"
+    ],
+    "f": "$\\text{Si } \\frac{OA}{OB} = \\frac{OC}{OD} \\text{ alors } (AC) \\parallel (BD)$",
+    "categorie": "Thales_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "Dans un triangle rectangle, l'angle $\\widehat{A} = 35°$, le côté adjacent mesure $10$ cm. Quel calcul donne le côté opposé ?",
+    "a": "$10 \\times \\tan(35°)$",
+    "type": "qcm",
+    "options": [
+      "$10 \\times \\tan(35°)$",
+      "$10 \\times \\cos(35°)$",
+      "$\\frac{10}{\\sin(35°)}$"
+    ],
+    "steps": [
+      "On connaît l'angle, le côté adjacent, et on cherche le côté opposé.",
+      "Le rapport opposé/adjacent correspond à… ?",
+      "$\\tan(\\widehat{A}) = \\frac{\\text{opposé}}{\\text{adjacent}}$, donc opposé $= \\text{adjacent} \\times \\tan(?)$"
+    ],
+    "f": "$\\tan(\\widehat{A}) = \\frac{\\text{opposé}}{\\text{adjacent}}$",
+    "categorie": "Trigonometrie_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "Triangle rectangle : hypoténuse $= 20$ cm, $\\cos(\\widehat{B}) = 0{,}6$. Quelle est la longueur du côté adjacent à $\\widehat{B}$ ?",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "$\\cos(\\widehat{B}) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$.",
+      "Donc adjacent $= 20 \\times 0{,}6$.",
+      "Adjacent $= ?$ cm"
+    ],
+    "f": "$\\cos(\\widehat{A}) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+    "categorie": "Trigonometrie_Brevet"
+  },
+  {
+    "lvl": 2,
+    "q": "Dans un triangle rectangle, le côté opposé à l'angle $\\widehat{C}$ mesure $7$ cm et l'hypoténuse mesure $14$ cm. Que vaut $\\widehat{C}$ ?",
+    "a": "$30°$",
+    "type": "qcm",
+    "options": [
+      "$30°$",
+      "$45°$",
+      "$60°$"
+    ],
+    "steps": [
+      "$\\sin(\\widehat{C}) = \\frac{\\text{opposé}}{\\text{hypoténuse}} = \\frac{7}{14} = 0{,}5$.",
+      "On cherche l'angle dont le sinus vaut $0{,}5$.",
+      "$\\widehat{C} = ?°$"
+    ],
+    "f": "$\\sin(\\widehat{A}) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$",
+    "categorie": "Trigonometrie_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "Le point $A(2\\,;\\,3)$ est translaté par le vecteur $\\vec{u}(4\\,;\\,-1)$. Quelles sont les coordonnées de l'image $A'$ ?",
+    "a": "$(6\\,;\\,2)$",
+    "type": "qcm",
+    "options": [
+      "$(6\\,;\\,2)$",
+      "$(6\\,;\\,4)$",
+      "$(-2\\,;\\,4)$"
+    ],
+    "steps": [
+      "Translation : on ajoute les composantes du vecteur aux coordonnées du point.",
+      "$x' = 2 + 4 = 6$ et $y' = 3 + (-1) = ?$.",
+      "$A' = (? \\,;\\, ?)$"
+    ],
+    "f": "$A'(x + a\\,;\\, y + b)$ pour $\\vec{u}(a\\,;\\,b)$",
+    "categorie": "Transformations_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "Un triangle est l'image d'un autre par une rotation de centre $O$ et d'angle $90°$ dans le sens horaire. Les longueurs sont-elles conservées ?",
+    "a": "Vrai",
+    "type": "vf",
+    "options": [],
+    "steps": [
+      "La rotation est une transformation du plan qui conserve les distances.",
+      "L'image a la même forme et les mêmes dimensions que l'original.",
+      "Les longueurs sont donc… ?"
+    ],
+    "f": "$\\text{La rotation conserve les longueurs et les angles}$",
+    "categorie": "Transformations_Brevet"
+  },
+  {
+    "lvl": 2,
+    "q": "Un segment $[AB]$ de longueur $5$ cm subit une homothétie de centre $O$ et de rapport $k = -2$. Quelle est la longueur de $[A'B']$ ?",
+    "a": "10",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "L'homothétie multiplie les longueurs par $|k|$.",
+      "$A'B' = |{-2}| \\times 5$.",
+      "$A'B' = ?$ cm"
+    ],
+    "f": "$A'B' = |k| \\times AB$",
+    "categorie": "Transformations_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "Un cylindre a un rayon de $3$ cm et une hauteur de $10$ cm. Quel est son volume ? (Arrondir à l'unité)",
+    "a": "$283$ cm³",
+    "type": "qcm",
+    "options": [
+      "$283$ cm³",
+      "$90\\pi$ cm³",
+      "$188$ cm³"
+    ],
+    "steps": [
+      "$V = \\pi \\times r^2 \\times h = \\pi \\times 3^2 \\times 10$.",
+      "$V = 90\\pi \\approx 282{,}7$.",
+      "Arrondi à l'unité : $V \\approx ?$ cm³"
+    ],
+    "f": "$V_{\\text{cylindre}} = \\pi \\times r^2 \\times h$",
+    "categorie": "Geometrie_Espace_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "Le patron d'un cône de révolution est composé d'un disque et d'un secteur de disque. Le rayon du disque de base est $4$ cm. Quel est ce disque dans le patron ?",
+    "a": "Le petit disque de rayon $4$ cm",
+    "type": "qcm",
+    "options": [
+      "Le petit disque de rayon $4$ cm",
+      "Le grand secteur circulaire",
+      "Un rectangle de largeur $4$ cm"
+    ],
+    "steps": [
+      "Le patron d'un cône comporte deux parties : la base et la surface latérale.",
+      "La base est un disque de rayon égal au rayon de la base du cône.",
+      "La surface latérale se déplie en un secteur de… ?"
+    ],
+    "f": "$\\text{Patron cône = 1 disque (base) + 1 secteur (face latérale)}$",
+    "categorie": "Geometrie_Espace_Brevet"
+  },
+  {
+    "lvl": 2,
+    "q": "Une boule de rayon $6$ cm est agrandie par un coefficient $k = 2$. Par combien son volume est-il multiplié ?",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "Quand on agrandit par un coefficient $k$, les volumes sont multipliés par $k^3$.",
+      "$k^3 = 2^3 = ?$.",
+      "Le volume est donc multiplié par… ?"
+    ],
+    "f": "$V' = k^3 \\times V$",
+    "categorie": "Geometrie_Espace_Brevet"
+  },
+  {
+    "q": "On donne $f(x) = 3x + 1$. Calcule $f(5)$.",
+    "a": "$16$",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "L'image de $5$ par $f$, c'est $f(5)$. On remplace $x$ par $5$.",
+      "$f(5) = 3 \\times 5 + 1 = 15 + 1 = \\;?$."
+    ],
+    "f": "$f(x) = 3x + 1$",
+    "lvl": 1,
+    "categorie": "Fonctions_Brevet"
+  },
+  {
+    "q": "Sur le graphique d'une fonction $f$, le point $(3 ; 7)$ est sur la courbe. Quelle est l'image de $3$ par $f$ ?",
+    "a": "$7$",
+    "type": "qcm",
+    "options": [
+      "$7$",
+      "$3$",
+      "$10$"
+    ],
+    "steps": [
+      "Si le point $(3 ; 7)$ est sur la courbe, cela signifie que $f(3) = 7$.",
+      "L'image de $3$ par $f$ est donc $?$."
+    ],
+    "f": "",
+    "lvl": 1,
+    "categorie": "Fonctions_Brevet"
+  },
+  {
+    "q": "Soit $h(x) = x^2 - 9$. Un antécédent de $0$ par $h$ est $x = 3$.",
+    "a": "Vrai",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "steps": [
+      "Un antécédent de $0$, c'est un nombre $x$ tel que $h(x) = 0$.",
+      "On vérifie : $h(3) = 3^2 - 9 = 9 - 9 = \\;?$. Est-ce bien $0$ ?"
+    ],
+    "f": "$h(x) = x^2 - 9$",
+    "lvl": 2,
+    "categorie": "Fonctions_Brevet"
+  },
+  {
+    "q": "Soit $f(x) = -2x + 5$. Calcule $f(3)$.",
+    "a": "$-1$",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "On remplace $x$ par $3$ dans $f(x) = -2x + 5$.",
+      "$f(3) = -2 \\times 3 + 5 = -6 + 5 = \\;?$."
+    ],
+    "f": "$f(x) = ax + b$",
+    "lvl": 1,
+    "categorie": "Fonctions_Affines_Brevet"
+  },
+  {
+    "q": "Une droite passe par $A(0 ; 3)$ et $B(4 ; 11)$. Quel est son coefficient directeur ?",
+    "a": "$2$",
+    "type": "qcm",
+    "options": [
+      "$2$",
+      "$4$",
+      "$8$"
+    ],
+    "steps": [
+      "Le coefficient directeur se calcule : $a = \\frac{y_B - y_A}{x_B - x_A}$.",
+      "$a = \\frac{11 - 3}{4 - 0} = \\frac{8}{4} = \\;?$."
+    ],
+    "f": "$a = \\frac{\\Delta y}{\\Delta x}$",
+    "lvl": 1,
+    "categorie": "Fonctions_Affines_Brevet"
+  },
+  {
+    "q": "La droite $d$ a pour équation $y = 3x - 2$ et la droite $d'$ a pour équation $y = -x + 6$. Elles se coupent en $x = 2$.",
+    "a": "Vrai",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "steps": [
+      "Au point d'intersection, les deux fonctions sont égales : $3x - 2 = -x + 6$.",
+      "$3x + x = 6 + 2$, soit $4x = 8$, donc $x = \\;?$. Est-ce bien $2$ ?"
+    ],
+    "f": "$f(x) = g(x) \\Rightarrow$ intersection",
+    "lvl": 2,
+    "categorie": "Fonctions_Affines_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "Les notes d'un élève sont : $8$, $12$, $14$, $10$, $6$. Quelle est sa moyenne ?",
+    "a": "$10$",
+    "options": [
+      "$10$",
+      "$12$",
+      "$9$"
+    ],
+    "steps": [
+      "Additionne toutes les notes : $8 + 12 + 14 + 10 + 6 = ?$.",
+      "La somme vaut $50$. Combien de notes y a-t-il ?",
+      "Moyenne $= \\frac{50}{?}$."
+    ],
+    "f": "$\\text{Moyenne} = \\frac{\\text{somme des valeurs}}{\\text{nombre de valeurs}}$",
+    "categorie": "Statistiques_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "Voici une série ordonnée de $7$ valeurs : $3$, $5$, $7$, $9$, $11$, $13$, $15$. Quelle est la médiane ?",
+    "a": "$9$",
+    "type": "fill",
+    "steps": [
+      "La série est déjà rangée dans l'ordre croissant.",
+      "Il y a $7$ valeurs, donc la médiane est la valeur en position $\\frac{7+1}{2} = ?$.",
+      "C'est la $4$ème valeur de la série."
+    ],
+    "f": "$\\text{Médiane} = \\text{valeur en position } \\frac{n+1}{2} \\text{ (si } n \\text{ impair)}$",
+    "categorie": "Statistiques_Brevet"
+  },
+  {
+    "lvl": 2,
+    "q": "Voici $8$ valeurs ordonnées : $4$, $6$, $8$, $10$, $12$, $14$, $16$, $18$. Le premier quartile $Q_1$ vaut :",
+    "a": "$7$",
+    "options": [
+      "$7$",
+      "$8$",
+      "$6$"
+    ],
+    "steps": [
+      "$Q_1$ est la médiane de la moitié inférieure : $4$, $6$, $8$, $10$.",
+      "La médiane de $4$ valeurs est la moyenne des $2$ valeurs du milieu.",
+      "$Q_1 = \\frac{6 + 8}{2} = ?$."
+    ],
+    "f": "$Q_1 = \\text{médiane de la moitié inférieure de la série}$",
+    "categorie": "Statistiques_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "Un sac contient $3$ boules rouges et $5$ boules bleues. On tire une boule au hasard. Quelle est la probabilité de tirer une boule rouge ?",
+    "a": "$\\frac{3}{8}$",
+    "options": [
+      "$\\frac{3}{8}$",
+      "$\\frac{3}{5}$",
+      "$\\frac{5}{8}$"
+    ],
+    "steps": [
+      "Combien de boules au total ? $3 + 5 = ?$.",
+      "La probabilité est le rapport entre cas favorables et cas possibles.",
+      "$P(\\text{rouge}) = \\frac{?}{8}$."
+    ],
+    "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+    "categorie": "Probabilites_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "La probabilité qu'il pleuve demain est $0{,}3$. Quelle est la probabilité qu'il ne pleuve pas ?",
+    "a": "$0{,}7$",
+    "type": "fill",
+    "steps": [
+      "La somme des probabilités d'un événement et de son contraire vaut toujours $1$.",
+      "$P(\\overline{A}) = 1 - P(A)$.",
+      "$P(\\text{pas de pluie}) = 1 - 0{,}3 = ?$."
+    ],
+    "f": "$P(\\overline{A}) = 1 - P(A)$",
+    "categorie": "Probabilites_Brevet"
+  },
+  {
+    "lvl": 2,
+    "q": "On lance un dé équilibré puis on tire une carte (rouge ou noire). Combien d'issues possibles y a-t-il ?",
+    "a": "$12$",
+    "options": [
+      "$12$",
+      "$8$",
+      "$6$"
+    ],
+    "steps": [
+      "Le dé a $6$ faces. La carte a $2$ possibilités.",
+      "Pour une expérience à deux épreuves, on multiplie les nombres d'issues.",
+      "Nombre total d'issues $= 6 \\times ? = ?$."
+    ],
+    "f": "$\\text{Issues totales} = n_1 \\times n_2$",
+    "categorie": "Probabilites_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "Un programme de calcul dit : « Prends un nombre, multiplie-le par $3$, puis ajoute $5$ ». Pour le nombre $4$, quel résultat obtient-on ?",
+    "a": "$17$",
+    "type": "fill",
+    "steps": [
+      "On part de $4$. Première étape : $4 \\times 3 = ?$.",
+      "Deuxième étape : on ajoute $5$ au résultat.",
+      "$12 + 5 = ?$."
+    ],
+    "f": "",
+    "categorie": "Scratch_Brevet"
+  },
+  {
+    "lvl": 1,
+    "q": "Un programme de calcul dit : « Prends un nombre $x$, multiplie par $2$, soustrais $7$ ». Quelle expression littérale donne le résultat ?",
+    "a": "$2x - 7$",
+    "options": [
+      "$2x - 7$",
+      "$2(x - 7)$",
+      "$7 - 2x$"
+    ],
+    "steps": [
+      "On part de $x$. On multiplie par $2$ : on obtient $2x$.",
+      "Puis on soustrait $7$ à ce résultat.",
+      "L'expression est $2x - ?$."
+    ],
+    "f": "",
+    "categorie": "Scratch_Brevet"
+  },
+  {
+    "lvl": 2,
+    "q": "Un script Scratch initialise une variable $n$ à $1$ puis répète $4$ fois : « remplacer $n$ par $n \\times 2$ ». Quelle est la valeur finale de $n$ ?",
+    "a": "$16$",
+    "options": [
+      "$16$",
+      "$8$",
+      "$32$"
+    ],
+    "steps": [
+      "Au départ $n = 1$. Après la 1ère répétition : $n = 1 \\times 2 = 2$.",
+      "Après la 2ème : $n = 4$. Après la 3ème : $n = ?$.",
+      "Après la 4ème répétition : $n = 8 \\times 2 = ?$."
+    ],
+    "f": "",
+    "categorie": "Scratch_Brevet"
   }
 ]

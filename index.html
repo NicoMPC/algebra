@@ -3406,32 +3406,46 @@ function flowToStep3() {
     '<div style="text-align:center;padding:2rem 0;animation:flowIn .4s ease-out">' +
     '<div class="flow-breathe-icon" style="font-size:3.5rem;margin-bottom:1rem">⚡</div>' +
     '<div style="font-family:Syne,sans-serif;font-weight:900;font-size:1.35rem;color:#fff;margin-bottom:.5rem">C\'est parti !</div>' +
-    '<p style="color:rgba(255,255,255,.55);font-size:.9rem;line-height:1.6">Quelques questions — réponds comme tu peux.<br>Pas de piège, pas de note.</p>' +
-    '<p style="color:rgba(255,255,255,.3);font-size:.75rem;margin-top:.75rem">Ça prend moins de 2 minutes.</p>' +
+    '<p style="color:rgba(255,255,255,.55);font-size:.9rem;line-height:1.6">5 questions express — réponds comme tu peux.<br>Pas de piège, pas de note.</p>' +
+    '<p style="color:rgba(255,255,255,.3);font-size:.75rem;margin-top:.75rem">Ça prend 1 minute chrono.</p>' +
     '</div>';
   setTimeout(function() { _flowStartDiag(); }, 2000);
 }
 
-// ── COMPTAGE INTELLIGENT QUESTIONS DIAGNOSTIC ────────────────
-// 1 chap→4q, 2 chap→6q, 3 chap→8q, 4+→10q — au moins 1 par chapitre
+// ── DIAGNOSTIC EXPRESS — toujours 5 questions ────────────────
+// Pioche 1 question par bloc thématique (Brevet) ou par chapitre sélectionné
+// Shuffle interne pour varier d'un élève à l'autre
 function _pickDiagExos(exos, chapCount) {
-  var target = chapCount <= 1 ? 4 : chapCount === 2 ? 6 : chapCount === 3 ? 8 : 10;
-  if (exos.length <= target) return exos;
+  var TARGET = 5;
+  if (exos.length <= TARGET) return exos;
+  // Grouper par chapitre
   var groups = {}, keys = [];
   exos.forEach(function(e) {
     var k = e.oC || e.categorie || '';
     if (!groups[k]) { groups[k] = []; keys.push(k); }
     groups[k].push(e);
   });
-  var result = [];
-  keys.forEach(function(k) { result.push(groups[k][0]); }); // au moins 1 par chap
-  var remaining = target - result.length;
-  if (remaining > 0) {
-    var pool = [];
-    keys.forEach(function(k) { pool = pool.concat(groups[k].slice(1)); });
-    result = result.concat(pool.slice(0, remaining));
+  // Shuffle keys pour varier l'ordre
+  for (var si = keys.length - 1; si > 0; si--) {
+    var sj = Math.floor(Math.random() * (si + 1));
+    var tmp = keys[si]; keys[si] = keys[sj]; keys[sj] = tmp;
   }
-  return result.slice(0, target);
+  // Piocher 1 question aléatoire par chapitre, jusqu'à 5
+  var result = [];
+  keys.forEach(function(k) {
+    if (result.length >= TARGET) return;
+    var pool = groups[k];
+    result.push(pool[Math.floor(Math.random() * pool.length)]);
+  });
+  // Si < 5, compléter avec des questions supplémentaires
+  if (result.length < TARGET) {
+    var extra = [];
+    keys.forEach(function(k) { extra = extra.concat(groups[k]); });
+    for (var i = 0; i < extra.length && result.length < TARGET; i++) {
+      if (result.indexOf(extra[i]) === -1) result.push(extra[i]);
+    }
+  }
+  return result.slice(0, TARGET);
 }
 
 // ── DIAGNOSTIC GAS DANS LE FLOW ──────────────────────────────

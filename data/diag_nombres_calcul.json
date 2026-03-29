@@ -1,0 +1,203 @@
+[
+  {
+    "q": "Quel est le plus grand diviseur commun de $60$ et $96$ ?",
+    "a": "$12$",
+    "type": "qcm",
+    "options": ["$12$", "$6$", "$24$"],
+    "steps": [
+      "On décompose : $60 = 2^2 \\times 3 \\times 5$ et $96 = 2^5 \\times 3$.",
+      "Le PGCD prend le minimum de chaque exposant commun : $2^2 \\times 3^1$.",
+      "$4 \\times 3 = ?$."
+    ],
+    "f": "",
+    "lvl": 1,
+    "categorie": "Arithmetique_Brevet"
+  },
+  {
+    "q": "$119$ est un nombre premier.",
+    "a": "Faux",
+    "type": "vf",
+    "options": ["Vrai", "Faux"],
+    "steps": [
+      "On teste les diviseurs premiers : $2, 3, 5, 7, 11$...",
+      "$119 \\div 7 = 17$ : la division tombe juste."
+    ],
+    "f": "",
+    "lvl": 1,
+    "categorie": "Arithmetique_Brevet"
+  },
+  {
+    "q": "On veut répartir $108$ billes et $144$ cartes en paquets identiques (même nombre de billes, même nombre de cartes). Quel est le nombre maximal de paquets ?",
+    "a": "$36$",
+    "type": "qcm",
+    "options": ["$36$", "$12$", "$18$"],
+    "steps": [
+      "Le nombre maximal de paquets est le PGCD de $108$ et $144$.",
+      "$108 = 2^2 \\times 3^3$ et $144 = 2^4 \\times 3^2$. PGCD $= 2^2 \\times 3^2$.",
+      "$4 \\times 9 = ?$."
+    ],
+    "f": "",
+    "lvl": 2,
+    "categorie": "Arithmetique_Brevet"
+  },
+  {
+    "q": "Calcule $\\frac{5}{6} - \\frac{3}{4}$.",
+    "a": "$\\frac{1}{12}$",
+    "type": "qcm",
+    "options": ["$\\frac{1}{12}$", "$\\frac{2}{2}$", "$\\frac{1}{6}$"],
+    "steps": [
+      "Dénominateur commun de $6$ et $4$ : c'est $12$.",
+      "$\\frac{5}{6} = \\frac{10}{12}$ et $\\frac{3}{4} = \\frac{9}{12}$.",
+      "$\\frac{10}{12} - \\frac{9}{12} = \\frac{?}{12}$."
+    ],
+    "f": "$\\frac{a}{b} - \\frac{c}{d} = \\frac{a \\times d - c \\times b}{b \\times d}$",
+    "lvl": 1,
+    "categorie": "Fractions_Brevet"
+  },
+  {
+    "q": "Dans une classe de $32$ élèves, les $\\frac{3}{8}$ pratiquent un sport. Combien d'élèves sportifs ?",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "On calcule $\\frac{3}{8}$ de $32$ : $\\frac{3}{8} \\times 32 = \\frac{3 \\times 32}{8}$.",
+      "$\\frac{96}{8} = ?$."
+    ],
+    "f": "",
+    "lvl": 1,
+    "categorie": "Fractions_Brevet"
+  },
+  {
+    "q": "Calcule $\\frac{7}{9} \\times \\frac{3}{14}$.",
+    "a": "$\\frac{1}{6}$",
+    "type": "qcm",
+    "options": ["$\\frac{1}{6}$", "$\\frac{21}{126}$", "$\\frac{7}{42}$"],
+    "steps": [
+      "On multiplie : $\\frac{7 \\times 3}{9 \\times 14} = \\frac{21}{126}$.",
+      "On simplifie par $21$ : $\\frac{21}{126} = \\frac{1}{?}$."
+    ],
+    "f": "$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{a \\times c}{b \\times d}$",
+    "lvl": 2,
+    "categorie": "Fractions_Brevet"
+  },
+  {
+    "q": "Simplifie $10^3 \\times 10^{-5}$.",
+    "a": "$10^{-2}$",
+    "type": "qcm",
+    "options": ["$10^{-2}$", "$10^{-15}$", "$10^8$"],
+    "steps": [
+      "Quand on multiplie des puissances de même base, on additionne les exposants.",
+      "$10^{3+(-5)} = 10^{?}$."
+    ],
+    "f": "$a^m \\times a^n = a^{m+n}$",
+    "lvl": 1,
+    "categorie": "Puissances_Brevet"
+  },
+  {
+    "q": "La distance Terre-Soleil est d'environ $150\\,000\\,000$ km. En notation scientifique, cela s'écrit $1{,}5 \\times 10^n$. Que vaut $n$ ?",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "On compte le nombre de rangs pour passer de $1{,}5$ à $150\\,000\\,000$.",
+      "La virgule se déplace de $?$ rangs vers la droite."
+    ],
+    "f": "$a \\times 10^n \\text{ avec } 1 \\leq a < 10$",
+    "lvl": 1,
+    "categorie": "Puissances_Brevet"
+  },
+  {
+    "q": "Calcule $\\frac{3 \\times 10^4}{6 \\times 10^{-2}}$ et donne le résultat en notation scientifique.",
+    "a": "$5 \\times 10^5$",
+    "type": "qcm",
+    "options": ["$5 \\times 10^5$", "$0{,}5 \\times 10^6$", "$5 \\times 10^2$"],
+    "steps": [
+      "On sépare les coefficients et les puissances : $\\frac{3}{6} \\times \\frac{10^4}{10^{-2}}$.",
+      "$\\frac{3}{6} = 0{,}5$ et $10^{4-(-2)} = 10^6$.",
+      "$0{,}5 \\times 10^6 = ? \\times 10^?$ en notation scientifique."
+    ],
+    "f": "$\\frac{a^m}{a^n} = a^{m-n}$",
+    "lvl": 2,
+    "categorie": "Puissances_Brevet"
+  },
+  {
+    "q": "Simplifie $\\sqrt{75}$.",
+    "a": "$5\\sqrt{3}$",
+    "type": "qcm",
+    "options": ["$5\\sqrt{3}$", "$3\\sqrt{5}$", "$25\\sqrt{3}$"],
+    "steps": [
+      "On cherche le plus grand carré parfait qui divise $75$ : $75 = 25 \\times 3$.",
+      "$\\sqrt{75} = \\sqrt{25} \\times \\sqrt{3} = ?\\sqrt{3}$."
+    ],
+    "f": "$\\sqrt{a \\times b} = \\sqrt{a} \\times \\sqrt{b}$",
+    "lvl": 1,
+    "categorie": "Racines_Carrees_Brevet"
+  },
+  {
+    "q": "$\\sqrt{9 \\times 16} = \\sqrt{9} \\times \\sqrt{16}$.",
+    "a": "Vrai",
+    "type": "vf",
+    "options": ["Vrai", "Faux"],
+    "steps": [
+      "La propriété $\\sqrt{a \\times b} = \\sqrt{a} \\times \\sqrt{b}$ est valable pour $a \\geq 0$ et $b \\geq 0$.",
+      "Vérifions : $\\sqrt{144} = 12$ et $3 \\times 4 = 12$. Les deux sont-ils égaux ?"
+    ],
+    "f": "$\\sqrt{a \\times b} = \\sqrt{a} \\times \\sqrt{b}$",
+    "lvl": 1,
+    "categorie": "Racines_Carrees_Brevet"
+  },
+  {
+    "q": "Calcule $3\\sqrt{2} \\times 4\\sqrt{2}$.",
+    "a": "$24$",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "On multiplie les coefficients : $3 \\times 4 = 12$.",
+      "On multiplie les racines : $\\sqrt{2} \\times \\sqrt{2} = 2$.",
+      "$12 \\times 2 = ?$."
+    ],
+    "f": "$\\sqrt{a} \\times \\sqrt{a} = a$",
+    "lvl": 2,
+    "categorie": "Racines_Carrees_Brevet"
+  },
+  {
+    "q": "Un pantalon affiché à $65$ euros est soldé à $-20\\%$. Quel est le prix soldé en euros ?",
+    "a": "52",
+    "type": "fill",
+    "options": [],
+    "steps": [
+      "La réduction vaut $65 \\times \\frac{20}{100} = 13$ euros.",
+      "Le prix soldé est $65 - 13 = ?$ euros."
+    ],
+    "f": "",
+    "lvl": 1,
+    "categorie": "Proportionnalite_Brevet"
+  },
+  {
+    "q": "$4$ kg de pommes coûtent $6$ euros. Combien coûtent $10$ kg ?",
+    "a": "$15$ euros",
+    "type": "qcm",
+    "options": ["$15$ euros", "$12$ euros", "$24$ euros"],
+    "steps": [
+      "Le prix est proportionnel à la masse. Le prix au kg est $\\frac{6}{4} = 1{,}5$ euros.",
+      "Pour $10$ kg : $10 \\times 1{,}5 = ?$ euros."
+    ],
+    "f": "",
+    "lvl": 1,
+    "categorie": "Proportionnalite_Brevet"
+  },
+  {
+    "q": "Un article passe de $120$ euros à $150$ euros. Quel est le pourcentage d'augmentation ?",
+    "a": "$25\\%$",
+    "type": "qcm",
+    "options": ["$25\\%$", "$20\\%$", "$30\\%$"],
+    "steps": [
+      "L'augmentation est $150 - 120 = 30$ euros.",
+      "Le taux est $\\frac{30}{120} = \\frac{1}{4} = 0{,}25$.",
+      "$0{,}25 \\times 100 = ?\\%$."
+    ],
+    "f": "$\\text{taux} = \\frac{\\text{variation}}{\\text{valeur initiale}}$",
+    "lvl": 2,
+    "categorie": "Proportionnalite_Brevet"
+  }
+]

@@ -1,0 +1,152 @@
+[
+  {
+    "niveau": "3EME",
+    "categorie": "Statistiques_Brevet",
+    "exos": [
+      {
+        "lvl": 1,
+        "q": "Les notes d'un élève sont : $8$, $12$, $14$, $10$, $6$. Quelle est sa moyenne ?",
+        "a": "$10$",
+        "options": [
+          "$10$",
+          "$12$",
+          "$9$"
+        ],
+        "steps": [
+          "Additionne toutes les notes : $8 + 12 + 14 + 10 + 6 = ?$.",
+          "La somme vaut $50$. Combien de notes y a-t-il ?",
+          "Moyenne $= \\frac{50}{?}$."
+        ],
+        "f": "$\\text{Moyenne} = \\frac{\\text{somme des valeurs}}{\\text{nombre de valeurs}}$"
+      },
+      {
+        "lvl": 1,
+        "q": "Voici une série ordonnée de $7$ valeurs : $3$, $5$, $7$, $9$, $11$, $13$, $15$. Quelle est la médiane ?",
+        "a": "$9$",
+        "type": "fill",
+        "steps": [
+          "La série est déjà rangée dans l'ordre croissant.",
+          "Il y a $7$ valeurs, donc la médiane est la valeur en position $\\frac{7+1}{2} = ?$.",
+          "C'est la $4$ème valeur de la série."
+        ],
+        "f": "$\\text{Médiane} = \\text{valeur en position } \\frac{n+1}{2} \\text{ (si } n \\text{ impair)}$"
+      },
+      {
+        "lvl": 2,
+        "q": "Voici $8$ valeurs ordonnées : $4$, $6$, $8$, $10$, $12$, $14$, $16$, $18$. Le premier quartile $Q_1$ vaut :",
+        "a": "$7$",
+        "options": [
+          "$7$",
+          "$8$",
+          "$6$"
+        ],
+        "steps": [
+          "$Q_1$ est la médiane de la moitié inférieure : $4$, $6$, $8$, $10$.",
+          "La médiane de $4$ valeurs est la moyenne des $2$ valeurs du milieu.",
+          "$Q_1 = \\frac{6 + 8}{2} = ?$."
+        ],
+        "f": "$Q_1 = \\text{médiane de la moitié inférieure de la série}$"
+      }
+    ]
+  },
+  {
+    "niveau": "3EME",
+    "categorie": "Probabilites_Brevet",
+    "exos": [
+      {
+        "lvl": 1,
+        "q": "Un sac contient $3$ boules rouges et $5$ boules bleues. On tire une boule au hasard. Quelle est la probabilité de tirer une boule rouge ?",
+        "a": "$\\frac{3}{8}$",
+        "options": [
+          "$\\frac{3}{8}$",
+          "$\\frac{3}{5}$",
+          "$\\frac{5}{8}$"
+        ],
+        "steps": [
+          "Combien de boules au total ? $3 + 5 = ?$.",
+          "La probabilité est le rapport entre cas favorables et cas possibles.",
+          "$P(\\text{rouge}) = \\frac{?}{8}$."
+        ],
+        "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
+      },
+      {
+        "lvl": 1,
+        "q": "La probabilité qu'il pleuve demain est $0{,}3$. Quelle est la probabilité qu'il ne pleuve pas ?",
+        "a": "$0{,}7$",
+        "type": "fill",
+        "steps": [
+          "La somme des probabilités d'un événement et de son contraire vaut toujours $1$.",
+          "$P(\\overline{A}) = 1 - P(A)$.",
+          "$P(\\text{pas de pluie}) = 1 - 0{,}3 = ?$."
+        ],
+        "f": "$P(\\overline{A}) = 1 - P(A)$"
+      },
+      {
+        "lvl": 2,
+        "q": "On lance un dé équilibré puis on tire une carte (rouge ou noire). Combien d'issues possibles y a-t-il ?",
+        "a": "$12$",
+        "options": [
+          "$12$",
+          "$8$",
+          "$6$"
+        ],
+        "steps": [
+          "Le dé a $6$ faces. La carte a $2$ possibilités.",
+          "Pour une expérience à deux épreuves, on multiplie les nombres d'issues.",
+          "Nombre total d'issues $= 6 \\times ? = ?$."
+        ],
+        "f": "$\\text{Issues totales} = n_1 \\times n_2$"
+      }
+    ]
+  },
+  {
+    "niveau": "3EME",
+    "categorie": "Scratch_Brevet",
+    "exos": [
+      {
+        "lvl": 1,
+        "q": "Un programme de calcul dit : « Prends un nombre, multiplie-le par $3$, puis ajoute $5$ ». Pour le nombre $4$, quel résultat obtient-on ?",
+        "a": "$17$",
+        "type": "fill",
+        "steps": [
+          "On part de $4$. Première étape : $4 \\times 3 = ?$.",
+          "Deuxième étape : on ajoute $5$ au résultat.",
+          "$12 + 5 = ?$."
+        ],
+        "f": ""
+      },
+      {
+        "lvl": 1,
+        "q": "Un programme de calcul dit : « Prends un nombre $x$, multiplie par $2$, soustrais $7$ ». Quelle expression littérale donne le résultat ?",
+        "a": "$2x - 7$",
+        "options": [
+          "$2x - 7$",
+          "$2(x - 7)$",
+          "$7 - 2x$"
+        ],
+        "steps": [
+          "On part de $x$. On multiplie par $2$ : on obtient $2x$.",
+          "Puis on soustrait $7$ à ce résultat.",
+          "L'expression est $2x - ?$."
+        ],
+        "f": ""
+      },
+      {
+        "lvl": 2,
+        "q": "Un script Scratch initialise une variable $n$ à $1$ puis répète $4$ fois : « remplacer $n$ par $n \\times 2$ ». Quelle est la valeur finale de $n$ ?",
+        "a": "$16$",
+        "options": [
+          "$16$",
+          "$8$",
+          "$32$"
+        ],
+        "steps": [
+          "Au départ $n = 1$. Après la 1ère répétition : $n = 1 \\times 2 = 2$.",
+          "Après la 2ème : $n = 4$. Après la 3ème : $n = ?$.",
+          "Après la 4ème répétition : $n = 8 \\times 2 = ?$."
+        ],
+        "f": ""
+      }
+    ]
+  }
+]

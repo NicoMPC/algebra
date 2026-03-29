@@ -1002,30 +1002,29 @@ function generateDiagnostic(p) {
     if (byChap.length > 0) filtered = byChap;
   }
 
-  // Garantit 1 exo lvl1 + 1 exo lvl2 par chapitre sélectionné
-  var exos = [];
+  // Collecter toutes les questions diagnostic par chapitre
+  var allByChap = {};
   filtered.forEach(function(r) {
-    var cat     = String(r['Categorie'] || '');
+    var cat = String(r['Categorie'] || '');
     var chapExos = parseJSON(r['ExosJSON']);
-    var l1 = shuffle(chapExos.filter(function(e){ return (e.lvl || 1) === 1; }));
-    var l2 = shuffle(chapExos.filter(function(e){ return (e.lvl || 1) === 2; }));
-    if (l1.length > 0) { l1[0].categorie = cat; exos.push(l1[0]); }
-    if (l2.length > 0) {
-      l2[0].categorie = cat; exos.push(l2[0]);
-    } else if (l1.length > 1) {
-      // Fallback : pas de champ lvl → on prend un 2e exo lvl1 comme substitute
-      l1[1].categorie = cat; exos.push(l1[1]);
-    }
-    // Fallback total : aucun exo dans aucun bucket
-    if (l1.length === 0 && l2.length === 0) {
-      chapExos.slice(0, 2).forEach(function(e){ e.categorie = cat; exos.push(e); });
-    }
+    chapExos.forEach(function(e) { e.categorie = cat; });
+    if (!allByChap[cat]) allByChap[cat] = [];
+    allByChap[cat] = allByChap[cat].concat(chapExos);
   });
+
+  // Piocher 1 question aléatoire par chapitre
+  var exos = [];
+  var cats = Object.keys(allByChap);
+  for (var ci = 0; ci < cats.length; ci++) {
+    var pool = shuffle(allByChap[cats[ci]]);
+    if (pool.length > 0) exos.push(pool[0]);
+  }
 
   if (exos.length === 0) {
     return { status: 'error', message: 'DiagnosticExos vide pour le niveau ' + level + '.' };
   }
 
+  // Le frontend _pickDiagExos limite à 5 — on renvoie tout, il choisit
   return { status: 'success', exos: shuffle(exos) };
 }
 
