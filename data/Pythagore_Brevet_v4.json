@@ -1,0 +1,399 @@
+[
+  {
+    "id": "PYT_01",
+    "title": "La diagonale du grand écran",
+    "context": "Le cinéma Le Majestic installe un nouvel écran rectangulaire dans sa salle principale. Le technicien, Samir, doit calculer la diagonale de l'écran pour vérifier qu'il entre dans le cadre prévu. L'écran est un rectangle, et sa diagonale coupe l'écran en deux triangles rectangles.",
+    "figure": "PYT_01_cinema.svg",
+    "figure_desc": "Rectangle ABCD représentant l'écran de cinéma, vu de face. A en bas à gauche, B en bas à droite, C en haut à droite, D en haut à gauche. Diagonale [AC] tracée en pointillés. Angle droit codé (petit carré) en B dans le triangle ABC. AB = largeur (valeur variable selon question), BC = hauteur (valeur variable). AC = ? (diagonale). Labels aux sommets en gras.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "L'écran mesure $AB = 3$ m de large et $BC = 4$ m de haut. Calcule la longueur de la diagonale $AC$.",
+        "a": "5",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Le triangle $ABC$ est rectangle en $B$. L'hypoténuse est $AC$. On applique le théorème de Pythagore : $AC^2 = AB^2 + BC^2$.",
+          "$AC^2 = 3^2 + 4^2 = 9 + 16 = ?$.",
+          "$AC = \\sqrt{?} = \\;?$ m."
+        ],
+        "f": "$AC^2 = AB^2 + BC^2$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Samir mesure un second écran : $AB = 4{,}8$ m et $BC = 3{,}6$ m. Quelle est la longueur de la diagonale $AC$ ?",
+        "a": "$6$ m",
+        "type": "qcm",
+        "options": [
+          "$8{,}4$ m",
+          "$6$ m",
+          "$\\sqrt{35}$ m"
+        ],
+        "steps": [
+          "Triangle rectangle en $B$ : $AC^2 = 4{,}8^2 + 3{,}6^2$.",
+          "$AC^2 = 23{,}04 + 12{,}96 = ?$.",
+          "$AC = \\sqrt{?} = \\;?$ m."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Un troisième écran mesure $6{,}4$ m de large et $4{,}8$ m de haut. Calcule sa diagonale.",
+        "a": "8",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On applique Pythagore : $AC^2 = 6{,}4^2 + 4{,}8^2$.",
+          "$AC^2 = 40{,}96 + 23{,}04 = ?$.",
+          "$AC = \\sqrt{?} = \\;?$ m."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Samir affirme : « La diagonale d'un écran de $2{,}4$ m par $3{,}2$ m mesure exactement $4$ m. »",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "On calcule : $2{,}4^2 + 3{,}2^2 = 5{,}76 + 10{,}24 = ?$.",
+          "$\\sqrt{?} = \\;?$ — compare avec $4$ m."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "En coupant l'écran de $3$ m par $4$ m le long de sa diagonale, on obtient un triangle rectangle. Quel est le périmètre de ce triangle ?",
+        "a": "$12$ m",
+        "type": "qcm",
+        "options": [
+          "$12$ m",
+          "$7$ m",
+          "$14$ m"
+        ],
+        "steps": [
+          "Le triangle a pour côtés $AB = 3$ m, $BC = 4$ m et $AC = 5$ m (calculé en Q1).",
+          "Périmètre $= 3 + 4 + ? = \\;?$ m."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "PYT_02",
+    "title": "L'échelle de Jade",
+    "context": "Jade aide son père à repeindre la façade de leur maison. Elle utilise une échelle qu'elle appuie contre le mur. Le sol est horizontal et le mur est vertical : le triangle formé par l'échelle, le mur et le sol est rectangle.",
+    "figure": "PYT_02_echelle.svg",
+    "figure_desc": "Triangle rectangle : A au pied du mur (au sol), B en haut du mur (où l'échelle touche), C au sol (pied de l'échelle). Angle droit codé en A. AB = hauteur (vertical, le long du mur), AC = distance au sol (horizontal), BC = longueur de l'échelle (hypoténuse, en diagonale). Sol représenté par un trait horizontal avec hachures. Mur représenté par un trait vertical avec hachures.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "L'échelle mesure $BC = 5$ m. Le pied de l'échelle est à $AC = 3$ m du mur. À quelle hauteur $AB$ l'échelle touche-t-elle le mur ?",
+        "a": "4",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Triangle rectangle en $A$. L'hypoténuse est $BC = 5$ m. On cherche $AB$ (côté de l'angle droit).",
+          "$AB^2 = BC^2 - AC^2 = 5^2 - 3^2 = 25 - 9 = ?$.",
+          "$AB = \\sqrt{?} = \\;?$ m."
+        ],
+        "f": "$AB^2 = BC^2 - AC^2$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Avec une échelle de $10$ m posée à une hauteur de $8$ m, à quelle distance du mur se trouve le pied de l'échelle ?",
+        "a": "$6$ m",
+        "type": "qcm",
+        "options": [
+          "$2$ m",
+          "$\\sqrt{164}$ m",
+          "$6$ m"
+        ],
+        "steps": [
+          "Triangle rectangle en $A$ : $AC^2 = BC^2 - AB^2 = 10^2 - 8^2$.",
+          "$AC^2 = 100 - 64 = ?$.",
+          "$AC = \\sqrt{?} = \\;?$ m."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Jade affirme : « Avec une échelle de $13$ m et le pied à $5$ m du mur, j'atteins exactement $12$ m de hauteur. »",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "On vérifie : $AB^2 = 13^2 - 5^2 = 169 - 25 = ?$.",
+          "$AB = \\sqrt{?} = \\;?$ — compare avec $12$ m."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Une échelle de $8{,}5$ m est posée à $4$ m du mur. Calcule la hauteur atteinte sur le mur.",
+        "a": "7,5",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$AB^2 = 8{,}5^2 - 4^2 = 72{,}25 - 16 = ?$.",
+          "$AB = \\sqrt{?} = \\;?$ m."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Jade dispose d'une échelle de $6{,}5$ m et veut atteindre une fenêtre à $6$ m de hauteur. À quelle distance du mur doit-elle placer le pied de l'échelle ?",
+        "a": "$2{,}5$ m",
+        "type": "qcm",
+        "options": [
+          "$3{,}5$ m",
+          "$2{,}5$ m",
+          "$\\sqrt{6{,}25}$ m"
+        ],
+        "steps": [
+          "$AC^2 = 6{,}5^2 - 6^2 = 42{,}25 - 36 = ?$.",
+          "$AC = \\sqrt{?} = \\;?$ m."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "PYT_03",
+    "title": "Le terrain de Lucas",
+    "context": "Lucas est bénévole dans un club de sport. Il doit vérifier que les terrains tracés au sol ont bien des angles droits. Pour cela, il mesure les trois côtés de chaque triangle formé et utilise la réciproque du théorème de Pythagore : si le carré du plus grand côté est égal à la somme des carrés des deux autres, alors le triangle est rectangle.",
+    "figure": "PYT_03_terrain.svg",
+    "figure_desc": "Vue de dessus d'un terrain de sport (rectangle vert clair). Un triangle est tracé dans le terrain avec ses trois côtés cotés. Les sommets sont étiquetés. L'angle droit éventuel est codé avec un petit carré (ou un point d'interrogation si c'est ce qu'on cherche). Les mesures des côtés sont indiquées le long des segments.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Un terrain rectangulaire mesure $40$ m de long et $30$ m de large. Quelle est la longueur de sa diagonale ?",
+        "a": "$50$ m",
+        "type": "qcm",
+        "options": [
+          "$50$ m",
+          "$70$ m",
+          "$\\sqrt{2500}$ m"
+        ],
+        "steps": [
+          "Le rectangle forme deux triangles rectangles. L'hypoténuse est la diagonale $d$.",
+          "$d^2 = 40^2 + 30^2 = 1600 + 900 = ?$.",
+          "$d = \\sqrt{?} = \\;?$ m."
+        ],
+        "f": "$d^2 = L^2 + l^2$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Lucas mesure un triangle tracé au sol : ses côtés mesurent $5$ m, $12$ m et $13$ m. Ce triangle est-il rectangle ? Si oui, calcule son aire.",
+        "a": "30",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On teste : $13^2 = 169$ et $5^2 + 12^2 = 25 + 144 = 169$. Les deux sont égaux, donc le triangle est rectangle.",
+          "L'angle droit est entre les côtés $5$ m et $12$ m. Aire $= \\frac{1}{2} \\times 5 \\times 12 = ?$ m²."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Lucas affirme : « Un triangle dont les côtés mesurent $7$ m, $24$ m et $25$ m est rectangle. »",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Le plus grand côté est $25$ m. On compare $25^2$ avec $7^2 + 24^2$.",
+          "$25^2 = 625$ et $7^2 + 24^2 = 49 + 576 = ?$. Sont-ils égaux ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Un autre triangle au sol a des côtés de $8$ m, $15$ m et $18$ m. Calcule $8^2 + 15^2$.",
+        "a": "289",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Le plus grand côté est $18$ m. On calcule $18^2 = 324$.",
+          "On calcule $8^2 + 15^2 = 64 + 225 = ?$. Compare avec $324$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "D'après la question précédente, le triangle de côtés $8$ m, $15$ m et $18$ m est-il rectangle ?",
+        "a": "$\\text{Non, car } 289 \\neq 324$",
+        "type": "qcm",
+        "options": [
+          "$\\text{Oui, car } 8^2 + 15^2 = 18^2$",
+          "$\\text{Non, car } 289 \\neq 324$",
+          "$\\text{Oui, car } 8 + 15 > 18$"
+        ],
+        "steps": [
+          "On a trouvé $8^2 + 15^2 = 289$ et $18^2 = 324$.",
+          "$289 \\neq 324$, donc l'égalité de Pythagore n'est pas vérifiée. Conclusion ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "PYT_04",
+    "title": "Le chantier d'Inès",
+    "context": "Inès est architecte stagiaire sur un chantier de rénovation. Elle doit vérifier des mesures, calculer des distances et estimer des surfaces pour valider les plans. Tous les murs sont verticaux et le sol est horizontal.",
+    "figure": "PYT_04_chantier.svg",
+    "figure_desc": "Coupe verticale d'un bâtiment rectangulaire. A en bas à gauche, B en bas à droite (sol), C en haut à droite, D en haut à gauche (mur). AB = largeur au sol, BC = hauteur du mur (vertical), diagonale AC tracée en pointillés. Angle droit codé en B. Mesures indiquées selon la question. Pour Q3-Q4 : un triangle rectangle additionnel représentant une dalle au sol avec cotations.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Une cloison rectangulaire mesure $6$ m de large et $8$ m de haut. Inès tend un câble en diagonale pour la stabiliser. Quelle est la longueur du câble ?",
+        "a": "10",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Le rectangle forme un triangle rectangle. Le câble est l'hypoténuse.",
+          "$d^2 = 6^2 + 8^2 = 36 + 64 = ?$.",
+          "$d = \\sqrt{?} = \\;?$ m."
+        ],
+        "f": "$d^2 = a^2 + b^2$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Une poutre diagonale de $13$ m est posée dans un cadre rectangulaire de $5$ m de large. Quelle est la hauteur du cadre ?",
+        "a": "$12$ m",
+        "type": "qcm",
+        "options": [
+          "$8$ m",
+          "$12$ m",
+          "$\\sqrt{144}$ m"
+        ],
+        "steps": [
+          "Triangle rectangle : la poutre ($13$ m) est l'hypoténuse, la largeur ($5$ m) un côté.",
+          "$h^2 = 13^2 - 5^2 = 169 - 25 = ?$.",
+          "$h = \\sqrt{?} = \\;?$ m."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Inès affirme : « Une dalle triangulaire de côtés $6$ m, $8$ m et $10$ m est un triangle rectangle. »",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Le plus grand côté est $10$ m. On vérifie : $6^2 + 8^2 = 36 + 64 = ?$.",
+          "Compare avec $10^2 = 100$. L'égalité est-elle vérifiée ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "La dalle triangulaire de la question précédente ($6$ m, $8$ m, $10$ m) est rectangle. Calcule son aire en m².",
+        "a": "24",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Le triangle est rectangle. Les deux côtés de l'angle droit sont $6$ m et $8$ m.",
+          "Aire $= \\frac{1}{2} \\times 6 \\times 8 = ?$ m²."
+        ],
+        "f": "$\\text{Aire} = \\frac{1}{2} \\times a \\times b$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Inès doit tendre un câble entre deux coins opposés d'une pièce en forme de L. En passant par l'angle intérieur, le trajet forme deux segments perpendiculaires : $9$ m horizontalement puis $12$ m verticalement. Quelle est la distance directe (à vol d'oiseau) entre les deux coins ?",
+        "a": "$15$ m",
+        "type": "qcm",
+        "options": [
+          "$21$ m",
+          "$\\sqrt{200}$ m",
+          "$15$ m"
+        ],
+        "steps": [
+          "Les deux segments sont perpendiculaires : on a un triangle rectangle de côtés $9$ m et $12$ m.",
+          "$d^2 = 9^2 + 12^2 = 81 + 144 = ?$.",
+          "$d = \\sqrt{?} = \\;?$ m."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

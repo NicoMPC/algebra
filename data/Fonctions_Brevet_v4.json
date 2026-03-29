@@ -1,0 +1,376 @@
+[
+  {
+    "id": "FONC_01",
+    "title": "Le tarif du taxi",
+    "context": "Un taxi affiche un tarif composé d'une prise en charge de 3 € plus 1,20 € par kilomètre parcouru. On note $f$ la fonction qui, à la distance $d$ (en km), associe le prix $f(d)$ (en €).",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Quelle est l'expression de $f(d)$ ? Calcule le prix pour une course de 10 km.",
+        "a": "15",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Le prix est : prise en charge + prix au km $\\times$ distance, soit $f(d) = 1{,}2d + 3$.",
+          "$f(10) = 1{,}2 \\times 10 + 3 = 12 + 3 = \\;?$."
+        ],
+        "f": "$f(d) = 1{,}2d + 3$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quel est le prix d'une course de 25 km ?",
+        "a": "$33$ €",
+        "type": "qcm",
+        "options": ["$33$ €", "$28$ €", "$30$ €"],
+        "steps": [
+          "On calcule $f(25) = 1{,}2 \\times 25 + 3$.",
+          "$f(25) = 30 + 3 = \\;?$."
+        ],
+        "f": "$f(d) = 1{,}2d + 3$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Quelle est l'image de 0 par $f$ ? Que représente cette valeur concrètement ?",
+        "a": "3",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$f(0) = 1{,}2 \\times 0 + 3 = 3$. C'est le prix quand la distance est nulle.",
+          "Ce montant correspond à la prise en charge (prix fixe au départ). $f(0) = \\;?$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Un client a payé 27 €. Quelle distance a-t-il parcourue ?",
+        "a": "$20$ km",
+        "type": "qcm",
+        "options": ["$20$ km", "$22{,}5$ km", "$18$ km"],
+        "steps": [
+          "On cherche $d$ tel que $f(d) = 27$, soit $1{,}2d + 3 = 27$.",
+          "$1{,}2d = 24$, donc $d = \\frac{24}{1{,}2} = \\;?$."
+        ],
+        "f": "$f(d) = 1{,}2d + 3$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Un concurrent propose un tarif sans prise en charge mais à 1,50 € par km. Pour une course de 20 km, le premier taxi est-il moins cher que le concurrent ?",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Premier taxi : $f(20) = 1{,}2 \\times 20 + 3 = 27$ €. Concurrent : $1{,}5 \\times 20 = 30$ €.",
+          "On compare : $27 < 30$. Le premier taxi est-il moins cher ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "FONC_02",
+    "title": "La température de la pièce",
+    "context": "On mesure la température $T$ (en °C) d'une pièce au cours d'une journée. La courbe ci-dessous représente la fonction $T$ en fonction du temps $t$ (en heures, de 0 h à 24 h).",
+    "figure": null,
+    "figure_desc": "Repère orthogonal. Axe horizontal : temps $t$ de 0 à 24 (graduations toutes les 2 h). Axe vertical : température $T$ de 14 à 24 °C (graduations tous les 2 °C). Courbe continue passant par : (0 ; 16), (4 ; 15), (6 ; 15), (8 ; 16), (10 ; 18), (12 ; 20), (14 ; 22), (16 ; 23), (18 ; 22), (20 ; 19), (22 ; 17), (24 ; 16). La courbe a une allure en cloche avec un maximum vers 16 h. Quadrillage léger en arrière-plan.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Quelle est la température de la pièce à 14 h ? (lecture graphique)",
+        "a": "22",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On repère $t = 14$ sur l'axe horizontal, puis on lit l'ordonnée du point correspondant sur la courbe.",
+          "Le point de la courbe a pour ordonnée $\\;?$ °C."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["Heure", "0", "4", "6", "8", "10", "12", "14", "16", "18", "20", "22", "24"],
+          "rows": [
+            ["$T$ (°C)", "16", "15", "15", "16", "18", "20", "22", "23", "22", "19", "17", "16"]
+          ],
+          "caption": "Température de la pièce au cours de la journée"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est l'image de 4 par la fonction $T$ ?",
+        "a": "$15$ °C",
+        "type": "qcm",
+        "options": ["$15$ °C", "$16$ °C", "$14$ °C"],
+        "steps": [
+          "L'image de 4 par $T$ signifie la valeur $T(4)$.",
+          "Sur la courbe (ou le tableau), à $t = 4$ on lit $T = \\;?$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "À quelle(s) heure(s) la température vaut-elle 19 °C ? Donne l'antécédent le plus grand.",
+        "a": "20",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On trace la droite horizontale $T = 19$ et on cherche les intersections avec la courbe.",
+          "La courbe coupe $T = 19$ en deux points : vers $t \\approx 11$ h (montée) et $t = \\;?$ h (descente)."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Sur quel intervalle de temps la température est-elle supérieure ou égale à 20 °C ?",
+        "a": "De 12 h à 18 h",
+        "type": "qcm",
+        "options": ["De 12 h à 18 h", "De 10 h à 20 h", "De 14 h à 18 h"],
+        "steps": [
+          "On cherche quand la courbe est au-dessus (ou sur) la droite $T = 20$.",
+          "D'après le tableau et la courbe, $T \\geq 20$ entre $t = 12$ et $t = \\;?$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "La température maximale est atteinte à 16 h. La fonction $T$ est-elle croissante sur l'intervalle $[0\\;;\\;16]$ ?",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Une fonction est croissante si, quand $t$ augmente, $T$ augmente aussi — sans jamais redescendre.",
+          "Entre $t = 0$ (16 °C) et $t = 4$ (15 °C), la température descend. Peut-on dire que $T$ est croissante sur $[0\\;;\\;16]$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "FONC_03",
+    "title": "La croissance de la plante",
+    "context": "Samir plante une graine de tournesol et mesure chaque semaine la hauteur $h$ (en cm) de sa plante. Les résultats sont consignés dans le tableau ci-dessous.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Quelle est la hauteur de la plante à la semaine 3 ?",
+        "a": "18",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On lit directement la valeur dans le tableau à la colonne « Semaine 3 ».",
+          "La hauteur est $\\;?$ cm."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["Semaine", "0", "1", "2", "3", "4", "5", "6", "7", "8"],
+          "rows": [
+            ["Hauteur (cm)", "0", "2", "8", "18", "32", "45", "54", "60", "63"]
+          ],
+          "caption": "Hauteur du tournesol au fil des semaines"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est l'image de 5 par la fonction $h$ ?",
+        "a": "$45$ cm",
+        "type": "qcm",
+        "options": ["$45$ cm", "$54$ cm", "$32$ cm"],
+        "steps": [
+          "L'image de 5 par $h$ est $h(5)$, c'est-à-dire la hauteur à la semaine 5.",
+          "On lit dans le tableau : $h(5) = \\;?$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "De combien de centimètres la plante a-t-elle grandi entre la semaine 2 et la semaine 4 ?",
+        "a": "24",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On calcule la différence : $h(4) - h(2) = 32 - 8$.",
+          "$32 - 8 = \\;?$ cm."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "La croissance est-elle plus rapide entre la semaine 1 et la semaine 3 qu'entre la semaine 5 et la semaine 7 ?",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Semaine 1→3 : $h(3) - h(1) = 18 - 2 = 16$ cm en 2 semaines. Semaine 5→7 : $h(7) - h(5) = 60 - 45 = 15$ cm en 2 semaines.",
+          "$16 > 15$ : la plante a davantage grandi entre les semaines 1 et 3. La croissance est-elle plus rapide ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "La croissance hebdomadaire moyenne entre la semaine 0 et la semaine 8 est de :",
+        "a": "$7{,}875$ cm/semaine",
+        "type": "qcm",
+        "options": ["$7{,}875$ cm/semaine", "$8{,}5$ cm/semaine", "$9$ cm/semaine"],
+        "steps": [
+          "La croissance totale est $h(8) - h(0) = 63 - 0 = 63$ cm sur 8 semaines.",
+          "Croissance moyenne $= \\frac{63}{8} = \\;?$ cm/semaine."
+        ],
+        "f": "$\\text{moyenne} = \\frac{\\text{variation totale}}{\\text{durée}}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "FONC_04",
+    "title": "Le bénéfice de l'entreprise",
+    "context": "Une petite entreprise vend des coques de téléphone personnalisées. Le coût de production pour $x$ coques est $C(x) = 2x + 80$ (en €). Chaque coque est vendue au prix unitaire $p$ (en €). La recette est $R(x) = px$. Le bénéfice est $B(x) = R(x) - C(x)$. On fixe $p = 7$ €.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Exprime $B(x)$ en fonction de $x$ (avec $p = 7$) et calcule $B(20)$.",
+        "a": "20",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$B(x) = R(x) - C(x) = 7x - (2x + 80) = 5x - 80$.",
+          "$B(20) = 5 \\times 20 - 80 = 100 - 80 = \\;?$."
+        ],
+        "f": "$B(x) = R(x) - C(x)$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Pour combien de coques vendues le bénéfice est-il nul (seuil de rentabilité) ?",
+        "a": "$16$ coques",
+        "type": "qcm",
+        "options": ["$16$ coques", "$20$ coques", "$12$ coques"],
+        "steps": [
+          "On résout $B(x) = 0$, soit $5x - 80 = 0$.",
+          "$5x = 80$, donc $x = \\frac{80}{5} = \\;?$."
+        ],
+        "f": "$B(x) = 5x - 80$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Complète le tableau de valeurs du bénéfice. Quel est $B(30)$ ?",
+        "a": "70",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$B(30) = 5 \\times 30 - 80 = 150 - 80$.",
+          "$B(30) = \\;?$ €."
+        ],
+        "f": "$B(x) = 5x - 80$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": {
+          "headers": ["Coques ($x$)", "0", "10", "16", "20", "30", "40", "50"],
+          "rows": [
+            ["$B(x)$ (€)", "$-80$", "$-30$", "$0$", "$20$", "?", "$120$", "$170$"]
+          ],
+          "caption": "Bénéfice en fonction du nombre de coques vendues"
+        },
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "L'entreprise veut un bénéfice d'au moins 120 €. Combien de coques minimum doit-elle vendre ?",
+        "a": "$40$ coques",
+        "type": "qcm",
+        "options": ["$40$ coques", "$36$ coques", "$44$ coques"],
+        "steps": [
+          "On résout $B(x) \\geq 120$, soit $5x - 80 \\geq 120$.",
+          "$5x \\geq 200$, donc $x \\geq \\frac{200}{5} = \\;?$."
+        ],
+        "f": "$B(x) = 5x - 80$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Si le prix unitaire passe à 6 € au lieu de 7 €, le seuil de rentabilité augmente-t-il ?",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Avec $p = 6$ : $B(x) = 6x - (2x + 80) = 4x - 80$. Seuil : $4x - 80 = 0 \\Rightarrow x = 20$.",
+          "Avant (p = 7), le seuil était 16 coques. Maintenant 20 coques. $20 > 16$ : le seuil a-t-il augmenté ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

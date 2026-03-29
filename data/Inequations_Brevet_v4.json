@@ -1,0 +1,356 @@
+[
+  {
+    "id": "INEQ_01",
+    "title": "Le budget rentrée d'Inès",
+    "context": "Inès prépare la rentrée scolaire. Elle dispose d'un budget de 45 € pour acheter des cahiers à $3{,}50$ € pièce et un lot de stylos à 10 €. Soit $n$ le nombre de cahiers qu'elle peut acheter.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Écris le membre de droite de l'inéquation qui traduit la contrainte de budget : $3{,}50n + 10 \\leq$ ___",
+        "a": "45",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Le coût total = prix des cahiers + lot de stylos = $3{,}50 \\times n + 10$",
+          "Ce coût total doit être inférieur ou égal au budget : $3{,}50n + 10 \\leq ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Résous $3{,}50n + 10 \\leq 45$. Combien de cahiers Inès peut-elle acheter au maximum ?",
+        "a": "10",
+        "type": "qcm",
+        "options": ["10", "12", "9"],
+        "steps": [
+          "Isole $n$ : $3{,}50n \\leq 45 - 10 = 35$",
+          "Divise par $3{,}50$ (positif, le sens ne change pas) : $n \\leq \\frac{35}{3{,}50} = ?$"
+        ],
+        "f": "$ax + b \\leq c \\Rightarrow x \\leq \\frac{c - b}{a}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Inès affirme : « Si j'achète 11 cahiers à $3{,}50$ € et le lot de stylos à 10 €, je ne dépasse pas 45 €. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Calcule le coût pour 11 cahiers : $3{,}50 \\times 11 + 10 = ?$",
+          "Compare ce résultat à 45 €. Est-ce inférieur ou égal ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Le prix d'un cahier augmente à 4 €. Inès a toujours 45 € et achète le lot de stylos à 10 €. Combien de cahiers peut-elle acheter au maximum ? ___",
+        "a": "8",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Nouvelle inéquation : $4n + 10 \\leq 45$, soit $4n \\leq ?$",
+          "Divise par 4 : $n \\leq \\frac{35}{4} = 8{,}75$ — comme $n$ est entier, prends la partie entière"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Inès veut aussi acheter une trousse à 7 €. Avec les cahiers à $3{,}50$ € et le lot de stylos à 10 €, combien de cahiers peut-elle acheter au maximum sans dépasser 45 € ?",
+        "a": "8",
+        "type": "qcm",
+        "options": ["7", "8", "9"],
+        "steps": [
+          "Inéquation : $3{,}50n + 10 + 7 \\leq 45$, soit $3{,}50n \\leq ?$",
+          "Divise : $n \\leq \\frac{28}{3{,}50} = ?$ — prends la partie entière"
+        ],
+        "f": "$ax + b \\leq c \\Rightarrow x \\leq \\frac{c - b}{a}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "INEQ_02",
+    "title": "L'expérience de Hugo",
+    "context": "Hugo réalise une expérience en sciences. La température $T$ d'un mélange chimique part de 8°C et augmente de 2°C par minute. La réaction ne fonctionne que si la température est strictement supérieure à 15°C et ne dépasse pas 40°C.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Exprime $T$ en fonction du nombre de minutes $t$ : $T =$ ___",
+        "a": "2t + 8",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Au départ ($t = 0$), la température est 8°C",
+          "Chaque minute ajoute 2°C : $T = 2 \\times t + ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "La réaction ne fonctionne que si $T > 15$°C. Sachant que $T = 2t + 8$, au bout de combien de minutes entières la réaction peut-elle commencer ?",
+        "a": "4",
+        "type": "qcm",
+        "options": ["3", "4", "5"],
+        "steps": [
+          "Isole $t$ : $2t > 15 - 8 = 7$, soit $t > ?$",
+          "$t > 3{,}5$ — quel est le plus petit entier strictement supérieur à $3{,}5$ ?"
+        ],
+        "f": "$ax + b > c \\Rightarrow x > \\frac{c - b}{a}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Hugo affirme : « Au bout de 3 minutes, la température atteint $T = 2 \\times 3 + 8 = 14$°C, et la réaction fonctionne car $14 > 15$. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Calcule : $T = 2 \\times 3 + 8 = 14$°C — c'est correct",
+          "La réaction nécessite $T > 15$. Or $14$ est-il strictement supérieur à 15 ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "La réaction doit aussi rester sous 40°C ($T \\leq 40$). Résous $2t + 8 \\leq 40$. Hugo doit arrêter la chauffe au bout de ___ minutes au maximum.",
+        "a": "16",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Isole $t$ : $2t \\leq 40 - 8 = ?$",
+          "Divise par 2 : $t \\leq ?$"
+        ],
+        "f": "$ax + b \\leq c \\Rightarrow x \\leq \\frac{c - b}{a}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "La réaction fonctionne pour $15 < T \\leq 40$, soit de $t = 4$ min à $t = 16$ min. Combien de minutes entières complètes Hugo a-t-il pour l'expérience ?",
+        "a": "12",
+        "type": "qcm",
+        "options": ["13", "12", "11"],
+        "steps": [
+          "La réaction commence à $t = 4$ (car $T = 16 > 15$) et finit à $t = 16$ (car $T = 40 \\leq 40$)",
+          "Nombre de minutes entières complètes : de la minute 4 à la minute 15 incluse, soit $15 - 4 + 1 = ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "INEQ_03",
+    "title": "Le chargement d'Adam",
+    "context": "Adam est artisan menuisier. Il charge son camion (capacité maximale : 800 kg) avec des planches de $12{,}5$ kg chacune et 150 kg d'outillage. Pour la sécurité, il ne doit pas dépasser $\\frac{3}{4}$ de la capacité maximale. Soit $p$ le nombre de planches.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Écris le membre de droite de l'inéquation de capacité du camion : $12{,}5p + 150 \\leq$ ___",
+        "a": "800",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Poids total = poids des planches + outillage = $12{,}5p + 150$",
+          "Ce poids doit être $\\leq$ à la capacité maximale : $12{,}5p + 150 \\leq ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Résous $12{,}5p + 150 \\leq 800$. Combien de planches Adam peut-il charger au maximum ?",
+        "a": "52",
+        "type": "qcm",
+        "options": ["52", "64", "50"],
+        "steps": [
+          "Isole $p$ : $12{,}5p \\leq 800 - 150 = 650$",
+          "Divise par $12{,}5$ : $p \\leq \\frac{650}{12{,}5} = ?$"
+        ],
+        "f": "$ax + b \\leq c \\Rightarrow x \\leq \\frac{c - b}{a}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Pour la sécurité, Adam ne doit pas charger plus des $\\frac{3}{4}$ de 800 kg. Quel est le poids maximal autorisé ? ___ kg",
+        "a": "600",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Calcule $\\frac{3}{4} \\times 800 = ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Avec la règle de sécurité (poids total $\\leq 600$ kg) et 150 kg d'outillage, combien de planches de $12{,}5$ kg Adam peut-il charger au maximum ?",
+        "a": "36",
+        "type": "qcm",
+        "options": ["36", "48", "35"],
+        "steps": [
+          "Inéquation : $12{,}5p + 150 \\leq 600$, soit $12{,}5p \\leq ?$",
+          "Divise par $12{,}5$ : $p \\leq ?$"
+        ],
+        "f": "$ax + b \\leq c \\Rightarrow x \\leq \\frac{c - b}{a}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Adam affirme : « Même avec la règle de sécurité ($\\leq 600$ kg), je peux transporter 40 planches de $12{,}5$ kg et mes 150 kg d'outillage en un seul voyage. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Calcule le poids pour 40 planches + outillage : $12{,}5 \\times 40 + 150 = ?$",
+          "Compare ce résultat à 600 kg. La règle de sécurité est-elle respectée ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "INEQ_04",
+    "title": "Le concert de Jade",
+    "context": "Jade organise un concert au collège. La salle coûte 350 € et le groupe de musique demande 200 €, soit un coût total de 550 €. Elle vend les places 8 € chacune et souhaite au minimum couvrir ses frais. Soit $x$ le nombre de places vendues.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Quel est le coût total de l'événement (salle + groupe) ? ___ €",
+        "a": "550",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Coût total = location + groupe = $350 + 200 = ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Jade veut couvrir les 550 € de coûts. Résous $8x \\geq 550$. Quel est le nombre minimum de places à vendre ?",
+        "a": "69",
+        "type": "qcm",
+        "options": ["68", "69", "70"],
+        "steps": [
+          "Divise par 8 : $x \\geq \\frac{550}{8} = 68{,}75$",
+          "Quel est le plus petit entier $\\geq 68{,}75$ ?"
+        ],
+        "f": "$ax \\geq c \\Rightarrow x \\geq \\frac{c}{a}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Jade affirme : « Avec 68 places vendues à 8 €, je couvre les 550 € de coûts du concert. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Calcule les recettes pour 68 places : $8 \\times 68 = ?$",
+          "Compare au coût total de 550 €. Les recettes sont-elles $\\geq 550$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Jade veut dégager un bénéfice d'au moins 100 €. Résous $8x - 550 \\geq 100$. Combien de places minimum doit-elle vendre ? ___",
+        "a": "82",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Isole $x$ : $8x \\geq 550 + 100 = ?$",
+          "Divise par 8 : $x \\geq \\frac{650}{8} = ?$ — arrondis à l'entier supérieur"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Jade propose une promo : les 20 premières places sont à 5 € au lieu de 8 €. Combien de places à 8 € doit-elle encore vendre au minimum pour couvrir les 550 € de coûts ?",
+        "a": "57",
+        "type": "qcm",
+        "options": ["56", "57", "58"],
+        "steps": [
+          "Recettes des 20 premières places : $20 \\times 5 = 100$ €. Il reste à couvrir : $550 - 100 = ?$",
+          "Inéquation : $8y \\geq 450$. Divise par 8 : $y \\geq \\frac{450}{8} = ?$ — arrondis à l'entier supérieur"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

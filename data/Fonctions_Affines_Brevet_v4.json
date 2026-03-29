@@ -1,0 +1,361 @@
+[
+  {
+    "id": "FONC_AFF_01",
+    "title": "Le forfait de Noé",
+    "context": "Noé compare des forfaits téléphoniques. Le forfait \"Éco\" coûte $12~€$ d'abonnement mensuel fixe, plus $0{,}15~€$ par minute d'appel. On modélise le coût mensuel par $f(x) = 0{,}15x + 12$, où $x$ est le nombre de minutes d'appel dans le mois.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Dans l'expression $f(x) = 0{,}15x + 12$, que représente le nombre $0{,}15$ ?",
+        "a": "Le prix par minute d'appel",
+        "type": "qcm",
+        "options": ["Le prix par minute d'appel", "L'abonnement mensuel", "Le nombre de minutes incluses"],
+        "steps": [
+          "Dans $f(x) = ax + b$, le coefficient $a$ est le nombre qui multiplie $x$.",
+          "Ici $x$ représente les minutes d'appel. Le nombre qui multiplie $x$ est $0{,}15$. Que représente-t-il concrètement ?"
+        ],
+        "f": "$f(x) = ax + b$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Calcule le coût mensuel de Noé s'il appelle $40$ minutes. $f(40) = $ ___",
+        "a": "18",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On remplace $x$ par $40$ dans $f(x) = 0{,}15x + 12$.",
+          "$f(40) = 0{,}15 \\times 40 + 12 = 6 + 12 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Même sans passer le moindre appel, Noé paie $12~€$ avec ce forfait.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Si Noé ne téléphone pas, $x = 0$. On calcule $f(0) = 0{,}15 \\times 0 + 12$.",
+          "$f(0) = 12$. Ce montant correspond à l'abonnement fixe. Que peut-on en conclure ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Noé a reçu une facture de $27~€$. Combien de minutes a-t-il appelé ? ___ minutes",
+        "a": "100",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On résout $f(x) = 27$, soit $0{,}15x + 12 = 27$.",
+          "$0{,}15x = 27 - 12 = 15$, donc $x = \\frac{15}{0{,}15} = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Le forfait \"Premium\" coûte $25~€$ par mois, appels illimités. À partir de combien de minutes le forfait Éco devient-il plus cher que le Premium ?",
+        "a": "À partir de $87$ minutes",
+        "type": "qcm",
+        "options": ["À partir de $87$ minutes", "À partir de $100$ minutes", "À partir de $75$ minutes"],
+        "steps": [
+          "Le forfait Éco dépasse le Premium quand $f(x) > 25$, soit $0{,}15x + 12 > 25$.",
+          "$0{,}15x > 13$, donc $x > \\frac{13}{0{,}15} = 86{,}\\overline{6}$.",
+          "Le nombre de minutes est entier. À partir de quel entier $x$ cela se produit-il ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "FONC_AFF_02",
+    "title": "La piscine d'Emma",
+    "context": "Emma remplit sa piscine à l'aide d'un tuyau à débit constant. Au moment où elle commence à chronométrer ($t = 0$), la piscine contient déjà $400$ litres d'eau. Le tuyau ajoute $250$ litres par heure. La capacité maximale de la piscine est $2\\,500$ litres. On modélise le volume d'eau par $V(t) = 250t + 400$, où $t$ est le temps en heures.",
+    "figure_desc": "Repère orthogonal. Axe horizontal : $t$ (heures), gradué de 0 à 10. Axe vertical : $V$ (litres), gradué de 0 à 2500 par pas de 500. Droite tracée passant par $(0 ; 400)$ et $(8 ; 2400)$, avec étiquette $V(t) = 250t + 400$. Ligne horizontale pointillée à $V = 2500$ avec étiquette \"Capacité max\". Points marqués : $(0 ; 400)$ avec label \"400 L\" et $(8 ; 2400)$.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "En lisant le graphique, combien de litres la piscine contient-elle à $t = 0$ ? ___ L",
+        "a": "400",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "À $t = 0$, on lit l'ordonnée du point de départ de la droite sur l'axe vertical.",
+          "La droite coupe l'axe des ordonnées en $(0 ; ?)$."
+        ],
+        "f": "$f(x) = ax + b \\text{ ; } b = f(0)$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quel est le coefficient directeur de la droite $V(t)$ ? Que représente-t-il ?",
+        "a": "$250$ L/h — c'est le débit du tuyau",
+        "type": "qcm",
+        "options": ["$250$ L/h — c'est le débit du tuyau", "$400$ L/h — c'est le volume initial", "$2\\,500$ L/h — c'est la capacité"],
+        "steps": [
+          "Le coefficient directeur $a$ mesure la variation de $V$ quand $t$ augmente de $1$ heure.",
+          "On peut lire sur le graphique : entre $t = 0$ et $t = 2$, le volume passe de $400$ à $900$. Donc $a = \\frac{900 - 400}{2 - 0} = $ ?"
+        ],
+        "f": "$a = \\frac{\\Delta y}{\\Delta x}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Au bout de $8$ heures de remplissage, la piscine est pleine.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "On calcule $V(8) = 250 \\times 8 + 400 = 2\\,000 + 400 = 2\\,400$ L.",
+          "La capacité maximale est $2\\,500$ L. Compare $2\\,400$ et $2\\,500$ : la piscine est-elle pleine ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Au bout de combien d'heures la piscine sera-t-elle pleine ? $t = $ ___ h",
+        "a": "8,4",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "La piscine est pleine quand $V(t) = 2\\,500$. On résout $250t + 400 = 2\\,500$.",
+          "$250t = 2\\,100$, donc $t = \\frac{2\\,100}{250} = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Après $3$ heures de remplissage, quel pourcentage de la capacité totale a été atteint ?",
+        "a": "$46~\\%$",
+        "type": "qcm",
+        "options": ["$46~\\%$", "$30~\\%$", "$50~\\%$"],
+        "steps": [
+          "On calcule $V(3) = 250 \\times 3 + 400 = 750 + 400 = 1\\,150$ L.",
+          "Le pourcentage est $\\frac{V(3)}{2\\,500} \\times 100 = \\frac{1\\,150}{2\\,500} \\times 100 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "FONC_AFF_03",
+    "title": "Le voyage de Jade",
+    "context": "Jade voyage à Londres et change ses euros en livres sterling dans un bureau de change. Le bureau applique un taux de $0{,}8~£$ pour $1~€$ et prélève une commission fixe de $2~£$ sur chaque opération. On note $f(x)$ le montant en livres reçu pour $x$ euros changés.",
+    "table": {
+      "headers": ["Euros changés ($x$)", "$10$", "$30$", "$50$", "$100$"],
+      "rows": [
+        ["Livres reçues $f(x)$", "$6$", "$22$", "$38$", "?"]
+      ],
+      "caption": "Montant en livres reçu selon les euros changés"
+    },
+    "questions": [
+      {
+        "num": "1",
+        "q": "En utilisant le tableau, combien de livres Jade reçoit-elle si elle change $100~€$ ? ___ £",
+        "a": "78",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On observe la régularité du tableau. De $10~€$ à $30~€$ (+$20~€$), les livres passent de $6$ à $22$ (+$16~£$).",
+          "Le taux est $\\frac{16}{20} = 0{,}8$. Pour $100~€$ : $f(100) = 0{,}8 \\times 100 - 2 = $ ?"
+        ],
+        "f": "$f(x) = ax + b$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quel est le coefficient directeur $a$ de la fonction $f$ ? Que représente-t-il ?",
+        "a": "$0{,}8$ — c'est le taux de change",
+        "type": "qcm",
+        "options": ["$0{,}8$ — c'est le taux de change", "$2$ — c'est la commission", "$6$ — c'est le montant minimum"],
+        "steps": [
+          "On utilise deux points du tableau : $(10 ; 6)$ et $(30 ; 22)$.",
+          "$a = \\frac{22 - 6}{30 - 10} = \\frac{16}{20} = $ ?"
+        ],
+        "f": "$a = \\frac{y_2 - y_1}{x_2 - x_1}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Pour obtenir $46~£$, Jade doit changer $60~€$.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "On calcule $f(60) = 0{,}8 \\times 60 - 2 = 48 - 2 = 46$.",
+          "Compare le résultat avec l'affirmation. Que peut-on en conclure ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Détermine l'expression complète de $f(x)$. $f(x) = $ ___",
+        "a": "0,8x - 2",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On sait que $a = 0{,}8$. On utilise le point $(10 ; 6)$ : $6 = 0{,}8 \\times 10 + b$.",
+          "$6 = 8 + b$, donc $b = 6 - 8 = -2$. L'expression est $f(x) = $ ?"
+        ],
+        "f": "$f(x) = ax + b$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Jade veut recevoir au moins $100~£$. Combien d'euros minimum doit-elle changer ?",
+        "a": "$128~€$",
+        "type": "qcm",
+        "options": ["$128~€$", "$125~€$", "$130~€$"],
+        "steps": [
+          "On résout $f(x) \\geq 100$, soit $0{,}8x - 2 \\geq 100$.",
+          "$0{,}8x \\geq 102$, donc $x \\geq \\frac{102}{0{,}8} = 127{,}5$.",
+          "Le montant en euros doit être entier. Quel est le plus petit entier supérieur ou égal à $127{,}5$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "FONC_AFF_04",
+    "title": "Hugo choisit son opérateur",
+    "context": "Hugo hésite entre deux opérateurs téléphoniques pour son nouveau forfait mobile.\n\n**Opérateur A** : abonnement $15~€$/mois + $0{,}10~€$ par minute hors forfait. Coût : $f(x) = 0{,}10x + 15$.\n\n**Opérateur B** : abonnement $20~€$/mois + $0{,}05~€$ par minute hors forfait. Coût : $g(x) = 0{,}05x + 20$.\n\n$x$ désigne le nombre de minutes hors forfait utilisées dans le mois.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule le coût mensuel chez l'opérateur A pour $60$ minutes hors forfait. $f(60) = $ ___ €",
+        "a": "21",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On remplace $x$ par $60$ dans $f(x) = 0{,}10x + 15$.",
+          "$f(60) = 0{,}10 \\times 60 + 15 = 6 + 15 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Pour $60$ minutes hors forfait, quel opérateur est le moins cher ?",
+        "a": "Opérateur A ($21~€$ contre $23~€$)",
+        "type": "qcm",
+        "options": ["Opérateur A ($21~€$ contre $23~€$)", "Opérateur B ($20~€$ contre $21~€$)", "Les deux coûtent pareil"],
+        "steps": [
+          "On a $f(60) = 21~€$. On calcule $g(60) = 0{,}05 \\times 60 + 20 = 3 + 20 = 23~€$.",
+          "Compare $21~€$ et $23~€$. Quel opérateur coûte le moins cher ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "L'opérateur B est toujours plus cher que l'opérateur A, quel que soit le nombre de minutes.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Teste avec un grand nombre de minutes, par exemple $x = 200$ : $f(200) = 0{,}10 \\times 200 + 15 = 35~€$ et $g(200) = 0{,}05 \\times 200 + 20 = 30~€$.",
+          "Pour $200$ minutes, c'est A qui est plus cher. L'affirmation est-elle correcte ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "À partir de combien de minutes hors forfait les deux opérateurs coûtent-ils le même prix ? ___ minutes",
+        "a": "100",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On résout $f(x) = g(x)$, soit $0{,}10x + 15 = 0{,}05x + 20$.",
+          "$0{,}10x - 0{,}05x = 20 - 15$, donc $0{,}05x = 5$, soit $x = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Hugo consomme $200$ minutes hors forfait par mois. Quel opérateur doit-il choisir, et combien économise-t-il ?",
+        "a": "Opérateur B — il économise $5~€$",
+        "type": "qcm",
+        "options": ["Opérateur B — il économise $5~€$", "Opérateur A — il économise $5~€$", "Opérateur B — il économise $10~€$"],
+        "steps": [
+          "$f(200) = 0{,}10 \\times 200 + 15 = 35~€$ et $g(200) = 0{,}05 \\times 200 + 20 = 30~€$.",
+          "L'écart est $35 - 30 = 5~€$. Quel opérateur est le moins cher ?",
+          "Au-delà de $100$ minutes (le point d'intersection), l'opérateur B est toujours moins cher car son coût par minute ($0{,}05~€$) est plus faible."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

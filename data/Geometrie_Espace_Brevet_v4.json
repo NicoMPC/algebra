@@ -1,0 +1,358 @@
+[
+  {
+    "id": "GEOESP_01",
+    "title": "La boule du glacier",
+    "context": "Enzo travaille dans un glacier artisanal. Il utilise des cônes en gaufrette de rayon $3$ cm et de hauteur $10$ cm. Les boules de glace sont des sphères parfaites de rayon $3$ cm. Il range ses cônes dans un présentoir cylindrique de rayon $3$ cm et de hauteur $12$ cm.",
+    "figure": "GEOESP_01_glacier.svg",
+    "figure_desc": "Vue en coupe : un cône pointe en bas (rayon 3 cm, hauteur 10 cm) avec une sphère posée dessus (rayon 3 cm, dépassant du cône). À droite, un cylindre vertical (rayon 3 cm, hauteur 12 cm) contenant 3 sphères empilées. Cotes affichées : r = 3 cm sur chaque solide, h = 10 cm sur le cône, h = 12 cm sur le cylindre. Figure non à l'échelle.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule le volume exact d'une boule de glace de rayon $3$ cm. Donne ta réponse en fonction de $\\pi$.",
+        "a": "36π",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "La boule est une sphère → formule $V = \\frac{4}{3}\\pi r^3$ avec $r = 3$.",
+          "$V = \\frac{4}{3} \\times \\pi \\times 3^3 = \\frac{4}{3} \\times 27\\pi = \\;?\\;\\pi$ cm$^3$."
+        ],
+        "f": "$V_{\\text{sphère}} = \\frac{4}{3}\\pi r^3$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quel est le volume exact du cône en gaufrette ?",
+        "a": "30π cm³",
+        "type": "qcm",
+        "options": ["30π cm³", "90π cm³", "10π cm³"],
+        "steps": [
+          "Le cône a pour rayon $r = 3$ et hauteur $h = 10$ → formule $V = \\frac{1}{3}\\pi r^2 h$.",
+          "$V = \\frac{1}{3} \\times \\pi \\times 9 \\times 10 = \\frac{90\\pi}{3} = \\;?\\;\\pi$ cm$^3$."
+        ],
+        "f": "$V_{\\text{cône}} = \\frac{1}{3}\\pi r^2 h$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Le volume du présentoir cylindrique est $108\\pi$ cm$^3$.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Le cylindre a $r = 3$ cm et $h = 12$ cm → $V = \\pi r^2 h = \\pi \\times 9 \\times 12$.",
+          "$V = 108\\pi$ cm$^3$. Compare avec l'affirmation — sont-ils égaux ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Enzo veut connaître le volume total de glace quand il sert un cône rempli surmonté d'une boule. Calcule ce volume arrondi à l'unité en cm$^3$.",
+        "a": "207",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Le volume total = volume du cône + volume de la boule = $30\\pi + 36\\pi = 66\\pi$.",
+          "$66\\pi \\approx \\;?$ cm$^3$. Arrondis à l'unité."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Combien de boules de glace de rayon $3$ cm peut-on empiler exactement dans le présentoir cylindrique de rayon $3$ cm et hauteur $12$ cm ?",
+        "a": "3",
+        "type": "qcm",
+        "options": ["3", "2", "4"],
+        "steps": [
+          "Chaque boule a un diamètre de $2 \\times 3 = 6$ cm. La hauteur du cylindre est $12$ cm.",
+          "$12 \\div 6 = \\;?$ boules. Vérifie aussi que le rayon du cylindre ($3$ cm) = rayon de la boule."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "GEOESP_02",
+    "title": "La boîte cadeau de Jade",
+    "context": "Jade fabrique une boîte cadeau cylindrique en carton. Le cylindre a un rayon de $5$ cm et une hauteur de $15$ cm. Elle doit découper le patron dans une feuille de carton pour assembler la boîte.",
+    "figure": "GEOESP_02_patron.svg",
+    "figure_desc": "À gauche : cylindre en 3D (rayon 5 cm, hauteur 15 cm) avec cotes r = 5 cm et h = 15 cm. À droite : patron déplié du cylindre — un rectangle (largeur = ?, hauteur = 15 cm) avec deux disques (rayon 5 cm) attachés en haut et en bas. Le rectangle a sa largeur marquée '?' et sa hauteur marquée 15 cm. Les disques ont r = 5 cm. Figure non à l'échelle.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule le périmètre de la base circulaire de la boîte, arrondi au dixième.",
+        "a": "31,4",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Le périmètre d'un cercle est $P = 2\\pi r$ avec $r = 5$ cm.",
+          "$P = 2 \\times \\pi \\times 5 = 10\\pi \\approx \\;?$ cm."
+        ],
+        "f": "$P = 2\\pi r$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Sur le patron, le rectangle qui forme la surface latérale a pour longueur le périmètre de la base et pour largeur la hauteur du cylindre. Quelles sont ses dimensions ?",
+        "a": "10π cm × 15 cm",
+        "type": "qcm",
+        "options": ["10π cm × 15 cm", "5π cm × 15 cm", "10π cm × 5 cm"],
+        "steps": [
+          "La longueur du rectangle = périmètre de la base = $2\\pi r = 2\\pi \\times 5 = \\;?\\;\\pi$ cm.",
+          "La largeur du rectangle = hauteur du cylindre = $15$ cm."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Si on coupe la boîte par un plan parallèle à la base, la section obtenue est un cercle de rayon $5$ cm.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Un plan parallèle à la base d'un cylindre coupe le cylindre selon un cercle.",
+          "Ce cercle a le même rayon que la base. Ici $r = 5$ cm — l'affirmation est-elle correcte ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Calcule l'aire de la surface latérale de la boîte, arrondie à l'unité en cm$^2$.",
+        "a": "471",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "L'aire latérale d'un cylindre est $A = 2\\pi r h$ avec $r = 5$ et $h = 15$.",
+          "$A = 2 \\times \\pi \\times 5 \\times 15 = 150\\pi \\approx \\;?$ cm$^2$."
+        ],
+        "f": "$A_{\\text{lat}} = 2\\pi r h$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Jade veut connaître l'aire totale de carton nécessaire (surface latérale + les deux bases). Quelle est cette aire arrondie à l'unité ?",
+        "a": "628 cm²",
+        "type": "qcm",
+        "options": ["628 cm²", "471 cm²", "785 cm²"],
+        "steps": [
+          "Aire totale = aire latérale + $2 \\times$ aire d'un disque = $150\\pi + 2 \\times \\pi \\times 5^2 = 150\\pi + 50\\pi = 200\\pi$.",
+          "$200\\pi \\approx \\;?$ cm$^2$. Arrondis à l'unité."
+        ],
+        "f": "$A_{\\text{totale}} = 2\\pi r h + 2\\pi r^2$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "GEOESP_03",
+    "title": "La maquette du monument",
+    "context": "Hugo réalise une maquette à l'échelle $\\frac{1}{50}$ d'un monument historique. Le monument réel comporte une tour cylindrique de rayon $2$ m et de hauteur $10$ m. Hugo doit calculer les dimensions et le volume de sa maquette.",
+    "figure": "GEOESP_03_maquette.svg",
+    "figure_desc": "À gauche : grand cylindre (le monument réel) avec cotes r = 2 m et h = 10 m, libellé 'Monument réel'. À droite : petit cylindre (la maquette) beaucoup plus petit, avec cotes r = ? et h = ?, libellé 'Maquette (échelle 1/50)'. Flèche entre les deux avec '× 1/50'. Figure non à l'échelle.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule la hauteur de la maquette en centimètres.",
+        "a": "20",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "L'échelle $\\frac{1}{50}$ signifie que chaque dimension est divisée par $50$.",
+          "Hauteur maquette = $\\frac{10}{50} = 0{,}2$ m. Convertis en cm : $0{,}2 \\times 100 = \\;?$ cm."
+        ],
+        "f": "$d_{\\text{maquette}} = \\frac{d_{\\text{réel}}}{k}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quel est le rayon de la tour sur la maquette ?",
+        "a": "4 cm",
+        "type": "qcm",
+        "options": ["4 cm", "40 cm", "0,4 cm"],
+        "steps": [
+          "Rayon réel = $2$ m. Échelle = $\\frac{1}{50}$.",
+          "Rayon maquette = $\\frac{2}{50} = 0{,}04$ m = $\\;?$ cm."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Hugo affirme : « Le volume de ma maquette est $50$ fois plus petit que le volume du monument réel. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Quand on réduit les longueurs par un facteur $k$, les volumes sont multipliés par $k^3$.",
+          "Ici $k = \\frac{1}{50}$, donc les volumes sont multipliés par $\\left(\\frac{1}{50}\\right)^3 = \\frac{1}{125\\,000}$. Est-ce la même chose que $\\frac{1}{50}$ ?"
+        ],
+        "f": "$V_{\\text{réduit}} = k^3 \\times V_{\\text{réel}}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Calcule le volume réel de la tour cylindrique, arrondi au dixième en m$^3$.",
+        "a": "125,7",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Volume du cylindre : $V = \\pi r^2 h = \\pi \\times 2^2 \\times 10 = 40\\pi$.",
+          "$40\\pi \\approx \\;?$ m$^3$. Arrondis au dixième."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Quel est le volume de la maquette, arrondi à l'unité en cm$^3$ ?",
+        "a": "1005 cm³",
+        "type": "qcm",
+        "options": ["1005 cm³", "8 cm³", "2513 cm³"],
+        "steps": [
+          "Volume maquette = $k^3 \\times V_{\\text{réel}}$. Avec $k^3 = \\frac{1}{125\\,000}$ : $V = \\frac{40\\pi}{125\\,000}$ m$^3$.",
+          "Convertis en cm$^3$ : $1$ m$^3$ = $1\\,000\\,000$ cm$^3$. Donc $V = \\frac{40\\pi \\times 1\\,000\\,000}{125\\,000} = 320\\pi \\approx \\;?$ cm$^3$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "GEOESP_04",
+    "title": "Le château d'eau",
+    "context": "Inès étudie un château d'eau composé d'un cylindre de rayon $3$ m et de hauteur $8$ m, surmonté d'un cône de même rayon et de hauteur $4$ m. Elle doit calculer sa contenance totale et vérifier certaines propriétés géométriques.",
+    "figure": "GEOESP_04_chateau.svg",
+    "figure_desc": "Château d'eau en coupe : un cylindre vertical (rayon 3 m, hauteur 8 m) surmonté d'un cône (rayon 3 m, hauteur 4 m) pointant vers le haut. Cotes affichées : r = 3 m, h_cylindre = 8 m, h_cône = 4 m. La génératrice du cône est marquée '?' m. Au sol, un trait horizontal marque le diamètre 6 m. Figure non à l'échelle.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule le volume du cylindre, arrondi à l'unité en m$^3$.",
+        "a": "226",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Volume du cylindre : $V = \\pi r^2 h$ avec $r = 3$ et $h = 8$.",
+          "$V = \\pi \\times 9 \\times 8 = 72\\pi \\approx \\;?$ m$^3$."
+        ],
+        "f": "$V_{\\text{cylindre}} = \\pi r^2 h$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quel est le volume du cône arrondi au dixième ?",
+        "a": "37,7 m³",
+        "type": "qcm",
+        "options": ["37,7 m³", "113,1 m³", "12,6 m³"],
+        "steps": [
+          "Volume du cône : $V = \\frac{1}{3}\\pi r^2 h = \\frac{1}{3} \\times \\pi \\times 9 \\times 4 = 12\\pi$.",
+          "$12\\pi \\approx \\;?$ m$^3$. Arrondis au dixième."
+        ],
+        "f": "$V_{\\text{cône}} = \\frac{1}{3}\\pi r^2 h$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "La génératrice du cône (segment allant du sommet à un point du cercle de base) mesure $5$ m.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "La génératrice $g$, le rayon $r$ et la hauteur $h$ du cône forment un triangle rectangle.",
+          "Par Pythagore : $g^2 = r^2 + h^2 = 3^2 + 4^2 = 9 + 16 = \\;?$. Puis $g = \\sqrt{?}$ — compare avec $5$ m."
+        ],
+        "f": "$g^2 = r^2 + h^2$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Calcule le volume total du château d'eau (cylindre + cône), arrondi à l'unité en m$^3$.",
+        "a": "264",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Volume total = $V_{\\text{cylindre}} + V_{\\text{cône}} = 72\\pi + 12\\pi = 84\\pi$.",
+          "$84\\pi \\approx \\;?$ m$^3$. Arrondis à l'unité."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Inès veut convertir le volume total en litres. Sachant que $1$ m$^3$ = $1\\,000$ L, quelle est la contenance du château d'eau ?",
+        "a": "264 000 L",
+        "type": "qcm",
+        "options": ["264 000 L", "26 400 L", "2 640 000 L"],
+        "steps": [
+          "Volume total $\\approx 264$ m$^3$. Conversion : $1$ m$^3$ = $1\\,000$ L.",
+          "$264 \\times 1\\,000 = \\;?$ L."
+        ],
+        "f": "$1\\;\\text{m}^3 = 1\\,000\\;\\text{L}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

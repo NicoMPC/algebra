@@ -1,0 +1,392 @@
+[
+  {
+    "id": "STAT_01",
+    "title": "Les résultats du brevet blanc",
+    "context": "Samir vient de recevoir ses notes du brevet blanc. Voici ses résultats par matière avec les coefficients officiels.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule la somme des coefficients de toutes les matières. ___",
+        "a": "10",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Repère chaque coefficient dans le tableau : Français $3$, Maths $3$, Histoire $2$, Sciences $1$, EPS $1$.",
+          "Additionne : $3 + 3 + 2 + 1 + 1 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["Matière", "Français", "Maths", "Histoire", "Sciences", "EPS"],
+          "rows": [
+            ["Note", "$13$", "$16$", "$10$", "$14$", "$12$"],
+            ["Coefficient", "$3$", "$3$", "$2$", "$1$", "$1$"]
+          ],
+          "caption": "Résultats de Samir au brevet blanc"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la moyenne pondérée de Samir ?",
+        "a": "$13{,}3$",
+        "type": "qcm",
+        "options": ["$13{,}3$", "$13$", "$14{,}1$"],
+        "steps": [
+          "Calcule la somme pondérée : $13 \\times 3 + 16 \\times 3 + 10 \\times 2 + 14 \\times 1 + 12 \\times 1 = 39 + 48 + 20 + 14 + 12 = 133$.",
+          "Divise par la somme des coefficients : $\\frac{133}{10} = $ ?"
+        ],
+        "f": "$\\bar{x} = \\frac{\\sum n_i \\times x_i}{\\sum n_i}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "« La note de maths a plus d'influence sur la moyenne que la note de sciences, car son coefficient est plus élevé. »",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Le coefficient de maths est $3$, celui de sciences est $1$.",
+          "Un coefficient plus élevé signifie que la note « pèse » davantage dans le calcul de la moyenne pondérée. Que peut-on en conclure ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Samir repasse son épreuve d'histoire et obtient $14$ au lieu de $10$. Calcule sa nouvelle moyenne pondérée. ___",
+        "a": "14,1",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Nouvelle somme pondérée : remplace $10 \\times 2 = 20$ par $14 \\times 2 = 28$. Ancienne somme $= 133$, nouvelle somme $= 133 - 20 + 28 = 141$.",
+          "Nouvelle moyenne : $\\frac{141}{10} = $ ?"
+        ],
+        "f": "$\\bar{x} = \\frac{\\sum n_i \\times x_i}{\\sum n_i}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Avec ses notes initiales, quelle note minimale Samir doit-il obtenir en EPS (coefficient $1$) pour avoir une moyenne pondérée supérieure ou égale à $14$ ?",
+        "a": "$19$",
+        "type": "qcm",
+        "options": ["$19$", "$16$", "$20$"],
+        "steps": [
+          "On veut $\\frac{39 + 48 + 20 + 14 + x}{10} \\geq 14$, soit $121 + x \\geq 140$.",
+          "Donc $x \\geq $ ? Vérifie que cette note est possible (entre $0$ et $20$)."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "STAT_02",
+    "title": "Le cross du collège",
+    "context": "La classe de 3ème B a participé au cross du collège. Le professeur d'EPS a relevé les temps de course (en minutes) des $20$ élèves.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Combien d'élèves ont participé au cross ? ___",
+        "a": "20",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Repère la ligne « Effectif » du tableau : $2$, $3$, $5$, $4$, $3$, $3$.",
+          "Additionne : $2 + 3 + 5 + 4 + 3 + 3 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["Temps (min)", "$10$", "$11$", "$12$", "$13$", "$14$", "$15$"],
+          "rows": [
+            ["Effectif", "$2$", "$3$", "$5$", "$4$", "$3$", "$3$"]
+          ],
+          "caption": "Temps de course au cross — classe de 3ème B"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est l'étendue de cette série de temps ?",
+        "a": "$5$ min",
+        "type": "qcm",
+        "options": ["$5$ min", "$12$ min", "$3$ min"],
+        "steps": [
+          "L'étendue est la différence entre la plus grande et la plus petite valeur.",
+          "$15 - 10 = $ ?"
+        ],
+        "f": "$\\text{Étendue} = x_{\\max} - x_{\\min}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "« La médiane de cette série est $12{,}5$ minutes. »",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Il y a $20$ valeurs (pair). La médiane est la moyenne des valeurs en positions $10$ et $11$.",
+          "Effectifs cumulés : $2$, $5$, $10$, $14\\ldots$ La $10$ème valeur est $12$ et la $11$ème est $13$. Calcule $\\frac{12 + 13}{2} = $ ?"
+        ],
+        "f": "$\\text{Médiane} = \\frac{x_{n/2} + x_{n/2+1}}{2}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Calcule la moyenne des temps de course (arrondie au dixième). ___",
+        "a": "12,6",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Somme pondérée : $10 \\times 2 + 11 \\times 3 + 12 \\times 5 + 13 \\times 4 + 14 \\times 3 + 15 \\times 3 = 20 + 33 + 60 + 52 + 42 + 45 = 252$.",
+          "Moyenne : $\\frac{252}{20} = $ ?"
+        ],
+        "f": "$\\bar{x} = \\frac{\\sum n_i \\times x_i}{\\sum n_i}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Un $21$ème élève, absent le jour du cross, le court une semaine plus tard et termine en $18$ minutes. Quelle est la nouvelle médiane ?",
+        "a": "$13$ min",
+        "type": "qcm",
+        "options": ["$13$ min", "$12{,}5$ min", "$13{,}5$ min"],
+        "steps": [
+          "Avec $21$ valeurs (impair), la médiane est la valeur en position $\\frac{21+1}{2} = 11$.",
+          "Les effectifs cumulés deviennent : $2$, $5$, $10$, $14\\ldots$ La $11$ème valeur est ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "STAT_03",
+    "title": "Les salaires chez TechNova",
+    "context": "Le comité d'entreprise de TechNova étudie la répartition des salaires mensuels nets de ses $20$ employés pour préparer les négociations annuelles.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Combien d'employés gagnent $1800$ € ou moins par mois ? ___",
+        "a": "12",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Repère les salaires inférieurs ou égaux à $1800$ € : $1200$ €, $1500$ € et $1800$ €.",
+          "Calcule les effectifs cumulés : $2 + 4 + 6 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["Salaire (€)", "$1200$", "$1500$", "$1800$", "$2100$", "$2500$", "$3000$", "$4000$"],
+          "rows": [
+            ["Effectif", "$2$", "$4$", "$6$", "$4$", "$2$", "$1$", "$1$"]
+          ],
+          "caption": "Répartition des salaires mensuels nets — TechNova"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la médiane des salaires ?",
+        "a": "$1800$ €",
+        "type": "qcm",
+        "options": ["$1800$ €", "$1500$ €", "$2100$ €"],
+        "steps": [
+          "Il y a $20$ salaires. La médiane est la moyenne des valeurs en positions $10$ et $11$.",
+          "Effectifs cumulés : $2$, $6$, $12\\ldots$ Les $10$ème et $11$ème valeurs sont toutes les deux à $1800$ €. Médiane $= $ ?"
+        ],
+        "f": "$\\text{Médiane} = \\frac{x_{n/2} + x_{n/2+1}}{2}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Calcule l'écart interquartile $Q_3 - Q_1$. ___",
+        "a": "600",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Sous-série inférieure (positions $1$ à $10$) : effectifs cumulés $2$, $6$, $12$. $Q_1 = \\frac{\\text{pos } 5 + \\text{pos } 6}{2} = \\frac{1500 + 1500}{2} = 1500$ €.",
+          "Sous-série supérieure (positions $11$ à $20$) : positions $15$ et $16$ → $Q_3 = \\frac{2100 + 2100}{2} = 2100$ €.",
+          "$Q_3 - Q_1 = 2100 - 1500 = $ ?"
+        ],
+        "f": "$\\text{IQR} = Q_3 - Q_1$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Sur un diagramme en boîte, que représente la longueur de la « boîte » ?",
+        "a": "L'écart interquartile",
+        "type": "qcm",
+        "options": ["L'écart interquartile", "L'étendue", "La moyenne"],
+        "steps": [
+          "Le diagramme en boîte est construit avec $5$ valeurs : minimum, $Q_1$, médiane, $Q_3$, maximum.",
+          "La boîte s'étend de $Q_1$ à $Q_3$. Sa longueur représente donc ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "« La moyenne des salaires ($1980$ €) est supérieure à la médiane ($1800$ €). Cela indique que quelques salaires élevés tirent la moyenne vers le haut. »",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Calcule la moyenne : $\\frac{2 \\times 1200 + 4 \\times 1500 + 6 \\times 1800 + 4 \\times 2100 + 2 \\times 2500 + 3000 + 4000}{20} = \\frac{39600}{20} = 1980$ €.",
+          "Quand la moyenne est tirée au-dessus de la médiane, c'est que des valeurs extrêmes hautes (ici $3000$ € et $4000$ €) pèsent dans la somme. Que peut-on en conclure ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "STAT_04",
+    "title": "Le match des 3ème A contre les 3ème C",
+    "context": "Deux classes de 3ème ont passé le même contrôle de mathématiques. Le professeur compare leurs résultats pour adapter ses cours.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule la moyenne de la classe A. ___",
+        "a": "12",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Somme pondérée : $8 \\times 2 + 10 \\times 4 + 12 \\times 8 + 14 \\times 4 + 16 \\times 2 = 16 + 40 + 96 + 56 + 32 = 240$.",
+          "Moyenne : $\\frac{240}{20} = $ ?"
+        ],
+        "f": "$\\bar{x} = \\frac{\\sum n_i \\times x_i}{\\sum n_i}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": {
+          "headers": ["Note", "$8$", "$10$", "$12$", "$14$", "$16$"],
+          "rows": [
+            ["Effectif classe A", "$2$", "$4$", "$8$", "$4$", "$2$"],
+            ["Effectif classe C", "$2$", "$4$", "$8$", "$4$", "$2$"]
+          ],
+          "caption": "Résultats des classes A et C au même contrôle"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la moyenne de la classe C ?",
+        "a": "$12$",
+        "type": "qcm",
+        "options": ["$12$", "$11$", "$13$"],
+        "steps": [
+          "Somme pondérée : $4 \\times 2 + 8 \\times 4 + 12 \\times 8 + 16 \\times 4 + 20 \\times 2 = 8 + 32 + 96 + 64 + 40 = 240$.",
+          "Moyenne : $\\frac{240}{20} = $ ?"
+        ],
+        "f": "$\\bar{x} = \\frac{\\sum n_i \\times x_i}{\\sum n_i}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": {
+          "headers": ["Note", "$4$", "$8$", "$12$", "$16$", "$20$"],
+          "rows": [
+            ["Effectif classe C", "$2$", "$4$", "$8$", "$4$", "$2$"]
+          ],
+          "caption": "Résultats détaillés de la classe C"
+        },
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "« Les deux classes ont la même médiane. »",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Chaque classe a $20$ élèves. La médiane est la moyenne des valeurs en positions $10$ et $11$.",
+          "Classe A : effectifs cumulés $2$, $6$, $14\\ldots$ → positions $10$ et $11$ = $12$. Classe C : effectifs cumulés $2$, $6$, $14\\ldots$ → positions $10$ et $11$ = $12$. Que peut-on en conclure ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Calcule l'écart interquartile de la classe C. ___",
+        "a": "8",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Sous-série inférieure de C (positions $1$ à $10$) : cumuls $2$, $6$. Positions $5$ et $6$ = $8$. Donc $Q_1 = 8$.",
+          "Sous-série supérieure (positions $11$ à $20$) : positions $15$ et $16$ = $16$. Donc $Q_3 = 16$.",
+          "$Q_3 - Q_1 = 16 - 8 = $ ?"
+        ],
+        "f": "$\\text{IQR} = Q_3 - Q_1$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Les deux classes ont la même moyenne et la même médiane. Quelle classe a les résultats les plus homogènes ?",
+        "a": "Classe A",
+        "type": "qcm",
+        "options": ["Classe A", "Classe C", "On ne peut pas savoir"],
+        "steps": [
+          "L'écart interquartile de la classe A : $Q_1 = 10$, $Q_3 = 14$, IQR $= 4$. Celui de la classe C : IQR $= 8$.",
+          "Un IQR plus petit signifie que les $50\\%$ centraux sont plus resserrés autour de la médiane. Quelle classe a l'IQR le plus petit ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

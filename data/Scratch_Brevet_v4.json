@@ -1,0 +1,370 @@
+[
+  {
+    "id": "SCRATCH_01",
+    "title": "Le programme de calcul de Léa",
+    "context": "Léa a écrit le programme de calcul suivant :\n• Choisir un nombre $x$\n• Le multiplier par $3$\n• Ajouter $5$\n• Afficher le résultat",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Léa choisit $x = 4$. Quel résultat affiche le programme ?",
+        "a": "17",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On remplace $x$ par $4$ : première étape, on multiplie par $3$ → $4 \\times 3 = 12$.",
+          "Deuxième étape, on ajoute $5$ → $12 + 5 = \\;?$."
+        ],
+        "f": "$3x + 5$",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Léa choisit maintenant $x = -2$. Quel résultat obtient-elle ?",
+        "a": "$-1$",
+        "type": "qcm",
+        "options": ["$-1$", "$1$", "$-11$"],
+        "steps": [
+          "On remplace $x$ par $-2$ : $(-2) \\times 3 = -6$.",
+          "Puis $-6 + 5 = \\;?$. Attention au signe !"
+        ],
+        "f": "$3x + 5$",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Voici les résultats obtenus pour plusieurs valeurs de $x$. Complète le tableau.",
+        "a": "32",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On applique le programme à $x = 9$ : $9 \\times 3 = 27$.",
+          "Puis $27 + 5 = \\;?$."
+        ],
+        "f": "$3x + 5$",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["$x$", "$0$", "$5$", "$9$"],
+          "rows": [
+            ["Résultat", "$5$", "$20$", "$?$"]
+          ],
+          "caption": "Résultats du programme de Léa"
+        },
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Affirmation : « Si on choisit $x = 10$, le résultat est $35$. »",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "On applique le programme : $10 \\times 3 = 30$, puis $30 + 5 = \\;?$.",
+          "Compare avec $35$ : est-ce bien le même résultat ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Quel nombre $x$ faut-il choisir pour que le programme affiche $20$ ?",
+        "a": "$5$",
+        "type": "qcm",
+        "options": ["$5$", "$4$", "$6$"],
+        "steps": [
+          "On cherche $x$ tel que $3x + 5 = 20$, donc $3x = 15$.",
+          "On divise : $x = \\;?$."
+        ],
+        "f": "$3x + 5 = 20$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "SCRATCH_02",
+    "title": "Le jeu de devinette de Samir",
+    "context": "Samir propose un jeu à ses amis : « Choisis un nombre, multiplie-le par $2$, ajoute $7$, puis donne-moi le résultat. Je devinerai ton nombre de départ ! »\n\nSon programme de calcul est :\n• Choisir un nombre $x$\n• Le multiplier par $2$\n• Ajouter $7$\n• Afficher le résultat",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Inès choisit $x = 6$. Quel résultat annonce-t-elle à Samir ?",
+        "a": "19",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On applique : $6 \\times 2 = 12$.",
+          "Puis $12 + 7 = \\;?$."
+        ],
+        "f": "$2x + 7$",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "En appelant $x$ le nombre choisi, quelle expression représente le résultat du programme ?",
+        "a": "$2x + 7$",
+        "type": "qcm",
+        "options": ["$2x + 7$", "$2(x + 7)$", "$7x + 2$"],
+        "steps": [
+          "On suit les étapes avec $x$ : multiplier par $2$ donne $2x$.",
+          "Ajouter $7$ donne $2x + \\;?$. Attention à l'ordre des opérations."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Affirmation : « Si le résultat annoncé est $25$, le nombre de départ est $8$. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "On résout $2x + 7 = 25$ : $2x = 18$, donc $x = \\;?$.",
+          "Compare avec $8$ : est-ce bien la même valeur ?"
+        ],
+        "f": "$2x + 7 = 25$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Samir affirme : « Quel que soit le nombre de départ, le résultat est toujours impair. » Développe $2x + 7$ pour vérifier. Le résultat est-il toujours impair ?",
+        "a": "$2x + 7$",
+        "type": "qcm",
+        "options": ["$2x + 7$", "$2x + 6$", "$2(x + 3) + 1$"],
+        "steps": [
+          "$2x$ est toujours pair (multiple de $2$). La somme d'un nombre pair et de $7$ (impair) est toujours $\\;?$.",
+          "Quelle écriture montre que le résultat vaut un nombre pair $+ 1$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Samir modifie son programme : au lieu d'ajouter $7$, il ajoute $8$. Quel résultat obtient-on pour $x = 3$ ?",
+        "a": "14",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Le nouveau programme donne $2x + 8$. Pour $x = 3$ : $2 \\times 3 = 6$.",
+          "Puis $6 + 8 = \\;?$."
+        ],
+        "f": "$2x + 8$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "SCRATCH_03",
+    "title": "Le robot sur la grille",
+    "context": "Un robot est placé sur une grille quadrillée. Il part de la case $(0 ; 0)$ et peut exécuter les instructions suivantes :\n• AVANCER : avance d'une case dans la direction où il regarde\n• DROITE : tourne à droite (sans avancer)\n• GAUCHE : tourne à gauche (sans avancer)\n\nAu départ, le robot regarde vers le haut (direction : Nord).",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "On exécute : AVANCER, AVANCER, AVANCER. Sur quelle case se trouve le robot ?",
+        "a": "$(0 ; 3)$",
+        "type": "qcm",
+        "options": ["$(0 ; 3)$", "$(3 ; 0)$", "$(0 ; 2)$"],
+        "steps": [
+          "Le robot regarde vers le Nord. Chaque AVANCER augmente son ordonnée ($y$) de $1$.",
+          "Après $3$ pas : $x = 0$, $y = 0 + 3 = \\;?$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "On exécute maintenant : AVANCER, DROITE, AVANCER, AVANCER. Quelles sont les coordonnées du robot ?",
+        "a": "(2 ; 1)",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "AVANCER (Nord) → $(0 ; 1)$. DROITE → le robot regarde maintenant vers l'Est.",
+          "AVANCER (Est) → $(1 ; 1)$. AVANCER (Est) → $(? ; ?)$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "On veut que le robot aille de $(0 ; 0)$ à $(0 ; 2)$ puis revienne à $(0 ; 0)$. Voici un programme :\nAVANCER, AVANCER, DROITE, DROITE, AVANCER, AVANCER.\nAffirmation : « Ce programme ramène bien le robot à $(0 ; 0)$. »",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "AVANCER, AVANCER → $(0 ; 2)$. DROITE, DROITE → le robot a tourné $2$ fois à droite, il regarde vers le $\\;?$.",
+          "AVANCER, AVANCER → il redescend de $2$ cases. Vérifie les coordonnées finales."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "On exécute le programme suivant :\n$n \\leftarrow 0$\nRépéter $4$ fois :\n  AVANCER\n  DROITE\n  $n \\leftarrow n + 1$\nQue vaut $n$ à la fin, et quelle figure le robot a-t-il tracée ?",
+        "a": "$4$",
+        "type": "qcm",
+        "options": ["$4$", "$3$", "$5$"],
+        "steps": [
+          "La boucle s'exécute $4$ fois. À chaque tour, $n$ augmente de $1$.",
+          "Le robot avance puis tourne à droite $4$ fois : il dessine un $\\;?$ (quelle forme à $4$ côtés ?)."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "On modifie la boucle : Répéter $k$ fois : AVANCER, DROITE. Pour quelle valeur de $k$ le robot revient-il exactement à son point de départ ?",
+        "a": "4",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "À chaque tour, le robot avance de $1$ et tourne de $90°$ à droite.",
+          "Après $k$ tours, il a tourné de $k \\times 90°$. Pour revenir au départ, il faut un tour complet de $\\;?°$."
+        ],
+        "f": "$k \\times 90 = 360$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "SCRATCH_04",
+    "title": "Le tour de magie de Raphaël",
+    "context": "Raphaël propose un tour de magie : « Choisis un nombre entier. Ajoute $3$. Multiplie le résultat par le nombre de départ. Soustrais le carré du nombre de départ. »\n\nSon programme est :\n• Choisir un nombre $x$\n• Calculer $x + 3$\n• Multiplier par $x$\n• Soustraire $x^2$\n• Afficher le résultat",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Teste le programme avec $x = 5$. Quel résultat obtient Raphaël ?",
+        "a": "15",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$x + 3 = 5 + 3 = 8$. Puis on multiplie par $x$ : $8 \\times 5 = 40$.",
+          "On soustrait $x^2 = 25$ : $40 - 25 = \\;?$."
+        ],
+        "f": "$x(x+3) - x^2$",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Teste maintenant avec $x = -2$. Quel résultat le programme affiche-t-il ?",
+        "a": "$-6$",
+        "type": "qcm",
+        "options": ["$-6$", "$10$", "$-2$"],
+        "steps": [
+          "$x + 3 = -2 + 3 = 1$. Puis $1 \\times (-2) = -2$.",
+          "On soustrait $x^2 = (-2)^2 = 4$ : $-2 - 4 = \\;?$."
+        ],
+        "f": "$x(x+3) - x^2$",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Raphaël teste plusieurs nombres et note les résultats dans un tableau. Quelle conjecture peux-tu faire ?",
+        "a": "$3x$",
+        "type": "qcm",
+        "options": ["$3x$", "$x + 3$", "$x^2$"],
+        "steps": [
+          "Observe le tableau : pour $x = 1$, résultat $= 3$ ; pour $x = 4$, résultat $= 12$.",
+          "Quel lien entre le nombre de départ et le résultat ? Résultat $= \\;? \\times x$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": {
+          "headers": ["$x$", "$1$", "$4$", "$7$", "$10$"],
+          "rows": [
+            ["Résultat", "$3$", "$12$", "$21$", "$30$"]
+          ],
+          "caption": "Résultats du tour de Raphaël"
+        },
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Développe l'expression $x(x + 3) - x^2$ pour prouver la conjecture.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Développe : $x(x+3) = x^2 + 3x$.",
+          "Puis $x^2 + 3x - x^2 = \\;?$. La conjecture est-elle prouvée ?"
+        ],
+        "f": "$x(x+3) - x^2 = x^2 + 3x - x^2$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Raphaël modifie son tour : il remplace « Ajoute $3$ » par « Ajoute $k$ ». Pour quelle valeur de $k$ le résultat vaut-il toujours $10x$ ?",
+        "a": "10",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Le programme donne $x(x + k) - x^2 = x^2 + kx - x^2 = kx$.",
+          "On veut $kx = 10x$, donc $k = \\;?$."
+        ],
+        "f": "$x(x+k) - x^2 = kx$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

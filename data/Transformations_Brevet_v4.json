@@ -1,0 +1,368 @@
+[
+  {
+    "id": "TRANSF_01",
+    "title": "Déplacement sur la grille",
+    "context": "Dans un jeu vidéo, le personnage Pixel se déplace sur une grille quadrillée. Chaque case mesure 1 unité. On utilise un repère orthonormé $(O ; \\vec{i}, \\vec{j})$. Pixel se trouve au point $A(2 ; 3)$. On lui applique la translation de vecteur $\\vec{u}(4 ; -1)$.",
+    "figure": "TRANSF_01_grille.svg",
+    "figure_desc": "Repère orthonormé (O ; i, j) avec grille quadrillée de 0 à 8 en x et -1 à 6 en y. Point A placé en (2 ; 3) avec label A. Vecteur u représenté par une flèche depuis A, composantes (+4 ; -1). Point image A' en (6 ; 2) avec label A' et un ? à côté. Flèche rouge du vecteur u. Axes gradués, origine O marquée.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Quel est l'abscisse de l'image $A'$ de $A$ par la translation de vecteur $\\vec{u}(4 ; -1)$ ?",
+        "a": "6",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Pour trouver l'abscisse de $A'$, on ajoute la composante horizontale du vecteur à l'abscisse de $A$.",
+          "$x_{A'} = x_A + 4 = 2 + 4 = $ ?"
+        ],
+        "f": "$x_{A'} = x_A + a$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelles sont les coordonnées complètes de $A'$, image de $A(2 ; 3)$ par la translation de vecteur $\\vec{u}(4 ; -1)$ ?",
+        "a": "$(6 ; 2)$",
+        "type": "qcm",
+        "options": ["$(6 ; 2)$", "$(6 ; 4)$", "$(-2 ; 4)$"],
+        "steps": [
+          "On applique la formule pour chaque coordonnée : $x_{A'} = x_A + a$ et $y_{A'} = y_A + b$.",
+          "$x_{A'} = 2 + 4 = 6$ et $y_{A'} = 3 + (-1) = $ ?",
+          "Les coordonnées sont $(6 ; ?)$."
+        ],
+        "f": "$A'(x_A + a \\; ; \\; y_A + b)$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Dans une translation, la figure et son image sont superposables (même forme, mêmes dimensions).",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "La translation est un « glissement » : chaque point se déplace de la même distance, dans la même direction.",
+          "Aucune déformation, aucun changement de taille. Que peut-on en conclure ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Pixel est maintenant en $B(5 ; 1)$. Après une translation, il arrive en $B'(1 ; 4)$. Quel est le vecteur de cette translation ?",
+        "a": "$\\vec{v}(-4 ; 3)$",
+        "type": "qcm",
+        "options": ["$\\vec{v}(-4 ; 3)$", "$\\vec{v}(4 ; -3)$", "$\\vec{v}(6 ; 5)$"],
+        "steps": [
+          "Le vecteur de translation $\\vec{v}$ a pour composantes $x_{B'} - x_B$ et $y_{B'} - y_B$.",
+          "$x_v = 1 - 5 = -4$ et $y_v = 4 - 1 = $ ?",
+          "Le vecteur est $\\vec{v}(? \\; ; \\; ?)$."
+        ],
+        "f": "$\\vec{v}(x_{B'} - x_B \\; ; \\; y_{B'} - y_B)$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "On applique la translation de vecteur $\\vec{u}(4 ; -1)$ au segment $[AC]$ avec $C(2 ; 5)$. Quelle est la longueur de l'image $[A'C']$ sachant que $AC = 2$ unités ?",
+        "a": "2",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "La translation conserve les longueurs : chaque point se déplace de la même manière.",
+          "Donc $A'C' = AC = $ ? unités."
+        ],
+        "f": "$A'C' = AC$ (conservation des longueurs)",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "TRANSF_02",
+    "title": "La roue du manège",
+    "context": "Un manège forain possède une grande roue à engrenages. Le centre de la roue est le point $O$. Un siège est fixé au point $A$, situé à $3$ m du centre. On étudie les rotations de la roue autour du centre $O$.",
+    "figure": "TRANSF_02_roue.svg",
+    "figure_desc": "Cercle de centre O et rayon 3 cm (représentant 3 m). Point A placé sur le cercle à droite (position 0°). Point A' image par rotation de 90° dans le sens anti-horaire, placé en haut du cercle. Arc de cercle fléché de A vers A' (sens anti-horaire) avec annotation 90°. Axe horizontal et vertical en pointillé passant par O. Labels O (centre), A, A'. Annotation rayon OA = 3 m.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Le siège $A$ subit une rotation de centre $O$ et d'angle $90°$ dans le sens anti-horaire. Quelle est la distance $OA'$ entre le centre et l'image $A'$ ?",
+        "a": "3",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Une rotation conserve les distances au centre : le point image reste sur le même cercle.",
+          "$OA' = OA = $ ? m."
+        ],
+        "f": "$OA' = OA$ (conservation des distances)",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Après une rotation de $180°$ autour de $O$, le siège $A$ arrive en $A'$. Où se situe $A'$ par rapport à $O$ et $A$ ?",
+        "a": "$A'$ est le symétrique de $A$ par rapport à $O$",
+        "type": "qcm",
+        "options": ["$A'$ est le symétrique de $A$ par rapport à $O$", "$A'$ est confondu avec $A$", "$A'$ est au-dessus de $O$"],
+        "steps": [
+          "Une rotation de $180°$ envoie chaque point de l'autre côté du centre, à la même distance.",
+          "C'est exactement la définition d'une symétrie centrale de centre $O$. Que peut-on en conclure ?"
+        ],
+        "f": "Rotation de $180°$ = symétrie centrale",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Une rotation de $360°$ ramène chaque point à sa position initiale.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Après un tour complet ($360°$), le point a parcouru tout le cercle et revient à son point de départ.",
+          "Donc $A' = A$. Que peut-on en conclure ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Un engrenage fait tourner la roue de $90°$ dans le sens horaire, puis de $90°$ dans le sens anti-horaire. Quel est l'angle total de rotation effectué ?",
+        "a": "$0°$",
+        "type": "qcm",
+        "options": ["$0°$", "$180°$", "$90°$"],
+        "steps": [
+          "La première rotation déplace de $+90°$ (horaire), la seconde de $-90°$ (anti-horaire).",
+          "$90° - 90° = $ ? La roue revient à sa position initiale.",
+          "L'angle résultant est ? degrés."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Le point $A(3 ; 0)$ subit une rotation de centre $O(0 ; 0)$ et d'angle $90°$ dans le sens anti-horaire. Quelles sont les coordonnées de $A'$ ?",
+        "a": "$(0 ; 3)$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Une rotation de $90°$ anti-horaire transforme $(x ; y)$ en $(-y ; x)$.",
+          "Pour $A(3 ; 0)$ : $x_{A'} = -0 = 0$ et $y_{A'} = 3$. Donc $A' = $ ?",
+          "$A'(0 ; 3)$."
+        ],
+        "f": "Rotation $90°$ anti-horaire : $(x ; y) \\to (-y ; x)$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "TRANSF_03",
+    "title": "Le zoom du photographe",
+    "context": "Un photographe prépare un tirage agrandi d'une photo. Il utilise une homothétie de centre $O(0 ; 0)$ pour agrandir ou réduire des éléments de son image. Sur la photo originale, un monument est représenté par le triangle $ABC$ avec $A(2 ; 1)$, $B(4 ; 1)$ et $C(3 ; 3)$.",
+    "figure": "TRANSF_03_photo.svg",
+    "figure_desc": "Repère orthonormé (O ; i, j) avec grille de 0 à 10 en x et 0 à 8 en y. Triangle ABC : A(2;1), B(4;1), C(3;3) tracé en bleu. Triangle image A'B'C' : A'(4;2), B'(8;2), C'(6;6) tracé en rouge pointillé. Centre O marqué à l'origine. Segments [OA] et [OA'] en pointillé gris pour montrer l'alignement. Labels A, B, C (bleu) et A', B', C' (rouge). Annotation k = 2.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Le photographe applique une homothétie de centre $O(0 ; 0)$ et de rapport $k = 2$. Quelles sont les coordonnées de $A'$, image de $A(2 ; 1)$ ?",
+        "a": "$(4 ; 2)$",
+        "type": "qcm",
+        "options": ["$(4 ; 2)$", "$(4 ; 1)$", "$(2 ; 2)$"],
+        "steps": [
+          "Dans une homothétie de centre $O(0;0)$ et de rapport $k$, l'image d'un point $(x ; y)$ est $(k \\times x ; k \\times y)$.",
+          "$x_{A'} = 2 \\times 2 = 4$ et $y_{A'} = 2 \\times 1 = $ ?",
+          "$A'(4 ; ?)$."
+        ],
+        "f": "$A'(k \\times x_A \\; ; \\; k \\times y_A)$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelles sont les coordonnées de $C'$, image de $C(3 ; 3)$ par la même homothétie de rapport $k = 2$ ?",
+        "a": "(6 ; 6)",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On applique la même formule : $C'(k \\times x_C \\; ; \\; k \\times y_C)$.",
+          "$x_{C'} = 2 \\times 3 = 6$ et $y_{C'} = 2 \\times 3 = $ ?",
+          "$C'(? \\; ; \\; ?)$."
+        ],
+        "f": "$C'(k \\times x_C \\; ; \\; k \\times y_C)$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Le côté $AB$ mesure $2$ unités. Après l'homothétie de rapport $k = 2$, le côté $A'B'$ mesure ___ unités.",
+        "a": "4",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Dans une homothétie de rapport $k$, les longueurs sont multipliées par $|k|$.",
+          "$A'B' = |k| \\times AB = 2 \\times 2 = $ ?"
+        ],
+        "f": "$A'B' = |k| \\times AB$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "L'aire du triangle $ABC$ est $2$ unités d'aire. Quelle est l'aire du triangle $A'B'C'$ après l'homothétie de rapport $k = 2$ ?",
+        "a": "$8$ unités d'aire",
+        "type": "qcm",
+        "options": ["$8$ unités d'aire", "$4$ unités d'aire", "$16$ unités d'aire"],
+        "steps": [
+          "Dans une homothétie de rapport $k$, les aires sont multipliées par $k^2$.",
+          "Aire$(A'B'C') = k^2 \\times$ Aire$(ABC) = 2^2 \\times 2 = 4 \\times 2 = $ ?",
+          "L'aire est multipliée par $4$, pas par $2$ !"
+        ],
+        "f": "$\\text{Aire}' = k^2 \\times \\text{Aire}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Le photographe veut réduire l'image à la moitié de sa taille. Une homothétie de rapport $k = -\\frac{1}{2}$ conserve l'orientation de la figure.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Un rapport négatif inverse l'orientation : les points images passent de l'autre côté du centre.",
+          "Seul un rapport positif conserve l'orientation. Ici $k < 0$, donc l'orientation est inversée. Que peut-on en conclure ?"
+        ],
+        "f": "$k > 0$ : même orientation. $k < 0$ : orientation inversée.",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "TRANSF_04",
+    "title": "Le pavage de la mosquée",
+    "context": "Un artiste crée un pavage décoratif en utilisant un motif étoilé. Le motif de base est un losange $ABCD$ avec $A(0 ; 0)$, $B(2 ; 1)$, $C(4 ; 0)$ et $D(2 ; -1)$. L'artiste reproduit ce motif en appliquant différentes transformations.",
+    "figure": "TRANSF_04_pavage.svg",
+    "figure_desc": "Repère orthonormé avec grille de -2 à 10 en x et -3 à 5 en y. Losange ABCD en bleu : A(0;0), B(2;1), C(4;0), D(2;-1). Image par translation de vecteur (4;0) : losange A'B'C'D' en vert : A'(4;0), B'(6;1), C'(8;0), D'(6;-1). Image par rotation 180° centre C : losange en orange. Labels A, B, C, D. Vecteur de translation représenté par flèche.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "L'artiste translate le losange $ABCD$ par le vecteur $\\vec{u}(4 ; 0)$. Quelles sont les coordonnées de $B'$, image de $B(2 ; 1)$ ?",
+        "a": "$(6 ; 1)$",
+        "type": "qcm",
+        "options": ["$(6 ; 1)$", "$(2 ; 5)$", "$(6 ; -1)$"],
+        "steps": [
+          "On ajoute les composantes du vecteur aux coordonnées de $B$.",
+          "$x_{B'} = 2 + 4 = 6$ et $y_{B'} = 1 + 0 = $ ?",
+          "$B'(? \\; ; \\; ?)$."
+        ],
+        "f": "$B'(x_B + a \\; ; \\; y_B + b)$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "L'artiste applique une rotation de $180°$ de centre $C(4 ; 0)$ au point $A(0 ; 0)$. Quelles sont les coordonnées de l'image $A''$ ?",
+        "a": "(8 ; 0)",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Une rotation de $180°$ de centre $C$ envoie $A$ au symétrique de $A$ par rapport à $C$.",
+          "Les coordonnées du symétrique : $x_{A''} = 2 \\times x_C - x_A = 2 \\times 4 - 0 = 8$ et $y_{A''} = 2 \\times y_C - y_A = 2 \\times 0 - 0 = $ ?",
+          "$A''(? \\; ; \\; ?)$."
+        ],
+        "f": "Symétrique de $M$ par rapport à $I$ : $(2x_I - x_M \\; ; \\; 2y_I - y_M)$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "L'artiste observe que le motif translaté par $\\vec{u}(4 ; 0)$ a exactement la même forme et les mêmes dimensions que le motif original. Cela est dû au fait que la translation conserve les longueurs et les angles.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "La translation est une isométrie : elle conserve les distances entre les points et les mesures d'angles.",
+          "Le losange image est donc superposable à l'original. Que peut-on en conclure ?"
+        ],
+        "f": "Translation, rotation, symétrie = isométries (conservent distances et angles)",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "L'artiste applique une homothétie de centre $A(0 ; 0)$ et de rapport $k = \\frac{1}{2}$ au losange $ABCD$. Quelles sont les coordonnées de l'image $C'$ de $C(4 ; 0)$ ?",
+        "a": "$(2 ; 0)$",
+        "type": "qcm",
+        "options": ["$(2 ; 0)$", "$(8 ; 0)$", "$(4 ; 0)$"],
+        "steps": [
+          "Homothétie de centre $A(0;0)$ : l'image de $(x;y)$ est $(k \\times x ; k \\times y)$.",
+          "$x_{C'} = \\frac{1}{2} \\times 4 = 2$ et $y_{C'} = \\frac{1}{2} \\times 0 = $ ?",
+          "$C'(? \\; ; \\; ?)$."
+        ],
+        "f": "$C'(k \\times x_C \\; ; \\; k \\times y_C)$ (centre à l'origine)",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Parmi ces transformations, laquelle ne conserve PAS les longueurs ?",
+        "a": "L'homothétie de rapport $k \\neq 1$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "La translation, la rotation et la symétrie sont des isométries : elles conservent toutes les longueurs.",
+          "L'homothétie multiplie les longueurs par $|k|$. Si $k \\neq 1$, les longueurs changent. Quelle transformation ne conserve pas les longueurs ?"
+        ],
+        "f": "Isométries : translation, rotation, symétrie. L'homothétie ($k \\neq 1$) modifie les longueurs.",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

@@ -1,0 +1,359 @@
+[
+  {
+    "id": "ARITH_01",
+    "title": "Les groupes de la sortie scolaire",
+    "context": "Mme Duval, professeure de 3ème, organise une sortie au musée des sciences. Elle emmène $84$ élèves et veut former des groupes de taille égale, sans qu'il reste d'élève seul. Chaque groupe sera encadré par un accompagnateur.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Peut-on répartir les $84$ élèves en groupes de $5$ sans qu'il reste d'élève ?",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Critère de divisibilité par $5$ : le chiffre des unités doit être $0$ ou $5$.",
+          "Le chiffre des unités de $84$ est $4$. Ce critère est-il vérifié ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Parmi les tailles de groupes suivantes, laquelle permet une répartition exacte des $84$ élèves ?",
+        "a": "$7$",
+        "type": "qcm",
+        "options": ["$7$", "$8$", "$5$"],
+        "steps": [
+          "Teste chaque valeur : $84 \\div 7 = ?$, $84 \\div 8 = ?$, $84 \\div 5 = ?$",
+          "Une division tombe juste quand le reste est $0$. Lequel donne un quotient entier ?"
+        ],
+        "f": "$a \\text{ divise } b \\Leftrightarrow b = a \\times q \\text{ avec } q \\in \\mathbb{N}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Combien de diviseurs le nombre $84$ possède-t-il au total ? ___",
+        "a": "12",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Décompose $84$ en facteurs premiers : $84 = 2^2 \\times 3 \\times 7$.",
+          "Le nombre de diviseurs est $(2+1) \\times (1+1) \\times (1+1) = ?$"
+        ],
+        "f": "$\\text{Si } n = p_1^{a_1} \\times p_2^{a_2} \\times \\ldots \\text{ alors nb diviseurs} = (a_1+1)(a_2+1)\\ldots$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "$84$ est-il un nombre premier ?",
+        "a": "Faux, car $84 = 2^2 \\times 3 \\times 7$",
+        "type": "qcm",
+        "options": ["Faux, car $84 = 2^2 \\times 3 \\times 7$", "Vrai, car $84$ n'est divisible que par $1$ et $84$", "Faux, car $84$ est pair donc divisible par $4$"],
+        "steps": [
+          "Un nombre premier n'a que deux diviseurs : $1$ et lui-même.",
+          "$84$ est pair, donc divisible par $2$. A-t-il d'autres diviseurs que $1$ et $84$ ?"
+        ],
+        "f": "$\\text{Un nombre premier n'a que 2 diviseurs : } 1 \\text{ et lui-même.}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Mme Duval veut des groupes de plus de $10$ élèves. Quelle est la seule taille de groupe possible pour répartir exactement les $84$ élèves ? ___",
+        "a": "12",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Les diviseurs de $84$ sont : $1, 2, 3, 4, 6, 7, 12, 14, 21, 28, 42, 84$.",
+          "Parmi ceux strictement supérieurs à $10$ et inférieurs à $84$ (taille raisonnable d'un groupe) : $12, 14, 21, 28, 42$. Mais combien d'accompagnateurs faudrait-il pour des groupes de $42$ ?",
+          "La taille la plus raisonnable pour un groupe scolaire (entre $10$ et $20$) est ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "ARITH_02",
+    "title": "Les tablettes du chocolatier",
+    "context": "Hugo, artisan chocolatier, fabrique des tablettes rectangulaires de $126$ carrés de large et $90$ carrés de haut. Il veut découper chaque tablette en carrés identiques les plus grands possibles, sans perte. Pour cela, il doit trouver la bonne dimension de carrés.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Quelle est la décomposition en facteurs premiers de $126$ ? ___",
+        "a": "2 \\times 3^2 \\times 7",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$126 \\div 2 = 63$. Puis $63 \\div 3 = 21$, $21 \\div 3 = 7$, et $7$ est premier.",
+          "$126 = 2 \\times 3^{?} \\times 7$. Combien de fois le facteur $3$ ?"
+        ],
+        "f": "$\\text{Diviser successivement par } 2, 3, 5, 7, 11\\ldots$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la décomposition en facteurs premiers de $90$ ?",
+        "a": "$2 \\times 3^2 \\times 5$",
+        "type": "qcm",
+        "options": ["$2 \\times 3^2 \\times 5$", "$2 \\times 3 \\times 15$", "$2^2 \\times 3 \\times 5$"],
+        "steps": [
+          "$90 \\div 2 = 45$. Puis $45 \\div 3 = 15$, $15 \\div 3 = 5$, et $5$ est premier.",
+          "$90 = 2 \\times 3^{?} \\times 5$. Quel exposant pour $3$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Le nombre $126$ est-il divisible par $4$ ?",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Critère de divisibilité par $4$ : les deux derniers chiffres forment un nombre divisible par $4$.",
+          "Les deux derniers chiffres de $126$ sont $26$. Or $26 \\div 4 = 6{,}5$. Est-ce un entier ?"
+        ],
+        "f": "$\\text{Divisible par } 4 \\Leftrightarrow \\text{les 2 derniers chiffres forment un multiple de } 4$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "En utilisant les décompositions, quel est le PGCD de $126$ et $90$ ? ___",
+        "a": "18",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$126 = 2 \\times 3^2 \\times 7$ et $90 = 2 \\times 3^2 \\times 5$.",
+          "Le PGCD prend les facteurs communs avec le plus petit exposant : $2^{?} \\times 3^{?} = ?$"
+        ],
+        "f": "$\\text{PGCD} = \\text{produit des facteurs premiers communs avec le plus petit exposant}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Combien de carrés Hugo obtient-il en découpant une tablette avec des carrés de côté $18$ ?",
+        "a": "$35$",
+        "type": "qcm",
+        "options": ["$35$", "$45$", "$63$"],
+        "steps": [
+          "Nombre de carrés en largeur : $126 \\div 18 = ?$. Nombre de carrés en hauteur : $90 \\div 18 = ?$.",
+          "Nombre total de carrés $= ? \\times ? = ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "ARITH_03",
+    "title": "Les bouquets de Jade",
+    "context": "Jade, fleuriste, a reçu une livraison de $120$ roses et $84$ tulipes. Elle veut composer des bouquets tous identiques (même nombre de roses et même nombre de tulipes dans chaque bouquet), en utilisant toutes les fleurs sans en perdre.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Jade peut-elle faire exactement $10$ bouquets identiques avec toutes ses fleurs ?",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Si $10$ bouquets : $120 \\div 10 = 12$ roses par bouquet. $84 \\div 10 = ?$",
+          "$84 \\div 10 = 8{,}4$. Ce n'est pas un nombre entier. Que peut-on conclure ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quel est le plus grand nombre de bouquets identiques que Jade peut composer ? ___",
+        "a": "12",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On cherche le PGCD de $120$ et $84$. Décompose : $120 = 2^3 \\times 3 \\times 5$ et $84 = 2^2 \\times 3 \\times 7$.",
+          "$\\text{PGCD}(120 ; 84) = 2^{?} \\times 3^{?} = ?$"
+        ],
+        "f": "$\\text{PGCD} = \\text{produit des facteurs premiers communs, plus petit exposant}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Avec ce nombre maximal de bouquets, combien y a-t-il de tulipes par bouquet ?",
+        "a": "$7$",
+        "type": "qcm",
+        "options": ["$7$", "$6$", "$8$"],
+        "steps": [
+          "Nombre de bouquets $= 12$. Tulipes par bouquet $= 84 \\div 12 = ?$",
+          "Roses par bouquet $= 120 \\div 12 = ?$. Vérifie que les deux quotients sont entiers."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "La fraction $\\frac{84}{120}$ est-elle irréductible ?",
+        "a": "Faux, on peut simplifier par $12$",
+        "type": "qcm",
+        "options": ["Faux, on peut simplifier par $12$", "Vrai, $84$ et $120$ n'ont pas de diviseur commun", "Faux, on peut simplifier par $6$ seulement"],
+        "steps": [
+          "Une fraction est irréductible si le PGCD du numérateur et du dénominateur est $1$.",
+          "$\\text{PGCD}(84 ; 120) = 12 \\neq 1$. Peut-on simplifier ? Par quel nombre ?"
+        ],
+        "f": "$\\frac{a}{b} \\text{ irréductible} \\Leftrightarrow \\text{PGCD}(a ; b) = 1$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Quelle est la forme irréductible de $\\frac{84}{120}$ ? ___",
+        "a": "7/10",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On divise numérateur et dénominateur par leur PGCD : $\\frac{84 \\div 12}{120 \\div 12} = \\frac{?}{?}$",
+          "Vérifie que $\\text{PGCD}(? ; ?) = 1$ pour confirmer que la fraction est bien irréductible."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "ARITH_04",
+    "title": "Le carrelage de la terrasse",
+    "context": "Lucas, carreleur, doit recouvrir une terrasse rectangulaire de $180$ cm de long et $150$ cm de large avec des carreaux carrés identiques, les plus grands possibles, sans découpe ni perte. Il doit commander le bon nombre de carreaux.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Quelle est la décomposition en facteurs premiers de $180$ ?",
+        "a": "$2^2 \\times 3^2 \\times 5$",
+        "type": "qcm",
+        "options": ["$2^2 \\times 3^2 \\times 5$", "$2 \\times 3^2 \\times 10$", "$2^2 \\times 3 \\times 15$"],
+        "steps": [
+          "$180 \\div 2 = 90$, $90 \\div 2 = 45$, $45 \\div 3 = 15$, $15 \\div 3 = 5$, $5$ est premier.",
+          "$180 = 2^{?} \\times 3^{?} \\times 5$. Quels exposants ?"
+        ],
+        "f": "$\\text{Diviser successivement par } 2, 3, 5, 7\\ldots$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quel est le PGCD de $180$ et $150$ ? ___",
+        "a": "30",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$180 = 2^2 \\times 3^2 \\times 5$ et $150 = 2 \\times 3 \\times 5^2$.",
+          "$\\text{PGCD} = 2^{\\min(2;1)} \\times 3^{\\min(2;1)} \\times 5^{\\min(1;2)} = 2 \\times 3 \\times 5 = ?$"
+        ],
+        "f": "$\\text{PGCD} = \\text{produit des facteurs premiers communs, plus petit exposant}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Le côté du plus grand carreau possible est donc de $30$ cm. Combien de carreaux faut-il en longueur ? ___",
+        "a": "6",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Longueur de la terrasse $= 180$ cm. Côté du carreau $= 30$ cm.",
+          "$180 \\div 30 = ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Les nombres $180$ et $150$ sont-ils premiers entre eux ?",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Deux nombres sont premiers entre eux si leur PGCD vaut $1$.",
+          "$\\text{PGCD}(180 ; 150) = 30$. Est-ce que $30 = 1$ ?"
+        ],
+        "f": "$a \\text{ et } b \\text{ premiers entre eux} \\Leftrightarrow \\text{PGCD}(a ; b) = 1$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Combien de carreaux de $30$ cm de côté Lucas doit-il commander au total ?",
+        "a": "$30$",
+        "type": "qcm",
+        "options": ["$30$", "$36$", "$25$"],
+        "steps": [
+          "En longueur : $180 \\div 30 = 6$ carreaux. En largeur : $150 \\div 30 = ?$ carreaux.",
+          "Nombre total $= 6 \\times ? = ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

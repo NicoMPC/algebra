@@ -1,0 +1,314 @@
+[
+  {
+    "id": "AUTSP_01",
+    "title": "Le sac de jetons de Marius",
+    "context": "Marius a un sac opaque contenant des jetons de couleur. Il tire un jeton au hasard.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Combien y a-t-il de jetons au total dans le sac ? ___",
+        "a": "20",
+        "type": "fill",
+        "options": [],
+        "steps": ["$5 + 8 + 3 + 4 = $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["Couleur", "Rouge", "Bleu", "Vert", "Jaune"],
+          "rows": [["Nombre", "5", "8", "3", "4"]],
+          "caption": "Contenu du sac de Marius"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la probabilité de tirer un jeton bleu ? ___",
+        "a": "2/5",
+        "type": "fill",
+        "options": [],
+        "steps": ["$8$ jetons bleus sur $20$ au total. $\\frac{8}{20}$ se simplifie par $4$ : ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Quelle couleur a la plus faible probabilité d'être tirée ?",
+        "a": "Vert",
+        "type": "qcm",
+        "options": ["Rouge", "Vert", "Jaune"],
+        "steps": ["La couleur la moins représentée a la plus faible probabilité. Compare : $5$, $3$, $4$ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "La probabilité de tirer un jeton rouge est $\\frac{1}{5}$.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": ["$P(\\text{rouge}) = \\frac{5}{20} = \\frac{1}{4}$, pas $\\frac{1}{5}$"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Quelle est la probabilité de NE PAS tirer un jeton vert ?",
+        "a": "$\\frac{17}{20}$",
+        "type": "qcm",
+        "options": ["$\\frac{17}{20}$", "$\\frac{3}{20}$", "$\\frac{7}{10}$"],
+        "steps": ["$P(\\text{pas vert}) = 1 - P(\\text{vert}) = 1 - \\frac{3}{20} = $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "AUTSP_02",
+    "title": "Le sondage au collège Voltaire",
+    "context": "On a demandé à $50$ élèves de 3ème quel sport ils préfèrent.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Quel sport est le plus populaire ? ___",
+        "a": "Foot",
+        "type": "fill",
+        "options": [],
+        "steps": ["Compare les effectifs : $20 > 15 > 10 > 5$. Le plus grand est ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["Sport", "Foot", "Basket", "Natation", "Tennis"],
+          "rows": [["Effectif", "20", "15", "10", "5"]],
+          "caption": "Sport préféré des élèves de 3ème"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la fréquence du Basket ? ___",
+        "a": "3/10",
+        "type": "fill",
+        "options": [],
+        "steps": ["Fréquence $= \\frac{15}{50}$. Simplifie par $5$ : ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Quel pourcentage des élèves préfèrent le Foot ?",
+        "a": "40 %",
+        "type": "qcm",
+        "options": ["40 %", "20 %", "50 %"],
+        "steps": ["$\\frac{20}{50} = \\frac{40}{100}$. Donc ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "La Natation représente $25\\%$ des réponses.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": ["$\\frac{10}{50} = \\frac{20}{100} = 20\\%$, pas $25\\%$"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Si on interroge un élève au hasard, quelle est la probabilité qu'il préfère le Tennis ?",
+        "a": "$\\frac{1}{10}$",
+        "type": "qcm",
+        "options": ["$\\frac{1}{10}$", "$\\frac{1}{5}$", "$\\frac{5}{50}$"],
+        "steps": ["$P(\\text{Tennis}) = \\frac{5}{50} = $ ? Simplifie par $5$."],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "AUTSP_03",
+    "title": "Les notes de Jade en maths",
+    "context": "Voici les notes de Jade au 2ème trimestre de maths (sur $20$).",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Quelle est la note la plus haute de Jade ? ___",
+        "a": "16",
+        "type": "fill",
+        "options": [],
+        "steps": ["Compare toutes les notes du tableau : ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["Devoir", "DS1", "DS2", "DS3", "DS4", "DS5"],
+          "rows": [["Note", "12", "8", "14", "16", "10"]],
+          "caption": "Notes de Jade — Trimestre 2"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est l'étendue de cette série de notes ? ___",
+        "a": "8",
+        "type": "fill",
+        "options": [],
+        "steps": ["Étendue $=$ note max $-$ note min $= 16 - 8 = $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Quelle est la moyenne de Jade ?",
+        "a": "12",
+        "type": "qcm",
+        "options": ["12", "11", "13"],
+        "steps": ["$\\frac{12 + 8 + 14 + 16 + 10}{5} = \\frac{60}{5} = $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Jade a eu la moyenne (≥ $10$) à tous ses devoirs.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": ["DS2 $= 8 < 10$. Elle n'a pas eu la moyenne partout."],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Si Jade obtient $18$ au DS6, quelle sera sa nouvelle moyenne ?",
+        "a": "13",
+        "type": "qcm",
+        "options": ["13", "14", "12"],
+        "steps": ["$\\frac{60 + 18}{6} = \\frac{78}{6} = $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "AUTSP_04",
+    "title": "Le tournoi de badminton du collège",
+    "context": "Voici les résultats de $4$ joueurs lors d'un tournoi de badminton (nombre de matchs gagnés sur $10$ matchs joués chacun).",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Combien de matchs ont été joués au total dans le tournoi ? ___",
+        "a": "40",
+        "type": "fill",
+        "options": [],
+        "steps": ["$4$ joueurs $\\times$ $10$ matchs chacun $= $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["Joueur", "Léo", "Inès", "Tom", "Sara"],
+          "rows": [["Victoires", "7", "5", "8", "6"]],
+          "caption": "Résultats du tournoi de badminton"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la moyenne de victoires par joueur ?",
+        "a": "6,5",
+        "type": "qcm",
+        "options": ["6,5", "6", "7"],
+        "steps": ["$\\frac{7 + 5 + 8 + 6}{4} = \\frac{26}{4} = $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Si on choisit un match de Tom au hasard, quelle est la probabilité qu'il l'ait gagné ? ___",
+        "a": "4/5",
+        "type": "fill",
+        "options": [],
+        "steps": ["Tom a gagné $8$ matchs sur $10$. $\\frac{8}{10}$ simplifié par $2$ = ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Quel pourcentage de ses matchs Inès a-t-elle gagnés ?",
+        "a": "50 %",
+        "type": "qcm",
+        "options": ["50 %", "40 %", "60 %"],
+        "steps": ["$\\frac{5}{10} = \\frac{50}{100} = $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Sara a gagné plus de la moitié de ses matchs.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": ["La moitié de $10$ est $5$. Sara a gagné $6 > 5$."],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

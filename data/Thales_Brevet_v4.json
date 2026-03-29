@@ -1,0 +1,390 @@
+[
+  {
+    "id": "THAL_01",
+    "title": "L'ombre du clocher",
+    "context": "Par une journée ensoleillée, Yasmine mesure l'ombre d'un clocher et celle d'un poteau vertical planté dans le sol. Les rayons du soleil sont parallèles : l'ombre du poteau $MN$ mesure $3$ m (avec $M$ au sol) et le poteau mesure $MN = 2$ m. L'ombre du clocher $AH$ s'étend sur $BH = 18$ m au sol (avec $H$ le pied du clocher).",
+    "figure": "THAL_01_clocher.svg",
+    "figure_desc": "Vue de profil. Point B à gauche (bout des deux ombres, au sol). Point H à droite (pied du clocher, au sol). Segment [BH] horizontal = 18 m. Point A au-dessus de H (sommet du clocher), segment [AH] vertical = ?. Point M sur [BH] à 3 m de B, segment [MN] vertical = 2 m avec N au-dessus de M. Droites (BA) et (BN) issues de B. Codage : angles droits en H et M, flèches de parallélisme sur (AH) et (MN). Mesures affichées : BM = 3 m, MN = 2 m, BH = 18 m, AH = ?.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule le rapport $\\frac{BM}{BH}$. Donne le résultat sous forme de fraction irréductible.",
+        "a": "1/6",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On lit sur la figure : $BM = 3$ m et $BH = 18$ m.",
+          "$\\frac{BM}{BH} = \\frac{3}{18}$. Simplifie par le PGCD de $3$ et $18$ — quel est-il ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle égalité de rapports permet d'appliquer le théorème de Thalès dans cette configuration ?",
+        "a": "$\\frac{BM}{BH} = \\frac{MN}{AH}$",
+        "type": "qcm",
+        "options": [
+          "$\\frac{BM}{BH} = \\frac{MN}{AH}$",
+          "$\\frac{BM}{MH} = \\frac{MN}{AH}$",
+          "$\\frac{BH}{BM} = \\frac{MN}{AH}$"
+        ],
+        "steps": [
+          "Les droites $(MN)$ et $(AH)$ sont parallèles, coupées par deux sécantes issues de $B$.",
+          "Le théorème de Thalès donne $\\frac{BM}{BH} = \\frac{BN}{BA} = \\frac{?}{?}$. Quels segments correspondent ?"
+        ],
+        "f": "$\\frac{BM}{BH} = \\frac{BN}{BA} = \\frac{MN}{AH}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Calcule la hauteur $AH$ du clocher en mètres.",
+        "a": "12",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "D'après Thalès : $\\frac{MN}{AH} = \\frac{BM}{BH}$, soit $\\frac{2}{AH} = \\frac{3}{18}$.",
+          "Donc $AH = \\frac{2 \\times 18}{3} = \\frac{?}{3} = \\;?$ m."
+        ],
+        "f": "$\\frac{BM}{BH} = \\frac{MN}{AH}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Si l'ombre du poteau mesurait $6$ m au lieu de $3$ m (le poteau gardant la même hauteur de $2$ m), la hauteur calculée du clocher serait deux fois plus grande.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Avec $BM = 6$ m : $\\frac{MN}{AH} = \\frac{BM}{BH}$ donne $\\frac{2}{AH} = \\frac{6}{18}$.",
+          "Calcule $AH$ dans ce cas. Compare avec $12$ m — est-ce le double ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Un arbre de $8$ m de haut se trouve à côté du clocher. Quelle est la longueur de son ombre au même moment ?",
+        "a": "$12$ m",
+        "type": "qcm",
+        "options": [
+          "$12$ m",
+          "$16$ m",
+          "$9$ m"
+        ],
+        "steps": [
+          "Les rayons du soleil sont parallèles : le rapport ombre/hauteur est le même pour tous les objets.",
+          "Pour le poteau : $\\frac{\\text{ombre}}{\\text{hauteur}} = \\frac{3}{2}$. Pour l'arbre : $\\frac{x}{8} = \\frac{3}{2}$, donc $x = \\;?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "THAL_02",
+    "title": "La maquette d'avion",
+    "context": "Léo construit une maquette d'avion. Sur le plan en coupe de l'aile, deux droites se coupent en un point $O$. Les points $A$ et $B$ sont d'un côté de $O$, les points $C$ et $D$ de l'autre, avec $(AB) \\parallel (CD)$. On donne : $OA = 4$ cm, $OC = 3$ cm, $OB = 6$ cm et $AB = 8$ cm.",
+    "figure": "THAL_02_papillon.svg",
+    "figure_desc": "Configuration papillon. Point O au centre. Droite passant par A, O, C (A en haut à gauche, C en bas à droite). Droite passant par B, O, D (B en haut à droite, D en bas à gauche). Segment [AB] en haut, segment [CD] en bas, avec flèches de parallélisme sur (AB) et (CD). Mesures affichées : OA = 4 cm, OC = 3 cm, OB = 6 cm, AB = 8 cm, OD = ?, CD = ?.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule la longueur $OD$.",
+        "a": "4,5",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$(AB) \\parallel (CD)$ et les sécantes se coupent en $O$ → théorème de Thalès.",
+          "$\\frac{OA}{OC} = \\frac{OB}{OD}$ donne $\\frac{4}{3} = \\frac{6}{OD}$, donc $OD = \\frac{6 \\times 3}{4} = \\;?$"
+        ],
+        "f": "$\\frac{OA}{OC} = \\frac{OB}{OD} = \\frac{AB}{CD}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Calcule la longueur $CD$.",
+        "a": "$6$ cm",
+        "type": "qcm",
+        "options": [
+          "$6$ cm",
+          "$5{,}5$ cm",
+          "$\\frac{32}{3}$ cm"
+        ],
+        "steps": [
+          "On utilise la 3ème égalité de Thalès : $\\frac{AB}{CD} = \\frac{OA}{OC}$.",
+          "$\\frac{8}{CD} = \\frac{4}{3}$, donc $CD = \\frac{8 \\times 3}{4} = \\;?$"
+        ],
+        "f": "$\\frac{OA}{OC} = \\frac{OB}{OD} = \\frac{AB}{CD}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Le triangle $OCD$ est une réduction du triangle $OAB$.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Le rapport de réduction est $\\frac{OC}{OA} = \\frac{3}{4}$. Vérifie que $\\frac{OD}{OB}$ donne le même rapport.",
+          "$\\frac{OD}{OB} = \\frac{4{,}5}{6} = \\;?$. Ce rapport est-il égal à $\\frac{3}{4}$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "L'échelle de la maquette est $\\frac{1}{20}$. Si $AB = 8$ cm sur la maquette, quelle est la longueur réelle de cette partie de l'aile ?",
+        "a": "160",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Échelle = $\\frac{\\text{maquette}}{\\text{réel}}$, soit $\\frac{1}{20} = \\frac{8}{\\text{réel}}$.",
+          "Longueur réelle $= 8 \\times 20 = \\;?$ cm."
+        ],
+        "f": "$\\text{échelle} = \\frac{\\text{dimension maquette}}{\\text{dimension réelle}}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Si le rapport d'agrandissement du triangle $OAB$ par rapport au triangle $OCD$ est $\\frac{4}{3}$, quel est le rapport des aires $\\frac{\\mathcal{A}_{OAB}}{\\mathcal{A}_{OCD}}$ ?",
+        "a": "$\\frac{16}{9}$",
+        "type": "qcm",
+        "options": [
+          "$\\frac{16}{9}$",
+          "$\\frac{4}{3}$",
+          "$\\frac{8}{3}$"
+        ],
+        "steps": [
+          "Quand deux figures sont en rapport $k$, le rapport des aires est $k^2$.",
+          "$k = \\frac{4}{3}$, donc $k^2 = \\left(\\frac{4}{3}\\right)^2 = \\;?$"
+        ],
+        "f": "$\\frac{\\mathcal{A}_1}{\\mathcal{A}_2} = k^2$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "THAL_03",
+    "title": "Le plan de la terrasse",
+    "context": "Samir dessine le plan d'une terrasse triangulaire $DEF$. Il trace un segment $[GH]$ avec $G$ sur $[DE]$ et $H$ sur $[DF]$. Il relève : $DG = 4{,}5$ m, $GE = 1{,}5$ m, $DH = 6$ m et $HF = 2$ m. Il veut savoir si $(GH)$ est parallèle à $(EF)$ pour poser une rangée de dalles droite.",
+    "figure": "THAL_03_terrasse.svg",
+    "figure_desc": "Triangle DEF. D en haut. E en bas à gauche, F en bas à droite. G sur [DE] (plus proche de D), H sur [DF] (plus proche de D). Segment [GH] tracé en pointillés. Mesures affichées : DG = 4,5 m, GE = 1,5 m, DH = 6 m, HF = 2 m. Pas de codage de parallélisme (c'est ce qu'on cherche). Segment [EF] en bas.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule la longueur $DE$.",
+        "a": "6",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$G$ est sur le segment $[DE]$, donc $DE = DG + GE$.",
+          "$DE = 4{,}5 + 1{,}5 = \\;?$ m."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Calcule le rapport $\\frac{DG}{DE}$.",
+        "a": "$\\frac{3}{4}$",
+        "type": "qcm",
+        "options": [
+          "$\\frac{3}{4}$",
+          "$\\frac{4}{5}$",
+          "$\\frac{1}{3}$"
+        ],
+        "steps": [
+          "$DG = 4{,}5$ m et $DE = 6$ m.",
+          "$\\frac{DG}{DE} = \\frac{4{,}5}{6}$. Multiplie numérateur et dénominateur par $2$ pour supprimer la virgule — que trouves-tu ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Les droites $(GH)$ et $(EF)$ sont-elles parallèles ? Justifie à l'aide de la réciproque du théorème de Thalès.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Calcule $\\frac{DH}{DF}$ : $DF = DH + HF = 6 + 2 = 8$ m, donc $\\frac{DH}{DF} = \\frac{6}{8} = \\frac{3}{4}$.",
+          "Compare $\\frac{DG}{DE}$ et $\\frac{DH}{DF}$. Si ces rapports sont égaux et que les points sont dans le bon ordre, que conclut la réciproque de Thalès ?"
+        ],
+        "f": "$\\text{Si } \\frac{DG}{DE} = \\frac{DH}{DF} \\text{ alors } (GH) \\parallel (EF)$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Samir modifie son plan : il déplace $H$ pour que $DH = 5$ m (et $HF = 3$ m), en gardant $DG = 4{,}5$ m et $GE = 1{,}5$ m. Les droites $(GH)$ et $(EF)$ sont-elles encore parallèles ?",
+        "a": "Non, car $\\frac{DG}{DE} \\neq \\frac{DH}{DF}$",
+        "type": "qcm",
+        "options": [
+          "Non, car $\\frac{DG}{DE} \\neq \\frac{DH}{DF}$",
+          "Oui, car les points sont alignés",
+          "On ne peut pas conclure"
+        ],
+        "steps": [
+          "$\\frac{DG}{DE} = \\frac{4{,}5}{6} = \\frac{3}{4} = 0{,}75$. Calcule $\\frac{DH}{DF} = \\frac{5}{8} = \\;?$",
+          "$0{,}75 \\neq \\;?$ — les rapports sont-ils égaux ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Dans la configuration initiale (où $(GH) \\parallel (EF)$), on sait que $GH = 9$ m. Calcule $EF$.",
+        "a": "12",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$(GH) \\parallel (EF)$ avec $\\frac{DG}{DE} = \\frac{3}{4}$. D'après Thalès : $\\frac{GH}{EF} = \\frac{DG}{DE}$.",
+          "$\\frac{9}{EF} = \\frac{3}{4}$, donc $EF = \\frac{9 \\times 4}{3} = \\;?$ m."
+        ],
+        "f": "$\\frac{DG}{DE} = \\frac{DH}{DF} = \\frac{GH}{EF}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "THAL_04",
+    "title": "Le phare de la pointe",
+    "context": "Depuis la plage, Noa veut déterminer la hauteur d'un phare $PH$ situé au bord d'une falaise. Elle plante un piquet vertical $CD = 1{,}5$ m à $40$ m du pied $H$ du phare. En alignant le sommet du piquet $D$ avec le sommet du phare $P$, elle repère que son oeil $E$ est au sol, à $2$ m derrière le piquet (soit $EC = 2$ m). On a $(CD) \\parallel (PH)$.",
+    "figure": "THAL_04_phare.svg",
+    "figure_desc": "Vue de profil. Point E à gauche (oeil au sol). Point C à 2 m de E (pied du piquet, au sol). Point D au-dessus de C, CD = 1,5 m (piquet vertical). Point H au sol à droite (pied du phare), EH = EC + CH = 2 + 40 = 42 m. Point P au-dessus de H (sommet du phare), PH = ?. Droite (EP) passant par D. Codage : angles droits en C et H, flèches de parallélisme sur (CD) et (PH). Mesures affichées : EC = 2 m, CD = 1,5 m, CH = 40 m, PH = ?.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule la distance $EH$ entre l'oeil de Noa et le pied du phare.",
+        "a": "42",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$E$, $C$ et $H$ sont alignés sur le sol. $EH = EC + CH$.",
+          "$EH = 2 + 40 = \\;?$ m."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "En appliquant le théorème de Thalès dans le triangle $EPH$, quelle est la hauteur $PH$ du phare ?",
+        "a": "$31{,}5$ m",
+        "type": "qcm",
+        "options": [
+          "$31{,}5$ m",
+          "$30$ m",
+          "$28$ m"
+        ],
+        "steps": [
+          "$(CD) \\parallel (PH)$, sécantes issues de $E$. Thalès : $\\frac{EC}{EH} = \\frac{CD}{PH}$.",
+          "$\\frac{2}{42} = \\frac{1{,}5}{PH}$, donc $PH = \\frac{1{,}5 \\times 42}{2} = \\frac{63}{2} = \\;?$"
+        ],
+        "f": "$\\frac{EC}{EH} = \\frac{CD}{PH}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Le rapport $\\frac{EC}{EH} = \\frac{2}{42}$ est aussi égal au rapport $\\frac{CD}{PH}$. Ce rapport correspond à une échelle de $\\frac{1}{21}$.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "$\\frac{2}{42} = \\frac{1}{21}$ après simplification par $2$.",
+          "Vérifie : $\\frac{CD}{PH} = \\frac{1{,}5}{31{,}5}$. Simplifie cette fraction — retrouves-tu $\\frac{1}{21}$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Noa déplace le piquet à $10$ m du pied du phare (au lieu de $40$ m). Elle reste à $2$ m derrière le piquet. Quelle hauteur $CD'$ doit avoir le nouveau piquet pour aligner son sommet avec celui du phare ?",
+        "a": "5,25",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Nouvelle configuration : $EC' = 2$ m, $C'H = 10$ m, donc $E'H = 12$ m. Thalès : $\\frac{EC'}{E'H} = \\frac{CD'}{PH}$.",
+          "$\\frac{2}{12} = \\frac{CD'}{31{,}5}$, donc $CD' = \\frac{2 \\times 31{,}5}{12} = \\frac{63}{12} = \\;?$"
+        ],
+        "f": "$\\frac{EC'}{E'H} = \\frac{CD'}{PH}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Le phare a une base carrée de côté $4$ m. La maquette du phare est à l'échelle $\\frac{1}{21}$. Quelle est l'aire de la base de la maquette ? Arrondis au $\\text{cm}^2$ près.",
+        "a": "$363$ cm$^2$",
+        "type": "qcm",
+        "options": [
+          "$363$ cm$^2$",
+          "$19$ cm$^2$",
+          "$36$ cm$^2$"
+        ],
+        "steps": [
+          "Côté réel = $4$ m = $400$ cm. Côté maquette = $\\frac{400}{21} \\approx 19{,}05$ cm.",
+          "Aire maquette = $(19{,}05)^2 \\approx \\;?$ cm$^2$. Arrondis."
+        ],
+        "f": "$\\text{Aire} = \\text{côté}^2$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

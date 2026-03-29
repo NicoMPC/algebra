@@ -1,0 +1,422 @@
+[
+  {
+    "id": "FRAC_01",
+    "title": "La recette d'Inès",
+    "context": "Inès prépare une recette de gâteau. Elle doit mélanger plusieurs ingrédients liquides et solides, en mesurant tout avec des fractions.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Inès mélange $\\frac{1}{3}$ de litre de lait et $\\frac{1}{4}$ de litre de crème. Quel volume total de liquide obtient-elle ? Donne ta réponse en fraction irréductible. ___",
+        "a": "7/12",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Dénominateur commun de $3$ et $4$ : $\\text{PPCM}(3, 4) = 12$.",
+          "$\\frac{1}{3} = \\frac{4}{12}$ et $\\frac{1}{4} = \\frac{3}{12}$. Donc $\\frac{4}{12} + \\frac{3}{12} = \\frac{?}{12}$.",
+          "$\\text{PGCD}(7, 12) = 1$ : la fraction est-elle déjà irréductible ?"
+        ],
+        "f": "$\\frac{a}{b} + \\frac{c}{d} = \\frac{a \\times d + c \\times b}{b \\times d}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Elle doit aussi ajouter $\\frac{3}{4}$ de litre d'eau puis retirer $\\frac{1}{6}$ de litre qu'elle a versé en trop. Quel volume d'eau reste-t-il ? ___",
+        "a": "7/12",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Dénominateur commun de $4$ et $6$ : $\\text{PPCM}(4, 6) = 12$.",
+          "$\\frac{3}{4} = \\frac{9}{12}$ et $\\frac{1}{6} = \\frac{2}{12}$. Donc $\\frac{9}{12} - \\frac{2}{12} = \\frac{?}{12}$.",
+          "Simplifie si possible : $\\text{PGCD}(?, 12) = \\,?$"
+        ],
+        "f": "$\\frac{a}{b} - \\frac{c}{d} = \\frac{a \\times d - c \\times b}{b \\times d}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Inès a besoin de $\\frac{2}{5}$ de kg de farine et $\\frac{1}{3}$ de kg de sucre. Quelle masse totale cela fait-il ?",
+        "a": "$\\frac{11}{15}$",
+        "type": "qcm",
+        "options": [
+          "$\\frac{11}{15}$",
+          "$\\frac{3}{8}$",
+          "$\\frac{11}{8}$"
+        ],
+        "steps": [
+          "Dénominateur commun de $5$ et $3$ : $\\text{PPCM}(5, 3) = 15$.",
+          "$\\frac{2}{5} = \\frac{6}{15}$ et $\\frac{1}{3} = \\frac{5}{15}$. Calcule $\\frac{6}{15} + \\frac{5}{15} = \\frac{?}{15}$.",
+          "Le distracteur $\\frac{3}{8}$ vient de l'erreur : additionner numérateurs ET dénominateurs. Est-ce correct ?"
+        ],
+        "f": "$\\frac{a}{b} + \\frac{c}{d} = \\frac{a \\times d + c \\times b}{b \\times d}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Inès affirme : « $\\frac{5}{6} - \\frac{2}{3} = \\frac{3}{3} = 1$ ». A-t-elle raison ?",
+        "a": "Faux",
+        "type": "vf",
+        "options": [
+          "Vrai",
+          "Faux"
+        ],
+        "steps": [
+          "Inès a soustrait directement $5 - 2 = 3$ aux numérateurs et gardé $6$ puis simplifié avec $3$. Les dénominateurs sont-ils les mêmes ?",
+          "Il faut d'abord mettre au même dénominateur : $\\frac{2}{3} = \\frac{4}{6}$. Donc $\\frac{5}{6} - \\frac{4}{6} = \\frac{?}{6}$.",
+          "Le résultat correct est-il bien $1$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Pour sa pâte à crêpes, Inès mélange $\\frac{1}{2}$ L de lait, $\\frac{1}{4}$ L de bière et $\\frac{1}{8}$ L d'eau. Quel est le volume total ?",
+        "a": "$\\frac{7}{8}$",
+        "type": "qcm",
+        "options": [
+          "$\\frac{7}{8}$",
+          "$\\frac{3}{14}$",
+          "$\\frac{7}{4}$"
+        ],
+        "steps": [
+          "Dénominateur commun : $\\text{PPCM}(2, 4, 8) = 8$.",
+          "$\\frac{1}{2} = \\frac{4}{8}$, $\\frac{1}{4} = \\frac{2}{8}$, $\\frac{1}{8} = \\frac{1}{8}$. Calcule $\\frac{4 + 2 + 1}{8} = \\frac{?}{8}$.",
+          "$\\frac{3}{14}$ viendrait de l'erreur d'additionner les dénominateurs. Quel est le bon résultat ?"
+        ],
+        "f": "$\\frac{a}{b} + \\frac{c}{d} = \\frac{a \\times d + c \\times b}{b \\times d}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "FRAC_02",
+    "title": "Le partage du terrain",
+    "context": "Trois héritiers — Hugo, Jade et Adam — se partagent un terrain de $600\\text{ m}^2$. Chacun peut revendre ou diviser sa part.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Hugo reçoit $\\frac{1}{3}$ du terrain, puis il en revend $\\frac{1}{4}$ à sa sœur. Quelle fraction du terrain total Hugo possède-t-il encore ? ___",
+        "a": "1/4",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Hugo reçoit $\\frac{1}{3}$ du terrain, puis il en revend $\\frac{1}{4}$ de SA part.",
+          "Il garde $1 - \\frac{1}{4} = \\frac{3}{4}$ de sa part. Donc il possède $\\frac{3}{4} \\times \\frac{1}{3} = \\frac{?}{?}$.",
+          "Simplifie : $\\frac{3}{12} = \\frac{?}{?}$"
+        ],
+        "f": "$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{a \\times c}{b \\times d}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "La part de Jade représente $\\frac{2}{5}$ du terrain. Elle divise cette part en $3$ parcelles égales. Quelle est l'aire d'une parcelle en $\\text{m}^2$ ? ___",
+        "a": "80",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Part de Jade : $\\frac{2}{5} \\times 600 = \\frac{?}{?} = ?\\text{ m}^2$.",
+          "Elle divise par $3$ : $\\frac{240}{3} = ?\\text{ m}^2$. Ou bien directement $\\frac{2}{5} \\times \\frac{1}{3} \\times 600 = ?$.",
+          "Vérifie : $\\frac{2}{15} \\times 600 = ?$"
+        ],
+        "f": "$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{a \\times c}{b \\times d}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Adam possède $\\frac{3}{8}$ du terrain. Il vend $\\frac{2}{3}$ de sa part. Quelle fraction du terrain total a-t-il vendue ?",
+        "a": "$\\frac{1}{4}$",
+        "type": "qcm",
+        "options": [
+          "$\\frac{1}{4}$",
+          "$\\frac{5}{11}$",
+          "$\\frac{6}{8}$"
+        ],
+        "steps": [
+          "Fraction vendue du terrain total : $\\frac{2}{3} \\times \\frac{3}{8} = \\frac{2 \\times 3}{3 \\times 8} = \\frac{?}{?}$.",
+          "Simplifie $\\frac{6}{24}$ : $\\text{PGCD}(6, 24) = 6$. Donc $\\frac{6 \\div 6}{24 \\div 6} = \\frac{?}{?}$.",
+          "$\\frac{5}{11}$ viendrait de l'erreur d'additionner au lieu de multiplier. Quel est le bon calcul ?"
+        ],
+        "f": "$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{a \\times c}{b \\times d}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Noé affirme : « Diviser par $\\frac{3}{4}$, c'est la même chose que multiplier par $\\frac{3}{4}$ ». A-t-il raison ?",
+        "a": "Faux",
+        "type": "vf",
+        "options": [
+          "Vrai",
+          "Faux"
+        ],
+        "steps": [
+          "Diviser par une fraction, c'est multiplier par son inverse.",
+          "L'inverse de $\\frac{3}{4}$ est $\\frac{4}{3}$. Donc diviser par $\\frac{3}{4}$ revient à multiplier par $\\frac{?}{?}$.",
+          "$\\frac{4}{3} \\neq \\frac{3}{4}$ : les deux opérations donnent-elles le même résultat ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Le terrain de $600\\text{ m}^2$ est divisé en parcelles de $\\frac{3}{4}\\text{ m}^2$ chacune pour un potager. Combien de parcelles peut-on former ?",
+        "a": "$800$",
+        "type": "qcm",
+        "options": [
+          "$800$",
+          "$450$",
+          "$200$"
+        ],
+        "steps": [
+          "On divise la surface totale par la surface d'une parcelle : $600 \\div \\frac{3}{4}$.",
+          "Diviser par $\\frac{3}{4}$, c'est multiplier par $\\frac{4}{3}$ : $600 \\times \\frac{4}{3} = \\frac{?}{?}$.",
+          "$\\frac{2400}{3} = ?$. Le distracteur $450$ vient de $600 \\times \\frac{3}{4}$ (multiplier au lieu de diviser)."
+        ],
+        "f": "$a \\div \\frac{b}{c} = a \\times \\frac{c}{b}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "FRAC_03",
+    "title": "Les soldes au centre commercial",
+    "context": "C'est la période des soldes. Léa et ses amis comparent les réductions sur différents articles au centre commercial.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Une veste coûte $80$ €. Elle est soldée à $\\frac{3}{4}$ de son prix. Quel est le prix soldé en euros ? ___",
+        "a": "60",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Prendre $\\frac{3}{4}$ d'un prix, c'est multiplier : $\\frac{3}{4} \\times 80 = \\frac{3 \\times 80}{4}$.",
+          "$\\frac{240}{4} = ?$ €.",
+          "Autre méthode : $80 \\div 4 = 20$, puis $20 \\times 3 = ?$ €."
+        ],
+        "f": "$\\text{Fraction d'une quantité} = \\frac{a}{b} \\times \\text{quantité}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Un pantalon affiché à $60$ € bénéficie d'une réduction de $\\frac{1}{5}$. Quel est le montant de la réduction ?",
+        "a": "$12$ €",
+        "type": "qcm",
+        "options": [
+          "$12$ €",
+          "$48$ €",
+          "$15$ €"
+        ],
+        "steps": [
+          "La réduction est $\\frac{1}{5}$ du prix : $\\frac{1}{5} \\times 60 = \\frac{?}{?}$.",
+          "$\\frac{60}{5} = ?$ €. Attention : on demande la réduction, pas le prix final.",
+          "$48$ € serait le prix après réduction ($60 - 12$), pas la réduction elle-même."
+        ],
+        "f": "$\\text{Fraction d'une quantité} = \\frac{a}{b} \\times \\text{quantité}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Emma dit : « Un article soldé à $-25\\%$, c'est comme payer $\\frac{3}{4}$ du prix initial ». A-t-elle raison ?",
+        "a": "Vrai",
+        "type": "vf",
+        "options": [
+          "Vrai",
+          "Faux"
+        ],
+        "steps": [
+          "$-25\\%$ signifie qu'on retire $\\frac{25}{100} = \\frac{1}{4}$ du prix.",
+          "On paie donc $1 - \\frac{1}{4} = \\frac{3}{4}$ du prix initial.",
+          "Est-ce bien ce qu'Emma affirme ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Un pull à $90$ € est soldé à $-30\\%$. Lucas paie avec un bon de réduction supplémentaire de $\\frac{1}{7}$ sur le prix soldé. Combien paie-t-il au final ? ___",
+        "a": "54",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Prix après solde : $90 \\times (1 - 0{,}30) = 90 \\times 0{,}70 = ?$ €. Ou bien : $90 \\times \\frac{7}{10} = ?$.",
+          "Bon supplémentaire de $\\frac{1}{7}$ : réduction = $\\frac{1}{7} \\times 63 = ?$ €. Prix final = $63 - ? = ?$ €.",
+          "Ou directement : $63 \\times \\frac{6}{7} = \\frac{?}{?} = ?$ €."
+        ],
+        "f": "",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Léa achète $3$ articles : un t-shirt à $\\frac{2}{3}$ de $45$ €, un jean à $\\frac{4}{5}$ de $75$ € et des baskets à $\\frac{7}{10}$ de $90$ €. Quel est le total ?",
+        "a": "$153$ €",
+        "type": "qcm",
+        "options": [
+          "$153$ €",
+          "$210$ €",
+          "$140$ €"
+        ],
+        "steps": [
+          "T-shirt : $\\frac{2}{3} \\times 45 = \\frac{90}{3} = ?$ €. Jean : $\\frac{4}{5} \\times 75 = \\frac{300}{5} = ?$ €.",
+          "Baskets : $\\frac{7}{10} \\times 90 = \\frac{630}{10} = ?$ €.",
+          "Total : $? + ? + ? = ?$ €. Le distracteur $210$ est le total sans réduction."
+        ],
+        "f": "$\\text{Fraction d'une quantité} = \\frac{a}{b} \\times \\text{quantité}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "FRAC_04",
+    "title": "Le chef cuisinier adapte ses recettes",
+    "context": "Un chef cuisinier doit adapter ses recettes pour un nombre variable de convives. Toutes les quantités de base sont pour $4$ personnes.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "La recette nécessite $\\frac{3}{4}$ de litre de bouillon pour $4$ personnes. Le chef adapte pour $6$ personnes. Quelle quantité de bouillon lui faut-il ? Donne ta réponse en fraction irréductible. ___",
+        "a": "9/8",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Coefficient multiplicateur : $\\frac{6}{4} = \\frac{3}{2}$.",
+          "Quantité pour $6$ : $\\frac{3}{4} \\times \\frac{3}{2} = \\frac{? \\times ?}{? \\times ?} = \\frac{?}{?}$.",
+          "$\\frac{9}{8}$ est-il irréductible ? $\\text{PGCD}(9, 8) = ?$"
+        ],
+        "f": "$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{a \\times c}{b \\times d}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "La recette demande $\\frac{2}{3}$ kg de viande et $\\frac{5}{6}$ kg de légumes pour $4$ personnes. Le chef cuisine pour $10$ personnes. Quelle masse totale de viande et légumes lui faut-il ?",
+        "a": "$\\frac{15}{4}$ kg",
+        "type": "qcm",
+        "options": [
+          "$\\frac{15}{4}$ kg",
+          "$\\frac{7}{9}$ kg",
+          "$\\frac{15}{6}$ kg"
+        ],
+        "steps": [
+          "Coefficient : $\\frac{10}{4} = \\frac{5}{2}$. Viande : $\\frac{2}{3} \\times \\frac{5}{2} = \\frac{10}{6} = \\frac{5}{3}$ kg.",
+          "Légumes : $\\frac{5}{6} \\times \\frac{5}{2} = \\frac{25}{12}$ kg. Total : $\\frac{5}{3} + \\frac{25}{12} = ?$.",
+          "$\\frac{5}{3} = \\frac{20}{12}$. Donc $\\frac{20}{12} + \\frac{25}{12} = \\frac{?}{12}$. Simplifie."
+        ],
+        "f": "$\\frac{a}{b} + \\frac{c}{d} = \\frac{a \\times d + c \\times b}{b \\times d}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Le chef affirme : « Pour passer de $4$ à $12$ convives, il suffit de multiplier toutes les quantités par $3$ ». A-t-il raison ?",
+        "a": "Vrai",
+        "type": "vf",
+        "options": [
+          "Vrai",
+          "Faux"
+        ],
+        "steps": [
+          "Coefficient multiplicateur : $\\frac{12}{4} = ?$.",
+          "Multiplier par $3$ revient bien à tripler chaque quantité.",
+          "La proportionnalité s'applique-t-elle aux recettes de cuisine ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Le chef adapte pour $7$ personnes. Il lui faut $\\frac{2}{3}$ L de crème (quantité pour $4$). Calcule la quantité totale de crème nécessaire, en fraction irréductible. ___",
+        "a": "7/6",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Coefficient : $\\frac{7}{4}$. Crème pour $7$ : $\\frac{2}{3} \\times \\frac{7}{4} = \\frac{2 \\times 7}{3 \\times 4} = \\frac{?}{?}$.",
+          "Simplifie $\\frac{14}{12}$ : $\\text{PGCD}(14, 12) = 2$. Donc $\\frac{14 \\div 2}{12 \\div 2} = \\frac{?}{?}$.",
+          "Le résultat est-il irréductible ?"
+        ],
+        "f": "$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{a \\times c}{b \\times d}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Le chef a $\\frac{5}{3}$ kg de farine. Sa recette pour $4$ personnes en demande $\\frac{3}{8}$ kg. Pour combien de personnes peut-il cuisiner au maximum avec sa farine ?",
+        "a": "$17$",
+        "type": "qcm",
+        "options": [
+          "$17$",
+          "$16$",
+          "$10$"
+        ],
+        "steps": [
+          "Nombre de « portions de $4$ » : $\\frac{5}{3} \\div \\frac{3}{8} = \\frac{5}{3} \\times \\frac{8}{3} = \\frac{?}{?}$.",
+          "$\\frac{40}{9} \\approx 4{,}44$ portions de $4$ personnes. Nombre de personnes : $\\frac{40}{9} \\times 4 = \\frac{160}{9} \\approx ?$.",
+          "On ne peut servir qu'un nombre entier de personnes. $\\frac{160}{9} = 17{,}7\\ldots$ Donc au maximum $?$ personnes."
+        ],
+        "f": "$a \\div \\frac{b}{c} = a \\times \\frac{c}{b}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]
