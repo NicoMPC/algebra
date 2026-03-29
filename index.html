@@ -2677,7 +2677,7 @@ var _MSGS = {
   ok_boost:   ['Dans le mille ⚡','T\'as géré ça 💪','Maîtrisé ✅','Propre 🔥','GG 👌'],
   ok_chap:    ['Carton plein 🎯','Trop fort(e) 🚀','Dans le mille ⚡','Maîtrisé ✅','Propre. Vraiment 🔥'],
   ok_6eme:    ['Super ! 🎉','Exactement ! ✅','Bravo ! 💪','Bien vu ! 🔥','Parfait ! ⭐'],
-  ok_3eme:    ['Exact ✅','Maîtrisé 💪','Dans le mille ⚡','Propre 🔥','Bon calcul 🎯'],
+  ok_3eme:    ['Exact {name} ✅','Maîtrisé 💪','Dans le mille {name} ⚡','Propre 🔥','Bon calcul {name} 🎯'],
   ok_auto:    ['Réflexe ⚡','Automatique 🎯','Rapide et juste 🧠','Ça sort tout seul 💪','Acquis ✅'],
   ok_streak:  ['Streak actif — continue ! 🔥','Encore une ! ⚡','En forme aujourd\'hui 💪'],
   ko_boost:   ['Pas celui-là — regarde la correction en dessous 👀','Ça arrive — la méthode est juste en dessous 💡','La prochaine tu l\'as — retiens la correction 🎯'],
@@ -2693,7 +2693,7 @@ var _MSGS = {
   cours_15:   '📖 Cours avancé débloqué — les points de vigilance pour l\'exam.',
   cours_20:   '✨ Cours complet. Maîtrise confirmée — excellent travail 🏆',
   cours_prep: '🎉 Jalon atteint. Ton cours personnalisé est en préparation.',
-  chap_done:  '🏆 Chapitre terminé — bien joué. Choisis le suivant quand tu veux.',
+  chap_done:  '🏆 Bravo {name} — chapitre terminé ! Choisis le suivant quand tu veux.',
   chap_done_auto: { def: '⚡ Automatismes terminés — tes réflexes se renforcent ! Ton prof prépare la suite 🎯' },
   boost_ready:      '⚡ Ton Entraînement du jour est prêt !',
   boost_preparing:  '✨ Prochain entraînement demain — ton boost sera encore plus ciblé !',
@@ -3344,6 +3344,11 @@ function _flowSetStep(n) {
 function flowSelectLevel() {
   _flowLevel = '3EME';
   _flowChaps = [];
+  // 3ème → auto Brevet, skip choice screen
+  if (_flowLevel === '3EME') {
+    _flowPickBrevet();
+    return;
+  }
   _flowSetStep(1);
   // Reset vers le choix parcours
   document.getElementById('flow-parcours-choice').classList.remove('hidden');
@@ -3409,7 +3414,7 @@ function flowToStep3() {
     '<p style="color:rgba(255,255,255,.55);font-size:.9rem;line-height:1.6">5 questions express — réponds comme tu peux.<br>Pas de piège, pas de note.</p>' +
     '<p style="color:rgba(255,255,255,.3);font-size:.75rem;margin-top:.75rem">Ça prend 1 minute chrono.</p>' +
     '</div>';
-  setTimeout(function() { _flowStartDiag(); }, 2000);
+  setTimeout(function() { _flowStartDiag(); }, 800);
 }
 
 // ── DIAGNOSTIC EXPRESS — toujours 5 questions ────────────────
@@ -3757,13 +3762,18 @@ function _showObjectifPicker(callback) {
     'position:fixed;inset:0;z-index:4000;display:flex;align-items:center;justify-content:center;' +
     'padding:1.25rem;background:rgba(7,9,15,.92);overflow-y:auto';
 
-  var choices = [
-    { key: 'lacunes',        emoji: '\u{1F3AF}', label: 'Combler mes lacunes',           sub: 'Identifier et travailler mes points faibles' },
-    { key: 'chapitre_jour',  emoji: '\u{1F4C5}', label: 'Un chapitre par jour',           sub: 'Progresser r\u00e9guli\u00e8rement, chapitre apr\u00e8s chapitre' },
-    { key: 'brevet',         emoji: '\u{1F4DD}', label: 'Pr\u00e9parer le brevet',             sub: 'R\u00e9viser les notions cl\u00e9s et s\'entra\u00eener aux examens' },
-    { key: 'toutes_matieres',emoji: '\u{1F680}', label: 'Tout r\u00e9viser',                   sub: 'Revoir l\'ensemble du programme \u00e0 mon rythme' }
-  ];
-  if (_flowLevel !== '3EME') choices = choices.filter(function(c) { return c.key !== 'brevet'; });
+  var choices;
+  if (_flowLevel === '3EME') {
+    choices = [
+      { key: 'lacunes', emoji: '\u{1F3AF}', label: 'Combler mes lacunes', sub: 'Identifier et travailler mes points faibles' },
+      { key: 'brevet',  emoji: '\u{1F4DD}', label: 'Pr\u00e9parer le brevet', sub: 'R\u00e9viser les notions cl\u00e9s et s\'entra\u00eener aux examens' }
+    ];
+  } else {
+    choices = [
+      { key: 'lacunes',         emoji: '\u{1F3AF}', label: 'Combler mes lacunes', sub: 'Identifier et travailler mes points faibles' },
+      { key: 'toutes_matieres', emoji: '\u{1F680}', label: 'Tout r\u00e9viser',   sub: 'Revoir l\'ensemble du programme \u00e0 mon rythme' }
+    ];
+  }
 
   var cardsHTML = choices.map(function(c) {
     return '<button onclick="_selectObjectif(\'' + c.key + '\')" style="' +
@@ -3840,11 +3850,10 @@ function _flowActivateStep3Guest() {
   // Objectif choices intégrés dans la carte
   var objChoices = [
     { key: 'lacunes',        emoji: '\u{1F3AF}', label: 'Combler mes lacunes' },
-    { key: 'chapitre_jour',  emoji: '\u{1F4C5}', label: 'Avancer chapitre par chapitre' },
-    { key: 'brevet',         emoji: '\u{1F4DD}', label: 'Pr\u00e9parer le brevet' },
-    { key: 'toutes_matieres',emoji: '\u{1F680}', label: 'Tout r\u00e9viser' }
+    _flowLevel === '3EME'
+      ? { key: 'brevet',         emoji: '\u{1F4DD}', label: 'Pr\u00e9parer le brevet' }
+      : { key: 'toutes_matieres',emoji: '\u{1F680}', label: 'Tout r\u00e9viser' }
   ];
-  if (_flowLevel !== '3EME') objChoices = objChoices.filter(function(c) { return c.key !== 'brevet'; });
   var objHtml = objChoices.map(function(c) {
     return '<button onclick="_flowGoToRegister(\'' + c.key + '\')" style="width:100%;padding:.55rem .85rem;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;color:rgba(255,255,255,.75);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;margin-bottom:.35rem;display:flex;align-items:center;gap:.6rem;text-align:left" onmouseover="this.style.borderColor=\'#60A5FA\';this.style.background=\'rgba(99,102,241,.15)\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,.12)\';this.style.background=\'rgba(255,255,255,.06)\'">' +
       '<span style="font-size:1.1rem;flex-shrink:0">' + c.emoji + '</span>' +
@@ -4389,18 +4398,6 @@ var _onbSlide = 0;
 var _onbCallback = null;
 var _onbSlides = [
   {
-    emoji: '🎉',
-    title: 'C\'est lancé — 7 jours offerts',
-    body: 'Accès complet immédiat. Aucune carte bancaire requise. Annulable à tout moment.',
-    color: 'linear-gradient(135deg,#0F172A 0%,#1E40AF 55%,#3B82F6 100%)'
-  },
-  {
-    emoji: '🎯',
-    title: 'Un diagnostic sur mesure',
-    body: 'En quelques questions, on identifie exactement où tu bloques — pas les difficultés de la classe, les tiennes.',
-    color: 'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)'
-  },
-  {
     emoji: '⚡',
     title: 'Lance ton Entraînement du jour !',
     body: 'Chaque jour, un <strong>entraînement personnalisé</strong> t\'attend — des exercices ciblés sur tes vrais points faibles. Commence maintenant, ça prend 5 minutes.',
@@ -4423,9 +4420,7 @@ function showOnboarding(cb) {
     toutes_matieres: { emoji: '🚀', title: 'Tout le programme est là',           body: 'Commence par ton Entraînement du jour, puis explore librement les 54 chapitres disponibles.' }
   };
   var _s3 = _s3Map[_flowObjectif] || _s3Map['lacunes'];
-  if (_onbSlides.length > 2) {
-    _onbSlides[2] = { emoji: _s3.emoji, title: _s3.title, body: _s3.body, color: 'linear-gradient(135deg,#0F172A 0%,#1E40AF 100%)' };
-  }
+  _onbSlides[0] = { emoji: _s3.emoji, title: _s3.title, body: _s3.body, color: 'linear-gradient(135deg,#0F172A 0%,#1E40AF 100%)' };
   var ov = document.createElement('div');
   ov.id = 'onb-overlay';
   ov.style.cssText =
@@ -4440,11 +4435,6 @@ function _onbRender() {
   if (!ov) return;
   var sl = _onbSlides[_onbSlide];
   var isLast = _onbSlide === _onbSlides.length - 1;
-  // Dots
-  var dots = _onbSlides.map(function(_, i) {
-    var active = i === _onbSlide;
-    return '<span style="display:inline-block;width:' + (active ? '22px' : '8px') + ';height:8px;border-radius:99px;background:' + (active ? '#60A5FA' : 'rgba(255,255,255,.3)') + ';transition:all .3s"></span>';
-  }).join('');
   ov.innerHTML =
     '<div style="background:#fff;border-radius:24px;width:100%;max-width:360px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.45)">' +
     '<div style="background:' + sl.color + ';padding:2.5rem 2rem 2rem;text-align:center">' +
@@ -4453,10 +4443,7 @@ function _onbRender() {
     '<p style="color:rgba(255,255,255,.7);font-size:.9rem;font-weight:500;line-height:1.6">' + sl.body + '</p>' +
     '</div>' +
     '<div style="padding:1.5rem;text-align:center">' +
-    '<div style="display:flex;align-items:center;justify-content:center;gap:.4rem;margin-bottom:1.25rem">' + dots + '</div>' +
-    (isLast
-      ? '<button onclick="_onbNext()" class="pop-in" style="width:100%;padding:1rem;background:linear-gradient(135deg,#1E40AF,#3B82F6);color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer">C\'est parti →</button>'
-      : '<button onclick="_onbNext()" style="width:100%;padding:1rem;background:linear-gradient(135deg,#1E40AF,#3B82F6);color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer">Suivant →</button>') +
+    '<button onclick="_onbNext()" class="pop-in" style="width:100%;padding:1rem;background:linear-gradient(135deg,#1E40AF,#3B82F6);color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer">C\'est parti \u2192</button>' +
     '</div></div>';
 }
 
@@ -4475,14 +4462,9 @@ window._onbNext = function() {
 // TOUR GUIDÉ — first-login spotlight tutorial
 // ══════════════════════════════════════════════════════════════
 var _tourSteps = [
-  { el: null, emoji: '👋', title: 'Bienvenue sur Matheux !', body: 'Petit tour rapide pour découvrir ton espace. Ça prend 20 secondes.', pos: 'center' },
-  { el: function(){ return document.querySelector('#main-app .pop-in.rounded-2xl'); }, emoji: '⚡', title: 'Ton entraînement du jour', body: 'Chaque jour, 5 exercices personnalisés t\'attendent ici. C\'est ton point de départ.', pos: 'below' },
-  { el: function(){ var cards = document.querySelectorAll('#main-app [data-cat]'); return cards.length > 0 ? cards[0] : null; }, emoji: '📘', title: 'Tes chapitres', body: 'Tous tes chapitres sont là. Tu peux les faire dans l\'ordre que tu veux, sans limite.', pos: 'below' },
-  { el: function(){ return document.getElementById('ui-xp') ? document.getElementById('ui-xp').parentElement : null; }, emoji: '💎', title: 'Tes XP', body: 'Chaque exercice te rapporte des XP — même quand tu te trompes.', pos: 'below' },
-  { el: function(){ return document.getElementById('stk-box'); }, emoji: '🔥', title: 'Ta série', body: 'Reviens chaque jour pour garder ta série active. La régularité paye.', pos: 'below' },
-  { el: function(){ var pills = document.querySelectorAll('.help-pill'); for(var i=0;i<pills.length;i++){if(pills[i].textContent.indexOf('Brouillon')!==-1) return pills[i];} return document.getElementById('fab-draft'); }, emoji: '✏️', title: 'Brouillon & calculette', body: 'Ce bouton ouvre ton brouillon et ta calculette — pose tes calculs, dessine, note tes idées.', pos: 'above' },
-  { el: null, emoji: '⏱️', title: 'Le chrono', body: '1 minute par exercice, zéro pénalité. Réponds vite 5 fois → Mode Flow, XP doublés ⚡', pos: 'center' },
-  { el: null, emoji: '🚀', title: 'C\'est parti !', body: 'Lance ton premier entraînement. Bonne chance !', pos: 'center', last: true }
+  { el: null, emoji: '\uD83D\uDC4B', title: 'Bienvenue sur Matheux !', body: 'Petit tour rapide pour d\u00e9couvrir ton espace. \u00c7a prend 10 secondes.', pos: 'center' },
+  { el: function(){ return document.querySelector('#main-app .pop-in.rounded-2xl'); }, emoji: '\u26A1', title: 'Ton entra\u00eenement du jour', body: 'Chaque jour, 5 exercices personnalis\u00e9s t\'attendent ici. C\'est ton point de d\u00e9part.', pos: 'below' },
+  { el: null, emoji: '\uD83D\uDE80', title: 'C\'est parti !', body: 'Lance ton premier entra\u00eenement. Bonne chance !', pos: 'center', last: true }
 ];
 var _tourIdx = 0;
 var _tourResizeHandler = null;
@@ -4707,6 +4689,7 @@ function initApp(d, skipRender) {
   // Charger milestones + coach namespacés par user
   try { _milestoneShown = JSON.parse(localStorage.getItem('mx_ms_' + d.profile.code) || '{}'); } catch(e) { _milestoneShown = {}; }
   try { _coachShown = JSON.parse(localStorage.getItem('mx_co_' + d.profile.code) || '{}'); } catch(e) { _coachShown = {}; }
+  S._coachFiredThisRender = false;
   try { S.assignedByProf = JSON.parse(localStorage.getItem('mx_assigned_' + d.profile.code) || '{}'); } catch(e) { S.assignedByProf = {}; }
   S.boost      = d.dailyBoost;
   S.boostEx    = d.boostExistsInDB;
@@ -4884,7 +4867,9 @@ function initApp(d, skipRender) {
     }
   } catch (e) {}
 
-  S.res = {}; S.xp = 0; S.sent = new Set(); S.deferred = {};
+  S.res = {}; S.xp = 0; S.sent = new Set();
+  // Restore deferred state from localStorage (survives refresh)
+  try { S.deferred = JSON.parse(localStorage.getItem('mx_deferred_' + (S.prof && S.prof.code || '')) || '{}'); } catch(e) { S.deferred = {}; }
   S.chapTouched = {}; // chapitres réellement entamés (hors CALIBRAGE/BOOST)
   S.chapSessions = {}; S.retroSess = {}; S.retroBoost = null;
   S.exOverrides = d.exerciseOverrides || {}; // dates d'override per-student
@@ -5357,6 +5342,18 @@ function _showSlotReward(cat, slotNum, dailyJustDone) {
   // XP bonus slot
   S.xp += 75; showXP(75);
 
+  // Perfect slot check — all 5 EASY?
+  var _slotStart = done - 5;
+  var _perfectSlot = true;
+  for (var _ps = _slotStart; _ps < _slotStart + 5; _ps++) {
+    var _pr = res2(cat, _ps);
+    if (S.res[S.niv + '-' + _pr.rC + '-' + _pr.rI] !== 'EASY') { _perfectSlot = false; break; }
+  }
+  if (_perfectSlot) {
+    S.xp += 25; showXP(25);
+    msg = '\uD83C\uDFC6 S\u00c9RIE PARFAITE ! ' + msg;
+  }
+
   // Stars
   var starsHtml = '';
   for (var i = 0; i < slotNum; i++) starsHtml += '<span class="slot-star">⭐</span>';
@@ -5412,7 +5409,7 @@ function _showSlotReward(cat, slotNum, dailyJustDone) {
       })() +
       coursHtml +
       '<div class="slot-dots">' + dotsHtml + '</div>' +
-      '<div style="font-size:.75rem;font-weight:700;color:#1E40AF">+75 XP</div>' +
+      '<div style="font-size:.75rem;font-weight:700;color:#1E40AF">+' + (_perfectSlot ? '100' : '75') + ' XP</div>' +
       dailyHtml +
       '<button class="slot-btn" onclick="this.closest(\'.slot-overlay\').remove();_slotRewardShowing=false;render();if(S._pendingTimerExo){_startTimer(S._pendingTimerExo);S._pendingTimerExo=null;}">Continuer →</button>' +
     '</div>';
@@ -5609,9 +5606,10 @@ window.validateAnswer = function() {
     var _okKey = _isAuto ? 'ok_auto' : (cat === 'BOOST') ? 'ok_boost' : 'ok_3eme';
     var _koKey = _isAuto ? 'ko_auto' : (cat === 'BOOST') ? 'ko_boost' : 'ko_3eme';
     if (isCorrect) {
-      showXP(100);
-      showT(_msg(_okKey), 1200, '\u2B50');
-      setTimeout(function(){ mark(cat, idx, 'EASY', null); }, 700);
+      var _hinted = !!(S.hints[id] || S.ftch[id]);
+      showXP(_hinted ? 50 : 100);
+      showT(_msg(_okKey, {name: S.prof ? S.prof.name : ''}), 1200, '\u2B50');
+      setTimeout(function(){ mark(cat, idx, _hinted ? 'MEDIUM' : 'EASY', null); }, 1000);
     } else {
       if (_needsCoach('tip_wrong')) {
         _markCoach('tip_wrong');
@@ -5654,9 +5652,10 @@ window.validateAnswer = function() {
   var _okKey = _isAuto ? 'ok_auto' : (cat === 'BOOST') ? 'ok_boost' : 'ok_3eme';
   var _koKey = _isAuto ? 'ko_auto' : (cat === 'BOOST') ? 'ko_boost' : 'ko_3eme';
   if (exo.options[oI] === exo.a) {
-    showXP(100);
-    showT(_msg(_okKey), 1200, '\u2B50');
-    setTimeout(function(){ mark(cat, idx, 'EASY', null); }, 700);
+    var _hinted2 = !!(S.hints[id] || S.ftch[id]);
+    showXP(_hinted2 ? 50 : 100);
+    showT(_msg(_okKey, {name: S.prof ? S.prof.name : ''}), 1200, '\u2B50');
+    setTimeout(function(){ mark(cat, idx, _hinted2 ? 'MEDIUM' : 'EASY', null); }, 1000);
   } else {
     // INVARIANT : coach tip OU toast ko — jamais les deux (if/else exclusif)
     // Coach tip AVANT le panel aide (immédiat, aide arrive à 900ms)
@@ -5721,10 +5720,40 @@ function mark(cat, idx, status, wrongOpt) {
         _me.freezeWeek = _weekId;
         showT('Jour de pause utilisé — ta série continue !', 3500, '🛡️');
       } else {
+        var _oldStk = _me.stk || 0;
         S.stk = 1;
+        if (_oldStk >= 3) {
+          setTimeout(function() {
+            var ov = document.createElement('div');
+            ov.className = 'fixed inset-0 z-[4000] flex items-center justify-center';
+            ov.style.background = 'rgba(0,0,0,.85)';
+            ov.innerHTML = '<div style="text-align:center;max-width:320px;padding:2rem">' +
+              '<div style="font-size:4rem;margin-bottom:1rem">😢</div>' +
+              '<div style="font-family:Syne;font-weight:900;font-size:1.5rem;color:#fff;margin-bottom:.5rem">Série de ' + _oldStk + ' jours perdue</div>' +
+              '<p style="color:rgba(255,255,255,.6);font-size:.9rem;margin-bottom:1.5rem">Pas grave — recommence maintenant et ta prochaine série sera encore plus longue !</p>' +
+              '<button onclick="this.closest(\'.fixed\').remove()" style="background:linear-gradient(135deg,#3B82F6,#1E40AF);color:#fff;border:none;padding:.8rem 2rem;border-radius:12px;font-weight:800;font-size:1rem;cursor:pointer">Recommencer 💪</button>' +
+              '</div>';
+            document.body.appendChild(ov);
+          }, 1500);
+        }
       }
     } else {
+      var _oldStk2 = _me.stk || 0;
       S.stk = 1;
+      if (_oldStk2 >= 3) {
+        setTimeout(function() {
+          var ov = document.createElement('div');
+          ov.className = 'fixed inset-0 z-[4000] flex items-center justify-center';
+          ov.style.background = 'rgba(0,0,0,.85)';
+          ov.innerHTML = '<div style="text-align:center;max-width:320px;padding:2rem">' +
+            '<div style="font-size:4rem;margin-bottom:1rem">😢</div>' +
+            '<div style="font-family:Syne;font-weight:900;font-size:1.5rem;color:#fff;margin-bottom:.5rem">Série de ' + _oldStk2 + ' jours perdue</div>' +
+            '<p style="color:rgba(255,255,255,.6);font-size:.9rem;margin-bottom:1.5rem">Pas grave — recommence maintenant et ta prochaine série sera encore plus longue !</p>' +
+            '<button onclick="this.closest(\'.fixed\').remove()" style="background:linear-gradient(135deg,#3B82F6,#1E40AF);color:#fff;border:none;padding:.8rem 2rem;border-radius:12px;font-weight:800;font-size:1rem;cursor:pointer">Recommencer 💪</button>' +
+            '</div>';
+          document.body.appendChild(ov);
+        }, 1500);
+      }
     }
     _me.stk = S.stk; _me.last = tod();
     localStorage.setItem(LK, JSON.stringify(_loc));
@@ -5858,7 +5887,7 @@ function nextEx(cat) {
   }
   // 2. Tous faits ou différés → reprendre le premier différé
   for (var j = 0; j < exs.length; j++) {
-    if (def[j]) { delete def[j]; goEx(cat, j); return; }
+    if (def[j]) { delete def[j]; try { localStorage.setItem('mx_deferred_' + S.prof.code, JSON.stringify(S.deferred)); } catch(e) {} goEx(cat, j); return; }
   }
   goEx(cat, 0);
 }
@@ -5868,6 +5897,7 @@ window.deferExo = function(cat, idx) {
   _stopTimer();
   if (!S.deferred[cat]) S.deferred[cat] = {};
   S.deferred[cat][idx] = true;
+  try { localStorage.setItem('mx_deferred_' + S.prof.code, JSON.stringify(S.deferred)); } catch(e) {}
   showT('Question reportée à la fin 👍', 1500, '⏭️');
   nextEx(cat);
 };
@@ -5955,7 +5985,7 @@ function chkComp(cat) {
       S.xp += _chapXpBonus; showXP(_chapXpBonus);
       // S5 — Chapitre terminé : confettis + toast + info prochain chapitre
       var _chDoneKey = cat.indexOf('Auto_') === 0 ? 'chap_done_auto' : 'chap_done';
-      showT(_msg(_chDoneKey), 6000, '🏆');
+      showT(_msg(_chDoneKey, {name: S.prof ? S.prof.name : ''}), 6000, '🏆');
       if (typeof _boostInsightConfetti === 'function') _boostInsightConfetti();
       setTimeout(function() { _showSessionFeedback('chapitre', cat, null); }, 3500);
       // Nettoyer assignedByProf pour ce chapitre (permet au flag d'être "frais" pour une V3)
@@ -9058,18 +9088,18 @@ function rSection(cat, data, idx, total, catDone) {
       '</div>';
   }
   // T1 : Tip premier exercice — comment sélectionner + valider
-  if (cat !== 'CALIBRAGE' && idx === 0 && _needsCoach('tip_select')) {
-    _markCoach('tip_select');
+  if (!S._coachFiredThisRender && cat !== 'CALIBRAGE' && idx === 0 && _needsCoach('tip_select')) {
+    _markCoach('tip_select'); S._coachFiredThisRender = true;
     setTimeout(function() { showT('Choisis ta réponse puis appuie sur Valider', 4500, '📋'); }, 600);
   }
   // T5 : Tip 3ème exercice — brouillon et calculette
-  if (cat !== 'CALIBRAGE' && idx === 2 && _needsCoach('tip_tools')) {
-    _markCoach('tip_tools');
+  if (!S._coachFiredThisRender && cat !== 'CALIBRAGE' && idx === 2 && _needsCoach('tip_tools')) {
+    _markCoach('tip_tools'); S._coachFiredThisRender = true;
     setTimeout(function() { showT('Le brouillon et la calculette sont en bas — tape le crayon ✏️', 4500, '📋'); }, 600);
   }
   // T6 : Tip 2ème exercice — "Je ne sais pas" montre la correction
-  if (cat !== 'CALIBRAGE' && idx === 1 && _needsCoach('tip_skip')) {
-    _markCoach('tip_skip');
+  if (!S._coachFiredThisRender && cat !== 'CALIBRAGE' && idx === 1 && _needsCoach('tip_skip')) {
+    _markCoach('tip_skip'); S._coachFiredThisRender = true;
     setTimeout(function() { showT('"Je ne sais pas" montre la correction — zéro jugement', 4000, '📋'); }, 5500);
   }
   var r       = res2(cat, idx);
@@ -9099,8 +9129,8 @@ function rSection(cat, data, idx, total, catDone) {
   }
   pills += '</div>';
   // T8 : Tip pills navigation — après 2+ réponses
-  if (cat !== 'CALIBRAGE' && idx >= 2 && _needsCoach('tip_pills')) {
-    _markCoach('tip_pills');
+  if (!S._coachFiredThisRender && cat !== 'CALIBRAGE' && idx >= 2 && _needsCoach('tip_pills')) {
+    _markCoach('tip_pills'); S._coachFiredThisRender = true;
     setTimeout(function() { showT('Les pastilles en haut te permettent de revoir chaque question', 4000, '\uD83D\uDCCB'); }, 800);
   }
 
