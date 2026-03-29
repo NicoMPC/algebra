@@ -4,16 +4,24 @@
 
 ---
 
-## État global — 28 mars 2026
+## État global — 29 mars 2026
 
-**Matheux LANCÉ.** GAS @122. Tests 80/82. **Refonte 3ème Brevet 2026 LIVRÉE EN PROD** (nuit 27-28 mars) : 22 chapitres, 484 exercices, 4 audits qualité, 0 erreur calcul, migration BDD terminée, code frontend complet.
+**Matheux LANCÉ.** GAS @125. **Refonte complète exercices Brevet 2026 v4** (29 mars soir) : 22 chapitres × 4 exercices-parapluie × 5 questions = **440 questions** au format Brevet (contexte réel + questions progressives). Diagnostic réduit à **5 questions express** (banque 54 questions). Prompt v4, rapport Brevet 2026, docs à jour.
 
-**Fait cette nuit :** migration BDD (484 exos injectés), timer 30s automatismes (`_getTimerDuration()`), `_normFill()` renforcé (racines/puissances/notation sci), `ordered:true`, 11 items UX/messages/gamification Automatismes, audit Phase 4 (140/140 OK).
+**Fait le 29 mars :**
+- 440 exercices format parapluie v4 (contexte sticky, tables, draw, f_disabled)
+- Diagnostic express 5 questions (était 22)
+- Frontend adapté (rSection: _ctx, table, draw, f_disabled)
+- Backend adapté (importChapters flatten, generateDiagnostic simplifié)
+- Ancienne base archivée (data/archive_v2/)
+- SW cache v3
+
+**Prochaine priorité : landing page machine à convertir** (event 30 mars 10h)
 
 | Dimension | État |
 |---|---|
 | Tests automatisés | 74/74 (100%) + simulation 40 élèves 17/17 + simulation 21j 12 profils |
-| Couverture programme | ~100% — 43 chapitres autres niveaux + **22 chapitres Brevet 2026 EN PROD** (484 exos) = 65 chapitres |
+| Couverture programme | ~100% — 43 chapitres autres niveaux + **22 chapitres Brevet 2026 v4 EN PROD** (440 exos parapluie) = 65 chapitres |
 | Niveau 1ERE Spé | 10 chapitres expérimentaux — backend prêt, frontend non modifié |
 | Juridique | Complet (5 pages + consentement parental + RGPD + TVA art. 293 B CGI) |
 | Paiement | Stripe PROD actif (19,99/mois) |
