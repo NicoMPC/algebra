@@ -3495,8 +3495,17 @@ function _flowRenderQuestion(idx) {
   var tutorial = '';
 
   var opts = exo.options || exo.opts || [];
+  var isFill = exo.type === 'fill' || (!opts.length && exo.a);
   var optsHtml = '';
-  if (opts.length > 0) {
+  if (isFill) {
+    optsHtml =
+      '<div style="margin-top:1rem">' +
+      '<input type="text" id="flow-fill-input" class="fill-input" placeholder="Ta réponse..." autocomplete="off" autocorrect="off" spellcheck="false" ' +
+      'style="width:100%;padding:.75rem 1rem;font-size:.95rem;font-weight:600;border:2px solid #e2e8f0;border-radius:12px;font-family:inherit" ' +
+      'onkeydown="if(event.key===\'Enter\')_flowAnswerFill()">' +
+      '<button onclick="_flowAnswerFill()" style="width:100%;margin-top:.6rem;padding:.7rem;background:#1E40AF;color:#fff;border:none;border-radius:12px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit">Valider →</button>' +
+      '</div>';
+  } else if (opts.length > 0) {
     optsHtml =
       '<div id="flow-opts" style="display:flex;flex-direction:column;gap:.6rem;margin-top:1rem">' +
       opts.map(function(o, i) {
@@ -3624,6 +3633,43 @@ function _flowAnswerOpt(optIdx) {
       _track('tutorial_complete');
       _flowActivateStep3Guest();
     }
+  }, 800);
+}
+
+function _flowAnswerFill() {
+  var exo = _flowExos[_flowExoIdx];
+  if (!exo) return;
+  var inp = document.getElementById('flow-fill-input');
+  if (!inp) return;
+  var val = inp.value.trim();
+  if (!val) { inp.style.borderColor = '#ef4444'; inp.focus(); return; }
+  var correct = _normFill(val) === _normFill(exo.a || exo.rep || exo.answer || '');
+  var elapsed = Math.round((Date.now() - _flowStartTs) / 1000);
+  _flowResults.push({ idx: _flowExoIdx, correct: correct, time: elapsed });
+  if (correct) _flowCorrectCount++;
+  // Feedback visuel
+  inp.disabled = true;
+  inp.style.background = correct ? '#d1fae5' : '#fee2e2';
+  inp.style.borderColor = correct ? '#10b981' : '#ef4444';
+  inp.style.color = correct ? '#065f46' : '#991b1b';
+  if (!correct) {
+    var corr = exo.a || exo.rep || exo.answer || '';
+    inp.insertAdjacentHTML('afterend', '<p style="color:#065f46;font-size:.8rem;font-weight:600;margin-top:.4rem">Réponse : ' + fmtL(corr) + '</p>');
+  }
+  var btn = inp.nextElementSibling;
+  while (btn && btn.tagName !== 'BUTTON') btn = btn.nextElementSibling;
+  if (btn) btn.disabled = true;
+  if (!correct && _flowExoIdx <= 2) showT('C\'est normal — ça nous aide à cibler', 1600, '');
+  if (_flowExoIdx === 1 && correct) showT('On commence à voir quelque chose', 1800, '');
+  try {
+    var gd = JSON.parse(localStorage.getItem('guestDiag') || '{}');
+    gd.results = _flowResults; gd.step = _flowExoIdx + 1;
+    localStorage.setItem('guestDiag', JSON.stringify(gd));
+  } catch(e) {}
+  _flowExoIdx++;
+  setTimeout(function() {
+    if (_flowExoIdx < _flowExos.length) _flowRenderQuestion(_flowExoIdx);
+    else { _flowDiagDone = true; _track('tutorial_complete'); _flowActivateStep3Guest(); }
   }, 800);
 }
 
