@@ -1162,6 +1162,20 @@
     body.app-night #main-app .chap-discovered { background:#1e293b !important; border-color:#334155 !important; box-shadow:0 1px 3px rgba(0,0,0,.2) !important; }
     body.app-night #main-app .chap-invite { background:linear-gradient(135deg, #0F172A 0%, #1e3a5f 100%) !important; border-color:#3B82F6 !important; }
 
+    /* ── CAROUSEL CHAPITRES PRIORITAIRES ────────────────── */
+    .chap-carousel {
+      display:flex; gap:.75rem; overflow-x:auto; scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch; padding:0 0 .5rem 0;
+      scrollbar-width:none;
+    }
+    .chap-carousel::-webkit-scrollbar { display:none; }
+    .chap-carousel > .chap-slide {
+      min-width:85%; scroll-snap-align:center; flex-shrink:0;
+    }
+    .chap-carousel-dots { display:flex; justify-content:center; gap:6px; margin-top:8px; }
+    .chap-carousel-dots .cdot { width:7px;height:7px;border-radius:50%;background:#cbd5e1;transition:all .2s; }
+    .chap-carousel-dots .cdot.active { background:#1E40AF;width:18px;border-radius:4px; }
+
     /* ── BOOST SHIMMER CTA ─────────────────────────────── */
     .boost-shimmer {
       position:relative; overflow:hidden;
@@ -8498,8 +8512,19 @@ function render() {
 
   var _doneHtml = '';
   var _doneCount = 0;
+  var _carouselHtml = '';
+  var _carouselCount = 0;
+
+  html += '<!--CAROUSEL_SLOT-->';
 
   sortedKeys.forEach(function(cat){
+    // Déterminer si ce chapitre est "prioritaire" (carousel)
+    var _isPriority = !_chapStats[cat].isDone && cat !== 'BOOST' && (
+      (S.chapTouched[cat] && !S.chapDone[cat]) ||
+      _diagWeak[cat] ||
+      (S.assignedByProf && S.assignedByProf[cat])
+    );
+    var _htmlBefore = html.length;
     var exs = cats[cat]; var tot = exs.length; var done = 0;
     for (var i = 0; i < tot; i++) {
       var rr = res2(cat, i);
@@ -8720,11 +8745,44 @@ function render() {
       }
     }
     html += '</div>';
+    // Router vers carousel ou liste
+    if (_isPriority && !S.exp[cat]) {
+      var _cardHtml = html.substring(_htmlBefore);
+      html = html.substring(0, _htmlBefore);
+      _carouselHtml += '<div class="chap-slide">' + _cardHtml + '</div>';
+      _carouselCount++;
+    }
   });
 
-  // ── Chapitres terminés : rendus inline dans la liste principale ──
+  // ── Assemblage : carousel prioritaires à l'emplacement du marqueur ──
+  if (_carouselCount > 1) {
+    var _carouselLabel = _carouselCount + ' chapitre' + (_carouselCount > 1 ? 's' : '') + ' à travailler';
+    var _carouselBlock =
+      '<div class="mb-4"><div class="flex items-center justify-between mb-2"><span class="text-xs font-black text-slate-500 uppercase tracking-widest">🎯 ' + _carouselLabel + '</span><span class="text-[10px] text-slate-400">← swipe →</span></div>' +
+      '<div class="chap-carousel" id="chap-carousel">' + _carouselHtml + '</div>' +
+      '<div class="chap-carousel-dots" id="chap-carousel-dots"></div></div>';
+    html = html.replace('<!--CAROUSEL_SLOT-->', _carouselBlock);
+  } else {
+    html = html.replace('<!--CAROUSEL_SLOT-->', '');
+  }
 
   c.innerHTML = html || '<div class="text-center text-slate-400 font-semibold py-12 text-sm">Aucun exercice disponible pour ce niveau.</div>';
+
+  // Carousel dots + scroll sync
+  if (_carouselCount > 1) {
+    var _carousel = document.getElementById('chap-carousel');
+    var _dotsC = document.getElementById('chap-carousel-dots');
+    if (_carousel && _dotsC) {
+      for (var _di = 0; _di < _carouselCount; _di++) _dotsC.innerHTML += '<span class="cdot' + (_di === 0 ? ' active' : '') + '"></span>';
+      _carousel.addEventListener('scroll', function() {
+        var _scrollLeft = _carousel.scrollLeft;
+        var _slideW = _carousel.querySelector('.chap-slide').offsetWidth + 12;
+        var _activeIdx = Math.round(_scrollLeft / _slideW);
+        var _dots = _dotsC.querySelectorAll('.cdot');
+        _dots.forEach(function(d, i) { d.classList.toggle('active', i === _activeIdx); });
+      });
+    }
+  }
   rMath();
   _startBoostCountdown();
   _startNextContentTimer();
