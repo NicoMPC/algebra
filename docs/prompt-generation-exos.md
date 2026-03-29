@@ -194,20 +194,27 @@ produit scalaire, géométrie repérée, variables aléatoires.
 - **Step 1** : Reformule le problème et identifie la méthode — "Ici, on cherche... Pour ça, on utilise..."
 - **Step 2** : Montre le calcul intermédiaire AVEC les valeurs de l'énoncé — PAS la réponse finale
 - **Step 3** : Conclut avec le résultat détaillé ET une phrase de validation
-- **JAMAIS donner la réponse dans le step 1** — l'élève doit pouvoir essayer après chaque indice
+- **JAMAIS donner la réponse dans AUCUN step** — utiliser `?` à la place du résultat final. L'élève doit pouvoir essayer après chaque indice
 - **JAMAIS de phrase passe-partout** : "Applique la formule...", "Vérifie ton calcul...", "Identifie les données..." sont INTERDITS
 - Si l'exercice est simple (calcul mental), **2 steps suffisent** — ne pas en ajouter un 3ème creux pour faire du remplissage
 - Chaque step doit **apporter une information nouvelle** que le précédent n'avait pas
+- **Pour les V/F** : le dernier step doit poser une question ouverte ("Que peut-on en conclure ?"), pas donner la réponse directement
 
 ### Formule (f)
+- Le champ s'appelle **`f`** (pas `formula`, pas `formule`)
 - La formule **GÉNÉRALE** du chapitre en LaTeX — c'est un rappel théorique
 - **Ne pas mettre de formule** si l'exercice est purement logique ou ne repose sur aucune formule (ex : lecture de graphique, dénombrement simple)
 - Dans ce cas : `"f": ""` (chaîne vide)
 
-### Level (lvl)
-- **Ne plus utiliser lvl pour séparer facile/difficile**
-- `lvl: 1` = les exos de ce chapitre (valeur par défaut pour tous)
-- `lvl: 2` = réservé aux exos avancés dans les boosts personnalisés uniquement
+### Level (lvl) — progression par slot
+- **Ne plus utiliser lvl pour séparer facile/difficile globalement**
+- La difficulté progresse **graduellement par slot** :
+  - Slot 1 (exos 1-5) : `[1, 1, 1, 1, 1]`
+  - Slot 2 (exos 6-10) : `[1, 1, 1, 2, 2]`
+  - Slot 3 (exos 11-15) : `[1, 1, 2, 2, 2]`
+  - Slot 4 (exos 16-20) : `[1, 2, 2, 2, 2]`
+- `lvl: 1` = accessible / intermédiaire
+- `lvl: 2` = challenge / avancé
 
 ---
 

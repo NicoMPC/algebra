@@ -1,6 +1,6 @@
 // ════════════════════════════════════════════════════════════
 //  MATHEUX — BACKEND GOOGLE APPS SCRIPT
-//  Version collège : 6EME / 5EME / 4EME / 3EME uniquement
+//  Version Brevet 3ème — pivot 2026-03-28
 //  BUILD: 2026-03-10
 //
 //  Actions gérées :
@@ -21,7 +21,7 @@
 // ════════════════════════════════════════════════════════════
 
 // ── Niveaux autorisés ────────────────────────────────────────
-var ALLOWED_LEVELS = ['6EME', '5EME', '4EME', '3EME', '1ERE'];
+var ALLOWED_LEVELS = ['3EME'];
 
 // ── Noms exacts des onglets ──────────────────────────────────
 var SH = {
@@ -107,6 +107,7 @@ function doPost(e) {
       case 'check_trial_status':         res = checkTrialStatus(p);        break;
       case 'import_chapters':            res = importChapters(p);          break;
       case 'send_test_email':            res = sendTestEmail(p);           break;
+      case 'send_custom_email':          res = sendCustomEmail(p);         break;
       case 'mark_all_test':              res = markAllTest(p);             break;
       case 'simulate_next_day':          res = simulateNextDay(p);         break;
       case 'cleanup_all':                res = cleanupAll(p);              break;
@@ -272,7 +273,7 @@ function register(p) {
     return { status: 'error', message: 'Mot de passe invalide (hash attendu).' };
   }
   if (!isValidLevel(level)) {
-    return { status: 'error', message: 'Niveau invalide. Valeurs acceptées : ' + ALLOWED_LEVELS.join(', ') };
+    return { status: 'error', message: 'Seul le niveau 3EME est accepté.' };
   }
 
   // Email déjà enregistré ?
@@ -331,10 +332,13 @@ function register(p) {
   getRows(SH.CURRICULUM)
     .filter(function(r) { return r['Niveau'] && r['Niveau'].toString().toUpperCase() === level; })
     .forEach(function(r) {
-      curriculumOfficiel.push({
+      var co = {
         categorie: String(r['Categorie']), titre: String(r['Titre']),
         icone: String(r['Icone']), exos: parseJSON(r['ExosJSON'])
-      });
+      };
+      if (r['Timer'])   co.timer   = parseInt(r['Timer']) || 60;
+      if (r['Ordered']) co.ordered = true;
+      curriculumOfficiel.push(co);
     });
 
   return {
@@ -385,6 +389,7 @@ function login(p) {
         break;
       }
       // Master password admin — recalcule le hash attendu côté backend
+      // Login read-only : ne consomme PAS nextChapter/nextBoost dans Suivi
       var masterPwd = PropertiesService.getScriptProperties().getProperty('ADMIN_MASTER_PWD');
       if (masterPwd) {
         var raw = email + '::' + masterPwd + '::AB22';
@@ -392,6 +397,7 @@ function login(p) {
         var masterHash = digest.map(function(b) { return ('0' + ((b + 256) % 256).toString(16)).slice(-2); }).join('');
         if (hash === masterHash) {
           user = u;
+          user._adminLogin = true;
           break;
         }
       }
@@ -401,6 +407,7 @@ function login(p) {
     return { status: 'error', message: 'Email ou mot de passe incorrect.' };
   }
 
+  var isAdminLogin = !!user._adminLogin;  // master password → read-only, ne consomme rien
   var code       = String(user['Code']);
   var level      = String(user['Niveau']).toUpperCase();
   var name       = String(user['Prénom']);
@@ -418,12 +425,15 @@ function login(p) {
       return r['Niveau'] && r['Niveau'].toString().toUpperCase() === level;
     })
     .forEach(function(r) {
-      curriculumOfficiel.push({
+      var co = {
         categorie: String(r['Categorie']),
         titre:     String(r['Titre']),
         icone:     String(r['Icone']),
         exos:      parseJSON(r['ExosJSON'])
-      });
+      };
+      if (r['Timer'])   co.timer   = parseInt(r['Timer']) || 60;
+      if (r['Ordered']) co.ordered = true;
+      curriculumOfficiel.push(co);
     });
 
   // ── Overrides per-student (RemediationChapters) ──────────
@@ -540,12 +550,12 @@ function login(p) {
             if (parsed && parsed.draft) continue;  // brouillon agent — skip, attendre Publier
             if (parsed && parsed.categorie && parsed.exos && parsed.exos.length > 0) {
               nextChapter = parsed;
-              suiviSh.getRange(si + 1, chapIndices[sk] + 1).setValue('');
+              if (!isAdminLogin) suiviSh.getRange(si + 1, chapIndices[sk] + 1).setValue('');
             } else if (parsed && parsed.categorie) {
               // JSON valide mais exos vide → PENDING_MANUAL, vider la cellule
               nextChapter = { categorie: 'PENDING_MANUAL', exos: [],
                 insight: 'Ton prof prépare ton prochain chapitre personnalisé… reviens dans quelques heures !' };
-              suiviSh.getRange(si + 1, chapIndices[sk] + 1).setValue('');
+              if (!isAdminLogin) suiviSh.getRange(si + 1, chapIndices[sk] + 1).setValue('');
             } else {
               // JSON sans categorie valide → laisser la cellule intacte
               Logger.log('login injection KO (pas de categorie) pour ' + code + ' : ' + val.substring(0, 100));
@@ -566,22 +576,24 @@ function login(p) {
             if (boostParsed && boostParsed.draft) { /* brouillon agent — skip */ }
             else if (boostParsed && boostParsed.exos && boostParsed.exos.length > 0) {
               nextBoost = boostParsed;
-              suiviSh.getRange(si + 1, 19).setValue('');
-              // Créer entrée DailyBoosts exosDone=0 → admin voit "⏳ En attente"
-              try {
-                var nextDay = todayStr; // Boost livré aujourd'hui → daté aujourd'hui
-                var boostSh = getSheet(SH.BOOSTS);
-                var boostData = boostSh.getDataRange().getValues();
-                var alreadyExists = false;
-                for (var bi = 1; bi < boostData.length; bi++) {
-                  if (String(boostData[bi][0]) === code && String(boostData[bi][1]).substring(0,10) === nextDay) {
-                    alreadyExists = true; break;
+              if (!isAdminLogin) {
+                suiviSh.getRange(si + 1, 19).setValue('');
+                // Créer entrée DailyBoosts exosDone=0 → admin voit "⏳ En attente"
+                try {
+                  var nextDay = todayStr; // Boost livré aujourd'hui → daté aujourd'hui
+                  var boostSh = getSheet(SH.BOOSTS);
+                  var boostData = boostSh.getDataRange().getValues();
+                  var alreadyExists = false;
+                  for (var bi = 1; bi < boostData.length; bi++) {
+                    if (String(boostData[bi][0]) === code && String(boostData[bi][1]).substring(0,10) === nextDay) {
+                      alreadyExists = true; break;
+                    }
                   }
-                }
-                if (!alreadyExists) {
-                  appendRow(SH.BOOSTS, [code, nextDay, JSON.stringify(boostParsed), 0]);
-                }
-              } catch(e) { Logger.log('login boost DailyBoosts KO: ' + e); }
+                  if (!alreadyExists) {
+                    appendRow(SH.BOOSTS, [code, nextDay, JSON.stringify(boostParsed), 0]);
+                  }
+                } catch(e) { Logger.log('login boost DailyBoosts KO: ' + e); }
+              }
             } else {
               Logger.log('login boost injection KO pour ' + code);
             }
@@ -593,8 +605,8 @@ function login(p) {
       }
     }
   }
-  // Rebuildsuivi si injection faite (met à jour les couleurs)
-  if (nextChapter || nextBoost) {
+  // Rebuildsuivi si injection faite (met à jour les couleurs) — skip si admin read-only
+  if ((nextChapter || nextBoost) && !isAdminLogin) {
     try { rebuildSuivi(code); } catch (e) {}
   }
 
@@ -1075,7 +1087,7 @@ function generateDailyBoost(p) {
   var fromDiag = Array.isArray(p.errors) && p.errors.length > 0;
 
   if (!code || !isValidLevel(level)) {
-    return { status: 'error', message: 'code et level (6EME/5EME/4EME/3EME/1ERE) requis.' };
+    return { status: 'error', message: 'code et level (3EME) requis.' };
   }
 
   // Récupère le pool d'exercices boost dédié (fallback → Curriculum_Officiel)
@@ -2103,7 +2115,7 @@ function debugProgress(p) {
     try {
       var r = updateConfidenceScore(
         String(p.code || 'DEBUG'),
-        String(p.level || '4EME'),
+        String(p.level || '3EME'),
         String(p.categorie || 'Fractions'),
         'EASY', 0, 1
       );
@@ -4039,6 +4051,8 @@ function publishAdminChapter(p) {
   var motProf  = String(p.motProf || '').trim();
   var chapObj  = { categorie: categorie, insight: insight, exos: exos };
   if (motProf) chapObj.motProf = motProf;
+  if (p.timer)   chapObj.timer   = parseInt(p.timer) || 60;
+  if (p.ordered) chapObj.ordered = true;
   var chapJSON = JSON.stringify(chapObj);
 
   // Slots →Nouveau Ch : 0-based indices 6, 9, 12, 15 → 1-based 7, 10, 13, 16
@@ -4333,17 +4347,17 @@ function _ensureEmailsSheet() {
   var sh = ss.getSheetByName(SH.EMAILS);
   if (!sh) {
     sh = ss.insertSheet(SH.EMAILS);
-    sh.getRange(1, 1, 1, 5).setValues([['Date', 'Email', 'Prénom', 'Type', 'Statut']]);
-    sh.getRange(1, 1, 1, 5).setFontWeight('bold').setBackground('#e0e7ff');
+    sh.getRange(1, 1, 1, 6).setValues([['Date', 'Email', 'Prénom', 'Type', 'Statut', 'Objet']]);
+    sh.getRange(1, 1, 1, 6).setFontWeight('bold').setBackground('#e0e7ff');
   }
   return sh;
 }
 
-function _logEmail(email, prenom, type, status) {
+function _logEmail(email, prenom, type, status, subject) {
   try {
     var sh = _ensureEmailsSheet();
     var now = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm');
-    sh.appendRow([now, email, prenom, type, status]);
+    sh.appendRow([now, email, prenom, type, status, subject || '']);
   } catch(e) {} // silencieux
 }
 
@@ -4680,6 +4694,44 @@ function sendTestEmail(p) {
     return { status: 'success', to: email };
   }
   return result;
+}
+
+/**
+ * Envoie un email personnalisé (HTML) à un élève. Admin only.
+ * Params: adminCode, targetEmail, subject, htmlBody, label (ex: 'PERSO', 'J+3')
+ */
+function sendCustomEmail(p) {
+  var code = (p.adminCode || '').trim();
+  if (!code) return { status: 'error', message: 'adminCode requis.' };
+
+  var users = getRows(SH.USERS);
+  var admin = null;
+  for (var i = 0; i < users.length; i++) {
+    if (String(users[i]['Code']) === code) { admin = users[i]; break; }
+  }
+  if (!admin) return { status: 'error', message: 'Utilisateur introuvable.' };
+
+  var isAdmin = parseInt(admin['IsAdmin'] || 0) === 1 ||
+    String(admin['IsAdmin']).toUpperCase() === 'TRUE';
+  if (!isAdmin) return { status: 'error', message: 'Accès refusé.' };
+
+  var email   = (p.targetEmail || '').trim();
+  var subject = (p.subject || '').trim();
+  var html    = (p.htmlBody || '').trim();
+  if (!email || !subject || !html) return { status: 'error', message: 'targetEmail, subject et htmlBody requis.' };
+
+  if (_isUnsubscribed(email)) return { status: 'success', message: 'Utilisateur désinscrit, email non envoyé.' };
+
+  try {
+    GmailApp.sendEmail(email, subject, '', {
+      htmlBody: html,
+      name: 'Nicolas · Matheux'
+    });
+    _logEmail(email, '', p.label || 'PERSO', 'envoyé', subject);
+    return { status: 'success', to: email };
+  } catch(e) {
+    return { status: 'error', message: 'Erreur envoi: ' + e.toString() };
+  }
 }
 
 /**

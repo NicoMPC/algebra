@@ -122,8 +122,9 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @97
+### Actions GAS — état @122
 
+> @122 : master password admin read-only login.
 > @97 : tour guidé 7 étapes + fix toast "Génération des défis" persistant.
 > @95 : invariants messages figés, toast mutex, simulation 7j 0 incohérence.
 > @93 : refonte onboarding UX (stepper, animations, carte résultat split).
@@ -133,7 +134,7 @@ function doPost(e) {
 | Action | Description | Statut |
 |---|---|---|
 | `register` | Inscription élève. TrialStart = TODAY, email J+0 auto (si alias Gmail opérationnel) | ✅ |
-| `login` | Connexion. Retourne trial, boostExosDone, pendingBrevet, nextChapter, nextBoostTopic, **revisionChapters** | ✅ |
+| `login` | Connexion. Retourne trial, boostExosDone, pendingBrevet, nextChapter, nextBoostTopic, **revisionChapters**. **Admin master password** : si `ADMIN_MASTER_PWD` match → `isAdminLogin=true` → read-only (ne consomme pas nextChapter/nextBoost, n'écrit pas DailyBoosts, ne rebuildSuivi pas) | ✅ |
 | `save_score` | Sauvegarde réponse. **LockService** (tryLock 10s) + MAJ Progress + rebuildSuivi + writeToHistorique + ExosDone si BOOST. Persiste `source` (col N Scores) | ✅ |
 | `save_boost` | Sauvegarde fin de boost. ExosDone + rebuildSuivi | ✅ |
 | `generate_diagnostic` | Génère diagnostic. Mode guest (sans code) pour landing flow | ✅ |
@@ -335,3 +336,4 @@ Scripts one-shot déjà exécutés : imports, migrations, fix one-shot, anciens 
 - **Boost reopen nav** : navigation Précédent/Suivant après boost terminé (comme les chapitres)
 - **Guide "Commence par là"** : affiché uniquement après boost consommé (pas au premier chargement)
 - **Titres chapitres** : `font-weight:800` explicite pour cohérence visuelle
+- **Admin master password** (@122) : `ADMIN_MASTER_PWD` dans Script Properties. Login avec le master pwd sur n'importe quel compte élève → `isAdminLogin=true` → mode read-only complet (ne consomme pas nextChapter/nextBoost, n'écrit pas dans DailyBoosts, ne rebuildSuivi pas). Permet à Nicolas de vérifier l'état d'un élève sans interférer avec ses données

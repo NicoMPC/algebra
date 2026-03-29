@@ -7,7 +7,7 @@
 
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Matheux — Soutien scolaire maths collège | Exercices personnalisés 6ème à 3ème</title>
+  <title>Matheux — Prépare ton Brevet 2026 | Exercices maths 3ème personnalisés</title>
   <!-- PWA -->
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#1E40AF">
@@ -17,18 +17,18 @@
   <meta name="apple-mobile-web-app-title" content="Matheux">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
-  <meta name="description" content="Soutien scolaire maths collège personnalisé. Matheux détecte les lacunes de votre enfant (6e, 5e, 4e, 3e) et propose 5 exercices ciblés par jour. Parcours vérifié chaque soir. Essai gratuit 7 jours, sans carte bancaire."/>
-  <meta name="keywords" content="soutien scolaire maths, exercices maths collège, maths 6ème 5ème 4ème 3ème, révision brevet maths, cours maths en ligne, exercices personnalisés maths, lacunes maths collège, soutien maths adaptatif"/>
+  <meta name="description" content="Prépare le Brevet 2026 en maths. Matheux détecte les lacunes de votre enfant en 3ème et propose 5 exercices ciblés par jour. Parcours vérifié chaque soir. Essai gratuit 7 jours, sans carte bancaire."/>
+  <meta name="keywords" content="brevet 2026 maths, exercices brevet maths, révision brevet 3ème, maths 3ème exercices, préparation brevet maths, soutien maths 3ème, exercices personnalisés brevet"/>
   <link rel="canonical" href="https://matheux.fr/"/>
-  <meta property="og:title"       content="Matheux — Soutien scolaire maths personnalisé collège"/>
-  <meta property="og:description" content="Diagnostic personnalisé, 5 exercices ciblés par jour, parcours vérifié chaque soir. 7 jours offerts, sans carte bancaire."/>
+  <meta property="og:title"       content="Matheux — Prépare ton Brevet 2026 en maths"/>
+  <meta property="og:description" content="Diagnostic personnalisé 3ème, 5 exercices ciblés par jour, parcours vérifié chaque soir. 7 jours offerts, sans carte bancaire."/>
   <meta property="og:type"        content="website"/>
   <meta property="og:url"         content="https://matheux.fr/"/>
   <meta property="og:image"       content="https://matheux.fr/mockup.png"/>
   <meta property="og:locale"      content="fr_FR"/>
   <meta property="og:site_name"   content="Matheux"/>
   <meta name="twitter:card"       content="summary_large_image"/>
-  <meta name="twitter:title"      content="Matheux — Soutien scolaire maths collège personnalisé"/>
+  <meta name="twitter:title"      content="Matheux — Prépare ton Brevet 2026 en maths"/>
   <meta name="twitter:description" content="Diagnostic personnalisé, 5 exercices ciblés par jour, parcours vérifié chaque soir. 7 jours offerts."/>
   <meta name="twitter:image"      content="https://matheux.fr/mockup.png"/>
 
@@ -41,7 +41,7 @@
     "url": "https://matheux.fr",
     "applicationCategory": "EducationalApplication",
     "operatingSystem": "Web",
-    "description": "Soutien scolaire maths adaptatif pour collégiens. Diagnostic des lacunes, exercices personnalisés quotidiens, parcours vérifié chaque soir.",
+    "description": "Préparation Brevet 2026 en maths. Diagnostic des lacunes en 3ème, exercices personnalisés quotidiens, parcours vérifié chaque soir.",
     "offers": {
       "@type": "Offer",
       "price": "19.99",
@@ -51,7 +51,7 @@
     "audience": {
       "@type": "EducationalAudience",
       "educationalRole": "student",
-      "description": "Collégiens de la 6ème à la 3ème et lycéens 1ère Spé Maths"
+      "description": "Élèves de 3ème préparant le Brevet 2026"
     },
     "provider": {
       "@type": "Organization",
@@ -94,7 +94,7 @@
         "name": "Est-ce adapté au programme scolaire ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Oui. Tous les exercices sont alignés avec le programme officiel de l'Éducation Nationale 2026. 44 chapitres couvrent le programme de la 6ème à la 3ème, plus la 1ère Spé Maths."
+          "text": "Oui. Tous les exercices sont alignés avec le programme officiel de l'Éducation Nationale 2026. 22 chapitres couvrent l'intégralité du programme de 3ème pour le Brevet."
         }
       },
       {
@@ -110,7 +110,7 @@
         "name": "Peut-il l'utiliser seul ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Oui. L'interface est conçue pour les collégiens. Indices progressifs, formules rappelées après une erreur, exercices adaptés au niveau. Votre enfant est guidé à chaque étape."
+          "text": "Oui. L'interface est conçue pour les élèves de 3ème. Indices progressifs, formules rappelées après une erreur, exercices adaptés au niveau. Votre enfant est guidé à chaque étape."
         }
       }
     ]
@@ -673,9 +673,9 @@
     #trial-flow.flow-fs > .max-w-lg { width:100%; }
     /* Hauteur min fixe par step — empêche le jump */
     #trial-flow .flow-step { min-height:320px; }
-    /* Step 3 quiz — pas d'animation entre les questions pour éviter le jump */
-    #flow-s3 > div { animation:none; }
-    /* Steps 1, 2, 4 centrés verticalement — .flow-step (pas d'ID) pour ne pas écraser .hidden */
+    /* Step 2 quiz — pas d'animation entre les questions pour éviter le jump */
+    #flow-s2 > div { animation:none; }
+    /* Steps 1, 3 centrés verticalement — .flow-step (pas d'ID) pour ne pas écraser .hidden */
     .flow-step:not(.hidden) { display:flex; flex-direction:column; justify-content:center; min-height:0; }
     /* Centrage exercices mobile — quiz/diagnostic dans l'app */
     @media (max-width:640px) {
@@ -1368,6 +1368,8 @@
       color:#0f172a;transition:color .4s,opacity .4s;
       user-select:none;cursor:pointer;
     }
+    .exo-timer.timer-warn { color:#d97706; }
+    .exo-timer.timer-warn .exo-timer-ring { stroke:#d97706 }
     .exo-timer.overtime { color:#b45309; }
     .exo-timer.disabled { opacity:.35 }
     .exo-timer svg { width:26px;height:26px }
@@ -1419,6 +1421,8 @@
     body.app-night .flow-card { background:#0F172A;color:#DBEAFE }
     body.app-night .flow-badge { background:linear-gradient(135deg,#78350f,#92400e);border-color:#d97706;color:#fde68a }
     body.app-night .exo-timer { color:#93C5FD }
+    body.app-night .exo-timer.timer-warn { color:#fbbf24 }
+    body.app-night .exo-timer.timer-warn .exo-timer-ring { stroke:#fbbf24 }
     body.app-night .exo-timer.overtime { color:#fbbf24 }
     body.app-night .exo-timer-ring { stroke:#93C5FD }
     body.app-night .exo-timer.overtime .exo-timer-ring { stroke:#fbbf24 }
@@ -1572,18 +1576,18 @@
       </div>
       <div class="hero-badge" style="animation:s1 .5s .05s ease both">
         <span class="dot-live"></span>
-        <span id="hero-badge-txt">Maths adaptatif · 6e à 3e</span>
+        <span id="hero-badge-txt">Brevet 2026 · Programme officiel</span>
       </div>
       <h1 id="hero-h1" class="font-black text-stone-900 leading-[1.12] mb-5 max-w-md mx-auto" style="font-size:clamp(1.8rem,5.5vw,2.6rem);animation:s1 .6s .02s ease both;letter-spacing:-.02em">
-        En 5 minutes, vous saurez exactement <span style="color:#EA580C">où votre enfant bloque en maths.</span>
+        T'es prêt pour le brevet de maths ? <span style="color:#EA580C">Vérifie en 5 minutes.</span>
       </h1>
       <p id="hero-sub" class="text-stone-600 text-base sm:text-lg font-semibold mb-4 max-w-md mx-auto" style="line-height:1.7;animation:s1 .6s .1s ease both">
-        On trouve où ça coince, il s'entraîne uniquement là-dessus. Et tout s'aligne enfin.
+        Matheux détecte ses lacunes et lui prépare 5 exercices ciblés par jour. 10 min, c'est tout.
       </p>
-      <p id="hero-mention" class="text-stone-400 text-xs font-semibold mb-8" style="animation:s1 .6s .22s ease both;letter-spacing:.05em">10 MINUTES PAR JOUR</p>
+      <p id="hero-mention" class="text-stone-400 text-xs font-semibold mb-8" style="animation:s1 .6s .22s ease both;letter-spacing:.05em">PROGRAMME OFFICIEL 2026</p>
       <button onclick="startTrialFlow('hero')"
               class="btn btn-ac btn-fw shadow-xl" id="cta-hero" style="max-width:420px;font-size:1.05rem;padding:1.15rem 1.5rem;border-radius:var(--l-radius);animation:s1 .6s .28s ease both">
-        <span id="hero-cta-txt">Faites le test avec votre enfant</span>
+        <span id="hero-cta-txt">Je teste mon niveau →</span>
       </button>
       <p class="text-stone-400 text-xs mt-4 font-medium" style="animation:s1 .6s .35s ease both">5 minutes · Sans carte bancaire</p>
       <div id="pwa-install-banner" class="hidden mt-3 flex items-center gap-3
@@ -1608,44 +1612,26 @@
   <!-- ── TRIAL FLOW INLINE ────────────────────────────────── -->
   <div id="trial-flow" class="hidden px-5 pb-14 -mt-2" style="background:#1C1917">
     <div class="max-w-lg mx-auto">
-      <!-- Stepper progress -->
+      <!-- Stepper progress (3 steps : Chapitres → Diagnostic → Inscription) -->
       <div class="flow-stepper" id="flow-stepper">
         <div class="flow-st-item">
           <div class="flow-st-dot active" id="fst-1">1</div>
-          <span class="flow-st-label active" id="fst-l1">Classe</span>
+          <span class="flow-st-label active" id="fst-l1">Chapitres</span>
         </div>
         <div class="flow-st-line" id="fst-ln1"></div>
         <div class="flow-st-item">
           <div class="flow-st-dot" id="fst-2">2</div>
-          <span class="flow-st-label" id="fst-l2">Chapitres</span>
+          <span class="flow-st-label" id="fst-l2">Diagnostic</span>
         </div>
         <div class="flow-st-line" id="fst-ln2"></div>
         <div class="flow-st-item">
           <div class="flow-st-dot" id="fst-3">3</div>
-          <span class="flow-st-label" id="fst-l3">Diagnostic</span>
-        </div>
-        <div class="flow-st-line" id="fst-ln3"></div>
-        <div class="flow-st-item">
-          <div class="flow-st-dot" id="fst-4">4</div>
-          <span class="flow-st-label" id="fst-l4">Inscription</span>
+          <span class="flow-st-label" id="fst-l3">Inscription</span>
         </div>
       </div>
 
-      <!-- STEP 1 — Classe -->
+      <!-- STEP 1 — Chapitres (3ème Brevet) -->
       <div id="flow-s1" class="flow-step">
-        <p class="text-white/40 text-xs text-center mb-3 font-medium" style="letter-spacing:.05em">ON ADAPTE LES EXERCICES À SON NIVEAU</p>
-        <h2 class="text-2xl font-extrabold text-white text-center mb-2" style="letter-spacing:-.02em">En quelle classe est votre enfant ?</h2>
-        <p class="text-white/45 text-sm text-center mb-7">Choisissez simplement sa classe.</p>
-        <div class="grid grid-cols-2 gap-3">
-          <button onclick="flowSelectLevel('6EME')" class="lvl-btn" id="lvl-6EME">6<sup>ème</sup></button>
-          <button onclick="flowSelectLevel('5EME')" class="lvl-btn" id="lvl-5EME">5<sup>ème</sup></button>
-          <button onclick="flowSelectLevel('4EME')" class="lvl-btn" id="lvl-4EME">4<sup>ème</sup></button>
-          <button onclick="flowSelectLevel('3EME')" class="lvl-btn" id="lvl-3EME">3<sup>ème</sup></button>
-        </div>
-      </div>
-
-      <!-- STEP 2 — Chapitres -->
-      <div id="flow-s2" class="flow-step hidden">
         <h2 class="text-2xl font-extrabold text-white text-center mb-2" style="letter-spacing:-.02em">Quels chapitres reconnaît-il ?</h2>
         <p class="text-white/50 text-sm text-center mb-2">Pas besoin d'être précis — on ajuste après.</p>
         <p class="text-white/30 text-xs text-center mb-5">Cochez ce qui vous parle, même vaguement.</p>
@@ -1654,14 +1640,13 @@
         <button onclick="_flowAutoSelectChaps()" class="block w-full text-center text-sm font-semibold transition-colors mb-5 cursor-pointer py-2" style="background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;color:rgba(255,255,255,.6)">Je ne sais pas trop — choisir pour moi</button>
         <button onclick="flowToStep3()" class="btn btn-ac btn-fw py-4">Voir le diagnostic →</button>
         <p class="text-white/30 text-xs text-center mt-2">On ajuste automatiquement ensuite.</p>
-        <button onclick="_flowSetStep(1)" class="block w-full text-center text-xs text-white/40 hover:text-white/70 transition-colors mt-3 bg-transparent border-none cursor-pointer" id="flow-back-class">← Changer de classe</button>
       </div>
 
-      <!-- STEP 3 — Diagnostic GAS -->
-      <div id="flow-s3" class="flow-step hidden"></div>
+      <!-- STEP 2 — Diagnostic GAS -->
+      <div id="flow-s2" class="flow-step hidden"></div>
 
-      <!-- STEP 4 — Inscription -->
-      <div id="flow-s4" class="flow-step hidden">
+      <!-- STEP 3 — Inscription -->
+      <div id="flow-s3" class="flow-step hidden">
         <div class="bg-white/10 border border-white/15 rounded-2xl p-6">
           <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4" style="background:linear-gradient(135deg,#1E40AF,#3B82F6)">✨</div>
           <h2 class="text-xl font-extrabold text-white text-center mb-1" id="fl-heading" style="letter-spacing:-.02em">Plus qu'une étape</h2>
@@ -1694,7 +1679,7 @@
   <!-- ── MICRO-BLOC PROMESSE ─────────────────────────────── -->
   <div style="background:linear-gradient(180deg,#FFFBF5 0%,#FFF7ED 100%)" class="px-5 py-12">
     <div class="max-w-lg mx-auto text-center reveal">
-      <p class="text-lg sm:text-xl font-extrabold text-stone-800" style="line-height:1.7;letter-spacing:-.01em">Quelques questions, et <span style="color:#EA580C">tout devient clair.</span></p>
+      <p class="text-lg sm:text-xl font-extrabold text-stone-800" style="line-height:1.7;letter-spacing:-.01em">En 5 minutes, tu sais exactement <span style="color:#EA580C">quoi réviser pour le brevet.</span></p>
     </div>
   </div>
 
@@ -1839,27 +1824,27 @@
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="sp-quote reveal reveal-d1">
-          <p class="text-slate-600 text-sm leading-[1.8] mb-4">"Mon fils était bloqué en équations depuis 2 mois. En trois semaines avec Matheux, il a rattrapé tout le retard. Les exercices changent vraiment chaque jour."</p>
+          <p class="text-slate-600 text-sm leading-[1.8] mb-4">"Mon fils passait le brevet en juin et paniquait sur les équations. En 3 semaines avec Matheux, il a comblé ses lacunes. Ce qui m'a rassurée : quelqu'un suit vraiment son parcours."</p>
           <div class="tm-author-row">
             <div class="tm-avatar" style="background:linear-gradient(135deg,#EA580C,#FB923C)">SM</div>
             <div>
-              <div class="text-slate-700 text-xs font-semibold">Sophie M. — mère, 4ème</div>
+              <div class="text-slate-700 text-xs font-semibold">Sophie M. — mère, 3ème</div>
               <div class="text-slate-400 text-xs">Paris</div>
             </div>
           </div>
         </div>
         <div class="sp-quote reveal reveal-d2">
-          <p class="text-slate-600 text-sm leading-[1.8] mb-4">"En deux semaines, ma fille a retrouvé confiance. Elle fait ses 10 minutes sans que j'aie besoin de la relancer."</p>
+          <p class="text-slate-600 text-sm leading-[1.8] mb-4">"Ma fille avait décroché en maths depuis la 4ème. En deux semaines, elle fait ses 10 minutes toute seule et ne stresse plus pour le brevet."</p>
           <div class="tm-author-row">
             <div class="tm-avatar" style="background:linear-gradient(135deg,#D97706,#FBBF24)">LB</div>
             <div>
-              <div class="text-slate-700 text-xs font-semibold">Laurent B. — père, 5ème</div>
+              <div class="text-slate-700 text-xs font-semibold">Laurent B. — père, 3ème</div>
               <div class="text-slate-400 text-xs">Lyon</div>
             </div>
           </div>
         </div>
         <div class="sp-quote reveal reveal-d3">
-          <p class="text-slate-600 text-sm leading-[1.8] mb-4">"Ce qui m'a convaincue : quelqu'un regarde vraiment le parcours de mon fils, et il s'adapte chaque jour. Ça change tout."</p>
+          <p class="text-slate-600 text-sm leading-[1.8] mb-4">"Ce qui change par rapport aux autres applis : chaque soir, le parcours est ajusté. Mon fils a repris confiance pour le brevet blanc."</p>
           <div class="tm-author-row">
             <div class="tm-avatar" style="background:linear-gradient(135deg,#C2410C,#EA580C)">NC</div>
             <div>
@@ -1883,7 +1868,7 @@
         <div class="flex items-center gap-3 mb-5">
           <div style="width:40px;height:40px;background:linear-gradient(135deg,#FB923C,#EA580C);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;color:#fff">L</div>
           <div>
-            <div class="syne font-black text-slate-900 text-sm">Léa — 4ème</div>
+            <div class="syne font-black text-slate-900 text-sm">Léa — 3ème</div>
             <div class="text-slate-400 text-xs">Progression en 30 jours</div>
           </div>
         </div>
@@ -1899,29 +1884,13 @@
               <div style="font-size:1rem;color:#94a3b8;margin-top:.5rem">→</div>
               <div style="flex:1">
                 <div class="text-xs text-slate-400 mb-1">Après</div>
-                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:60%;background:#4ade80;border-radius:99px"></div></div>
-                <div class="text-xs font-bold mt-1" style="color:#22c55e">60%</div>
+                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:75%;background:#4ade80;border-radius:99px"></div></div>
+                <div class="text-xs font-bold mt-1" style="color:#22c55e">75%</div>
               </div>
             </div>
           </div>
           <div>
             <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Équations</span></div>
-            <div style="display:flex;gap:.5rem;align-items:center">
-              <div style="flex:1">
-                <div class="text-xs text-slate-400 mb-1">Avant</div>
-                <div style="height:8px;border-radius:99px;background:#fee2e2;overflow:hidden"><div style="height:100%;width:35%;background:#fca5a5;border-radius:99px"></div></div>
-                <div class="text-xs font-bold mt-1" style="color:#ef4444">35%</div>
-              </div>
-              <div style="font-size:1rem;color:#94a3b8;margin-top:.5rem">→</div>
-              <div style="flex:1">
-                <div class="text-xs text-slate-400 mb-1">Après</div>
-                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:65%;background:#4ade80;border-radius:99px"></div></div>
-                <div class="text-xs font-bold mt-1" style="color:#22c55e">65%</div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Fractions</span></div>
             <div style="display:flex;gap:.5rem;align-items:center">
               <div style="flex:1">
                 <div class="text-xs text-slate-400 mb-1">Avant</div>
@@ -1931,8 +1900,24 @@
               <div style="font-size:1rem;color:#94a3b8;margin-top:.5rem">→</div>
               <div style="flex:1">
                 <div class="text-xs text-slate-400 mb-1">Après</div>
-                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:70%;background:#4ade80;border-radius:99px"></div></div>
-                <div class="text-xs font-bold mt-1" style="color:#22c55e">70%</div>
+                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:80%;background:#4ade80;border-radius:99px"></div></div>
+                <div class="text-xs font-bold mt-1" style="color:#22c55e">80%</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Fractions</span></div>
+            <div style="display:flex;gap:.5rem;align-items:center">
+              <div style="flex:1">
+                <div class="text-xs text-slate-400 mb-1">Avant</div>
+                <div style="height:8px;border-radius:99px;background:#fee2e2;overflow:hidden"><div style="height:100%;width:35%;background:#fca5a5;border-radius:99px"></div></div>
+                <div class="text-xs font-bold mt-1" style="color:#ef4444">35%</div>
+              </div>
+              <div style="font-size:1rem;color:#94a3b8;margin-top:.5rem">→</div>
+              <div style="flex:1">
+                <div class="text-xs text-slate-400 mb-1">Après</div>
+                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:75%;background:#4ade80;border-radius:99px"></div></div>
+                <div class="text-xs font-bold mt-1" style="color:#22c55e">75%</div>
               </div>
             </div>
           </div>
@@ -1947,8 +1932,8 @@
               <div style="font-size:1rem;color:#94a3b8;margin-top:.5rem">→</div>
               <div style="flex:1">
                 <div class="text-xs text-slate-400 mb-1">Après</div>
-                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:65%;background:#4ade80;border-radius:99px"></div></div>
-                <div class="text-xs font-bold mt-1" style="color:#22c55e">65%</div>
+                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:70%;background:#4ade80;border-radius:99px"></div></div>
+                <div class="text-xs font-bold mt-1" style="color:#22c55e">70%</div>
               </div>
             </div>
           </div>
@@ -1958,7 +1943,7 @@
         <div id="res-slide-0" style="transition:opacity .5s ease;opacity:1">
           <p class="text-slate-600 text-sm font-medium mb-2">Tous les exercices sont alignés avec le programme officiel de l'Éducation Nationale 2026.</p>
           <div class="flex flex-wrap justify-center gap-2 mt-4">
-            <span style="background:#FFF7ED;color:#EA580C;border:1px solid #FDBA74;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">+2500 exercices disponibles</span>
+            <span style="background:#FFF7ED;color:#EA580C;border:1px solid #FDBA74;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">480+ exercices Brevet 2026</span>
             <span style="background:#FEF3C7;color:#92400e;border:1px solid #FCD34D;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">Exercices sur mesure</span>
           </div>
         </div>
@@ -2004,7 +1989,7 @@
           </div>
         </div>
         <p class="text-slate-600 text-sm leading-relaxed mb-3">J'ai vu les mêmes blocages revenir encore et encore, souvent aux mêmes endroits. Ils comprennent en cours, puis oublient. Pas parce qu'ils sont nuls — parce qu'ils ne pratiquent pas au bon endroit.</p>
-        <p class="text-slate-600 text-sm leading-relaxed mb-3">J'ai construit Matheux pour ça. Un système simple : identifier les trous, les combler un peu chaque jour, et suivre chaque élève de près.</p>
+        <p class="text-slate-600 text-sm leading-relaxed mb-3">J'ai construit Matheux pour ça. Un système simple : identifier les trous, les combler un peu chaque jour, et suivre chaque élève de près. Avec le brevet qui approche, chaque semaine compte — c'est pour ça que le parcours est ajusté tous les soirs.</p>
         <p class="text-slate-600 text-sm leading-relaxed mb-4"><strong>Pensé par quelqu'un qui a vu les mêmes erreurs des dizaines de fois. Chaque soir, le parcours est ajusté.</strong></p>
         <div style="border-top:1px solid #f1f5f9;padding-top:.75rem">
           <p class="syne font-black text-slate-700 text-sm">Nicolas Follezou — Fondateur de Matheux</p>
@@ -2028,14 +2013,14 @@
         <div class="text-center mb-5"><span class="perday-badge">soit 0,66 € / jour</span></div>
         <div class="space-y-3 text-left mb-6">
           <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">Entraînement quotidien ciblé</span></div>
-          <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">44 chapitres — tout le programme</span></div>
+          <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">22 chapitres — tout le programme de 3ème</span></div>
           <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">Brevet Blanc inclus</span></div>
           <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">Parcours vérifié et ajusté chaque soir</span></div>
           <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">Exercices uniques, créés sur mesure</span></div>
         </div>
         <button onclick="startTrialFlow('pricing')"
                 class="btn btn-ac btn-fw py-4 shadow-xl" style="font-size:1rem;border-radius:var(--l-radius)">
-          Essayer 7 jours gratuit
+          Je teste mon niveau — 7 jours offerts
         </button>
         <div class="guarantee-badge"></div>
         <p class="text-stone-400 text-xs mt-3">Sans carte bancaire · Sans engagement</p>
@@ -2060,16 +2045,16 @@
   <div class="px-5 py-16" style="background:#FFF7ED">
     <div class="max-w-lg mx-auto relative z-10 text-center reveal">
       <h2 id="bottom-h2" class="text-2xl sm:text-3xl font-extrabold text-stone-900 leading-tight mb-3" style="letter-spacing:-.02em">
-        Appelez votre enfant maintenant.<br>
-        <span style="color:#EA580C">Testez ensemble en 5 minutes.</span>
+        Tu veux être prêt pour le brevet ?<br>
+        <span style="color:#EA580C">Teste-toi en 5 minutes.</span>
       </h2>
       <p id="bottom-sub" class="text-stone-500 text-sm font-medium mb-8 max-w-sm mx-auto">
-        Vous saurez exactement où il bloque.
+        Tu sauras exactement où bosser.
       </p>
       <button onclick="startTrialFlow('bottom')"
               style="max-width:400px;font-size:1.05rem;padding:1.15rem;display:block;margin:0 auto;border-radius:var(--l-radius)"
               class="btn btn-ac btn-fw shadow-xl">
-        <span id="bottom-cta-txt">Faites le test avec votre enfant</span>
+        <span id="bottom-cta-txt">Je teste mon niveau →</span>
       </button>
       <p class="text-stone-400 text-xs mt-4">5 minutes · Sans carte bancaire · Aucune pression</p>
     </div>
@@ -2093,11 +2078,11 @@
         </details>
         <details class="faq-item">
           <summary class="faq-q">Et s'il a des lacunes de l'année dernière ?</summary>
-          <p class="faq-a">C'est exactement pour ce cas que Matheux existe. Après le diagnostic, si votre enfant a des lacunes sur des notions d'une année précédente — des fractions de 5ème alors qu'il est en 4ème, par exemple — l'algorithme ouvre des chapitres temporaires pour combler ces lacunes anciennes. Le parcours est construit sur ce qui manque réellement.</p>
+          <p class="faq-a">C'est exactement pour ce cas que Matheux existe. Après le diagnostic, si votre enfant a des lacunes sur des notions des années précédentes, l'algorithme cible ces lacunes en priorité. Le parcours est construit sur ce qui manque réellement pour réussir le Brevet.</p>
         </details>
         <details class="faq-item">
           <summary class="faq-q">Est-ce adapté au programme scolaire ?</summary>
-          <p class="faq-a">Oui. Tous les exercices sont alignés avec le programme officiel de l'Éducation Nationale 2026. 44 chapitres couvrent le programme de la 6ème à la 3ème, plus la 1ère Spé Maths.</p>
+          <p class="faq-a">Oui. Tous les exercices sont alignés avec le programme officiel de l'Éducation Nationale 2026. 22 chapitres couvrent l'intégralité du programme de 3ème pour le Brevet.</p>
         </details>
         <details class="faq-item">
           <summary class="faq-q">Combien de temps par jour ?</summary>
@@ -2105,7 +2090,15 @@
         </details>
         <details class="faq-item">
           <summary class="faq-q">Peut-il l'utiliser seul ?</summary>
-          <p class="faq-a">Oui. L'interface est conçue pour les collégiens. Indices progressifs, formules rappelées après une erreur, exercices adaptés au niveau. Votre enfant est guidé à chaque étape.</p>
+          <p class="faq-a">Oui. L'interface est conçue pour les élèves de 3ème. Indices progressifs, formules rappelées après une erreur, exercices adaptés au niveau. Votre enfant est guidé à chaque étape.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Est-ce qu'il y a des sujets de Brevet Blanc ?</summary>
+          <p class="faq-a">Oui. Le programme inclut des exercices type Brevet et des chapitres Automatismes (calcul rapide chronométré) — exactement ce qui tombe à l'épreuve.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">C'est moins cher qu'un prof particulier ?</summary>
+          <p class="faq-a">Un cours particulier coûte 25 à 40 euros de l'heure. Matheux coûte 19,99 € par mois — soit 0,66 € par jour — pour un entraînement quotidien personnalisé. Et votre enfant progresse tous les jours, pas une fois par semaine.</p>
         </details>
       </div>
     </div>
@@ -2113,7 +2106,7 @@
 
   <!-- Mobile sticky CTA bar -->
   <div id="sticky-cta" aria-hidden="true">
-    <button id="sticky-cta-btn" onclick="startTrialFlow('sticky')"><span id="sticky-cta-txt">Tester avec mon enfant →</span></button>
+    <button id="sticky-cta-btn" onclick="startTrialFlow('sticky')"><span id="sticky-cta-txt">Brevet — je teste mon niveau →</span></button>
     <div class="sticky-sub">5 min · gratuit</div>
   </div>
 
@@ -2164,10 +2157,7 @@
         <div id="form-r" class="space-y-3">
           <input type="text"  id="rn" class="inp" placeholder="Prénom de l'élève" autocomplete="given-name">
           <select id="rl" class="inp font-bold text-indigo-700" onchange="updateLevelChapters()">
-            <option value="6EME">Classe : 6ème</option>
-            <option value="5EME">Classe : 5ème</option>
-            <option value="4EME" selected>Classe : 4ème</option>
-            <option value="3EME">Classe : 3ème</option>
+            <option value="3EME" selected>Classe : 3ème</option>
           </select>
           <label style="display:flex;align-items:flex-start;gap:.5rem;cursor:pointer;padding:.25rem 0">
             <input type="checkbox" id="consent-auth" style="margin-top:3px;flex-shrink:0;accent-color:var(--p);width:16px;height:16px">
@@ -2451,23 +2441,11 @@ const SU = 'https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrT
 const SK  = 'boost_v23';
 const LK  = 'boost_loc_v23';
 const DK  = 'done_v23';      // { [code]: { chapDone: {[cat]: {errs,tot,easy,medium,hard}}, boostConsumed: true } }
-const LO  = ["6EME","5EME","4EME","3EME"];
-const LN  = {"6EME":"6ème","5EME":"5ème","4EME":"4ème","3EME":"3ème"};
+const LO  = ["3EME"];
+const LN  = {"3EME":"3ème"};
 const TS  = ["🧠 Analyse de tes réponses...","🔍 Détection des points à renforcer...","⚙️ Calibrage du niveau...","🎯 Génération des défis...","✨ Finalisation en cours..."];
 
 const DEMO_QS = {
-  "6EME": [
-    { q:"2/3 + 1/3 = ?",                                   a:"1",      opts:["1","3/6","2/3"] },
-    { q:"Périmètre d'un carré de côté 5 cm ?",             a:"20 cm",  opts:["20 cm","25 cm","10 cm"] }
-  ],
-  "5EME": [
-    { q:"L'opposé de −7 est ?",                            a:"7",      opts:["7","−7","1/7"] },
-    { q:"2³ = ?",                                          a:"8",      opts:["8","6","9"] }
-  ],
-  "4EME": [
-    { q:"Si 2x + 4 = 10, alors x = ?",                    a:"3",      opts:["3","7","2"] },
-    { q:"2² × 2³ = ?",                                    a:"32",     opts:["32","8","64"] }
-  ],
   "3EME": [
     { q:"Si f(x) = 2x + 1, alors f(3) = ?",               a:"7",      opts:["7","5","9"] },
     { q:"Dans un triangle rectangle de côtés 3 et 4, l'hypoténuse vaut ?", a:"5", opts:["5","7","√7"] }
@@ -2475,9 +2453,6 @@ const DEMO_QS = {
 };
 
 const CHAPS_BY_LEVEL = {
-  "6EME":     ["Nombres entiers 🔢","Fractions 🍕","Proportionnalité ⚖️","Géométrie 📐","Périmètres & Aires 🟦","Angles 📏","Nombres Décimaux 🔢","Statistiques 6ème 📊","Symétrie Axiale 🪞","Volumes 📦","Agrandissement Réduction 🔎","Conversions Unités ⚖️","Puissances 10 🔟"],
-  "5EME":     ["Fractions 🍕","Nombres relatifs ➕","Proportionnalité ⚖️","Puissances ⚡","Pythagore 📐","Calcul Littéral 📝","Symétrie Centrale 🔄","Transformations ↔️","Racines Carrées √","Triangles Semblables 📐"],
-  "4EME":     ["Fractions 🍕","Puissances ⚡","Calcul Littéral 📝","Équations 🎯","Pythagore 📐","Proportionnalité ⚖️","Fonctions Linéaires 📈","Inéquations 📊","Homothétie 🔍","Sections Solides ✂️"],
   "3EME":     ["Calcul Littéral 📝","Équations 🎯","Fonctions 📈","Théorème de Thalès 📐","Trigonométrie 📐","Statistiques 📊","Probabilités 🎲","Racines Carrées √","Systèmes Équations 🎯","Inéquations 📊","Notation Scientifique 🔬"],
 };
 
@@ -2489,7 +2464,7 @@ let currentTab = 'register';
 let penColor   = '#1E40AF';
 
 let S = {
-  prof: null, niv: "4EME", res: {}, xp: 0, stk: 0,
+  prof: null, niv: "3EME", res: {}, xp: 0, stk: 0,
   qv: {}, exp: {}, rev: false, cid: null,
   hints: {}, ftch: {}, qans: {}, shuf: {},
   dOpen: false,
@@ -2550,7 +2525,7 @@ let S = {
 };
 
 const LVL = {};
-LO.forEach(function(k) { LVL[k] = { cats: {}, names: {}, icons: {} }; });
+LO.forEach(function(k) { LVL[k] = { cats: {}, names: {}, icons: {}, meta: {} }; });
 
 // ══════════════════════════════════════════════════════════════
 // UTILS
@@ -2660,60 +2635,33 @@ var _MSGS = {
   ctx_streak:              '🔥 {n} jours d\'affilée — continue, l\'habitude se forme !',
   ctx_mastered_week:       '✓ {n} maîtrisé cette semaine — beau progrès !',
   ctx_inactive:            'Ça fait {n} jours — 5 exercices suffisent pour reprendre',
-  diag_strong:      { '6EME': 'Super ! On va affiner les derniers points.',
-                      '3EME': 'Solides bases. On cible ce qui reste à travailler.',
-                      def:    'Solides bases {name}&nbsp;! On va renforcer les derniers points.' },
-  diag_mid:         { '6EME': 'Bon début {name}. On sait exactement quoi travailler !',
-                      '3EME': 'Bon niveau {name}. Les axes de travail sont identifiés.',
-                      def:    'Bon début {name}. Les points à renforcer sont ciblés.' },
-  diag_low:         { '6EME': 'On sait où ça coince {name}. C\'est le plus important !',
-                      '3EME': 'Diagnostic complet {name}. On attaque les lacunes prioritaires.',
-                      def:    'On sait exactement où travailler {name}. C\'est le plus important.' },
-  boost_perfect:    { '6EME': 'Parfait {name}&nbsp;! 100% — garde ce rythme 🔥',
-                      '3EME': 'Parfait {name}. {n}/{n} — aucune erreur aujourd\'hui 🔥',
-                      def:    'Parfait {name}&nbsp;! {n} sur {n} — garde ce rythme.' },
-  boost_good:       { '6EME': 'Beau travail {name}&nbsp;! {n} exos dans la boîte. Reviens demain !',
-                      '3EME': 'Bien joué {name}. {n} exercices maîtrisés aujourd\'hui.',
-                      def:    'Beau travail {name}. {n} exercice{s} dans la boîte aujourd\'hui.' },
-  boost_low:        { '6EME': 'Pas grave {name} — ton prochain boost sera encore plus ciblé !',
-                      '3EME': 'Quelques points à retravailler {name}. Le prochain boost sera ajusté.',
-                      def:    'Quelques notions à retravailler {name}. Ton prochain boost sera encore plus ciblé.' },
+  diag_strong:      'Solides bases. On cible ce qui reste à travailler.',
+  diag_mid:         'Bon niveau {name}. Les axes de travail sont identifiés.',
+  diag_low:         'Diagnostic complet {name}. On attaque les lacunes prioritaires.',
+  boost_perfect:    'Parfait {name}. {n}/{n} — aucune erreur aujourd\'hui 🔥',
+  boost_good:       'Bien joué {name}. {n} exercices maîtrisés aujourd\'hui.',
+  boost_low:        'Quelques points à retravailler {name}. Le prochain boost sera ajusté.',
   ok_boost:   ['Dans le mille ⚡','T\'as géré ça 💪','Maîtrisé ✅','Propre 🔥','GG 👌'],
   ok_chap:    ['Carton plein 🎯','Trop fort(e) 🚀','Dans le mille ⚡','Maîtrisé ✅','Propre. Vraiment 🔥'],
   ok_6eme:    ['Super ! 🎉','Exactement ! ✅','Bravo ! 💪','Bien vu ! 🔥','Parfait ! ⭐'],
   ok_3eme:    ['Exact ✅','Maîtrisé 💪','Dans le mille ⚡','Propre 🔥','Bon calcul 🎯'],
+  ok_auto:    ['Réflexe ⚡','Automatique 🎯','Rapide et juste 🧠','Ça sort tout seul 💪','Acquis ✅'],
   ok_streak:  ['Streak actif — continue ! 🔥','Encore une ! ⚡','En forme aujourd\'hui 💪'],
   ko_boost:   ['Pas celui-là — regarde la correction en dessous 👀','Ça arrive — la méthode est juste en dessous 💡','La prochaine tu l\'as — retiens la correction 🎯'],
   ko_chap:    ['Pas grave — la correction est là 📝','Difficile celui-là — retiens bien 🧠','C\'est ça qui fait monter de niveau 📈'],
   ko_6eme:    ['Pas tout à fait — regarde la correction ! 👀','On va y arriver ! Regarde bien 💡','Pas grave — c\'est comme ça qu\'on apprend 😊'],
   ko_3eme:    ['Pas bon — retiens la méthode 📝','Ça accroche là — regarde la correction 🧠','Erreur classique — à ne plus refaire 💡'],
-  streak_3:   { '6EME': '🔥 3 jours d\'affilée — super ! Continue comme ça !',
-                '3EME': '🔥 3 jours — une habitude qui paie. Continue !',
-                def:    '🔥 3 jours d\'affilée — une habitude commence. Continue !' },
-  streak_7:   { '6EME': '🏆 7 jours — tu es une star ! C\'est énorme !',
-                '3EME': '🏆 7 jours consécutifs — discipline de champion. C\'est sérieux ça.',
-                def:    '🏆 7 jours — tu es en mode champion. C\'est énorme !' },
-  streak_gen: { '6EME': '🔥 {n} jours d\'affilée — génial ! Reviens demain !',
-                '3EME': '🔥 Streak : {n} jours — ne le laisse pas tomber.',
-                def:    '🔥 Streak&nbsp;: {n} jour{s} consécutif{s} — reviens demain pour ne pas le perdre&nbsp;!' },
-  cours_5:    { '6EME': '📖 Ton cours est prêt ! Va le voir — c\'est pour toi !',
-                '3EME': '📖 Première section de cours disponible. Consulte-la.',
-                def:    '📖 Ton cours est prêt ! Consulte-le depuis le chapitre.' },
-  cours_10:   { '6EME': '📖 Ton cours s\'enrichit — de nouvelles choses à découvrir !',
-                '3EME': '📖 Nouvelles notions débloquées dans ton cours.',
-                def:    '📖 Ton cours s\'enrichit — nouvelles notions disponibles !' },
-  cours_15:   { '6EME': '📖 Points de vigilance débloqués — les pièges à éviter !',
-                '3EME': '📖 Cours avancé débloqué — les points de vigilance pour l\'exam.',
-                def:    '📖 Cours avancé débloqué — points de vigilance personnalisés.' },
-  cours_20:   { '6EME': '✨ Cours complet débloqué — tu as TOUT maîtrisé 🏆 Bravo !',
-                '3EME': '✨ Cours complet. Maîtrise confirmée — excellent travail 🏆',
-                def:    '✨ Cours complet ! Tu as tout maîtrisé 🏆' },
-  cours_prep: { '6EME': '🎉 Super ! Ton cours est en préparation — bientôt disponible !',
-                '3EME': '🎉 Jalon atteint. Ton cours personnalisé est en préparation.',
-                def:    '🎉 Bravo ! Ton cours personnalisé est en préparation — bientôt disponible !' },
-  chap_done:  { '6EME': '🏆 Chapitre terminé — super boulot ! Continue sur ta lancée 📚',
-                '3EME': '🏆 Chapitre terminé — bien joué. Choisis le suivant quand tu veux.',
-                def:    '🏆 Chapitre terminé — bien joué ! Choisis ton prochain chapitre 📚' },
+  ko_auto:    ['Pas encore automatique — ça viendra 💡','Reprends cette notion — la vitesse suivra 🧠','Pas grave — le réflexe se construit 🎯'],
+  streak_3:   '🔥 3 jours — une habitude qui paie. Continue !',
+  streak_7:   '🏆 7 jours consécutifs — discipline de champion. C\'est sérieux ça.',
+  streak_gen: '🔥 Streak : {n} jours — ne le laisse pas tomber.',
+  cours_5:    '📖 Première section de cours disponible. Consulte-la.',
+  cours_10:   '📖 Nouvelles notions débloquées dans ton cours.',
+  cours_15:   '📖 Cours avancé débloqué — les points de vigilance pour l\'exam.',
+  cours_20:   '✨ Cours complet. Maîtrise confirmée — excellent travail 🏆',
+  cours_prep: '🎉 Jalon atteint. Ton cours personnalisé est en préparation.',
+  chap_done:  '🏆 Chapitre terminé — bien joué. Choisis le suivant quand tu veux.',
+  chap_done_auto: { def: '⚡ Automatismes terminés — tes réflexes se renforcent ! Ton prof prépare la suite 🎯' },
   boost_ready:      '⚡ Ton Entraînement du jour est prêt !',
   boost_preparing:  '✨ Prochain entraînement demain — ton boost sera encore plus ciblé !',
   boost_in_progress:'Ton entraînement est en cours ⚡ — encore {n} exo{s} et c\'est dans la boîte !',
@@ -2727,19 +2675,15 @@ var _MSGS = {
   net_retry:       'Erreur réseau — réessaie',
   save_offline:    'Résultats non sauvegardés (offline)',
   // ── Slot rewards ──
-  slot_1: { '6EME': ['Bien lancé {name} — les 5 premiers sont faits ! 💪', 'Super début {name} — continue comme ça ! 🎯'],
-            '3EME': ['5 dans la boîte {name} — bon rythme 🎯', 'Premier palier atteint — la suite t\'attend 💪'],
-            def:    ['Bien lancé {name} — les 5 premiers sont faits ! 💪', '5 exos en poche {name} — continue 🎯'] },
-  slot_2: { '6EME': ['La moitié {name} ! T\'es en forme 🔥', 'Mi-parcours — t\'assures {name} ! 🚀'],
-            '3EME': ['Mi-parcours {name} — le rythme est bon 🔥', '10 faits — solide {name}. Continue 💪'],
-            def:    ['Mi-parcours {name} — t\'es chaud(e) 🔥', 'La moitié ! Continue comme ça {name} 🚀'] },
-  slot_3: { '6EME': ['Plus que 5 {name} ! La fin est proche 🏁', '15 exos — tu gères {name} ! ⚡'],
-            '3EME': ['15/20 {name} — dernier effort 🏁', 'Le niveau monte — et toi aussi {name} ⚡'],
-            def:    ['Plus que 5 {name} — lâche rien ! 🏁', '15 exos faits — le dernier sprint {name} ⚡'] },
+  slot_1: ['5 dans la boîte {name} — bon rythme 🎯', 'Premier palier atteint — la suite t\'attend 💪'],
+  slot_2: ['Mi-parcours {name} — le rythme est bon 🔥', '10 faits — solide {name}. Continue 💪'],
+  slot_3: ['15/20 {name} — dernier effort 🏁', 'Le niveau monte — et toi aussi {name} ⚡'],
+  // ── Slot rewards — Automatismes ──
+  slot_1_auto: { def: ['5 réflexes en poche {name} — le cerveau chauffe ⚡', 'Premiers automatismes validés {name} 🎯'] },
+  slot_2_auto: { def: ['Mi-parcours {name} — tes réflexes s\'aiguisent 🧠', '10 automatismes — la vitesse vient 🔥'] },
+  slot_3_auto: { def: ['Plus que 5 {name} — sprint final ⚡', '15 réflexes acquis — dernière ligne droite 🏁'] },
   // ── Daily goal ──
-  daily_done:  { '6EME': ['Mission du jour terminée {name} ! Bravo 🎯', '5/5 — objectif atteint {name} ! 🏆'],
-                 '3EME': ['Objectif du jour atteint {name} — bien joué 🎯', 'Mission accomplie. {name}, tu gères 🏆'],
-                 def:    ['Mission du jour terminée {name} ! 🎯', 'Objectif atteint — bien joué {name} 🏆'] },
+  daily_done:  ['Objectif du jour atteint {name} — bien joué 🎯', 'Mission accomplie. {name}, tu gères 🏆'],
   daily_bonus: 'Mode bonus — chaque exo compte double en fierté 🔥',
 };
 
@@ -3178,7 +3122,7 @@ async function submitResetPassword() {
 }
 function updateLevelChapters() {
   var level = document.getElementById('rl').value;
-  var chaps = CHAPS_BY_LEVEL[level] || CHAPS_BY_LEVEL["4EME"];
+  var chaps = CHAPS_BY_LEVEL[level] || CHAPS_BY_LEVEL["3EME"];
   var grid  = document.getElementById('onboarding-chaps');
   if (grid) grid.innerHTML = chaps.map(function(c){
     var key = c.replace(/[^\w\sÀ-ÿ]/g,'').trim().replace(/\s+/g,'_');
@@ -3188,45 +3132,7 @@ function updateLevelChapters() {
 // ══════════════════════════════════════════════════════════════
 // TRIAL FLOW INLINE (landing → register sans modal)
 // ══════════════════════════════════════════════════════════════
-var _isBrevet = location.search.indexOf('from=brevet') !== -1;
-if (_isBrevet) sessionStorage.setItem('mx_from','brevet');
-if (sessionStorage.getItem('mx_from')==='brevet') _isBrevet = true;
-
-// ── Landing brevet : swap hero + CTAs ──
-if (_isBrevet) {
-  _track('landing_brevet_view');
-  document.addEventListener('DOMContentLoaded', function() {
-    var b = document.getElementById('hero-badge-txt');
-    if (b) b.textContent = 'Brevet 2026 · Programme officiel';
-    var h1 = document.getElementById('hero-h1');
-    if (h1) h1.innerHTML = "T'es prêt pour le brevet de maths ? <span style='color:#EA580C'>Vérifie en 5 minutes.</span>";
-    var sub = document.getElementById('hero-sub');
-    if (sub) sub.textContent = "On détecte tes lacunes, tu t'entraînes uniquement là-dessus. 10 min par jour, c'est tout.";
-    var mention = document.getElementById('hero-mention');
-    if (mention) mention.textContent = 'PROGRAMME OFFICIEL 2026';
-    var heroCta = document.getElementById('hero-cta-txt');
-    if (heroCta) heroCta.textContent = 'Je teste mon niveau →';
-    var bottomH2 = document.getElementById('bottom-h2');
-    if (bottomH2) bottomH2.innerHTML = "Tu veux être prêt pour le brevet ?<br><span style='color:#EA580C'>Teste-toi en 5 minutes.</span>";
-    var bottomSub = document.getElementById('bottom-sub');
-    if (bottomSub) bottomSub.textContent = "Tu sauras exactement où bosser.";
-    var bottomCta = document.getElementById('bottom-cta-txt');
-    if (bottomCta) bottomCta.textContent = 'Je teste mon niveau →';
-    var stickyCta = document.getElementById('sticky-cta-txt');
-    if (stickyCta) stickyCta.textContent = 'Je teste mon niveau →';
-    // Step 2 wording
-    var s2h = document.querySelector('#flow-s2 h2');
-    if (s2h) s2h.textContent = 'Quels chapitres tu reconnais ?';
-    // Step 4 wording
-    var flDesc = document.getElementById('fl-desc');
-    if (flDesc) flDesc.textContent = "Ton programme personnalisé t'attend — 7 jours offerts, sans carte bancaire.";
-    // Masquer "← Changer de classe" (step 1 skippé)
-    var backBtn = document.getElementById('flow-back-class');
-    if (backBtn) backBtn.style.display = 'none';
-  });
-}
-
-var _flowLevel = _isBrevet ? '3EME' : '4EME';
+var _flowLevel = '3EME';
 var _flowChaps = [];
 var _flowObjectif = '';
 var _flowQIdx  = 0;
@@ -3322,12 +3228,12 @@ function _animCounter(el) {
 }
 
 function startTrialFlow(src) {
-  _track('cta_click', { source: src || 'hero', from: _isBrevet ? 'brevet' : 'default' });
+  _track('cta_click', { source: src || 'hero', from: 'brevet' });
   var tf = document.getElementById('trial-flow');
   tf.classList.remove('hidden');
   tf.classList.add('flow-fs');
   document.getElementById('cta-hero').classList.add('hidden');
-  if (_isBrevet) { flowSelectLevel('3EME'); } else { _flowSetStep(1); }
+  flowSelectLevel();
   tf.scrollTop = 0;
   // Vérifier s'il y a un diagnostic abandonné à reprendre
   var saved = null;
@@ -3367,18 +3273,20 @@ function _flowResumeFromSaved() {
   _flowChaps   = saved.chapitres || _flowChaps;
   _flowDiagDone = false;
   // Reprendre le quiz inline dans la landing
-  _flowSetStep(3);
+  _flowSetStep(2);
   _flowRenderQuestion(_flowExoIdx);
 }
 
 var _flowPrevStep = 1;
 function _flowSetStep(n) {
   var dir = n >= _flowPrevStep ? 'flow-slide-in' : 'flow-slide-back';
-  for (var i = 1; i <= 4; i++) {
+  for (var i = 1; i <= 3; i++) {
     var el = document.getElementById('flow-s' + i);
-    el.classList.toggle('hidden', i !== n);
-    el.classList.remove('flow-slide-in', 'flow-slide-back');
-    if (i === n) el.classList.add(dir);
+    if (el) {
+      el.classList.toggle('hidden', i !== n);
+      el.classList.remove('flow-slide-in', 'flow-slide-back');
+      if (i === n) el.classList.add(dir);
+    }
     // Stepper dots
     var dot = document.getElementById('fst-' + i);
     var lbl = document.getElementById('fst-l' + i);
@@ -3390,7 +3298,7 @@ function _flowSetStep(n) {
       else { dot.textContent = i; }
     }
     // Stepper lines
-    if (i < 4) {
+    if (i < 3) {
       var ln = document.getElementById('fst-ln' + i);
       if (ln) ln.classList.toggle('done', i < n);
     }
@@ -3400,24 +3308,16 @@ function _flowSetStep(n) {
   if (tf) tf.scrollTop = 0;
 }
 
-function flowSelectLevel(lv) {
-  _flowLevel = lv;
-  ['6EME','5EME','4EME','3EME'].forEach(function(l){
-    var btn = document.getElementById('lvl-' + l);
-    if (btn) { btn.classList.toggle('sel', l === lv); btn.classList.remove('lvl-bounce'); }
-  });
-  var selBtn = document.getElementById('lvl-' + lv);
-  if (selBtn) { void selBtn.offsetWidth; selBtn.classList.add('lvl-bounce'); }
-  setTimeout(function() {
-    var chaps = CHAPS_BY_LEVEL[lv] || CHAPS_BY_LEVEL['4EME'];
-    var grid  = document.getElementById('flow-chaps-grid');
-    grid.innerHTML = chaps.map(function(c) {
-      var key = c.replace(/[^\w\sÀ-ÿ]/g,'').trim().replace(/\s+/g,'_');
-      return '<div onclick="flowToggleChap(this,\''+key+'\')" class="flow-chap" data-key="'+key+'">'+c+'</div>';
-    }).join('');
-    _flowChaps = [];
-    _flowSetStep(2);
-  }, 320);
+function flowSelectLevel() {
+  _flowLevel = '3EME';
+  var chaps = CHAPS_BY_LEVEL['3EME'];
+  var grid  = document.getElementById('flow-chaps-grid');
+  grid.innerHTML = chaps.map(function(c) {
+    var key = c.replace(/[^\w\sÀ-ÿ]/g,'').trim().replace(/\s+/g,'_');
+    return '<div onclick="flowToggleChap(this,\''+key+'\')" class="flow-chap" data-key="'+key+'">'+c+'</div>';
+  }).join('');
+  _flowChaps = [];
+  _flowSetStep(1);
 }
 
 function flowToggleChap(el, key) {
@@ -3444,9 +3344,9 @@ var _flowCorrectCount = 0; // compteur bonnes réponses visible pendant le quiz
 function flowToStep3() {
   if (_flowChaps.length < 1) { showT('Sélectionne au moins 1 chapitre 😊', 2500, '⚠️'); return; }
   _flowQIdx = 0; _flowScore = 0; _flowCorrectCount = 0;
-  _flowSetStep(3);
+  _flowSetStep(2);
   // Breathing screen
-  var container = document.getElementById('flow-s3');
+  var container = document.getElementById('flow-s2');
   container.innerHTML =
     '<div style="text-align:center;padding:2rem 0;animation:flowIn .4s ease-out">' +
     '<div class="flow-breathe-icon" style="font-size:3.5rem;margin-bottom:1rem">⚡</div>' +
@@ -3484,8 +3384,8 @@ function _flowStartDiag() {
   // Convertir clés normalisées → noms propres (pour localStorage uniquement)
   var chaps = _flowChaps.map(function(c) { return c.replace(/_+$/, '').trim(); });
 
-  // Afficher spinner dans le container step 3
-  var container = document.getElementById('flow-s3');
+  // Afficher spinner dans le container step 2
+  var container = document.getElementById('flow-s2');
   if (container) {
     container.innerHTML =
       '<div class="text-center py-8">' +
@@ -3528,7 +3428,7 @@ function _flowStartDiag() {
     }
   })
   .catch(function() {
-    var c2 = document.getElementById('flow-s3');
+    var c2 = document.getElementById('flow-s2');
     if (c2) c2.innerHTML =
       '<div class="text-center py-6">' +
       '<p class="text-red-400 text-sm">Oups, problème de connexion — <button onclick="_flowStartDiag()" class="underline text-indigo-300 font-semibold">Réessayer</button></p>' +
@@ -3542,7 +3442,7 @@ function _flowStartDiag() {
 
 // ── RENDU QUIZ INLINE LANDING ─────────────────────────────────
 function _flowRenderQuestion(idx) {
-  var container = document.getElementById('flow-s3');
+  var container = document.getElementById('flow-s2');
   if (!container) return;
   var exo = _flowExos[idx];
   if (!exo) return;
@@ -3681,7 +3581,7 @@ function _flowAnswerOpt(optIdx) {
     } else {
       _flowDiagDone = true;
       _track('tutorial_complete');
-      _flowActivateStep4Guest();
+      _flowActivateStep3Guest();
     }
   }, 800);
 }
@@ -3783,8 +3683,8 @@ function _showObjectifPicker(callback) {
   };
 }
 
-function _flowActivateStep4Guest() {
-  // Carte résultat diagnostic — rendue dans flow-s3
+function _flowActivateStep3Guest() {
+  // Carte résultat diagnostic — rendue dans flow-s2
   var ok = _flowResults.filter(function(r) { return r.correct; }).length;
   var total = _flowResults.length;
   var pct = total > 0 ? Math.round((ok / total) * 100) : 0;
@@ -3836,7 +3736,7 @@ function _flowActivateStep4Guest() {
       '<span>' + c.label + '</span></button>';
   }).join('');
 
-  var container = document.getElementById('flow-s3');
+  var container = document.getElementById('flow-s2');
   if (!container) return;
 
   // ── Écran 1 : Score + émotion ──
@@ -3883,7 +3783,7 @@ function _flowActivateStep4Guest() {
 }
 
 function _flowShowObjectifScreen() {
-  var container = document.getElementById('flow-s3');
+  var container = document.getElementById('flow-s2');
   if (!container) return;
   container.innerHTML =
     '<div style="text-align:center;animation:flowSlideIn .32s ease-out">' +
@@ -3905,7 +3805,7 @@ function _flowGoToRegister(objKey) {
   if (btnTxt) btnTxt.textContent = 'Continuer et voir son programme';
   var btn = document.getElementById('fl-btn');
   if (btn) btn.setAttribute('onclick', '_flowGuestRegister()');
-  _flowSetStep(4);
+  _flowSetStep(3);
 }
 
 async function _flowGuestRegister() {
@@ -3930,7 +3830,7 @@ async function _flowGuestRegister() {
   var _regMsgTimer = setInterval(function(){ if(btnTxt && _regMsgI < _regMsgs.length) btnTxt.textContent = _regMsgs[_regMsgI++]; else clearInterval(_regMsgTimer); }, 1500);
 
   // Spinner visuel
-  var flowStep4 = document.getElementById('flow-s4');
+  var flowStep3 = document.getElementById('flow-s3');
   var spinDiv = document.createElement('div');
   spinDiv.id = 'flow-register-spin';
   spinDiv.style.cssText = 'text-align:center;padding:1rem 0;font-size:2rem;animation:spin .75s linear infinite;display:inline-block;width:100%';
@@ -4253,7 +4153,7 @@ async function submitAuth() {
         document.getElementById('auth-step-1').classList.add('hidden');
         document.getElementById('auth-step-2').classList.remove('hidden');
         document.getElementById('auth-title').innerText = "Tes chapitres 📚";
-        var chaps = CHAPS_BY_LEVEL[l] || CHAPS_BY_LEVEL["4EME"];
+        var chaps = CHAPS_BY_LEVEL[l] || CHAPS_BY_LEVEL["3EME"];
         document.getElementById('onboarding-chaps').innerHTML = chaps.map(function(c){
           var key = c.replace(/[^\w\sÀ-ÿ]/g,'').trim().replace(/\s+/g,'_');
           return '<div onclick="this.classList.toggle(\'selected\')" class="chap-card syne" data-chap="'+key+'">'+c+'</div>';
@@ -4713,7 +4613,7 @@ function initApp(d, skipRender) {
   var loc = JSON.parse(localStorage.getItem(LK) || '{}');
   // ul supprimé — S.res/S.stk viennent exclusivement de d (GAS)
 
-  LVL[S.niv] = { cats:{}, names:{}, icons:{} };
+  LVL[S.niv] = { cats:{}, names:{}, icons:{}, meta:{} };
   S.revisionCats = [];  // reset à chaque login
 
   if (d.curriculumOfficiel && d.curriculumOfficiel.length > 0) {
@@ -4724,6 +4624,7 @@ function initApp(d, skipRender) {
         LVL[S.niv].cats[c.categorie]  = c.exos.map(function(e,i){ return Object.assign({},e,{oC:c.categorie,oI:i}); });
         LVL[S.niv].names[c.categorie] = c.titre;
         LVL[S.niv].icons[c.categorie] = c.icone;
+        if (c.timer || c.ordered) LVL[S.niv].meta[c.categorie] = { timer: c.timer || 60, ordered: !!c.ordered };
       }
     });
   }
@@ -4766,6 +4667,7 @@ function initApp(d, skipRender) {
       S.exp[ncKey] = true;  // auto-déplie le nouveau chapitre
       if (nc.motProf) S.motProfChap[ncKey] = nc.motProf;
       if (nc.insight) S.insights[ncKey] = nc.insight;
+      if (nc.timer || nc.ordered) LVL[S.niv].meta[ncKey] = { timer: nc.timer || 60, ordered: !!nc.ordered };
       delete S.chapDone[ncKey];
       try {
         var doneStore2 = JSON.parse(localStorage.getItem(DK) || '{}');
@@ -4810,7 +4712,7 @@ function initApp(d, skipRender) {
   }
   // Afficher le bouton Brevet pour les 3EME (ou si brevet en attente)
   var navBrevBtn = document.getElementById('nav-brev');
-  if (navBrevBtn && (S.niv === '3EME' || S.brevPendingConfig)) {
+  if (navBrevBtn) {
     navBrevBtn.style.display = '';
     if (S.brevPendingConfig) {
       navBrevBtn.innerHTML = '📝 Brevet';
@@ -5320,7 +5222,8 @@ function _checkSlotReward(cat) {
 function _showSlotReward(cat, slotNum, dailyJustDone) {
   _slotRewardShowing = true;
   var name = (S.prof && S.prof.name) ? S.prof.name : '';
-  var msg = _msg('slot_' + slotNum, { name: name });
+  var isAuto = cat.indexOf('Auto_') === 0;
+  var msg = _msg('slot_' + slotNum + (isAuto ? '_auto' : ''), { name: name });
   var total = (LVL[S.niv].cats[cat] || []).length;
   var done = _slotCount(cat);
 
@@ -5519,6 +5422,12 @@ function _normFill(s) {
   v = v.replace(/\\times/g,'×').replace(/\\cdot/g,'·').replace(/\\div/g,'÷');
   // Retirer les commandes LaTeX résiduelles (\text{...} → contenu, \left \right etc.)
   v = v.replace(/\\text\{([^}]*)\}/g,'$1').replace(/\\(left|right|displaystyle|,|;|!|quad)/g,'');
+  // Puissances : ^{-4} → ^-4, ^(-4) → ^-4
+  v = v.replace(/\^\{([^}]*)\}/g, '^$1').replace(/\^\(([^)]*)\)/g, '^$1');
+  // Racines : \sqrt{x} → sqrt(x), puis 5sqrt → 5*sqrt
+  v = v.replace(/\\sqrt\{([^}]*)\}/g, 'sqrt($1)').replace(/(\d)sqrt/g, '$1*sqrt');
+  // Unifier multiplicateurs : * et x minuscule → ×
+  v = v.replace(/\*/g, '×').replace(/(\d)x(?=[\d(s])/g, '$1×');
   return v;
 }
 
@@ -5569,8 +5478,9 @@ window.validateAnswer = function() {
     S.rev  = true;
     S.cid  = id;
     var isCorrect = _normFill(val) === _normFill(exo.a);
-    var _okKey = (cat === 'BOOST') ? 'ok_boost' : (S.niv === '6EME') ? 'ok_6eme' : (S.niv === '3EME' || S.niv === '1ERE') ? 'ok_3eme' : 'ok_chap';
-    var _koKey = (cat === 'BOOST') ? 'ko_boost' : (S.niv === '6EME') ? 'ko_6eme' : (S.niv === '3EME' || S.niv === '1ERE') ? 'ko_3eme' : 'ko_chap';
+    var _isAuto = cat.indexOf('Auto_') === 0;
+    var _okKey = _isAuto ? 'ok_auto' : (cat === 'BOOST') ? 'ok_boost' : 'ok_3eme';
+    var _koKey = _isAuto ? 'ko_auto' : (cat === 'BOOST') ? 'ko_boost' : 'ko_3eme';
     if (isCorrect) {
       showXP(100);
       showT(_msg(_okKey), 1200, '\u2B50');
@@ -5613,8 +5523,9 @@ window.validateAnswer = function() {
   var vw = document.getElementById('validate-wrap');
   if (vw) vw.style.display = 'none';
 
-  var _okKey = (cat === 'BOOST') ? 'ok_boost' : (S.niv === '6EME') ? 'ok_6eme' : (S.niv === '3EME' || S.niv === '1ERE') ? 'ok_3eme' : 'ok_chap';
-  var _koKey = (cat === 'BOOST') ? 'ko_boost' : (S.niv === '6EME') ? 'ko_6eme' : (S.niv === '3EME' || S.niv === '1ERE') ? 'ko_3eme' : 'ko_chap';
+  var _isAuto = cat.indexOf('Auto_') === 0;
+  var _okKey = _isAuto ? 'ok_auto' : (cat === 'BOOST') ? 'ok_boost' : 'ok_3eme';
+  var _koKey = _isAuto ? 'ko_auto' : (cat === 'BOOST') ? 'ko_boost' : 'ko_3eme';
   if (exo.options[oI] === exo.a) {
     showXP(100);
     showT(_msg(_okKey), 1200, '\u2B50');
@@ -5801,6 +5712,11 @@ function goEx(cat, i) {
 
   if (alreadyAnswered) { S.rev = true; S.cid = id; _stopTimer(); }
   else { S.rev = false; S.cid = null; S._sel = null; delete S.shuf[S.niv+'-'+cat+'-'+i]; if (cat !== 'CALIBRAGE' && cat !== 'BREVET') setTimeout(function() { _startTimer(id); }, 50); }
+  // Coach tip premier Automatisme
+  if (cat.indexOf('Auto_') === 0 && parseInt(i) === 0 && _needsCoach('tip_auto')) {
+    _markCoach('tip_auto');
+    setTimeout(function() { showT('Mode Automatismes — pas d\'aide, pas de formule, juste toi et ta vitesse ⚡', 4000, '🧠'); }, 1500);
+  }
   render();
 }
 
@@ -5911,7 +5827,8 @@ function chkComp(cat) {
       var _chapXpBonus = (tot >= 20) ? 75 : 300;
       S.xp += _chapXpBonus; showXP(_chapXpBonus);
       // S5 — Chapitre terminé : confettis + toast + info prochain chapitre
-      showT(_msg('chap_done'), 6000, '🏆');
+      var _chDoneKey = cat.indexOf('Auto_') === 0 ? 'chap_done_auto' : 'chap_done';
+      showT(_msg(_chDoneKey), 6000, '🏆');
       if (typeof _boostInsightConfetti === 'function') _boostInsightConfetti();
       setTimeout(function() { _showSessionFeedback('chapitre', cat, null); }, 3500);
       // Nettoyer assignedByProf pour ce chapitre (permet au flag d'être "frais" pour une V3)
@@ -6077,7 +5994,7 @@ function setView(v) {
 
 var _auditExos = [];
 var _auditIdx = 0;
-var _auditLevel = '6EME';
+var _auditLevel = '3EME';
 var _auditSource = 'curriculum';
 var _auditFilter = 'all'; // 'all' | 'figure'
 var _auditCategorie = 'all';
@@ -6089,7 +6006,7 @@ function renderAuditView() {
   var c = document.getElementById('app-c');
   if (!S.isAuditor) { render(); return; }
 
-  var LEVELS = ['6EME','5EME','4EME','3EME','1ERE'];
+  var LEVELS = ['3EME'];
   var SOURCES = [
     { key:'curriculum', label:'📚 Chapitres' },
     { key:'diagnostic', label:'🎯 Diagnostic' },
@@ -7077,9 +6994,9 @@ function renderProgress() {
   var totalExosAll = 0;
   chapData.forEach(function(ch) { totalExosAll += ch.nbExos; });
 
-  // Ton adapté au niveau
-  var is3eme = S.niv === '3EME';
-  var is6eme = S.niv === '6EME';
+  // Ton adapté au niveau (3ème only)
+  var is3eme = true;
+  var is6eme = false;
 
   var html = '';
 
@@ -8350,8 +8267,10 @@ function render() {
         if (_hk3b === 'BOOST') continue;
         if (S.assignedByProf && S.assignedByProf[_hk3b] && _chapStats[_hk3b] && !_chapStats[_hk3b].isDone) {
           var _hNm3b = (LVL[S.niv].names[_hk3b] || _hk3b).replace(/_/g, ' ');
-          _hero = { action: "togCat('" + _hk3b + "')", emoji: LVL[S.niv].icons[_hk3b] || '📘',
-            title: 'Commence par ' + _hNm3b, sub: 'Ton prof te recommande de commencer ici', pct: 0, _remain: _chapStats[_hk3b].tot };
+          var _isAutoH = _hk3b.indexOf('Auto_') === 0;
+          var _p2Done = _chapStats[_hk3b].done || 0;
+          _hero = { action: "togCat('" + _hk3b + "')", emoji: _isAutoH ? '⚡' : (LVL[S.niv].icons[_hk3b] || '📘'),
+            title: _isAutoH ? (_p2Done > 0 ? 'Continue tes réflexes' : 'Entraîne tes réflexes') : (_p2Done > 0 ? 'Continue ' + _hNm3b : 'Commence par ' + _hNm3b), sub: _isAutoH ? 'Mode Automatismes — sans aide, sans formule, juste toi' : 'Ton prof te recommande de commencer ici', pct: Math.round((_p2Done / _chapStats[_hk3b].tot) * 100), _remain: _chapStats[_hk3b].tot - _p2Done };
           break;
         }
       }
@@ -8369,8 +8288,9 @@ function render() {
           var _hSub = _hs.done >= Math.ceil(_hs.tot * 0.7)
             ? ('Plus que ' + (_hs.tot - _hs.done) + ' exo' + ((_hs.tot - _hs.done) > 1 ? 's' : '') + ' — la fin est proche !')
             : (_hs.done + '/' + _hs.tot + ' — chaque exo compte');
-          _hero = { action: "togCat('" + _hk + "')", emoji: LVL[S.niv].icons[_hk] || '📘',
-            title: 'Continue ' + _hNm, sub: _hSub, pct: _hPct, _remain: _hs.tot - _hs.done };
+          var _isAutoP3 = _hk.indexOf('Auto_') === 0;
+          _hero = { action: "togCat('" + _hk + "')", emoji: _isAutoP3 ? '⚡' : (LVL[S.niv].icons[_hk] || '📘'),
+            title: _isAutoP3 ? 'Continue tes réflexes' : ('Continue ' + _hNm), sub: _hSub, pct: _hPct, _remain: _hs.tot - _hs.done };
           break;
         }
       }
@@ -8545,6 +8465,7 @@ function render() {
     if (S.exOverrides && S.exOverrides[cat]) html += '<span class="text-[9px] syne font-black bg-slate-100 text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-md">Série 2</span>';
     if (S.remReq[cat]) html += '<span class="text-[9px] syne font-black bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md">🔄 Demain</span>';
     if (S.revisionCats && S.revisionCats.indexOf(cat) !== -1) html += '<span class="text-[9px] syne font-black bg-violet-100 text-violet-700 border border-violet-200 px-1.5 py-0.5 rounded-md">🔁 Révision</span>';
+    if (cat.indexOf('Auto_') === 0) html += '<span class="text-[9px] syne font-black bg-amber-50 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md">⚡ Automatisme</span>';
     // ── Progression : pills historique si passages terminés, sinon slots/barre ──
     var _cardSessions = !isBoost && comp && S.chapSessions && S.chapSessions[cat];
     if (_cardSessions && _cardSessions.length > 0) {
@@ -9114,7 +9035,7 @@ function rSection(cat, data, idx, total, catDone) {
     '<div class="bg-amber-50 border border-amber-100 rounded-xl p-3">' +
     '<div class="flex justify-between items-center mb-2">' +
     '<span class="text-[10px] syne font-black text-amber-700 uppercase tracking-wider">💡 Indices</span>' +
-    (shown < maxH ? '<button onclick="showHint(\''+cat+'\','+idx+','+maxH+')" class="text-xs font-bold text-amber-600 bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-lg">Voir +1</button>' : '') +
+    (shown < maxH ? '<button onclick="showHint(\''+cat+'\','+idx+','+maxH+')" class="text-xs font-bold text-amber-600 bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-lg">'+(maxH === 1 ? 'Voir l\'indice' : 'Voir +1')+'</button>' : '') +
     '</div>' +
     (maxH > 0 ? '<div class="space-y-1.5">'+hSteps+'</div>' : '<p class="text-amber-400 text-xs">Aucun indice disponible.</p>') +
     '</div>';
@@ -9311,11 +9232,11 @@ function toggleDraft() {
 // ══════════════════════════════════════════════════════════════
 function renderCalcButtons() {
   var cat = getDraftCat();
-  var niv = S.niv || '6EME';
+  var niv = S.niv || '3EME';
   var hasTrig = /trigono|angle|pythagore/i.test(cat);
   var hasGeo = /géomét|périmètre|aire|volume|cercle|section|agrandissement/i.test(cat);
   var hasPow = /puissance|notation.scient|racine/i.test(cat);
-  var hasFrac = /fraction|proportion/i.test(cat) || niv === '6EME';
+  var hasFrac = /fraction|proportion/i.test(cat);
   var rows = [
     [{l:'C', fn:"calcClear()", cls:'clr'}, {l:'⌫', fn:"calcBack()", cls:'clr'}, {l:'M+', fn:"calcMStore()", cls:'clr'}, {l:'MR', fn:"calcMRecall()", cls:'clr'}],
     [{l:'7', fn:"calcInput('7')"}, {l:'8', fn:"calcInput('8')"}, {l:'9', fn:"calcInput('9')"}, {l:'÷', fn:"calcInput('/')", cls:'op'}],
@@ -10018,7 +9939,12 @@ function clearNudge(id) {
 // ══════════════════════════════════════════════════════════════
 // TIMER EXERCICE — 60s doux + Mode Flow
 // ══════════════════════════════════════════════════════════════
-var TIMER_DURATION = 60; // secondes
+var TIMER_DURATION = 60; // secondes (défaut, surchargé par meta.timer)
+function _getTimerDuration() {
+  var cat = S._curCat || '';
+  var m = LVL[S.niv] && LVL[S.niv].meta && LVL[S.niv].meta[cat];
+  return (m && m.timer) || TIMER_DURATION;
+}
 var FLOW_THRESHOLD = 5;  // exos consécutifs in-time pour activer
 var FLOW_BONUS_EXOS = 5; // nb exos avec XP ×2
 
@@ -10076,28 +10002,31 @@ function _tickTimer() {
   if (!el) return;
   var elapsed = Math.floor((Date.now() - S._timerStart) / 1000);
   // Cap overtime at +5:00 — stop updating beyond that
-  if (elapsed > TIMER_DURATION + 300) {
+  var _td = _getTimerDuration();
+  if (elapsed > _td + 300) {
     clearInterval(S._timerIv); S._timerIv = null;
     var txt0 = el.querySelector('.exo-timer-txt');
     if (txt0) txt0.textContent = '+5:00';
     el.classList.add('overtime');
     return;
   }
-  var remaining = Math.max(0, TIMER_DURATION - elapsed);
+  var remaining = Math.max(0, _td - elapsed);
   var mins = Math.floor(remaining / 60);
   var secs = remaining % 60;
   // Update text
   var txt = el.querySelector('.exo-timer-txt');
-  if (txt) txt.textContent = remaining > 0 ? mins + ':' + String(secs).padStart(2, '0') : '+' + Math.floor((elapsed - TIMER_DURATION) / 60) + ':' + String((elapsed - TIMER_DURATION) % 60).padStart(2, '0');
+  if (txt) txt.textContent = remaining > 0 ? mins + ':' + String(secs).padStart(2, '0') : '+' + Math.floor((elapsed - _td) / 60) + ':' + String((elapsed - _td) % 60).padStart(2, '0');
   // Update SVG ring (circumference = 2*PI*9 ≈ 56.55)
   var ring = el.querySelector('.exo-timer-ring');
   if (ring) {
-    var pct = remaining > 0 ? remaining / TIMER_DURATION : 0;
+    var pct = remaining > 0 ? remaining / _td : 0;
     ring.style.strokeDashoffset = (56.55 * (1 - pct)).toFixed(2);
   }
-  // Overtime visual
-  if (remaining <= 0) el.classList.add('overtime');
-  else el.classList.remove('overtime');
+  // Warning + overtime visual
+  var _warn = Math.max(10, Math.ceil(_td * 0.33));
+  if (remaining <= 0) { el.classList.add('overtime'); el.classList.remove('timer-warn'); }
+  else if (remaining <= _warn) { el.classList.add('timer-warn'); el.classList.remove('overtime'); }
+  else { el.classList.remove('overtime'); el.classList.remove('timer-warn'); }
 }
 
 function _getTimerElapsed() {
@@ -10110,7 +10039,7 @@ function _checkFlowOnAnswer(status) {
   if (!_isTimerOn()) return;
   var elapsed = _getTimerElapsed();
   var _justActivated = false;
-  if (status === 'EASY' && elapsed <= TIMER_DURATION) {
+  if (status === 'EASY' && elapsed <= _getTimerDuration()) {
     S._flowStreak++;
     if (S._flowStreak >= FLOW_THRESHOLD && !S._flowActive) {
       S._flowActive = true;
@@ -10284,7 +10213,7 @@ function copyWelcomeEmail(code) {
         lacunes:         'J\'ai vu les premières réponses de ' + prenom + ' — le diagnostic a ciblé ses vrais points faibles, pas ceux de la classe entière.',
         chapitre_jour:   'L\'objectif de ' + prenom + ' : un chapitre par jour. 10 minutes suffisent pour créer l\'habitude.',
         brevet:          prenom + ' prépare le brevet. Matheux inclut des exercices style brevet et des brevets blancs complets.',
-        toutes_matieres: prenom + ' veut revoir l\'ensemble du programme. 54 chapitres couvrent du 6ème à la 1ère Spé.'
+        toutes_matieres: prenom + ' veut revoir l\'ensemble du programme. 22 chapitres couvrent tout le programme de 3ème.'
       };
       return st.objectif && _objIntros[st.objectif] ? '\n' + _objIntros[st.objectif] + '\n\n' : '';
     })() +
@@ -10372,7 +10301,7 @@ function copySequenceEmail(code, type) {
 
       toutes_matieres:
         'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\n' +
-        '54 chapitres couvrent l\'intégralité du programme de la 6ème à la 1ère Spé. ' + prenom + ' peut avancer à son rythme, sur tous les sujets qui l\'intéressent.\n\n' +
+        '22 chapitres couvrent l\'intégralité du programme de 3ème pour le Brevet. ' + prenom + ' peut avancer à son rythme, sur tous les sujets.\n\n' +
         'Pour accéder à l\'ensemble du programme, c\'est 19,99 €/mois — sans engagement.\n→ ' + stripeLink + '\n\n' +
         'Des questions ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux'
     };
@@ -10407,7 +10336,7 @@ function copySequenceEmail(code, type) {
       toutes_matieres:
         'Bonjour,\n\nLa semaine d\'essai de ' + prenom + ' se termine aujourd\'hui.\n\n' +
         'Une semaine pour explorer. ' + prenom + ' a maintenant accès à un aperçu de ce que Matheux propose : ' +
-        '54 chapitres, du 6ème au lycée, avec des exercices adaptés à son niveau réel — pas au niveau moyen de sa classe.\n\n' +
+        '22 chapitres couvrant tout le programme du Brevet, avec des exercices adaptés à son niveau réel — pas au niveau moyen de sa classe.\n\n' +
         'Pour accéder à l\'ensemble du programme sans limite :\n→ 19,99 €/mois · sans engagement · résiliable à tout moment\n→ ' + stripeLink + '\n\n' +
         'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux'
     };
@@ -12045,7 +11974,7 @@ function _renderAdminCoursHTML() {
   });
   var html = '';
   html += '<div class="bg-cyan-50 border border-cyan-200 rounded-xl px-3 py-2 mb-4 text-[11px] text-cyan-700 font-semibold">📚 Rédige les cours par chapitre. Chaque section se débloque après 5/10/15/20 exercices faits par l\'élève.</div>';
-  var levels = ['6EME','5EME','4EME','3EME','1ERE'];
+  var levels = ['3EME'];
   levels.forEach(function(niv) {
     var chaps = byLevel[niv];
     if (!chaps || chaps.length === 0) return;
@@ -12740,7 +12669,7 @@ function _buildModalHTML(st) {
     (function() {
       var allChaps = S._adminChapsByLevel || {};
       var studentNiv = st.niveau || '';
-      var levels = ['6EME', '5EME', '4EME', '3EME'].filter(function(l) { return l !== studentNiv; });
+      var levels = ['3EME'].filter(function(l) { return l !== studentNiv; });
       var currentRev = Array.isArray(st.revisionChapters) ? st.revisionChapters : [];
 
       var hr = '<details class="mb-2"><summary class="cursor-pointer flex items-center justify-between py-2 select-none">' +
@@ -12825,7 +12754,7 @@ function adminRevSelectLevel(code, level) {
   if (!container) return;
 
   // Highlight le bouton sélectionné
-  ['6EME', '5EME', '4EME', '3EME'].forEach(function(l) {
+  ['3EME'].forEach(function(l) {
     var btn = document.getElementById('adm-rev-lvl-btn-' + code + '-' + l);
     if (!btn) return;
     if (l === level) {

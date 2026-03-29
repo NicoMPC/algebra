@@ -6,14 +6,14 @@
 
 ## État global — 28 mars 2026
 
-**Matheux LANCÉ.** GAS @122. Tests 74/74. **Refonte 3ème Brevet 2026 terminée** : 22 chapitres, 484 exercices (diagnostic + curriculum + automatismes), 3 audits qualité, 0 erreur de calcul. Branche `feat/brevet-2026-architecture` prête à merger.
+**Matheux LANCÉ.** GAS @122. Tests 80/82. **Refonte 3ème Brevet 2026 LIVRÉE EN PROD** (nuit 27-28 mars) : 22 chapitres, 484 exercices, 4 audits qualité, 0 erreur calcul, migration BDD terminée, code frontend complet.
 
-**Reste** : migration BDD (data/*.json → DiagnosticExos + Curriculum_Officiel), code frontend (timer 30s automatismes, _normFill(), ordered:true), audit Phase 4.
+**Fait cette nuit :** migration BDD (484 exos injectés), timer 30s automatismes (`_getTimerDuration()`), `_normFill()` renforcé (racines/puissances/notation sci), `ordered:true`, 11 items UX/messages/gamification Automatismes, audit Phase 4 (140/140 OK).
 
 | Dimension | État |
 |---|---|
 | Tests automatisés | 74/74 (100%) + simulation 40 élèves 17/17 + simulation 21j 12 profils |
-| Couverture programme | ~100% — 54 chapitres existants + **22 chapitres Brevet 2026** (484 exos, branche feat/) |
+| Couverture programme | ~100% — 43 chapitres autres niveaux + **22 chapitres Brevet 2026 EN PROD** (484 exos) = 65 chapitres |
 | Niveau 1ERE Spé | 10 chapitres expérimentaux — backend prêt, frontend non modifié |
 | Juridique | Complet (5 pages + consentement parental + RGPD + TVA art. 293 B CGI) |
 | Paiement | Stripe PROD actif (19,99/mois) |
@@ -40,7 +40,7 @@
 
 | # | Action | Priorité |
 |---|---|---|
-| 0 | **🔥 Brevet 2026 — intégration** : merger branche, migration BDD (data/*.json → Sheets), timer 30s automatismes, _normFill() racines/π/notation sci, ordered:true fil narratif | 🔴 |
+| ~~0~~ | ~~**Brevet 2026 — intégration**~~ | ✅ FAIT 2026-03-28 |
 | 1 | **Doublons 1ERE** : 24 doublons Diag/Boost/Curriculum — non bloquant | 🟡 |
 | 2 | **Profil d'apprentissage élève** — page dédiée (3 points forts, 2 lacunes, vitesse, streak record). Cadenas overlay trial J+7. | 🟡 |
 | 3 | **Automatisation boosts nuit** — agent qui génère JSON boost depuis Scores, pousse dans Suivi. Dès 30 clients. | 🟡 |
@@ -51,7 +51,7 @@
 | 8 | Double confirmation mot de passe inscription | 🟡 |
 | 9 | Template email inscription + rapport parent (design) | 🟡 |
 | 10 | Vérif PWA mobile (install + offline + icône) | 🟡 |
-| 11 | **Fix hero P2 wording reprise partielle** — done > 0 → "Continue" au lieu de "Commence par" | 🟡 |
+| ~~11~~ | ~~**Fix hero P2 wording reprise partielle**~~ | ✅ FAIT 2026-03-28 |
 | 12 | **Archi ChapAssigned** — persister chapitres assignés dans un sheet dédié (comme DailyBoosts) au lieu du one-shot Suivi col G | 🟡 |
 
 ---
@@ -79,8 +79,8 @@
 
 | Priorité | Action | Chapitres concernés | Volume |
 |---|---|---|---|
-| 1 | **BREVET-INTÉGRATION** : Merger branche, migration BDD, code frontend | 3EME — 22 chapitres Brevet 2026 | 484 exos prêts |
-| 2 | **BREVET-AUDIT-P4** : Auditer les 140 exos Phase 4 (Puissances→Proportionnalité) | 7 chapitres Phase 4 | 140 exos |
+| ~~1~~ | ~~**BREVET-INTÉGRATION**~~ | ✅ FAIT 2026-03-28 | 484 exos en prod |
+| ~~2~~ | ~~**BREVET-AUDIT-P4**~~ | ✅ FAIT 2026-03-28 | 140/140 OK |
 | 3 | **AMÉLIO-01** : Diversifier types sur les autres niveaux (6EME→4EME, 1ERE) | Tous sauf 3EME (déjà fait) | ~280 exos |
 | 4 | **AMÉLIO-03** : Contextualisation autres niveaux | Priorité 5EME + 4EME | long terme |
 
@@ -124,7 +124,7 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 - [x] 5 pages légales + consentement parental + RGPD + GA4
 
 ### Pédagogie
-- [x] 1080 exos curriculum + 108 diag + 540 boost + 144 brevet + **484 Brevet 2026** (branche feat/)
+- [x] 1300 exos curriculum (65 chapitres) + 130 diag + 540 boost + 144 brevet — **484 Brevet 2026 EN PROD**
 
 ### UX
 - [x] Mobile-first, gamification, messages ado, onboarding premium

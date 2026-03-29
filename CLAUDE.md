@@ -2,7 +2,7 @@
 
 > Document unique. Point d'entrée + règles métier + contraintes techniques.
 > Tout ce qui n'est pas ici est dans docs/ ou dans le code.
-> GAS @117 · Lancé le 18 mars 2026
+> GAS @122 · Lancé le 18 mars 2026
 
 ---
 
@@ -99,11 +99,12 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | P4 | **Tous les chapitres accessibles** | Pas de verrou, pas de limite 1/jour |
 | P5 | **Nicolas assigne manuellement** | Prochain chapitre et prochain boost via admin |
 | P6 | **Indices progressifs** | 1-3 étapes + formule clé révélée après erreur |
-| P7 | **3 types d'exercices** | QCM (défaut), Vrai/Faux (`vf`), Trou à compléter (`fill`). Fill : rendu `___` en 2 temps — `\text{___}` dans LaTeX → `\boxed{\phantom{xx}}` avant KaTeX, puis `___` texte brut → span HTML stylé après KaTeX. Comparaison réponse via `_normFill()` : normalise `\frac{a}{b}` → `a/b`, `\times` → `×`, supprime `$`, espaces, `\text{}`. Pas de bouton "Révéler la réponse" sur les fill (guard `exoType !== 'fill'`) |
+| P7 | **3 types d'exercices** | QCM (défaut), Vrai/Faux (`vf`), Trou à compléter (`fill`). Fill : rendu `___` en 2 temps — `\text{___}` dans LaTeX → `\boxed{\phantom{xx}}` avant KaTeX, puis `___` texte brut → span HTML stylé après KaTeX. Comparaison réponse via `_normFill()` : normalise `\frac{a}{b}` → `a/b`, `\times` → `×`, `\sqrt{x}` → `sqrt(x)`, `^{-4}` → `^-4`, `*` → `×`, supprime `$`, espaces, `\text{}`. Pas de bouton "Révéler la réponse" sur les fill (guard `exoType !== 'fill'`) |
 | P8 | **Scoring tri-niveau** | EASY = correct 1er essai (succès, compte pour le %). MEDIUM = correct après indices ("hésitation", ne compte PAS). HARD = mauvaise réponse (ne compte PAS). SKIP = "Je ne sais pas" (ne compte PAS, même traitement que HARD). Différé ("Passer") = pas de score tant que non répondu. Score % = EASY / total exercices × 100. S'applique partout : scores chapitres, sessions retro, pills, flèches tendance, comparaison live |
 | P9 | **Boost rattrapage** | Si aucun boost aujourd'hui, servir le dernier boost non terminé (ExosDone < 5). Le save_score incrémente la bonne ligne. Un boost n'est jamais perdu silencieusement |
 | P10 | **Chapitre terminé — tri stable** | Quand plusieurs chapitres ont la même DernierePratique, celui avec le plus d'exos (≥20 = terminé) est prioritaire. Évite qu'un chapitre en cours masque un chapitre terminé dans l'admin |
 | P11 | **Skip = différé, pas abandonné** | "⏭️ Passer" reporte la question en fin de chapitre (pas de correction, pas de score). "🤷 Je ne sais pas" = définitif (montre correction, marque SKIP, auto-avance 2.5s). `S.deferred[cat]` tracke les différés. `nextEx()` ignore les différés puis les reprend quand tout le reste est fait. `chkComp` ne fire pas tant qu'il reste des différés |
+| P12 | **Mode Automatismes** | Chapitres AT1-AT4 (préfixe `Auto_`) : timer 30s (via champ `timer` dans JSON chapitre → `_getTimerDuration()`), Fill dominant (70%+), 0-1 step max, formule toujours vide (`f=""`), pas de QCM qui donne la réponse. Messages spécifiques `slot_*_auto`. Chapitres avec `ordered: true` : le backend ne shuffle pas les exercices (fil narratif) |
 
 ### 3.2 Trial & Conversion
 
@@ -148,7 +149,8 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | G10 | **Comparaison live** | Chapitre en cours : bandeau gris `Session en cours — xx% (n/done) ↑ vs yy%` (carte ouverte). Carte fermée : comparaison inline à côté des slots/barre (si historique). Overlay slot (5/10/15) : ligne "📈 X% vs Y% précédent". Affiché uniquement si ≥1 passage complet existe |
 | G11 | **Message anticipation** | Post-complétion boost : "Tes prochains exos sur mesure arrivent demain matin 🔥" (rendez-vous quotidien). Post-complétion chapitre : "Ton prof prépare la suite sur mesure 🎯" (visible dès que prêt, pas de promesse de date) |
 | G12 | **Timer exercice** | 60s par exercice, cercle SVG animé. Doux (bleu→ambre après 60s), aucune pénalité. Désactivable via clic toggle (persisté `mx_timer_{code}`). Pas affiché sur CALIBRAGE. Coach tip `tip_timer` au premier usage |
-| G13 | **Mode Flow** | 5 exos EASY consécutifs répondus en ≤60s → XP ×2 pendant 5 exos. Overlay activation. Badge ⚡×2 dans gamif-row. Multiplie uniquement les XP exercices (pas slot/daily/chapitre). Reset streak si HARD/SKIP/overtime (sauf si flow déjà actif) |
+| G13 | **Mode Flow** | 5 exos EASY consécutifs répondus en ≤`_getTimerDuration()`s (60s standard, 30s automatismes) → XP ×2 pendant 5 exos. Overlay activation. Badge ⚡×2 dans gamif-row. Multiplie uniquement les XP exercices (pas slot/daily/chapitre). Reset streak si HARD/SKIP/overtime (sauf si flow déjà actif) |
+| G14 | **Timer configurable** | `_getTimerDuration()` lit `LVL[S.niv].meta[cat].timer` (défaut 60s). Automatismes = 30s. Champ `timer` dans JSON chapitre (Curriculum_Officiel col Timer, ou publishAdminChapter param `timer`). Le flow mode, l'overtime et le ring SVG utilisent tous cette valeur |
 
 ### 3.5 Admin
 
@@ -269,6 +271,7 @@ Quand Nicolas veut ajouter un élève déjà connu (visio en cours) **sans lui f
 | V7 | ~~Calibrage pollue tri chapitres + flèches tendance~~ | ✅ FIXÉ | `S.chapTouched` + filtre `r.source !== 'CALIBRAGE'` dans sessions (2026-03-22) |
 | V8 | ~~Doublons scores (retry réseau + bypass adminMode)~~ | ✅ FIXÉ | Backend dedup (code+cat+idx+date) dans `_saveScoreInner` + retiré bypass `!S.adminMode` dans `sendScore` frontend (2026-03-26) |
 | V9 | ~~Override same-day : V1 scores non filtrés~~ | ✅ FIXÉ | `<` → `<=` sur 3 occurrences de comparaison `date <= ovDate` (score loading, retro sessions, prev retro modal). Grep 0 restant (2026-03-26) |
+| V10 | nextChapter one-shot (Suivi col G consommé au login) | 🟠 HAUTE | **Fix partiel** : admin login read-only (@122) ne consomme plus nextChapter. **Fix long terme à faire** : persister les chapitres assignés dans un sheet `ChapAssigned` (comme DailyBoosts pour les boosts) au lieu du one-shot col G |
 
 ---
 

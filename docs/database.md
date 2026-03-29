@@ -13,6 +13,13 @@
 
 Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 
+### Script Properties (GAS PropertiesService)
+
+| Clé | Rôle |
+|---|---|
+| `SHARED_SECRET` | Secret HMAC pour webhook Stripe |
+| `ADMIN_MASTER_PWD` | Master password admin — permet de se connecter sur n'importe quel compte élève en mode read-only (ne consomme pas nextChapter/nextBoost, n'écrit pas DailyBoosts, ne rebuildSuivi pas). Configurer dans Apps Script → Paramètres → Propriétés de script |
+
 ---
 
 ## Onglets — Vue d'ensemble
@@ -142,6 +149,8 @@ Supprimés par `cleanup_all` le 14 mars 2026 : `_ARCHIVE_Queue`, `_ARCHIVE_Prere
 | C | Titre | String | Nom affiché (ex: `Fractions 🍕`) |
 | D | Icone | String | Emoji |
 | E | ExosJSON | String | JSON tableau de 20 exercices |
+| F | Timer | Number | *(optionnel)* Durée timer en secondes (défaut 60). `30` pour Automatismes |
+| G | Ordered | Boolean | *(optionnel)* `true` = exercices non mélangés (fil narratif) |
 
 **Format exercice :**
 ```json
