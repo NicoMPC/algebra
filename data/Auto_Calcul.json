@@ -1,186 +1,377 @@
-{
-  "niveau": "3EME",
-  "categorie": "Auto_Calcul",
-  "titre": "Automatismes — Calcul",
-  "icone": "\u26a1",
-  "timer": 30,
-  "exos": [
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Calcule : $7^2 = $ ___",
-      "a": "49",
-      "options": [],
-      "steps": ["$7^2 = 7 \\times 7 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Calcule : $12^2 = $ ___",
-      "a": "144",
-      "options": [],
-      "steps": ["$12^2 = 12 \\times 12 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Calcule : $(-5)^2 = $ ___",
-      "a": "25",
-      "options": [],
-      "steps": ["Un carr\u00e9 est toujours positif : $(-5)^2 = (-5) \\times (-5) = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Calcule : $(-3)^3 = $ ___",
-      "a": "-27",
-      "options": [],
-      "steps": ["$(-3)^3 = (-3) \\times (-3) \\times (-3) = 9 \\times (-3) = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "q": "Calcule : $15 \\times 8 - 20$.",
-      "a": "$100$",
-      "options": ["$100$", "$80$", "$140$"],
-      "steps": ["$15 \\times 8 = 120$, puis $120 - 20 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Calcule : $\\frac{3}{4} + \\frac{1}{6} = $ ___",
-      "a": "11/12",
-      "options": [],
-      "steps": ["D\u00e9nominateur commun $12$ : $\\frac{9}{12} + \\frac{2}{12} = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Calcule : $\\frac{5}{3} \\times \\frac{9}{10} = $ ___",
-      "a": "3/2",
-      "options": [],
-      "steps": ["$\\frac{5 \\times 9}{3 \\times 10} = \\frac{45}{30}$, on simplifie par $15$ : ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Calcule : $\\frac{7}{2} \\div \\frac{3}{4} = $ ___",
-      "a": "14/3",
-      "options": [],
-      "steps": ["Diviser par une fraction = multiplier par son inverse : $\\frac{7}{2} \\times \\frac{4}{3} = \\frac{28}{6}$, on simplifie : ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "$\\frac{6}{8}$ est une fraction irr\u00e9ductible.",
-      "a": "Faux",
-      "options": ["Vrai", "Faux"],
-      "steps": ["$6$ et $8$ sont tous les deux divisibles par $2$ : $\\frac{6}{8} = \\frac{3}{4}$."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Calcule : $\\frac{5}{6} - \\frac{3}{8} = $ ___",
-      "a": "11/24",
-      "options": [],
-      "steps": ["D\u00e9nominateur commun $24$ : $\\frac{20}{24} - \\frac{9}{24} = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Calcule : $10^3 \\times 10^{-5} = $ ___",
-      "a": "$10^{-2}$",
-      "options": [],
-      "steps": ["On additionne les exposants : $10^{3+(-5)} = 10^{?}$"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "\u00c9cris $0{,}00056$ en notation scientifique : ___",
-      "a": "$5{,}6 \\times 10^{-4}$",
-      "options": [],
-      "steps": ["On d\u00e9place la virgule de $4$ rangs vers la droite pour obtenir $5{,}6$, donc l'exposant est $-4$."],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "$3{,}2 \\times 10^5 = 320\\,000$",
-      "a": "Vrai",
-      "options": ["Vrai", "Faux"],
-      "steps": ["$3{,}2 \\times 10^5 = 3{,}2 \\times 100\\,000 = 320\\,000$. C'est correct."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "q": "Quel est l'ordre de grandeur de $6{,}8 \\times 10^{-3}$ ?",
-      "a": "$10^{-2}$",
-      "options": ["$10^{-2}$", "$10^{-3}$", "$10^{-1}$"],
-      "steps": ["$6{,}8 \\geq 5$, donc on arrondit \u00e0 la puissance sup\u00e9rieure : l'ordre de grandeur est $10^{?}$."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Calcule : $\\frac{10^4 \\times 10^{-2}}{10^3} = $ ___",
-      "a": "$10^{-1}$",
-      "options": [],
-      "steps": ["Num\u00e9rateur : $10^{4+(-2)} = 10^2$. Puis $\\frac{10^2}{10^3} = 10^{2-3} = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "q": "Que vaut $\\sqrt{49}$ ?",
-      "a": "$7$",
-      "options": ["$7$", "$49$", "$\\sqrt{7}$"],
-      "steps": ["$7 \\times 7 = 49$, donc $\\sqrt{49} = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Calcule : $\\sqrt{144} = $ ___",
-      "a": "12",
-      "options": [],
-      "steps": ["$12 \\times 12 = 144$, donc $\\sqrt{144} = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Simplifie : $\\sqrt{50} = $ ___",
-      "a": "$5\\sqrt{2}$",
-      "options": [],
-      "steps": ["$50 = 25 \\times 2$, donc $\\sqrt{50} = \\sqrt{25} \\times \\sqrt{2} = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "$\\sqrt{9 + 16} = \\sqrt{9} + \\sqrt{16}$",
-      "a": "Faux",
-      "options": ["Vrai", "Faux"],
-      "steps": ["$\\sqrt{9+16} = \\sqrt{25} = 5$, mais $\\sqrt{9} + \\sqrt{16} = 3 + 4 = 7$. Ce n'est pas \u00e9gal."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Simplifie : $\\sqrt{12} + \\sqrt{27} = $ ___",
-      "a": "$5\\sqrt{3}$",
-      "options": [],
-      "steps": ["$\\sqrt{12} = 2\\sqrt{3}$ et $\\sqrt{27} = 3\\sqrt{3}$, donc $2\\sqrt{3} + 3\\sqrt{3} = $ ?"],
-      "f": ""
-    }
-  ]
-}
+[
+  {
+    "id": "ACALC_01",
+    "title": "Courses au supermarché",
+    "context": "Tu accompagnes ta mère au supermarché. Vous devez calculer rapidement les réductions et les parts sans calculatrice.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Un paquet de céréales coûte $4$ €. Il est à $-50\\%$. Quel est le prix réduit ? ___ €",
+        "a": "2",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$50\\%$ de $4$ € $= \\frac{4}{2} = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Une pizza coûte $12$ €. Tu en manges $\\frac{3}{4}$. Combien coûte la part que tu as mangée ? ___ €",
+        "a": "9",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$\\frac{3}{4} \\times 12 = \\frac{3 \\times 12}{4} = \\frac{36}{4} = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Un lot de $6$ yaourts coûte $3$ €. Quel est le prix d'un yaourt ?",
+        "a": "$0{,}50$ €",
+        "type": "qcm",
+        "options": [
+          "$0{,}50$ €",
+          "$0{,}60$ €",
+          "$2$ €"
+        ],
+        "steps": [
+          "$\\frac{3}{6} = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "$\\frac{1}{3} + \\frac{1}{6}$ de la recette est payé par toi. Cela fait $\\frac{1}{2}$ de la recette.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Dénominateur commun $6$ : $\\frac{2}{6} + \\frac{1}{6} = \\frac{3}{6} = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Un article affiché $20$ € est soldé à $-25\\%$. Tu as un bon de $3$ € en plus. Combien paies-tu ?",
+        "a": "$12$ €",
+        "type": "qcm",
+        "options": [
+          "$12$ €",
+          "$15$ €",
+          "$10$ €"
+        ],
+        "steps": [
+          "$25\\%$ de $20 = 5$ €, donc prix soldé $= 20 - 5 = 15$ €. Puis $15 - 3 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "ACALC_02",
+    "title": "Records et mesures scientifiques",
+    "context": "Petit quiz de culture scientifique : carrés, racines et puissances de $10$ sont partout dans la nature !",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule : $9^2 = $ ___",
+        "a": "81",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$9^2 = 9 \\times 9 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Calcule : $\\sqrt{144} = $ ___",
+        "a": "12",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Quel nombre au carré donne $144$ ? $12 \\times 12 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Combien vaut $10^5$ ?",
+        "a": "$100\\,000$",
+        "type": "qcm",
+        "options": [
+          "$100\\,000$",
+          "$10\\,000$",
+          "$1\\,000\\,000$"
+        ],
+        "steps": [
+          "$10^5 = 1$ suivi de $5$ zéros $= $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "$\\sqrt{64} + \\sqrt{36} = \\sqrt{100}$.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "$\\sqrt{64} = 8$ et $\\sqrt{36} = 6$, donc $8 + 6 = 14$.",
+          "Or $\\sqrt{100} = 10$. Et $14 \\neq 10$, donc ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "L'épaisseur d'un cheveu est environ $0{,}00008$ m. En écriture scientifique, cela donne :",
+        "a": "$8 \\times 10^{-5}$ m",
+        "type": "qcm",
+        "options": [
+          "$8 \\times 10^{-5}$ m",
+          "$8 \\times 10^{-4}$ m",
+          "$0{,}8 \\times 10^{-4}$ m"
+        ],
+        "steps": [
+          "On décale la virgule de $5$ rangs vers la droite pour obtenir $8$.",
+          "Donc $0{,}00008 = 8 \\times 10^{?}$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "ACALC_03",
+    "title": "Organiser une fête",
+    "context": "Tu organises une fête avec tes amis. Il faut répartir $36$ invités en groupes égaux pour les activités.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Peut-on répartir $36$ invités en groupes de $4$ sans qu'il en reste ?",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "$36 \\div 4 = 9$. Le reste est $0$, donc ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Parmi ces nombres, lequel est un diviseur de $36$ ?",
+        "a": "$9$",
+        "type": "qcm",
+        "options": [
+          "$9$",
+          "$7$",
+          "$8$"
+        ],
+        "steps": [
+          "$36 \\div 9 = 4$ (reste $0$), $36 \\div 7 = 5$ reste $1$, $36 \\div 8 = 4$ reste $4$. Donc ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Tu veux aussi acheter des bonbons par paquets de $5$. Il te faut exactement $42$ bonbons. Quel est le reste de la division de $42$ par $5$ ? ___",
+        "a": "2",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$42 = 5 \\times 8 + $ ? Donc le reste est ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Lequel de ces nombres est premier ?",
+        "a": "$29$",
+        "type": "qcm",
+        "options": [
+          "$29$",
+          "$27$",
+          "$33$"
+        ],
+        "steps": [
+          "$27 = 3 \\times 9$ (pas premier). $33 = 3 \\times 11$ (pas premier).",
+          "$29$ : pas divisible par $2, 3, 5$. Et $\\sqrt{29} < 6$, donc on teste jusqu'à $5$. Aucun diviseur trouvé : ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Tu veux faire des équipes égales avec $36$ invités ET $24$ lots de tombola (même nombre d'équipes pour les deux). Quel est le plus grand nombre d'équipes possible ? ___",
+        "a": "12",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On cherche le PGCD de $36$ et $24$.",
+          "Diviseurs de $36$ : $1, 2, 3, 4, 6, 9, 12, 18, 36$. Diviseurs de $24$ : $1, 2, 3, 4, 6, 8, 12, 24$.",
+          "Le plus grand commun est ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "ACALC_04",
+    "title": "Quiz de rapidité entre amis",
+    "context": "Tu défies tes amis sur un quiz de calcul mental : celui qui répond le plus vite gagne !",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule : $\\frac{3}{4} \\times 100 = $ ___",
+        "a": "75",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$\\frac{3 \\times 100}{4} = \\frac{300}{4} = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "$0{,}001$ est égal à :",
+        "a": "$10^{-3}$",
+        "type": "qcm",
+        "options": [
+          "$10^{-3}$",
+          "$10^{-2}$",
+          "$10^{-4}$"
+        ],
+        "steps": [
+          "$0{,}001 = \\frac{1}{1000} = \\frac{1}{10^3} = 10^{?}$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "$2{,}5 \\times 10^3 = 250$.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "$2{,}5 \\times 10^3 = 2{,}5 \\times 1000 = $ ?",
+          "On obtient $2500$, pas $250$. Donc ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Convertis : $3{,}5$ km $= $ ___ m",
+        "a": "3500",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$1$ km $= 1000$ m, donc $3{,}5 \\times 1000 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Quel nombre est à la fois un carré parfait ET un multiple de $9$ ?",
+        "a": "$36$",
+        "type": "qcm",
+        "options": [
+          "$36$",
+          "$27$",
+          "$49$"
+        ],
+        "steps": [
+          "$36 = 6^2$ (carré parfait) et $36 = 9 \\times 4$ (multiple de $9$).",
+          "$27 = 9 \\times 3$ mais $\\sqrt{27}$ n'est pas entier. $49 = 7^2$ mais $49 \\div 9 = 5$ reste $4$. Donc ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

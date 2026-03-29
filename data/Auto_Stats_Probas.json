@@ -1,187 +1,314 @@
-{
-  "niveau": "3EME",
-  "categorie": "Auto_Stats_Probas",
-  "titre": "Automatismes — Stats & Probas",
-  "icone": "\u26a1",
-  "timer": 30,
-  "exos": [
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Un diagramme en barres montre les effectifs suivants : Lundi = 5, Mardi = 8, Mercredi = 3, Jeudi = 7, Vendredi = 2. Quel est l'effectif total ?",
-      "a": "25",
-      "options": [],
-      "steps": ["$5 + 8 + 3 + 7 + 2 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Un diagramme montre : Pommes = 12, Poires = 9, Bananes = 15, Cerises = 4. Quel fruit a le plus grand effectif ?",
-      "a": "Bananes",
-      "options": [],
-      "steps": ["On compare : $15 > 12 > 9 > 4$"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "Un diagramme montre : Mars = 6, Avril = 11, Mai = 8. L'effectif d'Avril est le double de celui de Mars.",
-      "a": "Faux",
-      "options": ["Vrai", "Faux"],
-      "steps": ["Le double de $6$ serait $12$, or Avril $= 11$"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Dans un tableau d'effectifs : Sport = 14, Musique = 6, Dessin = 10. Quelle est la fréquence du Sport ? Donne la fraction irréductible.",
-      "a": "7/15",
-      "options": [],
-      "steps": ["Effectif total $= 30$. Fréquence $= \\frac{14}{30} = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Un diagramme circulaire montre : Rouge = 50%, Bleu = 30%, Vert = le reste. Quel est le pourcentage de Vert ?",
-      "a": "20%",
-      "options": [],
-      "steps": ["$100\\% - 50\\% - 30\\% = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Calcule la moyenne de $8$, $12$ et $10$.",
-      "a": "10",
-      "options": [],
-      "steps": ["$\\frac{8 + 12 + 10}{3} = \\frac{30}{3} = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Calcule la moyenne de $15$, $9$ et $6$.",
-      "a": "10",
-      "options": [],
-      "steps": ["$\\frac{15 + 9 + 6}{3} = \\frac{30}{3} = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "La moyenne de $7$ et $13$ est $9$.",
-      "a": "Faux",
-      "options": ["Vrai", "Faux"],
-      "steps": ["$\\frac{7 + 13}{2} = \\frac{20}{2} = 10 \\neq 9$"],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Moyenne pondérée : note $15$ (coefficient $2$) et note $9$ (coefficient $1$). Résultat ?",
-      "a": "13",
-      "options": [],
-      "steps": ["$\\frac{15 \\times 2 + 9 \\times 1}{2 + 1} = \\frac{39}{3} = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "q": "La moyenne de $4$, $6$, $8$ et $14$ est :",
-      "a": "$8$",
-      "options": ["$8$", "$7$", "$9$"],
-      "steps": ["$\\frac{4 + 6 + 8 + 14}{4} = \\frac{32}{4} = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Un sac contient $3$ billes rouges et $7$ billes bleues. Quelle est la probabilité de tirer une bille rouge ? Donne la fraction.",
-      "a": "3/10",
-      "options": [],
-      "steps": ["$P = \\frac{\\text{cas favorables}}{\\text{cas possibles}} = \\frac{3}{10}$"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "On lance un dé à $6$ faces. Quelle est la probabilité d'obtenir un multiple de $3$ ? Donne la fraction irréductible.",
-      "a": "1/3",
-      "options": [],
-      "steps": ["Multiples de $3$ : $\\{3 ; 6\\}$ soit $2$ cas sur $6$ $= \\frac{2}{6} = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "Si $P(A) = 0{,}3$ alors $P(\\overline{A}) = 0{,}7$.",
-      "a": "Vrai",
-      "options": ["Vrai", "Faux"],
-      "steps": ["$P(\\overline{A}) = 1 - P(A) = 1 - 0{,}3 = 0{,}7$"],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "On tire une carte au hasard dans un jeu de $32$ cartes. Quelle est la probabilité d'obtenir un roi ? Donne la fraction irréductible.",
-      "a": "1/8",
-      "options": [],
-      "steps": ["$4$ rois sur $32$ cartes : $\\frac{4}{32} = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "q": "On lance un dé à $6$ faces. Quelle est la probabilité d'obtenir un nombre strictement supérieur à $4$ ?",
-      "a": "$\\frac{1}{3}$",
-      "options": ["$\\frac{1}{3}$", "$\\frac{1}{2}$", "$\\frac{2}{3}$"],
-      "steps": ["Nombres $> 4$ : $\\{5 ; 6\\}$ soit $2$ cas sur $6$"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Calcule : $20\\%$ de $150$ $=$ ___",
-      "a": "30",
-      "options": [],
-      "steps": ["$\\frac{20}{100} \\times 150 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Un prix passe de $80$~euros à $100$~euros. Quel est le pourcentage d'augmentation ?",
-      "a": "25%",
-      "options": [],
-      "steps": ["Augmentation $= 20$~euros. $\\frac{20}{80} \\times 100 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Calcule : $15\\%$ de $200$ $=$ ___",
-      "a": "30",
-      "options": [],
-      "steps": ["$\\frac{15}{100} \\times 200 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "Augmenter un prix de $50\\%$ puis le diminuer de $50\\%$ revient au prix initial.",
-      "a": "Faux",
-      "options": ["Vrai", "Faux"],
-      "steps": ["Ex : $100 \\xrightarrow{+50\\%} 150 \\xrightarrow{-50\\%} 75 \\neq 100$"],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Après une réduction de $30\\%$, un article coûte $35$~euros. Quel était le prix initial ?",
-      "a": "50",
-      "options": [],
-      "steps": ["$70\\%$ du prix $= 35$, donc prix $= \\frac{35}{0{,}7} = $ ?"],
-      "f": ""
-    }
-  ]
-}
+[
+  {
+    "id": "AUTSP_01",
+    "title": "Le sac de jetons de Marius",
+    "context": "Marius a un sac opaque contenant des jetons de couleur. Il tire un jeton au hasard.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Combien y a-t-il de jetons au total dans le sac ? ___",
+        "a": "20",
+        "type": "fill",
+        "options": [],
+        "steps": ["$5 + 8 + 3 + 4 = $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["Couleur", "Rouge", "Bleu", "Vert", "Jaune"],
+          "rows": [["Nombre", "5", "8", "3", "4"]],
+          "caption": "Contenu du sac de Marius"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la probabilité de tirer un jeton bleu ? ___",
+        "a": "2/5",
+        "type": "fill",
+        "options": [],
+        "steps": ["$8$ jetons bleus sur $20$ au total. $\\frac{8}{20}$ se simplifie par $4$ : ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Quelle couleur a la plus faible probabilité d'être tirée ?",
+        "a": "Vert",
+        "type": "qcm",
+        "options": ["Rouge", "Vert", "Jaune"],
+        "steps": ["La couleur la moins représentée a la plus faible probabilité. Compare : $5$, $3$, $4$ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "La probabilité de tirer un jeton rouge est $\\frac{1}{5}$.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": ["$P(\\text{rouge}) = \\frac{5}{20} = \\frac{1}{4}$, pas $\\frac{1}{5}$"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Quelle est la probabilité de NE PAS tirer un jeton vert ?",
+        "a": "$\\frac{17}{20}$",
+        "type": "qcm",
+        "options": ["$\\frac{17}{20}$", "$\\frac{3}{20}$", "$\\frac{7}{10}$"],
+        "steps": ["$P(\\text{pas vert}) = 1 - P(\\text{vert}) = 1 - \\frac{3}{20} = $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "AUTSP_02",
+    "title": "Le sondage au collège Voltaire",
+    "context": "On a demandé à $50$ élèves de 3ème quel sport ils préfèrent.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Quel sport est le plus populaire ? ___",
+        "a": "Foot",
+        "type": "fill",
+        "options": [],
+        "steps": ["Compare les effectifs : $20 > 15 > 10 > 5$. Le plus grand est ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["Sport", "Foot", "Basket", "Natation", "Tennis"],
+          "rows": [["Effectif", "20", "15", "10", "5"]],
+          "caption": "Sport préféré des élèves de 3ème"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la fréquence du Basket ? ___",
+        "a": "3/10",
+        "type": "fill",
+        "options": [],
+        "steps": ["Fréquence $= \\frac{15}{50}$. Simplifie par $5$ : ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Quel pourcentage des élèves préfèrent le Foot ?",
+        "a": "40 %",
+        "type": "qcm",
+        "options": ["40 %", "20 %", "50 %"],
+        "steps": ["$\\frac{20}{50} = \\frac{40}{100}$. Donc ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "La Natation représente $25\\%$ des réponses.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": ["$\\frac{10}{50} = \\frac{20}{100} = 20\\%$, pas $25\\%$"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Si on interroge un élève au hasard, quelle est la probabilité qu'il préfère le Tennis ?",
+        "a": "$\\frac{1}{10}$",
+        "type": "qcm",
+        "options": ["$\\frac{1}{10}$", "$\\frac{1}{5}$", "$\\frac{5}{50}$"],
+        "steps": ["$P(\\text{Tennis}) = \\frac{5}{50} = $ ? Simplifie par $5$."],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "AUTSP_03",
+    "title": "Les notes de Jade en maths",
+    "context": "Voici les notes de Jade au 2ème trimestre de maths (sur $20$).",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Quelle est la note la plus haute de Jade ? ___",
+        "a": "16",
+        "type": "fill",
+        "options": [],
+        "steps": ["Compare toutes les notes du tableau : ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["Devoir", "DS1", "DS2", "DS3", "DS4", "DS5"],
+          "rows": [["Note", "12", "8", "14", "16", "10"]],
+          "caption": "Notes de Jade — Trimestre 2"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est l'étendue de cette série de notes ? ___",
+        "a": "8",
+        "type": "fill",
+        "options": [],
+        "steps": ["Étendue $=$ note max $-$ note min $= 16 - 8 = $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Quelle est la moyenne de Jade ?",
+        "a": "12",
+        "type": "qcm",
+        "options": ["12", "11", "13"],
+        "steps": ["$\\frac{12 + 8 + 14 + 16 + 10}{5} = \\frac{60}{5} = $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Jade a eu la moyenne (≥ $10$) à tous ses devoirs.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": ["DS2 $= 8 < 10$. Elle n'a pas eu la moyenne partout."],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Si Jade obtient $18$ au DS6, quelle sera sa nouvelle moyenne ?",
+        "a": "13",
+        "type": "qcm",
+        "options": ["13", "14", "12"],
+        "steps": ["$\\frac{60 + 18}{6} = \\frac{78}{6} = $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "AUTSP_04",
+    "title": "Le tournoi de badminton du collège",
+    "context": "Voici les résultats de $4$ joueurs lors d'un tournoi de badminton (nombre de matchs gagnés sur $10$ matchs joués chacun).",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Combien de matchs ont été joués au total dans le tournoi ? ___",
+        "a": "40",
+        "type": "fill",
+        "options": [],
+        "steps": ["$4$ joueurs $\\times$ $10$ matchs chacun $= $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["Joueur", "Léo", "Inès", "Tom", "Sara"],
+          "rows": [["Victoires", "7", "5", "8", "6"]],
+          "caption": "Résultats du tournoi de badminton"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la moyenne de victoires par joueur ?",
+        "a": "6,5",
+        "type": "qcm",
+        "options": ["6,5", "6", "7"],
+        "steps": ["$\\frac{7 + 5 + 8 + 6}{4} = \\frac{26}{4} = $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Si on choisit un match de Tom au hasard, quelle est la probabilité qu'il l'ait gagné ? ___",
+        "a": "4/5",
+        "type": "fill",
+        "options": [],
+        "steps": ["Tom a gagné $8$ matchs sur $10$. $\\frac{8}{10}$ simplifié par $2$ = ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Quel pourcentage de ses matchs Inès a-t-elle gagnés ?",
+        "a": "50 %",
+        "type": "qcm",
+        "options": ["50 %", "40 %", "60 %"],
+        "steps": ["$\\frac{5}{10} = \\frac{50}{100} = $ ?"],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Sara a gagné plus de la moitié de ses matchs.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": ["La moitié de $10$ est $5$. Sara a gagné $6 > 5$."],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

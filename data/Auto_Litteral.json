@@ -1,186 +1,346 @@
-{
-  "niveau": "3EME",
-  "categorie": "Auto_Litteral",
-  "titre": "Automatismes — Algèbre",
-  "icone": "⚡",
-  "timer": 30,
-  "exos": [
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Si $x = 3$, que vaut $2x^2 - 5$ ? ___",
-      "a": "13",
-      "options": [],
-      "steps": ["$2 \\times 3^2 - 5 = 2 \\times 9 - 5 = 18 - 5 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Si $a = -2$, que vaut $3a + 7$ ? ___",
-      "a": "1",
-      "options": [],
-      "steps": ["$3 \\times (-2) + 7 = -6 + 7 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Si $x = -4$, que vaut $x^2 + 3x$ ? ___",
-      "a": "4",
-      "options": [],
-      "steps": ["$(-4)^2 + 3 \\times (-4) = 16 - 12 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Si $t = 5$, que vaut $(2t - 3)^2$ ? ___",
-      "a": "49",
-      "options": [],
-      "steps": ["$(2 \\times 5 - 3)^2 = (10 - 3)^2 = 7^2 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Si $x = 2$, que vaut $4x^2 - x + 1$ ? ___",
-      "a": "15",
-      "options": [],
-      "steps": ["$4 \\times 2^2 - 2 + 1 = 4 \\times 4 - 2 + 1 = 16 - 2 + 1 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Développe : $3(x + 2) = $ ___",
-      "a": "$3x + 6$",
-      "options": [],
-      "steps": ["$3 \\times x + 3 \\times 2 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Factorise : $x^2 - 9 = $ ___",
-      "a": "$(x - 3)(x + 3)$",
-      "options": [],
-      "steps": ["$x^2 - 9 = x^2 - 3^2$, c'est une différence de deux carrés."],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "$3(x + 2) = 3x + 2$",
-      "a": "Faux",
-      "options": ["Vrai", "Faux"],
-      "steps": ["$3(x + 2) = 3x + 6$, pas $3x + 2$ : on distribue le $3$ sur les deux termes."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Développe : $5x(2x - 1) = $ ___",
-      "a": "$10x^2 - 5x$",
-      "options": [],
-      "steps": ["$5x \\times 2x - 5x \\times 1 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Factorise : $4x^2 - 25 = $ ___",
-      "a": "$(2x - 5)(2x + 5)$",
-      "options": [],
-      "steps": ["$4x^2 - 25 = (2x)^2 - 5^2$, c'est une différence de deux carrés."],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Développe : $(x + 5)^2 = $ ___",
-      "a": "$x^2 + 10x + 25$",
-      "options": [],
-      "steps": ["$(x + 5)^2 = x^2 + 2 \\times x \\times 5 + 5^2 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "$x^2 - 16$ est une différence de deux carrés.",
-      "a": "Vrai",
-      "options": ["Vrai", "Faux"],
-      "steps": ["$x^2 - 16 = x^2 - 4^2$ : c'est bien $a^2 - b^2$ avec $a = x$ et $b = 4$."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "q": "$9x^2 + 6x + 1$ est le carré de :",
-      "a": "$3x + 1$",
-      "options": ["$3x + 1$", "$3x - 1$", "$9x + 1$"],
-      "steps": ["$(3x)^2 = 9x^2$, $1^2 = 1$ et $2 \\times 3x \\times 1 = 6x$ : on reconnaît $(3x + 1)^2$."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "$(2x - 3)^2 = 4x^2 - 6x + 9$",
-      "a": "Faux",
-      "options": ["Vrai", "Faux"],
-      "steps": ["$(2x - 3)^2 = 4x^2 - 12x + 9$ : le double produit est $2 \\times 2x \\times 3 = 12x$, pas $6x$."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Factorise : $x^2 + 8x + 16 = $ ___",
-      "a": "$(x + 4)^2$",
-      "options": [],
-      "steps": ["$x^2 + 8x + 16 = x^2 + 2 \\times x \\times 4 + 4^2$ : on reconnaît $(x + 4)^2$."],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "$2x + 1 = 7$. $x = $ ___",
-      "a": "3",
-      "options": [],
-      "steps": ["$2x = 7 - 1 = 6$, donc $x = 6 \\div 2 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "$5x = -15$. $x = $ ___",
-      "a": "-3",
-      "options": [],
-      "steps": ["$x = \\frac{-15}{5} = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "q": "$x^2 = 49$. Les solutions sont :",
-      "a": "$7$ et $-7$",
-      "options": ["$7$ et $-7$", "$7$", "$49$"],
-      "steps": ["$x^2 = 49$ admet deux solutions : $x = 7$ et $x = -7$ car $7^2 = (-7)^2 = 49$."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "$3x - 4 = 11$. $x = $ ___",
-      "a": "5",
-      "options": [],
-      "steps": ["$3x = 11 + 4 = 15$, donc $x = 15 \\div 3 = $ ?"],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "q": "$(x - 2)(x + 3) = 0$. Les solutions sont :",
-      "a": "$2$ et $-3$",
-      "options": ["$2$ et $-3$", "$-2$ et $3$", "$2$ et $3$"],
-      "steps": ["Un produit est nul si l'un des facteurs est nul : $x - 2 = 0$ donne $x = 2$, $x + 3 = 0$ donne $x = -3$."],
-      "f": ""
-    }
-  ]
-}
+[
+  {
+    "id": "AUTO_LIT_01",
+    "title": "Formules du quotidien",
+    "context": "En cours de physique, ton professeur te demande de vérifier rapidement des calculs de formules courantes : distance, aire, vitesse… Le tout sans calculatrice, en moins de 30 secondes par question !",
+    "figure": null,
+    "figure_desc": null,
+    "ordered": true,
+    "timer": 30,
+    "questions": [
+      {
+        "num": "1",
+        "q": "La distance est donnée par $d = v \\times t$. Si $v = 4$ km/h et $t = 3$ h, que vaut $d$ en km ? ___",
+        "a": "12",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$d = 4 \\times 3 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "L'aire d'un rectangle est $A = L \\times l$. Si $L = 7$ et $l = 6$, que vaut $A$ ? ___",
+        "a": "42",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$A = 7 \\times 6 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Le périmètre d'un carré est $P = 4c$. Si $c = 8$ cm, combien vaut $P$ ?",
+        "a": "$32$ cm",
+        "type": "qcm",
+        "options": ["$32$ cm", "$24$ cm", "$64$ cm"],
+        "steps": [
+          "$P = 4 \\times 8 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "On calcule l'énergie avec $E = m \\times v^2$. Si $m = 3$ et $v = 5$, combien vaut $E$ ?",
+        "a": "$75$",
+        "type": "qcm",
+        "options": ["$75$", "$30$", "$45$"],
+        "steps": [
+          "$E = 3 \\times 5^2 = 3 \\times 25 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "La formule $C = 2x + 5$ donne le coût d'un trajet de $x$ km. Pour $x = 10$, on obtient $C = 20$.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "$C = 2 \\times 10 + 5 = 20 + 5 = $ ? Est-ce bien $20$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "AUTO_LIT_02",
+    "title": "Programme de calcul express",
+    "context": "Ton prof de maths te lance un défi : développer ou factoriser des expressions le plus vite possible. C'est un programme de calcul rapide — pas de calculatrice, juste ta tête !",
+    "figure": null,
+    "figure_desc": null,
+    "ordered": true,
+    "timer": 30,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Développe : $5(x + 3) = $ ___",
+        "a": "$5x + 15$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$5 \\times x + 5 \\times 3 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Développe : $-2(3x - 4) = $ ___",
+        "a": "$-6x + 8$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$-2 \\times 3x + (-2) \\times (-4) = $ ? Attention au signe !"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Quel est le développement de $4(2x - 1)$ ?",
+        "a": "$8x - 4$",
+        "type": "qcm",
+        "options": ["$8x - 4$", "$8x - 1$", "$6x - 4$"],
+        "steps": [
+          "$4 \\times 2x - 4 \\times 1 = $ ? On distribue le $4$ sur chaque terme."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Factorise : $6x + 18 = $ ?",
+        "a": "$6(x + 3)$",
+        "type": "qcm",
+        "options": ["$6(x + 3)$", "$3(2x + 18)$", "$6(x + 2)$"],
+        "steps": [
+          "Le facteur commun de $6x$ et $18$ est $6$. Donc $6x + 18 = 6(\\ldots + \\ldots)$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "$-3(x - 5) = -3x - 15$",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "$-3 \\times x = -3x$ ✓. Mais $-3 \\times (-5) = +15$, pas $-15$. Résultat : $-3x + 15$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "AUTO_LIT_03",
+    "title": "Identités remarquables : vrai ou faux ?",
+    "context": "Le prof affiche des égalités algébriques au tableau et te demande de dire instantanément si c'est correct ou non. Reconnais les identités remarquables au premier coup d'œil !",
+    "figure": null,
+    "figure_desc": null,
+    "ordered": true,
+    "timer": 30,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Développe : $(x + 4)^2 = $ ___",
+        "a": "$x^2 + 8x + 16$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$(a + b)^2 = a^2 + 2ab + b^2$. Ici $a = x$, $b = 4$. Donc $x^2 + 2 \\times x \\times 4 + 4^2 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "$(x - 3)^2 = x^2 - 9$",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "$(x - 3)^2 = x^2 - 2 \\times x \\times 3 + 9 = x^2 - 6x + 9$. Il manque le terme $-6x$ !"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Quel est le développement de $(x + 5)(x - 5)$ ?",
+        "a": "$x^2 - 25$",
+        "type": "qcm",
+        "options": ["$x^2 - 25$", "$x^2 + 25$", "$x^2 - 10x + 25$"],
+        "steps": [
+          "$(a + b)(a - b) = a^2 - b^2$. Ici $a = x$ et $b = 5$, donc $x^2 - 5^2 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Factorise $x^2 - 16$ en utilisant une identité remarquable : ___",
+        "a": "$(x - 4)(x + 4)$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$x^2 - 16 = x^2 - 4^2$. C'est la forme $a^2 - b^2 = (a - b)(a + b)$. Donc ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Quel est le développement de $(2x - 3)^2$ ?",
+        "a": "$4x^2 - 12x + 9$",
+        "type": "qcm",
+        "options": ["$4x^2 - 12x + 9$", "$4x^2 - 6x + 9$", "$2x^2 - 12x + 9$"],
+        "steps": [
+          "$(a - b)^2 = a^2 - 2ab + b^2$ avec $a = 2x$ et $b = 3$. Donc $(2x)^2 - 2 \\times 2x \\times 3 + 3^2 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "AUTO_LIT_04",
+    "title": "Défi inter-classes",
+    "context": "C'est le défi de calcul mental entre la 3ème A et la 3ème B ! Équations, expressions, tests d'égalité… Chaque bonne réponse rapporte un point à ton équipe. Pas de calculatrice, pas de brouillon !",
+    "figure": null,
+    "figure_desc": null,
+    "ordered": true,
+    "timer": 30,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Résous mentalement : $3x = 21$. Que vaut $x$ ? ___",
+        "a": "7",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$x = \\frac{21}{3} = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la solution de $2x + 1 = 9$ ?",
+        "a": "$x = 4$",
+        "type": "qcm",
+        "options": ["$x = 4$", "$x = 5$", "$x = 3$"],
+        "steps": [
+          "$2x = 9 - 1 = 8$, donc $x = \\frac{8}{2} = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Si $x = -2$, l'expression $x^2 - 3x + 1$ vaut $11$.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "$(-2)^2 - 3 \\times (-2) + 1 = 4 + 6 + 1 = $ ? Compare avec $11$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Développe et réduis : $(x + 2)(x - 3) = $ ___",
+        "a": "$x^2 - x - 6$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$x \\times x + x \\times (-3) + 2 \\times x + 2 \\times (-3) = x^2 - 3x + 2x - 6 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Quelle est la solution de $5x - 3 = 2x + 9$ ?",
+        "a": "$x = 4$",
+        "type": "qcm",
+        "options": ["$x = 4$", "$x = 3$", "$x = 6$"],
+        "steps": [
+          "$5x - 2x = 9 + 3$, donc $3x = 12$, donc $x = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

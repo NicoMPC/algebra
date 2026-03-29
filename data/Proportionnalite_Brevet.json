@@ -1,251 +1,374 @@
-{
-  "niveau": "3EME",
-  "categorie": "Proportionnalite_Brevet",
-  "titre": "Proportionnalité",
-  "icone": "⚖️",
-  "exos": [
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "Le tableau suivant est-il un tableau de proportionnalité ?\n| $3$ | $6$ | $9$ |\n| $5$ | $10$ | $15$ |",
-      "a": "Vrai",
-      "options": ["Vrai", "Faux"],
-      "steps": [
-        "On vérifie si le rapport entre chaque paire de valeurs est constant : $\\frac{5}{3}$, $\\frac{10}{6}$, $\\frac{15}{9}$.",
-        "On obtient $\\frac{5}{3} \\approx 1{,}67$, $\\frac{10}{6} \\approx 1{,}67$, $\\frac{15}{9} \\approx 1{,}67$. Les rapports sont tous égaux.",
-        "Que peut-on en conclure sur ce tableau ?"
-      ],
-      "f": "$\\text{Si } \\frac{y_1}{x_1} = \\frac{y_2}{x_2} = \\frac{y_3}{x_3}, \\text{ le tableau est proportionnel.}$"
-    },
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "Le tableau suivant est-il un tableau de proportionnalité ?\n| $2$ | $5$ | $8$ |\n| $6$ | $15$ | $20$ |",
-      "a": "Faux",
-      "options": ["Vrai", "Faux"],
-      "steps": [
-        "On calcule les rapports : $\\frac{6}{2} = 3$, $\\frac{15}{5} = 3$, $\\frac{20}{8} = 2{,}5$.",
-        "Le troisième rapport ($2{,}5$) est différent des deux premiers ($3$). Les rapports ne sont pas tous égaux.",
-        "Que peut-on en conclure ?"
-      ],
-      "f": "$\\text{Si } \\frac{y_1}{x_1} = \\frac{y_2}{x_2} = \\frac{y_3}{x_3}, \\text{ le tableau est proportionnel.}$"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Dans un tableau de proportionnalité, quand $x = 4$ donne $y = 14$, quel est le coefficient de proportionnalité ? ___",
-      "a": "3,5",
-      "options": [],
-      "steps": [
-        "Le coefficient de proportionnalité est le rapport $\\frac{y}{x}$.",
-        "$\\frac{14}{4} = 3{,}5$. Le coefficient vaut $?$."
-      ],
-      "f": "$k = \\frac{y}{x}$"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Un tableau de proportionnalité donne : $x = 5 \\to y = 20$ et $x = 8 \\to y = ?$. Complète la valeur manquante. ___",
-      "a": "32",
-      "options": [],
-      "steps": [
-        "On identifie le coefficient : $k = \\frac{20}{5} = 4$.",
-        "On applique : $y = k \\times x = 4 \\times 8 = ?$."
-      ],
-      "f": "$y = k \\times x$"
-    },
-    {
-      "lvl": 1,
-      "q": "Lucas achète $3$ kg de pommes pour $5{,}40$ euros. Combien paiera-t-il pour $7$ kg ?",
-      "a": "$12{,}60$ euros",
-      "options": ["$12{,}60$ euros", "$11{,}40$ euros", "$15{,}40$ euros"],
-      "steps": [
-        "On identifie le prix au kilo : $\\frac{5{,}40}{3} = 1{,}80$ euros/kg.",
-        "On calcule pour $7$ kg : $7 \\times 1{,}80 = ?$.",
-        "On obtient le prix total en euros."
-      ],
-      "f": "$y = k \\times x$"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Un article coûte $80$ euros. Après une réduction de $25\\%$, il coûte ___ euros.",
-      "a": "60",
-      "options": [],
-      "steps": [
-        "Une réduction de $25\\%$ signifie qu'on paie $75\\%$ du prix initial.",
-        "$80 \\times 0{,}75 = ?$."
-      ],
-      "f": "$\\text{Prix final} = \\text{Prix initial} \\times (1 - \\frac{t}{100})$"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Un prix augmente de $15\\%$. Le nouveau prix d'un objet à $200$ euros est ___ euros.",
-      "a": "230",
-      "options": [],
-      "steps": [
-        "Augmenter de $15\\%$ revient à multiplier par $1 + 0{,}15 = 1{,}15$.",
-        "$200 \\times 1{,}15 = ?$."
-      ],
-      "f": "$\\text{Prix final} = \\text{Prix initial} \\times (1 + \\frac{t}{100})$"
-    },
-    {
-      "lvl": 1,
-      "q": "Après une réduction de $10\\%$, un article coûte $63$ euros. Quel était son prix initial ?",
-      "a": "$70$ euros",
-      "options": ["$70$ euros", "$56{,}70$ euros", "$73$ euros"],
-      "steps": [
-        "Après $10\\%$ de réduction, on a payé $90\\%$ du prix initial. Donc $\\text{Prix initial} \\times 0{,}9 = 63$.",
-        "$\\text{Prix initial} = \\frac{63}{0{,}9} = ?$.",
-        "On divise $63$ par $0{,}9$ pour retrouver le prix de départ."
-      ],
-      "f": "$\\text{Prix initial} = \\frac{\\text{Prix final}}{1 - \\frac{t}{100}}$"
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "Augmenter un prix de $20\\%$ puis le diminuer de $20\\%$ revient au prix initial.",
-      "a": "Faux",
-      "options": ["Vrai", "Faux"],
-      "steps": [
-        "Prenons un prix de $100$ euros. Après $+20\\%$ : $100 \\times 1{,}2 = 120$ euros.",
-        "Puis $-20\\%$ : $120 \\times 0{,}8 = 96$ euros. On n'obtient pas $100$ euros.",
-        "Que peut-on en conclure sur les pourcentages successifs ?"
-      ],
-      "f": "$\\text{Coefficient global} = 1{,}2 \\times 0{,}8 = 0{,}96 \\neq 1$"
-    },
-    {
-      "lvl": 2,
-      "q": "Un prix passe de $50$ euros à $65$ euros. Quel est le pourcentage d'augmentation ?",
-      "a": "$30\\%$",
-      "options": ["$30\\%$", "$15\\%$", "$23\\%$"],
-      "steps": [
-        "On calcule l'augmentation : $65 - 50 = 15$ euros.",
-        "On rapporte au prix initial : $\\frac{15}{50} = 0{,}3$.",
-        "On convertit en pourcentage : $0{,}3 \\times 100 = ?\\%$."
-      ],
-      "f": "$\\text{Taux} = \\frac{\\text{Variation}}{\\text{Valeur initiale}} \\times 100$"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Une voiture roule à $90$ km/h pendant $2$ h $30$ min. La distance parcourue est ___ km.",
-      "a": "225",
-      "options": [],
-      "steps": [
-        "On convertit le temps : $2$ h $30$ min $= 2{,}5$ h.",
-        "$d = v \\times t = 90 \\times 2{,}5 = ?$ km."
-      ],
-      "f": "$d = v \\times t$"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Jade parcourt $45$ km en $1$ h $30$ min à vélo. Sa vitesse moyenne est ___ km/h.",
-      "a": "30",
-      "options": [],
-      "steps": [
-        "On convertit le temps : $1$ h $30$ min $= 1{,}5$ h.",
-        "$v = \\frac{d}{t} = \\frac{45}{1{,}5} = ?$ km/h."
-      ],
-      "f": "$v = \\frac{d}{t}$"
-    },
-    {
-      "lvl": 2,
-      "q": "Combien de temps faut-il pour parcourir $180$ km à $60$ km/h ?",
-      "a": "$3$ h",
-      "options": ["$3$ h", "$2$ h $30$ min", "$3$ h $30$ min"],
-      "steps": [
-        "On utilise $t = \\frac{d}{v}$.",
-        "$t = \\frac{180}{60} = ?$ h."
-      ],
-      "f": "$t = \\frac{d}{v}$"
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "Si on double la vitesse d'un véhicule (distance constante), le temps de trajet est divisé par $2$.",
-      "a": "Vrai",
-      "options": ["Vrai", "Faux"],
-      "steps": [
-        "On part de $t = \\frac{d}{v}$. Si $v$ est remplacé par $2v$ : $t' = \\frac{d}{2v} = \\frac{1}{2} \\times \\frac{d}{v} = \\frac{t}{2}$.",
-        "Le nouveau temps est bien la moitié de l'ancien.",
-        "Que peut-on en conclure sur le lien entre vitesse et temps ?"
-      ],
-      "f": "$t = \\frac{d}{v}$"
-    },
-    {
-      "lvl": 2,
-      "q": "Un train roule à $108$ km/h. Quelle est sa vitesse en m/s ?",
-      "a": "$30$ m/s",
-      "options": ["$30$ m/s", "$38{,}9$ m/s", "$10{,}8$ m/s"],
-      "steps": [
-        "Pour convertir des km/h en m/s, on divise par $3{,}6$.",
-        "$\\frac{108}{3{,}6} = ?$ m/s.",
-        "On obtient la vitesse en mètres par seconde."
-      ],
-      "f": "$v_{\\text{m/s}} = \\frac{v_{\\text{km/h}}}{3{,}6}$"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Sur une carte au $1/25\\,000$, deux villes sont séparées de $8$ cm. La distance réelle entre ces deux villes est ___ km.",
-      "a": "2",
-      "options": [],
-      "steps": [
-        "Échelle $1/25\\,000$ signifie que $1$ cm sur la carte $= 25\\,000$ cm en réalité.",
-        "$8 \\times 25\\,000 = 200\\,000$ cm $= 2\\,000$ m $= ?$ km."
-      ],
-      "f": "$d_{\\text{réelle}} = d_{\\text{carte}} \\times \\text{échelle}$"
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Toujours sur la même carte au $1/25\\,000$, un lac mesure $500$ m en réalité. Sa longueur sur la carte est ___ cm.",
-      "a": "2",
-      "options": [],
-      "steps": [
-        "On convertit : $500$ m $= 50\\,000$ cm.",
-        "$d_{\\text{carte}} = \\frac{50\\,000}{25\\,000} = ?$ cm."
-      ],
-      "f": "$d_{\\text{carte}} = \\frac{d_{\\text{réelle}}}{\\text{échelle}}$"
-    },
-    {
-      "lvl": 2,
-      "q": "Hugo marche à $5$ km/h entre les deux villes distantes de $2$ km. Combien de temps met-il ?",
-      "a": "$24$ min",
-      "options": ["$24$ min", "$20$ min", "$30$ min"],
-      "steps": [
-        "On calcule le temps : $t = \\frac{d}{v} = \\frac{2}{5} = 0{,}4$ h.",
-        "$0{,}4$ h $= 0{,}4 \\times 60 = ?$ min.",
-        "On convertit les heures décimales en minutes."
-      ],
-      "f": "$t = \\frac{d}{v}$"
-    },
-    {
-      "lvl": 2,
-      "q": "Si l'échelle d'une carte passe de $1/25\\,000$ à $1/50\\,000$, comment changent les distances mesurées sur la carte ?",
-      "a": "Elles sont $2$ fois plus petites",
-      "options": ["Elles sont $2$ fois plus petites", "Elles sont $2$ fois plus grandes", "Elles ne changent pas"],
-      "steps": [
-        "À $1/25\\,000$ : $1$ cm carte $= 250$ m. À $1/50\\,000$ : $1$ cm carte $= 500$ m.",
-        "Pour une même distance réelle, il faut $2$ fois moins de cm sur la carte au $1/50\\,000$.",
-        "Plus le dénominateur de l'échelle est grand, plus la carte est \"zoomée out\"."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "q": "Sur la carte au $1/25\\,000$, l'aire du lac est $0{,}8$ cm$^2$. Quelle est l'aire réelle du lac ?",
-      "a": "$5$ ha",
-      "options": ["$5$ ha", "$0{,}5$ ha", "$20\\,000$ m$^2$"],
-      "steps": [
-        "Pour les aires, on met l'échelle au carré : $(25\\,000)^2 = 625\\,000\\,000$.",
-        "$0{,}8 \\times 625\\,000\\,000 = 500\\,000\\,000$ cm$^2$. On convertit : $500\\,000\\,000 \\div 10\\,000 = 50\\,000$ m$^2$.",
-        "$1$ ha $= 10\\,000$ m$^2$, donc $50\\,000 \\div 10\\,000 = ?$ ha."
-      ],
-      "f": "$A_{\\text{réelle}} = A_{\\text{carte}} \\times (\\text{échelle})^2$"
-    }
-  ]
-}
+[
+  {
+    "id": "PROP_01",
+    "title": "Les courses au marché",
+    "context": "Jade fait ses courses au marché. Elle achète des fruits vendus au kilo. Voici les prix relevés sur l'étal du primeur.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "D'après le tableau, quel est le prix au kilo des pommes ?",
+        "a": "$3{,}50$ €",
+        "type": "qcm",
+        "options": ["$3{,}50$ €", "$7$ €", "$1{,}75$ €"],
+        "steps": [
+          "Le prix au kilo = prix total $\\div$ masse achetée.",
+          "$2$ kg coûtent $7$ €, donc $1$ kg coûte $\\frac{7}{2} = ?$ €"
+        ],
+        "f": "$\\text{Prix unitaire} = \\frac{\\text{Prix total}}{\\text{Quantité}}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": {
+          "headers": ["Fruit", "Masse (kg)", "Prix (€)"],
+          "rows": [
+            ["Pommes", "2", "7"],
+            ["Poires", "1,5", "?"],
+            ["Bananes", "3", "8,40"]
+          ],
+          "caption": "Prix des fruits au marché"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Le prix des bananes est-il proportionnel à la masse achetée si $1$ kg coûte $2{,}80$ € ?",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Si le prix est proportionnel, alors $\\frac{\\text{prix}}{\\text{masse}}$ doit être constant.",
+          "$\\frac{8{,}40}{3} = ?$. Compare avec $2{,}80$ €/kg."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Les poires coûtent $4{,}20$ € le kilo. Combien Jade paie-t-elle pour $1{,}5$ kg ? ___",
+        "a": "6,30",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Prix = prix au kilo $\\times$ masse achetée.",
+          "$4{,}20 \\times 1{,}5 = ?$"
+        ],
+        "f": "$\\text{Prix total} = \\text{prix unitaire} \\times \\text{quantité}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Jade achète $2{,}5$ kg de pommes et $1$ kg de bananes. Combien paie-t-elle en tout ? ___",
+        "a": "11,55",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Pommes : $2{,}5 \\times 3{,}50 = ?$ €. Bananes : $1 \\times 2{,}80 = ?$ €.",
+          "Total = somme des deux prix : $? + ? = ?$ €"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Un autre primeur vend les pommes $9{,}80$ € les $2{,}5$ kg. Quel étal propose le meilleur prix au kilo ?",
+        "a": "Le premier étal ($3{,}50$ €/kg)",
+        "type": "qcm",
+        "options": ["Le premier étal ($3{,}50$ €/kg)", "Le second étal ($3{,}92$ €/kg)", "Les deux sont identiques"],
+        "steps": [
+          "Second étal : prix au kilo $= \\frac{9{,}80}{2{,}5} = ?$ €/kg.",
+          "Compare les deux prix au kilo : $3{,}50$ et $?$. Lequel est le plus petit ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "PROP_02",
+    "title": "Les soldes chez SportMax",
+    "context": "Hugo repère des articles en soldes dans le magasin SportMax. Les remises sont affichées en pourcentage sur chaque rayon.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Un sweat à $45$ € est soldé à $-20\\%$. Quel est le montant de la réduction ? ___",
+        "a": "9",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Réduction $= 45 \\times \\frac{20}{100} = ?$ €",
+          "On calcule $45 \\times 0{,}20 = ?$"
+        ],
+        "f": "$\\text{Réduction} = \\text{prix initial} \\times \\frac{t}{100}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quel est le prix soldé du sweat après la réduction de $20\\%$ ?",
+        "a": "$36$ €",
+        "type": "qcm",
+        "options": ["$36$ €", "$25$ €", "$40{,}50$ €"],
+        "steps": [
+          "Prix soldé $= 45 - ?$ (la réduction trouvée à la question précédente).",
+          "Ou directement : $45 \\times (1 - 0{,}20) = 45 \\times ? = ?$"
+        ],
+        "f": "$\\text{Prix soldé} = \\text{prix initial} \\times (1 - \\frac{t}{100})$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Des baskets coûtaient $80$ € et sont maintenant vendues $60$ €. Le taux de réduction est de $25\\%$.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Réduction en euros : $80 - 60 = 20$ €.",
+          "Taux $= \\frac{20}{80} \\times 100 = ?\\%$. Compare avec $25\\%$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Un sac à dos est affiché à $56$ € après une remise de $30\\%$. Quel était son prix initial ? ___",
+        "a": "80",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Après $-30\\%$, le prix soldé $= \\text{prix initial} \\times 0{,}70$.",
+          "$\\text{prix initial} = \\frac{56}{0{,}70} = ?$"
+        ],
+        "f": "$\\text{Prix initial} = \\frac{\\text{prix soldé}}{1 - \\frac{t}{100}}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Hugo hésite entre deux magasins. SportMax affiche $-30\\%$ sur un article à $90$ €. SportPlus affiche $-20\\%$ puis $-10\\%$ supplémentaires sur le même article à $90$ €. Quel magasin est le moins cher ?",
+        "a": "SportMax ($63$ €)",
+        "type": "qcm",
+        "options": ["SportMax ($63$ €)", "SportPlus ($64{,}80$ €)", "Les deux sont au même prix"],
+        "steps": [
+          "SportMax : $90 \\times 0{,}70 = ?$ €.",
+          "SportPlus : d'abord $90 \\times 0{,}80 = ?$ €, puis $? \\times 0{,}90 = ?$ €. Compare les deux résultats."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "PROP_03",
+    "title": "Le road-trip de Léa",
+    "context": "Léa prépare un trajet en voiture de Lyon à Marseille. Elle utilise une carte routière à l'échelle $1 : 2\\,000\\,000$ et relève les informations suivantes.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Sur la carte, la distance Lyon–Valence mesure $5{,}5$ cm. Quelle est la distance réelle en km ? ___",
+        "a": "110",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Échelle $1 : 2\\,000\\,000$ signifie que $1$ cm sur la carte $= 2\\,000\\,000$ cm en réalité.",
+          "$5{,}5 \\times 2\\,000\\,000 = ?$ cm $= ?$ km (diviser par $100\\,000$)."
+        ],
+        "f": "$d_{\\text{réelle}} = d_{\\text{carte}} \\times \\text{échelle}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Léa roule à une vitesse moyenne de $110$ km/h. Combien de temps met-elle pour parcourir $110$ km ?",
+        "a": "$1$ h",
+        "type": "qcm",
+        "options": ["$1$ h", "$1$ h $10$ min", "$55$ min"],
+        "steps": [
+          "Temps $= \\frac{\\text{distance}}{\\text{vitesse}} = \\frac{110}{110} = ?$",
+          "Convertis en heures et minutes si nécessaire."
+        ],
+        "f": "$t = \\frac{d}{v}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "D'après le tableau, la vitesse moyenne entre Valence et Montélimar est-elle supérieure à $100$ km/h ?",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Vitesse $= \\frac{\\text{distance}}{\\text{temps}}$. Distance $= 70$ km, temps $= 50$ min $= \\frac{50}{60}$ h.",
+          "$v = \\frac{70}{\\frac{50}{60}} = 70 \\times \\frac{60}{50} = ?$ km/h. Compare avec $100$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": {
+          "headers": ["Tronçon", "Distance (km)", "Temps (min)"],
+          "rows": [
+            ["Lyon → Valence", "110", "60"],
+            ["Valence → Montélimar", "70", "50"],
+            ["Montélimar → Marseille", "135", "?"]
+          ],
+          "caption": "Détail du trajet Lyon–Marseille"
+        },
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Léa met $1$ h $30$ min pour le tronçon Montélimar–Marseille ($135$ km). Quelle est sa vitesse moyenne sur ce tronçon ? ___",
+        "a": "90",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$1$ h $30$ min $= 1{,}5$ h.",
+          "$v = \\frac{135}{1{,}5} = ?$ km/h"
+        ],
+        "f": "$v = \\frac{d}{t}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Quelle est la vitesse moyenne de Léa sur l'ensemble du trajet Lyon–Marseille ($315$ km en $3$ h $20$ min) ?",
+        "a": "$94{,}5$ km/h",
+        "type": "qcm",
+        "options": ["$94{,}5$ km/h", "$100$ km/h", "$105$ km/h"],
+        "steps": [
+          "Temps total $= 3$ h $20$ min $= 3 + \\frac{20}{60} = \\frac{?}{?}$ h.",
+          "$v = \\frac{315}{\\frac{10}{3}} = 315 \\times \\frac{3}{10} = ?$ km/h"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "PROP_04",
+    "title": "Forfait ou à la séance ?",
+    "context": "Adam hésite entre deux formules pour une salle d'escalade. Formule A : abonnement à $25$ €/mois + $3$ € par séance. Formule B : pas d'abonnement, $8$ € par séance.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Si Adam fait $4$ séances dans le mois, combien paie-t-il avec la formule A ? ___",
+        "a": "37",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Formule A : $25 + 3 \\times \\text{nombre de séances}$.",
+          "$25 + 3 \\times 4 = 25 + ? = ?$ €"
+        ],
+        "f": "$\\text{Coût}_A = 25 + 3n$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Pour $4$ séances, quelle formule est la moins chère ?",
+        "a": "Formule B ($32$ €)",
+        "type": "qcm",
+        "options": ["Formule B ($32$ €)", "Formule A ($37$ €)", "Elles coûtent le même prix"],
+        "steps": [
+          "Formule B : $8 \\times 4 = ?$ €.",
+          "Compare avec le coût de la formule A calculé à la question précédente."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "À partir de combien de séances la formule A devient-elle plus avantageuse que la formule B ? ___",
+        "a": "6",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On résout $25 + 3n < 8n$, soit $25 < ?n$.",
+          "$n > \\frac{25}{5} = ?$. Quel est le plus petit entier qui convient ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Adam fait $8$ séances. Le mois suivant, la salle augmente l'abonnement de $15\\%$. Le nouveau coût de la formule A pour $8$ séances est-il supérieur à $52$ € ?",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Nouvel abonnement : $25 \\times 1{,}15 = ?$ €.",
+          "Nouveau coût A : $? + 3 \\times 8 = ? + 24 = ?$ €. Compare avec $52$ €."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "La salle propose une formule C : $60$ € pour $10$ séances (pack). Adam fait exactement $10$ séances ce mois-ci. En utilisant la formule A (avant augmentation), quel pourcentage économise-t-il par rapport à la formule C ?",
+        "a": "Formule A est $8{,}3\\%$ moins chère",
+        "type": "qcm",
+        "options": ["Formule A est $8{,}3\\%$ moins chère", "Formule C est $8{,}3\\%$ moins chère", "Les deux coûtent le même prix"],
+        "steps": [
+          "Formule A : $25 + 3 \\times 10 = ?$ €. Formule C : $60$ €.",
+          "Différence $= 60 - ? = ?$ €. Pourcentage par rapport à C : $\\frac{?}{60} \\times 100 = ?\\%$"
+        ],
+        "f": "$\\text{Taux} = \\frac{\\text{écart}}{\\text{valeur de référence}} \\times 100$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

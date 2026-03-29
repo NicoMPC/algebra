@@ -1,186 +1,352 @@
-{
-  "niveau": "3EME",
-  "categorie": "Auto_Geometrie",
-  "titre": "Automatismes — Géométrie",
-  "icone": "⚡",
-  "timer": 30,
-  "exos": [
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "Un triangle a pour côtés $5$ cm, $12$ cm et $13$ cm. Ce triangle est rectangle.",
-      "a": "Vrai",
-      "options": ["Vrai", "Faux"],
-      "steps": ["$5^2 + 12^2 = 25 + 144 = 169 = 13^2$. L'égalité est vérifiée."],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "Un triangle a pour côtés $3$ cm, $5$ cm et $7$ cm. Ce triangle est rectangle.",
-      "a": "Faux",
-      "options": ["Vrai", "Faux"],
-      "steps": ["$3^2 + 5^2 = 9 + 25 = 34$ et $7^2 = 49$. Comme $34 \\neq 49$, ce n'est pas un triangle rectangle."],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Dans un triangle rectangle, le côté opposé à l'angle droit s'appelle ___",
-      "a": "l'hypoténuse",
-      "options": [],
-      "steps": ["C'est le plus grand côté du triangle rectangle, situé en face de l'angle droit."],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "Un triangle a pour côtés $8$ cm, $15$ cm et $17$ cm. Ce triangle est rectangle.",
-      "a": "Vrai",
-      "options": ["Vrai", "Faux"],
-      "steps": ["$8^2 + 15^2 = 64 + 225 = 289 = 17^2$. L'égalité de Pythagore est vérifiée."],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Un triangle rectangle a pour côtés de l'angle droit $6$ cm et $8$ cm. Son hypoténuse mesure ___ cm.",
-      "a": "10",
-      "options": [],
-      "steps": ["$6^2 + 8^2 = 36 + 64 = 100$, donc l'hypoténuse vaut $\\sqrt{100}$."],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Le volume d'une sphère de rayon $3$ cm vaut ___ cm$^3$.",
-      "a": "$36\\pi$",
-      "options": [],
-      "steps": ["$V = \\frac{4}{3}\\pi r^3 = \\frac{4}{3}\\pi \\times 27 = 36\\pi$."],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "L'aire d'un disque de rayon $5$ cm vaut ___ cm$^2$.",
-      "a": "$25\\pi$",
-      "options": [],
-      "steps": ["$A = \\pi r^2 = \\pi \\times 25 = 25\\pi$."],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Le volume d'un cône de rayon $4$ cm et de hauteur $9$ cm vaut ___ cm$^3$.",
-      "a": "$48\\pi$",
-      "options": [],
-      "steps": ["$V = \\frac{1}{3}\\pi r^2 h = \\frac{1}{3}\\pi \\times 16 \\times 9 = 48\\pi$."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "q": "Quelle est la formule du volume d'une pyramide de base $B$ et de hauteur $h$ ?",
-      "a": "$\\frac{1}{3} \\times B \\times h$",
-      "options": ["$\\frac{1}{3} \\times B \\times h$", "$B \\times h$", "$\\frac{1}{2} \\times B \\times h$"],
-      "steps": ["Le volume d'une pyramide est le tiers du produit de l'aire de la base par la hauteur."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Le volume d'un cylindre de rayon $3$ cm et de hauteur $10$ cm vaut ___ cm$^3$.",
-      "a": "$90\\pi$",
-      "options": [],
-      "steps": ["$V = \\pi r^2 h = \\pi \\times 9 \\times 10 = 90\\pi$."],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Dans un triangle rectangle, pour calculer le côté opposé connaissant l'hypoténuse, on utilise le ___",
-      "a": "sinus",
-      "options": [],
-      "steps": ["$\\sin(\\alpha) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$, donc on isole le côté opposé avec le sinus."],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "On connaît le côté adjacent et le côté opposé à un angle. On utilise la fonction ___",
-      "a": "tangente",
-      "options": [],
-      "steps": ["$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$ relie ces deux côtés."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "$\\cos(60°) = $ ___",
-      "a": "1/2",
-      "options": [],
-      "steps": ["Valeur remarquable : $\\cos(60°) = \\frac{1}{2}$."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "$\\sin(30°) = \\dfrac{\\sqrt{3}}{2}$",
-      "a": "Faux",
-      "options": ["Vrai", "Faux"],
-      "steps": ["$\\sin(30°) = \\frac{1}{2}$. C'est $\\cos(30°)$ qui vaut $\\frac{\\sqrt{3}}{2}$."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "q": "On connaît l'hypoténuse et le côté adjacent à un angle. Quelle fonction trigonométrique utiliser ?",
-      "a": "Cosinus",
-      "options": ["Cosinus", "Sinus", "Tangente"],
-      "steps": ["$\\cos(\\alpha) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$ relie ces deux côtés."],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Deux triangles qui ont les mêmes angles sont dits ___",
-      "a": "semblables",
-      "options": [],
-      "steps": ["Des triangles de mêmes angles ont des côtés proportionnels : ils sont semblables."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Le rapport d'une homothétie est $2$. L'aire de l'image est multipliée par ___",
-      "a": "4",
-      "options": [],
-      "steps": ["Les aires sont multipliées par $k^2$. Ici $k = 2$, donc $2^2 = 4$."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Si deux droites parallèles sont coupées par deux sécantes, on applique le théorème de ___",
-      "a": "Thalès",
-      "options": [],
-      "steps": ["Cette configuration (droites parallèles coupées par deux sécantes) est celle du théorème de Thalès."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "Une homothétie de rapport négatif inverse le sens des figures.",
-      "a": "Vrai",
-      "options": ["Vrai", "Faux"],
-      "steps": ["Un rapport $k < 0$ retourne la figure de l'autre côté du centre : le sens est inversé."],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "q": "Une homothétie de rapport $3$ est appliquée à un cube d'arête $2$ cm. Par combien le volume est-il multiplié ?",
-      "a": "$27$",
-      "options": ["$27$", "$9$", "$6$"],
-      "steps": ["Les volumes sont multipliés par $k^3$. Ici $k = 3$, donc $3^3 = 27$."],
-      "f": ""
-    }
-  ]
-}
+[
+  {
+    "id": "AUTOGEO_01",
+    "title": "Le plan du parc d'attractions",
+    "context": "Le parc d'attractions \"AquaFun\" est représenté sur un plan muni d'un repère orthonormé. L'entrée est à l'origine $O(0\\,;\\,0)$. Le manège est au point $M(4\\,;\\,3)$, la grande roue au point $G(-2\\,;\\,6)$ et le toboggan au point $T(4\\,;\\,-1)$.",
+    "figure": null,
+    "figure_desc": "Repère orthonormé (O, i, j) avec axes gradués de -3 à 6 en x et -2 à 7 en y. Points placés : O(0;0) avec label \"Entrée\", M(4;3) avec label \"Manège\", G(-2;6) avec label \"Grande roue\", T(4;-1) avec label \"Toboggan\". Grille en pointillés. Unité : 1 carreau = 1.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Quelle est l'abscisse du point $M$ (le manège) ?",
+        "a": "4",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Les coordonnées de $M$ sont $(4\\,;\\,3)$. L'abscisse est la première valeur."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quel point a pour ordonnée $-1$ ?",
+        "a": "T",
+        "type": "qcm",
+        "options": ["T", "G", "M"],
+        "steps": [
+          "$T(4\\,;\\,-1)$ : l'ordonnée (deuxième coordonnée) est bien $-1$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Le milieu du segment $[OT]$ a pour coordonnées $(2\\,;\\,0{,}5)$.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Milieu de $[OT]$ : $\\left(\\frac{0+4}{2}\\,;\\,\\frac{0+(-1)}{2}\\right) = (2\\,;\\,?)$.",
+          "$\\frac{-1}{2} = -0{,}5$, pas $0{,}5$."
+        ],
+        "f": "$I\\left(\\frac{x_A+x_B}{2}\\,;\\,\\frac{y_A+y_B}{2}\\right)$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Quelles sont les coordonnées du milieu $I$ du segment $[MG]$ ?",
+        "a": "(1;4,5)",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$I = \\left(\\frac{4+(-2)}{2}\\,;\\,\\frac{3+6}{2}\\right) = \\left(\\frac{?}{2}\\,;\\,\\frac{?}{2}\\right)$.",
+          "Simplifie chaque fraction pour trouver les coordonnées de $I$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "On place un kiosque au point $K$ tel que $I(1\\,;\\,4{,}5)$ soit le milieu de $[OK]$. Quelle est l'abscisse de $K$ ?",
+        "a": "2",
+        "type": "qcm",
+        "options": ["2", "0,5", "1"],
+        "steps": [
+          "Si $I$ est milieu de $[OK]$ : $x_I = \\frac{x_O + x_K}{2}$, donc $1 = \\frac{0 + x_K}{2}$.",
+          "$x_K = 2 \\times 1 = \\,?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "AUTOGEO_02",
+    "title": "Le cerf-volant de Jade",
+    "context": "Jade fabrique un cerf-volant en forme de losange. Elle assemble 4 tiges pour former les côtés. La grande diagonale forme un angle de $50°$ avec le bord supérieur gauche. Jade doit calculer tous les angles avant de couper le tissu.",
+    "figure": null,
+    "figure_desc": "Losange ABCD, A en haut, B à droite, C en bas, D à gauche. Diagonale [AC] tracée (verticale). Angle BAC marqué = 50°. Angle droit codé à l'intersection des diagonales (point O). Labels A, B, C, D aux sommets.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Dans un triangle, la somme des angles vaut ___ degrés.",
+        "a": "180",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Propriété fondamentale : la somme des angles d'un triangle est toujours $180°$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Le triangle $OAB$ est rectangle en $O$ (intersection des diagonales). L'angle $\\widehat{BAO} = 50°$. Combien vaut l'angle $\\widehat{ABO}$ ?",
+        "a": "40",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Triangle rectangle en $O$ : $90° + 50° + \\widehat{ABO} = 180°$.",
+          "$\\widehat{ABO} = 180° - 90° - 50° = \\,?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Deux angles sont complémentaires quand leur somme vaut $90°$. Les angles $50°$ et $40°$ sont complémentaires.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "$50° + 40° = 90°$. Complémentaires = somme $90°$. Vérifie si c'est le cas."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Jade trace une tige qui prolonge le côté $[AB]$ au-delà de $B$. L'angle entre cette tige et le côté $[BC]$ est supplémentaire à l'angle $\\widehat{ABC}$. Si $\\widehat{ABC} = 80°$, combien vaut cet angle extérieur ?",
+        "a": "100",
+        "type": "qcm",
+        "options": ["100", "80", "120"],
+        "steps": [
+          "Angles supplémentaires : leur somme vaut $180°$.",
+          "$180° - 80° = \\,?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Un triangle isocèle a un angle au sommet de $36°$. Combien vaut chacun des deux angles de la base ?",
+        "a": "72",
+        "type": "qcm",
+        "options": ["72", "144", "54"],
+        "steps": [
+          "Les deux angles de la base sont égaux. Leur somme vaut $180° - 36° = ?$.",
+          "Chaque angle de la base vaut la moitié de cette somme."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "AUTOGEO_03",
+    "title": "L'échelle et l'ombre",
+    "context": "Hugo pose une échelle de $5$ m contre un mur. Le pied de l'échelle est à $3$ m du mur. Plus tard, il mesure l'ombre d'un poteau pour estimer sa hauteur grâce au soleil.",
+    "figure": null,
+    "figure_desc": "Triangle rectangle ABC. A = sommet du mur (en haut), B = pied du mur (angle droit codé), C = pied de l'échelle (au sol, à 3 m de B). [AC] = échelle = 5 m. [BC] = 3 m au sol. [AB] = ? (hauteur). Angle droit codé en B. À droite : poteau vertical MN (M en haut, N au sol). Ombre [NP] au sol = 8 m. Droite du soleil de M à P. MN = ? (à trouver). Un petit poteau de 1{,}5 m avec ombre de 2 m à côté (config Thalès).",
+    "questions": [
+      {
+        "num": "1",
+        "q": "L'échelle mesure $5$ m et le pied est à $3$ m du mur. À quelle hauteur l'échelle touche-t-elle le mur ? Le triangle est rectangle au pied du mur.",
+        "a": "4",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Triangle rectangle : $AB^2 + 3^2 = 5^2$, donc $AB^2 = 25 - 9 = ?$.",
+          "$AB = \\sqrt{?}$"
+        ],
+        "f": "$a^2 + b^2 = c^2$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Un triangle a pour côtés $6$ cm, $8$ cm et $10$ cm. Ce triangle est-il rectangle ?",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "$6^2 + 8^2 = 36 + 64 = 100$ et $10^2 = 100$.",
+          "L'égalité de Pythagore est-elle vérifiée ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Un poteau de $1{,}5$ m projette une ombre de $2$ m. Un arbre voisin projette une ombre de $8$ m. Par le théorème de Thalès (rayons du soleil parallèles), quelle est la hauteur de l'arbre ?",
+        "a": "6",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Thalès : $\\frac{\\text{hauteur arbre}}{\\text{hauteur poteau}} = \\frac{\\text{ombre arbre}}{\\text{ombre poteau}}$.",
+          "$\\frac{h}{1{,}5} = \\frac{8}{2} = 4$, donc $h = 1{,}5 \\times ? = \\,?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Hugo déplace l'échelle. Le pied est maintenant à $5$ m du mur et l'échelle touche le mur à $12$ m de hauteur. Quelle est la longueur de cette échelle ?",
+        "a": "13",
+        "type": "qcm",
+        "options": ["13", "17", "15"],
+        "steps": [
+          "Triangle rectangle : $c^2 = 5^2 + 12^2 = 25 + 144 = ?$.",
+          "$c = \\sqrt{?}$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Un piquet de $2$ m projette une ombre de $3$ m. À côté, une antenne projette une ombre de $12$ m. Quelle est la hauteur de l'antenne ?",
+        "a": "8",
+        "type": "qcm",
+        "options": ["8", "6", "9"],
+        "steps": [
+          "$\\frac{h}{2} = \\frac{12}{3} = ?$.",
+          "$h = 2 \\times ? = \\,?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "AUTOGEO_04",
+    "title": "Les emballages de Lucas",
+    "context": "Lucas travaille dans un entrepôt. Il doit trier des emballages : boîtes de conserve (cylindres), boîtes de céréales (pavés droits), cônes de glace et ballons (sphères). Il doit aussi convertir des mesures entre cm, m et L.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Combien de cm$^3$ y a-t-il dans $1$ L ?",
+        "a": "1000",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$1$ L $= 1$ dm$^3$. Et $1$ dm$^3 = 10 \\times 10 \\times 10 = ?$ cm$^3$."
+        ],
+        "f": "$1\\text{ L} = 1\\text{ dm}^3 = 1000\\text{ cm}^3$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Une boîte de céréales est un pavé droit de $20$ cm $\\times$ $8$ cm $\\times$ $30$ cm. Son volume est de :",
+        "a": "$4800$ cm$^3$",
+        "type": "qcm",
+        "options": ["$4800$ cm$^3$", "$4800$ cm$^2$", "$480$ cm$^3$"],
+        "steps": [
+          "$V = L \\times l \\times h = 20 \\times 8 \\times 30 = ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Une boîte de conserve est un cylindre de rayon $4$ cm et de hauteur $10$ cm. Son volume vaut $160\\pi$ cm$^3$.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "$V = \\pi \\times r^2 \\times h = \\pi \\times 4^2 \\times 10 = \\pi \\times ?$.",
+          "Compare avec $160\\pi$."
+        ],
+        "f": "$V_{\\text{cylindre}} = \\pi \\times r^2 \\times h$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Un cône de glace a un rayon de $3$ cm et une hauteur de $12$ cm. Quel est son volume ?",
+        "a": "$36\\pi$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$V = \\frac{1}{3} \\times \\pi \\times r^2 \\times h = \\frac{1}{3} \\times \\pi \\times 9 \\times 12$.",
+          "$= \\frac{1}{3} \\times \\pi \\times ? = ?\\pi$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Un ballon (sphère) a un rayon de $3$ cm. Quel est son volume ?",
+        "a": "$36\\pi$ cm$^3$",
+        "type": "qcm",
+        "options": ["$36\\pi$ cm$^3$", "$27\\pi$ cm$^3$", "$108\\pi$ cm$^3$"],
+        "steps": [
+          "$V = \\frac{4}{3} \\times \\pi \\times r^3 = \\frac{4}{3} \\times \\pi \\times 27$.",
+          "$= \\frac{?}{3} \\pi = ?\\pi$"
+        ],
+        "f": "$V_{\\text{sphere}} = \\frac{4}{3}\\pi r^3$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

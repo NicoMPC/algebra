@@ -1,297 +1,356 @@
-{
-  "niveau": "3EME",
-  "categorie": "Inequations_Brevet",
-  "titre": "Inéquations",
-  "icone": "⚖️",
-  "exos": [
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Resous l'inequation $2x - 3 > 7$. La solution est $x > $ ___",
-      "a": "5",
-      "options": [],
-      "steps": [
-        "On isole le terme en $x$ : $2x > 7 + 3$, soit $2x > 10$.",
-        "On divise par $2$ (positif, le sens ne change pas) : $x > \\frac{10}{2}$.",
-        "Donc $x > $ ?"
-      ],
-      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Resous l'inequation $-4x + 1 \\leq 9$. La solution est $x \\geq $ ___",
-      "a": "-2",
-      "options": [],
-      "steps": [
-        "On isole le terme en $x$ : $-4x \\leq 9 - 1$, soit $-4x \\leq 8$.",
-        "On divise par $-4$ : attention, on divise par un nombre negatif, donc l'inegalite change de sens ! $x \\geq \\frac{8}{-4}$.",
-        "Donc $x \\geq $ ?"
-      ],
-      "f": "$ax + b \\leq c \\Leftrightarrow x \\geq \\frac{c - b}{a}$ (si $a < 0$, le sens change)"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Resous l'inequation $5x + 2 < 3x + 10$. La solution est $x < $ ___",
-      "a": "4",
-      "options": [],
-      "steps": [
-        "On regroupe les termes en $x$ a gauche : $5x - 3x < 10 - 2$, soit $2x < 8$.",
-        "On divise par $2$ (positif, le sens ne change pas) : $x < \\frac{8}{2}$.",
-        "Donc $x < $ ?"
-      ],
-      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
-    },
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "Si on multiplie les deux membres d'une inegalite par un nombre negatif, alors l'inegalite change de sens.",
-      "a": "Vrai",
-      "options": [
-        "Vrai",
-        "Faux"
-      ],
-      "steps": [
-        "Prenons un exemple : $3 < 5$. Multiplions par $-1$ : $-3$ et $-5$.",
-        "On obtient $-3 > -5$ : l'inegalite a bien change de sens.",
-        "C'est une regle fondamentale : multiplier ou diviser par un negatif inverse le sens. Que peut-on en conclure ?"
-      ],
-      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
-    },
-    {
-      "lvl": 1,
-      "q": "Resous l'inequation $\\frac{x}{3} - 2 \\geq 1$. Quelle est la solution ?",
-      "a": "$x \\geq 9$",
-      "options": [
-        "$x \\geq 9$",
-        "$x \\geq 3$",
-        "$x \\leq 9$"
-      ],
-      "steps": [
-        "On isole $\\frac{x}{3}$ : $\\frac{x}{3} \\geq 1 + 2$, soit $\\frac{x}{3} \\geq 3$.",
-        "On multiplie par $3$ (positif, le sens ne change pas) : $x \\geq 3 \\times 3$.",
-        "Donc $x \\geq 9$."
-      ],
-      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
-    },
-    {
-      "lvl": 1,
-      "q": "L'ensemble des solutions de $x > 3$ est :",
-      "a": "$]3 ; +\\infty[$",
-      "options": [
-        "$]3 ; +\\infty[$",
-        "$[3 ; +\\infty[$",
-        "$]-\\infty ; 3[$"
-      ],
-      "steps": [
-        "L'inegalite est stricte ($>$, pas $\\geq$) : $3$ n'est pas inclus dans les solutions.",
-        "Le crochet ouvert $]$ signifie que la borne n'est pas incluse. Le crochet ferme $[$ signifie qu'elle est incluse.",
-        "Les solutions sont tous les nombres strictement superieurs a $3$ : $]3 ; +\\infty[$."
-      ],
-      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
-    },
-    {
-      "lvl": 1,
-      "q": "L'ensemble des solutions de $x \\leq -2$ est :",
-      "a": "$]-\\infty ; -2]$",
-      "options": [
-        "$]-\\infty ; -2]$",
-        "$]-\\infty ; -2[$",
-        "$[-2 ; +\\infty[$"
-      ],
-      "steps": [
-        "L'inegalite est large ($\\leq$) : $-2$ est inclus dans les solutions.",
-        "Le crochet ferme $]$ du cote de $-2$ signifie que $-2$ fait partie de l'ensemble.",
-        "Les solutions sont tous les nombres inferieurs ou egaux a $-2$ : $]-\\infty ; -2]$."
-      ],
-      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
-    },
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "$x = 5$ est solution de l'inequation $x > 5$.",
-      "a": "Faux",
-      "options": [
-        "Vrai",
-        "Faux"
-      ],
-      "steps": [
-        "L'inegalite $x > 5$ est stricte : on demande que $x$ soit strictement superieur a $5$.",
-        "Or $5 > 5$ est faux, car $5 = 5$ (egalite, pas superieur strict).",
-        "Que peut-on en conclure sur la difference entre $>$ et $\\geq$ ?"
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "$x = -2$ est solution de l'inequation $x \\geq -2$.",
-      "a": "Vrai",
-      "options": [
-        "Vrai",
-        "Faux"
-      ],
-      "steps": [
-        "L'inegalite $x \\geq -2$ est large : on demande que $x$ soit superieur ou egal a $-2$.",
-        "Or $-2 \\geq -2$ est vrai, car $-2 = -2$ (l'egalite est acceptee).",
-        "Que peut-on en conclure ?"
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Le plus petit entier solution de $x > 3{,}5$ est ___ .",
-      "a": "4",
-      "options": [],
-      "steps": [
-        "On cherche le plus petit nombre entier qui soit strictement superieur a $3{,}5$.",
-        "Les entiers sont $\\ldots, 2, 3, 4, 5, \\ldots$ Le premier qui depasse $3{,}5$ est $4$."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Un cinema propose des places a $8$ euros. Jade dispose de $50$ euros. Combien de places peut-elle acheter au maximum ? ___",
-      "a": "6",
-      "options": [],
-      "steps": [
-        "On pose l'inequation : $8x \\leq 50$, ou $x$ est le nombre de places.",
-        "On divise : $x \\leq \\frac{50}{8} = 6{,}25$.",
-        "Comme $x$ doit etre un nombre entier de places, on prend la partie entiere : $x = $ ?"
-      ],
-      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Un reservoir de $40$ L se vide a $3$ L par minute. Apres combien de minutes au maximum reste-t-il au moins $10$ L ? ___",
-      "a": "10",
-      "options": [],
-      "steps": [
-        "Apres $t$ minutes, il reste $40 - 3t$ litres. On veut $40 - 3t \\geq 10$.",
-        "On isole $t$ : $-3t \\geq 10 - 40$, soit $-3t \\geq -30$. On divise par $-3$ (negatif !) : le sens change, $t \\leq 10$.",
-        "Le reservoir contient au moins $10$ L tant que $t \\leq $ ? minutes."
-      ],
-      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
-    },
-    {
-      "lvl": 2,
-      "q": "Hugo a $30$ euros. Il veut acheter des cahiers a $3{,}50$ euros et un stylo a $2$ euros. Quelle inequation modelise le nombre maximal de cahiers $n$ qu'il peut acheter ?",
-      "a": "$3{,}5n + 2 \\leq 30$",
-      "options": [
-        "$3{,}5n + 2 \\leq 30$",
-        "$3{,}5n \\leq 30$",
-        "$3{,}5n + 2 \\geq 30$"
-      ],
-      "steps": [
-        "Le cout total est : prix des cahiers + prix du stylo = $3{,}5 \\times n + 2$.",
-        "Ce cout doit etre inferieur ou egal au budget de $30$ euros : $3{,}5n + 2 \\leq 30$.",
-        "On obtient $3{,}5n \\leq 28$, soit $n \\leq 8$. Hugo peut acheter $8$ cahiers maximum."
-      ],
-      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "Ines affirme que $x = 7$ est solution de $-3x + 5 > -20$. A-t-elle raison ?",
-      "a": "Vrai",
-      "options": [
-        "Vrai",
-        "Faux"
-      ],
-      "steps": [
-        "On remplace $x$ par $7$ : $-3 \\times 7 + 5 = -21 + 5 = -16$.",
-        "On verifie : $-16 > -20$ ? Oui, car $-16$ est plus grand que $-20$ sur la droite des nombres.",
-        "Que peut-on en conclure ?"
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Adam s'entraine a la course. Il veut courir au moins $10$ km cette semaine. Il a deja couru $3{,}5$ km. Combien de kilometres lui reste-t-il a parcourir au minimum ? ___",
-      "a": "6.5",
-      "options": [],
-      "steps": [
-        "Soit $d$ la distance restante. On veut : $3{,}5 + d \\geq 10$.",
-        "On isole $d$ : $d \\geq 10 - 3{,}5 = 6{,}5$.",
-        "Adam doit parcourir au moins $6{,}5$ km."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Une sortie scolaire coute $200$ euros de bus plus $12$ euros par eleve pour l'entree. Le budget maximum est de $500$ euros. Combien d'eleves peuvent participer au maximum ? ___",
-      "a": "25",
-      "options": [],
-      "steps": [
-        "On pose l'inequation : $200 + 12x \\leq 500$, ou $x$ est le nombre d'eleves.",
-        "On isole $x$ : $12x \\leq 500 - 200 = 300$, soit $x \\leq \\frac{300}{12} = 25$.",
-        "Donc $x \\leq $ ? eleves au maximum."
-      ],
-      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "La sortie scolaire coute $200$ euros de bus, $12$ euros d'entree et $8$ euros de cantine par eleve. Avec un budget de $500$ euros, combien d'eleves au maximum ? ___",
-      "a": "15",
-      "options": [],
-      "steps": [
-        "Le cout par eleve est $12 + 8 = 20$ euros. L'inequation devient $200 + 20x \\leq 500$.",
-        "On isole $x$ : $20x \\leq 300$, soit $x \\leq \\frac{300}{20} = 15$.",
-        "Au maximum ? eleves peuvent participer."
-      ],
-      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
-    },
-    {
-      "lvl": 2,
-      "q": "Avec le bus ($200$ euros), l'entree ($12$ euros/eleve) et la cantine ($8$ euros/eleve), et la contrainte qu'il faut au moins $10$ eleves pour que le bus parte, quel est l'encadrement du nombre $x$ d'eleves possibles (budget $500$ euros) ?",
-      "a": "$10 \\leq x \\leq 15$",
-      "options": [
-        "$10 \\leq x \\leq 15$",
-        "$10 \\leq x \\leq 25$",
-        "$10 < x < 15$"
-      ],
-      "steps": [
-        "Contrainte budget : $200 + 20x \\leq 500$, soit $x \\leq 15$.",
-        "Contrainte minimum : $x \\geq 10$ (le bus ne part pas en dessous).",
-        "En combinant : $10 \\leq x \\leq 15$."
-      ],
-      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "La sortie scolaire coute $200$ euros de bus, $12$ euros d'entree et $8$ euros de cantine par eleve. Avec $20$ eleves et un budget de $500$ euros, le budget est depasse.",
-      "a": "Vrai",
-      "options": [
-        "Vrai",
-        "Faux"
-      ],
-      "steps": [
-        "Cout total : $200 + 20 \\times 20 = 200 + 400 = 600$ euros.",
-        "On compare : $600 > 500$, donc le budget de $500$ euros est bien depasse.",
-        "Que peut-on en conclure ?"
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Pour la sortie scolaire, le bus coute $200$ euros et la cantine $8$ euros par eleve. On veut emmener $20$ eleves avec un budget de $500$ euros. Quel est le prix maximum par entree $p$ (en euros) ? ___",
-      "a": "7",
-      "options": [],
-      "steps": [
-        "Cout total : $200 + 8 \\times 20 + 20p = 200 + 160 + 20p = 360 + 20p$.",
-        "On veut $360 + 20p \\leq 500$, soit $20p \\leq 140$, donc $p \\leq 7$.",
-        "Le prix maximum par entree est de ? euros."
-      ],
-      "f": "$ax + b > c \\Leftrightarrow x > \\frac{c - b}{a}$ (si $a > 0$)"
-    }
-  ]
-}
+[
+  {
+    "id": "INEQ_01",
+    "title": "Le budget rentrée d'Inès",
+    "context": "Inès prépare la rentrée scolaire. Elle dispose d'un budget de 45 € pour acheter des cahiers à $3{,}50$ € pièce et un lot de stylos à 10 €. Soit $n$ le nombre de cahiers qu'elle peut acheter.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Écris le membre de droite de l'inéquation qui traduit la contrainte de budget : $3{,}50n + 10 \\leq$ ___",
+        "a": "45",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Le coût total = prix des cahiers + lot de stylos = $3{,}50 \\times n + 10$",
+          "Ce coût total doit être inférieur ou égal au budget : $3{,}50n + 10 \\leq ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Résous $3{,}50n + 10 \\leq 45$. Combien de cahiers Inès peut-elle acheter au maximum ?",
+        "a": "10",
+        "type": "qcm",
+        "options": ["10", "12", "9"],
+        "steps": [
+          "Isole $n$ : $3{,}50n \\leq 45 - 10 = 35$",
+          "Divise par $3{,}50$ (positif, le sens ne change pas) : $n \\leq \\frac{35}{3{,}50} = ?$"
+        ],
+        "f": "$ax + b \\leq c \\Rightarrow x \\leq \\frac{c - b}{a}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Inès affirme : « Si j'achète 11 cahiers à $3{,}50$ € et le lot de stylos à 10 €, je ne dépasse pas 45 €. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Calcule le coût pour 11 cahiers : $3{,}50 \\times 11 + 10 = ?$",
+          "Compare ce résultat à 45 €. Est-ce inférieur ou égal ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Le prix d'un cahier augmente à 4 €. Inès a toujours 45 € et achète le lot de stylos à 10 €. Combien de cahiers peut-elle acheter au maximum ? ___",
+        "a": "8",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Nouvelle inéquation : $4n + 10 \\leq 45$, soit $4n \\leq ?$",
+          "Divise par 4 : $n \\leq \\frac{35}{4} = 8{,}75$ — comme $n$ est entier, prends la partie entière"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Inès veut aussi acheter une trousse à 7 €. Avec les cahiers à $3{,}50$ € et le lot de stylos à 10 €, combien de cahiers peut-elle acheter au maximum sans dépasser 45 € ?",
+        "a": "8",
+        "type": "qcm",
+        "options": ["7", "8", "9"],
+        "steps": [
+          "Inéquation : $3{,}50n + 10 + 7 \\leq 45$, soit $3{,}50n \\leq ?$",
+          "Divise : $n \\leq \\frac{28}{3{,}50} = ?$ — prends la partie entière"
+        ],
+        "f": "$ax + b \\leq c \\Rightarrow x \\leq \\frac{c - b}{a}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "INEQ_02",
+    "title": "L'expérience de Hugo",
+    "context": "Hugo réalise une expérience en sciences. La température $T$ d'un mélange chimique part de 8°C et augmente de 2°C par minute. La réaction ne fonctionne que si la température est strictement supérieure à 15°C et ne dépasse pas 40°C.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Exprime $T$ en fonction du nombre de minutes $t$ : $T =$ ___",
+        "a": "2t + 8",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Au départ ($t = 0$), la température est 8°C",
+          "Chaque minute ajoute 2°C : $T = 2 \\times t + ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "La réaction ne fonctionne que si $T > 15$°C. Sachant que $T = 2t + 8$, au bout de combien de minutes entières la réaction peut-elle commencer ?",
+        "a": "4",
+        "type": "qcm",
+        "options": ["3", "4", "5"],
+        "steps": [
+          "Isole $t$ : $2t > 15 - 8 = 7$, soit $t > ?$",
+          "$t > 3{,}5$ — quel est le plus petit entier strictement supérieur à $3{,}5$ ?"
+        ],
+        "f": "$ax + b > c \\Rightarrow x > \\frac{c - b}{a}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Hugo affirme : « Au bout de 3 minutes, la température atteint $T = 2 \\times 3 + 8 = 14$°C, et la réaction fonctionne car $14 > 15$. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Calcule : $T = 2 \\times 3 + 8 = 14$°C — c'est correct",
+          "La réaction nécessite $T > 15$. Or $14$ est-il strictement supérieur à 15 ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "La réaction doit aussi rester sous 40°C ($T \\leq 40$). Résous $2t + 8 \\leq 40$. Hugo doit arrêter la chauffe au bout de ___ minutes au maximum.",
+        "a": "16",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Isole $t$ : $2t \\leq 40 - 8 = ?$",
+          "Divise par 2 : $t \\leq ?$"
+        ],
+        "f": "$ax + b \\leq c \\Rightarrow x \\leq \\frac{c - b}{a}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "La réaction fonctionne pour $15 < T \\leq 40$, soit de $t = 4$ min à $t = 16$ min. Combien de minutes entières complètes Hugo a-t-il pour l'expérience ?",
+        "a": "12",
+        "type": "qcm",
+        "options": ["13", "12", "11"],
+        "steps": [
+          "La réaction commence à $t = 4$ (car $T = 16 > 15$) et finit à $t = 16$ (car $T = 40 \\leq 40$)",
+          "Nombre de minutes entières complètes : de la minute 4 à la minute 15 incluse, soit $15 - 4 + 1 = ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "INEQ_03",
+    "title": "Le chargement d'Adam",
+    "context": "Adam est artisan menuisier. Il charge son camion (capacité maximale : 800 kg) avec des planches de $12{,}5$ kg chacune et 150 kg d'outillage. Pour la sécurité, il ne doit pas dépasser $\\frac{3}{4}$ de la capacité maximale. Soit $p$ le nombre de planches.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Écris le membre de droite de l'inéquation de capacité du camion : $12{,}5p + 150 \\leq$ ___",
+        "a": "800",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Poids total = poids des planches + outillage = $12{,}5p + 150$",
+          "Ce poids doit être $\\leq$ à la capacité maximale : $12{,}5p + 150 \\leq ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Résous $12{,}5p + 150 \\leq 800$. Combien de planches Adam peut-il charger au maximum ?",
+        "a": "52",
+        "type": "qcm",
+        "options": ["52", "64", "50"],
+        "steps": [
+          "Isole $p$ : $12{,}5p \\leq 800 - 150 = 650$",
+          "Divise par $12{,}5$ : $p \\leq \\frac{650}{12{,}5} = ?$"
+        ],
+        "f": "$ax + b \\leq c \\Rightarrow x \\leq \\frac{c - b}{a}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Pour la sécurité, Adam ne doit pas charger plus des $\\frac{3}{4}$ de 800 kg. Quel est le poids maximal autorisé ? ___ kg",
+        "a": "600",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Calcule $\\frac{3}{4} \\times 800 = ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Avec la règle de sécurité (poids total $\\leq 600$ kg) et 150 kg d'outillage, combien de planches de $12{,}5$ kg Adam peut-il charger au maximum ?",
+        "a": "36",
+        "type": "qcm",
+        "options": ["36", "48", "35"],
+        "steps": [
+          "Inéquation : $12{,}5p + 150 \\leq 600$, soit $12{,}5p \\leq ?$",
+          "Divise par $12{,}5$ : $p \\leq ?$"
+        ],
+        "f": "$ax + b \\leq c \\Rightarrow x \\leq \\frac{c - b}{a}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Adam affirme : « Même avec la règle de sécurité ($\\leq 600$ kg), je peux transporter 40 planches de $12{,}5$ kg et mes 150 kg d'outillage en un seul voyage. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Calcule le poids pour 40 planches + outillage : $12{,}5 \\times 40 + 150 = ?$",
+          "Compare ce résultat à 600 kg. La règle de sécurité est-elle respectée ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "INEQ_04",
+    "title": "Le concert de Jade",
+    "context": "Jade organise un concert au collège. La salle coûte 350 € et le groupe de musique demande 200 €, soit un coût total de 550 €. Elle vend les places 8 € chacune et souhaite au minimum couvrir ses frais. Soit $x$ le nombre de places vendues.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Quel est le coût total de l'événement (salle + groupe) ? ___ €",
+        "a": "550",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Coût total = location + groupe = $350 + 200 = ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Jade veut couvrir les 550 € de coûts. Résous $8x \\geq 550$. Quel est le nombre minimum de places à vendre ?",
+        "a": "69",
+        "type": "qcm",
+        "options": ["68", "69", "70"],
+        "steps": [
+          "Divise par 8 : $x \\geq \\frac{550}{8} = 68{,}75$",
+          "Quel est le plus petit entier $\\geq 68{,}75$ ?"
+        ],
+        "f": "$ax \\geq c \\Rightarrow x \\geq \\frac{c}{a}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Jade affirme : « Avec 68 places vendues à 8 €, je couvre les 550 € de coûts du concert. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Calcule les recettes pour 68 places : $8 \\times 68 = ?$",
+          "Compare au coût total de 550 €. Les recettes sont-elles $\\geq 550$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Jade veut dégager un bénéfice d'au moins 100 €. Résous $8x - 550 \\geq 100$. Combien de places minimum doit-elle vendre ? ___",
+        "a": "82",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Isole $x$ : $8x \\geq 550 + 100 = ?$",
+          "Divise par 8 : $x \\geq \\frac{650}{8} = ?$ — arrondis à l'entier supérieur"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Jade propose une promo : les 20 premières places sont à 5 € au lieu de 8 €. Combien de places à 8 € doit-elle encore vendre au minimum pour couvrir les 550 € de coûts ?",
+        "a": "57",
+        "type": "qcm",
+        "options": ["56", "57", "58"],
+        "steps": [
+          "Recettes des 20 premières places : $20 \\times 5 = 100$ €. Il reste à couvrir : $550 - 100 = ?$",
+          "Inéquation : $8y \\geq 450$. Divise par 8 : $y \\geq \\frac{450}{8} = ?$ — arrondis à l'entier supérieur"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

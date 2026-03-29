@@ -1,265 +1,376 @@
-{
-  "niveau": "3EME",
-  "categorie": "Trigonometrie_Brevet",
-  "titre": "Trigonométrie",
-  "icone": "📐",
-  "exos": [
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Dans un triangle $ABC$ rectangle en $A$, $AB = 7$ cm et $\\widehat{ABC} = 35°$. Calcule $AC$ (arrondi au dixième).",
-      "a": "4,9",
-      "options": [],
-      "steps": [
-        "On cherche le côté opposé ($AC$) à l'angle $\\widehat{ABC}$, en connaissant le côté adjacent ($AB = 7$). On utilise la tangente.",
-        "$\\tan(35°) = \\frac{AC}{AB}$, donc $AC = 7 \\times \\tan(35°) = 7 \\times 0{,}700$.",
-        "$AC = 4{,}900 \\approx\\;?$ cm."
-      ],
-      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$",
-      "fig": {"t": "tri_trigo", "pts": ["A","B","C"], "sides": [7, null, null], "angles": [90, 35, 55], "unknown": "AC"}
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Dans un triangle $MNP$ rectangle en $N$, $MP = 10$ cm et $\\widehat{NMP} = 40°$. Calcule $MN$ (arrondi au dixième).",
-      "a": "7,7",
-      "options": [],
-      "steps": [
-        "On cherche le côté adjacent ($MN$) à l'angle $\\widehat{NMP}$, en connaissant l'hypoténuse ($MP = 10$). On utilise le cosinus.",
-        "$\\cos(40°) = \\frac{MN}{MP}$, donc $MN = 10 \\times \\cos(40°) = 10 \\times 0{,}766$.",
-        "$MN \\approx\\;?$ cm."
-      ],
-      "f": "$\\cos(\\alpha) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
-      "fig": {"t": "tri_trigo", "pts": ["M","N","P"], "sides": [null, null, 10], "angles": [null, 90, null], "unknown": "MN"}
-    },
-    {
-      "lvl": 1,
-      "q": "Dans un triangle $RST$ rectangle en $R$, $ST = 8$ cm et $\\widehat{RST} = 30°$. Quelle est la longueur de $RS$ (arrondi au dixième) ?",
-      "a": "$6{,}9$ cm",
-      "options": ["$6{,}9$ cm", "$4{,}0$ cm", "$9{,}2$ cm"],
-      "steps": [
-        "On cherche le côté adjacent ($RS$) à l'angle $\\widehat{RST}$, en connaissant l'hypoténuse ($ST = 8$). On utilise le cosinus.",
-        "$\\cos(30°) = \\frac{RS}{ST}$, donc $RS = 8 \\times \\cos(30°) = 8 \\times 0{,}866$.",
-        "$RS \\approx\\;?$ cm."
-      ],
-      "f": "$\\cos(\\alpha) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
-      "fig": {"t": "tri_trigo", "pts": ["R","S","T"], "sides": [null, null, 8], "angles": [90, 30, 60], "unknown": "RS"}
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Dans un triangle $DEF$ rectangle en $D$, $DE = 6$ cm et $\\widehat{DEF} = 60°$. Calcule $EF$ (arrondi au dixième).",
-      "a": "12",
-      "options": [],
-      "steps": [
-        "On cherche l'hypoténuse ($EF$) en connaissant le côté adjacent ($DE = 6$) et l'angle $\\widehat{DEF} = 60°$. On utilise le cosinus.",
-        "$\\cos(60°) = \\frac{DE}{EF}$, donc $EF = \\frac{DE}{\\cos(60°)} = \\frac{6}{0{,}5}$.",
-        "$EF = \\;?$ cm."
-      ],
-      "f": "$\\cos(\\alpha) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$"
-    },
-    {
-      "lvl": 1,
-      "q": "Dans un triangle $GHI$ rectangle en $G$, $HI = 9$ cm et $\\widehat{GHI} = 45°$. Quelle est la longueur de $GI$ (arrondi au dixième) ?",
-      "a": "$6{,}4$ cm",
-      "options": ["$6{,}4$ cm", "$9{,}0$ cm", "$12{,}7$ cm"],
-      "steps": [
-        "On cherche le côté opposé ($GI$) à l'angle $\\widehat{GHI}$, en connaissant l'hypoténuse ($HI = 9$). On utilise le sinus.",
-        "$\\sin(45°) = \\frac{GI}{HI}$, donc $GI = 9 \\times \\sin(45°) = 9 \\times 0{,}707$.",
-        "$GI \\approx\\;?$ cm."
-      ],
-      "f": "$\\sin(\\alpha) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Dans un triangle $KLM$ rectangle en $K$, $KL = 8$ cm et $KM = 6$ cm. Calcule $\\widehat{KLM}$ (arrondi au degré).",
-      "a": "37",
-      "options": [],
-      "steps": [
-        "On connaît le côté opposé ($KM = 6$) et le côté adjacent ($KL = 8$) à l'angle $\\widehat{KLM}$. On utilise la tangente.",
-        "$\\tan(\\widehat{KLM}) = \\frac{KM}{KL} = \\frac{6}{8} = 0{,}75$.",
-        "$\\widehat{KLM} = \\arctan(0{,}75) \\approx\\;?°$."
-      ],
-      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$",
-      "fig": {"t": "tri_trigo", "pts": ["K","L","M"], "sides": [8, 6, null], "angles": [90, null, null], "unknown": "\\widehat{KLM}"}
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Dans un triangle $PQR$ rectangle en $P$, $PQ = 5$ cm et $QR = 10$ cm. Calcule $\\widehat{PQR}$ (arrondi au degré).",
-      "a": "60",
-      "options": [],
-      "steps": [
-        "On connaît le côté adjacent ($PQ = 5$) et l'hypoténuse ($QR = 10$) par rapport à l'angle $\\widehat{PQR}$. On utilise le cosinus.",
-        "$\\cos(\\widehat{PQR}) = \\frac{PQ}{QR} = \\frac{5}{10} = 0{,}5$.",
-        "$\\widehat{PQR} = \\arccos(0{,}5) = \\;?°$."
-      ],
-      "f": "$\\cos(\\alpha) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
-      "fig": {"t": "tri_trigo", "pts": ["P","Q","R"], "sides": [5, null, 10], "angles": [90, null, null], "unknown": "\\widehat{PQR}"}
-    },
-    {
-      "lvl": 1,
-      "q": "Dans un triangle $XYZ$ rectangle en $X$, $XZ = 5$ cm et $YZ = 10$ cm. Que vaut $\\widehat{XYZ}$ (arrondi au degré) ?",
-      "a": "$30°$",
-      "options": ["$30°$", "$45°$", "$60°$"],
-      "steps": [
-        "On connaît le côté opposé ($XZ = 5$) et l'hypoténuse ($YZ = 10$) par rapport à l'angle $\\widehat{XYZ}$. On utilise le sinus.",
-        "$\\sin(\\widehat{XYZ}) = \\frac{XZ}{YZ} = \\frac{5}{10} = 0{,}5$.",
-        "$\\widehat{XYZ} = \\arcsin(0{,}5) = \\;?°$."
-      ],
-      "f": "$\\sin(\\alpha) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$"
-    },
-    {
-      "lvl": 2,
-      "q": "Dans un triangle $UVW$ rectangle en $U$, $UV = 4$ cm et $UW = 7$ cm. Que vaut $\\widehat{UVW}$ (arrondi au degré) ?",
-      "a": "$60°$",
-      "options": ["$60°$", "$30°$", "$55°$"],
-      "steps": [
-        "On connaît le côté adjacent ($UV = 4$) et le côté opposé ($UW = 7$) à l'angle $\\widehat{UVW}$. On utilise la tangente.",
-        "$\\tan(\\widehat{UVW}) = \\frac{UW}{UV} = \\frac{7}{4} = 1{,}75$.",
-        "$\\widehat{UVW} = \\arctan(1{,}75) \\approx\\;?°$."
-      ],
-      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$"
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Dans un triangle $EFG$ rectangle en $E$, $EF = 3$ cm et $EG = 7$ cm. Calcule $\\widehat{EFG}$ (arrondi au degré).",
-      "a": "67",
-      "options": [],
-      "steps": [
-        "On connaît le côté adjacent ($EF = 3$) et le côté opposé ($EG = 7$) à l'angle $\\widehat{EFG}$. On utilise la tangente.",
-        "$\\tan(\\widehat{EFG}) = \\frac{EG}{EF} = \\frac{7}{3} \\approx 2{,}333$.",
-        "$\\widehat{EFG} = \\arctan(2{,}333) \\approx\\;?°$."
-      ],
-      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$"
-    },
-    {
-      "lvl": 1,
-      "q": "Dans un triangle rectangle, on connaît un angle aigu et le côté adjacent à cet angle. On veut calculer le côté opposé. Quel rapport trigonométrique faut-il utiliser ?",
-      "a": "La tangente",
-      "options": ["La tangente", "Le cosinus", "Le sinus"],
-      "steps": [
-        "On identifie : côté adjacent (connu) et côté opposé (cherché) par rapport à l'angle.",
-        "Le rapport qui relie opposé et adjacent est $\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$.",
-        "On utilise donc la tangente pour trouver le côté opposé."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "$\\cos(\\alpha) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$.",
-      "a": "Faux",
-      "options": ["Vrai", "Faux"],
-      "steps": [
-        "On rappelle les trois rapports : $\\cos = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$, $\\sin = \\frac{\\text{opposé}}{\\text{hypoténuse}}$, $\\tan = \\frac{\\text{opposé}}{\\text{adjacent}}$.",
-        "L'énoncé dit $\\cos = \\frac{\\text{opposé}}{\\text{hypoténuse}}$ : c'est la définition du sinus, pas du cosinus.",
-        "Que peut-on en conclure ?"
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "q": "Dans un triangle rectangle, on connaît l'hypoténuse et un angle aigu. On veut calculer le côté opposé à cet angle. Quel rapport trigonométrique faut-il utiliser ?",
-      "a": "Le sinus",
-      "options": ["Le sinus", "Le cosinus", "La tangente"],
-      "steps": [
-        "On identifie : hypoténuse (connue) et côté opposé (cherché) par rapport à l'angle.",
-        "Le rapport qui relie opposé et hypoténuse est $\\sin(\\alpha) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$.",
-        "On utilise donc le sinus."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "$\\tan(\\alpha) = \\frac{\\text{adjacent}}{\\text{opposé}}$.",
-      "a": "Faux",
-      "options": ["Vrai", "Faux"],
-      "steps": [
-        "La tangente est définie par $\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$, et non l'inverse.",
-        "L'énoncé inverse numérateur et dénominateur : c'est faux.",
-        "Que peut-on en conclure ?"
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "Dans un triangle $ABC$ rectangle en $A$, pour calculer $AB$ en connaissant $\\widehat{ABC} = 50°$ et $BC = 12$ cm, Jade utilise le sinus. A-t-elle raison ?",
-      "a": "Faux",
-      "options": ["Vrai", "Faux"],
-      "steps": [
-        "Par rapport à l'angle $\\widehat{ABC}$ : $AB$ est le côté adjacent et $BC$ est l'hypoténuse.",
-        "Le rapport adjacent/hypoténuse est le cosinus, pas le sinus. Le sinus donnerait le côté opposé $AC$.",
-        "Que peut-on en conclure ?"
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Un randonneur se tient à $50$ m de la base d'un arbre. Il mesure un angle d'élévation de $25°$ vers le sommet. Quelle est la hauteur de l'arbre (arrondi au dixième) ?",
-      "a": "23,3",
-      "options": [],
-      "steps": [
-        "On a un triangle rectangle : la distance au sol ($50$ m) est le côté adjacent et la hauteur de l'arbre est le côté opposé à l'angle de $25°$.",
-        "$\\tan(25°) = \\frac{h}{50}$, donc $h = 50 \\times \\tan(25°) = 50 \\times 0{,}466$.",
-        "$h \\approx\\;?$ m."
-      ],
-      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$"
-    },
-    {
-      "lvl": 2,
-      "q": "Le randonneur aperçoit le sommet d'une montagne sous un angle d'élévation de $35°$. Le sommet est à $1\\,200$ m d'altitude au-dessus de lui. À quelle distance horizontale se trouve-t-il de la base du sommet (arrondi au mètre) ?",
-      "a": "$1\\,714$ m",
-      "options": ["$1\\,714$ m", "$688$ m", "$983$ m"],
-      "steps": [
-        "On connaît le côté opposé (dénivelé $= 1\\,200$ m) et on cherche le côté adjacent (distance horizontale). On utilise la tangente.",
-        "$\\tan(35°) = \\frac{1\\,200}{d}$, donc $d = \\frac{1\\,200}{\\tan(35°)} = \\frac{1\\,200}{0{,}700}$.",
-        "$d \\approx\\;?$ m."
-      ],
-      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$"
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "Le randonneur affirme : « Un sentier incliné à $30°$ par rapport à l'horizontale a une pente de $30\\%$. »",
-      "a": "Faux",
-      "options": ["Vrai", "Faux"],
-      "steps": [
-        "La pente en pourcentage se calcule avec la tangente : $\\text{pente} = \\tan(30°) \\times 100$.",
-        "$\\tan(30°) \\approx 0{,}577$, donc la pente est d'environ $57{,}7\\%$, pas $30\\%$.",
-        "Que peut-on en conclure ?"
-      ],
-      "f": "$\\text{pente (\\%)} = \\tan(\\alpha) \\times 100$"
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Le randonneur veut mesurer la largeur d'une rivière. Depuis un point $A$ sur la rive, il repère un rocher $B$ sur l'autre rive, exactement en face. Il recule de $20$ m jusqu'à un point $C$. L'angle $\\widehat{ACB} = 50°$. Quelle est la largeur $AB$ de la rivière (arrondi au dixième) ?",
-      "a": "23,8",
-      "options": [],
-      "steps": [
-        "Le triangle $ABC$ est rectangle en $A$ (le rocher est en face). $AC = 20$ m est le côté adjacent à $\\widehat{ACB}$ et $AB$ est le côté opposé.",
-        "$\\tan(50°) = \\frac{AB}{AC} = \\frac{AB}{20}$, donc $AB = 20 \\times \\tan(50°) = 20 \\times 1{,}192$.",
-        "$AB \\approx\\;?$ m."
-      ],
-      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$"
-    },
-    {
-      "lvl": 2,
-      "q": "En fin de randonnée, le randonneur se tient à $30$ m d'une falaise. Il mesure un angle d'élévation de $60°$ vers le sommet. Ses yeux sont à $1{,}7$ m du sol. Quelle est la hauteur totale de la falaise (arrondi au dixième) ?",
-      "a": "$53{,}7$ m",
-      "options": ["$53{,}7$ m", "$52{,}0$ m", "$51{,}0$ m"],
-      "steps": [
-        "La partie de la falaise au-dessus des yeux forme un triangle rectangle : côté adjacent $= 30$ m, angle $= 60°$, côté opposé $= h$.",
-        "$h = 30 \\times \\tan(60°) = 30 \\times 1{,}732 = 52{,}0$ m. On ajoute la hauteur des yeux : $52{,}0 + 1{,}7$.",
-        "Hauteur totale $\\approx\\;?$ m."
-      ],
-      "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$"
-    }
-  ]
-}
+[
+  {
+    "id": "TRIGO_01",
+    "title": "Le phare et le bateau",
+    "context": "Un bateau $B$ se trouve à $120$ m du pied $P$ d'un phare. Le sommet du phare est le point $H$. Le triangle $BPH$ est rectangle en $P$. L'angle $\\widehat{PBH} = 28°$.",
+    "figure": "TRIGO_01_phare.svg",
+    "figure_desc": "Triangle BPH rectangle en P (angle droit codé en P). B en bas à gauche (bateau), P en bas à droite (pied du phare), H en haut à droite (sommet du phare). Segment BP horizontal = 120 m (labellé). Segment PH vertical = ? (labellé). Segment BH = hypoténuse (pas de mesure). Angle en B = 28° marqué avec arc. Le phare est représenté verticalement à droite.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule la hauteur $PH$ du phare (arrondi au dixième).",
+        "a": "63,8",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On connaît le côté adjacent à l'angle ($BP = 120$ m) et on cherche le côté opposé ($PH$). Quel ratio trigonométrique relie opposé et adjacent ?",
+          "$\\tan(28°) = \\frac{PH}{BP}$, donc $PH = 120 \\times \\tan(28°) = 120 \\times 0{,}5317$.",
+          "$PH \\approx\\;?$ m."
+        ],
+        "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Calcule la distance $BH$ entre le bateau et le sommet du phare (arrondi au dixième).",
+        "a": "135,9",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On connaît le côté adjacent ($BP = 120$ m) et on cherche l'hypoténuse ($BH$). Quel ratio relie adjacent et hypoténuse ?",
+          "$\\cos(28°) = \\frac{BP}{BH}$, donc $BH = \\frac{120}{\\cos(28°)} = \\frac{120}{0{,}8829}$.",
+          "$BH \\approx\\;?$ m."
+        ],
+        "f": "$\\cos(\\alpha) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Pour trouver $PH$ en connaissant $BP$ et l'angle $\\widehat{PBH}$, quel ratio trigonométrique faut-il utiliser ?",
+        "a": "La tangente",
+        "type": "qcm",
+        "options": ["La tangente", "Le cosinus", "Le sinus"],
+        "steps": [
+          "$PH$ est le côté opposé à l'angle $\\widehat{PBH}$ et $BP$ est le côté adjacent. Quel ratio relie opposé et adjacent ?",
+          "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$. C'est bien la tangente qui convient ici."
+        ],
+        "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Le bateau recule à $200$ m du phare. Quel est le nouvel angle d'élévation $\\widehat{PBH}$ (arrondi au degré) ?",
+        "a": "$18°$",
+        "type": "qcm",
+        "options": ["$18°$", "$14°$", "$22°$"],
+        "steps": [
+          "La hauteur du phare ne change pas : $PH \\approx 63{,}8$ m. La nouvelle distance est $BP = 200$ m.",
+          "$\\tan(\\widehat{PBH}) = \\frac{63{,}8}{200} = 0{,}319$, donc $\\widehat{PBH} = \\arctan(0{,}319)$.",
+          "$\\widehat{PBH} \\approx\\;?°$."
+        ],
+        "f": "$\\alpha = \\arctan\\left(\\frac{\\text{opposé}}{\\text{adjacent}}\\right)$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "En doublant la distance bateau-phare (de $120$ m à $240$ m), l'angle d'élévation est exactement divisé par deux.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "À $120$ m, l'angle vaut $28°$. La moitié serait $14°$.",
+          "À $240$ m : $\\tan(\\alpha) = \\frac{63{,}8}{240} = 0{,}266$, donc $\\alpha = \\arctan(0{,}266) \\approx 14{,}9° \\approx 15°$.",
+          "$15° \\neq 14°$ : l'angle n'est pas exactement divisé par deux. La tangente n'est pas une fonction linéaire."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "TRIGO_02",
+    "title": "La rampe d'accessibilité",
+    "context": "Une rampe d'accès pour personnes à mobilité réduite a une longueur de $10$ m (la pente) et une hauteur de $1{,}4$ m. Le triangle est rectangle entre la base horizontale, la hauteur verticale et la rampe. La norme impose un angle de pente inférieur ou égal à $5°$.",
+    "figure": "TRIGO_02_rampe.svg",
+    "figure_desc": "Triangle rectangle : A en bas à gauche (début rampe au sol), B en bas à droite (pied de la marche), C en haut à droite (haut de la marche). Angle droit codé en B. AB = base horizontale (pas de mesure, = ?). BC = 1,4 m (hauteur, labellé). AC = 10 m (rampe/hypoténuse, labellé). Angle α en A marqué avec arc. La rampe monte de gauche à droite.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule l'angle $\\alpha$ de la rampe avec le sol (arrondi au degré).",
+        "a": "8",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On connaît le côté opposé à $\\alpha$ ($BC = 1{,}4$ m) et l'hypoténuse ($AC = 10$ m). Quel ratio utiliser ?",
+          "$\\sin(\\alpha) = \\frac{BC}{AC} = \\frac{1{,}4}{10} = 0{,}14$, donc $\\alpha = \\arcsin(0{,}14)$.",
+          "$\\alpha \\approx\\;?°$."
+        ],
+        "f": "$\\sin(\\alpha) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Cette rampe est-elle conforme à la norme (angle $\\leq 5°$) ?",
+        "a": "Non, l'angle dépasse $5°$",
+        "type": "qcm",
+        "options": ["Non, l'angle dépasse $5°$", "Oui, l'angle est inférieur à $5°$", "On ne peut pas savoir"],
+        "steps": [
+          "On a trouvé $\\alpha \\approx 8°$.",
+          "$8° > 5°$ : la rampe n'est pas conforme à la norme."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Quelle longueur minimale de rampe faudrait-il pour respecter la norme avec la même hauteur de $1{,}4$ m (arrondi au dixième) ?",
+        "a": "16,1",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On veut $\\alpha = 5°$ (angle maximal autorisé) avec $BC = 1{,}4$ m. On cherche la longueur de la rampe $AC$.",
+          "$\\sin(5°) = \\frac{1{,}4}{AC}$, donc $AC = \\frac{1{,}4}{\\sin(5°)} = \\frac{1{,}4}{0{,}0872}$.",
+          "$AC \\approx\\;?$ m."
+        ],
+        "f": "$\\sin(\\alpha) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Quelle est la longueur de la base horizontale $AB$ de la rampe actuelle (arrondi au dixième) ?",
+        "a": "$9{,}9$ m",
+        "type": "qcm",
+        "options": ["$9{,}9$ m", "$8{,}6$ m", "$10{,}1$ m"],
+        "steps": [
+          "On connaît $AC = 10$ m et $BC = 1{,}4$ m. On peut utiliser le théorème de Pythagore ou le cosinus.",
+          "$AB = AC \\times \\cos(\\alpha) = 10 \\times \\cos(8°) = 10 \\times 0{,}9903$.",
+          "$AB \\approx\\;?$ m."
+        ],
+        "f": "$\\cos(\\alpha) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Le côté adjacent à l'angle $\\alpha$ dans ce triangle est la rampe de $10$ m.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "La rampe ($AC = 10$ m) est le côté le plus long du triangle rectangle : c'est l'hypoténuse.",
+          "Le côté adjacent à $\\alpha$ est le côté qui touche l'angle $\\alpha$ sans être l'hypoténuse : c'est la base horizontale $AB$.",
+          "La rampe n'est donc pas le côté adjacent, c'est l'hypoténuse."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "TRIGO_03",
+    "title": "Randonnée en montagne",
+    "context": "Lors d'une randonnée, le sentier suit une pente régulière. La première portion fait $2$ km de long (distance parcourue sur le sentier) avec un angle de pente de $18°$ par rapport à l'horizontale.",
+    "figure": "TRIGO_03_rando.svg",
+    "figure_desc": "Triangle rectangle : A en bas à gauche (départ), B en bas à droite (projection au sol de l'arrivée), C en haut à droite (arrivée en altitude). Angle droit codé en B. AC = 2 km (sentier/hypoténuse, labellé). BC = ? (dénivelé, labellé). AB = ? (distance horizontale). Angle α = 18° en A marqué avec arc. Pente montante de gauche à droite. Ligne pointillée horizontale AB, ligne pointillée verticale BC.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule le dénivelé $BC$ de cette première portion (arrondi au dixième de km).",
+        "a": "0,6",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$BC$ est le côté opposé à l'angle de $18°$ et $AC = 2$ km est l'hypoténuse. Quel ratio utiliser ?",
+          "$\\sin(18°) = \\frac{BC}{AC}$, donc $BC = 2 \\times \\sin(18°) = 2 \\times 0{,}3090$.",
+          "$BC \\approx\\;?$ km."
+        ],
+        "f": "$\\sin(\\alpha) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la distance horizontale $AB$ parcourue (arrondi au dixième de km) ?",
+        "a": "$1{,}9$ km",
+        "type": "qcm",
+        "options": ["$1{,}9$ km", "$0{,}6$ km", "$2{,}1$ km"],
+        "steps": [
+          "$AB$ est le côté adjacent à l'angle de $18°$ et $AC = 2$ km est l'hypoténuse.",
+          "$\\cos(18°) = \\frac{AB}{AC}$, donc $AB = 2 \\times \\cos(18°) = 2 \\times 0{,}9511$.",
+          "$AB \\approx\\;?$ km."
+        ],
+        "f": "$\\cos(\\alpha) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Une deuxième portion du sentier couvre $1{,}5$ km à l'horizontale et $600$ m de dénivelé. Calcule l'angle de pente de cette portion (arrondi au degré).",
+        "a": "22",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On connaît le côté opposé ($0{,}6$ km) et le côté adjacent ($1{,}5$ km). Quel ratio relie opposé et adjacent ?",
+          "$\\tan(\\beta) = \\frac{0{,}6}{1{,}5} = 0{,}4$, donc $\\beta = \\arctan(0{,}4)$.",
+          "$\\beta \\approx\\;?°$."
+        ],
+        "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Quelle portion est la plus raide ?",
+        "a": "La deuxième ($22°$)",
+        "type": "qcm",
+        "options": ["La deuxième ($22°$)", "La première ($18°$)", "Elles ont la même pente"],
+        "steps": [
+          "La première portion a un angle de $18°$.",
+          "La deuxième a un angle d'environ $22°$.",
+          "$22° > 18°$ : la deuxième portion est plus raide."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Le dénivelé total des deux portions est de $1218$ m.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Première portion : $BC \\approx 0{,}618$ km $= 618$ m.",
+          "Deuxième portion : dénivelé $= 600$ m.",
+          "Total $= 618 + 600 = 1218$ m. L'affirmation est correcte."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "TRIGO_04",
+    "title": "Le drone géomètre",
+    "context": "Un drone $D$ survole un terrain à une altitude de $80$ m. Sa projection au sol est le point $P$. Il repère un point $A$ au sol avec un angle de plongée $\\widehat{PDA} = 35°$. Le triangle $DPA$ est rectangle en $P$.",
+    "figure": "TRIGO_04_drone.svg",
+    "figure_desc": "Triangle DPA rectangle en P. D en haut à gauche (drone en l'air), P en bas à gauche (projection au sol, directement sous le drone), A en bas à droite (point au sol). Angle droit codé en P. DP = 80 m (altitude, vertical, labellé). PA = ? (distance au sol, horizontal). DA = ? (ligne de visée, hypoténuse). Angle PDA = 35° marqué avec arc en D. Ligne pointillée verticale DP, trait plein DA oblique.",
+    "questions": [
+      {
+        "num": "1",
+        "q": "Calcule la distance au sol $PA$ entre la projection du drone et le point $A$ (arrondi au dixième).",
+        "a": "56,0",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Dans le triangle $DPA$ rectangle en $P$, l'angle $\\widehat{PDA} = 35°$. Le côté adjacent est $DP = 80$ m et le côté opposé est $PA$.",
+          "$\\tan(35°) = \\frac{PA}{DP}$, donc $PA = 80 \\times \\tan(35°) = 80 \\times 0{,}7002$.",
+          "$PA \\approx\\;?$ m."
+        ],
+        "f": "$\\tan(\\alpha) = \\frac{\\text{opposé}}{\\text{adjacent}}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la distance $DA$ entre le drone et le point $A$ (arrondi au dixième) ?",
+        "a": "$97{,}7$ m",
+        "type": "qcm",
+        "options": ["$97{,}7$ m", "$56{,}0$ m", "$136{,}0$ m"],
+        "steps": [
+          "On connaît le côté adjacent $DP = 80$ m et on cherche l'hypoténuse $DA$.",
+          "$\\cos(35°) = \\frac{DP}{DA}$, donc $DA = \\frac{80}{\\cos(35°)} = \\frac{80}{0{,}8192}$.",
+          "$DA \\approx\\;?$ m."
+        ],
+        "f": "$\\cos(\\alpha) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Le drone repère un second point $B$ au sol. La distance $DB = 110$ m. Calcule l'angle de plongée $\\widehat{PDB}$ (arrondi au degré).",
+        "a": "43",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On connaît le côté adjacent $DP = 80$ m et l'hypoténuse $DB = 110$ m.",
+          "$\\cos(\\widehat{PDB}) = \\frac{DP}{DB} = \\frac{80}{110} \\approx 0{,}7273$.",
+          "$\\widehat{PDB} = \\arccos(0{,}7273) \\approx\\;?°$."
+        ],
+        "f": "$\\cos(\\alpha) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "On vérifie $DA$ par le théorème de Pythagore : $DA = \\sqrt{DP^2 + PA^2}$. Quel résultat obtient-on (arrondi au dixième) ?",
+        "a": "$97{,}7$ m",
+        "type": "qcm",
+        "options": ["$97{,}7$ m", "$136{,}0$ m", "$68{,}0$ m"],
+        "steps": [
+          "$DA = \\sqrt{80^2 + 56{,}0^2} = \\sqrt{6400 + 3136}$.",
+          "$DA = \\sqrt{9536} \\approx\\;?$ m.",
+          "On retrouve le même résultat qu'avec la trigonométrie."
+        ],
+        "f": "$c = \\sqrt{a^2 + b^2}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "On peut retrouver la distance $DA$ aussi bien par le théorème de Pythagore que par la trigonométrie.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Par trigonométrie : $DA = \\frac{80}{\\cos(35°)} \\approx 97{,}7$ m.",
+          "Par Pythagore : $DA = \\sqrt{80^2 + 56^2} = \\sqrt{9536} \\approx 97{,}7$ m.",
+          "Les deux méthodes donnent le même résultat : c'est cohérent."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

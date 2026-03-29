@@ -1,304 +1,432 @@
-{
-  "niveau": "3EME",
-  "categorie": "Probabilites_Brevet",
-  "titre": "Probabilités",
-  "icone": "🎲",
-  "exos": [
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "On lance un dé équilibré à $6$ faces. Quelle est la probabilité d'obtenir un $5$ ? ___",
-      "a": "1/6",
-      "options": [],
-      "steps": [
-        "Il y a $1$ face favorable (le $5$) et $6$ faces au total.",
-        "On applique $P = \\frac{\\text{cas favorables}}{\\text{cas possibles}} = \\frac{1}{6}$.",
-        "La probabilité est $\\frac{1}{6}$."
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "On tire une carte au hasard dans un jeu de $32$ cartes. Quelle est la probabilité d'obtenir un coeur ? ___",
-      "a": "1/4",
-      "options": [],
-      "steps": [
-        "Dans un jeu de $32$ cartes, il y a $8$ coeurs.",
-        "$P(\\text{coeur}) = \\frac{8}{32}$. On simplifie par $8$ : $\\frac{8}{32} = \\frac{1}{4}$.",
-        "La probabilité est $\\frac{1}{4}$."
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 1,
-      "q": "Une urne contient $5$ boules rouges, $3$ bleues et $2$ vertes. On tire une boule au hasard. Quelle est la probabilité de tirer une boule bleue ?",
-      "a": "$\\frac{3}{10}$",
-      "options": [
-        "$\\frac{3}{10}$",
-        "$\\frac{3}{8}$",
-        "$\\frac{1}{3}$"
-      ],
-      "steps": [
-        "Il y a $3$ boules bleues et $5 + 3 + 2 = 10$ boules au total.",
-        "$P(\\text{bleue}) = \\frac{3}{10}$.",
-        "La fraction $\\frac{3}{10}$ est déjà irréductible."
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "On lance un dé équilibré à $6$ faces. L'événement « obtenir un nombre supérieur à $4$ » a une probabilité de $\\frac{1}{2}$.",
-      "a": "Faux",
-      "options": [
-        "Vrai",
-        "Faux"
-      ],
-      "steps": [
-        "Les nombres supérieurs à $4$ sur un dé sont $5$ et $6$, soit $2$ cas favorables.",
-        "$P = \\frac{2}{6} = \\frac{1}{3}$, pas $\\frac{1}{2}$.",
-        "La probabilité vaut $\\frac{1}{3}$. Que peut-on en conclure ?"
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 1,
-      "q": "Inès lance une pièce équilibrée. Quelle est la probabilité d'obtenir « pile » ?",
-      "a": "$\\frac{1}{2}$",
-      "options": [
-        "$\\frac{1}{2}$",
-        "$\\frac{1}{3}$",
-        "$1$"
-      ],
-      "steps": [
-        "Une pièce a $2$ faces : pile et face. L'événement « pile » correspond à $1$ cas favorable.",
-        "$P(\\text{pile}) = \\frac{1}{2}$.",
-        "La pièce est équilibrée, donc les deux issues sont équiprobables."
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "On tire successivement $2$ boules AVEC remise dans une urne contenant $4$ boules rouges et $6$ boules bleues. Quelle est la probabilité de tirer $2$ boules rouges ? ___",
-      "a": "4/25",
-      "options": [],
-      "steps": [
-        "Avec remise, les tirages sont indépendants. $P(\\text{rouge}) = \\frac{4}{10} = \\frac{2}{5}$ à chaque tirage.",
-        "$P(\\text{2 rouges}) = \\frac{2}{5} \\times \\frac{2}{5} = \\frac{4}{25}$.",
-        "On multiplie les probabilités car les tirages sont indépendants."
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 1,
-      "q": "Hugo lance un dé équilibré $2$ fois. En utilisant un arbre, combien y a-t-il d'issues possibles au total ?",
-      "a": "$36$",
-      "options": [
-        "$36$",
-        "$12$",
-        "$6$"
-      ],
-      "steps": [
-        "Au 1er lancer : $6$ issues possibles. Pour chacune, le 2ème lancer donne $6$ issues.",
-        "L'arbre a $6$ branches au 1er niveau et $6$ branches par noeud au 2ème niveau.",
-        "Nombre total d'issues : $6 \\times 6 = $ ?"
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 1,
-      "type": "vf",
-      "q": "On tire $2$ boules successivement AVEC remise dans une urne contenant $3$ rouges et $2$ vertes. La probabilité de tirer une rouge puis une verte est $\\frac{6}{25}$.",
-      "a": "Vrai",
-      "options": [
-        "Vrai",
-        "Faux"
-      ],
-      "steps": [
-        "$P(\\text{rouge}) = \\frac{3}{5}$ et $P(\\text{verte}) = \\frac{2}{5}$ (avec remise, les probabilités sont les mêmes à chaque tirage).",
-        "$P(\\text{rouge puis verte}) = \\frac{3}{5} \\times \\frac{2}{5} = \\frac{6}{25}$.",
-        "Le calcul confirme $\\frac{6}{25}$. Que peut-on en conclure ?"
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 2,
-      "q": "Noé tire $2$ billes successivement SANS remise dans un sac contenant $3$ billes jaunes et $2$ billes noires. Quelle est la probabilité de tirer $2$ billes jaunes ?",
-      "a": "$\\frac{3}{10}$",
-      "options": [
-        "$\\frac{3}{10}$",
-        "$\\frac{9}{25}$",
-        "$\\frac{2}{5}$"
-      ],
-      "steps": [
-        "Sans remise : $P(\\text{jaune au 1er tirage}) = \\frac{3}{5}$. Après avoir tiré une jaune, il reste $2$ jaunes sur $4$ billes.",
-        "$P(\\text{jaune au 2ème tirage}) = \\frac{2}{4} = \\frac{1}{2}$.",
-        "$P(\\text{2 jaunes}) = \\frac{3}{5} \\times \\frac{1}{2} = \\frac{3}{10}$. Le distracteur $\\frac{9}{25}$ correspondrait au cas AVEC remise."
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Emma tire $2$ cartes successivement AVEC remise dans un jeu de $4$ cartes numérotées de $1$ à $4$. Quelle est la probabilité d'obtenir une somme égale à $5$ ? ___",
-      "a": "1/4",
-      "options": [],
-      "steps": [
-        "Les couples dont la somme vaut $5$ sont : $(1;4)$, $(2;3)$, $(3;2)$, $(4;1)$, soit $4$ cas favorables.",
-        "Nombre total d'issues avec remise : $4 \\times 4 = 16$.",
-        "$P(\\text{somme} = 5) = \\frac{4}{16} = $ ?"
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 1,
-      "q": "Dans une classe de $30$ élèves, on a relevé le sport préféré. Le tableau ci-dessous résume les résultats :\n\n| | Foot | Basket | Tennis |\n|---|---|---|---|\n| Filles | $4$ | $6$ | $5$ |\n| Garçons | $8$ | $3$ | $4$ |\n\nOn choisit un élève au hasard. Quelle est la probabilité qu'il soit un garçon pratiquant le foot ?",
-      "a": "$\\frac{4}{15}$",
-      "options": [
-        "$\\frac{4}{15}$",
-        "$\\frac{8}{15}$",
-        "$\\frac{8}{12}$"
-      ],
-      "steps": [
-        "On cherche $P(\\text{garçon ET foot})$. Il y a $8$ garçons qui préfèrent le foot.",
-        "Il y a $30$ élèves au total. $P = \\frac{8}{30}$.",
-        "$\\frac{8}{30} = \\frac{4}{15}$ (on simplifie par $2$)."
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Dans un groupe de $40$ personnes, $12$ portent des lunettes et $28$ n'en portent pas. Quelle est la probabilité de choisir au hasard une personne qui ne porte PAS de lunettes ? ___",
-      "a": "7/10",
-      "options": [],
-      "steps": [
-        "L'événement contraire de « porte des lunettes » est « ne porte pas de lunettes ».",
-        "$P(\\text{lunettes}) = \\frac{12}{40} = \\frac{3}{10}$. Donc $P(\\overline{\\text{lunettes}}) = 1 - \\frac{3}{10} = \\frac{7}{10}$.",
-        "On peut aussi calculer directement : $\\frac{28}{40} = \\frac{7}{10}$."
-      ],
-      "f": "$P(\\bar{A}) = 1 - P(A)$"
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "Dans un collège, on interroge $50$ élèves. Le tableau résume leurs réponses :\n\n| | Demi-pensionnaire | Externe |\n|---|---|---|\n| 3ème | $18$ | $7$ |\n| 4ème | $15$ | $10$ |\n\nLes événements « être en 3ème » et « être externe » sont incompatibles.",
-      "a": "Faux",
-      "options": [
-        "Vrai",
-        "Faux"
-      ],
-      "steps": [
-        "Deux événements sont incompatibles s'ils ne peuvent pas se produire en même temps.",
-        "Ici, il y a $7$ élèves qui sont à la fois en 3ème ET externes. Les deux événements peuvent se produire simultanément.",
-        "Comme $7 \\neq 0$, les événements ne sont pas incompatibles. Que peut-on en conclure ?"
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 2,
-      "q": "Jade a une urne avec $7$ boules blanches et $3$ boules noires. Quelle est la probabilité de NE PAS tirer une boule noire ?",
-      "a": "$\\frac{7}{10}$",
-      "options": [
-        "$\\frac{7}{10}$",
-        "$\\frac{3}{7}$",
-        "$\\frac{3}{10}$"
-      ],
-      "steps": [
-        "L'événement contraire de « tirer une noire » est « ne pas tirer une noire » (= tirer une blanche).",
-        "$P(\\text{noire}) = \\frac{3}{10}$. Donc $P(\\overline{\\text{noire}}) = 1 - \\frac{3}{10} = \\frac{7}{10}$.",
-        "On retrouve $\\frac{7}{10}$ en comptant les $7$ boules blanches sur $10$."
-      ],
-      "f": "$P(\\bar{A}) = 1 - P(A)$"
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "Dans le tableau précédent ($50$ élèves : $18$ 3ème DP, $7$ 3ème ext., $15$ 4ème DP, $10$ 4ème ext.), la probabilité de choisir un demi-pensionnaire est $\\frac{33}{50}$.",
-      "a": "Vrai",
-      "options": [
-        "Vrai",
-        "Faux"
-      ],
-      "steps": [
-        "Nombre de demi-pensionnaires : $18 + 15 = 33$.",
-        "$P(\\text{DP}) = \\frac{33}{50}$.",
-        "Le calcul est correct. Que peut-on en conclure ?"
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Lors de la tombola du collège, $200$ tickets sont vendus. $40$ tickets gagnent un lot. Quelle est la probabilité de gagner un lot ? ___",
-      "a": "1/5",
-      "options": [],
-      "steps": [
-        "Il y a $40$ tickets gagnants sur $200$ tickets au total.",
-        "$P(\\text{gagner}) = \\frac{40}{200}$. On simplifie par $40$ : $\\frac{40}{200} = \\frac{1}{5}$.",
-        "La probabilité de gagner un lot est $\\frac{1}{5}$."
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "À la tombola du collège ($200$ tickets, $40$ gagnants), il y a un unique gros lot (un casque audio). Quelle est la probabilité de gagner le gros lot ? ___",
-      "a": "1/200",
-      "options": [],
-      "steps": [
-        "Un seul ticket gagne le gros lot sur $200$ tickets.",
-        "$P(\\text{gros lot}) = \\frac{1}{200}$.",
-        "La fraction est déjà irréductible."
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "À la tombola du collège ($200$ tickets, $40$ gagnants), Léa achète $5$ tickets. Il est certain qu'elle gagne au moins un lot.",
-      "a": "Faux",
-      "options": [
-        "Vrai",
-        "Faux"
-      ],
-      "steps": [
-        "Il y a $200 - 40 = 160$ tickets perdants sur $200$. Il est donc possible que les $5$ tickets de Léa soient tous perdants.",
-        "Pour que ce soit « certain », il faudrait que TOUTES les issues possibles donnent au moins un lot. Ce n'est pas le cas ici.",
-        "Acheter $5$ tickets augmente les chances, mais ne rend pas le gain certain. Que peut-on en conclure ?"
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "À la tombola du collège ($200$ tickets, $40$ gagnants), quelle est la probabilité de NE PAS gagner de lot avec un seul ticket ? ___",
-      "a": "4/5",
-      "options": [],
-      "steps": [
-        "On utilise l'événement contraire. $P(\\text{gagner}) = \\frac{40}{200} = \\frac{1}{5}$.",
-        "$P(\\text{ne pas gagner}) = 1 - P(\\text{gagner}) = 1 - \\frac{1}{5} = \\frac{4}{5}$.",
-        "La probabilité de ne rien gagner est $\\frac{4}{5}$."
-      ],
-      "f": "$P(\\bar{A}) = 1 - P(A)$"
-    },
-    {
-      "lvl": 2,
-      "q": "Les organisateurs de la tombola ajoutent $50$ tickets perdants (total : $250$ tickets, toujours $40$ gagnants). Quelle est la nouvelle probabilité de gagner un lot ?",
-      "a": "$\\frac{4}{25}$",
-      "options": [
-        "$\\frac{4}{25}$",
-        "$\\frac{1}{5}$",
-        "$\\frac{2}{25}$"
-      ],
-      "steps": [
-        "Il y a maintenant $250$ tickets au total et toujours $40$ tickets gagnants.",
-        "$P(\\text{gagner}) = \\frac{40}{250}$. On simplifie par $10$ : $\\frac{40}{250} = \\frac{4}{25}$.",
-        "La probabilité a diminué (de $\\frac{1}{5} = \\frac{5}{25}$ à $\\frac{4}{25}$) car on a ajouté des tickets perdants."
-      ],
-      "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$"
-    }
-  ]
-}
+[
+  {
+    "id": "PROB_01",
+    "title": "Le sac de billes de Léa",
+    "context": "Léa a un sac opaque contenant $4$ billes rouges, $6$ billes bleues et $2$ billes vertes. Elle tire une bille au hasard.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Combien y a-t-il de billes au total dans le sac ? ___",
+        "a": "12",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On additionne toutes les billes : $4 + 6 + 2 = $ ?",
+          "Il y a $12$ billes en tout."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["Couleur", "Rouge", "Bleue", "Verte"],
+          "rows": [
+            ["Nombre", "4", "6", "2"]
+          ],
+          "caption": "Contenu du sac de Léa"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la probabilité de tirer une bille bleue ?",
+        "a": "$\\frac{1}{2}$",
+        "type": "qcm",
+        "options": [
+          "$\\frac{1}{2}$",
+          "$\\frac{6}{12}$",
+          "$\\frac{1}{6}$"
+        ],
+        "steps": [
+          "Il y a $6$ billes bleues sur $12$ billes au total.",
+          "$P(\\text{bleue}) = \\frac{6}{12}$. On simplifie par $6$ : $\\frac{6}{12} = $ ?",
+          "Attention : $\\frac{6}{12}$ et $\\frac{1}{2}$ sont la même valeur, mais on attend la fraction simplifiée."
+        ],
+        "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "La probabilité de tirer une bille verte est $\\frac{1}{4}$.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Il y a $2$ billes vertes et $12$ billes au total.",
+          "$P(\\text{verte}) = \\frac{2}{12} = \\frac{1}{6}$, pas $\\frac{1}{4}$.",
+          "Que peut-on conclure ?"
+        ],
+        "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Quelle est la probabilité de tirer une bille rouge ? ___",
+        "a": "1/3",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Il y a $4$ billes rouges sur $12$ au total.",
+          "$P(\\text{rouge}) = \\frac{4}{12}$. On simplifie par $4$ : $\\frac{4}{12} = $ ?"
+        ],
+        "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Léa ajoute $3$ billes jaunes dans le sac. Quelle est maintenant la probabilité de tirer une bille rouge ?",
+        "a": "$\\frac{4}{15}$",
+        "type": "qcm",
+        "options": [
+          "$\\frac{4}{15}$",
+          "$\\frac{1}{3}$",
+          "$\\frac{4}{12}$"
+        ],
+        "steps": [
+          "Nouveau total : $12 + 3 = 15$ billes. Le nombre de billes rouges n'a pas changé : $4$.",
+          "$P(\\text{rouge}) = \\frac{4}{15}$.",
+          "$\\frac{4}{12} = \\frac{1}{3}$ c'était la probabilité AVANT d'ajouter les billes jaunes. Attention au nouveau total."
+        ],
+        "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "PROB_02",
+    "title": "La loterie du collège",
+    "context": "Pour la fête du collège, on organise une loterie. Une roue est divisée en $20$ secteurs identiques : $8$ rouges (perdu), $7$ jaunes (un bonbon), $3$ bleus (un stylo) et $2$ dorés (un livre). On fait tourner la roue une fois.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Quelle est la probabilité de tomber sur un secteur jaune ? ___",
+        "a": "7/20",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Il y a $7$ secteurs jaunes sur $20$ secteurs au total.",
+          "$P(\\text{jaune}) = \\frac{7}{20}$. Cette fraction est-elle simplifiable ?"
+        ],
+        "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": {
+          "headers": ["Couleur", "Rouge", "Jaune", "Bleu", "Doré"],
+          "rows": [
+            ["Secteurs", "8", "7", "3", "2"],
+            ["Lot", "Perdu", "Bonbon", "Stylo", "Livre"]
+          ],
+          "caption": "Répartition des secteurs de la roue"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la probabilité de gagner un lot (n'importe lequel) ?",
+        "a": "$\\frac{3}{5}$",
+        "type": "qcm",
+        "options": [
+          "$\\frac{3}{5}$",
+          "$\\frac{12}{20}$",
+          "$\\frac{2}{5}$"
+        ],
+        "steps": [
+          "Gagner = tomber sur jaune, bleu ou doré : $7 + 3 + 2 = 12$ secteurs favorables.",
+          "$P(\\text{gagner}) = \\frac{12}{20}$. On simplifie par $4$ : $\\frac{12}{20} = $ ?",
+          "Attention : $\\frac{12}{20}$ n'est pas simplifiée. La bonne réponse est la fraction irréductible."
+        ],
+        "f": "$P(A \\cup B) = P(A) + P(B)$ si $A$ et $B$ incompatibles",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "La probabilité de perdre est $\\frac{2}{5}$.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "$P(\\text{perdre}) = 1 - P(\\text{gagner}) = 1 - \\frac{3}{5} = \\frac{2}{5}$.",
+          "Ou directement : $\\frac{8}{20} = \\frac{2}{5}$.",
+          "C'est bien $\\frac{2}{5}$. Que peut-on conclure ?"
+        ],
+        "f": "$P(\\bar{A}) = 1 - P(A)$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Quelle est la probabilité de gagner un stylo ou un livre ?",
+        "a": "$\\frac{1}{4}$",
+        "type": "qcm",
+        "options": [
+          "$\\frac{1}{4}$",
+          "$\\frac{5}{20}$",
+          "$\\frac{3}{20}$"
+        ],
+        "steps": [
+          "Stylo : $3$ secteurs. Livre : $2$ secteurs. Ces événements sont incompatibles.",
+          "$P(\\text{stylo ou livre}) = \\frac{3}{20} + \\frac{2}{20} = \\frac{5}{20}$. On simplifie : $\\frac{5}{20} = $ ?",
+          "Attention : $\\frac{5}{20} = \\frac{1}{4}$, pas $\\frac{3}{20}$ (qui est « stylo seul »)."
+        ],
+        "f": "$P(A \\cup B) = P(A) + P(B)$ si $A$ et $B$ incompatibles",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Sacha joue $5$ fois et ne gagne rien. Il dit : « La prochaine fois, j'ai forcément plus de chances de gagner. » A-t-il raison ? ___",
+        "a": "Non",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Chaque tour de roue est indépendant des précédents.",
+          "La probabilité de gagner reste $\\frac{3}{5}$ à chaque tour, quel que soit le résultat des tours précédents.",
+          "C'est une erreur fréquente : croire que « ça doit finir par tomber »."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "PROB_03",
+    "title": "Le menu surprise de la cantine",
+    "context": "La cantine du collège propose un « menu surprise ». L'entrée est choisie au hasard parmi : Salade (S), Soupe (O), Crudités (C). Le dessert est choisi au hasard parmi : Fruit (F), Yaourt (Y). Chaque combinaison est équiprobable.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Combien de menus différents sont possibles au total ? ___",
+        "a": "6",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Il y a $3$ choix d'entrée et $2$ choix de dessert.",
+          "Nombre total de menus : $3 \\times 2 = $ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": {
+          "headers": ["", "Fruit (F)", "Yaourt (Y)"],
+          "rows": [
+            ["Salade (S)", "S-F", "S-Y"],
+            ["Soupe (O)", "O-F", "O-Y"],
+            ["Crudités (C)", "C-F", "C-Y"]
+          ],
+          "caption": "Tableau à double entrée des menus possibles"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la probabilité d'avoir le menu « Salade + Yaourt » ?",
+        "a": "$\\frac{1}{6}$",
+        "type": "qcm",
+        "options": [
+          "$\\frac{1}{6}$",
+          "$\\frac{1}{3}$",
+          "$\\frac{1}{2}$"
+        ],
+        "steps": [
+          "Il y a $1$ seul menu « S-Y » parmi $6$ menus possibles.",
+          "$P(\\text{S-Y}) = \\frac{1}{6}$.",
+          "$\\frac{1}{3}$ serait la probabilité de la salade seule, $\\frac{1}{2}$ celle du yaourt seul."
+        ],
+        "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "La probabilité d'avoir un fruit en dessert est $\\frac{1}{3}$.",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Les menus avec un fruit sont : S-F, O-F, C-F, soit $3$ menus sur $6$.",
+          "$P(\\text{fruit}) = \\frac{3}{6} = \\frac{1}{2}$, pas $\\frac{1}{3}$.",
+          "$\\frac{1}{3}$ c'est la probabilité d'une entrée précise, pas du dessert."
+        ],
+        "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Quelle est la probabilité de ne pas avoir de soupe en entrée ? ___",
+        "a": "2/3",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Les menus sans soupe : S-F, S-Y, C-F, C-Y, soit $4$ menus sur $6$.",
+          "$P(\\text{pas soupe}) = \\frac{4}{6}$. On simplifie : $\\frac{4}{6} = $ ?",
+          "Autre méthode : $P(\\text{pas soupe}) = 1 - P(\\text{soupe}) = 1 - \\frac{1}{3} = \\frac{2}{3}$."
+        ],
+        "f": "$P(\\bar{A}) = 1 - P(A)$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Emma veut une salade ou des crudités en entrée, avec un yaourt en dessert. Quelle est la probabilité qu'elle obtienne ce qu'elle veut ?",
+        "a": "$\\frac{1}{3}$",
+        "type": "qcm",
+        "options": [
+          "$\\frac{1}{3}$",
+          "$\\frac{2}{6}$",
+          "$\\frac{2}{3}$"
+        ],
+        "steps": [
+          "Les menus qui conviennent : S-Y et C-Y, soit $2$ menus favorables sur $6$.",
+          "$P = \\frac{2}{6}$. On simplifie : $\\frac{2}{6} = $ ?",
+          "$\\frac{2}{3}$ serait « salade ou crudités » sans condition sur le dessert. Attention à bien croiser les deux critères."
+        ],
+        "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "PROB_04",
+    "title": "La tombola du club de handball",
+    "context": "Le club de handball organise une tombola. $200$ billets sont vendus. Il y a $10$ lots : $1$ vélo (billet n°42), $4$ places de cinéma et $5$ porte-clés. Après la tombola, le club a aussi noté les résultats de $50$ lancers francs lors d'un concours : $32$ ont été réussis.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Quelle est la probabilité de gagner un lot (n'importe lequel) avec un billet ? ___",
+        "a": "1/20",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Il y a $10$ billets gagnants sur $200$ billets au total.",
+          "$P(\\text{gagner}) = \\frac{10}{200}$. On simplifie par $10$ : $\\frac{10}{200} = $ ?"
+        ],
+        "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": {
+          "headers": ["Lot", "Vélo", "Cinéma", "Porte-clés", "Rien"],
+          "rows": [
+            ["Nombre de billets", "1", "4", "5", "190"]
+          ],
+          "caption": "Répartition des lots de la tombola (200 billets)"
+        },
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Quelle est la fréquence de réussite des lancers francs lors du concours ?",
+        "a": "$0{,}64$",
+        "type": "qcm",
+        "options": [
+          "$0{,}64$",
+          "$\\frac{32}{50}$",
+          "$0{,}32$"
+        ],
+        "steps": [
+          "Fréquence = $\\frac{\\text{nombre de réussites}}{\\text{nombre total de lancers}} = \\frac{32}{50}$.",
+          "$\\frac{32}{50} = \\frac{64}{100} = $ ?",
+          "Attention : $\\frac{32}{50}$ est la fraction, $0{,}64$ est la fréquence décimale. $0{,}32$ serait $\\frac{32}{100}$."
+        ],
+        "f": "$f = \\frac{\\text{effectif}}{\\text{effectif total}}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Si on achète un billet, la probabilité de gagner le vélo est $\\frac{1}{200}$.",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Il y a $1$ seul billet gagnant le vélo sur $200$ billets.",
+          "$P(\\text{vélo}) = \\frac{1}{200}$.",
+          "C'est bien correct."
+        ],
+        "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Le club organise un nouveau concours de lancers francs. En se basant sur la fréquence observée, combien de réussites peut-on estimer sur $150$ lancers ? ___",
+        "a": "96",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "La fréquence observée est $0{,}64$. On estime les réussites par $150 \\times 0{,}64$.",
+          "$150 \\times 0{,}64 = $ ?",
+          "La fréquence observée sert d'estimation de la probabilité quand le nombre d'expériences est grand."
+        ],
+        "f": "$\\text{Estimation} = n \\times f$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "On simule $500$ tombolas sur ordinateur et on observe $24$ gains. Vers quelle valeur la fréquence de gain se rapproche-t-elle quand on augmente le nombre de simulations ?",
+        "a": "$\\frac{1}{20}$",
+        "type": "qcm",
+        "options": [
+          "$\\frac{1}{20}$",
+          "$\\frac{24}{500}$",
+          "$\\frac{1}{10}$"
+        ],
+        "steps": [
+          "La fréquence observée est $\\frac{24}{500} = 0{,}048$, proche de $\\frac{1}{20} = 0{,}05$.",
+          "Quand le nombre de simulations augmente, la fréquence se stabilise vers la probabilité théorique.",
+          "$\\frac{24}{500}$ est la fréquence observée (elle varie). La probabilité théorique $\\frac{1}{20}$ est la valeur limite."
+        ],
+        "f": "$\\text{Quand } n \\text{ est grand, } f \\approx P$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

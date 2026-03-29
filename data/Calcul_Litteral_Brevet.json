@@ -1,239 +1,358 @@
-{
-  "niveau": "3EME",
-  "categorie": "Calcul_Litteral_Brevet",
-  "titre": "Calcul littéral",
-  "icone": "📝",
-  "exos": [
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Développe et réduis : $3(2x + 5) = $ ___",
-      "a": "$6x + 15$",
-      "options": [],
-      "steps": [
-        "On distribue le $3$ sur chaque terme de la parenthèse : $3 \\times 2x$ et $3 \\times 5$.",
-        "$3 \\times 2x = 6x$ et $3 \\times 5 = 15$. Le résultat est donc $6x + ?$."
-      ],
-      "f": "$a(b + c) = ab + ac$"
-    },
-    {
-      "lvl": 1,
-      "q": "Karim utilise un programme de calcul : \"Choisir un nombre $x$, le multiplier par $4$, ajouter $7$\". Quelle expression représente ce programme ?",
-      "a": "$4x + 7$",
-      "options": ["$4x + 7$", "$4(x + 7)$", "$7x + 4$"],
-      "steps": [
-        "On suit les étapes dans l'ordre : on part de $x$, on multiplie par $4$ → $4x$.",
-        "Puis on ajoute $7$ au résultat : $4x + 7$. Attention, $4(x+7)$ signifierait qu'on ajoute $7$ AVANT de multiplier."
-      ],
-      "f": "$a(b + c) = ab + ac$"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Développe et réduis : $-2(3x - 4) = $ ___",
-      "a": "$-6x + 8$",
-      "options": [],
-      "steps": [
-        "On distribue $-2$ sur chaque terme : $(-2) \\times 3x$ et $(-2) \\times (-4)$.",
-        "$(-2) \\times 3x = -6x$ et $(-2) \\times (-4) = +8$. Attention au signe : moins par moins donne plus."
-      ],
-      "f": "$a(b + c) = ab + ac$"
-    },
-    {
-      "lvl": 1,
-      "q": "Développe et réduis : $(2x + 3)(x - 5)$.",
-      "a": "$2x^2 - 7x - 15$",
-      "options": ["$2x^2 - 7x - 15$", "$2x^2 - 10x - 15$", "$2x^2 + 7x - 15$"],
-      "steps": [
-        "On applique la double distributivité : chaque terme du premier facteur multiplie chaque terme du second.",
-        "$2x \\times x = 2x^2$, $2x \\times (-5) = -10x$, $3 \\times x = 3x$, $3 \\times (-5) = -15$. On regroupe : $2x^2 - 10x + 3x - 15 = 2x^2 + ?$."
-      ],
-      "f": "$a(b + c) = ab + ac$"
-    },
-    {
-      "lvl": 1,
-      "q": "Léa développe $(3x + 1)(2x - 4)$. Elle trouve $6x^2 - 12x + 2x - 4$. Quelle est la forme réduite ?",
-      "a": "$6x^2 - 10x - 4$",
-      "options": ["$6x^2 - 10x - 4$", "$6x^2 - 14x - 4$", "$6x^2 + 10x - 4$"],
-      "steps": [
-        "Léa a correctement développé. Il reste à réduire les termes en $x$ : $-12x + 2x$.",
-        "$-12x + 2x = -10x$. Donc le résultat réduit est $6x^2 - 10x - 4$."
-      ],
-      "f": "$a(b + c) = ab + ac$"
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Développe : $(x + 5)^2 = $ ___",
-      "a": "$x^2 + 10x + 25$",
-      "options": [],
-      "steps": [
-        "On identifie $(a+b)^2 = a^2 + 2ab + b^2$ avec $a = x$ et $b = 5$.",
-        "$x^2 + 2 \\times x \\times 5 + 5^2 = x^2 + 10x + ?$. Le double produit vaut $10x$."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Développe : $(x - 7)^2 = $ ___",
-      "a": "$x^2 - 14x + 49$",
-      "options": [],
-      "steps": [
-        "On identifie $(a - b)^2 = a^2 - 2ab + b^2$ avec $a = x$ et $b = 7$.",
-        "$x^2 - 2 \\times x \\times 7 + 7^2 = x^2 - 14x + ?$. Attention : le terme constant est toujours positif."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "q": "Développe $(3x + 2)^2$.",
-      "a": "$9x^2 + 12x + 4$",
-      "options": ["$9x^2 + 12x + 4$", "$3x^2 + 12x + 4$", "$9x^2 + 6x + 4$"],
-      "steps": [
-        "On identifie $(a+b)^2$ avec $a = 3x$ et $b = 2$. Donc $a^2 = (3x)^2 = 9x^2$, pas $3x^2$.",
-        "Le double produit : $2 \\times 3x \\times 2 = 12x$. Et $b^2 = 4$. Le résultat est $9x^2 + 12x + ?$."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "q": "Développe $(4x - 1)^2$.",
-      "a": "$16x^2 - 8x + 1$",
-      "options": ["$16x^2 - 8x + 1$", "$4x^2 - 8x + 1$", "$16x^2 - 4x + 1$"],
-      "steps": [
-        "On identifie $(a - b)^2$ avec $a = 4x$ et $b = 1$. Donc $a^2 = (4x)^2 = 16x^2$.",
-        "Le double produit : $2 \\times 4x \\times 1 = 8x$. Avec le signe moins : $-8x$. Et $b^2 = 1$."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Développe : $(5x + 3)(5x - 3) = $ ___",
-      "a": "$25x^2 - 9$",
-      "options": [],
-      "steps": [
-        "On reconnaît la forme $(a+b)(a-b) = a^2 - b^2$ avec $a = 5x$ et $b = 3$.",
-        "$(5x)^2 = 25x^2$ et $3^2 = 9$. Le double produit s'annule, il reste $a^2 - b^2 = ?$."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Factorise : $6x^2 + 9x = $ ___",
-      "a": "$3x(2x + 3)$",
-      "options": [],
-      "steps": [
-        "On cherche le facteur commun aux deux termes. $6x^2 = 3x \\times 2x$ et $9x = 3x \\times 3$.",
-        "Le facteur commun est $3x$. On factorise : $3x(2x + ?)$."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "q": "Quelle est la factorisation de $x^2 - 16$ ?",
-      "a": "$(x - 4)(x + 4)$",
-      "options": ["$(x - 4)(x + 4)$", "$(x - 4)^2$", "$(x - 8)(x + 8)$"],
-      "steps": [
-        "On reconnaît une différence de deux carrés : $x^2 - 16 = x^2 - 4^2$.",
-        "On applique $a^2 - b^2 = (a - b)(a + b)$ avec $a = x$ et $b = 4$."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Factorise : $9x^2 - 49 = $ ___",
-      "a": "$(3x - 7)(3x + 7)$",
-      "options": [],
-      "steps": [
-        "On identifie les deux carrés : $9x^2 = (3x)^2$ et $49 = 7^2$.",
-        "C'est $a^2 - b^2 = (a-b)(a+b)$ avec $a = 3x$ et $b = 7$."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "q": "Quelle est la factorisation de $x^2 + 8x + 16$ ?",
-      "a": "$(x + 4)^2$",
-      "options": ["$(x + 4)^2$", "$(x + 8)^2$", "$(x + 4)(x - 4)$"],
-      "steps": [
-        "On vérifie si c'est un carré parfait : $x^2 = x^2$, $16 = 4^2$, et le double produit $2 \\times x \\times 4 = 8x$. Ça correspond !",
-        "C'est la forme $a^2 + 2ab + b^2 = (a+b)^2$ avec $a = x$ et $b = 4$."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "q": "Factorise $4x^2 - 12x + 9$.",
-      "a": "$(2x - 3)^2$",
-      "options": ["$(2x - 3)^2$", "$(4x - 3)(x - 3)$", "$(2x + 3)^2$"],
-      "steps": [
-        "On vérifie : $4x^2 = (2x)^2$, $9 = 3^2$, et le double produit $2 \\times 2x \\times 3 = 12x$. Le signe est négatif → $(a - b)^2$.",
-        "C'est bien $a^2 - 2ab + b^2 = (a - b)^2$ avec $a = 2x$ et $b = 3$."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 1,
-      "type": "fill",
-      "q": "Voici un programme de calcul : \"Choisir un nombre $n$, calculer $(n + 3)^2 - (n - 3)^2$\". Teste avec $n = 5$ : le résultat vaut ___",
-      "a": "60",
-      "options": [],
-      "steps": [
-        "On remplace $n$ par $5$ : $(5 + 3)^2 - (5 - 3)^2 = 8^2 - 2^2$.",
-        "$8^2 = 64$ et $2^2 = 4$. Donc $64 - 4 = ?$."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Même programme : \"Choisir $n$, calculer $(n + 3)^2 - (n - 3)^2$\". Teste avec $n = -2$ : le résultat vaut ___",
-      "a": "-24",
-      "options": [],
-      "steps": [
-        "On remplace $n$ par $-2$ : $(-2 + 3)^2 - (-2 - 3)^2 = 1^2 - (-5)^2$.",
-        "$1^2 = 1$ et $(-5)^2 = 25$. Donc $1 - 25 = ?$."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "fill",
-      "q": "Développe et réduis l'expression $(n + 3)^2 - (n - 3)^2$ : le résultat simplifié vaut ___",
-      "a": "$12n$",
-      "options": [],
-      "steps": [
-        "On développe chaque carré : $(n+3)^2 = n^2 + 6n + 9$ et $(n-3)^2 = n^2 - 6n + 9$.",
-        "La différence : $(n^2 + 6n + 9) - (n^2 - 6n + 9) = n^2 + 6n + 9 - n^2 + 6n - 9 = ?$."
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "type": "vf",
-      "q": "Le résultat du programme \"Choisir $n$, calculer $(n + 3)^2 - (n - 3)^2$\" est toujours un multiple de $12$.",
-      "a": "Vrai",
-      "options": ["Vrai", "Faux"],
-      "steps": [
-        "On a montré que $(n + 3)^2 - (n - 3)^2 = 12n$ après développement.",
-        "$12n = 12 \\times n$. Quel que soit l'entier $n$, ce produit est bien divisible par $12$. Que peut-on en conclure ?"
-      ],
-      "f": ""
-    },
-    {
-      "lvl": 2,
-      "q": "On peut aussi simplifier $(n + 3)^2 - (n - 3)^2$ en factorisant avec $a^2 - b^2 = (a-b)(a+b)$. Quelle factorisation obtient-on ?",
-      "a": "$[(n+3) - (n-3)][(n+3) + (n-3)] = 6 \\times 2n = 12n$",
-      "options": ["$[(n+3) - (n-3)][(n+3) + (n-3)] = 6 \\times 2n = 12n$", "$[(n+3) + (n-3)]^2 = (2n)^2 = 4n^2$", "$(n^2 + 9)(n^2 - 9) = n^4 - 81$"],
-      "steps": [
-        "On pose $a = n+3$ et $b = n-3$. La formule $a^2 - b^2 = (a-b)(a+b)$ donne $[(n+3)-(n-3)][(n+3)+(n-3)]$.",
-        "$(n+3)-(n-3) = n + 3 - n + 3 = 6$ et $(n+3)+(n-3) = 2n$. Le produit est $6 \\times 2n = ?$."
-      ],
-      "f": ""
-    }
-  ]
-}
+[
+  {
+    "id": "CALLIT_01",
+    "title": "Le terrain du jardinier",
+    "context": "Rachid est jardinier paysagiste. Son terrain rectangulaire mesure $x$ mètres de long et $(x + 3)$ mètres de large. Il prévoit d'agrandir ce terrain pour y installer un potager.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Rachid veut poser une clôture sur l'un des grands côtés du terrain. Il dispose de $4$ rangées de grillage, chacune de longueur $(x + 3)$ mètres. Développe l'expression $4(x + 3)$.",
+        "a": "$4x + 12$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On distribue le $4$ sur chaque terme de la parenthèse : $4 \\times x$ et $4 \\times 3$.",
+          "$4 \\times x = 4x$ et $4 \\times 3 = ?$. Le résultat est $4x + ?$."
+        ],
+        "f": "$a(b + c) = ab + ac$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Rachid agrandit son terrain de $2$ m en longueur. La nouvelle aire est $(x + 2)(x + 3)$. Quelle est la forme développée et réduite ?",
+        "a": "$x^2 + 5x + 6$",
+        "type": "qcm",
+        "options": ["$x^2 + 5x + 6$", "$x^2 + 6x + 6$", "$x^2 + 5x + 5$"],
+        "steps": [
+          "On applique la double distributivité : chaque terme du premier facteur multiplie chaque terme du second.",
+          "$x \\times x = x^2$, $x \\times 3 = 3x$, $2 \\times x = 2x$, $2 \\times 3 = 6$. On regroupe les termes en $x$ : $3x + 2x = ?$."
+        ],
+        "f": "$(a + b)(c + d) = ac + ad + bc + bd$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Rachid affirme : « $4(x + 3) = 4x + 3$ ». A-t-il raison ?",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "On développe $4(x + 3)$ en distribuant le $4$ sur les deux termes.",
+          "$4 \\times x = 4x$ et $4 \\times 3 = 12$. Le résultat correct est-il $4x + 3$ ou $4x + 12$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Le périmètre du terrain initial est $2(x + 3) + 2x$. Développe et réduis cette expression.",
+        "a": "$4x + 6$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On développe d'abord $2(x + 3) = 2x + 6$.",
+          "Le périmètre vaut donc $2x + 6 + 2x$. On regroupe les termes en $x$ : $2x + 2x = ?$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "L'aire du terrain agrandi est $(x + 2)(x + 3)$. L'aire de l'ancien terrain est $x(x + 3)$. Quelle expression réduite représente l'aire gagnée ?",
+        "a": "$2x + 6$",
+        "type": "qcm",
+        "options": ["$2x + 6$", "$2x + 3$", "$x^2 + 6$"],
+        "steps": [
+          "L'aire gagnée = aire agrandie $-$ aire initiale : $(x + 2)(x + 3) - x(x + 3)$.",
+          "On développe chacune : $x^2 + 5x + 6$ et $x^2 + 3x$. La différence donne $5x + 6 - 3x = ?$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "CALLIT_02",
+    "title": "Les bénéfices de GreenTech",
+    "context": "L'entreprise GreenTech fabrique des panneaux solaires. Son bénéfice mensuel en euros dépend du nombre $x$ de panneaux vendus. La comptable, Inès, doit simplifier les expressions de calcul pour le rapport financier.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Le coût de production de $x$ panneaux est $6x + 18$ euros. Inès factorise cette expression. Quel est le résultat ?",
+        "a": "$6(x + 3)$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On cherche le plus grand facteur commun de $6x$ et $18$. Le PGCD de $6$ et $18$ est $6$.",
+          "On met $6$ en facteur : $6x = 6 \\times x$ et $18 = 6 \\times ?$. Donc $6x + 18 = 6(x + ?)$."
+        ],
+        "f": "$ab + ac = a(b + c)$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Les frais de livraison sont modélisés par $3x^2 - 12x$. Quelle est la forme factorisée ?",
+        "a": "$3x(x - 4)$",
+        "type": "qcm",
+        "options": ["$3x(x - 4)$", "$3(x^2 - 4x)$", "$x(3x - 12)$"],
+        "steps": [
+          "On identifie le facteur commun : $3x^2 = 3x \\times x$ et $12x = 3x \\times 4$.",
+          "Le facteur commun est $3x$. On factorise : $3x^2 - 12x = 3x(x - ?)$."
+        ],
+        "f": "$ab + ac = a(b + c)$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Inès affirme que $x^2 - 16$ peut s'écrire $(x - 4)(x + 4)$. A-t-elle raison ?",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "On reconnaît la forme $a^2 - b^2$ avec $a = x$ et $b = 4$, car $16 = 4^2$.",
+          "L'identité $a^2 - b^2 = (a - b)(a + b)$ donne $(x - 4)(x + 4)$. Le résultat d'Inès est-il correct ?"
+        ],
+        "f": "$a^2 - b^2 = (a - b)(a + b)$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Le bénéfice annuel est modélisé par $4x^2 + 20x + 25$. Factorise cette expression en utilisant une identité remarquable.",
+        "a": "$(2x + 5)^2$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On remarque que $4x^2 = (2x)^2$ et $25 = 5^2$. On vérifie le double produit : $2 \\times 2x \\times 5 = ?$.",
+          "Le double produit vaut $20x$, c'est bien le terme du milieu. L'identité $(a + b)^2 = a^2 + 2ab + b^2$ s'applique avec $a = 2x$ et $b = ?$."
+        ],
+        "f": "$(a + b)^2 = a^2 + 2ab + b^2$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Inès doit aussi factoriser $x^2 - 6x + 9$. Quelle est la forme factorisée ?",
+        "a": "$(x - 3)^2$",
+        "type": "qcm",
+        "options": ["$(x - 3)^2$", "$(x + 3)^2$", "$(x - 3)(x + 3)$"],
+        "steps": [
+          "On identifie $x^2 = x^2$, $9 = 3^2$. Le double produit : $2 \\times x \\times 3 = 6x$. Le signe du milieu est négatif.",
+          "L'identité $(a - b)^2 = a^2 - 2ab + b^2$ s'applique. Avec le signe $-$, la forme factorisée est $(x - ?)^2$."
+        ],
+        "f": "$(a - b)^2 = a^2 - 2ab + b^2$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "CALLIT_03",
+    "title": "Le programme de calcul de Jade",
+    "context": "Au brevet blanc, Jade découvre un programme de calcul : « Choisir un nombre $x$. Calculer $(x + 4)^2$. Soustraire $(x - 3)^2$ au résultat. » Elle doit montrer que le résultat final ne dépend que de $x$.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Développe $(x + 4)^2$.",
+        "a": "$x^2 + 8x + 16$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On applique l'identité $(a + b)^2 = a^2 + 2ab + b^2$ avec $a = x$ et $b = 4$.",
+          "$x^2 + 2 \\times x \\times 4 + 4^2 = x^2 + 8x + ?$."
+        ],
+        "f": "$(a + b)^2 = a^2 + 2ab + b^2$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Développe $(x - 3)^2$.",
+        "a": "$x^2 - 6x + 9$",
+        "type": "qcm",
+        "options": ["$x^2 - 6x + 9$", "$x^2 - 9$", "$x^2 + 6x + 9$"],
+        "steps": [
+          "On applique $(a - b)^2 = a^2 - 2ab + b^2$ avec $a = x$ et $b = 3$.",
+          "$x^2 - 2 \\times x \\times 3 + 3^2 = x^2 - 6x + ?$. Attention : $x^2 - 9$ est la forme $a^2 - b^2$, pas $(a - b)^2$."
+        ],
+        "f": "$(a - b)^2 = a^2 - 2ab + b^2$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Hugo affirme que $(2x + 1)^2 = 4x^2 + 1$. A-t-il raison ?",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "On développe $(2x + 1)^2$ avec l'identité $(a + b)^2$ : $(2x)^2 + 2 \\times 2x \\times 1 + 1^2$.",
+          "On obtient $4x^2 + 4x + 1$. Hugo a oublié le terme $?$. Son résultat est-il correct ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Développe $(3x - 2)^2$.",
+        "a": "$9x^2 - 12x + 4$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On applique $(a - b)^2$ avec $a = 3x$ et $b = 2$ : $(3x)^2 - 2 \\times 3x \\times 2 + 2^2$.",
+          "$9x^2 - ? + 4$. Le double produit $2 \\times 3x \\times 2$ vaut $?$."
+        ],
+        "f": "$(a - b)^2 = a^2 - 2ab + b^2$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Jade revient au programme de calcul. Le résultat final est $(x + 4)^2 - (x - 3)^2$. En utilisant l'identité $a^2 - b^2$, quelle est la forme factorisée ?",
+        "a": "$7(2x + 1)$",
+        "type": "qcm",
+        "options": ["$7(2x + 1)$", "$(2x + 7)(2x - 7)$", "$14x + 7$"],
+        "steps": [
+          "On pose $a = (x + 4)$ et $b = (x - 3)$. L'identité $a^2 - b^2 = (a - b)(a + b)$ donne $((x+4)-(x-3))((x+4)+(x-3))$.",
+          "$a - b = x + 4 - x + 3 = 7$ et $a + b = x + 4 + x - 3 = 2x + 1$. Le résultat factorisé est $? \\times ?$."
+        ],
+        "f": "$a^2 - b^2 = (a - b)(a + b)$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "CALLIT_04",
+    "title": "La cour de l'architecte",
+    "context": "L'architecte Emma conçoit une cour rectangulaire de longueur $(x + 3)$ mètres et de largeur $(x + 1)$ mètres, où $x$ représente un paramètre d'ajustement en mètres ($x > 0$). Elle doit calculer les dimensions optimales pour le client.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Développe et réduis l'expression de l'aire de la cour : $(x + 3)(x + 1)$.",
+        "a": "$x^2 + 4x + 3$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On applique la double distributivité : $x \\times x$, $x \\times 1$, $3 \\times x$, $3 \\times 1$.",
+          "$x^2 + x + 3x + 3$. On regroupe les termes en $x$ : $x + 3x = ?$."
+        ],
+        "f": "$(a + b)(c + d) = ac + ad + bc + bd$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Emma veut retrouver les dimensions à partir de l'aire. Factorise $x^2 + 4x + 3$.",
+        "a": "$(x + 1)(x + 3)$",
+        "type": "qcm",
+        "options": ["$(x + 1)(x + 3)$", "$(x + 2)(x + 1)$", "$(x + 4)(x - 1)$"],
+        "steps": [
+          "On cherche deux nombres dont le produit est $3$ et la somme est $4$.",
+          "Les nombres $1$ et $3$ vérifient : $1 \\times 3 = 3$ et $1 + 3 = ?$. Donc $x^2 + 4x + 3 = (x + ?)(x + ?)$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Emma affirme : « Pour $x = 2$, l'aire de la cour vaut $15$ m². » A-t-elle raison ?",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "On remplace $x$ par $2$ dans $(x + 3)(x + 1)$ : $(2 + 3)(2 + 1) = 5 \\times 3$.",
+          "Le résultat est-il bien $15$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Le client veut une cour de $35$ m² exactement. On résout $(x + 3)(x + 1) = 35$, soit $x^2 + 4x - 32 = 0$. Sachant que ce trinôme se factorise en $(x + 8)(x - 4) = 0$, quelle est la valeur de $x$ ?",
+        "a": "4",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$(x + 8)(x - 4) = 0$ donne deux solutions : $x = -8$ ou $x = 4$.",
+          "Or $x > 0$ (c'est une longueur). Quelle solution convient ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Avec $x = 4$, Emma calcule le périmètre de la cour : $2(x + 3) + 2(x + 1)$. Combien mesure-t-il ?",
+        "a": "$24$ m",
+        "type": "qcm",
+        "options": ["$24$ m", "$20$ m", "$28$ m"],
+        "steps": [
+          "On remplace $x$ par $4$ : $2(4 + 3) + 2(4 + 1) = 2 \\times 7 + 2 \\times 5$.",
+          "$14 + 10 = ?$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

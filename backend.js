@@ -5253,14 +5253,43 @@ function importChapters(p) {
       results.push('SKIP Curriculum ' + niveau + '/' + categorie + ' (déjà présent)');
       continue;
     }
+    // ── Flatten v4 parapluie format if needed ──
+    var rawExos = ch.exos || [];
+    var flatExos = [];
+    if (rawExos.length > 0 && rawExos[0].questions) {
+      // v4 parapluie: array of {id, title, context, figure, figure_desc, questions:[...]}
+      for (var p_ = 0; p_ < rawExos.length; p_++) {
+        var par = rawExos[p_];
+        var qs = par.questions || [];
+        for (var q_ = 0; q_ < qs.length; q_++) {
+          var ex = {};
+          // Copy question fields
+          var qObj = qs[q_];
+          var qKeys = ['num','q','a','type','options','steps','f','f_disabled','lvl','table','draw'];
+          for (var k_ = 0; k_ < qKeys.length; k_++) {
+            if (qObj[qKeys[k_]] !== undefined) ex[qKeys[k_]] = qObj[qKeys[k_]];
+          }
+          // Attach parent context metadata
+          ex._ctx = par.context || '';
+          ex._exId = par.id || '';
+          ex._exTitle = par.title || '';
+          ex._figure = par.figure || '';
+          ex._figure_desc = par.figure_desc || '';
+          flatExos.push(ex);
+        }
+      }
+    } else {
+      // Old flat format: array of {q, a, options, ...}
+      flatExos = rawExos;
+    }
     currSheet.appendRow([
       niveau,
       categorie,
       String(ch.titre || ''),
       String(ch.icone || '📘'),
-      JSON.stringify(ch.exos || [])
+      JSON.stringify(flatExos)
     ]);
-    results.push('OK Curriculum ' + niveau + '/' + categorie + ' (' + (ch.exos||[]).length + ' exos)');
+    results.push('OK Curriculum ' + niveau + '/' + categorie + ' (' + flatExos.length + ' exos)');
   }
 
   // ── DiagnosticExos ───────────────────────────────────────
