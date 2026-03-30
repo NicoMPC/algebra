@@ -3019,6 +3019,19 @@ document.addEventListener('touchend', function(e){
     }, 1000);
   } else {
     showLanding();
+    // ── Hash routing — landing Next.js redirige ici avec #trial-xxx ──
+    (function() {
+      var h = window.location.hash || '';
+      if (h.indexOf('#trial') === 0) {
+        var source = h.replace('#trial-', '').replace('&hq=done', '') || 'landing';
+        if (h.indexOf('hq=done') !== -1) window._heroQuizDone = true;
+        history.replaceState(null, '', window.location.pathname);
+        setTimeout(function() { startTrialFlow(source); }, 600);
+      } else if (h === '#login') {
+        history.replaceState(null, '', window.location.pathname);
+        setTimeout(function() { showAuth('login'); }, 400);
+      }
+    })();
   }
 
   // Fonction globale pour le bouton "Découvrir Matheux"
