@@ -689,6 +689,8 @@ function renderExo(){
 
   document.getElementById('exo-area').innerHTML=html;
   rMath();
+  // Auto-scroll pill active into view
+  setTimeout(function(){var ap=document.querySelector('.pill.ring-2');if(ap)ap.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'})},50);
 }
 
 function _previewHelp(exo){
