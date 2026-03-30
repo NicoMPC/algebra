@@ -1798,81 +1798,139 @@
           <div class="phone-mock">
             <div class="phone-notch"></div>
             <div class="phone-inner">
-              <!-- Screen 1: Diagnostic -->
+              <!-- Screen 1: Exo en cours (entraînement du jour) -->
               <div class="phone-scr pactive" id="pscr-0">
-                <div style="padding:2.5rem .85rem .85rem">
-                  <div style="background:#F0F9FF;border-radius:12px;padding:.55rem .7rem;margin-bottom:.7rem">
-                    <div style="font-size:.48rem;font-weight:800;color:#1E40AF;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem">DIAGNOSTIC</div>
-                    <div style="height:3px;background:#DBEAFE;border-radius:99px"><div style="height:100%;width:40%;background:#1E40AF;border-radius:99px"></div></div>
+                <div style="padding:2rem .85rem .65rem">
+                  <!-- Header: chapitre + timer + progression -->
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.55rem">
+                    <div style="background:#FFF7ED;border-radius:8px;padding:.22rem .5rem">
+                      <div style="font-size:.4rem;font-weight:800;color:#EA580C;text-transform:uppercase;letter-spacing:.04em">Entraînement du jour</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:.35rem">
+                      <!-- Timer circle -->
+                      <div style="position:relative;width:22px;height:22px">
+                        <svg viewBox="0 0 22 22" style="width:22px;height:22px"><circle cx="11" cy="11" r="9" style="fill:none;stroke:#e2e8f0;stroke-width:2"/><circle cx="11" cy="11" r="9" style="fill:none;stroke:#1E40AF;stroke-width:2;stroke-dasharray:56.5;stroke-dashoffset:14;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center"/></svg>
+                        <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.32rem;font-weight:800;color:#1E40AF">0:42</span>
+                      </div>
+                      <span style="font-size:.42rem;font-weight:800;color:#64748b">3/5</span>
+                    </div>
                   </div>
-                  <p style="font-size:.68rem;font-weight:700;color:#0f172a;line-height:1.5;margin-bottom:.6rem">Simplifie l'expression :<br><span style="font-size:.85rem">√72</span></p>
-                  <div style="display:flex;flex-direction:column;gap:.3rem">
-                    <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:9px;padding:.4rem .6rem;font-size:.58rem;font-weight:600;color:#1e293b"><span style="color:#3B82F6;font-weight:800;margin-right:.3rem">A.</span>6√2</div>
-                    <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:9px;padding:.4rem .6rem;font-size:.58rem;font-weight:600;color:#1e293b"><span style="color:#3B82F6;font-weight:800;margin-right:.3rem">B.</span>8√3</div>
-                    <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:9px;padding:.4rem .6rem;font-size:.58rem;font-weight:600;color:#1e293b"><span style="color:#3B82F6;font-weight:800;margin-right:.3rem">C.</span>36√2</div>
+                  <!-- Slot dots -->
+                  <div style="display:flex;gap:3px;margin-bottom:.6rem">
+                    <div style="flex:1;height:3px;background:#22c55e;border-radius:99px"></div>
+                    <div style="flex:1;height:3px;background:#22c55e;border-radius:99px"></div>
+                    <div style="flex:1;height:3px;background:#1E40AF;border-radius:99px"></div>
+                    <div style="flex:1;height:3px;background:#e2e8f0;border-radius:99px"></div>
+                    <div style="flex:1;height:3px;background:#e2e8f0;border-radius:99px"></div>
                   </div>
-                  <div style="display:flex;gap:.3rem;margin-top:.6rem">
-                    <div style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:8px;padding:.22rem .5rem;font-size:.44rem;font-weight:700">💡 Indice</div>
-                    <div style="background:#FFF7ED;color:#EA580C;border:1px solid #FDBA74;border-radius:8px;padding:.22rem .5rem;font-size:.44rem;font-weight:700">👁 Formule</div>
+                  <!-- Contexte Brevet -->
+                  <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:.45rem .55rem;margin-bottom:.5rem">
+                    <p style="font-size:.44rem;color:#64748b;font-weight:600;margin-bottom:.2rem">📐 Théorème de Pythagore</p>
+                    <p style="font-size:.5rem;font-weight:600;color:#1e293b;line-height:1.5">Un terrain rectangulaire ABCD a pour longueur AB = 12 m et largeur BC = 5 m.</p>
+                  </div>
+                  <!-- Question -->
+                  <p style="font-size:.56rem;font-weight:700;color:#0f172a;line-height:1.5;margin-bottom:.5rem">Quelle est la longueur de la diagonale AC ?</p>
+                  <!-- Options QCM -->
+                  <div style="display:flex;flex-direction:column;gap:.28rem">
+                    <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:9px;padding:.38rem .55rem;font-size:.52rem;font-weight:600;color:#1e293b;display:flex;align-items:center"><span style="background:#EFF6FF;color:#1E40AF;font-weight:800;border-radius:6px;padding:.1rem .3rem;margin-right:.4rem;font-size:.42rem">A</span>17 m</div>
+                    <div style="background:#EFF6FF;border:1.5px solid #3B82F6;border-radius:9px;padding:.38rem .55rem;font-size:.52rem;font-weight:600;color:#1E40AF;display:flex;align-items:center"><span style="background:#1E40AF;color:#fff;font-weight:800;border-radius:6px;padding:.1rem .3rem;margin-right:.4rem;font-size:.42rem">B</span>13 m ✓</div>
+                    <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:9px;padding:.38rem .55rem;font-size:.52rem;font-weight:600;color:#1e293b;display:flex;align-items:center"><span style="background:#EFF6FF;color:#1E40AF;font-weight:800;border-radius:6px;padding:.1rem .3rem;margin-right:.4rem;font-size:.42rem">C</span>√119 m</div>
+                  </div>
+                  <!-- Boutons aide -->
+                  <div style="display:flex;gap:.25rem;margin-top:.5rem">
+                    <div style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:8px;padding:.2rem .45rem;font-size:.4rem;font-weight:700">💡 Indice</div>
+                    <div style="background:#FFF7ED;color:#EA580C;border:1px solid #FDBA74;border-radius:8px;padding:.2rem .45rem;font-size:.4rem;font-weight:700">👁 Formule</div>
+                    <div style="background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;padding:.2rem .45rem;font-size:.4rem;font-weight:700;margin-left:auto">⏭️ Passer</div>
                   </div>
                 </div>
               </div>
-              <!-- Screen 2: Boost result -->
+              <!-- Screen 2: Feedback EASY + XP -->
               <div class="phone-scr" id="pscr-1">
-                <div style="padding:2.5rem .85rem .85rem">
-                  <div style="text-align:center;margin-bottom:.7rem">
-                    <div style="font-size:2rem;margin-bottom:.2rem">🔥</div>
-                    <div style="font-size:.78rem;font-weight:900;color:#0f172a">Boost terminé !</div>
-                    <div style="font-size:.52rem;color:#64748b;font-weight:600;margin-top:.15rem">5/5 exercices · 8 min</div>
+                <div style="padding:2rem .85rem .65rem">
+                  <!-- Header streak + XP -->
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+                    <div style="display:flex;align-items:center;gap:.25rem"><span style="font-size:.7rem">🔥</span><span style="font-size:.48rem;font-weight:900;color:#0f172a">4 jours</span></div>
+                    <div style="background:#FFF7ED;color:#EA580C;border-radius:99px;padding:.15rem .45rem;font-size:.42rem;font-weight:800">850 XP</div>
                   </div>
-                  <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:.55rem;margin-bottom:.5rem">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">
-                      <span style="font-size:.52rem;font-weight:700;color:#166534">Score du jour</span>
-                      <span style="font-size:.85rem;font-weight:900;color:#16a34a">80%</span>
+                  <!-- EASY badge central -->
+                  <div style="text-align:center;margin-bottom:.55rem">
+                    <div style="display:inline-flex;align-items:center;gap:.3rem;background:#d1fae5;border:2px solid #22c55e;border-radius:14px;padding:.4rem .8rem">
+                      <span style="font-size:1rem">🎯</span>
+                      <span style="font-size:.9rem;font-weight:900;color:#059669">EASY!</span>
                     </div>
-                    <div style="height:5px;background:#dcfce7;border-radius:99px"><div style="height:100%;width:80%;background:#22c55e;border-radius:99px"></div></div>
+                    <!-- XP pop -->
+                    <div style="margin-top:.25rem;font-size:.65rem;font-weight:900;color:#f59e0b;text-shadow:0 1px 6px rgba(245,158,11,.3)">+200 XP</div>
                   </div>
-                  <div style="font-size:.48rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem">Détail</div>
-                  <div style="display:flex;flex-direction:column;gap:.22rem">
-                    <div style="display:flex;justify-content:space-between;font-size:.5rem;font-weight:600"><span style="color:#334155">Racines carrées</span><span style="color:#22c55e">✓ EASY</span></div>
-                    <div style="display:flex;justify-content:space-between;font-size:.5rem;font-weight:600"><span style="color:#334155">Calcul littéral</span><span style="color:#22c55e">✓ EASY</span></div>
-                    <div style="display:flex;justify-content:space-between;font-size:.5rem;font-weight:600"><span style="color:#334155">Pythagore</span><span style="color:#f59e0b">⚡ MEDIUM</span></div>
-                    <div style="display:flex;justify-content:space-between;font-size:.5rem;font-weight:600"><span style="color:#334155">Équations</span><span style="color:#22c55e">✓ EASY</span></div>
-                    <div style="display:flex;justify-content:space-between;font-size:.5rem;font-weight:600"><span style="color:#334155">Thalès</span><span style="color:#ef4444">✗ HARD</span></div>
+                  <!-- Réponse correcte -->
+                  <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:.45rem .55rem;margin-bottom:.5rem">
+                    <div style="font-size:.4rem;color:#166534;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.2rem">✓ Bonne réponse</div>
+                    <div style="font-size:.6rem;font-weight:800;color:#059669">AC = 13 m</div>
+                    <div style="font-size:.42rem;color:#166534;font-weight:500;margin-top:.15rem;line-height:1.4">AC² = 12² + 5² = 144 + 25 = 169<br>AC = √169 = 13 m</div>
                   </div>
-                  <div style="background:#FFF7ED;border-radius:8px;padding:.35rem .55rem;margin-top:.5rem;font-size:.46rem;font-weight:700;color:#92400e;text-align:center">Demain → Pythagore + Thalès ciblés 🎯</div>
+                  <!-- Slot progress visual -->
+                  <div style="margin-bottom:.45rem">
+                    <div style="font-size:.42rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.25rem">Progression</div>
+                    <div style="display:flex;gap:4px;align-items:center">
+                      <div style="flex:1;height:24px;background:#d1fae5;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.38rem;font-weight:800;color:#059669">EASY</div>
+                      <div style="flex:1;height:24px;background:#d1fae5;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.38rem;font-weight:800;color:#059669">EASY</div>
+                      <div style="flex:1;height:24px;background:#d1fae5;border:2px solid #22c55e;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.38rem;font-weight:800;color:#059669">EASY</div>
+                      <div style="flex:1;height:24px;background:#f1f5f9;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.38rem;font-weight:700;color:#94a3b8">4</div>
+                      <div style="flex:1;height:24px;background:#f1f5f9;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.38rem;font-weight:700;color:#94a3b8">5</div>
+                    </div>
+                  </div>
+                  <!-- Mode Flow tease -->
+                  <div style="background:linear-gradient(135deg,#EFF6FF,#FFF7ED);border:1.5px solid #BFDBFE;border-radius:10px;padding:.35rem .55rem;text-align:center">
+                    <div style="font-size:.44rem;font-weight:800;color:#1E40AF">⚡ Mode Flow activé</div>
+                    <div style="font-size:.38rem;color:#64748b;font-weight:600;margin-top:.08rem">3 EASY d'affilée — XP ×2 sur les 2 prochains !</div>
+                  </div>
+                  <!-- Next button -->
+                  <div style="margin-top:.45rem;background:#059669;border-radius:10px;padding:.35rem;text-align:center">
+                    <span style="font-size:.48rem;font-weight:800;color:#fff">Exercice suivant →</span>
+                  </div>
                 </div>
               </div>
-              <!-- Screen 3: Dashboard -->
+              <!-- Screen 3: Diagnostic résultat -->
               <div class="phone-scr" id="pscr-2">
-                <div style="padding:2.5rem .85rem .85rem">
-                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.7rem">
-                    <div><div style="font-size:.72rem;font-weight:900;color:#0f172a">Salut Léa 👋</div><div style="font-size:.44rem;color:#94a3b8;font-weight:600">Streak : 🔥 7 jours</div></div>
-                    <div style="background:#FFF7ED;color:#EA580C;border-radius:99px;padding:.18rem .5rem;font-size:.44rem;font-weight:800">1 250 XP</div>
+                <div style="padding:2rem .85rem .65rem">
+                  <!-- Header -->
+                  <div style="text-align:center;margin-bottom:.55rem">
+                    <div style="font-size:.42rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em">Diagnostic terminé</div>
+                    <div style="font-size:1.5rem;font-weight:900;color:#0f172a;margin-top:.15rem">Ton profil</div>
                   </div>
-                  <div style="font-size:.48rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem">Ta progression</div>
-                  <div style="display:flex;flex-direction:column;gap:.35rem">
-                    <div>
-                      <div style="display:flex;justify-content:space-between;font-size:.48rem;font-weight:600;margin-bottom:.12rem"><span style="color:#334155">Pythagore</span><span style="color:#22c55e;font-weight:800">75%</span></div>
-                      <div style="height:4px;background:#f1f5f9;border-radius:99px"><div style="height:100%;width:75%;background:linear-gradient(90deg,#22c55e,#4ade80);border-radius:99px"></div></div>
-                    </div>
-                    <div>
-                      <div style="display:flex;justify-content:space-between;font-size:.48rem;font-weight:600;margin-bottom:.12rem"><span style="color:#334155">Thalès</span><span style="color:#f59e0b;font-weight:800">40%</span></div>
-                      <div style="height:4px;background:#f1f5f9;border-radius:99px"><div style="height:100%;width:40%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:99px"></div></div>
-                    </div>
-                    <div>
-                      <div style="display:flex;justify-content:space-between;font-size:.48rem;font-weight:600;margin-bottom:.12rem"><span style="color:#334155">Équations</span><span style="color:#22c55e;font-weight:800">85%</span></div>
-                      <div style="height:4px;background:#f1f5f9;border-radius:99px"><div style="height:100%;width:85%;background:linear-gradient(90deg,#22c55e,#4ade80);border-radius:99px"></div></div>
-                    </div>
-                    <div>
-                      <div style="display:flex;justify-content:space-between;font-size:.48rem;font-weight:600;margin-bottom:.12rem"><span style="color:#334155">Probabilités</span><span style="color:#ef4444;font-weight:800">20%</span></div>
-                      <div style="height:4px;background:#f1f5f9;border-radius:99px"><div style="height:100%;width:20%;background:linear-gradient(90deg,#ef4444,#f87171);border-radius:99px"></div></div>
+                  <!-- Score global circle -->
+                  <div style="text-align:center;margin-bottom:.55rem">
+                    <div style="display:inline-flex;align-items:center;justify-content:center;width:58px;height:58px;border-radius:99px;background:conic-gradient(#22c55e 0% 60%,#f59e0b 60% 80%,#ef4444 80% 100%);position:relative">
+                      <div style="width:46px;height:46px;border-radius:99px;background:#fff;display:flex;align-items:center;justify-content:center">
+                        <span style="font-size:.85rem;font-weight:900;color:#0f172a">3/5</span>
+                      </div>
                     </div>
                   </div>
-                  <div style="margin-top:.55rem;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:.45rem;text-align:center">
-                    <div style="font-size:.44rem;color:#64748b;font-weight:600">🎯 Mission du jour</div>
-                    <div style="font-size:.62rem;font-weight:900;color:#0f172a;margin-top:.1rem">3/5 exercices</div>
-                    <div style="height:4px;background:#e2e8f0;border-radius:99px;margin-top:.2rem"><div style="height:100%;width:60%;background:#EA580C;border-radius:99px"></div></div>
+                  <!-- Forces -->
+                  <div style="font-size:.42rem;font-weight:800;color:#059669;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.22rem">✅ Tes forces</div>
+                  <div style="display:flex;flex-direction:column;gap:.18rem;margin-bottom:.45rem">
+                    <div style="display:flex;align-items:center;gap:.3rem;background:#f0fdf4;border-radius:8px;padding:.28rem .45rem">
+                      <span style="font-size:.5rem">💪</span><span style="font-size:.46rem;font-weight:700;color:#166534">Équations</span><span style="margin-left:auto;font-size:.4rem;font-weight:800;color:#22c55e">EASY</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:.3rem;background:#f0fdf4;border-radius:8px;padding:.28rem .45rem">
+                      <span style="font-size:.5rem">💪</span><span style="font-size:.46rem;font-weight:700;color:#166534">Probabilités</span><span style="margin-left:auto;font-size:.4rem;font-weight:800;color:#22c55e">EASY</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:.3rem;background:#f0fdf4;border-radius:8px;padding:.28rem .45rem">
+                      <span style="font-size:.5rem">💪</span><span style="font-size:.46rem;font-weight:700;color:#166534">Calcul littéral</span><span style="margin-left:auto;font-size:.4rem;font-weight:800;color:#22c55e">EASY</span>
+                    </div>
+                  </div>
+                  <!-- Lacunes -->
+                  <div style="font-size:.42rem;font-weight:800;color:#ef4444;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.22rem">🎯 À travailler</div>
+                  <div style="display:flex;flex-direction:column;gap:.18rem;margin-bottom:.5rem">
+                    <div style="display:flex;align-items:center;gap:.3rem;background:#fff1f2;border-radius:8px;padding:.28rem .45rem">
+                      <span style="font-size:.5rem">📐</span><span style="font-size:.46rem;font-weight:700;color:#991b1b">Pythagore</span><span style="margin-left:auto;font-size:.4rem;font-weight:800;color:#ef4444">HARD</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:.3rem;background:#fff1f2;border-radius:8px;padding:.28rem .45rem">
+                      <span style="font-size:.5rem">📏</span><span style="font-size:.46rem;font-weight:700;color:#991b1b">Thalès</span><span style="margin-left:auto;font-size:.4rem;font-weight:800;color:#ef4444">HARD</span>
+                    </div>
+                  </div>
+                  <!-- CTA -->
+                  <div style="background:#EA580C;border-radius:10px;padding:.4rem;text-align:center">
+                    <span style="font-size:.48rem;font-weight:800;color:#fff">Commencer mon entraînement →</span>
                   </div>
                 </div>
               </div>
