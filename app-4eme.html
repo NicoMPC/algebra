@@ -276,16 +276,15 @@ async function doLogin(){
     var d=await resp.json();
     if(d.status!=='success'){showErr(d.message||'Identifiants incorrects');btn.disabled=false;btn.textContent='Se connecter';return}
     S.prof={code:d.profile.code,name:d.profile.name||d.profile.prenom,email:em};
-    S.niv=d.profile.niveau||'4EME';
-    // Load curriculum
+    S.niv=d.profile.level||'4EME';
+    // Load curriculum (already filtered by level server-side)
     if(d.curriculumOfficiel){
       d.curriculumOfficiel.forEach(function(ch){
-        if(ch.niveau!==S.niv)return;
         var cat=ch.categorie;
         S.names[cat]=ch.titre||cat.replace(/_/g,' ');
         S.icons[cat]=ch.icone||'📘';
         var exos=[];
-        try{exos=typeof ch.exosJSON==='string'?JSON.parse(ch.exosJSON):ch.exosJSON||[]}catch(e){exos=[]}
+        try{var raw=ch.exos||ch.exosJSON||[];exos=typeof raw==='string'?JSON.parse(raw):raw||[]}catch(e){exos=[]}
         // Aplatir parapluies
         var flat=[];
         exos.forEach(function(ex){
