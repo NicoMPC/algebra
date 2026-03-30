@@ -116,21 +116,5 @@
 })();
 </script><script>
 window.addEventListener("load",function(){setTimeout(function(){
-  // Hide StickyCTA - find fixed bottom element
-  var all=document.querySelectorAll("div");
-  for(var i=0;i<all.length;i++){
-    var s=getComputedStyle(all[i]);
-    if((s.position==="fixed"||s.position==="sticky")&&parseInt(s.bottom)<=20&&all[i].offsetHeight<120){
-      all[i].style.display="none";
-    }
-  }
-// Fix colon in "82%" text
-  var tw=document.body.innerHTML;
-  var els=document.querySelectorAll("p");
-  for(var j=0;j<els.length;j++){
-    if(els[j].textContent.indexOf("82%")!==-1&&els[j].textContent.indexOf(":")!==-1){
-      els[j].textContent=els[j].textContent.replace("question :","question.").replace("question:","question.");
-    }
-  }
 },1500)});
 </script></body></html>
