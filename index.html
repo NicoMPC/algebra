@@ -3677,7 +3677,7 @@ function _flowAnswerFill() {
   if (!inp) return;
   var val = inp.value.trim();
   if (!val) { inp.style.borderColor = '#ef4444'; inp.focus(); return; }
-  var correct = _normFill(val) === _normFill(exo.a || exo.rep || exo.answer || '');
+  var correct = _matchFill(val, exo.a || exo.rep || exo.answer || '', exo.alt);
   var elapsed = Math.round((Date.now() - _flowStartTs) / 1000);
   _flowResults.push({ idx: _flowExoIdx, correct: correct, time: elapsed });
   if (correct) _flowCorrectCount++;
@@ -5576,6 +5576,40 @@ function _normFill(s) {
   v = v.replace(/\*/g, '×').replace(/(\d)x(?=[\d(s])/g, '$1×');
   return v;
 }
+// Tente de convertir une string normalisée en nombre (gère %, fractions, virgule)
+function _toNum(s) {
+  var v = String(s).replace(/\s+/g,'').replace(/,/g,'.').toLowerCase();
+  // Pourcentage : "70%" → 0.7
+  var pct = v.match(/^(-?[\d.]+)\s*%$/);
+  if (pct) return parseFloat(pct[1]) / 100;
+  // Fraction simple : "7/10" → 0.7
+  var frac = v.match(/^(-?[\d.]+)\/(-?[\d.]+)$/);
+  if (frac && parseFloat(frac[2]) !== 0) return parseFloat(frac[1]) / parseFloat(frac[2]);
+  // Nombre simple
+  var n = parseFloat(v);
+  return isNaN(n) ? null : n;
+}
+// Comparaison intelligente : texte exact OU numérique OU alt[]
+function _matchFill(userVal, correctVal, altArr) {
+  var nu = _normFill(userVal), nc = _normFill(correctVal);
+  // 1. Match texte exact (après normalisation)
+  if (nu === nc) return true;
+  // 2. Match vrai/faux vs oui/non
+  var _vfMap = { 'oui': 'vrai', 'non': 'faux', 'yes': 'vrai', 'no': 'faux', 'v': 'vrai', 'f': 'faux' };
+  if (_vfMap[nu] === nc || nu === _vfMap[nc]) return true;
+  // 3. Match numérique (0.7 == 70% == 7/10)
+  var numU = _toNum(userVal), numC = _toNum(correctVal);
+  if (numU !== null && numC !== null && Math.abs(numU - numC) < 1e-9) return true;
+  // 4. Alt : réponses alternatives listées dans l'exo
+  if (altArr && altArr.length) {
+    for (var i = 0; i < altArr.length; i++) {
+      if (_normFill(userVal) === _normFill(altArr[i])) return true;
+      var numA = _toNum(altArr[i]);
+      if (numU !== null && numA !== null && Math.abs(numU - numA) < 1e-9) return true;
+    }
+  }
+  return false;
+}
 
 // ─── SÉLECTION + VALIDATION QCM ─────────────────────────────
 // v23 refactor : selectOpt (sélection visuelle) + validateAnswer (validation)
@@ -5623,7 +5657,7 @@ window.validateAnswer = function() {
     S.qans[id] = val;
     S.rev  = true;
     S.cid  = id;
-    var isCorrect = _normFill(val) === _normFill(exo.a);
+    var isCorrect = _matchFill(val, exo.a, exo.alt);
     var _isAuto = cat.indexOf('Auto_') === 0;
     var _okKey = _isAuto ? 'ok_auto' : (cat === 'BOOST') ? 'ok_boost' : 'ok_3eme';
     var _koKey = _isAuto ? 'ko_auto' : (cat === 'BOOST') ? 'ko_boost' : 'ko_3eme';
@@ -9248,7 +9282,7 @@ function rSection(cat, data, idx, total, catDone) {
   } else if (exoType === 'fill' && (isRev || scored)) {
     // ── Fill post-réponse : afficher la bonne réponse ──
     var fillAns = S.qans[id];
-    var fillOk = fillAns && _normFill(fillAns) === _normFill(data.a);
+    var fillOk = fillAns && _matchFill(fillAns, data.a, data.alt);
     opts = '<div class="mt-3">';
     opts += '<div class="text-sm font-bold mc bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5 ' + (fillOk ? 'text-emerald-600' : '') + '">✓ Réponse : '+fmtL(data.a)+'</div>';
     if (!fillOk && fillAns) {
