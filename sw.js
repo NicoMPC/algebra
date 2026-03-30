@@ -1,8 +1,7 @@
 // sw.js — Matheux Service Worker
-const CACHE_NAME = 'matheux-v10';
+const CACHE_NAME = 'matheux-v11';
 const CACHE_ASSETS = [
-  '/',
-  '/index.html',
+  '/app.html',
   '/manifest.json',
   '/scree.png',
   '/icons/icon-192.png',
@@ -66,7 +65,7 @@ self.addEventListener('fetch', function(e) {
       }).catch(function() {
         // Offline → page offline si navigation
         if (e.request.mode === 'navigate') {
-          return caches.match('/offline.html') || caches.match('/index.html');
+          return caches.match('/offline.html') || caches.match('/app.html');
         }
       });
     })
@@ -83,12 +82,12 @@ self.addEventListener('push', function(e) {
       icon: '/icons/icon-192.png',
       badge: '/icons/icon-96.png',
       tag: 'matheux-boost',
-      data: { url: data.url || '/' }
+      data: { url: data.url || '/app.html' }
     })
   );
 });
 
 self.addEventListener('notificationclick', function(e) {
   e.notification.close();
-  e.waitUntil(clients.openWindow(e.notification.data.url || '/'));
+  e.waitUntil(clients.openWindow(e.notification.data.url || '/app.html'));
 });
