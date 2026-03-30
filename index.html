@@ -1603,10 +1603,10 @@
       <div id="hero-quiz" style="animation:s1 .6s .15s ease both;background:#FFFBF5;border:2px solid #FDBA74;border-radius:20px;padding:1.5rem;max-width:400px;margin:0 auto;text-align:left">
         <p class="text-stone-700 text-sm font-semibold leading-relaxed mb-4">Un triangle a des côtés de <strong>6 cm</strong>, <strong>8 cm</strong> et <strong>10 cm</strong>.<br>Est-il rectangle ?</p>
         <div style="display:flex;gap:.5rem">
-          <button onclick="_heroQuiz('oui')" class="hq-btn" id="hq-oui" style="flex:1;padding:.75rem;border-radius:12px;border:2px solid #e2e8f0;background:#fff;font-weight:800;font-size:.85rem;color:#334155;cursor:pointer;transition:all .15s">OUI</button>
-          <button onclick="_heroQuiz('non')" class="hq-btn" id="hq-non" style="flex:1;padding:.75rem;border-radius:12px;border:2px solid #e2e8f0;background:#fff;font-weight:800;font-size:.85rem;color:#334155;cursor:pointer;transition:all .15s">NON</button>
-          <button onclick="_heroQuiz('jsp')" class="hq-btn" id="hq-jsp" style="flex:1;padding:.75rem;border-radius:12px;border:2px solid #e2e8f0;background:#fff;font-weight:800;font-size:.85rem;color:#334155;cursor:pointer;transition:all .15s">JE SAIS PAS</button>
+          <button onclick="_heroQuiz('oui')" class="hq-btn" id="hq-oui" style="flex:1;padding:.75rem;border-radius:12px;border:2px solid #e2e8f0;background:#fff;font-weight:800;font-size:.85rem;color:#334155;cursor:pointer;transition:all .15s">OUI ✅</button>
+          <button onclick="_heroQuiz('non')" class="hq-btn" id="hq-non" style="flex:1;padding:.75rem;border-radius:12px;border:2px solid #e2e8f0;background:#fff;font-weight:800;font-size:.85rem;color:#334155;cursor:pointer;transition:all .15s">NON ❌</button>
         </div>
+        <button onclick="_heroQuiz('jsp')" class="hq-btn" id="hq-jsp" style="margin-top:.6rem;padding:.5rem;background:transparent;border:none;font-weight:600;font-size:.78rem;color:#94a3b8;cursor:pointer;text-decoration:underline;text-underline-offset:2px;width:100%;transition:color .15s">Je ne sais pas 🤷</button>
       </div>
 
       <!-- Feedback après réponse -->
@@ -1641,6 +1641,7 @@
         else if(a==='non'){msg.style.cssText=s+'background:#fee2e2;color:#991b1b';msg.textContent='\u274c Pas tout \u00e0 fait \u2014 6\u00b2 + 8\u00b2 = 100 = 10\u00b2. Pythagore dit oui !';}
         else{msg.style.cssText=s+'background:#fef3c7;color:#92400e';msg.textContent='\uD83D\uDCA1 La r\u00e9ponse est OUI \u2014 6\u00b2 + 8\u00b2 = 100 = 10\u00b2. C\u2019est Pythagore !';}
         fb.classList.remove('hidden');
+        window._heroQuizDone = true;
       };
       </script>
       <div id="pwa-install-banner" class="hidden mt-3 flex items-center gap-3
@@ -3277,7 +3278,8 @@ function flowToStep3() {
 // Pioche 1 question par bloc thématique (Brevet) ou par chapitre sélectionné
 // Shuffle interne pour varier d'un élève à l'autre
 function _pickDiagExos(exos, chapCount) {
-  var TARGET = 5;
+  var TARGET = window._heroQuizDone ? 4 : 5;
+  window._heroQuizDone = false;
   if (exos.length <= TARGET) return exos;
   // Grouper par chapitre
   var groups = {}, keys = [];
@@ -3383,7 +3385,12 @@ function _flowRenderQuestion(idx) {
   // Tutorial supprimé — remplacé par l'écran respiration pré-diagnostic
   var tutorial = '';
 
-  var opts = exo.options || exo.opts || [];
+  var opts = (exo.options || exo.opts || []).slice();
+  // Shuffle QCM options (Fisher-Yates) pour ne pas toujours avoir la bonne en 1er
+  for (var si2 = opts.length - 1; si2 > 0; si2--) {
+    var sj2 = Math.floor(Math.random() * (si2 + 1));
+    var tmp2 = opts[si2]; opts[si2] = opts[sj2]; opts[sj2] = tmp2;
+  }
   var isFill = exo.type === 'fill' || (!opts.length && exo.a);
   var optsHtml = '';
   if (isFill) {
