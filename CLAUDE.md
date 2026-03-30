@@ -205,6 +205,16 @@ git add index.html && git commit -m "feat: ..." && git push origin main
 ./deploy.sh "desc"
 ```
 
+### ⛔ Landing page (index.html) — PIÈGE REACT
+
+> **index.html = build Next.js SSG (static export). NE JAMAIS modifier le HTML directement.**
+
+- React hydrate au chargement → toute modification manuelle du DOM est écrasée ou provoque un crash (erreurs #425/#418/#423, écran blanc)
+- Supprimer les scripts React casse les animations reveal (opacity:0 qui restent invisibles)
+- **Seule méthode safe** : ajouter un `<script>` avant `</body>` qui fait `appendChild` d'un overlay div **après** hydration (`window.load` + 1200ms delay). Ne jamais `innerHTML=`, `removeChild` ou modifier un nœud existant du DOM React
+- L'app principale est dans **app.html** (SPA vanilla JS, modifiable librement)
+- La source Next.js n'est pas dans ce repo (build exporté). Pour modifier la landing en profondeur → rebuild depuis le projet Next.js source
+
 ### Tests
 ```bash
 python3 test_full_v2.py          # Suite complète — 74/74
