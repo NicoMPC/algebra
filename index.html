@@ -124,5 +124,13 @@ window.addEventListener("load",function(){setTimeout(function(){
       all[i].style.display="none";
     }
   }
+// Fix colon in "82%" text
+  var tw=document.body.innerHTML;
+  var els=document.querySelectorAll("p");
+  for(var j=0;j<els.length;j++){
+    if(els[j].textContent.indexOf("82%")!==-1&&els[j].textContent.indexOf(":")!==-1){
+      els[j].textContent=els[j].textContent.replace("question :","question.").replace("question:","question.");
+    }
+  }
 },1500)});
 </script></body></html>
