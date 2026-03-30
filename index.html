@@ -1743,285 +1743,435 @@
   </div><!-- /trial-flow -->
 
 
-  <!-- ── SECTION 2 — COMMENT ÇA MARCHE (élève) ───────── -->
+  <!-- ── LANDING CSS ── -->
+  <style>
+  .phone-wrap{perspective:1000px}
+  .phone-mock{width:260px;height:530px;background:#0f172a;border-radius:40px;padding:12px;position:relative;box-shadow:0 25px 80px rgba(0,0,0,.35),inset 0 0 0 2px rgba(255,255,255,.1);margin:0 auto;transform:rotateY(-4deg) rotateX(2deg);transition:transform .5s ease}
+  @media(hover:hover){.phone-mock:hover{transform:rotateY(0) rotateX(0)}}
+  .phone-notch{width:80px;height:18px;background:#0f172a;border-radius:0 0 14px 14px;position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:2}
+  .phone-inner{width:100%;height:100%;background:#fff;border-radius:30px;overflow:hidden;position:relative}
+  .phone-scr{position:absolute;inset:0;opacity:0;transition:opacity .7s ease,transform .7s ease;transform:scale(.96)}
+  .phone-scr.pactive{opacity:1;transform:scale(1)}
+  .phone-dots{display:flex;gap:6px;justify-content:center;margin-top:1rem}
+  .phone-dot{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.2);transition:all .3s}
+  .phone-dot.pon{background:#EA580C;width:22px}
+  .loop-card{background:#fff;border:2px solid #e2e8f0;border-radius:20px;padding:1.1rem 1.25rem;display:flex;align-items:center;gap:1rem;transition:all .4s ease;width:100%;max-width:380px}
+  .loop-card.lit{border-color:#EA580C;box-shadow:0 0 40px rgba(234,88,12,.12);transform:scale(1.03)}
+  .loop-ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+  .loop-conn{width:2px;height:24px;margin:0 auto;position:relative;overflow:hidden;background:rgba(226,232,240,.4)}
+  .loop-conn::after{content:'';position:absolute;width:100%;height:100%;background:linear-gradient(to bottom,#EA580C,#FB923C);animation:lflow 1.8s ease-in-out infinite}
+  @keyframes lflow{0%,100%{transform:translateY(-100%);opacity:0}50%{transform:translateY(0);opacity:1}}
+  .loop-return{animation:lbounce 2s ease-in-out infinite;color:#EA580C}
+  @keyframes lbounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  .chap-block-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;padding-left:.15rem}
+  .chap-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1.25rem}
+  .chap-tag{font-size:.68rem;font-weight:700;padding:.3rem .6rem;border-radius:99px;border:1.5px solid;white-space:nowrap}
+  .counter-row{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap}
+  .counter-item{text-align:center}
+  .counter-num{font-family:Syne,sans-serif;font-weight:900;font-size:2.5rem;line-height:1;letter-spacing:-.03em}
+  .counter-label{font-size:.72rem;font-weight:600;margin-top:.25rem}
+  .grad-text{background:linear-gradient(135deg,#EA580C,#F97316,#FB923C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .parent-tag{display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:700;background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:99px;padding:.35rem .8rem}
+  .feat-row{display:grid;grid-template-columns:1fr 1fr;gap:.4rem .75rem}
+  @media(max-width:400px){.feat-row{grid-template-columns:1fr}}
+  .cta-dark-section{background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%);position:relative;overflow:hidden}
+  .cta-dark-section::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 50%,rgba(234,88,12,.06),transparent 50%);pointer-events:none}
+  </style>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SECTION 2 — L'APP QUI S'ADAPTE
+  ═══════════════════════════════════════════════════════════ -->
+  <div style="background:#0f172a;overflow:hidden" class="px-5 py-16 relative">
+    <div style="position:absolute;top:0;left:50%;width:600px;height:600px;background:radial-gradient(circle,rgba(234,88,12,.07),transparent 70%);transform:translate(-50%,-30%);pointer-events:none"></div>
+    <div class="max-w-3xl mx-auto relative z-10">
+      <div class="text-center mb-10 reveal">
+        <div class="stag mx-auto mb-4" style="background:rgba(234,88,12,.15);color:#FB923C;border-color:rgba(234,88,12,.3)">Le principe</div>
+        <h2 class="text-2xl sm:text-3xl font-black text-white leading-tight mb-3" style="letter-spacing:-.02em">
+          Tes erreurs deviennent<br><span class="grad-text">tes exercices de demain.</span>
+        </h2>
+        <p class="text-white/50 text-sm font-medium max-w-sm mx-auto">Matheux analyse chaque réponse. Plus tu pratiques, plus c'est ciblé sur TES lacunes.</p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center gap-8 sm:gap-12">
+        <!-- Phone mockup -->
+        <div class="phone-wrap reveal" style="flex-shrink:0">
+          <div class="phone-mock">
+            <div class="phone-notch"></div>
+            <div class="phone-inner">
+              <!-- Screen 1: Diagnostic -->
+              <div class="phone-scr pactive" id="pscr-0">
+                <div style="padding:2.5rem .85rem .85rem">
+                  <div style="background:#F0F9FF;border-radius:12px;padding:.55rem .7rem;margin-bottom:.7rem">
+                    <div style="font-size:.48rem;font-weight:800;color:#1E40AF;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem">DIAGNOSTIC</div>
+                    <div style="height:3px;background:#DBEAFE;border-radius:99px"><div style="height:100%;width:40%;background:#1E40AF;border-radius:99px"></div></div>
+                  </div>
+                  <p style="font-size:.68rem;font-weight:700;color:#0f172a;line-height:1.5;margin-bottom:.6rem">Simplifie l'expression :<br><span style="font-size:.85rem">√72</span></p>
+                  <div style="display:flex;flex-direction:column;gap:.3rem">
+                    <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:9px;padding:.4rem .6rem;font-size:.58rem;font-weight:600;color:#1e293b"><span style="color:#3B82F6;font-weight:800;margin-right:.3rem">A.</span>6√2</div>
+                    <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:9px;padding:.4rem .6rem;font-size:.58rem;font-weight:600;color:#1e293b"><span style="color:#3B82F6;font-weight:800;margin-right:.3rem">B.</span>8√3</div>
+                    <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:9px;padding:.4rem .6rem;font-size:.58rem;font-weight:600;color:#1e293b"><span style="color:#3B82F6;font-weight:800;margin-right:.3rem">C.</span>36√2</div>
+                  </div>
+                  <div style="display:flex;gap:.3rem;margin-top:.6rem">
+                    <div style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:8px;padding:.22rem .5rem;font-size:.44rem;font-weight:700">💡 Indice</div>
+                    <div style="background:#FFF7ED;color:#EA580C;border:1px solid #FDBA74;border-radius:8px;padding:.22rem .5rem;font-size:.44rem;font-weight:700">👁 Formule</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Screen 2: Boost result -->
+              <div class="phone-scr" id="pscr-1">
+                <div style="padding:2.5rem .85rem .85rem">
+                  <div style="text-align:center;margin-bottom:.7rem">
+                    <div style="font-size:2rem;margin-bottom:.2rem">🔥</div>
+                    <div style="font-size:.78rem;font-weight:900;color:#0f172a">Boost terminé !</div>
+                    <div style="font-size:.52rem;color:#64748b;font-weight:600;margin-top:.15rem">5/5 exercices · 8 min</div>
+                  </div>
+                  <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:.55rem;margin-bottom:.5rem">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">
+                      <span style="font-size:.52rem;font-weight:700;color:#166534">Score du jour</span>
+                      <span style="font-size:.85rem;font-weight:900;color:#16a34a">80%</span>
+                    </div>
+                    <div style="height:5px;background:#dcfce7;border-radius:99px"><div style="height:100%;width:80%;background:#22c55e;border-radius:99px"></div></div>
+                  </div>
+                  <div style="font-size:.48rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem">Détail</div>
+                  <div style="display:flex;flex-direction:column;gap:.22rem">
+                    <div style="display:flex;justify-content:space-between;font-size:.5rem;font-weight:600"><span style="color:#334155">Racines carrées</span><span style="color:#22c55e">✓ EASY</span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:.5rem;font-weight:600"><span style="color:#334155">Calcul littéral</span><span style="color:#22c55e">✓ EASY</span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:.5rem;font-weight:600"><span style="color:#334155">Pythagore</span><span style="color:#f59e0b">⚡ MEDIUM</span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:.5rem;font-weight:600"><span style="color:#334155">Équations</span><span style="color:#22c55e">✓ EASY</span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:.5rem;font-weight:600"><span style="color:#334155">Thalès</span><span style="color:#ef4444">✗ HARD</span></div>
+                  </div>
+                  <div style="background:#FFF7ED;border-radius:8px;padding:.35rem .55rem;margin-top:.5rem;font-size:.46rem;font-weight:700;color:#92400e;text-align:center">Demain → Pythagore + Thalès ciblés 🎯</div>
+                </div>
+              </div>
+              <!-- Screen 3: Dashboard -->
+              <div class="phone-scr" id="pscr-2">
+                <div style="padding:2.5rem .85rem .85rem">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.7rem">
+                    <div><div style="font-size:.72rem;font-weight:900;color:#0f172a">Salut Léa 👋</div><div style="font-size:.44rem;color:#94a3b8;font-weight:600">Streak : 🔥 7 jours</div></div>
+                    <div style="background:#FFF7ED;color:#EA580C;border-radius:99px;padding:.18rem .5rem;font-size:.44rem;font-weight:800">1 250 XP</div>
+                  </div>
+                  <div style="font-size:.48rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem">Ta progression</div>
+                  <div style="display:flex;flex-direction:column;gap:.35rem">
+                    <div>
+                      <div style="display:flex;justify-content:space-between;font-size:.48rem;font-weight:600;margin-bottom:.12rem"><span style="color:#334155">Pythagore</span><span style="color:#22c55e;font-weight:800">75%</span></div>
+                      <div style="height:4px;background:#f1f5f9;border-radius:99px"><div style="height:100%;width:75%;background:linear-gradient(90deg,#22c55e,#4ade80);border-radius:99px"></div></div>
+                    </div>
+                    <div>
+                      <div style="display:flex;justify-content:space-between;font-size:.48rem;font-weight:600;margin-bottom:.12rem"><span style="color:#334155">Thalès</span><span style="color:#f59e0b;font-weight:800">40%</span></div>
+                      <div style="height:4px;background:#f1f5f9;border-radius:99px"><div style="height:100%;width:40%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:99px"></div></div>
+                    </div>
+                    <div>
+                      <div style="display:flex;justify-content:space-between;font-size:.48rem;font-weight:600;margin-bottom:.12rem"><span style="color:#334155">Équations</span><span style="color:#22c55e;font-weight:800">85%</span></div>
+                      <div style="height:4px;background:#f1f5f9;border-radius:99px"><div style="height:100%;width:85%;background:linear-gradient(90deg,#22c55e,#4ade80);border-radius:99px"></div></div>
+                    </div>
+                    <div>
+                      <div style="display:flex;justify-content:space-between;font-size:.48rem;font-weight:600;margin-bottom:.12rem"><span style="color:#334155">Probabilités</span><span style="color:#ef4444;font-weight:800">20%</span></div>
+                      <div style="height:4px;background:#f1f5f9;border-radius:99px"><div style="height:100%;width:20%;background:linear-gradient(90deg,#ef4444,#f87171);border-radius:99px"></div></div>
+                    </div>
+                  </div>
+                  <div style="margin-top:.55rem;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:.45rem;text-align:center">
+                    <div style="font-size:.44rem;color:#64748b;font-weight:600">🎯 Mission du jour</div>
+                    <div style="font-size:.62rem;font-weight:900;color:#0f172a;margin-top:.1rem">3/5 exercices</div>
+                    <div style="height:4px;background:#e2e8f0;border-radius:99px;margin-top:.2rem"><div style="height:100%;width:60%;background:#EA580C;border-radius:99px"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="phone-dots">
+            <span class="phone-dot pon" id="pdot-0"></span>
+            <span class="phone-dot" id="pdot-1"></span>
+            <span class="phone-dot" id="pdot-2"></span>
+          </div>
+        </div>
+
+        <!-- Features list -->
+        <div class="reveal text-center sm:text-left" style="flex:1;min-width:0">
+          <div style="display:flex;flex-direction:column;gap:1.5rem">
+            <div style="display:flex;align-items:start;gap:.85rem">
+              <div style="width:42px;height:42px;background:rgba(59,130,246,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">🔍</div>
+              <div><div class="text-white font-extrabold text-sm mb-1">1 minute de diagnostic</div><p class="text-white/40 text-xs leading-relaxed">5 questions. On repère tes faiblesses.</p></div>
+            </div>
+            <div style="display:flex;align-items:start;gap:.85rem">
+              <div style="width:42px;height:42px;background:rgba(234,88,12,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">🎯</div>
+              <div><div class="text-white font-extrabold text-sm mb-1">Exercices sur tes lacunes</div><p class="text-white/40 text-xs leading-relaxed">Pas de temps perdu sur ce que tu sais déjà. Chaque erreur génère des exos ciblés.</p></div>
+            </div>
+            <div style="display:flex;align-items:start;gap:.85rem">
+              <div style="width:42px;height:42px;background:rgba(34,197,94,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">📈</div>
+              <div><div class="text-white font-extrabold text-sm mb-1">Plus tu pratiques, plus c'est précis</div><p class="text-white/40 text-xs leading-relaxed">Tes exercices de demain dépendent de tes erreurs d'aujourd'hui.</p></div>
+            </div>
+            <div style="display:flex;align-items:start;gap:.85rem">
+              <div style="width:42px;height:42px;background:rgba(124,58,237,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">⏱</div>
+              <div><div class="text-white font-extrabold text-sm mb-1">10 min par jour. C'est tout.</div><p class="text-white/40 text-xs leading-relaxed">5 exercices ciblés. Pas 2 heures de cours. Juste l'essentiel.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SECTION 3 — LA BOUCLE ADAPTATIVE
+  ═══════════════════════════════════════════════════════════ -->
+  <div style="background:#fff" class="px-5 py-16">
+    <div class="max-w-md mx-auto">
+      <div class="text-center mb-8 reveal">
+        <div class="stag mx-auto mb-3">Le secret</div>
+        <h2 class="text-2xl font-extrabold text-slate-900 mb-2" style="letter-spacing:-.02em">La boucle qui te fait progresser.</h2>
+        <p class="text-slate-500 text-sm">Chaque jour, le cycle recommence — mais mieux calibré.</p>
+      </div>
+      <div class="reveal" style="display:flex;flex-direction:column;align-items:center">
+        <div class="loop-card" id="lc-0">
+          <div class="loop-ico" style="background:#EFF6FF">✏️</div>
+          <div><div class="text-sm font-extrabold text-slate-900">Tu fais tes exercices</div><div class="text-xs text-slate-400 font-medium">5 exos, 10 min. C'est tout.</div></div>
+        </div>
+        <div class="loop-conn"></div>
+        <div class="loop-card" id="lc-1">
+          <div class="loop-ico" style="background:#FFF7ED">🔍</div>
+          <div><div class="text-sm font-extrabold text-slate-900">Tes erreurs sont analysées</div><div class="text-xs text-slate-400 font-medium">Chaque réponse compte.</div></div>
+        </div>
+        <div class="loop-conn"></div>
+        <div class="loop-card" id="lc-2">
+          <div class="loop-ico" style="background:#FEF3C7">🎯</div>
+          <div><div class="text-sm font-extrabold text-slate-900">Ton parcours s'adapte</div><div class="text-xs text-slate-400 font-medium">Demain, exos ciblés sur tes faiblesses.</div></div>
+        </div>
+        <div class="loop-conn"></div>
+        <div class="loop-card" id="lc-3">
+          <div class="loop-ico" style="background:#F0FDF4">📈</div>
+          <div><div class="text-sm font-extrabold text-slate-900">Tu progresses</div><div class="text-xs text-slate-400 font-medium">Score, streak, paliers de maîtrise.</div></div>
+        </div>
+        <div style="margin-top:.75rem;display:flex;flex-direction:column;align-items:center">
+          <span class="loop-return" style="font-size:1.5rem">↻</span>
+          <span style="font-size:.7rem;font-weight:700;color:#EA580C;margin-top:.25rem">Et on recommence, en mieux.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SECTION 4 — TOUT LE PROGRAMME BREVET 2026
+  ═══════════════════════════════════════════════════════════ -->
   <div style="background:#FFFBF5" class="px-5 py-16">
     <div class="max-w-2xl mx-auto">
-      <div class="text-center mb-10 reveal">
-        <div class="stag mx-auto mb-3">Comment ça marche</div>
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900" style="letter-spacing:-.02em">3 étapes. C'est tout.</h2>
+      <div class="text-center mb-8 reveal">
+        <div class="stag mx-auto mb-3">Brevet 2026</div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-3" style="letter-spacing:-.02em">22 chapitres. 440 exercices.<br>Tout le programme.</h2>
+        <p class="text-slate-500 text-sm">Chaque exercice au format exact de l'épreuve.</p>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div class="land-step reveal reveal-d1">
-          <div class="land-step-num">1</div>
-          <div class="syne font-black text-slate-900 mb-2">Diagnostic express</div>
-          <p class="text-slate-500 text-sm leading-relaxed">5 questions en 1 minute — on identifie tes 2-3 faiblesses.</p>
+
+      <!-- Counters -->
+      <div class="counter-row mb-10 reveal">
+        <div class="counter-item"><div class="counter-num" style="color:#EA580C" data-count="440">0</div><div class="counter-label text-slate-500">exercices</div></div>
+        <div class="counter-item"><div class="counter-num" style="color:#1E40AF" data-count="22">0</div><div class="counter-label text-slate-500">chapitres</div></div>
+        <div class="counter-item"><div class="counter-num" style="color:#16a34a" data-count="40">0</div><div class="counter-label text-slate-500">sujets analysés</div></div>
+      </div>
+
+      <!-- Chapter grid by theme -->
+      <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem 1.25rem">
+        <div>
+          <div class="chap-block-title" style="color:#EA580C">🔢 Nombres & Calcul</div>
+          <div class="chap-tags">
+            <span class="chap-tag" style="color:#EA580C;border-color:#FDBA74;background:#FFF7ED">Calcul numérique</span>
+            <span class="chap-tag" style="color:#EA580C;border-color:#FDBA74;background:#FFF7ED">Fractions</span>
+            <span class="chap-tag" style="color:#EA580C;border-color:#FDBA74;background:#FFF7ED">Puissances</span>
+            <span class="chap-tag" style="color:#EA580C;border-color:#FDBA74;background:#FFF7ED">Racines carrées</span>
+            <span class="chap-tag" style="color:#EA580C;border-color:#FDBA74;background:#FFF7ED">Calcul littéral</span>
+            <span class="chap-tag" style="color:#EA580C;border-color:#FDBA74;background:#FFF7ED">Équations</span>
+          </div>
         </div>
-        <div class="land-step reveal reveal-d2">
-          <div class="land-step-num">2</div>
-          <div class="syne font-black text-slate-900 mb-2">5 exos ciblés par jour</div>
-          <p class="text-slate-500 text-sm leading-relaxed">10 min, sur tes lacunes exactes. Comme au vrai brevet.</p>
+        <div>
+          <div class="chap-block-title" style="color:#1E40AF">📐 Géométrie</div>
+          <div class="chap-tags">
+            <span class="chap-tag" style="color:#1E40AF;border-color:#BFDBFE;background:#EFF6FF">Pythagore</span>
+            <span class="chap-tag" style="color:#1E40AF;border-color:#BFDBFE;background:#EFF6FF">Thalès</span>
+            <span class="chap-tag" style="color:#1E40AF;border-color:#BFDBFE;background:#EFF6FF">Trigonométrie</span>
+            <span class="chap-tag" style="color:#1E40AF;border-color:#BFDBFE;background:#EFF6FF">Transformations</span>
+            <span class="chap-tag" style="color:#1E40AF;border-color:#BFDBFE;background:#EFF6FF">Solides</span>
+          </div>
         </div>
-        <div class="land-step reveal reveal-d3">
-          <div class="land-step-num">3</div>
-          <div class="syne font-black text-slate-900 mb-2">Tu vois ta progression</div>
-          <p class="text-slate-500 text-sm leading-relaxed">Score, streak, paliers de maîtrise. Tu sais exactement où t'en es.</p>
+        <div>
+          <div class="chap-block-title" style="color:#7C3AED">📊 Fonctions</div>
+          <div class="chap-tags">
+            <span class="chap-tag" style="color:#7C3AED;border-color:#C4B5FD;background:#F5F3FF">Fonctions</span>
+            <span class="chap-tag" style="color:#7C3AED;border-color:#C4B5FD;background:#F5F3FF">Affines & linéaires</span>
+            <span class="chap-tag" style="color:#7C3AED;border-color:#C4B5FD;background:#F5F3FF">Proportionnalité</span>
+          </div>
         </div>
+        <div>
+          <div class="chap-block-title" style="color:#0891B2">🎲 Stats & Probas</div>
+          <div class="chap-tags">
+            <span class="chap-tag" style="color:#0891B2;border-color:#67E8F9;background:#ECFEFF">Statistiques</span>
+            <span class="chap-tag" style="color:#0891B2;border-color:#67E8F9;background:#ECFEFF">Probabilités</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Automatismes badge -->
+      <div class="reveal text-center mt-6">
+        <div style="display:inline-flex;align-items:center;gap:.5rem;background:#0f172a;color:#fff;padding:.55rem 1.2rem;border-radius:99px;font-size:.78rem;font-weight:800">
+          ⚡ Automatismes chronométrés — nouveau Brevet 2026
+        </div>
+      </div>
+
+      <div class="reveal text-center mt-8">
+        <button onclick="startTrialFlow('brevet')" class="btn btn-ac btn-fw shadow-xl" style="max-width:380px;font-size:1rem;padding:1rem 1.5rem;border-radius:var(--l-radius)">
+          Teste ton niveau →
+        </button>
+        <p class="text-stone-400 text-xs mt-3">1 minute · Sans carte bancaire</p>
       </div>
     </div>
   </div>
 
-  <!-- ── SECTION 3 — FORMAT BREVET 2026 ──────────── -->
-  <div class="bg-white px-5 py-16">
-    <div class="max-w-lg mx-auto text-center reveal">
-      <div class="stag mx-auto mb-3">Brevet 2026</div>
-      <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-6" style="letter-spacing:-.02em">Entraîne-toi comme au vrai brevet.</h2>
-      <div class="space-y-3 text-left max-w-sm mx-auto">
-        <div class="flex items-start gap-3"><span style="color:#EA580C;flex-shrink:0;margin-top:2px;font-weight:800">✓</span><span class="text-stone-700 text-sm font-medium">Exercices au format exact du Brevet 2026</span></div>
-        <div class="flex items-start gap-3"><span style="color:#EA580C;flex-shrink:0;margin-top:2px;font-weight:800">✓</span><span class="text-stone-700 text-sm font-medium">Partie Automatismes (nouveau 2026) — calcul rapide chronométré</span></div>
-        <div class="flex items-start gap-3"><span style="color:#EA580C;flex-shrink:0;margin-top:2px;font-weight:800">✓</span><span class="text-stone-700 text-sm font-medium">Contextes réels comme à l'examen</span></div>
-        <div class="flex items-start gap-3"><span style="color:#EA580C;flex-shrink:0;margin-top:2px;font-weight:800">✓</span><span class="text-stone-700 text-sm font-medium">440 exercices sur 22 chapitres — tout le programme</span></div>
-      </div>
-      <button onclick="startTrialFlow('brevet')" class="btn btn-ac btn-fw shadow-xl mt-8" style="max-width:380px;font-size:1rem;padding:1rem 1.5rem;border-radius:var(--l-radius)">
-        Teste ton niveau →
-      </button>
-      <p class="text-stone-400 text-xs mt-3">1 minute · Sans carte bancaire</p>
-    </div>
-  </div>
-
-  <!-- ── SECTION 8 — RÉSULTATS CONCRETS ────────────────────── -->
-  <div class="bg-white px-5 py-16">
+  <!-- ══════════════════════════════════════════════════════════
+       SECTION 5 — POUR LES PARENTS (prix + fondateur + FAQ)
+  ═══════════════════════════════════════════════════════════ -->
+  <div style="background:#f8fafc" class="px-5 py-16">
     <div class="max-w-xl mx-auto">
       <div class="text-center mb-8 reveal">
-        <div class="stag mx-auto mb-3">Résultats</div>
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900" style="letter-spacing:-.02em">Ce que ça donne concrètement</h2>
+        <div class="parent-tag mx-auto">👨‍👩‍👧 Pour les parents</div>
+        <h2 class="text-2xl font-extrabold text-slate-900 mb-2 mt-4" style="letter-spacing:-.02em">L'entraînement que vous cherchez pour le Brevet.</h2>
+        <p class="text-slate-500 text-sm max-w-md mx-auto">Chaque soir, le parcours de votre enfant est vérifié et ajusté par un accompagnant pédagogique.</p>
       </div>
-      <div class="reveal" style="background:#fff;border:1.5px solid #e2e8f0;border-radius:20px;padding:1.5rem;overflow:hidden">
-        <div class="flex items-center gap-3 mb-5">
-          <div style="width:40px;height:40px;background:linear-gradient(135deg,#FB923C,#EA580C);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;color:#fff">L</div>
-          <div>
-            <div class="syne font-black text-slate-900 text-sm">Léa — 3ème</div>
-            <div class="text-slate-400 text-xs">Progression en 30 jours</div>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:.75rem">
-          <div>
-            <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Calcul littéral</span></div>
-            <div style="display:flex;gap:.5rem;align-items:center">
-              <div style="flex:1">
-                <div class="text-xs text-slate-400 mb-1">Avant</div>
-                <div style="height:8px;border-radius:99px;background:#fee2e2;overflow:hidden"><div style="height:100%;width:25%;background:#fca5a5;border-radius:99px"></div></div>
-                <div class="text-xs font-bold mt-1" style="color:#ef4444">25%</div>
-              </div>
-              <div style="font-size:1rem;color:#94a3b8;margin-top:.5rem">→</div>
-              <div style="flex:1">
-                <div class="text-xs text-slate-400 mb-1">Après</div>
-                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:75%;background:#4ade80;border-radius:99px"></div></div>
-                <div class="text-xs font-bold mt-1" style="color:#22c55e">75%</div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Équations</span></div>
-            <div style="display:flex;gap:.5rem;align-items:center">
-              <div style="flex:1">
-                <div class="text-xs text-slate-400 mb-1">Avant</div>
-                <div style="height:8px;border-radius:99px;background:#fee2e2;overflow:hidden"><div style="height:100%;width:30%;background:#fca5a5;border-radius:99px"></div></div>
-                <div class="text-xs font-bold mt-1" style="color:#ef4444">30%</div>
-              </div>
-              <div style="font-size:1rem;color:#94a3b8;margin-top:.5rem">→</div>
-              <div style="flex:1">
-                <div class="text-xs text-slate-400 mb-1">Après</div>
-                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:80%;background:#4ade80;border-radius:99px"></div></div>
-                <div class="text-xs font-bold mt-1" style="color:#22c55e">80%</div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Fractions</span></div>
-            <div style="display:flex;gap:.5rem;align-items:center">
-              <div style="flex:1">
-                <div class="text-xs text-slate-400 mb-1">Avant</div>
-                <div style="height:8px;border-radius:99px;background:#fee2e2;overflow:hidden"><div style="height:100%;width:35%;background:#fca5a5;border-radius:99px"></div></div>
-                <div class="text-xs font-bold mt-1" style="color:#ef4444">35%</div>
-              </div>
-              <div style="font-size:1rem;color:#94a3b8;margin-top:.5rem">→</div>
-              <div style="flex:1">
-                <div class="text-xs text-slate-400 mb-1">Après</div>
-                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:75%;background:#4ade80;border-radius:99px"></div></div>
-                <div class="text-xs font-bold mt-1" style="color:#22c55e">75%</div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between mb-1"><span class="text-slate-700 text-sm font-medium">Théorème de Pythagore</span></div>
-            <div style="display:flex;gap:.5rem;align-items:center">
-              <div style="flex:1">
-                <div class="text-xs text-slate-400 mb-1">Avant</div>
-                <div style="height:8px;border-radius:99px;background:#fee2e2;overflow:hidden"><div style="height:100%;width:40%;background:#fca5a5;border-radius:99px"></div></div>
-                <div class="text-xs font-bold mt-1" style="color:#ef4444">40%</div>
-              </div>
-              <div style="font-size:1rem;color:#94a3b8;margin-top:.5rem">→</div>
-              <div style="flex:1">
-                <div class="text-xs text-slate-400 mb-1">Après</div>
-                <div style="height:8px;border-radius:99px;background:#dcfce7;overflow:hidden"><div style="height:100%;width:70%;background:#4ade80;border-radius:99px"></div></div>
-                <div class="text-xs font-bold mt-1" style="color:#22c55e">70%</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="reveal mt-8 text-center" style="position:relative;min-height:4.5rem">
-        <div id="res-slide-0" style="transition:opacity .5s ease;opacity:1">
-          <p class="text-slate-600 text-sm font-medium mb-2">Tous les exercices sont alignés avec le programme officiel de l'Éducation Nationale 2026.</p>
-          <div class="flex flex-wrap justify-center gap-2 mt-4">
-            <span style="background:#FFF7ED;color:#EA580C;border:1px solid #FDBA74;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">440 exercices Brevet 2026</span>
-            <span style="background:#FEF3C7;color:#92400e;border:1px solid #FCD34D;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">Exercices sur mesure</span>
-          </div>
-        </div>
-        <div id="res-slide-1" style="transition:opacity .5s ease;opacity:0;position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
-          <p class="text-slate-600 text-sm font-medium" style="max-width:340px">En moyenne, Léa a utilisé Matheux <strong style="color:#EA580C">15 minutes par jour</strong>, pendant <strong style="color:#EA580C">30 jours consécutifs</strong>.</p>
-        </div>
-        <div class="flex justify-center gap-2 mt-5">
-          <span id="res-dot-0" style="width:8px;height:8px;border-radius:99px;background:#EA580C;transition:background .3s"></span>
-          <span id="res-dot-1" style="width:8px;height:8px;border-radius:99px;background:#cbd5e1;transition:background .3s"></span>
-        </div>
-      </div>
-      <script>
-      (function(){
-        var cur=0;
-        setInterval(function(){
-          var s0=document.getElementById('res-slide-0'),s1=document.getElementById('res-slide-1');
-          var d0=document.getElementById('res-dot-0'),d1=document.getElementById('res-dot-1');
-          if(!s0||!s1)return;
-          cur=1-cur;
-          s0.style.opacity=cur===0?'1':'0';
-          s1.style.opacity=cur===1?'1':'0';
-          d0.style.background=cur===0?'#EA580C':'#cbd5e1';
-          d1.style.background=cur===1?'#EA580C':'#cbd5e1';
-        },4000);
-      })();
-      </script>
-    </div>
-  </div>
 
-  <!-- ── SECTION 9 — FONDATEUR ─────────────────────────────── -->
-  <div style="background:#FFFBF5" class="px-5 py-16">
-    <div class="max-w-xl mx-auto reveal">
-      <div class="text-center mb-6">
-        <div class="stag mx-auto mb-3">Derrière Matheux</div>
-        <h2 class="text-2xl font-extrabold text-slate-900 mb-4" style="letter-spacing:-.02em">Né de centaines d'heures de soutien scolaire en maths.</h2>
-      </div>
-      <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:24px;padding:2rem;position:relative">
-        <div class="flex items-start gap-4 mb-4">
-          <div style="width:56px;height:56px;background:linear-gradient(135deg,#EA580C,#FB923C);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;box-shadow:0 8px 24px rgba(234,88,12,.2)">👨‍🏫</div>
+      <!-- Nicolas mini -->
+      <div class="reveal" style="background:#fff;border:1.5px solid #e2e8f0;border-radius:20px;padding:1.25rem;margin-bottom:1.25rem">
+        <div class="flex items-center gap-3">
+          <div style="width:48px;height:48px;background:linear-gradient(135deg,#EA580C,#FB923C);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;color:#fff;box-shadow:0 4px 12px rgba(234,88,12,.2)">👨‍🏫</div>
           <div>
-            <div class="syne font-black text-slate-900">Nicolas</div>
-            <div class="text-xs font-semibold text-slate-400">Fondateur de Matheux</div>
+            <div class="syne font-black text-slate-900 text-sm">Nicolas Follezou</div>
+            <div class="text-xs text-slate-400 font-medium">Fondateur · Des centaines d'heures de soutien en maths</div>
           </div>
         </div>
-        <p class="text-slate-600 text-sm leading-relaxed mb-3">J'ai vu les mêmes blocages revenir encore et encore, souvent aux mêmes endroits. Ils comprennent en cours, puis oublient. Pas parce qu'ils sont nuls — parce qu'ils ne pratiquent pas au bon endroit.</p>
-        <p class="text-slate-600 text-sm leading-relaxed mb-3">J'ai construit Matheux pour ça. Un système simple : identifier les trous, les combler un peu chaque jour, et suivre chaque élève de près. Avec le brevet qui approche, chaque semaine compte — c'est pour ça que le parcours est ajusté tous les soirs.</p>
-        <p class="text-slate-600 text-sm leading-relaxed mb-4"><strong>Pensé par quelqu'un qui a vu les mêmes erreurs des dizaines de fois. Chaque soir, le parcours est ajusté.</strong></p>
-        <div style="border-top:1px solid #f1f5f9;padding-top:.75rem">
-          <p class="syne font-black text-slate-700 text-sm">Nicolas Follezou — Fondateur de Matheux</p>
-        </div>
+        <p class="text-slate-500 text-sm leading-relaxed mt-3">"J'ai vu les mêmes blocages revenir des dizaines de fois. Pas parce qu'ils sont nuls — parce qu'ils ne pratiquent pas au bon endroit. Matheux cible les trous et les comble un peu chaque jour."</p>
       </div>
-    </div>
-  </div>
 
-  <!-- ── SECTION 10 — PRIX ─────────────────────────────────── -->
-  <div class="bg-white px-5 py-16">
-    <div class="max-w-sm mx-auto text-center reveal">
-      <div class="stag mx-auto mb-5">Le prix</div>
-      <div class="flex flex-wrap justify-center gap-2 mb-5">
-        <span style="background:#FFF7ED;color:#EA580C;border:1px solid #FDBA74;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">Moins de 1€ par jour</span>
-        <span style="background:#FFF7ED;color:#EA580C;border:1px solid #FDBA74;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">Sans engagement</span>
-      </div>
-      <div style="background:#fff;border:2.5px solid #EA580C;position:relative;overflow:hidden" class="rounded-3xl p-8 shadow-2xl">
-        <div class="text-xs font-bold uppercase tracking-widest mb-4 mt-2" style="color:#EA580C">Accès complet</div>
-        <div class="text-5xl font-black text-stone-900 mb-1" style="font-family:Syne,sans-serif">19,99<span class="text-2xl font-bold" style="color:#EA580C"> €</span></div>
-        <div class="text-stone-400 text-sm mb-2">par mois</div>
-        <div class="text-center mb-5"><span class="perday-badge">soit 0,66 € / jour</span></div>
-        <div class="space-y-3 text-left mb-6">
-          <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">Entraînement quotidien ciblé</span></div>
-          <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">22 chapitres — tout le programme de 3ème</span></div>
-          <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">Brevet Blanc inclus</span></div>
-          <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">Parcours vérifié et ajusté chaque soir</span></div>
-          <div class="flex items-center gap-3"><span class="text-base" style="color:#EA580C">✓</span><span class="text-stone-700 text-sm font-medium">Exercices uniques, créés sur mesure</span></div>
+      <!-- Prix -->
+      <div class="reveal" style="background:#fff;border:2.5px solid #EA580C;border-radius:24px;padding:1.75rem;position:relative;overflow:hidden;margin-bottom:1.5rem">
+        <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+          <div>
+            <div class="text-3xl font-black text-stone-900" style="font-family:Syne,sans-serif">19,99<span class="text-lg font-bold" style="color:#EA580C"> €</span><span class="text-stone-400 text-sm font-semibold">/mois</span></div>
+            <div class="perday-badge mt-1">soit 0,66 € / jour</div>
+          </div>
+          <div style="text-align:right">
+            <div class="text-xs font-bold text-slate-400">Un cours particulier :</div>
+            <div class="text-sm font-extrabold text-slate-300 line-through">25–40 €/h</div>
+          </div>
         </div>
-        <button onclick="startTrialFlow('pricing')"
-                class="btn btn-ac btn-fw py-4 shadow-xl" style="font-size:1rem;border-radius:var(--l-radius)">
-          Je teste mon niveau — 7 jours offerts
+        <div class="feat-row" style="margin-bottom:1.25rem">
+          <div class="flex items-center gap-2"><span style="color:#EA580C;font-weight:800;font-size:.8rem">✓</span><span class="text-stone-700 text-xs font-medium">Entraînement quotidien</span></div>
+          <div class="flex items-center gap-2"><span style="color:#EA580C;font-weight:800;font-size:.8rem">✓</span><span class="text-stone-700 text-xs font-medium">22 chapitres complets</span></div>
+          <div class="flex items-center gap-2"><span style="color:#EA580C;font-weight:800;font-size:.8rem">✓</span><span class="text-stone-700 text-xs font-medium">Exercices sur mesure</span></div>
+          <div class="flex items-center gap-2"><span style="color:#EA580C;font-weight:800;font-size:.8rem">✓</span><span class="text-stone-700 text-xs font-medium">Parcours ajusté chaque soir</span></div>
+          <div class="flex items-center gap-2"><span style="color:#EA580C;font-weight:800;font-size:.8rem">✓</span><span class="text-stone-700 text-xs font-medium">Brevet Blanc inclus</span></div>
+          <div class="flex items-center gap-2"><span style="color:#EA580C;font-weight:800;font-size:.8rem">✓</span><span class="text-stone-700 text-xs font-medium">Sans engagement</span></div>
+        </div>
+        <button onclick="startTrialFlow('pricing')" class="btn btn-ac btn-fw py-3.5 shadow-xl" style="font-size:.95rem;border-radius:var(--l-radius)">
+          7 jours offerts — tester maintenant
         </button>
-        <div class="guarantee-badge"></div>
-        <p class="text-stone-400 text-xs mt-3">Sans carte bancaire · Sans engagement</p>
+        <p class="text-stone-400 text-xs mt-2.5 text-center">Sans carte bancaire · Résiliable en 1 clic</p>
+      </div>
+
+      <!-- FAQ compact -->
+      <div class="reveal space-y-2.5">
+        <details class="faq-item">
+          <summary class="faq-q">Mon enfant est démotivé. Comment Matheux peut l'aider ?</summary>
+          <p class="faq-a">La démotivation vient souvent d'un sentiment d'impuissance. Quand un élève voit qu'il progresse sur des lacunes précises, la confiance revient. Les exercices sont adaptés à son niveau exact — ni trop faciles, ni trop durs.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Est-ce que ça remplace un prof particulier ?</summary>
+          <p class="faq-a">Non. Matheux est un complément. Il fait ce qu'un prof ne peut pas en cours : cibler les lacunes individuelles chaque jour et adapter les exercices. Le tout supervisé par un accompagnant pédagogique.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Et s'il a des lacunes des années précédentes ?</summary>
+          <p class="faq-a">C'est exactement pour ça que Matheux existe. Le diagnostic détecte les lacunes, même sur des notions antérieures, et le parcours les cible en priorité.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Combien de temps par jour ?</summary>
+          <p class="faq-a">10 minutes suffisent. 5 exercices ciblés. Après l'entraînement du jour, votre enfant peut continuer librement — chapitres, révisions, Brevet Blanc. Aucune limite.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Peut-il l'utiliser seul ?</summary>
+          <p class="faq-a">Oui. Indices progressifs, formules rappelées après une erreur, exercices adaptés. Votre enfant est guidé à chaque étape.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">C'est adapté au programme officiel ?</summary>
+          <p class="faq-a">Oui. 22 chapitres couvrent l'intégralité du programme Éducation Nationale 2026. Les Automatismes (nouveau 2026) sont inclus.</p>
+        </details>
       </div>
     </div>
   </div>
 
-
-  <!-- ── SECTION 11 — CTA FINAL ────────────────────────────── -->
-  <div class="px-5 py-16" style="background:#FFF7ED">
+  <!-- ══════════════════════════════════════════════════════════
+       SECTION 6 — CTA FINAL
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="cta-dark-section px-5 py-16">
     <div class="max-w-lg mx-auto relative z-10 text-center reveal">
-      <h2 id="bottom-h2" class="text-2xl sm:text-3xl font-extrabold text-stone-900 leading-tight mb-3" style="letter-spacing:-.02em">
-        Tu veux être prêt pour le brevet ?<br>
-        <span style="color:#EA580C">Teste ton niveau en 1 minute.</span>
+      <div style="font-size:3rem;margin-bottom:1rem">🎯</div>
+      <h2 id="bottom-h2" class="text-2xl sm:text-3xl font-black text-white leading-tight mb-3" style="letter-spacing:-.02em">
+        T'as 1 minute ?<br>
+        <span class="grad-text">On te dit où bosser.</span>
       </h2>
-      <p id="bottom-sub" class="text-stone-500 text-sm font-medium mb-8 max-w-sm mx-auto">
-        Tu sauras exactement où bosser.
+      <p id="bottom-sub" class="text-white/50 text-sm font-medium mb-8 max-w-sm mx-auto">
+        Diagnostic express → tes lacunes identifiées → ton programme sur mesure.
       </p>
       <button onclick="startTrialFlow('bottom')"
               style="max-width:400px;font-size:1.05rem;padding:1.15rem;display:block;margin:0 auto;border-radius:var(--l-radius)"
               class="btn btn-ac btn-fw shadow-xl">
         <span id="bottom-cta-txt">Teste ton niveau →</span>
       </button>
-      <p class="text-stone-400 text-xs mt-4">1 minute · Sans carte bancaire</p>
+      <p class="text-white/30 text-xs mt-4">1 minute · Sans carte bancaire · 7 jours offerts</p>
     </div>
   </div>
 
-  <!-- ── SECTION 12 — FAQ ──────────────────────────────────── -->
-  <div style="background:#FFFBF5" class="px-5 py-16">
-    <div class="max-w-xl mx-auto">
-      <div class="text-center mb-10 reveal">
-        <div class="stag mx-auto mb-3">FAQ</div>
-        <h2 class="text-2xl font-extrabold text-slate-900" style="letter-spacing:-.02em">Vos questions.</h2>
-      </div>
-      <div class="space-y-3 reveal" style="transition-delay:.1s">
-        <details class="faq-item">
-          <summary class="faq-q">Mon enfant est démotivé. Comment Matheux peut l'aider ?</summary>
-          <p class="faq-a">La démotivation vient souvent d'un sentiment d'impuissance. Quand un élève voit qu'il progresse sur des lacunes précises, la confiance revient. Et spoiler : les élèves passent en moyenne 17 minutes par jour sur Matheux — bien plus que les 10 minutes demandées.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">Est-ce que ça remplace un professeur ?</summary>
-          <p class="faq-a">Non. Matheux est un complément. Il fait ce qu'un professeur ne peut pas faire en cours : cibler les lacunes individuelles de chaque élève, chaque jour, et adapter les exercices en conséquence. Le tout supervisé par un accompagnant pédagogique.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">Et s'il a des lacunes de l'année dernière ?</summary>
-          <p class="faq-a">C'est exactement pour ce cas que Matheux existe. Après le diagnostic, si votre enfant a des lacunes sur des notions des années précédentes, l'algorithme cible ces lacunes en priorité. Le parcours est construit sur ce qui manque réellement pour réussir le Brevet.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">Est-ce adapté au programme scolaire ?</summary>
-          <p class="faq-a">Oui. Tous les exercices sont alignés avec le programme officiel de l'Éducation Nationale 2026. 22 chapitres couvrent l'intégralité du programme de 3ème pour le Brevet.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">Combien de temps par jour ?</summary>
-          <p class="faq-a">10 minutes suffisent. 5 exercices ciblés sur ses lacunes exactes. Mais après l'entraînement du jour, votre enfant peut continuer librement sur tout le programme — chapitres, révisions, Brevet Blanc. Aucune limite.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">Peut-il l'utiliser seul ?</summary>
-          <p class="faq-a">Oui. L'interface est conçue pour les élèves de 3ème. Indices progressifs, formules rappelées après une erreur, exercices adaptés au niveau. Votre enfant est guidé à chaque étape.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">Est-ce qu'il y a des sujets de Brevet Blanc ?</summary>
-          <p class="faq-a">Oui. Le programme inclut des exercices type Brevet et des chapitres Automatismes (calcul rapide chronométré) — exactement ce qui tombe à l'épreuve.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">C'est moins cher qu'un prof particulier ?</summary>
-          <p class="faq-a">Un cours particulier coûte 25 à 40 euros de l'heure. Matheux coûte 19,99 € par mois — soit 0,66 € par jour — pour un entraînement quotidien personnalisé. Et votre enfant progresse tous les jours, pas une fois par semaine.</p>
-        </details>
-      </div>
-    </div>
-  </div>
+  <!-- ── LANDING JS ANIMATIONS ── -->
+  <script>
+  // Phone mockup carousel
+  (function(){
+    var cur=0,max=3;
+    setInterval(function(){
+      var p=document.getElementById('pscr-'+cur),pd=document.getElementById('pdot-'+cur);
+      if(p)p.classList.remove('pactive');
+      if(pd)pd.classList.remove('pon');
+      cur=(cur+1)%max;
+      var n=document.getElementById('pscr-'+cur),nd=document.getElementById('pdot-'+cur);
+      if(n)n.classList.add('pactive');
+      if(nd)nd.classList.add('pon');
+    },3500);
+  })();
+
+  // Loop cards highlight cycle
+  (function(){
+    var cur=0;
+    setInterval(function(){
+      for(var i=0;i<4;i++){var c=document.getElementById('lc-'+i);if(c)c.classList.toggle('lit',i===cur)}
+      cur=(cur+1)%4;
+    },2000);
+  })();
+
+  // Counter animation on scroll
+  (function(){
+    var done=false;
+    function go(){
+      if(done)return;
+      var els=document.querySelectorAll('[data-count]');
+      if(!els.length)return;
+      var r=els[0].getBoundingClientRect();
+      if(r.top>window.innerHeight*.9)return;
+      done=true;
+      els.forEach(function(el){
+        var t=parseInt(el.getAttribute('data-count')),dur=1400,s=Date.now();
+        (function tick(){
+          var p=Math.min(1,(Date.now()-s)/dur),ease=1-Math.pow(1-p,3);
+          el.textContent=Math.round(t*ease)+(t>=40?'+':'');
+          if(p<1)requestAnimationFrame(tick);
+        })();
+      });
+    }
+    window.addEventListener('scroll',go,{passive:true});
+    setTimeout(go,800);
+  })();
+  </script>
+
 
   <!-- Mobile sticky CTA bar -->
   <div id="sticky-cta" aria-hidden="true">
