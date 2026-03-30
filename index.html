@@ -1173,8 +1173,8 @@
       min-width:85%; scroll-snap-align:center; flex-shrink:0;
     }
     .chap-carousel-dots { display:flex; justify-content:center; gap:6px; margin-top:8px; }
-    .chap-carousel-dots .cdot { width:7px;height:7px;border-radius:50%;background:#cbd5e1;transition:all .2s; }
-    .chap-carousel-dots .cdot.active { background:#1E40AF;width:18px;border-radius:4px; }
+    .chap-carousel-dots .cdot { width:10px;height:10px;border-radius:50%;background:#cbd5e1;transition:all .2s; }
+    .chap-carousel-dots .cdot.active { background:#1E40AF;width:24px;border-radius:5px; }
 
     /* ── BOOST SHIMMER CTA ─────────────────────────────── */
     .boost-shimmer {
@@ -2296,8 +2296,8 @@
         <div class="flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 font-black text-sm px-2.5 py-1.5 rounded-xl syne">
           💎 <span id="ui-xp">0</span>
         </div>
-        <div id="daily-box" class="hidden flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 text-emerald-700 font-black text-sm px-2.5 py-1.5 rounded-xl syne">
-          🎯 <span id="ui-daily">0</span>/5
+        <div id="daily-box" class="hidden flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 text-emerald-700 font-black text-sm px-2.5 py-1.5 rounded-xl syne" onclick="_cycleDailyTarget()" style="cursor:pointer" title="Tap pour changer l'objectif">
+          🎯 <span id="ui-daily">0</span>/<span id="ui-daily-target">5</span>
           <div class="daily-bar"><div id="daily-fill" class="daily-fill" style="width:0%"></div></div>
         </div>
         <div id="flow-box" class="hidden flow-badge">⚡ ×2 <span id="ui-flow">0</span></div>
@@ -2713,6 +2713,7 @@ var _MSGS = {
   slot_3: ['15/20 {name} — dernier effort 🏁', 'Le niveau monte — et toi aussi {name} ⚡'],
   // ── Slot rewards — Automatismes ──
   slot_1_auto: { def: ['5 réflexes en poche {name} — le cerveau chauffe ⚡', 'Premiers automatismes validés {name} 🎯'] },
+  slot_transition: ['Prochaine série — on monte d\'un cran 💪', 'Allez, 5 de plus {name} — t\'es lancé(e) 🔥', 'Série suivante — garde le rythme ⚡'],
   slot_2_auto: { def: ['Mi-parcours {name} — tes réflexes s\'aiguisent 🧠', '10 automatismes — la vitesse vient 🔥'] },
   slot_3_auto: { def: ['Plus que 5 {name} — sprint final ⚡', '15 réflexes acquis — dernière ligne droite 🏁'] },
   // ── Daily goal ──
@@ -4625,15 +4626,15 @@ function renderTrialBadge() {
   if (!t.trialActive)    { el.classList.add('hidden'); return; }
 
   var days = t.daysLeft || 0;
-  // Badge visible les 5 derniers jours — rappel progressif
-  if (days > 5) { el.classList.add('hidden'); return; }
+  // Badge visible dès J-7 — rappel progressif
+  if (days > 7) { el.classList.add('hidden'); return; }
   var urgent = days <= 1;
   var color = urgent
     ? 'background:#fef3c7;border-color:#fcd34d;color:#92400e'
     : days <= 3
       ? 'background:#fef9c3;border-color:#fde047;color:#713f12'
       : 'background:#f0f9ff;border-color:#bae6fd;color:#0369a1';
-  var msg = days === 0 ? 'Essai terminé aujourd\'hui ⏰' : days <= 3 ? 'J-' + days + ' · Essai se termine bientôt' : 'Essai gratuit · J-' + days;
+  var msg = days === 0 ? 'Essai terminé aujourd\'hui ⏰' : days <= 1 ? '⏰ Dernier jour d\'essai' : days <= 3 ? 'J-' + days + ' · Essai se termine bientôt' : 'Essai gratuit · J-' + days;
   el.innerHTML =
     '<div style="display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;' +
     'padding:.3rem .75rem;border-radius:99px;border:1.5px solid;' + color + '">' +
@@ -4709,11 +4710,13 @@ function initApp(d, skipRender) {
   if (!S.trial.trialActive && !S.trial.isPremium) {
     // Essai terminé et non premium — afficher overlay après init
     setTimeout(showTrialExpired, 300);
-  } else if (S.trial.trialActive && !S.trial.isPremium && S.trial.daysLeft <= 3 && S.trial.daysLeft > 0) {
-    // Avertissement progressif J-3/J-2/J-1
+  } else if (S.trial.trialActive && !S.trial.isPremium && S.trial.daysLeft <= 7 && S.trial.daysLeft > 0) {
+    // Avertissement progressif J-7 → J-1
     var _trialMsg = S.trial.daysLeft === 1
       ? '⏰ Dernier jour d\'essai — profite bien de ta session !'
-      : '⏰ Plus que ' + S.trial.daysLeft + ' jours d\'essai gratuit';
+      : S.trial.daysLeft <= 3
+        ? '⏰ Plus que ' + S.trial.daysLeft + ' jours d\'essai gratuit'
+        : '⚡ Essai gratuit — J-' + S.trial.daysLeft + ' · profite à fond !';
     setTimeout(function() { showT(_trialMsg, 5000, '⏰'); }, 1500);
   }
   // SECURITY LAYER 2 — Premium Guard
@@ -5211,12 +5214,15 @@ function updH() {
   if (S.stk >= 3) document.getElementById('stk-box').style.animation = 'remPulse 2s ease infinite';
   // Daily goal UI
   var dg = _dailyGoal();
+  var _dTarget = _dailyTarget();
   var dBox = document.getElementById('daily-box');
   if (dBox) {
     dBox.classList.remove('hidden');
-    var cnt = Math.min(dg.count, 5);
+    var cnt = Math.min(dg.count, _dTarget);
     document.getElementById('ui-daily').innerText = cnt;
-    document.getElementById('daily-fill').style.width = (cnt / 5 * 100) + '%';
+    var _dtEl = document.getElementById('ui-daily-target');
+    if (_dtEl) _dtEl.innerText = _dTarget;
+    document.getElementById('daily-fill').style.width = (cnt / _dTarget * 100) + '%';
     if (dg.done) dBox.classList.add('daily-done-pulse');
     else dBox.classList.remove('daily-done-pulse');
   }
@@ -5275,6 +5281,20 @@ function _checkMilestone() {
 // DAILY GOAL — mission du jour (5 exos tous types confondus)
 // ══════════════════════════════════════════════════════════════
 var _DG_KEY = 'mx_daily_';
+var _DG_TARGET_KEY = 'mx_daily_target_';
+function _dailyTarget() {
+  var code = S.prof ? S.prof.code : 'anon';
+  var v = parseInt(localStorage.getItem(_DG_TARGET_KEY + code));
+  return (v === 5 || v === 10) ? v : 5;
+}
+function _cycleDailyTarget() {
+  var code = S.prof ? S.prof.code : 'anon';
+  var cur = _dailyTarget();
+  var next = cur === 5 ? 10 : 5;
+  try { localStorage.setItem(_DG_TARGET_KEY + code, next); } catch(e) {}
+  showT('Objectif : ' + next + ' exos/jour 🎯', 2000, '🎯');
+  updH();
+}
 function _dailyGoal() {
   var key = _DG_KEY + (S.prof ? S.prof.code : 'anon');
   var raw = null;
@@ -5285,8 +5305,9 @@ function _dailyGoal() {
 function _dailyInc() {
   var key = _DG_KEY + (S.prof ? S.prof.code : 'anon');
   var dg = _dailyGoal();
+  var target = _dailyTarget();
   dg.count++;
-  if (dg.count >= 5 && !dg.done) {
+  if (dg.count >= target && !dg.done) {
     dg.done = true;
     dg.justDone = true;
   } else {
@@ -5410,6 +5431,7 @@ function _showSlotReward(cat, slotNum, dailyJustDone) {
       coursHtml +
       '<div class="slot-dots">' + dotsHtml + '</div>' +
       '<div style="font-size:.75rem;font-weight:700;color:#1E40AF">+' + (_perfectSlot ? '100' : '75') + ' XP</div>' +
+      (slotNum < 4 && !dailyJustDone ? '<div style="font-size:.75rem;color:#64748b;margin-top:.35rem">' + _msg('slot_transition', {name: name}) + '</div>' : '') +
       dailyHtml +
       '<button class="slot-btn" onclick="this.closest(\'.slot-overlay\').remove();_slotRewardShowing=false;render();if(S._pendingTimerExo){_startTimer(S._pendingTimerExo);S._pendingTimerExo=null;}">Continuer →</button>' +
     '</div>';
@@ -7996,7 +8018,9 @@ function renderBoostInsight() {
     '</div>' +
     (progressHtml ? progressHtml : '') +
     '<div class="' + streakBg + ' border rounded-2xl px-4 py-3 text-sm font-semibold text-center">' + streakMsg + '</div>' +
-    '<div class="bg-indigo-50 border border-indigo-200 rounded-2xl px-4 py-3 text-sm font-semibold text-indigo-700 text-center">' + _msg('boost_preparing') + '</div>' +
+    '<div class="bg-indigo-50 border border-indigo-200 rounded-2xl px-4 py-3 text-sm font-semibold text-indigo-700 text-center">' + _msg('boost_preparing') +
+      (S.assignedByProf && Object.keys(S.assignedByProf).length > 0 ? '<div style="font-size:.75rem;color:#6366f1;margin-top:.35rem;font-weight:600">📘 Prochain : ' + (LVL[S.niv] && LVL[S.niv].names && LVL[S.niv].names[Object.keys(S.assignedByProf)[0]] || Object.keys(S.assignedByProf)[0].replace(/_/g,' ')) + '</div>' : '') +
+    '</div>' +
     '<button onclick="dismissBoostInsight()" class="btn btn-ac btn-fw py-4 text-base">Voir mes chapitres 🏠</button>' +
     '<div id="boost-redirect-msg" class="text-center text-xs text-slate-400 mt-2">Retour automatique dans <span id="boost-redirect-count">5</span>s…</div>' +
     '</div>';
