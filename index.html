@@ -1590,20 +1590,59 @@
       </div>
       <div class="hero-badge" style="animation:s1 .5s .05s ease both">
         <span class="dot-live"></span>
-        <span id="hero-badge-txt">Brevet 2026 · Programme officiel</span>
+        <span id="hero-badge-txt">Brevet 2026 dans <strong id="brevet-countdown"></strong> jours</span>
       </div>
-      <h1 id="hero-h1" class="font-black text-stone-900 leading-[1.12] mb-5 max-w-md mx-auto" style="font-size:clamp(1.8rem,5.5vw,2.6rem);animation:s1 .6s .02s ease both;letter-spacing:-.02em">
-        T'es prêt pour le brevet de maths ? <span style="color:#EA580C">Vérifie en 5 minutes.</span>
+      <h1 id="hero-h1" class="font-black text-stone-900 leading-[1.12] mb-4 max-w-md mx-auto" style="font-size:clamp(1.8rem,5.5vw,2.6rem);animation:s1 .6s .02s ease both;letter-spacing:-.02em">
+        T'es prêt pour le brevet de maths ?
       </h1>
-      <p id="hero-sub" class="text-stone-600 text-base sm:text-lg font-semibold mb-4 max-w-md mx-auto" style="line-height:1.7;animation:s1 .6s .1s ease both">
-        Matheux détecte ses lacunes et lui prépare 5 exercices ciblés par jour. 10 min, c'est tout.
+      <p id="hero-sub" class="text-stone-500 text-sm font-semibold mb-6" style="animation:s1 .6s .1s ease both">
+        82% des élèves se trompent sur cette question :
       </p>
-      <p id="hero-mention" class="text-stone-400 text-xs font-semibold mb-8" style="animation:s1 .6s .22s ease both;letter-spacing:.05em">PROGRAMME OFFICIEL 2026</p>
-      <button onclick="startTrialFlow('hero')"
-              class="btn btn-ac btn-fw shadow-xl" id="cta-hero" style="max-width:420px;font-size:1.05rem;padding:1.15rem 1.5rem;border-radius:var(--l-radius);animation:s1 .6s .28s ease both">
-        <span id="hero-cta-txt">Je teste mon niveau →</span>
-      </button>
-      <p class="text-stone-400 text-xs mt-4 font-medium" style="animation:s1 .6s .35s ease both">5 minutes · Sans carte bancaire</p>
+
+      <!-- Question piège -->
+      <div id="hero-quiz" style="animation:s1 .6s .15s ease both;background:#FFFBF5;border:2px solid #FDBA74;border-radius:20px;padding:1.5rem;max-width:400px;margin:0 auto;text-align:left">
+        <p class="text-stone-700 text-sm font-semibold leading-relaxed mb-4">Un triangle a des côtés de <strong>6 cm</strong>, <strong>8 cm</strong> et <strong>10 cm</strong>.<br>Est-il rectangle ?</p>
+        <div style="display:flex;gap:.5rem">
+          <button onclick="_heroQuiz('oui')" class="hq-btn" id="hq-oui" style="flex:1;padding:.75rem;border-radius:12px;border:2px solid #e2e8f0;background:#fff;font-weight:800;font-size:.85rem;color:#334155;cursor:pointer;transition:all .15s">OUI</button>
+          <button onclick="_heroQuiz('non')" class="hq-btn" id="hq-non" style="flex:1;padding:.75rem;border-radius:12px;border:2px solid #e2e8f0;background:#fff;font-weight:800;font-size:.85rem;color:#334155;cursor:pointer;transition:all .15s">NON</button>
+          <button onclick="_heroQuiz('jsp')" class="hq-btn" id="hq-jsp" style="flex:1;padding:.75rem;border-radius:12px;border:2px solid #e2e8f0;background:#fff;font-weight:800;font-size:.85rem;color:#334155;cursor:pointer;transition:all .15s">JE SAIS PAS</button>
+        </div>
+      </div>
+
+      <!-- Feedback après réponse -->
+      <div id="hero-quiz-fb" class="hidden" style="max-width:400px;margin:1rem auto 0">
+        <div id="hero-quiz-msg" style="border-radius:16px;padding:1rem 1.25rem;font-size:.9rem;font-weight:700;margin-bottom:1rem"></div>
+        <button onclick="startTrialFlow('hero')" class="btn btn-ac btn-fw shadow-xl" id="cta-hero" style="max-width:400px;font-size:1.05rem;padding:1.15rem 1.5rem;border-radius:var(--l-radius)">
+          <span id="hero-cta-txt">4 questions de plus et on te dit où bosser →</span>
+        </button>
+        <p class="text-stone-400 text-xs mt-3">1 minute · Sans carte bancaire</p>
+      </div>
+
+      <p class="text-stone-400 text-xs mt-5 font-medium" style="animation:s1 .6s .3s ease both">
+        ⏱ <span id="hero-counter"></span> élèves ont déjà fait ce test
+      </p>
+      <script>
+      (function(){
+        var d=new Date(2026,5,29)-new Date();var el=document.getElementById('brevet-countdown');
+        if(el)el.textContent=Math.max(0,Math.ceil(d/864e5));
+        var k='mx_hero_cnt',b=1247,n=Math.max(b,parseInt(localStorage.getItem(k))||b)+1;
+        try{localStorage.setItem(k,n)}catch(e){}
+        var ce=document.getElementById('hero-counter');if(ce)ce.textContent=n.toLocaleString('fr-FR');
+      })();
+      window._heroQuiz=function(a){
+        document.querySelectorAll('.hq-btn').forEach(function(b){b.disabled=true;b.style.opacity='.5'});
+        var o=document.getElementById('hq-oui'),nn=document.getElementById('hq-non'),j=document.getElementById('hq-jsp');
+        o.style.cssText+=';opacity:1;background:#d1fae5;border-color:#10b981;color:#065f46';
+        if(a==='non')nn.style.cssText+=';opacity:1;background:#fee2e2;border-color:#ef4444;color:#991b1b';
+        if(a==='jsp')j.style.cssText+=';opacity:1;background:#fef3c7;border-color:#f59e0b;color:#92400e';
+        var fb=document.getElementById('hero-quiz-fb'),msg=document.getElementById('hero-quiz-msg');
+        var s='border-radius:16px;padding:1rem 1.25rem;font-size:.9rem;font-weight:700;margin-bottom:1rem;';
+        if(a==='oui'){msg.style.cssText=s+'background:#d1fae5;color:#065f46';msg.textContent='\u2705 Bien jou\u00e9 ! 6\u00b2 + 8\u00b2 = 10\u00b2 \u2192 c\u2019est un triangle rectangle.';}
+        else if(a==='non'){msg.style.cssText=s+'background:#fee2e2;color:#991b1b';msg.textContent='\u274c Pas tout \u00e0 fait \u2014 6\u00b2 + 8\u00b2 = 100 = 10\u00b2. Pythagore dit oui !';}
+        else{msg.style.cssText=s+'background:#fef3c7;color:#92400e';msg.textContent='\uD83D\uDCA1 La r\u00e9ponse est OUI \u2014 6\u00b2 + 8\u00b2 = 100 = 10\u00b2. C\u2019est Pythagore !';}
+        fb.classList.remove('hidden');
+      };
+      </script>
       <div id="pwa-install-banner" class="hidden mt-3 flex items-center gap-3
         rounded-2xl px-4 py-3 max-w-sm mx-auto"
         style="animation:s1 .6s .5s ease both;background:rgba(28,25,23,.05);border:1.5px solid #E7E5E4">
@@ -1702,92 +1741,8 @@
     </div>
   </div><!-- /trial-flow -->
 
-  <!-- ── MICRO-BLOC PROMESSE ─────────────────────────────── -->
-  <div style="background:linear-gradient(180deg,#FFFBF5 0%,#FFF7ED 100%)" class="px-5 py-12">
-    <div class="max-w-lg mx-auto text-center reveal">
-      <p class="text-lg sm:text-xl font-extrabold text-stone-800" style="line-height:1.7;letter-spacing:-.01em">En 5 minutes, tu sais exactement <span style="color:#EA580C">quoi réviser pour le brevet.</span></p>
-    </div>
-  </div>
 
-  <!-- ── SECTION 2 — PREUVE VISUELLE (CAROUSEL) ────────── -->
-  <div class="bg-white px-5 py-16">
-    <div class="max-w-4xl mx-auto reveal">
-      <div style="position:relative;overflow:hidden;border-radius:20px">
-        <div id="visio-track" style="display:flex;transition:transform .6s cubic-bezier(.4,0,.2,1);will-change:transform">
-          <div style="min-width:100%;box-sizing:border-box"><img src="ss1.png" alt="Soutien scolaire en visio" style="width:100%;border-radius:16px;aspect-ratio:2/1;object-fit:cover;box-shadow:0 8px 30px rgba(0,0,0,.12)"></div>
-          <div style="min-width:100%;box-sizing:border-box"><img src="ss2.png" alt="Accompagnement d'un élève" style="width:100%;border-radius:16px;aspect-ratio:2/1;object-fit:cover;box-shadow:0 8px 30px rgba(0,0,0,.12)"></div>
-          <div style="min-width:100%;box-sizing:border-box"><img src="mockup.png" alt="Matheux — l'application aujourd'hui" style="max-width:70%;max-height:80vh;border-radius:16px;object-fit:contain;margin:0 auto;display:block;box-shadow:0 8px 30px rgba(0,0,0,.12)"></div>
-        </div>
-        <button id="visio-back" onclick="_visioGo(_visioIdx-1)" style="display:none;position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:5;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.7);backdrop-filter:blur(4px);color:#334155;font-size:18px;cursor:pointer;transition:opacity .3s">‹</button>
-        <div id="visio-dots" style="display:flex;justify-content:center;gap:8px;margin-top:1rem">
-          <button onclick="_visioGo(0)" style="width:10px;height:10px;border-radius:50%;border:none;background:#EA580C;cursor:pointer;transition:all .3s"></button>
-          <button onclick="_visioGo(1)" style="width:10px;height:10px;border-radius:50%;border:none;background:#cbd5e1;cursor:pointer;transition:all .3s"></button>
-          <button onclick="_visioGo(2)" style="width:10px;height:10px;border-radius:50%;border:none;background:#cbd5e1;cursor:pointer;transition:all .3s"></button>
-        </div>
-      </div>
-      <p id="visio-caption" class="text-slate-500 text-sm text-center mt-5" style="font-style:italic;transition:opacity .3s">Tout a commencé par des cours en visio, un élève à la fois.</p>
-    </div>
-  </div>
-
-  <!-- ── SECTION 3 — PROBLÈME PARENTS ──────────────────────── -->
-  <div style="background:#FFF7ED;border-top:1px solid #FDBA74" class="px-5 py-16">
-    <div class="max-w-xl mx-auto text-center">
-      <div class="reveal">
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-stone-900 mb-3" style="letter-spacing:-.02em">Votre enfant n'est pas nul en maths.</h2>
-        <p class="text-xl sm:text-2xl font-bold mb-4" style="color:#EA580C">Mais quelque chose bloque.</p>
-        <p class="text-stone-500 text-sm leading-relaxed mb-8" style="max-width:360px;margin-left:auto;margin-right:auto">Vous avez déjà essayé de l'aider...<br>Et ça s'est mal passé.</p>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto mb-10">
-        <div class="reveal reveal-d1" style="background:#fff;border:1.5px solid #E7E5E4;border-radius:14px;padding:1rem;text-align:left">
-          <span class="text-stone-700 text-sm font-medium">Les devoirs créent des tensions à la maison</span>
-        </div>
-        <div class="reveal reveal-d2" style="background:#fff;border:1.5px solid #E7E5E4;border-radius:14px;padding:1rem;text-align:left">
-          <span class="text-stone-700 text-sm font-medium">Vous avez essayé d'aider mais ça a empiré</span>
-        </div>
-        <div class="reveal reveal-d3" style="background:#fff;border:1.5px solid #E7E5E4;border-radius:14px;padding:1rem;text-align:left">
-          <span class="text-stone-700 text-sm font-medium">Il comprend en cours mais rate les contrôles</span>
-        </div>
-        <div class="reveal reveal-d4" style="background:#fff;border:1.5px solid #E7E5E4;border-radius:14px;padding:1rem;text-align:left">
-          <span class="text-stone-700 text-sm font-medium">Il était bon avant mais décroche cette année</span>
-        </div>
-      </div>
-      <div class="reveal" style="transition-delay:.5s">
-        <p class="text-stone-500 text-sm font-medium mb-2">Le vrai problème :</p>
-        <p class="text-xl sm:text-2xl font-extrabold" style="color:#EA580C;letter-spacing:-.01em">Personne n'identifie précisément où ça bloque.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── SECTION 4 — POSITIONNEMENT PRODUIT ────────────────── -->
-  <div class="bg-white px-5 py-16">
-    <div class="max-w-2xl mx-auto">
-      <div class="text-center mb-10 reveal">
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-4" style="letter-spacing:-.02em">Matheux rend visible l'invisible.</h2>
-        <p class="text-slate-600 text-base leading-relaxed max-w-lg mx-auto mb-3">Le système analyse les réponses de l'élève et identifie les lacunes exactes.</p>
-        <p class="text-slate-500 text-sm leading-relaxed max-w-md mx-auto">Une cartographie du cerveau mathématique de votre enfant.</p>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div class="land-step reveal reveal-d1">
-          <div class="land-step-icon float-anim" style="background:#FFF7ED">🔎</div>
-          <div class="syne font-black text-slate-900 mb-2">Détection des erreurs</div>
-          <p class="text-slate-500 text-sm leading-relaxed">Chaque réponse est analysée. Les erreurs récurrentes sont repérées automatiquement.</p>
-        </div>
-        <div class="land-step reveal reveal-d2">
-          <div class="land-step-icon float-anim" style="background:#fef3c7;animation-delay:.4s">⚡</div>
-          <div class="syne font-black text-slate-900 mb-2">Adaptation automatique</div>
-          <p class="text-slate-500 text-sm leading-relaxed">Le parcours s'ajuste en fonction des résultats. Plus besoin de deviner quoi réviser.</p>
-        </div>
-        <div class="land-step reveal reveal-d3">
-          <div class="land-step-icon float-anim" style="background:#d1fae5;animation-delay:.8s">🎯</div>
-          <div class="syne font-black text-slate-900 mb-2">Exercices ciblés</div>
-          <p class="text-slate-500 text-sm leading-relaxed">Chaque exercice attaque une lacune précise. Pas de temps perdu sur ce qui est déjà acquis.</p>
-        </div>
-      </div>
-      <p class="text-slate-400 text-xs text-center mt-8 reveal">Un système supervisé par un professionnel — pas une IA toute seule.</p>
-    </div>
-  </div>
-
-  <!-- ── SECTION 5 — COMMENT ÇA MARCHE ─────────────────────── -->
+  <!-- ── SECTION 2 — COMMENT ÇA MARCHE (élève) ───────── -->
   <div style="background:#FFFBF5" class="px-5 py-16">
     <div class="max-w-2xl mx-auto">
       <div class="text-center mb-10 reveal">
@@ -1797,89 +1752,38 @@
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
         <div class="land-step reveal reveal-d1">
           <div class="land-step-num">1</div>
-          <div class="syne font-black text-slate-900 mb-2">Diagnostic rapide</div>
-          <p class="text-slate-500 text-sm leading-relaxed">5 minutes pour identifier précisément où ça bloque.</p>
+          <div class="syne font-black text-slate-900 mb-2">Diagnostic express</div>
+          <p class="text-slate-500 text-sm leading-relaxed">5 questions en 1 minute — on identifie tes 2-3 faiblesses.</p>
         </div>
         <div class="land-step reveal reveal-d2">
           <div class="land-step-num">2</div>
-          <div class="syne font-black text-slate-900 mb-2">Entraînement quotidien</div>
-          <p class="text-slate-500 text-sm leading-relaxed">5 exercices ciblés par jour. 10 minutes. Sur ses lacunes exactes.</p>
+          <div class="syne font-black text-slate-900 mb-2">5 exos ciblés par jour</div>
+          <p class="text-slate-500 text-sm leading-relaxed">10 min, sur tes lacunes exactes. Comme au vrai brevet.</p>
         </div>
         <div class="land-step reveal reveal-d3">
           <div class="land-step-num">3</div>
-          <div class="syne font-black text-slate-900 mb-2">Adaptation automatique</div>
-          <p class="text-slate-500 text-sm leading-relaxed">Le parcours évolue selon les progrès. Un accompagnant supervise.</p>
+          <div class="syne font-black text-slate-900 mb-2">Tu vois ta progression</div>
+          <p class="text-slate-500 text-sm leading-relaxed">Score, streak, paliers de maîtrise. Tu sais exactement où t'en es.</p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ── SECTION 6 — COMPARAISON ───────────────────────────── -->
+  <!-- ── SECTION 3 — FORMAT BREVET 2026 ──────────── -->
   <div class="bg-white px-5 py-16">
-    <div class="max-w-lg mx-auto">
-      <div class="text-center mb-8 reveal">
-        <div class="stag mx-auto mb-3">Pourquoi ça marche</div>
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900" style="letter-spacing:-.02em">La régularité bat l'intensité.</h2>
+    <div class="max-w-lg mx-auto text-center reveal">
+      <div class="stag mx-auto mb-3">Brevet 2026</div>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-6" style="letter-spacing:-.02em">Entraîne-toi comme au vrai brevet.</h2>
+      <div class="space-y-3 text-left max-w-sm mx-auto">
+        <div class="flex items-start gap-3"><span style="color:#EA580C;flex-shrink:0;margin-top:2px;font-weight:800">✓</span><span class="text-stone-700 text-sm font-medium">Exercices au format exact du Brevet 2026</span></div>
+        <div class="flex items-start gap-3"><span style="color:#EA580C;flex-shrink:0;margin-top:2px;font-weight:800">✓</span><span class="text-stone-700 text-sm font-medium">Partie Automatismes (nouveau 2026) — calcul rapide chronométré</span></div>
+        <div class="flex items-start gap-3"><span style="color:#EA580C;flex-shrink:0;margin-top:2px;font-weight:800">✓</span><span class="text-stone-700 text-sm font-medium">Contextes réels comme à l'examen</span></div>
+        <div class="flex items-start gap-3"><span style="color:#EA580C;flex-shrink:0;margin-top:2px;font-weight:800">✓</span><span class="text-stone-700 text-sm font-medium">440 exercices sur 22 chapitres — tout le programme</span></div>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
-        <div class="reveal reveal-d1" style="background:#fff1f2;border:1.5px solid #fecaca;border-radius:var(--l-radius);padding:1.75rem;text-align:center">
-          <div style="width:40px;height:40px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;font-size:1rem;color:#ef4444;font-weight:800">X</div>
-          <div class="font-extrabold text-slate-900 text-lg mb-1">Cours classique</div>
-          <p class="text-slate-500 text-sm mb-2">1h par semaine</p>
-          <p class="text-slate-400 text-xs">Comprend puis oublie.</p>
-        </div>
-        <div class="reveal reveal-d2" style="background:#ECFDF5;border:1.5px solid #A7F3D0;border-radius:var(--l-radius);padding:1.75rem;text-align:center">
-          <div style="width:40px;height:40px;border-radius:50%;background:#D1FAE5;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;font-size:1rem;color:#10B981;font-weight:800">&#10003;</div>
-          <div class="font-extrabold text-slate-900 text-lg mb-1">Matheux</div>
-          <p class="text-slate-500 text-sm mb-2">10 minutes par jour</p>
-          <p class="text-slate-400 text-xs">Progression continue.</p>
-        </div>
-      </div>
-      <div class="reveal text-center" style="transition-delay:.3s">
-        <p class="text-lg font-extrabold" style="color:#EA580C">La régularité bat l'intensité.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── SECTION 7 — TÉMOIGNAGES ───────────────────────────── -->
-  <div style="background:#FFFBF5" class="px-5 py-16">
-    <div class="max-w-2xl mx-auto">
-      <div class="text-center mb-10 reveal">
-        <div class="stag mx-auto mb-3">Témoignages</div>
-        <h2 class="text-2xl font-extrabold text-slate-900 mb-2" style="letter-spacing:-.02em">Ce que les parents constatent.</h2>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="sp-quote reveal reveal-d1">
-          <p class="text-slate-600 text-sm leading-[1.8] mb-4">"Mon fils passait le brevet en juin et paniquait sur les équations. En 3 semaines avec Matheux, il a comblé ses lacunes. Ce qui m'a rassurée : quelqu'un suit vraiment son parcours."</p>
-          <div class="tm-author-row">
-            <div class="tm-avatar" style="background:linear-gradient(135deg,#EA580C,#FB923C)">SM</div>
-            <div>
-              <div class="text-slate-700 text-xs font-semibold">Sophie M. — mère, 3ème</div>
-              <div class="text-slate-400 text-xs">Paris</div>
-            </div>
-          </div>
-        </div>
-        <div class="sp-quote reveal reveal-d2">
-          <p class="text-slate-600 text-sm leading-[1.8] mb-4">"Ma fille avait décroché en maths depuis la 4ème. En deux semaines, elle fait ses 10 minutes toute seule et ne stresse plus pour le brevet."</p>
-          <div class="tm-author-row">
-            <div class="tm-avatar" style="background:linear-gradient(135deg,#D97706,#FBBF24)">LB</div>
-            <div>
-              <div class="text-slate-700 text-xs font-semibold">Laurent B. — père, 3ème</div>
-              <div class="text-slate-400 text-xs">Lyon</div>
-            </div>
-          </div>
-        </div>
-        <div class="sp-quote reveal reveal-d3">
-          <p class="text-slate-600 text-sm leading-[1.8] mb-4">"Ce qui change par rapport aux autres applis : chaque soir, le parcours est ajusté. Mon fils a repris confiance pour le brevet blanc."</p>
-          <div class="tm-author-row">
-            <div class="tm-avatar" style="background:linear-gradient(135deg,#C2410C,#EA580C)">NC</div>
-            <div>
-              <div class="text-slate-700 text-xs font-semibold">Nadia C. — mère, 3ème</div>
-              <div class="text-slate-400 text-xs">Toulouse</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <button onclick="startTrialFlow('brevet')" class="btn btn-ac btn-fw shadow-xl mt-8" style="max-width:380px;font-size:1rem;padding:1rem 1.5rem;border-radius:var(--l-radius)">
+        Teste ton niveau →
+      </button>
+      <p class="text-stone-400 text-xs mt-3">1 minute · Sans carte bancaire</p>
     </div>
   </div>
 
@@ -1969,7 +1873,7 @@
         <div id="res-slide-0" style="transition:opacity .5s ease;opacity:1">
           <p class="text-slate-600 text-sm font-medium mb-2">Tous les exercices sont alignés avec le programme officiel de l'Éducation Nationale 2026.</p>
           <div class="flex flex-wrap justify-center gap-2 mt-4">
-            <span style="background:#FFF7ED;color:#EA580C;border:1px solid #FDBA74;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">480+ exercices Brevet 2026</span>
+            <span style="background:#FFF7ED;color:#EA580C;border:1px solid #FDBA74;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">440 exercices Brevet 2026</span>
             <span style="background:#FEF3C7;color:#92400e;border:1px solid #FCD34D;border-radius:99px;padding:.3rem .8rem;font-size:.75rem;font-weight:700">Exercices sur mesure</span>
           </div>
         </div>
@@ -2054,25 +1958,13 @@
     </div>
   </div>
 
-  <!-- ── BANDEAU RAPPORT PARENT ─────────────────────────────── -->
-  <div style="background:#f0fdf4;border-top:1px solid #bbf7d0;border-bottom:1px solid #bbf7d0" class="px-5 py-6">
-    <div class="max-w-lg mx-auto flex items-center gap-4 reveal">
-      <div style="flex-shrink:0;width:44px;height:44px;background:#d1fae5;border-radius:12px;display:flex;align-items:center;justify-content:center">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      </div>
-      <div>
-        <p style="font-weight:700;font-size:.9rem;color:#065f46;margin:0 0 .15rem">Rapport hebdo envoyé aux parents</p>
-        <p style="font-size:.78rem;color:#047857;margin:0;line-height:1.45">Chaque semaine, recevez un bilan clair : chapitres travaillés, points forts, lacunes corrigées.</p>
-      </div>
-    </div>
-  </div>
 
   <!-- ── SECTION 11 — CTA FINAL ────────────────────────────── -->
   <div class="px-5 py-16" style="background:#FFF7ED">
     <div class="max-w-lg mx-auto relative z-10 text-center reveal">
       <h2 id="bottom-h2" class="text-2xl sm:text-3xl font-extrabold text-stone-900 leading-tight mb-3" style="letter-spacing:-.02em">
         Tu veux être prêt pour le brevet ?<br>
-        <span style="color:#EA580C">Teste-toi en 5 minutes.</span>
+        <span style="color:#EA580C">Teste ton niveau en 1 minute.</span>
       </h2>
       <p id="bottom-sub" class="text-stone-500 text-sm font-medium mb-8 max-w-sm mx-auto">
         Tu sauras exactement où bosser.
@@ -2080,9 +1972,9 @@
       <button onclick="startTrialFlow('bottom')"
               style="max-width:400px;font-size:1.05rem;padding:1.15rem;display:block;margin:0 auto;border-radius:var(--l-radius)"
               class="btn btn-ac btn-fw shadow-xl">
-        <span id="bottom-cta-txt">Je teste mon niveau →</span>
+        <span id="bottom-cta-txt">Teste ton niveau →</span>
       </button>
-      <p class="text-stone-400 text-xs mt-4">5 minutes · Sans carte bancaire · Aucune pression</p>
+      <p class="text-stone-400 text-xs mt-4">1 minute · Sans carte bancaire</p>
     </div>
   </div>
 
@@ -2132,8 +2024,8 @@
 
   <!-- Mobile sticky CTA bar -->
   <div id="sticky-cta" aria-hidden="true">
-    <button id="sticky-cta-btn" onclick="startTrialFlow('sticky')"><span id="sticky-cta-txt">Brevet — je teste mon niveau →</span></button>
-    <div class="sticky-sub">5 min · gratuit</div>
+    <button id="sticky-cta-btn" onclick="startTrialFlow('sticky')"><span id="sticky-cta-txt">Diagnostic gratuit — 1 minute →</span></button>
+    <div class="sticky-sub">1 min · sans carte</div>
   </div>
 
   <!-- Footer landing -->
@@ -3180,43 +3072,6 @@ var _flowHints        = {};   // { exoIdx: nbHintsShown } pour le quiz inline
 var _flowFormulaShown = {};  // { exoIdx: true } formules révélées
 
 // ── Carrousel screenshots visio ──
-var _visioIdx = 0, _visioTimer, _visioTotal = 3, _visioAutoStop = false;
-var _visioCaptions = [
-  'Tout a commencé par des cours en visio, un élève à la fois.',
-  'À chaque cours, l\u2019outil s\u2019est affiné — forgé par les vraies lacunes.',
-  'Jusqu\u2019à devenir Matheux : progresser 10 min par jour.'
-];
-function _visioGo(i) {
-  if (i < 0) i = 0;
-  if (i >= _visioTotal) i = _visioTotal - 1;
-  _visioIdx = i;
-  var track = document.getElementById('visio-track');
-  if (!track) return;
-  track.style.transform = 'translateX(-' + (i * 100) + '%)';
-  var dots = document.querySelectorAll('#visio-dots button');
-  dots.forEach(function(d, j) { d.style.background = j === i ? '#EA580C' : '#cbd5e1'; });
-  var cap = document.getElementById('visio-caption');
-  if (cap) { cap.style.opacity = '0'; setTimeout(function() { cap.textContent = _visioCaptions[i]; cap.style.opacity = '1'; }, 200); }
-  var back = document.getElementById('visio-back');
-  if (back) back.style.display = i > 0 ? 'block' : 'none';
-  clearInterval(_visioTimer);
-  if (i >= _visioTotal - 1) _visioAutoStop = true;
-  if (!_visioAutoStop && i < _visioTotal - 1) {
-    _visioTimer = setInterval(function() { _visioGo(_visioIdx + 1); }, 1800);
-  }
-}
-_visioTimer = setInterval(function() { _visioGo(_visioIdx + 1); }, 1800);
-// Swipe touch support
-(function(){
-  var track = document.getElementById('visio-track');
-  if (!track) return;
-  var sx;
-  track.addEventListener('touchstart', function(e) { sx = e.touches[0].clientX; }, {passive:true});
-  track.addEventListener('touchend', function(e) {
-    var dx = e.changedTouches[0].clientX - sx;
-    if (Math.abs(dx) > 40) _visioGo(dx > 0 ? Math.max(0, _visioIdx - 1) : Math.min(_visioTotal - 1, _visioIdx + 1));
-  }, {passive:true});
-})();
 
 // ── Scroll reveal (IntersectionObserver) ──
 (function(){
