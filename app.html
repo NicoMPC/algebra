@@ -5644,7 +5644,7 @@ window.revF = function(cat, idx) {
 // ─── NORMALISATION FILL ──────────────────────────────────────
 // Compare la réponse élève vs la bonne réponse (tolérant espaces, $, virgules)
 function _normFill(s) {
-  var v = String(s).replace(/\$/g,'').replace(/\\,/g,'').replace(/\s+/g,'').replace(/,/g,'.').toLowerCase().trim();
+  var v = String(s).replace(/\$/g,'').replace(/\{,\}/g,',').replace(/\\,/g,'').replace(/\s+/g,'').replace(/,/g,'.').toLowerCase().trim();
   // Normaliser \frac{a}{b} → a/b (et \dfrac)
   v = v.replace(/\\d?frac\{([^}]*)\}\{([^}]*)\}/g, '$1/$2');
   // Normaliser \times → ×, \cdot → ·, \div → ÷
