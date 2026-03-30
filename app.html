@@ -3621,6 +3621,7 @@ function _flowRenderQuestion(idx) {
       'style="width:100%;padding:.75rem 1rem;font-size:.95rem;font-weight:600;border:2px solid #e2e8f0;border-radius:12px;font-family:inherit" ' +
       'onkeydown="if(event.key===\'Enter\')_flowAnswerFill()">' +
       '<button onclick="_flowAnswerFill()" style="width:100%;margin-top:.6rem;padding:.7rem;background:#1E40AF;color:#fff;border:none;border-radius:12px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit">Valider →</button>' +
+      '<button onclick="_flowAnswerJsp()" style="width:100%;margin-top:.5rem;padding:.5rem;background:transparent;border:none;font-weight:600;font-size:.78rem;color:#94a3b8;cursor:pointer;text-decoration:underline;text-underline-offset:2px">Je ne sais pas 🤷</button>' +
       '</div>';
   } else if (opts.length > 0) {
     optsHtml =
@@ -3633,6 +3634,7 @@ function _flowRenderQuestion(idx) {
           '<span style="color:#3B82F6;font-weight:800;margin-right:.4rem">' + String.fromCharCode(65+i) + '.</span> ' +
           fmtL(o) + '</button>';
       }).join('') +
+      '<button onclick="_flowAnswerJsp()" style="width:100%;margin-top:.5rem;padding:.5rem;background:transparent;border:none;font-weight:600;font-size:.78rem;color:#94a3b8;cursor:pointer;text-decoration:underline;text-underline-offset:2px">Je ne sais pas 🤷</button>' +
       '</div>';
   }
 
@@ -3783,6 +3785,55 @@ function _flowAnswerFill() {
     gd.results = _flowResults; gd.step = _flowExoIdx + 1;
     localStorage.setItem('guestDiag', JSON.stringify(gd));
   } catch(e) {}
+  _flowExoIdx++;
+  setTimeout(function() {
+    if (_flowExoIdx < _flowExos.length) _flowRenderQuestion(_flowExoIdx);
+    else { _flowDiagDone = true; _track('tutorial_complete'); _flowActivateStep3Guest(); }
+  }, 800);
+}
+
+function _flowAnswerJsp() {
+  var exo = _flowExos[_flowExoIdx];
+  if (!exo) return;
+  var elapsed = Math.round((Date.now() - _flowStartTs) / 1000);
+  _flowResults.push({ idx: _flowExoIdx, correct: false, time: elapsed });
+
+  // Disable all interactive elements
+  var container = document.getElementById('flow-s2');
+  if (container) {
+    container.querySelectorAll('button, input').forEach(function(el) { el.disabled = true; el.style.opacity = '.5'; });
+  }
+
+  // Show correct answer
+  var correctText = exo.a || exo.rep || exo.answer || '';
+  var opts = exo.options || exo.opts || [];
+  var buttons = document.querySelectorAll('#flow-opts .flow-opt-btn');
+  if (buttons.length) {
+    buttons.forEach(function(btn, i) {
+      if (opts[i] === correctText) {
+        btn.style.opacity = '1';
+        btn.style.background = '#d1fae5';
+        btn.style.borderColor = '#10b981';
+        btn.style.color = '#065f46';
+      }
+    });
+  } else {
+    // Fill — show answer below input
+    var inp = document.getElementById('flow-fill-input');
+    if (inp) {
+      inp.style.background = '#fee2e2'; inp.style.borderColor = '#ef4444';
+      inp.insertAdjacentHTML('afterend', '<p style="color:#065f46;font-size:.8rem;font-weight:600;margin-top:.4rem">Réponse : ' + fmtL(correctText) + '</p>');
+    }
+  }
+
+  showT('C\'est normal — ça nous aide à cibler', 1600, '');
+
+  try {
+    var gd = JSON.parse(localStorage.getItem('guestDiag') || '{}');
+    gd.results = _flowResults; gd.step = _flowExoIdx + 1;
+    localStorage.setItem('guestDiag', JSON.stringify(gd));
+  } catch(e) {}
+
   _flowExoIdx++;
   setTimeout(function() {
     if (_flowExoIdx < _flowExos.length) _flowRenderQuestion(_flowExoIdx);
