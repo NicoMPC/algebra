@@ -10300,6 +10300,12 @@ function renderFunctionGraph(fnSpec) {
 // TYPEWRITER + PILLS AIDE INLINE + NUDGE
 // ══════════════════════════════════════════════════════════════
 function typewriter(el, text, callback) {
+  // Si le texte contient du LaTeX → rendu direct (pas de flash brut→rendu)
+  if (text && (text.includes('$') || text.includes('\\(') || text.includes('\\['))) {
+    el.innerHTML = text;
+    if (callback) callback();
+    return;
+  }
   el.innerHTML = '';
   var i = 0;
   function tick() {
