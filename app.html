@@ -10,7 +10,7 @@
   <title>Matheux — Prépare ton Brevet 2026 | Exercices maths 3ème personnalisés</title>
   <!-- PWA -->
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#1E40AF">
+  <meta name="theme-color" content="#4338ca">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -5163,6 +5163,9 @@ function initApp(d, skipRender) {
   }
 
   if (!skipRender) { render(); flushQ(); }
+
+  // ── PWA Install nudge post-login ──────────────────────
+  setTimeout(_checkPwaInstall, 5000);
 }
 
 function logout() { localStorage.removeItem(SK); location.reload(); }
@@ -13695,6 +13698,92 @@ function submitContactForm() {
 }
 </script>
 
+<!-- PWA — Install nudge post-login -->
+<script>
+function _checkPwaInstall() {
+  // Skip si déjà en mode standalone (app installée)
+  if (window.matchMedia('(display-mode: standalone)').matches) return;
+  if (window.navigator.standalone === true) return;
+  // Skip si admin
+  if (S && S.prof && S.prof.isAdmin) return;
+  // Skip si déjà dismissé (1 semaine cooldown)
+  var dismissTs = parseInt(localStorage.getItem('mx_pwa_dismiss') || '0');
+  if (dismissTs && (Date.now() - dismissTs) < 7 * 24 * 3600 * 1000) return;
+
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  var hasPrompt = !!window._pwaPrompt;
+
+  // Rien à proposer si pas Android/iOS/PC avec prompt
+  if (!hasPrompt && !isIOS) return;
+
+  // Créer le banner flottant
+  var existing = document.getElementById('pwa-nudge');
+  if (existing) existing.remove();
+
+  var div = document.createElement('div');
+  div.id = 'pwa-nudge';
+  div.style.cssText = 'position:fixed;bottom:70px;left:50%;transform:translateX(-50%);z-index:85;' +
+    'background:#1e1b4b;border:1.5px solid rgba(129,140,248,.3);border-radius:16px;' +
+    'padding:12px 16px;display:flex;align-items:center;gap:12px;max-width:360px;width:calc(100% - 32px);' +
+    'box-shadow:0 8px 32px rgba(0,0,0,.4);animation:s1 .5s ease both;';
+
+  if (hasPrompt) {
+    // Android / Chrome desktop — bouton install natif
+    div.innerHTML =
+      '<span style="font-size:1.5rem;flex-shrink:0">📲</span>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="color:#e0e7ff;font-weight:700;font-size:.875rem">Installe Matheux</div>' +
+        '<div style="color:#a5b4fc;font-size:.75rem">Accès direct depuis ton écran d\'accueil</div>' +
+      '</div>' +
+      '<button id="pwa-nudge-install" style="background:#6366f1;color:#fff;font-weight:800;font-size:.75rem;' +
+        'padding:6px 14px;border-radius:10px;border:none;cursor:pointer;flex-shrink:0">Installer</button>' +
+      '<button id="pwa-nudge-close" style="color:#6b7280;font-size:1.1rem;background:none;border:none;' +
+        'cursor:pointer;padding:4px;flex-shrink:0">✕</button>';
+  } else if (isIOS) {
+    // iOS — instructions manuelles
+    div.innerHTML =
+      '<span style="font-size:1.5rem;flex-shrink:0">📲</span>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="color:#e0e7ff;font-weight:700;font-size:.875rem">Installe Matheux</div>' +
+        '<div style="color:#a5b4fc;font-size:.75rem">Appuie sur <span style="font-size:1rem">⎙</span> puis <strong>"Sur l\'écran d\'accueil"</strong></div>' +
+      '</div>' +
+      '<button id="pwa-nudge-close" style="color:#6b7280;font-size:1.1rem;background:none;border:none;' +
+        'cursor:pointer;padding:4px;flex-shrink:0">✕</button>';
+  }
+
+  document.body.appendChild(div);
+
+  // Handlers
+  var installBtn = document.getElementById('pwa-nudge-install');
+  if (installBtn) {
+    installBtn.addEventListener('click', function() {
+      if (window._pwaPrompt) {
+        window._pwaPrompt.prompt();
+        window._pwaPrompt.userChoice.then(function(r) {
+          if (r.outcome === 'accepted') {
+            if (typeof showT === 'function') showT('Matheux installé ! 🎉', 4000, '🎉');
+          }
+          window._pwaPrompt = null;
+        });
+      }
+      div.remove();
+      localStorage.setItem('mx_pwa_dismiss', '' + Date.now());
+    });
+  }
+
+  var closeBtn = document.getElementById('pwa-nudge-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      div.remove();
+      localStorage.setItem('mx_pwa_dismiss', '' + Date.now());
+    });
+  }
+
+  // Auto-dismiss après 15s
+  setTimeout(function() { if (div.parentNode) div.remove(); }, 15000);
+}
+</script>
+
 <!-- PWA — Service Worker -->
 <script>
 if ('serviceWorker' in navigator) {
@@ -13755,18 +13844,7 @@ window._installPWA = function() {
   });
 };
 
-// iOS install hint — affiché une seule fois
-var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-var isStandalone = window.navigator.standalone === true;
-var iosHintShown = localStorage.getItem('mx_ios_hint');
-if (isIOS && !isStandalone && !iosHintShown) {
-  setTimeout(function() {
-    if (typeof showT === 'function') {
-      showT('Pour installer l\'app : appuie sur ⎙ puis "Sur l\'écran d\'accueil"', 6000, '📲');
-      localStorage.setItem('mx_ios_hint', '1');
-    }
-  }, 8000);
-}
+// iOS install hint — géré par _checkPwaInstall() post-login
 </script>
 
 </body>
