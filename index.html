@@ -3,6 +3,23 @@
 (function(){
   window.addEventListener('load', function(){
     setTimeout(function(){
+      // Fix 1: Remove trailing ":" from hero subtitle
+      var heroSub = document.querySelector('.text-stone-500.text-sm.font-semibold.mb-6');
+      if (heroSub && heroSub.textContent.indexOf('question :') !== -1) {
+        heroSub.textContent = heroSub.textContent.replace(' :', '');
+      }
+      // Fix 2: After quiz answer, scroll down to reveal CTA on mobile
+      var gc = document.querySelector('.glass-card');
+      if (gc) {
+        gc.addEventListener('click', function(ev) {
+          if (ev.target.tagName === 'BUTTON' || ev.target.closest && ev.target.closest('button')) {
+            setTimeout(function() {
+              var fb = document.querySelector('.max-w-\[400px\] [class*="rounded-2xl"][class*="p-4"][class*="font-bold"]');
+              if (fb) fb.scrollIntoView({ behavior: "smooth", block: "center" });
+            }, 500);
+          }
+        });
+      }
       // Animate hero exercise card — subtle pulse + button hover effect
       var style = document.createElement('style');
       style.textContent = '@keyframes mx-soft-pulse{0%,100%{box-shadow:0 4px 24px rgba(79,70,229,.1),0 0 0 0 rgba(79,70,229,0)}50%{box-shadow:0 12px 48px rgba(79,70,229,.25),0 0 0 6px rgba(79,70,229,.08)}}@keyframes mx-btn-pop{0%,100%{transform:scale(1);box-shadow:none}50%{transform:scale(1.07);box-shadow:0 4px 20px rgba(79,70,229,.3)}}.mx-quiz-pulse{animation:mx-soft-pulse 2.5s ease-in-out infinite}.mx-btn-pop{animation:mx-btn-pop 1.5s ease-in-out infinite}';

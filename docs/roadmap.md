@@ -53,7 +53,7 @@
 | 2 | **Profil d'apprentissage élève** — page dédiée (3 points forts, 2 lacunes, vitesse, streak record). Cadenas overlay trial J+7. | 🟡 |
 | 3 | **Automatisation boosts nuit** — agent qui génère JSON boost depuis Scores, pousse dans Suivi. Dès 30 clients. | 🟡 |
 | 4 | Agent analyse lacunes quotidien automatique | 🔵 |
-| 5 | **Migration Sheets → Supabase** — à déclencher à 80-100 clients. Stack : Supabase + Node.js Railway. Emails : Brevo/Resend. 3-5 sessions. **Ne pas faire avant d'avoir le problème.** | 🔵 |
+| 5 | **Migration Sheets → Supabase** — ~1 journée. Trigger : ~200-300 inscrits. Stack : Supabase PostgreSQL + Edge Functions. Frontend vanilla JS inchangé. | 🔵 |
 | 6 | `replyTo: nicolas@matheux.fr` sur J+3, J+7 et reset MDP | 🟡 |
 | 7 | **Séquences J+3/J+5/J+7 activées** — trigger Apps Script (manuel pour l'instant) | 🟡 |
 | 8 | Double confirmation mot de passe inscription | 🟡 |
@@ -141,6 +141,17 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 ### Admin
 - [x] Dashboard trié, modal complet, publish 1-clic, cockpit 6 onglets
 - [x] Emails dus, templates marketing, profils test
+
+---
+
+## Scaling — Ordre des opérations
+
+| Palier | Action | Effort réel |
+|---|---|---|
+| **Maintenant** | Automatiser boucle admin (agent GAS analyse + assignation auto) | ~2-3h |
+| **~50 élèves** | Nicolas passe de opérateur à superviseur | Process |
+| **~200-300 inscrits** | Migration Supabase (PostgreSQL + Edge Functions) | ~1 journée |
+| **Partenariat actif** | Système code promo + tracking conversions | ~2h (champ Stripe) |
 
 ---
 
