@@ -207,6 +207,15 @@ git add index.html && git commit -m "feat: ..." && git push origin main
 ./deploy.sh "desc"
 ```
 
+### ⛔ clasp push — PIÈGE CRITIQUE
+
+> **`clasp push --force` envoie TOUS les `.js` et `.html` du repo dans GAS.**
+
+- Le dossier `_next/` (build Next.js landing) contient des fichiers `.js` → si poussés dans GAS, le runtime V8 tente de les exécuter → crash `ReferenceError: self is not defined` → **toutes les API retournent une erreur HTML** → le navigateur voit "pas de CORS" → **l'app entière est down**
+- `.claspignore` DOIT contenir `_next/` et `_next/**`
+- **Après chaque ajout de dossier contenant des `.js`** → vérifier `.claspignore`
+- Incident 1er avril 2026 : app down en production, cause = fichiers Next.js dans GAS
+
 ### ⛔ Landing page (index.html) — PIÈGE REACT
 
 > **index.html = build Next.js SSG (static export). NE JAMAIS modifier le HTML directement.**
@@ -219,12 +228,14 @@ git add index.html && git commit -m "feat: ..." && git push origin main
 
 ### Tests
 ```bash
-python3 test_full_v2.py          # Suite complète — 74/74
+python3 test_full_v2.py          # Suite complète — 66/72 (92%)
+python3 test_coherence_boost.py # Cohérence CALIBRAGE — 14/14
 python3 test_simulation_40.py   # Simulation 40 élèves × 15 jours
 python3 sim_7days_messages.py   # Simulation messages — 0 incohérence
 python3 validate_exos.py        # Gate qualité exercices
 python3 check_students.py       # Health check données élèves
 ```
+> ⚠️ `test_full_v2.py` : 6 fails attendus = gate J+1 (publish + login même jour → l'élève ne reçoit rien, c'est le comportement voulu par G16)
 
 ### Tokens
 ⚠️ Toujours estimer avant génération massive → présenter options → attendre validation.
@@ -245,6 +256,7 @@ python3 check_students.py       # Health check données élèves
 - Entrée : `doPost(e)` → dispatch `action`
 - Convention : `snake_case` pour les noms d'actions
 - Retour : `{ status: 'success', ... }` ou `{ status: 'error', message: '...' }`
+- ⚠️ **Pas de variables globales** — `todayStr`, `code`, `level` etc. sont des `var` locales à chaque fonction. Chaque nouvelle fonction qui a besoin de la date doit déclarer `var todayStr = today();`. Incident 1er avril : `todayStr` absent dans `publishAdminBoost/Chapter` → crash silencieux, l'admin publiait mais rien n'arrivait à l'élève
 
 ### Nommage
 - Actions GAS : `save_score`, `generate_daily_boost`, `get_admin_overview`
