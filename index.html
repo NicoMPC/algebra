@@ -5,7 +5,7 @@
     setTimeout(function(){
       // Animate hero exercise card — subtle pulse + button hover effect
       var style = document.createElement('style');
-      style.textContent = '@keyframes mx-soft-pulse{0%,100%{box-shadow:0 4px 24px rgba(79,70,229,.08)}50%{box-shadow:0 8px 40px rgba(79,70,229,.18)}}@keyframes mx-btn-nudge{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}.mx-quiz-pulse{animation:mx-soft-pulse 3s ease-in-out infinite}.mx-btn-nudge{animation:mx-btn-nudge 2s ease-in-out infinite 4s}';
+      style.textContent = '@keyframes mx-soft-pulse{0%,100%{box-shadow:0 4px 24px rgba(79,70,229,.1),0 0 0 0 rgba(79,70,229,0)}50%{box-shadow:0 12px 48px rgba(79,70,229,.25),0 0 0 6px rgba(79,70,229,.08)}}@keyframes mx-btn-pop{0%,100%{transform:scale(1);box-shadow:none}50%{transform:scale(1.07);box-shadow:0 4px 20px rgba(79,70,229,.3)}}.mx-quiz-pulse{animation:mx-soft-pulse 2.5s ease-in-out infinite}.mx-btn-pop{animation:mx-btn-pop 1.5s ease-in-out infinite}';
       document.head.appendChild(style);
       // Add pulse to quiz card
       var quizCard = document.querySelector('.glass-card');
@@ -13,7 +13,15 @@
         quizCard.classList.add('mx-quiz-pulse');
         // Add nudge to first button (OUI) after 4s
         var btns = quizCard.querySelectorAll('button');
-        if (btns[0]) btns[0].classList.add('mx-btn-nudge');
+        if (btns[0] && btns[1]) {
+          btns[0].classList.add('mx-btn-pop');
+          var flip = true;
+          setInterval(function(){
+            btns[0].classList.toggle('mx-btn-pop', !flip);
+            btns[1].classList.toggle('mx-btn-pop', flip);
+            flip = !flip;
+          }, 1500);
+        }
       }
 
       var sec = document.createElement('div');
