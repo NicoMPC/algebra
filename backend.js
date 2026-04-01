@@ -3989,6 +3989,7 @@ function publishAdminBoost(p) {
     return { status: 'error', message: 'Onglet 👁 Suivi introuvable.' };
   }
 
+  var todayStr  = today();
   var motProf   = String(p.motProf || '').trim();
   var boostObj  = { insight: insight, exos: exos, publishDate: todayStr };
   if (motProf) boostObj.motProf = motProf;
@@ -4017,11 +4018,11 @@ function publishAdminBoost(p) {
         break;
       }
     }
+    if (!found) return { status: 'error', message: 'Élève introuvable dans le Suivi.' };
+    // rebuildSuivi déjà appelé juste au-dessus → pas besoin de le refaire
+  } else {
+    try { rebuildSuivi(targetCode); } catch (e) {}
   }
-
-  if (!found) return { status: 'error', message: 'Élève introuvable dans le Suivi.' };
-
-  try { rebuildSuivi(targetCode); } catch (e) {}
 
   return { status: 'success', message: 'Boost publié. L\'élève le recevra à son prochain login.' };
 }
@@ -4083,6 +4084,7 @@ function publishAdminChapter(p) {
     return { status: 'error', message: 'Onglet 👁 Suivi introuvable.' };
   }
 
+  var todayStr = today();
   var motProf  = String(p.motProf || '').trim();
   var chapObj  = { categorie: categorie, insight: insight, exos: exos, publishDate: todayStr };
   if (motProf) chapObj.motProf = motProf;
@@ -4136,8 +4138,10 @@ function publishAdminChapter(p) {
     break;
   }
 
+  var alreadyRebuilt = false;
   if (!found) {
     try { rebuildSuivi(targetCode); } catch (e) {}
+    alreadyRebuilt = true;
     suiviData = suiviSh.getDataRange().getValues();
     for (var si2 = 1; si2 < suiviData.length; si2++) {
       if (String(suiviData[si2][20]) === targetCode) {
@@ -4146,9 +4150,8 @@ function publishAdminChapter(p) {
         break;
       }
     }
+    if (!found) return { status: 'error', message: 'Élève introuvable dans le Suivi.' };
   }
-
-  if (!found) return { status: 'error', message: 'Élève introuvable dans le Suivi.' };
 
   // ── Persister dans RemediationChapters (survit aux re-logins) ──
   if (sheetExists(SH.REMEDIATION)) {
@@ -4166,14 +4169,13 @@ function publishAdminChapter(p) {
     }
     var newVersion = maxVersion + 1;
     if (existingRow > 0) {
-      // Upsert : écraser la ligne existante
       remSh.getRange(existingRow + 1, 1, 1, 6).setValues([[targetCode, categorie, newVersion, JSON.stringify(exos), insight, today()]]);
     } else {
       appendRow(SH.REMEDIATION, [targetCode, categorie, newVersion, JSON.stringify(exos), insight, today()]);
     }
   }
 
-  try { rebuildSuivi(targetCode); } catch (e) {}
+  if (!alreadyRebuilt) { try { rebuildSuivi(targetCode); } catch (e) {} }
 
   return { status: 'success', message: 'Chapitre "' + categorie + '" publié. L\'élève le recevra à son prochain login.', overwrite: overwriteWarning };
 }

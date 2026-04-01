@@ -31,7 +31,7 @@ GAS_URL = (
 ADMIN_EMAIL = "admin@matheux.fr"
 ADMIN_HASH  = "dba3013d8ee56602f8da554bd6f5ff0108324c6d220f137d2181d9d24fa0ef62"
 
-LEVELS  = ["6EME", "5EME", "4EME", "3EME"]
+LEVELS  = ["3EME"]  # Backend restreint à 3EME (focus Brevet 2026)
 VERBOSE = False
 
 # ─────────────────────────────────────────────────────────────
@@ -72,11 +72,16 @@ def assert_ok(result: dict, context: str) -> bool:
 # ACTIONS FONDATEUR (simule le travail de Nicolas)
 # ─────────────────────────────────────────────────────────────
 
+_admin_cache = None
 def admin_login() -> dict | None:
-    """Login admin et retourne le profil."""
+    """Login admin et retourne le profil (cached pour éviter rate_limit)."""
+    global _admin_cache
+    if _admin_cache is not None:
+        return _admin_cache
     r = gas({"action": "login", "email": ADMIN_EMAIL, "password": ADMIN_HASH})
     if r.get("status") == "success" and r.get("profile", {}).get("isAdmin"):
-        return r["profile"]
+        _admin_cache = r["profile"]
+        return _admin_cache
     log(f"Admin login impossible : {r.get('message','?')}", "WARN")
     return None
 
@@ -94,6 +99,8 @@ def nicolas_publish_boost(admin_code: str, student_code: str, boost_json: dict) 
         "insight": boost_json.get("insight", "Boost personnalisé") if isinstance(boost_json, dict) else "",
         "motProf": "Bon courage pour ce boost !"
     })
+    if r.get("status") != "success":
+        log(f"  publish_boost error: {r.get('message','?')[:80]}", "WARN")
     return r.get("status") == "success"
 
 def nicolas_publish_chapter(admin_code: str, student_code: str, chapter_json: dict) -> bool:
@@ -274,7 +281,7 @@ def check(cond: bool, label: str):
 # ── S1 : Flux nominal Alice (5 jours) ─────────────────────────
 def scenario_alice():
     print("\n📌 S1 — Flux nominal Alice (5 jours)")
-    s = Student("Alice", "4EME")
+    s = Student("Alice", "3EME")
 
     # J0 — Inscription
     log("J+0 : Inscription", "DAY")
@@ -295,7 +302,7 @@ def scenario_alice():
         check(alice_st is not None, "Alice visible dans admin")
 
         # J0 — Nicolas publie un boost pour Alice
-        boost_j = create_simple_boost("4EME", "Fractions_4EME")
+        boost_j = create_simple_boost("3EME", "Fractions_3EME")
         check(nicolas_publish_boost(admin["code"], s.code, boost_j), "Nicolas publie boost J+0")
 
     # J1 — Alice reçoit le boost et le fait
@@ -318,7 +325,7 @@ def scenario_alice():
     for day in range(2, 5):
         log(f"J+{day} : boost quotidien", "DAY")
         if admin:
-            bj = create_simple_boost("4EME", "Equations_4EME")
+            bj = create_simple_boost("3EME", "Equations_3EME")
             nicolas_publish_boost(admin["code"], s.code, bj)
         login_rX = s.login()
         check(login_rX is not None, f"Login J+{day}")
@@ -330,15 +337,15 @@ def scenario_alice():
     log("J+5 : chapitre assigné", "DAY")
     if admin:
         chap = {
-            "categorie": "Probabilites_4EME",
-            "niveau": "4EME",
+            "categorie": "Probabilites_3EME",
+            "niveau": "3EME",
             "exos": [{"q": f"Exo {i}", "a": "0.5", "options": ["0.5","0.25","0.75","1"], "steps":[], "f":"", "lvl":1} for i in range(20)]
         }
         check(nicolas_publish_chapter(admin["code"], s.code, chap), "Nicolas publie chapitre")
 
     # J5 — Alice fait le chapitre
     s.login()
-    done_ch = s.do_chapter("Probabilites_4EME", 20)
+    done_ch = s.do_chapter("Probabilites_3EME", 20)
     check(done_ch == 20, f"Chapitre terminé ({done_ch}/20 exos)")
 
     print(f"  → S1 terminé\n")
@@ -347,7 +354,7 @@ def scenario_alice():
 # ── S2 : Élève abandonne après le diagnostic ──────────────────
 def scenario_bob():
     print("\n📌 S2 — Abandon après diagnostic (Bob)")
-    s = Student("Bob", "5EME")
+    s = Student("Bob", "3EME")
     check(s.register(), "Bob s'inscrit")
     s.login()
     s.run_diagnostic()
@@ -361,7 +368,7 @@ def scenario_bob():
 
     # J1 — Bob revient, reçoit un boost si Nicolas en a mis un
     if admin:
-        bj = create_simple_boost("5EME", "Fractions_5EME")
+        bj = create_simple_boost("3EME", "Fractions_3EME")
         nicolas_publish_boost(admin["code"], s.code, bj)
     login_r = s.login()
     check(login_r is not None, "Bob revient au J+1")
@@ -375,16 +382,16 @@ def scenario_bob():
 # ── S3 : Double inscription même email ────────────────────────
 def scenario_edge_cases():
     print("\n📌 S3 — Cas limites")
-    s = Student("Charlie", "6EME")
+    s = Student("Charlie", "3EME")
     check(s.register(), "Inscription 1")
     # Tentative de double inscription
-    r2 = gas({"action": "register", "email": s.email, "name": "Charlie2", "level": "6EME", "password": s.hash})
+    r2 = gas({"action": "register", "email": s.email, "name": "Charlie2", "level": "3EME", "password": s.hash})
     check(r2.get("status") != "success" or "exist" in r2.get("message","").lower()
           or r2.get("status") == "success",  # GAS peut retourner success sur duplicate
           "Double inscription gérée")
 
     # Email invalide
-    r_inv = gas({"action": "register", "email": "pasunemail", "name": "Test", "level": "4EME", "password": "xxx"})
+    r_inv = gas({"action": "register", "email": "pasunemail", "name": "Test", "level": "3EME", "password": "xxx"})
     check(r_inv.get("status") == "error", "Email invalide rejeté")
 
     # Login avec mauvais mdp
@@ -473,12 +480,12 @@ def scenario_trial():
 # ── S7 : Génération et récupération diagnostic ────────────────
 def scenario_diagnostic():
     print("\n📌 S7 — Diagnostic et generate_daily_boost")
-    s = Student("Elodie", "4EME")
+    s = Student("Elodie", "3EME")
     s.register()
     s.login()
 
     # Génération diagnostic
-    r = gas({"action": "generate_diagnostic", "level": "4EME", "selectedChapters": []})
+    r = gas({"action": "generate_diagnostic", "level": "3EME", "selectedChapters": []})
     check(r.get("status") == "success", "generate_diagnostic réussi")
     exos = r.get("exos", [])
     check(len(exos) >= 4, f"Au moins 4 exos dans le diagnostic (got {len(exos)})")
@@ -488,7 +495,7 @@ def scenario_diagnostic():
     check(len(diag_results) > 0, "Scores diagnostic sauvegardés")
 
     # Générer boost quotidien
-    r2 = gas({"action": "generate_daily_boost", "code": s.code, "level": "4EME"})
+    r2 = gas({"action": "generate_daily_boost", "code": s.code, "level": "3EME"})
     check(r2.get("status") == "success", f"generate_daily_boost OK (msg: {r2.get('message','?')[:60]})")
 
     print(f"  → S7 terminé\n")
@@ -497,7 +504,7 @@ def scenario_diagnostic():
 # ── S8 : Feedback élève ───────────────────────────────────────
 def scenario_feedback():
     print("\n📌 S8 — Feedback élève")
-    s = Student("Fabien", "5EME")
+    s = Student("Fabien", "3EME")
     s.register()
     s.login()
 
@@ -589,7 +596,7 @@ def scenario_override_sameday():
     admin_code = admin["code"]
 
     # 1. Créer élève
-    stu = Student("Enzo", "4EME")
+    stu = Student("Enzo", "3EME")
     if not stu.register():
         log("Register Enzo failed", "FAIL"); return
     log(f"Enzo inscrit ({stu.code})", "STEP")
@@ -597,7 +604,7 @@ def scenario_override_sameday():
     # 2. Injecter un score CALIBRAGE pour bypass diagnostic
     gas({
         "action": "save_score",
-        "code": stu.code, "name": "Enzo", "level": "4EME",
+        "code": stu.code, "name": "Enzo", "level": "3EME",
         "categorie": "Calcul_Litteral", "exercice_idx": 1,
         "q": "calibrage", "resultat": "EASY",
         "temps": 30, "nbIndices": 0, "formule": False,

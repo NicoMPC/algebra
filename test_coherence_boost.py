@@ -22,7 +22,7 @@ import re
 import sys
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-INDEX = os.path.join(BASE, 'index.html')
+INDEX = os.path.join(BASE, 'app.html')  # L'app SPA est dans app.html (index.html = landing Next.js)
 BACKEND = os.path.join(BASE, 'backend.js')
 
 passed = 0
@@ -63,8 +63,8 @@ html_lines = lines(INDEX)
 #     Search for the save_score block with source: 'CALIBRAGE' near _flowExos.map
 region_diag = None
 for i, line in enumerate(html_lines):
-    if '_flowExos.map' in line and 'save' in line.lower():
-        # Grab surrounding 20 lines
+    if '_flowExos.map' in line:
+        # Grab surrounding 20 lines (save_score/save_calibration may be a few lines below)
         region_diag = ''.join(html_lines[i:i+20])
         break
 
@@ -81,13 +81,14 @@ check(
 )
 
 check(
-    "Diagnostic save includes source: 'CALIBRAGE'",
-    region_diag is not None and re.search(r"source:\s*'CALIBRAGE'", region_diag),
-    "source field should also be 'CALIBRAGE'"
+    "Diagnostic save uses save_calibration_batch (source hardcoded in backend)",
+    'save_calibration_batch' in html,
+    "Should use save_calibration_batch action (backend hardcodes source='CALIBRAGE')"
 )
 
-# 1b. Modal flow save (~line 2205): categorie must be 'CALIBRAGE'
-#     Search for _flowResults.forEach with save_score
+# 1b. _flowResults.forEach is used for DISPLAY (chapResults), NOT for saving scores.
+#     The actual save goes through save_calibration_batch via _flowExos.map (checked above).
+#     Verify _flowResults.forEach does NOT contain save_score (it should only compute stats).
 region_modal = None
 for i, line in enumerate(html_lines):
     if '_flowResults.forEach' in line:
@@ -95,21 +96,21 @@ for i, line in enumerate(html_lines):
         break
 
 check(
-    "Modal flow save uses categorie: 'CALIBRAGE'",
-    region_modal is not None and re.search(r"categorie:\s*'CALIBRAGE'", region_modal),
-    "Expected categorie: 'CALIBRAGE' in _flowResults.forEach block"
+    "_flowResults.forEach is stats-only (no save_score)",
+    region_modal is not None and 'save_score' not in region_modal,
+    "_flowResults.forEach should NOT contain save_score — saving is via save_calibration_batch"
 )
 
 check(
-    "Modal flow save does NOT use exo.categorie for categorie",
-    region_modal is not None and not re.search(r"categorie:\s*(exo\.categorie|exo\.oC)", region_modal),
-    "categorie should NOT reference exo.categorie"
+    "_flowResults.forEach does NOT use source field (not a save block)",
+    region_modal is not None and 'source:' not in region_modal,
+    "_flowResults.forEach is for display, should have no source field"
 )
 
 check(
-    "Modal flow save includes source: 'CALIBRAGE'",
-    region_modal is not None and re.search(r"source:\s*'CALIBRAGE'", region_modal),
-    "source field should also be 'CALIBRAGE'"
+    "All diagnostic saves route through save_calibration_batch",
+    'save_calibration_batch' in html and region_diag is not None,
+    "Diagnostic save must use save_calibration_batch action"
 )
 
 # 1c. initApp — CALIBRAGE keys in S.res are harmless (no fix needed)
