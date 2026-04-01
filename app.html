@@ -4607,11 +4607,27 @@ window._onbNext = function() {
 // ══════════════════════════════════════════════════════════════
 // TOUR GUIDÉ — first-login spotlight tutorial
 // ══════════════════════════════════════════════════════════════
-var _tourSteps = [
-  { el: null, emoji: '\uD83D\uDC4B', title: 'Bienvenue sur Matheux !', body: 'Petit tour rapide pour d\u00e9couvrir ton espace. \u00c7a prend 10 secondes.', pos: 'center' },
-  { el: function(){ return document.querySelector('#main-app .pop-in.rounded-2xl'); }, emoji: '\u26A1', title: 'Ton entra\u00eenement du jour', body: 'Chaque jour, 5 exercices personnalis\u00e9s t\'attendent ici. C\'est ton point de d\u00e9part.', pos: 'below' },
-  { el: null, emoji: '\uD83D\uDE80', title: 'C\'est parti !', body: 'Lance ton premier entra\u00eenement. Bonne chance !', pos: 'center', last: true }
-];
+var _tourSteps = (function() {
+  var steps = [
+    { el: null, emoji: '\uD83D\uDC4B', title: 'Bienvenue sur Matheux !', body: 'Petit tour rapide pour d\u00e9couvrir ton espace. \u00c7a prend 10 secondes.', pos: 'center' }
+  ];
+  // Étape PWA — adaptative selon plateforme (skip si déjà installé)
+  var _isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (!_isStandalone) {
+    var _isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    var _hasPrompt = !!window._pwaPrompt;
+    if (_hasPrompt) {
+      // Android / Chrome desktop — bouton install natif
+      steps.push({ el: null, emoji: '\uD83D\uDCF2', title: 'Installe l\'app !', body: 'Ajoute Matheux sur ton \u00e9cran d\'accueil pour y acc\u00e9der en 1 tap, comme une vraie app.', pos: 'center', customBtn: 'Installer', customAction: '_tourInstallPWA' });
+    } else if (_isIOS) {
+      // iOS — ouvre le tuto visuel
+      steps.push({ el: null, emoji: '\uD83D\uDCF2', title: 'Installe l\'app !', body: 'Ajoute Matheux sur ton \u00e9cran d\'accueil pour y acc\u00e9der en 1 tap, comme une vraie app.', pos: 'center', customBtn: 'Voir comment', customAction: '_tourShowIosTuto' });
+    }
+  }
+  steps.push({ el: function(){ return document.querySelector('#main-app .pop-in.rounded-2xl'); }, emoji: '\u26A1', title: 'Ton entra\u00eenement du jour', body: 'Chaque jour, 5 exercices personnalis\u00e9s t\'attendent ici. C\'est ton point de d\u00e9part.', pos: 'below' });
+  steps.push({ el: null, emoji: '\uD83D\uDE80', title: 'C\'est parti !', body: 'Lance ton premier entra\u00eenement. Bonne chance !', pos: 'center', last: true });
+  return steps;
+})();
 var _tourIdx = 0;
 var _tourResizeHandler = null;
 
@@ -4652,7 +4668,8 @@ function _tourRender() {
       '<div class="tour-body">' + step.body + '</div>' +
       '<div class="tour-actions" style="justify-content:center;gap:1rem">' +
       (!step.last ? '<button class="tour-btn tour-btn-skip" onclick="_tourEnd()">Passer</button>' : '') +
-      '<button class="tour-btn tour-btn-next" onclick="' + (step.last ? '_tourEnd()' : '_tourNext()') + '">' + (step.last ? 'C\'est parti !' : 'Suivant') + '</button>' +
+      (step.customBtn ? '<button class="tour-btn tour-btn-next" onclick="' + step.customAction + '()" style="background:#6366f1">' + step.customBtn + '</button>' : '') +
+      '<button class="tour-btn tour-btn-next" onclick="' + (step.last ? '_tourEnd()' : '_tourNext()') + '">' + (step.last ? 'C\'est parti !' : (step.customBtn ? 'Plus tard' : 'Suivant')) + '</button>' +
       '</div>' +
       '<div style="margin-top:.7rem">' + dots + '</div>' +
       '</div>';
@@ -4743,6 +4760,27 @@ function _tourPosition(step, el, dots) {
 
   tip.innerHTML = '<div class="tour-tooltip" style="top:' + tipTop + 'px;left:' + tipLeft + 'px;width:' + tipW + 'px">' +
     '<div class="tour-arrow" style="' + arrowStyle + '"></div>' + html + '</div>';
+}
+
+// ── Tour PWA actions ──────────────────────────────────────
+function _tourInstallPWA() {
+  if (window._pwaPrompt) {
+    window._pwaPrompt.prompt();
+    window._pwaPrompt.userChoice.then(function(r) {
+      if (r.outcome === 'accepted') {
+        localStorage.setItem('mx_pwa_dismiss', '' + Date.now());
+        if (typeof showT === 'function') showT('Matheux installé ! 🎉', 4000, '🎉');
+      }
+      window._pwaPrompt = null;
+    });
+  }
+  _tourNext();
+}
+
+function _tourShowIosTuto() {
+  // Fermer le tour, puis ouvrir le tuto iOS
+  _tourEnd();
+  setTimeout(function() { _showIosTuto(); }, 400);
 }
 
 function _tourNext() {
