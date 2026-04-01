@@ -8,28 +8,43 @@
 ## Vue d'ensemble
 
 ```
-NAVIGATEUR (index.html)              GOOGLE APPS SCRIPT (backend.js)
-        │                                        │
-        │  fetch POST (JSON, SANS Content-Type)  │
-        ├───────────────────────────────────────►│
-        │  { action: 'save_score',               │  Lit/écrit dans
-        │    code: 'ABC123', ... }               │  Google Sheets
-        │  ◄─────────────────────────────────── │  via SpreadsheetApp
-        │  { status: 'success', ... }            │
-        │                                        │
-  localStorage                             Google Sheets (prod)
-  - boost_v23: {email, hash}        ID: 1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4
-  - boost_loc_v23: {stk, last}
+                    matheux.fr (GitHub Pages)
+                    ┌─────────────────────────────────────┐
+                    │                                     │
+                    │  index.html (Next.js SSG ~4000L)    │  ← Landing marketing SEO
+                    │  Visiteur froid → conversion         │  ⚠️ Ne pas modifier le DOM (React hydration)
+                    │  Connecté → redirect /app.html      │
+                    │                                     │
+                    │  app.html (vanilla JS ~13000L)      │  ← SPA applicative
+                    │  Non-connecté → écran minimal       │
+                    │  Connecté → auto-login → dashboard  │
+                    │                                     │
+                    └────────────┬────────────────────────┘
+                                 │
+                    fetch POST (JSON, SANS Content-Type)
+                                 │
+                    ┌────────────▼────────────────────────┐
+                    │  GOOGLE APPS SCRIPT (backend.js)    │
+                    │  doPost(e) → dispatch action        │
+                    │  51 actions, @133                    │
+                    │  Lit/écrit Google Sheets             │
+                    └────────────┬────────────────────────┘
+                                 │
+                    Google Sheets (prod)
+                    ID: 1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4
+                    19 onglets (11 core + 2 dashboard + 4 admin + 2 archive)
 ```
 
 | Composant | Technologie | Fichier | Taille |
 |---|---|---|---|
-| Frontend | HTML + CSS vars + Tailwind CDN + JS vanilla | `index.html` | ~9900 lignes |
+| Landing SEO | Next.js SSG (build exporté, source hors repo) | `index.html` | ~4000 lignes |
+| App SPA | HTML + CSS vars + Tailwind CDN + JS vanilla | `app.html` | ~13000 lignes |
 | Backend | Google Apps Script (V8) | `backend.js` | ~5300 lignes |
-| Base de données | Google Sheets | — | 16 onglets actifs |
-| Hébergement frontend | GitHub Pages | `matheux.fr` | Auto-deploy sur push |
-| Hébergement backend | Google Apps Script Web App | URL fixe via deployment ID | — |
+| Base de données | Google Sheets | — | 19 onglets |
+| Hébergement | GitHub Pages | `matheux.fr` | Auto-deploy sur push |
+| Backend hosting | Google Apps Script Web App | URL fixe via deployment ID | — |
 | Auth | SHA-256 client-side | localStorage `boost_v23` | `email + '::' + password + '::AB22'` |
+| PWA | manifest.json + sw.js (cache v11) | `app.html` scope | Standalone, portrait |
 
 ---
 
@@ -50,8 +65,8 @@ Les vues sont des fonctions JS qui injectent du HTML dans `#main` :
 
 | Vue | Fonction | Description |
 |---|---|---|
-| Landing | Rendu directement dans le HTML | Page d'accueil marketing |
-| Trial Flow | `startTrialFlow()` → overlay fullscreen (`#trial-flow.flow-fs`) | Quiz diagnostic inline pre-inscription, 4 steps (classe → chapitres → quiz → inscription) |
+| Landing (app.html) | Écran minimal dans `#landing-screen` (logo + 2 CTA + rassurance) | Non-connecté sur /app.html. La landing marketing SEO est dans index.html (Next.js) |
+| Trial Flow | `startTrialFlow()` → overlay fullscreen (`#trial-flow.flow-fs`) | Quiz diagnostic inline pre-inscription. `flowSelectLevel()` skip direct au diag pour 3EME. guestDiag supprimé (pas de resume). Fill filtré (`_pickDiagExos`) |
 | Chapitres | `rSection('CHAPITRES', ...)` | Liste des chapitres + "Mon Boost du jour" |
 | Exercice | `rSection('EXERCICE', ...)` | Quiz avec indices/formule. Format v4 : contexte parapluie sticky (`data._ctx`), tables HTML (`data.table`), consigne dessin (`data.draw`), formule masquable (`data.f_disabled`) |
 | Calibrage | `rSection('CALIBRAGE', ...)` | Diagnostic express (5 questions, ~1 min). Banque 54 questions dans DiagnosticExos |
@@ -122,7 +137,7 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @122
+### Actions GAS — état @133
 
 > @122 : master password admin read-only login.
 > @97 : tour guidé 7 étapes + fix toast "Génération des défis" persistant.
