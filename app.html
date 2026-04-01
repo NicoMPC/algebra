@@ -1776,6 +1776,15 @@
   @media(max-width:400px){.feat-row{grid-template-columns:1fr}}
   .cta-dark-section{background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%);position:relative;overflow:hidden}
   .cta-dark-section::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 50%,rgba(234,88,12,.06),transparent 50%);pointer-events:none}
+  @media print {
+    body > *:not(#cours-modal) { display:none !important }
+    #cours-modal { position:static !important; background:#fff !important; overflow:visible !important }
+    #cours-modal .cours-printing { position:static !important; background:#fff !important }
+    #cours-modal button { display:none !important }
+    #cours-modal [style*="background:linear-gradient"] { background:#1E40AF !important; -webkit-print-color-adjust:exact; print-color-adjust:exact }
+    .pbar { -webkit-print-color-adjust:exact; print-color-adjust:exact }
+    @page { margin: 1.5cm }
+  }
   </style>
 
   <!-- ══════════════════════════════════════════════════════════
@@ -5083,6 +5092,11 @@ function initApp(d, skipRender) {
   }
   // ── Cours data ────────────────────────────────────────────────
   S.coursMap = d.coursData || {};
+
+  // ── J+1 teasing : ton prof a préparé qqch, dispo demain ──────
+  if (d.teasingChapter || d.teasingBoost) {
+    setTimeout(function() { _showTeasingModal(); }, 1200);
+  }
 
   // ── Boost history avec cross-ref scores source=BOOST ─────────
   S.boostHistory = (d.boostHistory || []).map(function(b) {
@@ -9045,7 +9059,7 @@ function openCoursView(cat) {
   if (!cm) return;
   var catName = (LVL[S.niv] && LVL[S.niv].names[cat]) || cat.replace(/_/g,' ');
   var total = (cm.unlocked ? cm.unlocked.length : 0) + (cm.locked ? cm.locked.length : 0);
-  var icons = ['💡','📐','⚠️','✨'];
+  var icons = ['📐','✨'];
 
   var html = '<div id="cours-modal" style="position:fixed;inset:0;z-index:9998;background:rgba(15,23,42,.6);overflow-y:auto;-webkit-overflow-scrolling:touch" onclick="if(event.target===this)closeCoursView()">';
   html += '<div class="bg-white" style="min-height:100vh;max-width:480px;margin:0 auto;padding:1.5rem 1.25rem 3rem">';
@@ -9076,7 +9090,7 @@ function openCoursView(cat) {
   html += '</div>';
 
   // Cours en préparation (aucune section débloquée mais exos >= 5)
-  if (cm.unlocked.length === 0 && cm.nbExos >= 5) {
+  if (cm.unlocked.length === 0 && cm.nbExos >= 1) {
     html += '<div style="text-align:center;padding:2rem 1rem">' +
       '<div style="font-size:2.5rem;margin-bottom:1rem">📚</div>' +
       '<div style="font-family:Syne,sans-serif;font-weight:800;color:#0f172a;font-size:1.05rem;margin-bottom:.5rem">Cours en préparation</div>' +
@@ -9115,7 +9129,8 @@ function openCoursView(cat) {
     });
   }
 
-  html += '<button onclick="closeCoursView()" class="mt-4 w-full py-3 rounded-2xl bg-indigo-600 text-white font-black syne text-sm">Retour aux exercices →</button>';
+  html += '<button onclick="_printCours()" class="mt-4 w-full py-3 rounded-2xl bg-slate-100 text-slate-700 font-black syne text-sm mb-2">🖨️ Imprimer / PDF</button>';
+  html += '<button onclick="closeCoursView()" class="w-full py-3 rounded-2xl bg-indigo-600 text-white font-black syne text-sm">Retour aux exercices →</button>';
   html += '</div></div>';
 
   var old = document.getElementById('cours-modal');
@@ -9127,6 +9142,32 @@ function closeCoursView() {
   var el = document.getElementById('cours-modal');
   if (el) el.remove();
   S.coursView = null;
+}
+function _printCours() {
+  var modal = document.getElementById('cours-modal');
+  if (!modal) return;
+  modal.classList.add('cours-printing');
+  window.print();
+  setTimeout(function() { modal.classList.remove('cours-printing'); }, 500);
+}
+
+// ── Modale teasing J+1 ─────────────────────────────────────────
+function _showTeasingModal() {
+  var html = '<div id="teasing-modal" style="position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.7);display:flex;align-items:center;justify-content:center;padding:1.5rem" onclick="if(event.target===this)_closeTeasingModal()">';
+  html += '<div style="background:#fff;border-radius:1.5rem;padding:2rem 1.5rem;max-width:340px;width:100%;text-align:center;animation:slideUp .4s ease">';
+  html += '<div style="font-size:3rem;margin-bottom:1rem">🔥</div>';
+  html += '<div class="syne" style="font-weight:800;font-size:1.15rem;color:#0f172a;margin-bottom:.75rem">Ton prof a préparé<br>quelque chose pour toi</div>';
+  html += '<p style="color:#64748b;font-size:.9rem;line-height:1.6;margin-bottom:1.5rem">Ton prochain entraînement personnalisé arrive <strong>demain matin</strong>. En attendant, continue tes exercices !</p>';
+  html += '<button onclick="_closeTeasingModal()" class="syne" style="width:100%;padding:.85rem;border-radius:1rem;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;font-weight:800;font-size:.95rem;border:none;cursor:pointer">J\'ai hâte ! 🚀</button>';
+  html += '</div></div>';
+  var old = document.getElementById('teasing-modal');
+  if (old) old.remove();
+  document.body.insertAdjacentHTML('beforeend', html);
+  setTimeout(function() { _closeTeasingModal(); }, 8000);
+}
+function _closeTeasingModal() {
+  var el = document.getElementById('teasing-modal');
+  if (el) el.remove();
 }
 
 // ── Gamification milestones cours ─────────────────────────────
@@ -9142,15 +9183,15 @@ function _checkCoursMilestone(cat) {
       if (S.res[S.niv+'-'+r.rC+'-'+r.rI]) nbExos++;
     }
   }
-  var milestones = [5, 10, 15, 20];
+  var milestones = [10, 20];
   var cm = S.coursMap[cat];
   milestones.forEach(function(m) {
     if (nbExos === m) {
       // Vérifier si le cours pour ce milestone est rédigé
       var hasSection = cm && cm.unlocked && cm.unlocked.some(function(s) { return s.unlock_at === m; });
       if (hasSection) {
-        var milestoneKeys = { 5: 'cours_5', 10: 'cours_10', 15: 'cours_15', 20: 'cours_20' };
-        setTimeout(function() { showT(_msg(milestoneKeys[m]), 5000, '📖'); }, 500);
+        var milestoneKeys = { 10: 'cours_10', 20: 'cours_20' };
+        setTimeout(function() { showT(_msg(milestoneKeys[m]), 5000, '📖'); showXP(50); }, 500);
       } else {
         setTimeout(function() { showT(_msg('cours_prep'), 5000, '📚'); }, 500);
       }

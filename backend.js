@@ -542,8 +542,10 @@ function login(p) {
   // Col U = index 20 (Code masquée)
   // →Nouveau ChN : G=6, J=9, M=12, P=15 (0-based)
   // →Nouveau Boost : S=18 (0-based)
-  var nextChapter = null;
-  var nextBoost   = null;
+  var nextChapter    = null;
+  var nextBoost      = null;
+  var teasingChapter = false;
+  var teasingBoost   = false;
   if (sheetExists(SH.SUIVI)) {
     var suiviSh   = getSheet(SH.SUIVI);
     var suiviData = suiviSh.getDataRange().getValues();
@@ -558,8 +560,14 @@ function login(p) {
             var parsed = JSON.parse(val);
             if (parsed && parsed.draft) continue;  // brouillon agent — skip, attendre Publier
             if (parsed && parsed.categorie && parsed.exos && parsed.exos.length > 0) {
-              nextChapter = parsed;
-              if (!isAdminLogin) suiviSh.getRange(si + 1, chapIndices[sk] + 1).setValue('');
+              // ── J+1 gate : publié aujourd'hui → teasing, pas encore livré ──
+              if (parsed.publishDate && parsed.publishDate >= todayStr) {
+                teasingChapter = true;
+                // NE PAS vider la cellule — elle sera livrée demain
+              } else {
+                nextChapter = parsed;
+                if (!isAdminLogin) suiviSh.getRange(si + 1, chapIndices[sk] + 1).setValue('');
+              }
             } else if (parsed && parsed.categorie) {
               // JSON valide mais exos vide → PENDING_MANUAL, vider la cellule
               nextChapter = { categorie: 'PENDING_MANUAL', exos: [],
@@ -584,24 +592,30 @@ function login(p) {
             var boostParsed = JSON.parse(boostVal);
             if (boostParsed && boostParsed.draft) { /* brouillon agent — skip */ }
             else if (boostParsed && boostParsed.exos && boostParsed.exos.length > 0) {
-              nextBoost = boostParsed;
-              if (!isAdminLogin) {
-                suiviSh.getRange(si + 1, 19).setValue('');
-                // Créer entrée DailyBoosts exosDone=0 → admin voit "⏳ En attente"
-                try {
-                  var nextDay = todayStr; // Boost livré aujourd'hui → daté aujourd'hui
-                  var boostSh = getSheet(SH.BOOSTS);
-                  var boostData = boostSh.getDataRange().getValues();
-                  var alreadyExists = false;
-                  for (var bi = 1; bi < boostData.length; bi++) {
-                    if (String(boostData[bi][0]) === code && String(boostData[bi][1]).substring(0,10) === nextDay) {
-                      alreadyExists = true; break;
+              // ── J+1 gate : publié aujourd'hui → teasing, pas encore livré ──
+              if (boostParsed.publishDate && boostParsed.publishDate >= todayStr) {
+                teasingBoost = true;
+                // NE PAS vider la cellule — elle sera livrée demain
+              } else {
+                nextBoost = boostParsed;
+                if (!isAdminLogin) {
+                  suiviSh.getRange(si + 1, 19).setValue('');
+                  // Créer entrée DailyBoosts exosDone=0 → admin voit "⏳ En attente"
+                  try {
+                    var nextDay = todayStr; // Boost livré aujourd'hui → daté aujourd'hui
+                    var boostSh = getSheet(SH.BOOSTS);
+                    var boostData = boostSh.getDataRange().getValues();
+                    var alreadyExists = false;
+                    for (var bi = 1; bi < boostData.length; bi++) {
+                      if (String(boostData[bi][0]) === code && String(boostData[bi][1]).substring(0,10) === nextDay) {
+                        alreadyExists = true; break;
+                      }
                     }
-                  }
-                  if (!alreadyExists) {
-                    appendRow(SH.BOOSTS, [code, nextDay, JSON.stringify(boostParsed), 0]);
-                  }
-                } catch(e) { Logger.log('login boost DailyBoosts KO: ' + e); }
+                    if (!alreadyExists) {
+                      appendRow(SH.BOOSTS, [code, nextDay, JSON.stringify(boostParsed), 0]);
+                    }
+                  } catch(e) { Logger.log('login boost DailyBoosts KO: ' + e); }
+                }
               }
             } else {
               Logger.log('login boost injection KO pour ' + code);
@@ -666,12 +680,10 @@ function login(p) {
         _chapNbExos[r.categorie]++;
       });
       var milestones = [
-        { at: 5,  key: 'Section5'  },
         { at: 10, key: 'Section10' },
-        { at: 15, key: 'Section15' },
         { at: 20, key: 'Section20' }
       ];
-      var titresDefaut = { 5: "L'essentiel", 10: 'Méthode & Exemples', 15: 'Points de vigilance', 20: 'Cours complet ✨' };
+      var titresDefaut = { 10: "L'essentiel — Méthode & Exemples", 20: 'Cours complet ✨' };
       getRows(SH.COURS).forEach(function(row) {
         if (String(row['Niveau'] || '') !== level) return;
         var cat = String(row['Categorie'] || '');
@@ -723,6 +735,8 @@ function login(p) {
     dynamicChapters:    [],
     nextChapter:        nextChapter,
     nextBoost:          nextBoost,
+    teasingChapter:     teasingChapter,
+    teasingBoost:       teasingBoost,
     pendingBrevet:      pendingBrevet,
     revisionChapters:   revisionChapters,
     exerciseOverrides:  exerciseOverrides,
@@ -3976,7 +3990,7 @@ function publishAdminBoost(p) {
   }
 
   var motProf   = String(p.motProf || '').trim();
-  var boostObj  = { insight: insight, exos: exos };
+  var boostObj  = { insight: insight, exos: exos, publishDate: todayStr };
   if (motProf) boostObj.motProf = motProf;
   var boostJSON = JSON.stringify(boostObj);
 
@@ -4070,7 +4084,7 @@ function publishAdminChapter(p) {
   }
 
   var motProf  = String(p.motProf || '').trim();
-  var chapObj  = { categorie: categorie, insight: insight, exos: exos };
+  var chapObj  = { categorie: categorie, insight: insight, exos: exos, publishDate: todayStr };
   if (motProf) chapObj.motProf = motProf;
   if (p.timer)   chapObj.timer   = parseInt(p.timer) || 60;
   if (p.ordered) chapObj.ordered = true;

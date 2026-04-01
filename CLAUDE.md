@@ -150,6 +150,8 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | G12 | **Timer exercice** | 60s par exercice, cercle SVG animé. Doux, aucune pénalité. Désactivable |
 | G13 | **Mode Flow** | 5 exos EASY consécutifs en ≤timer → XP ×2 pendant 5 exos |
 | G14 | **Timer configurable** | `_getTimerDuration()` — 60s standard, 30s automatismes |
+| G15 | **Cours adaptatif** | 2 sections débloquées à 10 et 20 exos curriculum. Imprimable/PDF. +50 XP par section débloquée. Bouton "📖 Mon cours" sur chaque carte chapitre |
+| G16 | **J+1 delivery** | Tout contenu publié par admin (boost/chapitre) est dispo le LENDEMAIN. `publishDate` dans le JSON Suivi. Modale teasing si l'élève se connecte le jour même |
 
 ### 3.6 Admin
 

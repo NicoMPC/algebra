@@ -207,9 +207,9 @@ Pool d'exercices **dédiée aux boosts quotidiens**, séparée de Curriculum_Off
 |---|---|---|---|
 | A | Niveau | String | `6EME` / `5EME` / `4EME` / `3EME` / `1ERE` |
 | B | Categorie | String | Identifiant chapitre (même que Curriculum_Officiel) |
-| C | Section5 | String | Contenu cours débloqué à 5 exos — "L'essentiel" |
-| D | Section10 | String | Contenu cours débloqué à 10 exos — "Méthode & Exemples" |
-| E | Section15 | String | Contenu cours débloqué à 15 exos — "Points de vigilance" |
+| C | Section5 | String | *(obsolète — non utilisé)* |
+| D | Section10 | String | Contenu cours débloqué à 10 exos — "L'essentiel — Méthode & Exemples" |
+| E | Section15 | String | *(obsolète — non utilisé)* |
 | F | Section20 | String | Contenu cours débloqué à 20 exos — "Cours complet ✨" |
 | G | DateMaj | Date | Date de dernière modification |
 
@@ -217,7 +217,14 @@ Pool d'exercices **dédiée aux boosts quotidiens**, séparée de Curriculum_Off
 - Géré exclusivement via l'onglet "📚 Cours" du dashboard admin (GAS `save_cours`)
 - Chargé au login → `coursData` dans la réponse → `S.coursMap` dans le frontend
 - `nbExos` calculé depuis l'historique (source ≠ BOOST, catégorie ≠ CALIBRAGE)
-- Milestones 5/10/15/20 → toast gamification + bouton "📖 Mon cours" sur la carte chapitre
+- Milestones **10/20** → toast gamification +50 XP + bouton "📖 Mon cours" sur la carte chapitre
+- Imprimable/PDF via bouton dans la modale cours (`window.print()`)
+
+### Mécanisme J+1 (publishDate)
+
+Les JSON des cellules →Nouveau Boost (col S) et →Nouveau Ch (cols G/J/M/P) contiennent un champ `publishDate` (format `yyyy-MM-dd`), auto-ajouté par `publishAdminBoost()` / `publishAdminChapter()`.
+
+**Règle :** `login()` ne délivre le contenu que si `publishDate < today`. Si publié aujourd'hui → `teasingChapter: true` / `teasingBoost: true` dans la réponse, cellule NON vidée. L'élève voit une modale teasing ("Rendez-vous demain 🔥"). Le lendemain, `publishDate < today` → contenu livré normalement et cellule vidée.
 
 ### BrevetResults
 
