@@ -3630,7 +3630,7 @@ async function _flowGuestRegister() {
     render();
     var _introSlides2 = [
       { emoji: '\u{1F389}', title: 'Ton espace est cr\u00e9\u00e9', body: '7 jours offerts. Acc\u00e8s complet. Sans carte bancaire.' },
-      { emoji: '\u26A1', title: 'Ton entra\u00eenement est pr\u00eat', body: '5 exercices cibl\u00e9s sur tes vrais points faibles. C\'est parti.' }
+      { emoji: '\u26A1', title: 'Ton entra\u00eenement est pr\u00eat', body: '5 exercices cibl\u00e9s sur tes vrais points faibles. C\'est parti.', el: function(){ return document.querySelector('#main-app .pop-in.rounded-2xl'); } }
     ];
     setTimeout(function() { _startTour(_introSlides2); }, 600);
   } else {
@@ -3714,7 +3714,7 @@ async function flowRegister() {
       // Tour unifié : slides d'accueil + PWA + tour guidé
       var _introSlides = [
         { emoji: '\u{1F389}', title: 'Ton espace est cr\u00e9\u00e9', body: '7 jours offerts. Acc\u00e8s complet. Sans carte bancaire.' },
-        { emoji: '\u26A1', title: 'Ton entra\u00eenement est pr\u00eat', body: '5 exercices cibl\u00e9s sur tes vrais points faibles. C\'est parti.' }
+        { emoji: '\u26A1', title: 'Ton entra\u00eenement est pr\u00eat', body: '5 exercices cibl\u00e9s sur tes vrais points faibles. C\'est parti.', el: function(){ return document.querySelector('#main-app .pop-in.rounded-2xl'); } }
       ];
       setTimeout(function() { _startTour(_introSlides); }, 600);
     } else {
@@ -4040,7 +4040,8 @@ function _startTour(introSlides) {
   // Slides onboarding fusionnées en premières étapes du tour
   if (introSlides && introSlides.length) {
     for (var si = 0; si < introSlides.length; si++) {
-      _tourSteps.push({ el: null, emoji: introSlides[si].emoji, title: introSlides[si].title, body: introSlides[si].body, pos: 'center' });
+      var _is = introSlides[si];
+      _tourSteps.push({ el: _is.el || null, emoji: _is.emoji, title: _is.title, body: _is.body, pos: _is.el ? 'below' : 'center' });
     }
   } else {
     _tourSteps.push({ el: null, emoji: '\uD83D\uDC4B', title: 'Bienvenue sur Matheux !', body: 'Petit tour rapide pour d\u00e9couvrir ton espace. \u00c7a prend 10 secondes.', pos: 'center' });
@@ -4055,7 +4056,6 @@ function _startTour(introSlides) {
       _tourSteps.push({ el: null, emoji: '\uD83D\uDCF2', title: 'Installe l\'app !', body: 'Ajoute Matheux sur ton \u00e9cran d\'accueil pour y acc\u00e9der en 1 tap, comme une vraie app.', pos: 'center', customBtn: 'Voir comment', customAction: '_tourShowIosTuto' });
     }
   }
-  _tourSteps.push({ el: function(){ return document.querySelector('#main-app .pop-in.rounded-2xl'); }, emoji: '\u26A1', title: 'Ton entra\u00eenement du jour', body: 'Chaque jour, 5 exercices personnalis\u00e9s t\'attendent ici. C\'est ton point de d\u00e9part.', pos: 'below' });
   _tourSteps.push({ el: null, emoji: '\uD83D\uDE80', title: 'C\'est parti !', body: 'Lance ton premier entra\u00eenement. Bonne chance !', pos: 'center', last: true });
   _tourIdx = 0;
   var ov = document.createElement('div');
