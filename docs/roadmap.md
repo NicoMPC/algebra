@@ -58,7 +58,7 @@
 | 7 | **Séquences J+3/J+5/J+7 activées** — trigger Apps Script (manuel pour l'instant) | 🟡 |
 | 8 | Double confirmation mot de passe inscription | 🟡 |
 | 9 | Template email inscription + rapport parent (design) | 🟡 |
-| 10 | Vérif PWA mobile (install + offline + icône) | 🟡 |
+| 10 | ~~Vérif PWA mobile (install + offline + icône)~~ | ✅ FAIT 01/04 — prompt post-login + tuto iOS + tour onboarding |
 | ~~11~~ | ~~**Fix hero P2 wording reprise partielle**~~ | ✅ FAIT 2026-03-28 |
 | 12 | **Archi ChapAssigned** — persister chapitres assignés dans un sheet dédié (comme DailyBoosts) au lieu du one-shot Suivi col G | 🟡 |
 
@@ -136,7 +136,7 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 
 ### UX
 - [x] Mobile-first, gamification, messages ado, onboarding premium
-- [~] **PWA installable** — code prêt, **à valider en prod** (Lighthouse PWA ≥ 90)
+- [x] **PWA installable** — code prêt, **à valider en prod** (Lighthouse PWA ≥ 90)
 
 ### Admin
 - [x] Dashboard trié, modal complet, publish 1-clic, cockpit 6 onglets
@@ -149,8 +149,10 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 | Palier | Action | Effort réel |
 |---|---|---|
 | **Maintenant** | Automatiser boucle admin (agent GAS analyse + assignation auto) | ~2-3h |
+| **Maintenant** | ✅ PWA install prompt post-login (Android + iOS + PC) | FAIT 01/04 |
 | **~50 élèves** | Nicolas passe de opérateur à superviseur | Process |
-| **~200-300 inscrits** | Migration Supabase (PostgreSQL + Edge Functions) | ~1 journée |
+| **~100+ inscrits** | Migration Supabase (PostgreSQL + Edge Functions + Auth) | ~1 journée |
+| **~100+ inscrits** | Wrapper store — TWA (Google Play) + Capacitor (iOS App Store) | ~1 jour |
 | **Partenariat actif** | Système code promo + tracking conversions | ~2h (champ Stripe) |
 
 ---

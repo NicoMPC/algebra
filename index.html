@@ -116,4 +116,8 @@
   });
 })();
 </script>
+<script>
+// Redirect connectés vers l'app (pas de boucle : app.html ne redirige pas ici)
+try{var s=localStorage.getItem('boost_v23');if(s&&JSON.parse(s).email)window.location.replace('/app.html')}catch(e){}
+</script>
 </body></html>

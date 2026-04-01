@@ -1577,91 +1577,54 @@
 <!-- ═══════════════════════════════════════════════════════════
      LANDING PAGE
 ════════════════════════════════════════════════════════════ -->
-<div id="landing-screen" class="fixed inset-0 z-50 overflow-y-auto bg-white hidden" style="overflow-x:hidden">
+<div id="landing-screen" class="fixed inset-0 z-50 overflow-y-auto hidden" style="overflow-x:hidden;background:#1C1917">
 
-  <!-- Connexion flottant -->
-  <button onclick="showAuth('login')" class="text-stone-400 hover:text-stone-700 text-xs font-semibold px-4 py-2 transition-colors" style="position:absolute;top:1rem;right:1.25rem;z-index:30"><span class="underline">Connexion</span></button>
+  <!-- ── ÉCRAN D'ACCUEIL MINIMAL ─────────────────────────── -->
+  <div class="px-5 flex flex-col items-center justify-center text-center" style="min-height:100vh;min-height:100dvh">
+    <!-- Logo -->
+    <div style="animation:s1 .5s ease both">
+      <div class="flex items-center justify-center gap-2 mb-8">
+        <span style="font-size:2rem">🧠</span>
+        <span style="font-family:Syne,sans-serif;font-weight:900;font-size:1.6rem;color:#e0e7ff;letter-spacing:-.02em">Matheux</span>
+      </div>
+    </div>
 
-  <!-- SECTION 1 — HERO -->
-  <div class="lhero px-5 pt-10 pb-20 relative">
-    <div class="grid-ov"></div>
-    <div class="hero-glow"></div>
-    <div class="max-w-lg mx-auto relative z-10 text-center">
-      <div onclick="triggerAdmin()" class="flex justify-center mb-8" style="animation:s1 .5s ease both;cursor:default">
-        <img src="logo-matheux.png" alt="Matheux" style="height:6rem" class="drop-shadow-lg">
-      </div>
-      <div class="hero-badge" style="animation:s1 .5s .05s ease both">
-        <span class="dot-live"></span>
-        <span id="hero-badge-txt">Brevet 2026 dans <strong id="brevet-countdown"></strong> jours</span>
-      </div>
-      <h1 id="hero-h1" class="font-black text-stone-900 leading-[1.12] mb-4 max-w-md mx-auto" style="font-size:clamp(1.8rem,5.5vw,2.6rem);animation:s1 .6s .02s ease both;letter-spacing:-.02em">
-        T'es prêt pour le brevet de maths ?
-      </h1>
-      <p id="hero-sub" class="text-stone-500 text-sm font-semibold mb-6" style="animation:s1 .6s .1s ease both">
-        82% des élèves se trompent sur cette question :
-      </p>
+    <!-- Headline -->
+    <h1 class="font-black leading-tight mb-3 max-w-sm" style="font-size:clamp(1.6rem,5vw,2.2rem);color:#f1f5f9;letter-spacing:-.02em;animation:s1 .5s .05s ease both">
+      Prêt à bosser<br>tes maths ?
+    </h1>
+    <p style="color:rgba(255,255,255,.45);font-size:.9rem;max-width:300px;line-height:1.6;animation:s1 .5s .1s ease both">
+      Diagnostic express + exercices ciblés.<br>10 min par jour, résultats garantis.
+    </p>
 
-      <!-- Question piège -->
-      <div id="hero-quiz" style="animation:s1 .6s .15s ease both;background:#FFFBF5;border:2px solid #FDBA74;border-radius:20px;padding:1.5rem;max-width:400px;margin:0 auto;text-align:left">
-        <p class="text-stone-700 text-sm font-semibold leading-relaxed mb-4">Un triangle a des côtés de <strong>6 cm</strong>, <strong>8 cm</strong> et <strong>10 cm</strong>.<br>Est-il rectangle ?</p>
-        <div style="display:flex;gap:.5rem">
-          <button onclick="_heroQuiz('oui')" class="hq-btn" id="hq-oui" style="flex:1;padding:.75rem;border-radius:12px;border:2px solid #e2e8f0;background:#fff;font-weight:800;font-size:.85rem;color:#334155;cursor:pointer;transition:all .15s">OUI ✅</button>
-          <button onclick="_heroQuiz('non')" class="hq-btn" id="hq-non" style="flex:1;padding:.75rem;border-radius:12px;border:2px solid #e2e8f0;background:#fff;font-weight:800;font-size:.85rem;color:#334155;cursor:pointer;transition:all .15s">NON ❌</button>
-        </div>
-        <button onclick="_heroQuiz('jsp')" class="hq-btn" id="hq-jsp" style="margin-top:.6rem;padding:.5rem;background:transparent;border:none;font-weight:600;font-size:.78rem;color:#94a3b8;cursor:pointer;text-decoration:underline;text-underline-offset:2px;width:100%;transition:color .15s">Je ne sais pas 🤷</button>
-      </div>
+    <!-- CTA -->
+    <div style="animation:s1 .5s .18s ease both;width:100%;max-width:320px;margin-top:2rem">
+      <button onclick="startTrialFlow('direct')" class="btn btn-ac btn-fw shadow-xl" style="padding:1rem 1.5rem;font-size:1.05rem;border-radius:var(--l-radius);width:100%">
+        Commencer — c'est gratuit →
+      </button>
+      <button onclick="showAuth('login')" class="block w-full text-center mt-4 font-semibold text-sm transition-colors" style="color:rgba(255,255,255,.4);cursor:pointer;padding:.5rem">
+        J'ai déjà un compte
+      </button>
+    </div>
 
-      <!-- Feedback après réponse -->
-      <div id="hero-quiz-fb" class="hidden" style="max-width:400px;margin:1rem auto 0">
-        <div id="hero-quiz-msg" style="border-radius:16px;padding:1rem 1.25rem;font-size:.9rem;font-weight:700;margin-bottom:1rem"></div>
-        <button onclick="startTrialFlow('hero')" class="btn btn-ac btn-fw shadow-xl" id="cta-hero" style="max-width:400px;font-size:1.05rem;padding:1.15rem 1.5rem;border-radius:var(--l-radius)">
-          <span id="hero-cta-txt">4 questions de plus et on te dit où bosser →</span>
-        </button>
-        <p class="text-stone-400 text-xs mt-3">1 minute · Sans carte bancaire</p>
-      </div>
+    <!-- Rassurance -->
+    <div class="flex flex-wrap justify-center gap-3 mt-10" style="animation:s1 .5s .25s ease both">
+      <span style="color:rgba(255,255,255,.3);font-size:.75rem;font-weight:600">🎯 5 questions · 1 min</span>
+      <span style="color:rgba(255,255,255,.3);font-size:.75rem;font-weight:600">💳 Sans carte bancaire</span>
+      <span style="color:rgba(255,255,255,.3);font-size:.75rem;font-weight:600">📱 7 jours gratuits</span>
+    </div>
 
-      <p class="text-stone-400 text-xs mt-5 font-medium" style="animation:s1 .6s .3s ease both">
-        ⏱ <span id="hero-counter"></span> élèves ont déjà fait ce test
-      </p>
-      <script>
-      (function(){
-        var d=new Date(2026,5,29)-new Date();var el=document.getElementById('brevet-countdown');
-        if(el)el.textContent=Math.max(0,Math.ceil(d/864e5));
-        var k='mx_hero_cnt',b=1247,n=Math.max(b,parseInt(localStorage.getItem(k))||b)+1;
-        try{localStorage.setItem(k,n)}catch(e){}
-        var ce=document.getElementById('hero-counter');if(ce)ce.textContent=n.toLocaleString('fr-FR');
-      })();
-      window._heroQuiz=function(a){
-        document.querySelectorAll('.hq-btn').forEach(function(b){b.disabled=true;b.style.opacity='.5'});
-        var o=document.getElementById('hq-oui'),nn=document.getElementById('hq-non'),j=document.getElementById('hq-jsp');
-        o.style.cssText+=';opacity:1;background:#d1fae5;border-color:#10b981;color:#065f46';
-        if(a==='non')nn.style.cssText+=';opacity:1;background:#fee2e2;border-color:#ef4444;color:#991b1b';
-        if(a==='jsp')j.style.cssText+=';opacity:1;background:#fef3c7;border-color:#f59e0b;color:#92400e';
-        var fb=document.getElementById('hero-quiz-fb'),msg=document.getElementById('hero-quiz-msg');
-        var s='border-radius:16px;padding:1rem 1.25rem;font-size:.9rem;font-weight:700;margin-bottom:1rem;';
-        if(a==='oui'){msg.style.cssText=s+'background:#d1fae5;color:#065f46';msg.textContent='\u2705 Bien jou\u00e9 ! 6\u00b2 + 8\u00b2 = 10\u00b2 \u2192 c\u2019est un triangle rectangle.';}
-        else if(a==='non'){msg.style.cssText=s+'background:#fee2e2;color:#991b1b';msg.textContent='\u274c Pas tout \u00e0 fait \u2014 6\u00b2 + 8\u00b2 = 100 = 10\u00b2. Pythagore dit oui !';}
-        else{msg.style.cssText=s+'background:#fef3c7;color:#92400e';msg.textContent='\uD83D\uDCA1 La r\u00e9ponse est OUI \u2014 6\u00b2 + 8\u00b2 = 100 = 10\u00b2. C\u2019est Pythagore !';}
-        fb.classList.remove('hidden');
-        window._heroQuizDone = true;
-      };
-      </script>
-      <div id="pwa-install-banner" class="hidden mt-3 flex items-center gap-3
-        rounded-2xl px-4 py-3 max-w-sm mx-auto"
-        style="animation:s1 .6s .5s ease both;background:rgba(28,25,23,.05);border:1.5px solid #E7E5E4">
-        <span class="text-2xl flex-shrink-0">📲</span>
-        <div class="flex-1 min-w-0">
-          <div class="text-stone-800 font-bold text-sm">Installer l'app</div>
-          <div class="text-stone-400 text-xs">Accès direct depuis ton écran d'accueil</div>
-        </div>
-        <button onclick="_installPWA()"
-          class="font-black text-xs px-3 py-1.5 rounded-xl
-          flex-shrink-0 active:scale-95 transition-transform" style="background:#EA580C;color:#fff">
-          Installer
-        </button>
-        <button onclick="document.getElementById('pwa-install-banner').classList.add('hidden')"
-          class="text-stone-300 text-lg leading-none flex-shrink-0 p-1">✕</button>
-      </div>
+    <!-- Lien landing -->
+    <a href="/" style="color:rgba(255,255,255,.2);font-size:.72rem;font-weight:500;margin-top:2rem;text-decoration:underline;text-underline-offset:3px;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.5)'" onmouseout="this.style.color='rgba(255,255,255,.2)'">
+      Découvrir Matheux →
+    </a>
+
+    <!-- Footer minimal -->
+    <div class="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-8" style="animation:s1 .5s .3s ease both">
+      <a href="mentions-legales.html" target="_blank" style="color:rgba(255,255,255,.15);font-size:.65rem">Mentions légales</a>
+      <a href="cgu.html" target="_blank" style="color:rgba(255,255,255,.15);font-size:.65rem">CGU</a>
+      <a href="politique-confidentialite.html" target="_blank" style="color:rgba(255,255,255,.15);font-size:.65rem">Confidentialité</a>
+      <button onclick="openContactForm()" style="color:rgba(255,255,255,.15);font-size:.65rem;background:none;border:none;cursor:pointer;text-decoration:underline">Contact</button>
     </div>
   </div>
 
@@ -1745,39 +1708,8 @@
   </div><!-- /trial-flow -->
 
 
-  <!-- ── LANDING CSS ── -->
+  <!-- Print CSS (cours adaptatif) -->
   <style>
-  .phone-wrap{perspective:1000px}
-  .phone-mock{width:260px;height:530px;background:#0f172a;border-radius:40px;padding:12px;position:relative;box-shadow:0 25px 80px rgba(0,0,0,.35),inset 0 0 0 2px rgba(255,255,255,.1);margin:0 auto;transform:rotateY(-4deg) rotateX(2deg);transition:transform .5s ease}
-  @media(hover:hover){.phone-mock:hover{transform:rotateY(0) rotateX(0)}}
-  .phone-notch{width:80px;height:18px;background:#0f172a;border-radius:0 0 14px 14px;position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:2}
-  .phone-inner{width:100%;height:100%;background:#fff;border-radius:30px;overflow:hidden;position:relative}
-  .phone-scr{position:absolute;inset:0;opacity:0;transition:opacity .7s ease,transform .7s ease;transform:scale(.96)}
-  .phone-scr.pactive{opacity:1;transform:scale(1)}
-  .phone-dots{display:flex;gap:6px;justify-content:center;margin-top:1rem}
-  .phone-dot{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.2);transition:all .3s}
-  .phone-dot.pon{background:#EA580C;width:22px}
-  .loop-card{background:#fff;border:2px solid #e2e8f0;border-radius:20px;padding:1.1rem 1.25rem;display:flex;align-items:center;gap:1rem;transition:all .4s ease;width:100%;max-width:380px}
-  .loop-card.lit{border-color:#EA580C;box-shadow:0 0 40px rgba(234,88,12,.12);transform:scale(1.03)}
-  .loop-ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
-  .loop-conn{width:2px;height:24px;margin:0 auto;position:relative;overflow:hidden;background:rgba(226,232,240,.4)}
-  .loop-conn::after{content:'';position:absolute;width:100%;height:100%;background:linear-gradient(to bottom,#EA580C,#FB923C);animation:lflow 1.8s ease-in-out infinite}
-  @keyframes lflow{0%,100%{transform:translateY(-100%);opacity:0}50%{transform:translateY(0);opacity:1}}
-  .loop-return{animation:lbounce 2s ease-in-out infinite;color:#EA580C}
-  @keyframes lbounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-  .chap-block-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;padding-left:.15rem}
-  .chap-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1.25rem}
-  .chap-tag{font-size:.68rem;font-weight:700;padding:.3rem .6rem;border-radius:99px;border:1.5px solid;white-space:nowrap}
-  .counter-row{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap}
-  .counter-item{text-align:center}
-  .counter-num{font-family:Syne,sans-serif;font-weight:900;font-size:2.5rem;line-height:1;letter-spacing:-.03em}
-  .counter-label{font-size:.72rem;font-weight:600;margin-top:.25rem}
-  .grad-text{background:linear-gradient(135deg,#EA580C,#F97316,#FB923C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  .parent-tag{display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:700;background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:99px;padding:.35rem .8rem}
-  .feat-row{display:grid;grid-template-columns:1fr 1fr;gap:.4rem .75rem}
-  @media(max-width:400px){.feat-row{grid-template-columns:1fr}}
-  .cta-dark-section{background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%);position:relative;overflow:hidden}
-  .cta-dark-section::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 50%,rgba(234,88,12,.06),transparent 50%);pointer-events:none}
   @media print {
     body > *:not(#cours-modal) { display:none !important }
     #cours-modal { position:static !important; background:#fff !important; overflow:visible !important }
@@ -1789,480 +1721,7 @@
   }
   </style>
 
-  <!-- ══════════════════════════════════════════════════════════
-       SECTION 2 — L'APP QUI S'ADAPTE
-  ═══════════════════════════════════════════════════════════ -->
-  <div style="background:#0f172a;overflow:hidden" class="px-5 py-16 relative">
-    <div style="position:absolute;top:0;left:50%;width:600px;height:600px;background:radial-gradient(circle,rgba(234,88,12,.07),transparent 70%);transform:translate(-50%,-30%);pointer-events:none"></div>
-    <div class="max-w-3xl mx-auto relative z-10">
-      <div class="text-center mb-10 reveal">
-        <div class="stag mx-auto mb-4" style="background:rgba(234,88,12,.15);color:#FB923C;border-color:rgba(234,88,12,.3)">Le principe</div>
-        <h2 class="text-2xl sm:text-3xl font-black text-white leading-tight mb-3" style="letter-spacing:-.02em">
-          Tes erreurs deviennent<br><span class="grad-text">tes exercices de demain.</span>
-        </h2>
-        <p class="text-white/50 text-sm font-medium max-w-sm mx-auto">Matheux analyse chaque réponse. Plus tu pratiques, plus c'est ciblé sur TES lacunes.</p>
-      </div>
-
-      <div class="flex flex-col sm:flex-row items-center gap-8 sm:gap-12">
-        <!-- Phone mockup -->
-        <div class="phone-wrap reveal" style="flex-shrink:0">
-          <div class="phone-mock">
-            <div class="phone-notch"></div>
-            <div class="phone-inner">
-              <!-- Screen 1: Exo en cours (entraînement du jour) -->
-              <div class="phone-scr pactive" id="pscr-0">
-                <div style="padding:2rem .85rem .65rem">
-                  <!-- Header: chapitre + timer + progression -->
-                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.55rem">
-                    <div style="background:#FFF7ED;border-radius:8px;padding:.22rem .5rem">
-                      <div style="font-size:.4rem;font-weight:800;color:#EA580C;text-transform:uppercase;letter-spacing:.04em">Entraînement du jour</div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:.35rem">
-                      <!-- Timer circle -->
-                      <div style="position:relative;width:22px;height:22px">
-                        <svg viewBox="0 0 22 22" style="width:22px;height:22px"><circle cx="11" cy="11" r="9" style="fill:none;stroke:#e2e8f0;stroke-width:2"/><circle cx="11" cy="11" r="9" style="fill:none;stroke:#1E40AF;stroke-width:2;stroke-dasharray:56.5;stroke-dashoffset:14;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center"/></svg>
-                        <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.32rem;font-weight:800;color:#1E40AF">0:42</span>
-                      </div>
-                      <span style="font-size:.42rem;font-weight:800;color:#64748b">3/5</span>
-                    </div>
-                  </div>
-                  <!-- Slot dots -->
-                  <div style="display:flex;gap:3px;margin-bottom:.6rem">
-                    <div style="flex:1;height:3px;background:#22c55e;border-radius:99px"></div>
-                    <div style="flex:1;height:3px;background:#22c55e;border-radius:99px"></div>
-                    <div style="flex:1;height:3px;background:#1E40AF;border-radius:99px"></div>
-                    <div style="flex:1;height:3px;background:#e2e8f0;border-radius:99px"></div>
-                    <div style="flex:1;height:3px;background:#e2e8f0;border-radius:99px"></div>
-                  </div>
-                  <!-- Contexte Brevet -->
-                  <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:.45rem .55rem;margin-bottom:.5rem">
-                    <p style="font-size:.44rem;color:#64748b;font-weight:600;margin-bottom:.2rem">📐 Théorème de Pythagore</p>
-                    <p style="font-size:.5rem;font-weight:600;color:#1e293b;line-height:1.5">Un terrain rectangulaire ABCD a pour longueur AB = 12 m et largeur BC = 5 m.</p>
-                  </div>
-                  <!-- Question -->
-                  <p style="font-size:.56rem;font-weight:700;color:#0f172a;line-height:1.5;margin-bottom:.5rem">Quelle est la longueur de la diagonale AC ?</p>
-                  <!-- Options QCM -->
-                  <div style="display:flex;flex-direction:column;gap:.28rem">
-                    <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:9px;padding:.38rem .55rem;font-size:.52rem;font-weight:600;color:#1e293b;display:flex;align-items:center"><span style="background:#EFF6FF;color:#1E40AF;font-weight:800;border-radius:6px;padding:.1rem .3rem;margin-right:.4rem;font-size:.42rem">A</span>17 m</div>
-                    <div style="background:#EFF6FF;border:1.5px solid #3B82F6;border-radius:9px;padding:.38rem .55rem;font-size:.52rem;font-weight:600;color:#1E40AF;display:flex;align-items:center"><span style="background:#1E40AF;color:#fff;font-weight:800;border-radius:6px;padding:.1rem .3rem;margin-right:.4rem;font-size:.42rem">B</span>13 m ✓</div>
-                    <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:9px;padding:.38rem .55rem;font-size:.52rem;font-weight:600;color:#1e293b;display:flex;align-items:center"><span style="background:#EFF6FF;color:#1E40AF;font-weight:800;border-radius:6px;padding:.1rem .3rem;margin-right:.4rem;font-size:.42rem">C</span>√119 m</div>
-                  </div>
-                  <!-- Boutons aide -->
-                  <div style="display:flex;gap:.25rem;margin-top:.5rem">
-                    <div style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:8px;padding:.2rem .45rem;font-size:.4rem;font-weight:700">💡 Indice</div>
-                    <div style="background:#FFF7ED;color:#EA580C;border:1px solid #FDBA74;border-radius:8px;padding:.2rem .45rem;font-size:.4rem;font-weight:700">👁 Formule</div>
-                    <div style="background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;padding:.2rem .45rem;font-size:.4rem;font-weight:700;margin-left:auto">⏭️ Passer</div>
-                  </div>
-                </div>
-              </div>
-              <!-- Screen 2: Feedback EASY + XP -->
-              <div class="phone-scr" id="pscr-1">
-                <div style="padding:2rem .85rem .65rem">
-                  <!-- Header streak + XP -->
-                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
-                    <div style="display:flex;align-items:center;gap:.25rem"><span style="font-size:.7rem">🔥</span><span style="font-size:.48rem;font-weight:900;color:#0f172a">4 jours</span></div>
-                    <div style="background:#FFF7ED;color:#EA580C;border-radius:99px;padding:.15rem .45rem;font-size:.42rem;font-weight:800">850 XP</div>
-                  </div>
-                  <!-- EASY badge central -->
-                  <div style="text-align:center;margin-bottom:.55rem">
-                    <div style="display:inline-flex;align-items:center;gap:.3rem;background:#d1fae5;border:2px solid #22c55e;border-radius:14px;padding:.4rem .8rem">
-                      <span style="font-size:1rem">🎯</span>
-                      <span style="font-size:.9rem;font-weight:900;color:#059669">EASY!</span>
-                    </div>
-                    <!-- XP pop -->
-                    <div style="margin-top:.25rem;font-size:.65rem;font-weight:900;color:#f59e0b;text-shadow:0 1px 6px rgba(245,158,11,.3)">+200 XP</div>
-                  </div>
-                  <!-- Réponse correcte -->
-                  <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:.45rem .55rem;margin-bottom:.5rem">
-                    <div style="font-size:.4rem;color:#166534;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.2rem">✓ Bonne réponse</div>
-                    <div style="font-size:.6rem;font-weight:800;color:#059669">AC = 13 m</div>
-                    <div style="font-size:.42rem;color:#166534;font-weight:500;margin-top:.15rem;line-height:1.4">AC² = 12² + 5² = 144 + 25 = 169<br>AC = √169 = 13 m</div>
-                  </div>
-                  <!-- Slot progress visual -->
-                  <div style="margin-bottom:.45rem">
-                    <div style="font-size:.42rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.25rem">Progression</div>
-                    <div style="display:flex;gap:4px;align-items:center">
-                      <div style="flex:1;height:24px;background:#d1fae5;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.38rem;font-weight:800;color:#059669">EASY</div>
-                      <div style="flex:1;height:24px;background:#d1fae5;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.38rem;font-weight:800;color:#059669">EASY</div>
-                      <div style="flex:1;height:24px;background:#d1fae5;border:2px solid #22c55e;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.38rem;font-weight:800;color:#059669">EASY</div>
-                      <div style="flex:1;height:24px;background:#f1f5f9;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.38rem;font-weight:700;color:#94a3b8">4</div>
-                      <div style="flex:1;height:24px;background:#f1f5f9;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.38rem;font-weight:700;color:#94a3b8">5</div>
-                    </div>
-                  </div>
-                  <!-- Mode Flow tease -->
-                  <div style="background:linear-gradient(135deg,#EFF6FF,#FFF7ED);border:1.5px solid #BFDBFE;border-radius:10px;padding:.35rem .55rem;text-align:center">
-                    <div style="font-size:.44rem;font-weight:800;color:#1E40AF">⚡ Mode Flow activé</div>
-                    <div style="font-size:.38rem;color:#64748b;font-weight:600;margin-top:.08rem">3 EASY d'affilée — XP ×2 sur les 2 prochains !</div>
-                  </div>
-                  <!-- Next button -->
-                  <div style="margin-top:.45rem;background:#059669;border-radius:10px;padding:.35rem;text-align:center">
-                    <span style="font-size:.48rem;font-weight:800;color:#fff">Exercice suivant →</span>
-                  </div>
-                </div>
-              </div>
-              <!-- Screen 3: Diagnostic résultat -->
-              <div class="phone-scr" id="pscr-2">
-                <div style="padding:2rem .85rem .65rem">
-                  <!-- Header -->
-                  <div style="text-align:center;margin-bottom:.55rem">
-                    <div style="font-size:.42rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em">Diagnostic terminé</div>
-                    <div style="font-size:1.5rem;font-weight:900;color:#0f172a;margin-top:.15rem">Ton profil</div>
-                  </div>
-                  <!-- Score global circle -->
-                  <div style="text-align:center;margin-bottom:.55rem">
-                    <div style="display:inline-flex;align-items:center;justify-content:center;width:58px;height:58px;border-radius:99px;background:conic-gradient(#22c55e 0% 60%,#f59e0b 60% 80%,#ef4444 80% 100%);position:relative">
-                      <div style="width:46px;height:46px;border-radius:99px;background:#fff;display:flex;align-items:center;justify-content:center">
-                        <span style="font-size:.85rem;font-weight:900;color:#0f172a">3/5</span>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Forces -->
-                  <div style="font-size:.42rem;font-weight:800;color:#059669;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.22rem">✅ Tes forces</div>
-                  <div style="display:flex;flex-direction:column;gap:.18rem;margin-bottom:.45rem">
-                    <div style="display:flex;align-items:center;gap:.3rem;background:#f0fdf4;border-radius:8px;padding:.28rem .45rem">
-                      <span style="font-size:.5rem">💪</span><span style="font-size:.46rem;font-weight:700;color:#166534">Équations</span><span style="margin-left:auto;font-size:.4rem;font-weight:800;color:#22c55e">EASY</span>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:.3rem;background:#f0fdf4;border-radius:8px;padding:.28rem .45rem">
-                      <span style="font-size:.5rem">💪</span><span style="font-size:.46rem;font-weight:700;color:#166534">Probabilités</span><span style="margin-left:auto;font-size:.4rem;font-weight:800;color:#22c55e">EASY</span>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:.3rem;background:#f0fdf4;border-radius:8px;padding:.28rem .45rem">
-                      <span style="font-size:.5rem">💪</span><span style="font-size:.46rem;font-weight:700;color:#166534">Calcul littéral</span><span style="margin-left:auto;font-size:.4rem;font-weight:800;color:#22c55e">EASY</span>
-                    </div>
-                  </div>
-                  <!-- Lacunes -->
-                  <div style="font-size:.42rem;font-weight:800;color:#ef4444;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.22rem">🎯 À travailler</div>
-                  <div style="display:flex;flex-direction:column;gap:.18rem;margin-bottom:.5rem">
-                    <div style="display:flex;align-items:center;gap:.3rem;background:#fff1f2;border-radius:8px;padding:.28rem .45rem">
-                      <span style="font-size:.5rem">📐</span><span style="font-size:.46rem;font-weight:700;color:#991b1b">Pythagore</span><span style="margin-left:auto;font-size:.4rem;font-weight:800;color:#ef4444">HARD</span>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:.3rem;background:#fff1f2;border-radius:8px;padding:.28rem .45rem">
-                      <span style="font-size:.5rem">📏</span><span style="font-size:.46rem;font-weight:700;color:#991b1b">Thalès</span><span style="margin-left:auto;font-size:.4rem;font-weight:800;color:#ef4444">HARD</span>
-                    </div>
-                  </div>
-                  <!-- CTA -->
-                  <div style="background:#EA580C;border-radius:10px;padding:.4rem;text-align:center">
-                    <span style="font-size:.48rem;font-weight:800;color:#fff">Commencer mon entraînement →</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="phone-dots">
-            <span class="phone-dot pon" id="pdot-0"></span>
-            <span class="phone-dot" id="pdot-1"></span>
-            <span class="phone-dot" id="pdot-2"></span>
-          </div>
-        </div>
-
-        <!-- Features list -->
-        <div class="reveal text-center sm:text-left" style="flex:1;min-width:0">
-          <div style="display:flex;flex-direction:column;gap:1.5rem">
-            <div style="display:flex;align-items:start;gap:.85rem">
-              <div style="width:42px;height:42px;background:rgba(59,130,246,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">🔍</div>
-              <div><div class="text-white font-extrabold text-sm mb-1">1 minute de diagnostic</div><p class="text-white/40 text-xs leading-relaxed">5 questions. On repère tes faiblesses.</p></div>
-            </div>
-            <div style="display:flex;align-items:start;gap:.85rem">
-              <div style="width:42px;height:42px;background:rgba(234,88,12,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">🎯</div>
-              <div><div class="text-white font-extrabold text-sm mb-1">Exercices sur tes lacunes</div><p class="text-white/40 text-xs leading-relaxed">Pas de temps perdu sur ce que tu sais déjà. Chaque erreur génère des exos ciblés.</p></div>
-            </div>
-            <div style="display:flex;align-items:start;gap:.85rem">
-              <div style="width:42px;height:42px;background:rgba(34,197,94,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">📈</div>
-              <div><div class="text-white font-extrabold text-sm mb-1">Plus tu pratiques, plus c'est précis</div><p class="text-white/40 text-xs leading-relaxed">Tes exercices de demain dépendent de tes erreurs d'aujourd'hui.</p></div>
-            </div>
-            <div style="display:flex;align-items:start;gap:.85rem">
-              <div style="width:42px;height:42px;background:rgba(124,58,237,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">⏱</div>
-              <div><div class="text-white font-extrabold text-sm mb-1">10 min par jour. C'est tout.</div><p class="text-white/40 text-xs leading-relaxed">5 exercices ciblés. Pas 2 heures de cours. Juste l'essentiel.</p></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════════════════════
-       SECTION 3 — LA BOUCLE ADAPTATIVE
-  ═══════════════════════════════════════════════════════════ -->
-  <div style="background:#fff" class="px-5 py-16">
-    <div class="max-w-md mx-auto">
-      <div class="text-center mb-8 reveal">
-        <div class="stag mx-auto mb-3">Le secret</div>
-        <h2 class="text-2xl font-extrabold text-slate-900 mb-2" style="letter-spacing:-.02em">La boucle qui te fait progresser.</h2>
-        <p class="text-slate-500 text-sm">Chaque jour, le cycle recommence — mais mieux calibré.</p>
-      </div>
-      <div class="reveal" style="display:flex;flex-direction:column;align-items:center">
-        <div class="loop-card" id="lc-0">
-          <div class="loop-ico" style="background:#EFF6FF">✏️</div>
-          <div><div class="text-sm font-extrabold text-slate-900">Tu fais tes exercices</div><div class="text-xs text-slate-400 font-medium">5 exos, 10 min. C'est tout.</div></div>
-        </div>
-        <div class="loop-conn"></div>
-        <div class="loop-card" id="lc-1">
-          <div class="loop-ico" style="background:#FFF7ED">🔍</div>
-          <div><div class="text-sm font-extrabold text-slate-900">Tes erreurs sont analysées</div><div class="text-xs text-slate-400 font-medium">Chaque réponse compte.</div></div>
-        </div>
-        <div class="loop-conn"></div>
-        <div class="loop-card" id="lc-2">
-          <div class="loop-ico" style="background:#FEF3C7">🎯</div>
-          <div><div class="text-sm font-extrabold text-slate-900">Ton parcours s'adapte</div><div class="text-xs text-slate-400 font-medium">Demain, exos ciblés sur tes faiblesses.</div></div>
-        </div>
-        <div class="loop-conn"></div>
-        <div class="loop-card" id="lc-3">
-          <div class="loop-ico" style="background:#F0FDF4">📈</div>
-          <div><div class="text-sm font-extrabold text-slate-900">Tu progresses</div><div class="text-xs text-slate-400 font-medium">Score, streak, paliers de maîtrise.</div></div>
-        </div>
-        <div style="margin-top:.75rem;display:flex;flex-direction:column;align-items:center">
-          <span class="loop-return" style="font-size:1.5rem">↻</span>
-          <span style="font-size:.7rem;font-weight:700;color:#EA580C;margin-top:.25rem">Et on recommence, en mieux.</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════════════════════
-       SECTION 4 — TOUT LE PROGRAMME BREVET 2026
-  ═══════════════════════════════════════════════════════════ -->
-  <div style="background:#FFFBF5" class="px-5 py-16">
-    <div class="max-w-2xl mx-auto">
-      <div class="text-center mb-8 reveal">
-        <div class="stag mx-auto mb-3">Brevet 2026</div>
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-3" style="letter-spacing:-.02em">22 chapitres. 440 exercices.<br>Tout le programme.</h2>
-        <p class="text-slate-500 text-sm">Chaque exercice au format exact de l'épreuve.</p>
-      </div>
-
-      <!-- Counters -->
-      <div class="counter-row mb-10 reveal">
-        <div class="counter-item"><div class="counter-num" style="color:#EA580C" data-count="440">0</div><div class="counter-label text-slate-500">exercices</div></div>
-        <div class="counter-item"><div class="counter-num" style="color:#1E40AF" data-count="22">0</div><div class="counter-label text-slate-500">chapitres</div></div>
-        <div class="counter-item"><div class="counter-num" style="color:#16a34a" data-count="40">0</div><div class="counter-label text-slate-500">sujets analysés</div></div>
-      </div>
-
-      <!-- Chapter grid by theme -->
-      <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem 1.25rem">
-        <div>
-          <div class="chap-block-title" style="color:#EA580C">🔢 Nombres & Calcul</div>
-          <div class="chap-tags">
-            <span class="chap-tag" style="color:#EA580C;border-color:#FDBA74;background:#FFF7ED">Calcul numérique</span>
-            <span class="chap-tag" style="color:#EA580C;border-color:#FDBA74;background:#FFF7ED">Fractions</span>
-            <span class="chap-tag" style="color:#EA580C;border-color:#FDBA74;background:#FFF7ED">Puissances</span>
-            <span class="chap-tag" style="color:#EA580C;border-color:#FDBA74;background:#FFF7ED">Racines carrées</span>
-            <span class="chap-tag" style="color:#EA580C;border-color:#FDBA74;background:#FFF7ED">Calcul littéral</span>
-            <span class="chap-tag" style="color:#EA580C;border-color:#FDBA74;background:#FFF7ED">Équations</span>
-          </div>
-        </div>
-        <div>
-          <div class="chap-block-title" style="color:#1E40AF">📐 Géométrie</div>
-          <div class="chap-tags">
-            <span class="chap-tag" style="color:#1E40AF;border-color:#BFDBFE;background:#EFF6FF">Pythagore</span>
-            <span class="chap-tag" style="color:#1E40AF;border-color:#BFDBFE;background:#EFF6FF">Thalès</span>
-            <span class="chap-tag" style="color:#1E40AF;border-color:#BFDBFE;background:#EFF6FF">Trigonométrie</span>
-            <span class="chap-tag" style="color:#1E40AF;border-color:#BFDBFE;background:#EFF6FF">Transformations</span>
-            <span class="chap-tag" style="color:#1E40AF;border-color:#BFDBFE;background:#EFF6FF">Solides</span>
-          </div>
-        </div>
-        <div>
-          <div class="chap-block-title" style="color:#7C3AED">📊 Fonctions</div>
-          <div class="chap-tags">
-            <span class="chap-tag" style="color:#7C3AED;border-color:#C4B5FD;background:#F5F3FF">Fonctions</span>
-            <span class="chap-tag" style="color:#7C3AED;border-color:#C4B5FD;background:#F5F3FF">Affines & linéaires</span>
-            <span class="chap-tag" style="color:#7C3AED;border-color:#C4B5FD;background:#F5F3FF">Proportionnalité</span>
-          </div>
-        </div>
-        <div>
-          <div class="chap-block-title" style="color:#0891B2">🎲 Stats & Probas</div>
-          <div class="chap-tags">
-            <span class="chap-tag" style="color:#0891B2;border-color:#67E8F9;background:#ECFEFF">Statistiques</span>
-            <span class="chap-tag" style="color:#0891B2;border-color:#67E8F9;background:#ECFEFF">Probabilités</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Automatismes badge -->
-      <div class="reveal text-center mt-6">
-        <div style="display:inline-flex;align-items:center;gap:.5rem;background:#0f172a;color:#fff;padding:.55rem 1.2rem;border-radius:99px;font-size:.78rem;font-weight:800">
-          ⚡ Automatismes chronométrés — nouveau Brevet 2026
-        </div>
-      </div>
-
-      <div class="reveal text-center mt-8">
-        <button onclick="startTrialFlow('brevet')" class="btn btn-ac btn-fw shadow-xl" style="max-width:380px;font-size:1rem;padding:1rem 1.5rem;border-radius:var(--l-radius)">
-          Teste ton niveau →
-        </button>
-        <p class="text-stone-400 text-xs mt-3">1 minute · Sans carte bancaire</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════════════════════
-       SECTION 5 — POUR LES PARENTS (prix + fondateur + FAQ)
-  ═══════════════════════════════════════════════════════════ -->
-  <div style="background:#f8fafc" class="px-5 py-16">
-    <div class="max-w-xl mx-auto">
-      <div class="text-center mb-8 reveal">
-        <div class="parent-tag mx-auto">👨‍👩‍👧 Pour les parents</div>
-        <h2 class="text-2xl font-extrabold text-slate-900 mb-2 mt-4" style="letter-spacing:-.02em">L'entraînement que vous cherchez pour le Brevet.</h2>
-        <p class="text-slate-500 text-sm max-w-md mx-auto">Chaque soir, le parcours de votre enfant est vérifié et ajusté par un accompagnant pédagogique.</p>
-      </div>
-
-      <!-- Nicolas mini -->
-      <div class="reveal" style="background:#fff;border:1.5px solid #e2e8f0;border-radius:20px;padding:1.25rem;margin-bottom:1.25rem">
-        <div class="flex items-center gap-3">
-          <div style="width:48px;height:48px;background:linear-gradient(135deg,#EA580C,#FB923C);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;color:#fff;box-shadow:0 4px 12px rgba(234,88,12,.2)">👨‍🏫</div>
-          <div>
-            <div class="syne font-black text-slate-900 text-sm">Nicolas Follezou</div>
-            <div class="text-xs text-slate-400 font-medium">Fondateur · Des centaines d'heures de soutien en maths</div>
-          </div>
-        </div>
-        <p class="text-slate-500 text-sm leading-relaxed mt-3">"J'ai vu les mêmes blocages revenir des dizaines de fois. Pas parce qu'ils sont nuls — parce qu'ils ne pratiquent pas au bon endroit. Matheux cible les trous et les comble un peu chaque jour."</p>
-      </div>
-
-      <!-- Prix -->
-      <div class="reveal" style="background:#fff;border:2.5px solid #EA580C;border-radius:24px;padding:1.75rem;position:relative;overflow:hidden;margin-bottom:1.5rem">
-        <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
-          <div>
-            <div class="text-3xl font-black text-stone-900" style="font-family:Syne,sans-serif">19,99<span class="text-lg font-bold" style="color:#EA580C"> €</span><span class="text-stone-400 text-sm font-semibold">/mois</span></div>
-            <div class="perday-badge mt-1">soit 0,66 € / jour</div>
-          </div>
-          <div style="text-align:right">
-            <div class="text-xs font-bold text-slate-400">Un cours particulier :</div>
-            <div class="text-sm font-extrabold text-slate-300 line-through">25–40 €/h</div>
-          </div>
-        </div>
-        <div class="feat-row" style="margin-bottom:1.25rem">
-          <div class="flex items-center gap-2"><span style="color:#EA580C;font-weight:800;font-size:.8rem">✓</span><span class="text-stone-700 text-xs font-medium">Entraînement quotidien</span></div>
-          <div class="flex items-center gap-2"><span style="color:#EA580C;font-weight:800;font-size:.8rem">✓</span><span class="text-stone-700 text-xs font-medium">22 chapitres complets</span></div>
-          <div class="flex items-center gap-2"><span style="color:#EA580C;font-weight:800;font-size:.8rem">✓</span><span class="text-stone-700 text-xs font-medium">Exercices sur mesure</span></div>
-          <div class="flex items-center gap-2"><span style="color:#EA580C;font-weight:800;font-size:.8rem">✓</span><span class="text-stone-700 text-xs font-medium">Parcours ajusté chaque soir</span></div>
-          <div class="flex items-center gap-2"><span style="color:#EA580C;font-weight:800;font-size:.8rem">✓</span><span class="text-stone-700 text-xs font-medium">Brevet Blanc inclus</span></div>
-          <div class="flex items-center gap-2"><span style="color:#EA580C;font-weight:800;font-size:.8rem">✓</span><span class="text-stone-700 text-xs font-medium">Sans engagement</span></div>
-        </div>
-        <button onclick="startTrialFlow('pricing')" class="btn btn-ac btn-fw py-3.5 shadow-xl" style="font-size:.95rem;border-radius:var(--l-radius)">
-          7 jours offerts — tester maintenant
-        </button>
-        <p class="text-stone-400 text-xs mt-2.5 text-center">Sans carte bancaire · Résiliable en 1 clic</p>
-      </div>
-
-      <!-- FAQ compact -->
-      <div class="reveal space-y-2.5">
-        <details class="faq-item">
-          <summary class="faq-q">Mon enfant est démotivé. Comment Matheux peut l'aider ?</summary>
-          <p class="faq-a">La démotivation vient souvent d'un sentiment d'impuissance. Quand un élève voit qu'il progresse sur des lacunes précises, la confiance revient. Les exercices sont adaptés à son niveau exact — ni trop faciles, ni trop durs.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">Est-ce que ça remplace un prof particulier ?</summary>
-          <p class="faq-a">Non. Matheux est un complément. Il fait ce qu'un prof ne peut pas en cours : cibler les lacunes individuelles chaque jour et adapter les exercices. Le tout supervisé par un accompagnant pédagogique.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">Et s'il a des lacunes des années précédentes ?</summary>
-          <p class="faq-a">C'est exactement pour ça que Matheux existe. Le diagnostic détecte les lacunes, même sur des notions antérieures, et le parcours les cible en priorité.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">Combien de temps par jour ?</summary>
-          <p class="faq-a">10 minutes suffisent. 5 exercices ciblés. Après l'entraînement du jour, votre enfant peut continuer librement — chapitres, révisions, Brevet Blanc. Aucune limite.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">Peut-il l'utiliser seul ?</summary>
-          <p class="faq-a">Oui. Indices progressifs, formules rappelées après une erreur, exercices adaptés. Votre enfant est guidé à chaque étape.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">C'est adapté au programme officiel ?</summary>
-          <p class="faq-a">Oui. 22 chapitres couvrent l'intégralité du programme Éducation Nationale 2026. Les Automatismes (nouveau 2026) sont inclus.</p>
-        </details>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════════════════════
-       SECTION 6 — CTA FINAL
-  ═══════════════════════════════════════════════════════════ -->
-  <div class="cta-dark-section px-5 py-16">
-    <div class="max-w-lg mx-auto relative z-10 text-center reveal">
-      <div style="font-size:3rem;margin-bottom:1rem">🎯</div>
-      <h2 id="bottom-h2" class="text-2xl sm:text-3xl font-black text-white leading-tight mb-3" style="letter-spacing:-.02em">
-        T'as 1 minute ?<br>
-        <span class="grad-text">On te dit où bosser.</span>
-      </h2>
-      <p id="bottom-sub" class="text-white/50 text-sm font-medium mb-8 max-w-sm mx-auto">
-        Diagnostic express → tes lacunes identifiées → ton programme sur mesure.
-      </p>
-      <button onclick="startTrialFlow('bottom')"
-              style="max-width:400px;font-size:1.05rem;padding:1.15rem;display:block;margin:0 auto;border-radius:var(--l-radius)"
-              class="btn btn-ac btn-fw shadow-xl">
-        <span id="bottom-cta-txt">Teste ton niveau →</span>
-      </button>
-      <p class="text-white/30 text-xs mt-4">1 minute · Sans carte bancaire · 7 jours offerts</p>
-    </div>
-  </div>
-
-  <!-- ── LANDING JS ANIMATIONS ── -->
-  <script>
-  // Phone mockup carousel
-  (function(){
-    var cur=0,max=3;
-    setInterval(function(){
-      var p=document.getElementById('pscr-'+cur),pd=document.getElementById('pdot-'+cur);
-      if(p)p.classList.remove('pactive');
-      if(pd)pd.classList.remove('pon');
-      cur=(cur+1)%max;
-      var n=document.getElementById('pscr-'+cur),nd=document.getElementById('pdot-'+cur);
-      if(n)n.classList.add('pactive');
-      if(nd)nd.classList.add('pon');
-    },3500);
-  })();
-
-  // Loop cards highlight cycle
-  (function(){
-    var cur=0;
-    setInterval(function(){
-      for(var i=0;i<4;i++){var c=document.getElementById('lc-'+i);if(c)c.classList.toggle('lit',i===cur)}
-      cur=(cur+1)%4;
-    },2000);
-  })();
-
-  // Counter animation on scroll
-  (function(){
-    var done=false;
-    function go(){
-      if(done)return;
-      var els=document.querySelectorAll('[data-count]');
-      if(!els.length)return;
-      var r=els[0].getBoundingClientRect();
-      if(r.top>window.innerHeight*.9)return;
-      done=true;
-      els.forEach(function(el){
-        var t=parseInt(el.getAttribute('data-count')),dur=1400,s=Date.now();
-        (function tick(){
-          var p=Math.min(1,(Date.now()-s)/dur),ease=1-Math.pow(1-p,3);
-          el.textContent=Math.round(t*ease)+(t>=40?'+':'');
-          if(p<1)requestAnimationFrame(tick);
-        })();
-      });
-    }
-    window.addEventListener('scroll',go,{passive:true});
-    setTimeout(go,800);
-  })();
-  </script>
-
-
-  <!-- Mobile sticky CTA bar -->
-  <div id="sticky-cta" aria-hidden="true">
-    <button id="sticky-cta-btn" onclick="startTrialFlow('sticky')"><span id="sticky-cta-txt">Diagnostic gratuit — 1 minute →</span></button>
-    <div class="sticky-sub">1 min · sans carte</div>
-  </div>
-
-  <!-- Footer landing -->
-  <div class="bg-slate-50 py-6 border-t border-slate-100">
-    <div class="max-w-2xl mx-auto px-5">
-      <div class="flex flex-wrap justify-center gap-x-5 gap-y-2 mb-4">
-        <a href="mentions-legales.html" target="_blank" class="text-slate-400 hover:text-slate-600 text-xs font-medium transition-colors">Mentions légales</a>
-        <a href="cgu.html" target="_blank" class="text-slate-400 hover:text-slate-600 text-xs font-medium transition-colors">CGU</a>
-        <a href="cgv.html" target="_blank" class="text-slate-400 hover:text-slate-600 text-xs font-medium transition-colors">CGV</a>
-        <a href="politique-confidentialite.html" target="_blank" class="text-slate-400 hover:text-slate-600 text-xs font-medium transition-colors">Confidentialité</a>
-        <a href="politique-cookies.html" target="_blank" class="text-slate-400 hover:text-slate-600 text-xs font-medium transition-colors">Cookies</a>
-        <button onclick="showAuth('login')" class="text-slate-400 hover:text-slate-600 text-xs font-medium underline transition-colors">Connexion</button>
-        <button onclick="openContactForm()" class="text-slate-400 hover:text-slate-600 text-xs font-medium underline transition-colors">Contact</button>
-      </div>
-      <p class="text-slate-300 text-xs text-center">© 2026 Matheux · Nicolas Follezou · contact@matheux.fr</p>
-    </div>
-  </div>
+  <!-- Sections 2-6 supprimées — contenu marketing sur index.html uniquement -->
 </div><!-- /landing-screen -->
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -3093,7 +2552,7 @@ document.addEventListener('touchend', function(e){
       var h = window.location.hash || '';
       if (h.indexOf('#trial') === 0) {
         var source = h.replace('#trial-', '').replace('&hq=done', '') || 'landing';
-        if (h.indexOf('hq=done') !== -1) window._heroQuizDone = true;
+        // hq=done : legacy hero quiz (supprimé)
         history.replaceState(null, '', window.location.pathname);
         setTimeout(function() { startTrialFlow(source); }, 600);
       } else if (h === '#login') {
@@ -3510,8 +2969,7 @@ function flowToStep3() {
 // Pioche 1 question par bloc thématique (Brevet) ou par chapitre sélectionné
 // Shuffle interne pour varier d'un élève à l'autre
 function _pickDiagExos(exos, chapCount) {
-  var TARGET = window._heroQuizDone ? 4 : 5;
-  window._heroQuizDone = false;
+  var TARGET = 5;
   if (exos.length <= TARGET) return exos;
   // Grouper par chapitre
   var groups = {}, keys = [];
