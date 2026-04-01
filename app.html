@@ -2810,53 +2810,18 @@ function _animCounter(el) {
 
 function startTrialFlow(src) {
   _track('cta_click', { source: src || 'hero', from: 'brevet' });
+  // Nettoyer tout diagnostic abandonné (fresh start toujours)
+  try { localStorage.removeItem('guestDiag'); } catch(e) {}
   var tf = document.getElementById('trial-flow');
   tf.classList.remove('hidden');
   tf.classList.add('flow-fs');
-  document.getElementById('cta-hero').classList.add('hidden');
+  var heroBtn = document.getElementById('cta-hero');
+  if (heroBtn) heroBtn.classList.add('hidden');
   flowSelectLevel();
   tf.scrollTop = 0;
-  // Vérifier s'il y a un diagnostic abandonné à reprendre
-  var saved = null;
-  try { saved = JSON.parse(localStorage.getItem('guestDiag') || 'null'); } catch(e) {}
-  if (saved && saved.ts && (Date.now() - saved.ts) < 86400000 && saved.exos && saved.exos.length > 0 && !saved.complete && saved.niveau === _flowLevel) {
-    _showResumeBanner(saved);
-  }
 }
 
-function _showResumeBanner(saved) {
-  // Afficher bandeau discret sous le flow-step-1
-  var existing = document.getElementById('flow-resume-banner');
-  if (existing) existing.remove();
-  var banner = document.createElement('div');
-  banner.id = 'flow-resume-banner';
-  banner.style.cssText = 'margin-top:1rem;background:rgba(99,102,241,.18);border:1.5px solid rgba(129,140,248,.35);border-radius:14px;padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:.75rem;animation:flowIn .28s ease-out';
-  banner.innerHTML =
-    '<span style="color:rgba(255,255,255,.75);font-size:.8rem;font-weight:600">Tu t\'étais arrêté là ⚡</span>' +
-    '<div style="display:flex;gap:.5rem">' +
-    '<button onclick="_flowResumeFromSaved()" style="background:#60A5FA;color:#fff;border:none;border-radius:8px;padding:.4rem .8rem;font-size:.75rem;font-weight:700;cursor:pointer;font-family:Syne,sans-serif">Continuer</button>' +
-    '<button onclick="localStorage.removeItem(\'guestDiag\');document.getElementById(\'flow-resume-banner\').remove();" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.5);border:none;border-radius:8px;padding:.4rem .8rem;font-size:.75rem;font-weight:600;cursor:pointer">Recommencer</button>' +
-    '</div>';
-  var flowContainer = document.querySelector('#trial-flow .max-w-lg');
-  if (flowContainer) flowContainer.appendChild(banner);
-}
-
-function _flowResumeFromSaved() {
-  var saved = null;
-  try { saved = JSON.parse(localStorage.getItem('guestDiag') || 'null'); } catch(e) {}
-  if (!saved || !saved.exos || !saved.exos.length) return;
-  var banner = document.getElementById('flow-resume-banner');
-  if (banner) banner.remove();
-  _flowExos    = saved.exos;
-  _flowResults = saved.results || [];
-  _flowExoIdx  = saved.step || 0;
-  _flowLevel   = saved.niveau || _flowLevel;
-  _flowChaps   = saved.chapitres || _flowChaps;
-  _flowDiagDone = false;
-  // Reprendre le quiz inline dans la landing
-  _flowSetStep(2);
-  _flowRenderQuestion(_flowExoIdx);
-}
+// _showResumeBanner + _flowResumeFromSaved SUPPRIMÉS — fresh start toujours
 
 var _flowPrevStep = 1;
 function _flowSetStep(n) {
@@ -2892,15 +2857,9 @@ function _flowSetStep(n) {
 function flowSelectLevel() {
   _flowLevel = '3EME';
   _flowChaps = [];
-  // 3ème → auto Brevet, skip choice screen
-  if (_flowLevel === '3EME') {
-    _flowPickBrevet();
-    return;
-  }
-  _flowSetStep(1);
-  // Reset vers le choix parcours
-  document.getElementById('flow-parcours-choice').classList.remove('hidden');
-  document.getElementById('flow-blocs-view').classList.add('hidden');
+  // 3ème → direct au diagnostic, skip parcours choice entièrement
+  _flowChaps = BREVET_PACK.slice();
+  flowToStep3();
 }
 
 function _flowPickBrevet() {
@@ -2970,6 +2929,12 @@ function flowToStep3() {
 // Shuffle interne pour varier d'un élève à l'autre
 function _pickDiagExos(exos, chapCount) {
   var TARGET = 5;
+  // Filtrer les fill — diagnostic = QCM/VF uniquement (pas de saisie libre)
+  exos = exos.filter(function(e) {
+    if (e.type === 'fill') return false;
+    if (!(e.options || e.opts || []).length && e.a) return false; // fill implicite
+    return true;
+  });
   if (exos.length <= TARGET) return exos;
   // Grouper par chapitre
   var groups = {}, keys = [];
@@ -3728,6 +3693,11 @@ async function flowRegister() {
       } catch(e) {}
     }
 
+    // Filet de sécurité : si showOnboarding plante, render() quand même après 5s
+    var _renderDone = false;
+    function _safeRender() { if (!_renderDone) { _renderDone = true; render(); } }
+    setTimeout(_safeRender, 5000);
+
     if (_flowDiagDone) {
       // Aligner sur _flowGuestRegister : calDone + supprimer CALIBRAGE + boost + guest slides
       try {
@@ -3753,11 +3723,11 @@ async function flowRegister() {
       _onbSlides = _guestSlides2;
       showOnboarding(function() {
         _onbSlides = _savedSlides2;
-        render();
+        _safeRender();
         setTimeout(_startTour, 600);
       });
     } else {
-      showOnboarding(function() { startCal(); });
+      showOnboarding(function() { _renderDone = true; startCal(); });
     }
   }
 
@@ -3829,7 +3799,7 @@ async function flowRegister() {
       var diagR = await fetch(SU, { method:'POST', body:JSON.stringify({ action:'generate_diagnostic', code:S.prof.code, level:_flowLevel, selectedChapters:_flowChaps }) });
       var diagD = await diagR.json();
       if (diagD.status !== 'success') {
-        hideT(); showT('Diagnostic indisponible, on réessaie dans 10s...', 3000, '⏳');
+        hideT(); showT('Diagnostic indisponible — réessaie 🔄', 3000, '⏳');
         document.getElementById('fl-btn-txt').classList.remove('hidden');
         document.getElementById('fl-btn-ld').classList.add('hidden');
         if (btn) btn.disabled = false;
@@ -3843,7 +3813,8 @@ async function flowRegister() {
     var loginD = await loginR.json();
     hideT();
     if (loginD.status !== 'success') {
-      showT('❌ Connexion impossible. Réessaie.', 4000, '❌'); return;
+      // Compte créé mais login échoué — on lance quand même avec les données register
+      loginD = { status: 'success', profile: S.prof, history: [], scores: {}, suivi: {} };
     }
     S.calExos = _pickDiagExos(diagExos, _flowChaps.length);
     await _doLoginAndLaunch(email, h, loginD);
