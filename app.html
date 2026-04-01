@@ -3626,18 +3626,13 @@ async function _flowGuestRegister() {
     // Générer boost en background
     boostFromDiag(_diagErrs.slice(0, 4));
 
-    // Onboarding adapté guest — 2 slides
-    var _guestSlides = [
-      { emoji: '\u{1F389}', title: 'Ton espace est cr\u00e9\u00e9', body: '7 jours offerts. Acc\u00e8s complet. Sans carte bancaire.', color: 'linear-gradient(135deg,#0F172A 0%,#1E40AF 55%,#3B82F6 100%)' },
-      { emoji: '\u26A1', title: 'Ton entra\u00eenement est pr\u00eat', body: '5 exercices cibl\u00e9s sur tes vrais points faibles. C\'est parti.', color: 'linear-gradient(135deg,#0F172A 0%,#1E40AF 100%)' }
+    // Tour unifié : slides d'accueil + PWA + tour guidé (plus de double tour)
+    render();
+    var _introSlides2 = [
+      { emoji: '\u{1F389}', title: 'Ton espace est cr\u00e9\u00e9', body: '7 jours offerts. Acc\u00e8s complet. Sans carte bancaire.' },
+      { emoji: '\u26A1', title: 'Ton entra\u00eenement est pr\u00eat', body: '5 exercices cibl\u00e9s sur tes vrais points faibles. C\'est parti.' }
     ];
-    var _savedSlides = _onbSlides;
-    _onbSlides = _guestSlides;
-    showOnboarding(function() {
-      _onbSlides = _savedSlides;
-      render();
-      setTimeout(_startTour, 600);
-    });
+    setTimeout(function() { _startTour(_introSlides2); }, 600);
   } else {
     showT('Connecte-toi depuis le menu 😊', 2500, '💡');
     document.getElementById('landing-screen').classList.add('hidden');
@@ -3715,17 +3710,13 @@ async function flowRegister() {
         .map(function(rr) { return (_flowExos[rr.idx] || {}).q || ''; })
         .filter(Boolean);
       boostFromDiag(_diagErrs2.slice(0, 4));
-      var _guestSlides2 = [
-        { emoji: '\u{1F389}', title: 'Ton espace est cr\u00e9\u00e9', body: '7 jours offerts. Acc\u00e8s complet. Sans carte bancaire.', color: 'linear-gradient(135deg,#0F172A 0%,#1E40AF 55%,#3B82F6 100%)' },
-        { emoji: '\u26A1', title: 'Ton entra\u00eenement est pr\u00eat', body: '5 exercices cibl\u00e9s sur tes vrais points faibles. C\'est parti.', color: 'linear-gradient(135deg,#0F172A 0%,#1E40AF 100%)' }
+      _safeRender();
+      // Tour unifié : slides d'accueil + PWA + tour guidé
+      var _introSlides = [
+        { emoji: '\u{1F389}', title: 'Ton espace est cr\u00e9\u00e9', body: '7 jours offerts. Acc\u00e8s complet. Sans carte bancaire.' },
+        { emoji: '\u26A1', title: 'Ton entra\u00eenement est pr\u00eat', body: '5 exercices cibl\u00e9s sur tes vrais points faibles. C\'est parti.' }
       ];
-      var _savedSlides2 = _onbSlides;
-      _onbSlides = _guestSlides2;
-      showOnboarding(function() {
-        _onbSlides = _savedSlides2;
-        _safeRender();
-        setTimeout(_startTour, 600);
-      });
+      setTimeout(function() { _startTour(_introSlides); }, 600);
     } else {
       showOnboarding(function() { _renderDone = true; startCal(); });
     }
@@ -4036,32 +4027,36 @@ window._onbNext = function() {
 // ══════════════════════════════════════════════════════════════
 // TOUR GUIDÉ — first-login spotlight tutorial
 // ══════════════════════════════════════════════════════════════
-var _tourSteps = (function() {
-  var steps = [
-    { el: null, emoji: '\uD83D\uDC4B', title: 'Bienvenue sur Matheux !', body: 'Petit tour rapide pour d\u00e9couvrir ton espace. \u00c7a prend 10 secondes.', pos: 'center' }
-  ];
-  // Étape PWA — adaptative selon plateforme (skip si déjà installé)
-  var _isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  if (!_isStandalone) {
-    var _isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    var _hasPrompt = !!window._pwaPrompt;
-    if (_hasPrompt) {
-      // Android / Chrome desktop — bouton install natif
-      steps.push({ el: null, emoji: '\uD83D\uDCF2', title: 'Installe l\'app !', body: 'Ajoute Matheux sur ton \u00e9cran d\'accueil pour y acc\u00e9der en 1 tap, comme une vraie app.', pos: 'center', customBtn: 'Installer', customAction: '_tourInstallPWA' });
-    } else if (_isIOS) {
-      // iOS — ouvre le tuto visuel
-      steps.push({ el: null, emoji: '\uD83D\uDCF2', title: 'Installe l\'app !', body: 'Ajoute Matheux sur ton \u00e9cran d\'accueil pour y acc\u00e9der en 1 tap, comme une vraie app.', pos: 'center', customBtn: 'Voir comment', customAction: '_tourShowIosTuto' });
-    }
-  }
-  steps.push({ el: function(){ return document.querySelector('#main-app .pop-in.rounded-2xl'); }, emoji: '\u26A1', title: 'Ton entra\u00eenement du jour', body: 'Chaque jour, 5 exercices personnalis\u00e9s t\'attendent ici. C\'est ton point de d\u00e9part.', pos: 'below' });
-  steps.push({ el: null, emoji: '\uD83D\uDE80', title: 'C\'est parti !', body: 'Lance ton premier entra\u00eenement. Bonne chance !', pos: 'center', last: true });
-  return steps;
-})();
+// Tour steps — construit dynamiquement dans _startTour (pas en IIFE)
+// pour que _pwaPrompt soit capté après beforeinstallprompt
+var _tourSteps = [];
 var _tourIdx = 0;
 var _tourResizeHandler = null;
 
-function _startTour() {
+function _startTour(introSlides) {
   if (!_needsCoach('TOUR')) return;
+  // Construire les steps dynamiquement à chaque appel
+  _tourSteps = [];
+  // Slides onboarding fusionnées en premières étapes du tour
+  if (introSlides && introSlides.length) {
+    for (var si = 0; si < introSlides.length; si++) {
+      _tourSteps.push({ el: null, emoji: introSlides[si].emoji, title: introSlides[si].title, body: introSlides[si].body, pos: 'center' });
+    }
+  } else {
+    _tourSteps.push({ el: null, emoji: '\uD83D\uDC4B', title: 'Bienvenue sur Matheux !', body: 'Petit tour rapide pour d\u00e9couvrir ton espace. \u00c7a prend 10 secondes.', pos: 'center' });
+  }
+  // Étape PWA — vérif au moment du tour (pas au chargement)
+  var _isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (!_isStandalone) {
+    var _isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    if (window._pwaPrompt) {
+      _tourSteps.push({ el: null, emoji: '\uD83D\uDCF2', title: 'Installe l\'app !', body: 'Ajoute Matheux sur ton \u00e9cran d\'accueil pour y acc\u00e9der en 1 tap, comme une vraie app.', pos: 'center', customBtn: 'Installer', customAction: '_tourInstallPWA' });
+    } else if (_isIOS) {
+      _tourSteps.push({ el: null, emoji: '\uD83D\uDCF2', title: 'Installe l\'app !', body: 'Ajoute Matheux sur ton \u00e9cran d\'accueil pour y acc\u00e9der en 1 tap, comme une vraie app.', pos: 'center', customBtn: 'Voir comment', customAction: '_tourShowIosTuto' });
+    }
+  }
+  _tourSteps.push({ el: function(){ return document.querySelector('#main-app .pop-in.rounded-2xl'); }, emoji: '\u26A1', title: 'Ton entra\u00eenement du jour', body: 'Chaque jour, 5 exercices personnalis\u00e9s t\'attendent ici. C\'est ton point de d\u00e9part.', pos: 'below' });
+  _tourSteps.push({ el: null, emoji: '\uD83D\uDE80', title: 'C\'est parti !', body: 'Lance ton premier entra\u00eenement. Bonne chance !', pos: 'center', last: true });
   _tourIdx = 0;
   var ov = document.createElement('div');
   ov.id = 'tour-overlay';
