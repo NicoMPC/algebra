@@ -4168,8 +4168,9 @@ function _tourInstallPWA() {
   if (window._pwaPrompt) {
     window._pwaPrompt.prompt();
     window._pwaPrompt.userChoice.then(function(r) {
+      _trackPwa(r.outcome === 'accepted' ? 'installed' : 'dismissed');
+      localStorage.setItem('mx_pwa_logins', '0');
       if (r.outcome === 'accepted') {
-        localStorage.setItem('mx_pwa_dismiss', '' + Date.now());
         if (typeof showT === 'function') showT('Matheux installé ! 🎉', 4000, '🎉');
       }
       window._pwaPrompt = null;
@@ -13177,9 +13178,10 @@ function _checkPwaInstall() {
   if (window.navigator.standalone === true) return;
   // Skip si admin
   if (S && S.prof && S.prof.isAdmin) return;
-  // Skip si déjà dismissé (1 semaine cooldown)
-  var dismissTs = parseInt(localStorage.getItem('mx_pwa_dismiss') || '0');
-  if (dismissTs && (Date.now() - dismissTs) < 7 * 24 * 3600 * 1000) return;
+  // Skip si pas encore 2 connexions depuis le dernier dismiss
+  var pwaLogins = parseInt(localStorage.getItem('mx_pwa_logins') || '0') + 1;
+  localStorage.setItem('mx_pwa_logins', '' + pwaLogins);
+  if (pwaLogins < 2) return;
 
   var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
   var hasPrompt = !!window._pwaPrompt;
@@ -13233,6 +13235,7 @@ function _checkPwaInstall() {
       if (window._pwaPrompt) {
         window._pwaPrompt.prompt();
         window._pwaPrompt.userChoice.then(function(r) {
+          _trackPwa(r.outcome === 'accepted' ? 'installed' : 'dismissed');
           if (r.outcome === 'accepted') {
             if (typeof showT === 'function') showT('Matheux installé ! 🎉', 4000, '🎉');
           }
@@ -13240,13 +13243,14 @@ function _checkPwaInstall() {
         });
       }
       div.remove();
-      localStorage.setItem('mx_pwa_dismiss', '' + Date.now());
+      localStorage.setItem('mx_pwa_logins', '0');
     });
   }
 
   var tutoBtn = document.getElementById('pwa-nudge-tuto');
   if (tutoBtn) {
     tutoBtn.addEventListener('click', function() {
+      _trackPwa('ios_tuto');
       div.remove();
       _showIosTuto();
     });
@@ -13255,13 +13259,25 @@ function _checkPwaInstall() {
   var closeBtn = document.getElementById('pwa-nudge-close');
   if (closeBtn) {
     closeBtn.addEventListener('click', function() {
+      _trackPwa('dismissed');
       div.remove();
-      localStorage.setItem('mx_pwa_dismiss', '' + Date.now());
+      localStorage.setItem('mx_pwa_logins', '0');
     });
   }
 
   // Auto-dismiss après 15s (banner seulement, pas le tuto)
-  setTimeout(function() { if (div.parentNode) div.remove(); }, 15000);
+  setTimeout(function() { if (div.parentNode) { div.remove(); localStorage.setItem('mx_pwa_logins', '0'); } }, 15000);
+}
+
+// ── PWA tracking ──────────────────────────────────────────
+function _trackPwa(action) {
+  // Compteur local pour admin
+  var k = 'mx_pwa_' + action;
+  localStorage.setItem(k, '' + (parseInt(localStorage.getItem(k) || '0') + 1));
+  // Log GAS (fire-and-forget)
+  if (S && S.prof && S.prof.code) {
+    fetch(API, { method: 'POST', body: JSON.stringify({ action: 'log_event', code: S.prof.code, event: 'pwa_' + action }) }).catch(function(){});
+  }
 }
 
 // ── Tuto visuel iOS : bottom-sheet animé ──────────────────
@@ -13356,7 +13372,7 @@ function _showIosTuto() {
       if (backdrop.parentNode) backdrop.remove();
       if (sheet.parentNode) sheet.remove();
     }, 350);
-    localStorage.setItem('mx_pwa_dismiss', '' + Date.now());
+    localStorage.setItem('mx_pwa_logins', '0');
   }
 
   backdrop.addEventListener('click', _closeIosTuto);

@@ -45,7 +45,7 @@
 | 4 | Vrais témoignages élèves/parents sur landing | À collecter | 🔵 |
 | 5 | **UX sans boost** — bandeau "ton boost arrive bientôt" si aucun boost généré | Frontend | 🟡 |
 | 6 | **Centraliser 3 mails matheux.fr** (Thunderbird/alias/redirection) | Ionos | 🟡 |
-| 7 | **PWA bouton install manuel** — fallback si beforeinstallprompt pas déclenché | Frontend | 🟡 |
+| 7 | ~~PWA bouton install manuel~~ | ✅ FAIT 02/04 — nudge toutes les 2 connexions + tracking install/dismiss/ios_tuto |
 
 ---
 
@@ -63,7 +63,7 @@
 | 7 | **Séquences J+3/J+5/J+7 activées** — trigger Apps Script (manuel pour l'instant) | 🟡 |
 | 8 | Double confirmation mot de passe inscription | 🟡 |
 | 9 | Template email inscription + rapport parent (design) | 🟡 |
-| 10 | ~~PWA install~~ | ✅ FAIT 01/04 — prompt post-login + tuto iOS + tour onboarding. ⚠️ beforeinstallprompt Chrome Android pas déclenché (heuristiques). Bouton fallback prévu 02/04 |
+| 10 | ~~PWA install~~ | ✅ FAIT 01/04 — prompt post-login + tuto iOS + tour onboarding. Relance toutes les 2 connexions + tracking (02/04) |
 | ~~11~~ | ~~**Fix hero P2 wording reprise partielle**~~ | ✅ FAIT 2026-03-28 |
 | 12 | **Archi ChapAssigned** — persister chapitres assignés dans un sheet dédié (comme DailyBoosts) au lieu du one-shot Suivi col G | 🟡 |
 

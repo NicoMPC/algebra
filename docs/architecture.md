@@ -44,7 +44,7 @@
 | Hébergement | GitHub Pages | `matheux.fr` | Auto-deploy sur push |
 | Backend hosting | Google Apps Script Web App | URL fixe via deployment ID | — |
 | Auth | SHA-256 client-side | localStorage `boost_v23` | `email + '::' + password + '::AB22'` |
-| PWA | manifest.json + sw.js (cache v11) | `app.html` scope | Standalone, portrait |
+| PWA | manifest.json + sw.js (cache v11) | `app.html` scope | Standalone, portrait. Nudge toutes les 2 connexions (`mx_pwa_logins`). Tracking `_trackPwa()` → localStorage + GAS `log_event` |
 
 ---
 
