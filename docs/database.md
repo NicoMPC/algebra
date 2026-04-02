@@ -220,11 +220,27 @@ Pool d'exercices **dédiée aux boosts quotidiens**, séparée de Curriculum_Off
 - Milestones **10/20** → toast gamification +50 XP + bouton "📖 Mon cours" sur la carte chapitre
 - Imprimable/PDF via bouton dans la modale cours (`window.print()`)
 
-### Mécanisme J+1 (publishDate)
+### Mécanisme J+1 (publishDate) — NON NÉGOCIABLE
 
+**Principe** : l'élève ne reçoit JAMAIS du contenu fraîchement généré le jour même.
+
+#### Via Suivi (chapitres + boosts admin)
 Les JSON des cellules →Nouveau Boost (col S) et →Nouveau Ch (cols G/J/M/P) contiennent un champ `publishDate` (format `yyyy-MM-dd`), auto-ajouté par `publishAdminBoost()` / `publishAdminChapter()`.
 
-**Règle :** `login()` ne délivre le contenu que si `publishDate < today`. Si publié aujourd'hui → `teasingChapter: true` / `teasingBoost: true` dans la réponse, cellule NON vidée. L'élève voit une modale teasing ("Rendez-vous demain 🔥"). Le lendemain, `publishDate < today` → contenu livré normalement et cellule vidée.
+`login()` ne délivre le contenu que si `publishDate < today`. Si publié aujourd'hui → `teasingChapter: true` / `teasingBoost: true` dans la réponse, cellule NON vidée. L'élève voit une modale teasing ("Rendez-vous demain 🔥"). Le lendemain, `publishDate < today` → contenu livré normalement et cellule vidée.
+
+#### Via DailyBoosts (agent admin autonome)
+L'agent injecte directement dans DailyBoosts avec `Date = demain` et `ExosDone = 0`.
+
+`login()` cherche un boost dont `Date == today` (L487-498). Si `Date = demain`, le boost n'est **pas** trouvé aujourd'hui. Le lendemain, `Date == today` → le boost est livré.
+
+**Rattrapage** (L500-503) : si l'élève se connecte plusieurs jours après, le boost est servi via le fallback `lastUnfinishedBoost` (cherche le dernier boost avec `ExosDone < 5`). Le boost n'est jamais perdu.
+
+| Scénario | Résultat | Mécanisme |
+|---|---|---|
+| Connexion jour de l'injection | ❌ Pas visible | `Date != today` |
+| Connexion le lendemain | ✅ Livré | `Date == today` |
+| Connexion J+12 | ✅ Livré en rattrapage | `ExosDone < 5` → fallback |
 
 ### BrevetResults
 

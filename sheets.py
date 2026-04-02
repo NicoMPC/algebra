@@ -78,6 +78,16 @@ class Sheets:
             body={"values": [row]}
         ).execute()
 
+    def append_rows(self, tab: str, rows: list[list]):
+        """Ajoute plusieurs lignes en un seul appel (1 write request)."""
+        self._api.values().append(
+            spreadsheetId=SHEET_ID,
+            range=f"{tab}!A1",
+            valueInputOption="RAW",
+            insertDataOption="INSERT_ROWS",
+            body={"values": rows}
+        ).execute()
+
     def update_cell(self, tab: str, row: int, col: int, value):
         """Met à jour une cellule (row et col en 1-indexé)."""
         col_letter = chr(64 + col)

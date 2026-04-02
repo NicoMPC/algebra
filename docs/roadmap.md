@@ -56,8 +56,8 @@
 | ~~0~~ | ~~**Brevet 2026 — intégration**~~ | ✅ FAIT 2026-03-28 |
 | 1 | **Doublons 1ERE** : 24 doublons Diag/Boost/Curriculum — non bloquant | 🟡 |
 | 2 | **Profil d'apprentissage élève** — page dédiée (3 points forts, 2 lacunes, vitesse, streak record). Cadenas overlay trial J+7. | 🟡 |
-| 3 | **Automatisation boosts nuit** — agent qui génère JSON boost depuis Scores, pousse dans Suivi. Dès 30 clients. | 🟡 |
-| 4 | Agent analyse lacunes quotidien automatique | 🔵 |
+| 3 | ~~Automatisation boosts nuit~~ | ✅ Pipeline validé 02/04 — agent admin autonome, injection DailyBoosts Date=demain. Reste : agent `.md` + scheduler |
+| 4 | ~~Agent analyse lacunes quotidien automatique~~ | ✅ Intégré dans l'agent admin autonome (analyse Scores → diagnostic → génération → injection) |
 | 5 | **Migration Sheets → Supabase** — ~1 journée. Trigger : ~200-300 inscrits. Stack : Supabase PostgreSQL + Edge Functions. Frontend vanilla JS inchangé. | 🔵 |
 | 6 | `replyTo: nicolas@matheux.fr` sur J+3, J+7 et reset MDP | 🟡 |
 | 7 | **Séquences J+3/J+5/J+7 activées** — trigger Apps Script (manuel pour l'instant) | 🟡 |
@@ -153,7 +153,7 @@ Détail complet : [programme-français-verif.md](programme-français-verif.md)
 
 | Palier | Action | Effort réel |
 |---|---|---|
-| **Maintenant** | Automatiser boucle admin (agent GAS analyse + assignation auto) | ~2-3h |
+| **Maintenant** | ✅ Agent admin autonome — pipeline validé 02/04 (4 profils, 20 exos, publishDate J+1 prouvé). Reste : créer `.claude/agents/admin-auto.md` + scheduler 2×/jour | ~2h |
 | **Maintenant** | ✅ PWA install prompt post-login (Android + iOS + PC) | FAIT 01/04 |
 | **~50 élèves** | Nicolas passe de opérateur à superviseur | Process |
 | **~100+ inscrits** | Migration Supabase (PostgreSQL + Edge Functions + Auth) | ~1 journée |

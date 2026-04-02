@@ -129,6 +129,7 @@ function doPost(e) {
       case 'add_teasing_early':          res = addTeasingEarly(p);         break;
       case 'stripe_webhook':             res = stripeWebhook(p);           break;
       case 'send_contact':               res = sendContact(p);             break;
+      case 'send_welcome_email':          res = sendWelcomeEmail(p);        break;
       case 'get_audit_exos':             res = getAuditExos(p);            break;
       case 'get_audit_remarks':          res = getAuditRemarks(p);        break;
       case 'report_exo':                 res = reportExo(p);              break;
@@ -4530,6 +4531,26 @@ function _isUnsubscribed(email) {
  * Envoie l'email marketing du jour `day` (0, 3 ou 7) à l'utilisateur.
  * Retourne { status: 'success' } ou { status: 'error', message: ... }
  */
+// Proxy depuis Supabase Edge Function — envoie email bienvenue J+0 + notif fondateur
+function sendWelcomeEmail(p) {
+  var email = (p.email || '').trim().toLowerCase();
+  var name = (p.name || '').trim();
+  var code = (p.code || '').trim();
+  var level = (p.level || '').trim();
+  var objectif = (p.objectif || '').trim();
+  if (!email || !name) return { status: 'error', message: 'email et name requis.' };
+  // Email bienvenue J+0
+  try { sendMarketingSequence(email, name, 0, objectif); } catch(e) {}
+  // Notification fondateur
+  try {
+    GmailApp.sendEmail(FOUNDER_EMAIL,
+      '[Matheux] Nouvelle inscription : ' + name + ' (' + level + ')',
+      name + ' (' + level + ') vient de s\'inscrire.\nEmail parent : ' + email + '\nCode : ' + code + '\nObjectif : ' + (objectif || '—')
+    );
+  } catch(e) {}
+  return { status: 'success' };
+}
+
 function sendMarketingSequence(email, prenom, day, objectif) {
   objectif = objectif || 'lacunes';
   // Check désinscription

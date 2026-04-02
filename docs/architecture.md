@@ -39,11 +39,14 @@
 |---|---|---|---|
 | Landing SEO | Next.js SSG (build exporté, source hors repo) | `index.html` | ~4000 lignes |
 | App SPA | HTML + CSS vars + Tailwind CDN + JS vanilla | `app.html` | ~13000 lignes |
-| Backend | Google Apps Script (V8) | `backend.js` | ~5300 lignes |
-| Base de données | Google Sheets | — | 19 onglets |
+| Backend API | Supabase Edge Function (Deno) | `supabase/functions/api/index.ts` | ~900 lignes |
+| Backend emails | Google Apps Script (V8) — GmailApp only | `backend.js` | ~5300 lignes |
+| Base de données | Supabase PostgreSQL (West EU Paris) | `supabase/schema.sql` | 14 tables + RLS |
+| Base legacy | Google Sheets (backup, emails) | — | 14 onglets |
 | Hébergement | GitHub Pages | `matheux.fr` | Auto-deploy sur push |
-| Backend hosting | Google Apps Script Web App | URL fixe via deployment ID | — |
-| Auth | SHA-256 client-side | localStorage `boost_v23` | `email + '::' + password + '::AB22'` |
+| Backend hosting | Supabase Edge Functions | `xlfzhcanzmqqlxtavzrd.supabase.co` | — |
+| Auth | SHA-256 client-side → Supabase Auth (bcrypt) | localStorage `boost_v23` | Hash SHA-256 = mot de passe Supabase |
+| Emails | GAS GmailApp (proxy depuis Edge Function) | `send_welcome_email` | Migration Resend prévue à ~50 users |
 | PWA | manifest.json + sw.js (cache v11) | `app.html` scope | Standalone, portrait. Nudge toutes les 2 connexions (`mx_pwa_logins`). Tracking `_trackPwa()` → localStorage + GAS `log_event` |
 
 ---

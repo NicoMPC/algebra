@@ -151,7 +151,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | G13 | **Mode Flow** | 5 exos EASY consécutifs en ≤timer → XP ×2 pendant 5 exos |
 | G14 | **Timer configurable** | `_getTimerDuration()` — 60s standard, 30s automatismes |
 | G15 | **Cours adaptatif** | 2 sections débloquées à 10 et 20 exos curriculum. Imprimable/PDF. +50 XP par section débloquée. Bouton "📖 Mon cours" sur chaque carte chapitre |
-| G16 | **J+1 delivery** | Tout contenu publié par admin (boost/chapitre) est dispo le LENDEMAIN. `publishDate` dans le JSON Suivi. Modale teasing si l'élève se connecte le jour même |
+| G16 | **J+1 delivery** | Tout contenu publié (admin OU agent auto) est dispo le LENDEMAIN. `publishDate` dans le JSON Suivi + `Date` dans DailyBoosts. Login matche `Date == today` (boost direct) ou `ExosDone < 5` (rattrapage si connexion tardive). Modale teasing si connexion le jour même. **Non négociable** — l'élève ne doit JAMAIS recevoir du contenu fraîchement généré le jour même |
 
 ### 3.6 Admin
 
@@ -163,6 +163,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | A4 | **Workflow** | Nicolas prépare en admin → élève reçoit au login → archives consultables |
 | A5 | **Limite bêta** | 50 vrais élèves (IsTest=0) |
 | A6 | **Admin read-only** | Login admin ne consomme jamais les données one-shot (nextChapter, boost) |
+| A7 | **Agent admin autonome** | Agent lancé 2×/jour (matin+soir). Scanne Scores → diagnostique patterns → génère boosts/chapitres → injecte dans DailyBoosts avec `Date = demain` et `ExosDone = 0`. L'élève reçoit le contenu à sa prochaine connexion ≥ lendemain. Nicolas vérifie a posteriori. Pipeline validé le 02/04 (4 profils test, 20 exos, 100% validate_exos.py) |
 
 ---
 
@@ -196,15 +197,16 @@ Qualités non négociables :
 ```bash
 cd "/home/nicolas/Bureau/algebra live/algebra"
 
-# Backend GAS
+# API Supabase (Edge Function)
+npx supabase functions deploy api --project-ref xlfzhcanzmqqlxtavzrd --no-verify-jwt
+
+# Backend GAS (emails uniquement)
 clasp push --force
 clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF --description "desc"
+./deploy.sh "desc"  # raccourci
 
 # Frontend (GitHub Pages auto-deploy)
-git add index.html && git commit -m "feat: ..." && git push origin main
-
-# Raccourci GAS
-./deploy.sh "desc"
+git add app.html && git commit -m "feat: ..." && git push origin main
 ```
 
 ### ⛔ clasp push — PIÈGE CRITIQUE
@@ -269,9 +271,12 @@ python3 check_students.py       # Health check données élèves
 
 | Ressource | Valeur |
 |---|---|
-| GAS URL | `https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec` |
-| Deployment ID | `AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF` |
-| Sheet ID (prod) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
+| **API principale** | `https://xlfzhcanzmqqlxtavzrd.supabase.co/functions/v1/api` |
+| **Supabase project** | `xlfzhcanzmqqlxtavzrd` (matheux-prod, West EU Paris) |
+| **Supabase dashboard** | `https://supabase.com/dashboard/project/xlfzhcanzmqqlxtavzrd` |
+| GAS URL (emails only) | `https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec` |
+| GAS Deployment ID | `AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF` |
+| Sheet ID (legacy) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
 | GitHub | `https://github.com/MatheuxApp/algebra` (privé) |
 | Stripe PROD | `https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01` |
 

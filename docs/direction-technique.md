@@ -253,7 +253,8 @@ Ce process est aujourd'hui manuel (Nicolas + IA). Les étapes automatisables :
 8. ✅ **Agent "UX Engineer"** (`.claude/agents/ux-audit.md`) — agent Claude Code qui vérifie la cohérence états/affichage après chaque session de code. Paranoïaque : simule chaque état élève, vérifie les données disponibles, bloque si données manquantes. (fait 2026-03-24)
 9. ✅ **Système draft** — l'agent écrit `draft:true` dans Suivi. Le backend ignore les drafts au login. Nicolas clique "Publier" pour rendre live + persister dans RemediationChapters. L'élève ne reçoit RIEN tant que Nicolas n'a pas publié. (fait 2026-03-24)
 10. ✅ **RemediationChapters** — persistance per-student des exercices overridés. Survit aux re-logins. `prevExos` archive les exercices V1 pour le retro. (fait 2026-03-24)
-11. 🔜 Génération auto des exos via Claude API (remplace l'agent conversationnel) — Nicolas valide toujours avant publish
+11. ✅ **Pipeline agent admin autonome** — validé 02/04. Analyse Scores → diagnostic patterns → génération boosts → injection DailyBoosts `Date=demain`. 4 profils test (faible/ciblé/moyen/fort), 20 exos, 100% validate_exos.py. publishDate J+1 prouvé (pas visible jour même, livré demain, rattrapage J+12). Prêt pour scheduling 2×/jour (matin+soir).
+12. 🔜 **Agent `.claude/agents/admin-auto.md`** — scheduling cron 2×/jour, gère aussi les chapitres (20 exos), pas seulement les boosts
 
 ---
 
