@@ -124,7 +124,7 @@ document.head.appendChild(_s);
 
 // Fix 5: Add "Se connecter" link — pure CSS + HTML injected in <head> to survive React hydration
 var _ls = document.createElement('style');
-_ls.textContent = '#mx-login-btn{position:fixed;top:1rem;right:1rem;z-index:99999;color:rgba(255,255,255,.7);font-size:.8rem;font-weight:600;font-family:Syne,sans-serif;text-decoration:none;padding:.5rem 1rem;border:1px solid rgba(255,255,255,.2);border-radius:10px;backdrop-filter:blur(8px);background:rgba(255,255,255,.05)}#mx-login-btn:hover{color:#fff;border-color:rgba(255,255,255,.4)}';
+_ls.textContent = '#mx-login-btn{position:fixed!important;top:1rem!important;right:1rem!important;z-index:2147483647!important;color:rgba(255,255,255,.7);font-size:.8rem;font-weight:600;font-family:Syne,sans-serif;text-decoration:none;padding:.5rem 1rem;border:1px solid rgba(255,255,255,.2);border-radius:10px;backdrop-filter:blur(8px);background:rgba(15,23,42,.6);pointer-events:auto!important;display:block!important}#mx-login-btn:hover{color:#fff;border-color:rgba(255,255,255,.4)}';
 document.head.appendChild(_ls);
 window.addEventListener('load', function() {
   setTimeout(function() {
