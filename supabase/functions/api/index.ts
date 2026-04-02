@@ -541,18 +541,64 @@ async function saveCalibrationBatch(p: Record<string, unknown>) {
 
 // ── GENERATE_DIAGNOSTIC ─────────────────────────────────────
 
+// Explicit mapping for frontend names that lost accented chars (BREVET_PACK in app.html)
+const CHAP_ALIAS: Record<string, string[]> = {
+  "calcul_littral": ["calcul_litteral"],
+  "thorme_de_thals": ["thales"],
+  "trigonomtrie": ["trigonometrie"],
+  "probabilits": ["probabilites"],
+};
+
+// Normalise for fuzzy match: lowercase, strip accents, strip _Brevet, strip _de_, underscores
+function _normCat(s: string): string {
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().replace(/_brevet$/, "").replace(/_+$/, "")
+    .replace(/_de_/g, "_").replace(/_/g, "");
+}
+
+// Expand a frontend chapter name into all possible normalized forms to match against
+function _expandNorms(frontendName: string): string[] {
+  const base = _normCat(frontendName);
+  const key = frontendName.toLowerCase().replace(/_+$/, "");
+  const aliases = CHAP_ALIAS[key] || [];
+  return [base, ...aliases.map(_normCat)];
+}
+
+// Fuzzy match: check if two normalized strings are "close enough"
+// Handles frontend stripping accented chars (Littral vs Litteral, Thorme vs Theoreme)
+function _fuzzyMatch(frontNorm: string, dbNorm: string): boolean {
+  if (frontNorm === dbNorm) return true;
+  if (dbNorm.startsWith(frontNorm) || frontNorm.startsWith(dbNorm)) return true;
+  if (dbNorm.includes(frontNorm) || frontNorm.includes(dbNorm)) return true;
+  // Subsequence check: all chars of shorter must appear in order in longer
+  const [short, long] = frontNorm.length <= dbNorm.length ? [frontNorm, dbNorm] : [dbNorm, frontNorm];
+  let j = 0;
+  for (let i = 0; i < long.length && j < short.length; i++) {
+    if (long[i] === short[j]) j++;
+  }
+  // If short is a subsequence and at least 60% of long's length, it's a match
+  if (j === short.length && short.length >= long.length * 0.5) return true;
+  return false;
+}
+
 async function generateDiagnostic(p: Record<string, unknown>) {
   const level = String(p.level || "").toUpperCase();
   const selectedChapters = (p.selectedChapters || []) as string[];
 
-  let query = adminClient.from("diagnostic_exos")
+  // Always fetch all categories for this level, then filter in memory
+  // (handles frontend sending stripped names like "Calcul_Littral" vs DB "Calcul_Litteral_Brevet")
+  const { data: allRows } = await adminClient.from("diagnostic_exos")
     .select("categorie, exos_json").eq("niveau", level);
 
-  if (selectedChapters.length > 0) {
-    query = query.in("categorie", selectedChapters);
-  }
+  let diagRows = allRows || [];
 
-  const { data: diagRows } = await query;
+  if (selectedChapters.length > 0) {
+    const allNorms = selectedChapters.flatMap(_expandNorms);
+    diagRows = diagRows.filter((r: Record<string, unknown>) => {
+      const dbNorm = _normCat(String(r.categorie));
+      return allNorms.some(ns => _fuzzyMatch(ns, dbNorm));
+    });
+  }
   const exos: unknown[] = [];
   (diagRows || []).forEach((r: Record<string, unknown>) => {
     const parsed = typeof r.exos_json === "string" ? JSON.parse(r.exos_json) : (r.exos_json || []);
