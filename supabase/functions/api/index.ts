@@ -57,7 +57,7 @@ async function register(p: Record<string, unknown>) {
   const name = String(p.name || "").trim();
   const email = String(p.email || "").trim().toLowerCase();
   const level = String(p.level || "").toUpperCase();
-  const password = String(p.raw_password || "").trim();
+  const password = String(p.raw_password || p.password || "").trim();
   const objectif = String(p.objectif || "").trim().substring(0, 50);
 
   if (!name) return { status: "error", message: "Le prénom est requis." };
