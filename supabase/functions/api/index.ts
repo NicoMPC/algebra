@@ -709,8 +709,15 @@ async function generateDiagnostic(p: Record<string, unknown>) {
   (diagRows || []).forEach((r: Record<string, unknown>) => {
     const parsed = typeof r.exos_json === "string" ? JSON.parse(r.exos_json) : (r.exos_json || []);
     if (Array.isArray(parsed) && parsed.length > 0) {
-      // 1 question aléatoire par chapitre
-      const pick = parsed[Math.floor(Math.random() * parsed.length)];
+      // Filtrer les fill côté backend (diagnostic = QCM/VF uniquement)
+      const qcmVf = parsed.filter((e: Record<string, unknown>) => {
+        if (e.type === "fill") return false;
+        const opts = (e.options || e.opts || []) as unknown[];
+        if (!opts.length && e.a) return false; // fill implicite
+        return true;
+      });
+      const pool = qcmVf.length > 0 ? qcmVf : parsed; // fallback si tout est fill
+      const pick = pool[Math.floor(Math.random() * pool.length)];
       exos.push({ ...pick, categorie: r.categorie });
     }
   });
