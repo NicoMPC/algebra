@@ -76,13 +76,7 @@ async function register(p: Record<string, unknown>) {
 
   const isTest = email.endsWith("@matheux.fr") || p.test === true;
 
-  // Limite bêta 50
-  if (!isTest) {
-    const { count } = await adminClient.from("profiles").select("code", { count: "exact", head: true }).eq("is_admin", false).eq("is_test", false);
-    if ((count || 0) >= 50) {
-      return { status: "waitlist", message: "Matheux est en bêta privée limitée à 50 familles. Votre adresse est sur liste d'attente." };
-    }
-  }
+  // Limite bêta supprimée — Supabase tient la charge (migration 02/04/2026)
 
   // Créer user Supabase Auth
   const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
