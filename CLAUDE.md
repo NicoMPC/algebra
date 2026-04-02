@@ -88,7 +88,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 
 | # | Règle | Détail |
 |---|-------|--------|
-| P1 | **Diagnostic express 5 questions** | L'élève est testé sur 5 questions (1 par bloc thématique ou par chapitre sélectionné). Banque de 54 questions dans DiagnosticExos (3 par chapitre). ~1 min. |
+| P1 | **Diagnostic express 5 questions** | L'élève est testé sur 5 questions (1 par bloc thématique ou par chapitre sélectionné). Banque de 54 questions dans DiagnosticExos (3 par chapitre). ~1 min. **QCM/VF uniquement** — les fill sont filtrés côté backend (`generateDiagnostic`) ET frontend (`_pickDiagExos`). |
 | P2 | **Boost quotidien = 5 exercices** | Ciblés sur les lacunes, ~10 min |
 | P3 | **Chapitres = 20 exercices (4 parapluies × 5 questions)** | Format v4 : 1 contexte réel + 5 sous-questions progressives = 1 slot. Mix obligatoire : 2 fill + 2 QCM + 1 V/F. Voir `docs/prompt-generation-exos.md` |
 | P4 | **Tous les chapitres accessibles** | Pas de verrou, pas de limite 1/jour |

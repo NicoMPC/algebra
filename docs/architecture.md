@@ -173,7 +173,7 @@ GAS est conservé uniquement pour l'envoi d'emails (GmailApp). L'Edge Function p
 | `save_scores_batch` | Batch jusqu'à 25 scores en 1 appel (frontend flushQ) |
 | `save_boost` | Sauvegarde fin de boost (ExosDone) |
 | `save_calibration_batch` | Sauvegarde diagnostic (batch scores calibrage) |
-| `generate_diagnostic` | Génère quiz diagnostic (5 questions, fuzzy match chapitres) |
+| `generate_diagnostic` | Génère quiz diagnostic (5 questions QCM/VF, fill filtrés, fuzzy match chapitres) |
 | `get_progress` | Progression par chapitre + boost du jour / rattrapage |
 | `check_trial_status` | Vérifie trial { trialActive, daysLeft, isPremium } |
 | `submit_feedback` | Feedback élève → table insights |
