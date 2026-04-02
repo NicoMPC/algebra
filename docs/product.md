@@ -36,7 +36,7 @@ Argument commercial principal : "Un système supervisé par un accompagnant exp�
 ### Nicolas (fondateur)
 - Seul sur le projet, 2-3h/jour de travail manuel en phase 1
 - Gère boosts quotidiens, chapitres, relances
-- Google Sheets + Admin Panel comme outils principaux
+- Supabase (PostgreSQL + Edge Functions) + Admin Panel comme outils principaux
 
 ---
 

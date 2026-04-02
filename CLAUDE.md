@@ -8,7 +8,7 @@
 
 ## 0. Projet en 30 secondes
 
-Matheux (matheux.fr) est une SPA vanilla JS (`index.html` ~10000L) + backend Google Apps Script (`backend.js` ~5300L) sur Google Sheets.
+Matheux (matheux.fr) est une SPA vanilla JS (`app.html` ~13000L) + backend Supabase Edge Functions (`supabase/functions/api/index.ts` ~900L) sur PostgreSQL + GAS pour emails uniquement (`backend.js`, legacy).
 Soutien scolaire maths adaptatif, 3ème Brevet 2026 (focus actuel).
 Fondateur solo : Nicolas Follezou. Objectif : 10 premiers vrais élèves.
 
@@ -48,10 +48,15 @@ Nicolas décide, je propose et j'exécute.
 ```
 Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 
-### Schéma Google Sheets
-- Ne **jamais** changer de colonnes sans documenter dans [database.md](docs/database.md)
-- Index de colonnes **hardcodés** dans le backend → toute modification non documentée casse tout
-- ⚠️ `Users.Code` (col A) = **clé primaire** — le backend `getRows` mappe par header, donc si la colonne ou le header disparaît, `user['Code']` = undefined → tous les `history`, `progress`, `boost` reviennent vides → quiz diagnostic forcé pour tous les élèves
+### Schéma Supabase PostgreSQL
+- Ne **jamais** modifier le schéma sans documenter dans [database.md](docs/database.md) et `supabase/schema.sql`
+- 14 tables avec RLS (Row Level Security) — voir `supabase/schema.sql`
+- ⚠️ `profiles.code` = **clé primaire métier** — si elle disparaît, tout casse (même logique qu'avant)
+- Google Sheets conservé en backup/référence (plus écrit en prod)
+
+### Schéma Google Sheets (LEGACY)
+- Index de colonnes **hardcodés** dans backend.js (GAS) — ne toucher que pour les emails
+- ⚠️ `Users.Code` (col A) = **clé primaire** — encore utilisé par GAS pour les emails
 
 ### Compatibilité GAS
 - Runtime V8 limité (pas de modules ES, pas de top-level await)
@@ -329,8 +334,8 @@ Quand un problème est signalé, **lire le playbook du domaine concerné** avant
 
 | Script | Description |
 |---|---|
-| `sheets.py` | Bibliothèque Google Sheets API |
-| `rebuild_sheet.py` | Reconstruit Suivi + Historique |
+| `sheets.py` | Bibliothèque Google Sheets API (legacy, backup) |
+| `rebuild_sheet.py` | Reconstruit Suivi + Historique (legacy) |
 | `test_full_v2.py` | Suite de tests complète (74/74) |
 | `validate_exos.py` | Gate qualité exercices — valide JSON avant injection |
 | `audit_exos.py` | Audit qualité exercices |

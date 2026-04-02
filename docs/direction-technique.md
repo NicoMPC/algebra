@@ -20,7 +20,9 @@
 
 ## 1. Analyse des données élève — les signaux à lire
 
-### Source : onglet Scores
+### Source : table `scores` (Supabase PostgreSQL)
+
+> Anciennement onglet Scores dans Google Sheets. Migré le 02/04/2026.
 
 Pour chaque exercice fait par l'élève, on a :
 

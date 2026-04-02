@@ -1,15 +1,29 @@
-# Base de données — Google Sheets — Matheux
+# Base de données — Matheux
 
-> Schéma complet de la base de données Google Sheets.
+> Depuis le 02/04/2026, la base de données principale est **Supabase PostgreSQL**.
+> Google Sheets est conservé en backup/référence historique (plus écrit en prod).
 > Voir aussi [architecture.md](architecture.md) pour les flux, [claude.md](claude.md) pour les règles, [product.md](product.md) pour le produit.
 
 ---
 
 ## Informations de connexion
 
+### Supabase PostgreSQL (PROD — principal)
+
+| Ressource | Valeur |
+|---|---|
+| **Project** | `matheux-prod` (West EU Paris) |
+| **Project ref** | `xlfzhcanzmqqlxtavzrd` |
+| **API URL** | `https://xlfzhcanzmqqlxtavzrd.supabase.co/functions/v1/api` |
+| **Dashboard** | `https://supabase.com/dashboard/project/xlfzhcanzmqqlxtavzrd` |
+| **Schema** | `supabase/schema.sql` (14 tables + RLS) |
+| **Auth** | Supabase Auth (bcrypt). SHA-256 frontend = mot de passe Supabase |
+
+### Google Sheets (LEGACY — backup)
+
 | Environnement | Sheet ID |
 |---|---|
-| **Production** (GAS + Python) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
+| **Backup** (emails + référence) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
 
 Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 
@@ -22,7 +36,11 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 
 ---
 
-## Onglets — Vue d'ensemble
+## Onglets Google Sheets — Vue d'ensemble (LEGACY)
+
+> ⚠️ Ces onglets décrivent la structure Google Sheets historique.
+> Les données live sont maintenant dans Supabase PostgreSQL (14 tables).
+> Google Sheets reste utilisé par GAS pour les emails et comme backup de référence.
 
 ### Onglets Nicolas (lecture + écriture via Admin)
 

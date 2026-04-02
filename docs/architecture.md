@@ -21,18 +21,24 @@
                     │                                     │
                     └────────────┬────────────────────────┘
                                  │
-                    fetch POST (JSON, SANS Content-Type)
+                    fetch POST (JSON body)
+                                 │
+                    ┌────────────▼────────────────────────┐
+                    │  SUPABASE EDGE FUNCTION (index.ts)  │
+                    │  HTTP POST → dispatch action        │
+                    │  ~37 actions, Deno runtime           │
+                    │  Lit/écrit Supabase PostgreSQL       │
+                    └────────────┬────────────────────────┘
+                                 │
+                    Supabase PostgreSQL (prod)
+                    Project: matheux-prod (West EU Paris)
+                    14 tables + RLS
                                  │
                     ┌────────────▼────────────────────────┐
                     │  GOOGLE APPS SCRIPT (backend.js)    │
-                    │  doPost(e) → dispatch action        │
-                    │  51 actions, @133                    │
-                    │  Lit/écrit Google Sheets             │
-                    └────────────┬────────────────────────┘
-                                 │
-                    Google Sheets (prod)
-                    ID: 1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4
-                    19 onglets (11 core + 2 dashboard + 4 admin + 2 archive)
+                    │  Emails uniquement (GmailApp)       │
+                    │  Proxyé depuis Edge Function         │
+                    └─────────────────────────────────────┘
 ```
 
 | Composant | Technologie | Fichier | Taille |
@@ -100,7 +106,7 @@ const S = {
 - `localStorage('boost_loc_v23')` : `{ [code]: { stk, last } }` — streak local
 - `localStorage('app_night')` : `'1'` si mode nuit app actif — persisté entre sessions
 - `localStorage('mx_coach_v1')` : coach marks affichés (indice/boost/brouillon)
-- Toutes les données viennent du GAS à chaque login (pas de cache de données)
+- Toutes les données viennent de Supabase à chaque login (pas de cache de données)
 
 ### Librairies externes (CDN)
 
@@ -124,7 +130,19 @@ const S = {
 
 ---
 
-## Backend — Google Apps Script
+## Backend API — Supabase Edge Functions
+
+> Depuis le 02/04/2026. Remplace GAS comme API principale.
+> Source : `supabase/functions/api/index.ts` (~900 lignes, Deno runtime)
+> URL : `https://xlfzhcanzmqqlxtavzrd.supabase.co/functions/v1/api`
+> Dispatch sur `action` dans le body JSON (même pattern que l'ancien GAS `doPost`)
+
+Toutes les actions métier (register, login, save_score, publish, etc.) passent par l'Edge Function.
+GAS est conservé uniquement pour l'envoi d'emails (GmailApp). L'Edge Function proxy vers GAS pour `send_welcome_email`.
+
+---
+
+## Backend Emails — Google Apps Script (legacy)
 
 ### Point d'entrée
 
@@ -140,14 +158,10 @@ function doPost(e) {
 }
 ```
 
-### Actions GAS — état @133
+### Actions GAS encore actives (emails uniquement)
 
-> @122 : master password admin read-only login.
-> @97 : tour guidé 7 étapes + fix toast "Génération des défis" persistant.
-> @95 : invariants messages figés, toast mutex, simulation 7j 0 incohérence.
-> @93 : refonte onboarding UX (stepper, animations, carte résultat split).
-> @90 : gamification MVP (XP, paliers, streak freeze, milestones, tuto régressif).
-> @88 : admin cockpit 6 onglets, boutons "Copier JSON complet".
+> Le reste des actions est historique — conservé dans backend.js en backup mais plus appelé par le frontend.
+> Toutes les actions métier passent par Supabase Edge Functions depuis le 02/04/2026.
 
 | Action | Description | Statut |
 |---|---|---|
@@ -222,8 +236,8 @@ Email sujet `[Matheux ⚡ ACTION]` si fragiles/bloquées.
 1. Choix niveau (6EME→3EME) → sélection chapitres ("Je ne sais pas trop" = auto-select 65%)
 2. Quiz diagnostic inline guest (4-10 questions, AVANT inscription)
 3. Carte résultat (barre animée + récit + tags chapitres solides/faibles + objectif picker intégré)
-4. Formulaire prénom + email + mdp → register() GAS
-5. GAS : crée Users + email J+0 auto
+4. Formulaire prénom + email + mdp → register() Supabase Edge Function
+5. Edge Function : crée profile + Supabase Auth + email J+0 auto (via GAS proxy)
 6. Scores CALIBRAGE sauvés fire-and-forget
 7. calDone=true localStorage + suppression CALIBRAGE des cats
 8. boostFromDiag() en background → DailyBoosts
@@ -274,11 +288,14 @@ Deux variantes convergentes : `_flowGuestRegister()` (guest complet) et `_doLogi
 
 | Service | Usage | Coût |
 |---|---|---|
-| GitHub Pages | Frontend (index.html, pages légales) | Gratuit |
-| Google Apps Script | Backend API | Gratuit (quotas Google) |
-| Google Sheets | Base de données | Gratuit |
-| Gmail (GmailApp) | Emails auto (J+0, J+3, J+5, J+7 personnalisés objectif + rapport parent hebdo) — alias no-reply@matheux.fr requis | Gratuit |
-| Stripe | Paiement PROD (19,99€/mois, limite 50, webhook déployé @85) | ~0,39€/transaction |
+| GitHub Pages | Frontend (index.html, app.html, pages légales) | Gratuit |
+| **Supabase Edge Functions** | **Backend API principal** (Deno, ~37 actions) | Gratuit (Free tier) |
+| **Supabase PostgreSQL** | **Base de données principale** (14 tables, RLS) | Gratuit (Free tier, 500 MB) |
+| **Supabase Auth** | Authentification (bcrypt, JWT ECC) | Gratuit (Free tier, 50K users) |
+| Google Apps Script | **Emails uniquement** (GmailApp — J+0, rapports, notifs) | Gratuit (quotas Google) |
+| Google Sheets | **Legacy backup** — référence historique, plus écrit en prod | Gratuit |
+| Gmail (GmailApp) | Alias no-reply@matheux.fr. Migration Resend prévue à ~50 users | Gratuit |
+| Stripe | Paiement PROD (19,99€/mois, webhook déployé @85) | ~0,39€/transaction |
 | GA4 | Analytics | Gratuit |
 
 Commandes de déploiement : voir [claude.md](claude.md#déploiement).
@@ -302,15 +319,20 @@ Commandes de déploiement : voir [claude.md](claude.md#déploiement).
 
 | Script | Usage |
 |---|---|
-| `sheets.py` | Bibliothèque accès Google Sheets (utilisée par tous les scripts) |
-| `rebuild_sheet.py` | Reconstruit 👁 Suivi + 📋 Historique |
-| `test_full_v2.py` | Suite de tests complète (74/74) |
-| `test_simulation_40.py` | Simulation 40 élèves × 15 jours (17/17, 1616 appels) |
-| `sim_21days.py` | Simulation 21j — 12 profils QA |
+| `test_full_v2.py` | Suite de tests complète (66/72, 6 fails = gate J+1 attendu) |
+| `test_coherence_boost.py` | Test régression calibrage/boost (14/14) |
+| `validate_exos.py` | Gate qualité exercices JSON |
+| `check_students.py` | Health check données élèves |
 | `audit_exos.py` | Audit qualité exercices collège |
-| `verify_hints.py` | Audit qualité des indices |
-| `test_coherence_boost.py` | Test régression calibrage/boost |
-| `deploy.sh` | Script de déploiement GAS (push + deploy) |
+| `deploy.sh` | Script de déploiement GAS (push + deploy) — emails uniquement |
+
+### Legacy (encore présents mais utilisent Google Sheets — plus en prod)
+
+| Script | Usage |
+|---|---|
+| `sheets.py` | Bibliothèque accès Google Sheets (legacy, backup) |
+| `rebuild_sheet.py` | Reconstruit 👁 Suivi + 📋 Historique (legacy) |
+| `test_simulation_40.py` | Simulation 40 élèves × 15 jours (legacy) |
 
 ### Utilitaires (scripts/)
 
