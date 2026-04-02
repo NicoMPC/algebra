@@ -122,17 +122,18 @@ var _s = document.createElement('style');
 _s.textContent = '[class*="fixed"][class*="bottom-0"][class*="z-50"][class*="p-3"]{display:none!important}';
 document.head.appendChild(_s);
 
-// Fix 5: Add "Se connecter" button top-right (after React hydration)
+// Fix 5: Add "Se connecter" link — pure CSS + HTML injected in <head> to survive React hydration
+var _ls = document.createElement('style');
+_ls.textContent = '#mx-login-btn{position:fixed;top:1rem;right:1rem;z-index:99999;color:rgba(255,255,255,.7);font-size:.8rem;font-weight:600;font-family:Syne,sans-serif;text-decoration:none;padding:.5rem 1rem;border:1px solid rgba(255,255,255,.2);border-radius:10px;backdrop-filter:blur(8px);background:rgba(255,255,255,.05)}#mx-login-btn:hover{color:#fff;border-color:rgba(255,255,255,.4)}';
+document.head.appendChild(_ls);
 window.addEventListener('load', function() {
   setTimeout(function() {
     var _lb = document.createElement('a');
+    _lb.id = 'mx-login-btn';
     _lb.href = '/app.html';
     _lb.textContent = 'Se connecter';
-    _lb.style.cssText = 'position:fixed;top:1rem;right:1rem;z-index:9999;color:rgba(255,255,255,.6);font-size:.8rem;font-weight:600;font-family:Syne,sans-serif;text-decoration:none;padding:.5rem 1rem;border:1px solid rgba(255,255,255,.15);border-radius:10px;backdrop-filter:blur(8px);transition:all .2s';
-    _lb.onmouseover = function(){ this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,.3)'; };
-    _lb.onmouseout = function(){ this.style.color='rgba(255,255,255,.6)'; this.style.borderColor='rgba(255,255,255,.15)'; };
-    document.body.appendChild(_lb);
-  }, 1500);
+    document.documentElement.appendChild(_lb);
+  }, 1200);
 });
 </script>
 <script>
