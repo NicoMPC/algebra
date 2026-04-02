@@ -3,6 +3,8 @@
 > Domaine : login, boost du jour, exercices, XP, streak, daily goal, timer, messages, coach tips.
 > Déclencheurs : "le boost arrive pas", "les scores sont faux", "le message est bizarre", "l'XP compte pas", "le streak a reset"
 
+> ⚠️ **Depuis 02/04/2026** : l'API est Supabase Edge Functions (`index.ts`). Les références `backend.js` / lignes GAS sont legacy (emails uniquement).
+
 ---
 
 ## User flow

@@ -36,7 +36,40 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 
 ---
 
-## Onglets Google Sheets — Vue d'ensemble (LEGACY)
+## Supabase PostgreSQL — Schéma actif (14 tables)
+
+> Source de vérité : `supabase/schema.sql` + `supabase/fix_schema.sql`
+
+| Table | Équivalent Sheets | Colonnes clés | Index |
+|---|---|---|---|
+| **profiles** | Users | `code` (PK métier, char 6), `email`, `prenom`, `niveau`, `password_hash`, `is_admin`, `premium`, `trial_start`, `objectif` | code, email, niveau |
+| **scores** | Scores | `code`, `chapitre`, `num_exo`, `resultat` (EASY/MEDIUM/HARD/SKIP), `date`, `source` | code+date, code+chapitre, dedup (code,chapitre,num_exo,date,source) |
+| **progress** | Progress | `code`, `chapitre`, `score` (adaptatif 0-100), `nb_exos`, `nb_easy`, `derniere_pratique` | code+chapitre |
+| **daily_boosts** | DailyBoosts | `code`, `date`, `boost_json` (JSONB), `exos_done` (0-5) | code+date (unique) |
+| **curriculum** | Curriculum_Officiel | `niveau`, `categorie`, `titre`, `exos_json` (JSONB, 20 exos), `timer`, `ordered` | niveau+categorie (unique) |
+| **diagnostic_exos** | DiagnosticExos | `niveau`, `categorie`, `exos_json` (JSONB, 2 exos) | niveau+categorie (unique) |
+| **brevet_exos** | BrevetExos | `niveau`, `categorie`, `exos_json` | niveau+categorie (unique) |
+| **brevet_results** | BrevetResults | `code`, `date`, `score_pct`, `detail_json` | code+date |
+| **cours** | Cours | `niveau`, `categorie`, `section_10`, `section_20`, `date_maj` | niveau+categorie (unique) |
+| **suivi** | 👁 Suivi | `code` (unique), `chap1..chap4` (JSONB), `boost` (JSONB), `action_nicolas` | code |
+| **emails** | 📧 Emails | `email`, `type`, `status` (default 'envoyé'), `date` | email |
+| **insights** | Insights | `code`, `type`, `message`, `source`, `ref` | code |
+| **rapports** | Rapports | `date`, `contenu` | — |
+| **contact** | Contact | `email`, `nom`, `message` | — |
+
+### RLS (Row Level Security)
+- **Données élève** (profiles, scores, progress, daily_boosts, brevet_results) : `code = my_code() OR is_admin()`
+- **Contenu** (curriculum, diagnostic_exos, brevet_exos, cours) : lecture pour tout authentifié, écriture admin
+- **Admin only** (suivi, emails, rapports) : `is_admin()`
+- **Contact** : insertion publique, lecture admin
+
+### Colonnes non utilisées (dead schema, conservées pour usage futur)
+- `progress.nb_erreurs`, `progress.statut`, `progress.streak` — jamais lues ni écrites par le code
+- `rapports` — table orpheline, aucune écriture depuis Supabase
+
+---
+
+## Onglets Google Sheets — LEGACY (backup uniquement)
 
 > ⚠️ Ces onglets décrivent la structure Google Sheets historique.
 > Les données live sont maintenant dans Supabase PostgreSQL (14 tables).
@@ -108,7 +141,7 @@ Supprimés le 2 avril 2026 : `prompts`, `BoostExos`, `AuditExos`, `Prospection`,
 
 **Règles importantes :**
 - Emails `@matheux.fr` → `IsTest=1` automatiquement au `register()`
-- Limite bêta : 50 vrais élèves (`IsTest=0`, non-admin uniquement)
+- Limite bêta supprimée 02/04 (migration Supabase)
 - `login()` vérifie `isAdmin` et `premium` de façon robuste (`true`/`TRUE`/`1`/`'1'`)
 
 ### Scores

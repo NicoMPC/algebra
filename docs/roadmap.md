@@ -4,34 +4,41 @@
 
 ---
 
-## État global — 29 mars 2026
+## État global — 02 avril 2026
 
-**Matheux LANCÉ.** GAS @125. **Refonte complète exercices Brevet 2026 v4** (29 mars soir) : 22 chapitres × 4 exercices-parapluie × 5 questions = **440 questions** au format Brevet (contexte réel + questions progressives). Diagnostic réduit à **5 questions express** (banque 54 questions). Prompt v4, rapport Brevet 2026, docs à jour.
+**Matheux LANCÉ sur Supabase.** Migration GAS→Supabase terminée le 02/04. Backend = Edge Functions + PostgreSQL. GAS = emails uniquement. Stress test 500 élèves passé. Optimisations scale déployées.
+
+**Fait le 02/04 :**
+- ✅ Migration Supabase PostgreSQL LIVE (14 tables, RLS, Edge Functions)
+- ✅ Stress test 500 élèves (register/login/diagnostic/publish 100%)
+- ✅ Optimisations scale (batch scores, cache curriculum, UPSERT, history 60j)
+- ✅ 2 bugs post-migration fixés (fuzzy match diagnostic + register field name)
+- ✅ Limite 50 élèves supprimée
+- ✅ Fuite clé service_role fixée (GitGuardian)
+- ✅ PWA nudge toutes les 2 connexions + tracking install/dismiss
+- ✅ Agent admin autonome pipeline validé (4 profils, 20 exos, 100% validate_exos.py)
+- ✅ 10 fixes UX (timer, "Passer", fill, indices Game Boy, logo, landing CTA)
+- ✅ Grand ménage : 20 fichiers orphelins + 28 logs supprimés
+
+**Fait le 01/04 :**
+- Architecture propre 2 pages (landing SEO + app SPA, redirect connectés)
+- 5 bugs critiques onboarding fixés
+- Tour unifié 4 étapes + PWA code complet
 
 **Fait le 29 mars :**
-- 440 exercices format parapluie v4 (contexte sticky, tables, draw, f_disabled)
-- Diagnostic express 5 questions (était 22)
-- Frontend adapté (rSection: _ctx, table, draw, f_disabled)
-- Backend adapté (importChapters flatten, generateDiagnostic simplifié)
-- Ancienne base archivée (data/archive_v2/)
-- SW cache v3
-
-**Fait le 01/04 soir :**
-- Architecture propre 2 pages (landing SEO + app SPA, zéro doublon, redirect connectés)
-- 5 bugs critiques onboarding fixés (double parcours, resume banner, fill diag, retry msg, app vide)
-- Tour unifié 4 étapes (slides fusionnées dans le tour, PWA timing fix)
-- PWA code complet (install prompt, tuto iOS, tour step)
+- 440 exercices format parapluie v4 Brevet 2026
+- Diagnostic express 5 questions
 
 | Dimension | État |
 |---|---|
-| Tests automatisés | 74/74 (100%) + simulation 40 élèves 17/17 + simulation 21j 12 profils |
-| Couverture programme | ~100% — 43 chapitres autres niveaux + **22 chapitres Brevet 2026 v4 EN PROD** (440 exos parapluie) = 65 chapitres |
-| Niveau 1ERE Spé | 10 chapitres expérimentaux — backend prêt, frontend non modifié |
+| Backend | Supabase Edge Functions + PostgreSQL (LIVE 02/04) |
+| Tests automatisés | 66/72 (92%) — 6 fails = gate J+1 attendu |
+| Couverture programme | ~100% — 65 chapitres (22 Brevet 2026 v4 + 43 autres niveaux) |
 | Juridique | Complet (5 pages + consentement parental + RGPD + TVA art. 293 B CGI) |
 | Paiement | Stripe PROD actif (19,99/mois) |
-| Emails auto | J+0 auto + reset MDP auto — J+3/J+5/J+7 manuels via admin |
-| Admin cockpit | 6 onglets, boost+chapitre 1-clic, JSON complet, profils test |
-| Limite bêta | 50 vrais élèves (IsTest=0) |
+| Emails auto | J+0 auto (GAS) + reset MDP auto (Supabase Auth) — J+3/J+5/J+7 manuels |
+| Admin cockpit | 6 onglets, boost+chapitre 1-clic, JSON complet |
+| Limite bêta | ~~50 élèves~~ Supprimée (Supabase tient la charge) |
 
 ---
 
@@ -58,7 +65,7 @@
 | 2 | **Profil d'apprentissage élève** — page dédiée (3 points forts, 2 lacunes, vitesse, streak record). Cadenas overlay trial J+7. | 🟡 |
 | 3 | ~~Automatisation boosts nuit~~ | ✅ Pipeline validé 02/04 — agent admin autonome, injection DailyBoosts Date=demain. Reste : agent `.md` + scheduler |
 | 4 | ~~Agent analyse lacunes quotidien automatique~~ | ✅ Intégré dans l'agent admin autonome (analyse Scores → diagnostic → génération → injection) |
-| 5 | **Migration Sheets → Supabase** — ~1 journée. Trigger : ~200-300 inscrits. Stack : Supabase PostgreSQL + Edge Functions. Frontend vanilla JS inchangé. | 🔵 |
+| ~~5~~ | ~~**Migration Sheets → Supabase**~~ | ✅ FAIT 02/04 — Supabase PostgreSQL + Edge Functions LIVE. GAS emails uniquement |
 | 6 | `replyTo: nicolas@matheux.fr` sur J+3, J+7 et reset MDP | 🟡 |
 | 7 | **Séquences J+3/J+5/J+7 activées** — trigger Apps Script (manuel pour l'instant) | 🟡 |
 | 8 | Double confirmation mot de passe inscription | 🟡 |

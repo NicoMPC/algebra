@@ -54,8 +54,9 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 - ⚠️ `profiles.code` = **clé primaire métier** — si elle disparaît, tout casse (même logique qu'avant)
 - Google Sheets conservé en backup/référence (plus écrit en prod)
 
-### Schéma Google Sheets (LEGACY)
-- Index de colonnes **hardcodés** dans backend.js (GAS) — ne toucher que pour les emails
+### Google Sheets (LEGACY — emails uniquement)
+- `backend.js` (~5300L) conservé pour GAS GmailApp (envoi d'emails). Plus aucune action métier.
+- Index de colonnes **hardcodés** dans backend.js — ne toucher que pour les emails
 - ⚠️ `Users.Code` (col A) = **clé primaire** — encore utilisé par GAS pour les emails
 
 ### Compatibilité GAS
@@ -235,7 +236,7 @@ git add app.html && git commit -m "feat: ..." && git push origin main
 
 ### Tests
 ```bash
-python3 test_full_v2.py          # Suite complète — 66/72 (92%)
+python3 test_full_v2.py          # Suite complète — 66/72 (92%) — 6 fails = gate J+1 attendu
 python3 test_coherence_boost.py # Cohérence CALIBRAGE — 14/14
 python3 test_simulation_40.py   # Simulation 40 élèves × 15 jours
 python3 sim_7days_messages.py   # Simulation messages — 0 incohérence
@@ -334,8 +335,8 @@ Quand un problème est signalé, **lire le playbook du domaine concerné** avant
 
 | Script | Description |
 |---|---|
-| `sheets.py` | Bibliothèque Google Sheets API (legacy, backup) |
-| `rebuild_sheet.py` | Reconstruit Suivi + Historique (legacy) |
+| ~~`sheets.py`~~ | ~~Bibliothèque Google Sheets API~~ — supprimé 02/04 (legacy) |
+| ~~`rebuild_sheet.py`~~ | ~~Reconstruit Suivi + Historique~~ — supprimé 02/04 (legacy) |
 | `test_full_v2.py` | Suite de tests complète (74/74) |
 | `validate_exos.py` | Gate qualité exercices — valide JSON avant injection |
 | `audit_exos.py` | Audit qualité exercices |

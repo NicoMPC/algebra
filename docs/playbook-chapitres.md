@@ -3,6 +3,8 @@
 > Domaine : sélection chapitre, progression 20 exos, slots, complétion, sessions retro, assignation admin.
 > Déclencheurs : "le chapitre apparaît pas", "il est bloqué à 15 exos", "les sessions retro sont fausses", "le slot reward s'affiche pas"
 
+> ⚠️ **Depuis 02/04/2026** : l'API est Supabase Edge Functions (`index.ts`). Les références `backend.js` / lignes GAS sont legacy (emails uniquement).
+
 ---
 
 ## User flow

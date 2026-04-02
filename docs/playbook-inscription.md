@@ -3,6 +3,8 @@
 > Domaine : tout ce qui se passe entre l'arrivée sur la landing et la fin du trial.
 > Déclencheurs : "un élève peut pas s'inscrire", "le quiz marche pas", "le mail J+0 est pas parti", "le badge trial s'affiche pas"
 
+> ⚠️ **Depuis 02/04/2026** : l'API est Supabase Edge Functions (`index.ts`). Les références `backend.js` / lignes GAS sont legacy (emails uniquement).
+
 ---
 
 ## User flow

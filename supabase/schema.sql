@@ -21,6 +21,7 @@ create table profiles (
   prenom        text not null,
   niveau        text not null check (niveau in ('6EME','5EME','4EME','3EME','1ERE')),
   email         text not null unique,                  -- lowercase, trimmed
+  password_hash text,                                  -- SHA-256 hash pour fallback auth (ajouté par fix_schema.sql)
   date_inscription date not null default current_date,
   is_admin      boolean not null default false,
   premium       boolean not null default false,
@@ -69,8 +70,9 @@ create index idx_scores_code_date on scores(code, date);
 create index idx_scores_code_chapitre on scores(code, chapitre);
 create index idx_scores_chapitre on scores(chapitre);
 
--- Contrainte de déduplication : même (code, chapitre, num_exo, date) = déjà enregistré
-create unique index idx_scores_dedup on scores(code, chapitre, num_exo, date);
+-- Contrainte de déduplication : même (code, chapitre, num_exo, date, source) = déjà enregistré
+-- (source ajouté par fix_schema.sql : BOOST et curriculum peuvent avoir même idx)
+create unique index idx_scores_dedup on scores(code, chapitre, num_exo, date, source);
 
 comment on table scores is 'Toutes les réponses individuelles des élèves';
 
@@ -229,7 +231,7 @@ create table emails (
   email       text not null,
   prenom      text,
   type        text not null,                           -- J+0, J+3, etc.
-  status      text not null,                           -- envoyé / erreur
+  status      text not null default 'envoyé',           -- envoyé / erreur
   subject     text,
   created_at  timestamptz not null default now()
 );
@@ -306,29 +308,15 @@ create table suivi (
   action_nicolas      text,                            -- 🔴 BLOQUÉ / ⚡ BOOST TERMINÉ / ✅ CHAPITRE TERMINÉ / 👍 RAS
   derniere_connexion  date,
 
-  -- Slots chapitres 1-4
-  chapitre_1          text,
-  statut_1            text,
-  nouveau_ch_1        jsonb,                           -- JSON chapitre assigné par Nicolas (avec publishDate)
+  -- Slots chapitres 1-4 (renommés via fix_schema.sql)
+  chap1               jsonb,                           -- JSON chapitre assigné par Nicolas (avec publishDate)
+  chap2               jsonb,
+  chap3               jsonb,
+  chap4               jsonb,
 
-  chapitre_2          text,
-  statut_2            text,
-  nouveau_ch_2        jsonb,
-
-  chapitre_3          text,
-  statut_3            text,
-  nouveau_ch_3        jsonb,
-
-  chapitre_4          text,
-  statut_4            text,
-  nouveau_ch_4        jsonb,
-
-  -- Boost
+  -- Boost (renommé via fix_schema.sql)
   boost_consomme      boolean default false,
-  prochain_boost      jsonb,                           -- JSON boost assigné par Nicolas (avec publishDate)
-
-  -- Divers
-  rapport_envoye      text,                            -- 📧 Rapport envoyé / Chap5+
+  boost               jsonb,                           -- JSON boost assigné par Nicolas (avec publishDate)
 
   updated_at          timestamptz not null default now()
 );

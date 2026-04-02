@@ -3,6 +3,8 @@
 > Domaine : tout ce qui concerne le dashboard admin, le workflow boost/chapitre, les emails parents.
 > Déclencheurs : "je vois pas un élève", "l'onglet À FAIRE est vide", "le boost se publie pas", "le mail parent part pas"
 
+> ⚠️ **Depuis 02/04/2026** : l'API est Supabase Edge Functions (`index.ts`). Les références `backend.js` / lignes GAS sont legacy (emails uniquement).
+
 ---
 
 ## User flow (Nicolas)

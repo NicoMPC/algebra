@@ -3,6 +3,8 @@
 > Domaine : trial 7 jours, badge progressif, overlay bloquant, Stripe, activation premium.
 > Déclencheurs : "il peut encore jouer après J+7", "le paiement active pas le compte", "le badge trial s'affiche pas"
 
+> ⚠️ **Depuis 02/04/2026** : l'API est Supabase Edge Functions (`index.ts`). Les références `backend.js` / lignes GAS sont legacy (emails uniquement).
+
 ---
 
 ## User flow

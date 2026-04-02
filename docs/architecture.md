@@ -159,88 +159,55 @@ GAS est conservé uniquement pour l'envoi d'emails (GmailApp). L'Edge Function p
 
 ---
 
-## Backend Emails — Google Apps Script (legacy)
+### Actions Supabase Edge Function (complètes)
 
-### Point d'entrée
+> Source : `supabase/functions/api/index.ts`. Dispatch sur `action` dans le body JSON.
 
-```javascript
-function doPost(e) {
-  const data = JSON.parse(e.postData.contents);
-  switch(data.action) {
-    case 'register': return register(data);
-    case 'login': return login(data);
-    case 'save_score': return saveScore(data);
-    // ...
-  }
-}
-```
+**Actions métier (implémentées) :**
 
-### Actions GAS encore actives (emails uniquement)
-
-> Le reste des actions est historique — conservé dans backend.js en backup mais plus appelé par le frontend.
-> Toutes les actions métier passent par Supabase Edge Functions depuis le 02/04/2026.
-
-| Action | Description | Statut |
-|---|---|---|
-| `register` | Inscription élève. TrialStart = TODAY, email J+0 auto (si alias Gmail opérationnel) | ✅ |
-| `login` | Connexion. Retourne trial, boostExosDone, pendingBrevet, nextChapter, nextBoostTopic, **revisionChapters**. **Admin master password** : si `ADMIN_MASTER_PWD` match → `isAdminLogin=true` → read-only (ne consomme pas nextChapter/nextBoost, n'écrit pas DailyBoosts, ne rebuildSuivi pas) | ✅ |
-| `save_score` | Sauvegarde réponse. **LockService** (tryLock 10s) + MAJ Progress + rebuildSuivi + writeToHistorique + ExosDone si BOOST. Persiste `source` (col N Scores) | ✅ |
-| `save_boost` | Sauvegarde fin de boost. ExosDone + rebuildSuivi | ✅ |
-| `generate_diagnostic` | Génère diagnostic. Mode guest (sans code) pour landing flow | ✅ |
-| `generate_daily_boost` | Génère boost quotidien depuis BoostExos (fallback Curriculum_Officiel), ciblé sur chapitres sélectionnés par l'élève | ✅ |
-| `generate_remediation` | ⏸️ Désactivé — return success immédiat | ⏸️ |
-| `get_progress` | Récupère progression par chapitre. Boost : sert le boost du jour, ou le dernier non terminé (rattrapage P9) | ✅ |
-| `detect_fragile_prereqs` | Détection prérequis fragiles (archivé → false) | ✅ |
-| `get_prerequisites` | Liste prérequis | ✅ |
-| `enqueue` | File d'attente (archivée → erreur propre) | ✅ |
-| `generate_exam_prep` | Préparation examen par chapitre (10q : 7 lvl2 + 3 lvl1) | ✅ |
-| `generate_brevet` | Brevet multi-chapitres (~15q style Brevet) — UI désactivé | ✅ |
-| `generate_revision` | Révision niveau inférieur — UI désactivé | ✅ |
-| `submit_feedback` | Feedback élève → onglet Insights. Types : signalement erreur (general) ou feedback session (boost/brevet/chapitre). Champs : source, ref, rating (1-5), type (difficile/moyen/bien/super) | ✅ |
-| `generateMorningReport` | Rapport matin 7h (génération IA désactivée) | ✅ |
-| `get_admin_overview` | Vue admin complète. Retourne `email` + `j0Sent` + `emailsDue` + `secondaryActions` + `category` + `trialDays` + `inactivityDays` + `neverStarted` + **`revisionChapters`** par élève + **`allChapsByLevel`** global. boostPendingContent alimenté depuis col S. `neverStarted` promu en `actionPriority` si aucune autre action (ghost → "🚀 Jamais commencé"). Dates normalisées via `_toDateStr()` | ✅ |
-| `publish_admin_boost` | Admin publie boost (→Nouveau Boost col 18) + rebuildSuivi | ✅ |
-| `publish_admin_chapter` | Admin publie chapitre (→Nouveau Ch libre) + rebuildSuivi. Retourne `overwrite:true` si >4 chapitres en attente (toast ⚠️ côté frontend) | ✅ |
-| `log_manual_email` | Admin — logue un email envoyé manuellement dans l'onglet Emails. Params : `adminCode`, `userEmail`, `type` (ex: `J+0-manuel`). Statut='envoyé' (fix @75) | ✅ |
-| `get_daily_checklist` | Checklist quotidienne admin — lit Users/Emails/Boosts/Suivi/Progress, retourne items triés par priorité (boost/chapitre/emails/parent/brevet/inactifs). @75 | ✅ |
-| `send_weekly_report` | Envoi manuel du rapport parent hebdo depuis le dashboard admin. Appelle `triggerWeeklyParentReport`. @75 | ✅ |
-| `check_trial_status` | Vérifie trial actif { trialActive, daysLeft, isPremium } | ✅ |
-| `triggerWeeklyParentReport` | Rapport parent hebdo dimanche 17h-18h (stats semaine, % réussite, chapitres maîtrisés) — trigger à activer manuellement | ✅ |
-| `import_chapters` | One-shot admin — pousse chapitres dans Curriculum_Officiel + DiagnosticExos | ✅ |
-| `send_test_email` | Admin — envoie email J+0 test | ✅ |
-| `mark_all_test` | Admin one-shot — marque tous comptes non-admin sans IsTest → IsTest=1 | ✅ |
-| `generate_brevet_session` | Génère session brevet (chapitres → exos mélangés) | ✅ |
-| `save_brevet_result` | Sauvegarde résultat brevet dans BrevetResults | ✅ |
-| `publish_admin_brevet` | Admin publie brevet blanc personnalisé | ✅ |
-| `get_brevet_chapters` | Liste chapitres disponibles dans BrevetExos | ✅ |
-| `request_brevet_chapter` | Élève demande chapitre manquant → Insights | ✅ |
-| `import_brevet_exos` | One-shot admin — pousse exercices dans BrevetExos | ✅ |
-| `publish_admin_revision` | Admin assigne chapitres d'une autre année à un élève → Users col M `RevisionChapters` (JSON) + rebuildSuivi. Payload : `adminCode, targetCode, chapters:[{niveau,categorie}]`. Vide si `chapters=[]` | ✅ |
-| `log_contact` | Admin — logue un contact parent effectué dans Insights. Params : `adminCode`, `code`, `prenom`, `niveau`. @76 | ✅ |
-
-### Fonctions internes clés
-
-| Fonction | Rôle |
+| Action | Description |
 |---|---|
-| `rebuildSuivi(code)` | Recalcule la ligne 👁 Suivi de l'élève (appelé dans save_score, save_boost) |
-| `writeToHistorique(p)` | Insère en ligne 2 de 📋 Historique (récent en haut) |
-| `updateConfidenceScore(...)` | Met à jour Progress après chaque réponse. **Score ≠ P8** : score adaptatif cumulatif (delta +5/+10/-3/-5 par réponse, décroissance >14j inactivité), pas EASY/total×100. P8 appliqué côté frontend uniquement (pills, sessions retro) |
-| `_toDateStr(val)` | Normalise Date object / string longue / yyyy-MM-dd → `yyyy-MM-dd`. Utilisé dans `getAdminOverview` et `rebuildSuivi` |
-| `_pickDiagExos(exos, chapCount)` | Smart count diagnostic : 1ch→4q, 2ch→6q, 3ch→8q, 4+→10q |
+| `register` | Inscription élève. Auth Supabase + profil + email J+0 (proxy GAS) |
+| `login` | Connexion. Retourne profil, boost, chapitres, history, cours, trial |
+| `save_score` | Sauvegarde réponse (UPSERT dedup) + MAJ progress + ExosDone |
+| `save_scores_batch` | Batch jusqu'à 25 scores en 1 appel (frontend flushQ) |
+| `save_boost` | Sauvegarde fin de boost (ExosDone) |
+| `save_calibration_batch` | Sauvegarde diagnostic (batch scores calibrage) |
+| `generate_diagnostic` | Génère quiz diagnostic (5 questions, fuzzy match chapitres) |
+| `get_progress` | Progression par chapitre + boost du jour / rattrapage |
+| `check_trial_status` | Vérifie trial { trialActive, daysLeft, isPremium } |
+| `submit_feedback` | Feedback élève → table insights |
+| `report_exo` | Signalement exercice → table insights |
+| `log_contact` | Contact parent → table insights |
+| `send_contact` | Formulaire contact → table contact |
+| `forgot_password` | Reset MDP via Supabase Auth |
+| `reset_password` | Nouveau MDP (token Supabase Auth) |
+| `unsubscribe` | Désinscription email → table emails |
+| `get_admin_overview` | Vue admin complète (tous les élèves + statuts) |
+| `publish_admin_boost` | Admin publie boost (suivi.boost JSON + publishDate) |
+| `publish_admin_chapter` | Admin publie chapitre (suivi.chap1..4 JSON + publishDate) |
+| `log_manual_email` | Admin logue email envoyé manuellement |
+| `get_cours_admin` | Admin récupère cours par chapitre |
+| `save_cours` | Admin sauvegarde cours (section_10, section_20) |
+| `get_brevet_chapters` | Liste chapitres BrevetExos |
+| `generate_brevet_session` | Génère session brevet (chapitres → exos mélangés) |
+| `save_brevet_result` | Sauvegarde résultat brevet |
+| `stripe_webhook` | Webhook Stripe (paiement → premium) |
 
-### Rapport matin (generateMorningReport)
+**Actions NOOP (retournent success, à implémenter si besoin) :**
+`add_teasing_early`, `detect_fragile_prereqs`, `enqueue`, `generate_daily_boost`, `generate_revision`, `log_event`, `mark_all_test`, `simulate_next_day`, `get_audit_exos`, `get_audit_remarks`, `publish_admin_brevet`, `publish_admin_revision`, `request_brevet_chapter`
 
-Trigger GAS quotidien 7h. Analyse chaque élève :
+**Actions proxyées vers GAS (emails uniquement) :**
+`send_test_email`, `send_weekly_report`, `send_custom_email`, `send_session_rapport`
 
-| Statut | Critères |
-|---|---|
-| ✅ ACQUISE | score > 80, statut='maitrise', 0 HARD depuis 14j, ≥3 sessions |
-| 🔴 BLOQUEE | score < 40, pas d'amélioration 2 semaines, ≥4 sessions |
-| 🟡 FRAGILE | score < 40 OU ≥3 HARD cette semaine |
-| 📈 EN_PROGRESSION | taux erreur semaine < semaine passée (−10 pts) |
-| 📘 EN_COURS | défaut |
+---
 
-Email sujet `[Matheux ⚡ ACTION]` si fragiles/bloquées.
+## Backend Emails — Google Apps Script (LEGACY)
+
+> `backend.js` (~5300L) — conservé uniquement pour GmailApp (envoi d'emails).
+> Plus aucune action métier ne passe par GAS. Le frontend appelle Supabase Edge Functions.
+> L'Edge Function proxy vers GAS pour les 4 actions email ci-dessus.
+> Migration vers Resend (~3$/mois) prévue à ~50 users actifs.
 
 ---
 
