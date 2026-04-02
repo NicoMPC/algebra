@@ -166,7 +166,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | A2 | **6 onglets** | À FAIRE / NOUVEAU / FAIT / MAILS / INACTIFS / RAPPORT |
 | A3 | **4 statuts ACTION** | 🔴 BLOQUÉ / ⚡ BOOST TERMINÉ / ✅ CHAPITRE TERMINÉ / 👍 RAS |
 | A4 | **Workflow** | Nicolas prépare en admin → élève reçoit au login → archives consultables |
-| A5 | **Limite bêta** | 50 vrais élèves (IsTest=0) |
+| A5 | **Pas de limite** | Limite bêta 50 supprimée (02/04 migration Supabase) |
 | A6 | **Admin read-only** | Login admin ne consomme jamais les données one-shot (nextChapter, boost) |
 | A7 | **Agent admin autonome** | Agent lancé 2×/jour (matin+soir). Scanne Scores → diagnostique patterns → génère boosts/chapitres → injecte dans DailyBoosts avec `Date = demain` et `ExosDone = 0`. L'élève reçoit le contenu à sa prochaine connexion ≥ lendemain. Nicolas vérifie a posteriori. Pipeline validé le 02/04 (4 profils test, 20 exos, 100% validate_exos.py) |
 

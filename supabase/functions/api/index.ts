@@ -16,6 +16,21 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45
 // Client admin (service_role) pour bypass RLS
 const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
+// ── Cache en mémoire (persiste tant que l'instance Edge Function est chaude) ──
+const _cache: Record<string, { data: unknown; ts: number }> = {};
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function cacheGet(key: string): unknown | null {
+  const entry = _cache[key];
+  if (!entry) return null;
+  if (Date.now() - entry.ts > CACHE_TTL) { delete _cache[key]; return null; }
+  return entry.data;
+}
+
+function cacheSet(key: string, data: unknown): void {
+  _cache[key] = { data, ts: Date.now() };
+}
+
 // ── Helpers ──────────────────────────────────────────────────
 
 function todayParis(): string {
@@ -192,20 +207,26 @@ async function login(p: Record<string, unknown>) {
   const objectif = String(user.objectif || "");
   const todayStr = todayParis();
 
-  // ── Curriculum officiel ──
-  const { data: curriculum } = await adminClient.from("curriculum")
-    .select("categorie, titre, icone, exos_json, timer, ordered")
-    .eq("niveau", level);
+  // ── Curriculum officiel (cached 5 min — identique pour tous les élèves d'un même niveau) ──
+  const cacheKey = `curriculum_${level}`;
+  let curriculumOfficiel = cacheGet(cacheKey) as Record<string, unknown>[] | null;
 
-  const curriculumOfficiel = (curriculum || []).map((r: Record<string, unknown>) => {
-    const co: Record<string, unknown> = {
-      categorie: r.categorie, titre: r.titre, icone: r.icone,
-      exos: typeof r.exos_json === "string" ? JSON.parse(r.exos_json) : (r.exos_json || []),
-    };
-    if (r.timer) co.timer = r.timer;
-    if (r.ordered) co.ordered = true;
-    return co;
-  });
+  if (!curriculumOfficiel) {
+    const { data: curriculum } = await adminClient.from("curriculum")
+      .select("categorie, titre, icone, exos_json, timer, ordered")
+      .eq("niveau", level);
+
+    curriculumOfficiel = (curriculum || []).map((r: Record<string, unknown>) => {
+      const co: Record<string, unknown> = {
+        categorie: r.categorie, titre: r.titre, icone: r.icone,
+        exos: typeof r.exos_json === "string" ? JSON.parse(r.exos_json) : (r.exos_json || []),
+      };
+      if (r.timer) co.timer = r.timer;
+      if (r.ordered) co.ordered = true;
+      return co;
+    });
+    cacheSet(cacheKey, curriculumOfficiel);
+  }
 
   // ── Boost du jour ──
   const { data: boostRows } = await adminClient.from("daily_boosts")
@@ -234,9 +255,15 @@ async function login(p: Record<string, unknown>) {
   }
   const boostExistsInDB = todayBoost !== null;
 
-  // ── History (scores hors CALIBRAGE) ──
+  // ── History (scores hors CALIBRAGE — 60 derniers jours, champs allégés) ──
+  const histCutoff = new Date();
+  histCutoff.setDate(histCutoff.getDate() - 60);
+  const histCutoffStr = histCutoff.toISOString().split("T")[0];
+
   const { data: scoreRows } = await adminClient.from("scores")
-    .select("*").eq("code", code).neq("chapitre", "CALIBRAGE");
+    .select("code, niveau, chapitre, num_exo, resultat, temps_sec, nb_indices, formule_vue, date, source")
+    .eq("code", code).neq("chapitre", "CALIBRAGE")
+    .gte("date", histCutoffStr);
 
   let _hasCalibration = false;
   {
@@ -434,15 +461,8 @@ async function saveScore(p: Record<string, unknown>) {
   const dedupDate = p.answeredAt && /^\d{4}-\d{2}-\d{2}$/.test(String(p.answeredAt))
     ? String(p.answeredAt) : todayParis();
 
-  // Dedup
-  const { count } = await adminClient.from("scores")
-    .select("id", { count: "exact", head: true })
-    .eq("code", code).eq("chapitre", String(p.categorie))
-    .eq("num_exo", Number(p.exercice_idx)).eq("date", dedupDate);
-  if ((count || 0) > 0) return { status: "success", message: "Score déjà enregistré (dedup)." };
-
-  // Insert
-  await adminClient.from("scores").insert({
+  // Insert with ON CONFLICT dedup (idx_scores_dedup: code+chapitre+num_exo+date)
+  const { error: insertErr } = await adminClient.from("scores").upsert({
     code,
     prenom: String(p.name),
     niveau: String(p.level),
@@ -457,7 +477,7 @@ async function saveScore(p: Record<string, unknown>) {
     draft: String(p.draft || ""),
     date: dedupDate,
     source: String(p.source || ""),
-  });
+  }, { onConflict: "code,chapitre,num_exo,date", ignoreDuplicates: true });
 
   // Update confidence score (Progress) — hors BOOST et CALIBRAGE
   const source = String(p.source || "");
@@ -485,10 +505,11 @@ async function saveScore(p: Record<string, unknown>) {
 // ── UPDATE_CONFIDENCE_SCORE (Progress) ──────────────────────
 
 async function updateConfidenceScore(
-  code: string, level: string, categorie: string, resultat: string, exerciceIdx: number
+  code: string, level: string, categorie: string, resultat: string, _exerciceIdx: number
 ) {
+  // Use RPC or read-then-write (UPSERT can't do nb_exos+1 atomically with supabase-js)
   const { data: existing } = await adminClient.from("progress")
-    .select("*").eq("code", code).eq("categorie", categorie).maybeSingle();
+    .select("id, nb_exos, nb_easy").eq("code", code).eq("categorie", categorie).maybeSingle();
 
   const nbExos = (existing?.nb_exos || 0) + 1;
   const nbEasy = (existing?.nb_easy || 0) + (resultat === "EASY" ? 1 : 0);
@@ -500,8 +521,10 @@ async function updateConfidenceScore(
       nb_exos: nbExos, nb_easy: nbEasy, score, derniere_pratique: todayStr,
     }).eq("id", existing.id);
   } else {
-    await adminClient.from("progress").insert({
+    await adminClient.from("progress").upsert({
       code, niveau: level, categorie, nb_exos: nbExos, nb_easy: nbEasy, score, derniere_pratique: todayStr,
+    }, { onConflict: "code,chapitre" }).catch(() => {
+      // Race condition fallback — another request created it
     });
   }
 }
@@ -530,6 +553,95 @@ async function saveCalibrationBatch(p: Record<string, unknown>) {
   }));
 
   await adminClient.from("scores").insert(rows);
+  return { status: "success", saved: rows.length };
+}
+
+// ── SAVE_SCORES_BATCH (generic — for boost/chapter flush) ───
+
+async function saveScoresBatch(p: Record<string, unknown>) {
+  if (!p.code || !p.scores || !Array.isArray(p.scores) || p.scores.length === 0)
+    return { status: "error", message: "code et scores[] requis." };
+  if ((p.scores as unknown[]).length > 25)
+    return { status: "error", message: "Max 25 scores par batch." };
+
+  const code = String(p.code);
+  if (code.length !== 6) return { status: "error", message: "Code élève invalide." };
+
+  // Single identity check for the whole batch
+  const { data: profile } = await adminClient.from("profiles")
+    .select("email, premium, trial_start").eq("code", code).maybeSingle();
+  if (!profile) return { status: "error", message: "Élève introuvable." };
+
+  const todayStr = todayParis();
+  const name = String(p.name || "");
+  const level = String(p.level || "");
+
+  // Build rows
+  const rows = (p.scores as Record<string, unknown>[]).map((s) => ({
+    code, prenom: name, niveau: level,
+    chapitre: String(s.categorie || ""),
+    num_exo: Number(s.exercice_idx || 0),
+    enonce: String(s.q || "").substring(0, 500),
+    resultat: String(s.resultat || "HARD"),
+    temps_sec: parseInt(String(s.time || s.temps || "0")),
+    nb_indices: parseInt(String(s.indices || s.nbIndices || "0")),
+    formule_vue: !!(s.formule),
+    mauvaise_option: String(s.wrongOpt || ""),
+    draft: String(s.draft || ""),
+    date: (s.answeredAt && /^\d{4}-\d{2}-\d{2}$/.test(String(s.answeredAt)))
+      ? String(s.answeredAt) : todayStr,
+    source: String(s.source || ""),
+  }));
+
+  // Batch insert with dedup (ON CONFLICT ignore)
+  await adminClient.from("scores").upsert(rows, {
+    onConflict: "code,chapitre,num_exo,date", ignoreDuplicates: true
+  });
+
+  // Batch progress updates — group by chapitre, only for non-BOOST non-CALIBRAGE
+  const chapScores: Record<string, string[]> = {};
+  let boostCount = 0;
+  for (const s of (p.scores as Record<string, unknown>[])) {
+    const src = String(s.source || "");
+    if (src === "BOOST") { boostCount++; continue; }
+    if (src === "CALIBRAGE") continue;
+    const cat = String(s.categorie || "");
+    if (!chapScores[cat]) chapScores[cat] = [];
+    chapScores[cat].push(String(s.resultat || "HARD"));
+  }
+
+  // Update progress per chapter
+  for (const [cat, results] of Object.entries(chapScores)) {
+    const { data: existing } = await adminClient.from("progress")
+      .select("id, nb_exos, nb_easy").eq("code", code).eq("categorie", cat).maybeSingle();
+
+    const nbExos = (existing?.nb_exos || 0) + results.length;
+    const nbEasy = (existing?.nb_easy || 0) + results.filter(r => r === "EASY").length;
+    const score = nbExos > 0 ? Math.round((nbEasy / nbExos) * 100) : 0;
+
+    if (existing) {
+      await adminClient.from("progress").update({
+        nb_exos: nbExos, nb_easy: nbEasy, score, derniere_pratique: todayStr,
+      }).eq("id", existing.id);
+    } else {
+      await adminClient.from("progress").insert({
+        code, niveau: level, categorie: cat, nb_exos: nbExos, nb_easy: nbEasy, score, derniere_pratique: todayStr,
+      });
+    }
+  }
+
+  // Update ExosDone in DailyBoosts if any BOOST scores
+  if (boostCount > 0) {
+    const { data: boostRow } = await adminClient.from("daily_boosts")
+      .select("id, exos_done").eq("code", code)
+      .or(`date.eq.${todayStr},exos_done.lt.5`)
+      .order("date", { ascending: false }).limit(1).maybeSingle();
+    if (boostRow) {
+      await adminClient.from("daily_boosts")
+        .update({ exos_done: Math.min((boostRow.exos_done || 0) + boostCount, 5) }).eq("id", boostRow.id);
+    }
+  }
+
   return { status: "success", saved: rows.length };
 }
 
@@ -949,6 +1061,7 @@ const ACTIONS: Record<string, (p: Record<string, unknown>) => Promise<unknown>> 
   register,
   login,
   save_score: saveScore,
+  save_scores_batch: saveScoresBatch,
   save_boost: saveBoost,
   save_calibration_batch: saveCalibrationBatch,
   generate_diagnostic: generateDiagnostic,

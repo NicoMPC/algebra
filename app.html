@@ -2440,20 +2440,21 @@ var _flushRetry = 0;
 var _flushTimer = null;
 async function flushQ() {
   if (!S.scoreQueue.length) { _flushRetry = 0; return; }
+  // Batch : envoyer jusqu'à 25 scores en 1 appel
+  var batch = S.scoreQueue.slice(0, 25);
+  var payload = { action: 'save_scores_batch', scores: batch };
   try {
-    var resp = await fetch(SU, { method:'POST', body:JSON.stringify(S.scoreQueue[0]) });
+    var resp = await fetch(SU, { method:'POST', body:JSON.stringify(payload) });
     var json = await resp.json().catch(function(){ return {}; });
     if (resp.ok && json.status === 'success') {
-      S.scoreQueue.shift();
+      S.scoreQueue.splice(0, batch.length);
       try { localStorage.setItem('sq', JSON.stringify(S.scoreQueue)); } catch(e) {}
       _flushRetry = 0;
-      if (S.scoreQueue.length) setTimeout(flushQ, 400);
+      if (S.scoreQueue.length) setTimeout(flushQ, 200);
     } else {
-      // Serveur a répondu mais erreur → retry avec backoff
       _scheduleRetry();
     }
   } catch(e) {
-    // Réseau coupé → retry avec backoff
     _scheduleRetry();
   }
 }

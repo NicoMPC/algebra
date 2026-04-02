@@ -140,6 +140,23 @@ const S = {
 Toutes les actions métier (register, login, save_score, publish, etc.) passent par l'Edge Function.
 GAS est conservé uniquement pour l'envoi d'emails (GmailApp). L'Edge Function proxy vers GAS pour `send_welcome_email`.
 
+### Optimisations scale (02/04/2026)
+
+| Optimisation | Avant | Après | Impact |
+|---|---|---|---|
+| **save_score UPSERT** | SELECT count dedup + INSERT | Single UPSERT ON CONFLICT | -1 query/score |
+| **save_scores_batch** | 5 appels HTTP/boost (1 par exo) | 1 appel batch (jusqu'à 25 scores) | ÷5 appels réseau |
+| **Cache curriculum** | Query DB à chaque login | In-memory cache 5 min TTL | -1 query/login |
+| **History 60 jours** | SELECT * sans limite temporelle | `.gte("date", 60j)` + colonnes allégées | Réponse login plus légère |
+
+### Améliorations futures (Supabase Pro, ~100+ users actifs)
+
+- **Connection pooling PgBouncer** — pool dédié, meilleure gestion des connexions concurrentes
+- **Read replicas** — séparer lectures lourdes (login) des écritures (save_score)
+- **Monitoring intégré** — alertes latence, erreurs, usage DB
+- **Backup PITR** — point-in-time recovery (inclus dans Pro)
+- **Migration Resend** — remplacer GAS emails par Resend (~3$/mois) pour fiabilité et templates FR
+
 ---
 
 ## Backend Emails — Google Apps Script (legacy)
