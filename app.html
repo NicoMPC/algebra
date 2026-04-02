@@ -3025,6 +3025,8 @@ function _flowRenderQuestion(idx) {
     var sj2 = Math.floor(Math.random() * (si2 + 1));
     var tmp2 = opts[si2]; opts[si2] = opts[sj2]; opts[sj2] = tmp2;
   }
+  // Stocker les options shufflées pour _flowAnswerOpt
+  exo._shuffledOpts = opts;
   var isFill = exo.type === 'fill' || (!opts.length && exo.a);
   var optsHtml = '';
   if (isFill) {
@@ -3104,7 +3106,7 @@ function _flowRenderQuestion(idx) {
 function _flowAnswerOpt(optIdx) {
   var exo = _flowExos[_flowExoIdx];
   if (!exo) return;
-  var opts = exo.options || exo.opts || [];
+  var opts = exo._shuffledOpts || exo.options || exo.opts || [];
   var correctText = exo.rep || exo.answer || exo.a || '';
   var correct = (opts[optIdx] === correctText);
   var elapsed = Math.round((Date.now() - _flowStartTs) / 1000);
