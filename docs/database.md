@@ -53,17 +53,17 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 
 | Onglet | Rôle | Modifier ? |
 |---|---|---|
-| `Teasing_Early` | Emails waitlist pré-lancement (action `add_teasing_early`) | Lecture seule |
 | `Contact` | Log des formulaires de contact (`send_contact`) | Lecture seule |
-| `Webhook_Log` | Log des webhooks Stripe reçus | Lecture seule |
 
 ### Onglets archivés
 
 Supprimés par `cleanup_all` le 14 mars 2026 : `_ARCHIVE_Queue`, `_ARCHIVE_Prerequisites`, `_ARCHIVE_Rapports`, `_ARCHIVE_Pending_Exos`, `Pending_Exos`, `Queue`, `Programme_Officiel`, `Waitlist`.
 
+Supprimés le 2 avril 2026 : `prompts`, `BoostExos`, `AuditExos`, `Prospection`, `Annonces_LBC`, `Annonces_LBC_2`, `RemediationChapters`, `Teasing_Early`, `Webhook_Log`. 11 comptes test (`@matheux.fr`) purgés de Users/DailyBoosts.
+
 ### Références mortes dans backend.js (SH constant)
 
-`SH.PREREQS` (`Prerequisites`), `SH.QUEUE` (`Queue`), `SH.PENDING` (`Pending_Exos`) — onglets supprimés mais encore déclarés dans le code. Le helper `getSheet()` gère les tabs manquants sans erreur. À nettoyer dans un futur sprint.
+`SH.PREREQS` (`Prerequisites`), `SH.QUEUE` (`Queue`), `SH.PENDING` (`Pending_Exos`), `SH.REMEDIATION` (`RemediationChapters`), `SH.BOOSTEXOS` (`BoostExos`) — onglets supprimés mais encore déclarés dans le code. Le helper `getSheet()` gère les tabs manquants sans erreur. À nettoyer dans un futur sprint.
 
 ---
 
