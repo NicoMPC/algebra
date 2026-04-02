@@ -223,3 +223,15 @@ ce niveau de personnalisation."
 2. Rapport parent hebdo automatique (dès 20 clients)
 3. Streak comme identité dans les toasts (petit patch, fort impact)
 4. Personnalisation explicite dans les messages post-exo (wording uniquement)
+
+---
+
+## Backlog — idées terrain (02 avril 2026)
+
+> Relevé par Nicolas lors de tests utilisateur. À planifier quand les 10 premiers élèves seront actifs.
+
+| # | Idée | Détail | Effort estimé |
+|---|---|---|---|
+| F1 | **Partage question** | Bouton "Envoyer à un pote" sur chaque exo (Web Share API → Snap/Insta/WhatsApp). L'élève bloque, il demande de l'aide | 2-3h |
+| F2 | **Parrainage** | Lien unique par élève, tracking referral, récompense XP pour les deux | 4-5h |
+| F3 | **Questions enchaînées** | Q2 utilise la réponse de Q1, garder visible. Nécessite format JSON v5 | 3-4h |

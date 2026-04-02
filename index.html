@@ -117,6 +117,21 @@
 })();
 </script>
 <script>
+// Fix 2: Hide sticky CTA bottom banner
+var _s = document.createElement('style');
+_s.textContent = '[class*="fixed"][class*="bottom-0"][class*="z-50"][class*="p-3"]{display:none!important}';
+document.head.appendChild(_s);
+
+// Fix 5: Add "Se connecter" button top-right
+var _lb = document.createElement('a');
+_lb.href = '/app.html';
+_lb.textContent = 'Se connecter';
+_lb.style.cssText = 'position:fixed;top:1rem;right:1rem;z-index:9999;color:rgba(255,255,255,.6);font-size:.8rem;font-weight:600;font-family:Syne,sans-serif;text-decoration:none;padding:.5rem 1rem;border:1px solid rgba(255,255,255,.15);border-radius:10px;backdrop-filter:blur(8px);transition:all .2s';
+_lb.onmouseover = function(){ this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,.3)'; };
+_lb.onmouseout = function(){ this.style.color='rgba(255,255,255,.6)'; this.style.borderColor='rgba(255,255,255,.15)'; };
+document.body.appendChild(_lb);
+</script>
+<script>
 // Redirect connectés vers l'app (pas de boucle : app.html ne redirige pas ici)
 try{var s=localStorage.getItem('boost_v23');if(s&&JSON.parse(s).email)window.location.replace('/app.html')}catch(e){}
 </script>

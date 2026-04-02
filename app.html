@@ -261,6 +261,11 @@
       50% { opacity: 0.85; transform: scale(1.02); }
     }
     .pulse-hint { animation: pulseHint 4s ease-in-out infinite; }
+    @keyframes pulseCalc {
+      0%, 100% { transform: scale(1); box-shadow: none; }
+      50% { transform: scale(1.08); box-shadow: 0 0 8px rgba(99,102,241,.3); }
+    }
+    .pulse-calc { animation: pulseCalc 2s ease-in-out 3; }
     @keyframes pulseNewChap {
       0%,100% { box-shadow: 0 0 0 0 rgba(99,102,241,0),  0 1px 4px rgba(0,0,0,.07); }
       50%      { box-shadow: 0 0 0 6px rgba(99,102,241,.11), 0 1px 4px rgba(0,0,0,.07); }
@@ -412,10 +417,12 @@
     }
     .fill-input {
       width:100%; padding:1rem; border-radius:var(--r); font-weight:700;
-      font-size:1.1rem; border:2px solid #cbd5e1; background:#f8fafc;
-      text-align:center; outline:none; transition:border-color .2s;
+      font-size:1.1rem; border:2.5px solid #1E40AF; background:#fff;
+      text-align:center; outline:none; transition:border-color .2s, box-shadow .2s;
+      box-shadow:0 0 0 3px rgba(30,64,175,.08);
     }
-    .fill-input:focus { border-color:#1E40AF; background:#fff; }
+    .fill-input::placeholder { color:#94a3b8; font-weight:500; }
+    .fill-input:focus { border-color:#1E40AF; background:#fff; box-shadow:0 0 0 4px rgba(30,64,175,.15); }
     .btn-validate {
       width:100%; padding:1rem; border-radius:var(--r); font-weight:800;
       font-size:1rem; border:none; cursor:pointer; transition:all .15s;
@@ -929,27 +936,6 @@
       border-radius:var(--l-radius,var(--r)); pointer-events:none;
     }
 
-    /* ── MOBILE STICKY CTA BAR ───────────────────────────────── */
-    #sticky-cta {
-      display:none; position:fixed; bottom:0; left:0; right:0; z-index:90;
-      background:rgba(7,9,15,.96); backdrop-filter:blur(14px) saturate(1.6);
-      border-top:1px solid rgba(129,140,248,.18);
-      padding:.875rem 1.25rem; gap:.75rem;
-      align-items:center; justify-content:space-between;
-      transform:translateY(100%);
-      transition:transform .35s cubic-bezier(.4,0,.2,1);
-    }
-    #sticky-cta.visible { transform:translateY(0); }
-    @media (max-width:768px) { #sticky-cta { display:flex; } }
-    #sticky-cta-btn {
-      flex:1; text-align:center; padding:.7rem 1rem;
-      background:linear-gradient(135deg,#1E40AF,#3B82F6);
-      color:#fff; border:none; border-radius:12px;
-      font-family:'Syne',sans-serif; font-weight:700; font-size:.875rem;
-      cursor:pointer; box-shadow:0 4px 16px rgba(67,56,202,.4);
-      -webkit-tap-highlight-color:transparent;
-    }
-    .sticky-sub { font-size:.6rem; color:rgba(255,255,255,.38); white-space:nowrap; text-align:right; line-height:1.4; }
 
 
     /* ── ADMIN PANEL (DEV TOOLS) ─────────────────────────── */
@@ -1583,9 +1569,8 @@
   <div class="px-5 flex flex-col items-center justify-center text-center" style="min-height:100vh;min-height:100dvh">
     <!-- Logo -->
     <div style="animation:s1 .5s ease both">
-      <div class="flex items-center justify-center gap-2 mb-8">
-        <span style="font-size:2rem">🧠</span>
-        <span style="font-family:Syne,sans-serif;font-weight:900;font-size:1.6rem;color:#e0e7ff;letter-spacing:-.02em">Matheux</span>
+      <div class="flex items-center justify-center mb-8">
+        <img src="logo-matheux.png" alt="Matheux" style="height:3.5rem" class="drop-shadow-md">
       </div>
     </div>
 
@@ -2782,14 +2767,6 @@ var _flowFormulaShown = {};  // { exoIdx: true } formules révélées
   }, { root: root, threshold: 0.12 });
   root.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
 
-  // Sticky mobile CTA — apparaît après 480px de scroll dans la landing
-  var stickyBar = document.getElementById('sticky-cta');
-  if (stickyBar) {
-    root.addEventListener('scroll', function() {
-      if (root.scrollTop > 480) stickyBar.classList.add('visible');
-      else stickyBar.classList.remove('visible');
-    }, { passive: true });
-  }
 })();
 
 function _animCounter(el) {
@@ -3312,12 +3289,12 @@ window._flowShowFormula = function(idx) {
   if (btn) { btn.innerHTML = '✓ Formule vue'; btn.classList.remove('pulse-hint'); btn.classList.add('opacity-40','pointer-events-none'); }
   if (!area) return;
   var wrap = document.createElement('div');
-  wrap.style.cssText = 'background:#DBEAFE;border:1px solid #60A5FA;border-radius:8px;padding:.35rem .6rem;max-width:100%;overflow-x:auto;box-sizing:border-box';
+  wrap.style.cssText = 'background:#1a1a2e;border:2px solid #60A5FA;border-radius:6px;padding:.5rem .75rem;max-width:100%;overflow-x:auto;box-sizing:border-box;box-shadow:0 0 8px rgba(96,165,250,.15)';
   var label = document.createElement('span');
-  label.style.cssText = 'font-size:.7rem;font-weight:900;color:#1e3a8a;text-transform:uppercase;letter-spacing:.05em';
-  label.textContent = 'Formule : ';
+  label.style.cssText = 'font-size:.65rem;font-weight:900;color:#60A5FA;text-transform:uppercase;letter-spacing:.1em;font-family:"Courier New",monospace';
+  label.textContent = '▸ Formule ';
   var span = document.createElement('span');
-  span.style.cssText = 'color:#0F172A;font-weight:600';
+  span.style.cssText = 'color:#e0e7ff;font-weight:600;font-family:"Courier New",monospace;font-size:.85rem';
   wrap.appendChild(label); wrap.appendChild(span);
   area.appendChild(wrap);
   area.classList.add('rdy');
@@ -5486,6 +5463,16 @@ async function togCat(cat) {
   if (S.isNew[cat]) S.isNew[cat] = false;
   if (S.exp[cat] && S.motProfChap[cat]) S._motProfScreen = cat;
   render();
+  // Fix: démarrer le timer sur la première question (goEx() n'est pas appelé par togCat)
+  if (S.exp[cat] && LVL[S.niv] && LVL[S.niv].cats[cat]) {
+    var _ti = S.qv[cat] || 0;
+    var _tr = res2(cat, _ti);
+    var _tid = S.niv + '-' + _tr.rC + '-' + _tr.rI;
+    if (!S.res[_tid] && !S.qans[_tid] && cat !== 'CALIBRAGE' && cat !== 'BREVET') {
+      S.exoStartTime[_tid] = Date.now();
+      setTimeout(function() { _startTimer(_tid); }, 100);
+    }
+  }
   // Scroll vers la carte ouverte
   if (S.exp[cat]) setTimeout(function(){
     var el = document.querySelector('[data-cat="'+cat+'"]');
@@ -5567,10 +5554,24 @@ window.deferExo = function(cat, idx) {
   if (S.rev) return;
   _stopTimer();
   if (!S.deferred[cat]) S.deferred[cat] = {};
-  S.deferred[cat][idx] = true;
+  var count = (typeof S.deferred[cat][idx] === 'number') ? S.deferred[cat][idx] : 0;
+  S.deferred[cat][idx] = count + 1;
   try { localStorage.setItem('mx_deferred_' + S.prof.code, JSON.stringify(S.deferred)); } catch(e) {}
-  showT('Question reportée à la fin 👍', 1500, '⏭️');
-  nextEx(cat);
+  if (count >= 1) {
+    // Double-pass : compter comme faux et montrer la correction
+    var r = res2(cat, idx);
+    var id = S.niv + '-' + r.rC + '-' + r.rI;
+    mark(cat, idx, 'HARD', null);
+    delete S.deferred[cat][idx];
+    try { localStorage.setItem('mx_deferred_' + S.prof.code, JSON.stringify(S.deferred)); } catch(e) {}
+    showT('Pas de souci — regarde la correction 👀', 2000, '📋');
+    S.rev = true; S.cid = id;
+    render();
+    setTimeout(function() { nextEx(cat); }, 2500);
+  } else {
+    showT('Question reportée à la fin 👍', 1500, '⏭️');
+    nextEx(cat);
+  }
 };
 
 function chkComp(cat) {
@@ -7229,7 +7230,7 @@ function _renderRetroExo(exo, score, cat, idx) {
   html += getExoFigure(exo, cat);
   // ── Énoncé (même style que l'exo actif) ──
   var qHtml = exoType === 'fill'
-    ? fmtL(exo.q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace')).replace(/___/g, '<span style="display:inline-block;min-width:5rem;border-bottom:3px solid #1E40AF;background:#eef2ff;border-radius:4px;padding:2px 8px;margin:0 4px">\u2026</span>')
+    ? fmtL(exo.q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace')).replace(/___/g, '<span style="display:inline-block;min-width:4rem;border-bottom:2px dashed #cbd5e1;background:transparent;padding:0 6px;margin:0 3px;color:#94a3b8;font-size:.85em">?</span>')
     : fmtL(exo.q);
   html += '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 sm:p-5 mb-3 min-h-[60px] flex items-center justify-center" style="overflow-wrap:break-word;word-break:break-word">';
   html += '<div class="mc text-center font-bold text-base sm:text-lg leading-relaxed w-full min-w-0" style="overflow-x:auto">'+qHtml+'</div></div>';
@@ -7437,7 +7438,7 @@ function _openPrevRetroModal(cat) {
 
       // Question
       h += '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:.85rem;margin-bottom:.75rem;min-height:50px;display:flex;align-items:center;justify-content:center">';
-      var qH = (exo.type === 'fill') ? fmtL(exo.q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace')).replace(/___/g, '<span style="display:inline-block;min-width:4rem;border-bottom:3px solid #1E40AF;background:#eef2ff;border-radius:4px;padding:2px 6px">\u2026</span>') : fmtL(exo.q);
+      var qH = (exo.type === 'fill') ? fmtL(exo.q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace')).replace(/___/g, '<span style="display:inline-block;min-width:4rem;border-bottom:2px dashed #cbd5e1;background:transparent;padding:0 6px;color:#94a3b8;font-size:.85em">?</span>') : fmtL(exo.q);
       h += '<div class="mc" style="text-align:center;font-weight:700;font-size:.95rem;line-height:1.6;width:100%">' + qH + '</div></div>';
 
       // Options
@@ -8797,10 +8798,10 @@ function rSection(cat, data, idx, total, catDone) {
     _markCoach('tip_tools'); S._coachFiredThisRender = true;
     setTimeout(function() { showT('Le brouillon et la calculette sont en bas — tape le crayon ✏️', 4500, '📋'); }, 600);
   }
-  // T6 : Tip 2ème exercice — "Je ne sais pas" montre la correction
+  // T6 : Tip 2ème exercice — "Passer" reporte la question à la fin
   if (!S._coachFiredThisRender && cat !== 'CALIBRAGE' && idx === 1 && _needsCoach('tip_skip')) {
     _markCoach('tip_skip'); S._coachFiredThisRender = true;
-    setTimeout(function() { showT('"Je ne sais pas" montre la correction — zéro jugement', 4000, '📋'); }, 5500);
+    setTimeout(function() { showT('"Passer" reporte la question à la fin — tu la reverras', 4000, '⏭️'); }, 5500);
   }
   var r       = res2(cat, idx);
   var id      = S.niv+'-'+r.rC+'-'+r.rI;
@@ -8898,9 +8899,8 @@ function rSection(cat, data, idx, total, catDone) {
         (hasSel ? 'Valider la r\u00e9ponse \u2713' : 'Choisis une r\u00e9ponse') +
         '</button>' +
         '</div>' +
-        '<div class="flex justify-center gap-3 mt-5 mb-2">' +
-        '<button class="opt-skip" style="flex:1;max-width:160px" onclick="deferExo(\''+cat+'\','+idx+')">⏭️ Passer</button>' +
-        '<button class="opt-skip" style="flex:1;max-width:160px" onclick="skipAnswer(\''+cat+'\','+idx+')">🤷 Je ne sais pas</button>' +
+        '<div class="flex justify-center mt-5 mb-2">' +
+        '<button class="opt-skip" style="max-width:200px" onclick="deferExo(\''+cat+'\','+idx+')">⏭️ Passer</button>' +
         '</div>';
     }
     // Justification VF post-réponse
@@ -8916,9 +8916,8 @@ function rSection(cat, data, idx, total, catDone) {
       '<div class="validate-wrap" id="validate-wrap">' +
         '<button id="btn-validate-fill" class="btn-validate" onclick="validateAnswer()" disabled>Écris ta réponse</button>' +
       '</div>' +
-      '<div class="flex justify-center gap-3 mt-5 mb-2">' +
-      '<button class="opt-skip" style="flex:1;max-width:160px" onclick="deferExo(\''+cat+'\','+idx+')">⏭️ Passer</button>' +
-      '<button class="opt-skip" style="flex:1;max-width:160px" onclick="skipAnswer(\''+cat+'\','+idx+')">🤷 Je ne sais pas</button>' +
+      '<div class="flex justify-center mt-5 mb-2">' +
+      '<button class="opt-skip" style="max-width:200px" onclick="deferExo(\''+cat+'\','+idx+')">⏭️ Passer</button>' +
       '</div>' +
     '</div>';
   } else if (exoType === 'fill' && (isRev || scored)) {
@@ -9016,7 +9015,7 @@ function rSection(cat, data, idx, total, catDone) {
     getExoFigure(data, cat, scored) +
     tableHtml +
     '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 sm:p-5 mb-3 min-h-[60px] flex items-center justify-center" style="overflow-wrap:break-word;word-break:break-word">' +
-    '<div class="mc text-center font-bold text-base sm:text-lg leading-relaxed w-full min-w-0" style="overflow-x:auto">'+(exoType === 'fill' ? fmtL(data.q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace')).replace(/___/g, '<span style="display:inline-block;min-width:5rem;border-bottom:3px solid #1E40AF;background:#eef2ff;border-radius:4px;padding:2px 8px;margin:0 4px">\u2026</span>') : fmtL(data.q))+'</div></div>' +
+    '<div class="mc text-center font-bold text-base sm:text-lg leading-relaxed w-full min-w-0" style="overflow-x:auto">'+(exoType === 'fill' ? fmtL(data.q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace')).replace(/___/g, '<span style="display:inline-block;min-width:4rem;border-bottom:2px dashed #cbd5e1;background:transparent;padding:0 6px;margin:0 3px;color:#94a3b8;font-size:.85em">?</span>') : fmtL(data.q))+'</div></div>' +
     drawHtml +
     opts + acts +
     (catDone && scored
@@ -9842,12 +9841,12 @@ window.showHintInline = function(cat, idx, max) {
   var area = document.getElementById('help-inline-'+id);
   if (!area) return;
   var wrap = document.createElement('div');
-  wrap.style.cssText = 'margin-bottom:.35rem;background:#fef9c3;border:1px solid #fbbf24;border-radius:8px;padding:.35rem .6rem';
+  wrap.style.cssText = 'margin-bottom:.35rem;background:#1a1a2e;border:2px solid #fbbf24;border-radius:6px;padding:.5rem .75rem;box-shadow:0 0 8px rgba(251,191,36,.15)';
   var label = document.createElement('span');
-  label.style.cssText = 'font-size:.7rem;font-weight:900;color:#78350f;text-transform:uppercase;letter-spacing:.05em';
-  label.textContent = 'Indice ' + S.hints[id] + ' : ';
+  label.style.cssText = 'font-size:.65rem;font-weight:900;color:#fbbf24;text-transform:uppercase;letter-spacing:.1em;font-family:"Courier New",monospace';
+  label.textContent = '▸ Indice ' + S.hints[id] + ' ';
   var span = document.createElement('span');
-  span.style.cssText = 'color:#0F172A;font-weight:600';
+  span.style.cssText = 'color:#e0e7ff;font-weight:600;font-family:"Courier New",monospace;font-size:.85rem;line-height:1.5';
   wrap.appendChild(label);
   wrap.appendChild(span);
   area.appendChild(wrap);
@@ -9871,12 +9870,12 @@ window.revFInline = function(cat, idx) {
   if (btn) { btn.innerHTML = '✓ Formule vue'; btn.classList.add('opacity-40','pointer-events-none'); btn.classList.remove('pulse-hint'); }
   if (!area) return;
   var wrap = document.createElement('div');
-  wrap.style.cssText = 'background:#DBEAFE;border:1px solid #60A5FA;border-radius:8px;padding:.35rem .6rem;max-width:100%;overflow-x:auto;box-sizing:border-box';
+  wrap.style.cssText = 'background:#1a1a2e;border:2px solid #60A5FA;border-radius:6px;padding:.5rem .75rem;max-width:100%;overflow-x:auto;box-sizing:border-box;box-shadow:0 0 8px rgba(96,165,250,.15)';
   var label = document.createElement('span');
-  label.style.cssText = 'font-size:.7rem;font-weight:900;color:#1e3a8a;text-transform:uppercase;letter-spacing:.05em';
-  label.textContent = 'Formule : ';
+  label.style.cssText = 'font-size:.65rem;font-weight:900;color:#60A5FA;text-transform:uppercase;letter-spacing:.1em;font-family:"Courier New",monospace';
+  label.textContent = '▸ Formule ';
   var span = document.createElement('span');
-  span.style.cssText = 'color:#0F172A;font-weight:600';
+  span.style.cssText = 'color:#e0e7ff;font-weight:600;font-family:"Courier New",monospace;font-size:.85rem';
   wrap.appendChild(label);
   wrap.appendChild(span);
   area.appendChild(wrap);
@@ -9893,13 +9892,21 @@ function startNudge(id) {
     if (pf && !pf.classList.contains('pointer-events-none')) pf.classList.add('pill-nudge');
     showT('Psst — t\'as droit aux indices 💡 Hésite pas !', 3500, '💡');
   }, 20000);
+  // Nudge brouillon/calculette à 30s
+  _nudgeTimers[id+'_calc'] = setTimeout(function() {
+    var tab = document.getElementById('tab-draft');
+    if (tab && !S.res[id]) tab.classList.add('pulse-calc');
+  }, 30000);
 }
 function clearNudge(id) {
   clearTimeout(_nudgeTimers[id]);
+  clearTimeout(_nudgeTimers[id+'_calc']);
   var ph = document.getElementById('pill-hint-'+id);
   var pf = document.getElementById('pill-form-'+id);
   if (ph) ph.classList.remove('pill-nudge');
   if (pf) pf.classList.remove('pill-nudge');
+  var tab = document.getElementById('tab-draft');
+  if (tab) tab.classList.remove('pulse-calc');
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -11418,7 +11425,7 @@ function _adminPreviewChapter(jsonStr, title) {
 
     // Question
     var qHtml = exoType === 'fill'
-      ? fmtL(ex.q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace')).replace(/___/g, '<span style="display:inline-block;min-width:5rem;border-bottom:3px solid #1E40AF;background:#eef2ff;border-radius:4px;padding:2px 8px;margin:0 4px">\u2026</span>')
+      ? fmtL(ex.q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace')).replace(/___/g, '<span style="display:inline-block;min-width:4rem;border-bottom:2px dashed #cbd5e1;background:transparent;padding:0 6px;margin:0 3px;color:#94a3b8;font-size:.85em">?</span>')
       : fmtL(ex.q);
     html += '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.85rem;padding:.75rem;margin-bottom:.5rem;min-height:50px;display:flex;align-items:center;justify-content:center">';
     html += '<div class="mc" style="text-align:center;font-weight:700;font-size:.95rem;line-height:1.6;width:100%;overflow-x:auto">' + qHtml + '</div></div>';
@@ -11573,7 +11580,7 @@ function _ckPreviewJ1(code, type) {
   html += '<div style="background:white;border:1px solid #e2e8f0;border-radius:16px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:1rem">';
   html += '<div style="font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#3B82F6;margin-bottom:.5rem">Exercice 1/' + nExos + '</div>';
   var q1Html = (ex1.type === 'fill')
-    ? fmtL(ex1.q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace')).replace(/___/g, '<span style="display:inline-block;min-width:4rem;border-bottom:3px solid #1E40AF;background:#eef2ff;border-radius:4px;padding:2px 6px;margin:0 3px">\u2026</span>')
+    ? fmtL(ex1.q.replace(/\\text\{___\}/g, '\\enspace\\boxed{\\phantom{xx}}\\enspace')).replace(/___/g, '<span style="display:inline-block;min-width:4rem;border-bottom:2px dashed #cbd5e1;background:transparent;padding:0 6px;margin:0 3px;color:#94a3b8;font-size:.85em">?</span>')
     : fmtL(ex1.q);
   html += '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:.75rem;margin-bottom:.75rem;min-height:50px;display:flex;align-items:center;justify-content:center">';
   html += '<div class="mc" style="text-align:center;font-weight:700;font-size:.95rem;line-height:1.6">' + q1Html + '</div></div>';
