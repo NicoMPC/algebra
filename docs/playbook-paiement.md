@@ -1,60 +1,73 @@
-# Playbook — Paiement & Trial
+# Playbook — Paiement & Freemium
 
-> Domaine : trial 7 jours, badge progressif, overlay bloquant, Stripe, activation premium.
-> Déclencheurs : "il peut encore jouer après J+7", "le paiement active pas le compte", "le badge trial s'affiche pas"
+> Domaine : freemium (1 chapitre gratuit), chapitres verrouillés, Stripe one-time 29,99€, activation premium auto.
+> Déclencheurs : "il peut accéder à un chapitre bloqué", "le paiement active pas le compte", "le badge free s'affiche pas"
 
 > ⚠️ **Depuis 02/04/2026** : l'API est Supabase Edge Functions (`index.ts`). Les références `backend.js` / lignes GAS sont legacy (emails uniquement).
+> ⚠️ **Depuis 03/04/2026** : modèle freemium (plus de trial 7 jours). Paiement unique 29,99€.
 
 ---
 
 ## User flow
 
 ```
-Inscription → TrialStart = today
-  → J-5 à J-1 : badge progressif (bleu → jaune → orange)
-  → J-3 : toast "Plus que N jours"
-  → J+7 : overlay bloquant + lien Stripe
-  → Paiement Stripe → webhook → Premium=1
-  → Accès illimité
+Inscription → Diagnostic 5 questions
+  → free_chapter = chapitre le plus faible (auto)
+  → 1 chapitre débloqué + boost quotidien illimité
+  → Autres chapitres : visibles mais 🔒 grisés
+  → Clic chapitre bloqué → overlay "Débloque tout" + CTA Stripe
+  → Paiement Stripe 29,99€ → webhook auto → premium=true, premium_end=2026-06-30
+  → Tous les chapitres débloqués
 ```
 
 ## Fonctions clés
 
-| Étape | Frontend (index.html) | Backend (backend.js) | Sheet |
-|---|---|---|---|
-| Calcul trial | — | `checkTrialStatus()` L.4935 | Users.Premium, Users.TrialStart |
-| Badge trial | `renderTrialBadge()` L.4570 | — | — |
-| Overlay J+7 | `showTrialExpired()` L.4597 | — | — |
-| Premium guard | `startPremiumGuard()` L.4960 | `checkTrialStatus()` | Users |
-| Webhook Stripe | — | `stripeWebhook()` + `_verifyWebhookHmac()` | Users.Premium |
-| Lien Stripe | L.4624 | — | — |
+| Étape | Frontend (app.html) | Backend (index.ts) |
+|---|---|---|
+| Chapitre verrouillé ? | `_isChapLocked(cat)` | Guard dans `saveScore()` / `saveScoresBatch()` |
+| free_chapter auto | Callback `save_calibration_batch` | `saveCalibrationBatch()` → weakest chapter |
+| Badge free/premium | `renderTrialBadge()` | — |
+| Overlay locked | `showLockedOverlay()` | — |
+| Premium guard | `startPremiumGuard()` / `_verifyPremiumStatus()` | `checkTrialStatus()` → isPremium + freeChapter |
+| Webhook Stripe | — | `stripeWebhook()` (natif checkout.session.completed) |
+| Lien Stripe | `showLockedOverlay()`, `premium.html` | — |
+
+## Guard freemium — 2 niveaux
+
+### Frontend (`_isChapLocked`)
+- Retourne `false` si : premium, admin, cat = BOOST/CALIBRAGE/BREVET/REVISION, ou cat = freeChapter
+- Utilisé dans : `togCat()`, `openFromProgress()`, rendu cartes, hero CTA
+
+### Backend (`saveScore` / `saveScoresBatch`)
+- Si `!premium && source !== 'CALIBRAGE' && source !== 'BOOST'` → vérifie `categorie === free_chapter`
+- Sinon → reject "Chapitre verrouillé"
 
 ## 3 couches de protection premium
 
-1. **Check serveur toutes les 5 min** : `_verifyPremiumStatus()` L.4978
+1. **Check serveur toutes les 5 min** : `_verifyPremiumStatus()`
 2. **Intégrité localStorage** : `_sealTrial()` + hash — si modifié manuellement → reset + re-verify
 3. **Détection DevTools** : si panel ouvert → vérification immédiate
 
+## Webhook Stripe (auto)
+
+- Endpoint : `https://xlfzhcanzmqqlxtavzrd.supabase.co/functions/v1/api`
+- Event : `checkout.session.completed`
+- L'Edge Function détecte `p.type === "checkout.session.completed"` → extrait `customer_details.email` → `UPDATE profiles SET premium=true, premium_end='2026-06-30'`
+- Pas de signature verification pour l'instant (OK pour <50 élèves)
+
 ## Checklist diagnostic
 
-1. **Élève accède après J+7** → Vérifier `checkTrialStatus()` retourne `trialActive=false`. Vérifier Users.TrialStart est bien la date d'inscription. Vérifier Users.Premium n'est pas à 1 par erreur.
-2. **Overlay ne s'affiche pas** → Vérifier `S.trial.trialActive === false && S.trial.isPremium === false`. L'overlay se déclenche 300ms après `initApp()`.
-3. **Paiement Stripe ne s'active pas** → Vérifier webhook reçu dans GAS logs. Vérifier `_verifyWebhookHmac()` ne rejette pas (secret dans PropertiesService). Vérifier que le webhook écrit `Premium=1` dans Users.
-4. **Badge trial invisible** → Visible uniquement si `daysLeft ≤ 5`. Admin et Premium ne le voient jamais.
+1. **Élève clique chapitre bloqué** → Vérifier `_isChapLocked()` retourne true. Overlay s'affiche avec CTA Stripe.
+2. **Paiement Stripe ne s'active pas** → Vérifier webhook reçu (Stripe Dashboard → Developers → Events). Vérifier que l'email Stripe matche l'email du profil Supabase.
+3. **Badge free invisible** → Visible uniquement si `!S.trial.isPremium`. Admin ne le voit jamais.
+4. **free_chapter null** → L'élève n'a pas fait le diagnostic. UI doit bloquer tant que diag pas terminé.
 
 ## Sécurité
 
-- Webhook Stripe : HMAC-SHA256 via `_sig/_ts` payload (limitation GAS : pas d'accès aux headers HTTP)
-- `SHARED_SECRET` dans `PropertiesService` (plus hardcodé)
 - Lien Stripe PROD : `https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02`
-
-## Points de défaillance connus
-
-| Bug | Cause | Fix | Date |
-|-----|-------|-----|------|
-| Webhook sans vérification | GAS n'expose pas les headers HTTP | V1 — `_verifyWebhookHmac()` + fallback metadata.secret | 2026-03-22 |
-| Secret hardcodé | SHARED_SECRET en clair dans backend.js | V2 — PropertiesService | 2026-03-22 |
+- Prix : 29,99€ TTC (TVA non applicable, art. 293 B CGI)
+- Pas de signature webhook (à ajouter au-delà de 50 élèves)
 
 ## Règles CLAUDE.md
 
-T1 (7 jours gratuits), T2 (19.99€/mois), T3 (badge progressif), T4 (overlay bloquant)
+T1 (freemium 1 chapitre), T2 (29,99€ one-time), T3 (badge freemium), T4 (chapitres bloqués)

@@ -4,9 +4,20 @@
 
 ---
 
-## État global — 02 avril 2026
+## État global — 03 avril 2026
 
-**Matheux LANCÉ sur Supabase.** Migration GAS→Supabase terminée le 02/04. Backend = Edge Functions + PostgreSQL. GAS = emails uniquement. Stress test 500 élèves passé. Optimisations scale déployées.
+**Matheux LANCÉ sur Supabase + FREEMIUM DÉPLOYÉ.** Migration GAS→Supabase terminée le 02/04. Modèle freemium (1 chapitre gratuit + 29,99€ one-time) déployé le 03/04. Webhook Stripe auto.
+
+**Fait le 03/04 :**
+- ✅ Modèle freemium déployé (1 chapitre gratuit + boost quotidien + paiement unique 29,99€)
+- ✅ Backend : guard saveScore/saveScoresBatch, free_chapter auto post-diagnostic
+- ✅ Frontend : chapitres verrouillés, overlay upsell, badge FREE/PRO
+- ✅ Stripe : Payment Link 29,99€ + webhook checkout.session.completed → premium auto
+- ✅ Pages légales mises à jour (CGV, CGU, mentions), premium.html refait
+- ✅ Landing page : script post-hydration (trial 7j → 1 chapitre gratuit)
+- ✅ 7 élèves existants migrés premium (premium_end = 2026-06-30)
+- ✅ Cours adaptatif : agent admin-auto génère section_10 + section_20
+- ✅ 3 fixes UX carousel (toast, flèches desktop, expanded card)
 
 **Fait le 02/04 :**
 - ✅ Migration Supabase PostgreSQL LIVE (14 tables, RLS, Edge Functions)
@@ -35,7 +46,7 @@
 | Tests automatisés | 66/72 (92%) — 6 fails = gate J+1 attendu |
 | Couverture programme | ~100% — 65 chapitres (22 Brevet 2026 v4 + 43 autres niveaux) |
 | Juridique | Complet (5 pages + consentement parental + RGPD + TVA art. 293 B CGI) |
-| Paiement | Stripe PROD actif (19,99/mois) |
+| Paiement | Stripe PROD actif (29,99€ one-time, webhook auto) |
 | Emails auto | J+0 auto (GAS) + reset MDP auto (Supabase Auth) — J+3/J+5/J+7 manuels |
 | Admin cockpit | 6 onglets, boost+chapitre 1-clic, JSON complet |
 | Limite bêta | ~~50 élèves~~ Supprimée (Supabase tient la charge) |
@@ -47,8 +58,8 @@
 | # | Action | Où | Priorité |
 |---|---|---|---|
 | 1 | **Automatiser trigger `triggerDailyMarketing`** — dès 10 clients actifs | Apps Script UI | 🟡 |
-| 2 | **Webhook Stripe HMAC-SHA256** — endpoint à finaliser, `SHARED_SECRET` à déplacer vers `PropertiesService` | Stripe dashboard | 🔴 |
-| 3 | **Test paiement CB réel** (19,99€ → vérifier Premium=1 → rembourser) | Stripe | 🔴 |
+| ~~2~~ | ~~Webhook Stripe~~ | ✅ FAIT 03/04 — webhook auto checkout.session.completed → premium |
+| 3 | **Test paiement CB réel** (29,99€ → vérifier premium=true auto → rembourser) | Stripe | 🔴 |
 | 4 | Vrais témoignages élèves/parents sur landing | À collecter | 🔵 |
 | 5 | **UX sans boost** — bandeau "ton boost arrive bientôt" si aucun boost généré | Frontend | 🟡 |
 | 6 | **Centraliser 3 mails matheux.fr** (Thunderbird/alias/redirection) | Ionos | 🟡 |
