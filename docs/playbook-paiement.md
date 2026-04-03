@@ -46,7 +46,7 @@ Inscription → TrialStart = today
 
 - Webhook Stripe : HMAC-SHA256 via `_sig/_ts` payload (limitation GAS : pas d'accès aux headers HTTP)
 - `SHARED_SECRET` dans `PropertiesService` (plus hardcodé)
-- Lien Stripe PROD : `https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01`
+- Lien Stripe PROD : `https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02`
 
 ## Points de défaillance connus
 

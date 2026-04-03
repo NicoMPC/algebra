@@ -212,12 +212,11 @@ Matheux (matheux.fr) = SPA vanilla JS (`index.html` ~10000L) + backend Google Ap
 
 ## Exercices — quand Nicolas demande d'en créer
 
-**TOUJOURS lire ces 2 docs avant de générer :**
-1. `docs/direction-technique.md` — analyse élève, grille de patterns, prescription, anti-doublon
-2. `docs/prompt-generation-exos.md` — format JSON v4, règles absolues, workflow
+**TOUJOURS lire ce doc avant de générer :**
+1. `docs/prompt-generation-exos.md` — référence unique : analyse élève, prescription, format JSON, règles absolues, workflow
 
 **Workflow :**
-1. Scanner les Scores de l'élève via `sheets.py`
+1. Scanner les scores de l'élève (table `scores` Supabase)
 2. Identifier les lacunes (patterns d'erreurs)
 3. Proposer un brief à Nicolas → attendre validation
 4. Générer (format JSON strict, 4 slots de 5)
@@ -253,7 +252,7 @@ Matheux (matheux.fr) = SPA vanilla JS (`index.html` ~10000L) + backend Google Ap
 - Un seul interlocuteur Claude (pas d'agents séparés pour l'élève)
 - Focus 3ème Brevet — 100% effort acquisition/contenu
 - Mail auto = J+0 uniquement (reste manuel)
-- Process analyse → prescription documenté dans direction-technique.md
+- Process analyse → prescription documenté dans prompt-generation-exos.md
 
 ---
 
@@ -286,7 +285,7 @@ python3 check_students.py       # Health check données
 
 - GAS URL : `https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec`
 - Sheet PROD : `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4`
-- Stripe PROD : `https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01`
+- Stripe PROD : `https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02`
 - Service account Python : `algebreboost-sheets-2595a71cadfb.json`
 
 ---
@@ -303,8 +302,7 @@ Quand tu as besoin de détails, lis ces docs :
 | `docs/product.md` | Vision produit, parcours, business |
 | `docs/messages.md` | Ton, messages, _MSGS |
 | `docs/workflow-quotidien.md` | Workflow admin Nicolas |
-| `docs/prompt-generation-exos.md` | Générer des exercices |
-| `docs/direction-technique.md` | Analyse élève → prescription |
+| `docs/prompt-generation-exos.md` | Référence unique génération exercices (analyse + prescription + fabrication) |
 | `docs/roadmap.md` | Priorités, état, prochaines actions |
 
 ### Playbooks — diagnostic par domaine

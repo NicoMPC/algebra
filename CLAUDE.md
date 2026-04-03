@@ -283,7 +283,7 @@ python3 check_students.py       # Health check données élèves
 | GAS Deployment ID | `AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF` |
 | Sheet ID (legacy) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
 | GitHub | `https://github.com/MatheuxApp/algebra` (privé) |
-| Stripe PROD | `https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01` |
+| Stripe PROD | `https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02` |
 
 | Code | Prénom | Niveau | Email |
 |---|---|---|---|
