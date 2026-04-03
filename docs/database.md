@@ -38,19 +38,20 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 
 ## Supabase PostgreSQL — Schéma actif (14 tables)
 
-> Source de vérité : `supabase/schema.sql` + `supabase/fix_schema.sql`
+> **Source de vérité : `supabase/schema.sql`** — en cas de doute sur les colonnes exactes, lire le SQL.
+> Le tableau ci-dessous est un résumé humain, il peut diverger. Si contradiction → schema.sql a raison.
 
 | Table | Équivalent Sheets | Colonnes clés | Index |
 |---|---|---|---|
 | **profiles** | Users | `code` (PK métier, char 6), `email`, `prenom`, `niveau`, `password_hash`, `is_admin`, `premium`, `trial_start`, `objectif` | code, email, niveau |
 | **scores** | Scores | `code`, `chapitre`, `num_exo`, `resultat` (EASY/MEDIUM/HARD/SKIP), `date`, `source` | code+date, code+chapitre, dedup (code,chapitre,num_exo,date,source) |
-| **progress** | Progress | `code`, `chapitre`, `score` (adaptatif 0-100), `nb_exos`, `nb_easy`, `derniere_pratique` | code+chapitre |
+| **progress** | Progress | `code`, `categorie`, `score` (adaptatif 0-100), `nb_exos`, `nb_erreurs`, `derniere_pratique`, `statut`, `streak` | code+categorie |
 | **daily_boosts** | DailyBoosts | `code`, `date`, `boost_json` (JSONB), `exos_done` (0-5) | code+date (unique) |
 | **curriculum** | Curriculum_Officiel | `niveau`, `categorie`, `titre`, `exos_json` (JSONB, 20 exos), `timer`, `ordered` | niveau+categorie (unique) |
 | **diagnostic_exos** | DiagnosticExos | `niveau`, `categorie`, `exos_json` (JSONB, 2 exos) | niveau+categorie (unique) |
 | **brevet_exos** | BrevetExos | `niveau`, `categorie`, `exos_json` | niveau+categorie (unique) |
 | **brevet_results** | BrevetResults | `code`, `date`, `score_pct`, `detail_json` | code+date |
-| **cours** | Cours | `niveau`, `categorie`, `section_10`, `section_20`, `date_maj` | niveau+categorie (unique) |
+| **cours** | Cours | `niveau`, `categorie`, `section_10`, `section_20`, `publish_10`, `publish_20`, `date_maj` | niveau+categorie (unique) |
 | **suivi** | 👁 Suivi | `code` (unique), `chap1..chap4` (JSONB), `boost` (JSONB), `action_nicolas` | code |
 | **emails** | 📧 Emails | `email`, `type`, `status` (default 'envoyé'), `date` | email |
 | **insights** | Insights | `code`, `type`, `message`, `source`, `ref` | code |
@@ -258,14 +259,14 @@ Pool d'exercices **dédiée aux boosts quotidiens**, séparée de Curriculum_Off
 |---|---|---|---|
 | A | Niveau | String | `6EME` / `5EME` / `4EME` / `3EME` / `1ERE` |
 | B | Categorie | String | Identifiant chapitre (même que Curriculum_Officiel) |
-| C | Section5 | String | *(obsolète — non utilisé)* |
-| D | Section10 | String | Contenu cours débloqué à 10 exos — "L'essentiel — Méthode & Exemples" |
-| E | Section15 | String | *(obsolète — non utilisé)* |
-| F | Section20 | String | Contenu cours débloqué à 20 exos — "Cours complet ✨" |
+| C | Section10 | String | Contenu cours débloqué à 10 exos — "L'essentiel — Méthode & Exemples" |
+| D | Section20 | String | Contenu cours débloqué à 20 exos — "Cours complet ✨" |
+| E | Publish10 | Date | Date de publication section_10 (gate J+1) |
+| F | Publish20 | Date | Date de publication section_20 (gate J+1) |
 | G | DateMaj | Date | Date de dernière modification |
 
 **Règles :**
-- Géré exclusivement via l'onglet "📚 Cours" du dashboard admin (GAS `save_cours`)
+- Géré par l'agent admin-auto (génération) + dashboard admin (édition manuelle via `save_cours`)
 - Chargé au login → `coursData` dans la réponse → `S.coursMap` dans le frontend
 - `nbExos` calculé depuis l'historique (source ≠ BOOST, catégorie ≠ CALIBRAGE)
 - Milestones **10/20** → toast gamification +50 XP + bouton "📖 Mon cours" sur la carte chapitre
@@ -292,6 +293,9 @@ L'agent injecte directement dans DailyBoosts avec `Date = demain` et `ExosDone =
 | Connexion jour de l'injection | ❌ Pas visible | `Date != today` |
 | Connexion le lendemain | ✅ Livré | `Date == today` |
 | Connexion J+12 | ✅ Livré en rattrapage | `ExosDone < 5` → fallback |
+
+#### Via Cours (agent admin autonome)
+L'agent injecte les cours avec `publish_10` / `publish_20` = TOMORROW. L'Edge Function `login()` ne débloque une section que si `publish_XX <= today`. Si la section existe mais `publish_XX > today` → `teasingCours` dans la réponse → bandeau "📖 Nouvelle section de cours dispo demain matin !" sur la carte chapitre. Les sections déjà publiées restent visibles — seules les **nouvelles** sections sont soumises à J+1.
 
 ### BrevetResults
 

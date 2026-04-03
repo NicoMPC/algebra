@@ -1163,6 +1163,12 @@
     .chap-carousel-dots { display:flex; justify-content:center; gap:6px; margin-top:8px; }
     .chap-carousel-dots .cdot { width:10px;height:10px;border-radius:50%;background:#cbd5e1;transition:all .2s; }
     .chap-carousel-dots .cdot.active { background:#1E40AF;width:24px;border-radius:5px; }
+    .carousel-nav { position:relative; }
+    .carousel-arrow { position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:36px;height:36px;border-radius:50%;background:white;border:1px solid #e2e8f0;font-size:20px;font-weight:900;color:#1E40AF;cursor:pointer;opacity:0;transition:opacity .2s;box-shadow:0 2px 8px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center; }
+    .carousel-arrow-l { left:-8px; }
+    .carousel-arrow-r { right:-8px; }
+    .carousel-nav:hover .carousel-arrow { opacity:1; }
+    @media (max-width:768px) { .carousel-arrow { display:none !important; } }
 
     /* ── BOOST SHIMMER CTA ─────────────────────────────── */
     .boost-shimmer {
@@ -8237,6 +8243,7 @@ function render() {
   var _doneCount = 0;
   var _carouselHtml = '';
   var _carouselCount = 0;
+  var _expandedPriorityHtml = '';
 
   html += '<!--CAROUSEL_SLOT-->';
 
@@ -8385,6 +8392,10 @@ function render() {
       if (_nexM && (_nexM - done) > 0 && (_nexM - done) <= 2) {
         html += '<div class="mx-4 mb-2 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-1.5 text-[10px] font-bold text-indigo-600">📖 Plus que '+(_nexM - done)+' exo'+((_nexM-done)>1?'s':'')+' pour débloquer ton cours !</div>';
       }
+      // Teasing J+1 : section rédigée mais pas encore publiée
+      if (_cm.teasingCours && _cm.teasingCours.length > 0) {
+        html += '<div class="mx-4 mb-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 text-[10px] font-bold text-amber-700">📖 Nouvelle section de cours dispo demain matin !</div>';
+      }
     }
     html += '<div class="'+(isBoost?'text-white/40':'text-slate-300')+' text-xl font-light select-none" style="transition:transform .2s;transform:rotate('+(isOpen?90:0)+'deg)">›</div></div>';
     // Insight prof visible sur carte fermée pour chapitres assignedByProf non commencés
@@ -8474,6 +8485,10 @@ function render() {
       html = html.substring(0, _htmlBefore);
       _carouselHtml += '<div class="chap-slide">' + _cardHtml + '</div>';
       _carouselCount++;
+    } else if (_isPriority && S.exp[cat]) {
+      var _cardHtml = html.substring(_htmlBefore);
+      html = html.substring(0, _htmlBefore);
+      _expandedPriorityHtml += _cardHtml;
     }
   });
 
@@ -8482,11 +8497,15 @@ function render() {
     var _carouselLabel = _carouselCount + ' chapitre' + (_carouselCount > 1 ? 's' : '') + ' à travailler';
     var _carouselBlock =
       '<div class="mb-4"><div class="flex items-center justify-between mb-2"><span class="text-xs font-black text-slate-500 uppercase tracking-widest">🎯 ' + _carouselLabel + '</span><span class="text-[10px] text-slate-400">← swipe →</span></div>' +
+      '<div class="carousel-nav">' +
+      '<button class="carousel-arrow carousel-arrow-l" onclick="_carouselNav(-1)">‹</button>' +
       '<div class="chap-carousel" id="chap-carousel">' + _carouselHtml + '</div>' +
+      '<button class="carousel-arrow carousel-arrow-r" onclick="_carouselNav(1)">›</button>' +
+      '</div>' +
       '<div class="chap-carousel-dots" id="chap-carousel-dots"></div></div>';
-    html = html.replace('<!--CAROUSEL_SLOT-->', _carouselBlock);
+    html = html.replace('<!--CAROUSEL_SLOT-->', _expandedPriorityHtml + _carouselBlock);
   } else {
-    html = html.replace('<!--CAROUSEL_SLOT-->', '');
+    html = html.replace('<!--CAROUSEL_SLOT-->', _expandedPriorityHtml);
   }
 
   c.innerHTML = html || '<div class="text-center text-slate-400 font-semibold py-12 text-sm">Aucun exercice disponible pour ce niveau.</div>';
@@ -8643,11 +8662,17 @@ function _closeTeasingModal() {
   if (el) el.remove();
 }
 
+// ── Carousel navigation desktop ──────────────────────────────
+function _carouselNav(dir) {
+  var c = document.getElementById('chap-carousel');
+  if (!c) return;
+  var slide = c.querySelector('.chap-slide');
+  if (!slide) return;
+  c.scrollBy({ left: dir * (slide.offsetWidth + 12), behavior: 'smooth' });
+}
+
 // ── Gamification milestones cours ─────────────────────────────
 function _checkCoursMilestone(cat) {
-  if (!S.coursMap[cat]) return;
-  var sessions = S.chapSessions && S.chapSessions[cat];
-  // Compter exos curriculum faits pour ce chapitre
   var nbExos = 0;
   var exs = LVL[S.niv] && LVL[S.niv].cats[cat];
   if (exs) {
@@ -8657,10 +8682,9 @@ function _checkCoursMilestone(cat) {
     }
   }
   var milestones = [10, 20];
-  var cm = S.coursMap[cat];
+  var cm = S.coursMap && S.coursMap[cat];
   milestones.forEach(function(m) {
     if (nbExos === m) {
-      // Vérifier si le cours pour ce milestone est rédigé
       var hasSection = cm && cm.unlocked && cm.unlocked.some(function(s) { return s.unlock_at === m; });
       if (hasSection) {
         var milestoneKeys = { 10: 'cours_10', 20: 'cours_20' };

@@ -85,7 +85,7 @@ create table progress (
   id              bigint generated always as identity primary key,
   code            char(6) not null references profiles(code) on delete cascade,
   niveau          text not null,
-  chapitre        text not null,
+  categorie       text not null,
   score           integer not null default 0,          -- score confiance adaptatif 0-100
   nb_exos         integer not null default 0,
   nb_erreurs      integer not null default 0,
@@ -94,7 +94,7 @@ create table progress (
   streak          integer not null default 0,
   created_at      timestamptz not null default now(),
   updated_at      timestamptz not null default now(),
-  unique(code, chapitre)
+  unique(code, categorie)
 );
 
 create index idx_progress_code on progress(code);
@@ -212,6 +212,8 @@ create table cours (
   categorie   text not null,
   section_10  text,                                    -- contenu débloqué à 10 exos
   section_20  text,                                    -- contenu débloqué à 20 exos
+  publish_10  date,                                    -- date de publication section_10 (J+1)
+  publish_20  date,                                    -- date de publication section_20 (J+1)
   date_maj    date,                                    -- dernière modification
   unique(niveau, categorie)
 );
