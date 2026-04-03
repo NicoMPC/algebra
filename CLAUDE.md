@@ -116,10 +116,10 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 
 | # | Règle | Détail |
 |---|-------|--------|
-| T1 | **7 jours gratuits** | Accès complet, sans carte bancaire |
-| T2 | **19,99 €/mois** | Prix unique, pas de paliers |
-| T3 | **Badge trial progressif** | J-5 bleu → J-3 jaune → J-1 orange |
-| T4 | **J+7 overlay bloquant** | Lien Stripe direct |
+| T1 | **Freemium** | 1 chapitre gratuit (le plus faible au diagnostic) + boost quotidien illimité |
+| T2 | **Paiement unique** | One-time (prix à confirmer), accès jusqu'au Brevet 2026 (premium_end = 2026-06-30) |
+| T3 | **Badge freemium** | "🔓 1 chapitre gratuit" cliquable → overlay déblocage |
+| T4 | **Chapitres bloqués** | Visibles mais 🔒 grisés. `togCat()` + `openFromProgress()` → overlay. `saveScore` backend rejette |
 | T5 | **Emails** | J+0 auto uniquement. Le reste est manuel pour l'instant |
 | T6 | **Désinscription emails** | `unsubscribe.html` + action GAS `unsubscribe` → log UNSUB dans onglet Emails. Check `_isUnsubscribed()` avant chaque envoi marketing |
 
@@ -156,7 +156,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | G12 | **Timer exercice** | 60s par exercice, cercle SVG animé. Doux, aucune pénalité. Désactivable |
 | G13 | **Mode Flow** | 5 exos EASY consécutifs en ≤timer → XP ×2 pendant 5 exos |
 | G14 | **Timer configurable** | `_getTimerDuration()` — 60s standard, 30s automatismes |
-| G15 | **Cours adaptatif** | 2 sections débloquées à 10 et 20 exos curriculum. Imprimable/PDF. +50 XP par section débloquée. Bouton "📖 Mon cours" sur chaque carte chapitre |
+| G15 | **Cours adaptatif** | 2 sections débloquées à 10 et 20 exos curriculum. Imprimable/PDF. +50 XP par section débloquée. Bouton "📖 Mon cours" sur chaque carte chapitre. **Généré par l'agent admin-auto** : section_10 (bases & méthodes) à 10 exos, section_20 (approfondissement & astuces Brevet) à 20 exos. Amélioré tous les 10 exos supplémentaires. Contenu LaTeX basé sur les erreurs réelles des élèves. Table `cours(niveau, categorie)` |
 | G16 | **J+1 delivery** | Tout contenu publié (admin OU agent auto) est dispo le LENDEMAIN. `publishDate` dans le JSON Suivi + `Date` dans DailyBoosts. Login matche `Date == today` (boost direct) ou `ExosDone < 5` (rattrapage si connexion tardive). Modale teasing si connexion le jour même. **Non négociable** — l'élève ne doit JAMAIS recevoir du contenu fraîchement généré le jour même |
 
 ### 3.6 Admin
@@ -169,18 +169,17 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | A4 | **Workflow** | Nicolas prépare en admin → élève reçoit au login → archives consultables |
 | A5 | **Pas de limite** | Limite bêta 50 supprimée (02/04 migration Supabase) |
 | A6 | **Admin read-only** | Login admin ne consomme jamais les données one-shot (nextChapter, boost) |
-| A7 | **Agent admin autonome** | Agent lancé 2×/jour (matin+soir). Scanne Scores → diagnostique patterns → génère boosts/chapitres → injecte dans DailyBoosts avec `Date = demain` et `ExosDone = 0`. L'élève reçoit le contenu à sa prochaine connexion ≥ lendemain. Nicolas vérifie a posteriori. Pipeline validé le 02/04 (4 profils test, 20 exos, 100% validate_exos.py) |
+| A7 | **Agent admin autonome** | Agent lancé 2×/jour (matin+soir). Scanne Scores → diagnostique patterns → génère boosts/chapitres → injecte dans DailyBoosts avec `Date = demain` et `ExosDone = 0`. **Génère aussi les cours adaptatifs** (section_10 à 10 exos, section_20 à 20 exos, amélioration à 30+). L'élève reçoit le contenu à sa prochaine connexion ≥ lendemain. Nicolas vérifie a posteriori. Pipeline validé le 02/04 (4 profils test, 20 exos, 100% validate_exos.py) |
 
 ---
 
 ## 4. Exercices — quand Nicolas me demande d'en créer
 
 Lire obligatoirement avant de générer :
-1. **`docs/direction-technique.md`** — analyse élève, grille de patterns, prescription, anti-doublon
-2. **`docs/prompt-generation-exos.md`** — format JSON, règles absolues, workflow
+1. **`docs/prompt-generation-exos.md`** — référence unique : analyse élève, prescription, format JSON, règles absolues, workflow
 
 Workflow :
-1. Scanner les Scores de l'élève via `sheets.py`
+1. Scanner les scores de l'élève (table `scores` Supabase)
 2. Identifier les lacunes (patterns d'erreurs)
 3. Proposer un brief à Nicolas → attendre validation
 4. Générer les exos (format JSON strict, 4 slots de 5)
@@ -307,8 +306,7 @@ docs/product.md                → Produit (vision + parcours + business)
 docs/roadmap.md                → Priorités + calendrier
 docs/messages.md               → Voice & tone guide
 docs/workflow-quotidien.md     → Workflow quotidien Nicolas (6 onglets admin)
-docs/prompt-generation-exos.md → Prompt unique pour générer des exercices
-docs/direction-technique.md    → Analyse élève → prescription → anti-doublon
+docs/prompt-generation-exos.md → Référence unique génération exercices (analyse + prescription + fabrication)
 ```
 
 ### Playbooks — diagnostic par domaine

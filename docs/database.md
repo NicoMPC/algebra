@@ -43,7 +43,7 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 
 | Table | Équivalent Sheets | Colonnes clés | Index |
 |---|---|---|---|
-| **profiles** | Users | `code` (PK métier, char 6), `email`, `prenom`, `niveau`, `password_hash`, `is_admin`, `premium`, `trial_start`, `objectif` | code, email, niveau |
+| **profiles** | Users | `code` (PK métier, char 6), `email`, `prenom`, `niveau`, `password_hash`, `is_admin`, `premium`, `premium_end` (date expiration), `trial_start` (legacy), `free_chapter` (chapitre gratuit freemium), `objectif` | code, email, niveau |
 | **scores** | Scores | `code`, `chapitre`, `num_exo`, `resultat` (EASY/MEDIUM/HARD/SKIP), `date`, `source` | code+date, code+chapitre, dedup (code,chapitre,num_exo,date,source) |
 | **progress** | Progress | `code`, `categorie`, `score` (adaptatif 0-100), `nb_exos`, `nb_erreurs`, `derniere_pratique`, `statut`, `streak` | code+categorie |
 | **daily_boosts** | DailyBoosts | `code`, `date`, `boost_json` (JSONB), `exos_done` (0-5) | code+date (unique) |

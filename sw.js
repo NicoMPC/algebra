@@ -1,5 +1,5 @@
 // sw.js — Matheux Service Worker
-const CACHE_NAME = 'matheux-v11';
+const CACHE_NAME = 'matheux-v12';
 const CACHE_ASSETS = [
   '/app.html',
   '/manifest.json',

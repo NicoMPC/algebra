@@ -456,23 +456,22 @@ def scenario_admin():
     print(f"  → S5 terminé\n")
 
 
-# ── S6 : Trial et check_trial_status ──────────────────────────
+# ── S6 : Freemium et check_trial_status ──────────────────────────
 def scenario_trial():
-    print("\n📌 S6 — Trial 7 jours")
+    print("\n📌 S6 — Freemium (1 chapitre gratuit)")
     s = Student("Diane", "3EME")
     s.register()
     r = s.login()
     check(r is not None, "Login après inscription")
     if r:
         trial = r.get("trial", {})
-        check(trial.get("trialActive") == True, "Trial actif à J+0")
-        days = trial.get("daysLeft", 0)
-        check(days >= 6, f"daysLeft >= 6 (actual: {days})")
+        check(trial.get("isPremium") == False, "Pas premium à l'inscription")
+        check("freeChapter" in trial, "freeChapter présent dans trial")
 
         # check_trial_status séparé
         r2 = gas({"action": "check_trial_status", "code": s.code})
         check(r2.get("status") == "success", "check_trial_status OK")
-        check(r2.get("trialActive") == True, "Trial actif via check_trial_status")
+        check(r2.get("isPremium") == False, "Pas premium via check_trial_status")
 
     print(f"  → S6 terminé\n")
 

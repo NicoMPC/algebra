@@ -116,6 +116,7 @@ async function register(p: Record<string, unknown>) {
     is_admin: false,
     premium: false,
     trial_start: now,
+    free_chapter: null,
     is_test: isTest,
   });
   if (profileError) return { status: "error", message: "Erreur profil : " + profileError.message };
@@ -160,7 +161,7 @@ async function register(p: Record<string, unknown>) {
     nextBoost: null,
     pendingBrevet: null,
     revisionChapters: [],
-    trial: { trialActive: true, daysLeft: 7, isPremium: false },
+    trial: { isPremium: false, freeChapter: null },
   };
 }
 
@@ -378,37 +379,43 @@ async function login(p: Record<string, unknown>) {
       { at: 20, key: "section_20" as const, titre: "Cours complet ✨" },
     ];
 
+    const todayStr = new Date().toISOString().slice(0, 10);
     coursRows.forEach((row: Record<string, unknown>) => {
       const cat = String(row.categorie || "");
       if (!cat) return;
       const nbExos = chapNbExos[cat] || 0;
       const unlocked: unknown[] = [];
       const locked: unknown[] = [];
+      const teasingCours: unknown[] = [];
       milestones.forEach((m) => {
         const contenu = String((row as Record<string, string>)[m.key] || "").trim();
         if (!contenu) return;
-        if (nbExos >= m.at) unlocked.push({ unlock_at: m.at, titre: m.titre, contenu });
+        // Gate J+1 : publish_XX doit être <= aujourd'hui
+        const publishKey = m.key === "section_10" ? "publish_10" : "publish_20";
+        const publishDate = String(row[publishKey] || "");
+        const isPublished = publishDate && publishDate <= todayStr;
+        if (nbExos >= m.at && isPublished) unlocked.push({ unlock_at: m.at, titre: m.titre, contenu });
+        else if (nbExos >= m.at && !isPublished) teasingCours.push({ unlock_at: m.at, titre: m.titre });
         else locked.push({ unlock_at: m.at, titre: m.titre });
       });
-      if (unlocked.length + locked.length > 0) {
-        coursData[cat] = { unlocked, locked, nbExos, nextMilestone: locked.length > 0 ? (locked[0] as { unlock_at: number }).unlock_at : null };
+      if (unlocked.length + locked.length + teasingCours.length > 0) {
+        coursData[cat] = { unlocked, locked, teasingCours, nbExos, nextMilestone: locked.length > 0 ? (locked[0] as { unlock_at: number }).unlock_at : null };
       }
     });
   }
 
-  // ── Trial status ──
-  let trialActive = false;
-  let daysLeft = 0;
-  if (trialStart && !premium) {
-    const ts = new Date(trialStart);
-    const daysSince = Math.floor((Date.now() - ts.getTime()) / 86400000);
-    daysLeft = Math.max(0, 7 - daysSince);
-    trialActive = daysSince <= 7;
+  // ── Freemium status ──
+  // premium_end = date d'expiration premium (ex: 2026-06-30 pour Brevet 2026)
+  let isPremium = premium;
+  if (isPremium && user.premium_end) {
+    const endDate = String(user.premium_end).substring(0, 10);
+    if (endDate && endDate < todayStr) isPremium = false; // premium expiré
   }
+  const freeChapter = user.free_chapter ? String(user.free_chapter) : null;
 
   return {
     status: "success",
-    profile: { code, name, level, isAdmin, premium, trialStart, objectif },
+    profile: { code, name, level, isAdmin, premium: isPremium, trialStart, objectif },
     curriculumOfficiel,
     diagExos: [],
     dailyBoost: todayBoost,
@@ -426,7 +433,7 @@ async function login(p: Record<string, unknown>) {
     pendingBrevet: user.pending_brevet || null,
     revisionChapters: [],
     hasCalibration: _hasCalibration,
-    trial: { trialActive, daysLeft, isPremium: premium },
+    trial: { isPremium, freeChapter },
   };
 }
 
@@ -447,15 +454,23 @@ async function saveScore(p: Record<string, unknown>) {
 
   // Vérifier identité
   const { data: profile } = await adminClient.from("profiles")
-    .select("email, premium, trial_start").eq("code", code).maybeSingle();
+    .select("email, premium, premium_end, free_chapter").eq("code", code).maybeSingle();
   if (!profile) return { status: "error", message: "Élève introuvable." };
   if (p.email && String(p.email).toLowerCase() !== profile.email)
     return { status: "error", message: "Identité non vérifiée." };
 
-  // Check trial
-  if (!profile.premium && profile.trial_start) {
-    const daysSince = Math.floor((Date.now() - new Date(profile.trial_start).getTime()) / 86400000);
-    if (daysSince > 7) return { status: "error", message: "Essai terminé." };
+  // Freemium guard : si !premium, autoriser seulement CALIBRAGE, BOOST, et le chapitre gratuit
+  const source = String(p.source || "");
+  const categorie = String(p.categorie || "");
+  let _isPremium = !!profile.premium;
+  if (_isPremium && profile.premium_end) {
+    const endDate = String(profile.premium_end).substring(0, 10);
+    if (endDate && endDate < todayParis()) _isPremium = false;
+  }
+  if (!_isPremium && source !== "CALIBRAGE" && source !== "BOOST") {
+    if (!profile.free_chapter || categorie !== profile.free_chapter) {
+      return { status: "error", message: "Chapitre verrouillé — débloque l'accès complet pour continuer." };
+    }
   }
 
   const dedupDate = p.answeredAt && /^\d{4}-\d{2}-\d{2}$/.test(String(p.answeredAt))
@@ -480,7 +495,6 @@ async function saveScore(p: Record<string, unknown>) {
   }, { onConflict: "code,chapitre,num_exo,date", ignoreDuplicates: true });
 
   // Update confidence score (Progress) — hors BOOST et CALIBRAGE
-  const source = String(p.source || "");
   if (source !== "BOOST" && source !== "CALIBRAGE") {
     await updateConfidenceScore(code, String(p.level), String(p.categorie), String(p.resultat), parseInt(String(p.exercice_idx || "0")));
   }
@@ -553,7 +567,38 @@ async function saveCalibrationBatch(p: Record<string, unknown>) {
   }));
 
   await adminClient.from("scores").insert(rows);
-  return { status: "success", saved: rows.length };
+
+  // Identifier le chapitre le plus faible et le set comme free_chapter
+  // (seulement si l'élève n'est pas premium et n'a pas encore de free_chapter)
+  let freeChapter: string | null = null;
+  const { data: prof } = await adminClient.from("profiles")
+    .select("premium, free_chapter").eq("code", code).maybeSingle();
+
+  if (prof && !prof.premium && !prof.free_chapter) {
+    const chapErrors: Record<string, { total: number; wrong: number }> = {};
+    for (const s of (p.scores as Record<string, unknown>[])) {
+      // originalChapter contient le vrai chapitre (categorie = "CALIBRAGE" pour tous)
+      const cat = String(s.originalChapter || s.categorie || "");
+      if (!cat || cat === "CALIBRAGE") continue;
+      if (!chapErrors[cat]) chapErrors[cat] = { total: 0, wrong: 0 };
+      chapErrors[cat].total++;
+      if (String(s.resultat || "") !== "EASY") chapErrors[cat].wrong++;
+    }
+    let weakest = "";
+    let worstRatio = -1;
+    for (const [cat, stats] of Object.entries(chapErrors)) {
+      const ratio = stats.total > 0 ? stats.wrong / stats.total : 0;
+      if (ratio > worstRatio) { worstRatio = ratio; weakest = cat; }
+    }
+    if (weakest) {
+      await adminClient.from("profiles").update({ free_chapter: weakest }).eq("code", code);
+      freeChapter = weakest;
+    }
+  } else if (prof) {
+    freeChapter = prof.free_chapter || null;
+  }
+
+  return { status: "success", saved: rows.length, freeChapter };
 }
 
 // ── SAVE_SCORES_BATCH (generic — for boost/chapter flush) ───
@@ -569,8 +614,25 @@ async function saveScoresBatch(p: Record<string, unknown>) {
 
   // Single identity check for the whole batch
   const { data: profile } = await adminClient.from("profiles")
-    .select("email, premium, trial_start").eq("code", code).maybeSingle();
+    .select("email, premium, premium_end, free_chapter").eq("code", code).maybeSingle();
   if (!profile) return { status: "error", message: "Élève introuvable." };
+
+  // Freemium guard batch
+  let _batchPremium = !!profile.premium;
+  if (_batchPremium && profile.premium_end) {
+    const endDate = String(profile.premium_end).substring(0, 10);
+    if (endDate && endDate < todayParis()) _batchPremium = false;
+  }
+  if (!_batchPremium) {
+    for (const s of (p.scores as Record<string, unknown>[])) {
+      const src = String(s.source || "");
+      const cat = String(s.categorie || "");
+      if (src === "CALIBRAGE" || src === "BOOST") continue;
+      if (!profile.free_chapter || cat !== profile.free_chapter) {
+        return { status: "error", message: "Chapitre verrouillé — débloque l'accès complet." };
+      }
+    }
+  }
 
   const todayStr = todayParis();
   const name = String(p.name || "");
@@ -738,17 +800,17 @@ async function getProgress(p: Record<string, unknown>) {
 async function checkTrialStatus(p: Record<string, unknown>) {
   const code = String(p.code);
   const { data: profile } = await adminClient.from("profiles")
-    .select("premium, trial_start, premium_end").eq("code", code).maybeSingle();
+    .select("premium, premium_end, free_chapter").eq("code", code).maybeSingle();
   if (!profile) return { status: "error", message: "Utilisateur introuvable." };
 
-  const isPremium = !!profile.premium;
-  if (isPremium) return { trialActive: false, daysLeft: 0, isPremium: true };
-
-  if (profile.trial_start) {
-    const daysSince = Math.floor((Date.now() - new Date(profile.trial_start).getTime()) / 86400000);
-    return { trialActive: daysSince <= 7, daysLeft: Math.max(0, 7 - daysSince), isPremium: false };
+  let isPremium = !!profile.premium;
+  if (isPremium && profile.premium_end) {
+    const endDate = String(profile.premium_end).substring(0, 10);
+    const todayStr = todayParis();
+    if (endDate && endDate < todayStr) isPremium = false;
   }
-  return { trialActive: false, daysLeft: 0, isPremium: false };
+  const freeChapter = profile.free_chapter ? String(profile.free_chapter) : null;
+  return { status: "success", isPremium, freeChapter };
 }
 
 // ── SAVE_BOOST ──────────────────────────────────────────────
@@ -899,7 +961,7 @@ async function stripeWebhook(p: Record<string, unknown>) {
 
   await adminClient.from("profiles").update({
     premium: true,
-    premium_end: String(p.premium_end || ""),
+    premium_end: String(p.premium_end || "2026-06-30"),
   }).eq("email", email);
 
   return { status: "success" };
@@ -995,12 +1057,18 @@ async function saveCours(p: Record<string, unknown>) {
   const categorie = String(p.categorie || "");
   if (!niveau || !categorie) return { status: "error", message: "niveau et categorie requis." };
 
-  await adminClient.from("cours").upsert({
-    niveau, categorie,
-    section_10: String(p.section10 || ""),
-    section_20: String(p.section20 || ""),
-    date_maj: todayParis(),
-  }, { onConflict: "niveau,categorie" });
+  const upsertData: Record<string, unknown> = {
+    niveau, categorie, date_maj: todayParis(),
+  };
+  if (p.section10 !== undefined) {
+    upsertData.section_10 = String(p.section10 || "");
+    upsertData.publish_10 = String(p.publish10 || todayParis());
+  }
+  if (p.section20 !== undefined) {
+    upsertData.section_20 = String(p.section20 || "");
+    upsertData.publish_20 = String(p.publish20 || todayParis());
+  }
+  await adminClient.from("cours").upsert(upsertData, { onConflict: "niveau,categorie" });
 
   return { status: "success" };
 }

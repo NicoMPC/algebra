@@ -25,8 +25,9 @@ create table profiles (
   date_inscription date not null default current_date,
   is_admin      boolean not null default false,
   premium       boolean not null default false,
-  trial_start   date,                                  -- début essai 7 jours
-  premium_end   date,                                  -- fin premium (Stripe)
+  trial_start   date,                                  -- début essai (legacy, conservé pour tracking)
+  premium_end   date,                                  -- fin premium (Stripe) — ex: 2026-06-30 pour Brevet 2026
+  free_chapter  text,                                  -- chapitre gratuit (freemium) — set après diagnostic
   is_test       boolean not null default false,        -- compte test (@matheux.fr)
   pending_brevet jsonb,                                -- JSON {chapitres, message, date}
   revision_chapters jsonb,                             -- JSON [{niveau, categorie}]

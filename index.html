@@ -140,4 +140,27 @@ window.addEventListener('load', function() {
 // Redirect connectés vers l'app (pas de boucle : app.html ne redirige pas ici)
 try{var s=localStorage.getItem('boost_v23');if(s&&JSON.parse(s).email)window.location.replace('/app.html')}catch(e){}
 </script>
+<script>
+// Freemium pricing override — post-hydration text replacement (safe: text nodes only)
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    var R = [
+      ['7 jours offerts \u2014 tester maintenant', '1 chapitre gratuit \u2014 tester maintenant'],
+      ['7 jours offerts', '1 chapitre gratuit'],
+      ['Sans carte bancaire', 'Sans engagement'],
+      ['7 jours gratuits, puis 19,99 EUR/mois', 'Paiement unique \u2014 acc\u00e8s Brevet 2026'],
+      ['essai gratuit', 'chapitre gratuit']
+    ];
+    var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+    var n;
+    while (n = w.nextNode()) {
+      var t = n.nodeValue, c = false;
+      for (var i = 0; i < R.length; i++) {
+        if (t.indexOf(R[i][0]) !== -1) { t = t.split(R[i][0]).join(R[i][1]); c = true; }
+      }
+      if (c) n.nodeValue = t;
+    }
+  }, 1500);
+});
+</script>
 </body></html>

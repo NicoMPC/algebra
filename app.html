@@ -17,11 +17,11 @@
   <meta name="apple-mobile-web-app-title" content="Matheux">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
-  <meta name="description" content="Prépare le Brevet 2026 en maths. Matheux détecte les lacunes de votre enfant en 3ème et propose 5 exercices ciblés par jour. Parcours vérifié chaque soir. Essai gratuit 7 jours, sans carte bancaire."/>
+  <meta name="description" content="Prépare le Brevet 2026 en maths. Matheux détecte les lacunes de votre enfant en 3ème et propose 5 exercices ciblés par jour. Parcours vérifié chaque soir. 1 chapitre gratuit, sans inscription payante."/>
   <meta name="keywords" content="brevet 2026 maths, exercices brevet maths, révision brevet 3ème, maths 3ème exercices, préparation brevet maths, soutien maths 3ème, exercices personnalisés brevet"/>
   <link rel="canonical" href="https://matheux.fr/"/>
   <meta property="og:title"       content="Matheux — Prépare ton Brevet 2026 en maths"/>
-  <meta property="og:description" content="Diagnostic personnalisé 3ème, 5 exercices ciblés par jour, parcours vérifié chaque soir. 7 jours offerts, sans carte bancaire."/>
+  <meta property="og:description" content="Diagnostic personnalisé 3ème, 5 exercices ciblés par jour, parcours vérifié chaque soir. 1 chapitre gratuit."/>
   <meta property="og:type"        content="website"/>
   <meta property="og:url"         content="https://matheux.fr/"/>
   <meta property="og:image"       content="https://matheux.fr/mockup.png"/>
@@ -29,7 +29,7 @@
   <meta property="og:site_name"   content="Matheux"/>
   <meta name="twitter:card"       content="summary_large_image"/>
   <meta name="twitter:title"      content="Matheux — Prépare ton Brevet 2026 en maths"/>
-  <meta name="twitter:description" content="Diagnostic personnalisé, 5 exercices ciblés par jour, parcours vérifié chaque soir. 7 jours offerts."/>
+  <meta name="twitter:description" content="Diagnostic personnalisé, 5 exercices ciblés par jour, parcours vérifié chaque soir. 1 chapitre gratuit."/>
   <meta name="twitter:image"      content="https://matheux.fr/mockup.png"/>
 
   <!-- ── Schema.org JSON-LD — SEO structuré ─────────────── -->
@@ -46,7 +46,7 @@
       "@type": "Offer",
       "price": "19.99",
       "priceCurrency": "EUR",
-      "description": "Abonnement mensuel — 7 jours d'essai gratuit sans carte bancaire"
+      "description": "Entraînement maths Brevet — 1 chapitre gratuit, programme complet en option"
     },
     "audience": {
       "@type": "EducationalAudience",
@@ -1602,7 +1602,7 @@
     <div class="flex flex-wrap justify-center gap-3 mt-10" style="animation:s1 .5s .25s ease both">
       <span style="color:rgba(255,255,255,.3);font-size:.75rem;font-weight:600">🎯 5 questions · 1 min</span>
       <span style="color:rgba(255,255,255,.3);font-size:.75rem;font-weight:600">💳 Sans carte bancaire</span>
-      <span style="color:rgba(255,255,255,.3);font-size:.75rem;font-weight:600">📱 7 jours gratuits</span>
+      <span style="color:rgba(255,255,255,.3);font-size:.75rem;font-weight:600">📱 1 chapitre gratuit</span>
     </div>
 
     <!-- Lien landing -->
@@ -1672,7 +1672,7 @@
         <div class="bg-white/10 border border-white/15 rounded-2xl p-6">
           <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4" style="background:linear-gradient(135deg,#1E40AF,#3B82F6)">✨</div>
           <h2 class="text-xl font-extrabold text-white text-center mb-1" id="fl-heading" style="letter-spacing:-.02em">Plus qu'une étape</h2>
-          <p class="text-white/55 text-sm text-center mb-6" id="fl-desc">Ton programme personnalisé t'attend — 7 jours offerts, sans carte bancaire.</p>
+          <p class="text-white/55 text-sm text-center mb-6" id="fl-desc">Ton programme personnalisé t'attend — 1 chapitre gratuit pour commencer.</p>
           <div class="space-y-3">
             <input type="text"     id="fl-name"  class="flow-inp" placeholder="Comment tu t'appelles ?" autocomplete="given-name">
             <input type="email"    id="fl-email" class="flow-inp" placeholder="Email du parent" autocomplete="email">
@@ -1691,7 +1691,7 @@
             <span id="fl-btn-ld" class="ld hidden"></span>
           </button>
           <p class="text-center text-white/40 text-xs mt-3">Ça prend 30 secondes</p>
-          <p class="text-center text-white/25 text-xs mt-1">Aucune carte bancaire · 7 jours gratuits · Résiliable en 1 clic</p>
+          <p class="text-center text-white/25 text-xs mt-1">Aucune carte bancaire · 1 chapitre gratuit · Boost quotidien inclus</p>
         </div>
       </div>
 
@@ -2074,7 +2074,7 @@ let S = {
   boostInsight: null,     // { easy, total, boostCat } — écran post-boost
   diagChapResults: {},    // { cat → { easy, total, name } } pour comparaison boost
   isFirstDay: false,
-  trial: null,            // { trialActive, daysLeft, isPremium } — depuis GAS login()
+  trial: null,            // { isPremium, freeChapter } — freemium (1 chapitre gratuit)
   drafts: {},          // { exoId → { img, txt } }
   sent: new Set(),
   scoreQueue: (function(){ try { return JSON.parse(localStorage.getItem('sq') || '[]'); } catch(e) { localStorage.removeItem('sq'); return []; } })(),
@@ -3556,6 +3556,7 @@ async function _flowGuestRegister() {
     var res3 = _flowResults.find(function(rr) { return rr.idx === i; });
     return {
       categorie: 'CALIBRAGE', exercice_idx: i + 1,
+      originalChapter: exo.oC || exo.categorie || '',
       q: (exo.q || '').substring(0, 80),
       resultat: res3 ? (res3.correct ? 'EASY' : 'HARD') : 'HARD',
       temps: res3 ? (res3.time || 0) : 0, nbIndices: 0, formule: false
@@ -3563,6 +3564,13 @@ async function _flowGuestRegister() {
   });
   fetch(SU, { method: 'POST',
     body: JSON.stringify({ action: 'save_calibration_batch', code: code, email: (document.getElementById('le') || {}).value || '', name: prenom, level: _flowLevel, scores: calScores })
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    // Mettre à jour freeChapter après le diagnostic
+    if (d.freeChapter && S.trial) {
+      S.trial.freeChapter = d.freeChapter;
+      _updateIntegrityHash();
+      render(); // re-render pour montrer le chapitre débloqué
+    }
   }).catch(function() {});
 
   // Nettoyer
@@ -3616,7 +3624,7 @@ async function _flowGuestRegister() {
     // Tour unifié : slides d'accueil + PWA + tour guidé (plus de double tour)
     render();
     var _introSlides2 = [
-      { emoji: '\u{1F389}', title: 'Ton espace est cr\u00e9\u00e9', body: '7 jours offerts. Acc\u00e8s complet. Sans carte bancaire.' },
+      { emoji: '\u{1F389}', title: 'Ton espace est cr\u00e9\u00e9', body: '1 chapitre gratuit + ton entra\u00eenement quotidien. C\'est parti !' },
       { emoji: '\u26A1', title: 'Ton entra\u00eenement est pr\u00eat', body: '5 exercices cibl\u00e9s sur tes vrais points faibles. C\'est parti.', el: function(){ return document.querySelector('#main-app .pop-in.rounded-2xl'); } }
     ];
     setTimeout(function() { _startTour(_introSlides2); }, 600);
@@ -3700,7 +3708,7 @@ async function flowRegister() {
       _safeRender();
       // Tour unifié : slides d'accueil + PWA + tour guidé
       var _introSlides = [
-        { emoji: '\u{1F389}', title: 'Ton espace est cr\u00e9\u00e9', body: '7 jours offerts. Acc\u00e8s complet. Sans carte bancaire.' },
+        { emoji: '\u{1F389}', title: 'Ton espace est cr\u00e9\u00e9', body: '1 chapitre gratuit + ton entra\u00eenement quotidien. C\'est parti !' },
         { emoji: '\u26A1', title: 'Ton entra\u00eenement est pr\u00eat', body: '5 exercices cibl\u00e9s sur tes vrais points faibles. C\'est parti.', el: function(){ return document.querySelector('#main-app .pop-in.rounded-2xl'); } }
       ];
       setTimeout(function() { _startTour(_introSlides); }, 600);
@@ -4209,68 +4217,61 @@ function _tourEnd() {
 }
 
 // ══════════════════════════════════════════════════════════════
-// ESSAI GRATUIT — badge + overlay
+// FREEMIUM — badge + overlay chapitre bloqué
 // ══════════════════════════════════════════════════════════════
 function renderTrialBadge() {
   var el = document.getElementById('trial-badge');
   if (!el) return;
-  // Cacher sur vues landing/auth/admin
   if (!S.prof || (S.prof && S.prof.isAdmin)) { el.classList.add('hidden'); return; }
   var t = S.trial;
   if (!t || t.isPremium) { el.classList.add('hidden'); return; }
-  if (!t.trialActive)    { el.classList.add('hidden'); return; }
-
-  var days = t.daysLeft || 0;
-  // Badge visible dès J-7 — rappel progressif
-  if (days > 7) { el.classList.add('hidden'); return; }
-  var urgent = days <= 1;
-  var color = urgent
-    ? 'background:#fef3c7;border-color:#fcd34d;color:#92400e'
-    : days <= 3
-      ? 'background:#fef9c3;border-color:#fde047;color:#713f12'
-      : 'background:#f0f9ff;border-color:#bae6fd;color:#0369a1';
-  var msg = days === 0 ? 'Essai terminé aujourd\'hui ⏰' : days <= 1 ? '⏰ Dernier jour d\'essai' : days <= 3 ? 'J-' + days + ' · Essai se termine bientôt' : 'Essai gratuit · J-' + days;
+  // Badge "Gratuit" pour les élèves free
   el.innerHTML =
-    '<div style="display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;' +
-    'padding:.3rem .75rem;border-radius:99px;border:1.5px solid;' + color + '">' +
-    '⚡ ' + msg +
+    '<div onclick="showLockedOverlay()" style="display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;' +
+    'padding:.3rem .75rem;border-radius:99px;border:1.5px solid;cursor:pointer;' +
+    'background:#f0f9ff;border-color:#bae6fd;color:#0369a1">' +
+    '🔓 1 chapitre gratuit' +
     '</div>';
   el.classList.remove('hidden');
 }
 
 function showTrialExpired() {
-  if (S.prof && S.prof.isAdmin) return; // admin jamais bloqué
-  if (S.trial && S.trial.isPremium) return; // premium jamais bloqué
-  // Ne pas empiler deux overlays
-  if (document.getElementById('trial-expired-overlay')) return;
+  // Legacy — redirige vers le nouvel overlay freemium
+  showLockedOverlay();
+}
+
+function showLockedOverlay() {
+  if (S.prof && S.prof.isAdmin) return;
+  if (S.trial && S.trial.isPremium) return;
+  if (document.getElementById('locked-overlay')) return;
   var ov = document.createElement('div');
-  ov.id = 'trial-expired-overlay';
+  ov.id = 'locked-overlay';
   ov.style.cssText =
     'position:fixed;inset:0;z-index:4000;display:flex;align-items:center;justify-content:center;' +
     'padding:1.5rem;background:rgba(15,23,42,.82)';
   ov.innerHTML =
     '<div style="background:#fff;border-radius:24px;width:100%;max-width:380px;padding:2rem;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.35)">' +
-    '<div style="font-size:3rem;margin-bottom:.75rem">⏰</div>' +
-    '<div style="font-family:Syne,sans-serif;font-weight:900;font-size:1.2rem;color:#07090f;margin-bottom:.6rem">Ton essai de 7 jours est terminé</div>' +
-    '<p style="color:#64748b;font-size:.9rem;font-weight:500;line-height:1.6;margin-bottom:1.5rem">T\'as progressé, maintenant continue sans limite !</p>' +
-    '<button onclick="__trialProlonger()" style="width:100%;padding:1rem;background:linear-gradient(135deg,#1E40AF,#3B82F6);color:#fff;' +
+    '<div style="font-size:3rem;margin-bottom:.75rem">🔒</div>' +
+    '<div style="font-family:Syne,sans-serif;font-weight:900;font-size:1.2rem;color:#07090f;margin-bottom:.6rem">Débloque tous les chapitres</div>' +
+    '<p style="color:#64748b;font-size:.9rem;font-weight:500;line-height:1.6;margin-bottom:.5rem">Tu as accès à <strong>1 chapitre gratuit</strong> + ton boost quotidien.</p>' +
+    '<p style="color:#64748b;font-size:.85rem;font-weight:500;line-height:1.6;margin-bottom:1.5rem">Pour débloquer <strong>tout le programme</strong> jusqu\'au Brevet, passe à l\'offre complète 👇</p>' +
+    '<button onclick="__unlockAll()" style="width:100%;padding:1rem;background:linear-gradient(135deg,#1E40AF,#3B82F6);color:#fff;' +
     'font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;border:none;border-radius:14px;cursor:pointer;margin-bottom:.75rem">' +
-    'Passer à l\'abonnement 19,99 €/mois →' +
+    'Débloquer tout le programme →' +
     '</button>' +
-    '<button onclick="__trialDismiss()" style="font-size:.8rem;font-weight:600;color:#94a3b8;background:none;border:none;cursor:pointer">' +
-    'Voir ma progression quand même' +
+    '<button onclick="__lockedDismiss()" style="font-size:.8rem;font-weight:600;color:#94a3b8;background:none;border:none;cursor:pointer">' +
+    'Continuer avec mon chapitre gratuit' +
     '</button>' +
     '</div>';
   document.body.appendChild(ov);
 }
 
-window.__trialProlonger = function() {
+window.__unlockAll = function() {
   window.open('https://buy.stripe.com/cNicN7b0ebU9bOE9WTb3q01', '_blank');
 };
-window.__trialDismiss = function() {
-  var ov = document.getElementById('trial-expired-overlay');
+window.__lockedDismiss = function() {
+  var ov = document.getElementById('locked-overlay');
   if (ov) ov.remove();
-  setView('chapters');
 };
 
 // ══════════════════════════════════════════════════════════════
@@ -4300,20 +4301,11 @@ function initApp(d, skipRender) {
     }, 2500);
   }
 
-  // ── Essai 7 jours ──────────────────────────────────────
-  S.trial = d.trial || { trialActive: true, daysLeft: 7, isPremium: false };
-  if (!S.trial.trialActive && !S.trial.isPremium) {
-    // Essai terminé et non premium — afficher overlay après init
-    setTimeout(showTrialExpired, 300);
-  } else if (S.trial.trialActive && !S.trial.isPremium && S.trial.daysLeft <= 7 && S.trial.daysLeft > 0) {
-    // Avertissement progressif J-7 → J-1
-    var _trialMsg = S.trial.daysLeft === 1
-      ? '⏰ Dernier jour d\'essai — profite bien de ta session !'
-      : S.trial.daysLeft <= 3
-        ? '⏰ Plus que ' + S.trial.daysLeft + ' jours d\'essai gratuit'
-        : '⚡ Essai gratuit — J-' + S.trial.daysLeft + ' · profite à fond !';
-    setTimeout(function() { showT(_trialMsg, 5000, '⏰'); }, 1500);
-  }
+  // ── Freemium ───────────────────────────────────────────
+  S.trial = d.trial || { isPremium: false, freeChapter: null };
+  // Compat : s'assurer que les props existent
+  if (S.trial.freeChapter === undefined) S.trial.freeChapter = null;
+  if (S.trial.isPremium === undefined) S.trial.isPremium = false;
   // SECURITY LAYER 2 — Premium Guard
   startPremiumGuard();
 
@@ -4655,16 +4647,15 @@ async function _verifyPremiumStatus() {
     var d = await r.json();
     if (d.status === 'success') {
       _lastServerVerifyTs = Date.now();
-      var serverPremium     = !!d.isPremium;
-      var serverTrialActive = !!d.trialActive;
+      var serverPremium = !!d.isPremium;
+      var serverFreeChapter = d.freeChapter || null;
 
       if (S.trial && S.trial.isPremium && !serverPremium) {
-        S.trial.isPremium    = false;
-        S.trial.trialActive  = serverTrialActive;
-        S.trial.daysLeft     = d.daysLeft || 0;
+        S.trial.isPremium = false;
+        S.trial.freeChapter = serverFreeChapter;
         _updateIntegrityHash();
         renderTrialBadge();
-        if (!serverTrialActive) showTrialExpired();
+        render(); // re-render pour montrer les cadenas
       }
 
       if (S.trial && !S.trial.isPremium && serverPremium) {
@@ -4672,14 +4663,14 @@ async function _verifyPremiumStatus() {
         S.prof.premium    = true;
         _updateIntegrityHash();
         renderTrialBadge();
-        var ov = document.getElementById('trial-expired-overlay');
+        var ov = document.getElementById('locked-overlay');
         if (ov) ov.remove();
-        showT('Abonnement activé ! Accès illimité.', 4000, '🎉');
+        showT('Accès complet activé ! Tous les chapitres sont débloqués 🎉', 4000, '🎉');
+        render(); // re-render pour supprimer les cadenas
       }
 
-      if (S.trial) {
-        S.trial.daysLeft    = d.daysLeft || S.trial.daysLeft;
-        S.trial.trialActive = serverTrialActive;
+      if (S.trial && serverFreeChapter) {
+        S.trial.freeChapter = serverFreeChapter;
         _updateIntegrityHash();
       }
     }
@@ -4697,15 +4688,14 @@ function _sealTrial() {
 }
 
 // ── MODULE 4 : Hash d'intégrité localStorage ──────────────────────────────────
-//  Stocke un hash de isPremium+trialActive+daysLeft dans une clé obfusquée.
+//  Stocke un hash de isPremium+freeChapter dans une clé obfusquée.
 //  Si un utilisateur édite localStorage directement, la clé sera incohérente.
 var _HASH_KEY = '_mx' + btoa('trial_seal').replace(/=/g, '');
 
 function _trialHash() {
   if (!S.trial) return '0';
   var raw = (S.trial.isPremium ? '1' : '0')
-          + (S.trial.trialActive ? '1' : '0')
-          + (S.trial.daysLeft || 0)
+          + (S.trial.freeChapter || 'none')
           + (S.prof && S.prof.code ? S.prof.code : '');
   var h = 0;
   for (var i = 0; i < raw.length; i++) {
@@ -4724,8 +4714,6 @@ function _checkLocalIntegrity() {
     if (stored !== null && stored !== _trialHash()) {
       // Falsification détectée → reset et re-vérif serveur immédiate
       S.trial.isPremium   = false;
-      S.trial.trialActive = false;
-      S.trial.daysLeft    = 0;
       _updateIntegrityHash();
       renderTrialBadge();
       _verifyPremiumStatus(); // re-sync serveur
@@ -4807,8 +4795,8 @@ function isPremiumOrTrialValid() {
   }
 
   if (S.trial.isPremium) return true;
-  if (S.trial.trialActive && S.trial.daysLeft > 0) return true;
-  return false;
+  // Freemium : toujours accès (le guard est dans togCat + saveScore)
+  return true;
 }
 
 function updH() {
@@ -5451,7 +5439,20 @@ function mark(cat, idx, status, wrongOpt) {
   updH();
 }
 
+function _isChapLocked(cat) {
+  if (!S.trial || S.trial.isPremium) return false;
+  if (S.prof && S.prof.isAdmin) return false;
+  if (cat === 'BOOST' || cat === 'CALIBRAGE' || cat === 'BREVET' || cat === 'REVISION') return false;
+  if (S.trial.freeChapter && cat === S.trial.freeChapter) return false;
+  return true;
+}
+
 async function togCat(cat) {
+  // Freemium guard : chapitre bloqué → overlay
+  if (!S.exp[cat] && _isChapLocked(cat)) {
+    showLockedOverlay();
+    return;
+  }
   var was = !!S.exp[cat];
   // Toast abandon boost incomplet
   if (was && cat === 'BOOST' && !S.boostConsumed && S.boost && S.boost.exos) {
@@ -6783,6 +6784,7 @@ function getChapProgress(cat) {
 }
 
 function openFromProgress(cat) {
+  if (_isChapLocked(cat)) { showLockedOverlay(); return; }
   S.view = 'chapters';
   Object.keys(S.exp).forEach(function(k){ S.exp[k] = false; });
   S.exp[cat] = true;
@@ -6921,8 +6923,8 @@ function renderProgress() {
     var isMast = ch.isMast;
     // Couleur barre progressive
     var barClass = score >= 90 ? 'pfg' : score >= 70 ? 'pfp' : score >= 40 ? 'pfo' : 'pfr';
-    var locked = false;
-    var cardBg = isMast ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-slate-200';
+    var locked = _isChapLocked(cat);
+    var cardBg = locked ? 'bg-slate-50 border-slate-200' : (isMast ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-slate-200');
 
     html += '<div data-cat="'+cat+'" onclick="openFromProgress(\''+cat+'\')" ';
     html += 'class="rounded-2xl border '+cardBg+' shadow-sm p-4 mb-2.5 cursor-pointer active:scale-[.98] transition-transform'+(locked?' opacity-60':'')+'">';
@@ -8116,7 +8118,7 @@ function render() {
     if (!_hero) {
       for (var _hi3b = 0; _hi3b < sortedKeys.length; _hi3b++) {
         var _hk3b = sortedKeys[_hi3b];
-        if (_hk3b === 'BOOST') continue;
+        if (_hk3b === 'BOOST' || _isChapLocked(_hk3b)) continue;
         if (S.assignedByProf && S.assignedByProf[_hk3b] && _chapStats[_hk3b] && !_chapStats[_hk3b].isDone) {
           var _hNm3b = (LVL[S.niv].names[_hk3b] || _hk3b).replace(/_/g, ' ');
           var _isAutoH = _hk3b.indexOf('Auto_') === 0;
@@ -8132,7 +8134,7 @@ function render() {
     if (!_hero) {
       for (var _hi = 0; _hi < sortedKeys.length; _hi++) {
         var _hk = sortedKeys[_hi];
-        if (_hk === 'BOOST' || _hk === 'REVISION') continue;
+        if (_hk === 'BOOST' || _hk === 'REVISION' || _isChapLocked(_hk)) continue;
         var _hs = _chapStats[_hk];
         if (_hs && _hs.done > 0 && !_hs.isDone) {
           var _hPct = Math.round((_hs.done / _hs.tot) * 100);
@@ -8152,7 +8154,7 @@ function render() {
     if (!_hero && S.boostConsumed) {
       for (var _hi2 = 0; _hi2 < sortedKeys.length; _hi2++) {
         var _hk2 = sortedKeys[_hi2];
-        if (_hk2 === 'BOOST' || _hk2 === 'REVISION') continue;
+        if (_hk2 === 'BOOST' || _hk2 === 'REVISION' || _isChapLocked(_hk2)) continue;
         var _hs2 = _chapStats[_hk2];
         if (_hs2 && _hs2.done === 0 && !_hs2.isDone && _boostCats[_hk2]) {
           var _hNm2 = (LVL[S.niv].names[_hk2] || _hk2).replace(/_/g, ' ');
@@ -8167,7 +8169,7 @@ function render() {
     if (!_hero) {
       for (var _hi3 = 0; _hi3 < sortedKeys.length; _hi3++) {
         var _hk3 = sortedKeys[_hi3];
-        if (_hk3 === 'BOOST') continue;
+        if (_hk3 === 'BOOST' || _isChapLocked(_hk3)) continue;
         if (S.isNew[_hk3] && _chapStats[_hk3] && !_chapStats[_hk3].isDone) {
           var _hNm3 = (LVL[S.niv].names[_hk3] || _hk3).replace(/_/g, ' ');
           _hero = { action: "togCat('" + _hk3 + "')", emoji: LVL[S.niv].icons[_hk3] || '📘',
@@ -8181,7 +8183,7 @@ function render() {
     if (!_hero && _totalChapDone === 0) {
       for (var _hi4 = 0; _hi4 < sortedKeys.length; _hi4++) {
         var _hk4 = sortedKeys[_hi4];
-        if (_hk4 === 'BOOST' || _hk4 === 'REVISION') continue;
+        if (_hk4 === 'BOOST' || _hk4 === 'REVISION' || _isChapLocked(_hk4)) continue;
         if (_chapStats[_hk4] && !_chapStats[_hk4].isDone) {
           var _hNm4 = (LVL[S.niv].names[_hk4] || _hk4).replace(/_/g, ' ');
           _hero = { action: "togCat('" + _hk4 + "')", emoji: LVL[S.niv].icons[_hk4] || '📘',
@@ -8195,7 +8197,7 @@ function render() {
     if (!_hero) {
       for (var _hi5 = 0; _hi5 < sortedKeys.length; _hi5++) {
         var _hk5 = sortedKeys[_hi5];
-        if (_hk5 === 'BOOST' || _hk5 === 'REVISION') continue;
+        if (_hk5 === 'BOOST' || _hk5 === 'REVISION' || _isChapLocked(_hk5)) continue;
         var _hs5 = _chapStats[_hk5];
         if (_hs5 && _hs5.done === 0 && !_hs5.isDone) {
           var _hNm5 = (LVL[S.niv].names[_hk5] || _hk5).replace(/_/g, ' ');
@@ -8219,6 +8221,16 @@ function render() {
         (_hero.pct > 0 ? '<div class="mt-2 h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,.15)"><div class="h-full rounded-full transition-all" style="width:' + _hero.pct + '%;background:rgba(255,255,255,.5)"></div></div>' : '') +
         '</div>' +
         '<div class="text-white/50 text-2xl font-light">›</div></div>';
+    }
+
+    // P0 upsell : chapitre gratuit terminé, pas premium → CTA déblocage
+    if (!_hero && S.trial && !S.trial.isPremium && S.trial.freeChapter) {
+      var _freeStats = _chapStats[S.trial.freeChapter];
+      if (_freeStats && _freeStats.isDone) {
+        _hero = { action: 'showLockedOverlay()', emoji: '🔓',
+          title: 'Débloque tout le programme', sub: 'Bravo pour ton 1er chapitre ! Continue sur tous les autres.',
+          pct: 100, _remain: 0 };
+      }
     }
 
     // Session terminée (boost fait, pas de hero chapitre actif)
@@ -8296,6 +8308,18 @@ function render() {
       if (isBoost && window.location.search.includes('sim=1')) {
         html += '<button onclick="_simulateNextDay()" class="mb-2 text-[8px] font-bold text-indigo-400 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full active:opacity-70">🔮 Simuler demain</button>';
       }
+      html += '</div>';
+      return;
+    }
+
+    // ── Carte bloquée (freemium) ────────────────────────
+    if (_isChapLocked(cat)) {
+      html += '<div data-cat="'+cat+'" onclick="togCat(\''+cat+'\')" class="rounded-2xl border border-slate-200 flex items-center gap-3 py-3 px-4 cursor-pointer select-none mb-3" style="background:#f8fafc;opacity:.65">';
+      html += '<div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-base flex-shrink-0">🔒</div>';
+      html += '<div class="flex-1 min-w-0"><div class="syne font-black text-sm text-slate-400 truncate" style="font-weight:800">'+(LVL[S.niv].names[cat]||cat)+'</div>';
+      html += '<div class="text-[9px] font-medium text-slate-400">Débloque l\'accès complet pour commencer</div>';
+      html += '</div>';
+      html += '<span class="text-[9px] syne font-black bg-slate-100 text-slate-400 border border-slate-200 px-1.5 py-0.5 rounded-full">🔒</span>';
       html += '</div>';
       return;
     }
@@ -10220,7 +10244,7 @@ function copyWelcomeEmail(code) {
       return st.objectif && _objIntros[st.objectif] ? '\n' + _objIntros[st.objectif] + '\n\n' : '';
     })() +
     '→ Démarrer maintenant : https://matheux.fr\n\n' +
-    'L\'essai dure 7 jours, sans carte bancaire. Vous décidez ensuite, sans pression.\n\n' +
+    'Votre enfant a accès à 1 chapitre gratuit + un entraînement quotidien. Pour débloquer tout le programme jusqu\'au Brevet, une seule option simple.\n\n' +
     'Des questions ? Répondez directement — je lis chaque message.\n\n' +
     'Nicolas\n' +
     'Fondateur · Matheux';
@@ -10286,25 +10310,25 @@ function copySequenceEmail(code, type) {
       lacunes:
         'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\n' +
         'Ce qu\'on a fait ensemble : identifier précisément les notions qui posent problème, pas les lacunes supposées de la classe entière — les siennes.\n\n' +
-        'Pour continuer à les combler, c\'est 19,99 €/mois — sans engagement.\n→ ' + stripeLink + '\n\n' +
+        'Pour continuer à les combler, c\'est un paiement unique pour tout le programme jusqu'au Brevet.\n→ ' + stripeLink + '\n\n' +
         'Des questions ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux',
 
       chapitre_jour:
         'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\n' +
         'Un chapitre par jour, 10 minutes — c\'est le rythme que ' + prenom + ' a commencé à prendre. Ce type de régularité, sur un trimestre, change vraiment les résultats.\n\n' +
-        'Pour continuer sur ce rythme, c\'est 19,99 €/mois — sans engagement.\n→ ' + stripeLink + '\n\n' +
+        'Pour continuer sur ce rythme, c\'est un paiement unique pour tout le programme jusqu'au Brevet.\n→ ' + stripeLink + '\n\n' +
         'Des questions ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux',
 
       brevet:
         'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\n' +
         'Le brevet, ça se prépare dans la durée. Matheux inclut 144 exercices style brevet + des brevets blancs complets pour s\'entraîner dans les conditions réelles.\n\n' +
-        'Pour continuer la préparation, c\'est 19,99 €/mois — sans engagement.\n→ ' + stripeLink + '\n\n' +
+        'Pour continuer la préparation, c\'est un paiement unique pour tout le programme jusqu'au Brevet.\n→ ' + stripeLink + '\n\n' +
         'Des questions ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux',
 
       toutes_matieres:
         'Bonjour,\n\nDans 2 jours, l\'essai de ' + prenom + ' se termine.\n\n' +
         '22 chapitres couvrent l\'intégralité du programme de 3ème pour le Brevet. ' + prenom + ' peut avancer à son rythme, sur tous les sujets.\n\n' +
-        'Pour accéder à l\'ensemble du programme, c\'est 19,99 €/mois — sans engagement.\n→ ' + stripeLink + '\n\n' +
+        'Pour accéder à l\'ensemble du programme, c\'est un paiement unique pour tout le programme jusqu'au Brevet.\n→ ' + stripeLink + '\n\n' +
         'Des questions ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux'
     };
 
@@ -10317,7 +10341,7 @@ function copySequenceEmail(code, type) {
         'Bonjour,\n\nLa semaine d\'essai de ' + prenom + ' se termine aujourd\'hui.\n\n' +
         'Ce qu\'on a fait : identifier ses vrais points faibles et commencer à les travailler un par un. ' +
         'C\'est ce type de suivi ciblé — pas du tout-venant — qui change les résultats sur un trimestre.\n\n' +
-        'Pour continuer ce travail de fond :\n→ 19,99 €/mois · sans engagement · résiliable à tout moment\n→ ' + stripeLink + '\n\n' +
+        'Pour continuer ce travail de fond :\n→ paiement unique · accès complet jusqu'au Brevet\n→ ' + stripeLink + '\n\n' +
         'Pour référence : un cours particulier coûte 30 à 50 €/heure. Matheux, c\'est un suivi quotidien personnalisé à 66 centimes par jour.\n\n' +
         'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux',
 
@@ -10325,21 +10349,21 @@ function copySequenceEmail(code, type) {
         'Bonjour,\n\nLa semaine d\'essai de ' + prenom + ' se termine aujourd\'hui.\n\n' +
         prenom + ' a commencé à prendre le rythme : un chapitre, un jour, 10 minutes. ' +
         'Sur un trimestre, cette régularité représente des dizaines de notions consolidées.\n\n' +
-        'Pour que l\'habitude devienne des résultats :\n→ 19,99 €/mois · sans engagement · résiliable à tout moment\n→ ' + stripeLink + '\n\n' +
+        'Pour que l\'habitude devienne des résultats :\n→ paiement unique · accès complet jusqu'au Brevet\n→ ' + stripeLink + '\n\n' +
         'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux',
 
       brevet:
         'Bonjour,\n\nLa semaine d\'essai de ' + prenom + ' se termine aujourd\'hui.\n\n' +
         'Une semaine pour démarrer la préparation, c\'est bien — mais le brevet se gagne sur la durée. ' +
         'Matheux permet de s\'entraîner sur l\'intégralité du programme 3ème + des brevets blancs complets.\n\n' +
-        'Pour terminer la préparation dans de bonnes conditions :\n→ 19,99 €/mois · sans engagement · résiliable à tout moment\n→ ' + stripeLink + '\n\n' +
+        'Pour terminer la préparation dans de bonnes conditions :\n→ paiement unique · accès complet jusqu'au Brevet\n→ ' + stripeLink + '\n\n' +
         'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux',
 
       toutes_matieres:
         'Bonjour,\n\nLa semaine d\'essai de ' + prenom + ' se termine aujourd\'hui.\n\n' +
         'Une semaine pour explorer. ' + prenom + ' a maintenant accès à un aperçu de ce que Matheux propose : ' +
         '22 chapitres couvrant tout le programme du Brevet, avec des exercices adaptés à son niveau réel — pas au niveau moyen de sa classe.\n\n' +
-        'Pour accéder à l\'ensemble du programme sans limite :\n→ 19,99 €/mois · sans engagement · résiliable à tout moment\n→ ' + stripeLink + '\n\n' +
+        'Pour accéder à l\'ensemble du programme sans limite :\n→ paiement unique · accès complet jusqu'au Brevet\n→ ' + stripeLink + '\n\n' +
         'Des questions avant de décider ? Répondez à cet email.\n\nNicolas\nFondateur · Matheux'
     };
 
@@ -10834,8 +10858,9 @@ function _renderAdminCards() {
     html += '<div class="px-4 py-2.5 border-b border-slate-50 flex items-center gap-3">';
     html += '<div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-black text-indigo-600">' + (st.prenom || '?').charAt(0).toUpperCase() + '</div>';
     html += '<div class="flex-1 min-w-0">';
-    html += '<div class="font-bold text-sm text-slate-800 truncate">' + (st.prenom || '—') + ' <span class="text-xs font-semibold text-indigo-500">' + (st.niveau || '') + '</span></div>';
-    html += '<div class="text-[10px] text-slate-400 font-medium truncate">' + (st.email || '—') + '</div>';
+    var _premBadge = st.premium ? '<span class="text-[9px] font-black bg-emerald-100 text-emerald-700 px-1 py-0.5 rounded ml-1">PRO</span>' : '<span class="text-[9px] font-black bg-slate-100 text-slate-400 px-1 py-0.5 rounded ml-1">FREE</span>';
+    html += '<div class="font-bold text-sm text-slate-800 truncate">' + (st.prenom || '—') + ' <span class="text-xs font-semibold text-indigo-500">' + (st.niveau || '') + '</span>' + _premBadge + '</div>';
+    html += '<div class="text-[10px] text-slate-400 font-medium truncate">' + (st.email || '—') + (st.free_chapter ? ' · 🔓 ' + st.free_chapter.replace(/_/g,' ') : '') + '</div>';
     html += '</div>';
     html += '<div class="text-right flex-shrink-0">';
     html += '<div class="text-xs font-bold text-slate-700">' + ad + ' jour' + (ad > 1 ? 's' : '') + '</div>';
