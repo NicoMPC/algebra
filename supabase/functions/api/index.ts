@@ -1194,7 +1194,18 @@ Deno.serve(async (req: Request) => {
   if (req.method !== "POST") return json({ status: "error", message: "POST uniquement" }, 405);
 
   try {
-    const p = await req.json();
+    const raw = await req.text();
+    const p = JSON.parse(raw);
+
+    // ── Stripe native webhook (checkout.session.completed) ──
+    if (p.type === "checkout.session.completed" && p.data?.object) {
+      const session = p.data.object;
+      const email = String(session.customer_details?.email || session.customer_email || "").trim().toLowerCase();
+      if (!email) return json({ status: "error", message: "Stripe webhook: no email found" });
+      const result = await stripeWebhook({ email, premium_end: "2026-06-30" });
+      return json(result);
+    }
+
     const action = String(p.action || "");
     const handler = ACTIONS[action];
     if (!handler) return json({ status: "error", message: "Action inconnue : " + action });
