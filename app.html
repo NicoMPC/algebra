@@ -3977,6 +3977,33 @@ async function finalizeOnboarding() {
 }
 
 // ══════════════════════════════════════════════════════════════
+// RETOUR STRIPE — helpers overlay
+// ══════════════════════════════════════════════════════════════
+function _showPaymentSuccess() {
+  var ov = document.getElementById('payment-pending-overlay');
+  if (!ov) return;
+  var icon = document.getElementById('pay-ov-icon');
+  var title = document.getElementById('pay-ov-title');
+  var sub = document.getElementById('pay-ov-sub');
+  if (icon) icon.textContent = '🎉';
+  if (title) title.textContent = 'Tout est débloqué !';
+  if (sub) sub.innerHTML = 'Tous les chapitres sont maintenant accessibles.<br>Bon courage pour le Brevet 💪';
+  setTimeout(function() { ov.remove(); render(); }, 3000);
+}
+
+function _showPaymentFallback() {
+  var ov = document.getElementById('payment-pending-overlay');
+  if (!ov) return;
+  var icon = document.getElementById('pay-ov-icon');
+  var title = document.getElementById('pay-ov-title');
+  var sub = document.getElementById('pay-ov-sub');
+  if (icon) icon.textContent = '✅';
+  if (title) title.textContent = 'Paiement confirmé !';
+  if (sub) sub.innerHTML = 'L\'activation peut prendre quelques instants.<br>Rafraîchis la page dans un moment.';
+  setTimeout(function() { ov.remove(); }, 5000);
+}
+
+// ══════════════════════════════════════════════════════════════
 // AUTO-LOGIN AU DÉMARRAGE
 // ══════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
@@ -3989,6 +4016,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }, 1200);
 
+  // ── Retour Stripe : overlay + poll premium ──
+  var _stripeReturn = new URLSearchParams(window.location.search).get('payment') === 'success';
+  if (_stripeReturn) {
+    history.replaceState(null, '', window.location.pathname);
+    var _ov = document.createElement('div');
+    _ov.id = 'payment-pending-overlay';
+    _ov.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;';
+    _ov.innerHTML = '<div style="background:#fff;border-radius:20px;padding:40px 32px;text-align:center;max-width:340px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3)">'
+      + '<div style="font-size:48px;margin-bottom:16px" id="pay-ov-icon">⏳</div>'
+      + '<div style="font-size:20px;font-weight:700;margin-bottom:8px" id="pay-ov-title">Paiement reçu !</div>'
+      + '<div style="color:#666;font-size:15px" id="pay-ov-sub">Activation en cours…</div>'
+      + '</div>';
+    document.body.appendChild(_ov);
+  }
+
   var s = localStorage.getItem(SK);
   if (!s) return;
   try {
@@ -3999,8 +4041,29 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(function(d){
         if (d.status === 'success') {
           initApp(d, false);
-          // Toast "Bon retour" après initApp
-          setTimeout(function() { showT('Bon retour ! 🔥', 3000, '👋'); }, 600);
+          if (_stripeReturn) {
+            // Poll rapide toutes les 2s pendant 60s
+            var _pollCount = 0;
+            var _pollMax = 30;
+            var _pollIv = setInterval(function() {
+              _pollCount++;
+              if (S.trial && S.trial.isPremium) {
+                clearInterval(_pollIv);
+                _showPaymentSuccess();
+                return;
+              }
+              if (_pollCount >= _pollMax) {
+                clearInterval(_pollIv);
+                _showPaymentFallback();
+                return;
+              }
+              _verifyPremiumStatus();
+            }, 2000);
+            // Check immédiat (le webhook a peut-être déjà fire)
+            _verifyPremiumStatus();
+          } else {
+            setTimeout(function() { showT('Bon retour ! 🔥', 3000, '👋'); }, 600);
+          }
         } else {
           // Pré-remplir l'email pour faciliter la reconnexion manuelle, sans imposer la modale
           try { var le = document.getElementById('le'); if (le) le.value = creds.email; } catch(e2) {}
