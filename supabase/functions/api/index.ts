@@ -83,7 +83,7 @@ async function register(p: Record<string, unknown>) {
   if (name.length > 50)
     return { status: "error", message: "Le prénom ne doit pas dépasser 50 caractères." };
   if (!ALLOWED_LEVELS.includes(level))
-    return { status: "error", message: "Seul le niveau 3EME est accepté." };
+    return { status: "error", message: "Niveau non accepté." };
 
   // Email déjà pris ?
   const { data: existingUser } = await adminClient.from("profiles").select("code").eq("email", email).maybeSingle();
@@ -146,7 +146,7 @@ async function register(p: Record<string, unknown>) {
 
   return {
     status: "success",
-    profile: { code, name, level, isAdmin: false, premium: false, trialStart: now, objectif },
+    profile: { code, name, level, isAdmin: false, premium: false, trialStart: now, objectif, mode: null },
     curriculumOfficiel,
     diagExos: [],
     dailyBoost: null,
@@ -415,7 +415,7 @@ async function login(p: Record<string, unknown>) {
 
   return {
     status: "success",
-    profile: { code, name, level, isAdmin, premium: isPremium, trialStart, objectif },
+    profile: { code, name, level, isAdmin, premium: isPremium, trialStart, objectif, mode: user.mode || null },
     curriculumOfficiel,
     diagExos: [],
     dailyBoost: todayBoost,
@@ -460,14 +460,16 @@ async function saveScore(p: Record<string, unknown>) {
     return { status: "error", message: "Identité non vérifiée." };
 
   // Freemium guard : si !premium, autoriser seulement CALIBRAGE, BOOST, et le chapitre gratuit
+  // Mode lite = accès complet (élèves privés)
   const source = String(p.source || "");
   const categorie = String(p.categorie || "");
+  const isLite = profile.mode === "lite";
   let _isPremium = !!profile.premium;
   if (_isPremium && profile.premium_end) {
     const endDate = String(profile.premium_end).substring(0, 10);
     if (endDate && endDate < todayParis()) _isPremium = false;
   }
-  if (!_isPremium && source !== "CALIBRAGE" && source !== "BOOST") {
+  if (!isLite && !_isPremium && source !== "CALIBRAGE" && source !== "BOOST") {
     if (!profile.free_chapter || categorie !== profile.free_chapter) {
       return { status: "error", message: "Chapitre verrouillé — débloque l'accès complet pour continuer." };
     }

@@ -2314,7 +2314,7 @@ function _markCoach(key) {
   _coachShown[key] = true;
   try { localStorage.setItem(_coKey(), JSON.stringify(_coachShown)); } catch(e) {}
 }
-function _needsCoach(key) { return !_coachShown[key]; }
+function _needsCoach(key) { if (S.lite) return false; return !_coachShown[key]; }
 
 function alert2(t, m, ic) {
   ic = ic || '⚠️';
@@ -2326,6 +2326,7 @@ function alert2(t, m, ic) {
 function closeAlert() { document.getElementById('m-alert').classList.add('hidden'); }
 
 function showXP(a) {
+  if (S.lite) return;
   // T7 : Tip premier XP — explication
   if (_needsCoach('tip_xp')) {
     _markCoach('tip_xp');
@@ -4343,6 +4344,7 @@ function _tourEnd() {
 function renderTrialBadge() {
   var el = document.getElementById('trial-badge');
   if (!el) return;
+  if (S.lite) { el.classList.add('hidden'); return; }
   if (!S.prof || (S.prof && S.prof.isAdmin)) { el.classList.add('hidden'); return; }
   var t = S.trial;
   if (!t || t.isPremium) { el.classList.add('hidden'); return; }
@@ -4403,6 +4405,7 @@ function initApp(d, skipRender) {
   try { localStorage.removeItem('guestDiag'); } catch(e) {}
   S.prof       = d.profile;
   S.niv        = d.profile.level;
+  S.lite       = d.profile.mode === 'lite';
   S.isAuditor  = d.profile.code === 'WXHBJH';
   // Charger milestones + coach namespacés par user
   try { _milestoneShown = JSON.parse(localStorage.getItem('mx_ms_' + d.profile.code) || '{}'); } catch(e) { _milestoneShown = {}; }
@@ -4416,7 +4419,7 @@ function initApp(d, skipRender) {
 
   // S3 — Nudge boost en cours : boost partiellement fait, pas encore terminé
   var _beDone = d.boostExosDone || 0;
-  if (_beDone > 0 && _beDone < 5) {
+  if (!S.lite && _beDone > 0 && _beDone < 5) {
     setTimeout(function() {
       showT(_msg('boost_in_progress', {n: 5 - _beDone}), 5000, '⚡');
     }, 2500);
@@ -4534,7 +4537,8 @@ function initApp(d, skipRender) {
   // Afficher le bouton Brevet pour les 3EME (ou si brevet en attente)
   var navBrevBtn = document.getElementById('nav-brev');
   if (navBrevBtn) {
-    navBrevBtn.style.display = '';
+    if (S.lite) { navBrevBtn.style.display = 'none'; }
+    else navBrevBtn.style.display = '';
     if (S.brevPendingConfig) {
       navBrevBtn.innerHTML = '📝 Brevet';
       navBrevBtn.style.background = '#fef3c7';
@@ -4712,7 +4716,7 @@ function initApp(d, skipRender) {
   if (S.calState !== 'test') {
     // calDone : état UX local (diagnostic fait) — lu depuis LK
     var _calDone = loc[d.profile.code] ? loc[d.profile.code].calDone : false;
-    S.calState = (_calDone || d.hasCalibration) ? null : (d.history.length === 0 ? 'sel' : null);
+    S.calState = (S.lite || _calDone || d.hasCalibration) ? null : (d.history.length === 0 ? 'sel' : null);
   }
 
   if (S.boostEx && S.boost) loadBoost();
@@ -4921,6 +4925,18 @@ function isPremiumOrTrialValid() {
 }
 
 function updH() {
+  // Mode lite : masquer toute la gamification
+  if (S.lite) {
+    document.getElementById('stk-box').style.display = 'none';
+    var _xpBox = document.getElementById('ui-xp');
+    if (_xpBox && _xpBox.parentElement) _xpBox.parentElement.style.display = 'none';
+    var dBox = document.getElementById('daily-box');
+    if (dBox) dBox.style.display = 'none';
+    var fBox = document.getElementById('flow-box');
+    if (fBox) fBox.style.display = 'none';
+    renderTrialBadge();
+    return;
+  }
   document.getElementById('ui-stk').innerText = S.stk;
   document.getElementById('ui-xp').innerText  = S.xp;
   if (S.stk >= 3) document.getElementById('stk-box').style.animation = 'remPulse 2s ease infinite';
@@ -4965,6 +4981,7 @@ function loadBoost() {
 function _msKey() { return 'mx_ms_' + (S.prof ? S.prof.code : 'anon'); }
 var _milestoneShown = {};
 function _checkMilestone() {
+  if (S.lite) return;
   var totalExos = Object.keys(S.res).length;
   var totalChapDone = Object.keys(S.chapDone || {}).length;
   var ms = null;
@@ -5561,6 +5578,7 @@ function mark(cat, idx, status, wrongOpt) {
 }
 
 function _isChapLocked(cat) {
+  if (S.lite) return false;
   if (!S.trial || S.trial.isPremium) return false;
   if (S.prof && S.prof.isAdmin) return false;
   if (cat === 'BOOST' || cat === 'CALIBRAGE' || cat === 'BREVET' || cat === 'REVISION') return false;
@@ -8110,8 +8128,10 @@ function render() {
   // Vue principale
   var cats = LVL[S.niv].cats;
   var keys = Object.keys(cats).filter(function(k){ return k !== 'CALIBRAGE' && k !== 'BREVET'; });
-  if (keys.includes('BOOST')) keys = ['BOOST'].concat(keys.filter(function(k){ return k !== 'BOOST'; }));
-  if (cats['REVISION'] && cats['REVISION'].length > 0) keys = ['REVISION'].concat(keys.filter(function(k){ return k !== 'REVISION'; }));
+  // Mode lite : pas de boost, pas de revision
+  if (S.lite) keys = keys.filter(function(k){ return k !== 'BOOST' && k !== 'REVISION'; });
+  if (!S.lite && keys.includes('BOOST')) keys = ['BOOST'].concat(keys.filter(function(k){ return k !== 'BOOST'; }));
+  if (!S.lite && cats['REVISION'] && cats['REVISION'].length > 0) keys = ['REVISION'].concat(keys.filter(function(k){ return k !== 'REVISION'; }));
 
   // Calcul boost terminé
   var bDone = false;
@@ -8220,7 +8240,7 @@ function render() {
   //   DONE: boostConsumed && !_hero → "Continue ou reviens"
   // Résultat : exactement 1 hero OU 1 fallback. Jamais 0, jamais 2.
   // ═══════════════════════════════════════════════════════
-  if (!S.boostPreping) {
+  if (!S.boostPreping && !S.lite) {
     var _heroName = S.prof ? S.prof.name : '';
     var _hero = null;
 
@@ -10108,6 +10128,7 @@ function _toggleTimer() {
 
 function _startTimer(exoId) {
   _stopTimer();
+  if (S.lite) return;
   if (!_isTimerOn()) return;
   if (_slotRewardShowing) { S._pendingTimerExo = exoId; return; }
   S._timerExoId = exoId;
