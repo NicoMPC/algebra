@@ -8128,8 +8128,11 @@ function render() {
   // Vue principale
   var cats = LVL[S.niv].cats;
   var keys = Object.keys(cats).filter(function(k){ return k !== 'CALIBRAGE' && k !== 'BREVET'; });
-  // Mode lite : pas de boost, pas de revision
-  if (S.lite) keys = keys.filter(function(k){ return k !== 'BOOST' && k !== 'REVISION'; });
+  // Mode lite : pas de boost, pas de revision, Fractions en premier
+  if (S.lite) {
+    keys = keys.filter(function(k){ return k !== 'BOOST' && k !== 'REVISION'; });
+    keys.sort(function(a, b) { return a === 'Fractions' ? -1 : b === 'Fractions' ? 1 : 0; });
+  }
   if (!S.lite && keys.includes('BOOST')) keys = ['BOOST'].concat(keys.filter(function(k){ return k !== 'BOOST'; }));
   if (!S.lite && cats['REVISION'] && cats['REVISION'].length > 0) keys = ['REVISION'].concat(keys.filter(function(k){ return k !== 'REVISION'; }));
 
