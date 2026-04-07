@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistiques — Exercices brevet maths 2026 | Matheux</title>
+<meta name="description" content="Maîtrise les statistiques pour le brevet 2026. Moyenne, médiane, étendue, quartiles. Exercices corrigés avec indices progressifs. 1er chapitre gratuit.">
+<meta name="keywords" content="statistiques brevet, statistiques 3ème exercices, médiane brevet maths, quartiles 3ème, moyenne pondérée brevet, exercices statistiques corrigés">
+<link rel="canonical" href="https://matheux.fr/statistiques-brevet.html">
+<meta property="og:title" content="Statistiques — Exercices brevet maths 2026 | Matheux">
+<meta property="og:description" content="Maîtrise les statistiques pour le brevet 2026. Moyenne, médiane, étendue, quartiles. Exercices corrigés avec indices progressifs. 1er chapitre gratuit.">
+<meta property="og:url" content="https://matheux.fr/statistiques-brevet.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://matheux.fr/mockup.png">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Matheux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Statistiques — Exercices brevet maths 2026 | Matheux">
+<meta name="twitter:description" content="Maîtrise les statistiques pour le brevet 2026. Moyenne, médiane, étendue, quartiles. Exercices corrigés avec indices progressifs. 1er chapitre gratuit.">
+<meta name="twitter:image" content="https://matheux.fr/mockup.png">
+<link rel="icon" href="/icons/icon-192x192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "Statistiques — Brevet maths 2026",
+  "description": "Exercices corrigés de statistiques pour le brevet 2026 : moyenne pondérée, médiane, quartiles, étendue, lecture de diagrammes.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Matheux",
+    "url": "https://matheux.fr"
+  },
+  "educationalLevel": "3ème",
+  "inLanguage": "fr",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR",
+    "availability": "https://schema.org/InStock"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Comment calculer la médiane au brevet ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ordonne toutes les valeurs. Si l'effectif est impair, la médiane est la valeur du milieu. Si l'effectif est pair, c'est la moyenne des deux valeurs centrales. Au brevet, n'oublie pas d'ordonner les valeurs — c'est l'erreur n°1."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quelle différence entre moyenne et médiane ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "La moyenne prend en compte toutes les valeurs (sensible aux extrêmes). La médiane est la valeur centrale (insensible aux extrêmes). Au brevet, on te demande souvent les deux pour comparer."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Les statistiques tombent-elles au brevet ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Presque chaque année. C'est un exercice souvent jugé 'facile' mais les erreurs de calcul coûtent cher. Bien s'entraîner = points assurés."
+      }
+    }
+  ]
+}
+</script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: #f7f8fc; color: #1e293b; }
+.syne { font-family: 'Syne', sans-serif; }
+.hero { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%); color: #fff; padding: 4rem 1.5rem 3rem; text-align: center; }
+.hero-badge { display: inline-block; background: rgba(255,255,255,.15); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,.2); border-radius: 99px; padding: .4rem 1rem; font-size: .8rem; font-weight: 600; margin-bottom: 1.5rem; }
+.hero h1 { font-family: 'Syne', sans-serif; font-weight: 900; font-size: clamp(1.8rem, 5vw, 2.8rem); line-height: 1.15; margin-bottom: 1rem; }
+.hero h1 span { color: #fb923c; }
+.hero p { font-size: 1.05rem; color: rgba(255,255,255,.8); max-width: 540px; margin: 0 auto 2rem; line-height: 1.6; }
+.hero-cta { display: inline-block; background: linear-gradient(135deg, #f97316, #ea580c); color: #fff; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.05rem; padding: 1rem 2.5rem; border-radius: 14px; text-decoration: none; transition: transform .15s, box-shadow .15s; }
+.hero-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(249,115,22,.35); }
+.hero-sub { font-size: .82rem; color: rgba(255,255,255,.5); margin-top: .75rem; }
+.section { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem; }
+.section h2 { font-family: 'Syne', sans-serif; font-weight: 900; font-size: 1.6rem; margin-bottom: 1.5rem; text-align: center; }
+.section h2 span { color: #4338ca; }
+.features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
+.feat-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 1.5rem; }
+.feat-card .icon { font-size: 1.5rem; margin-bottom: .5rem; }
+.feat-card h3 { font-weight: 700; font-size: .95rem; margin-bottom: .4rem; }
+.feat-card p { font-size: .85rem; color: #64748b; line-height: 1.5; }
+.stats-row { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin: 2rem 0; }
+.stat { text-align: center; }
+.stat-num { font-family: 'Syne', sans-serif; font-weight: 900; font-size: 2rem; color: #4338ca; }
+.stat-label { font-size: .8rem; color: #64748b; }
+.prose { max-width: 600px; margin: 0 auto 2rem; font-size: .95rem; line-height: 1.7; color: #475569; }
+.prose h3 { font-family: 'Syne', sans-serif; font-weight: 800; color: #1e293b; font-size: 1.1rem; margin: 1.5rem 0 .5rem; }
+.example-box { background: #fff; border: 2px solid #e0e7ff; border-radius: 16px; padding: 2rem; margin: 2rem auto; max-width: 600px; }
+.example-box h3 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; color: #4338ca; margin-bottom: 1rem; }
+.example-box .enonce { background: #f8fafc; border-radius: 10px; padding: 1rem; margin-bottom: 1rem; font-size: .92rem; line-height: 1.6; }
+.example-box .resolution { font-size: .9rem; line-height: 1.7; color: #475569; }
+.example-box .resolution strong { color: #1e293b; }
+.cta-section { background: linear-gradient(135deg, #eef2ff, #e0e7ff); border-radius: 20px; padding: 2.5rem 2rem; text-align: center; margin: 2rem 0; }
+.cta-section p { color: #64748b; font-size: .95rem; margin-bottom: 1.5rem; }
+.links-grid { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; margin: 1.5rem 0; }
+.links-grid a { display: inline-block; background: #eef2ff; color: #4338ca; padding: .5rem 1rem; border-radius: 99px; font-size: .85rem; font-weight: 600; text-decoration: none; border: 1px solid #c7d2fe; transition: all .15s; }
+.links-grid a:hover { background: #4338ca; color: #fff; }
+footer { background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 1.5rem; text-align: center; }
+footer a { color: #94a3b8; font-size: .75rem; text-decoration: none; margin: 0 .5rem; }
+footer a:hover { color: #64748b; }
+footer p { color: #cbd5e1; font-size: .72rem; margin-top: .75rem; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Brevet 2026 — Programme officiel</div>
+  <h1>Statistiques au brevet : <span>moyenne, médiane, quartiles</span></h1>
+  <p>Moyenne pondérée, médiane, quartiles, étendue. Entraîne-toi sur les exercices types du brevet avec des indices progressifs.</p>
+  <a href="https://matheux.fr/app.html?from=statistiques" class="hero-cta">S'entraîner gratuitement</a>
+  <div class="hero-sub">1 chapitre gratuit · sans carte bancaire</div>
+</div>
+
+<div class="section">
+  <h2>Ce qu'il faut <span>maîtriser</span></h2>
+  <div class="features-grid">
+    <div class="feat-card">
+      <div class="icon">📊</div>
+      <h3>Moyenne pondérée</h3>
+      <p>Calculer une moyenne avec des effectifs ou des coefficients. La méthode change selon le tableau donné.</p>
+    </div>
+    <div class="feat-card">
+      <div class="icon">📏</div>
+      <h3>Médiane</h3>
+      <p>La valeur qui partage la série en deux groupes égaux. Méthode différente selon que l'effectif est pair ou impair.</p>
+    </div>
+    <div class="feat-card">
+      <div class="icon">📐</div>
+      <h3>Quartiles</h3>
+      <p>Q1 et Q3 : comprendre ce qu'ils signifient et savoir les lire sur un diagramme en boîte.</p>
+    </div>
+    <div class="feat-card">
+      <div class="icon">📈</div>
+      <h3>Étendue</h3>
+      <p>Max - Min : mesure la dispersion d'une série. Simple mais souvent oublié dans les copies.</p>
+    </div>
+    <div class="feat-card">
+      <div class="icon">📉</div>
+      <h3>Lire un diagramme</h3>
+      <p>Diagramme en barres, circulaire, boîte à moustaches : savoir extraire les informations demandées.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Exemple type <span>brevet</span></h2>
+  <div class="example-box">
+    <h3>Exercice — Moyenne et médiane</h3>
+    <div class="enonce">Voici les notes d'un élève : 8, 12, 14, 9, 11, 15, 7, 13, 10, 11. Calculer la moyenne et la médiane.</div>
+    <div class="resolution">
+      <strong>Moyenne :</strong> On additionne toutes les notes : 8 + 12 + 14 + 9 + 11 + 15 + 7 + 13 + 10 + 11 = 110. On divise par le nombre de notes : 110 / 10 = 11.<br><br>
+      <strong>Médiane :</strong> On ordonne les valeurs : 7, 8, 9, 10, 11, 11, 12, 13, 14, 15. Il y a 10 valeurs (effectif pair). La médiane est la moyenne des 5ème et 6ème valeurs : (11 + 11) / 2 = 11.<br><br>
+      <strong>Réponse :</strong> La moyenne est 11 et la médiane est 11.
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Pourquoi ce chapitre <span>tombe au brevet</span></h2>
+  <div class="prose">
+    <p>Les statistiques sont un classique du brevet de maths. L'exercice porte généralement sur un tableau d'effectifs ou un diagramme, avec calcul de moyenne, médiane et parfois quartiles. C'est un chapitre accessible si tu maîtrises la méthode : les calculs sont arithmétiques, pas de formule complexe.</p>
+    <p>Le piège le plus fréquent : confondre moyenne et médiane, ou se tromper dans le classement des valeurs pour la médiane. Beaucoup d'élèves oublient d'ordonner les données avant de chercher la médiane — c'est l'erreur qui coûte le plus de points.</p>
+    <p>Matheux te fait pratiquer sur des séries variées pour automatiser la méthode. Avec des indices progressifs, tu apprends à ne plus faire ces erreurs classiques le jour J.</p>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-num">90%</div>
+      <div class="stat-label">des brevets incluent des stats</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">12-18</div>
+      <div class="stat-label">points au brevet</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4 min</div>
+      <div class="stat-label">par exercice en moyenne</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Autres chapitres <span>du brevet</span></h2>
+  <div class="links-grid">
+    <a href="/probabilites-brevet.html">Probabilités</a>
+    <a href="/pythagore-brevet.html">Pythagore</a>
+    <a href="/thales-brevet.html">Thalès</a>
+    <a href="/fractions-brevet.html">Fractions</a>
+    <a href="/brevet-2026.html">Tous les chapitres</a>
+    <a href="/exercices-maths-3eme-brevet.html">Exercices 3ème</a>
+    <a href="/comment-reviser-brevet-maths.html">Comment réviser</a>
+  </div>
+</div>
+
+<div class="section">
+  <div class="cta-section">
+    <h2 class="syne">Prêt à t'entraîner ?</h2>
+    <p>Commence par un diagnostic express de 5 questions. Ton premier chapitre est gratuit.</p>
+    <a href="https://matheux.fr/app.html?from=statistiques" class="hero-cta">S'entraîner gratuitement</a>
+    <div class="hero-sub" style="color:#94a3b8; margin-top:.75rem;">1 chapitre gratuit · sans carte bancaire</div>
+  </div>
+</div>
+
+<footer>
+  <a href="/">Accueil</a>
+  <a href="mentions-legales.html">Mentions légales</a>
+  <a href="cgu.html">CGU</a>
+  <a href="politique-confidentialite.html">Confidentialité</a>
+  <a href="politique-cookies.html">Cookies</a>
+  <p>© 2026 Matheux · Nicolas Follezou · contact@matheux.fr</p>
+</footer>
+
+</body>
+</html>
