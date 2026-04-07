@@ -2085,6 +2085,7 @@ const CHAP_BLOCS = [
 // ══════════════════════════════════════════════════════════════
 let currentTab = 'register';
 let penColor   = '#1E40AF';
+var _doneSecOpen = false;
 
 let S = {
   prof: null, niv: "3EME", res: {}, xp: 0, stk: 0,
@@ -5683,11 +5684,14 @@ async function togCat(cat) {
       setTimeout(function() { _startTimer(_tid); }, 100);
     }
   }
-  // Scroll vers la carte ouverte
+  // Scroll vers la carte ouverte (offset -12px pour respiration)
   if (S.exp[cat]) setTimeout(function(){
     var el = document.querySelector('[data-cat="'+cat+'"]');
-    if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
-  }, 100);
+    if (el) {
+      var y = el.getBoundingClientRect().top + window.pageYOffset - 12;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  }, 150);
   // B3 — vérifie les prérequis fragiles à la première ouverture du chapitre
   if (S.exp[cat] && !(cat in S.prereqBanner) && cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET' && cat !== 'REVISION') {
     S.prereqBanner[cat] = undefined; // en cours
@@ -5700,6 +5704,25 @@ async function togCat(cat) {
     }
     if (S.exp[cat]) render();
   }
+}
+
+function _catToBloc(cat) {
+  var name = (LVL[S.niv] && LVL[S.niv].names[cat]) || '';
+  for (var i = 0; i < CHAP_BLOCS.length; i++) {
+    for (var j = 0; j < CHAP_BLOCS[i].chaps.length; j++) {
+      if (name === CHAP_BLOCS[i].chaps[j]) return i;
+    }
+  }
+  return -1;
+}
+
+function togDone() {
+  _doneSecOpen = !_doneSecOpen;
+  render();
+  if (_doneSecOpen) setTimeout(function() {
+    var el = document.querySelector('[data-done-header]');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
 }
 
 function dismissPrereq(cat) {
@@ -6989,8 +7012,11 @@ function openFromProgress(cat) {
   render();
   setTimeout(function(){
     var el = document.querySelector('[data-cat="'+cat+'"]');
-    if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
-  }, 80);
+    if (el) {
+      var y = el.getBoundingClientRect().top + window.pageYOffset - 12;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  }, 150);
 }
 
 function renderProgress() {
@@ -8456,9 +8482,12 @@ function render() {
 
   var _doneHtml = '';
   var _doneCount = 0;
+  var _doneSecCount = 0;
   var _carouselHtml = '';
   var _carouselCount = 0;
   var _expandedPriorityHtml = '';
+  var _blocHtmls = ['', '', '', ''];
+  var _blocCounts = [0, 0, 0, 0];
 
   html += '<!--CAROUSEL_SLOT-->';
 
@@ -8512,6 +8541,12 @@ function render() {
         html += '<button onclick="_simulateNextDay()" class="mb-2 text-[8px] font-bold text-indigo-400 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full active:opacity-70">🔮 Simuler demain</button>';
       }
       html += '</div>';
+      if (!isBoost) {
+        _doneSecCount++;
+        var _doneCard = html.substring(_htmlBefore);
+        html = html.substring(0, _htmlBefore);
+        _doneHtml += _doneCard;
+      }
       return;
     }
 
@@ -8716,6 +8751,14 @@ function render() {
       var _cardHtml = html.substring(_htmlBefore);
       html = html.substring(0, _htmlBefore);
       _expandedPriorityHtml += _cardHtml;
+    } else if (!_isPriority) {
+      var _bi = _catToBloc(cat);
+      if (_bi >= 0) {
+        var _cardHtml = html.substring(_htmlBefore);
+        html = html.substring(0, _htmlBefore);
+        _blocHtmls[_bi] += _cardHtml;
+        _blocCounts[_bi]++;
+      }
     }
   });
 
@@ -8733,6 +8776,31 @@ function render() {
     html = html.replace('<!--CAROUSEL_SLOT-->', _expandedPriorityHtml + _carouselBlock);
   } else {
     html = html.replace('<!--CAROUSEL_SLOT-->', _expandedPriorityHtml);
+  }
+
+  // ── Sections thématiques ──────────────────────────────
+  CHAP_BLOCS.forEach(function(bloc, i) {
+    if (_blocHtmls[i]) {
+      html += '<div class="mt-5 mb-2">' +
+        '<div class="flex items-center gap-2 mb-2.5 px-1">' +
+        '<span class="text-base">' + bloc.icon + '</span>' +
+        '<span class="text-xs font-black text-slate-400 uppercase tracking-widest">' + bloc.nom + '</span>' +
+        '<span class="text-[10px] bg-slate-100 text-slate-400 font-bold px-1.5 py-0.5 rounded-full">' + _blocCounts[i] + '</span>' +
+        '</div>' + _blocHtmls[i] + '</div>';
+    }
+  });
+
+  // ── Terminés (replié par défaut) ──────────────────────
+  if (_doneSecCount > 0) {
+    html += '<div class="mt-6">' +
+      '<div data-done-header onclick="togDone()" class="flex items-center gap-2 mb-2.5 px-1 cursor-pointer select-none">' +
+      '<span class="text-base">✅</span>' +
+      '<span class="text-xs font-black text-slate-400 uppercase tracking-widest">Terminés</span>' +
+      '<span class="text-[10px] bg-emerald-100 text-emerald-600 font-bold px-1.5 py-0.5 rounded-full">' + _doneSecCount + '</span>' +
+      '<span class="text-slate-300 text-lg font-light" style="margin-left:auto;transition:transform .2s;transform:rotate(' + (_doneSecOpen ? 90 : 0) + 'deg)">›</span>' +
+      '</div>' +
+      (_doneSecOpen ? _doneHtml : '') +
+      '</div>';
   }
 
   c.innerHTML = html || '<div class="text-center text-slate-400 font-semibold py-12 text-sm">Aucun exercice disponible pour ce niveau.</div>';

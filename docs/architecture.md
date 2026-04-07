@@ -35,9 +35,16 @@
                     14 tables + RLS
                                  │
                     ┌────────────▼────────────────────────┐
+                    │  RESEND API                         │
+                    │  Emails (no-reply@matheux.fr)       │
+                    │  Appelé depuis Edge Function         │
+                    │  5 templates : J+0/1/3/7/14          │
+                    └─────────────────────────────────────┘
+                                 │
+                    ┌────────────▼────────────────────────┐
                     │  GOOGLE APPS SCRIPT (backend.js)    │
-                    │  Emails uniquement (GmailApp)       │
-                    │  Proxyé depuis Edge Function         │
+                    │  LEGACY — plus d'envoi email         │
+                    │  Conservé pour référence              │
                     └─────────────────────────────────────┘
 ```
 
@@ -46,7 +53,8 @@
 | Landing SEO | Next.js SSG (build exporté, source hors repo) | `index.html` | ~4000 lignes |
 | App SPA | HTML + CSS vars + Tailwind CDN + JS vanilla | `app.html` | ~13000 lignes |
 | Backend API | Supabase Edge Function (Deno) | `supabase/functions/api/index.ts` | ~900 lignes |
-| Backend emails | Google Apps Script (V8) — GmailApp only | `backend.js` | ~5300 lignes |
+| Backend emails | Resend API (no-reply@matheux.fr) via Edge Function | `supabase/functions/api/index.ts` | intégré |
+| Backend legacy | Google Apps Script (V8) — plus d'envoi email | `backend.js` | ~5300 lignes |
 | Base de données | Supabase PostgreSQL (West EU Paris) | `supabase/schema.sql` | 14 tables + RLS |
 | Base legacy | Google Sheets (backup, emails) | — | 14 onglets |
 | Hébergement | GitHub Pages | `matheux.fr` | Auto-deploy sur push |
@@ -123,6 +131,12 @@ const S = {
 - **Timer exercice** : cercle SVG 60s par exercice (pas CALIBRAGE/BREVET). Doux, ambre après dépassement, désactivable. `_isTimerOn()`, `_startTimer(id)`, `_stopTimer()`. Persisté `mx_timer_{code}`
 - **Mode Flow** : 5 EASY consécutifs en ≤60s → XP ×2 pendant 5 exos. `_checkFlowOnAnswer()`, `_flowXPMultiplier()`. Badge ⚡×2 dans gamif-row. Overlay activation
 - **Tri chapitres dashboard** : BOOST (fixe en tête) → **assignés par le prof** (`S.assignedByProf`, persisté `mx_assigned_{code}` localStorage) → entamés (exos faits hors calibrage, pas terminés) → révision (cross-niveau) → pas commencés → terminés. Basé sur `S.chapTouched` (exclut `source=CALIBRAGE` et `source=BOOST`). Flèches tendance via `S.chapSessions` (même filtrage — pas de session fantôme sur chapitres seulement diagnostiqués). Le tri s'applique aussi dans `renderProgress()` (vue progression) : les chapitres `assignedByProf` sont pinnés en premier
+- **Organisation visuelle dashboard** : le dashboard chapitres est structuré en sections. **Architecture** : `render()` route chaque carte vers un bucket via le pattern `html.substring(_htmlBefore)`. **Sections affichées** (dans l'ordre) :
+  1. **Hero CTA** + carousel prioritaires (assignés/en cours/faibles) — inchangé
+  2. **Ungrouped** : chapitres spéciaux (Auto_, REVISION, dynamiques) non matchés
+  3. **4 sections thématiques** : Calcul, Équations & Fonctions, Géométrie, Stats & Probas — headers avec icône + nom + compteur. Matching via `_catToBloc(cat)` qui compare `LVL[S.niv].names[cat]` aux entrées de `CHAP_BLOCS[]`
+  4. **Terminés** : section repliée par défaut (`_doneSecOpen`), toggle via `togDone()`. BOOST done reste dans le flux principal (pas dans cette section). Header cliquable avec chevron rotatif + compteur vert
+  - Le scroll au clic (`togCat`, `openFromProgress`) utilise `getBoundingClientRect` + offset -12px pour respiration
 - **Panneau inscrits admin** : clic sur KPI "Inscrits total" → toggle liste triée par jours actifs décroissant (prénom, niveau, email, jours actifs, date inscription). `activeDays` = dates distinctes dans Scores (toutes sources, sans cutoff)
 - **Messages adaptatifs** : système `_msg(key, vars)` avec `_MSGS` (~35 entrées), adaptation niveau (6EME/3EME/def), arrays aléatoires, substitution variables `{name}` `{n}` `{s}`. Coach marks persistés localStorage (`mx_coach_v1`). Voir [messages.md](messages.md)
 - **Brouillon contextuel + Calculette** : mobile = bottom sheet 50vh avec onglets (brouillon|calculette), desktop = panneau latéral droit 1/3 écran avec les 2 fusionnés (calculette en haut, brouillon en bas). Brouillon : symboles adaptés au chapitre via `getContextSymbols(niv, cat)`, mode quadrillé toggle. Calculette : adaptée par niveau/chapitre (trig si géo, π si aires/volumes, puissances si 5EME+, fractions si 6EME), mémoire M+/MR, copie vers brouillon.
