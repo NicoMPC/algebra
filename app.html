@@ -1582,33 +1582,60 @@
 
     <!-- Headline -->
     <h1 class="font-black leading-tight mb-3 max-w-sm" style="font-size:clamp(1.6rem,5vw,2.2rem);color:#f1f5f9;letter-spacing:-.02em;animation:s1 .5s .05s ease both">
-      Prêt à bosser<br>tes maths ?
+      1 minute pour savoir<br><span style="background:linear-gradient(135deg,#EA580C,#FB923C);-webkit-background-clip:text;-webkit-text-fill-color:transparent">où tu en es.</span>
     </h1>
-    <p style="color:rgba(255,255,255,.45);font-size:.9rem;max-width:300px;line-height:1.6;animation:s1 .5s .1s ease both">
-      Diagnostic express + exercices ciblés.<br>10 min par jour, résultats garantis.
+    <p style="color:rgba(255,255,255,.45);font-size:.88rem;max-width:300px;line-height:1.6;animation:s1 .5s .1s ease both">
+      Diagnostic express → tes lacunes identifiées → exercices sur mesure chaque jour.
     </p>
 
+    <!-- Mini mockup preview -->
+    <div style="animation:s1 .5s .14s ease both;margin-top:1.5rem;width:100%;max-width:280px">
+      <div style="background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:16px;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem">
+        <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#EA580C,#FB923C);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">📊</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.72rem;font-weight:700;color:rgba(255,255,255,.7)">Pythagore — Score</div>
+          <div style="height:6px;border-radius:99px;background:rgba(255,255,255,.1);margin-top:4px;overflow:hidden">
+            <div style="height:100%;width:85%;border-radius:99px;background:linear-gradient(90deg,#EA580C,#FB923C)"></div>
+          </div>
+          <div style="font-size:.65rem;font-weight:700;color:#FB923C;margin-top:2px">85% maîtrisé</div>
+        </div>
+      </div>
+    </div>
+
     <!-- CTA -->
-    <div style="animation:s1 .5s .18s ease both;width:100%;max-width:320px;margin-top:2rem">
+    <div style="animation:s1 .5s .2s ease both;width:100%;max-width:320px;margin-top:1.5rem">
       <button onclick="startTrialFlow('direct')" class="btn btn-ac btn-fw shadow-xl" style="padding:1rem 1.5rem;font-size:1.05rem;border-radius:var(--l-radius);width:100%">
-        Commencer — c'est gratuit →
+        Commencer le diagnostic →
       </button>
-      <button onclick="showAuth('login')" class="block w-full text-center mt-4 font-semibold text-sm transition-colors" style="color:rgba(255,255,255,.4);cursor:pointer;padding:.5rem">
-        J'ai déjà un compte
-      </button>
+      <p style="color:rgba(255,255,255,.3);font-size:.75rem;text-align:center;margin-top:.6rem;font-weight:600">1 chapitre gratuit · Pas de carte bancaire</p>
+    </div>
+
+    <!-- Social proof -->
+    <div style="animation:s1 .5s .25s ease both;margin-top:1.5rem;display:flex;align-items:center;gap:.5rem">
+      <div style="display:flex">
+        <span style="width:24px;height:24px;border-radius:50%;background:#FFF7ED;border:2px solid #1C1917;display:flex;align-items:center;justify-content:center;font-size:.7rem">🧑‍🎓</span>
+        <span style="width:24px;height:24px;border-radius:50%;background:#FFF7ED;border:2px solid #1C1917;display:flex;align-items:center;justify-content:center;font-size:.7rem;margin-left:-8px">👩‍🎓</span>
+        <span style="width:24px;height:24px;border-radius:50%;background:#FFF7ED;border:2px solid #1C1917;display:flex;align-items:center;justify-content:center;font-size:.7rem;margin-left:-8px">🧑‍💻</span>
+      </div>
+      <span style="color:rgba(255,255,255,.3);font-size:.72rem;font-weight:600">Utilisé par des élèves de 3ème partout en France</span>
     </div>
 
     <!-- Rassurance -->
-    <div class="flex flex-wrap justify-center gap-3 mt-10" style="animation:s1 .5s .25s ease both">
-      <span style="color:rgba(255,255,255,.3);font-size:.75rem;font-weight:600">🎯 5 questions · 1 min</span>
-      <span style="color:rgba(255,255,255,.3);font-size:.75rem;font-weight:600">💳 Sans carte bancaire</span>
-      <span style="color:rgba(255,255,255,.3);font-size:.75rem;font-weight:600">📱 1 chapitre gratuit</span>
+    <div class="flex flex-wrap justify-center gap-3 mt-6" style="animation:s1 .5s .3s ease both">
+      <span style="color:rgba(255,255,255,.25);font-size:.72rem;font-weight:600">🎯 5 questions · 1 min</span>
+      <span style="color:rgba(255,255,255,.25);font-size:.72rem;font-weight:600">📱 10 min/jour</span>
+      <span style="color:rgba(255,255,255,.25);font-size:.72rem;font-weight:600">📈 Adapté à tes erreurs</span>
     </div>
 
-    <!-- Lien landing -->
-    <a href="/" style="color:rgba(255,255,255,.2);font-size:.72rem;font-weight:500;margin-top:2rem;text-decoration:underline;text-underline-offset:3px;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.5)'" onmouseout="this.style.color='rgba(255,255,255,.2)'">
-      Découvrir Matheux →
-    </a>
+    <!-- Login (text link discret) + landing -->
+    <div class="flex gap-4 mt-6" style="animation:s1 .5s .35s ease both">
+      <button onclick="showAuth('login')" style="color:rgba(255,255,255,.2);font-size:.72rem;font-weight:500;cursor:pointer;background:none;border:none;text-decoration:underline;text-underline-offset:3px;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.5)'" onmouseout="this.style.color='rgba(255,255,255,.2)'">
+        Déjà inscrit ? Se connecter
+      </button>
+      <a href="/" style="color:rgba(255,255,255,.2);font-size:.72rem;font-weight:500;text-decoration:underline;text-underline-offset:3px;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.5)'" onmouseout="this.style.color='rgba(255,255,255,.2)'">
+        Découvrir Matheux →
+      </a>
+    </div>
 
     <!-- Footer minimal -->
     <div class="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-8" style="animation:s1 .5s .3s ease both">
@@ -2545,10 +2572,14 @@ document.addEventListener('touchend', function(e){
     (function() {
       var h = window.location.hash || '';
       if (h.indexOf('#diag') === 0 || h.indexOf('#trial') === 0) {
+        var hasHQ = h.indexOf('hq=done') !== -1;
         var source = h.replace('#diag-', '').replace('#trial-', '').replace('&hq=done', '') || 'landing';
-        // hq=done : legacy hero quiz (supprimé)
         history.replaceState(null, '', window.location.pathname);
-        setTimeout(function() { startTrialFlow(source); }, 600);
+        setTimeout(function() {
+          startTrialFlow(source);
+          // Auto-select Brevet pathway if coming from landing quiz
+          if (hasHQ) setTimeout(function() { _flowPickBrevet(); }, 300);
+        }, 600);
       } else if (h === '#login') {
         history.replaceState(null, '', window.location.pathname);
         setTimeout(function() { showAuth('login'); }, 400);
