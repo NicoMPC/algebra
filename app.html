@@ -44,7 +44,7 @@
     "description": "Préparation Brevet 2026 en maths. Diagnostic des lacunes en 3ème, exercices personnalisés quotidiens, parcours vérifié chaque soir.",
     "offers": {
       "@type": "Offer",
-      "price": "19.99",
+      "price": "29.99",
       "priceCurrency": "EUR",
       "description": "Entraînement maths Brevet — 1 chapitre gratuit, programme complet en option"
     },
@@ -3419,6 +3419,7 @@ function _flowActivateStep3Guest() {
     if (cr.total > 0 && (cr.ok / cr.total) >= 0.5) solidChaps.push(label);
     else weakChaps.push(label);
   });
+  window._flowWeakChaps = weakChaps;
 
   // Récit
   var narrative;
@@ -3466,8 +3467,8 @@ function _flowActivateStep3Guest() {
     (weakChaps.length > 0 ? '<p style="color:#60A5FA;font-size:.82rem;font-weight:600;margin-bottom:.5rem">On a identifié ' + weakChaps.length + ' point' + (weakChaps.length > 1 ? 's' : '') + ' à travailler en priorité.</p>' : '') +
     '<p style="color:rgba(255,255,255,.45);font-size:.78rem;margin-bottom:1rem">En 2 semaines, ça peut déjà changer.</p>' +
     '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:.3rem;margin-bottom:1.5rem">' + tagsHtml + '</div>' +
-    '<button onclick="_flowShowObjectifScreen()" style="width:100%;padding:1rem 1.25rem;background:#10B981;border:none;border-radius:var(--l-radius,14px);color:#fff;font-family:Inter,sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:all .15s;box-shadow:0 4px 16px rgba(16,185,129,.3)" onmouseover="this.style.transform=\'scale(1.02)\'" onmouseout="this.style.transform=\'none\'">Voir mon programme personnalisé</button>' +
-    '<p style="color:rgba(255,255,255,.3);font-size:.72rem;margin-top:.75rem">Créé automatiquement à partir de tes réponses</p>' +
+    '<button onclick="_flowToRegisterDirect()" style="width:100%;padding:1rem 1.25rem;background:#10B981;border:none;border-radius:var(--l-radius,14px);color:#fff;font-family:Inter,sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:all .15s;box-shadow:0 4px 16px rgba(16,185,129,.3)" onmouseover="this.style.transform=\'scale(1.02)\'" onmouseout="this.style.transform=\'none\'">Créer mon espace gratuit →</button>' +
+    '<p style="color:rgba(255,255,255,.3);font-size:.72rem;margin-top:.75rem">1 chapitre débloqué · Entraînement quotidien inclus · Tes résultats sauvegardés</p>' +
     '</div>';
 
   // Animate bar + counter
@@ -3578,6 +3579,22 @@ function _flowSkipUpsell() {
   _flowSetStep(3);
 }
 
+function _flowToRegisterDirect() {
+  _flowObjectif = _flowLevel === '3EME' ? 'brevet' : 'lacunes';
+  var weak = window._flowWeakChaps || [];
+  var h2 = document.getElementById('fl-heading');
+  if (h2) h2.textContent = weak.length > 0 ? 'Ne perds pas tes résultats' : 'Ton programme est prêt';
+  var desc = document.getElementById('fl-desc');
+  if (desc) desc.textContent = weak.length > 0
+    ? weak.length + ' point' + (weak.length > 1 ? 's' : '') + ' faible' + (weak.length > 1 ? 's' : '') + ' identifié' + (weak.length > 1 ? 's' : '') + ' — crée ton espace pour y remédier.'
+    : 'Crée ton espace pour accéder à ton entraînement personnalisé.';
+  var btnTxt = document.getElementById('fl-btn-txt');
+  if (btnTxt) btnTxt.textContent = 'Créer mon espace — c\'est gratuit';
+  var btn = document.getElementById('fl-btn');
+  if (btn) btn.setAttribute('onclick', '_flowGuestRegister()');
+  _flowSetStep(3);
+}
+
 async function _flowGuestRegister() {
   var prenom = (document.getElementById('fl-name')  || {}).value || '';
   var email  = (document.getElementById('fl-email') || {}).value || '';
@@ -3653,7 +3670,7 @@ async function _flowGuestRegister() {
     };
   });
   fetch(SU, { method: 'POST',
-    body: JSON.stringify({ action: 'save_calibration_batch', code: code, email: (document.getElementById('le') || {}).value || '', name: prenom, level: _flowLevel, scores: calScores })
+    body: JSON.stringify({ action: 'save_calibration_batch', code: code, email: email.toLowerCase().trim(), name: prenom, level: _flowLevel, scores: calScores })
   }).then(function(r) { return r.json(); }).then(function(d) {
     // Mettre à jour freeChapter après le diagnostic
     if (d.freeChapter && S.trial) {
@@ -4420,8 +4437,19 @@ function showLockedOverlay() {
   document.body.appendChild(ov);
 }
 
+function _stripeUrl(email, code) {
+  var base = 'https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02';
+  var params = [];
+  var _code = code || (S.prof && S.prof.code) || '';
+  var _email = email || '';
+  if (!_email) try { var c = JSON.parse(localStorage.getItem(SK) || '{}'); _email = c.email || ''; } catch(e) {}
+  if (_code) params.push('client_reference_id=' + encodeURIComponent(_code));
+  if (_email) params.push('prefilled_email=' + encodeURIComponent(_email));
+  return base + (params.length ? '?' + params.join('&') : '');
+}
+
 window.__unlockAll = function() {
-  window.open('https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02', '_blank');
+  window.open(_stripeUrl(), '_blank');
 };
 window.__lockedDismiss = function() {
   var ov = document.getElementById('locked-overlay');
@@ -10464,7 +10492,7 @@ function copySequenceEmail(code, type) {
   if (!st) return;
   var prenom = st.prenom || 'ton élève';
   var objectif = st.objectif || '';
-  var stripeLink = 'https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02';
+  var stripeLink = _stripeUrl(st.email, st.code);
   var subject = '', body = '';
 
   if (type === 'J+3') {
@@ -12284,7 +12312,7 @@ async function _adminMarkAllTest() {
 }
 
 function _adminOpenStripe() {
-  window.open('https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02', '_blank');
+  window.open(_stripeUrl(), '_blank');
 }
 
 async function _adminTestEmail() {
