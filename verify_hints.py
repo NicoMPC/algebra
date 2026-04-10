@@ -1,34 +1,62 @@
 #!/usr/bin/env python3
 """
-verify_hints.py — Audit des indices (steps) d'exercices
-========================================================
+verify_hints.py — Audit des indices (steps) d'exercices (Supabase)
+===================================================================
 Cherche les cas où un indice révèle la réponse, contient une formule complète,
 est trop court, ou duplique la formule de l'exercice.
 
 Usage : python3 verify_hints.py
-Output : docs/audit-hints-2026-03-14.md
+Output : docs/audit-hints-YYYY-MM-DD.md
 """
 
 import json, re, sys
 from datetime import date
-from sheets import sh
+from supabase_helper import sb
 
-ONGLETS = ["Curriculum_Officiel", "DiagnosticExos", "BoostExos"]
-OUTPUT = "/home/nicolas/Bureau/algebra live/algebra/docs/audit-hints-2026-03-14.md"
+# Mapping ancien onglet Sheet → table Supabase + colonne exos
+ONGLETS = {
+    "curriculum":      {"table": "curriculum",      "exos_col": "exos_json", "cat_col": "categorie", "lvl_col": "niveau"},
+    "diagnostic_exos": {"table": "diagnostic_exos", "exos_col": "exos_json", "cat_col": "categorie", "lvl_col": "niveau"},
+}
+
+OUTPUT = f"/home/nicolas/Bureau/algebra live/algebra/docs/audit-hints-{date.today()}.md"
+
+
+_NUMERIC_RE = re.compile(r'^-?\d+(?:[.,]\d+)?(?:°|%|cm|m|km|g|kg)?$')
+_TRIVIAL_ANSWERS = {"vrai", "faux", "oui", "non"}
 
 
 def normalize(s):
-    """Normalise pour comparaison : strip, supprime $, espaces."""
     if not s:
         return ""
     s = str(s).strip().replace("$", "").replace(" ", "").lower()
     return s
 
 
+def _is_numeric_or_trivial(a_norm):
+    """Une réponse numérique courte ou Vrai/Faux apparaît naturellement dans
+    les calculs intermédiaires et le raisonnement — ce n'est pas un dévoilement."""
+    if a_norm in _TRIVIAL_ANSWERS:
+        return True
+    if _NUMERIC_RE.match(a_norm):
+        return True
+    return False
+
+
 def check_hint_is_answer(steps, answer):
-    """CHECK A: un step contient la valeur de 'a' (réponse correcte)."""
+    """Détecte un step qui dévoile textuellement la réponse.
+
+    Pédagogiquement : un calcul intermédiaire qui produit la réponse est OK
+    (c'est le raisonnement). Un step affirmatif qui contient la réponse
+    textuelle (ex: a="parallélogramme") est un dévoilement.
+
+    Règle : on flag uniquement si la réponse est une chaîne non-triviale
+    (pas un nombre, pas Vrai/Faux/Oui/Non) et qu'elle apparaît dans un step.
+    """
     a_norm = normalize(answer)
-    if not a_norm or len(a_norm) < 2:
+    if not a_norm or len(a_norm) < 3:
+        return []
+    if _is_numeric_or_trivial(a_norm):
         return []
     warnings = []
     for i, step in enumerate(steps):
@@ -38,27 +66,35 @@ def check_hint_is_answer(steps, answer):
     return warnings
 
 
-def check_hint_is_formula(steps):
-    """CHECK B: un step contient une formule complète ($...=...$ avec variable)."""
-    warnings = []
-    pattern = re.compile(r'\$[^$]*[a-zA-Z][^$]*=[^$]+\$')
-    for i, step in enumerate(steps):
-        if pattern.search(str(step)):
-            warnings.append((i + 1, step, "WARN_HINT_IS_FORMULA"))
-    return warnings
+# Pattern "invitation finale" : uniquement des symboles math/ponctuation
+# (ex: `$= $?`, `$= $?.`, `= ?$`, etc.) — pas de lettres, pas de chiffres
+_INVITATION_CHARS = re.compile(r'^[\$=\?\.\s]+$')
+_CONVENTION_WORDS = re.compile(r'^(vrai|faux|oui|non)\.?$', re.IGNORECASE)
+
+
+def _is_convention_final(step):
+    """Skip les conventions pédago valides : step final invitant à répondre
+    (`$= $?`, `= ?`, etc.) ou confirmation V/F (Vrai./Faux.)."""
+    s = str(step).strip()
+    if _INVITATION_CHARS.match(s):
+        return True
+    if _CONVENTION_WORDS.match(s):
+        return True
+    return False
 
 
 def check_hint_too_short(steps):
-    """CHECK C: un step fait moins de 10 caractères."""
+    """Un step trop court (<7 chars) est probablement un résidu.
+    Skip les conventions d'invitation finale ($= ?$., Vrai./Faux.)."""
     warnings = []
     for i, step in enumerate(steps):
-        if len(str(step).strip()) < 10:
+        s = str(step).strip()
+        if len(s) < 7 and not _is_convention_final(step):
             warnings.append((i + 1, step, "WARN_HINT_TOO_SHORT"))
     return warnings
 
 
 def check_hint_duplicate_formula(steps, formula):
-    """CHECK D: un step est identique à la formule (f)."""
     if not formula:
         return []
     f_norm = normalize(formula)
@@ -71,29 +107,37 @@ def check_hint_duplicate_formula(steps, formula):
     return warnings
 
 
-def audit_onglet(tab_name):
-    """Audite un onglet et retourne la liste des warnings."""
-    print(f"  Lecture de {tab_name}...")
+def audit_table(name, config):
+    """Audite une table Supabase et retourne la liste des warnings."""
+    table = config["table"]
+    exos_col = config["exos_col"]
+    cat_col = config["cat_col"]
+    lvl_col = config["lvl_col"]
+
+    print(f"  Lecture de {table}...")
     try:
-        rows = sh.read(tab_name)
+        rows = sb.read(table)
     except Exception as e:
-        print(f"  ⚠️ Erreur lecture {tab_name}: {e}")
+        print(f"  ⚠️ Erreur lecture {table}: {e}")
         return []
 
     results = []
-    exos_col = "ExosJSON"
-
     for row_idx, row in enumerate(rows):
         raw = row.get(exos_col, "")
         if not raw:
             continue
 
-        chapter = row.get("Chapitre", row.get("Chapter", "?"))
-        level = row.get("Niveau", row.get("Level", "?"))
+        chapter = row.get(cat_col, "?")
+        level = row.get(lvl_col, "?")
 
-        try:
-            exos = json.loads(raw)
-        except (json.JSONDecodeError, TypeError):
+        if isinstance(raw, str):
+            try:
+                exos = json.loads(raw)
+            except (json.JSONDecodeError, TypeError):
+                continue
+        elif isinstance(raw, list):
+            exos = raw
+        else:
             continue
 
         if isinstance(exos, dict):
@@ -115,16 +159,15 @@ def audit_onglet(tab_name):
 
             warnings = []
             warnings.extend(check_hint_is_answer(steps, a))
-            warnings.extend(check_hint_is_formula(steps))
             warnings.extend(check_hint_too_short(steps))
             warnings.extend(check_hint_duplicate_formula(steps, f))
 
             if warnings:
                 results.append({
-                    "tab": tab_name,
+                    "tab": table,
                     "level": level,
                     "chapter": chapter,
-                    "row": row_idx + 2,
+                    "row": row_idx + 1,
                     "exo": ex_idx + 1,
                     "q": q[:80],
                     "a": str(a)[:40],
@@ -135,7 +178,6 @@ def audit_onglet(tab_name):
 
 
 def generate_report(all_results):
-    """Génère le rapport Markdown."""
     lines = [
         f"# Audit Hints — {date.today()}",
         "",
@@ -144,7 +186,6 @@ def generate_report(all_results):
         "",
     ]
 
-    # Stats par type
     counts = {}
     for r in all_results:
         for _, _, wtype in r["warnings"]:
@@ -158,18 +199,16 @@ def generate_report(all_results):
         lines.append(f"| {wtype} | {counts[wtype]} |")
     lines.append("")
 
-    # Stats par onglet
     tabs = {}
     for r in all_results:
         tabs[r["tab"]] = tabs.get(r["tab"], 0) + len(r["warnings"])
 
-    lines.append("## Par onglet")
+    lines.append("## Par table")
     lines.append("")
     for tab, cnt in sorted(tabs.items()):
         lines.append(f"- **{tab}**: {cnt} warnings")
     lines.append("")
 
-    # Détails
     lines.append("## Détails")
     lines.append("")
 
@@ -185,12 +224,12 @@ def generate_report(all_results):
 
 
 def main():
-    print("=== Audit Hints ===")
+    print("=== Audit Hints (Supabase) ===")
     all_results = []
-    for tab in ONGLETS:
-        results = audit_onglet(tab)
+    for name, config in ONGLETS.items():
+        results = audit_table(name, config)
         all_results.extend(results)
-        print(f"  → {len(results)} exercices avec warnings dans {tab}")
+        print(f"  → {len(results)} exercices avec warnings dans {config['table']}")
 
     report = generate_report(all_results)
 

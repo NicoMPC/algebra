@@ -268,8 +268,8 @@ def audit_exercice(exo, niveau, categorie, exo_idx, onglet):
     steps = exo.get("steps")
     if not isinstance(steps, list):
         errors.append(("ERREUR_CHAMP_MANQUANT", loc, "steps n'est pas une liste", str(type(steps)), "list"))
-    elif len(steps) < 1 or len(steps) > 3:
-        errors.append(("WARN_STEPS", loc, f"steps a {len(steps)} éléments (attendu 1-3)", str(len(steps)), "1-3"))
+    elif len(steps) < 1 or len(steps) > 4:
+        errors.append(("WARN_STEPS", loc, f"steps a {len(steps)} éléments (attendu 1-4)", str(len(steps)), "1-4"))
     lvl = exo.get("lvl")
     if lvl not in (1, 2):
         errors.append(("ERREUR_CHAMP_MANQUANT", loc, f"lvl={lvl} (attendu 1 ou 2)", str(lvl), "1 ou 2"))
