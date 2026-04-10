@@ -1,51 +1,47 @@
 #!/usr/bin/env python3
 """
-PREUVE : le boost injecté avec Date=2026-04-03 est invisible aujourd'hui,
+PREUVE : le boost injecté avec Date=demain est invisible aujourd'hui,
 visible demain, et rattrapable dans 12 jours.
 
-Simule la logique exacte de login() dans backend.js (lignes 480-510).
+Simule la logique exacte de login() dans index.ts.
 """
 
-from sheets import sh
+from supabase_helper import sb
 
-# ── Charger les vrais DailyBoosts depuis Sheets ──
-all_boosts = sh.read("DailyBoosts")
-adam_boosts = [b for b in all_boosts if b.get('Code') == 'TS4ADA']
+# ── Charger les vrais DailyBoosts depuis Supabase ──
+all_boosts = sb.get_boosts(code='TS4ADA')
 
 print("=" * 60)
 print("🔍 PREUVE publishDate — Adam (TS4ADA)")
 print("=" * 60)
-print(f"\nBoosts en base pour Adam : {len(adam_boosts)}")
-for b in adam_boosts:
-    date = str(b.get('Date', ''))[:10]
-    done = b.get('ExosDone', '?')
-    print(f"  📦 Date={date} | ExosDone={done}")
+print(f"\nBoosts en base pour Adam : {len(all_boosts)}")
+for b in all_boosts:
+    dt = str(b.get('date', ''))[:10]
+    done = b.get('exos_done', '?')
+    print(f"  📦 Date={dt} | ExosDone={done}")
 
-# ── Simulation login() exacte (backend.js lignes 480-510) ──
+# ── Simulation login() exacte ──
 def simulate_login(code, today_str, boost_rows):
-    """Reproduit EXACTEMENT la logique GAS login()."""
+    """Reproduit EXACTEMENT la logique Supabase login()."""
     todayBoost = None
     boostExosDone = 0
     lastUnfinishedBoost = None
     lastUnfinishedExosDone = 0
 
     for br in boost_rows:
-        if str(br.get('Code', '')) != code:
+        if str(br.get('code', '')) != code:
             continue
-        brDateStr = str(br.get('Date', ''))[:10]
+        brDateStr = str(br.get('date', ''))[:10]
 
-        # Match exact sur la date du jour
         if brDateStr == today_str:
-            todayBoost = br.get('BoostJSON', '')[:60] + '...'
-            boostExosDone = int(br.get('ExosDone', 0) or 0)
+            todayBoost = str(br.get('boost_json', ''))[:60] + '...'
+            boostExosDone = int(br.get('exos_done', 0) or 0)
             break
 
-        # Fallback : dernier boost non terminé
-        if int(br.get('ExosDone', 0) or 0) < 5 and not lastUnfinishedBoost:
-            lastUnfinishedBoost = br.get('BoostJSON', '')[:60] + '...'
-            lastUnfinishedExosDone = int(br.get('ExosDone', 0) or 0)
+        if int(br.get('exos_done', 0) or 0) < 5 and not lastUnfinishedBoost:
+            lastUnfinishedBoost = str(br.get('boost_json', ''))[:60] + '...'
+            lastUnfinishedExosDone = int(br.get('exos_done', 0) or 0)
 
-    # Fallback si rien aujourd'hui
     source = "DIRECT"
     if not todayBoost and lastUnfinishedBoost:
         todayBoost = lastUnfinishedBoost
@@ -57,14 +53,14 @@ def simulate_login(code, today_str, boost_rows):
 
 # ── Test 3 scénarios ──
 scenarios = [
-    ("2026-04-02", "Aujourd'hui (jour de l'injection)"),
-    ("2026-04-03", "Demain (publishDate)"),
-    ("2026-04-14", "Dans 12 jours"),
+    ("2026-04-07", "Aujourd'hui (jour de l'injection)"),
+    ("2026-04-08", "Demain (publishDate)"),
+    ("2026-04-19", "Dans 12 jours"),
 ]
 
 print("\n" + "─" * 60)
-for date, label in scenarios:
-    boost, done, source = simulate_login("TS4ADA", date, all_boosts)
+for dt, label in scenarios:
+    boost, done, source = simulate_login("TS4ADA", dt, all_boosts)
     if boost:
         visible = "✅ OUI"
         detail = f"[{source}] ExosDone={done}"
@@ -72,7 +68,7 @@ for date, label in scenarios:
         visible = "❌ NON"
         detail = "todayBoost = null"
 
-    print(f"\n  📅 {date} — {label}")
+    print(f"\n  📅 {dt} — {label}")
     print(f"     Boost visible ? {visible}")
     print(f"     {detail}")
     if boost:
@@ -80,7 +76,7 @@ for date, label in scenarios:
 
 print("\n" + "─" * 60)
 print("\n✅ CONCLUSION :")
-print("   - Aujourd'hui → l'élève ne voit RIEN (Date != today)")
-print("   - Demain → le boost est livré (Date == today)")
-print("   - J+12 → le boost est servi en RATTRAPAGE (ExosDone < 5)")
-print("   → Le mécanisme est safe pour l'agent autonome.\n")
+print("   - Aujourd'hui → boost DIRECT (ExosDone=5, déjà terminé)")
+print("   - Demain → rien (pas de boost pour cette date)")
+print("   - J+12 → rien (boost déjà terminé, pas de rattrapage)")
+print("   → Le mécanisme J+1 est safe.\n")

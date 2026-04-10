@@ -1320,7 +1320,7 @@ function templateJ0(prenom: string, email: string): { subject: string; html: str
       '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 6px;">✔️ Il sait mieux par où commencer</p>' +
       '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 6px;">✔️ Il travaille régulièrement, sans qu\u2019on le pousse</p>' +
       '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 24px;">✔️ Et surtout… <strong>il reprend confiance</strong></p>' +
-      emailHighlight("Dès demain matin, son premier entraînement sur mesure l\u2019attend.") +
+      emailHighlight("Dès demain matin, son premier boost sur mesure l\u2019attend.") +
       '<p style="color:#374151;font-size:15px;line-height:1.7;margin:0 0 8px;">Chaque semaine, vous recevrez un <strong>bilan clair</strong> : ce qui est acquis, ce qui bloque, et ce qui progresse.</p>' +
       emailCTA("https://matheux.fr/app.html", "Ouvrir Matheux →") +
       '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">J\u2019ai créé Matheux après des années à donner des cours de maths. Le même constat revenait : les élèves comprennent en cours, mais ne s\u2019entraînent pas assez entre les séances.</p>' +
@@ -1334,7 +1334,7 @@ function templateJ0(prenom: string, email: string): { subject: string; html: str
 
 function templateJ1(prenom: string, email: string): { subject: string; html: string } {
   return {
-    subject: "Le premier entraînement de " + prenom + " est prêt 🎯",
+    subject: "Le premier boost de " + prenom + " est prêt 🎯",
     html: emailWrap(email, "5 exercices ciblés, 10 minutes — c'est parti.",
       '<p style="color:#1e293b;font-size:20px;font-weight:800;line-height:1.4;margin:0 0 20px;">Le premier boost de ' + prenom + ' est prêt.</p>' +
       '<p style="color:#374151;font-size:16px;line-height:1.8;margin:0 0 16px;">Bonjour,</p>' +

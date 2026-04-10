@@ -668,18 +668,13 @@ def scenario_override_sameday():
     else:
         check(False, f"{test_cat} absent des categories après override")
 
-    # 7. Cleanup
-    from sheets import Sheets
-    s = Sheets()
-    for tab in ['Users', 'Scores', 'DailyBoosts', 'RemediationChapters']:
-        raw = s.read_raw(tab)
-        clean = [raw[0]] + [r for r in raw[1:] if len(r) == 0 or r[0] != stu.code]
-        s.write_rows(tab, clean)
-    raw_sv = s.read_raw('👁 Suivi')
-    h_sv = raw_sv[0]
-    ci = h_sv.index('Code') if 'Code' in h_sv else -1
-    clean_sv = [h_sv] + [r for r in raw_sv[1:] if ci < 0 or len(r) <= ci or r[ci] != stu.code]
-    s.write_rows('👁 Suivi', clean_sv)
+    # 7. Cleanup via Supabase REST
+    from supabase_helper import sb
+    for table in ['profiles', 'scores', 'daily_boosts', 'suivi', 'progress']:
+        try:
+            sb.delete(table, {'code': f'eq.{stu.code}'})
+        except:
+            pass  # Table peut ne pas avoir de ligne pour ce code
     log("Cleanup Enzo OK", "OK")
 
 

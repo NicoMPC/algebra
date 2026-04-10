@@ -13,7 +13,41 @@ import json
 import subprocess
 import sys
 from datetime import datetime, timedelta
-from sheets import sh
+from supabase_helper import sb
+
+def _adapt_scores(rows):
+    """Adapte les noms de colonnes Supabase → ancien format Sheets pour compatibilité."""
+    adapted = []
+    for r in rows:
+        adapted.append({
+            'Code': r.get('code', ''),
+            'Prénom': r.get('prenom', ''),
+            'Niveau': r.get('niveau', ''),
+            'Chapitre': r.get('chapitre', ''),
+            'NumExo': str(r.get('num_exo', '')),
+            'Énoncé': r.get('enonce', ''),
+            'Résultat': r.get('resultat', ''),
+            'Temps(sec)': str(r.get('temps_sec', 0)),
+            'NbIndices': str(r.get('nb_indices', 0)),
+            'FormuleVue': '1' if r.get('formule_vue') else '0',
+            'MauvaiseOption': r.get('mauvaise_option', ''),
+            'Draft': r.get('draft', ''),
+            'Date': str(r.get('date', '')),
+            'Source': r.get('source', ''),
+        })
+    return adapted
+
+def _adapt_boosts(rows):
+    """Adapte daily_boosts Supabase → ancien format Sheets."""
+    adapted = []
+    for r in rows:
+        adapted.append({
+            'Code': r.get('code', ''),
+            'Date': str(r.get('date', '')),
+            'BoostJSON': r.get('boost_json', ''),
+            'ExosDone': str(r.get('exos_done', 0)),
+        })
+    return adapted
 
 TODAY = "2026-04-02"
 TOMORROW = "2026-04-03"
@@ -480,7 +514,7 @@ def inject_boosts(boosts_data):
         # DailyBoosts: Code, Date, BoostJSON, ExosDone
         rows.append([code, TOMORROW, boost_json, 0])
 
-    sh.append_rows("DailyBoosts", rows)
+    sb.insert("daily_boosts", [{"code": r[0], "date": r[1], "boost_json": r[2], "exos_done": int(r[3])} for r in rows])
     return len(rows)
 
 
@@ -496,7 +530,7 @@ def main():
 
     # ── Étape 1 : Lire les Scores ──
     print("\n📊 ÉTAPE 1 — Lecture des Scores...")
-    all_scores = sh.read("Scores")
+    all_scores = _adapt_scores(sb.get_scores())
     test_codes = ["TS1INE", "TS2HUG", "TS3JAD", "TS4ADA"]
 
     analyses = {}
@@ -548,7 +582,7 @@ def main():
 
     # ── Étape 5 : Vérification ──
     print("\n\n🔍 ÉTAPE 5 — Vérification publishDate...")
-    boosts = sh.read("DailyBoosts")
+    boosts = _adapt_boosts(sb.read("daily_boosts"))
     for code in test_codes:
         tomorrow_boosts = [b for b in boosts if b['Code'] == code and b.get('Date', '') == TOMORROW]
         if tomorrow_boosts:

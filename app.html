@@ -46,7 +46,7 @@
       "@type": "Offer",
       "price": "29.99",
       "priceCurrency": "EUR",
-      "description": "Entraînement maths Brevet — 1 chapitre gratuit, programme complet en option"
+      "description": "Révisions maths Brevet — 1 chapitre gratuit, programme complet en option"
     },
     "audience": {
       "@type": "EducationalAudience",
@@ -102,7 +102,7 @@
         "name": "Combien de temps par jour ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "10 minutes suffisent. 5 exercices ciblés sur ses lacunes exactes. Après l'entraînement du jour, votre enfant peut continuer librement sur tout le programme — chapitres, révisions, Brevet Blanc."
+          "text": "10 minutes suffisent. 5 exercices ciblés sur ses lacunes exactes. Après l'boost du jour, votre enfant peut continuer librement sur tout le programme — chapitres, révisions, Brevet Blanc."
         }
       },
       {
@@ -2082,8 +2082,6 @@ const CHAP_BLOCS = [
 // ══════════════════════════════════════════════════════════════
 let currentTab = 'register';
 let penColor   = '#1E40AF';
-var _doneSecOpen = false;
-
 let S = {
   prof: null, niv: "3EME", res: {}, xp: 0, stk: 0,
   qv: {}, exp: {}, rev: false, cid: null,
@@ -2133,7 +2131,6 @@ let S = {
   retroExoIdx:       {},      // { cat → exoIdx } — navigation dans la session retro
   coursMap:          {},      // { cat → {unlocked, locked, nbExos, nextMilestone} }
   coursView:         null,    // cat dont le cours est ouvert (overlay)
-  _doneAccOpen:      false,   // accordéon chapitres terminés
   // ── Timer & Flow Mode ──
   _timerIv:          null,    // setInterval ID for active timer
   _timerStart:       0,       // Date.now() when timer started for current exo
@@ -2283,13 +2280,13 @@ var _MSGS = {
   cours_prep: '🎉 Jalon atteint. Ton cours personnalisé est en préparation.',
   chap_done:  '🏆 Bravo {name} — chapitre terminé ! Choisis le suivant quand tu veux.',
   chap_done_auto: { def: '⚡ Automatismes terminés — tes réflexes se renforcent ! Ton prof prépare la suite 🎯' },
-  boost_ready:      '⚡ Ton Entraînement du jour est prêt !',
-  boost_preparing:  '✨ Prochain entraînement demain — ton boost sera encore plus ciblé !',
-  boost_in_progress:'Ton entraînement est en cours ⚡ — encore {n} exo{s} et c\'est dans la boîte !',
+  boost_ready:      '⚡ Ton Boost du jour est prêt !',
+  boost_preparing:  '✨ Prochain boost demain — encore plus ciblé sur tes lacunes !',
+  boost_in_progress:'Ton boost est en cours ⚡ — encore {n} exo{s} et c\'est dans la boîte !',
   coach_hint:    'Les indices se dévoilent un par un — utilise-les avant de répondre 💡',
   coach_formula: 'La formule se révèle après réponse 📐 — clique dessus !',
   coach_brouillon:'Le brouillon est en bas 📝 — utilise-le pour tes calculs !',
-  coach_boost_first: '⚡ C\'est ton Entraînement du jour — 5 exos, ~10 min. C\'est parti !',
+  coach_boost_first: '⚡ C\'est ton Boost du jour — 5 exos, ~10 min. C\'est parti !',
   pending_chapter:  'Ton prochain chapitre personnalisé est en préparation… reviens dans quelques heures !',
   revision_done:    'Révision terminée ! {easy}/{tot} réussis 🔁',
   net_error:       'Erreur réseau — vérifie ta connexion 📡',
@@ -3468,7 +3465,7 @@ function _flowActivateStep3Guest() {
     '<p style="color:rgba(255,255,255,.45);font-size:.78rem;margin-bottom:1rem">En 2 semaines, ça peut déjà changer.</p>' +
     '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:.3rem;margin-bottom:1.5rem">' + tagsHtml + '</div>' +
     '<button onclick="_flowToRegisterDirect()" style="width:100%;padding:1rem 1.25rem;background:#10B981;border:none;border-radius:var(--l-radius,14px);color:#fff;font-family:Inter,sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:all .15s;box-shadow:0 4px 16px rgba(16,185,129,.3)" onmouseover="this.style.transform=\'scale(1.02)\'" onmouseout="this.style.transform=\'none\'">Créer mon espace gratuit →</button>' +
-    '<p style="color:rgba(255,255,255,.3);font-size:.72rem;margin-top:.75rem">1 chapitre débloqué · Entraînement quotidien inclus · Tes résultats sauvegardés</p>' +
+    '<p style="color:rgba(255,255,255,.3);font-size:.72rem;margin-top:.75rem">1 chapitre débloqué · Boost quotidien inclus · Tes résultats sauvegardés</p>' +
     '</div>';
 
   // Animate bar + counter
@@ -3587,7 +3584,7 @@ function _flowToRegisterDirect() {
   var desc = document.getElementById('fl-desc');
   if (desc) desc.textContent = weak.length > 0
     ? weak.length + ' point' + (weak.length > 1 ? 's' : '') + ' faible' + (weak.length > 1 ? 's' : '') + ' identifié' + (weak.length > 1 ? 's' : '') + ' — crée ton espace pour y remédier.'
-    : 'Crée ton espace pour accéder à ton entraînement personnalisé.';
+    : 'Crée ton espace pour accéder à ton boost personnalisé.';
   var btnTxt = document.getElementById('fl-btn-txt');
   if (btnTxt) btnTxt.textContent = 'Créer mon espace — c\'est gratuit';
   var btn = document.getElementById('fl-btn');
@@ -4130,8 +4127,8 @@ var _onbCallback = null;
 var _onbSlides = [
   {
     emoji: '⚡',
-    title: 'Lance ton Entraînement du jour !',
-    body: 'Chaque jour, un <strong>entraînement personnalisé</strong> t\'attend — des exercices ciblés sur tes vrais points faibles. Commence maintenant, ça prend 5 minutes.',
+    title: 'Lance ton Boost du jour !',
+    body: 'Chaque jour, un <strong>boost personnalisé</strong> t\'attend — des exercices ciblés sur tes vrais points faibles. Commence maintenant, ça prend 5 minutes.',
     color: 'linear-gradient(135deg,#0F172A 0%,#1E40AF 100%)'
   }
 ];
@@ -4145,10 +4142,10 @@ function showOnboarding(cb) {
   _onbCallback = cb || null;
   // Adapter slide 3 selon objectif
   var _s3Map = {
-    lacunes:         { emoji: '⚡', title: 'Ton Entraînement du jour t\'attend !',      body: 'Exercices ciblés sur tes vraies lacunes — pas celles de ta classe, les tiennes. 5 exos, 10 min. C\'est parti !' },
-    chapitre_jour:   { emoji: '📅', title: 'Un chapitre par jour',               body: 'Ton Entraînement du jour est prêt. Ensuite, tu avances dans tes chapitres à ton rythme. Régulier > intense.' },
-    brevet:          { emoji: '📝', title: 'La prépa brevet commence maintenant', body: 'Ton entraînement cible les chapitres clés du brevet. Les exercices style examen arrivent au fur et à mesure.' },
-    toutes_matieres: { emoji: '🚀', title: 'Tout le programme est là',           body: 'Commence par ton Entraînement du jour, puis explore librement les 54 chapitres disponibles.' }
+    lacunes:         { emoji: '⚡', title: 'Ton Boost du jour t\'attend !',      body: 'Exercices ciblés sur tes vraies lacunes — pas celles de ta classe, les tiennes. 5 exos, 10 min. C\'est parti !' },
+    chapitre_jour:   { emoji: '📅', title: 'Un chapitre par jour',               body: 'Ton Boost du jour est prêt. Ensuite, tu avances dans tes chapitres à ton rythme. Régulier > intense.' },
+    brevet:          { emoji: '📝', title: 'La prépa brevet commence maintenant', body: 'Ton boost cible les chapitres clés du brevet. Les exercices style examen arrivent au fur et à mesure.' },
+    toutes_matieres: { emoji: '🚀', title: 'Tout le programme est là',           body: 'Commence par ton Boost du jour, puis explore librement les 54 chapitres disponibles.' }
   };
   var _s3 = _s3Map[_flowObjectif] || _s3Map['lacunes'];
   _onbSlides[0] = { emoji: _s3.emoji, title: _s3.title, body: _s3.body, color: 'linear-gradient(135deg,#0F172A 0%,#1E40AF 100%)' };
@@ -4800,7 +4797,7 @@ function initApp(d, skipRender) {
   var _stkMileDup = (S.stk === 3 && !_milestoneShown['streak_3']) || (S.stk === 7 && !_milestoneShown['streak_7']);
   if (S.stk >= 2 && !S.boostConsumed && !_stkMileDup) {
     setTimeout(function() {
-      showT('🔥 Streak de ' + S.stk + ' jour' + (S.stk > 1 ? 's' : '') + ' — fais ton entraînement pour le garder !', 5000, '🔥');
+      showT('🔥 Streak de ' + S.stk + ' jour' + (S.stk > 1 ? 's' : '') + ' — fais ton boost pour le garder !', 5000, '🔥');
     }, 2000);
   }
 
@@ -5043,7 +5040,7 @@ function updH() {
 function loadBoost() {
   if (!S.boost) return;
   LVL[S.niv].cats["BOOST"]  = S.boost.exos.map(function(e,i){ return Object.assign({},e,{oC:'BOOST',oI:i}); });
-  LVL[S.niv].names["BOOST"] = "Mon entraînement du jour";
+  LVL[S.niv].names["BOOST"] = "Mon boost du jour";
   LVL[S.niv].icons["BOOST"] = "⚡";
   S.insights["BOOST"]        = S.boost.insight;
 }
@@ -5060,7 +5057,7 @@ function _checkMilestone() {
   var ms = null;
   // Priorité : un seul milestone par session d'exercice
   if (!_milestoneShown['first_boost'] && S.boostConsumed) {
-    ms = { id:'first_boost', msg:'Premier entraînement terminé — c\'est le plus dur', ic:'💪' };
+    ms = { id:'first_boost', msg:'Premier boost terminé — c\'est le plus dur', ic:'💪' };
   } else if (!_milestoneShown['streak_3'] && S.stk === 3) {
     ms = { id:'streak_3', msg:'3 jours d\'affilée — l\'habitude se crée !', ic:'🔥' };
   } else if (!_milestoneShown['streak_7'] && S.stk === 7) {
@@ -5684,6 +5681,18 @@ async function togCat(cat) {
   if (!S.exp[cat]) { delete S.retroSess[cat]; S.retroBoost = null; if (cat === 'BOOST') delete S.retroExoIdx['BOOST']; }
   // Boost consommé : reprendre la révision depuis le Q1
   if (!was && cat === 'BOOST' && S.boostConsumed) S.qv['BOOST'] = 0;
+  // Reprise : si on ouvre un chapitre, positionner sur la première question non résolue ET non différée
+  if (!was && S.exp[cat] && LVL[S.niv] && LVL[S.niv].cats[cat] && cat !== 'BOOST' && cat !== 'CALIBRAGE' && cat !== 'BREVET') {
+    var _exsR = LVL[S.niv].cats[cat];
+    var _defR = S.deferred[cat] || {};
+    var _resumeIdx = 0;
+    for (var _rk = 0; _rk < _exsR.length; _rk++) {
+      var _rr = res2(cat, _rk);
+      var _rid = S.niv+'-'+_rr.rC+'-'+_rr.rI;
+      if (!S.res[_rid] && !_defR[_rk]) { _resumeIdx = _rk; break; }
+    }
+    S.qv[cat] = _resumeIdx;
+  }
   if (S.isNew[cat]) S.isNew[cat] = false;
   if (S.exp[cat] && S.motProfChap[cat]) S._motProfScreen = cat;
   render();
@@ -5729,14 +5738,7 @@ function _catToBloc(cat) {
   return -1;
 }
 
-function togDone() {
-  _doneSecOpen = !_doneSecOpen;
-  render();
-  if (_doneSecOpen) setTimeout(function() {
-    var el = document.querySelector('[data-done-header]');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
-}
+// togDone supprimé — les chapitres terminés sont désormais inline dans leur bloc thématique
 
 function dismissPrereq(cat) {
   S.prereqBanner[cat] = null;
@@ -5783,14 +5785,17 @@ function goEx(cat, i) {
 function nextEx(cat) {
   var exs = LVL[S.niv].cats[cat];
   var def = S.deferred[cat] || {};
-  // 1. Chercher le prochain non-répondu ET non-différé
-  for (var i = 0; i < exs.length; i++) {
+  var n = exs.length;
+  var cur = (typeof S.qv[cat] === 'number') ? S.qv[cat] : 0;
+  // 1. Scan forward wrap-around depuis cur+1 : prochain non-répondu ET non-différé
+  for (var k = 1; k <= n; k++) {
+    var i = (cur + k) % n;
     var r = res2(cat, i);
     var id = S.niv+'-'+r.rC+'-'+r.rI;
     if (!S.res[id] && !def[i]) { goEx(cat, i); return; }
   }
-  // 2. Tous faits ou différés → reprendre le premier différé
-  for (var j = 0; j < exs.length; j++) {
+  // 2. Tous faits ou différés → reprendre le premier différé (ordre chapitre)
+  for (var j = 0; j < n; j++) {
     if (def[j]) { delete def[j]; try { localStorage.setItem('mx_deferred_' + S.prof.code, JSON.stringify(S.deferred)); } catch(e) {} goEx(cat, j); return; }
   }
   goEx(cat, 0);
@@ -5994,7 +5999,7 @@ function rMastery() {
     var _daysSince = Math.floor((new Date(tod()) - new Date(_me2.last)) / 86400000);
     var _pName = S.prof ? S.prof.name : '';
     if (_daysSince === 0 && S.stk >= 2) _retMsg = 'Jour ' + S.stk + ' — continue comme ça' + (_pName ? ' ' + _pName : '') + ' !';
-    else if (_daysSince === 0) _retMsg = 'Content de te revoir' + (_pName ? ' ' + _pName : '') + ' — ton entraînement t\'attend';
+    else if (_daysSince === 0) _retMsg = 'Content de te revoir' + (_pName ? ' ' + _pName : '') + ' — ton boost t\'attend';
     else if (_daysSince <= 2) _retMsg = (_daysSince === 1 ? '1 jour' : _daysSince + ' jours') + ' sans pratiquer — reprends en douceur';
     else if (_daysSince <= 7) _retMsg = 'Tu nous as manqué ! Reprends là où tu en étais';
     else if (_daysSince > 7) _retMsg = 'Ça fait un moment — 5 exercices suffisent pour reprendre';
@@ -7265,9 +7270,9 @@ function renderArchiveSection(cat, exs) {
   var html = '<div class="mx-4 mb-4" onclick="event.stopPropagation()" style="position:relative;z-index:3">';
 
   if (isBoost) {
-    // ── Entraînement du jour terminé ─────────────────────────────
+    // ── Boost du jour terminé ─────────────────────────────
     html += '<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 text-center mb-3">';
-    html += '<div class="text-xs font-black text-emerald-700 mb-0.5">Entraînement du jour : fait ✅</div>';
+    html += '<div class="text-xs font-black text-emerald-700 mb-0.5">Boost du jour : fait ✅</div>';
     html += '<div class="text-[10px] font-medium text-emerald-600">Tes prochains exos sur mesure arrivent demain matin 🔥</div>';
     html += '</div>';
     // ── Build unified boost list: [0]=today, [1..N]=past boosts ──
@@ -7856,9 +7861,9 @@ function renderDiagInsight() {
     '</div>' +
     '<div class="space-y-2">' + chapHtml + '</div>' +
     '<div class="bg-indigo-50 border border-indigo-200 rounded-2xl px-4 py-3 text-sm font-semibold text-indigo-700 text-center">' +
-      '⚡ Ton premier entraînement du jour est prêt — 5 exercices ciblés sur tes points faibles' +
+      '⚡ Ton premier boost du jour est prêt — 5 exercices ciblés sur tes points faibles' +
     '</div>' +
-    '<button onclick="dismissDiagInsight();togCat(\'BOOST\')" class="btn btn-ac btn-fw py-4 text-base boost-shimmer">Commencer mon entraînement du jour ⚡</button>' +
+    '<button onclick="dismissDiagInsight();togCat(\'BOOST\')" class="btn btn-ac btn-fw py-4 text-base boost-shimmer">Commencer mon boost du jour ⚡</button>' +
     '</div>';
 }
 
@@ -7965,7 +7970,7 @@ function _showSessionFeedback(source, ref, callback) {
   if (S.prof && S.prof.isAdmin) { if (callback) callback(); return; }
 
   var labels = {
-    boost:    'Comment s\'est passé ton Entraînement du jour ?',
+    boost:    'Comment s\'est passé ton Boost du jour ?',
     brevet:   'Comment s\'est passé ce Brevet Blanc ?',
     chapitre: 'Comment s\'est passé ce chapitre ?'
   };
@@ -8040,8 +8045,8 @@ function _copyParentMessage(code, type) {
   var subject = '', body = '';
 
   if (type === 'parent-premier-boost') {
-    subject = prenom + ' a terminé son premier entraînement Matheux 🎉';
-    body = 'Bonjour,\n\n' + prenom + ' vient de terminer son premier Entraînement du jour sur Matheux.\n\n' +
+    subject = prenom + ' a terminé son premier boost Matheux 🎉';
+    body = 'Bonjour,\n\n' + prenom + ' vient de terminer son premier Boost du jour sur Matheux.\n\n' +
       'C\'est une excellente nouvelle — le plus dur dans un nouvel outil, c\'est de commencer. ' + prenom + ' l\'a fait.\n\n' +
       'Les prochains jours sont importants : si le rythme s\'installe cette semaine, les résultats suivent. ' +
       'Je suis les exercices en direct et j\'ajuste le contenu selon ce que je vois.\n\n' +
@@ -8055,7 +8060,7 @@ function _copyParentMessage(code, type) {
   } else if (type === 'parent-relance') {
     subject = 'Un petit point sur ' + prenom + ' 💬';
     body = 'Bonjour,\n\n' +
-      'Je voulais prendre des nouvelles de ' + prenom + ' — je vois qu\'il/elle n\'a pas fait d\'entraînement depuis quelques jours.\n\n' +
+      'Je voulais prendre des nouvelles de ' + prenom + ' — je vois qu\'il/elle n\'a pas fait de boost depuis quelques jours.\n\n' +
       'Pas d\'inquiétude — ça arrive à tout le monde de décrocher quelques jours. ' +
       'Si quelque chose bloque (les exercices trop difficiles, manque de motivation, planning chargé), ' +
       'dites-le moi — je peux adapter.\n\n' +
@@ -8143,7 +8148,7 @@ window._simulateNextDay = function() {
 function renderMotProf() {
   var isBoost = S._motProfScreen === 'boost';
   var msg     = isBoost ? S.motProfBoost : (S.motProfChap[S._motProfScreen] || '');
-  var label   = isBoost ? '⚡ Ton entraînement du jour' : '📚 ' + (S._motProfScreen || '').replace(/_/g,' ');
+  var label   = isBoost ? '⚡ Ton boost du jour' : '📚 ' + (S._motProfScreen || '').replace(/_/g,' ');
   var c = document.getElementById('main-content');
   if (!c) return;
   c.innerHTML =
@@ -8323,7 +8328,7 @@ function render() {
   if (S.boostPreping) {
     html += '<div class="rounded-2xl p-5 flex items-center gap-4 shadow-lg mb-4" style="background:linear-gradient(135deg,#0F172A,#1E40AF)">' +
       '<div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0"><div class="ld"></div></div>' +
-      '<div><div class="syne text-base font-black text-white mb-0.5">Mon entraînement du jour en cours...</div>' +
+      '<div><div class="syne text-base font-black text-white mb-0.5">Mon boost du jour en cours...</div>' +
       '<p class="text-indigo-200 text-sm">Analyse en cours — tes exercices arrivent</p></div></div>';
   }
 
@@ -8350,7 +8355,7 @@ function render() {
       var _bSt = _chapStats['BOOST'];
       var _bPct = _bSt ? Math.round((_bSt.done / _bSt.tot) * 100) : 0;
       _hero = { action: 'handleBoost()', emoji: '⚡',
-        title: _bSt && _bSt.done > 0 ? 'Continue ton entraînement' : 'Ton entraînement du jour',
+        title: _bSt && _bSt.done > 0 ? 'Continue ton boost' : 'Ton boost du jour',
         sub: _bSt && _bSt.done > 0 ? (_bSt.done + '/' + _bSt.tot + ' — encore ' + (_bSt.tot - _bSt.done) + ' exo' + ((_bSt.tot - _bSt.done) > 1 ? 's' : '')) : 'Exercices ciblés sur tes points à renforcer',
         pct: _bPct, _remain: _bSt ? (_bSt.tot - _bSt.done) : 5 };
     }
@@ -8482,7 +8487,7 @@ function render() {
         '<div class="flex items-center gap-3 mb-3">' +
         '<div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-lg flex-shrink-0">✅</div>' +
         '<div class="flex-1 min-w-0">' +
-        '<div class="syne text-sm font-black text-white">Entraînement du jour terminé' + (_heroName ? ', ' + _heroName : '') + ' !</div>' +
+        '<div class="syne text-sm font-black text-white">Boost du jour terminé' + (_heroName ? ', ' + _heroName : '') + ' !</div>' +
         '<p class="text-emerald-200 text-xs font-medium">Tes prochains exos sur mesure arrivent demain matin 🔥</p>' +
         '</div></div>' +
         '<div class="flex gap-2">' +
@@ -8493,13 +8498,12 @@ function render() {
     }
   }
 
-  var _doneHtml = '';
   var _doneCount = 0;
-  var _doneSecCount = 0;
   var _carouselHtml = '';
   var _carouselCount = 0;
   var _expandedPriorityHtml = '';
-  var _blocHtmls = ['', '', '', ''];
+  // Listes par bloc thématique : {k: 0=en cours, 1=terminé, 2=à découvrir, h: HTML}
+  var _blocLists = [[], [], [], []];
   var _blocCounts = [0, 0, 0, 0];
 
   html += '<!--CAROUSEL_SLOT-->';
@@ -8536,7 +8540,7 @@ function render() {
       }
       html += '<div data-cat="'+cat+'" onclick="togCat(\''+cat+'\')" class="rounded-2xl border border-emerald-200 flex items-center gap-3 py-3 px-4 cursor-pointer select-none" style="background:#f0fdf4;position:relative;z-index:2">';
       html += '<div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-base flex-shrink-0">'+(isBoost?'⚡':(LVL[S.niv].icons[cat]||'📘'))+'</div>';
-      html += '<div class="flex-1 min-w-0"><div class="syne font-black text-sm text-slate-800 truncate" style="font-weight:800">'+(isBoost?'Mon entraînement ✓':(LVL[S.niv].names[cat]||cat))+'</div>';
+      html += '<div class="flex-1 min-w-0"><div class="syne font-black text-sm text-slate-800 truncate" style="font-weight:800">'+(isBoost?'Boost ✓':(LVL[S.niv].names[cat]||cat))+'</div>';
       html += '<div class="text-[9px] font-medium text-emerald-600">'+(isBoost?'Tes prochains exos arrivent demain matin 🔥':'Ton prof prépare la suite sur mesure 🎯')+'</div>';
       html += '</div>';
       html += '<div class="flex items-center gap-1.5 flex-shrink-0">';
@@ -8555,10 +8559,14 @@ function render() {
       }
       html += '</div>';
       if (!isBoost) {
-        _doneSecCount++;
+        _doneCount++;
         var _doneCard = html.substring(_htmlBefore);
         html = html.substring(0, _htmlBefore);
-        _doneHtml += _doneCard;
+        var _biDone = _catToBloc(cat);
+        if (_biDone >= 0) {
+          _blocLists[_biDone].push({ k: 1, h: _doneCard });
+          _blocCounts[_biDone]++;
+        }
       }
       return;
     }
@@ -8769,7 +8777,9 @@ function render() {
       if (_bi >= 0) {
         var _cardHtml = html.substring(_htmlBefore);
         html = html.substring(0, _htmlBefore);
-        _blocHtmls[_bi] += _cardHtml;
+        // Tri : en cours (0) > à découvrir (2). Done a déjà été pushé plus haut (k=1).
+        var _sortK = (done > 0 && !comp) ? 0 : 2;
+        _blocLists[_bi].push({ k: _sortK, h: _cardHtml });
         _blocCounts[_bi]++;
       }
     }
@@ -8791,30 +8801,20 @@ function render() {
     html = html.replace('<!--CAROUSEL_SLOT-->', _expandedPriorityHtml);
   }
 
-  // ── Sections thématiques ──────────────────────────────
+  // ── Sections thématiques (tri interne : en cours > terminés > à découvrir) ──
   CHAP_BLOCS.forEach(function(bloc, i) {
-    if (_blocHtmls[i]) {
-      html += '<div class="mt-5 mb-2">' +
-        '<div class="flex items-center gap-2 mb-2.5 px-1">' +
-        '<span class="text-base">' + bloc.icon + '</span>' +
-        '<span class="text-xs font-black text-slate-400 uppercase tracking-widest">' + bloc.nom + '</span>' +
-        '<span class="text-[10px] bg-slate-100 text-slate-400 font-bold px-1.5 py-0.5 rounded-full">' + _blocCounts[i] + '</span>' +
-        '</div>' + _blocHtmls[i] + '</div>';
-    }
+    var items = _blocLists[i];
+    if (!items || !items.length) return;
+    items.sort(function(a, b) { return a.k - b.k; });
+    var _blocInner = '';
+    for (var _bk = 0; _bk < items.length; _bk++) _blocInner += items[_bk].h;
+    html += '<div class="mt-5 mb-2">' +
+      '<div class="flex items-center gap-2 mb-2.5 px-1">' +
+      '<span class="text-base">' + bloc.icon + '</span>' +
+      '<span class="text-xs font-black text-slate-400 uppercase tracking-widest">' + bloc.nom + '</span>' +
+      '<span class="text-[10px] bg-slate-100 text-slate-400 font-bold px-1.5 py-0.5 rounded-full">' + _blocCounts[i] + '</span>' +
+      '</div>' + _blocInner + '</div>';
   });
-
-  // ── Terminés (replié par défaut) ──────────────────────
-  if (_doneSecCount > 0) {
-    html += '<div class="mt-6">' +
-      '<div data-done-header onclick="togDone()" class="flex items-center gap-2 mb-2.5 px-1 cursor-pointer select-none">' +
-      '<span class="text-base">✅</span>' +
-      '<span class="text-xs font-black text-slate-400 uppercase tracking-widest">Terminés</span>' +
-      '<span class="text-[10px] bg-emerald-100 text-emerald-600 font-bold px-1.5 py-0.5 rounded-full">' + _doneSecCount + '</span>' +
-      '<span class="text-slate-300 text-lg font-light" style="margin-left:auto;transition:transform .2s;transform:rotate(' + (_doneSecOpen ? 90 : 0) + 'deg)">›</span>' +
-      '</div>' +
-      (_doneSecOpen ? _doneHtml : '') +
-      '</div>';
-  }
 
   c.innerHTML = html || '<div class="text-center text-slate-400 font-semibold py-12 text-sm">Aucun exercice disponible pour ce niveau.</div>';
 
@@ -8957,7 +8957,7 @@ function _showTeasingModal() {
   html += '<div style="background:#fff;border-radius:1.5rem;padding:2rem 1.5rem;max-width:340px;width:100%;text-align:center;animation:slideUp .4s ease">';
   html += '<div style="font-size:3rem;margin-bottom:1rem">🔥</div>';
   html += '<div class="syne" style="font-weight:800;font-size:1.15rem;color:#0f172a;margin-bottom:.75rem">Ton prof a préparé<br>quelque chose pour toi</div>';
-  html += '<p style="color:#64748b;font-size:.9rem;line-height:1.6;margin-bottom:1.5rem">Ton prochain entraînement personnalisé arrive <strong>demain matin</strong>. En attendant, continue tes exercices !</p>';
+  html += '<p style="color:#64748b;font-size:.9rem;line-height:1.6;margin-bottom:1.5rem">Ton prochain boost personnalisé arrive <strong>demain matin</strong>. En attendant, continue tes exercices !</p>';
   html += '<button onclick="_closeTeasingModal()" class="syne" style="width:100%;padding:.85rem;border-radius:1rem;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;font-weight:800;font-size:.95rem;border:none;cursor:pointer">J\'ai hâte ! 🚀</button>';
   html += '</div></div>';
   var old = document.getElementById('teasing-modal');
@@ -9481,7 +9481,7 @@ function _updateDraftExoBar() {
     bar.classList.add('hidden'); return;
   }
   var exo = LVL[S.niv].cats[cat][idx];
-  var label = cat === 'BOOST' ? 'Entraînement du jour' : cat.replace(/_/g, ' ');
+  var label = cat === 'BOOST' ? 'Boost du jour' : cat.replace(/_/g, ' ');
   bar.classList.remove('hidden');
   bar.innerHTML = '<div class="exo-q-label">📐 ' + label + ' — exo ' + (idx + 1) + '</div>' +
     '<div class="exo-q mc">' + fmtL(exo.q) + '</div>';
@@ -10515,7 +10515,7 @@ function copyWelcomeEmail(code) {
     'Ce qui attend ' + prenom + ' :\n\n' +
     '🎯 Un diagnostic personnalisé\n' +
     'Pas une liste de tout le programme — uniquement ce qui mérite d\'être retravaillé.\n\n' +
-    '⚡ Un Entraînement du jour\n' +
+    '⚡ Un Boost du jour\n' +
     '5 exercices ciblés, chaque matin. 10 minutes suffisent. C\'est la clé.\n\n' +
     '📈 Une progression visible\n' +
     'Je suis les résultats en direct. Je vous envoie un point à J+3 et J+7.\n\n' +
@@ -10529,7 +10529,7 @@ function copyWelcomeEmail(code) {
       return st.objectif && _objIntros[st.objectif] ? '\n' + _objIntros[st.objectif] + '\n\n' : '';
     })() +
     '→ Démarrer maintenant : https://matheux.fr\n\n' +
-    'Votre enfant a accès à 1 chapitre gratuit + un entraînement quotidien. Pour débloquer tout le programme jusqu\'au Brevet, une seule option simple.\n\n' +
+    'Votre enfant a accès à 1 chapitre gratuit + un boost quotidien. Pour débloquer tout le programme jusqu\'au Brevet, une seule option simple.\n\n' +
     'Des questions ? Répondez directement — je lis chaque message.\n\n' +
     'Nicolas\n' +
     'Fondateur · Matheux';
@@ -10583,7 +10583,7 @@ function copySequenceEmail(code, type) {
       'J\'ai pu voir ses premières réponses. Ce que je vois à ce stade est courant :\n' +
       'certaines notions semblent solides, d\'autres moins — c\'est exactement pour ça que le diagnostic existe.\n\n' +
       'Ce qui fait la différence à ce stade : la régularité.\n' +
-      'Pas besoin d\'heures de travail. L\'entraînement du jour — 5 exercices, 10 minutes — suffit à créer l\'habitude.\n\n' +
+      'Pas besoin d\'heures de travail. L\'boost du jour — 5 exercices, 10 minutes — suffit à créer l\'habitude.\n\n' +
       'Si ' + prenom + ' n\'a pas encore pris le rythme, c\'est normal. Il reste 4 jours d\'essai — c\'est amplement assez pour voir des résultats concrets.\n\n' +
       'Un retour sur comment ça se passe ? Répondez à cet email — je suis disponible.\n\n' +
       'Nicolas\n' +

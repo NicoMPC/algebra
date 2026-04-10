@@ -295,24 +295,31 @@ def validate_json_file(filepath):
 
 
 def validate_from_sheet(tab, niveau, categorie):
-    """Valide des exercices directement depuis le Google Sheet."""
-    from sheets import sh
-    rows = sh.read(tab)
-    target = None
-    for r in rows:
-        if r.get('Niveau', '').upper() == niveau.upper() and r.get('Categorie', '') == categorie:
-            target = r
-            break
-    if not target:
-        print(f"❌ Pas trouvé : {niveau}/{categorie} dans {tab}")
+    """Valide des exercices depuis Supabase (anciennement Google Sheet)."""
+    from supabase_helper import sb
+    # Mapping ancien nom de tab → table Supabase
+    TABLE_MAP = {
+        'Curriculum_Officiel': 'curriculum',
+        'Curriculum': 'curriculum',
+        'DiagnosticExos': 'diagnostic_exos',
+        'BoostExos': 'daily_boosts',
+    }
+    table = TABLE_MAP.get(tab, tab.lower())
+    rows = sb.read(table, filters={'niveau': f'eq.{niveau.upper()}', 'categorie': f'eq.{categorie}'})
+    if not rows:
+        print(f"❌ Pas trouvé : {niveau}/{categorie} dans {table}")
         return False
 
-    exos_json = target.get('ExosJSON', '')
-    try:
-        exos = json.loads(exos_json)
-    except json.JSONDecodeError as e:
-        print(f"❌ JSON invalide dans {tab}/{niveau}/{categorie} : {e}")
-        return False
+    target = rows[0]
+    exos_json = target.get('exos_json', target.get('ExosJSON', ''))
+    if isinstance(exos_json, list):
+        exos = exos_json
+    else:
+        try:
+            exos = json.loads(exos_json)
+        except (json.JSONDecodeError, TypeError) as e:
+            print(f"❌ JSON invalide dans {table}/{niveau}/{categorie} : {e}")
+            return False
 
     errors = []
     warnings = []
@@ -356,9 +363,9 @@ if __name__ == '__main__':
         print("  python3 validate_exos.py --sheet TAB NIVEAU CATEGORIE")
         sys.exit(1)
 
-    if sys.argv[1] == '--sheet':
+    if sys.argv[1] in ('--sheet', '--db', '--supabase'):
         if len(sys.argv) < 5:
-            print("Usage : python3 validate_exos.py --sheet TAB NIVEAU CATEGORIE")
+            print("Usage : python3 validate_exos.py --db TAB NIVEAU CATEGORIE")
             sys.exit(1)
         ok = validate_from_sheet(sys.argv[2], sys.argv[3], sys.argv[4])
     else:

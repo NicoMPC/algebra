@@ -54,7 +54,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 - ⚠️ `profiles.code` = **clé primaire métier** — si elle disparaît, tout casse (même logique qu'avant)
 - Google Sheets conservé en backup/référence (plus écrit en prod)
 
-### Google Sheets (LEGACY — emails uniquement)
+### Google Sheets (LEGACY — backup uniquement, plus d'emails)
 - `backend.js` (~5300L) conservé pour GAS GmailApp (envoi d'emails). Plus aucune action métier.
 - Index de colonnes **hardcodés** dans backend.js — ne toucher que pour les emails
 - ⚠️ `Users.Code` (col A) = **clé primaire** — encore utilisé par GAS pour les emails
@@ -120,7 +120,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | T2 | **Paiement unique** | One-time (prix à confirmer), accès jusqu'au Brevet 2026 (premium_end = 2026-06-30) |
 | T3 | **Badge freemium** | "🔓 1 chapitre gratuit" cliquable → overlay déblocage |
 | T4 | **Chapitres bloqués** | Visibles mais 🔒 grisés. `togCat()` + `openFromProgress()` → overlay. `saveScore` backend rejette |
-| T5 | **Emails** | J+0 auto uniquement. Le reste est manuel pour l'instant |
+| T5 | **Emails** | Séquence auto via Resend (no-reply@matheux.fr) : J+0 welcome, J+1 boost prêt, J+3 check-in, J+7 bilan+conversion, J+14 nudge conversion. Cron `cron_send_emails` 1×/jour. J+7/J+14 skip si premium. Logs dans `email_logs` (dédup + unsub) |
 | T6 | **Désinscription emails** | `unsubscribe.html` + action GAS `unsubscribe` → log UNSUB dans onglet Emails. Check `_isUnsubscribed()` avant chaque envoi marketing |
 
 ### 3.4 Messages — invariants figés
@@ -205,7 +205,7 @@ cd "/home/nicolas/Bureau/algebra live/algebra"
 # API Supabase (Edge Function)
 npx supabase functions deploy api --project-ref xlfzhcanzmqqlxtavzrd --no-verify-jwt
 
-# Backend GAS (emails uniquement)
+# Backend GAS (LEGACY — plus d'envoi email)
 clasp push --force
 clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF --description "desc"
 ./deploy.sh "desc"  # raccourci
@@ -235,14 +235,16 @@ git add app.html && git commit -m "feat: ..." && git push origin main
 
 ### Tests
 ```bash
-python3 test_full_v2.py          # Suite complète — 66/72 (92%) — 6 fails = gate J+1 attendu
-python3 test_coherence_boost.py # Cohérence CALIBRAGE — 14/14
-python3 test_simulation_40.py   # Simulation 40 élèves × 15 jours
-python3 sim_7days_messages.py   # Simulation messages — 0 incohérence
-python3 validate_exos.py        # Gate qualité exercices
-python3 check_students.py       # Health check données élèves
+python3 check_students.py       # Health check données élèves (Supabase) — doit être ✅
+python3 validate_exos.py f.json # Gate qualité exercices (JSON local)
+python3 validate_exos.py --db curriculum 3EME Fractions  # Gate qualité (depuis Supabase)
+python3 verify_hints.py         # Audit indices → docs/audit-hints-*.md
+python3 audit_exos.py           # Audit exercices → docs/audit-exos-*.md
+python3 test_full_v2.py         # Suite complète — 61/73 (84%)
+python3 create_test_profiles.py # Crée 4 profils test dans Supabase
 ```
-> ⚠️ `test_full_v2.py` : 6 fails attendus = gate J+1 (publish + login même jour → l'élève ne reçoit rien, c'est le comportement voulu par G16)
+> ⚠️ `test_full_v2.py` : certains fails = gate J+1 attendu + scénarios qui testent des actions GAS noop.
+> Tous les scripts utilisent `supabase_helper.py` (plus aucun `from sheets import`).
 
 ### Tokens
 ⚠️ Toujours estimer avant génération massive → présenter options → attendre validation.
@@ -279,18 +281,21 @@ python3 check_students.py       # Health check données élèves
 | **API principale** | `https://xlfzhcanzmqqlxtavzrd.supabase.co/functions/v1/api` |
 | **Supabase project** | `xlfzhcanzmqqlxtavzrd` (matheux-prod, West EU Paris) |
 | **Supabase dashboard** | `https://supabase.com/dashboard/project/xlfzhcanzmqqlxtavzrd` |
-| GAS URL (emails only) | `https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec` |
+| GAS URL (legacy, plus d'emails) | `https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec` |
+| **Resend** | Dashboard : `https://resend.com` · Domaine : `matheux.fr` (vérifié, EU) · From : `no-reply@matheux.fr` · DNS : IONOS |
 | GAS Deployment ID | `AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF` |
 | Sheet ID (legacy) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
 | GitHub | `https://github.com/MatheuxApp/algebra` (privé) |
 | Stripe PROD | `https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02` |
 
-| Code | Prénom | Niveau | Email |
-|---|---|---|---|
-| AUG001 | Auguste | 1ERE | augustecapronm@icloud.com |
-| PR3CMB | Nicolas | 4EME | nico@nico.fr |
-| 3M4ZAB | Charlie | 3EME | charlieboitel6@gmail.com |
-| HMD493 | Admin | — | (admin) |
+| Code | Prénom | Niveau | Email | Notes |
+|---|---|---|---|---|
+| KN6CFG | Nicolas | 3EME | nicolas.follezou@hotmail.fr | **Admin** (is_admin=true) |
+| QETKY4 | Leo | 4EME | leoiozzia2012@gmail.com | Premier vrai élève Supabase |
+| TS1INE | Inès | 3EME | ines@test.matheux.fr | Test (20% score) |
+| TS2HUG | Hugo | 3EME | hugo@test.matheux.fr | Test (45% score) |
+| TS3JAD | Jade | 3EME | jade@test.matheux.fr | Test (75% score) |
+| TS4ADA | Adam | 3EME | adam@test.matheux.fr | Test (90% score) |
 
 ---
 
@@ -333,14 +338,17 @@ Quand un problème est signalé, **lire le playbook du domaine concerné** avant
 
 | Script | Description |
 |---|---|
-| ~~`sheets.py`~~ | ~~Bibliothèque Google Sheets API~~ — supprimé 02/04 (legacy) |
-| ~~`rebuild_sheet.py`~~ | ~~Reconstruit Suivi + Historique~~ — supprimé 02/04 (legacy) |
-| `test_full_v2.py` | Suite de tests complète (74/74) |
-| `validate_exos.py` | Gate qualité exercices — valide JSON avant injection |
-| `audit_exos.py` | Audit qualité exercices |
+| `supabase_helper.py` | Client REST Supabase (remplace sheets.py). `from supabase_helper import sb, api_call` |
+| `test_full_v2.py` | Suite de tests complète (10 scénarios, 73 checks) |
+| `validate_exos.py` | Gate qualité exercices — `validate_exos.py exos.json` ou `--db TAB NIVEAU CAT` |
+| `audit_exos.py` | Audit qualité exercices (Supabase) → docs/audit-exos-*.md |
+| `verify_hints.py` | Audit indices exercices (Supabase) → docs/audit-hints-*.md |
+| `check_students.py` | Health check données élèves (Supabase) |
+| `create_test_profiles.py` | Crée 4 profils test (Auth + REST) : TS1INE, TS2HUG, TS3JAD, TS4ADA |
+| `test_pipeline_auto.py` | Simulation pipeline admin-auto (Supabase) |
+| `test_publishdate_proof.py` | Preuve mécanisme J+1 (Supabase) |
 | `audit_latex.py` | Audit rendu LaTeX/KaTeX |
 | `fix_latex.py` | Fix automatique formules LaTeX |
-| `check_students.py` | Health check données élèves |
 | `deploy.sh` | Push + deploy GAS en une commande |
 
 ---

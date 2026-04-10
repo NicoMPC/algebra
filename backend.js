@@ -1296,7 +1296,7 @@ function generateDailyBoost(p) {
         var source = fresh.length >= 1 ? fresh : exos;
         source.forEach(function(ex) { pool.push(Object.assign({}, ex, { _cat: cat })); });
       });
-      insight = 'Super journée ! Voici un entraînement varié avec des exercices que tu n\'as pas encore faits.';
+      insight = 'Super journée ! Voici un boost varié avec des exercices que tu n\'as pas encore faits.';
     }
   }
 
@@ -4607,7 +4607,7 @@ function sendMarketingSequence(email, prenom, day, objectif) {
         // ── Encart demain
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;"><tr>' +
         '<td style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:8px;padding:16px 20px;text-align:center;">' +
-        '<p style="color:#1E40AF;font-size:15px;font-weight:800;margin:0;">D\u00e8s demain matin, son premier entra\u00eenement sur mesure l\u2019attend.</p>' +
+        '<p style="color:#1E40AF;font-size:15px;font-weight:800;margin:0;">D\u00e8s demain matin, son premier boost sur mesure l\u2019attend.</p>' +
         '</td></tr></table>' +
         // ── Bilan hebdo
         '<p style="color:#374151;font-size:15px;line-height:1.7;margin:0 0 28px;">Chaque semaine, vous recevrez un <strong>bilan clair</strong> : ce qui est acquis, ce qui bloque, et ce qui progresse.</p>' +
@@ -4622,7 +4622,7 @@ function sendMarketingSequence(email, prenom, day, objectif) {
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td style="border-top:1px solid #e5e7eb;padding-top:20px;">' +
         '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">J\u2019ai cr\u00e9\u00e9 Matheux apr\u00e8s des ann\u00e9es \u00e0 donner des cours de maths. Le m\u00eame constat revenait \u00e0 chaque fois : les \u00e9l\u00e8ves comprennent en cours, mais ne s\u2019entra\u00eenent pas assez entre les s\u00e9ances.</p>' +
         '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">Le probl\u00e8me n\u2019est presque jamais la compr\u00e9hension. <strong>C\u2019est la pratique.</strong></p>' +
-        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 16px;">Matheux corrige \u00e7a : un entra\u00eenement quotidien, court et cibl\u00e9, qui s\u2019adapte \u00e0 chaque \u00e9l\u00e8ve.</p>' +
+        '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 16px;">Matheux corrige \u00e7a : un boost quotidien, court et cibl\u00e9, qui s\u2019adapte \u00e0 chaque \u00e9l\u00e8ve.</p>' +
         '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 4px;">Une question ? <strong>R\u00e9pondez \u00e0 cet email</strong>, je lis tout personnellement.</p>' +
         '</td></tr></table>' +
         // ── Signature

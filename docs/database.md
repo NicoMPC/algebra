@@ -54,6 +54,7 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 | **cours** | Cours | `niveau`, `categorie`, `section_10`, `section_20`, `publish_10`, `publish_20`, `date_maj` | niveau+categorie (unique) |
 | **suivi** | 👁 Suivi | `code` (unique), `chap1..chap4` (JSONB), `boost` (JSONB), `action_nicolas` | code |
 | **emails** | 📧 Emails | `email`, `type`, `status` (default 'envoyé'), `date` | email |
+| **email_logs** | — (nouveau) | `email`, `prenom`, `type` (J+0/J+1/J+3/J+7/J+14/UNSUB), `statut`, `details`, `created_at` | email+type |
 | **insights** | Insights | `code`, `type`, `message`, `source`, `ref` | code |
 | **rapports** | Rapports | `date`, `contenu` | — |
 | **contact** | Contact | `email`, `nom`, `message` | — |
@@ -74,7 +75,7 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 
 > ⚠️ Ces onglets décrivent la structure Google Sheets historique.
 > Les données live sont maintenant dans Supabase PostgreSQL (14 tables).
-> Google Sheets reste utilisé par GAS pour les emails et comme backup de référence.
+> Google Sheets n'est plus utilisé pour les emails (migration Resend 07/04/2026). Conservé comme backup de référence.
 
 ### Onglets Nicolas (lecture + écriture via Admin)
 
