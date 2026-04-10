@@ -234,8 +234,12 @@ def audit_exercice(exo, niveau, categorie, exo_idx, onglet):
     loc = f"[{onglet}] {niveau}/{categorie} exo#{exo_idx+1}"
 
     # Type d'exo — fill n'a pas d'options par design (P7)
+    # VF : options canoniques ["Vrai","Faux"] — auto-complétées si absentes
     exo_type = str(exo.get("type", "qcm")).lower()
     is_fill = exo_type == "fill"
+    is_vf = exo_type == "vf"
+    if is_vf and not exo.get("options"):
+        exo["options"] = ["Vrai", "Faux"]
 
     # CHECK A — Champs obligatoires
     if not exo.get("q", "").strip():

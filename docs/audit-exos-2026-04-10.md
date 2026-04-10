@@ -11,12 +11,11 @@
 
 ### diagnostic_exos
 - Exercices analysés : 120 (51 chapitres)
-- Sans erreur : 98
-- ERREUR_CHAMP_MANQUANT : 5
+- Sans erreur : 103
 - WARN_FORMULE_VIDE : 10
 - WARN_STEPS : 7
 
-**Total : 5 erreurs critiques, 27 warnings**
+**Total : 0 erreurs critiques, 27 warnings**
 
 ## Détail des erreurs
 
@@ -63,32 +62,17 @@
 ### [diagnostic_exos] 3EME/Arithmetique_Brevet exo#3
 - **WARNING** `WARN_FORMULE_VIDE` : f vide
 
-### [diagnostic_exos] 3EME/Calcul_Litteral_Brevet exo#3
-- **CRITIQUE** `ERREUR_CHAMP_MANQUANT` : options a 0 éléments (attendu 2-4)
-  - trouvé : `0`
-  - attendu : `2-4`
-
 ### [diagnostic_exos] 3EME/Fonctions_Brevet exo#2
 - **WARNING** `WARN_FORMULE_VIDE` : f vide
 
 ### [diagnostic_exos] 3EME/Fractions_Brevet exo#2
 - **WARNING** `WARN_FORMULE_VIDE` : f vide
 
-### [diagnostic_exos] 3EME/Inequations_Brevet exo#2
-- **CRITIQUE** `ERREUR_CHAMP_MANQUANT` : options a 0 éléments (attendu 2-4)
-  - trouvé : `0`
-  - attendu : `2-4`
-
 ### [diagnostic_exos] 3EME/Proportionnalite_Brevet exo#1
 - **WARNING** `WARN_FORMULE_VIDE` : f vide
 
 ### [diagnostic_exos] 3EME/Proportionnalite_Brevet exo#2
 - **WARNING** `WARN_FORMULE_VIDE` : f vide
-
-### [diagnostic_exos] 3EME/Pythagore_Brevet exo#3
-- **CRITIQUE** `ERREUR_CHAMP_MANQUANT` : options a 0 éléments (attendu 2-4)
-  - trouvé : `0`
-  - attendu : `2-4`
 
 ### [diagnostic_exos] 3EME/Scratch_Brevet exo#1
 - **WARNING** `WARN_FORMULE_VIDE` : f vide
@@ -98,16 +82,6 @@
 
 ### [diagnostic_exos] 3EME/Scratch_Brevet exo#3
 - **WARNING** `WARN_FORMULE_VIDE` : f vide
-
-### [diagnostic_exos] 3EME/Thales_Brevet exo#3
-- **CRITIQUE** `ERREUR_CHAMP_MANQUANT` : options a 0 éléments (attendu 2-4)
-  - trouvé : `0`
-  - attendu : `2-4`
-
-### [diagnostic_exos] 3EME/Transformations_Brevet exo#2
-- **CRITIQUE** `ERREUR_CHAMP_MANQUANT` : options a 0 éléments (attendu 2-4)
-  - trouvé : `0`
-  - attendu : `2-4`
 
 ### [diagnostic_exos] 4EME/Calcul_Littéral exo#1
 - **WARNING** `WARN_STEPS` : steps a 4 éléments (attendu 1-3)
