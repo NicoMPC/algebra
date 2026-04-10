@@ -4642,6 +4642,20 @@ function initApp(d, skipRender) {
     }
   } catch (e) {}
 
+  // ── Bandeau "prof prépare la suite" ──────────────────────
+  // Si l'élève a déjà terminé au moins 1 chapitre, aucun nouveau n'est assigné,
+  // aucun teasing J+1 n'est en cours, et ce n'est pas un admin → rassurer.
+  // Message différent selon freemium (bloqué) ou premium/lite (peut avancer seul).
+  if (!S.pendingManual && !d.nextChapter && !d.teasingChapter && !S.prof.isAdmin) {
+    var _chapDoneCount = Object.keys(S.chapDone || {}).length;
+    if (_chapDoneCount > 0) {
+      var _isFreemiumStuck = !S.prof.premium && S.prof.mode !== 'lite';
+      S.pendingManual = _isFreemiumStuck
+        ? '⏳ Ton prof prépare ton prochain chapitre personnalisé — reviens dans quelques heures 🔥'
+        : '⏳ Ton prof prépare la suite — en attendant, tu peux explorer les autres chapitres 🚀';
+    }
+  }
+
   S.res = {}; S.xp = 0; S.sent = new Set();
   // Restore deferred state from localStorage (survives refresh)
   try { S.deferred = JSON.parse(localStorage.getItem('mx_deferred_' + (S.prof && S.prof.code || '')) || '{}'); } catch(e) { S.deferred = {}; }
