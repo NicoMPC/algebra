@@ -9,7 +9,7 @@ Usage : python3 audit_exos.py
 import json, re, sys, math
 from datetime import date
 from fractions import Fraction
-from sheets import sh
+from supabase_helper import sb
 
 # ══════════════════════════════════════════════════════════════
 # CONFIGURATION
@@ -18,9 +18,8 @@ from sheets import sh
 NIVEAUX = {"6EME", "5EME", "4EME", "3EME"}
 
 ONGLETS = {
-    "Curriculum_Officiel": {"exos_col": "ExosJSON", "expected_count": 20},
-    "DiagnosticExos":      {"exos_col": "ExosJSON", "expected_count": None},
-    "BoostExos":           {"exos_col": "ExosJSON", "expected_count": 10},
+    "curriculum":      {"table": "curriculum",      "exos_col": "exos_json", "expected_count": 20, "cat_col": "categorie", "lvl_col": "niveau"},
+    "diagnostic_exos": {"table": "diagnostic_exos", "exos_col": "exos_json", "expected_count": None, "cat_col": "categorie", "lvl_col": "niveau"},
 }
 
 FORMULES_REF = {
@@ -234,6 +233,10 @@ def audit_exercice(exo, niveau, categorie, exo_idx, onglet):
     errors = []
     loc = f"[{onglet}] {niveau}/{categorie} exo#{exo_idx+1}"
 
+    # Type d'exo — fill n'a pas d'options par design (P7)
+    exo_type = str(exo.get("type", "qcm")).lower()
+    is_fill = exo_type == "fill"
+
     # CHECK A — Champs obligatoires
     if not exo.get("q", "").strip():
         errors.append(("ERREUR_CHAMP_MANQUANT", loc, "q manquant", "", ""))
@@ -241,13 +244,22 @@ def audit_exercice(exo, niveau, categorie, exo_idx, onglet):
     if not str(a_val).strip():
         errors.append(("ERREUR_CHAMP_MANQUANT", loc, "a manquant", "", ""))
     options = exo.get("options")
-    if not isinstance(options, list):
-        errors.append(("ERREUR_CHAMP_MANQUANT", loc, "options n'est pas une liste", str(type(options)), "list"))
-        options = []
-    elif len(options) < 2 or len(options) > 4:
-        errors.append(("ERREUR_CHAMP_MANQUANT", loc, f"options a {len(options)} éléments (attendu 2-4)", str(len(options)), "2-4"))
+    if is_fill:
+        # Fill : pas d'options attendues
+        if options is None:
+            options = []
+        elif not isinstance(options, list):
+            errors.append(("ERREUR_CHAMP_MANQUANT", loc, "options doit être une liste ou absent (fill)", str(type(options)), "list|None"))
+            options = []
+    else:
+        if not isinstance(options, list):
+            errors.append(("ERREUR_CHAMP_MANQUANT", loc, "options n'est pas une liste", str(type(options)), "list"))
+            options = []
+        elif len(options) < 2 or len(options) > 4:
+            errors.append(("ERREUR_CHAMP_MANQUANT", loc, f"options a {len(options)} éléments (attendu 2-4)", str(len(options)), "2-4"))
     f_val = exo.get("f", "")
-    if not str(f_val).strip():
+    # Fill : formule peut être vide si f_disabled=true (P6/P12) — downgrade warn
+    if not str(f_val).strip() and not exo.get("f_disabled"):
         errors.append(("WARN_FORMULE_VIDE", loc, "f vide", "", ""))
     steps = exo.get("steps")
     if not isinstance(steps, list):
@@ -258,8 +270,14 @@ def audit_exercice(exo, niveau, categorie, exo_idx, onglet):
     if lvl not in (1, 2):
         errors.append(("ERREUR_CHAMP_MANQUANT", loc, f"lvl={lvl} (attendu 1 ou 2)", str(lvl), "1 ou 2"))
 
-    if not str(a_val).strip() or not isinstance(options, list) or len(options) == 0:
+    if not str(a_val).strip():
         return errors  # pas la peine de continuer
+    # Fill : skip les checks options/doublons qui n'ont pas de sens
+    if is_fill:
+        return errors
+
+    if not isinstance(options, list) or len(options) == 0:
+        return errors  # pas la peine de continuer (qcm/vf sans options → déjà signalé)
 
     # CHECK B — Réponse dans les options
     a_str = str(a_val).strip()
@@ -310,14 +328,15 @@ def load_and_audit():
     stats = {}
 
     for onglet, cfg in ONGLETS.items():
-        print(f"\n📥 Chargement {onglet}…")
+        table = cfg["table"]
+        print(f"\n📥 Chargement {table}…")
         try:
-            rows = sh.read(onglet)
+            rows = sb.read(table)
         except Exception as e:
             print(f"  ❌ Erreur lecture : {e}")
             continue
 
-        college_rows = [r for r in rows if r.get("Niveau", "") in NIVEAUX]
+        college_rows = [r for r in rows if r.get(cfg["lvl_col"], "") in NIVEAUX]
         print(f"  → {len(college_rows)} lignes collège (sur {len(rows)} total)")
 
         onglet_stats = {
@@ -328,14 +347,19 @@ def load_and_audit():
         }
 
         for row in college_rows:
-            niveau = row.get("Niveau", "")
-            categorie = row.get("Categorie", "")
+            niveau = row.get(cfg["lvl_col"], "")
+            categorie = row.get(cfg["cat_col"], "")
             exos_raw = row.get(cfg["exos_col"], "")
             onglet_stats["chapitres"] += 1
 
             try:
-                exos = json.loads(exos_raw) if exos_raw else []
-            except json.JSONDecodeError as e:
+                if isinstance(exos_raw, list):
+                    exos = exos_raw
+                elif isinstance(exos_raw, str) and exos_raw:
+                    exos = json.loads(exos_raw)
+                else:
+                    exos = []
+            except (json.JSONDecodeError, TypeError) as e:
                 all_errors.append(("ERREUR_JSON", f"[{onglet}] {niveau}/{categorie}", f"JSON invalide: {e}", "", ""))
                 continue
 

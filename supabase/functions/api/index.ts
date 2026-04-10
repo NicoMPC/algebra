@@ -10,8 +10,12 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const ALLOWED_LEVELS = ["6EME", "5EME", "4EME", "3EME", "1ERE"];
 
-// GAS gardé pour les emails (GmailApp) — migration Resend prévue à ~50 users
+// GAS gardé en legacy (plus d'envoi email — Resend depuis 07/04/2026)
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec";
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
+// Stripe webhook signing secret (set via `supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...`)
+// REQUIRED en prod — si absent, les webhooks Stripe sont rejetés (fail-closed).
+const STRIPE_WEBHOOK_SECRET = Deno.env.get("STRIPE_WEBHOOK_SECRET") || "";
 
 // Client admin (service_role) pour bypass RLS
 const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
@@ -47,6 +51,43 @@ function json(obj: unknown, status = 200): Response {
       "Access-Control-Allow-Headers": "Content-Type, Authorization, apikey",
     },
   });
+}
+
+// ── Stripe signature verification (manual HMAC SHA-256, pas de dépendance) ──
+function _hexOfBuf(buf: ArrayBuffer): string {
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function _timingSafeEqualHex(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let r = 0;
+  for (let i = 0; i < a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return r === 0;
+}
+
+async function verifyStripeSignature(rawBody: string, signatureHeader: string, secret: string, toleranceSec = 300): Promise<boolean> {
+  if (!signatureHeader || !secret) return false;
+  const parts = signatureHeader.split(",").map(s => s.trim());
+  const tsPart = parts.find(p => p.startsWith("t="));
+  const sigHexes = parts.filter(p => p.startsWith("v1=")).map(p => p.slice(3));
+  if (!tsPart || sigHexes.length === 0) return false;
+  const ts = tsPart.slice(2);
+  const tsNum = parseInt(ts);
+  if (!Number.isFinite(tsNum)) return false;
+  // Replay protection : rejeter les timestamps trop anciens (> 5 min par défaut)
+  const nowSec = Math.floor(Date.now() / 1000);
+  if (Math.abs(nowSec - tsNum) > toleranceSec) return false;
+  const signedPayload = `${ts}.${rawBody}`;
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sigBuf = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(signedPayload));
+  const expected = _hexOfBuf(sigBuf);
+  return sigHexes.some(h => _timingSafeEqualHex(h, expected));
 }
 
 function generateCode(): string {
@@ -85,9 +126,14 @@ async function register(p: Record<string, unknown>) {
   if (!ALLOWED_LEVELS.includes(level))
     return { status: "error", message: "Niveau non accepté." };
 
-  // Email déjà pris ?
-  const { data: existingUser } = await adminClient.from("profiles").select("code").eq("email", email).maybeSingle();
-  if (existingUser) return { status: "error", message: "Un compte existe déjà avec cet email." };
+  // Email déjà pris ? Check profiles ET Supabase Auth
+  const { data: existingProfile } = await adminClient.from("profiles").select("code").eq("email", email).maybeSingle();
+  if (existingProfile) return { status: "error", message: "Un compte existe déjà avec cet email." };
+
+  // Check Supabase Auth aussi (cas : auth existe mais profil supprimé/orphelin)
+  const { data: authLookup } = await adminClient.auth.admin.listUsers({ perPage: 1000, page: 1 });
+  const authExists = (authLookup?.users || []).some((u: { email?: string }) => u.email?.toLowerCase() === email);
+  if (authExists) return { status: "error", message: "Un compte existe déjà avec cet email." };
 
   const isTest = email.endsWith("@matheux.fr") || p.test === true;
 
@@ -99,7 +145,14 @@ async function register(p: Record<string, unknown>) {
     password,
     email_confirm: true,
   });
-  if (authError) return { status: "error", message: "Erreur création compte : " + authError.message };
+  if (authError) {
+    const msg = authError.message || "";
+    // Supabase Auth renvoie "already been registered" si email existe déjà
+    if (msg.toLowerCase().includes("already") || msg.toLowerCase().includes("exist") || msg.toLowerCase().includes("duplicate")) {
+      return { status: "error", message: "Un compte existe déjà avec cet email." };
+    }
+    return { status: "error", message: "Erreur création compte : " + msg };
+  }
 
   const userId = authData.user.id;
   const code = await uniqueCode();
@@ -121,13 +174,21 @@ async function register(p: Record<string, unknown>) {
   });
   if (profileError) return { status: "error", message: "Erreur profil : " + profileError.message };
 
-  // Email bienvenue J+0 + notification fondateur → via GAS (garde Gmail)
+  // Email bienvenue J+0 via Resend
   try {
-    await fetch(GAS_URL, {
-      method: "POST",
-      body: JSON.stringify({ action: "send_welcome_email", email, name, code, level, objectif }),
-    });
+    await sendMarketingEmail({ email, name, day: 0, objectif });
   } catch { /* silencieux — ne bloque pas l'inscription */ }
+
+  // Notification fondateur
+  try {
+    const isTest = email.endsWith("@matheux.fr");
+    if (!isTest) {
+      await resendSend("seopourvous@gmail.com",
+        "[Matheux] Nouvelle inscription : " + name + " (" + level + ")",
+        "<p>" + name + " (" + level + ") vient de s'inscrire.</p><p>Email parent : " + email + "<br>Code : " + code + "<br>Objectif : " + (objectif || "—") + "</p>"
+      );
+    }
+  } catch { /* silencieux */ }
 
   // Curriculum officiel
   const { data: curriculum } = await adminClient.from("curriculum")
@@ -203,6 +264,8 @@ async function login(p: Record<string, unknown>) {
   const level = String(user.niveau).toUpperCase();
   const name = String(user.prenom);
   const isAdmin = !!user.is_admin;
+  // A6 : admin read-only — ne pas consommer nextBoost/nextChapter depuis suivi
+  isAdminLogin = isAdmin;
   const premium = !!user.premium;
   const trialStart = user.trial_start ? String(user.trial_start) : "";
   const objectif = String(user.objectif || "");
@@ -452,24 +515,44 @@ async function saveScore(p: Record<string, unknown>) {
   const code = String(p.code);
   if (code.length !== 6) return { status: "error", message: "Code élève invalide." };
 
-  // Vérifier identité
+  // Vérifier identité — SELECT avec `mode` (fix P1 #4 mode lite Leo)
   const { data: profile } = await adminClient.from("profiles")
-    .select("email, premium, premium_end, free_chapter").eq("code", code).maybeSingle();
+    .select("email, mode, premium, premium_end, free_chapter").eq("code", code).maybeSingle();
   if (!profile) return { status: "error", message: "Élève introuvable." };
   if (p.email && String(p.email).toLowerCase() !== profile.email)
     return { status: "error", message: "Identité non vérifiée." };
 
-  // Freemium guard : si !premium, autoriser seulement CALIBRAGE, BOOST, et le chapitre gratuit
-  // Mode lite = accès complet (élèves privés)
   const source = String(p.source || "");
   const categorie = String(p.categorie || "");
-  const isLite = profile.mode === "lite";
+
+  // Hardening (P1 #7) : CALIBRAGE ne doit pas passer par saveScore — seulement par save_calibration_batch
+  if (source === "CALIBRAGE") {
+    return { status: "error", message: "CALIBRAGE doit passer par save_calibration_batch." };
+  }
+
+  // Hardening (P1 #7) : source=BOOST nécessite un boost actif en DB.
+  // On remonte la lookup du boost ici pour le réutiliser plus bas (évite un 2ème round-trip).
+  let activeBoostRow: { id: number; exos_done: number } | null = null;
+  if (source === "BOOST") {
+    const todayStr = todayParis();
+    const { data: boostRow } = await adminClient.from("daily_boosts")
+      .select("id, exos_done").eq("code", code)
+      .or(`date.eq.${todayStr},exos_done.lt.5`)
+      .order("date", { ascending: false }).limit(1).maybeSingle();
+    if (!boostRow) {
+      return { status: "error", message: "Aucun boost actif — source BOOST refusée." };
+    }
+    activeBoostRow = boostRow as { id: number; exos_done: number };
+  }
+
+  // Freemium guard : mode lite OU premium OU BOOST actif OU free_chapter
+  const isLite = (profile as Record<string, unknown>).mode === "lite";
   let _isPremium = !!profile.premium;
   if (_isPremium && profile.premium_end) {
     const endDate = String(profile.premium_end).substring(0, 10);
     if (endDate && endDate < todayParis()) _isPremium = false;
   }
-  if (!isLite && !_isPremium && source !== "CALIBRAGE" && source !== "BOOST") {
+  if (!isLite && !_isPremium && source !== "BOOST") {
     if (!profile.free_chapter || categorie !== profile.free_chapter) {
       return { status: "error", message: "Chapitre verrouillé — débloque l'accès complet pour continuer." };
     }
@@ -501,18 +584,10 @@ async function saveScore(p: Record<string, unknown>) {
     await updateConfidenceScore(code, String(p.level), String(p.categorie), String(p.resultat), parseInt(String(p.exercice_idx || "0")));
   }
 
-  // MAJ ExosDone dans DailyBoosts si source=BOOST
-  if (source === "BOOST") {
-    const todayStr = todayParis();
-    // Chercher le boost d'aujourd'hui ou le dernier non terminé
-    const { data: boostRow } = await adminClient.from("daily_boosts")
-      .select("id, exos_done").eq("code", code)
-      .or(`date.eq.${todayStr},exos_done.lt.5`)
-      .order("date", { ascending: false }).limit(1).maybeSingle();
-    if (boostRow) {
-      await adminClient.from("daily_boosts")
-        .update({ exos_done: (boostRow.exos_done || 0) + 1 }).eq("id", boostRow.id);
-    }
+  // MAJ ExosDone dans DailyBoosts si source=BOOST — réutilise activeBoostRow chargé plus haut
+  if (source === "BOOST" && activeBoostRow) {
+    await adminClient.from("daily_boosts")
+      .update({ exos_done: Math.min((activeBoostRow.exos_done || 0) + 1, 5) }).eq("id", activeBoostRow.id);
   }
 
   return { status: "success" };
@@ -614,22 +689,43 @@ async function saveScoresBatch(p: Record<string, unknown>) {
   const code = String(p.code);
   if (code.length !== 6) return { status: "error", message: "Code élève invalide." };
 
-  // Single identity check for the whole batch
+  // Single identity check for the whole batch — SELECT avec `mode`
   const { data: profile } = await adminClient.from("profiles")
-    .select("email, premium, premium_end, free_chapter").eq("code", code).maybeSingle();
+    .select("email, mode, premium, premium_end, free_chapter").eq("code", code).maybeSingle();
   if (!profile) return { status: "error", message: "Élève introuvable." };
 
-  // Freemium guard batch
+  // Hardening (P1 #7) : analyser les sources avant la gate freemium
+  let _batchHasBoost = false;
+  for (const s of (p.scores as Record<string, unknown>[])) {
+    const src = String(s.source || "");
+    if (src === "CALIBRAGE") {
+      return { status: "error", message: "CALIBRAGE doit passer par save_calibration_batch." };
+    }
+    if (src === "BOOST") _batchHasBoost = true;
+  }
+  if (_batchHasBoost) {
+    const todayStrBatch = todayParis();
+    const { data: boostRow } = await adminClient.from("daily_boosts")
+      .select("id").eq("code", code)
+      .or(`date.eq.${todayStrBatch},exos_done.lt.5`)
+      .order("date", { ascending: false }).limit(1).maybeSingle();
+    if (!boostRow) {
+      return { status: "error", message: "Aucun boost actif — source BOOST refusée." };
+    }
+  }
+
+  // Freemium guard batch : mode lite OU premium OU BOOST (validé) OU free_chapter
+  const _batchIsLite = (profile as Record<string, unknown>).mode === "lite";
   let _batchPremium = !!profile.premium;
   if (_batchPremium && profile.premium_end) {
     const endDate = String(profile.premium_end).substring(0, 10);
     if (endDate && endDate < todayParis()) _batchPremium = false;
   }
-  if (!_batchPremium) {
+  if (!_batchIsLite && !_batchPremium) {
     for (const s of (p.scores as Record<string, unknown>[])) {
       const src = String(s.source || "");
       const cat = String(s.categorie || "");
-      if (src === "CALIBRAGE" || src === "BOOST") continue;
+      if (src === "BOOST") continue; // déjà gated par la vérif boost actif
       if (!profile.free_chapter || cat !== profile.free_chapter) {
         return { status: "error", message: "Chapitre verrouillé — débloque l'accès complet." };
       }
@@ -975,8 +1071,13 @@ async function unsubscribeEmail(p: Record<string, unknown>) {
   const email = String(p.email || "").trim().toLowerCase();
   if (!email) return { status: "error", message: "email requis." };
 
+  // Log dans emails (legacy) + email_logs (nouveau — check par sendMarketingEmail)
   await adminClient.from("emails").insert({
     email, type: "UNSUB", date: todayParis(),
+  });
+  await adminClient.from("email_logs").insert({
+    email, prenom: "", type: "UNSUB", statut: "unsub",
+    created_at: new Date().toISOString(),
   });
 
   return { status: "success" };
@@ -994,12 +1095,12 @@ async function resetPassword(p: Record<string, unknown>) {
     .select("id").eq("email", email).maybeSingle();
   if (!profile) return { status: "error", message: "Utilisateur introuvable." };
 
-  // Mettre à jour le mot de passe via admin API
+  // Mettre à jour le mot de passe via admin API (Supabase Auth gère le hash)
   const { error } = await adminClient.auth.admin.updateUserById(profile.id, { password });
   if (error) return { status: "error", message: error.message };
 
-  // Mettre à jour le hash dans profiles aussi (pour fallback)
-  await adminClient.from("profiles").update({ password_hash: password }).eq("id", profile.id);
+  // Nullifier le fallback legacy password_hash pour éviter tout stockage résiduel
+  await adminClient.from("profiles").update({ password_hash: null }).eq("id", profile.id);
 
   return { status: "success", message: "Mot de passe mis à jour." };
 }
@@ -1115,7 +1216,7 @@ async function saveBrevetResult(p: Record<string, unknown>) {
   return { status: "success" };
 }
 
-// ── PROXY GAS — actions qui nécessitent GmailApp ────────────
+// ── PROXY GAS (legacy, plus d'emails) ────────────
 
 async function proxyGas(p: Record<string, unknown>) {
   try {
@@ -1124,6 +1225,316 @@ async function proxyGas(p: Record<string, unknown>) {
   } catch (err) {
     return { status: "error", message: "GAS proxy error: " + String(err) };
   }
+}
+
+// ── RESEND — envoi d'emails ────────────────────────────────
+
+async function resendSend(to: string, subject: string, html: string, replyTo = "contact@matheux.fr"): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const resp = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "Matheux <no-reply@matheux.fr>",
+        to, subject, html, reply_to: replyTo,
+      }),
+    });
+    if (!resp.ok) {
+      const err = await resp.text();
+      return { ok: false, error: err };
+    }
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: String(err) };
+  }
+}
+
+// ── Templates emails ────────────────────────────────────────
+// Layout unifié : table Outlook-safe, ligne bleue top, preheader, signature cohérente
+
+const FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif";
+
+function emailWrap(email: string, preheader: string, body: string): string {
+  const unsubLink = "https://matheux.fr/unsubscribe?email=" + encodeURIComponent(email);
+  return (
+    // Preheader invisible (preview Gmail/Outlook)
+    '<span style="display:none;font-size:0;color:transparent;max-height:0;overflow:hidden;">' + preheader + '\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0</span>' +
+    // Wrapper centré (Outlook-safe)
+    '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f9fafb;"><tr><td align="center" style="padding:24px 0;">' +
+    '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" style="max-width:520px;width:100%;font-family:' + FONT + ';">' +
+    // Ligne bleue top
+    '<tr><td style="background:#1E40AF;height:4px;font-size:0;line-height:0;">&nbsp;</td></tr>' +
+    // Logo
+    '<tr><td style="padding:24px 28px 0;background:#ffffff;"><p style="font-size:13px;font-weight:800;color:#1E40AF;letter-spacing:2px;text-transform:uppercase;margin:0;">MATHEUX</p></td></tr>' +
+    // Body
+    '<tr><td style="background:#ffffff;padding:24px 28px 32px;">' + body + '</td></tr>' +
+    // Signature
+    '<tr><td style="background:#ffffff;padding:0 28px 24px;border-top:1px solid #e5e7eb;">' +
+    '<p style="color:#1e293b;font-size:15px;font-weight:700;margin:16px 0 2px;">Nicolas</p>' +
+    '<p style="color:#6b7280;font-size:13px;margin:0;">Fondateur de Matheux</p>' +
+    '</td></tr>' +
+    // Footer désinscription
+    '<tr><td style="padding:16px 28px;text-align:center;background:#f9fafb;">' +
+    '<p style="font-size:11px;color:#9ca3af;margin:0;">Matheux · 100 % pédagogique, 0 % pression · <a href="' + unsubLink + '" style="color:#9ca3af;text-decoration:underline;">Se désinscrire</a></p>' +
+    '</td></tr>' +
+    '</table></td></tr></table>'
+  );
+}
+
+function emailCTA(href: string, label: string, gradient = false): string {
+  const bg = gradient ? 'background:linear-gradient(135deg,#4338ca,#6366f1);' : 'background:#1E40AF;';
+  return (
+    '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="center" style="padding:24px 0;">' +
+    '<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>' +
+    '<td style="' + bg + 'border-radius:8px;text-align:center;">' +
+    '<a href="' + href + '" style="display:inline-block;padding:14px 32px;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;letter-spacing:-.2px;">' + label + '</a>' +
+    '</td></tr></table></td></tr></table>'
+  );
+}
+
+function emailHighlight(text: string): string {
+  return (
+    '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:20px 0;"><tr>' +
+    '<td style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:8px;padding:16px 20px;text-align:center;">' +
+    '<p style="color:#1E40AF;font-size:15px;font-weight:800;margin:0;">' + text + '</p>' +
+    '</td></tr></table>'
+  );
+}
+
+// ── J+0 : Welcome ──────────────────────────────────────────
+
+function templateJ0(prenom: string, email: string): { subject: string; html: string } {
+  return {
+    subject: prenom + " est inscrit — ses premiers exos arrivent demain",
+    html: emailWrap(email, "5 exercices sur mesure, 10 minutes, adaptés à son niveau.",
+      '<p style="color:#1e293b;font-size:20px;font-weight:800;line-height:1.4;margin:0 0 20px;">' + prenom + ' est inscrit. Demain matin, 5\u00a0exercices sur mesure l\u2019attendent.</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.8;margin:0 0 24px;">Bonjour,</p>' +
+      '<p style="color:#1e293b;font-size:16px;line-height:1.8;font-weight:700;margin:0 0 12px;">Concrètement, voilà comment ça fonctionne :</p>' +
+      '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;"><tr><td style="padding:12px 16px;background:#f8fafc;border-left:3px solid #1E40AF;border-radius:0 6px 6px 0;">' +
+      '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">' +
+      '<tr><td style="padding:4px 0;color:#374151;font-size:15px;line-height:1.8;"><strong style="color:#1E40AF;">1.</strong> Chaque jour, <strong>5 exercices ciblés</strong> sur ses lacunes</td></tr>' +
+      '<tr><td style="padding:4px 0;color:#374151;font-size:15px;line-height:1.8;"><strong style="color:#1E40AF;">2.</strong> <strong>10 minutes</strong> suffisent — pas de surcharge</td></tr>' +
+      '<tr><td style="padding:4px 0;color:#374151;font-size:15px;line-height:1.8;"><strong style="color:#1E40AF;">3.</strong> Le parcours <strong>s\u2019adapte</strong> automatiquement à ses réponses</td></tr>' +
+      '</table></td></tr></table>' +
+      '<p style="color:#1e293b;font-size:16px;line-height:1.8;font-weight:700;margin:0 0 12px;">Ce que vous allez observer :</p>' +
+      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 6px;">✔️ Il sait mieux par où commencer</p>' +
+      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 6px;">✔️ Il travaille régulièrement, sans qu\u2019on le pousse</p>' +
+      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 24px;">✔️ Et surtout… <strong>il reprend confiance</strong></p>' +
+      emailHighlight("Dès demain matin, son premier entraînement sur mesure l\u2019attend.") +
+      '<p style="color:#374151;font-size:15px;line-height:1.7;margin:0 0 8px;">Chaque semaine, vous recevrez un <strong>bilan clair</strong> : ce qui est acquis, ce qui bloque, et ce qui progresse.</p>' +
+      emailCTA("https://matheux.fr/app.html", "Ouvrir Matheux →") +
+      '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">J\u2019ai créé Matheux après des années à donner des cours de maths. Le même constat revenait : les élèves comprennent en cours, mais ne s\u2019entraînent pas assez entre les séances.</p>' +
+      '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">Le problème n\u2019est presque jamais la compréhension. <strong>C\u2019est la pratique.</strong></p>' +
+      '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0;">Une question ? <strong>Répondez à cet email</strong>, je lis tout personnellement.</p>'
+    ),
+  };
+}
+
+// ── J+1 : "Son boost est prêt" ─────────────────────────────
+
+function templateJ1(prenom: string, email: string): { subject: string; html: string } {
+  return {
+    subject: "Le premier entraînement de " + prenom + " est prêt 🎯",
+    html: emailWrap(email, "5 exercices ciblés, 10 minutes — c'est parti.",
+      '<p style="color:#1e293b;font-size:20px;font-weight:800;line-height:1.4;margin:0 0 20px;">Le premier boost de ' + prenom + ' est prêt.</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.8;margin:0 0 16px;">Bonjour,</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.8;margin:0 0 16px;">5 exercices ciblés sur les résultats de son diagnostic l\'attendent. C\'est court (10 minutes), adapté à son niveau, et ça commence à combler ses lacunes dès aujourd\'hui.</p>' +
+      emailHighlight("🎯 5 exercices · 10 minutes · adapté à " + prenom) +
+      emailCTA("https://matheux.fr/app.html", "Commencer le boost →") +
+      '<p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0;">Un petit rituel quotidien vaut mieux qu\'une grosse session de temps en temps. 😉</p>'
+    ),
+  };
+}
+
+// ── J+3 : Check-in engagement ───────────────────────────────
+
+function templateJ3(prenom: string, email: string, objectif: string): { subject: string; html: string } {
+  const variants: Record<string, string> = {
+    lacunes: "Les premiers exercices permettent de cibler précisément ce qui bloque " + prenom + " — pas les difficultés supposées, les vraies. C'est là que le diagnostic devient utile.",
+    chapitre_jour: "La régularité, c'est la clé. Un chapitre par jour, 10 minutes — si " + prenom + " tient ce rythme cette semaine, les résultats suivront.",
+    brevet: "Le brevet, ça se prépare dans la durée. Ces premiers jours posent les bases — les exercices style brevet arrivent au fur et à mesure de la progression.",
+    toutes_matieres: prenom + " a accès à l'intégralité du programme. L'important à ce stade : trouver un rythme et rester régulier, même 10 minutes par jour.",
+  };
+  return {
+    subject: "Comment ça se passe pour " + prenom + " ? 💪",
+    html: emailWrap(email, "3 jours déjà — un petit point sur la progression.",
+      '<h1 style="color:#1e293b;font-size:22px;font-weight:800;margin:0 0 20px;">3 jours déjà !</h1>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Bonjour,</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Cela fait 3 jours que ' + prenom + ' a rejoint Matheux.</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">' + (variants[objectif] || variants.lacunes) + '</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 0;"><strong>Petit rappel :</strong> le boost quotidien (5 exercices, ~10 minutes) est la clé. Régulier vaut mieux qu\'intense.</p>' +
+      emailCTA("https://matheux.fr/app.html", "Voir sa progression →") +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">N\'hésitez pas à me faire un retour — un simple "ça va bien" ou "on galère sur les fractions" suffit. Je lis tous les messages.</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0;">Bon courage,</p>'
+    ),
+  };
+}
+
+// ── J+7 : Bilan semaine 1 + soft conversion ─────────────────
+
+function templateJ7(prenom: string, email: string, objectif: string): { subject: string; html: string } {
+  const variants: Record<string, string> = {
+    lacunes: '<li>Identifié ses lacunes précises — pas celles de sa classe, les siennes</li><li>Travaillé sur des exercices vraiment ciblés</li><li>Posé les bases d\'un rattrapage durable</li>',
+    chapitre_jour: '<li>Établi une routine quotidienne de travail</li><li>Progressé chapitre par chapitre à son rythme</li><li>Prouvé qu\'il pouvait tenir sur la durée</li>',
+    brevet: '<li>Fait ses premiers exercices style brevet</li><li>Identifié les chapitres à travailler en priorité</li><li>Posé des bases solides pour la préparation</li>',
+    toutes_matieres: '<li>Exploré plusieurs chapitres du programme</li><li>Repéré ses points forts et ses axes de travail</li><li>Pris ses premières marques sur Matheux</li>',
+  };
+  return {
+    subject: "Bilan de la semaine de " + prenom + " ⭐",
+    html: emailWrap(email, "Une semaine avec Matheux — voici le bilan.",
+      '<h1 style="color:#1e293b;font-size:22px;font-weight:800;margin:0 0 20px;">Une semaine avec Matheux !</h1>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Bonjour,</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">La première semaine de ' + prenom + ' sur Matheux touche à sa fin. Le simple fait de commencer, c\'est déjà 90 % du travail.</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 8px;">En une semaine, ' + prenom + ' a :</p>' +
+      '<ul style="color:#374151;font-size:16px;line-height:1.8;padding-left:20px;margin:0 0 16px;">' +
+      (variants[objectif] || variants.lacunes) + '</ul>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 0;">' + prenom + ' a accès à <strong>1 chapitre complet gratuit</strong> + ses boosts quotidiens. Pour débloquer tous les chapitres jusqu\'au Brevet, c\'est <strong>29,99 € en une fois</strong> — pas d\'abonnement.</p>' +
+      emailCTA("https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02", "Débloquer tous les chapitres →", true) +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Si vous avez des questions avant de décider, répondez à cet email — je suis là.</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0;">Merci pour votre confiance,</p>'
+    ),
+  };
+}
+
+// ── J+14 : Conversion nudge (freemium → premium) ───────────
+
+function templateJ14(prenom: string, email: string): { subject: string; html: string } {
+  return {
+    subject: prenom + " progresse — et si on passait à la vitesse supérieure ?",
+    html: emailWrap(email, "2 semaines déjà — il est temps de passer aux choses sérieuses.",
+      '<h1 style="color:#1e293b;font-size:22px;font-weight:800;margin:0 0 20px;">2 semaines déjà 🎉</h1>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Bonjour,</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">' + prenom + ' utilise Matheux depuis 2 semaines. Peu d\'élèves tiennent aussi longtemps — c\'est un vrai signal de motivation.</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 16px;">Aujourd\'hui, ' + prenom + ' travaille sur <strong>1 chapitre gratuit</strong>. Mais le programme de 3ème en compte plus d\'une dizaine — et le Brevet approche.</p>' +
+      '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 20px;"><tr><td style="background:#f8fafc;border-left:3px solid #1E40AF;border-radius:0 6px 6px 0;padding:16px 20px;">' +
+      '<p style="color:#1e293b;font-size:15px;line-height:1.8;margin:0 0 6px;"><strong>Avec l\'accès complet :</strong></p>' +
+      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 4px;">✅ Tous les chapitres du programme</p>' +
+      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 4px;">✅ Exercices style Brevet</p>' +
+      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 4px;">✅ Parcours adapté à ses lacunes</p>' +
+      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0;">✅ Accès jusqu\'au Brevet 2026</p>' +
+      '</td></tr></table>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 0;"><strong>29,99 € en une fois</strong> — pas d\'abonnement, pas de renouvellement, pas de surprise.</p>' +
+      emailCTA("https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02", "Débloquer tout le programme →", true) +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Pas de pression — ' + prenom + ' garde son chapitre gratuit et ses boosts dans tous les cas. Mais si le Brevet est l\'objectif, le plus tôt sera le mieux.</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0;">Une question ? Répondez directement à cet email.</p>'
+    ),
+  };
+}
+
+// ── Action send_email — envoi via Resend ────────────────────
+
+async function sendMarketingEmail(p: Record<string, unknown>) {
+  const email = String(p.email || "").trim().toLowerCase();
+  const prenom = String(p.name || p.prenom || "").trim();
+  const day = Number(p.day ?? 0);
+  const objectif = String(p.objectif || "lacunes").trim();
+
+  if (!email || !prenom) return { status: "error", message: "email et name requis." };
+
+  // Check désinscription
+  const { data: unsub } = await adminClient.from("email_logs")
+    .select("id").eq("email", email).eq("type", "UNSUB").limit(1);
+  if (unsub && unsub.length > 0) return { status: "success", message: "Utilisateur désinscrit." };
+
+  // Dédup
+  const { data: already } = await adminClient.from("email_logs")
+    .select("id").eq("email", email).eq("type", "J+" + day).eq("statut", "envoyé").limit(1);
+  if (already && already.length > 0) return { status: "success", message: "J+" + day + " déjà envoyé." };
+
+  // Template
+  let tpl: { subject: string; html: string };
+  if (day === 0) tpl = templateJ0(prenom, email);
+  else if (day === 1) tpl = templateJ1(prenom, email);
+  else if (day === 3) tpl = templateJ3(prenom, email, objectif);
+  else if (day === 7) tpl = templateJ7(prenom, email, objectif);
+  else if (day === 14) tpl = templateJ14(prenom, email);
+  else return { status: "error", message: "Jour invalide : " + day + ". Valeurs acceptées : 0, 1, 3, 7, 14." };
+
+  const result = await resendSend(email, tpl.subject, tpl.html);
+
+  // Log
+  await adminClient.from("email_logs").insert({
+    email, prenom, type: "J+" + day,
+    statut: result.ok ? "envoyé" : "erreur",
+    details: result.error || null,
+    created_at: new Date().toISOString(),
+  });
+
+  if (!result.ok) return { status: "error", message: "Resend: " + result.error };
+  return { status: "success" };
+}
+
+// ── Action cron_send_emails — à appeler 1×/jour (9h) ────────
+// Scanne tous les élèves, calcule J+N depuis inscription, envoie si pas déjà fait
+
+async function cronSendEmails(_p: Record<string, unknown>) {
+  const today = todayParis();
+  const todayDate = new Date(today + "T00:00:00Z");
+
+  // Tous les profils non-admin, non-test
+  const { data: profiles } = await adminClient.from("profiles")
+    .select("code, prenom, email, date_inscription, objectif, premium")
+    .eq("is_admin", false)
+    .eq("is_test", false);
+
+  if (!profiles || profiles.length === 0) return { status: "success", sent: 0 };
+
+  const SEQUENCE = [1, 3, 7, 14]; // jours après inscription
+  let sent = 0;
+  const errors: string[] = [];
+
+  for (const p of profiles) {
+    if (!p.email || !p.date_inscription) continue;
+
+    const inscDate = new Date(p.date_inscription + "T00:00:00Z");
+    const diffDays = Math.floor((todayDate.getTime() - inscDate.getTime()) / (1000 * 60 * 60 * 24));
+
+    for (const day of SEQUENCE) {
+      // Catch-up safe : si le cron saute un jour, on rattrape.
+      // La dédup est assurée côté sendMarketingEmail via email_logs.
+      if (diffDays < day) continue;
+
+      // Skip conversion emails (J+7, J+14) si déjà premium
+      if ((day === 7 || day === 14) && p.premium) continue;
+
+      const result = await sendMarketingEmail({
+        email: p.email,
+        name: p.prenom,
+        day,
+        objectif: p.objectif || "lacunes",
+      });
+
+      if (result && (result as Record<string, unknown>).status === "success") {
+        sent++;
+      } else {
+        errors.push(p.code + "/J+" + day + ": " + JSON.stringify(result));
+      }
+    }
+  }
+
+  return { status: "success", sent, errors: errors.length > 0 ? errors : undefined };
+}
+
+// ── Action send_test_email — test admin ─────────────────────
+
+async function sendTestEmailResend(p: Record<string, unknown>) {
+  const email = String(p.targetEmail || "").trim();
+  const prenom = String(p.targetPrenom || "Nicolas").trim();
+  const day = Number(p.day ?? 0);
+  if (!email) return { status: "error", message: "targetEmail requis." };
+
+  // Bypass dédup pour tests : on envoie directement
+  let tpl: { subject: string; html: string };
+  if (day === 0) tpl = templateJ0(prenom, email);
+  else if (day === 1) tpl = templateJ1(prenom, email);
+  else if (day === 3) tpl = templateJ3(prenom, email, "lacunes");
+  else if (day === 7) tpl = templateJ7(prenom, email, "lacunes");
+  else if (day === 14) tpl = templateJ14(prenom, email);
+  else return { status: "error", message: "Jour invalide : " + day };
+
+  const result = await resendSend(email, tpl.subject, tpl.html);
+  if (!result.ok) return { status: "error", message: "Resend: " + result.error };
+  return { status: "success", sent_to: email };
 }
 
 // ── NOOP actions (fonctionnalités secondaires, retournent success) ──
@@ -1170,7 +1581,9 @@ const ACTIONS: Record<string, (p: Record<string, unknown>) => Promise<unknown>> 
   log_event: noopAction,
   mark_all_test: noopAction,
   simulate_next_day: noopAction,
-  send_test_email: proxyGas,
+  send_test_email: sendTestEmailResend,
+  send_marketing_email: sendMarketingEmail,
+  cron_send_emails: cronSendEmails,
   send_weekly_report: proxyGas,
   send_custom_email: proxyGas,
   send_session_rapport: proxyGas,
@@ -1200,7 +1613,19 @@ Deno.serve(async (req: Request) => {
     const p = JSON.parse(raw);
 
     // ── Stripe native webhook (checkout.session.completed) ──
+    // FAIL-CLOSED : on exige Stripe-Signature valide.
+    // Si STRIPE_WEBHOOK_SECRET manquant → on rejette (évite exploit "n'importe qui grante premium").
     if (p.type === "checkout.session.completed" && p.data?.object) {
+      const sigHeader = req.headers.get("stripe-signature") || req.headers.get("Stripe-Signature") || "";
+      if (!STRIPE_WEBHOOK_SECRET) {
+        console.error("[stripe] STRIPE_WEBHOOK_SECRET non configuré — webhook rejeté");
+        return json({ status: "error", message: "Stripe webhook: secret not configured" }, 500);
+      }
+      const valid = await verifyStripeSignature(raw, sigHeader, STRIPE_WEBHOOK_SECRET);
+      if (!valid) {
+        console.error("[stripe] Signature invalide — webhook rejeté");
+        return json({ status: "error", message: "Stripe webhook: invalid signature" }, 400);
+      }
       const session = p.data.object;
       const email = String(session.customer_details?.email || session.customer_email || "").trim().toLowerCase();
       if (!email) return json({ status: "error", message: "Stripe webhook: no email found" });
