@@ -1649,26 +1649,23 @@
   <!-- ── TRIAL FLOW INLINE ────────────────────────────────── -->
   <div id="trial-flow" class="hidden px-5 pb-14 -mt-2" style="background:#1C1917">
     <div class="max-w-lg mx-auto">
-      <!-- Stepper progress (3 steps : Chapitres → Diagnostic → Inscription) -->
+      <!-- Stepper progress (2 steps : Diagnostic → Inscription)
+           NB : les IDs fst-2/fst-3 et flow-s2/flow-s3 sont conservés pour minimiser le diff JS.
+                Le dot affiche (i-1) visuellement → 1 pour Diagnostic, 2 pour Inscription. -->
       <div class="flow-stepper" id="flow-stepper">
         <div class="flow-st-item">
-          <div class="flow-st-dot active" id="fst-1">1</div>
-          <span class="flow-st-label active" id="fst-l1">Chapitres</span>
-        </div>
-        <div class="flow-st-line" id="fst-ln1"></div>
-        <div class="flow-st-item">
-          <div class="flow-st-dot" id="fst-2">2</div>
-          <span class="flow-st-label" id="fst-l2">Diagnostic</span>
+          <div class="flow-st-dot active" id="fst-2">1</div>
+          <span class="flow-st-label active" id="fst-l2">Diagnostic</span>
         </div>
         <div class="flow-st-line" id="fst-ln2"></div>
         <div class="flow-st-item">
-          <div class="flow-st-dot" id="fst-3">3</div>
+          <div class="flow-st-dot" id="fst-3">2</div>
           <span class="flow-st-label" id="fst-l3">Inscription</span>
         </div>
       </div>
 
-      <!-- STEP 1 — Chapitres (3ème Brevet) -->
-      <div id="flow-s1" class="flow-step">
+      <!-- STEP 1 — Mort code (conservé pour réouverture multi-niveaux plus tard) -->
+      <div id="flow-s1" class="flow-step hidden">
         <div id="flow-parcours-choice">
           <h2 class="text-2xl font-extrabold text-white text-center mb-2" style="letter-spacing:-.02em">Comment on t'aide ?</h2>
           <p class="text-white/50 text-sm text-center mb-6">Choisis ton parcours — on ajuste tout après.</p>
@@ -2841,10 +2838,12 @@ function startTrialFlow(src) {
 
 // _showResumeBanner + _flowResumeFromSaved SUPPRIMÉS — fresh start toujours
 
-var _flowPrevStep = 1;
+var _flowPrevStep = 2;
 function _flowSetStep(n) {
   var dir = n >= _flowPrevStep ? 'flow-slide-in' : 'flow-slide-back';
-  for (var i = 1; i <= 3; i++) {
+  // Boucle 2..3 : le step 1 "Chapitres" est mort code (flow-s1 hidden en permanence)
+  // Le dot affiche (i-1) pour numéroter 1→Diagnostic, 2→Inscription.
+  for (var i = 2; i <= 3; i++) {
     var el = document.getElementById('flow-s' + i);
     if (el) {
       el.classList.toggle('hidden', i !== n);
@@ -2858,8 +2857,8 @@ function _flowSetStep(n) {
       dot.classList.remove('active', 'done');
       if (lbl) lbl.classList.remove('active', 'done');
       if (i < n) { dot.classList.add('done'); dot.innerHTML = '✓'; if (lbl) lbl.classList.add('done'); }
-      else if (i === n) { dot.classList.add('active'); dot.textContent = i; if (lbl) lbl.classList.add('active'); }
-      else { dot.textContent = i; }
+      else if (i === n) { dot.classList.add('active'); dot.textContent = (i - 1); if (lbl) lbl.classList.add('active'); }
+      else { dot.textContent = (i - 1); }
     }
     // Stepper lines
     if (i < 3) {
