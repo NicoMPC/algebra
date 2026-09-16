@@ -613,11 +613,12 @@ async function updateConfidenceScore(
       nb_exos: nbExos, nb_easy: nbEasy, score, derniere_pratique: todayStr,
     }).eq("id", existing.id);
   } else {
+    // onConflict doit correspondre à unique(code, categorie) (supabase/schema.sql) — un
+    // upsert sur une race condition (2 requêtes simultanées, aucune ne trouve `existing`)
+    // écrase l'autre au lieu de planter (pas de .catch : le builder n'est pas un throw-on-error).
     await adminClient.from("progress").upsert({
       code, niveau: level, categorie, nb_exos: nbExos, nb_easy: nbEasy, score, derniere_pratique: todayStr,
-    }, { onConflict: "code,chapitre" }).catch(() => {
-      // Race condition fallback — another request created it
-    });
+    }, { onConflict: "code,categorie" });
   }
 }
 
@@ -935,6 +936,118 @@ async function saveBoost(p: Record<string, unknown>) {
     });
   }
   return { status: "success" };
+}
+
+// ── GENERATE_ADAPTIVE_BOOST ──────────────────────────────────
+// Moteur de sélection algorithmique du boost quotidien (5 exos), en remplacement
+// de la génération LLM par élève (admin-auto). Pioche dans la banque statique
+// `curriculum` en pondérant par lacune (progress.score) + exclut les exos déjà
+// vus (par texte d'énoncé, cf. scores.enonce). Aucun appel LLM.
+//
+// Respecte G16 (J+1 non négociable) : écrit toujours dans daily_boosts avec
+// date = demain. Additif — n'écrase pas le workflow admin/admin-auto existant,
+// à tester en parallèle avant bascule (cf. CLAUDE.md "Moteur adaptatif").
+
+type ExoQuestion = { num: number; q: string; a: unknown; type?: string; options?: unknown[]; steps?: unknown[]; f?: string; f_disabled?: boolean; lvl?: number };
+type ExoParapluie = { id?: string; title?: string; context?: string; figure?: string; figure_desc?: string; questions: ExoQuestion[] };
+
+function tomorrowParis(): string {
+  const d = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Paris" }));
+  d.setDate(d.getDate() + 1);
+  return d.toISOString().slice(0, 10);
+}
+
+function shuffleArr<T>(arr: T[]): T[] {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+async function generateAdaptiveBoost(p: Record<string, unknown>) {
+  const code = String(p.code || "");
+  if (code.length !== 6) return { status: "error", message: "code élève invalide." };
+
+  const { data: profile } = await adminClient.from("profiles")
+    .select("niveau").eq("code", code).maybeSingle();
+  if (!profile) return { status: "error", message: "Élève introuvable." };
+  const niveau = String(profile.niveau || "");
+
+  // 1. Lacunes — chapitres du niveau triés par progress.score croissant (plus faible = prioritaire).
+  //    Un chapitre jamais pratiqué (pas de ligne progress) reçoit un score neutre (50) : ni prioritaire
+  //    ni ignoré, pour laisser une vraie lacune remonter avant un chapitre juste jamais commencé.
+  const { data: curriculumRows } = await adminClient.from("curriculum")
+    .select("categorie, exos_json").eq("niveau", niveau);
+  if (!curriculumRows || curriculumRows.length === 0) {
+    return { status: "error", message: "Aucun chapitre en banque pour ce niveau." };
+  }
+
+  const { data: progressRows } = await adminClient.from("progress")
+    .select("categorie, score").eq("code", code);
+  const scoreByChap: Record<string, number> = {};
+  (progressRows || []).forEach((r: Record<string, unknown>) => { scoreByChap[String(r.categorie)] = Number(r.score) || 0; });
+
+  const chapitresTries = curriculumRows
+    .map((r: Record<string, unknown>) => ({ categorie: String(r.categorie), score: scoreByChap[String(r.categorie)] ?? 50 }))
+    .sort((a, b) => a.score - b.score);
+
+  // 2. Anti-doublon — tous les énoncés déjà servis à cet élève (curriculum + boost confondus).
+  const { data: seenRows } = await adminClient.from("scores")
+    .select("enonce").eq("code", code).not("enonce", "is", null);
+  const seenEnonces = new Set((seenRows || []).map((r: Record<string, unknown>) => String(r.enonce || "").trim()).filter(Boolean));
+
+  // 3. Pool pondéré — les 3 chapitres les plus faibles fournissent le gros du pool,
+  //    avec un poids décroissant (le plus faible d'abord), le reste du niveau complète si besoin.
+  const curByChap: Record<string, ExoParapluie[]> = {};
+  curriculumRows.forEach((r: Record<string, unknown>) => {
+    const exos = typeof r.exos_json === "string" ? JSON.parse(r.exos_json as string) : (r.exos_json || []);
+    curByChap[String(r.categorie)] = exos as ExoParapluie[];
+  });
+
+  type Candidate = { categorie: string; q: ExoQuestion };
+  const weighted: Candidate[] = [];
+  const weights = [3, 2, 1]; // top-3 chapitres faibles sur-représentés dans le pool
+  chapitresTries.forEach((c, idx) => {
+    const parapluies = curByChap[c.categorie] || [];
+    const questions: ExoQuestion[] = [];
+    parapluies.forEach((par) => (par.questions || []).forEach((q) => questions.push(q)));
+    const notSeen = questions.filter((q) => !seenEnonces.has(String(q.q || "").trim()));
+    const repeat = idx < weights.length ? weights[idx] : 1;
+    for (let i = 0; i < repeat; i++) notSeen.forEach((q) => weighted.push({ categorie: c.categorie, q }));
+  });
+
+  if (weighted.length === 0) {
+    return { status: "error", message: "Banque épuisée pour cet élève sur ce niveau — réassort nécessaire." };
+  }
+
+  // 4. Tirage — 5 exos, en évitant les doublons du même exercice dans le même boost.
+  const picked: Candidate[] = [];
+  const usedQ = new Set<string>();
+  for (const cand of shuffleArr(weighted)) {
+    const key = cand.categorie + "|" + cand.q.num + "|" + cand.q.q;
+    if (usedQ.has(key)) continue;
+    usedQ.add(key);
+    picked.push(cand);
+    if (picked.length >= 5) break;
+  }
+
+  const boostJson = {
+    generatedBy: "algo_v1",
+    exos: picked.map((c, i) => ({ ...c.q, categorie: c.categorie, boostIdx: i })),
+  };
+
+  const tomorrow = tomorrowParis();
+  const { data: existing } = await adminClient.from("daily_boosts")
+    .select("id").eq("code", code).eq("date", tomorrow).maybeSingle();
+  if (existing) {
+    await adminClient.from("daily_boosts").update({ boost_json: boostJson, exos_done: 0 }).eq("id", existing.id);
+  } else {
+    await adminClient.from("daily_boosts").insert({ code, date: tomorrow, boost_json: boostJson, exos_done: 0 });
+  }
+
+  return { status: "success", niveau, chapitresCibles: chapitresTries.slice(0, 3).map((c) => c.categorie), nbExosPool: weighted.length, boost: boostJson };
 }
 
 // ── SUBMIT_FEEDBACK ─────────────────────────────────────────
@@ -1579,6 +1692,7 @@ const ACTIONS: Record<string, (p: Record<string, unknown>) => Promise<unknown>> 
   save_score: saveScore,
   save_scores_batch: saveScoresBatch,
   save_boost: saveBoost,
+  generate_adaptive_boost: generateAdaptiveBoost,
   save_calibration_batch: saveCalibrationBatch,
   generate_diagnostic: generateDiagnostic,
   get_progress: getProgress,
