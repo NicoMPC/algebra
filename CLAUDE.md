@@ -335,6 +335,7 @@ docs/roadmap.md                → Priorités + calendrier
 docs/messages.md               → Voice & tone guide
 docs/workflow-quotidien.md     → Workflow quotidien Nicolas (6 onglets admin)
 docs/prompt-generation-exos.md → Référence unique génération exercices (analyse + prescription + fabrication)
+docs/roadmap-refonte-6e-3e.md  → État + calendrier de reprise de la refonte 6e-3e (ATTENTE TOKEN) — lire en premier si une session reprend ce chantier
 ```
 
 ### Playbooks — diagnostic par domaine
