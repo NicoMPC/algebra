@@ -468,7 +468,8 @@ async function login(p: Record<string, unknown>) {
   }
 
   // ── Freemium status ──
-  // premium_end = date d'expiration premium (ex: 2026-06-30 pour Brevet 2026)
+  // premium_end = null par défaut (accès one-shot non expirant). Réservé à un usage
+  // futur (ex: offre limitée dans le temps) — si renseigné, coupe l'accès après la date.
   let isPremium = premium;
   if (isPremium && user.premium_end) {
     const endDate = String(user.premium_end).substring(0, 10);
@@ -1057,10 +1058,16 @@ async function stripeWebhook(p: Record<string, unknown>) {
   const email = String(p.email || "").trim().toLowerCase();
   if (!email) return { status: "error", message: "email requis." };
 
-  await adminClient.from("profiles").update({
-    premium: true,
-    premium_end: String(p.premium_end || "2026-06-30"),
-  }).eq("email", email);
+  // Accès one-shot non expirant : premium_end reste null (les checks isPremium
+  // partout dans ce fichier ne testent la date que si premium_end est renseigné).
+  // niveau = provient des metadata du Payment Link Stripe (6EME/5EME/4EME/3EME),
+  // conservé pour reporting admin — l'accès lui-même n'est pas restreint par niveau
+  // côté serveur (un profil = un niveau, cf. profiles.level).
+  const update: Record<string, unknown> = { premium: true, premium_end: null };
+  const niveau = String(p.niveau || "").trim().toUpperCase();
+  if (niveau) update.premium_niveau = niveau;
+
+  await adminClient.from("profiles").update(update).eq("email", email);
 
   return { status: "success" };
 }
@@ -1292,6 +1299,22 @@ function emailCTA(href: string, label: string, gradient = false): string {
   );
 }
 
+// Un Payment Link Stripe par niveau (29,99€, accès non expirant) — cf. metadata.niveau
+// configuré sur chaque lien, lu par le webhook (stripeWebhook ci-dessous).
+const STRIPE_LINKS_PAR_NIVEAU: Record<string, string> = {
+  "6EME": "https://buy.stripe.com/14A8wRgky4rHf0Q3yvb3q03",
+  "5EME": "https://buy.stripe.com/00waEZ0lA6zP1a0glhb3q04",
+  "4EME": "https://buy.stripe.com/6oU4gBgkybU9g4Uglhb3q05",
+  "3EME": "https://buy.stripe.com/3cI9AVd8maQ51a05GDb3q06",
+};
+function stripeUrlForNiveau(niveau: string): string {
+  return STRIPE_LINKS_PAR_NIVEAU[niveau] || STRIPE_LINKS_PAR_NIVEAU["3EME"];
+}
+function niveauLabel(niveau: string): string {
+  const labels: Record<string, string> = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "1ERE": "1ère" };
+  return labels[niveau] || "sa classe";
+}
+
 function emailHighlight(text: string): string {
   return (
     '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:20px 0;"><tr>' +
@@ -1372,7 +1395,7 @@ function templateJ3(prenom: string, email: string, objectif: string): { subject:
 
 // ── J+7 : Bilan semaine 1 + soft conversion ─────────────────
 
-function templateJ7(prenom: string, email: string, objectif: string): { subject: string; html: string } {
+function templateJ7(prenom: string, email: string, objectif: string, niveau: string): { subject: string; html: string } {
   const variants: Record<string, string> = {
     lacunes: '<li>Identifié ses lacunes précises — pas celles de sa classe, les siennes</li><li>Travaillé sur des exercices vraiment ciblés</li><li>Posé les bases d\'un rattrapage durable</li>',
     chapitre_jour: '<li>Établi une routine quotidienne de travail</li><li>Progressé chapitre par chapitre à son rythme</li><li>Prouvé qu\'il pouvait tenir sur la durée</li>',
@@ -1388,8 +1411,8 @@ function templateJ7(prenom: string, email: string, objectif: string): { subject:
       '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 8px;">En une semaine, ' + prenom + ' a :</p>' +
       '<ul style="color:#374151;font-size:16px;line-height:1.8;padding-left:20px;margin:0 0 16px;">' +
       (variants[objectif] || variants.lacunes) + '</ul>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 0;">' + prenom + ' a accès à <strong>1 chapitre complet gratuit</strong> + ses boosts quotidiens. Pour débloquer tous les chapitres jusqu\'au Brevet, c\'est <strong>29,99 € en une fois</strong> — pas d\'abonnement.</p>' +
-      emailCTA("https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02", "Débloquer tous les chapitres →", true) +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 0;">' + prenom + ' a accès à <strong>1 chapitre complet gratuit</strong> + ses boosts quotidiens. Pour débloquer tout le programme de ' + niveauLabel(niveau) + ', c\'est <strong>29,99 € en une fois</strong> — pas d\'abonnement, accès non expirant.</p>' +
+      emailCTA(stripeUrlForNiveau(niveau), "Débloquer tous les chapitres →", true) +
       '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Si vous avez des questions avant de décider, répondez à cet email — je suis là.</p>' +
       '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0;">Merci pour votre confiance,</p>'
     ),
@@ -1398,24 +1421,26 @@ function templateJ7(prenom: string, email: string, objectif: string): { subject:
 
 // ── J+14 : Conversion nudge (freemium → premium) ───────────
 
-function templateJ14(prenom: string, email: string): { subject: string; html: string } {
+function templateJ14(prenom: string, email: string, niveau: string): { subject: string; html: string } {
   return {
     subject: prenom + " progresse — et si on passait à la vitesse supérieure ?",
     html: emailWrap(email, "2 semaines déjà — il est temps de passer aux choses sérieuses.",
       '<h1 style="color:#1e293b;font-size:22px;font-weight:800;margin:0 0 20px;">2 semaines déjà 🎉</h1>' +
       '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Bonjour,</p>' +
       '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">' + prenom + ' utilise Matheux depuis 2 semaines. Peu d\'élèves tiennent aussi longtemps — c\'est un vrai signal de motivation.</p>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 16px;">Aujourd\'hui, ' + prenom + ' travaille sur <strong>1 chapitre gratuit</strong>. Mais le programme de 3ème en compte plus d\'une dizaine — et le Brevet approche.</p>' +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 16px;">Aujourd\'hui, ' + prenom + ' travaille sur <strong>1 chapitre gratuit</strong>. Mais le programme de ' + niveauLabel(niveau) + ' en compte plus d\'une dizaine.</p>' +
       '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 20px;"><tr><td style="background:#f8fafc;border-left:3px solid #1E40AF;border-radius:0 6px 6px 0;padding:16px 20px;">' +
       '<p style="color:#1e293b;font-size:15px;line-height:1.8;margin:0 0 6px;"><strong>Avec l\'accès complet :</strong></p>' +
       '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 4px;">✅ Tous les chapitres du programme</p>' +
-      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 4px;">✅ Exercices style Brevet</p>' +
+      (niveau === "3EME"
+        ? '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 4px;">✅ Exercices style Brevet</p>'
+        : '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 4px;">✅ Exercices ciblés sur ses erreurs</p>') +
       '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 4px;">✅ Parcours adapté à ses lacunes</p>' +
-      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0;">✅ Accès jusqu\'au Brevet 2026</p>' +
+      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0;">✅ Accès non expirant</p>' +
       '</td></tr></table>' +
       '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 0;"><strong>29,99 € en une fois</strong> — pas d\'abonnement, pas de renouvellement, pas de surprise.</p>' +
-      emailCTA("https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02", "Débloquer tout le programme →", true) +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Pas de pression — ' + prenom + ' garde son chapitre gratuit et ses boosts dans tous les cas. Mais si le Brevet est l\'objectif, le plus tôt sera le mieux.</p>' +
+      emailCTA(stripeUrlForNiveau(niveau), "Débloquer tout le programme →", true) +
+      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Pas de pression — ' + prenom + ' garde son chapitre gratuit et ses boosts dans tous les cas. Mais plus tôt ' + prenom + ' comble ses lacunes, plus vite ça devient un réflexe.</p>' +
       '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0;">Une question ? Répondez directement à cet email.</p>'
     ),
   };
@@ -1428,6 +1453,7 @@ async function sendMarketingEmail(p: Record<string, unknown>) {
   const prenom = String(p.name || p.prenom || "").trim();
   const day = Number(p.day ?? 0);
   const objectif = String(p.objectif || "lacunes").trim();
+  const niveau = String(p.niveau || p.level || "3EME").trim().toUpperCase();
 
   if (!email || !prenom) return { status: "error", message: "email et name requis." };
 
@@ -1446,8 +1472,8 @@ async function sendMarketingEmail(p: Record<string, unknown>) {
   if (day === 0) tpl = templateJ0(prenom, email);
   else if (day === 1) tpl = templateJ1(prenom, email);
   else if (day === 3) tpl = templateJ3(prenom, email, objectif);
-  else if (day === 7) tpl = templateJ7(prenom, email, objectif);
-  else if (day === 14) tpl = templateJ14(prenom, email);
+  else if (day === 7) tpl = templateJ7(prenom, email, objectif, niveau);
+  else if (day === 14) tpl = templateJ14(prenom, email, niveau);
   else return { status: "error", message: "Jour invalide : " + day + ". Valeurs acceptées : 0, 1, 3, 7, 14." };
 
   const result = await resendSend(email, tpl.subject, tpl.html);
@@ -1473,7 +1499,7 @@ async function cronSendEmails(_p: Record<string, unknown>) {
 
   // Tous les profils non-admin, non-test
   const { data: profiles } = await adminClient.from("profiles")
-    .select("code, prenom, email, date_inscription, objectif, premium")
+    .select("code, prenom, email, date_inscription, objectif, premium, niveau")
     .eq("is_admin", false)
     .eq("is_test", false);
 
@@ -1502,6 +1528,7 @@ async function cronSendEmails(_p: Record<string, unknown>) {
         name: p.prenom,
         day,
         objectif: p.objectif || "lacunes",
+        niveau: p.niveau,
       });
 
       if (result && (result as Record<string, unknown>).status === "success") {
@@ -1521,6 +1548,7 @@ async function sendTestEmailResend(p: Record<string, unknown>) {
   const email = String(p.targetEmail || "").trim();
   const prenom = String(p.targetPrenom || "Nicolas").trim();
   const day = Number(p.day ?? 0);
+  const niveau = String(p.niveau || p.level || "3EME").trim().toUpperCase();
   if (!email) return { status: "error", message: "targetEmail requis." };
 
   // Bypass dédup pour tests : on envoie directement
@@ -1528,8 +1556,8 @@ async function sendTestEmailResend(p: Record<string, unknown>) {
   if (day === 0) tpl = templateJ0(prenom, email);
   else if (day === 1) tpl = templateJ1(prenom, email);
   else if (day === 3) tpl = templateJ3(prenom, email, "lacunes");
-  else if (day === 7) tpl = templateJ7(prenom, email, "lacunes");
-  else if (day === 14) tpl = templateJ14(prenom, email);
+  else if (day === 7) tpl = templateJ7(prenom, email, "lacunes", niveau);
+  else if (day === 14) tpl = templateJ14(prenom, email, niveau);
   else return { status: "error", message: "Jour invalide : " + day };
 
   const result = await resendSend(email, tpl.subject, tpl.html);
@@ -1629,7 +1657,10 @@ Deno.serve(async (req: Request) => {
       const session = p.data.object;
       const email = String(session.customer_details?.email || session.customer_email || "").trim().toLowerCase();
       if (!email) return json({ status: "error", message: "Stripe webhook: no email found" });
-      const result = await stripeWebhook({ email, premium_end: "2026-06-30" });
+      // niveau du Payment Link acheté : metadata.niveau (configuré sur chaque Payment
+      // Link Stripe, un par niveau) avec fallback client_reference_id si jamais utilisé.
+      const niveau = String(session.metadata?.niveau || session.client_reference_id || "");
+      const result = await stripeWebhook({ email, niveau });
       return json(result);
     }
 

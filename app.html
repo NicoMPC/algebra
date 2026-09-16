@@ -3542,16 +3542,16 @@ function _flowShowUpsell() {
       'Ton programme cible ' + weakMsg +
     '</div>' +
     '<p style="color:rgba(255,255,255,.55);font-size:.85rem;line-height:1.6;margin-bottom:1.5rem">' +
-      '22 chapitres · 440 exercices · Accès complet jusqu\'au Brevet 2026' +
+      'Programme complet de ' + _flowLevel.replace('EME', 'ème').replace('1ERE','1ère') + ' · Accès non expirant' +
     '</p>' +
 
-    // CTA principal — Stripe
-    '<a href="https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02" ' +
+    // CTA principal — Stripe (lien propre au niveau sélectionné)
+    '<a href="' + (STRIPE_LINKS_PAR_NIVEAU[_flowLevel] || STRIPE_LINKS_PAR_NIVEAU['3EME']) + '" ' +
     'style="display:block;width:100%;padding:1rem 1.25rem;background:linear-gradient(135deg,#EA580C,#C2410C);border:none;border-radius:14px;color:#fff;font-family:Syne,sans-serif;font-weight:800;font-size:1.05rem;cursor:pointer;text-decoration:none;text-align:center;box-shadow:0 6px 24px rgba(234,88,12,.35);transition:transform .15s" ' +
     'onmouseover="this.style.transform=\'scale(1.02)\'" onmouseout="this.style.transform=\'none\'">' +
       'Débloquer tout le programme — 29,99 €' +
     '</a>' +
-    '<p style="color:rgba(255,255,255,.4);font-size:.72rem;margin-top:.4rem;margin-bottom:1rem">Paiement unique · Accès jusqu\'au Brevet 2026</p>' +
+    '<p style="color:rgba(255,255,255,.4);font-size:.72rem;margin-top:.4rem;margin-bottom:1rem">Paiement unique · Accès non expirant</p>' +
 
     // CTA secondaire — gratuit
     '<button onclick="_flowSkipUpsell()" ' +
@@ -4434,8 +4434,15 @@ function showLockedOverlay() {
   document.body.appendChild(ov);
 }
 
-function _stripeUrl(email, code) {
-  var base = 'https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02';
+var STRIPE_LINKS_PAR_NIVEAU = {
+  '6EME': 'https://buy.stripe.com/14A8wRgky4rHf0Q3yvb3q03',
+  '5EME': 'https://buy.stripe.com/00waEZ0lA6zP1a0glhb3q04',
+  '4EME': 'https://buy.stripe.com/6oU4gBgkybU9g4Uglhb3q05',
+  '3EME': 'https://buy.stripe.com/3cI9AVd8maQ51a05GDb3q06'
+};
+function _stripeUrl(email, code, level) {
+  var _niveau = level || (S.prof && S.prof.level) || '';
+  var base = STRIPE_LINKS_PAR_NIVEAU[_niveau] || STRIPE_LINKS_PAR_NIVEAU['3EME'];
   var params = [];
   var _code = code || (S.prof && S.prof.code) || '';
   var _email = email || '';
@@ -10573,7 +10580,7 @@ function copySequenceEmail(code, type) {
   if (!st) return;
   var prenom = st.prenom || 'ton élève';
   var objectif = st.objectif || '';
-  var stripeLink = _stripeUrl(st.email, st.code);
+  var stripeLink = _stripeUrl(st.email, st.code, st.level || st.niveau);
   var subject = '', body = '';
 
   if (type === 'J+3') {
