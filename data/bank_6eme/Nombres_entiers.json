@@ -1,0 +1,359 @@
+[
+  {
+    "id": "NENT_01",
+    "title": "Les fournitures du club",
+    "context": "Le club de robotique de Karim doit acheter du matériel avant la compétition régionale. Karim note toutes les dépenses dans un seul calcul et doit respecter l'ordre des opérations pour ne pas se tromper de budget.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Le club achète $4$ capteurs à $15$ € l'un et $3$ câbles à $8$ € l'un. Calcule le montant total dépensé en une seule expression : $4 \\times 15 + 3 \\times 8$.",
+        "a": "84",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On calcule d'abord les deux multiplications, avant l'addition : $4 \\times 15$ et $3 \\times 8$.",
+          "$4 \\times 15 = 60$ et $3 \\times 8 = 24$.",
+          "On additionne les deux résultats : $60 + 24 = \\;?$."
+        ],
+        "f": "$\\text{Priorité : on calcule d'abord } \\times \\text{ et } \\div \\text{, puis } + \\text{ et } -$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Karim recompte une autre dépense : $6 \\times 7 - 2 \\times 9$. Quel est le résultat ?",
+        "a": "24",
+        "type": "qcm",
+        "options": ["24", "360", "270"],
+        "steps": [
+          "On effectue d'abord les multiplications : $6 \\times 7$ et $2 \\times 9$.",
+          "$6 \\times 7 = 42$ et $2 \\times 9 = 18$. On soustrait ensuite : $42 - 18 = \\;?$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Karim affirme : « Dans $10 - 2 \\times 3$, il faut d'abord calculer $10 - 2$ avant de multiplier par $3$. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "On rappelle la règle : dans une expression sans parenthèses, on calcule les multiplications avant les soustractions.",
+          "Ici, il faut calculer $2 \\times 3$ en premier, pas $10 - 2$. L'affirmation de Karim respecte-t-elle cette règle ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Calcule $5 \\times 6 - 4 \\times 5$.",
+        "a": "10",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Multiplications d'abord : $5 \\times 6$ et $4 \\times 5$.",
+          "$5 \\times 6 = 30$ et $4 \\times 5 = 20$. Termine avec $30 - 20 = \\;?$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Le trésorier du club vérifie : $3 \\times (8+2) - 5$. Quel est le résultat ?",
+        "a": "25",
+        "type": "qcm",
+        "options": ["21", "25", "15"],
+        "steps": [
+          "Les parenthèses se calculent en premier : $8 + 2 = 10$.",
+          "On multiplie ensuite : $3 \\times 10 = 30$. Termine par la soustraction : $30 - 5 = \\;?$."
+        ],
+        "f": "$\\text{Parenthèses d'abord, puis } \\times, \\div\\text{, puis } +, -$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "NENT_02",
+    "title": "Les paquets de bonbons",
+    "context": "Léa organise l'anniversaire de sa petite sœur et doit répartir des bonbons équitablement dans des sachets, sans jamais casser un bonbon. Elle utilise la division euclidienne pour savoir combien de sachets complets elle peut remplir.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Léa a $47$ bonbons à répartir dans des sachets de $5$ bonbons. Combien de sachets complets peut-elle remplir ?",
+        "a": "9",
+        "type": "qcm",
+        "options": ["10", "8", "9"],
+        "steps": [
+          "On cherche combien de fois $5$ tient dans $47$ : c'est la division euclidienne de $47$ par $5$.",
+          "$5 \\times 9 = 45$ et $5 \\times 10 = 50$. Le nombre de sachets complets est le plus grand multiple de $5$ qui ne dépasse pas $47$ : $\\;?$."
+        ],
+        "f": "$\\text{Division euclidienne : dividende} = \\text{diviseur} \\times \\text{quotient} + \\text{reste}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Avec les $47$ bonbons de la question précédente, combien en reste-t-il une fois les $9$ sachets de $5$ remplis ?",
+        "a": "2",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On calcule le nombre de bonbons déjà utilisés : $5 \\times 9 = 45$.",
+          "Le reste est $47 - 45 = \\;?$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Léa range maintenant $63$ billes dans des boîtes de $8$. Combien de boîtes complètes remplit-elle ?",
+        "a": "7",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On cherche le plus grand multiple de $8$ qui ne dépasse pas $63$.",
+          "$8 \\times 7 = 56$ et $8 \\times 8 = 64$. Le nombre de boîtes complètes est $\\;?$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Léa affirme : « Avec $63$ billes rangées par $8$, il reste $7$ billes non rangées. »",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "On a trouvé que $7$ boîtes complètes utilisent $8 \\times 7 = 56$ billes.",
+          "Le reste est $63 - 56 = \\;?$ — compare avec l'affirmation de Léa."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Léa veut répartir $95$ stylos dans des trousses de $12$ stylos, sans en casser aucun. Combien de trousses pleines obtient-elle, et combien de stylos restent hors trousse ?",
+        "a": "7 trousses et 11 stylos",
+        "type": "qcm",
+        "options": ["8 trousses et 1 stylo", "7 trousses et 11 stylos", "7 trousses et 12 stylos"],
+        "steps": [
+          "On cherche le plus grand multiple de $12$ qui ne dépasse pas $95$ : $12 \\times 7 = 84$ et $12 \\times 8 = 96$.",
+          "Le quotient est $7$. Le reste est $95 - 84 = \\;?$ (il doit être strictement inférieur à $12$)."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "NENT_03",
+    "title": "Les multiples du marché",
+    "context": "Adam aide sur le marché de fruits et légumes de son quartier tous les samedis. Il doit organiser des caisses en respectant des règles de multiples et de divisibilité pour ne rien gaspiller.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Adam a $84$ oranges à ranger en caisses de $6$, sans qu'il en reste aucune. Combien de caisses complètes peut-il remplir ?",
+        "a": "14",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On teste si $84$ est un multiple de $6$ : $84 = 6 \\times \\;?$.",
+          "Cherche le nombre qui, multiplié par $6$, donne $84$."
+        ],
+        "f": "$\\text{Un nombre } a \\text{ est multiple de } b \\text{ si } a = b \\times k$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Adam affirme : « $135$ est un multiple de $5$. »",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Rappel : un nombre est un multiple de $5$ si son chiffre des unités est $0$ ou $5$.",
+          "Quel est le chiffre des unités de $135$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Parmi ces nombres de cageots, lequel est divisible à la fois par $2$ et par $3$ (donc par $6$) ?",
+        "a": "522",
+        "type": "qcm",
+        "options": ["341", "236", "522"],
+        "steps": [
+          "Un nombre divisible par $6$ doit être divisible par $2$ ET par $3$ en même temps.",
+          "Teste chaque nombre : est-il pair ? La somme de ses chiffres est-elle un multiple de $3$ ?"
+        ],
+        "f": "$\\text{Divisible par } 6 \\Leftrightarrow \\text{divisible par } 2 \\text{ et par } 3$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Adam a $126$ pommes. Il veut faire des lots identiques de $9$ pommes, sans reste. Combien de lots peut-il faire ?",
+        "a": "14",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Somme des chiffres de $126$ : $1+2+6=9$, multiple de $9$ → $126$ est divisible par $9$.",
+          "$126 = 9 \\times \\;?$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Adam doit choisir un nombre de caisses qui divise à la fois $60$ kiwis et $84$ kiwis, sans reste dans les deux cas. Lequel de ces nombres convient ?",
+        "a": "12",
+        "type": "qcm",
+        "options": ["12", "8", "9"],
+        "steps": [
+          "Un diviseur commun doit diviser $60$ ET $84$ exactement.",
+          "Teste $12$ : $60 \\div 12 = \\;?$ et $84 \\div 12 = \\;?$ — les deux résultats sont-ils des nombres entiers ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "NENT_04",
+    "title": "Le tournoi de Noé",
+    "context": "Noé organise un tournoi de jeux de société inter-classes pour la fête de fin d'année. Il doit gérer les inscriptions, former les équipes et vérifier son budget en utilisant tout ce qu'il connaît sur les nombres entiers.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "$124$ élèves se sont inscrits au tournoi. Noé veut former des équipes de $8$ joueurs. Combien d'équipes complètes peut-il former ?",
+        "a": "15",
+        "type": "qcm",
+        "options": ["16", "15", "14"],
+        "steps": [
+          "On cherche le plus grand multiple de $8$ qui ne dépasse pas $124$.",
+          "$8 \\times 15 = 120$ et $8 \\times 16 = 128$. Combien d'équipes complètes peut-il former ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Combien d'élèves restent sans équipe après avoir formé les $15$ équipes de $8$ (question précédente) ?",
+        "a": "4",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$15$ équipes de $8$ utilisent $8 \\times 15 = 120$ élèves.",
+          "Le reste est $124 - 120 = \\;?$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Noé affirme : « Le nombre d'inscrits, $124$, est un multiple de $4$. »",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Rappel : un nombre est multiple de $4$ si ses deux derniers chiffres forment un nombre multiple de $4$.",
+          "Les deux derniers chiffres de $124$ sont $24$. $24$ est-il un multiple de $4$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Pour l'achat des lots, Noé calcule : $7 \\times 12 - 3 \\times 9 + 5$. Quel est le résultat ?",
+        "a": "62",
+        "type": "qcm",
+        "options": ["734", "57", "62"],
+        "steps": [
+          "Priorité : multiplications d'abord : $7 \\times 12 = 84$ et $3 \\times 9 = 27$.",
+          "On calcule ensuite de gauche à droite : $84 - 27 = 57$, puis $57 + 5 = \\;?$."
+        ],
+        "f": "$\\text{Priorités : } \\times, \\div \\text{ avant } +, -$",
+        "f_disabled": false,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Noé a un budget de $150$ € pour les lots. Il achète des jeux à $18$ € pièce, le maximum possible. Combien d'euros lui reste-t-il après cet achat ?",
+        "a": "6",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "On cherche le plus grand multiple de $18$ qui ne dépasse pas $150$ : $18 \\times 8 = 144$.",
+          "L'argent restant est $150 - 144 = \\;?$ €."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

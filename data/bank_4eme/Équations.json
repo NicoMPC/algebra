@@ -1,0 +1,358 @@
+[
+  {
+    "id": "EQ_01",
+    "title": "L'âge de la cousine de Noé",
+    "context": "Noé essaie de deviner l'âge de sa cousine à partir d'indices que ses parents lui donnent, chacun traduit par une équation simple à résoudre.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Résous l'équation $x + 7 = 15$.",
+        "a": "8",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Pour isoler $x$, soustrais $7$ des deux côtés de l'égalité.",
+          "$x = 15 - 7 = ?$"
+        ],
+        "f": "$x + a = b \\Rightarrow x = b - a$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Résous l'équation $5x = 35$.",
+        "a": "7",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Pour isoler $x$, divise les deux côtés de l'égalité par $5$.",
+          "$x = \\dfrac{35}{5} = ?$"
+        ],
+        "f": "$ax = b \\Rightarrow x = \\dfrac{b}{a}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Pour résoudre $x - 4 = 9$, quelle opération doit-on faire sur les deux membres de l'égalité ?",
+        "a": "Ajouter $4$",
+        "type": "qcm",
+        "options": ["Soustraire $4$", "Ajouter $4$", "Multiplier par $4$"],
+        "steps": [
+          "Pour isoler $x$, il faut annuler le $-4$ présent avec $x$.",
+          "Quelle opération inverse de la soustraction par $4$ permet cela ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Résous l'équation $x - 4 = 9$.",
+        "a": "$13$",
+        "type": "qcm",
+        "options": ["$5$", "$36$", "$13$"],
+        "steps": [
+          "Ajoute $4$ aux deux membres de l'égalité.",
+          "$x = 9 + 4 = ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Noé affirme : « La solution de l'équation $6x = 42$ est $x = 8$. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Calcule la vraie solution : $x = \\dfrac{42}{6} = ?$.",
+          "Compare ce résultat avec $8$. Est-ce la bonne valeur ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "EQ_02",
+    "title": "Le forfait téléphonique d'Inès",
+    "context": "Inès compare des forfaits de téléphone. Le prix total dépend d'un abonnement fixe et d'un coût par Go de données consommées, modélisé par une équation du type $ax + b = c$.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Résous l'équation $3x + 4 = 19$.",
+        "a": "5",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Isole d'abord le terme en $x$ en soustrayant $4$ des deux côtés : $3x = 19 - 4 = ?$.",
+          "Divise ensuite par $3$ : $x = \\dfrac{?}{3}$."
+        ],
+        "f": "$ax + b = c \\Rightarrow x = \\dfrac{c-b}{a}$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Un forfait coûte $2x + 10$ € pour $x$ Go de données, et Inès a payé $24$ €. Quelle équation doit-elle résoudre pour trouver $x$ ?",
+        "a": "$2x + 10 = 24$",
+        "type": "qcm",
+        "options": ["$2x + 10 = 24$", "$2x - 10 = 24$", "$2 + 10x = 24$"],
+        "steps": [
+          "Le prix payé par Inès est donné par l'expression $2x + 10$.",
+          "Pose l'égalité entre cette expression et le montant réellement payé, $24$ €."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Inès affirme : « Pour résoudre l'équation $2x + 10 = 24$, il faut d'abord diviser les deux membres par $10$. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Pour isoler le terme en $x$, il faut d'abord annuler le nombre qui est additionné à ce terme.",
+          "Quelle opération permet réellement d'isoler $2x$ dans cette équation ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Un autre forfait coûte $4x + 6$ € pour $x$ Go. Inès a payé $34$ €. Combien de Go a-t-elle consommés ?",
+        "a": "7",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Pose l'équation $4x + 6 = 34$, puis isole le terme en $x$ : $4x = 34 - 6 = ?$.",
+          "Divise par $4$ : $x = \\dfrac{?}{4}$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Résous l'équation $-2x + 9 = 1$.",
+        "a": "$4$",
+        "type": "qcm",
+        "options": ["$-4$", "$4$", "$5$"],
+        "steps": [
+          "Isole le terme en $x$ : $-2x = 1 - 9 = ?$.",
+          "Divise par $-2$ (attention aux signes) : $x = \\dfrac{?}{-2}$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "EQ_03",
+    "title": "La compétition de natation de Lucas",
+    "context": "Lucas compare sa progression en natation à celle d'un ami. Les deux évolutions sont modélisées par des expressions contenant $x$ des deux côtés d'une égalité.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Pour résoudre une équation du type $ax + b = cx + d$, que doit-on faire en premier ?",
+        "a": "Regrouper tous les termes en $x$ d'un même côté",
+        "type": "qcm",
+        "options": ["Diviser les deux membres par $a$", "Ajouter $d$ des deux côtés", "Regrouper tous les termes en $x$ d'un même côté"],
+        "steps": [
+          "Le but est d'avoir tous les termes en $x$ d'un côté, et les nombres de l'autre.",
+          "Quelle est la première étape logique pour y parvenir ?"
+        ],
+        "f": "$ax+b=cx+d \\Rightarrow (a-c)x = d - b$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Résous l'équation $5x + 2 = 3x + 10$.",
+        "a": "4",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Regroupe les termes en $x$ à gauche : $5x - 3x = 10 - 2$.",
+          "$2x = 8$. Divise par $2$ : $x = ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Résous l'équation $2x - 5 = 4x - 13$.",
+        "a": "4",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Regroupe les termes en $x$ à gauche : $2x - 4x = -13 + 5$.",
+          "$-2x = -8$. Divise par $-2$ : $x = ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Lucas affirme : « L'équation $3x + 4 = 3x + 9$ n'a aucune solution. »",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Regroupe les termes en $x$ : $3x - 3x = 9 - 4$.",
+          "Que devient l'égalité ? Est-elle vraie pour une valeur de $x$, ou n'est-elle jamais vraie ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Lucas nage $x$ longueurs de plus chaque semaine. Après $3$ semaines, il a fait $4x + 6$ longueurs. Son ami en a fait $2x + 20$. Quelle équation permet de trouver la valeur de $x$ pour laquelle ils ont fait le même nombre de longueurs ?",
+        "a": "$4x + 6 = 2x + 20$",
+        "type": "qcm",
+        "options": ["$4x + 6 = 2x + 20$", "$4x + 6 = 2x - 20$", "$4x - 6 = 2x + 20$"],
+        "steps": [
+          "Les deux expressions représentent le nombre de longueurs nagées par chacun.",
+          "Pose l'égalité entre les deux expressions pour qu'elles soient identiques."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "EQ_04",
+    "title": "Le concert de fin d'année",
+    "context": "La classe de Jade vend des billets pour financer un voyage scolaire. Jade doit traduire plusieurs situations concrètes en équations, puis les résoudre pour comparer deux groupes d'élèves.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "La classe a déjà $80$ € et vend des billets à $5$ € pièce. Combien de billets $x$ doit-elle vendre pour atteindre $250$ € au total ?",
+        "a": "34",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Traduis la situation par l'équation $5x + 80 = 250$.",
+          "Isole $x$ : $5x = 250 - 80 = ?$, puis divise par $5$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Le groupe A commence avec $80$ € et vend des billets à $5$ € (recette $5x+80$). Le groupe B commence avec $140$ € et vend des billets à $3$ € (recette $3x+140$). Quelle équation permet de trouver le nombre de billets $x$ pour lequel les deux groupes ont la même recette ?",
+        "a": "$5x+80=3x+140$",
+        "type": "qcm",
+        "options": ["$5x+80=3x-140$", "$5x+80=3x+140$", "$5x-80=3x+140$"],
+        "steps": [
+          "Les deux recettes sont données par les expressions $5x+80$ et $3x+140$.",
+          "Pose l'égalité entre les deux expressions pour qu'elles soient égales."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Résous l'équation trouvée à la question précédente pour connaître le nombre de billets $x$ pour lequel les deux groupes ont la même recette.",
+        "a": "30",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Regroupe les termes en $x$ : $5x - 3x = 140 - 80$.",
+          "$2x = 60$. Divise par $2$ : $x = ?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Jade affirme : « Avant que les deux recettes ne s'égalisent, le groupe A avait forcément plus d'argent que le groupe B, car il vend ses billets plus cher. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Calcule la recette de chaque groupe pour $x = 0$ billet vendu : le groupe A a $80$ €, le groupe B a $140$ €.",
+          "Avant que les deux recettes ne s'égalisent à $30$ billets, lequel des deux groupes a le plus d'argent ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Après avoir vendu $40$ billets, quelle est la recette du groupe A (donnée par $5x+80$) ?",
+        "a": "$280$ €",
+        "type": "qcm",
+        "options": ["$200$ €", "$120$ €", "$280$ €"],
+        "steps": [
+          "Remplace $x$ par $40$ dans l'expression $5x + 80$.",
+          "$5 \\times 40 + 80 = ? + 80 = \\;?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

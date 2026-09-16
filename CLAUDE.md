@@ -2,15 +2,21 @@
 
 > Document unique. Point d'entrée + règles métier + contraintes techniques.
 > Tout ce qui n'est pas ici est dans docs/ ou dans le code.
-> Lancé le 18 mars 2026
+> Lancé le 18 mars 2026 · Relancé pour la rentrée 2026-2027 (16 sept. 2026)
+
+---
+
+## ⚠️ Branche de production — piège vécu
+
+Le repo GitHub (`NicoMPC/algebra`) a plusieurs branches. **`main` est la seule branche déployée en prod** (GitHub Pages, confirmé via `gh api repos/NicoMPC/algebra/pages` → `source.branch: main`) — c'est elle que sert matheux.fr. La branche par défaut du dépôt (`root`) est un ancien état (GAS + Google Sheets, jamais migré Supabase) : si tu clones sans vérifier, tu atterris dessus et tout ce que tu analyses est faux. **Toujours vérifier `git branch -a` + checkout `main` avant toute analyse ou modification.**
 
 ---
 
 ## 0. Projet en 30 secondes
 
-Matheux (matheux.fr) est une SPA vanilla JS (`app.html` ~13000L) + backend Supabase Edge Functions (`supabase/functions/api/index.ts` ~900L) sur PostgreSQL + GAS pour emails uniquement (`backend.js`, legacy).
-Soutien scolaire maths adaptatif, 3ème Brevet 2026 (focus actuel).
-Fondateur solo : Nicolas Follezou. Objectif : 10 premiers vrais élèves.
+Matheux (matheux.fr) est une landing Next.js statique (`index.html`, build exporté, source hors repo) + une SPA vanilla JS pour l'app (`app.html` ~13000L) + backend Supabase Edge Functions (`supabase/functions/api/index.ts`) sur PostgreSQL + GAS legacy (`backend.js`, plus aucune action métier, emails gérés par Resend).
+Soutien scolaire maths adaptatif, **6ème → 3ème** (élargi depuis le focus 3ème Brevet 2026 initial — le Brevet 2026 est passé, la rentrée 2026-2027 est l'occasion de couvrir tout le collège).
+Fondateur solo : Nicolas Follezou. Objectif : premiers vrais élèves sur les 4 niveaux.
 
 ---
 
@@ -117,7 +123,7 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | # | Règle | Détail |
 |---|-------|--------|
 | T1 | **Freemium** | 1 chapitre gratuit (le plus faible au diagnostic) + boost quotidien illimité |
-| T2 | **Paiement unique** | One-time (prix à confirmer), accès jusqu'au Brevet 2026 (premium_end = 2026-06-30) |
+| T2 | **Paiement unique par niveau** | 29,99€, **un Payment Link Stripe par niveau** (6EME/5EME/4EME/3EME, metadata.niveau lu par le webhook → `profiles.premium_niveau`). **Accès non expirant** — `premium_end` reste `null` (plus de date en dur type "Brevet 2026" : ça expire tout seul et silencieusement, piège vécu le 16/09/2026, 4 mois après le lancement). `_stripeUrl()` dans `app.html` route vers le bon lien selon `S.prof.level` |
 | T3 | **Badge freemium** | "🔓 1 chapitre gratuit" cliquable → overlay déblocage |
 | T4 | **Chapitres bloqués** | Visibles mais 🔒 grisés. `togCat()` + `openFromProgress()` → overlay. `saveScore` backend rejette |
 | T5 | **Emails** | Séquence auto via Resend (no-reply@matheux.fr) : J+0 welcome, J+1 boost prêt, J+3 check-in, J+7 bilan+conversion, J+14 nudge conversion. Cron `cron_send_emails` 1×/jour. J+7/J+14 skip si premium. Logs dans `email_logs` (dédup + unsub) |
@@ -169,7 +175,20 @@ Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
 | A4 | **Workflow** | Nicolas prépare en admin → élève reçoit au login → archives consultables |
 | A5 | **Pas de limite** | Limite bêta 50 supprimée (02/04 migration Supabase) |
 | A6 | **Admin read-only** | Login admin ne consomme jamais les données one-shot (nextChapter, boost) |
-| A7 | **Agent admin autonome** | Agent lancé 2×/jour (matin+soir). Scanne Scores → diagnostique patterns → génère boosts/chapitres → injecte dans DailyBoosts avec `Date = demain` et `ExosDone = 0`. **Génère aussi les cours adaptatifs** (section_10 à 10 exos, section_20 à 20 exos, amélioration à 30+). L'élève reçoit le contenu à sa prochaine connexion ≥ lendemain. Nicolas vérifie a posteriori. Pipeline validé le 02/04 (4 profils test, 20 exos, 100% validate_exos.py) |
+| A7 | **Agent admin-auto — réassort mensuel (plus 2×/jour)** | Depuis la refonte 09/2026 : le boost quotidien n'a plus besoin d'une génération LLM par élève (voir §3.7 Moteur adaptatif) — admin-auto passe d'un rythme 2×/jour à un **réassort mensuel de la banque** (déclenché quand `generate_adaptive_boost` retourne `"Banque épuisée"` pour un chapitre, ou à la demande) + génération des **cours adaptatifs** (section_10/section_20, moins sensible à la latence qu'un boost quotidien). Pipeline de génération inchangé (scan Scores → pattern → génère → `validate_exos.py` → injecte), juste la fréquence et la cible qui changent. Nicolas valide toujours les nouveaux chapitres/cours a posteriori |
+
+---
+
+## 3.7 Moteur de sélection adaptative — remplace la génération IA quotidienne
+
+> Ajouté 09/2026. Objectif : arrêter de dépendre d'un LLM à chaque boost pour chaque élève
+> (lent, coûteux, qualité variable à volume — cf. audit du 10/04 : 1877→124 alertes indices).
+> À la place : une banque statique large + un algorithme déterministe qui pioche dedans.
+
+- **Action** `generate_adaptive_boost` (`supabase/functions/api/index.ts`) : reçoit `{code}`, calcule les 3 chapitres les plus faibles de l'élève (`progress.score` croissant, pondération 3/2/1), exclut les exercices déjà vus (`scores.enonce`), tire 5 exercices pondérés vers les chapitres faibles, écrit dans `daily_boosts` avec `date = demain` (respecte G16). Zéro appel LLM, zéro coût API, résultat instantané.
+- **Additif, pas encore branché en remplacement automatique** : `admin-auto`/l'admin peuvent continuer à publier des boosts manuellement en parallèle. À tester sur des profils réels (`create_test_profiles.py`) avant de couper le circuit LLM quotidien.
+- **Dépend d'une banque profonde** : l'algo ne vaut que ce que contient `curriculum.exos_json` par chapitre. Le chantier 09/2026 a généré une première banque enrichie 6EME/5EME/4EME dans `data/bank_6eme/`, `data/bank_5eme/`, `data/bank_4eme/` (validée via `validate_exos.py`, **pas encore importée en base** — pas de credentials Supabase dans ce repo, l'import est à faire par Nicolas via `supabase_helper.py`).
+- **Prérequis corrigé au passage** : `updateConfidenceScore` avait un bug qui empêchait `progress` de se peupler à la 1ère pratique de chaque chapitre (`onConflict` sur une colonne inexistante) — sans ce fix, l'algo (et le tri "chapitres faibles en haut") tournait aveugle. Fixé 16/09/2026.
 
 ---
 
@@ -285,8 +304,12 @@ python3 create_test_profiles.py # Crée 4 profils test dans Supabase
 | **Resend** | Dashboard : `https://resend.com` · Domaine : `matheux.fr` (vérifié, EU) · From : `no-reply@matheux.fr` · DNS : IONOS |
 | GAS Deployment ID | `AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF` |
 | Sheet ID (legacy) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
-| GitHub | `https://github.com/MatheuxApp/algebra` (privé) |
-| Stripe PROD | `https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02` |
+| GitHub | `https://github.com/NicoMPC/algebra` (public — voir avertissement branche en tête de fichier) |
+| Stripe — 6EME | `https://buy.stripe.com/14A8wRgky4rHf0Q3yvb3q03` (metadata niveau=6EME) |
+| Stripe — 5EME | `https://buy.stripe.com/00waEZ0lA6zP1a0glhb3q04` (metadata niveau=5EME) |
+| Stripe — 4EME | `https://buy.stripe.com/6oU4gBgkybU9g4Uglhb3q05` (metadata niveau=4EME) |
+| Stripe — 3EME | `https://buy.stripe.com/3cI9AVd8maQ51a05GDb3q06` (metadata niveau=3EME) |
+| Stripe — ancien lien (à archiver) | `https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02` — "jusqu'au Brevet 2026", laissé actif le temps de la bascule, à archiver dans le dashboard Stripe une fois les nouveaux liens vérifiés en prod |
 
 | Code | Prénom | Niveau | Email | Notes |
 |---|---|---|---|---|

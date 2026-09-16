@@ -215,18 +215,39 @@ def validate_batch(exos, errors, warnings):
 
 # ── Main ──────────────────────────────────────────────────────
 
+def _flatten_v4(parapluies):
+    """Aplati le format v4 (4 exercices-parapluie x 5 sous-questions) en liste flat
+    d'exercices individuels, pour réutiliser validate_exo/validate_batch tels quels.
+    Chaque sous-question hérite du contexte de son parapluie (context/figure/id) en
+    métadonnées, sans quoi les checks existants (q/a/steps/options/type/lvl à plat)
+    ne s'appliquent pas — v4.1 (docs/prompt-generation-exos.md) n'était pas géré ici."""
+    flat = []
+    for p_idx, par in enumerate(parapluies):
+        questions = par.get('questions', [])
+        for q in questions:
+            exo = dict(q)  # copie — ne mute pas l'original
+            exo['_parapluie_id'] = par.get('id', p_idx)
+            exo['_context'] = par.get('context', '')
+            flat.append(exo)
+    return flat
+
+
 def validate_json_file(filepath):
     """Valide un fichier JSON d'exercices."""
     with open(filepath, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
-    # Accepter un array ou un objet avec clé "exos"
+    # Accepter un array flat, un objet {exos: [...]}, ou le format v4
+    # (array d'exercices-parapluie, chacun avec une clé "questions").
     if isinstance(data, dict):
         exos = data.get('exos', [])
     elif isinstance(data, list):
-        exos = data
+        if data and isinstance(data[0], dict) and 'questions' in data[0]:
+            exos = _flatten_v4(data)
+        else:
+            exos = data
     else:
-        print("❌ Format JSON invalide : attendu un array ou {exos: [...]}")
+        print("❌ Format JSON invalide : attendu un array, {exos: [...]}, ou le format v4 (parapluies)")
         return False
 
     errors = []

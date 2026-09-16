@@ -66,24 +66,26 @@ Argument commercial principal : "Un système supervisé par un accompagnant exp�
 5. Peut explorer les chapitres librement
 6. Nicolas voit l'avancement dans le dashboard admin
 
-### Conversion (J7)
-1. Badge J-X visible dès J5
-2. J7 : overlay bloquant → "19,99 €/mois pour continuer"
-3. Email J+7 avec lien Stripe direct
-4. Bouton "Voir ma progression quand même" (ferme l'overlay)
+### Conversion (freemium)
+1. 1 chapitre gratuit débloqué (le plus faible au diagnostic) + boost quotidien illimité, sans limite de durée
+2. Badge "🔓 1 chapitre gratuit" cliquable → overlay upsell
+3. Emails séquencés J+3/J+7/J+14 avec lien Stripe (skip si déjà premium)
 
 ---
 
 ## Modèle économique
 
+> Mis à jour 16/09/2026 — remplace l'ancien modèle "trial 7j + 19,99€/mois" (abandonné le
+> 03/04/2026 au profit du freemium one-time ci-dessous ; la doc n'avait pas été nettoyée).
+
 | Élément | Détail |
 |---|---|
-| Prix | 19,99 €/mois |
-| Essai | 7 jours gratuits, accès complet, sans carte bancaire |
-| Paiement | Stripe PROD — lien actif `3cI5kFfgu9M19Gwd95b3q02 (29,99€ one-time, accès Brevet 2026) 
-| Cible | 50 clients = ~500 € MRR |
-| Offre flash | -50% premier mois (9,99€) envoyée manuellement à J+2/J+3 aux élèves engagés | Lien Stripe séparé, zéro code |
-| Offres futures | Basées sur données col Objectif — décision après 10-15 clients | Ne pas créer avant |
+| Prix | 29,99 € paiement unique, par niveau (6EME/5EME/4EME/3EME) |
+| Essai | Freemium permanent : 1 chapitre gratuit + boost quotidien illimité, pas de carte bancaire |
+| Paiement | 4 Payment Links Stripe (un par niveau, `metadata.niveau`) — voir CLAUDE.md §7 pour les URLs |
+| Accès | Non expirant (pas de date calendaire codée en dur — piège vécu avec "jusqu'au Brevet 2026") |
+| Cible | Pas de MRR (paiement unique) — objectif = volume de premiers clients sur les 4 niveaux |
+| Offres futures | Basées sur données col `objectif` — décision après 10-15 clients. Ne pas créer avant |
 
 ---
 

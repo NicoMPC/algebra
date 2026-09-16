@@ -1,0 +1,358 @@
+[
+  {
+    "id": "CAL_01",
+    "title": "La collection de cartes de Léo",
+    "context": "Léo collectionne des cartes de sport. Chaque mois, il achète des lots de cartes rares (notées $x$) et de cartes communes (notées $y$). Il note ses achats avec des expressions littérales qu'il doit apprendre à réduire.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Réduis l'expression $3x + 5x$.",
+        "a": "$8x$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "$3x$ et $5x$ sont des termes semblables (même lettre $x$) : on additionne leurs coefficients.",
+          "$3x + 5x = (3+5)x = ?x$"
+        ],
+        "f": "$ax + bx = (a+b)x$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Réduis l'expression $7x - 2x + 4$.",
+        "a": "$5x + 4$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Regroupe les termes en $x$ entre eux : $7x - 2x = ?x$.",
+          "Le terme $4$ n'a pas de $x$ : il reste tel quel à côté du résultat trouvé."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Quels sont les deux termes semblables dans l'expression $4x + 3y - 2x + 5$ ?",
+        "a": "$4x$ et $-2x$",
+        "type": "qcm",
+        "options": ["$3y$ et $5$", "$4x$ et $-2x$", "$4x$ et $3y$"],
+        "steps": [
+          "Deux termes sont semblables s'ils contiennent exactement la même lettre (ou aucune lettre) avec le même exposant.",
+          "Cherche les deux termes qui contiennent tous les deux la lettre $x$ seule."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Réduis complètement l'expression $4x + 3y - 2x + 5$.",
+        "a": "$2x + 3y + 5$",
+        "type": "qcm",
+        "options": ["$2x + 8y$", "$6x + 3y + 5$", "$2x + 3y + 5$"],
+        "steps": [
+          "Regroupe les termes en $x$ : $4x - 2x = ?x$.",
+          "Le terme en $y$ ($3y$) et le nombre ($5$) restent inchangés : écris l'expression réduite complète."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Léo affirme : « Dans l'expression $6x + 6y$, on peut réduire les deux termes en un seul terme $12xy$. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Rappelle-toi : on ne peut additionner (réduire) que des termes semblables.",
+          "$6x$ et $6y$ contiennent-ils la même lettre ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "CAL_02",
+    "title": "Le jardin d'Emma",
+    "context": "Emma agrandit le jardin rectangulaire de ses parents. Elle exprime l'aire de nouvelles parcelles avec des expressions littérales, qu'elle doit développer grâce à la distributivité simple.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Développe l'expression $5(x + 3)$.",
+        "a": "$5x + 15$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Distribue le facteur $5$ à chacun des deux termes entre parenthèses.",
+          "$5 \\times x = ?x$ et $5 \\times 3 = ?$. Écris l'expression développée complète."
+        ],
+        "f": "$k(a+b) = ka + kb$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Développe l'expression $-3(x - 4)$.",
+        "a": "$-3x + 12$",
+        "type": "qcm",
+        "options": ["$-3x + 12$", "$-3x - 12$", "$-3x + 4$"],
+        "steps": [
+          "Distribue $-3$ à $x$ : $-3 \\times x = ?x$.",
+          "Distribue $-3$ à $-4$ : $-3 \\times (-4) = ?$ (attention aux signes)."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Emma affirme : « $4(x + 3) = 4x + 3$. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Vérifie si le facteur $4$ a bien été distribué aux deux termes de la parenthèse.",
+          "Que devient $4 \\times 3$ dans le développement correct ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Le jardin agrandi d'Emma a une aire qui s'écrit $6(x + 2)$. Développe cette expression.",
+        "a": "$6x + 12$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Distribue le facteur $6$ aux deux termes de la parenthèse.",
+          "$6 \\times x = ?x$ et $6 \\times 2 = ?$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Emma doit développer et réduire $-2(3x - 5) + 4x$. Quelle est l'expression réduite obtenue ?",
+        "a": "$-2x + 10$",
+        "type": "qcm",
+        "options": ["$-6x + 10 + 4x$", "$-2x + 10$", "$2x + 10$"],
+        "steps": [
+          "Développe d'abord $-2(3x-5) = ?x + ?$.",
+          "Ajoute le terme $4x$ restant et réduis les termes semblables en $x$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "CAL_03",
+    "title": "L'agrandissement du studio de danse d'Adam",
+    "context": "Adam aide à concevoir l'agrandissement d'un studio de danse rectangulaire. La nouvelle aire s'exprime comme un produit de deux sommes, qu'il doit développer avec la double distributivité.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "Pour développer $(x+2)(x+5)$, combien de produits faut-il calculer avant de réduire ?",
+        "a": "$4$",
+        "type": "qcm",
+        "options": ["$2$", "$3$", "$4$"],
+        "steps": [
+          "Chaque terme de la première parenthèse doit être multiplié par chaque terme de la seconde.",
+          "Il y a $2$ termes dans chaque parenthèse. Combien de produits cela fait-il au total ?"
+        ],
+        "f": "$(a+b)(c+d) = ac + ad + bc + bd$",
+        "f_disabled": false,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Développe et réduis $(x + 2)(x + 5)$.",
+        "a": "$x^2 + 7x + 10$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Calcule les $4$ produits : $x\\times x$, $x\\times 5$, $2\\times x$, $2\\times 5$.",
+          "Additionne tous les résultats, puis réduis les termes semblables en $x$ : $5x + 2x = ?x$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "Développe et réduis $(x - 3)(x + 4)$.",
+        "a": "$x^2 + x - 12$",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Calcule les $4$ produits, en faisant attention aux signes : $x\\times x$, $x\\times 4$, $(-3)\\times x$, $(-3)\\times 4$.",
+          "Réduis les termes semblables en $x$ : $4x - 3x = ?x$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Adam affirme : « $(x+2)(x+5)$ est égal à $x^2 + 10$. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Développe complètement $(x+2)(x+5)$ en calculant les $4$ produits.",
+          "Le développement obtenu correspond-il à $x^2 + 10$, ou contient-il aussi un terme en $x$ ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Le studio agrandi a pour dimensions $(x+6)$ m et $(x+1)$ m. Quelle expression donne son aire développée et réduite ?",
+        "a": "$x^2 + 7x + 6$",
+        "type": "qcm",
+        "options": ["$x^2 + 7x + 6$", "$x^2 + 6x + 6$", "$x^2 + 7$"],
+        "steps": [
+          "Calcule les $4$ produits : $x\\times x$, $x\\times 1$, $6\\times x$, $6\\times 1$.",
+          "Additionne tous les termes puis réduis les termes semblables en $x$ : $x + 6x = ?x$."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  },
+  {
+    "id": "CAL_04",
+    "title": "Le prix des billets du spectacle de Jade",
+    "context": "Jade organise le spectacle de fin d'année de son collège. Elle exprime la recette totale avec une expression littérale selon le nombre de billets vendus, et doit la manipuler pour préparer son budget.",
+    "figure": null,
+    "figure_desc": null,
+    "questions": [
+      {
+        "num": "1",
+        "q": "La recette de Jade s'exprime par $R = 8x + 50$, où $x$ est le nombre de billets vendus. Calcule $R$ pour $x = 20$ billets (en €).",
+        "a": "210",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Remplace $x$ par $20$ dans l'expression $8x + 50$.",
+          "$8 \\times 20 + 50 = ? + 50 = \\;?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 1,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "2",
+        "q": "Jade doit soustraire de sa recette $8x + 50$ les frais de location de la salle, modélisés par $2(x + 15)$. Quelle expression réduite représente son bénéfice ?",
+        "a": "$6x + 20$",
+        "type": "qcm",
+        "options": ["$6x + 80$", "$6x + 20$", "$10x + 65$"],
+        "steps": [
+          "Développe d'abord $2(x+15) = ?x + ?$.",
+          "Soustrais cette expression développée de $8x + 50$, en faisant attention aux signes : $8x + 50 - 2x - ? = \\;?x + \\;?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "3",
+        "q": "En utilisant l'expression réduite du bénéfice trouvée à la question précédente, calcule le bénéfice de Jade pour $x = 30$ billets vendus (en €).",
+        "a": "200",
+        "type": "fill",
+        "options": [],
+        "steps": [
+          "Remplace $x$ par $30$ dans l'expression réduite du bénéfice.",
+          "$6 \\times 30 + 20 = ? + 20 = \\;?$"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "4",
+        "q": "Jade affirme : « Pour calculer le bénéfice pour n'importe quel nombre de billets, il est plus rapide d'utiliser l'expression réduite $6x + 20$ que de refaire à chaque fois le calcul complet $8x + 50 - 2(x+15)$. »",
+        "a": "Vrai",
+        "type": "vf",
+        "options": ["Vrai", "Faux"],
+        "steps": [
+          "Compare le nombre d'étapes de calcul entre les deux expressions pour une même valeur de $x$.",
+          "Réduire une expression avant de substituer permet-il de gagner du temps à chaque nouveau calcul ?"
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      },
+      {
+        "num": "5",
+        "q": "Jade veut savoir combien de billets $x$ elle doit vendre pour que son bénéfice $6x + 20$ atteigne exactement $200$ €. Quelle égalité doit-elle résoudre ?",
+        "a": "$6x + 20 = 200$",
+        "type": "qcm",
+        "options": ["$6x + 20 = 0$", "$6 + 20x = 200$", "$6x + 20 = 200$"],
+        "steps": [
+          "Le bénéfice de Jade est donné par l'expression $6x + 20$.",
+          "Pose l'égalité entre cette expression et la valeur $200$ € recherchée."
+        ],
+        "f": "",
+        "f_disabled": true,
+        "lvl": 2,
+        "table": null,
+        "draw": null
+      }
+    ]
+  }
+]

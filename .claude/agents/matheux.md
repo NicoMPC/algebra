@@ -247,12 +247,19 @@ Matheux (matheux.fr) = SPA vanilla JS (`index.html` ~10000L) + backend Google Ap
 
 ## Décisions structurantes — NE PAS ROUVRIR
 
-- SPA monolithique (migration Supabase à 80-100 clients, pas avant)
-- Pas de framework — vanilla JS, Tailwind CDN
-- Un seul interlocuteur Claude (pas d'agents séparés pour l'élève)
-- Focus 3ème Brevet — 100% effort acquisition/contenu
-- Mail auto = J+0 uniquement (reste manuel)
-- Process analyse → prescription documenté dans prompt-generation-exos.md
+> Mis à jour 16/09/2026 — cette section était périmée (décrivait encore GAS/Sheets et le
+> modèle 19,99€/mois alors que CLAUDE.md, à jour, documentait déjà Supabase + freemium
+> one-time depuis le 02-03/04/2026). Vérifier `git log -5` + CLAUDE.md avant de faire confiance
+> à une décision listée ici si elle date d'avant la dernière session.
+
+- Backend Supabase PostgreSQL + Edge Functions (migration terminée 02/04/2026, GAS legacy = emails uniquement, remplacés par Resend depuis le 07/04)
+- Pas de framework pour l'app — `app.html` vanilla JS, Tailwind CDN (la landing `index.html`, elle, est un build Next.js exporté — ne jamais éditer son HTML directement, cf. CLAUDE.md §5 "piège React")
+- Un seul interlocuteur Claude (pas d'agents séparés pour l'élève) — `admin-auto` reste distinct car autonome/asynchrone
+- Scope produit élargi 3ème Brevet → **6ème-3ème** (rentrée 2026-2027) — le Brevet 2026 est passé, ne plus positionner sur une échéance calendaire figée
+- Paiement one-time par niveau (29,99€, non expirant) — pas d'abonnement, pas de date d'expiration codée en dur (piège vécu : "Brevet 2026" a expiré tout seul après 4 mois d'inactivité)
+- Boost quotidien : sélection algorithmique (`generate_adaptive_boost`, déterministe) en remplacement progressif de la génération LLM par élève — voir CLAUDE.md §3.7
+- admin-auto : réassort mensuel de banque + cours adaptatifs (plus 2×/jour) — voir CLAUDE.md A7
+- Process analyse → prescription documenté dans `prompt-generation-exos.md`
 
 ---
 
