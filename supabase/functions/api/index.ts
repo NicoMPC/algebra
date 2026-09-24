@@ -19,6 +19,12 @@ const STRIPE_WEBHOOK_SECRET = Deno.env.get("STRIPE_WEBHOOK_SECRET") || "";
 
 // Client admin (service_role) pour bypass RLS
 const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+// Client dédié au login (signInWithPassword) : sur adminClient, la session de l'élève connecté
+// remplaçait la clé service_role dans toutes les requêtes suivantes de l'instance (RLS appliquée
+// → « Profil introuvable » / « Élève introuvable » pour les autres élèves). Bug trouvé en dev local 24/09.
+const authClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
+  auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+});
 
 // ── Cache en mémoire (persiste tant que l'instance Edge Function est chaude) ──
 const _cache: Record<string, { data: unknown; ts: number }> = {};
@@ -235,7 +241,7 @@ async function login(p: Record<string, unknown>) {
   if (!email || !password) return { status: "error", message: "Email et mot de passe requis." };
 
   // Auth Supabase — tente le sign in
-  const { data: authData, error: authError } = await adminClient.auth.signInWithPassword({ email, password });
+  const { data: authData, error: authError } = await authClient.auth.signInWithPassword({ email, password });
 
   // Fallback : ancien hash SHA-256 (transition)
   let user: Record<string, unknown> | null = null;
@@ -480,6 +486,7 @@ async function login(p: Record<string, unknown>) {
   return {
     status: "success",
     profile: { code, name, level, isAdmin, premium: isPremium, trialStart, objectif, mode: user.mode || null },
+    access_token: authData?.session?.access_token || null,
     curriculumOfficiel,
     diagExos: [],
     dailyBoost: todayBoost,
@@ -578,7 +585,7 @@ async function saveScore(p: Record<string, unknown>) {
     draft: String(p.draft || ""),
     date: dedupDate,
     source: String(p.source || ""),
-  }, { onConflict: "code,chapitre,num_exo,date", ignoreDuplicates: true });
+  }, { onConflict: "code,chapitre,num_exo,date,source", ignoreDuplicates: true }); // = idx_scores_dedup (schema.sql)
 
   // Update confidence score (Progress) — hors BOOST et CALIBRAGE
   if (source !== "BOOST" && source !== "CALIBRAGE") {
@@ -763,7 +770,7 @@ async function saveScoresBatch(p: Record<string, unknown>) {
 
   // Batch insert with dedup (ON CONFLICT ignore)
   await adminClient.from("scores").upsert(rows, {
-    onConflict: "code,chapitre,num_exo,date", ignoreDuplicates: true
+    onConflict: "code,chapitre,num_exo,date,source", ignoreDuplicates: true, // = idx_scores_dedup (schema.sql)
   });
 
   // Moteur 3e : maîtrise par compétence — additif, seulement pour les exos portant item_id ou comp.
@@ -2326,6 +2333,7 @@ function mxCartePartage(carte: Record<string, unknown>) {
   const pf = comps.find((c) => c.id === carte.point_faible);
   return {
     eleve: { prenom: (carte.eleve as Record<string, unknown>)?.prenom || "" }, type: carte.type, date: carte.date,
+    n_questions: carte.n_questions, duree_min: carte.duree_min,
     score_global: carte.score_global, phrase_cle: carte.phrase_cle, domaines: carte.domaines,
     point_faible: pf ? { id: pf.id, titre_eleve: pf.titre_eleve, niveau_origine: pf.niveau_origine, statut: pf.statut,
       cause_racine: pf.cause_racine, n_bloque: ((pf.bloque || []) as unknown[]).length } : null,
@@ -2381,7 +2389,7 @@ async function getBilanPartage(p: Record<string, unknown>) {
   const prenom = String(carte.eleve.prenom || "votre enfant");
   return {
     status: "success", carte, code: sh.code, // le code sert de client_reference_id pour le paiement depuis la page parent
-    acces: droits?.acces || "free", prix_cents: droits?.prix_cents || null,
+    acces: droits?.acces || "free", prix_cents: droits?.prix_cents || null, expires_at: sh.expires_at,
     og: {
       title: "Le bilan maths de " + prenom + " (3e)",
       description: String(carte.phrase_cle || "").slice(0, 190),
@@ -2505,11 +2513,21 @@ async function forgotPassword(p: Record<string, unknown>) {
 
 // ── GET_ADMIN_OVERVIEW ──────────────────────────────────────
 
+// Vérifie que l'appel vient d'un admin authentifié (jeton de session Supabase), pas d'un
+// simple `code` : le code admin est public (dépôt GitHub). Faille corrigée le 24/09.
+async function requireAdmin(p: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+  const token = String(p.access_token || "");
+  if (!token) return { status: "error", message: "Accès refusé." };
+  const { data, error } = await adminClient.auth.getUser(token);
+  if (error || !data?.user) return { status: "error", message: "Accès refusé." };
+  const { data: prof } = await adminClient.from("profiles")
+    .select("is_admin").eq("id", data.user.id).maybeSingle();
+  return prof?.is_admin ? null : { status: "error", message: "Accès refusé." };
+}
+
 async function getAdminOverview(p: Record<string, unknown>) {
-  const code = String(p.code);
-  const { data: profile } = await adminClient.from("profiles")
-    .select("is_admin").eq("code", code).maybeSingle();
-  if (!profile?.is_admin) return { status: "error", message: "Accès refusé." };
+  const denied = await requireAdmin(p);
+  if (denied) return denied;
 
   const { data: users } = await adminClient.from("profiles").select("*").eq("is_test", false);
   const { data: allScores } = await adminClient.from("scores").select("code, chapitre, resultat, date, source");
@@ -2530,6 +2548,8 @@ async function getAdminOverview(p: Record<string, unknown>) {
 // ── PUBLISH_ADMIN_BOOST ─────────────────────────────────────
 
 async function publishAdminBoost(p: Record<string, unknown>) {
+  const denied = await requireAdmin(p);
+  if (denied) return denied;
   const code = String(p.code);
   const boostJson = p.boost;
   if (!code || !boostJson) return { status: "error", message: "code et boost requis." };
@@ -2555,6 +2575,8 @@ async function publishAdminBoost(p: Record<string, unknown>) {
 // ── PUBLISH_ADMIN_CHAPTER ───────────────────────────────────
 
 async function publishAdminChapter(p: Record<string, unknown>) {
+  const denied = await requireAdmin(p);
+  if (denied) return denied;
   const code = String(p.code);
   const chapterJson = p.chapter;
   if (!code || !chapterJson) return { status: "error", message: "code et chapter requis." };
@@ -2661,10 +2683,15 @@ async function resetPassword(p: Record<string, unknown>) {
   const password = String(p.password || "").trim();
   if (!email || !password) return { status: "error", message: "Email et mot de passe requis." };
 
-  // Trouver l'utilisateur par email
-  const { data: profile } = await adminClient.from("profiles")
-    .select("id").eq("email", email).maybeSingle();
-  if (!profile) return { status: "error", message: "Utilisateur introuvable." };
+  // Jeton de récupération obligatoire (access_token du lien envoyé par forgot_password).
+  // Avant le 24/09 : aucun contrôle → n'importe qui changeait le mot de passe d'un compte avec son email.
+  const token = String(p.access_token || "");
+  if (!token) return { status: "error", message: "Lien de réinitialisation invalide ou expiré." };
+  const { data: tokData, error: tokErr } = await adminClient.auth.getUser(token);
+  if (tokErr || !tokData?.user || String(tokData.user.email || "").toLowerCase() !== email) {
+    return { status: "error", message: "Lien de réinitialisation invalide ou expiré." };
+  }
+  const profile = { id: tokData.user.id };
 
   // Mettre à jour le mot de passe via admin API (Supabase Auth gère le hash)
   const { error } = await adminClient.auth.admin.updateUserById(profile.id, { password });

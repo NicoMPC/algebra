@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le bilan maths de votre enfant — Matheux</title>
+<meta name="description" content="Bilan de maths 3e partagé par votre enfant : les 5 domaines du programme et le point à surveiller.">
+<!-- Page privée (lien personnel) : jamais indexée, jamais de referrer, pas de GA4 (visiteur non consentant). -->
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0F172A">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Matheux">
+<meta property="og:title" content="Le bilan maths de votre enfant (3e)">
+<meta property="og:description" content="Les 5 domaines du programme et le point à surveiller. 2 minutes de lecture.">
+<meta property="og:image" content="https://matheux.fr/assets/og.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0F172A;--ink:#0F172A;--text:#1E293B;--sub:#475569;--mut:#64748B;
+  --blue:#1E40AF;--blue2:#3B82F6;--blue-l:#EEF2FF;
+  --bg:#F7F8FC;--card:#fff;--brd:#E2E8F0;--line:#F1F5F9;
+  --lac:#E11D48;--lacl:#FFF1F2;--lacb:#FECDD3;--fra:#D97706;--fral:#FEF3C7;--acq:#059669;--acql:#D1FAE5;--ne:#94A3B8;--nel:#F1F5F9;
+  --r:14px;--rl:20px;
+  --f-t:'Syne',system-ui,sans-serif;--f-b:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--f-b);font-size:16px;line-height:1.55;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3{font-family:var(--f-t);color:var(--ink);line-height:1.2;margin:0;letter-spacing:-.01em}
+p{margin:0}
+a{color:var(--blue)}
+:focus-visible{outline:3px solid #60A5FA;outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+.wrap{max-width:560px;margin:0 auto;padding:14px 16px 32px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.logo{display:inline-flex;align-items:center;gap:7px;font-family:var(--f-t);font-weight:800;font-size:1.05rem;color:var(--navy);text-decoration:none}
+.logo img{width:24px;height:24px}
+.chip{font-size:.74rem;color:var(--mut);white-space:nowrap}
+.card{background:var(--card);border:1px solid var(--brd);border-radius:var(--rl);padding:18px 16px;box-shadow:0 4px 20px rgba(15,23,42,.05)}
+.card+.card{margin-top:12px}
+.label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}
+h1{font-weight:800;font-size:1.45rem}
+h2{font-weight:700;font-size:1.02rem}
+.sub{color:var(--sub);font-size:.9rem;margin-top:6px}
+.small{font-size:.78rem;color:var(--mut)}
+.sep{height:1px;background:var(--brd);margin:16px 0}
+.blk{border:1px solid var(--brd);border-radius:var(--r);padding:14px;background:#F8FAFC;margin-top:12px}
+.blk p{font-size:.88rem;color:#334155;margin-top:6px}
+.blk-lac{background:#FFF7F8;border-color:var(--lacb)}
+.blk-lac .label{color:var(--lac)}
+.blk-ok{background:#F0FDF4;border-color:#BBF7D0}
+.blk-ok .label{color:var(--acq)}
+.pf-t{font-weight:700;font-size:1rem;margin-top:4px;color:var(--ink)}
+/* domaines */
+.dom{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.dom:first-of-type{border-top:none}
+.dom .nm{flex:1;min-width:0}
+.dom .nm b{display:block;font-size:.88rem;color:var(--ink)}
+.dom .nm span{font-size:.72rem;color:var(--mut)}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.st{display:inline-flex;align-items:center;font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.s-lacune .dot{background:var(--lac)} .s-lacune .st{background:var(--lacl);color:#BE123C}
+.s-fragile .dot{background:var(--fra)} .s-fragile .st{background:var(--fral);color:#92400E}
+.s-acquis .dot{background:var(--acq)} .s-acquis .st{background:var(--acql);color:#065F46}
+.s-ne .dot{background:var(--ne)} .s-ne .st{background:var(--nel);color:#475569}
+ul.chk{list-style:none;margin:8px 0 0;padding:0}
+ul.chk li{position:relative;padding:3px 0 3px 24px;font-size:.86rem;color:#334155}
+ul.chk li::before{content:'';position:absolute;left:3px;top:9px;width:11px;height:6px;border-left:2px solid var(--acq);border-bottom:2px solid var(--acq);transform:rotate(-45deg)}
+/* boutons */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:50px;border:none;cursor:pointer;font-family:var(--f-t);font-weight:700;font-size:.98rem;border-radius:var(--r);padding:13px 16px;text-decoration:none;text-align:center;line-height:1.25}
+.btn-ac{background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 100%);color:#fff;box-shadow:0 4px 18px rgba(30,64,175,.28)}
+.btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--brd)}
+.btn-link{background:none;color:var(--blue);font-family:var(--f-b);font-size:.9rem;min-height:44px;padding:8px}
+.btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn+.btn{margin-top:10px}
+.center{text-align:center}
+/* offres */
+.offer{border:1.5px solid var(--brd);border-radius:var(--r);padding:14px;margin-top:12px;background:#fff}
+.offer.main{border-color:#C7D2FE;background:#FAFBFF}
+.offer .hd{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.offer .hd h2{flex:1;min-width:0;font-size:.98rem}
+.offer .pr{font-family:var(--f-t);font-weight:800;font-size:1.2rem;color:var(--ink);white-space:nowrap}
+.offer .pr small{font-family:var(--f-b);font-weight:500;font-size:.72rem;color:var(--mut)}
+.offer .btn{margin-top:12px}
+.info{font-size:.82rem;color:#334155;margin-top:10px}
+.done{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:var(--r);background:var(--acql);color:#065F46;font-weight:700;font-size:.92rem;margin-top:12px}
+/* checkout */
+.co{border:1.5px solid var(--blue);border-radius:var(--r);padding:14px;margin-top:12px;background:#fff}
+.co .pre{font-size:.8rem;color:#334155;background:#F8FAFC;border-radius:10px;padding:10px 12px;margin-top:8px}
+.co label{display:flex;gap:10px;align-items:flex-start;font-size:.84rem;color:var(--text);margin-top:12px;cursor:pointer}
+.co input[type=checkbox]{width:20px;height:20px;flex-shrink:0;margin:1px 0 0;accent-color:var(--blue)}
+.co .err{color:#BE123C;font-size:.82rem;margin-top:10px}
+/* confiance, FAQ, footer */
+.trust{display:flex;gap:10px;align-items:flex-start;font-size:.84rem;color:#334155;padding:6px 0}
+.trust i{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--blue-l);color:var(--blue);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:700;font-size:.72rem;margin-top:1px}
+details{border-top:1px solid var(--brd);padding:12px 0}
+details:first-of-type{border-top:none}
+summary{font-weight:700;font-size:.9rem;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px;color:var(--ink)}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'+';color:var(--mut);font-weight:500}
+details[open] summary::after{content:'−'}
+details p{color:var(--sub);margin-top:6px;font-size:.86rem}
+footer{margin-top:20px;font-size:.76rem;color:var(--mut);text-align:center}
+footer nav{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;margin:10px 0}
+footer a{color:var(--sub)}
+/* états */
+.sk{background:linear-gradient(90deg,#EEF1F5 25%,#E4E8EE 37%,#EEF1F5 63%);background-size:400% 100%;animation:sk 1.4s ease infinite;border-radius:8px}
+@keyframes sk{0%{background-position:100% 50%}100%{background-position:0 50%}}
+@media (prefers-reduced-motion:reduce){.sk{animation:none}}
+.state{text-align:center;padding:28px 16px}
+.state h1{font-size:1.25rem;margin-bottom:8px}
+.state p{color:var(--sub);font-size:.9rem;margin-bottom:18px}
+.merci{background:var(--acql);border:1px solid #A7F3D0;color:#065F46;border-radius:var(--r);padding:12px 14px;font-size:.88rem;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="logo" href="/"><img src="/assets/mark-navy.png" alt="" width="24" height="24">Matheux</a>
+    <span class="chip" id="chip"></span>
+  </div>
+
+  <!-- État : chargement -->
+  <section id="st-load" class="card" aria-busy="true" aria-label="Chargement du bilan">
+    <div class="sk" style="height:26px;width:75%"></div>
+    <div class="sk" style="height:14px;width:95%;margin-top:14px"></div>
+    <div class="sk" style="height:14px;width:60%;margin-top:8px"></div>
+    <div class="sk" style="height:180px;margin-top:22px"></div>
+  </section>
+
+  <!-- État : lien invalide, expiré ou révoqué -->
+  <section id="st-exp" class="card state" hidden>
+    <h1>Ce lien n'est plus actif</h1>
+    <p id="exp-msg">Il a expiré ou a été désactivé. Demandez à votre enfant de vous en renvoyer un depuis son espace Matheux.</p>
+    <a class="btn btn-ghost" href="/">Découvrir Matheux</a>
+  </section>
+
+  <!-- État : erreur réseau -->
+  <section id="st-net" class="card state" hidden>
+    <h1>Le bilan n'a pas pu être chargé</h1>
+    <p>La connexion a échoué. Vérifiez votre réseau puis réessayez.</p>
+    <button class="btn btn-ac" type="button" id="retry">Réessayer</button>
+  </section>
+
+  <!-- État : bilan -->
+  <main id="st-ok" hidden>
+    <div class="merci" id="merci" hidden role="status"><b>Merci, votre paiement est enregistré.</b> L'accès est ouvert : il apparaîtra à la prochaine connexion de <span data-prenom></span>. Un email de confirmation vous est envoyé.</div>
+
+    <section class="card">
+      <h1>Le bilan maths de <span data-prenom></span></h1>
+      <p class="sub" id="intro"></p>
+      <p class="small" id="validite" style="margin-top:8px"></p>
+
+      <div class="sep"></div>
+      <div class="label">Vue d'ensemble</div>
+      <div id="domaines" style="margin-top:4px"></div>
+
+      <div id="pf"></div>
+      <div id="alerte"></div>
+
+      <div class="blk" id="pasencore">
+        <div class="label">Ce que ce bilan ne dit pas encore</div>
+        <p id="pasencore-txt"></p>
+        <ul class="chk">
+          <li>Environ 40 minutes, en 3 parties que <span data-prenom></span> peut faire en plusieurs fois</li>
+          <li>Toutes les compétences de 3e, et les bases de 6e à 4e quand c'est là que ça bloque</li>
+          <li>Les causes des difficultés, pas seulement les résultats</li>
+          <li>Un bilan PDF pour vous, avec un plan de travail de 4 semaines</li>
+        </ul>
+        <button class="btn btn-ghost" type="button" id="btn-apercu" style="margin-top:14px">Voir un aperçu du bilan PDF</button>
+        <p class="small center" id="apercu-msg" style="margin-top:6px">Les 2 premières pages avec les résultats de <span data-prenom></span>, puis le sommaire du bilan complet.</p>
+      </div>
+    </section>
+
+    <section class="card" id="offres" aria-labelledby="offres-t">
+      <h2 id="offres-t">Aller plus loin</h2>
+      <div id="offres-body"></div>
+      <div id="checkout"></div>
+      <p class="info"><b>Garantie 30 jours</b> : si le bilan ne vous est pas utile, écrivez-moi et je vous rembourse intégralement, sans justification.</p>
+      <p class="info"><b>Pour comparer</b> : une heure de cours particulier de maths en 3e coûte en moyenne 20 à 25 € après crédit d'impôt (environ 49 € avant).</p>
+      <p class="info">Sans rien acheter, <span data-prenom></span> garde son entraînement gratuit : 5 exercices par jour sur son point à travailler.</p>
+      <p class="small" style="margin-top:10px">Paiement unique par carte via Stripe · pas d'abonnement · accès sans date de fin · TVA non applicable, art. 293 B du CGI</p>
+    </section>
+
+    <section class="card" aria-label="Qui est derrière Matheux">
+      <div class="trust"><i>N</i><span>Matheux est conçu par <b>Nicolas Follezou</b>, ancien ingénieur qui accompagne des élèves en maths depuis des années. Une question avant de décider ? <a href="mailto:contact@matheux.fr">contact@matheux.fr</a>, je réponds moi-même.</span></div>
+      <div class="trust"><i>4</i><span>Aligné sur le programme officiel du cycle 4 et les épreuves du Brevet. Le diagnostic remonte aux notions des années précédentes quand c'est là que se trouve le problème.</span></div>
+      <div class="trust"><i>✓</i><span>Seul le prénom de <span data-prenom></span> apparaît ici. Aucune donnée vendue ni utilisée pour de la publicité. Lien privé, désactivable par <span data-prenom></span>.</span></div>
+    </section>
+
+    <section class="card" aria-labelledby="faq-t">
+      <div class="label" id="faq-t" style="margin-bottom:4px">Questions fréquentes</div>
+      <details><summary>Combien de temps ça prend ?</summary><p>Environ 40 minutes pour le diagnostic complet, en 3 parties. <span data-prenom></span> peut s'arrêter et reprendre. L'entraînement quotidien, c'est 5 à 10 minutes.</p></details>
+      <details><summary>C'est un abonnement ?</summary><p>Non. Paiement unique, rien ne se renouvelle, il n'y a rien à résilier.</p></details>
+      <details><summary>Et si ça ne sert à rien ?</summary><p>Garantie 30 jours : je rembourse intégralement, sur simple email à contact@matheux.fr.</p></details>
+      <details><summary>Qui voit les résultats de mon enfant ?</summary><p>Vous, <span data-prenom></span>, et moi pour le support. Rien n'est vendu ni partagé. Ce lien expire au bout de 30 jours et <span data-prenom></span> peut le désactiver.</p></details>
+      <details><summary>Est-ce que ça remplace les cours ?</summary><p>Non. C'est un complément : ça dit précisément quoi travailler, et ça fait travailler un peu chaque jour. Si <span data-prenom></span> a déjà un professeur particulier, le bilan PDF lui fera gagner les premières séances.</p></details>
+    </section>
+  </main>
+
+  <footer>
+    <p id="foot-ignore" hidden>Vous n'êtes pas le parent de <span data-prenom></span> ? Ignorez simplement cette page.</p>
+    <nav aria-label="Informations légales">
+      <a href="/mentions-legales.html">Mentions légales</a>
+      <a href="/cgv.html">CGV</a>
+      <a href="/cgu.html">CGU</a>
+      <a href="/politique-confidentialite.html">Confidentialité</a>
+      <a href="mailto:contact@matheux.fr">Contact</a>
+    </nav>
+    <p>Matheux · Nicolas Follezou EI · matheux.fr</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── Offre : SEUL endroit de cette page où vivent les prix et les liens de paiement ──
+     Les prix affichés viennent en priorité de l'API (prix_cents, source serveur MX_PRODUITS) ;
+     ces valeurs ne servent que de secours. Liens Stripe : à renseigner par Nicolas quand les
+     Payment Links existent (tant qu'ils sont vides, le paiement affiche un message « bientôt »). */
+  var OFFRE = {
+    diag:      { produit: 'diag_complet',      libelle: 'Diagnostic complet', prix: 19, lien: '' },
+    programme: { produit: 'programme_brevet',  libelle: 'Programme Brevet',   prix: 49, lien: '' },
+    upgrade:   { produit: 'programme_upgrade', libelle: 'Programme Brevet',   prix: 30, lien: '' },
+    textes_version: 'bilan-2026-09-24'
+  };
+
+  var SU = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? location.origin + '/api'
+    : 'https://xlfzhcanzmqqlxtavzrd.supabase.co/functions/v1/api';
+
+  var qs = new URLSearchParams(location.search);
+  // ?t=<token> (redirection de 404.html sur GitHub Pages) ou /b/<token> (réécriture serveur, ex. dev/server.ts)
+  var TOKEN = qs.get('t') || decodeURIComponent((location.pathname.match(/^\/b\/([^/]+)\/?$/) || [])[1] || '');
+  var DATA = null; // réponse get_bilan_partage
+
+  function $(id) { return document.getElementById(id); }
+  // Élision devant un prénom à voyelle ou h muet : « d'Inès », « qu'Inès » (et « de Léa »).
+  function voy(p) { return /^[aeiouyhàâäéèêëîïôöùûü]/i.test(String(p || '')); }
+  function de(p) { return (voy(p) ? 'd\'' : 'de ') + p; }
+  function que(p) { return (voy(p) ? 'qu\'' : 'que ') + p; }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function show(id) {
+    ['st-load', 'st-exp', 'st-net', 'st-ok'].forEach(function (s) { $(s).hidden = s !== id; });
+  }
+  function dateFr(iso, withYear) {
+    if (!iso) return '';
+    var d = new Date(String(iso).slice(0, 10) + 'T12:00:00');
+    if (isNaN(d)) return '';
+    return d.toLocaleDateString('fr-FR', withYear === false ? { day: 'numeric', month: 'long' } : { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+  function niveauFr(n) {
+    var m = String(n || '').match(/^(\d)EME$/);
+    return m ? m[1] + 'e' : '';
+  }
+  function euros(n) { return (Math.round(n * 100) % 100 ? n.toFixed(2).replace('.', ',') : String(Math.round(n))) + ' €'; }
+  function api(payload) {
+    return fetch(SU, { method: 'POST', body: JSON.stringify(payload) }).then(function (r) {
+      if (!r.ok) throw new Error('http ' + r.status);
+      return r.json();
+    });
+  }
+  function logEvent(event, meta) {
+    try { api({ action: 'log_funnel_event', event: event, code: DATA && DATA.code, meta: meta || {} }).catch(function () {}); } catch (e) {}
+  }
+
+  var STATUT = {
+    lacune:  { cls: 's-lacune', txt: 'À travailler' },
+    fragile: { cls: 's-fragile', txt: 'À consolider' },
+    acquis:  { cls: 's-acquis', txt: 'Acquis' },
+    ne:      { cls: 's-ne', txt: 'Non évalué' }
+  };
+  function statutDomaine(d) {
+    if (!d || !Number(d.n_evalues) || d.statut === 'non_evalue') return STATUT.ne;
+    return STATUT[d.statut] || STATUT.ne;
+  }
+
+  /* ── Chargement ── */
+  function load() {
+    show('st-load');
+    if (!/^[0-9a-f]{48}$/i.test(TOKEN)) { show('st-exp'); return; }
+    api({ action: 'get_bilan_partage', token: TOKEN.toLowerCase() }).then(function (r) {
+      if (r && r.status === 'success' && r.carte) { DATA = r; render(); return; }
+      show('st-exp');
+    }).catch(function () { show('st-net'); });
+  }
+
+  /* ── Rendu du bilan ── */
+  function render() {
+    var c = DATA.carte, prenom = (c.eleve && c.eleve.prenom) || 'votre enfant';
+    document.title = 'Le bilan maths ' + de(prenom) + ' — Matheux';
+    document.querySelectorAll('[data-prenom]').forEach(function (el) {
+      el.textContent = prenom;
+      var t = el.previousSibling;
+      if (voy(prenom) && t && t.nodeType === 3) t.nodeValue = t.nodeValue.replace(/(^|\s)(de|que) $/, function (m, a, w) { return a + (w === 'de' ? 'd\'' : 'qu\''); });
+    });
+    $('foot-ignore').hidden = false;
+
+    var express = c.type !== 'complet';
+    $('chip').textContent = (express ? 'Bilan express' : 'Bilan complet') + (c.date ? ' · ' + new Date(c.date + 'T12:00:00').toLocaleDateString('fr-FR') : '');
+
+    var doms = c.domaines || [];
+    var nEval = doms.reduce(function (s, d) { return s + (Number(d.n_evalues) || 0); }, 0);
+    var nTot = doms.reduce(function (s, d) { return s + (Number(d.n_comp) || 0); }, 0);
+    var nq = Number(c.n_questions) || 0, dm = Number(c.duree_min) || 0;
+    var desc = express ? 'un diagnostic express' : 'le diagnostic complet';
+    var det = [];
+    if (dm) det.push(dm + ' minutes');
+    if (nq) det.push(nq + ' questions');
+    $('intro').textContent = prenom + ' a fait ' + desc + ' de maths' + (det.length ? ' (' + det.join(', ') + ')' : '') +
+      (c.date ? ' le ' + dateFr(c.date) : '') + ', sur le programme de 3e, et a souhaité vous le transmettre.';
+    var exp = DATA.expires_at || (DATA.partage && DATA.partage.expires_at);
+    $('validite').textContent = 'Lien personnel, ' + (exp ? 'valable jusqu\'au ' + dateFr(exp, false) : 'valable 30 jours') + '. Seules les personnes qui ont ce lien voient cette page.';
+
+    // Domaines
+    $('domaines').innerHTML = doms.map(function (d) {
+      var st = statutDomaine(d), n = Number(d.n_evalues) || 0;
+      var mes = n ? n + (n > 1 ? ' compétences mesurées' : ' compétence mesurée') + (d.n_comp ? ' sur ' + d.n_comp : '') : 'pas encore mesuré';
+      return '<div class="dom ' + st.cls + '"><span class="dot"></span><span class="nm"><b>' + esc(d.libelle) + '</b><span>' + esc(mes) +
+        '</span></span><span class="st">' + st.txt + '</span></div>';
+    }).join('');
+
+    // Point à surveiller
+    var pf = c.point_faible, aSurveiller = pf && (pf.statut === 'lacune' || pf.statut === 'fragile');
+    if (aSurveiller) {
+      var no = niveauFr(pf.niveau_origine), nb = Number(pf.n_bloque) || 0;
+      var txt;
+      if (pf.cause_racine && nb) {
+        txt = 'C\'est ' + (no && no !== '3e' ? 'une notion de ' + no : 'une notion') + ' qui sert de base à ' + nb + ' autre' + (nb > 1 ? 's points' : ' point') +
+          ' du programme de 3e. C\'est souvent là que « ça ne rentre pas » en 3e sans qu\'on sache pourquoi. C\'est fréquent, et ça se retravaille bien.';
+      } else {
+        txt = 'C\'est le point le plus fragile repéré par le diagnostic' + (no && no !== '3e' ? ' (une notion de ' + no + ')' : '') + '. C\'est par là qu\'il est le plus utile de commencer.';
+      }
+      $('pf').innerHTML = '<div class="blk blk-lac"><div class="label">Le point à surveiller</div><div class="pf-t">' + esc(pf.titre_eleve) +
+        (no && no !== '3e' ? ' <span style="font-weight:500;color:var(--mut)">(notion de ' + esc(no) + ')</span>' : '') + '</div><p>' + esc(txt) + '</p>' + forts(c, prenom) + '</div>';
+    } else {
+      $('pf').innerHTML = '<div class="blk blk-ok"><div class="label">Rien d\'inquiétant repéré</div><p>Le diagnostic express n\'a pas trouvé de point bloquant sur les compétences mesurées. C\'est une bonne nouvelle, à confirmer sur l\'ensemble du programme.</p>' + forts(c, prenom) + '</div>';
+    }
+
+    // Fiabilité (élève qui a répondu vite / au hasard)
+    if (c.alerte || (c.fiabilite && c.fiabilite.niveau && c.fiabilite.niveau !== 'bonne')) {
+      $('alerte').innerHTML = '<div class="blk"><div class="label">À prendre avec prudence</div><p>Certaines réponses ont été données très vite. Ce bilan est peut-être moins représentatif que d\'habitude : un nouveau diagnostic au calme le confirmera.</p></div>';
+    }
+
+    // Ce que le bilan ne dit pas encore
+    if (express) {
+      $('pasencore-txt').textContent = (nq ? nq + ' questions' : 'Un diagnostic express') + ' ne suffi' + (nq ? 'sent' : 't') + ' pas pour conclure sur l\'ensemble du programme' +
+        (nEval && nTot ? ' : ' + nEval + ' compétences ont été mesurées sur les ' + nTot + ' que suit Matheux.' : '.') +
+        ' Le diagnostic complet les évalue toutes et remonte jusqu\'à l\'origine des difficultés.';
+    } else {
+      $('pasencore').hidden = true;
+    }
+
+    renderOffres();
+    if (qs.get('merci') === '1') $('merci').hidden = false;
+    show('st-ok');
+  }
+
+  function forts(c, prenom) {
+    var pts = (c.points_forts || []).slice(0, 2).map(function (p) { return p.titre_eleve; }).filter(Boolean);
+    if (!pts.length) return '';
+    return '<p><b>À l\'aise sur</b> : ' + esc(pts.join(' ; ')) + '.</p>';
+  }
+
+  /* ── Offres (selon l'accès déjà acheté) ── */
+  function prix(key) {
+    var pc = DATA && DATA.prix_cents;
+    if (pc && key === 'diag' && pc.diagnostic_complet) return pc.diagnostic_complet / 100;
+    if (pc && (key === 'programme' || key === 'upgrade') && pc.programme_brevet) return pc.programme_brevet / 100;
+    return OFFRE[key].prix;
+  }
+  function toutVert(c) {
+    var pf = c.point_faible;
+    if (pf && (pf.statut === 'lacune' || pf.statut === 'fragile')) return false;
+    return !(c.domaines || []).some(function (d) { return d.statut === 'lacune' || d.statut === 'fragile'; });
+  }
+  function renderOffres() {
+    var acces = DATA.acces || 'free', c = DATA.carte, h = '';
+    var progTxt = 'Entraînement illimité sur toute la carte, un nouveau diagnostic chaque mois pour mesurer la progression, des brevets blancs et un bilan chaque semaine. Paiement unique, accès jusqu\'au Brevet et au-delà.';
+    if (acces === 'programme_brevet') {
+      h = '<div class="done">✓ Programme Brevet actif pour ' + esc(c.eleve && c.eleve.prenom) + '</div>' +
+        '<p class="info">Tout est débloqué. Le bilan PDF complet est disponible dans l\'espace de votre enfant.</p>';
+    } else if (acces === 'diagnostic_complet') {
+      var up = prix('upgrade');
+      h = '<div class="done">✓ Diagnostic complet débloqué</div>' +
+        '<p class="info">Le diagnostic complet est accessible dans l\'espace de votre enfant. Le bilan PDF est généré à la fin.</p>' +
+        '<div class="offer"><div class="hd"><h2>Programme Brevet</h2><span class="pr">' + euros(up) + ' <small>au lieu de ' + euros(OFFRE.programme.prix) + '</small></span></div>' +
+        '<p class="info">' + progTxt + ' Les ' + euros(OFFRE.diag.prix) + ' déjà payés sont déduits.</p>' +
+        '<button class="btn btn-ac" type="button" data-buy="upgrade">Passer au Programme Brevet — ' + euros(up) + '</button></div>';
+    } else if (toutVert(c)) {
+      h = '<p class="info">Aucune difficulté n\'a été repérée : on ne vous recommande pas le diagnostic des lacunes. Si l\'objectif est la mention, le Programme Brevet sert surtout à s\'entraîner sur des sujets de type Brevet.</p>' +
+        '<div class="offer main"><div class="hd"><h2>Programme Brevet</h2><span class="pr">' + euros(prix('programme')) + ' <small>une fois</small></span></div>' +
+        '<p class="info">' + progTxt + ' Diagnostic complet inclus.</p>' +
+        '<button class="btn btn-ac" type="button" data-buy="programme">Choisir le Programme Brevet — ' + euros(prix('programme')) + '</button></div>' +
+        '<button class="btn btn-link" type="button" data-buy="diag">ou seulement le diagnostic complet (' + euros(prix('diag')) + ')</button>';
+    } else {
+      h = '<div class="offer main"><div class="hd"><h2>Diagnostic complet</h2><span class="pr">' + euros(prix('diag')) + ' <small>une fois</small></span></div>' +
+        '<ul class="chk"><li>Environ 40 minutes, en 3 parties</li><li>Un bilan PDF pour vous : les 5 domaines, ce qui est acquis, fragile ou à travailler, les causes, les erreurs types avec les réponses ' + esc(de((c.eleve && c.eleve.prenom) || 'votre enfant')) + '</li><li>Un plan de travail de 4 semaines</li></ul>' +
+        '<button class="btn btn-ac" type="button" data-buy="diag">Offrir le diagnostic complet — ' + euros(prix('diag')) + '</button></div>' +
+        '<div class="offer"><div class="hd"><h2>Programme Brevet</h2><span class="pr">' + euros(prix('programme')) + ' <small>diagnostic inclus</small></span></div>' +
+        '<p class="info">' + progTxt + '</p>' +
+        '<p class="info">Si vous commencez par le diagnostic, les ' + euros(prix('diag')) + ' seront déduits du programme : vous ne payez jamais deux fois, et rien ne presse.</p>' +
+        '<button class="btn btn-ghost" type="button" data-buy="programme">Programme Brevet — ' + euros(prix('programme')) + '</button></div>';
+    }
+    $('offres-body').innerHTML = h;
+    $('offres-body').querySelectorAll('[data-buy]').forEach(function (b) {
+      b.addEventListener('click', function () { openCheckout(b.getAttribute('data-buy')); });
+    });
+  }
+
+  /* ── Paiement : information précontractuelle + cases (52-legal §2.3), consentement horodaté côté serveur ── */
+  function textes(key) {
+    var p = (DATA.carte.eleve && DATA.carte.eleve.prenom) || 'mon enfant', montant = prix(key).toFixed(2).replace('.', ',') + ' €';
+    var info = key === 'diag'
+      ? 'Diagnostic complet de maths 3e : environ 40 minutes en 3 parties, bilan PDF et carte complète dans l\'application.'
+      : 'Programme Brevet maths 3e : diagnostic complet, entraînement illimité sur toute la carte, re-diagnostic mensuel, brevets blancs, bilan hebdomadaire.';
+    info += ' Accessible sur navigateur récent (ordinateur, tablette, téléphone). Prix : ' + montant + ' TTC, paiement unique (TVA non applicable, art. 293 B du CGI). Vendeur : Nicolas Follezou EI. Garantie légale de conformité applicable. Garantie commerciale « satisfait ou remboursé » 30 jours.';
+    var a = 'J\'ai lu et j\'accepte les Conditions générales de vente. Je suis majeur(e) et je suis le représentant légal ' + de(p) + ', ou j\'agis avec son accord.';
+    var b = key === 'diag'
+      ? 'Je demande que le diagnostic complet soit accessible immédiatement. Je reconnais que je perdrai mon droit de rétractation de 14 jours dès ' + que(p) + ' aura commencé le diagnostic. La garantie « satisfait ou remboursé » de 30 jours reste applicable.'
+      : 'Je demande que l\'accès au Programme Brevet commence immédiatement. Je conserve mon droit de rétractation de 14 jours ; si j\'en use après le début de l\'utilisation, un montant proportionnel pourrait être retenu. En pratique, la garantie de 30 jours me rembourse intégralement.';
+    return { info: info, a: a, b: b };
+  }
+  function openCheckout(key) {
+    var o = OFFRE[key], t = textes(key), box = $('checkout');
+    logEvent('checkout_click', { src: 'bilan', produit: o.produit });
+    box.innerHTML = '<div class="co" role="group" aria-labelledby="co-t"><h2 id="co-t">' + esc(o.libelle) + ' — ' + euros(prix(key)) + '</h2>' +
+      '<p class="pre">' + esc(t.info) + ' <a href="/cgv.html" target="_blank" rel="noopener">CGV</a></p>' +
+      '<label><input type="checkbox" id="co-a"><span>' + esc(t.a).replace('Conditions générales de vente', '<a href="/cgv.html" target="_blank" rel="noopener">Conditions générales de vente</a>') + '</span></label>' +
+      '<label><input type="checkbox" id="co-b"><span>' + esc(t.b) + '</span></label>' +
+      '<button class="btn btn-ac" type="button" id="co-go" disabled style="margin-top:14px">Continuer vers le paiement sécurisé</button>' +
+      '<button class="btn btn-link" type="button" id="co-x">Annuler</button>' +
+      '<p class="err" id="co-err" role="alert" hidden></p>' +
+      '<p class="small center">Vous serez redirigé vers Stripe. Aucun compte à créer : l\'accès s\'ouvre sur l\'espace ' + esc(de((DATA.carte.eleve && DATA.carte.eleve.prenom) || 'votre enfant')) + '.</p></div>';
+    var ca = $('co-a'), cb = $('co-b'), go = $('co-go');
+    function upd() { go.disabled = !(ca.checked && cb.checked); }
+    ca.addEventListener('change', upd); cb.addEventListener('change', upd);
+    $('co-x').addEventListener('click', function () { box.innerHTML = ''; });
+    go.addEventListener('click', function () { pay(key, t); });
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function sha256(s) {
+    try {
+      return crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)).then(function (b) {
+        return Array.from(new Uint8Array(b)).map(function (x) { return x.toString(16).padStart(2, '0'); }).join('');
+      });
+    } catch (e) { return Promise.resolve('indisponible'); }
+  }
+  function pay(key, t) {
+    var o = OFFRE[key], go = $('co-go'), err = $('co-err');
+    err.hidden = true;
+    if (!o.lien) {
+      err.innerHTML = 'Le paiement en ligne ouvre très bientôt. En attendant, écrivez-moi à <a href="mailto:contact@matheux.fr">contact@matheux.fr</a> et je m\'occupe de tout.';
+      err.hidden = false;
+      return;
+    }
+    go.disabled = true; go.textContent = 'Un instant…';
+    sha256(t.info + '\n' + t.a + '\n' + t.b).then(function (h) {
+      return api({ action: 'log_consent', code: DATA.code, produit: o.produit, texte_version: OFFRE.textes_version,
+        texte_hash: h, cases: ['cgv_representant_legal', key === 'diag' ? 'renonciation_retractation' : 'acces_immediat_retractation_conservee'] });
+    }).then(function (r) {
+      if (!r || r.status !== 'success') throw new Error('consent');
+      location.href = o.lien + (o.lien.indexOf('?') === -1 ? '?' : '&') + 'client_reference_id=' + encodeURIComponent(DATA.code);
+    }).catch(function () {
+      go.disabled = false; go.textContent = 'Continuer vers le paiement sécurisé';
+      err.textContent = 'La connexion a échoué. Vérifiez votre réseau puis réessayez.';
+      err.hidden = false;
+    });
+  }
+
+  /* ── Aperçu PDF (js/bilan-pdf.js, chargé à la demande) ── */
+  function cartePourPdf() {
+    var c = DATA.carte, comps = [], prio = [];
+    if (c.point_faible) {
+      comps.push({ id: c.point_faible.id, titre: c.point_faible.titre_eleve, titre_eleve: c.point_faible.titre_eleve,
+        statut: c.point_faible.statut, niveau_origine: c.point_faible.niveau_origine, cause_racine: !!c.point_faible.cause_racine, bloque: [], erreurs: [] });
+      prio.push(c.point_faible.id);
+    }
+    (c.points_forts || []).forEach(function (p) {
+      comps.push({ id: p.id, titre: p.titre_eleve, titre_eleve: p.titre_eleve, statut: 'acquis', bloque: [], erreurs: [] });
+    });
+    return { eleve: { prenom: (c.eleve && c.eleve.prenom) || 'Votre enfant', niveau: '3EME' }, type: c.type, date: c.date,
+      n_questions: c.n_questions, duree_min: c.duree_min, score_global: c.score_global, phrase_cle: c.phrase_cle,
+      domaines: c.domaines || [], competences: comps, priorites: prio,
+      points_forts: (c.points_forts || []).map(function (p) { return p.id; }), message_parent: c.message_parent };
+  }
+  var pdfLib = null;
+  function loadPdfLib() {
+    if (window.MatheuxBilanPDF) return Promise.resolve();
+    if (pdfLib) return pdfLib;
+    pdfLib = new Promise(function (res, rej) {
+      var s = document.createElement('script'); s.src = '/js/bilan-pdf.js';
+      s.onload = res; s.onerror = function () { pdfLib = null; rej(new Error('pdf lib')); };
+      document.head.appendChild(s);
+    });
+    return pdfLib;
+  }
+  function apercu() {
+    var btn = $('btn-apercu'), msg = $('apercu-msg'), label = btn.textContent;
+    // Fenêtre ouverte tout de suite (sinon bloquée par Safari iOS après l'attente asynchrone).
+    var w = null;
+    try { w = window.open('', '_blank'); if (w) w.document.write('<p style="font-family:sans-serif;padding:24px">Préparation de l\'aperçu…</p>'); } catch (e) { w = null; }
+    btn.disabled = true; btn.textContent = 'Préparation de l\'aperçu…';
+    logEvent('pdf_open', { src: 'bilan', apercu: true });
+    var key = DATA.acces === 'free' || !DATA.acces ? 'diag' : 'upgrade';
+    loadPdfLib().then(function () {
+      return window.MatheuxBilanPDF.render(cartePourPdf(), { apercu: true,
+        cta: { label: 'Obtenir le bilan complet', prix: euros(prix(key)) } }); // pas d'url : elle imprimerait le token en clair dans le PDF
+    }).then(function (r) {
+      if (w && !w.closed) { w.location.href = r.url; }
+      else {
+        var a = document.createElement('a'); a.href = r.url; a.download = r.fileName; document.body.appendChild(a); a.click(); a.remove();
+      }
+      btn.disabled = false; btn.textContent = label;
+    }).catch(function () {
+      if (w && !w.closed) w.close();
+      btn.disabled = false; btn.textContent = label;
+      msg.textContent = 'L\'aperçu n\'a pas pu être généré. Réessayez dans un instant.';
+    });
+  }
+
+  $('retry').addEventListener('click', load);
+  $('btn-apercu').addEventListener('click', apercu);
+  load();
+})();
+</script>
+</body>
+</html>

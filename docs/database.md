@@ -45,7 +45,7 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 |---|---|---|---|
 | **profiles** | Users | `code` (PK métier, char 6), `email`, `prenom`, `niveau`, `password_hash`, `is_admin`, `premium`, `premium_end` (date expiration), `trial_start` (legacy), `free_chapter` (chapitre gratuit freemium), `objectif` | code, email, niveau |
 | **scores** | Scores | `code`, `chapitre`, `num_exo`, `resultat` (EASY/MEDIUM/HARD/SKIP), `date`, `source` | code+date, code+chapitre, dedup (code,chapitre,num_exo,date,source) |
-| **progress** | Progress | `code`, `categorie`, `score` (adaptatif 0-100), `nb_exos`, `nb_erreurs`, `derniere_pratique`, `statut`, `streak` | code+categorie |
+| **progress** | Progress | `code`, `categorie`, `score` (adaptatif 0-100), `nb_exos`, `nb_erreurs`, `nb_easy` (migration 20260924_progress_nb_easy — lu/écrit par index.ts, manquait au schéma), `derniere_pratique`, `statut`, `streak` | code+categorie |
 | **daily_boosts** | DailyBoosts | `code`, `date`, `boost_json` (JSONB), `exos_done` (0-5) | code+date (unique) |
 | **curriculum** | Curriculum_Officiel | `niveau`, `categorie`, `titre`, `exos_json` (JSONB, 20 exos), `timer`, `ordered` | niveau+categorie (unique) |
 | **diagnostic_exos** | DiagnosticExos | `niveau`, `categorie`, `exos_json` (JSONB, 2 exos) | niveau+categorie (unique) |

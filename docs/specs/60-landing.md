@@ -1,7 +1,7 @@
 # 60 — Nouvelle landing vanilla (remplace le build Next.js)
 
 > Agent : dev-ux (landing) · 24/09/2026 · Branche `feat/diagnostic-3e` · Statut : **prête à relire, pas en prod**
-> Livrables : `landing/index.html`, `landing/assets/` (logo ×2, `og.png`), `landing/screens/` (captures).
+> Livrables : `index.html` (racine), `assets/` (logo ×2, `og.png`), `docs/specs/landing-screens/` (captures). Bascule faite sur la branche le 24/09 (§5 bis).
 > Copy reprise de `50-offre-conversion.md` §9 (growth). Charte reprise d'`app.html` (Syne + DM Sans,
 > navy `#0F172A`, bleu `#1E40AF`, vert `#10B981`) et des maquettes UX (`maquettes/02-carte-partielle`).
 
@@ -64,6 +64,16 @@
 6. Pages SEO (`pythagore-`, `thales-`, `fractions-`, `probabilites-`, `statistiques-brevet.html`, `comment-reviser-brevet-maths.html`, `premium.html`) : leurs CTA pointent vers `app.html?from=…`, un paramètre qu'`app.html` ne lit pas. Ils ouvrent donc l'ancienne landing interne de l'app au lieu du diagnostic. À remplacer par `/app.html#diag-seo_<page>`. Mettre aussi à jour les mentions « Brevet 2026 » et « 29,99 € ». `premium.html` est à réécrire ou à rediriger vers `/#offres` (growth : retirer le badge « rétractation 14 jours »).
 7. `app.html` : `showLanding()` affiche encore une landing interne (Tailwind, anciens textes). Hors périmètre, mais à signaler à l'agent UX : quand on arrive sans hash, l'app devrait renvoyer vers `/` ou vers le login.
 8. Vérifier en prod : les CTA ouvrent le diagnostic, le bandeau cookies n'apparaît qu'une fois pour le site et l'app, l'aperçu OG s'affiche correctement (debugger Facebook ou LinkedIn).
+
+## 5 bis. Bascule faite sur `feat/diagnostic-3e` (24/09, rien de déployé)
+
+- `landing/index.html` → `index.html` ; `landing/assets` → `assets/` ; captures → `docs/specs/landing-screens/`. `landing/` n'existe plus.
+- Supprimés : `_next/`, `index.txt`, `404/index.html` (build Next). `404.html` réécrite en vanilla.
+- **Lien parent `/b/<token>`** : GitHub Pages ne fait pas de réécriture, toute URL inconnue sert `404.html`. Son 1er script redirige `^/b/<x>$` vers `/bilan.html?t=<x>` (même un token tronqué : la page parent affiche alors « Ce lien n'est plus actif »). Limite : la réponse HTTP reste un 404, et l'aperçu WhatsApp/SMS ne peut pas être personnalisé (« Le bilan maths de Léa ») sans un rendu serveur des balises OG.
+- Pages SEO : CTA → `/app.html#diag-seo_<page>` (sources `pythagore`, `thales`, `fractions`, `probabilites`, `statistiques`, `guide`, `exercices_3eme`, `exercices_brevet`, `brevet2026`). Millésime « Brevet 2026 » → 2027 (hors ©), « 1er chapitre gratuit » → « Diagnostic gratuit », blocs « Suivi par un prof » réécrits (« Un parcours qui s'adapte »), favicon cassé `icon-192x192.png` → `icon-192.png`.
+- `premium.html` → redirection vers `/#offres` (noindex). `sitemap.xml` : `brevet-2026.html` et `premium.html` retirés, `lastmod` mis à jour. `robots.txt` : ligne `_next/` retirée.
+- `.claspignore` : `bilan.html`, `assets/`, `landing/`, `index.txt`, les 6 pages SEO manquantes et `dev/` ajoutés. Les lignes `_next/` sont gardées.
+- Page parent : `bilan.html` (spec 40 §P1, 50 §3.3). Paiement : information précontractuelle et cases A et B/B' (52-legal §2.3) → `log_consent` → Payment Link `?client_reference_id=<code>`. Les liens sont dans la constante `OFFRE`, en tête de script : vides tant que Nicolas ne les a pas créés, auquel cas on affiche le message « le paiement ouvre très bientôt ».
 
 ## ❓ Questions pour Nicolas
 

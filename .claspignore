@@ -17,14 +17,22 @@ CLAUDE.md
 .gitignore
 .claude/
 
-# Next.js build (landing page)
+# Ancien build Next.js (supprimé au 24/09, lignes gardées pour éviter un retour accidentel)
 _next/
 _next/**
+index.txt
+
+# Landing vanilla : assets à la racine
+assets/
+assets/**
+landing/
+landing/**
 
 # SPA frontend — pas dans GAS
 index.html
 app.html
 404.html
+bilan.html
 brevet-2026.html
 exercices-maths-3eme.html
 exercices-maths-3eme-brevet.html
@@ -38,6 +46,12 @@ mentions-legales.html
 politique-confidentialite.html
 politique-cookies.html
 premium.html
+pythagore-brevet.html
+thales-brevet.html
+fractions-brevet.html
+probabilites-brevet.html
+statistiques-brevet.html
+comment-reviser-brevet-maths.html
 CNAME
 robots.txt
 sitemap.xml
@@ -70,3 +84,13 @@ algebra/**
 js/
 js/**
 bilan-preview.html
+
+# Backend de dev local (autre agent) — pas dans GAS
+dev/
+dev/**
+
+# Dev local — jamais dans GAS (clasp pousse aussi les .ts, transpilés)
+dev/
+dev/**
+matheux.sh
+Matheux.desktop

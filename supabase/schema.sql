@@ -90,6 +90,7 @@ create table progress (
   score           integer not null default 0,          -- score confiance adaptatif 0-100
   nb_exos         integer not null default 0,
   nb_erreurs      integer not null default 0,
+  nb_easy         integer not null default 0,          -- nb réponses EASY (score = nb_easy/nb_exos) — migration 20260924_progress_nb_easy.sql
   derniere_pratique date,
   statut          text not null default 'en_cours' check (statut in ('en_cours','maitrise')),
   streak          integer not null default 0,
