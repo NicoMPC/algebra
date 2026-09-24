@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Aperçu PDF bilan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Syne:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0F172A; --mut:#64748B; --brd:#E2E8F0; --bg:#F8FAFC; --p:#1E40AF; --pl:#EEF2FF; --grn:#059669; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:'DM Sans',system-ui,sans-serif; background:var(--bg); color:var(--ink); }
+  header { padding:20px 16px 8px; max-width:1100px; margin:0 auto; }
+  h1 { font-family:'Syne',sans-serif; font-size:22px; margin:0 0 4px; }
+  p.sub { color:var(--mut); margin:0; font-size:14px; }
+  main { max-width:1100px; margin:0 auto; padding:12px 16px 32px; display:grid; gap:16px; grid-template-columns:320px 1fr; }
+  @media (max-width:820px) { main { grid-template-columns:1fr; } }
+  .card { background:#fff; border:1px solid var(--brd); border-radius:14px; padding:14px; margin-bottom:12px; }
+  .card h2 { font-size:15px; margin:0 0 2px; }
+  .card p { font-size:13px; color:var(--mut); margin:0 0 10px; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; }
+  button { font:600 13px 'DM Sans',sans-serif; border:0; border-radius:10px; padding:9px 12px; cursor:pointer; background:var(--p); color:#fff; }
+  button.alt { background:var(--pl); color:var(--p); }
+  #status { font-size:12px; color:var(--mut); min-height:18px; margin-top:6px; }
+  #dl { font-size:13px; color:var(--p); }
+  iframe { width:100%; height:80vh; border:1px solid var(--brd); border-radius:14px; background:#fff; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Bilan PDF · page de test</h1>
+  <p class="sub">Génère le PDF parent depuis deux cartes fictives (contrat §5). Servir en HTTP pour embarquer les polices (en <code>file://</code>, fallback Helvetica).</p>
+</header>
+<main>
+  <section>
+    <div class="card">
+      <h2>Léa · 3e · 49 %</h2>
+      <p>Cause racine sur les nombres relatifs (+ fractions), 7 lacunes.</p>
+      <div class="row">
+        <button onclick="go('lea', false)">Bilan complet</button>
+        <button class="alt" onclick="go('lea', true)">Aperçu</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Hugo · 3e · 81 %</h2>
+      <p>Bon élève, 2 points fragiles, aucune cause racine.</p>
+      <div class="row">
+        <button onclick="go('hugo', false)">Bilan complet</button>
+        <button class="alt" onclick="go('hugo', true)">Aperçu</button>
+      </div>
+    </div>
+    <div id="status"></div>
+    <a id="dl" href="#" style="display:none">Télécharger le PDF</a>
+  </section>
+  <iframe id="view" title="PDF"></iframe>
+</main>
+
+<script src="js/bilan-pdf.js"></script>
+<script>
+window.DEMO_CARTES = {
+  lea: {
+    eleve: { prenom: 'Léa', niveau: '3EME' },
+    type: 'complet', date: '2026-09-24', duree_min: 38, n_questions: 64, score_global: 49,
+    domaines: [
+      { code: 'NC', libelle: 'Nombres et calculs', maitrise: 0.42, statut: 'fragile', n_comp: 12, n_lacunes: 5 },
+      { code: 'DF', libelle: 'Données, statistiques et fonctions', maitrise: 0.61, statut: 'fragile', n_comp: 7, n_lacunes: 2 },
+      { code: 'GM', libelle: 'Grandeurs et mesures', maitrise: 0.66, statut: 'fragile', n_comp: 2, n_lacunes: 0 },
+      { code: 'EG', libelle: 'Espace et géométrie', maitrise: 0.74, statut: 'acquis', n_comp: 3, n_lacunes: 0 },
+      { code: 'AP', libelle: 'Algorithmique et programmation', maitrise: 0.68, statut: 'fragile', n_comp: 2, n_lacunes: 0 }
+    ],
+    competences: [
+      { id: 'NC.REL.01', titre: 'Comparer et ranger des nombres relatifs', niveau_origine: '5EME', statut: 'acquis', maitrise: 0.85 },
+      { id: 'NC.REL.02', titre: 'Soustraire un nombre relatif', niveau_origine: '5EME', statut: 'lacune', maitrise: 0.2,
+        cause_racine: true, bloque: ['NC.LIT.03', 'NC.EQ.02', 'DF.FONC.03'],
+        erreurs: [{ id: 'NC.REL.02#moins_moins', libelle: 'Transforme « − (−3) » en « − 3 » : −7 − (−3) = −10',
+          libelle_parent: 'Confond « enlever un nombre négatif » et « ajouter un nombre négatif » : la règle des signes n\'est pas encore fixée.',
+          remediation: 'Revenir au sens avec un thermomètre : supprimer une baisse de 3 °C, c\'est monter de 3 °C. Puis réécrire chaque soustraction en addition.',
+          exemple: { q: 'Calcule $-7 - (-3)$.', reponse_eleve: '-10', a: '-4' } }] },
+      { id: 'NC.REL.03', titre: 'Multiplier et diviser des nombres relatifs', niveau_origine: '4EME', statut: 'fragile', maitrise: 0.5 },
+      { id: 'NC.FRAC.01', titre: 'Simplifier une fraction', niveau_origine: '5EME', statut: 'acquis', maitrise: 0.75 },
+      { id: 'NC.FRAC.03', titre: 'Additionner deux fractions de dénominateurs différents', niveau_origine: '5EME', statut: 'lacune', maitrise: 0.25,
+        cause_racine: true, bloque: ['NC.EQ.04', 'DF.PROB.02'],
+        erreurs: [{ id: 'NC.FRAC.03#somme_directe', libelle: 'Additionne numérateurs et dénominateurs entre eux (1/3 + 1/4 = 2/7)',
+          libelle_parent: 'Applique une règle intuitive mais fausse : additionner « le haut avec le haut, le bas avec le bas ».',
+          remediation: 'Revenir au sens : un tiers et un quart ne sont pas des parts de même taille. On les découpe en douzièmes : $\\frac{4}{12} + \\frac{3}{12} = \\frac{7}{12}$.',
+          exemple: { q: 'Calcule $\\frac{1}{3} + \\frac{1}{4}$.', reponse_eleve: '2/7', a: '7/12' } }] },
+      { id: 'NC.FRAC.04', titre: 'Multiplier deux fractions', niveau_origine: '4EME', statut: 'fragile', maitrise: 0.55 },
+      { id: 'NC.PUIS.01', titre: 'Calculer une puissance d\'un nombre entier', niveau_origine: '4EME', statut: 'fragile', maitrise: 0.5,
+        erreurs: [{ id: 'NC.PUIS.01#base_fois_exposant', libelle: 'Multiplie la base par l\'exposant (2^3 = 6)',
+          libelle_parent: 'Confond « puissance » et « multiplication » : calcule 2 × 3 au lieu de 2 × 2 × 2.',
+          exemple: { q: 'Calcule $2^3$.', reponse_eleve: '6', a: '8' } }] },
+      { id: 'NC.PUIS.03', titre: 'Écrire un nombre en notation scientifique', niveau_origine: '4EME', statut: 'non_evalue', maitrise: null },
+      { id: 'NC.LIT.03', titre: 'Développer une expression (distributivité simple)', niveau_origine: '4EME', statut: 'lacune', maitrise: 0.3,
+        erreurs: [{ id: 'NC.LIT.03#signe_second_terme', libelle: 'Oublie le signe du produit sur le second terme',
+          libelle_parent: 'Distribue bien le facteur, mais se trompe sur le signe du second terme : c\'est la même difficulté qu\'avec les nombres relatifs.',
+          remediation: 'Écrire l\'étape intermédiaire $-2 \\times x + (-2) \\times (-5)$ avant de simplifier.',
+          exemple: { q: 'Développe $-2(x - 5)$.', reponse_eleve: '-2x - 10', a: '-2x + 10' } }] },
+      { id: 'NC.LIT.05', titre: 'Factoriser avec un facteur commun', niveau_origine: '3EME', statut: 'fragile', maitrise: 0.45 },
+      { id: 'NC.EQ.02', titre: 'Résoudre une équation du type ax + b = c', niveau_origine: '4EME', statut: 'lacune', maitrise: 0.33 },
+      { id: 'NC.EQ.04', titre: 'Résoudre une équation comportant des fractions', niveau_origine: '3EME', statut: 'lacune', maitrise: 0.2 },
+      { id: 'NC.ARITH.02', titre: 'Décomposer un nombre en produit de facteurs premiers', niveau_origine: '3EME', statut: 'acquis', maitrise: 0.8 },
+      { id: 'DF.PROP.01', titre: 'Reconnaître une situation de proportionnalité', niveau_origine: '5EME', statut: 'acquis', maitrise: 0.9 },
+      { id: 'DF.PROP.03', titre: 'Appliquer un pourcentage à une quantité', niveau_origine: '4EME', statut: 'acquis', maitrise: 0.75 },
+      { id: 'DF.STAT.02', titre: 'Calculer une moyenne', niveau_origine: '4EME', statut: 'acquis', maitrise: 0.92 },
+      { id: 'DF.STAT.03', titre: 'Déterminer la médiane d\'une série', niveau_origine: '3EME', statut: 'fragile', maitrise: 0.6 },
+      { id: 'DF.PROB.02', titre: 'Calculer une probabilité dans une expérience à deux épreuves', niveau_origine: '3EME', statut: 'lacune', maitrise: 0.35 },
+      { id: 'DF.FONC.01', titre: 'Lire l\'image d\'un nombre sur un graphique', niveau_origine: '3EME', statut: 'acquis', maitrise: 0.8 },
+      { id: 'DF.FONC.03', titre: 'Calculer l\'image d\'un nombre par une fonction affine', niveau_origine: '3EME', statut: 'lacune', maitrise: 0.3 },
+      { id: 'DF.FONC.04', titre: 'Déterminer un antécédent par le calcul', niveau_origine: '3EME', statut: 'non_evalue', maitrise: null },
+      { id: 'GM.AIRE.02', titre: 'Calculer l\'aire d\'un disque', niveau_origine: '5EME', statut: 'fragile', maitrise: 0.6 },
+      { id: 'GM.VOL.01', titre: 'Calculer le volume d\'un cylindre', niveau_origine: '4EME', statut: 'acquis', maitrise: 0.72 },
+      { id: 'GM.CONV.01', titre: 'Convertir des durées (heures, minutes)', niveau_origine: '6EME', statut: 'non_evalue', maitrise: null },
+      { id: 'EG.PYTH.01', titre: 'Calculer une longueur avec le théorème de Pythagore', niveau_origine: '4EME', statut: 'fragile', maitrise: 0.5,
+        erreurs: [{ id: 'EG.PYTH.01#somme_longueurs', libelle: 'Additionne les longueurs au lieu de leurs carrés',
+          libelle_parent: 'Connaît le théorème mais l\'applique aux longueurs, au lieu des carrés des longueurs.',
+          remediation: 'Toujours écrire l\'égalité complète : $BC^2 = AB^2 + AC^2 = 9 + 16 = 25$, donc $BC = \\sqrt{25} = 5$ cm.',
+          exemple: { q: 'Le triangle ABC est rectangle en A, avec AB = 3 cm et AC = 4 cm. Calcule BC.', reponse_eleve: '7 cm', a: '5 cm' } }] },
+      { id: 'EG.THAL.01', titre: 'Reconnaître une configuration de Thalès', niveau_origine: '3EME', statut: 'acquis', maitrise: 0.85 },
+      { id: 'EG.TRIG.01', titre: 'Utiliser le cosinus dans un triangle rectangle', niveau_origine: '3EME', statut: 'non_evalue', maitrise: null },
+      { id: 'EG.TRANS.01', titre: 'Construire l\'image d\'une figure par une symétrie', niveau_origine: '5EME', statut: 'acquis', maitrise: 0.9 },
+      { id: 'AP.SCR.01', titre: 'Lire un programme Scratch avec une boucle', niveau_origine: '4EME', statut: 'acquis', maitrise: 0.8 },
+      { id: 'AP.SCR.02', titre: 'Utiliser une variable dans un programme', niveau_origine: '4EME', statut: 'fragile', maitrise: 0.55 }
+    ],
+    priorites: ['NC.REL.02', 'NC.FRAC.03', 'EG.PYTH.01'],
+    plan_4_semaines: [
+      { semaine: 1, focus: ['NC.REL.02'], objectif: 'Fixer la règle des signes pour la soustraction. C\'est la base qui débloque le calcul littéral et les équations.' },
+      { semaine: 2, focus: ['NC.LIT.03', 'NC.EQ.02'], objectif: 'Réinvestir les relatifs : développer une expression, puis résoudre des équations simples.' },
+      { semaine: 3, focus: ['NC.FRAC.03', 'NC.EQ.04'], objectif: 'Additionner des fractions avec méthode, puis les utiliser dans des équations.' },
+      { semaine: 4, focus: ['EG.PYTH.01', 'DF.PROB.02'], objectif: 'Consolider deux incontournables du Brevet : Pythagore et les probabilités.' }
+    ],
+    points_forts: ['DF.STAT.02', 'EG.TRANS.01', 'EG.THAL.01'],
+    message_parent: 'Léa a de vraies ressources : elle raisonne bien en géométrie et en statistiques. Ses difficultés en calcul viennent presque toutes d\'une seule base de 5e, les nombres relatifs. C\'est une bonne nouvelle : en la reprenant pendant deux semaines, une grande partie du programme de 3e va se débloquer.'
+  },
+
+  hugo: {
+    eleve: { prenom: 'Hugo', niveau: '3EME' },
+    type: 'complet', date: '2026-09-24', duree_min: 41, n_questions: 66, score_global: 81,
+    domaines: [
+      { code: 'NC', libelle: 'Nombres et calculs', maitrise: 0.86, statut: 'acquis', n_comp: 9, n_lacunes: 0 },
+      { code: 'DF', libelle: 'Données, statistiques et fonctions', maitrise: 0.74, statut: 'acquis', n_comp: 6, n_lacunes: 0 },
+      { code: 'GM', libelle: 'Grandeurs et mesures', maitrise: 0.83, statut: 'acquis', n_comp: 3, n_lacunes: 0 },
+      { code: 'EG', libelle: 'Espace et géométrie', maitrise: 0.69, statut: 'fragile', n_comp: 4, n_lacunes: 0 },
+      { code: 'AP', libelle: 'Algorithmique et programmation', maitrise: 0.9, statut: 'acquis', n_comp: 2, n_lacunes: 0 }
+    ],
+    competences: [
+      { id: 'NC.REL.02', titre: 'Soustraire un nombre relatif', niveau_origine: '5EME', statut: 'acquis', maitrise: 0.95 },
+      { id: 'NC.REL.03', titre: 'Multiplier et diviser des nombres relatifs', niveau_origine: '4EME', statut: 'acquis', maitrise: 0.9 },
+      { id: 'NC.FRAC.03', titre: 'Additionner deux fractions de dénominateurs différents', niveau_origine: '5EME', statut: 'acquis', maitrise: 0.88 },
+      { id: 'NC.FRAC.05', titre: 'Diviser par une fraction', niveau_origine: '4EME', statut: 'acquis', maitrise: 0.78 },
+      { id: 'NC.PUIS.02', titre: 'Utiliser les puissances de 10', niveau_origine: '4EME', statut: 'acquis', maitrise: 0.85 },
+      { id: 'NC.LIT.03', titre: 'Développer une expression (distributivité simple)', niveau_origine: '4EME', statut: 'acquis', maitrise: 0.92 },
+      { id: 'NC.LIT.06', titre: 'Développer avec une identité remarquable', niveau_origine: '3EME', statut: 'acquis', maitrise: 0.72 },
+      { id: 'NC.EQ.03', titre: 'Résoudre une équation produit nul', niveau_origine: '3EME', statut: 'acquis', maitrise: 0.8 },
+      { id: 'NC.ARITH.03', titre: 'Rendre une fraction irréductible avec le PGCD', niveau_origine: '3EME', statut: 'acquis', maitrise: 0.83 },
+      { id: 'DF.PROP.03', titre: 'Appliquer un pourcentage à une quantité', niveau_origine: '4EME', statut: 'acquis', maitrise: 0.9 },
+      { id: 'DF.STAT.03', titre: 'Déterminer la médiane d\'une série', niveau_origine: '3EME', statut: 'acquis', maitrise: 0.8 },
+      { id: 'DF.PROB.02', titre: 'Calculer une probabilité dans une expérience à deux épreuves', niveau_origine: '3EME', statut: 'fragile', maitrise: 0.55,
+        erreurs: [{ id: 'DF.PROB.02#issues_oubliees', libelle: 'Ne compte pas PF et FP comme deux issues distinctes',
+          libelle_parent: 'Oublie certains cas possibles quand l\'expérience se fait en deux étapes.',
+          remediation: 'Faire un arbre et lister les 4 issues (PP, PF, FP, FF) avant de compter les cas favorables.',
+          exemple: { q: 'On lance deux fois une pièce équilibrée. Quelle est la probabilité d\'obtenir au moins une fois Pile ?', reponse_eleve: '1/2', a: '3/4' } }] },
+      { id: 'DF.FONC.03', titre: 'Calculer l\'image d\'un nombre par une fonction affine', niveau_origine: '3EME', statut: 'acquis', maitrise: 0.9 },
+      { id: 'DF.FONC.05', titre: 'Lire le coefficient directeur d\'une droite', niveau_origine: '3EME', statut: 'acquis', maitrise: 0.75 },
+      { id: 'DF.FONC.04', titre: 'Déterminer un antécédent par le calcul', niveau_origine: '3EME', statut: 'non_evalue', maitrise: null },
+      { id: 'GM.VOL.02', titre: 'Calculer le volume d\'une pyramide ou d\'un cône', niveau_origine: '4EME', statut: 'acquis', maitrise: 0.8 },
+      { id: 'GM.VIT.01', titre: 'Calculer une vitesse moyenne', niveau_origine: '4EME', statut: 'acquis', maitrise: 0.85 },
+      { id: 'GM.AGR.01', titre: 'Effet d\'un agrandissement sur les aires et les volumes', niveau_origine: '3EME', statut: 'non_evalue', maitrise: null },
+      { id: 'EG.PYTH.02', titre: 'Démontrer qu\'un triangle est rectangle (réciproque de Pythagore)', niveau_origine: '4EME', statut: 'acquis', maitrise: 0.83 },
+      { id: 'EG.THAL.02', titre: 'Calculer une longueur avec le théorème de Thalès', niveau_origine: '3EME', statut: 'acquis', maitrise: 0.78 },
+      { id: 'EG.TRIG.01', titre: 'Utiliser le cosinus dans un triangle rectangle', niveau_origine: '3EME', statut: 'fragile', maitrise: 0.5,
+        erreurs: [{ id: 'EG.TRIG.01#rapport_inverse', libelle: 'Inverse le rapport : hypoténuse sur côté adjacent',
+          libelle_parent: 'Connaît la formule du cosinus mais inverse le rapport ; un cosinus supérieur à 1 ne l\'alerte pas encore.',
+          remediation: 'Retenir « adjacent sur hypoténuse », puis vérifier : un cosinus est toujours compris entre 0 et 1.',
+          exemple: { q: 'Le triangle ABC est rectangle en C, avec AC = 4 cm et AB = 5 cm. Que vaut $\\cos \\widehat{BAC}$ ?', reponse_eleve: '5/4', a: '4/5' } }] },
+      { id: 'EG.TRANS.02', titre: 'Reconnaître une homothétie', niveau_origine: '3EME', statut: 'acquis', maitrise: 0.72 },
+      { id: 'AP.SCR.01', titre: 'Lire un programme Scratch avec une boucle', niveau_origine: '4EME', statut: 'acquis', maitrise: 0.95 },
+      { id: 'AP.SCR.02', titre: 'Utiliser une variable dans un programme', niveau_origine: '4EME', statut: 'acquis', maitrise: 0.85 }
+    ],
+    priorites: ['EG.TRIG.01', 'DF.PROB.02'],
+    plan_4_semaines: [
+      { semaine: 1, focus: ['EG.TRIG.01'], objectif: 'Sécuriser le cosinus : choisir le bon rapport et vérifier la vraisemblance du résultat.' },
+      { semaine: 2, focus: ['DF.PROB.02'], objectif: 'Représenter une expérience à deux épreuves par un arbre avant de calculer.' },
+      { semaine: 3, focus: ['NC.LIT.06', 'EG.TRANS.02'], objectif: 'Passer de « acquis » à « automatique » sur deux notions juste au-dessus du seuil.' },
+      { semaine: 4, focus: ['EG.TRIG.01', 'DF.PROB.02'], objectif: 'Problèmes type Brevet mêlant plusieurs notions, en temps limité.' }
+    ],
+    points_forts: ['NC.REL.02', 'NC.LIT.03', 'AP.SCR.01'],
+    message_parent: 'Hugo a un très bon niveau, régulier sur tout le programme. Les deux points à consolider sont récents (programme de 3e) et ne cachent aucune lacune ancienne. Avec un entraînement court et régulier, l\'objectif d\'une mention au Brevet est réaliste.'
+  }
+};
+
+var lastUrl = null;
+function go(key, apercu) {
+  var st = document.getElementById('status'), dl = document.getElementById('dl');
+  st.textContent = 'Génération…';
+  MatheuxBilanPDF.render(window.DEMO_CARTES[key], {
+    apercu: apercu,
+    cta: { label: 'Débloquer le bilan', prix: '19 €', url: 'https://matheux.fr/app.html#bilan' }
+  }).then(function (r) {
+    if (lastUrl) URL.revokeObjectURL(lastUrl);
+    lastUrl = r.url;
+    document.getElementById('view').src = r.url;
+    dl.href = r.url; dl.download = r.fileName; dl.style.display = 'inline';
+    dl.textContent = 'Télécharger ' + r.fileName;
+    st.textContent = r.pageCount + ' pages · polices ' + (r.fontsEmbedded ? 'Syne / DM Sans embarquées' : 'fallback Helvetica');
+  }).catch(function (e) { st.textContent = 'Erreur : ' + e.message; console.error(e); });
+}
+</script>
+</body>
+</html>

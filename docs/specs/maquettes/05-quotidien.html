@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Écran quotidien — séance du jour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&display=swap" rel="stylesheet">
+<!-- Maquette statique — spec docs/specs/40-parcours-epuration.md. Pas de JS métier. -->
+<style>
+:root{
+  --ink:#07090f;--ink2:#1a1f2e;--mut:#64748b;--brd:#e2e8f0;--bg:#f7f8fc;--wht:#fff;
+  --p:#1E40AF;--p2:#3B82F6;--pl:#eef2ff;--pd:#0F172A;
+  --amb:#f59e0b;--ambl:#fef3c7;--grn:#059669;--grnl:#d1fae5;--ros:#e11d48;--rosl:#fff1f2;
+  --r:14px;--rl:22px;
+  /* statuts carte (contrat §4) */
+  --lac:#e11d48;--lacl:#fff1f2;--fra:#d97706;--fral:#fef3c7;--acq:#059669;--acql:#d1fae5;--ne:#94a3b8;--nel:#f1f5f9;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;letter-spacing:.01em;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.syne{font-family:'Syne',system-ui,sans-serif;letter-spacing:-.01em}
+.phone{max-width:375px;margin:0 auto;min-height:100vh;padding:14px 16px 28px;background:var(--bg)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.logo{font-family:'Syne';font-weight:800;font-size:1.05rem;color:var(--p)}
+.chip{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;padding:5px 10px;border-radius:99px;border:1.5px solid var(--brd);background:#fff;color:var(--mut)}
+.card{background:#fff;border:1px solid var(--brd);border-radius:18px;padding:16px;box-shadow:0 4px 20px rgba(15,23,42,.05)}
+.card+.card{margin-top:12px}
+.stack>*+*{margin-top:12px}
+.label{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}
+.h1{font-family:'Syne';font-weight:800;font-size:1.32rem;line-height:1.2}
+.h2{font-family:'Syne';font-weight:700;font-size:1rem;line-height:1.3}
+.sub{color:var(--mut);font-size:.86rem}
+.small{font-size:.76rem;color:var(--mut)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:none;cursor:pointer;font-family:'Syne';font-weight:700;font-size:.95rem;border-radius:var(--r);padding:15px 16px;text-decoration:none}
+.btn-ac{background:linear-gradient(135deg,var(--p) 0%,var(--p2) 100%);color:#fff;box-shadow:0 4px 20px rgba(30,64,175,.3)}
+.btn-dk{background:var(--ink);color:#fff}
+.btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--brd)}
+.btn-link{background:none;color:var(--p);font-size:.84rem;padding:8px;font-family:'DM Sans';font-weight:700}
+.bar{height:8px;border-radius:99px;background:var(--brd);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:99px}
+.st{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:800;padding:3px 8px;border-radius:99px;white-space:nowrap}
+.st-lac{background:var(--lacl);color:var(--lac)} .st-fra{background:var(--fral);color:#92400e} .st-acq{background:var(--acql);color:#065f46} .st-ne{background:var(--nel);color:#475569}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.d-lac{background:var(--lac)} .d-fra{background:var(--fra)} .d-acq{background:var(--acq)} .d-ne{background:var(--ne)}
+.dom{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #f1f5f9}
+.dom:first-child{border-top:none}
+.dom .nm{flex:1;min-width:0;font-weight:700;font-size:.83rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dom .bar{width:52px;height:6px;flex-shrink:0}
+.note{background:var(--pl);border-radius:12px;padding:10px 12px;font-size:.8rem;color:#1e3a8a}
+.err{background:var(--rosl);border:1px solid #fecdd3;border-radius:12px;padding:10px 12px;font-size:.82rem}
+.mono{font-family:ui-monospace,Menlo,monospace}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:.9em;line-height:1.05;margin:0 2px}
+.frac b{font-weight:600;padding:0 2px}.frac b:first-child{border-bottom:1.5px solid currentColor}
+.center{text-align:center}
+.row{display:flex;align-items:center;gap:10px}
+.sep{height:1px;background:var(--brd);margin:14px 0}
+.state-sep{margin:28px -16px 16px;padding:8px 16px;background:#e2e8f0;color:#334155;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+
+.hdr{display:flex;align-items:center;justify-content:space-between}
+.badges{display:flex;gap:6px}
+.bdg{display:inline-flex;align-items:center;gap:5px;font-family:'Syne';font-weight:800;font-size:.85rem;padding:6px 10px;border-radius:12px;border:1px solid}
+.b-stk{background:#fffbeb;border-color:#fde68a;color:#b45309}
+.b-day{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
+.session{background:linear-gradient(135deg,#0F172A 0%,#1E40AF 100%);color:#fff;border-radius:22px;padding:18px 16px}
+.why{background:rgba(255,255,255,.1);border-radius:12px;padding:9px 11px;font-size:.78rem;color:rgba(255,255,255,.85);margin-top:12px}
+.dm{display:flex;align-items:center;gap:10px;padding:7px 0}
+.dm .nm{flex:1;font-size:.82rem;font-weight:700}
+.dm .bar{width:96px;height:6px}
+.mv{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid #f1f5f9;font-size:.83rem}
+.mv:first-of-type{border-top:none}
+.done{background:linear-gradient(135deg,#064e3b,#059669);color:#fff;border-radius:22px;padding:18px 16px}
+.lockrow{display:flex;align-items:center;gap:10px;border:1.5px dashed #cbd5e1;border-radius:14px;padding:11px 12px;background:#fff}
+</style></head><body>
+<div class="phone">
+
+<div class="hdr"><div><div class="small">Mercredi 1er octobre</div><div class="syne" style="font-weight:800;font-size:1.2rem">Salut Léa</div></div>
+  <div class="badges"><span class="bdg b-stk">🔥 6</span><span class="bdg b-day">🎯 0/5</span></div></div>
+
+<div class="session" style="margin-top:14px">
+  <div class="label" style="color:rgba(255,255,255,.55)">Ta séance du jour</div>
+  <div class="h1" style="margin-top:4px;font-size:1.3rem">Fractions : additionner</div>
+  <p style="font-size:.84rem;color:rgba(255,255,255,.7);margin-top:4px">5 exos · ~8 min · niveau ajusté à hier</p>
+  <div class="why">💡 <b>Pourquoi ça ?</b> C'est ta cause racine n°1 : ça débloque aussi les équations et les probas.</div>
+  <button class="btn" style="margin-top:14px;background:#fff;color:var(--pd)">C'est parti →</button>
+</div>
+
+<div class="card" style="margin-top:12px">
+  <div class="row" style="justify-content:space-between"><span class="label">Ta carte</span><span class="small" style="color:var(--grn);font-weight:700">+1 compétence cette semaine</span></div>
+  <div class="dm"><span class="dot d-fra"></span><span class="nm">Nombres et calculs</span><span class="bar"><i style="width:58%;background:var(--fra)"></i></span></div>
+  <div class="dm"><span class="dot d-lac"></span><span class="nm">Données, fonctions</span><span class="bar"><i style="width:32%;background:var(--lac)"></i></span></div>
+  <div class="dm"><span class="dot d-acq"></span><span class="nm">Grandeurs et mesures</span><span class="bar"><i style="width:80%;background:var(--acq)"></i></span></div>
+  <div class="dm"><span class="dot d-fra"></span><span class="nm">Espace et géométrie</span><span class="bar"><i style="width:58%;background:var(--fra)"></i></span></div>
+  <div class="dm"><span class="dot d-ne"></span><span class="nm">Algorithmique</span><span class="bar"><i style="width:0"></i></span></div>
+</div>
+
+<div class="lockrow" style="margin-top:12px"><span style="font-size:1.2rem">🔒</span><div style="flex:1"><div style="font-weight:800;font-size:.85rem">40 compétences encore floues</div><div class="small">Le diagnostic complet les révèle en 40 min.</div></div><span class="btn-link" style="padding:0">Voir →</span></div>
+
+<div class="state-sep">État B : séance terminée</div>
+
+<div class="hdr"><div><div class="small">Mercredi 1er octobre</div><div class="syne" style="font-weight:800;font-size:1.2rem">Salut Léa</div></div>
+  <div class="badges"><span class="bdg b-stk">🔥 7</span><span class="bdg b-day">🎯 5/5</span></div></div>
+
+<div class="done" style="margin-top:14px">
+  <div class="label" style="color:rgba(255,255,255,.6)">Séance faite ✓</div>
+  <div class="h1" style="margin-top:4px;font-size:1.3rem">4 sur 5 du premier coup.</div>
+  <p style="font-size:.84rem;color:rgba(255,255,255,.8);margin-top:4px">7 jours d'affilée. Ta prochaine séance est prête demain, elle part de ce que t'as fait aujourd'hui.</p>
+</div>
+
+<div class="card" style="margin-top:12px">
+  <div class="label">Ce qui a bougé aujourd'hui</div>
+  <div class="mv"><span class="st st-lac">Lacune</span>→<span class="st st-fra">Fragile</span><span style="flex:1;font-weight:700">Additionner des fractions</span></div>
+  <div class="mv"><span class="st st-ne">Pas vu</span>→<span class="st st-acq">Acquis</span><span style="flex:1;font-weight:700">Simplifier une fraction</span></div>
+  <div class="mv" style="color:var(--mut)"><span>🔁</span><span style="flex:1">1 erreur type repérée : <b>oublier de réduire au même dénominateur</b>. Elle reviendra demain.</span></div>
+</div>
+
+<div class="card" style="margin-top:12px">
+  <div class="h2" style="font-size:.98rem">T'as envie de continuer ?</div>
+  <p class="small" style="margin-top:2px">Le gratuit, c'est 5 exos par jour. Avec le programme, tu t'entraînes sur toute ta carte, sans limite.</p>
+  <button class="btn btn-ghost" style="margin-top:10px">Voir ce qui est inclus</button>
+</div>
+
+</div></body></html>

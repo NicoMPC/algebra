@@ -585,6 +585,12 @@ async function saveScore(p: Record<string, unknown>) {
     await updateConfidenceScore(code, String(p.level), String(p.categorie), String(p.resultat), parseInt(String(p.exercice_idx || "0")));
   }
 
+  // Moteur 3e : maîtrise par compétence — additif, ignoré si l'exo ne porte ni item_id ni comp.
+  if (p.item_id || p.comp) {
+    try { await mxMajDepuisScore(code, p, source === "BOOST" ? "train" : "legacy"); }
+    catch (e) { console.error("[moteur] maj maîtrise save_score", e); }
+  }
+
   // MAJ ExosDone dans DailyBoosts si source=BOOST — réutilise activeBoostRow chargé plus haut
   if (source === "BOOST" && activeBoostRow) {
     await adminClient.from("daily_boosts")
@@ -759,6 +765,13 @@ async function saveScoresBatch(p: Record<string, unknown>) {
   await adminClient.from("scores").upsert(rows, {
     onConflict: "code,chapitre,num_exo,date", ignoreDuplicates: true
   });
+
+  // Moteur 3e : maîtrise par compétence — additif, seulement pour les exos portant item_id ou comp.
+  for (const s of (p.scores as Record<string, unknown>[])) {
+    if (!s.item_id && !s.comp) continue;
+    try { await mxMajDepuisScore(code, s, String(s.source || "") === "BOOST" ? "train" : "legacy"); }
+    catch (e) { console.error("[moteur] maj maîtrise save_scores_batch", e); }
+  }
 
   // Batch progress updates — group by chapitre, only for non-BOOST non-CALIBRAGE
   const chapScores: Record<string, string[]> = {};
@@ -1050,6 +1063,1365 @@ async function generateAdaptiveBoost(p: Record<string, unknown>) {
   return { status: "success", niveau, chapitresCibles: chapitresTries.slice(0, 3).map((c) => c.categorie), nbExosPool: weighted.length, boost: boostJson };
 }
 
+// ════════════════════════════════════════════════════════════
+// MOTEUR_PUR_DEBUT — Moteur « Diagnostic 3e » : diagnostic adaptatif,
+// maîtrise par compétence, carte, entraînement, droits d'accès.
+// Spec : docs/specs/20-moteur.md · Contrat : docs/specs/00-contrat-commun.md §3-5
+//
+// LOGIQUE PURE : aucune I/O ici (ni adminClient, ni Deno, ni fetch, ni Math.random,
+// ni new Date() sans argument). Tout est déterministe à entrées égales.
+// Ce bloc est extrait tel quel et testé par supabase/tests/moteur_test.ts :
+// ne rien y référencer qui soit défini hors du bloc.
+// ════════════════════════════════════════════════════════════
+
+type MxErreurRef = { id: string; libelle: string; libelle_parent?: string; remediation?: string };
+type MxComp = {
+  id: string; domaine: string; theme?: string; titre: string; titre_eleve?: string;
+  niveau_origine: string; prerequis: string[]; poids_brevet: number;
+  chapitres_legacy?: string[]; erreurs?: MxErreurRef[];
+  diag_autorise?: boolean; hors_programme?: boolean;
+};
+type MxItem = {
+  id: string; comp: string; q: string; a: string; type?: string; options?: string[];
+  alt?: string[]; err?: Record<string, string>; steps?: string[]; f?: string;
+  lvl?: number; usage?: string[]; contexte?: boolean; [k: string]: unknown;
+};
+type MxObs = {
+  item_id: string; comp: string; ok: boolean; w: number;
+  reponse?: string; err?: string | null; temps?: number | null; date?: string; graine?: boolean;
+};
+type MxMaitrise = {
+  comp: string; alpha: number; beta: number; maitrise: number; n_obs: number; n_succes: number;
+  derniere_obs: string | null; erreurs_vues: Record<string, number>;
+  boite: number; prochaine_revision: string | null;
+};
+type MxStatut = "lacune" | "fragile" | "acquis" | "non_evalue";
+type MxRef = {
+  comps: Record<string, MxComp>;
+  ordre: string[];
+  enfants: Record<string, string[]>;
+  ancetres: Record<string, string[]>;     // tous les prérequis (fermeture transitive)
+  descendants: Record<string, string[]>;  // tout ce qui en dépend (fermeture transitive)
+  anc2: Record<string, string[]>;         // prérequis à distance 1 ou 2
+  desc2: Record<string, string[]>;        // dépendants à distance 1 ou 2
+  items: Record<string, MxItem>;
+  itemsParComp: Record<string, MxItem[]>;
+};
+type MxModule = { domaines: string[]; cibles: string[]; bonus: string[]; budget: number; poses: number; termine: boolean };
+type MxEtatDiag = {
+  version: 1; type: string; code: string;
+  module: number; modules: MxModule[];
+  obs: MxObs[];
+  pile: string[]; differes: string[];
+  ouverte: string | null; en_attente: string | null;
+  fermees: Record<string, MxStatut>;
+  profondeur: Record<string, number>;
+  phase: "balayage" | "descente";
+  termine: boolean;
+};
+type MxDiagCfg = {
+  modules: { domaines: string[]; budget: number }[];
+  maxObsCible: number; // nb max de questions sur une cible 3e (profondeur 0)
+  maxObs: number;      // nb max de questions sur un prérequis exploré en descente
+  minObsLacune: number; // nb min d'observations pour conclure « lacune » (robustesse aux étourderies)
+  profondeurMax: number; descenteImmediate: boolean;
+  seuilDescente: number; // une clôture « fragile » avec maîtrise < seuil déclenche aussi la descente
+};
+
+const MX_DOMAINES: [string, string][] = [
+  ["NC", "Nombres et calculs"],
+  ["DF", "Organisation et gestion de données, fonctions"],
+  ["GM", "Grandeurs et mesures"],
+  ["EG", "Espace et géométrie"],
+  ["AP", "Algorithmique et programmation"],
+];
+const MX_TOUS_DOMAINES = MX_DOMAINES.map((d) => d[0]);
+// Compétences hors programme (contrat §8) : entraînement seulement, JAMAIS en diagnostic,
+// même si un item est marqué `diag`. Complété par competences.diag_autorise = false en base.
+const MX_HORS_DIAG = ["NC.RAC.03", "NC.RAC.04", "EG.REP.02"];
+
+const MX = {
+  SEUIL_LACUNE: 0.4,          // contrat §4
+  SEUIL_ACQUIS: 0.7,          // contrat §4
+  OBS_MIN: 2,                 // jamais de conclusion sur 1 seule réponse
+  PRIOR: 1,                   // Beta(1,1) : maîtrise initiale 0.5, sans avis
+  OUBLI: 0.9,                 // maîtrise globale : chaque nouvelle obs « vieillit » les précédentes (×0.9)
+  REVISION_JOURS: [2, 4, 8, 16, 32], // répétition espacée (boîtes de Leitner)
+  REDIAG_JOURS: 30,           // re-diagnostic mensuel
+  TEMPS_SUSPECT_SEC: 4,       // réponse plus rapide = probablement au hasard
+  EXOS_PAR_JOUR: 5,
+  DIAG: {
+    express: {
+      modules: [{ domaines: MX_TOUS_DOMAINES, budget: 15 }],
+      maxObsCible: 2, maxObs: 3, minObsLacune: 2, profondeurMax: 2, descenteImmediate: false, seuilDescente: 0.5,
+    },
+    complet: {
+      modules: [
+        { domaines: ["NC"], budget: 24 },
+        { domaines: ["DF", "AP"], budget: 20 },
+        { domaines: ["EG", "GM"], budget: 20 },
+      ],
+      maxObsCible: 3, maxObs: 4, minObsLacune: 3, profondeurMax: 2, descenteImmediate: true, seuilDescente: 0.6,
+    },
+    mensuel: {
+      modules: [{ domaines: MX_TOUS_DOMAINES, budget: 20 }],
+      maxObsCible: 2, maxObs: 3, minObsLacune: 2, profondeurMax: 2, descenteImmediate: true, seuilDescente: 0.5,
+    },
+  } as Record<string, MxDiagCfg>,
+};
+
+// Prix : SEUL endroit où ils sont codés (contrat « Hypothèses de prix »). Les montants
+// réellement encaissés sont ceux des Payment Links Stripe — garder les deux alignés.
+const MX_PRODUITS: Record<string, { libelle: string; prix_cents: number; deduction?: { si: string; cents: number } }> = {
+  diagnostic_complet: { libelle: "Diagnostic complet", prix_cents: 1900 },
+  programme_brevet: { libelle: "Programme Brevet", prix_cents: 4900, deduction: { si: "diagnostic_complet", cents: 1900 } },
+};
+
+// ── Utilitaires ─────────────────────────────────────────────
+
+function mxHash(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+
+function mxR(x: number, d = 4): number { const k = Math.pow(10, d); return Math.round(x * k) / k; }
+
+function mxAjoutJours(date: string, n: number): string {
+  const d = new Date(date.slice(0, 10) + "T00:00:00Z");
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
+function mxJoursEntre(a: string, b: string): number {
+  const da = Date.parse(a.slice(0, 10) + "T00:00:00Z"), db = Date.parse(b.slice(0, 10) + "T00:00:00Z");
+  return Math.round((db - da) / 86400000);
+}
+
+function mxNiveauLabel(n: string): string {
+  return ({ "6EME": "6e", "5EME": "5e", "4EME": "4e", "3EME": "3e" } as Record<string, string>)[n] || n;
+}
+
+// Normalisation des réponses — portage fidèle de _normFill/_toNum/_matchFill (app.html)
+function mxNorm(s: unknown): string {
+  let v = String(s ?? "").replace(/\$/g, "").replace(/\{,\}/g, ",").replace(/\\,/g, "").replace(/\s+/g, "")
+    .replace(/,/g, ".").toLowerCase().trim();
+  v = v.replace(/\\d?frac\{([^}]*)\}\{([^}]*)\}/g, "$1/$2");
+  v = v.replace(/\\times/g, "×").replace(/\\cdot/g, "·").replace(/\\div/g, "÷");
+  v = v.replace(/\\text\{([^}]*)\}/g, "$1").replace(/\\(left|right|displaystyle|,|;|!|quad)/g, "");
+  v = v.replace(/\^\{([^}]*)\}/g, "^$1").replace(/\^\(([^)]*)\)/g, "^$1");
+  v = v.replace(/\\sqrt\{([^}]*)\}/g, "sqrt($1)").replace(/(\d)sqrt/g, "$1*sqrt");
+  v = v.replace(/\*/g, "×").replace(/(\d)x(?=[\d(s])/g, "$1×");
+  return v;
+}
+
+// Valeur numérique STRICTE (même règle que _toNum d'app.html depuis le correctif « 4x+3 ») :
+// jamais de parseFloat sur une entrée libre, seulement sur une chaîne entièrement numérique.
+const MX_NOMBRE = "-?(?:\\d+\\.?\\d*|\\.\\d+)";
+function mxNum(s: unknown): number | null {
+  const v = mxNorm(s);
+  const pct = v.match(new RegExp("^(" + MX_NOMBRE + ")%$"));
+  if (pct) return parseFloat(pct[1]) / 100;
+  const frac = v.match(new RegExp("^(" + MX_NOMBRE + ")/(" + MX_NOMBRE + ")$"));
+  if (frac) return parseFloat(frac[2]) !== 0 ? parseFloat(frac[1]) / parseFloat(frac[2]) : null;
+  const sansUnite = v.replace(/(mm|cm|dm|km|m|g|kg|l|cl|ml|s|min|h|€|°)(²|³|\^2|\^3)?$/, "");
+  return new RegExp("^" + MX_NOMBRE + "$").test(sansUnite) ? parseFloat(sansUnite) : null;
+}
+
+function mxEgal(u: unknown, c: unknown, alt?: string[]): boolean {
+  const nu = mxNorm(u), nc = mxNorm(c);
+  if (!nu) return false;
+  if (nu === nc) return true;
+  const vf: Record<string, string> = { oui: "vrai", non: "faux", yes: "vrai", no: "faux", v: "vrai", f: "faux" };
+  if (vf[nu] === nc || nu === vf[nc]) return true;
+  const a = mxNum(u), b = mxNum(c);
+  if (a !== null && b !== null && Math.abs(a - b) < 1e-9) return true;
+  return !!alt && alt.some((x) => mxEgal(u, x));
+}
+
+function mxTypeItem(it: { type?: string; options?: unknown[] }): "qcm" | "vf" | "fill" {
+  if (it.type === "vf" || it.type === "fill" || it.type === "qcm") return it.type;
+  return (it.options || []).length ? "qcm" : "fill";
+}
+
+// Poids d'un SUCCÈS : un QCM à k options se réussit par hasard 1 fois sur k → ne vaut
+// que 1 - 1/k d'une réussite « pleine ». Un échec vaut toujours 1 (contrat §4 / P8).
+function mxPoidsSucces(it: { type?: string; options?: unknown[] }): number {
+  const t = mxTypeItem(it);
+  if (t === "fill") return 1;
+  if (t === "vf") return 0.5;
+  const k = (it.options || []).length;
+  return k >= 2 ? Math.max(0.5, 1 - 1 / k) : 1;
+}
+
+function mxErreurType(it: MxItem, reponse: string): string | null {
+  for (const [k, v] of Object.entries(it.err || {})) if (mxEgal(reponse, k)) return v;
+  return null;
+}
+
+// Réponse vide / null = « je ne sais pas » = échec sans erreur type.
+function mxCorriger(it: MxItem, reponse: unknown): { ok: boolean; err: string | null } {
+  const r = reponse == null ? "" : String(reponse).trim();
+  if (!r) return { ok: false, err: null };
+  if (mxEgal(r, it.a, it.alt)) return { ok: true, err: null };
+  return { ok: false, err: mxErreurType(it, r) };
+}
+
+// ── Référentiel ─────────────────────────────────────────────
+
+function mxIndexer(comps: MxComp[], items: MxItem[]): MxRef {
+  const map: Record<string, MxComp> = {};
+  for (const c of comps) map[c.id] = { ...c, prerequis: (c.prerequis || []).filter((p) => p && p !== c.id) };
+  const ordre = Object.keys(map).sort();
+  const enfants: Record<string, string[]> = {};
+  ordre.forEach((id) => (enfants[id] = []));
+  for (const id of ordre) for (const p of map[id].prerequis) if (map[p]) enfants[p].push(id);
+  // Fermeture transitive tolérante aux cycles (un cycle ne boucle pas, il est juste ignoré)
+  const fermeture = (start: string, suiv: (x: string) => string[]): string[] => {
+    const vus = new Set<string>();
+    const pile = [...suiv(start)];
+    while (pile.length) {
+      const x = pile.pop()!;
+      if (x === start || vus.has(x) || !map[x]) continue;
+      vus.add(x);
+      pile.push(...suiv(x));
+    }
+    return [...vus].sort();
+  };
+  const ancetres: Record<string, string[]> = {}, descendants: Record<string, string[]> = {};
+  const anc2: Record<string, string[]> = {}, desc2: Record<string, string[]> = {};
+  const deuxNiveaux = (id: string, suiv: (x: string) => string[]) =>
+    [...new Set([...suiv(id), ...suiv(id).flatMap(suiv)])].filter((x) => x !== id && map[x]).sort();
+  for (const id of ordre) {
+    ancetres[id] = fermeture(id, (x) => map[x]?.prerequis || []);
+    descendants[id] = fermeture(id, (x) => enfants[x] || []);
+    anc2[id] = deuxNiveaux(id, (x) => (map[x]?.prerequis || []).filter((p) => map[p]));
+    desc2[id] = deuxNiveaux(id, (x) => enfants[x] || []);
+  }
+  const itemsMap: Record<string, MxItem> = {};
+  const itemsParComp: Record<string, MxItem[]> = {};
+  ordre.forEach((id) => (itemsParComp[id] = []));
+  for (const it of items) {
+    if (!it || !it.id || !map[it.comp]) continue;
+    itemsMap[it.id] = it;
+    // Une sous-question qui dépend de la précédente n'a de sens que dans son problème complet :
+    // jamais servie seule (ni en diagnostic, ni en entraînement quotidien).
+    if (it.depend_question_precedente) continue;
+    itemsParComp[it.comp].push(it);
+  }
+  for (const id of ordre) itemsParComp[id].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  return { comps: map, ordre, enfants, ancetres, descendants, anc2, desc2, items: itemsMap, itemsParComp };
+}
+
+// Détecte un cycle dans les prérequis (le contrat exige un graphe acyclique).
+function mxCycles(ref: MxRef): string[] {
+  return ref.ordre.filter((id) => ref.ancetres[id].some((a) => ref.ancetres[a].includes(id)) ||
+    ref.comps[id].prerequis.some((p) => ref.ancetres[p]?.includes(id)));
+}
+
+// ── Maîtrise (contrat §4) ───────────────────────────────────
+
+function mxMaitriseVide(comp: string): MxMaitrise {
+  return { comp, alpha: MX.PRIOR, beta: MX.PRIOR, maitrise: 0.5, n_obs: 0, n_succes: 0,
+    derniere_obs: null, erreurs_vues: {}, boite: 0, prochaine_revision: null };
+}
+
+function mxStatut(m?: { maitrise: number; n_obs: number } | null): MxStatut {
+  if (!m || m.n_obs < MX.OBS_MIN) return "non_evalue";
+  if (m.maitrise < MX.SEUIL_LACUNE) return "lacune";
+  if (m.maitrise <= MX.SEUIL_ACQUIS) return "fragile";
+  return "acquis";
+}
+
+// Mise à jour après UNE réponse (diagnostic comme entraînement).
+// Modèle : Beta(alpha, beta) avec oubli exponentiel ; maîtrise = alpha / (alpha + beta).
+function mxMajMaitrise(m0: MxMaitrise | undefined | null, comp: string, ok: boolean, w: number,
+  err: string | null, date: string, oubli: number = MX.OUBLI): MxMaitrise {
+  const m: MxMaitrise = m0 ? { ...m0, erreurs_vues: { ...(m0.erreurs_vues || {}) } } : mxMaitriseVide(comp);
+  const P = MX.PRIOR;
+  m.alpha = mxR(P + (m.alpha - P) * oubli + (ok ? w : 0));
+  m.beta = mxR(P + (m.beta - P) * oubli + (ok ? 0 : 1));
+  m.maitrise = mxR(m.alpha / (m.alpha + m.beta));
+  m.n_obs += 1;
+  if (ok) m.n_succes += 1;
+  if (err) m.erreurs_vues[err] = (m.erreurs_vues[err] || 0) + 1;
+  m.derniere_obs = date;
+  const acquis = mxStatut(m) === "acquis";
+  if (!ok) {
+    m.boite = 0;
+    m.prochaine_revision = acquis ? mxAjoutJours(date, 1) : null;
+  } else if (acquis) {
+    const b = Math.min(m.boite, MX.REVISION_JOURS.length - 1);
+    m.prochaine_revision = mxAjoutJours(date, MX.REVISION_JOURS[b]);
+    m.boite = Math.min(m.boite + 1, MX.REVISION_JOURS.length - 1);
+  } else {
+    m.prochaine_revision = null;
+  }
+  return m;
+}
+
+// ── Diagnostic adaptatif ────────────────────────────────────
+
+function mxTriCibles(ref: MxRef, ids: string[]): string[] {
+  return ids.slice().sort((a, b) => {
+    const ca = ref.comps[a], cb = ref.comps[b];
+    return (cb.poids_brevet - ca.poids_brevet) ||
+      (ref.ancetres[b].length - ref.ancetres[a].length) || (a < b ? -1 : a > b ? 1 : 0);
+  });
+}
+
+function mxDiagAutorise(ref: MxRef, c: string): boolean {
+  const comp = ref.comps[c];
+  return !!comp && comp.diag_autorise !== false && !comp.hors_programme && !MX_HORS_DIAG.includes(c);
+}
+
+// Cibles d'un ensemble de domaines : les compétences de 3e (avec items). Un domaine sans compétence
+// de 3e (ex. AP dans le référentiel réel) prend ses compétences du plus haut niveau disponible.
+function mxCibles3e(ref: MxRef, domaines: string[]): string[] {
+  const rangNiv: Record<string, number> = { "3EME": 3, "4EME": 2, "5EME": 1, "6EME": 0 };
+  const out: string[] = [];
+  for (const d of domaines) {
+    const ids = ref.ordre.filter((id) => ref.comps[id].domaine === d && (ref.itemsParComp[id] || []).length > 0 &&
+      mxDiagAutorise(ref, id));
+    const top = Math.max(-1, ...ids.map((id) => rangNiv[ref.comps[id].niveau_origine] ?? 0));
+    out.push(...ids.filter((id) => (rangNiv[ref.comps[id].niveau_origine] ?? 0) === top));
+  }
+  return mxTriCibles(ref, out);
+}
+
+function mxEvalSession(etat: MxEtatDiag, comp: string): { m: number; n: number } {
+  let a = MX.PRIOR, b = MX.PRIOR, n = 0;
+  for (const o of etat.obs) if (o.comp === comp) { n++; if (o.ok) a += o.w; else b += 1; }
+  return { m: a / (a + b), n };
+}
+
+// null = continuer à interroger ; sinon statut de clôture. maxObs = 0 → clôture forcée.
+function mxDecider(m: number, n: number, maxObs: number, minObsLacune: number = MX.OBS_MIN): MxStatut | null {
+  if (n < MX.OBS_MIN) return maxObs === 0 ? "non_evalue" : null;
+  if (m > MX.SEUIL_ACQUIS) return "acquis";
+  if (m < MX.SEUIL_LACUNE && (n >= minObsLacune || maxObs === 0 || n >= maxObs)) return "lacune";
+  if (m < MX.SEUIL_LACUNE) return null;
+  if (maxObs === 0 || n >= maxObs) return "fragile";
+  return null;
+}
+
+// Seuils d'arrêt pour une compétence. Si un de ses dépendants directs vient d'être jugé acquis,
+// une lacune serait incohérente (probable étourderie) : on exige une observation de plus.
+function mxSeuils(etat: MxEtatDiag, ref: MxRef, c: string): { maxObs: number; minLac: number } {
+  const cfg = MX.DIAG[etat.type];
+  const base = (etat.profondeur[c] || 0) === 0 ? cfg.maxObsCible : cfg.maxObs;
+  const contredit = (ref.enfants[c] || []).some((e) => etat.fermees[e] === "acquis");
+  const minLac = cfg.minObsLacune + (contredit ? 1 : 0);
+  return { maxObs: Math.max(base, minLac), minLac };
+}
+
+function mxPousserPrerequis(etat: MxEtatDiag, ref: MxRef, c: string) {
+  const cfg = MX.DIAG[etat.type];
+  const prof = (etat.profondeur[c] || 0) + 1;
+  if (prof > cfg.profondeurMax) return;
+  const aTester = (ref.comps[c]?.prerequis || []).filter((p) => ref.comps[p] && !(p in etat.fermees) &&
+    (ref.itemsParComp[p] || []).length > 0 && mxDiagAutorise(ref, p));
+  // Le plus « structurant » (poids + nb de dépendants) sera dépilé en premier.
+  aTester.sort((a, b) =>
+    (ref.comps[a].poids_brevet + ref.desc2[a].length) - (ref.comps[b].poids_brevet + ref.desc2[b].length) ||
+    (a < b ? 1 : a > b ? -1 : 0));
+  for (const p of aTester) {
+    etat.pile = etat.pile.filter((x) => x !== p);
+    etat.pile.push(p);
+    etat.profondeur[p] = Math.min(etat.profondeur[p] ?? 99, prof);
+  }
+}
+
+function mxFermer(etat: MxEtatDiag, ref: MxRef, c: string, force: boolean) {
+  const cfg = MX.DIAG[etat.type];
+  const { m, n } = mxEvalSession(etat, c);
+  const se = mxSeuils(etat, ref, c);
+  const d = mxDecider(m, n, force ? 0 : se.maxObs, se.minLac) || "fragile";
+  etat.fermees[c] = d;
+  if (etat.ouverte === c) etat.ouverte = null;
+  // On ne descend dans les prérequis qu'à partir d'un échec sur une compétence de 3e
+  // (ou en poursuivant une descente déjà commencée depuis une compétence de 3e).
+  const depuis3e = ref.comps[c].niveau_origine === "3EME" || (etat.profondeur[c] || 0) > 0;
+  const descendre = depuis3e && (d === "lacune" || (d === "fragile" && m < cfg.seuilDescente));
+  if (!descendre) return;
+  if (cfg.descenteImmediate || etat.phase === "descente") mxPousserPrerequis(etat, ref, c);
+  else etat.differes.push(c);
+}
+
+function mxDemarrerDiag(ref: MxRef, type: string, code: string,
+  opts: { graines?: MxObs[]; maitrise?: Record<string, MxMaitrise>; date?: string } = {}): MxEtatDiag {
+  const cfg = MX.DIAG[type];
+  if (!cfg) throw new Error("type de diagnostic inconnu : " + type);
+  const modules: MxModule[] = cfg.modules.map((m) => ({ domaines: m.domaines, cibles: [], bonus: [], budget: m.budget, poses: 0, termine: false }));
+  if (type === "express") {
+    // 1 cible par domaine (la plus lourde au Brevet), domaines ordonnés par leur meilleure cible ;
+    // les autres cibles 3e ne servent que s'il reste du budget après la descente.
+    const parDomaine = MX_TOUS_DOMAINES.map((d) => mxCibles3e(ref, [d])).filter((l) => l.length > 0);
+    const premieres = mxTriCibles(ref, parDomaine.map((l) => l[0]));
+    modules[0].cibles = premieres;
+    modules[0].bonus = mxTriCibles(ref, parDomaine.flatMap((l) => l.slice(1)));
+  } else if (type === "mensuel" && opts.maitrise) {
+    const mt = opts.maitrise;
+    const prios = mxPriorites(ref, mt).filter((id) => mxDiagAutorise(ref, id)).slice(0, 8);
+    const acquis = ref.ordre.filter((id) => mxStatut(mt[id]) === "acquis" && (ref.itemsParComp[id] || []).length && mxDiagAutorise(ref, id))
+      .sort((a, b) => (String(mt[a].derniere_obs) < String(mt[b].derniere_obs) ? -1 : 1)).slice(0, 4);
+    const neufs = mxCibles3e(ref, MX_TOUS_DOMAINES).filter((id) => mxStatut(mt[id]) === "non_evalue").slice(0, 4);
+    modules[0].cibles = [...new Set([...prios, ...acquis, ...neufs])];
+  } else {
+    for (const mod of modules) mod.cibles = mxCibles3e(ref, mod.domaines);
+  }
+  const etat: MxEtatDiag = {
+    version: 1, type, code, module: 0, modules, obs: [], pile: [], differes: [],
+    ouverte: null, en_attente: null, fermees: {}, profondeur: {},
+    phase: cfg.descenteImmediate ? "descente" : "balayage", termine: false,
+  };
+  for (const mod of modules) for (const c of mod.cibles) etat.profondeur[c] = 0;
+  // Graines (express → complet) : observations déjà faites, hors budget.
+  if (opts.graines && opts.graines.length) {
+    etat.obs = opts.graines.filter((o) => ref.comps[o.comp]).map((o) => ({ ...o, graine: true }));
+    const compsVus = [...new Set(etat.obs.map((o) => o.comp))].sort();
+    const lacunes: string[] = [];
+    for (const c of compsVus) {
+      const { m, n } = mxEvalSession(etat, c);
+      // un prérequis (non 3e) reste ouvert jusqu'à maxObs : la descente pourra le re-questionner
+      const d = mxDecider(m, n, ref.comps[c].niveau_origine === "3EME" ? cfg.maxObsCible : cfg.maxObs, cfg.minObsLacune);
+      const depuis3e = ref.comps[c].niveau_origine === "3EME" || (etat.profondeur[c] || 0) > 0;
+      if (d) { etat.fermees[c] = d; if (depuis3e && (d === "lacune" || (d === "fragile" && m < cfg.seuilDescente))) lacunes.push(c); }
+    }
+    // On reprend la descente là où l'express l'a laissée (lacunes les plus lourdes en haut de pile).
+    lacunes.sort((a, b) => ref.comps[a].poids_brevet - ref.comps[b].poids_brevet || (a < b ? 1 : -1));
+    for (const c of lacunes) mxPousserPrerequis(etat, ref, c);
+  }
+  return etat;
+}
+
+function mxChoisirItemDiag(etat: MxEtatDiag, ref: MxRef, c: string, dejaVus: string[]): MxItem | null {
+  if (!mxDiagAutorise(ref, c)) return null;
+  const poses = new Set(etat.obs.map((o) => o.item_id));
+  let cands = (ref.itemsParComp[c] || []).filter((it) => !poses.has(it.id));
+  const pourDiag = cands.filter((it) => !it.usage || it.usage.includes("diag"));
+  if (pourDiag.length) cands = pourDiag;
+  if (!cands.length) return null;
+  const obsC = etat.obs.filter((o) => o.comp === c);
+  const derniere = obsC[obsC.length - 1];
+  const veutFill = !!derniere && derniere.ok && derniere.w < 1; // confirmer un succès QCM par une réponse ouverte
+  const lvlPref = ref.comps[c].niveau_origine === "3EME" ? 2 : 1;
+  const vus = new Set(dejaVus);
+  const score = (it: MxItem) => (vus.has(it.id) ? 100 : 0) + Math.abs((it.lvl || 1) - lvlPref) * 3 +
+    (veutFill && mxTypeItem(it) !== "fill" ? 5 : 0) + (mxTypeItem(it) !== "fill" ? 1 : 0) + (it.contexte ? 1 : 0);
+  cands.sort((a, b) => score(a) - score(b) || mxHash(etat.code + "|" + a.id) - mxHash(etat.code + "|" + b.id));
+  return cands[0];
+}
+
+function mxTacheSuivante(etat: MxEtatDiag, ref: MxRef, mod: MxModule): string | null {
+  const libre = (c: string) => !!ref.comps[c] && !(c in etat.fermees);
+  if (etat.phase === "descente") {
+    while (etat.pile.length) { const c = etat.pile.pop()!; if (libre(c)) return c; }
+  }
+  for (const c of mod.cibles) if (libre(c)) return c;
+  if (etat.phase === "balayage") {
+    // Express : balayage des domaines terminé → on creuse la lacune la plus lourde d'abord.
+    etat.phase = "descente";
+    const prio = (c: string) => ref.comps[c].poids_brevet * (1 - mxEvalSession(etat, c).m);
+    const lac = etat.differes.slice().sort((a, b) => prio(a) - prio(b) || (a < b ? 1 : -1));
+    etat.differes = [];
+    for (const c of lac) mxPousserPrerequis(etat, ref, c);
+    return mxTacheSuivante(etat, ref, mod);
+  }
+  for (const c of mod.bonus) if (libre(c)) { etat.profondeur[c] = 0; return c; }
+  return null;
+}
+
+type MxQuestion = { item: MxItem } | { fin_module: number } | { fin: true };
+
+function mxProchaineQuestion(etat: MxEtatDiag, ref: MxRef, dejaVus: string[] = []): MxQuestion {
+  if (etat.termine) return { fin: true };
+  if (etat.en_attente) {
+    const it = ref.items[etat.en_attente];
+    if (it) return { item: it };
+    etat.en_attente = null;
+  }
+  for (let garde = 0; garde < 10000; garde++) {
+    const mod = etat.modules[etat.module];
+    if (!mod) { etat.termine = true; return { fin: true }; }
+    if (mod.termine || mod.poses >= mod.budget) {
+      mod.termine = true;
+      if (etat.ouverte) mxFermer(etat, ref, etat.ouverte, true);
+      etat.module++;
+      if (etat.module >= etat.modules.length) { etat.termine = true; return { fin: true }; }
+      return { fin_module: etat.module }; // index (0-based) du module suivant — reprenable plus tard
+    }
+    let c = etat.ouverte;
+    if (!c) c = mxTacheSuivante(etat, ref, mod);
+    if (!c) { mod.termine = true; continue; }
+    etat.ouverte = c;
+    const it = mxChoisirItemDiag(etat, ref, c, dejaVus);
+    if (!it) { mxFermer(etat, ref, c, true); continue; }
+    etat.en_attente = it.id;
+    return { item: it };
+  }
+  etat.termine = true;
+  return { fin: true };
+}
+
+function mxEnregistrerReponse(etat: MxEtatDiag, ref: MxRef, itemId: string, reponse: unknown,
+  temps: number | null, date: string): { error: string } | { obs: MxObs; item: MxItem } {
+  if (!etat.en_attente || etat.en_attente !== itemId) return { error: "Question inattendue (déjà répondue ou non posée)." };
+  const it = ref.items[itemId];
+  if (!it) return { error: "Item introuvable." };
+  const { ok, err } = mxCorriger(it, reponse);
+  const obs: MxObs = { item_id: it.id, comp: it.comp, ok, w: mxPoidsSucces(it),
+    reponse: String(reponse ?? "").slice(0, 100), err, temps, date };
+  etat.obs.push(obs);
+  etat.en_attente = null;
+  etat.modules[etat.module].poses++;
+  const { m, n } = mxEvalSession(etat, it.comp);
+  const se = mxSeuils(etat, ref, it.comp);
+  if (mxDecider(m, n, se.maxObs, se.minLac)) mxFermer(etat, ref, it.comp, false);
+  return { obs, item: it };
+}
+
+function mxProgression(etat: MxEtatDiag) {
+  const mod = etat.modules[Math.min(etat.module, etat.modules.length - 1)];
+  return {
+    module: Math.min(etat.module, etat.modules.length - 1) + 1, n_modules: etat.modules.length,
+    poses_module: mod.poses, budget_module: mod.budget,
+    poses_total: etat.modules.reduce((s, m) => s + m.poses, 0),
+    budget_total: etat.modules.reduce((s, m) => s + m.budget, 0),
+    termine: etat.termine,
+  };
+}
+
+// ── Carte (contrat §5) ──────────────────────────────────────
+
+function mxAnalyse(ref: MxRef, mt: Record<string, MxMaitrise>) {
+  const st: Record<string, MxStatut> = {};
+  for (const id of ref.ordre) st[id] = mxStatut(mt[id]);
+  const lac = new Set(ref.ordre.filter((id) => st[id] === "lacune"));
+  // Recommandation didacticien : le graphe complet est trop large (NC.ENT.02 atteint 66 compétences),
+  // on ne raisonne que sur les voisins à distance 1 ou 2.
+  const causeRacine = (id: string) => lac.has(id) && ref.desc2[id].some((d) => lac.has(d));
+  const racineProfonde = (id: string) => lac.has(id) && !ref.anc2[id].some((a) => lac.has(a));
+  const bloque = (id: string) => ref.desc2[id].filter((d) => st[d] === "lacune" || st[d] === "fragile")
+    .sort((a, b) => ref.comps[b].poids_brevet - ref.comps[a].poids_brevet || (a < b ? -1 : 1));
+  return { st, causeRacine, racineProfonde, bloque };
+}
+
+// Ordre = cause racine × poids Brevet × lacune, puis tri topologique : un prérequis EN LACUNE
+// (distance ≤ 2) passe toujours avant ce qu'il débloque (un prérequis seulement fragile ne bloque pas).
+function mxPriorites(ref: MxRef, mt: Record<string, MxMaitrise>): string[] {
+  const A = mxAnalyse(ref, mt);
+  const cands = ref.ordre.filter((id) => A.st[id] === "lacune" || A.st[id] === "fragile");
+  const score: Record<string, number> = {};
+  for (const c of cands) {
+    const facteur = A.causeRacine(c) ? (A.racineProfonde(c) ? 2 : 1.5) : 1;
+    // le bonus « ce qu'elle débloque » ne compte que pour une cause racine confirmée (lacune qui bloque des lacunes)
+    const impact = ref.comps[c].poids_brevet +
+      (A.causeRacine(c) ? A.bloque(c).reduce((s, d) => s + ref.comps[d].poids_brevet, 0) : 0);
+    score[c] = (1 - mt[c].maitrise) * facteur * impact;
+  }
+  let restant = cands.sort((a, b) => score[b] - score[a] || (a < b ? -1 : 1));
+  const res: string[] = [];
+  while (restant.length) {
+    const c = restant.find((x) => !ref.anc2[x].some((a) => A.st[a] === "lacune" && restant.includes(a))) || restant[0];
+    res.push(c);
+    restant = restant.filter((x) => x !== c);
+  }
+  return res;
+}
+
+function mxPlan4Semaines(ref: MxRef, mt: Record<string, MxMaitrise>, prios: string[]) {
+  const A = mxAnalyse(ref, mt);
+  const titre = (id: string) => ref.comps[id].titre_eleve || ref.comps[id].titre;
+  const plan: { semaine: number; focus: string[]; objectif: string }[] = [];
+  let i = 0;
+  for (let s = 1; s <= 4; s++) {
+    const focus: string[] = [];
+    let charge = 0;
+    while (i < prios.length && charge < 2) {
+      focus.push(prios[i]);
+      charge += A.st[prios[i]] === "lacune" ? 1 : 0.5;
+      i++;
+    }
+    let objectif: string;
+    if (!focus.length) objectif = "Entretenir les acquis (révisions espacées) et s'entraîner sur des sujets type Brevet";
+    else if (A.causeRacine(focus[0])) objectif = "Reconstruire la base : " + focus.map(titre).join(" ; ");
+    else objectif = "Travailler : " + focus.map(titre).join(" ; ");
+    plan.push({ semaine: s, focus, objectif });
+  }
+  return plan;
+}
+
+function mxFiabilite(ref: MxRef, st: Record<string, MxStatut>, obs: MxObs[]) {
+  const reelles = obs.filter((o) => !o.graine);
+  const avecTemps = reelles.filter((o) => typeof o.temps === "number");
+  const rapides = avecTemps.length ? avecTemps.filter((o) => (o.temps as number) < MX.TEMPS_SUSPECT_SEC).length / avecTemps.length : 0;
+  let aretes = 0, inversions = 0;
+  for (const c of ref.ordre) for (const p of ref.comps[c].prerequis) {
+    if (!ref.comps[p] || st[p] === "non_evalue" || st[c] === "non_evalue") continue;
+    aretes++;
+    if (st[c] === "acquis" && st[p] === "lacune") inversions++;
+  }
+  const inv = aretes ? inversions / aretes : 0;
+  const niveau = rapides >= 0.4 || (aretes >= 3 && inv > 0.34) ? "faible" : rapides >= 0.2 || inv > 0.2 ? "moyenne" : "bonne";
+  return { niveau, reponses_rapides: mxR(rapides, 2), inversions: mxR(inv, 2) };
+}
+
+function mxCalculerCarte(ref: MxRef, mt: Record<string, MxMaitrise>, opts: {
+  type: string; eleve: { prenom: string; niveau: string }; date: string;
+  duree_min?: number; n_questions?: number; obs?: MxObs[];
+}) {
+  const A = mxAnalyse(ref, mt);
+  const obs = opts.obs || [];
+  const titre = (id: string) => ref.comps[id].titre_eleve || ref.comps[id].titre;
+  const evalues = ref.ordre.filter((id) => (mt[id]?.n_obs || 0) > 0);
+  const prios = mxPriorites(ref, mt);
+  const competences = evalues.map((id) => {
+    const c = ref.comps[id], m = mt[id];
+    const erreurs = Object.entries(m.erreurs_vues || {}).sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1)).map(([eid, n]) => {
+      const def = (c.erreurs || []).find((e) => e.id === eid);
+      const ex = obs.slice().reverse().find((o) => o.err === eid);
+      const it = ex ? ref.items[ex.item_id] : null;
+      return { id: eid, libelle: def?.libelle || eid, libelle_parent: def?.libelle_parent || null,
+        remediation: def?.remediation || null, n,
+        exemple: it ? { q: it.q, reponse_eleve: ex!.reponse || "", a: it.a } : null };
+    });
+    return { id, titre: c.titre, titre_eleve: titre(id), domaine: c.domaine, niveau_origine: c.niveau_origine,
+      statut: A.st[id], maitrise: mxR(m.maitrise, 2), n_obs: m.n_obs,
+      cause_racine: A.causeRacine(id), racine_profonde: A.racineProfonde(id),
+      bloque: A.st[id] === "lacune" || A.st[id] === "fragile" ? A.bloque(id) : [], erreurs };
+  });
+  // Taux d'un ensemble de compétences : acquis = 1, fragile = 0.5, lacune = 0, pondéré par le poids
+  // Brevet. (La moyenne brute des maîtrises serait plafonnée ~0.75 après 2 questions à cause du prior :
+  // un élève parfait n'afficherait jamais 100 %.)
+  const valeur: Record<string, number> = { acquis: 1, fragile: 0.5, lacune: 0 };
+  const taux = (ids: string[]) => {
+    const pds = ids.reduce((s, id) => s + ref.comps[id].poids_brevet, 0);
+    return pds ? ids.reduce((s, id) => s + ref.comps[id].poids_brevet * valeur[A.st[id]], 0) / pds : 0;
+  };
+  const domaines = MX_DOMAINES.map(([code, libelle]) => {
+    const ids = ref.ordre.filter((id) => ref.comps[id].domaine === code);
+    const ev = ids.filter((id) => A.st[id] !== "non_evalue");
+    const m = taux(ev);
+    const statut: MxStatut = !ev.length ? "non_evalue" : m < MX.SEUIL_LACUNE ? "lacune" : m <= MX.SEUIL_ACQUIS ? "fragile" : "acquis";
+    return { code, libelle, maitrise: mxR(m, 2), statut, n_comp: ids.length, n_evalues: ev.length,
+      n_lacunes: ids.filter((id) => A.st[id] === "lacune").length };
+  }).filter((d) => d.n_comp > 0);
+  const ev3 = ref.ordre.filter((id) => A.st[id] !== "non_evalue" && ref.comps[id].niveau_origine === "3EME");
+  const base = ev3.length ? ev3 : ref.ordre.filter((id) => A.st[id] !== "non_evalue");
+  const score_global = Math.round(100 * taux(base));
+  const points_forts = ref.ordre.filter((id) => A.st[id] === "acquis").sort((a, b) =>
+    (ref.comps[a].niveau_origine === "3EME" ? 0 : 1) - (ref.comps[b].niveau_origine === "3EME" ? 0 : 1) ||
+    ref.comps[b].poids_brevet - ref.comps[a].poids_brevet || mt[b].maitrise - mt[a].maitrise || (a < b ? -1 : 1)).slice(0, 5);
+  const fiabilite = mxFiabilite(ref, A.st, obs);
+  // Point faible révélé = la 1re priorité qui est une lacune confirmée (cause racine de préférence).
+  const pf = prios.find((id) => A.causeRacine(id)) || prios.find((id) => A.st[id] === "lacune") || prios[0] || null;
+  // Zone d'entraînement gratuite : ses prérequis non acquis (évalués) + lui + ce qu'il bloque.
+  const zone_gratuite = pf ? [...new Set([
+    ...ref.anc2[pf].filter((a) => A.st[a] === "lacune" || A.st[a] === "fragile"), pf, ...A.bloque(pf)])] : [];
+  const prenom = opts.eleve.prenom || "Votre enfant";
+  let message_parent = prenom + (points_forts.length
+    ? " est à l'aise sur : " + points_forts.slice(0, 2).map(titre).join(" ; ") + ". "
+    : " a encore des bases à consolider. ");
+  if (pf) {
+    const nb = A.bloque(pf).length;
+    message_parent += "Priorité n°1 : " + titre(pf) +
+      (A.causeRacine(pf) ? " — une notion de " + mxNiveauLabel(ref.comps[pf].niveau_origine) +
+        " qui freine " + nb + " autre" + (nb > 1 ? "s" : "") + " compétence" + (nb > 1 ? "s" : "") + " du programme." : ".") +
+      " Le plan : 5 exercices ciblés par jour, environ 10 minutes.";
+  } else {
+    message_parent += "Aucune lacune détectée sur les compétences évaluées : on entretient les acquis.";
+  }
+  // « L'essentiel » en 1 phrase (couverture du PDF, haut de la carte), dérivée de la cause racine principale.
+  let phrase_cle: string;
+  if (pf && A.causeRacine(pf)) {
+    const nb = A.bloque(pf).length;
+    phrase_cle = "Le blocage principal vient d'une notion de " + mxNiveauLabel(ref.comps[pf].niveau_origine) + " : « " +
+      titre(pf) + " ». Elle freine " + nb + " autre" + (nb > 1 ? "s" : "") + " compétence" + (nb > 1 ? "s" : "") + " : c'est par là qu'on commence.";
+  } else if (pf) {
+    phrase_cle = "Priorité n°1 : « " + titre(pf) + " ». Le reste de la carte est plus solide.";
+  } else {
+    phrase_cle = "Aucune lacune sur ce qui a été évalué : l'objectif est d'entretenir les acquis et de viser les exercices type Brevet.";
+  }
+  const carte: Record<string, unknown> = {
+    eleve: { prenom: opts.eleve.prenom, niveau: opts.eleve.niveau },
+    type: opts.type, date: opts.date,
+    duree_min: opts.duree_min ?? null,
+    n_questions: opts.n_questions ?? obs.filter((o) => !o.graine).length,
+    score_global, phrase_cle, domaines, competences,
+    priorites: prios, point_faible: pf,
+    plan_4_semaines: mxPlan4Semaines(ref, mt, prios),
+    points_forts, message_parent, fiabilite, zone_gratuite,
+  };
+  if (fiabilite.niveau === "faible") {
+    carte.alerte = "Beaucoup de réponses très rapides ou incohérentes : la carte est peut-être faussée. " +
+      "Conseil : refaire le diagnostic au calme.";
+  }
+  return carte;
+}
+
+// Zone d'entraînement gratuite = prérequis fragiles du point faible + point faible + ce qu'il bloque.
+function mxZoneGratuite(carte: Record<string, unknown> | null): string[] | null {
+  if (!carte || !carte.point_faible) return null;
+  if (Array.isArray(carte.zone_gratuite) && carte.zone_gratuite.length) return carte.zone_gratuite as string[];
+  const pf = String(carte.point_faible);
+  const c = ((carte.competences || []) as { id: string; bloque?: string[] }[]).find((x) => x.id === pf);
+  return [pf, ...((c && c.bloque) || [])];
+}
+
+function mxComparerCartes(ancienne: Record<string, unknown> | null, nouvelle: Record<string, unknown>) {
+  if (!ancienne) return null;
+  const av: Record<string, string> = {};
+  for (const c of (ancienne.competences || []) as { id: string; statut: string }[]) av[c.id] = c.statut;
+  const changements = ((nouvelle.competences || []) as { id: string; statut: string }[])
+    .filter((c) => av[c.id] && av[c.id] !== c.statut).map((c) => ({ id: c.id, avant: av[c.id], apres: c.statut }));
+  return { score_avant: ancienne.score_global ?? null, score_apres: nouvelle.score_global, changements };
+}
+
+// ── Entraînement quotidien ──────────────────────────────────
+
+type MxHist = { item_id: string; date: string; ok: boolean; contexte?: string };
+type MxExoChoisi = { item: MxItem; role: "reussite" | "travail" | "revision" | "entretien" };
+
+function mxChoisirItemTrain(ref: MxRef, comp: string, lvlCible: number, dernier: Record<string, MxHist>,
+  date: string, code: string, pris: Set<string>): MxItem | null {
+  let cands = (ref.itemsParComp[comp] || []).filter((it) => !pris.has(it.id));
+  const pourTrain = cands.filter((it) => !it.usage || it.usage.includes("train"));
+  if (pourTrain.length) cands = pourTrain;
+  if (!cands.length) return null;
+  const score = (it: MxItem) => {
+    const h = dernier[it.id];
+    let s = Math.abs((it.lvl || 1) - lvlCible) * 4;
+    if (h) {
+      const j = mxJoursEntre(h.date, date);
+      // déjà vu : plus c'est ancien, mieux c'est ; réussi récemment = inutile ; < 3 jours = dernier recours
+      s += 50 - Math.min(j, 45) + (h.ok && j < 14 ? 40 : 0) + (j < 3 ? 200 : 0);
+    }
+    return s;
+  };
+  cands.sort((a, b) => score(a) - score(b) || mxHash(code + "|" + date + "|" + a.id) - mxHash(code + "|" + date + "|" + b.id));
+  return cands[0];
+}
+
+function mxLvlCible(m?: MxMaitrise): number {
+  if (!m || m.n_obs < MX.OBS_MIN) return 1;
+  if (m.maitrise < MX.SEUIL_LACUNE) return 1;
+  if (m.maitrise <= MX.SEUIL_ACQUIS) return 2;
+  return m.maitrise > 0.85 ? 3 : 2;
+}
+
+// 5 exos/jour : 1 réussite (échauffement) + 3 travail (priorités « prêtes ») + 1 révision espacée.
+// zone = null → toute la carte (Programme Brevet) ; sinon restreint à la zone (gratuit).
+function mxChoisirEntrainement(ref: MxRef, mt: Record<string, MxMaitrise>, opts: {
+  code: string; date: string; zone: string[] | null; historique: MxHist[];
+}) {
+  const dans = (id: string) => !opts.zone || opts.zone.includes(id);
+  const st = (id: string) => mxStatut(mt[id]);
+  const aItems = (id: string) => (ref.itemsParComp[id] || []).length > 0;
+  const dernier: Record<string, MxHist> = {};
+  for (const h of opts.historique.slice().sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0))) dernier[h.item_id] = h;
+
+  const prios = mxPriorites(ref, mt).filter((c) => dans(c) && aItems(c));
+  // Maîtrise d'abord : une compétence n'est « prête » que si aucun de ses prérequis proches (distance ≤ 2,
+  // dans le périmètre) n'est en lacune ou fragile. Repli : seulement « pas de prérequis en lacune »
+  // (jamais de blocage total si un prérequis plafonne).
+  const enChantier = new Set(prios);
+  const preteStricte = (c: string) => !ref.anc2[c].some((a) => enChantier.has(a));
+  const preteSouple = (c: string) => !ref.anc2[c].some((a) => st(a) === "lacune");
+  const prete = prios.some(preteStricte) ? preteStricte : preteSouple;
+  // Maîtrise d'abord : une compétence travaillée ces 3 derniers jours reste au focus jusqu'à « acquis »
+  // (sinon elle sortirait du focus dès qu'elle quitte « lacune » et resterait fragile pour toujours).
+  const recentes = new Set(opts.historique
+    .filter((h) => (h.contexte || "train") === "train" && mxJoursEntre(h.date, opts.date) <= 3)
+    .map((h) => ref.items[h.item_id]?.comp).filter(Boolean) as string[]);
+  // Une priorité bloquée « remonte » le prérequis qui la bloque (le plus prioritaire d'entre eux).
+  const rang = (c: string) => prios.indexOf(c);
+  const pretes: string[] = [];
+  for (const c of prios) {
+    const cible = prete(c) ? c
+      : ref.anc2[c].filter((a) => enChantier.has(a) && prete(a)).sort((a, b) => rang(a) - rang(b))[0];
+    if (cible && !pretes.includes(cible)) pretes.push(cible);
+  }
+  let focus = [...pretes.filter((c) => recentes.has(c)), ...pretes.filter((c) => !recentes.has(c))].slice(0, 2);
+  if (!focus.length && !opts.zone) {
+    // Tout est acquis ou non évalué : on explore (diagnostic continu) les compétences 3e non évaluées.
+    focus = mxCibles3e(ref, MX_TOUS_DOMAINES).filter((id) => st(id) === "non_evalue" && prete(id)).slice(0, 2);
+  }
+  const acquis = ref.ordre.filter((id) => dans(id) && aItems(id) && st(id) === "acquis");
+  const dues = acquis.filter((id) => mt[id].prochaine_revision && String(mt[id].prochaine_revision) <= opts.date)
+    .sort((a, b) => (String(mt[a].prochaine_revision) < String(mt[b].prochaine_revision) ? -1 : 1) || (a < b ? -1 : 1));
+  // Échauffement : un acquis solide, en tournant (le moins récemment vu d'abord).
+  const facile = acquis.filter((id) => id !== dues[0])
+    .sort((a, b) => (String(mt[a].derniere_obs) < String(mt[b].derniere_obs) ? -1 : String(mt[a].derniere_obs) > String(mt[b].derniere_obs) ? 1 : 0) ||
+      mxHash(opts.code + opts.date + a) - mxHash(opts.code + opts.date + b))[0];
+
+  type Voeu = { comp: string; role: MxExoChoisi["role"]; lvl: number };
+  const voeux: Voeu[] = [];
+  const reussite: Voeu | null = facile ? { comp: facile, role: "reussite", lvl: 1 }
+    : focus[0] ? { comp: focus[0], role: "reussite", lvl: 1 } : null;
+  const revision: Voeu | null = dues[0] ? { comp: dues[0], role: "revision", lvl: mxLvlCible(mt[dues[0]]) } : null;
+  const nTravail = MX.EXOS_PAR_JOUR - (reussite ? 1 : 0) - (revision ? 1 : 0);
+  const motif = [0, 0, 1, 0, 1];
+  const travail: Voeu[] = [];
+  for (let k = 0; k < nTravail && focus.length; k++) {
+    const c = focus[motif[k] % focus.length];
+    travail.push({ comp: c, role: "travail", lvl: mxLvlCible(mt[c]) });
+  }
+  if (reussite) voeux.push(reussite);
+  voeux.push(...travail.slice(0, 2));
+  if (revision) voeux.push(revision);
+  voeux.push(...travail.slice(2));
+
+  const pris = new Set<string>();
+  const exos: MxExoChoisi[] = [];
+  for (const v of voeux) {
+    const it = mxChoisirItemTrain(ref, v.comp, v.lvl, dernier, opts.date, opts.code, pris);
+    if (it) { pris.add(it.id); exos.push({ item: it, role: v.role }); }
+  }
+  // Compléments si la banque manque ou si rien n'est à travailler : révisions dues, puis entretien des acquis
+  // (les plus anciens d'abord), puis la zone elle-même.
+  const secours = [...focus, ...dues.slice(1),
+    ...acquis.slice().sort((a, b) => (String(mt[a].derniere_obs) < String(mt[b].derniere_obs) ? -1 : 1)),
+    ...(opts.zone || []).filter(aItems)];
+  for (let tour = 0; tour < 3 && exos.length < MX.EXOS_PAR_JOUR; tour++) {
+    for (const c of secours) {
+      if (exos.length >= MX.EXOS_PAR_JOUR) break;
+      const it = mxChoisirItemTrain(ref, c, mxLvlCible(mt[c]), dernier, opts.date, opts.code, pris);
+      if (it) { pris.add(it.id); exos.push({ item: it, role: st(c) === "acquis" ? "entretien" : "travail" }); }
+    }
+  }
+  const zone_maitrisee = !!opts.zone && opts.zone.length > 0 && opts.zone.every((c) => st(c) === "acquis");
+  return { exos: exos.slice(0, MX.EXOS_PAR_JOUR), focus, zone_maitrisee };
+}
+
+// ── Droits d'accès ──────────────────────────────────────────
+// free < diagnostic_complet < programme_brevet. Compatibilité : profiles.premium (legacy,
+// paiement 29,99 € par niveau) = accès complet → programme_brevet.
+function mxDroits(profile: { premium?: boolean | null; premium_end?: string | null },
+  achats: { produit: string }[], today: string) {
+  const premiumActif = !!profile.premium && !(profile.premium_end && String(profile.premium_end).slice(0, 10) < today);
+  const p = new Set(achats.map((a) => a.produit));
+  const acces = p.has("programme_brevet") || premiumActif ? "programme_brevet"
+    : p.has("diagnostic_complet") ? "diagnostic_complet" : "free";
+  const prog = MX_PRODUITS.programme_brevet;
+  const prixProgramme = prog.prix_cents - (prog.deduction && p.has(prog.deduction.si) ? prog.deduction.cents : 0);
+  return {
+    acces,
+    diagnostic_complet: acces !== "free",
+    pdf: acces !== "free",
+    entrainement_complet: acces === "programme_brevet",
+    rediagnostic_mensuel: acces === "programme_brevet",
+    brevets_blancs: acces === "programme_brevet",
+    prix_cents: {
+      diagnostic_complet: acces === "free" ? MX_PRODUITS.diagnostic_complet.prix_cents : 0,
+      programme_brevet: acces === "programme_brevet" ? 0 : prixProgramme,
+    },
+  };
+}
+
+// Streak calculé côté serveur (depuis les dates de réponses) : ne dépend plus du localStorage.
+// Règle G3 : 1 jour de gel toléré par fenêtre de 7 jours si les 2 jours précédant le trou sont actifs.
+// Aujourd'hui pas encore actif = le streak d'hier est conservé (il n'est pas encore perdu).
+function mxStreak(dates: string[], today: string) {
+  const S = new Set(dates.map((d) => String(d).slice(0, 10)).filter((d) => d <= today));
+  const prev = (d: string) => mxAjoutJours(d, -1);
+  let d = S.has(today) ? today : prev(today);
+  let streak = 0, i = 0, dernierGel = -99, gel_utilise = false;
+  for (let garde = 0; garde < 3660; garde++) {
+    if (S.has(d)) { streak++; d = prev(d); i++; continue; }
+    const p = prev(d);
+    if (S.has(p) && S.has(prev(p)) && i - dernierGel >= 7) { dernierGel = i; gel_utilise = true; d = p; i++; continue; }
+    break;
+  }
+  return { streak, actif_aujourdhui: S.has(today), gel_utilise };
+}
+
+function mxRediagDu(dernierDiagDate: string | null, today: string, acces: string): boolean {
+  return acces === "programme_brevet" && !!dernierDiagDate && mxJoursEntre(dernierDiagDate, today) >= MX.REDIAG_JOURS;
+}
+
+// Item envoyé au client pendant le DIAGNOSTIC : sans réponse, sans erreurs types, sans indices
+// (la correction est faite serveur). Options mélangées de façon déterministe.
+function mxItemPublic(it: MxItem, code: string) {
+  const { a: _a, alt: _alt, err: _err, steps: _s, f: _f, ...reste } = it;
+  const out: Record<string, unknown> = { ...reste, type: mxTypeItem(it) };
+  if (Array.isArray(it.options)) {
+    out.options = it.options.slice().sort((x, y) => mxHash(code + "|" + it.id + "|" + x) - mxHash(code + "|" + it.id + "|" + y));
+  }
+  return out;
+}
+
+// MOTEUR_PUR_FIN
+// ════════════════════════════════════════════════════════════
+
+// ════════════════════════════════════════════════════════════
+// MOTEUR 3E — couche I/O (Supabase). Actions : start_diagnostic, answer_diagnostic,
+// get_carte, get_training, get_acces (+ maj maîtrise branchée dans save_score /
+// save_scores_batch quand l'exo porte item_id ou comp). Spec : docs/specs/20-moteur.md
+// ════════════════════════════════════════════════════════════
+
+async function mxChargerRef(): Promise<MxRef> {
+  const cached = cacheGet("mx_ref") as MxRef | null;
+  if (cached) return cached;
+  const { data: comps } = await adminClient.from("competences").select("*").eq("actif", true);
+  const items: MxItem[] = [];
+  for (let from = 0; ; from += 1000) {
+    const { data: rows } = await adminClient.from("items").select("id, comp, item_json")
+      .eq("actif", true).order("id").range(from, from + 999);
+    for (const r of (rows || []) as Record<string, unknown>[]) {
+      const j = (typeof r.item_json === "string" ? JSON.parse(r.item_json as string) : r.item_json) as MxItem;
+      items.push({ ...j, id: String(r.id), comp: String(r.comp) });
+    }
+    if (!rows || rows.length < 1000) break;
+  }
+  const ref = mxIndexer((comps || []).map((c: Record<string, unknown>) => ({
+    id: String(c.id), domaine: String(c.domaine), theme: String(c.theme || ""), titre: String(c.titre),
+    titre_eleve: c.titre_eleve ? String(c.titre_eleve) : undefined, niveau_origine: String(c.niveau_origine),
+    prerequis: (c.prerequis || []) as string[], poids_brevet: Number(c.poids_brevet) || 1,
+    chapitres_legacy: (c.chapitres_legacy || []) as string[], erreurs: (c.erreurs || []) as MxErreurRef[],
+    diag_autorise: c.diag_autorise !== false,
+  })), items);
+  if (ref.ordre.length) cacheSet("mx_ref", ref);
+  return ref;
+}
+
+function mxDepuisLigne(r: Record<string, unknown>): MxMaitrise {
+  return {
+    comp: String(r.comp), alpha: Number(r.alpha), beta: Number(r.beta), maitrise: Number(r.maitrise),
+    n_obs: Number(r.n_obs) || 0, n_succes: Number(r.n_succes) || 0,
+    derniere_obs: r.derniere_obs ? String(r.derniere_obs).slice(0, 10) : null,
+    erreurs_vues: (r.erreurs_vues || {}) as Record<string, number>, boite: Number(r.boite) || 0,
+    prochaine_revision: r.prochaine_revision ? String(r.prochaine_revision).slice(0, 10) : null,
+  };
+}
+
+async function mxChargerMaitrise(code: string): Promise<Record<string, MxMaitrise>> {
+  const { data } = await adminClient.from("maitrise").select("*").eq("code", code);
+  const out: Record<string, MxMaitrise> = {};
+  for (const r of (data || []) as Record<string, unknown>[]) out[String(r.comp)] = mxDepuisLigne(r);
+  return out;
+}
+
+async function mxSauverMaitrise(code: string, m: MxMaitrise) {
+  await adminClient.from("maitrise").upsert({ code, ...m }, { onConflict: "code,comp" });
+}
+
+// Applique UNE réponse à la maîtrise globale + journalise dans reponses_items.
+async function mxAppliquerReponse(code: string, comp: string, itemId: string, ok: boolean, w: number,
+  err: string | null, extra: { contexte: string; diagnostic_id?: string | null; resultat?: string; reponse?: string; temps?: number | null }) {
+  const date = todayParis();
+  const { data: row } = await adminClient.from("maitrise").select("*").eq("code", code).eq("comp", comp).maybeSingle();
+  const m = mxMajMaitrise(row ? mxDepuisLigne(row as Record<string, unknown>) : null, comp, ok, w, err, date);
+  await mxSauverMaitrise(code, m);
+  await adminClient.from("reponses_items").insert({
+    code, item_id: itemId, comp, contexte: extra.contexte, diagnostic_id: extra.diagnostic_id || null,
+    ok, resultat: extra.resultat || (ok ? "EASY" : "HARD"), reponse: (extra.reponse || "").slice(0, 200),
+    err_id: err, temps_sec: extra.temps ?? null, date,
+  });
+}
+
+// Branché dans save_score / save_scores_batch : n'agit que si l'exo porte item_id ou comp.
+async function mxMajDepuisScore(code: string, s: Record<string, unknown>, contexte: string) {
+  const ref = await mxChargerRef();
+  const it = s.item_id ? ref.items[String(s.item_id)] : undefined;
+  const comp = it?.comp || String(s.comp || "");
+  if (!ref.comps[comp]) return;
+  const ok = String(s.resultat) === "EASY";
+  const nOpt = Number(s.nbOptions || s.nb_options || 0);
+  const w = it ? mxPoidsSucces(it) : mxPoidsSucces({ type: String(s.type || ""), options: new Array(nOpt).fill("") });
+  const rep = String(s.reponse ?? s.wrongOpt ?? "");
+  const err = !ok ? (it && rep ? mxErreurType(it, rep) : (s.err_id ? String(s.err_id) : null)) : null;
+  await mxAppliquerReponse(code, comp, it?.id || String(s.item_id || ""), ok, w, err, {
+    contexte, resultat: String(s.resultat || ""), reponse: rep,
+    temps: parseInt(String(s.time ?? s.temps ?? "")) || null,
+  });
+}
+
+async function mxProfil(p: Record<string, unknown>) {
+  const code = String(p.code || "");
+  if (code.length !== 6) return { error: "Code élève invalide." };
+  const { data: profile } = await adminClient.from("profiles")
+    .select("code, prenom, niveau, email, premium, premium_end, free_chapter").eq("code", code).maybeSingle();
+  if (!profile) return { error: "Élève introuvable." };
+  if (p.email && String(p.email).toLowerCase() !== profile.email) return { error: "Identité non vérifiée." };
+  const { data: achats } = await adminClient.from("achats").select("produit")
+    .or(`code.eq.${code},email.eq."${profile.email}"`);
+  const droits = mxDroits(profile, (achats || []) as { produit: string }[], todayParis());
+  return { profile: profile as Record<string, unknown>, droits };
+}
+
+async function mxDejaVus(code: string): Promise<string[]> {
+  const { data } = await adminClient.from("reponses_items").select("item_id").eq("code", code);
+  return [...new Set((data || []).map((r: Record<string, unknown>) => String(r.item_id)))];
+}
+
+async function mxDernierDiag(code: string, types?: string[]) {
+  let q = adminClient.from("diagnostics").select("*").eq("code", code).eq("statut", "termine");
+  if (types) q = q.in("type", types);
+  const { data } = await q.order("finished_at", { ascending: false }).limit(1).maybeSingle();
+  return data as Record<string, unknown> | null;
+}
+
+// Carte masquée selon les droits : en gratuit, seul le point faible est détaillé (reste « flouté »).
+function mxMasquerCarte(carte: Record<string, unknown> | null, acces: string) {
+  if (!carte || acces !== "free") return carte;
+  const pf = carte.point_faible;
+  return {
+    ...carte,
+    competences: ((carte.competences || []) as Record<string, unknown>[]).map((c) => c.id === pf ? c
+      : { id: c.id, domaine: c.domaine, statut: c.statut, masque: true }),
+    priorites: pf ? [pf] : [],
+    plan_4_semaines: ((carte.plan_4_semaines || []) as unknown[]).slice(0, 1),
+    masque: true,
+  };
+}
+
+async function mxFinaliserDiagnostic(diag: Record<string, unknown>, etat: MxEtatDiag, ref: MxRef,
+  profile: Record<string, unknown>) {
+  const code = String(profile.code);
+  const mt = await mxChargerMaitrise(code);
+  const debut = Date.parse(String(diag.started_at || new Date().toISOString()));
+  const carte = mxCalculerCarte(ref, mt, {
+    type: etat.type, eleve: { prenom: String(profile.prenom || ""), niveau: String(profile.niveau || "3EME") },
+    date: todayParis(), duree_min: Math.max(1, Math.round((Date.now() - debut) / 60000)),
+    n_questions: etat.obs.filter((o) => !o.graine).length, obs: etat.obs,
+  });
+  if (etat.type === "mensuel") {
+    const prec = await mxDernierDiag(code, ["complet", "mensuel"]);
+    carte.evolution = mxComparerCartes((prec?.carte_json || null) as Record<string, unknown> | null, carte);
+  }
+  // Compat legacy : le chapitre gratuit de l'app actuelle suit le point faible révélé.
+  const pf = carte.point_faible ? ref.comps[String(carte.point_faible)] : null;
+  if (pf && !profile.free_chapter && (pf.chapitres_legacy || []).length) {
+    await adminClient.from("profiles").update({ free_chapter: pf.chapitres_legacy![0] }).eq("code", code);
+  }
+  return carte;
+}
+
+// ── START_DIAGNOSTIC {code, email?, type: express|complet|mensuel} ──
+async function startDiagnostic(p: Record<string, unknown>) {
+  const type = String(p.type || "express");
+  if (!MX.DIAG[type]) return { status: "error", message: "Type de diagnostic inconnu." };
+  const pr = await mxProfil(p);
+  if ("error" in pr) return { status: "error", message: pr.error };
+  const { profile, droits } = pr;
+  if (type === "complet" && !droits.diagnostic_complet)
+    return { status: "error", message: "Diagnostic complet non débloqué.", paywall: "diagnostic_complet", droits };
+  if (type === "mensuel" && !droits.rediagnostic_mensuel)
+    return { status: "error", message: "Re-diagnostic réservé au Programme Brevet.", paywall: "programme_brevet", droits };
+  const ref = await mxChargerRef();
+  if (!ref.ordre.length) return { status: "error", message: "Référentiel non importé." };
+  const code = String(profile.code);
+
+  const { data: enCours } = await adminClient.from("diagnostics").select("*")
+    .eq("code", code).eq("type", type).eq("statut", "en_cours")
+    .order("started_at", { ascending: false }).limit(1).maybeSingle();
+  let diag = enCours as Record<string, unknown> | null;
+  let etat: MxEtatDiag;
+  if (diag) {
+    etat = diag.etat_json as MxEtatDiag;
+  } else {
+    let graines: MxObs[] | undefined;
+    if (type === "complet") {
+      const exp = await mxDernierDiag(code, ["express"]);
+      graines = exp ? ((exp.etat_json as MxEtatDiag).obs || []).filter((o) => !o.graine) : undefined;
+    }
+    const maitrise = type === "mensuel" ? await mxChargerMaitrise(code) : undefined;
+    etat = mxDemarrerDiag(ref, type, code, { graines, maitrise });
+    const { data: ins, error } = await adminClient.from("diagnostics")
+      .insert({ code, type, statut: "en_cours", etat_json: etat, n_questions: 0 }).select("*").single();
+    if (error || !ins) return { status: "error", message: "Création diagnostic impossible : " + (error?.message || "") };
+    diag = ins as Record<string, unknown>;
+    await mxLogEvent(code, type === "express" ? "diag_express_start" : type === "complet" ? "diag_complet_start" : "rediag_start", {});
+  }
+  const dejaVus = await mxDejaVus(code);
+  let q = mxProchaineQuestion(etat, ref, dejaVus);
+  if ("fin_module" in q) q = mxProchaineQuestion(etat, ref, dejaVus); // reprise = on enchaîne le module suivant
+  let carte: Record<string, unknown> | null = null;
+  if ("fin" in q) carte = await mxFinaliserDiagnostic(diag, etat, ref, profile);
+  await adminClient.from("diagnostics").update({
+    etat_json: etat, ...(carte ? { statut: "termine", carte_json: carte, finished_at: new Date().toISOString() } : {}),
+  }).eq("id", diag.id);
+  return {
+    status: "success", diagnostic_id: diag.id, type, repris: !!enCours,
+    question: "item" in q ? mxItemPublic(q.item, code) : null,
+    progression: mxProgression(etat), termine: !!carte,
+    carte: mxMasquerCarte(carte, droits.acces), droits,
+  };
+}
+
+// ── ANSWER_DIAGNOSTIC {code, email?, diagnostic_id, item_id, reponse, temps?} ──
+// reponse vide/null = « je ne sais pas ».
+async function answerDiagnostic(p: Record<string, unknown>) {
+  const pr = await mxProfil(p);
+  if ("error" in pr) return { status: "error", message: pr.error };
+  const { profile, droits } = pr;
+  const code = String(profile.code);
+  const { data: diag } = await adminClient.from("diagnostics").select("*")
+    .eq("id", String(p.diagnostic_id || "")).eq("code", code).maybeSingle();
+  if (!diag) return { status: "error", message: "Diagnostic introuvable." };
+  if (diag.statut !== "en_cours") return { status: "error", message: "Diagnostic déjà terminé." };
+  const ref = await mxChargerRef();
+  const etat = diag.etat_json as MxEtatDiag;
+  const temps = p.temps !== undefined && p.temps !== null ? Number(p.temps) : null;
+  const res = mxEnregistrerReponse(etat, ref, String(p.item_id || ""), p.reponse, temps, todayParis());
+  if ("error" in res) return { status: "error", message: res.error };
+  const { obs, item } = res;
+  await mxAppliquerReponse(code, obs.comp, obs.item_id, obs.ok, obs.w, obs.err || null, {
+    contexte: "diag", diagnostic_id: String(diag.id), reponse: obs.reponse, temps,
+  });
+  const dejaVus = await mxDejaVus(code);
+  const q = mxProchaineQuestion(etat, ref, dejaVus);
+  let carte: Record<string, unknown> | null = null;
+  if ("fin" in q) carte = await mxFinaliserDiagnostic(diag as Record<string, unknown>, etat, ref, profile);
+  await adminClient.from("diagnostics").update({
+    etat_json: etat, n_questions: etat.obs.filter((o) => !o.graine).length,
+    ...(carte ? { statut: "termine", carte_json: carte, finished_at: new Date().toISOString() } : {}),
+  }).eq("id", diag.id);
+  void item;
+  if ("fin_module" in q) await mxLogEvent(code, "module_done", { type: etat.type, module: q.fin_module });
+  if (carte) await mxLogEvent(code, etat.type === "express" ? "diag_express_done" : etat.type === "complet" ? "diag_complet_done" : "rediag_done",
+    { score: carte.score_global, n_questions: carte.n_questions });
+  // Pas de correction pendant le diagnostic (ni juste/faux, ni bonne réponse) : récapitulatif à la fin.
+  return {
+    status: "success",
+    question: "item" in q ? mxItemPublic(q.item, code) : null,
+    fin_module: "fin_module" in q ? q.fin_module + 1 : null, // n° (1-based) du module suivant
+    progression: mxProgression(etat), termine: !!carte,
+    carte: mxMasquerCarte(carte, droits.acces),
+    corrections: carte ? mxRecapCorrections(etat, ref) : null,
+  };
+}
+
+// Récapitulatif montré à la FIN du diagnostic (pendant : aucune correction).
+function mxRecapCorrections(etat: MxEtatDiag, ref: MxRef) {
+  return etat.obs.filter((o) => !o.graine).map((o) => {
+    const it = ref.items[o.item_id];
+    const def = o.err ? (ref.comps[o.comp]?.erreurs || []).find((e) => e.id === o.err) : null;
+    return { item_id: o.item_id, comp: o.comp, q: it?.q || "", reponse_eleve: o.reponse || "", ok: o.ok,
+      a: it?.a || "", steps: it?.steps || [], f: it?.f || "",
+      erreur: def ? { id: def.id, libelle: def.libelle, remediation: def.remediation || null } : null };
+  });
+}
+
+// Journal minimal du funnel (50-offre-conversion §8) : pas d'IP, pas d'email, pas d'user-agent.
+async function mxLogEvent(code: string | null, event: string, meta: Record<string, unknown>) {
+  try { await adminClient.from("funnel_events").insert({ code, event, meta }); } catch { /* jamais bloquant */ }
+}
+
+// Streak serveur : jours avec au moins une réponse (réponses items + scores legacy), 400 derniers jours.
+async function mxStreakEleve(code: string) {
+  const today = todayParis();
+  const depuis = mxAjoutJours(today, -400);
+  const { data: a } = await adminClient.from("reponses_items").select("date").eq("code", code).gte("date", depuis);
+  const { data: b } = await adminClient.from("scores").select("date").eq("code", code).gte("date", depuis);
+  const dates = [...(a || []), ...(b || [])].map((r: Record<string, unknown>) => String(r.date).slice(0, 10));
+  return mxStreak(dates, today);
+}
+
+// ── LOG_FUNNEL_EVENT {code?, event, meta?} — événements côté client (liste fermée) ──
+const MX_EVENTS_CLIENT = ["paywall_view", "checkout_click", "pdf_open", "share_opened_app"];
+async function logFunnelEvent(p: Record<string, unknown>) {
+  const event = String(p.event || "");
+  if (!MX_EVENTS_CLIENT.includes(event)) return { status: "error", message: "Événement non autorisé." };
+  const code = /^[A-Z0-9]{6}$/.test(String(p.code || "")) ? String(p.code) : null;
+  const meta = (p.meta && typeof p.meta === "object" && JSON.stringify(p.meta).length <= 500) ? p.meta as Record<string, unknown> : {};
+  await mxLogEvent(code, event, meta);
+  return { status: "success" };
+}
+
+// ── SET_PREFERENCES {code, email, email_eleve?, optin_marketing?, date_brevet_blanc?, consentement_parent?} ──
+async function setPreferences(p: Record<string, unknown>) {
+  if (!p.email) return { status: "error", message: "Email du compte requis." };
+  const pr = await mxProfil(p);
+  if ("error" in pr) return { status: "error", message: pr.error };
+  const maj: Record<string, unknown> = {};
+  if (p.email_eleve !== undefined) {
+    const e = String(p.email_eleve || "").trim().toLowerCase();
+    if (e && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)) return { status: "error", message: "Email élève invalide." };
+    maj.email_eleve = e || null;
+  }
+  if (p.optin_marketing !== undefined) { maj.optin_marketing = !!p.optin_marketing; maj.optin_marketing_at = p.optin_marketing ? new Date().toISOString() : null; }
+  if (p.date_brevet_blanc !== undefined) {
+    const d = String(p.date_brevet_blanc || "");
+    if (d && !/^\d{4}-\d{2}-\d{2}$/.test(d)) return { status: "error", message: "Date invalide (AAAA-MM-JJ)." };
+    maj.date_brevet_blanc = d || null;
+  }
+  if (p.consentement_parent === true) maj.consentement_parent_at = new Date().toISOString();
+  if (!Object.keys(maj).length) return { status: "error", message: "Rien à mettre à jour." };
+  await adminClient.from("profiles").update(maj).eq("code", String(pr.profile.code));
+  return { status: "success" };
+}
+
+// ── LOG_CONSENT {code, email?, produit, texte_version, texte_hash, cases[]} — avant redirection Stripe ──
+async function logConsent(p: Record<string, unknown>) {
+  const pr = await mxProfil(p);
+  if ("error" in pr) return { status: "error", message: pr.error };
+  const produit = String(p.produit || "");
+  if (!["diag_complet", "programme_brevet", "programme_upgrade", "compte"].includes(produit))
+    return { status: "error", message: "Produit inconnu." };
+  if (!p.texte_version || !p.texte_hash) return { status: "error", message: "texte_version et texte_hash requis." };
+  await adminClient.from("consentements").insert({
+    code: String(pr.profile.code), produit, texte_version: String(p.texte_version).slice(0, 40),
+    texte_hash: String(p.texte_hash).slice(0, 128),
+    cases: Array.isArray(p.cases) ? (p.cases as unknown[]).map(String).slice(0, 10) : [],
+  });
+  return { status: "success" };
+}
+
+// ── Partage de la carte au parent (lien /b/<token>) ──
+function mxJeton(): string {
+  const b = new Uint8Array(24); // 192 bits
+  crypto.getRandomValues(b);
+  return Array.from(b).map((x) => x.toString(16).padStart(2, "0")).join("");
+}
+
+// Carte réduite pour la page parent : pas de réponses brutes, pas d'email, pas d'exemples.
+function mxCartePartage(carte: Record<string, unknown>) {
+  const comps = (carte.competences || []) as Record<string, unknown>[];
+  const titre = (id: unknown) => String(comps.find((c) => c.id === id)?.titre_eleve || id);
+  const pf = comps.find((c) => c.id === carte.point_faible);
+  return {
+    eleve: { prenom: (carte.eleve as Record<string, unknown>)?.prenom || "" }, type: carte.type, date: carte.date,
+    score_global: carte.score_global, phrase_cle: carte.phrase_cle, domaines: carte.domaines,
+    point_faible: pf ? { id: pf.id, titre_eleve: pf.titre_eleve, niveau_origine: pf.niveau_origine, statut: pf.statut,
+      cause_racine: pf.cause_racine, n_bloque: ((pf.bloque || []) as unknown[]).length } : null,
+    priorites: ((carte.priorites || []) as string[]).slice(0, 3).map((id) => ({ id, titre_eleve: titre(id) })),
+    points_forts: ((carte.points_forts || []) as string[]).slice(0, 3).map((id) => ({ id, titre_eleve: titre(id) })),
+    message_parent: carte.message_parent, fiabilite: carte.fiabilite, alerte: carte.alerte || null,
+  };
+}
+
+// ── CREATE_SHARE {code, email?, canal?} → {token, url, expires_at} ──
+async function createShare(p: Record<string, unknown>) {
+  const pr = await mxProfil(p);
+  if ("error" in pr) return { status: "error", message: pr.error };
+  const code = String(pr.profile.code);
+  const diag = await mxDernierDiag(code);
+  if (!diag) return { status: "error", message: "Aucun diagnostic terminé à partager." };
+  const token = mxJeton();
+  const expires_at = new Date(Date.now() + 30 * 86400000).toISOString();
+  const { error } = await adminClient.from("bilan_partages").insert({
+    token, code, diagnostic_id: diag.id, type_carte: diag.type, expires_at,
+  });
+  if (error) return { status: "error", message: "Partage impossible : " + error.message };
+  await mxLogEvent(code, "share_created", { canal: String(p.canal || "").slice(0, 20) });
+  return { status: "success", token, url: "https://matheux.fr/b/" + token, expires_at };
+}
+
+// ── REVOKE_SHARE {code, email?, token? } — sans token : révoque tous les liens actifs de l'élève ──
+async function revokeShare(p: Record<string, unknown>) {
+  const pr = await mxProfil(p);
+  if ("error" in pr) return { status: "error", message: pr.error };
+  let q = adminClient.from("bilan_partages").update({ revoked_at: new Date().toISOString() })
+    .eq("code", String(pr.profile.code)).is("revoked_at", null);
+  if (p.token) q = q.eq("token", String(p.token));
+  await q;
+  return { status: "success" };
+}
+
+// ── GET_BILAN_PARTAGE {token} — PUBLIC (page bilan.html, /b/<token>) ──
+async function getBilanPartage(p: Record<string, unknown>) {
+  const token = String(p.token || "");
+  const expire = { status: "error", expire: true, message: "Ce lien a expiré. Demandez à votre enfant de vous en renvoyer un." };
+  if (!/^[0-9a-f]{48}$/.test(token)) return expire;
+  const { data: sh } = await adminClient.from("bilan_partages").select("*").eq("token", token).maybeSingle();
+  if (!sh || sh.revoked_at || String(sh.expires_at) < new Date().toISOString()) return expire;
+  const { data: diag } = await adminClient.from("diagnostics").select("carte_json").eq("id", sh.diagnostic_id).maybeSingle();
+  if (!diag?.carte_json) return expire;
+  const { data: prof } = await adminClient.from("profiles").select("code, premium, premium_end, email").eq("code", sh.code).maybeSingle();
+  const { data: achats } = prof ? await adminClient.from("achats").select("produit").eq("code", prof.code) : { data: [] };
+  const droits = prof ? mxDroits(prof, (achats || []) as { produit: string }[], todayParis()) : null;
+  await adminClient.from("bilan_partages").update({ vues: (Number(sh.vues) || 0) + 1, dernier_vu_at: new Date().toISOString() }).eq("token", token);
+  if (!sh.vues) await mxLogEvent(String(sh.code), "share_viewed", {});
+  const carte = mxCartePartage(diag.carte_json as Record<string, unknown>);
+  const prenom = String(carte.eleve.prenom || "votre enfant");
+  return {
+    status: "success", carte, code: sh.code, // le code sert de client_reference_id pour le paiement depuis la page parent
+    acces: droits?.acces || "free", prix_cents: droits?.prix_cents || null,
+    og: {
+      title: "Le bilan maths de " + prenom + " (3e)",
+      description: String(carte.phrase_cle || "").slice(0, 190),
+    },
+  };
+}
+
+// ── GET_CARTE {code, email?, diagnostic_id?} ──
+async function getCarte(p: Record<string, unknown>) {
+  const pr = await mxProfil(p);
+  if ("error" in pr) return { status: "error", message: pr.error };
+  const { profile, droits } = pr;
+  const code = String(profile.code);
+  let diag: Record<string, unknown> | null;
+  if (p.diagnostic_id) {
+    const { data } = await adminClient.from("diagnostics").select("*").eq("id", String(p.diagnostic_id))
+      .eq("code", code).eq("statut", "termine").maybeSingle();
+    diag = data as Record<string, unknown> | null;
+  } else diag = await mxDernierDiag(code);
+  const { data: enCours } = await adminClient.from("diagnostics").select("id, type, etat_json")
+    .eq("code", code).eq("statut", "en_cours");
+  return {
+    status: "success", droits, streak: await mxStreakEleve(code),
+    carte: mxMasquerCarte((diag?.carte_json || null) as Record<string, unknown> | null, droits.acces),
+    diagnostic_id: diag?.id || null,
+    en_cours: (enCours || []).map((d: Record<string, unknown>) => ({
+      diagnostic_id: d.id, type: d.type, progression: mxProgression(d.etat_json as MxEtatDiag) })),
+  };
+}
+
+// ── GET_ACCES {code, email?} ──
+async function getAcces(p: Record<string, unknown>) {
+  const pr = await mxProfil(p);
+  if ("error" in pr) return { status: "error", message: pr.error };
+  return { status: "success", droits: pr.droits, produits: MX_PRODUITS };
+}
+
+// ── GET_TRAINING {code, email?} — 5 exos du jour, idempotent (1 ligne daily_boosts / jour) ──
+// Écrit dans daily_boosts (date = aujourd'hui) : l'app sait déjà rendre un boost et save_score
+// source=BOOST incrémente exos_done. Chaque exo porte item_id + comp → maîtrise mise à jour.
+async function getTraining(p: Record<string, unknown>) {
+  const pr = await mxProfil(p);
+  if ("error" in pr) return { status: "error", message: pr.error };
+  const { profile, droits } = pr;
+  const code = String(profile.code);
+  const today = todayParis();
+  const dernier = await mxDernierDiag(code);
+  const dernierComplet = await mxDernierDiag(code, ["complet", "mensuel"]);
+  const rediagnostic_du = mxRediagDu(dernierComplet ? String(dernierComplet.finished_at || "").slice(0, 10) : null, today, droits.acces);
+
+  const { data: existant } = await adminClient.from("daily_boosts").select("boost_json, exos_done")
+    .eq("code", code).eq("date", today).maybeSingle();
+  const streak = await mxStreakEleve(code);
+  if (existant) {
+    return { status: "success", boost: existant.boost_json, exos_done: existant.exos_done || 0, deja: true, rediagnostic_du, streak, droits };
+  }
+  if (!dernier) return { status: "error", message: "Fais d'abord le diagnostic express.", diagnostic_requis: true };
+
+  const ref = await mxChargerRef();
+  const mt = await mxChargerMaitrise(code);
+  const { data: hist } = await adminClient.from("reponses_items").select("item_id, date, ok, contexte")
+    .eq("code", code).gte("date", mxAjoutJours(today, -90));
+  const zone = droits.entrainement_complet ? null : mxZoneGratuite(dernier.carte_json as Record<string, unknown>);
+  const sel = mxChoisirEntrainement(ref, mt, {
+    code, date: today, zone,
+    historique: ((hist || []) as Record<string, unknown>[]).map((h) => ({ item_id: String(h.item_id), date: String(h.date), ok: !!h.ok, contexte: String(h.contexte || "") })),
+  });
+  if (!sel.exos.length) return { status: "error", message: "Banque vide pour cette zone — réassort nécessaire." };
+  const boost = {
+    generatedBy: "moteur_v2", date: today, focus: sel.focus, zone, zone_maitrisee: sel.zone_maitrisee,
+    exos: sel.exos.map((e, i) => ({
+      ...e.item, item_id: e.item.id, comp: e.item.comp, role: e.role, boostIdx: i, num: i + 1,
+      type: mxTypeItem(e.item), categorie: (ref.comps[e.item.comp].chapitres_legacy || [])[0] || e.item.comp,
+    })),
+  };
+  await adminClient.from("daily_boosts").upsert({ code, date: today, boost_json: boost, exos_done: 0 },
+    { onConflict: "code,date", ignoreDuplicates: true });
+  const { data: final } = await adminClient.from("daily_boosts").select("boost_json, exos_done")
+    .eq("code", code).eq("date", today).maybeSingle();
+  return { status: "success", boost: final?.boost_json || boost, exos_done: final?.exos_done || 0, deja: false,
+    rediagnostic_du, zone_maitrisee: sel.zone_maitrisee, streak, droits };
+}
+
 // ── SUBMIT_FEEDBACK ─────────────────────────────────────────
 
 async function submitFeedback(p: Record<string, unknown>) {
@@ -1176,11 +2548,46 @@ async function stripeWebhook(p: Record<string, unknown>) {
   // niveau = provient des metadata du Payment Link Stripe (6EME/5EME/4EME/3EME),
   // conservé pour reporting admin — l'accès lui-même n'est pas restreint par niveau
   // côté serveur (un profil = un niveau, cf. profiles.level).
-  const update: Record<string, unknown> = { premium: true, premium_end: null };
   const niveau = String(p.niveau || "").trim().toUpperCase();
+
+  // Refonte diagnostic 3e (docs/specs/50-offre-conversion.md §4) : metadata.produit ∈ {diag_complet,
+  // programme_brevet, programme_upgrade}, client_reference_id = code élève (clé fiable : le parent paie
+  // souvent avec une autre adresse). Achat tracé dans `achats` ; droits calculés par mxDroits.
+  // diag_complet ne donne PAS premium (premium = accès complet legacy). Sans metadata.produit : legacy.
+  const codeRef = String(p.code || "").trim().toUpperCase();
+  let prof: { code: string } | null = null;
+  if (/^[A-Z0-9]{6}$/.test(codeRef)) {
+    const { data } = await adminClient.from("profiles").select("code").eq("code", codeRef).maybeSingle();
+    prof = data as { code: string } | null;
+  }
+  if (!prof) {
+    const { data } = await adminClient.from("profiles").select("code").eq("email", email).maybeSingle();
+    prof = data as { code: string } | null;
+  }
+  const offre = String(p.produit || "").trim();
+  const produit = ({ diag_complet: "diagnostic_complet", diagnostic_complet: "diagnostic_complet",
+    programme_brevet: "programme_brevet", programme_upgrade: "programme_brevet" } as Record<string, string>)[offre] || "";
+  if (produit) {
+    const achat = {
+      code: prof?.code || null, email, produit, offre, offre_version: p.offre_version ? String(p.offre_version) : null,
+      niveau: niveau || null,
+      montant_cents: Number.isFinite(Number(p.montant_cents)) ? Number(p.montant_cents) : null,
+      stripe_session_id: p.session_id ? String(p.session_id) : null,
+    };
+    if (achat.stripe_session_id) {
+      await adminClient.from("achats").upsert(achat, { onConflict: "stripe_session_id", ignoreDuplicates: true });
+    } else {
+      await adminClient.from("achats").insert(achat);
+    }
+    await mxLogEvent(prof?.code || null, "purchase", { produit: offre, montant: achat.montant_cents });
+    if (produit === "diagnostic_complet") return { status: "success", produit };
+  }
+
+  const update: Record<string, unknown> = { premium: true, premium_end: null };
   if (niveau) update.premium_niveau = niveau;
 
-  await adminClient.from("profiles").update(update).eq("email", email);
+  if (prof) await adminClient.from("profiles").update(update).eq("code", prof.code);
+  else await adminClient.from("profiles").update(update).eq("email", email);
 
   return { status: "success" };
 }
@@ -1714,6 +3121,18 @@ const ACTIONS: Record<string, (p: Record<string, unknown>) => Promise<unknown>> 
   get_brevet_chapters: getBrevetChapters,
   generate_brevet_session: generateBrevetSession,
   save_brevet_result: saveBrevetResult,
+  // Moteur diagnostic 3e (docs/specs/20-moteur.md)
+  start_diagnostic: startDiagnostic,
+  answer_diagnostic: answerDiagnostic,
+  get_carte: getCarte,
+  get_training: getTraining,
+  get_acces: getAcces,
+  set_preferences: setPreferences,
+  log_consent: logConsent,
+  log_funnel_event: logFunnelEvent,
+  create_share: createShare,
+  revoke_share: revokeShare,
+  get_bilan_partage: getBilanPartage,
   // Noop — fonctionnalités secondaires qui ne cassent pas le parcours
   add_teasing_early: noopAction,
   detect_fragile_prereqs: noopAction,
@@ -1771,10 +3190,16 @@ Deno.serve(async (req: Request) => {
       const session = p.data.object;
       const email = String(session.customer_details?.email || session.customer_email || "").trim().toLowerCase();
       if (!email) return json({ status: "error", message: "Stripe webhook: no email found" });
-      // niveau du Payment Link acheté : metadata.niveau (configuré sur chaque Payment
-      // Link Stripe, un par niveau) avec fallback client_reference_id si jamais utilisé.
-      const niveau = String(session.metadata?.niveau || session.client_reference_id || "");
-      const result = await stripeWebhook({ email, niveau });
+      // niveau du Payment Link acheté : metadata.niveau uniquement. client_reference_id porte
+      // désormais le code élève (refonte diagnostic 3e) : il ne doit plus finir dans premium_niveau.
+      const niveau = String(session.metadata?.niveau || "");
+      const result = await stripeWebhook({
+        email, niveau,
+        produit: String(session.metadata?.produit || ""), // refonte diagnostic 3e (vide = lien legacy)
+        offre_version: String(session.metadata?.offre_version || ""),
+        code: String(session.client_reference_id || ""), // code élève
+        session_id: session.id, montant_cents: session.amount_total,
+      });
       return json(result);
     }
 

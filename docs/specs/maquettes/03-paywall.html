@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Paywall — débloquer la carte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&display=swap" rel="stylesheet">
+<!-- Maquette statique — spec docs/specs/40-parcours-epuration.md. Pas de JS métier. -->
+<style>
+:root{
+  --ink:#07090f;--ink2:#1a1f2e;--mut:#64748b;--brd:#e2e8f0;--bg:#f7f8fc;--wht:#fff;
+  --p:#1E40AF;--p2:#3B82F6;--pl:#eef2ff;--pd:#0F172A;
+  --amb:#f59e0b;--ambl:#fef3c7;--grn:#059669;--grnl:#d1fae5;--ros:#e11d48;--rosl:#fff1f2;
+  --r:14px;--rl:22px;
+  /* statuts carte (contrat §4) */
+  --lac:#e11d48;--lacl:#fff1f2;--fra:#d97706;--fral:#fef3c7;--acq:#059669;--acql:#d1fae5;--ne:#94a3b8;--nel:#f1f5f9;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;letter-spacing:.01em;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.syne{font-family:'Syne',system-ui,sans-serif;letter-spacing:-.01em}
+.phone{max-width:375px;margin:0 auto;min-height:100vh;padding:14px 16px 28px;background:var(--bg)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.logo{font-family:'Syne';font-weight:800;font-size:1.05rem;color:var(--p)}
+.chip{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;padding:5px 10px;border-radius:99px;border:1.5px solid var(--brd);background:#fff;color:var(--mut)}
+.card{background:#fff;border:1px solid var(--brd);border-radius:18px;padding:16px;box-shadow:0 4px 20px rgba(15,23,42,.05)}
+.card+.card{margin-top:12px}
+.stack>*+*{margin-top:12px}
+.label{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}
+.h1{font-family:'Syne';font-weight:800;font-size:1.32rem;line-height:1.2}
+.h2{font-family:'Syne';font-weight:700;font-size:1rem;line-height:1.3}
+.sub{color:var(--mut);font-size:.86rem}
+.small{font-size:.76rem;color:var(--mut)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:none;cursor:pointer;font-family:'Syne';font-weight:700;font-size:.95rem;border-radius:var(--r);padding:15px 16px;text-decoration:none}
+.btn-ac{background:linear-gradient(135deg,var(--p) 0%,var(--p2) 100%);color:#fff;box-shadow:0 4px 20px rgba(30,64,175,.3)}
+.btn-dk{background:var(--ink);color:#fff}
+.btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--brd)}
+.btn-link{background:none;color:var(--p);font-size:.84rem;padding:8px;font-family:'DM Sans';font-weight:700}
+.bar{height:8px;border-radius:99px;background:var(--brd);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:99px}
+.st{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:800;padding:3px 8px;border-radius:99px;white-space:nowrap}
+.st-lac{background:var(--lacl);color:var(--lac)} .st-fra{background:var(--fral);color:#92400e} .st-acq{background:var(--acql);color:#065f46} .st-ne{background:var(--nel);color:#475569}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.d-lac{background:var(--lac)} .d-fra{background:var(--fra)} .d-acq{background:var(--acq)} .d-ne{background:var(--ne)}
+.dom{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #f1f5f9}
+.dom:first-child{border-top:none}
+.dom .nm{flex:1;min-width:0;font-weight:700;font-size:.83rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dom .bar{width:52px;height:6px;flex-shrink:0}
+.note{background:var(--pl);border-radius:12px;padding:10px 12px;font-size:.8rem;color:#1e3a8a}
+.err{background:var(--rosl);border:1px solid #fecdd3;border-radius:12px;padding:10px 12px;font-size:.82rem}
+.mono{font-family:ui-monospace,Menlo,monospace}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:.9em;line-height:1.05;margin:0 2px}
+.frac b{font-weight:600;padding:0 2px}.frac b:first-child{border-bottom:1.5px solid currentColor}
+.center{text-align:center}
+.row{display:flex;align-items:center;gap:10px}
+.sep{height:1px;background:var(--brd);margin:14px 0}
+.state-sep{margin:28px -16px 16px;padding:8px 16px;background:#e2e8f0;color:#334155;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+
+.offer{position:relative;border:2px solid var(--brd);border-radius:20px;padding:16px;background:#fff}
+.offer.best{border-color:var(--p);box-shadow:0 10px 30px rgba(30,64,175,.14)}
+.ribbon{position:absolute;top:-11px;left:16px;background:var(--p);color:#fff;font-size:.66rem;font-weight:800;padding:3px 10px;border-radius:99px;letter-spacing:.04em}
+.price{font-family:'Syne';font-weight:800;font-size:1.7rem;line-height:1;white-space:nowrap}
+.old{font-size:.85rem;color:var(--mut);text-decoration:line-through;margin-left:6px}
+ul.f{list-style:none;margin:10px 0 14px}
+ul.f li{display:flex;gap:8px;font-size:.84rem;padding:4px 0;color:#1e293b}
+ul.f li::before{content:'✓';color:var(--grn);font-weight:900}
+.close{width:34px;height:34px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--mut)}
+.ask{background:#0F172A;color:#fff;border-radius:18px;padding:14px 16px}
+</style></head><body>
+<div class="phone">
+
+<div class="top"><span class="logo">Matheux</span><span class="close">✕</span></div>
+<div class="label">Tu as vu 1 point faible sur ~45</div>
+<div class="h1" style="margin-top:4px">Débloque ta carte complète</div>
+<p class="sub" style="margin-top:6px">Savoir <b>exactement</b> ce qui coince, pourquoi, et dans quel ordre le reprendre.</p>
+
+<div class="offer" style="margin-top:18px">
+  <div class="row" style="justify-content:space-between;align-items:flex-end">
+    <div><div class="h2">Diagnostic complet</div><div class="small">3 modules · ~40 min · à ton rythme</div></div>
+    <div class="price">19 €</div>
+  </div>
+  <ul class="f">
+    <li>Toutes les compétences de 3e + les bases de 6e-4e</li>
+    <li>Les causes racines : ce qui bloque quoi</li>
+    <li>Tes erreurs types, nommées et expliquées</li>
+    <li>Un bilan PDF clair pour tes parents</li>
+    <li>Un plan de 4 semaines, dans le bon ordre</li>
+  </ul>
+  <button class="btn btn-ghost">Choisir le diagnostic — 19 €</button>
+</div>
+
+<div class="offer best" style="margin-top:18px">
+  <span class="ribbon">LE PLUS COMPLET</span>
+  <div class="row" style="justify-content:space-between;align-items:flex-end">
+    <div><div class="h2">Programme Brevet</div><div class="small">diagnostic inclus · tout le programme</div></div>
+    <div><span class="price">49 €</span></div>
+  </div>
+  <ul class="f">
+    <li>Tout le diagnostic complet + le PDF</li>
+    <li>Entraînement illimité sur toute ta carte</li>
+    <li>Un check-up chaque mois : ta carte avant / après</li>
+    <li>Des brevets blancs corrigés</li>
+  </ul>
+  <button class="btn btn-ac">Choisir le programme — 49 €</button>
+  <p class="small center" style="margin-top:8px">Déjà pris le diagnostic ? Les 19 € sont déduits.</p>
+</div>
+
+<div class="ask" style="margin-top:16px">
+  <div class="row"><span style="font-size:1.3rem">👨‍👩‍👧</span><div><div class="syne" style="font-weight:700;font-size:.95rem">C'est tes parents qui paient ?</div><div style="font-size:.78rem;color:rgba(255,255,255,.65)">Envoie-leur ta carte. Ils voient ton bilan, et ils débloquent en 1 clic.</div></div></div>
+  <button class="btn" style="margin-top:12px;background:#fff;color:var(--pd)">📩 Demander à mes parents</button>
+</div>
+
+<p class="small center" style="margin-top:14px">Paiement unique · Pas d'abonnement · Accès sans date de fin<br>Paiement sécurisé par Stripe</p>
+
+</div></body></html>

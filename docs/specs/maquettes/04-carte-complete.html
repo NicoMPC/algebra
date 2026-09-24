@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Carte complète — diagnostic complet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&display=swap" rel="stylesheet">
+<!-- Maquette statique — spec docs/specs/40-parcours-epuration.md. Pas de JS métier. -->
+<style>
+:root{
+  --ink:#07090f;--ink2:#1a1f2e;--mut:#64748b;--brd:#e2e8f0;--bg:#f7f8fc;--wht:#fff;
+  --p:#1E40AF;--p2:#3B82F6;--pl:#eef2ff;--pd:#0F172A;
+  --amb:#f59e0b;--ambl:#fef3c7;--grn:#059669;--grnl:#d1fae5;--ros:#e11d48;--rosl:#fff1f2;
+  --r:14px;--rl:22px;
+  /* statuts carte (contrat §4) */
+  --lac:#e11d48;--lacl:#fff1f2;--fra:#d97706;--fral:#fef3c7;--acq:#059669;--acql:#d1fae5;--ne:#94a3b8;--nel:#f1f5f9;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;letter-spacing:.01em;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.syne{font-family:'Syne',system-ui,sans-serif;letter-spacing:-.01em}
+.phone{max-width:375px;margin:0 auto;min-height:100vh;padding:14px 16px 28px;background:var(--bg)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.logo{font-family:'Syne';font-weight:800;font-size:1.05rem;color:var(--p)}
+.chip{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;padding:5px 10px;border-radius:99px;border:1.5px solid var(--brd);background:#fff;color:var(--mut)}
+.card{background:#fff;border:1px solid var(--brd);border-radius:18px;padding:16px;box-shadow:0 4px 20px rgba(15,23,42,.05)}
+.card+.card{margin-top:12px}
+.stack>*+*{margin-top:12px}
+.label{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}
+.h1{font-family:'Syne';font-weight:800;font-size:1.32rem;line-height:1.2}
+.h2{font-family:'Syne';font-weight:700;font-size:1rem;line-height:1.3}
+.sub{color:var(--mut);font-size:.86rem}
+.small{font-size:.76rem;color:var(--mut)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:none;cursor:pointer;font-family:'Syne';font-weight:700;font-size:.95rem;border-radius:var(--r);padding:15px 16px;text-decoration:none}
+.btn-ac{background:linear-gradient(135deg,var(--p) 0%,var(--p2) 100%);color:#fff;box-shadow:0 4px 20px rgba(30,64,175,.3)}
+.btn-dk{background:var(--ink);color:#fff}
+.btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--brd)}
+.btn-link{background:none;color:var(--p);font-size:.84rem;padding:8px;font-family:'DM Sans';font-weight:700}
+.bar{height:8px;border-radius:99px;background:var(--brd);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:99px}
+.st{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:800;padding:3px 8px;border-radius:99px;white-space:nowrap}
+.st-lac{background:var(--lacl);color:var(--lac)} .st-fra{background:var(--fral);color:#92400e} .st-acq{background:var(--acql);color:#065f46} .st-ne{background:var(--nel);color:#475569}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.d-lac{background:var(--lac)} .d-fra{background:var(--fra)} .d-acq{background:var(--acq)} .d-ne{background:var(--ne)}
+.dom{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #f1f5f9}
+.dom:first-child{border-top:none}
+.dom .nm{flex:1;min-width:0;font-weight:700;font-size:.83rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dom .bar{width:52px;height:6px;flex-shrink:0}
+.note{background:var(--pl);border-radius:12px;padding:10px 12px;font-size:.8rem;color:#1e3a8a}
+.err{background:var(--rosl);border:1px solid #fecdd3;border-radius:12px;padding:10px 12px;font-size:.82rem}
+.mono{font-family:ui-monospace,Menlo,monospace}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:.9em;line-height:1.05;margin:0 2px}
+.frac b{font-weight:600;padding:0 2px}.frac b:first-child{border-bottom:1.5px solid currentColor}
+.center{text-align:center}
+.row{display:flex;align-items:center;gap:10px}
+.sep{height:1px;background:var(--brd);margin:14px 0}
+.state-sep{margin:28px -16px 16px;padding:8px 16px;background:#e2e8f0;color:#334155;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
+.kpi{border-radius:12px;padding:8px 4px;text-align:center}
+.kpi b{display:block;font-family:'Syne';font-size:1.25rem;line-height:1.1}
+.kpi span{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.acc{border-top:1px solid #f1f5f9;padding:11px 0}
+.acc:first-of-type{border-top:none}
+.acc .hd{display:flex;align-items:center;gap:10px}
+.acc .nm{flex:1;font-weight:800;font-size:.9rem}
+.mini{display:flex;gap:2px;margin-top:7px}.mini i{height:6px;flex:1;border-radius:2px}
+.root{display:flex;align-items:stretch;gap:10px;margin-top:10px}
+.root .from{flex:0 0 118px;background:var(--rosl);border:1.5px solid #fecdd3;border-radius:12px;padding:8px;font-size:.74rem;font-weight:700}
+.root .arrow{display:flex;align-items:center;color:var(--mut);font-weight:900}
+.root .to{flex:1;display:flex;flex-direction:column;gap:4px}
+.root .to span{font-size:.72rem;font-weight:700;background:#f1f5f9;border-radius:8px;padding:4px 8px}
+.prio{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-top:1px solid #f1f5f9}
+.prio:first-of-type{border-top:none}
+.num{width:26px;height:26px;border-radius:9px;background:var(--pd);color:#fff;font-family:'Syne';font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.85rem}
+.wk{display:flex;gap:10px;padding:7px 0}
+.wk .w{font-family:'DM Sans';font-weight:800;font-size:.68rem;letter-spacing:.06em;color:rgba(255,255,255,.55);width:56px;white-space:nowrap;flex-shrink:0;padding-top:2px}
+.pdf{display:flex;gap:12px;align-items:center}
+.pdf .thumb{width:54px;height:70px;border-radius:6px;background:#fff;border:1px solid var(--brd);box-shadow:0 4px 12px rgba(15,23,42,.08);padding:6px;flex-shrink:0}
+.pdf .thumb i{display:block;height:4px;border-radius:2px;background:#e2e8f0;margin-bottom:4px}
+.up{background:linear-gradient(135deg,#0F172A,#1E40AF);color:#fff;border-radius:20px;padding:16px}
+</style></head><body>
+<div class="phone">
+
+<div class="top"><span class="logo">Matheux</span><span class="chip">Complet · 64 q · 38 min</span></div>
+<div class="label">Carte complète · 24 sept. 2026</div>
+<div class="h1" style="margin-top:4px">Léa, voilà ta carte en entier.</div>
+<p class="sub" style="margin-top:6px">La bonne nouvelle : 3 blocages expliquent presque tout le reste.</p>
+
+<div class="kpis">
+  <div class="kpi" style="background:var(--acql);color:#065f46"><b>31</b><span>Acquis</span></div>
+  <div class="kpi" style="background:var(--fral);color:#92400e"><b>14</b><span>Fragiles</span></div>
+  <div class="kpi" style="background:var(--lacl);color:var(--lac)"><b>9</b><span>Lacunes</span></div>
+  <div class="kpi" style="background:var(--nel);color:#475569"><b>4</b><span>Pas vu</span></div>
+</div>
+
+<div class="card" style="margin-top:12px">
+  <div class="label" style="color:var(--lac)">🔗 Tes causes racines</div>
+  <p class="small" style="margin-top:2px">Des bases d'avant la 3e qui en bloquent d'autres. On commence par là.</p>
+  <div class="root"><div class="from">Soustraire un nombre négatif<div class="small" style="font-weight:600">5e</div></div><div class="arrow">→</div><div class="to"><span>Résoudre une équation</span><span>Fonctions affines</span><span>Calcul littéral</span></div></div>
+  <div class="root"><div class="from">Fractions de dénominateurs différents<div class="small" style="font-weight:600">5e</div></div><div class="arrow">→</div><div class="to"><span>Probabilités</span><span>Équations</span></div></div>
+</div>
+
+<div class="card">
+  <div class="label">Tes priorités</div>
+  <div class="prio"><span class="num">1</span><div><div style="font-weight:800;font-size:.88rem">Nombres relatifs : soustraire un négatif</div><div class="small">Ton erreur : <span class="mono">5 − (−3) = 2</span>. Moins un moins, ça fait plus.</div></div></div>
+  <div class="prio"><span class="num">2</span><div><div style="font-weight:800;font-size:.88rem">Additionner des fractions</div><div class="small">Tu additionnes haut et bas. On revient au sens.</div></div></div>
+  <div class="prio"><span class="num">3</span><div><div style="font-weight:800;font-size:.88rem">Pythagore : savoir quand l'utiliser</div><div class="small">Tu calcules bien, mais tu l'appliques sans angle droit.</div></div></div>
+</div>
+
+<div class="card">
+  <div class="row" style="justify-content:space-between"><span class="label">Par domaine</span><span class="small">touche pour détailler</span></div>
+  <div class="acc"><div class="hd"><span class="dot d-fra"></span><span class="nm">Nombres et calculs</span><span class="st st-fra">Fragile</span></div>
+    <div class="mini"><i style="background:var(--acq)"></i><i style="background:var(--acq)"></i><i style="background:var(--acq)"></i><i style="background:var(--acq)"></i><i style="background:var(--acq)"></i><i style="background:var(--fra)"></i><i style="background:var(--fra)"></i><i style="background:var(--fra)"></i><i style="background:var(--lac)"></i><i style="background:var(--lac)"></i><i style="background:var(--lac)"></i><i style="background:var(--ne)"></i></div></div>
+  <div class="acc"><div class="hd"><span class="dot d-lac"></span><span class="nm">Données, fonctions</span><span class="st st-lac">Lacune</span></div>
+    <div class="mini"><i style="background:var(--acq)"></i><i style="background:var(--acq)"></i><i style="background:var(--fra)"></i><i style="background:var(--fra)"></i><i style="background:var(--lac)"></i><i style="background:var(--lac)"></i><i style="background:var(--lac)"></i><i style="background:var(--lac)"></i></div></div>
+  <div class="acc"><div class="hd"><span class="dot d-acq"></span><span class="nm">Grandeurs et mesures</span><span class="st st-acq">Acquis</span></div>
+    <div class="mini"><i style="background:var(--acq)"></i><i style="background:var(--acq)"></i><i style="background:var(--acq)"></i><i style="background:var(--acq)"></i><i style="background:var(--acq)"></i><i style="background:var(--fra)"></i></div></div>
+  <div class="acc"><div class="hd"><span class="dot d-fra"></span><span class="nm">Espace et géométrie</span><span class="st st-fra">Fragile</span></div>
+    <div class="mini"><i style="background:var(--acq)"></i><i style="background:var(--acq)"></i><i style="background:var(--acq)"></i><i style="background:var(--acq)"></i><i style="background:var(--fra)"></i><i style="background:var(--fra)"></i><i style="background:var(--lac)"></i><i style="background:var(--ne)"></i></div></div>
+  <div class="acc"><div class="hd"><span class="dot d-acq"></span><span class="nm">Algorithmique</span><span class="st st-acq">Acquis</span></div>
+    <div class="mini"><i style="background:var(--acq)"></i><i style="background:var(--acq)"></i><i style="background:var(--acq)"></i><i style="background:var(--ne)"></i></div></div>
+</div>
+
+<div class="card">
+  <div class="label">✨ Tes points forts</div>
+  <p style="font-size:.86rem;margin-top:4px">Thalès, lire un diagramme, aires et volumes. Ça, c'est réglé.</p>
+</div>
+
+<div class="card">
+  <div class="pdf"><div class="thumb"><i style="width:70%;background:#1E40AF"></i><i></i><i style="width:80%"></i><i></i><i style="width:60%"></i><i></i></div>
+    <div style="flex:1"><div class="h2" style="font-size:.95rem">Ton bilan PDF</div><div class="small">4 pages, écrit pour tes parents. Clair, sans jargon.</div></div></div>
+  <div class="row" style="margin-top:12px;gap:8px"><button class="btn btn-dk" style="padding:12px">📄 Télécharger</button><button class="btn btn-ghost" style="padding:12px">📩 Envoyer</button></div>
+</div>
+
+<div class="up" style="margin-top:12px">
+  <div class="label" style="color:rgba(255,255,255,.55)">Ton plan 4 semaines est prêt</div>
+  <div class="wk"><span class="w">SEM 1</span><span style="font-size:.82rem">Nombres relatifs</span></div>
+  <div class="wk"><span class="w">SEM 2</span><span style="font-size:.82rem">Fractions, puis équations</span></div>
+  <div class="wk"><span class="w">SEM 3</span><span style="font-size:.82rem">Fonctions affines</span></div>
+  <div class="wk"><span class="w">SEM 4</span><span style="font-size:.82rem">Pythagore + brevet blanc</span></div>
+  <button class="btn" style="margin-top:10px;background:#fff;color:var(--pd)">Activer mon plan — 30 €</button>
+  <p style="text-align:center;font-size:.72rem;color:rgba(255,255,255,.6);margin-top:8px">Programme Brevet 49 €, tes 19 € déjà payés sont déduits</p>
+</div>
+
+</div></body></html>
