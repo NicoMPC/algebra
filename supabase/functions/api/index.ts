@@ -1079,7 +1079,7 @@ type MxComp = {
   id: string; domaine: string; theme?: string; titre: string; titre_eleve?: string;
   niveau_origine: string; prerequis: string[]; poids_brevet: number;
   chapitres_legacy?: string[]; erreurs?: MxErreurRef[];
-  diag_autorise?: boolean; hors_programme?: boolean;
+  diag_autorise?: boolean; hors_programme?: boolean; diag?: boolean; // diag: false = jamais en diagnostic (contrat §9)
 };
 type MxItem = {
   id: string; comp: string; q: string; a: string; type?: string; options?: string[];
@@ -1089,6 +1089,7 @@ type MxItem = {
 type MxObs = {
   item_id: string; comp: string; ok: boolean; w: number;
   reponse?: string; err?: string | null; temps?: number | null; date?: string; graine?: boolean;
+  imputee?: boolean; // erreur d'un prérequis direct imputée à ce prérequis (contrat §9)
 };
 type MxMaitrise = {
   comp: string; alpha: number; beta: number; maitrise: number; n_obs: number; n_succes: number;
@@ -1206,6 +1207,8 @@ function mxNiveauLabel(n: string): string {
 function mxNorm(s: unknown): string {
   let v = String(s ?? "").replace(/\$/g, "").replace(/\{,\}/g, ",").replace(/\\,/g, "").replace(/\s+/g, "")
     .replace(/,/g, ".").toLowerCase().trim();
+  // moins Unicode (clavier iOS, copier-coller) → « - » ; préfixe « x= » / « a= » retiré (aligné app.html)
+  v = v.replace(/[\u2212\u2013]/g, "-").replace(/^[a-z]=/, "");
   v = v.replace(/\\d?frac\{([^}]*)\}\{([^}]*)\}/g, "$1/$2");
   v = v.replace(/\\times/g, "×").replace(/\\cdot/g, "·").replace(/\\div/g, "÷");
   v = v.replace(/\\text\{([^}]*)\}/g, "$1").replace(/\\(left|right|displaystyle|,|;|!|quad)/g, "");
@@ -1265,6 +1268,17 @@ function mxCorriger(it: MxItem, reponse: unknown): { ok: boolean; err: string | 
   if (!r) return { ok: false, err: null };
   if (mxEgal(r, it.a, it.alt)) return { ok: true, err: null };
   return { ok: false, err: mxErreurType(it, r) };
+}
+
+// Observations à appliquer pour UNE réponse : la compétence de l'item, et — si l'erreur type
+// appartient à un prérequis DIRECT de cette compétence — un échec imputé à ce prérequis (contrat §9).
+function mxImputer(ref: MxRef | null, it: MxItem, ok: boolean, err: string | null) {
+  const out: { comp: string; ok: boolean; err: string | null; imputee: boolean }[] = [];
+  const compErr = err ? err.split("#")[0] : null;
+  const versPrerequis = !!(compErr && compErr !== it.comp && ref && ref.comps[it.comp]?.prerequis.includes(compErr));
+  out.push({ comp: it.comp, ok, err: versPrerequis ? null : err, imputee: false });
+  if (versPrerequis) out.push({ comp: compErr!, ok: false, err, imputee: true });
+  return out;
 }
 
 // ── Référentiel ─────────────────────────────────────────────
@@ -1372,7 +1386,7 @@ function mxTriCibles(ref: MxRef, ids: string[]): string[] {
 
 function mxDiagAutorise(ref: MxRef, c: string): boolean {
   const comp = ref.comps[c];
-  return !!comp && comp.diag_autorise !== false && !comp.hors_programme && !MX_HORS_DIAG.includes(c);
+  return !!comp && comp.diag_autorise !== false && comp.diag !== false && !comp.hors_programme && !MX_HORS_DIAG.includes(c);
 }
 
 // Cibles d'un ensemble de domaines : les compétences de 3e (avec items). Un domaine sans compétence
@@ -1565,20 +1579,25 @@ function mxProchaineQuestion(etat: MxEtatDiag, ref: MxRef, dejaVus: string[] = [
 }
 
 function mxEnregistrerReponse(etat: MxEtatDiag, ref: MxRef, itemId: string, reponse: unknown,
-  temps: number | null, date: string): { error: string } | { obs: MxObs; item: MxItem } {
+  temps: number | null, date: string): { error: string } | { obs: MxObs; item: MxItem; imputations: MxObs[] } {
   if (!etat.en_attente || etat.en_attente !== itemId) return { error: "Question inattendue (déjà répondue ou non posée)." };
   const it = ref.items[itemId];
   if (!it) return { error: "Item introuvable." };
   const { ok, err } = mxCorriger(it, reponse);
   const obs: MxObs = { item_id: it.id, comp: it.comp, ok, w: mxPoidsSucces(it),
     reponse: String(reponse ?? "").slice(0, 100), err, temps, date };
+  const imputations = mxImputer(ref, it, ok, err);
+  if (imputations.length > 1) obs.err = null; // l'erreur est portée par l'observation imputée
   etat.obs.push(obs);
+  for (const im of imputations.slice(1)) {
+    etat.obs.push({ item_id: it.id, comp: im.comp, ok: false, w: 1, reponse: obs.reponse, err: im.err, temps, date, imputee: true });
+  }
   etat.en_attente = null;
   etat.modules[etat.module].poses++;
   const { m, n } = mxEvalSession(etat, it.comp);
   const se = mxSeuils(etat, ref, it.comp);
   if (mxDecider(m, n, se.maxObs, se.minLac)) mxFermer(etat, ref, it.comp, false);
-  return { obs, item: it };
+  return { obs, item: it, imputations: etat.obs.slice(etat.obs.length - imputations.length) };
 }
 
 function mxProgression(etat: MxEtatDiag) {
@@ -1653,7 +1672,7 @@ function mxPlan4Semaines(ref: MxRef, mt: Record<string, MxMaitrise>, prios: stri
 }
 
 function mxFiabilite(ref: MxRef, st: Record<string, MxStatut>, obs: MxObs[]) {
-  const reelles = obs.filter((o) => !o.graine);
+  const reelles = obs.filter((o) => !o.graine && !o.imputee);
   const avecTemps = reelles.filter((o) => typeof o.temps === "number");
   const rapides = avecTemps.length ? avecTemps.filter((o) => (o.temps as number) < MX.TEMPS_SUSPECT_SEC).length / avecTemps.length : 0;
   let aretes = 0, inversions = 0;
@@ -1747,7 +1766,7 @@ function mxCalculerCarte(ref: MxRef, mt: Record<string, MxMaitrise>, opts: {
     eleve: { prenom: opts.eleve.prenom, niveau: opts.eleve.niveau },
     type: opts.type, date: opts.date,
     duree_min: opts.duree_min ?? null,
-    n_questions: opts.n_questions ?? obs.filter((o) => !o.graine).length,
+    n_questions: opts.n_questions ?? obs.filter((o) => !o.graine && !o.imputee).length,
     score_global, phrase_cle, domaines, competences,
     priorites: prios, point_faible: pf,
     plan_4_semaines: mxPlan4Semaines(ref, mt, prios),
@@ -1784,8 +1803,10 @@ type MxHist = { item_id: string; date: string; ok: boolean; contexte?: string };
 type MxExoChoisi = { item: MxItem; role: "reussite" | "travail" | "revision" | "entretien" };
 
 function mxChoisirItemTrain(ref: MxRef, comp: string, lvlCible: number, dernier: Record<string, MxHist>,
-  date: string, code: string, pris: Set<string>): MxItem | null {
-  let cands = (ref.itemsParComp[comp] || []).filter((it) => !pris.has(it.id));
+  date: string, code: string, pris: Set<string>, strict = true): MxItem | null {
+  // strict : jamais un item vu il y a moins de 3 jours (banque peu profonde → on complète ailleurs d'abord)
+  let cands = (ref.itemsParComp[comp] || []).filter((it) => !pris.has(it.id) &&
+    (!strict || !dernier[it.id] || mxJoursEntre(dernier[it.id].date, date) >= 3));
   const pourTrain = cands.filter((it) => !it.usage || it.usage.includes("train"));
   if (pourTrain.length) cands = pourTrain;
   if (!cands.length) return null;
@@ -1795,7 +1816,7 @@ function mxChoisirItemTrain(ref: MxRef, comp: string, lvlCible: number, dernier:
     if (h) {
       const j = mxJoursEntre(h.date, date);
       // déjà vu : plus c'est ancien, mieux c'est ; réussi récemment = inutile ; < 3 jours = dernier recours
-      s += 50 - Math.min(j, 45) + (h.ok && j < 14 ? 40 : 0) + (j < 3 ? 200 : 0);
+      s += 50 - Math.min(j, 45) + (h.ok && j < 14 ? 40 : 0);
     }
     return s;
   };
@@ -1880,9 +1901,11 @@ function mxChoisirEntrainement(ref: MxRef, mt: Record<string, MxMaitrise>, opts:
   }
   // Compléments si la banque manque ou si rien n'est à travailler : révisions dues, puis entretien des acquis
   // (les plus anciens d'abord), puis la zone elle-même.
-  const secours = [...focus, ...dues.slice(1),
+  // (jamais une compétence non acquise dont un prérequis proche est encore en lacune)
+  const secours = [...new Set([...focus, ...dues.slice(1),
     ...acquis.slice().sort((a, b) => (String(mt[a].derniere_obs) < String(mt[b].derniere_obs) ? -1 : 1)),
-    ...(opts.zone || []).filter(aItems)];
+    ...pretes, ...(opts.zone || []).filter(aItems)])]
+    .filter((c) => st(c) === "acquis" || preteSouple(c));
   for (let tour = 0; tour < 3 && exos.length < MX.EXOS_PAR_JOUR; tour++) {
     for (const c of secours) {
       if (exos.length >= MX.EXOS_PAR_JOUR) break;
@@ -1891,7 +1914,21 @@ function mxChoisirEntrainement(ref: MxRef, mt: Record<string, MxMaitrise>, opts:
     }
   }
   const zone_maitrisee = !!opts.zone && opts.zone.length > 0 && opts.zone.every((c) => st(c) === "acquis");
-  return { exos: exos.slice(0, MX.EXOS_PAR_JOUR), focus, zone_maitrisee };
+  // Banque trop peu profonde pour 5 items distincts sans reprise < 3 jours : on n'invente rien, on signale
+  // (à remonter au concepteur d'items — viser ≥ 15 items « train » par compétence).
+  const banque_insuffisante = exos.length < MX.EXOS_PAR_JOUR;
+  if (banque_insuffisante) {
+    // Derniers recours (jamais 0 exo) : entretien des points forts hors zone, puis reprise d'items de la zone.
+    const horsZone = ref.ordre.filter((id) => !dans(id) && aItems(id) && st(id) === "acquis");
+    const recours: [string, boolean][] = [...horsZone.map((c) => [c, true] as [string, boolean]),
+      ...secours.map((c) => [c, false] as [string, boolean])];
+    for (const [c, strict] of recours) {
+      if (exos.length >= MX.EXOS_PAR_JOUR) break;
+      const it = mxChoisirItemTrain(ref, c, mxLvlCible(mt[c]), dernier, opts.date, opts.code, pris, strict);
+      if (it) { pris.add(it.id); exos.push({ item: it, role: st(c) === "acquis" ? "entretien" : "travail" }); }
+    }
+  }
+  return { exos: exos.slice(0, MX.EXOS_PAR_JOUR), focus, zone_maitrisee, banque_insuffisante };
 }
 
 // ── Droits d'accès ──────────────────────────────────────────
@@ -2008,11 +2045,12 @@ async function mxSauverMaitrise(code: string, m: MxMaitrise) {
 
 // Applique UNE réponse à la maîtrise globale + journalise dans reponses_items.
 async function mxAppliquerReponse(code: string, comp: string, itemId: string, ok: boolean, w: number,
-  err: string | null, extra: { contexte: string; diagnostic_id?: string | null; resultat?: string; reponse?: string; temps?: number | null }) {
+  err: string | null, extra: { contexte: string; diagnostic_id?: string | null; resultat?: string; reponse?: string; temps?: number | null; imputee?: boolean }) {
   const date = todayParis();
   const { data: row } = await adminClient.from("maitrise").select("*").eq("code", code).eq("comp", comp).maybeSingle();
   const m = mxMajMaitrise(row ? mxDepuisLigne(row as Record<string, unknown>) : null, comp, ok, w, err, date);
   await mxSauverMaitrise(code, m);
+  if (extra.imputee) return; // observation imputée à un prérequis : maîtrise seulement, pas de ligne de journal
   await adminClient.from("reponses_items").insert({
     code, item_id: itemId, comp, contexte: extra.contexte, diagnostic_id: extra.diagnostic_id || null,
     ok, resultat: extra.resultat || (ok ? "EASY" : "HARD"), reponse: (extra.reponse || "").slice(0, 200),
@@ -2031,10 +2069,13 @@ async function mxMajDepuisScore(code: string, s: Record<string, unknown>, contex
   const w = it ? mxPoidsSucces(it) : mxPoidsSucces({ type: String(s.type || ""), options: new Array(nOpt).fill("") });
   const rep = String(s.reponse ?? s.wrongOpt ?? "");
   const err = !ok ? (it && rep ? mxErreurType(it, rep) : (s.err_id ? String(s.err_id) : null)) : null;
-  await mxAppliquerReponse(code, comp, it?.id || String(s.item_id || ""), ok, w, err, {
-    contexte, resultat: String(s.resultat || ""), reponse: rep,
-    temps: parseInt(String(s.time ?? s.temps ?? "")) || null,
-  });
+  const imps = mxImputer(ref, it || { id: "", comp, q: "", a: "" }, ok, err);
+  for (const im of imps) {
+    await mxAppliquerReponse(code, im.comp, it?.id || String(s.item_id || ""), im.ok, im.imputee ? 1 : w, im.err, {
+      contexte, resultat: String(s.resultat || ""), reponse: rep, imputee: im.imputee,
+      temps: parseInt(String(s.time ?? s.temps ?? "")) || null,
+    });
+  }
 }
 
 async function mxProfil(p: Record<string, unknown>) {
@@ -2084,7 +2125,7 @@ async function mxFinaliserDiagnostic(diag: Record<string, unknown>, etat: MxEtat
   const carte = mxCalculerCarte(ref, mt, {
     type: etat.type, eleve: { prenom: String(profile.prenom || ""), niveau: String(profile.niveau || "3EME") },
     date: todayParis(), duree_min: Math.max(1, Math.round((Date.now() - debut) / 60000)),
-    n_questions: etat.obs.filter((o) => !o.graine).length, obs: etat.obs,
+    n_questions: etat.obs.filter((o) => !o.graine && !o.imputee).length, obs: etat.obs,
   });
   if (etat.type === "mensuel") {
     const prec = await mxDernierDiag(code, ["complet", "mensuel"]);
@@ -2166,16 +2207,18 @@ async function answerDiagnostic(p: Record<string, unknown>) {
   const temps = p.temps !== undefined && p.temps !== null ? Number(p.temps) : null;
   const res = mxEnregistrerReponse(etat, ref, String(p.item_id || ""), p.reponse, temps, todayParis());
   if ("error" in res) return { status: "error", message: res.error };
-  const { obs, item } = res;
-  await mxAppliquerReponse(code, obs.comp, obs.item_id, obs.ok, obs.w, obs.err || null, {
-    contexte: "diag", diagnostic_id: String(diag.id), reponse: obs.reponse, temps,
-  });
+  const { item } = res;
+  for (const o of res.imputations) {
+    await mxAppliquerReponse(code, o.comp, o.item_id, o.ok, o.w, o.err || null, {
+      contexte: "diag", diagnostic_id: String(diag.id), reponse: o.reponse, temps, imputee: !!o.imputee,
+    });
+  }
   const dejaVus = await mxDejaVus(code);
   const q = mxProchaineQuestion(etat, ref, dejaVus);
   let carte: Record<string, unknown> | null = null;
   if ("fin" in q) carte = await mxFinaliserDiagnostic(diag as Record<string, unknown>, etat, ref, profile);
   await adminClient.from("diagnostics").update({
-    etat_json: etat, n_questions: etat.obs.filter((o) => !o.graine).length,
+    etat_json: etat, n_questions: etat.obs.filter((o) => !o.graine && !o.imputee).length,
     ...(carte ? { statut: "termine", carte_json: carte, finished_at: new Date().toISOString() } : {}),
   }).eq("id", diag.id);
   void item;
@@ -2195,7 +2238,7 @@ async function answerDiagnostic(p: Record<string, unknown>) {
 
 // Récapitulatif montré à la FIN du diagnostic (pendant : aucune correction).
 function mxRecapCorrections(etat: MxEtatDiag, ref: MxRef) {
-  return etat.obs.filter((o) => !o.graine).map((o) => {
+  return etat.obs.filter((o) => !o.graine && !o.imputee).map((o) => {
     const it = ref.items[o.item_id];
     const def = o.err ? (ref.comps[o.comp]?.erreurs || []).find((e) => e.id === o.err) : null;
     return { item_id: o.item_id, comp: o.comp, q: it?.q || "", reponse_eleve: o.reponse || "", ok: o.ok,
@@ -2409,6 +2452,7 @@ async function getTraining(p: Record<string, unknown>) {
   if (!sel.exos.length) return { status: "error", message: "Banque vide pour cette zone — réassort nécessaire." };
   const boost = {
     generatedBy: "moteur_v2", date: today, focus: sel.focus, zone, zone_maitrisee: sel.zone_maitrisee,
+    banque_insuffisante: sel.banque_insuffisante,
     exos: sel.exos.map((e, i) => ({
       ...e.item, item_id: e.item.id, comp: e.item.comp, role: e.role, boostIdx: i, num: i + 1,
       type: mxTypeItem(e.item), categorie: (ref.comps[e.item.comp].chapitres_legacy || [])[0] || e.item.comp,
@@ -3111,7 +3155,8 @@ const ACTIONS: Record<string, (p: Record<string, unknown>) => Promise<unknown>> 
   get_admin_overview: getAdminOverview,
   publish_admin_boost: publishAdminBoost,
   publish_admin_chapter: publishAdminChapter,
-  stripe_webhook: stripeWebhook,
+  // stripe_webhook retiré du dispatch (24/09) : accordait le premium sans signature.
+  // Seul le chemin signé (checkout.session.completed, plus bas) appelle stripeWebhook.
   unsubscribe: unsubscribeEmail,
   report_exo: reportExo,
   send_contact: sendContact,

@@ -34,6 +34,7 @@ for f in sorted(glob.glob(os.path.join(HERE, "**", "*.json"), recursive=True)):
             if it["type"] in ("qcm", "vf") and w not in it["options"]: errs.append(f"{name}:{iid} clé err hors options {w}")
         if it["type"] in ("qcm", "vf") and it["a"] not in it["options"]: errs.append(f"{name}:{iid} a ∉ options")
 for f in glob.glob(os.path.join(HERE, "..", "*.json")):
+    if f.endswith(".review.json"): continue
     for it in json.load(open(f, encoding="utf-8")):
         if it.get("id") in ids: errs.append(f"id {it['id']} en collision avec {os.path.basename(f)}")
 print(f"{n} items, {n_err} rattachements err, {len(ids)} ids uniques")

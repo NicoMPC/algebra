@@ -36,7 +36,7 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 
 ---
 
-## Supabase PostgreSQL — Schéma actif (14 tables)
+## Supabase PostgreSQL — Schéma actif (14 tables + 10 tables refonte diagnostic 3e)
 
 > **Source de vérité : `supabase/schema.sql`** — en cas de doute sur les colonnes exactes, lire le SQL.
 > Le tableau ci-dessous est un résumé humain, il peut diverger. Si contradiction → schema.sql a raison.
@@ -58,6 +58,32 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 | **insights** | Insights | `code`, `type`, `message`, `source`, `ref` | code |
 | **rapports** | Rapports | `date`, `contenu` | — |
 | **contact** | Contact | `email`, `nom`, `message` | — |
+
+
+### Refonte « Diagnostic 3e » — tables ajoutées le 24/09/2026 (migration `20260924_diagnostic_3e.sql`)
+
+> Spec du moteur : [docs/specs/20-moteur.md](specs/20-moteur.md). Migration additive (aucun DROP).
+
+| Table | Rôle | Colonnes clés | Écrit par |
+|---|---|---|---|
+| **competences** | Référentiel 6e→3e (graphe de prérequis) | `id` (PK, `NC.FRAC.03`), `domaine`, `niveau_origine`, `prerequis[]`, `poids_brevet` 1-3, `erreurs` (jsonb), `diag_autorise` (false = hors programme), `actif` | `import_referentiel_banque.py` |
+| **items** | Banque atomique (1 question = 1 compétence) | `id` (PK), `comp` (FK), `type`, `lvl`, `usage[]` (diag/train), `item_json` (item complet dont `err`, `alt`), `parapluie_id`/`num`/`source`, `depend_question_precedente`, `actif` | import |
+| **maitrise** | Élève × compétence (contrat §4) | PK (`code`,`comp`), `maitrise` 0-1, `alpha`/`beta`, `n_obs`, `n_succes`, `derniere_obs`, `erreurs_vues` (jsonb), `boite`, `prochaine_revision` | API (chaque réponse) |
+| **diagnostics** | Sessions express / complet / mensuel | `id` uuid, `code`, `type`, `statut` (en_cours/termine/abandonne), `etat_json` (état moteur, reprise), `carte_json` (objet Carte §5), `n_questions` | API |
+| **reponses_items** | Journal de chaque réponse item | `code`, `item_id`, `comp`, `contexte` (diag/train/legacy), `ok`, `reponse`, `err_id`, `temps_sec`, `date` | API |
+| **achats** | Achats Stripe → droits | `code` (via `client_reference_id`), `email`, `produit` (diagnostic_complet/programme_brevet), `offre` (metadata brut), `montant_cents`, `stripe_session_id` (unique), `rembourse_at` | webhook Stripe |
+| **funnel_events** | Funnel minimal (13 mois, sans IP/UA/email) | `code`, `event`, `meta` | API |
+| **bilan_partages** | Lien parent `/b/<token>` | `token` (PK, 192 bits), `code`, `diagnostic_id`, `expires_at` (+30 j), `revoked_at`, `vues` | API |
+| **consentements** | Cases cochées avant paiement | `code`, `produit`, `texte_version`, `texte_hash`, `cases[]` | API (`log_consent`) |
+| **email_logs** | (existait hors schema.sql) Log Resend + désinscriptions | `email`, `prenom`, `type`, `statut`, `details`, `created_at` + **`categorie`** (T/P/M), **`code`** | API emails |
+
+Colonnes ajoutées à **profiles** : `email_eleve`, `consentement_parent_at`, `optin_marketing` (+ `optin_marketing_at`), `date_brevet_blanc` ; et documentées (déjà utilisées par le code) : `premium_niveau`, `mode`.
+
+Droits (calculés, jamais stockés côté client) : `achats` + `profiles.premium` legacy → `free` / `diagnostic_complet` / `programme_brevet` (`mxDroits` dans index.ts).
+
+RLS : `items` admin uniquement (contient les réponses) ; `competences` lecture authentifiée ; `maitrise`, `diagnostics`, `reponses_items`, `achats`, `bilan_partages` lecture propre (`code = my_code()`) ; `funnel_events`, `consentements`, `email_logs` admin. Aucune écriture directe élève : tout passe par l'Edge Function (service_role).
+
+Purge des anciens comptes (décision 24/09) : `supabase/purge_anciens_comptes.sql` (backup d'abord, épargne les admins / KN6CFG). **Ne pas exécuter sans Nicolas.**
 
 ### RLS (Row Level Security)
 - **Données élève** (profiles, scores, progress, daily_boosts, brevet_results) : `code = my_code() OR is_admin()`

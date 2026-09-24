@@ -71,11 +71,12 @@ def main(argv):
                 warns.append(f"{p}: id ne commence pas par {comp}-")
             per_comp[comp].append(it)
 
-            err_ids = {e["id"] for e in ref[comp].get("erreurs", [])}
+            # err autorisée sur la compétence ou un prérequis direct (erreur de prérequis = piste de cause racine)
+            err_ids = {e["id"] for cc in [comp] + ref[comp].get("prerequis", []) for e in ref.get(cc, {}).get("erreurs", [])}
             err = it.get("err") or {}
             for k, v in err.items():
                 if v not in err_ids:
-                    errs.append(f"{p}: erreur {v!r} absente de {comp} (clé {k!r})")
+                    errs.append(f"{p}: erreur {v!r} absente de {comp} et de ses prérequis directs (clé {k!r})")
 
             typ = it.get("type", "qcm")
             a = it.get("a")
@@ -124,7 +125,7 @@ def main(argv):
 
     for comp, its in sorted(per_comp.items()):
         nd = sum("diag" in (i.get("usage") or []) for i in its)
-        if nd < 3:
+        if nd < 3 and ref[comp].get("diag", True):
             errs.append(f"{comp}: {nd} item(s) diag (attendu ≥ 3)")
         covered = {v for i in its for v in (i.get("err") or {}).values()}
         if len(ref[comp].get("erreurs", [])) >= 2 and len(covered) < 2:

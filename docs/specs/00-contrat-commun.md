@@ -189,3 +189,23 @@ une section **« ❓ Questions pour Nicolas »** (courtes, avec la reco par déf
   DF graphes sont décrits en texte en attendant un type de figure « courbe/barres ».
 - Compétences hors programme (poids 1 : `NC.RAC.03/04`, `EG.REP.02`, quartiles…) :
   `usage: ["train"]` uniquement, jamais en diagnostic (reco didacticien adoptée).
+- Remontés par la relecture DF/GM : (a) un `alt` « 25% » fait accepter « 0,25 »/« 1/4 »
+  dans une case « ___ % » → comparer sans conversion % quand l'énoncé porte déjà le « % » ;
+  (b) `_normFill` doit retirer un préfixe `x=` / `a=` ; (c) normaliser la saisie avant
+  lookup dans les clés `err` ; (d) la vue rétro `_renderRetroExo` n'affiche pas les `table`.
+- Relecture EG/AP (24/09) : **calculatrice autorisée** pendant le diagnostic (items trigo) —
+  à écrire dans la consigne d'accueil du diag. Scripts Scratch : ligne « Fin répéter »
+  explicite (convention mise à jour). Moins Unicode `−` et préfixe `x=` gérés dans
+  `_normFill`/`_toNum` (fait, test : `node supabase/tests/fill_match_node.js`).
+
+## 9. Évolutions du format (24/09)
+
+- `err` peut pointer vers une erreur d'un **prérequis direct** de `comp` (ex. oublier la
+  racine dans un exo de réciproque de Pythagore = erreur de `EG.PYTH.01`). Le moteur
+  impute alors l'observation d'erreur au prérequis : c'est une piste de cause racine.
+- Compétence `"diag": false` dans le référentiel (hors programme : `NC.RAC.03/04`,
+  `EG.REP.02`) → jamais servie en diagnostic, items `usage: ["train"]`.
+- `EG.TRANS.02#vecteur_inverse` fusionnée dans `#soustrait_vecteur` ; nouvelle erreur
+  `EG.TRANS.02#ajoute_coordonnees_image`.
+- Scripts utilitaires : `data/banque_3eme/check_banque.py`, `apply_reviews.py`,
+  `_legacy/check_legacy.py`, `data/referentiel_3eme/check_referentiel.py`.

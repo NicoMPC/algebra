@@ -116,9 +116,8 @@ function simulerDiag(R: any, e: Eleve, type: string, mt: Record<string, any>, gr
     const { reponse, temps } = repondre(e, q.item);
     const res = M.mxEnregistrerReponse(etat, R.ref, q.item.id, reponse, temps, DATE0);
     assert(!("error" in res), "réponse refusée : " + JSON.stringify(res));
-    const o = res.obs;
-    mt[o.comp] = M.mxMajMaitrise(mt[o.comp], o.comp, o.ok, o.w, o.err, DATE0);
-    dejaVus.push(o.item_id);
+    for (const o of res.imputations) mt[o.comp] = M.mxMajMaitrise(mt[o.comp], o.comp, o.ok, o.w, o.err, DATE0);
+    dejaVus.push(res.obs.item_id);
     poses++;
   }
   const carte = M.mxCalculerCarte(R.ref, mt, { type, eleve: { prenom: e.nom, niveau: "3EME" }, date: DATE0, obs: etat.obs });
@@ -137,7 +136,9 @@ function simulerEntrainement(R: any, e: Eleve, mt: Record<string, any>, zone: st
       const { reponse } = repondre(e, x.item);
       const { ok } = M.mxCorriger(x.item, reponse);
       const err = ok ? null : M.mxErreurType(x.item, reponse);
-      mt[x.item.comp] = M.mxMajMaitrise(mt[x.item.comp], x.item.comp, ok, M.mxPoidsSucces(x.item), err, date);
+      for (const im of M.mxImputer(R.ref, x.item, ok, err)) {
+        mt[im.comp] = M.mxMajMaitrise(mt[im.comp], im.comp, im.ok, im.imputee ? 1 : M.mxPoidsSucces(x.item), im.err, date);
+      }
       historique.push({ item_id: x.item.id, date, ok, contexte: "train" });
       // Apprentissage simulé : progrès seulement si les prérequis directs sont là.
       const c = R.ref.comps[x.item.comp];
@@ -174,20 +175,22 @@ function invariantsCarte(R: any, nom: string, carte: any) {
   });
   assert(!/\bprof\b|Nicolas|prépare/i.test(carte.message_parent + " " + carte.phrase_cle), `${nom} : texte laissant croire à une intervention humaine`);
 }
+const manques = { n: 0 };
 function invariantsEntrainement(R: any, nom: string, journal: any[], zone: string[] | null) {
   const vuLe: Record<string, string> = {};
   journal.forEach((j: any, idx: number) => {
-    assert(j.sel.exos.length === 5, `${nom} J${idx + 1} : ${j.sel.exos.length} exos`);
-    assert(new Set(j.sel.exos.map((x: any) => x.item.id)).size === 5, `${nom} J${idx + 1} : doublon dans la journée`);
+    assert(j.sel.exos.length === 5 || (j.sel.banque_insuffisante && j.sel.exos.length >= 1), `${nom} J${idx + 1} : ${j.sel.exos.length} exos`);
+    if (j.sel.banque_insuffisante) manques.n++;
+    assert(new Set(j.sel.exos.map((x: any) => x.item.id)).size === j.sel.exos.length, `${nom} J${idx + 1} : doublon dans la journée`);
     for (const x of j.sel.exos) {
       assert(!x.item.depend_question_precedente, `${nom} : sous-question dépendante servie seule`);
-      if (zone) assert(zone.includes(x.item.comp), `${nom} : ${x.item.comp} hors zone gratuite`);
+      if (zone) assert(zone.includes(x.item.comp) || (j.sel.banque_insuffisante && x.role === "entretien"), `${nom} : ${x.item.comp} hors zone gratuite`);
       if (x.role === "travail") {
         const bloque = R.ref.anc2[x.item.comp].some((a: string) => M.mxStatut(j.mtAvant[a]) === "lacune" && (!zone || zone.includes(a)));
         assert(!bloque, `${nom} J${idx + 1} : travail sur ${x.item.comp} alors qu'un prérequis proche est en lacune`);
       }
       const prev = vuLe[x.item.id];
-      assert(!prev || M.mxJoursEntre(prev, j.date) >= 3, `${nom} : item ${x.item.id} resservi trop tôt (${prev} → ${j.date})`);
+      assert(!prev || M.mxJoursEntre(prev, j.date) >= 3 || j.sel.banque_insuffisante, `${nom} : item ${x.item.id} resservi trop tôt (${prev} → ${j.date})`);
       vuLe[x.item.id] = j.date;
     }
   });
@@ -233,6 +236,15 @@ Deno.test("unitaire : correction, poids QCM, erreurs types, statut, droits, stre
   const c = M.mxCorriger(it, "2/7");
   assert(!c.ok && c.err === "NC.FRAC.03#somme_directe", "erreur type reconnue");
   assert(!M.mxCorriger(it, "").ok, "« je ne sais pas » = échec");
+  // cas de référence de supabase/tests/fill_match_node.js (app.html) : même verdict côté serveur
+  const T: [string, string, boolean][] = [["−5","-5",true],["x=4","4",true],["a=3","3",true],["y=2x+3","y=2x+3",true],["x=5","4",false],
+    ["4x+3","4x+12",false],["8×10^5","8×10^-5",false],["4x+12","4x+12",true],["0,7","7/10",true],["70%","0.7",true],
+    ["-3","-3",true],["2.50","2,5",true],[" 12 ","12",true],["12cm","12",true],["12 cm²","12",true],["12x","12",false],["3a","3",false],[".5","0,5",true]];
+  for (const [u, cc, exp] of T) assert(M.mxEgal(u, cc) === exp, `fill_match : ${u} vs ${cc} attendu ${exp}`);
+  // erreur d'un prérequis direct → imputée au prérequis (contrat §9)
+  const imp = M.mxImputer(MINI.ref, { id: "i", comp: "NC.REL.02", q: "", a: "" }, false, "NC.REL.01#signe");
+  assert(imp.length === 2 && imp[1].comp === "NC.REL.01" && imp[1].err === "NC.REL.01#signe" && imp[0].err === null, "imputation au prérequis direct");
+  assert(M.mxImputer(MINI.ref, { id: "i", comp: "NC.LIT.03", q: "", a: "" }, false, "NC.REL.01#signe").length === 1, "pas d'imputation hors prérequis direct");
   // comparaison stricte (correctif « 4x+3 » d'app.html), alt, unités, erreurs types brutes
   assert(!M.mxEgal("4x+3", "4x+12") && !M.mxEgal("4x+3", "4"), "pas de parseFloat sur une entrée libre");
   assert(M.mxEgal("12 cm", "12") && M.mxEgal("2,5", "2.5") && M.mxEgal("0,25", "25%") && M.mxEgal("1/4", "0.25"), "équivalences numériques");
@@ -319,6 +331,7 @@ Deno.test("mini-référentiel : 4 profils × 20 graines", () => {
     const l1 = Object.keys(r.mtFin).filter((c) => M.mxStatut(r.mtFin[c]) === "lacune").length;
     return l1 < l0 || l0 === 0;
   }), 0.9);
+  assert(manques.n === 0, `banque synthétique : ${manques.n} séances incomplètes`);
   const moyQ = (l: any[], k: string) => Math.round(l.reduce((s, r) => s + r[k].poses, 0) / l.length);
   console.log(`  questions moyennes express/complet : relatifs ${moyQ(rel, "exp")}/${moyQ(rel, "comp")} · bon ${moyQ(bon, "exp")}/${moyQ(bon, "comp")} · hasard ${moyQ(has, "exp")}/${moyQ(has, "comp")} · moyen ${moyQ(moy, "exp")}/${moyQ(moy, "comp")}`);
 });
@@ -395,4 +408,30 @@ Deno.test("export des cartes exemples (fixtures)", () => {
   const r = simulerDiag(REEL, eleve(C, "Léa", () => 0.9, sp, 78), "complet", mt, exp.etat.obs);
   Deno.writeTextFileSync(new URL("fixtures/carte_exemple_complet.json", ICI), JSON.stringify(r.carte, null, 1) + "\n");
   Deno.writeTextFileSync(new URL("fixtures/carte_exemple_express.json", ICI), JSON.stringify(exp.carte, null, 1) + "\n");
+});
+
+// Banque réelle (data/banque_3eme, items diag+train + legacy taggés) : le moteur tourne sur les vrais items,
+// les vraies réponses et les vraies clés `err`. Ignoré si la banque n'est pas présente.
+Deno.test("banque réelle : diagnostic + 30 jours sur les vrais items", () => {
+  const dir = new URL("../../data/banque_3eme/", ICI);
+  const fichiers: URL[] = [];
+  try {
+    for (const e of Deno.readDirSync(dir)) if (/^(NC|DF|GM|EG|AP)\.[A-Z]{2,5}\.json$/.test(e.name)) fichiers.push(new URL(e.name, dir));
+    for (const e of Deno.readDirSync(new URL("_legacy/", dir))) if (e.name.endsWith(".json") && !e.name.includes(".review")) fichiers.push(new URL("_legacy/" + e.name, dir));
+  } catch { console.log("  (banque absente, test ignoré)"); return; }
+  const items = fichiers.flatMap((f) => JSON.parse(Deno.readTextFileSync(f)));
+  const R = { comps: REEL.comps, ref: M.mxIndexer(REEL.comps, items) };
+  // chaque bonne réponse de la banque est reconnue par le correcteur serveur
+  const nonReconnues = items.filter((it: any) => !M.mxCorriger(it, it.a).ok).map((it: any) => it.id);
+  assert(nonReconnues.length === 0, "réponses attendues non reconnues : " + nonReconnues.slice(0, 5).join(", "));
+  const sp: Record<string, number> = { "NC.REL.02": 0.1 };
+  for (const d of R.ref.desc2["NC.REL.02"]) sp[d] = 0.15;
+  manques.n = 0;
+  const rel = campagne(R, (s) => eleve(R.comps, "Rel", () => 0.92, sp, 12000 + s), 5, { gratuit: true });
+  const has = campagne(R, (s) => eleve(R.comps, "Has", () => 0, {}, 13000 + s, true), 5);
+  console.log(`  ${items.length} items · relatifs : priorités ${rel[0].comp.carte.priorites.slice(0, 3).join(", ")} · erreurs types nommées : ${rel[0].comp.carte.competences.reduce((n: number, c: any) => n + c.erreurs.length, 0)}`);
+  taux("relatifs (vrais items) : NC.REL.02 dans les 3 premières priorités", rel.map((r) => r.comp.carte.priorites.slice(0, 3).includes("NC.REL.02")), 0.8);
+  taux("relatifs (vrais items) : erreur type nommée avec exemple", rel.map((r) => r.comp.carte.competences.some((c: any) => c.erreurs.some((x: any) => x.exemple && x.libelle_parent))), 0.8);
+  console.log(`  séances < 5 exos faute d'items (banque trop peu profonde) : ${manques.n}`);
+  taux("hasard (vrais items) : fiabilité « faible »", has.map((r) => r.comp.carte.fiabilite.niveau === "faible"), 1);
 });
