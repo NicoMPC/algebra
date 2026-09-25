@@ -39,6 +39,14 @@
   0 erreur console, jeton en localStorage (plus de hash), email parent dans l'outbox.
 - ⚠️ Constat : la séance du jour ne sert que 1-2 exos (banque d'entraînement trop mince) → complément banque = priorité.
 
+## En cours (25/09 soir) — 2e complément banque
+
+- Objectif : ≥ 10 items « train » pour chacune des 118 compétences diagnosticables (sinon la séance ne sert
+  que 2 exos quand le point faible tombe hors des 30 compétences du 1er complément — constaté en e2e 2 fois sur 3).
+- 229 items (ids `-uNN`) : cibles `data/banque_3eme/cibles_complement2.json`, suivi `COMPLEMENT2_NC_DF.md`
+  et `COMPLEMENT2_GM_EG_AP.md`. Ensuite : relecture (`*.train-review.json` → `apply_reviews.py --train`),
+  puis e2e du parcours visiteur ×3 (la séance doit servir 5 exos).
+
 ## ⏭️ Reste à faire (décidé par Nicolas le 25/09 — créneau agenda sam. 26/09 9h-12h)
 
 1. **Complément banque d'entraînement** (~300 exos, 15/compétence sur les 30 causes racines, relecture
