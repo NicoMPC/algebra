@@ -1371,7 +1371,7 @@ function mxNorm(s: unknown): string {
   let v = String(s ?? "").replace(/\$/g, "").replace(/\{,\}/g, ",").replace(/\\,/g, "").replace(/\s+/g, "")
     .replace(/,/g, ".").toLowerCase().trim();
   // moins Unicode (clavier iOS, copier-coller) → « - » ; préfixe « x= » / « a= » retiré (aligné app.html)
-  v = v.replace(/[\u2212\u2013]/g, "-").replace(/^[a-z]=/, "");
+  v = v.replace(/[\u2212\u2013]/g, "-").replace(/^[a-z]=/, "").replace(/^\+/, "");
   v = v.replace(/\\d?frac\{([^}]*)\}\{([^}]*)\}/g, "$1/$2");
   v = v.replace(/\\times/g, "×").replace(/\\cdot/g, "·").replace(/\\div/g, "÷");
   v = v.replace(/\\text\{([^}]*)\}/g, "$1").replace(/\\(left|right|displaystyle|,|;|!|quad)/g, "");

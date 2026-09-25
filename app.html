@@ -3115,7 +3115,13 @@ async function shareVia(canal) {
     if (canal === 'natif') { await navigator.share({ title: 'Le bilan maths de ' + S.prof.name, text: msg.replace(sh.url, '').trim(), url: sh.url }); }
     else if (canal === 'whatsapp') { window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank'); }
     else if (canal === 'sms') { location.href = (/iPhone|iPad|iPod/.test(navigator.userAgent) ? 'sms:&body=' : 'sms:?&body=') + encodeURIComponent(msg); }
-    else if (canal === 'email') { location.href = 'mailto:' + encodeURIComponent(_creds().email || '') + '?subject=' + encodeURIComponent('Ma carte de maths') + '&body=' + encodeURIComponent(msg); }
+    else if (canal === 'email') {
+      // Envoi par Matheux à l'email du parent (compte) ; repli mailto si l'API refuse (plafond 3/24 h, réseau)
+      var r = null; try { r = await _api('send_share_email', {}); } catch(e) {}
+      if (r && r.status === 'success') { closeSheet(); showT(r.deja ? 'Déjà envoyé aujourd\'hui ✓ Ton parent l\'a dans sa boîte mail' : 'Envoyé ✓ Ton parent va recevoir ta carte par mail', 3500, '📨'); return; }
+      if (r && r.plafond) { showT(r.message, 3500, '⏳'); return; }
+      location.href = 'mailto:' + encodeURIComponent(_creds().email || '') + '?subject=' + encodeURIComponent('Ma carte de maths') + '&body=' + encodeURIComponent(msg);
+    }
     else if (canal === 'copier') { await navigator.clipboard.writeText(sh.url); showT('Lien copié ✓', 2000, '📋'); return; }
   } catch(e) { ok = false; }
   if (ok) { closeSheet(); showT('Envoyé ✓ Tes parents vont voir ta carte', 3000, '📨'); }

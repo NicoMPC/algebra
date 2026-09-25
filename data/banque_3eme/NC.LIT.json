@@ -928,25 +928,25 @@
   {
     "id": "NC.LIT.01-t04",
     "comp": "NC.LIT.01",
-    "q": "Nina a $3$ ans de plus que son frère. Nina a $n$ ans. Quel est l'âge de son frère ?",
-    "a": "$n - 3$",
+    "q": "Au cinéma, une place à tarif réduit coûte $3$ € de moins qu'une place plein tarif. La place plein tarif coûte $p$ euros. Combien coûte, en euros, une place à tarif réduit ?",
+    "a": "$p - 3$",
     "type": "qcm",
     "options": [
-      "$n + 3$",
-      "$n - 3$",
-      "$3 - n$"
+      "$p + 3$",
+      "$p - 3$",
+      "$3 - p$"
     ],
     "err": {
-      "$n + 3$": "NC.LIT.01#de_moins_plus",
-      "$3 - n$": "NC.LIT.01#ordre_inverse"
+      "$p + 3$": "NC.LIT.01#de_moins_plus",
+      "$3 - p$": "NC.LIT.01#ordre_inverse"
     },
     "steps": [
-      "Qui est le plus âgé des deux ? L'âge du frère est-il plus grand ou plus petit que $n$ ?",
-      "Teste avec $n = 14$ : quel âge a le frère ?"
+      "La place à tarif réduit est-elle plus chère ou moins chère que la place plein tarif ?",
+      "Teste avec $p = 10$ : combien coûte la place réduite ? Quelle expression donne ce résultat ?"
     ],
     "f": "Tester l'expression avec un nombre simple et comparer au texte",
     "f_disabled": false,
-    "lvl": 2,
+    "lvl": 1,
     "usage": [
       "train"
     ],
@@ -1083,7 +1083,10 @@
     "usage": [
       "train"
     ],
-    "contexte": false
+    "contexte": false,
+    "alt": [
+      "-2x"
+    ]
   },
   {
     "id": "NC.LIT.06-t03",
@@ -1158,7 +1161,10 @@
     "usage": [
       "train"
     ],
-    "contexte": false
+    "contexte": false,
+    "alt": [
+      "12x"
+    ]
   },
   {
     "id": "NC.LIT.07-t02",
@@ -1210,7 +1216,9 @@
     ],
     "contexte": true,
     "alt": [
-      "9+6x"
+      "9+6x",
+      "6×x+9",
+      "9+6×x"
     ]
   },
   {
@@ -1264,7 +1272,9 @@
     ],
     "contexte": true,
     "alt": [
-      "-3+6x"
+      "-3+6x",
+      "6×x-3",
+      "-3+6×x"
     ]
   }
 ]
