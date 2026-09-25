@@ -247,7 +247,7 @@ Quand Nicolas veut ajouter un élève déjà connu (visio en cours) **sans lui f
 | AUG001 | Auguste | 1ERE | augustecapronm@icloud.com | auguste |
 | PR3CMB | Nicolas | 4EME | nico@nico.fr | niconcico |
 | 3M4ZAB | Charlie | 3EME | charlieboitel6@gmail.com | charlie |
-| 6OCZ3G | Léo | 4EME | leoiozzia2012@gmail.com | — |
+| _(voir base)_ | Léo | 4EME | _(mineur — jamais de donnée perso dans le dépôt)_ | — |
 | DUFE96 | Stev | 3EME | prosbonnet@gmail.com | — |
 | WXHBJH | Jérôme | 3EME | savoye.jer@gmail.com | — |
 | HMD493 | Admin | — | (admin) | — |
