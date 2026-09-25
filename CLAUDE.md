@@ -313,8 +313,8 @@ python3 create_test_profiles.py # Crée 4 profils test dans Supabase
 
 | Code | Prénom | Niveau | Email | Notes |
 |---|---|---|---|---|
-| KN6CFG | Nicolas | 3EME | nicolas.follezou@hotmail.fr | **Admin** (is_admin=true) |
-| QETKY4 | Leo | 4EME | leoiozzia2012@gmail.com | Premier vrai élève Supabase |
+| _(voir base)_ | Nicolas | 3EME | _(email admin, hors dépôt)_ | **Admin** (is_admin=true) |
+| _(voir base)_ | Léo | 4EME | _(mineur — jamais de donnée perso dans le dépôt)_ | Premier vrai élève Supabase |
 | TS1INE | Inès | 3EME | ines@test.matheux.fr | Test (20% score) |
 | TS2HUG | Hugo | 3EME | hugo@test.matheux.fr | Test (45% score) |
 | TS3JAD | Jade | 3EME | jade@test.matheux.fr | Test (75% score) |

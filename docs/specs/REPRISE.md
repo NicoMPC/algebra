@@ -39,6 +39,24 @@
   0 erreur console, jeton en localStorage (plus de hash), email parent dans l'outbox.
 - ⚠️ Constat : la séance du jour ne sert que 1-2 exos (banque d'entraînement trop mince) → complément banque = priorité.
 
+## ⏭️ Reste à faire (décidé par Nicolas le 25/09 — créneau agenda sam. 26/09 9h-12h)
+
+1. **Complément banque d'entraînement** (~300 exos, 15/compétence sur les 30 causes racines, relecture
+   indépendante, ~0,8 M tokens) — reporté faute de tokens. Aujourd'hui la séance ne sert que 1-2 exos.
+2. **Mise en ligne** :
+   - 3 Payment Links Stripe (19 / 49 / 30 €, `metadata.produit`, redirection `app.html?achat=<produit>`) → remplir `OFFRE` dans app.html
+   - `CRON_SECRET` (secrets Supabase + Vault `matheux_cron_secret`)
+   - remplacer les anciens emails J+1..J+14 (29,99 €)
+   - migrations 20260924 + 20260925, import référentiel/banque, purge anciens comptes (backup)
+   - `sw.js` (cache des HTML) avant bascule landing
+   - merge `feat/diagnostic-3e` → `main` sur décision explicite
+3. **RGPD dépôt public** : push des commits de retrait des données perso sur `main` et `root` — **bloqué
+   pour Claude** (classé déploiement prod), à faire par Nicolas. Sur la branche locale c'est fait pour
+   `CLAUDE.md` et `docs/audit-qa-2026-04-10.md` ; reste avant tout push de la branche : `dev/README.md`,
+   `dev/seed.ts`, `dev/smoke_test.ts`, `docs/database.md`, `supabase/purge_anciens_comptes.sql`
+   (email/code admin en dur → utiliser `is_admin` et un email de dev).
+4. Besoin API n°13 (envoi du lien de partage par email, plafond 3/jour) ; `bilan.html` doit gérer `?confirmer=1`.
+
 ## Ensuite
 
 1. **Complément banque d'entraînement** (~300 exos, 15/compétence sur les causes racines) — bloquant pour l'expérience
