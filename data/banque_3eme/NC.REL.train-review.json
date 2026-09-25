@@ -1,0 +1,109 @@
+[
+ {
+  "id": "NC.REL.01-t01",
+  "verdict": "ok",
+  "raison": "−9 juste ; « −9 °C » couvert par l'alt (le « °c » n'est pas retiré par _toNum/mxNum). Choix entre deux valeurs données : la bonne réponse figure forcément dans l'énoncé, c'est le principe de l'item."
+ },
+ {
+  "id": "NC.REL.01-t02",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.REL.01-t03",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.REL.01-t04",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.REL.01-t05",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.REL.01-t06",
+  "verdict": "ok",
+  "raison": "−3,5 juste ; sélection parmi les valeurs de l'énoncé (inhérent). −12 = « plus grand » au sens des positifs : #distance_zero cohérent."
+ },
+ {
+  "id": "NC.REL.01-t07",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.REL.01-t08",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.REL.01-t09",
+  "verdict": "corrige",
+  "raison": "Bonne réponse juste (−3,2 < −3,15). Mais le distracteur « −4,09 < −4,1 » est aussi exactement ce que produit #distance_zero seul (4,09 < 4,1 bien comparés, puis négatifs rangés comme des positifs) : l'imputer à NC.ENT.02#plus_de_chiffres est ambigu, et c'est l'erreur de la compétence qui est la lecture la plus probable. Avec deux négatifs, toute comparaison fausse est « vraie » sous #distance_zero : impossible d'isoler #plus_de_chiffres ici. Tag ramené à NC.REL.01#distance_zero (deux distracteurs, chacun application exacte de la règle).",
+  "correction": {
+   "id": "NC.REL.01-t09",
+   "comp": "NC.REL.01",
+   "q": "Laquelle de ces comparaisons est vraie ?",
+   "a": "$-3{,}2 < -3{,}15$",
+   "type": "qcm",
+   "options": [
+    "$-0{,}5 < -0{,}8$",
+    "$-3{,}2 < -3{,}15$",
+    "$-4{,}09 < -4{,}1$"
+   ],
+   "err": {
+    "$-0{,}5 < -0{,}8$": "NC.REL.01#distance_zero",
+    "$-4{,}09 < -4{,}1$": "NC.REL.01#distance_zero"
+   },
+   "steps": [
+    "Compare d'abord les distances à $0$ : $3{,}2$ et $3{,}15$ (écris $3{,}20$).",
+    "Pour des négatifs, le plus éloigné de $0$ est-il le plus grand ou le plus petit ?"
+   ],
+   "f": "Entre deux nombres négatifs, le plus petit est le plus éloigné de $0$",
+   "f_disabled": false,
+   "lvl": 3,
+   "usage": [
+    "train"
+   ],
+   "contexte": false
+  }
+ },
+ {
+  "id": "NC.REL.03-t01",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.REL.03-t02",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.REL.03-t03",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.REL.03-t04",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.REL.03-t05",
+  "verdict": "ok",
+  "raison": "(−7) × (−8) = 56, −8 juste. « 8 » tagué #regle_addition cohérent (un élève #moins_par_moins donnerait aussi 8 : acceptable, un seul tag)."
+ },
+ {
+  "id": "NC.REL.03-t06",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.REL.03-t07",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ }
+]

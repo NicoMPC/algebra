@@ -77,6 +77,8 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 | **consentements** | Cases cochées avant paiement | `code`, `produit`, `texte_version`, `texte_hash`, `cases[]` | API (`log_consent`) |
 | **email_logs** | (existait hors schema.sql) Log Resend + désinscriptions | `email`, `prenom`, `type`, `statut`, `details`, `created_at` + **`categorie`** (T/P/M), **`code`** | API emails |
 
+`email_logs.type` (séquence 25/09, `docs/specs/51-emails.md`) : `D3:<email>` (ex. `D3:P-X1`, `D3:A-X0`, `D3:P-HEBDO:2026-W40`, `D3:A-MENS:2026-11`, `D3:P-SH:<token>`) ; dédup `(email, type, statut='envoyé')` ; `UNSUB` par adresse (T l'ignore sauf P-SH, P et M le respectent). Lien de désinscription signé : `unsubscribe?email=…&k=` (HMAC, `UNSUB_SECRET` ou clé service_role). `bilan_partages.canal` : `email_parent` (liens envoyés au parent par le serveur, valent lien de confirmation), `email` (P-SH, `send_share_email`), `app`.
+
 | **diagnostics_invites** | (25/09, migration `20260925_invites_securite.sql`) Diagnostic express **sans compte** | `id` uuid, `guest_token_hash` (SHA-256 du jeton, jamais en clair), `statut` (en_cours/termine/rattache), `prenom`, `etat_json`, `carte_json`, `n_questions`, `code` + `diagnostic_id` (après rattachement), `expires_at` (+2 j, prolongé à la fin du diag) | API (`start/answer_diagnostic` sans code, `register` rattache puis vide `etat_json`/`carte_json`/`prenom`) |
 
 Colonnes ajoutées à **profiles** : `email_eleve`, `consentement_parent_at`, `optin_marketing` (+ `optin_marketing_at`), `date_brevet_blanc` ; et documentées (déjà utilisées par le code) : `premium_niveau`, `mode`.

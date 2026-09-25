@@ -1,0 +1,219 @@
+[
+ {
+  "id": "NC.LIT.01-t01",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.LIT.01-t02",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.LIT.01-t03",
+  "verdict": "ok",
+  "raison": "4x − 9 juste ; simulés acceptés : 4x − 9, 4*x-9, 4 × x − 9, -9 + 4 x ; refusés : 4x+9, 9-4x, 4(x-9). Réserve : « 4(x−9) » tagué #parentheses_oubliees alors que ce sont des parenthèses en trop (même famille « structure du programme » : toléré, voir questions)."
+ },
+ {
+  "id": "NC.LIT.01-t04",
+  "verdict": "corrige",
+  "raison": "Réponse juste (n − 3), mais le tag de « n + 3 » est faux : l'énoncé dit « 3 ans DE PLUS », l'élève qui écrit n + 3 applique la relation à la mauvaise personne ; ce n'est pas #de_moins_plus (« de moins » traduit par +), et aucune erreur du référentiel ne décrit cette inversion. Reformulé avec « de moins que » pour que chaque distracteur soit l'application exacte de son erreur (n + 3 = #de_moins_plus ; 3 − n = #ordre_inverse, cas du libellé « 7 de moins que x → 7 − x »). Contexte changé (tarifs) pour ne pas doubler LIT.01-d02 (âges).",
+  "correction": {
+   "id": "NC.LIT.01-t04",
+   "comp": "NC.LIT.01",
+   "q": "Au cinéma, une place à tarif réduit coûte $3$ € de moins qu'une place plein tarif. La place plein tarif coûte $p$ euros. Combien coûte, en euros, une place à tarif réduit ?",
+   "a": "$p - 3$",
+   "type": "qcm",
+   "options": [
+    "$p + 3$",
+    "$p - 3$",
+    "$3 - p$"
+   ],
+   "err": {
+    "$p + 3$": "NC.LIT.01#de_moins_plus",
+    "$3 - p$": "NC.LIT.01#ordre_inverse"
+   },
+   "steps": [
+    "La place à tarif réduit est-elle plus chère ou moins chère que la place plein tarif ?",
+    "Teste avec $p = 10$ : combien coûte la place réduite ? Quelle expression donne ce résultat ?"
+   ],
+   "f": "Tester l'expression avec un nombre simple et comparer au texte",
+   "f_disabled": false,
+   "lvl": 1,
+   "usage": [
+    "train"
+   ],
+   "contexte": true
+  }
+ },
+ {
+  "id": "NC.LIT.01-t05",
+  "verdict": "ok",
+  "raison": "(x + 5)² juste. « x² + 5 » = étapes inversées, rattaché à #parentheses_oubliees : acceptable (la structure du programme n'est pas encodée)."
+ },
+ {
+  "id": "NC.LIT.01-t06",
+  "verdict": "ok",
+  "raison": "18r − 7 juste, simulation app/serveur ok (× et ordre inverse acceptés, 18r+7 refusé). Même réserve que t03 sur « 18(r−7) » tagué #parentheses_oubliees."
+ },
+ {
+  "id": "NC.LIT.01-t07",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.LIT.06-t01",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.LIT.06-t02",
+  "verdict": "corrige",
+  "raison": "(x − 5)(x + 3) = x² − 2x − 15 : −2 juste, err 2 / 8 / −8 = erreurs de signe exactes. La case est suivie de « x » : un élève qui tape « −2x » est refusé (app et serveur). Alt « -2x » ajouté (ne laisse passer aucune mauvaise réponse).",
+  "correction": {
+   "id": "NC.LIT.06-t02",
+   "comp": "NC.LIT.06",
+   "q": "Complète : $(x - 5)(x + 3) = x^2 + \\text{___}\\,x - 15$",
+   "a": "-2",
+   "type": "fill",
+   "options": [],
+   "err": {
+    "2": "NC.LIT.06#signes",
+    "-8": "NC.LIT.06#signes",
+    "8": "NC.LIT.06#signes"
+   },
+   "steps": [
+    "Les deux termes en $x$ viennent de $x \\times 3$ et de $(-5) \\times x$.",
+    "Additionne ces deux termes en gardant leur signe."
+   ],
+   "f": "$(a + b)(c + d) = ac + ad + bc + bd$",
+   "f_disabled": false,
+   "lvl": 2,
+   "usage": [
+    "train"
+   ],
+   "contexte": false,
+   "alt": [
+    "-2x"
+   ]
+  }
+ },
+ {
+  "id": "NC.LIT.06-t03",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.LIT.06-t04",
+  "verdict": "ok",
+  "raison": "−15x − 4x = −19x juste ; 11, 19, −11 = erreurs de signe ; −15 = un seul produit en x. Tous vérifiés."
+ },
+ {
+  "id": "NC.LIT.07-t01",
+  "verdict": "corrige",
+  "raison": "(x + 6)² : 12 juste ; 0 et 6 = oubli / non-doublement du double produit. Même faux négatif que LIT.06-t02 sur « 12x » : alt ajouté.",
+  "correction": {
+   "id": "NC.LIT.07-t01",
+   "comp": "NC.LIT.07",
+   "q": "Complète : $(x + 6)^2 = x^2 + \\text{___}\\,x + 36$",
+   "a": "12",
+   "type": "fill",
+   "options": [],
+   "err": {
+    "6": "NC.LIT.07#carre_somme",
+    "0": "NC.LIT.07#carre_somme"
+   },
+   "steps": [
+    "Écris $(x + 6)^2 = (x + 6)(x + 6)$ et fais les $4$ produits.",
+    "Regroupe ensuite les termes en $x$ : il y en a plusieurs."
+   ],
+   "f": "$(a + b)^2 = a^2 + 2ab + b^2$",
+   "f_disabled": false,
+   "lvl": 1,
+   "usage": [
+    "train"
+   ],
+   "contexte": false,
+   "alt": [
+    "12x"
+   ]
+  }
+ },
+ {
+  "id": "NC.LIT.07-t02",
+  "verdict": "ok",
+  "raison": "25x² − 1 juste ; « 25x² − 10x − 1 » tagué NC.LIT.06#signes (prérequis direct, −5x au lieu de +5x) cohérent."
+ },
+ {
+  "id": "NC.LIT.07-t03",
+  "verdict": "corrige",
+  "raison": "(x + 3)² − x² = 6x + 9 juste, err cohérents (9 et 3x + 9 = oubli / non-doublement du double produit). Faux négatif : « 6*x+9 » / « 6×x+9 » refusés (app et serveur). Alt complétés.",
+  "correction": {
+   "id": "NC.LIT.07-t03",
+   "comp": "NC.LIT.07",
+   "q": "Le côté d'un carré de $x$ cm est allongé de $3$ cm. De combien son aire augmente-t-elle ? Écris la réponse développée et réduite. ___",
+   "a": "6x+9",
+   "type": "fill",
+   "options": [],
+   "err": {
+    "9": "NC.LIT.07#carre_somme",
+    "3x+9": "NC.LIT.07#carre_somme"
+   },
+   "steps": [
+    "La nouvelle aire vaut $(x + 3)^2$ et l'ancienne $x^2$ : calcule leur différence.",
+    "Développe $(x + 3)^2$ sans oublier le double produit, puis enlève $x^2$."
+   ],
+   "f": "$(a + b)^2 = a^2 + 2ab + b^2$",
+   "f_disabled": false,
+   "lvl": 3,
+   "usage": [
+    "train"
+   ],
+   "contexte": true,
+   "alt": [
+    "9+6x",
+    "6×x+9",
+    "9+6×x"
+   ]
+  }
+ },
+ {
+  "id": "NC.LIT.03-t01",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.LIT.03-t02",
+  "verdict": "corrige",
+  "raison": "6x − 3 juste, clés err vérifiées (6x + 13 = #signe_detache ; 6x + 3 = NC.REL.02#mauvais_signe, prérequis direct ; 3x = #termes_non_semblables). Faux négatif : « 6*x-3 » / « 6×x-3 » sont refusés (app et serveur), contrairement à ce qu'annoncent les notes auteur. Alt complétés ; simulation : aucune mauvaise réponse ne passe.",
+  "correction": {
+   "id": "NC.LIT.03-t02",
+   "comp": "NC.LIT.03",
+   "q": "Un triangle a pour côtés $2x$, $x + 5$ et $3x - 8$ (en cm). Écris son périmètre sous forme réduite. ___",
+   "a": "6x-3",
+   "type": "fill",
+   "options": [],
+   "err": {
+    "6x+13": "NC.LIT.03#signe_detache",
+    "6x+3": "NC.REL.02#mauvais_signe",
+    "3x": "NC.LIT.03#termes_non_semblables"
+   },
+   "steps": [
+    "Périmètre $= 2x + (x + 5) + (3x - 8)$ : entoure chaque terme avec son signe.",
+    "Regroupe les termes en $x$, puis les nombres $+5$ et $-8$."
+   ],
+   "f": "On regroupe les termes en $x$ entre eux, et les nombres entre eux",
+   "f_disabled": false,
+   "lvl": 2,
+   "usage": [
+    "train"
+   ],
+   "contexte": true,
+   "alt": [
+    "-3+6x",
+    "6×x-3",
+    "-3+6×x"
+   ]
+  }
+ }
+]

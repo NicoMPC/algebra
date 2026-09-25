@@ -1962,7 +1962,7 @@ function mxComparerCartes(ancienne: Record<string, unknown> | null, nouvelle: Re
 
 // ── Entraînement quotidien ──────────────────────────────────
 
-type MxHist = { item_id: string; date: string; ok: boolean; contexte?: string };
+type MxHist = { item_id: string; date: string; ok: boolean; contexte?: string; rang?: number }; // rang : ordre chronologique (plus grand = plus récent)
 type MxExoChoisi = { item: MxItem; role: "reussite" | "travail" | "revision" | "entretien" };
 
 function mxChoisirItemTrain(ref: MxRef, comp: string, lvlCible: number, dernier: Record<string, MxHist>,
@@ -1980,6 +1980,7 @@ function mxChoisirItemTrain(ref: MxRef, comp: string, lvlCible: number, dernier:
       const j = mxJoursEntre(h.date, date);
       // déjà vu : plus c'est ancien, mieux c'est ; réussi récemment = inutile ; < 3 jours = dernier recours
       s += 50 - Math.min(j, 45) + (h.ok && j < 14 ? 40 : 0);
+      s += (h.rang || 0) * 1e-6; // même jour : la réponse la plus récente passe après (départage stable, pas le hasard)
     }
     return s;
   };
@@ -3196,7 +3197,7 @@ async function mxEntrainementLibre(p: Record<string, unknown>, code: string, dro
   // Plusieurs séries le même jour : « dernière réponse » = la plus récente à la seconde près (created_at), pas au jour.
   const { data: hist } = await adminClient.from("reponses_items").select("item_id, date, ok, contexte, created_at")
     .eq("code", code).gte("date", mxAjoutJours(today, -90)).order("created_at", { ascending: true });
-  const rows = ((hist || []) as Record<string, unknown>[]).map((h) => ({ item_id: String(h.item_id), date: String(h.date), ok: !!h.ok, contexte: String(h.contexte || "") }));
+  const rows = ((hist || []) as Record<string, unknown>[]).map((h, i) => ({ item_id: String(h.item_id), date: String(h.date), ok: !!h.ok, contexte: String(h.contexte || ""), rang: i + 1 }));
   const dernier: Record<string, MxHist> = {};
   for (const h of rows) dernier[h.item_id] = h;
   const pris = new Set<string>((((existant?.boost_json as Record<string, unknown>)?.exos || []) as { item_id?: string }[])

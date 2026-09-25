@@ -26,6 +26,8 @@ const questions: string[] = [];
 let ok = false;
 // deno-lint-ignore no-explicit-any
 let sw: any = null;
+// deno-lint-ignore no-explicit-any
+let confirmer: any = null;
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, args: ["--no-sandbox", "--disable-gpu", `--user-data-dir=${DATA}/chrome`] });
 try {
   const page = await browser.newPage();
@@ -92,6 +94,22 @@ try {
   const r = await p2.goto(BASE + "/", { waitUntil: "load" });
   const landing = await p2.evaluate(() => document.body.innerText.slice(0, 200));
   sw = { ...sw, controle, landingStatus: r?.status(), vieille: /VIEILLE LANDING/.test(landing) };
+
+  // ── bilan.html?confirmer=1 : carte de confirmation (vouvoiement), clic → confirm_parent → confirmé ──
+  const px0 = [...Deno.readDirSync(`${DATA}/outbox`)].filter((e) => e.name.includes("tom@exemple.fr") && e.name.includes("bilan_maths"))
+    .map((e) => Deno.readTextFileSync(`${DATA}/outbox/${e.name}`))[0] || "";
+  const tokC = (px0.match(/\/b\/([0-9a-f]{48})\?confirmer=1/) || [])[1];
+  const p3 = await browser.newPage();
+  p3.on("pageerror", (e) => erreurs.push("pageerror bilan: " + String((e as Error).message || e)));
+  await p3.goto(`${BASE}/b/${tokC}?confirmer=1`, { waitUntil: "networkidle2" });
+  const avantClic = await p3.evaluate(() => ({ form: !document.getElementById("cf-form")!.hidden, titre: document.getElementById("cf-t")!.textContent }));
+  await p3.click("#cf-go");
+  await p3.waitForFunction(() => !document.getElementById("cf-ok")!.hidden, { timeout: 8000 }).catch(() => {});
+  const apres = await p3.evaluate(() => ({ ok: !document.getElementById("cf-ok")!.hidden, txt: document.getElementById("cf-ok")!.innerText, bilan: !document.getElementById("st-ok")!.hidden }));
+  const p4 = await browser.newPage();
+  await p4.goto(`${BASE}/b/${"0".repeat(48)}?confirmer=1`, { waitUntil: "networkidle2" });
+  const expire = await p4.evaluate(() => !document.getElementById("cf-exp")!.hidden);
+  confirmer = { tokC: !!tokC, avantClic, apres, expire };
 } finally {
   await browser.close();
   srv.kill("SIGTERM"); await srv.status;
@@ -104,5 +122,8 @@ console.log(vraies.length ? "  ❌ erreurs :\n     " + vraies.join("\n     ") : 
 const swOk = sw && sw.etat === "activated" && !sw.keys.includes("matheux-v13") && sw.keys.includes("matheux-v14") && sw.n >= 6 && sw.controle && sw.landingStatus === 200 && !sw.vieille;
 console.log(swOk ? `  ✅ sw.js : install + activation OK (${sw.n} ressources en cache), ancien cache v13 supprimé, landing servie par le réseau`
   : "  ❌ sw.js : " + JSON.stringify(sw));
+const cfOk = confirmer && confirmer.tokC && confirmer.avantClic.form && /Tom/.test(confirmer.avantClic.titre) && confirmer.apres.ok && /confirmée/.test(confirmer.apres.txt) && confirmer.apres.bilan && confirmer.expire;
+console.log(cfOk ? "  ✅ bilan.html?confirmer=1 : formulaire, clic → « inscription confirmée », bilan affiché ; lien invalide → message d'erreur"
+  : "  ❌ bilan.html?confirmer=1 : " + JSON.stringify(confirmer));
 console.log("  capture : " + SHOT);
-Deno.exit(ok && !vraies.length && swOk ? 0 : 1);
+Deno.exit(ok && !vraies.length && swOk && cfOk ? 0 : 1);

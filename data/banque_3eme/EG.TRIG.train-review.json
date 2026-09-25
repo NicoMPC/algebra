@@ -1,0 +1,75 @@
+[
+ {
+  "id": "EG.TRIG.02-t01",
+  "verdict": "ok",
+  "raison": "Hypoténuse KM, opposé à K = LM : sin K = LM/KM. KL/KM (cos), KM/LM (inversé), LM/KL (tan) cohérents."
+ },
+ {
+  "id": "EG.TRIG.02-t02",
+  "verdict": "ok",
+  "raison": "Hypoténuse PQ, opposé QR, adjacent PR : tan P = QR/PR. PQ = sinus (mauvais rapport)."
+ },
+ {
+  "id": "EG.TRIG.02-t03",
+  "verdict": "ok",
+  "raison": "Adjacent + hypoténuse → cos. sin/tan tagués. Fill à 3 choix donnés dans l'énoncé : acceptable (même principe que les QCM)."
+ },
+ {
+  "id": "EG.TRIG.02-t04",
+  "verdict": "ok",
+  "raison": "Hypoténuse EG, adjacent à E = EF. FG = opposé (mauvais rapport)."
+ },
+ {
+  "id": "EG.TRIG.02-t05",
+  "verdict": "ok",
+  "raison": "Échelle = hypoténuse, 1,2 m = adjacent : cos α = 1,2/4. tan α = 1,2/4 revient à prendre l'hypoténuse pour l'adjacent (EG.TRIG.01, prérequis direct) : juste."
+ },
+ {
+  "id": "EG.TRIG.02-t06",
+  "verdict": "ok",
+  "raison": "Rectangle en S, hypoténuse RT ; RS ne touche pas T → opposé → sin. cos = côtés vus depuis R (mauvais angle, EG.TRIG.01) : juste."
+ },
+ {
+  "id": "EG.TRIG.02-t07",
+  "verdict": "ok",
+  "raison": "2 km = hypoténuse, altitude = opposé → 2 sin 15°. 2 tan 15° (hyp. prise pour adjacent), 2/sin 15° (inversé) cohérents."
+ },
+ {
+  "id": "EG.TRIG.02-t08",
+  "verdict": "corrige",
+  "raison": "Réponse juste : vu de B, AH opposé, BH adjacent → tan 40° = AH/BH. Mais le distracteur « cos(40°) = BH/AH » met AH (l'opposé) à la place de l'hypoténuse : ce n'est pas « prendre l'hypoténuse pour l'adjacent » (EG.TRIG.01#adjacent_hypotenuse). Correction : le taguer EG.TRIG.02#mauvais_rapport. Les autres clés sont justes.",
+  "correction": {
+   "id": "EG.TRIG.02-t08",
+   "comp": "EG.TRIG.02",
+   "q": "Le triangle $ABH$ est rectangle en $H$. On connaît $AH = 5$ cm et $\\widehat{ABH} = 40°$. On cherche la longueur $BH$. Quelle égalité faut-il utiliser ?",
+   "a": "$\\tan(40°) = \\frac{AH}{BH}$",
+   "type": "qcm",
+   "options": [
+    "$\\tan(40°) = \\frac{BH}{AH}$",
+    "$\\sin(40°) = \\frac{AH}{BH}$",
+    "$\\tan(40°) = \\frac{AH}{BH}$",
+    "$\\cos(40°) = \\frac{BH}{AH}$"
+   ],
+   "err": {
+    "$\\tan(40°) = \\frac{BH}{AH}$": "EG.TRIG.01#mauvais_angle",
+    "$\\sin(40°) = \\frac{AH}{BH}$": "EG.TRIG.01#adjacent_hypotenuse",
+    "$\\cos(40°) = \\frac{BH}{AH}$": "EG.TRIG.02#mauvais_rapport"
+   },
+   "steps": [
+    "L'angle connu est en $B$. Vu de $B$, $AH$ est-il l'opposé ou l'adjacent ? Et $BH$ ?",
+    "Ni $AH$ ni $BH$ n'est l'hypoténuse : quel rapport n'utilise pas l'hypoténuse ?"
+   ],
+   "f": "$\\tan = \\frac{\\text{opposé}}{\\text{adjacent}}$",
+   "lvl": 3,
+   "usage": [
+    "train"
+   ],
+   "contexte": false
+  }
+ },
+ {
+  "id": "EG.TRIG.02-t09",
+  "verdict": "ok",
+  "raison": "Hypoténuse (rampe) inconnue, BC opposé, AC adjacent → tan. sin = AC pris pour hypoténuse ; cos = mauvais rapport."
+ }
+]

@@ -50,16 +50,27 @@
      ⏳ Liens 49 € (`programme_brevet`) et 30 € (`programme_upgrade`) : création bloquée pour Claude (classée transaction réelle) → Nicolas, mêmes réglages.
      ⚠️ Vérifier que le webhook Stripe de prod pointe bien vers l'Edge Function et que `metadata` du lien est bien recopiée dans la session (1er paiement test).
    - `CRON_SECRET` (secrets Supabase + Vault `matheux_cron_secret`)
-   - remplacer les anciens emails J+1..J+14 (29,99 €)
+   - ✅ anciens emails J+1..J+14 (29,99 €) remplacés (25/09) par la séquence `51-emails.md` : planificateur pur
+     `mxPlanEmails` (tests `supabase/tests/emails_test.ts`, 300 élèves fictifs) + cron piloté par l'état (P-X0N/R1/R2
+     confirmation, P-X1/P-X2/P-X3 commercial avec opt-in, P-X2b usage, A-X0/A-X1 ado, A-MOD/P-MOD, P-UP1/P-UP2,
+     P-HEBDO, A-MENS) + emails d'événement P-ACH1/P-ACH2 (confirmation légale au payeur), P-PDF/A-PDF. Plafonds :
+     1 commercial/72 h, 5/30 j, conversion ≤ J+30, rien du 15/05 au 31/08, 1 email/jour/adresse, rien le week-end
+     (sauf hebdo dimanche, A-MENS samedi). Désinscription signée (HMAC `k`), one-click `List-Unsubscribe`,
+     `unsubscribe.html` rebranché sur l'API Supabase (appelait encore GAS). Cron déplacé à 15:00 UTC (17h Paris).
+     Non faits (à décider) : saisonniers S-DEC/S-BB/S-AVR (date du Brevet 2027 à fixer), re-test A-RT/P-UP3
+     (le re-test n'existe pas pour les acheteurs du seul diagnostic), suppression du compte à J+30 sans confirmation.
+     ⚠️ Optionnel : secret `UNSUB_SECRET` (sinon la clé service_role sert de clé HMAC ; la changer invalide les liens).
    - migrations 20260924 + 20260925, import référentiel/banque, purge anciens comptes (backup)
-   - `sw.js` (cache des HTML) avant bascule landing
+   - ✅ `sw.js` v14 (25/09) : HTML en réseau d'abord, plus de `/scree.png`, anciens caches supprimés ; install testée en Chrome headless (`dev/browser_test.ts`)
    - merge `feat/diagnostic-3e` → `main` sur décision explicite
 3. **RGPD dépôt public** : push des commits de retrait des données perso sur `main` et `root` — **bloqué
-   pour Claude** (classé déploiement prod), à faire par Nicolas. Sur la branche locale c'est fait pour
-   `CLAUDE.md` et `docs/audit-qa-2026-04-10.md` ; reste avant tout push de la branche : `dev/README.md`,
-   `dev/seed.ts`, `dev/smoke_test.ts`, `docs/database.md`, `supabase/purge_anciens_comptes.sql`
-   (email/code admin en dur → utiliser `is_admin` et un email de dev).
-4. Besoin API n°13 (envoi du lien de partage par email, plafond 3/jour) ; `bilan.html` doit gérer `?confirmer=1`.
+   pour Claude** (classé déploiement prod), à faire par Nicolas. ✅ Branche locale propre (25/09) : `git grep`
+   ne trouve plus aucun email/code réel ; admin de dev = `admin@dev.matheux.local` / `ADMDEV` ; la purge épargne
+   `is_admin = true` sans code en dur.
+4. ✅ Besoin API n°13 : `send_share_email {code, access_token, to?}` (P-SH, 3 envois/24 h/élève, 1 par adresse/24 h,
+   désinscription respectée) — **reste à brancher dans app.html** (aujourd'hui `mailto:`, ligne ~3118).
+   ✅ `bilan.html?confirmer=1` : rien n'est écrit à l'ouverture (antivirus de messagerie), le parent clique,
+   case d'opt-in non cochée, états déjà confirmé / lien invalide / réseau. `confirm_parent {apercu:true}` en lecture seule.
 
 ## Ensuite
 

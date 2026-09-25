@@ -1,0 +1,205 @@
+[
+ {
+  "id": "NC.ENT.01-t01",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.01-t02",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.01-t03",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.01-t04",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.01-t05",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.01-t06",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.01-t07",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.01-t08",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.01-t09",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.01-t10",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.01-t11",
+  "verdict": "ok",
+  "raison": "0,04 × 1000 = 40 juste. Même forme que ENT.01-d03 (0,02 × 1000 grains) mais valeurs et contexte différents : pas un doublon."
+ },
+ {
+  "id": "NC.ENT.01-t12",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.02-t01",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.02-t02",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.02-t03",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.02-t04",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.02-t05",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.02-t06",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.02-t07",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.02-t08",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.02-t09",
+  "verdict": "ok",
+  "raison": "0,705 juste. Note : la règle #plus_de_chiffres donne aussi 0,705 (bonne réponse) ; l'item ne teste que #plus_court_plus_grand, seul tag présent : acceptable en entraînement (même structure que t01/t04/t05, comparaison binaire)."
+ },
+ {
+  "id": "NC.ENT.02-t10",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.02-t11",
+  "verdict": "corrige",
+  "raison": "52,25 juste. La clé « 52,4 » (tag #plus_de_chiffres) n'est prédite par aucune règle erronée : avec « plus de décimales = plus grand », 52,4 reste le plus grand des nombres à 1 décimale, donc jamais choisi comme le plus court. Clé retirée (les 3 autres sont exactes).",
+  "correction": {
+   "id": "NC.ENT.02-t11",
+   "comp": "NC.ENT.02",
+   "q": "En slalom, quatre skieurs réalisent $52{,}3$ s, $52{,}25$ s, $52{,}305$ s et $52{,}4$ s. Quel est le meilleur temps (le plus court), en s ? ___",
+   "a": "52,25",
+   "type": "fill",
+   "options": [],
+   "err": {
+    "52,3": "NC.ENT.02#plus_de_chiffres",
+    "52,305": "NC.ENT.02#plus_court_plus_grand"
+   },
+   "steps": [
+    "Les parties entières sont toutes égales : écris les quatre temps avec trois décimales.",
+    "Compare les dixièmes : lesquels ont seulement $2$ dixièmes ?"
+   ],
+   "f": "Compare d'abord les unités, puis les dixièmes, puis les centièmes : le premier rang qui diffère décide.",
+   "f_disabled": false,
+   "lvl": 3,
+   "usage": [
+    "train"
+   ],
+   "contexte": true
+  }
+ },
+ {
+  "id": "NC.ENT.02-t12",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.03-t01",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.03-t02",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.03-t03",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.03-t04",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.03-t05",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.03-t06",
+  "verdict": "ok",
+  "raison": "4,96 → 5,0 juste. « 5 » est aussi accepté (égalité numérique) : tolérable, 5 est la même valeur."
+ },
+ {
+  "id": "NC.ENT.03-t07",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.03-t08",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.03-t09",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.03-t10",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.03-t11",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, err cohérents, app et serveur simulés."
+ },
+ {
+  "id": "NC.ENT.03-t12",
+  "verdict": "ok",
+  "raison": "9,995 → 10,00 juste ; « 10 » accepté numériquement (tolérable)."
+ }
+]

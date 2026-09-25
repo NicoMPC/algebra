@@ -69,7 +69,7 @@
 10. ✅ **Monitoring admin** : `get_admin_overview {access_token}` ajoute `diagnostics: [{id, code, type, statut, n_questions, started_at, finished_at, score_global, point_faible, fiabilite}]`, `diagnostics_stats: {express|complet|mensuel: {en_cours, termine, abandonne}}`, `invites: {en_cours, termine, rattache, expires}`, `achats: [lignes achats, récentes d'abord]`, `ca_cents` (hors remboursés), `funnel: {event: {total, j7, j30}}`.
 11. ✅ **Question de diagnostic** (fait au passage) : chaque `question` porte `domaine` et `niveau_origine` de sa compétence.
 12. ✅ **Rattachement au login** (fait au passage) : `login {email, password, diagnostic_id, guest_token}` rattache comme `register` → en plus : `diagnostic_id`, `diagnostic_rattache`, `rattachement_erreur?`. P-X0 part si c'est la 1re carte express de cette adresse.
-13. ⏳ **P-SH (envoi du lien par email via Resend)** : pas fait. À cadrer : l'ado saisit une adresse libre, donc risque de relais de spam → il faut un plafond (ex. 3 envois / jour / élève) et le template `51` §2 P-SH. En attendant : `mailto:`.
+13. ✅ **P-SH** (25/09) : action `send_share_email {code, access_token, to?}` → email P-SH (template `51` §2), 3 envois / 24 h / élève (tentatives comprises), 1 par adresse / 24 h (`deja: true`), `plafond: true` au-delà, `to` absent = email du compte. Renvoie `{token, url, expires_at}`. Reste à remplacer le `mailto:` d'app.html.
 14. ✅ **État des partages** (fait au passage) : `get_carte.partages = [{token, created_at, expires_at, vues, dernier_vu_at, canal}]` (liens actifs, récents d'abord ; `canal` = `app`, `whatsapp`… ou `email_parent` pour le lien du mail P-X0).
 
 ## Plan des lots (40 §5)

@@ -1,0 +1,64 @@
+[
+ {
+  "id": "DF.FONC.02-t01",
+  "verdict": "ok",
+  "raison": "Point (4 ; −1) → −1. 1 = signe perdu (EG.REP.01, prérequis direct), −3 = abscisse du point d'ordonnée 4 (axes inversés)."
+ },
+ {
+  "id": "DF.FONC.02-t02",
+  "verdict": "ok",
+  "raison": "g(3) = 8. Les trois distracteurs expriment tous g(8) = 3 : cohérents avec axes_inverses (un peu redondants, acceptable)."
+ },
+ {
+  "id": "DF.FONC.02-t03",
+  "verdict": "corrige",
+  "raison": "Réponse juste (−3) mais recopiable : l'énoncé ne contient que 0 et « hauteur −3 », l'item ne teste plus la lecture. Correction : donner deux points d'intersection avec les axes pour obliger à choisir le bon ; 2 = abscisse du point d'ordonnée 0 (axes inversés), 3 = signe perdu. Clé « 0 » retirée (pas une inversion d'axes dans la nouvelle version).",
+  "correction": {
+   "id": "DF.FONC.02-t03",
+   "comp": "DF.FONC.02",
+   "q": "La courbe d'une fonction $f$ coupe l'axe des abscisses au point $(2 ; 0)$ et l'axe des ordonnées au point $(0 ; -3)$. Que vaut $f(0)$ ? ___",
+   "a": "-3",
+   "type": "fill",
+   "options": [],
+   "err": {
+    "2": "DF.FONC.02#axes_inverses",
+    "3": "EG.REP.01#quadrant"
+   },
+   "steps": [
+    "$f(0)$ est l'ordonnée du point de la courbe d'abscisse $0$.",
+    "Ce point est-il au-dessus ou en dessous de l'axe horizontal ?"
+   ],
+   "f": "$f(x)$ = ordonnée du point de la courbe d'abscisse $x$",
+   "lvl": 1,
+   "usage": [
+    "train"
+   ],
+   "contexte": false
+  }
+ },
+ {
+  "id": "DF.FONC.02-t04",
+  "verdict": "ok",
+  "raison": "3 carreaux = 30 min ; 4 carreaux × 2 °C sous l'axe → −8. 8 = signe perdu, −4 = 1 carreau = 1 unité."
+ },
+ {
+  "id": "DF.FONC.02-t05",
+  "verdict": "ok",
+  "raison": "Point (−1 ; 3) → 3. 2 = abscisse du point d'ordonnée −1, −3 = signe."
+ },
+ {
+  "id": "DF.FONC.02-t06",
+  "verdict": "ok",
+  "raison": "7 × 0,5 = 3,5 km. 7 et 14 = graduation, 2 = abscisse lue."
+ },
+ {
+  "id": "DF.FONC.02-t07",
+  "verdict": "ok",
+  "raison": "4 carreaux × 2 = 8 min (abscisse vérifiée), 6 × 5 = 30 cm. 6 et 12 = graduation, 20 = 4 × 5 (axes mélangés)."
+ },
+ {
+  "id": "DF.FONC.02-t08",
+  "verdict": "ok",
+  "raison": "x = −3 × 2 = −6, y = −2 → f(−6) = −2. Distracteurs cohérents."
+ }
+]

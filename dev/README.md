@@ -9,7 +9,7 @@ en mémoire. **Rien ne part vers la prod** : pas de Supabase, pas de Resend, pas
 ```bash
 ./matheux.sh          # lance le serveur et ouvre le navigateur (Ctrl+C pour arrêter)
 ./matheux.sh reset    # remet la base à l'état initial (marche aussi serveur lancé)
-./matheux.sh test     # smoke test API + test navigateur (Chrome headless)
+./matheux.sh test     # smoke test API + test navigateur (Chrome headless : diagnostic, sw.js, bilan.html?confirmer=1)
 ```
 
 Tu peux aussi double-cliquer sur `Matheux.desktop` (ça ouvre un terminal).
@@ -26,7 +26,7 @@ Mot de passe pour tous les comptes : **`matheux-dev`**. Les codes restent les m�
 | Tom | tom@exemple.fr | AQPTSK | diagnostic express fait hier en invité puis rattaché à l'inscription, accès gratuit |
 | Sarah | sarah@exemple.fr | 6LDHJ5 | Programme Brevet payé, diag complet, 10 jours d'entraînement (streak 10) |
 
-Les comptes ont été créés **en passant par l'API** (register, diagnostic, webhook Stripe signé,
+L'admin de dev est fictif (aucune donnée de la prod dans le dépôt). Les comptes élèves ont été créés **en passant par l'API** (register, diagnostic, webhook Stripe signé,
 get_training, save_score), avec l'horloge reculée dans le temps. Leur état est donc celui que la
 prod produirait avec les mêmes réponses.
 
@@ -42,6 +42,12 @@ diagnostic express **en invité** (sans compte), rattaché ensuite au `register`
   (ou `programme_brevet`, qui devient `programme_upgrade` à 30 € si le diagnostic complet est déjà acheté).
   Ça envoie un vrai webhook `checkout.session.completed`, signé avec le secret de dev, au chemin Stripe
   d'index.ts. Dans le navigateur, un clic sur un lien `buy.stripe.com` ouvre ce paiement simulé au lieu de Stripe.
+- **Séquence emails** (`docs/specs/51-emails.md`) : le cron n'est pas planifié en local. Pour voir ce qui part :
+  `curl localhost:8787/api -d '{"action":"cron_send_emails","access_token":"<jeton admin>"}'` (jeton : `login` de
+  `admin@dev.matheux.local`), puis `/dev/time?jours=1` et recommencer. La réponse liste `details` (« CODE type → envoyé /
+  raison »). Le smoke test fait ça sur 15 jours pour Lina, Tom, Sarah et un profil neuf (Nora, opt-in) et affiche le calendrier.
+  Aperçu d'un email pour un élève : action admin `send_test_email {targetEmail, type:"P-X1", code_eleve}`.
+- **Service worker** : neutralisé sur `/sw.js` ; le vrai est servi sur `/sw.js?reel=1` (utilisé par `browser_test.ts`).
 - **Horloge** : `/dev/time?jours=1` avance d'un jour (pour tester le streak, le lendemain, le re-diagnostic à 30 jours).
   `/dev/time?reset` revient à aujourd'hui. Le décalage est perdu au redémarrage.
 - **Base** : `/dev/health` (nombre de lignes par table), `/dev/db/<table>?code=XXX` (lignes en JSON).

@@ -1,0 +1,83 @@
+[
+ {
+  "id": "DF.STAT.01-t01",
+  "verdict": "ok",
+  "raison": "3+5+4+2 = 14. 6 = somme des valeurs (0+1+2+3), 19 = nombre total de buts : confusion valeurs/effectifs."
+ },
+ {
+  "id": "DF.STAT.01-t02",
+  "verdict": "ok",
+  "raison": "Traits 3 et 4 = 30 et 40 → 35. 3,5 = graduation lue de 1 en 1."
+ },
+ {
+  "id": "DF.STAT.01-t03",
+  "verdict": "corrige",
+  "raison": "Calcul juste (4+9 = 13) mais la réponse 13 coïncide avec la valeur « 13 ans » de l'énoncé : un élève qui répond « 13 » en pensant « moins de 14 ans, c'est 13 ans » (confusion valeur/effectif, exactement l'erreur visée) serait compté juste. Correction : effectifs 3 et 8 → réponse 11, qui n'est ni une valeur ni un effectif de l'énoncé ; 25 (= 12+13) reste la clé valeurs_effectifs.",
+  "correction": {
+   "id": "DF.STAT.01-t03",
+   "comp": "DF.STAT.01",
+   "q": "Âges des joueurs d'une équipe de handball : $12$ ans : $3$ joueurs ; $13$ ans : $8$ joueurs ; $14$ ans : $7$ joueurs ; $15$ ans : $2$ joueurs. Combien de joueurs ont strictement moins de $14$ ans ? ___",
+   "a": "11",
+   "type": "fill",
+   "options": [],
+   "err": {
+    "25": "DF.STAT.01#valeurs_effectifs"
+   },
+   "steps": [
+    "Quels âges sont strictement inférieurs à $14$ ans ?",
+    "Additionne les effectifs (nombres de joueurs) de ces âges, pas les âges eux-mêmes."
+   ],
+   "f": "Effectif d'un groupe = somme des effectifs des valeurs concernées",
+   "lvl": 2,
+   "usage": [
+    "train"
+   ],
+   "contexte": true
+  }
+ },
+ {
+  "id": "DF.STAT.01-t04",
+  "verdict": "ok",
+  "raison": "15 + 25 + 10 = 50. 10 = 3+5+2 traits comptés comme unités."
+ },
+ {
+  "id": "DF.STAT.03-t01",
+  "verdict": "ok",
+  "raison": "109 ÷ 5 = 21,8. 22 = médiane, 22,5 = (min+max)/2, 27,25 = 109 ÷ 4."
+ },
+ {
+  "id": "DF.STAT.03-t02",
+  "verdict": "ok",
+  "raison": "296 ÷ 4 = 74. 73,5 = (min+max)/2, 74,5 = médiane, 59,2 = 296 ÷ 5."
+ },
+ {
+  "id": "DF.STAT.03-t03",
+  "verdict": "ok",
+  "raison": "11,2 ÷ 4 = 2,8. 2,85 = (min+max)/2, 2,75 = médiane."
+ },
+ {
+  "id": "DF.STAT.03-t04",
+  "verdict": "ok",
+  "raison": "22 ÷ 5 = 4,4. 4 = médiane, 5,5 = 22 ÷ 4 (manche à 0 oubliée)."
+ },
+ {
+  "id": "DF.STAT.03-t05",
+  "verdict": "ok",
+  "raison": "(33+15) ÷ 4 = 12. 13 = (11+15)/2, 16 = 48 ÷ 3. Même structure que d03 mais nombres différents : pas un doublon."
+ },
+ {
+  "id": "DF.STAT.03-t06",
+  "verdict": "ok",
+  "raison": "(12+15+9) ÷ 3. Parenthèses oubliées rattachées à NC.PRIO.01#trait_fraction (prérequis direct, erreur de regroupement : acceptable), (12+9)/2 = (min+max)/2, ÷ 2 = mauvais diviseur."
+ },
+ {
+  "id": "DF.STAT.03-t07",
+  "verdict": "ok",
+  "raison": "44 + 34 = 78, 78 ÷ 6 = 13. 14 = (11 + 17)/2 et 15 = (11+16+18)/3 : nouvelle_moyenne ; 19,5 = 78 ÷ 4."
+ },
+ {
+  "id": "DF.STAT.03-t08",
+  "verdict": "ok",
+  "raison": "52 − 38 = 14. 1 = 13×3 − 38 (compte 3 notes au lieu de 4 : mauvais diviseur). « 13 » sans clé, comme l'a noté l'auteur : acceptable."
+ }
+]
