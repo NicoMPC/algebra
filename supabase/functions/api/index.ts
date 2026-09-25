@@ -19,6 +19,10 @@ const STRIPE_WEBHOOK_SECRET = Deno.env.get("STRIPE_WEBHOOK_SECRET") || "";
 
 // Client admin (service_role) pour bypass RLS
 const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+// Client dédié au login : sur adminClient, la session de l'élève remplaçait la clé service_role (25/09).
+const authClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
+  auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+});
 
 // ── Cache en mémoire (persiste tant que l'instance Edge Function est chaude) ──
 const _cache: Record<string, { data: unknown; ts: number }> = {};
@@ -238,7 +242,7 @@ async function login(p: Record<string, unknown>) {
   if (!email || !password) return { status: "error", message: "Email et mot de passe requis." };
 
   // Auth Supabase — tente le sign in
-  const { data: authData, error: authError } = await adminClient.auth.signInWithPassword({ email, password });
+  const { data: authData, error: authError } = await authClient.auth.signInWithPassword({ email, password });
 
   // Fallback : ancien hash SHA-256 (transition)
   let user: Record<string, unknown> | null = null;
@@ -482,6 +486,7 @@ async function login(p: Record<string, unknown>) {
   return {
     status: "success",
     profile: { code, name, level, isAdmin, premium: isPremium, trialStart, objectif, mode: user.mode || null },
+    access_token: authData?.session?.access_token || null,
     curriculumOfficiel,
     diagExos: [],
     dailyBoost: todayBoost,
@@ -1692,6 +1697,23 @@ async function noopAction(_p: Record<string, unknown>) {
 
 // ── DISPATCH ────────────────────────────────────────────────
 
+// ── Actions réservées à l'admin : jeton de session Supabase obligatoire (25/09) ──
+// Avant : contrôle par `code`/`adminCode` seul, or le code admin est public (dépôt GitHub),
+// et certaines actions d'envoi d'email n'avaient aucun contrôle.
+const ADMIN_ONLY = new Set([
+  "get_admin_overview", "publish_admin_boost", "publish_admin_chapter", "get_cours_admin", "save_cours",
+  "send_admin_email", "send_test_email", "send_marketing_email", "log_manual_email",
+  "send_weekly_report", "send_custom_email", "send_session_rapport",
+]);
+async function requireAdmin(p: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+  const token = String(p.access_token || "");
+  if (!token) return { status: "error", message: "Accès refusé." };
+  const { data, error } = await adminClient.auth.getUser(token);
+  if (error || !data?.user) return { status: "error", message: "Accès refusé." };
+  const { data: prof } = await adminClient.from("profiles").select("is_admin").eq("id", data.user.id).maybeSingle();
+  return prof?.is_admin ? null : { status: "error", message: "Accès refusé." };
+}
+
 const ACTIONS: Record<string, (p: Record<string, unknown>) => Promise<unknown>> = {
   register,
   login,
@@ -1786,6 +1808,10 @@ Deno.serve(async (req: Request) => {
     const action = String(p.action || "");
     const handler = ACTIONS[action];
     if (!handler) return json({ status: "error", message: "Action inconnue : " + action });
+    if (ADMIN_ONLY.has(action)) {
+      const denied = await requireAdmin(p);
+      if (denied) return json(denied);
+    }
 
     const result = await handler(p);
     return json(result);
