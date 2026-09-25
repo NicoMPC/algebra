@@ -117,7 +117,7 @@ export async function simulerPaiement(code: string, produitIn: string) {
     .map((x) => x.toString(16).padStart(2, "0")).join("");
   const r = await api(new Request(`${PUBLIC}/api`, { method: "POST", body: raw, headers: { "stripe-signature": `t=${t},v1=${sig}` } }));
   const webhook = await r.json();
-  const acces = await callApi({ action: "get_acces", code });
+  const acces = await callApi({ action: "get_acces", code, access_token: await fake.tokenFor(String(prof.id)) });
   return { status: webhook.status, produit, montant_cents: montants[produit], webhook, droits: acces.droits };
 }
 

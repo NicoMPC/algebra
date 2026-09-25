@@ -93,37 +93,58 @@ function repondre(d: Deps, itemId: string, prof: Profil, bonus = 0): { reponse: 
   return { reponse: opts[0] ?? "", ok: false }; // "" = je ne sais pas
 }
 
-async function inscrire(d: Deps, c: { prenom: string; email: string; mdp: string }) {
-  const r = await d.callApi({ action: "register", name: c.prenom, email: c.email, level: "3EME", password: await hashApp(c.email, c.mdp), objectif: "brevet" });
+// register renvoie le jeton de session : toutes les actions élève l'exigent (Besoin API n°8).
+// `invite` : rattache un diagnostic express passé sans compte (Besoin API n°1).
+async function inscrire(d: Deps, c: { prenom: string; email: string; mdp: string }, invite?: { diagnostic_id: unknown; guest_token: unknown }) {
+  const r = await d.callApi({ action: "register", name: c.prenom, email: c.email, level: "3EME", password: await hashApp(c.email, c.mdp), objectif: "brevet", ...(invite || {}) });
   if (r.status !== "success") throw new Error("register " + c.email + " : " + r.message);
-  return String((r.profile as Record<string, unknown>).code);
+  if (invite && !r.diagnostic_rattache) throw new Error("register " + c.email + " : diagnostic invité non rattaché");
+  return { code: String((r.profile as Record<string, unknown>).code), tok: String(r.access_token || "") };
 }
 
-async function faireDiagnostic(d: Deps, code: string, type: string, prof: Profil) {
-  let r = await d.callApi({ action: "start_diagnostic", code, type });
+// Diagnostic express SANS compte (parcours cible : carte partielle avant l'inscription).
+async function faireDiagnosticInvite(d: Deps, prenom: string, prof: Profil) {
+  let r = await d.callApi({ action: "start_diagnostic", type: "express", prenom });
+  if (r.status !== "success" || !r.guest_token) throw new Error("start_diagnostic invité : " + r.message);
+  const invite = { diagnostic_id: r.diagnostic_id, guest_token: r.guest_token };
+  let n = 0;
+  while (r.question && n < 40) {
+    const q = r.question as Record<string, unknown>;
+    const { reponse } = repondre(d, String(q.id), prof);
+    r = await d.callApi({ action: "answer_diagnostic", ...invite, item_id: q.id, reponse, temps: 20 + Math.round(hash01(String(q.id)) * 40) });
+    if (r.status !== "success") throw new Error("answer_diagnostic invité : " + r.message);
+    n++;
+  }
+  if (!r.termine) throw new Error("diagnostic invité non terminé");
+  return { invite, n };
+}
+
+async function faireDiagnostic(d: Deps, code: string, tok: string, type: string, prof: Profil) {
+  const auth = { code, access_token: tok };
+  let r = await d.callApi({ action: "start_diagnostic", ...auth, type });
   if (r.status !== "success") throw new Error(`start_diagnostic ${type} ${code} : ${r.message}`);
   const id = r.diagnostic_id;
   let n = 0;
   while (r.question && n < 200) {
     const q = r.question as Record<string, unknown>;
     const { reponse } = repondre(d, String(q.id), prof);
-    r = await d.callApi({ action: "answer_diagnostic", code, diagnostic_id: id, item_id: q.id, reponse, temps: 20 + Math.round(hash01(String(q.id)) * 40) });
+    r = await d.callApi({ action: "answer_diagnostic", ...auth, diagnostic_id: id, item_id: q.id, reponse, temps: 20 + Math.round(hash01(String(q.id)) * 40) });
     if (r.status !== "success") throw new Error(`answer_diagnostic ${code} : ${r.message}`);
     n++;
-    if (!r.question && r.fin_module && !r.termine) r = await d.callApi({ action: "start_diagnostic", code, type }); // module suivant (reprise)
+    if (!r.question && r.fin_module && !r.termine) r = await d.callApi({ action: "start_diagnostic", ...auth, type }); // module suivant (reprise)
   }
   if (!r.termine) throw new Error(`diagnostic ${type} ${code} non terminé après ${n} questions`);
   return n;
 }
 
-async function faireEntrainement(d: Deps, code: string, prenom: string, prof: Profil, bonus: number, email: string) {
-  const r = await d.callApi({ action: "get_training", code, email });
+async function faireEntrainement(d: Deps, code: string, tok: string, prenom: string, prof: Profil, bonus: number, email: string) {
+  const r = await d.callApi({ action: "get_training", code, email, access_token: tok });
   if (r.status !== "success") throw new Error(`get_training ${code} : ${r.message}`);
   const exos = ((r.boost as Record<string, unknown>).exos || []) as Record<string, unknown>[];
   for (const e of exos) {
     const { reponse, ok } = repondre(d, String(e.item_id), prof, bonus);
     const s = await d.callApi({
-      action: "save_score", code, email, name: prenom, level: "3EME", categorie: e.categorie, exercice_idx: e.num,
+      action: "save_score", code, email, access_token: tok, name: prenom, level: "3EME", categorie: e.categorie, exercice_idx: e.num,
       resultat: ok ? "EASY" : "HARD", source: "BOOST", item_id: e.item_id, comp: e.comp, q: e.q, reponse, wrongOpt: ok ? "" : reponse,
       time: 30 + Math.round(hash01(String(e.item_id)) * 50), type: e.type, nbOptions: ((e.options || []) as unknown[]).length,
     });
@@ -159,27 +180,28 @@ async function seedInner(d: Deps) {
 
   // 1. Lina — compte neuf (inscrite aujourd'hui, rien fait)
   d.setOffsetDays(0);
-  const lina = await inscrire(d, COMPTES.neuf);
+  const { code: lina } = await inscrire(d, COMPTES.neuf);
 
-  // 2. Tom — diagnostic express fait hier (fractions / relatifs fragiles)
+  // 2. Tom — diagnostic express fait hier SANS compte (invité), puis inscription qui le rattache
   d.setOffsetDays(-1);
-  const tom = await inscrire(d, COMPTES.express);
-  const nTom = await faireDiagnostic(d, tom, "express", { faibles: /^NC\.(FRAC|REL|PUIS)/, pFort: 0.85, pFaible: 0.2, graine: "tom" });
+  const di = await faireDiagnosticInvite(d, COMPTES.express.prenom, { faibles: /^NC\.(FRAC|REL|PUIS)/, pFort: 0.85, pFaible: 0.2, graine: "tom" });
+  const { code: tom } = await inscrire(d, COMPTES.express, di.invite);
+  const nTom = di.n;
 
   // 3. Sarah — express il y a 11 jours, Programme Brevet payé, diagnostic complet, puis 10 jours d'entraînement
   d.setOffsetDays(-11);
-  const sarah = await inscrire(d, COMPTES.programme);
+  const { code: sarah, tok: tokS } = await inscrire(d, COMPTES.programme);
   const profS: Profil = { faibles: /^(NC\.(LIT|EQUA|FRAC)|DF\.(AFF|FONC))/, pFort: 0.8, pFaible: 0.3, graine: "sarah" };
-  const nS1 = await faireDiagnostic(d, sarah, "express", profS);
+  const nS1 = await faireDiagnostic(d, sarah, tokS, "express", profS);
   const pay = await d.simulerPaiement(sarah, "programme_brevet");
   if (pay.status !== "success") throw new Error("paiement Sarah : " + JSON.stringify(pay));
-  const nS2 = await faireDiagnostic(d, sarah, "complet", profS);
+  const nS2 = await faireDiagnostic(d, sarah, tokS, "complet", profS);
   let nTrain = 0;
   for (let j = 10; j >= 1; j--) {
     d.setOffsetDays(-j);
-    nTrain += await faireEntrainement(d, sarah, COMPTES.programme.prenom, profS, (10 - j) * 0.04, COMPTES.programme.email);
+    nTrain += await faireEntrainement(d, sarah, tokS, COMPTES.programme.prenom, profS, (10 - j) * 0.04, COMPTES.programme.email);
   }
   d.setOffsetDays(0);
-  console.log(`[seed] comptes : admin ${a.code} · Lina ${lina} (neuve) · Tom ${tom} (express ${nTom} q) · Sarah ${sarah} (express ${nS1} q + complet ${nS2} q + ${nTrain} exos sur 10 j)`);
+  console.log(`[seed] comptes : admin ${a.code} · Lina ${lina} (neuve) · Tom ${tom} (express invité ${nTom} q, rattaché) · Sarah ${sarah} (express ${nS1} q + complet ${nS2} q + ${nTrain} exos sur 10 j)`);
   return { lina, tom, sarah };
 }

@@ -36,7 +36,7 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 
 ---
 
-## Supabase PostgreSQL — Schéma actif (14 tables + 10 tables refonte diagnostic 3e)
+## Supabase PostgreSQL — Schéma actif (14 tables + 11 tables refonte diagnostic 3e)
 
 > **Source de vérité : `supabase/schema.sql`** — en cas de doute sur les colonnes exactes, lire le SQL.
 > Le tableau ci-dessous est un résumé humain, il peut diverger. Si contradiction → schema.sql a raison.
@@ -73,15 +73,21 @@ Service account : `algebreboost-sheets-2595a71cadfb.json` (ignoré par git).
 | **reponses_items** | Journal de chaque réponse item | `code`, `item_id`, `comp`, `contexte` (diag/train/legacy), `ok`, `reponse`, `err_id`, `temps_sec`, `date` | API |
 | **achats** | Achats Stripe → droits | `code` (via `client_reference_id`), `email`, `produit` (diagnostic_complet/programme_brevet), `offre` (metadata brut), `montant_cents`, `stripe_session_id` (unique), `rembourse_at` | webhook Stripe |
 | **funnel_events** | Funnel minimal (13 mois, sans IP/UA/email) | `code`, `event`, `meta` | API |
-| **bilan_partages** | Lien parent `/b/<token>` | `token` (PK, 192 bits), `code`, `diagnostic_id`, `expires_at` (+30 j), `revoked_at`, `vues` | API |
+| **bilan_partages** | Lien parent `/b/<token>` | `token` (PK, 192 bits), `code`, `diagnostic_id`, `expires_at` (+30 j), `revoked_at`, `vues`, **`canal`** (25/09 : `email_parent` = lien du mail P-X0, vaut preuve pour `confirm_parent` ; jamais créé depuis l'app) | API |
 | **consentements** | Cases cochées avant paiement | `code`, `produit`, `texte_version`, `texte_hash`, `cases[]` | API (`log_consent`) |
 | **email_logs** | (existait hors schema.sql) Log Resend + désinscriptions | `email`, `prenom`, `type`, `statut`, `details`, `created_at` + **`categorie`** (T/P/M), **`code`** | API emails |
+
+| **diagnostics_invites** | (25/09, migration `20260925_invites_securite.sql`) Diagnostic express **sans compte** | `id` uuid, `guest_token_hash` (SHA-256 du jeton, jamais en clair), `statut` (en_cours/termine/rattache), `prenom`, `etat_json`, `carte_json`, `n_questions`, `code` + `diagnostic_id` (après rattachement), `expires_at` (+2 j, prolongé à la fin du diag) | API (`start/answer_diagnostic` sans code, `register` rattache puis vide `etat_json`/`carte_json`/`prenom`) |
 
 Colonnes ajoutées à **profiles** : `email_eleve`, `consentement_parent_at`, `optin_marketing` (+ `optin_marketing_at`), `date_brevet_blanc` ; et documentées (déjà utilisées par le code) : `premium_niveau`, `mode`.
 
 Droits (calculés, jamais stockés côté client) : `achats` + `profiles.premium` legacy → `free` / `diagnostic_complet` / `programme_brevet` (`mxDroits` dans index.ts).
 
-RLS : `items` admin uniquement (contient les réponses) ; `competences` lecture authentifiée ; `maitrise`, `diagnostics`, `reponses_items`, `achats`, `bilan_partages` lecture propre (`code = my_code()`) ; `funnel_events`, `consentements`, `email_logs` admin. Aucune écriture directe élève : tout passe par l'Edge Function (service_role).
+RLS : `items` et `diagnostics_invites` admin uniquement ; `competences` lecture authentifiée ; `maitrise`, `diagnostics`, `reponses_items`, `achats`, `bilan_partages` lecture propre (`code = my_code()`) ; `funnel_events`, `consentements`, `email_logs` admin. Aucune écriture directe élève : tout passe par l'Edge Function (service_role).
+
+Sécurité API (25/09) : toute action qui lit/écrit les données d'un élève exige `access_token` (session Supabase Auth) rattaché au profil du `code` — le code seul ne suffit plus (détail : `docs/specs/20-moteur.md` §8 bis). `cron_send_emails` exige le secret `CRON_SECRET` (migration `20260925_cron_secret.sql`, Vault `matheux_cron_secret`).
+
+Purge des sessions invitées non rattachées (à la main ou en cron, sans urgence) : `delete from diagnostics_invites where statut <> 'rattache' and expires_at < now() - interval '7 days';`
 
 Purge des anciens comptes (décision 24/09) : `supabase/purge_anciens_comptes.sql` (backup d'abord, épargne les admins / KN6CFG). **Ne pas exécuter sans Nicolas.**
 

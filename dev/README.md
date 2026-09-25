@@ -23,12 +23,16 @@ Mot de passe pour tous les comptes : **`matheux-dev`**. Les codes restent les m�
 |---|---|---|---|
 | Nicolas (admin) | nicolas.follezou@hotmail.fr | KN6CFG | admin, triple-clic sur le logo |
 | Lina | lina@exemple.fr | MDX7DK | vient de s'inscrire, rien fait |
-| Tom | tom@exemple.fr | AQPTSK | diagnostic express fait hier, accès gratuit |
+| Tom | tom@exemple.fr | AQPTSK | diagnostic express fait hier en invité puis rattaché à l'inscription, accès gratuit |
 | Sarah | sarah@exemple.fr | 6LDHJ5 | Programme Brevet payé, diag complet, 10 jours d'entraînement (streak 10) |
 
 Les comptes ont été créés **en passant par l'API** (register, diagnostic, webhook Stripe signé,
 get_training, save_score), avec l'horloge reculée dans le temps. Leur état est donc celui que la
 prod produirait avec les mêmes réponses.
+
+Les actions élève exigent le **jeton de session** (`access_token` renvoyé par `login`, `register`, `login_token`) :
+`curl localhost:8787/api -d '{"action":"get_carte","code":"AQPTSK"}'` est refusé (`auth_requise`). Tom a fait son
+diagnostic express **en invité** (sans compte), rattaché ensuite au `register` : c'est le parcours cible.
 
 ## Outils de dev : http://localhost:8787/dev
 

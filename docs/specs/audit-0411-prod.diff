@@ -1,0 +1,414 @@
+diff --git a/supabase/functions/api/index.ts b/supabase/functions/api/index.ts
+index 0ffaeb6..540894e 100644
+--- a/supabase/functions/api/index.ts
++++ b/supabase/functions/api/index.ts
+@@ -123,6 +123,9 @@ async function register(p: Record<string, unknown>) {
+     return { status: "error", message: "Format d'email invalide." };
+   if (name.length > 50)
+     return { status: "error", message: "Le prénom ne doit pas dépasser 50 caractères." };
++  // Audit 2026-04-11 P0 : whitelist chars pour bloquer XSS stored dans le dashboard admin.
++  if (!/^[\p{L}\p{M}\s'\-]{1,50}$/u.test(name))
++    return { status: "error", message: "Prénom invalide — uniquement lettres, espaces, tirets et apostrophes." };
+   if (!ALLOWED_LEVELS.includes(level))
+     return { status: "error", message: "Niveau non accepté." };
+ 
+@@ -381,7 +384,7 @@ async function login(p: Record<string, unknown>) {
+             }
+           }
+         }
+-      } catch { /* JSON malformé — skip */ }
++      } catch { /* skip */ }
+       break;
+     }
+ 
+@@ -561,7 +564,10 @@ async function saveScore(p: Record<string, unknown>) {
+   const dedupDate = p.answeredAt && /^\d{4}-\d{2}-\d{2}$/.test(String(p.answeredAt))
+     ? String(p.answeredAt) : todayParis();
+ 
+-  // Insert with ON CONFLICT dedup (idx_scores_dedup: code+chapitre+num_exo+date)
++  // Insert with ON CONFLICT dedup
++  // FIX 2026-04-11 P0 : l'index unique est (code,chapitre,num_exo,date,source).
++  // Avant ce fix le onConflict listait 4 cols → PostgREST 42P10 sur tous les doublons
++  // → save_scores_batch/saveScore échouaient silencieusement. Scores perdus 9 jours.
+   const { error: insertErr } = await adminClient.from("scores").upsert({
+     code,
+     prenom: String(p.name),
+@@ -577,7 +583,11 @@ async function saveScore(p: Record<string, unknown>) {
+     draft: String(p.draft || ""),
+     date: dedupDate,
+     source: String(p.source || ""),
+-  }, { onConflict: "code,chapitre,num_exo,date", ignoreDuplicates: true });
++  }, { onConflict: "code,chapitre,num_exo,date,source", ignoreDuplicates: true });
++  if (insertErr) {
++    console.error("saveScore upsert error:", insertErr);
++    return { status: "error", message: "Erreur enregistrement score : " + insertErr.message };
++  }
+ 
+   // Update confidence score (Progress) — hors BOOST et CALIBRAGE
+   if (source !== "BOOST" && source !== "CALIBRAGE") {
+@@ -596,28 +606,36 @@ async function saveScore(p: Record<string, unknown>) {
+ // ── UPDATE_CONFIDENCE_SCORE (Progress) ──────────────────────
+ 
+ async function updateConfidenceScore(
+-  code: string, level: string, categorie: string, resultat: string, _exerciceIdx: number
++  code: string, level: string, categorie: string, _resultat: string, _exerciceIdx: number
+ ) {
+-  // Use RPC or read-then-write (UPSERT can't do nb_exos+1 atomically with supabase-js)
+-  const { data: existing } = await adminClient.from("progress")
+-    .select("id, nb_exos, nb_easy").eq("code", code).eq("categorie", categorie).maybeSingle();
+-
+-  const nbExos = (existing?.nb_exos || 0) + 1;
+-  const nbEasy = (existing?.nb_easy || 0) + (resultat === "EASY" ? 1 : 0);
++  // FIX 2026-04-11 P0 : l'ancien code lisait/écrivait `progress.nb_easy` qui N'EXISTE
++  // PAS dans le schéma (seulement nb_exos, nb_erreurs, score) → toute écriture progress
++  // échouait silencieusement (PGRST204). Refactor : on recompte depuis `scores` à la
++  // volée (source de vérité). 1 query supplémentaire mais correct et sans DDL.
++  const { data: scoreRows, error: selErr } = await adminClient.from("scores")
++    .select("resultat, source")
++    .eq("code", code).eq("chapitre", categorie);
++  if (selErr) {
++    console.error("updateConfidenceScore select error:", selErr);
++    return;
++  }
++  const relevant = (scoreRows || []).filter((s: Record<string, unknown>) => {
++    const src = String(s.source || "");
++    return src !== "BOOST" && src !== "CALIBRAGE";
++  });
++  const nbExos = relevant.length;
++  const nbEasy = relevant.filter((s: Record<string, unknown>) => String(s.resultat) === "EASY").length;
++  const nbErreurs = nbExos - nbEasy;
+   const score = nbExos > 0 ? Math.round((nbEasy / nbExos) * 100) : 0;
+   const todayStr = todayParis();
+ 
+-  if (existing) {
+-    await adminClient.from("progress").update({
+-      nb_exos: nbExos, nb_easy: nbEasy, score, derniere_pratique: todayStr,
+-    }).eq("id", existing.id);
+-  } else {
+-    await adminClient.from("progress").upsert({
+-      code, niveau: level, categorie, nb_exos: nbExos, nb_easy: nbEasy, score, derniere_pratique: todayStr,
+-    }, { onConflict: "code,chapitre" }).catch(() => {
+-      // Race condition fallback — another request created it
+-    });
+-  }
++  // Schéma progress : unique(code, categorie). onConflict doit matcher cet index.
++  const { error: upErr } = await adminClient.from("progress").upsert({
++    code, niveau: level, categorie,
++    nb_exos: nbExos, nb_erreurs: nbErreurs, score,
++    derniere_pratique: todayStr,
++  }, { onConflict: "code,categorie" });
++  if (upErr) console.error("updateConfidenceScore upsert error:", upErr);
+ }
+ 
+ // ── SAVE_CALIBRATION_BATCH ──────────────────────────────────
+@@ -645,32 +663,80 @@ async function saveCalibrationBatch(p: Record<string, unknown>) {
+ 
+   await adminClient.from("scores").insert(rows);
+ 
+-  // Identifier le chapitre le plus faible et le set comme free_chapter
+-  // (seulement si l'élève n'est pas premium et n'a pas encore de free_chapter)
++  // ── Choix du chapitre offert (free_chapter) ─────────────────
++  // Refonte 10/04/2026 : scoring pondéré par importance Brevet + tie-break explicite
++  // + fallback Fonctions Affines pour élève fort (0 erreur).
++  // Seulement si l'élève n'est pas premium et n'a pas encore de free_chapter.
+   let freeChapter: string | null = null;
+   const { data: prof } = await adminClient.from("profiles")
+     .select("premium, free_chapter").eq("code", code).maybeSingle();
+ 
+   if (prof && !prof.premium && !prof.free_chapter) {
+-    const chapErrors: Record<string, { total: number; wrong: number }> = {};
++    // Poids stratégiques Brevet (plus élevé = plus prioritaire si raté)
++    const CALIB_WEIGHTS: Record<string, number> = {
++      "fonctions_affines": 2.0,  // LE chapitre décisif Brevet
++      "pythagore":         1.6,
++      "thales":            1.6,
++      "calcul_litteral":   1.5,
++      "fractions":         1.4,
++      "proportionnalite":  1.0,
++      "puissances":        0.9,
++    };
++    // Ordre de priorité pour tie-break (1er gagne si scores égaux)
++    const CALIB_PRIORITY = [
++      "fonctions_affines", "thales", "pythagore", "calcul_litteral",
++      "fractions", "proportionnalite", "puissances",
++    ];
++    // Normaliser un nom de chapitre pour matcher avec les clés de poids
++    const normCalib = (s: string): string => {
++      const n = s.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
++        .toLowerCase().replace(/_brevet$/, "").replace(/_+$/, "")
++        .replace(/_de_/g, "_").replace(/\s+/g, "_");
++      for (const k of Object.keys(CALIB_WEIGHTS)) {
++        if (n === k || n.includes(k) || k.includes(n)) return k;
++      }
++      return n;
++    };
++
++    const chapErrors: Record<string, { total: number; wrong: number; raw: string }> = {};
+     for (const s of (p.scores as Record<string, unknown>[])) {
+       // originalChapter contient le vrai chapitre (categorie = "CALIBRAGE" pour tous)
+-      const cat = String(s.originalChapter || s.categorie || "");
+-      if (!cat || cat === "CALIBRAGE") continue;
+-      if (!chapErrors[cat]) chapErrors[cat] = { total: 0, wrong: 0 };
++      const rawCat = String(s.originalChapter || s.categorie || "");
++      if (!rawCat || rawCat === "CALIBRAGE") continue;
++      const cat = normCalib(rawCat);
++      if (!chapErrors[cat]) chapErrors[cat] = { total: 0, wrong: 0, raw: rawCat };
+       chapErrors[cat].total++;
+       if (String(s.resultat || "") !== "EASY") chapErrors[cat].wrong++;
+     }
+-    let weakest = "";
+-    let worstRatio = -1;
++
++    // Score pondéré = wrong × poids (wrong = 0/1 avec 1 question par chapitre)
++    let bestScore = -1;
++    const tied: string[] = [];
+     for (const [cat, stats] of Object.entries(chapErrors)) {
+-      const ratio = stats.total > 0 ? stats.wrong / stats.total : 0;
+-      if (ratio > worstRatio) { worstRatio = ratio; weakest = cat; }
++      const wrong = stats.wrong > 0 ? 1 : 0;
++      const weight = CALIB_WEIGHTS[cat] ?? 1.0;
++      const score = wrong * weight;
++      if (score > bestScore) { bestScore = score; tied.length = 0; tied.push(cat); }
++      else if (score === bestScore) { tied.push(cat); }
+     }
+-    if (weakest) {
+-      await adminClient.from("profiles").update({ free_chapter: weakest }).eq("code", code);
+-      freeChapter = weakest;
++
++    let weakestKey = "";
++    if (bestScore > 0 && tied.length > 0) {
++      // Tie-break par ordre de priorité explicite
++      for (const pKey of CALIB_PRIORITY) {
++        if (tied.includes(pKey)) { weakestKey = pKey; break; }
++      }
++      if (!weakestKey) weakestKey = tied[0];
++    } else {
++      // Fallback élève fort (0 erreur) → Fonctions Affines
++      weakestKey = "fonctions_affines";
+     }
++
++    // Récupérer le nom brut original (ex: "Fonctions_Affines_Brevet") pour cohérence DB.
++    // Si l'élève fort n'a pas vu cette catégorie, on fallback sur le nom canonique *_Brevet.
++    const weakest = chapErrors[weakestKey]?.raw || "Fonctions_Affines_Brevet";
++    await adminClient.from("profiles").update({ free_chapter: weakest }).eq("code", code);
++    freeChapter = weakest;
+   } else if (prof) {
+     freeChapter = prof.free_chapter || null;
+   }
+@@ -754,40 +820,47 @@ async function saveScoresBatch(p: Record<string, unknown>) {
+   }));
+ 
+   // Batch insert with dedup (ON CONFLICT ignore)
+-  await adminClient.from("scores").upsert(rows, {
+-    onConflict: "code,chapitre,num_exo,date", ignoreDuplicates: true
++  // FIX 2026-04-11 P0 : onConflict doit matcher l'index unique (5 cols, pas 4).
++  const { error: batchErr } = await adminClient.from("scores").upsert(rows, {
++    onConflict: "code,chapitre,num_exo,date,source", ignoreDuplicates: true
+   });
++  if (batchErr) {
++    console.error("save_scores_batch upsert error:", batchErr);
++    return { status: "error", message: "Erreur batch scores : " + batchErr.message };
++  }
+ 
+   // Batch progress updates — group by chapitre, only for non-BOOST non-CALIBRAGE
+-  const chapScores: Record<string, string[]> = {};
++  const chapCats = new Set<string>();
+   let boostCount = 0;
+   for (const s of (p.scores as Record<string, unknown>[])) {
+     const src = String(s.source || "");
+     if (src === "BOOST") { boostCount++; continue; }
+     if (src === "CALIBRAGE") continue;
+     const cat = String(s.categorie || "");
+-    if (!chapScores[cat]) chapScores[cat] = [];
+-    chapScores[cat].push(String(s.resultat || "HARD"));
++    if (cat) chapCats.add(cat);
+   }
+ 
+-  // Update progress per chapter
+-  for (const [cat, results] of Object.entries(chapScores)) {
+-    const { data: existing } = await adminClient.from("progress")
+-      .select("id, nb_exos, nb_easy").eq("code", code).eq("categorie", cat).maybeSingle();
+-
+-    const nbExos = (existing?.nb_exos || 0) + results.length;
+-    const nbEasy = (existing?.nb_easy || 0) + results.filter(r => r === "EASY").length;
++  // Update progress per chapter — recompute from scores table (source de vérité)
++  // FIX 2026-04-11 P0 : ne plus utiliser `progress.nb_easy` (colonne inexistante).
++  for (const cat of chapCats) {
++    const { data: scoreRows, error: selErr } = await adminClient.from("scores")
++      .select("resultat, source")
++      .eq("code", code).eq("chapitre", cat);
++    if (selErr) { console.error("batch progress select error:", selErr); continue; }
++    const rel = (scoreRows || []).filter((s: Record<string, unknown>) => {
++      const src = String(s.source || "");
++      return src !== "BOOST" && src !== "CALIBRAGE";
++    });
++    const nbExos = rel.length;
++    const nbEasy = rel.filter((s: Record<string, unknown>) => String(s.resultat) === "EASY").length;
++    const nbErreurs = nbExos - nbEasy;
+     const score = nbExos > 0 ? Math.round((nbEasy / nbExos) * 100) : 0;
+-
+-    if (existing) {
+-      await adminClient.from("progress").update({
+-        nb_exos: nbExos, nb_easy: nbEasy, score, derniere_pratique: todayStr,
+-      }).eq("id", existing.id);
+-    } else {
+-      await adminClient.from("progress").insert({
+-        code, niveau: level, categorie: cat, nb_exos: nbExos, nb_easy: nbEasy, score, derniere_pratique: todayStr,
+-      });
+-    }
++    const { error: upErr } = await adminClient.from("progress").upsert({
++      code, niveau: level, categorie: cat,
++      nb_exos: nbExos, nb_erreurs: nbErreurs, score,
++      derniere_pratique: todayStr,
++    }, { onConflict: "code,categorie" });
++    if (upErr) console.error("batch progress upsert error:", upErr);
+   }
+ 
+   // Update ExosDone in DailyBoosts if any BOOST scores
+@@ -1000,7 +1073,14 @@ async function getAdminOverview(p: Record<string, unknown>) {
+ // ── PUBLISH_ADMIN_BOOST ─────────────────────────────────────
+ 
+ async function publishAdminBoost(p: Record<string, unknown>) {
+-  const code = String(p.code);
++  // Audit 2026-04-11 P0 : exiger is_admin sur le caller (défense en profondeur).
++  // Note : le front envoie adminCode séparé de targetCode. Backward-compat si adminCode absent → fallback code.
++  const adminCode = String(p.adminCode || p.code || "");
++  const { data: admin } = await adminClient.from("profiles")
++    .select("is_admin").eq("code", adminCode).maybeSingle();
++  if (!admin?.is_admin) return { status: "error", message: "Accès refusé." };
++
++  const code = String(p.targetCode || p.code);
+   const boostJson = p.boost;
+   if (!code || !boostJson) return { status: "error", message: "code et boost requis." };
+ 
+@@ -1025,7 +1105,13 @@ async function publishAdminBoost(p: Record<string, unknown>) {
+ // ── PUBLISH_ADMIN_CHAPTER ───────────────────────────────────
+ 
+ async function publishAdminChapter(p: Record<string, unknown>) {
+-  const code = String(p.code);
++  // Audit 2026-04-11 P0 : exiger is_admin sur le caller.
++  const adminCode = String(p.adminCode || p.code || "");
++  const { data: admin } = await adminClient.from("profiles")
++    .select("is_admin").eq("code", adminCode).maybeSingle();
++  if (!admin?.is_admin) return { status: "error", message: "Accès refusé." };
++
++  const code = String(p.targetCode || p.code);
+   const chapterJson = p.chapter;
+   if (!code || !chapterJson) return { status: "error", message: "code et chapter requis." };
+ 
+@@ -1090,7 +1176,13 @@ async function resetPassword(p: Record<string, unknown>) {
+   const password = String(p.password || "").trim();
+   if (!email || !password) return { status: "error", message: "Email et mot de passe requis." };
+ 
++  // ⚠ Audit 2026-04-11 : flow custom token cassé (aucun token stocké côté back).
++  // Refus systématique — le vrai reset passe par le lien Supabase Auth envoyé par forgot_password.
++  // L'élève doit cliquer le lien dans l'email (hash #access_token=...) et reset via supabase.auth.updateUser côté client.
++  return { status: "error", message: "Reset indisponible par ce canal — utilise le lien reçu par email." };
++
+   // Trouver l'utilisateur par email
++  // deno-lint-ignore no-unreachable
+   const { data: profile } = await adminClient.from("profiles")
+     .select("id").eq("email", email).maybeSingle();
+   if (!profile) return { status: "error", message: "Utilisateur introuvable." };
+@@ -1149,6 +1241,12 @@ async function logManualEmail(p: Record<string, unknown>) {
+ // ── GET_COURS_ADMIN ─────────────────────────────────────────
+ 
+ async function getCoursAdmin(p: Record<string, unknown>) {
++  // Audit 2026-04-11 P1 : exiger is_admin sur le caller.
++  const adminCode = String(p.code || "");
++  const { data: admin } = await adminClient.from("profiles")
++    .select("is_admin").eq("code", adminCode).maybeSingle();
++  if (!admin?.is_admin) return { status: "error", message: "Accès refusé." };
++
+   const { data } = await adminClient.from("cours").select("*");
+   return { status: "success", cours: data || [] };
+ }
+@@ -1156,6 +1254,12 @@ async function getCoursAdmin(p: Record<string, unknown>) {
+ // ── SAVE_COURS ──────────────────────────────────────────────
+ 
+ async function saveCours(p: Record<string, unknown>) {
++  // Audit 2026-04-11 P0 : exiger is_admin sur le caller.
++  const adminCode = String(p.code || p.adminCode || "");
++  const { data: admin } = await adminClient.from("profiles")
++    .select("is_admin").eq("code", adminCode).maybeSingle();
++  if (!admin?.is_admin) return { status: "error", message: "Accès refusé." };
++
+   const niveau = String(p.niveau || "");
+   const categorie = String(p.categorie || "");
+   if (!niveau || !categorie) return { status: "error", message: "niveau et categorie requis." };
+@@ -1468,6 +1572,13 @@ async function sendMarketingEmail(p: Record<string, unknown>) {
+ // Scanne tous les élèves, calcule J+N depuis inscription, envoie si pas déjà fait
+ 
+ async function cronSendEmails(_p: Record<string, unknown>) {
++  // Audit 2026-04-11 P0 : gate par secret partagé.
++  // Définir CRON_SECRET via `supabase secrets set CRON_SECRET=...` et l'inclure dans le payload Scheduler.
++  const CRON_SECRET = Deno.env.get("CRON_SECRET") || "";
++  const providedSecret = String(_p.cron_secret || "");
++  if (!CRON_SECRET || providedSecret !== CRON_SECRET) {
++    return { status: "error", message: "Accès refusé." };
++  }
+   const today = todayParis();
+   const todayDate = new Date(today + "T00:00:00Z");
+ 
+@@ -1537,6 +1648,42 @@ async function sendTestEmailResend(p: Record<string, unknown>) {
+   return { status: "success", sent_to: email };
+ }
+ 
++// ── send_admin_email — envoi custom Resend, gaté par compte admin ──
++// Utilisé pour les mails one-shot personnalisés (premier contact, suivi VIP).
++// Requiert adminCode d'un profil avec is_admin=true.
++
++async function sendAdminEmail(p: Record<string, unknown>) {
++  const adminCode = String(p.adminCode || "").trim().toUpperCase();
++  const to = String(p.to || "").trim().toLowerCase();
++  const subject = String(p.subject || "").trim();
++  const html = String(p.html || "").trim();
++  const replyTo = String(p.replyTo || "contact@matheux.fr").trim();
++
++  if (!adminCode || !to || !subject || !html) {
++    return { status: "error", message: "adminCode, to, subject, html requis." };
++  }
++
++  // Vérif admin
++  const { data: prof } = await adminClient.from("profiles")
++    .select("code, is_admin").eq("code", adminCode).limit(1);
++  if (!prof || prof.length === 0 || !prof[0].is_admin) {
++    return { status: "error", message: "Accès refusé." };
++  }
++
++  const result = await resendSend(to, subject, html, replyTo);
++
++  // Log dans email_logs (type ADMIN pour distinguer des marketing J+N)
++  await adminClient.from("email_logs").insert({
++    email: to, prenom: "", type: "ADMIN",
++    statut: result.ok ? "envoyé" : "erreur",
++    details: result.error || subject,
++    created_at: new Date().toISOString(),
++  });
++
++  if (!result.ok) return { status: "error", message: "Resend: " + result.error };
++  return { status: "success", sent_to: to };
++}
++
+ // ── NOOP actions (fonctionnalités secondaires, retournent success) ──
+ 
+ async function noopAction(_p: Record<string, unknown>) {
+@@ -1562,7 +1709,9 @@ const ACTIONS: Record<string, (p: Record<string, unknown>) => Promise<unknown>>
+   get_admin_overview: getAdminOverview,
+   publish_admin_boost: publishAdminBoost,
+   publish_admin_chapter: publishAdminChapter,
+-  stripe_webhook: stripeWebhook,
++  // stripe_webhook volontairement hors ACTIONS map (audit 2026-04-11) —
++  // accessible UNIQUEMENT via le path signature vérifiée en haut du dispatch (ligne ~1666).
++  // Laisser ici permettait à n'importe qui de grante premium en envoyant {action:"stripe_webhook", email}.
+   unsubscribe: unsubscribeEmail,
+   report_exo: reportExo,
+   send_contact: sendContact,
+@@ -1582,6 +1731,7 @@ const ACTIONS: Record<string, (p: Record<string, unknown>) => Promise<unknown>>
+   mark_all_test: noopAction,
+   simulate_next_day: noopAction,
+   send_test_email: sendTestEmailResend,
++  send_admin_email: sendAdminEmail,
+   send_marketing_email: sendMarketingEmail,
+   cron_send_emails: cronSendEmails,
+   send_weekly_report: proxyGas,

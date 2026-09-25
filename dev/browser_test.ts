@@ -51,7 +51,8 @@ try {
   for (let etape = 0; etape < 12 && !ok; etape++) {
     await new Promise((r) => setTimeout(r, 900));
     const texte: string = await page.evaluate(() => document.body.innerText.replace(/\s+/g, " "));
-    if (questions.some((q) => { const x = extrait(q); return x && texte.includes(x); })) { ok = true; break; }
+    // mots un par un : KaTeX intercale la formule rendue entre les mots (question différente à chaque run en invité)
+    if (questions.some((q) => { const x = extrait(q); return x && x.split(" ").every((w) => texte.includes(w)); })) { ok = true; break; }
     await page.evaluate(() => {
       const vis = (el: Element) => { const r = (el as HTMLElement).getBoundingClientRect(); const s = getComputedStyle(el); return r.width > 0 && r.height > 0 && s.visibility !== "hidden" && s.display !== "none"; };
       for (const i of Array.from(document.querySelectorAll('input[type="text"],input:not([type])'))) if (vis(i) && !(i as HTMLInputElement).value) { (i as HTMLInputElement).value = "Test"; i.dispatchEvent(new Event("input", { bubbles: true })); }

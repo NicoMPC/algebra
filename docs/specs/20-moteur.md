@@ -192,17 +192,43 @@ legacy inchangé. Le client ne fait jamais foi : chaque action recalcule les dro
 
 | Action | Entrée | Sortie |
 |---|---|---|
-| `start_diagnostic` | `code, email?, type` | `diagnostic_id, question` (sans réponse), `progression`, `repris` ; refus `paywall` si non débloqué |
-| `answer_diagnostic` | `code, diagnostic_id, item_id, reponse, temps?` | question suivante ou `fin_module` ; à la fin `carte` (masquée selon droits) + `corrections` (récap). **Aucune correction avant la fin** |
-| `get_carte` | `code, diagnostic_id?` | dernière carte (masquée), `droits`, `streak`, diagnostics `en_cours` |
-| `get_training` | `code` | `boost` du jour (5 exos), `rediagnostic_du`, `zone_maitrisee`, `streak`, `droits` |
-| `get_acces` | `code` | `droits`, `produits` (prix) |
+| `start_diagnostic` | `code, access_token, type` · **sans code** : invité (§8 bis) | `diagnostic_id, question` (sans réponse), `progression`, `repris` ; refus `paywall` si non débloqué |
+| `answer_diagnostic` | `code, access_token, diagnostic_id, item_id, reponse, temps?` (ou `diagnostic_id, guest_token, …` en invité) | question suivante ou `fin_module` ; à la fin `carte` (masquée selon droits) + `corrections` (récap). **Aucune correction avant la fin** |
+| `get_carte` | `code, access_token, diagnostic_id?` | dernière carte (masquée, titres gardés, `non_mesurees`), `droits`, `streak`, diagnostics `en_cours` |
+| `get_training` | `code, access_token, comp?` | `boost` du jour (5 exos + `err_libelles`, `focus_titres`, `pourquoi`), `rediagnostic_du`, `zone_maitrisee`, `streak`, `droits` ; avec `comp` : entraînement libre Programme (hors quota, n'écrit pas `daily_boosts`) |
+| `get_acces` | `code, access_token` | `droits`, `produits` (prix en centimes : 1900 / 4900 / 3000 upgrade) |
 | `set_preferences` | `code, email, email_eleve?, optin_marketing?, date_brevet_blanc?, consentement_parent?` | — |
 | `log_consent` | `code, produit, texte_version, texte_hash, cases[]` | — (table `consentements`) |
 | `log_funnel_event` | `event` ∈ {paywall_view, checkout_click, pdf_open, share_opened_app}, `meta` | — (les autres événements sont loggés côté serveur) |
 | `create_share` / `revoke_share` | `code, canal?` / `code, token?` | `token`, `url` = `https://matheux.fr/b/<token>`, expiration 30 j |
 | `get_bilan_partage` | `token` (**public**) | carte réduite (sans réponses ni email), `og {title, description}` pour WhatsApp, `code` (pour `client_reference_id`), `prix_cents` |
 | `save_score` / `save_scores_batch` | + `item_id` (ou `comp`, `type`, `nbOptions`) facultatifs | maîtrise mise à jour ; sans ces champs, comportement inchangé |
+
+**Toutes** les actions élève ci-dessus exigent `access_token` depuis le 25/09 (voir §8 bis). Contrats exacts :
+`docs/specs/41-integration-log.md` section « Besoins API ».
+
+### 8 bis. Ajouts du 25/09 (Besoins API 1-10, journal d'intégration)
+
+- **Sécurité** : helper unique `mxSessionUid` (jeton → `auth.getUser`), utilisé par `mxAuth` (élève : le jeton doit
+  appartenir au profil du `code` ; lecture admin autorisée sur `get_carte`, `get_acces`, `get_progress`,
+  `check_trial_status`, `generate_adaptive_boost`) et par `requireAdmin` (garde centrale `ADMIN_ONLY`, 12 actions,
+  même liste que le hotfix prod `4fc6123`). Refus = `{status:'error', auth_requise:true}`. `cron_send_emails` :
+  `cron_send_emails {cron_secret}` (secret `CRON_SECRET`) ou jeton admin. Correctifs de l'audit prod du 11/04 portés
+  (whitelist du prénom, erreurs d'upsert `scores` remontées, `progress` recalculé depuis `scores`, `free_chapter`
+  pondéré, `send_admin_email`, `targetCode`).
+- **Sessions** : `register` et `login` renvoient `access_token`, `refresh_token`, `expires_at` ; `login_token`
+  (auto-login sans hash de mot de passe) et `refresh_session`.
+- **Diagnostic invité** : table `diagnostics_invites` (jeton hashé, expiration 2 j). Maîtrise calculée en mémoire
+  (`mxMaitriseDepuisObs`, bloc pur) ; `register {diagnostic_id, guest_token}` crée la ligne `diagnostics`, rejoue les
+  observations (`maitrise`, `reponses_items`), recalcule la carte avec le prénom, puis vide la copie invitée.
+- **Séance** : `err_libelles` par exo (`mxErrLibelles`), `focus_titres`, `pourquoi` (`mxPourquoi` : cause racine >
+  erreur type vue > statut, + révision ; tutoiement, aucun humain cité). Séance libre : `source: "LIBRE"` dans
+  `save_score` (contexte `train`, pas de `progress` legacy, Programme seulement).
+- **Email P-X0** au parent (remplace `templateJ0`) : à la fin de l'express si le compte existe, sinon au `register` qui
+  rattache un diag invité terminé. Dédup `email_logs` `D3:P-X0`, UNSUB respecté, lien `/b/<token>` (partage
+  `canal = email_parent`) et `?confirmer=1` → action publique `confirm_parent {token, optin_marketing?}`.
+- **Admin** : `get_admin_overview` ajoute `diagnostics` (+ `diagnostics_stats`), `invites`, `achats`, `ca_cents`, `funnel`.
+- Tests : `supabase/tests/besoins_api_test.ts` (fonctions pures), `dev/smoke_test.ts` (parcours + attaques HTTP).
 
 Streak (`mxStreak`) : jours avec ≥ 1 réponse (`reponses_items` + `scores`), gel d'1 jour par fenêtre de 7 (G3),
 streak conservé tant que la journée n'est pas finie.
@@ -254,7 +280,7 @@ en diagnostic, sous-questions dépendantes jamais servies seules, déterminisme.
   faibles restent « non évalués » et sont découverts à l'entraînement. Pour tout couvrir il faudrait ~90-100 q.
 - La maîtrise ne met à jour que la compétence principale (`comp_secondaires` ignorées).
 - Double comptage possible si l'app renvoie deux fois le même `save_score` (dédup `scores` silencieuse).
-- Identité par `code` (+ email facultatif), comme les actions existantes : pas de JWT.
+- ~~Identité par `code` seul~~ : corrigé le 25/09, jeton de session exigé (§8 bis).
 - Problèmes Brevet complets (parapluies, `parapluie_id`/`num`, sous-questions `depend_question_precedente`), brevets
   blancs et automatismes : v1.1. Les items dépendants ne sont jamais servis seuls.
 - Banque peu profonde (voir §6) : séances parfois < 5 exos, signalées.

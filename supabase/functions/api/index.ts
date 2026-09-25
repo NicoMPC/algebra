@@ -129,6 +129,9 @@ async function register(p: Record<string, unknown>) {
     return { status: "error", message: "Format d'email invalide." };
   if (name.length > 50)
     return { status: "error", message: "Le prénom ne doit pas dépasser 50 caractères." };
+  // Audit 2026-04-11 P0 (porté de la prod le 25/09) : whitelist chars pour bloquer XSS stored dans le dashboard admin.
+  if (!/^[\p{L}\p{M}\s'\-]{1,50}$/u.test(name))
+    return { status: "error", message: "Prénom invalide — uniquement lettres, espaces, tirets et apostrophes." };
   if (!ALLOWED_LEVELS.includes(level))
     return { status: "error", message: "Niveau non accepté." };
 
@@ -180,10 +183,21 @@ async function register(p: Record<string, unknown>) {
   });
   if (profileError) return { status: "error", message: "Erreur profil : " + profileError.message };
 
-  // Email bienvenue J+0 via Resend
-  try {
-    await sendMarketingEmail({ email, name, day: 0, objectif });
-  } catch { /* silencieux — ne bloque pas l'inscription */ }
+  // Session tout de suite (Besoin API n°8/9) : l'app enchaîne les actions élève avec access_token.
+  const { data: sess } = await authClient.auth.signInWithPassword({ email, password });
+  const session = sess?.session || null;
+
+  // Diagnostic express fait en invité avant le compte (Besoin API n°1) : rattachement + rejeu.
+  let rattache: Awaited<ReturnType<typeof mxRattacherInvite>> = null;
+  if (p.diagnostic_id && p.guest_token) {
+    try { rattache = await mxRattacherInvite(p, { code, prenom: name, niveau: level, email, free_chapter: null }); }
+    catch (e) { console.error("[register] rattachement invité", e); }
+  }
+  // Ancien templateJ0 remplacé par P-X0 (bilan express au parent, Besoin API n°7) : il part dès que la
+  // carte express existe (ici si le diag invité est terminé, sinon à la fin du diagnostic).
+  if (rattache?.termine && rattache.carte) {
+    await mxEmailBilanExpress({ code, prenom: name, email }, rattache.diagnostic_id, rattache.carte, rattache.ref);
+  }
 
   // Notification fondateur
   try {
@@ -214,6 +228,13 @@ async function register(p: Record<string, unknown>) {
   return {
     status: "success",
     profile: { code, name, level, isAdmin: false, premium: false, trialStart: now, objectif, mode: null },
+    access_token: session?.access_token || null,
+    refresh_token: session?.refresh_token || null,
+    expires_at: session?.expires_at || null,
+    diagnostic_id: rattache?.diagnostic_id || null,
+    diagnostic_rattache: !!rattache,
+    ...(p.diagnostic_id && p.guest_token && !rattache ? { rattachement_erreur: "Session invitée expirée ou déjà utilisée : refais le diagnostic express." } : {}),
+    carte: rattache?.carte ? mxMasquerCarte(rattache.carte, "free", rattache.ref) : null,
     curriculumOfficiel,
     diagExos: [],
     dailyBoost: null,
@@ -245,7 +266,6 @@ async function login(p: Record<string, unknown>) {
 
   // Fallback : ancien hash SHA-256 (transition)
   let user: Record<string, unknown> | null = null;
-  let isAdminLogin = false;
 
   if (authError) {
     // Vérifier si c'est un login avec l'ancien hash
@@ -265,7 +285,26 @@ async function login(p: Record<string, unknown>) {
     if (!profile) return { status: "error", message: "Profil introuvable." };
     user = profile;
   }
+  // Besoin API n°12 : diagnostic express fait en invité par quelqu'un qui a DÉJÀ un compte → rattaché au login
+  // (même logique que register). Seulement avec une vraie session (pas le fallback hash legacy).
+  let rattache: Awaited<ReturnType<typeof mxRattacherInvite>> = null;
+  if (authData?.session && p.diagnostic_id && p.guest_token && !user!.is_admin) {
+    try { rattache = await mxRattacherInvite(p, user!); } catch (e) { console.error("[login] rattachement invité", e); }
+    if (rattache?.termine && rattache.carte) await mxEmailBilanExpress(user!, rattache.diagnostic_id, rattache.carte, rattache.ref);
+  }
+  const rep = await mxReponseSession(user!, authData?.session || null);
+  if (p.diagnostic_id && p.guest_token) {
+    Object.assign(rep, { diagnostic_id: rattache?.diagnostic_id || null, diagnostic_rattache: !!rattache,
+      ...(rattache ? {} : { rattachement_erreur: "Session invitée expirée ou déjà utilisée." }) });
+  }
+  return rep;
+}
 
+// Réponse de connexion (login, login_token) : profil + état de l'app + jetons de session.
+// `session` = jetons à renvoyer (access_token pour chaque appel élève, refresh_token pour le renouveler).
+async function mxReponseSession(user: Record<string, unknown>,
+  session: { access_token: string; refresh_token?: string | null; expires_at?: number | null } | null) {
+  let isAdminLogin = false;
   const code = String(user.code);
   const level = String(user.niveau).toUpperCase();
   const name = String(user.prenom);
@@ -486,7 +525,9 @@ async function login(p: Record<string, unknown>) {
   return {
     status: "success",
     profile: { code, name, level, isAdmin, premium: isPremium, trialStart, objectif, mode: user.mode || null },
-    access_token: authData?.session?.access_token || null,
+    access_token: session?.access_token || null,
+    refresh_token: session?.refresh_token || null,
+    expires_at: session?.expires_at || null,
     curriculumOfficiel,
     diagExos: [],
     dailyBoost: todayBoost,
@@ -508,6 +549,43 @@ async function login(p: Record<string, unknown>) {
   };
 }
 
+// ── LOGIN_TOKEN {access_token, refresh_token?} / REFRESH_SESSION {refresh_token} (Besoin API n°9) ──
+// Auto-login sans garder le hash du mot de passe côté app : on garde access_token + refresh_token.
+// access_token valide → même réponse que login. Expiré mais refresh_token fourni → session renouvelée
+// (nouveaux jetons dans la réponse, à re-stocker : le refresh_token est à usage unique chez Supabase).
+async function mxRafraichir(refresh: string) {
+  if (!refresh) return null;
+  const { data, error } = await authClient.auth.refreshSession({ refresh_token: refresh });
+  if (error || !data?.session || !data.user) return null;
+  return { uid: data.user.id, session: data.session };
+}
+
+async function loginToken(p: Record<string, unknown>) {
+  const access = String(p.access_token || ""), refresh = String(p.refresh_token || "");
+  let uid: string | null = null;
+  let session: { access_token: string; refresh_token?: string | null; expires_at?: number | null } | null = null;
+  if (access) {
+    const { data, error } = await adminClient.auth.getUser(access);
+    if (!error && data?.user) { uid = data.user.id; session = { access_token: access, refresh_token: refresh || null, expires_at: null }; }
+  }
+  if (!uid && refresh) {
+    const r = await mxRafraichir(refresh);
+    if (r) { uid = r.uid; session = r.session; }
+  }
+  if (!uid || !session) return MX_AUTH_REFUS;
+  const { data: profile } = await adminClient.from("profiles").select("*").eq("id", uid).maybeSingle();
+  if (!profile) return { status: "error", message: "Profil introuvable." };
+  return await mxReponseSession(profile as Record<string, unknown>, session);
+}
+
+async function refreshSession(p: Record<string, unknown>) {
+  const r = await mxRafraichir(String(p.refresh_token || ""));
+  if (!r) return MX_AUTH_REFUS;
+  const { data: profile } = await adminClient.from("profiles").select("code").eq("id", r.uid).maybeSingle();
+  return { status: "success", access_token: r.session.access_token, refresh_token: r.session.refresh_token,
+    expires_at: r.session.expires_at || null, code: profile?.code || null };
+}
+
 // ── SAVE_SCORE ──────────────────────────────────────────────
 
 async function saveScore(p: Record<string, unknown>) {
@@ -522,6 +600,7 @@ async function saveScore(p: Record<string, unknown>) {
 
   const code = String(p.code);
   if (code.length !== 6) return { status: "error", message: "Code élève invalide." };
+  if (!(await mxAuth(p))) return MX_AUTH_REFUS; // Besoin API n°8 : jeton de session obligatoire
 
   // Vérifier identité — SELECT avec `mode` (fix P1 #4 mode lite Leo)
   const { data: profile } = await adminClient.from("profiles")
@@ -560,6 +639,10 @@ async function saveScore(p: Record<string, unknown>) {
     const endDate = String(profile.premium_end).substring(0, 10);
     if (endDate && endDate < todayParis()) _isPremium = false;
   }
+  // LIBRE = entraînement libre du Programme Brevet (get_training {comp}) : réservé au programme.
+  if (source === "LIBRE" && !_isPremium) {
+    return { status: "error", message: "Entraînement libre réservé au Programme Brevet.", paywall: "programme_brevet" };
+  }
   if (!isLite && !_isPremium && source !== "BOOST") {
     if (!profile.free_chapter || categorie !== profile.free_chapter) {
       return { status: "error", message: "Chapitre verrouillé — débloque l'accès complet pour continuer." };
@@ -586,15 +669,20 @@ async function saveScore(p: Record<string, unknown>) {
     date: dedupDate,
     source: String(p.source || ""),
   }, { onConflict: "code,chapitre,num_exo,date,source", ignoreDuplicates: true }); // = idx_scores_dedup (schema.sql)
+  // Audit 2026-04-11 P0 (porté 25/09) : ne plus échouer en silence (scores perdus 9 jours en avril).
+  if (insertErr) {
+    console.error("saveScore upsert error:", insertErr);
+    return { status: "error", message: "Erreur enregistrement score : " + insertErr.message };
+  }
 
-  // Update confidence score (Progress) — hors BOOST et CALIBRAGE
-  if (source !== "BOOST" && source !== "CALIBRAGE") {
+  // Update confidence score (Progress) — hors BOOST, LIBRE et CALIBRAGE
+  if (source !== "BOOST" && source !== "LIBRE" && source !== "CALIBRAGE") {
     await updateConfidenceScore(code, String(p.level), String(p.categorie), String(p.resultat), parseInt(String(p.exercice_idx || "0")));
   }
 
   // Moteur 3e : maîtrise par compétence — additif, ignoré si l'exo ne porte ni item_id ni comp.
   if (p.item_id || p.comp) {
-    try { await mxMajDepuisScore(code, p, source === "BOOST" ? "train" : "legacy"); }
+    try { await mxMajDepuisScore(code, p, source === "BOOST" || source === "LIBRE" ? "train" : "legacy"); }
     catch (e) { console.error("[moteur] maj maîtrise save_score", e); }
   }
 
@@ -610,29 +698,35 @@ async function saveScore(p: Record<string, unknown>) {
 // ── UPDATE_CONFIDENCE_SCORE (Progress) ──────────────────────
 
 async function updateConfidenceScore(
-  code: string, level: string, categorie: string, resultat: string, _exerciceIdx: number
+  code: string, level: string, categorie: string, _resultat: string, _exerciceIdx: number
 ) {
-  // Use RPC or read-then-write (UPSERT can't do nb_exos+1 atomically with supabase-js)
-  const { data: existing } = await adminClient.from("progress")
-    .select("id, nb_exos, nb_easy").eq("code", code).eq("categorie", categorie).maybeSingle();
-
-  const nbExos = (existing?.nb_exos || 0) + 1;
-  const nbEasy = (existing?.nb_easy || 0) + (resultat === "EASY" ? 1 : 0);
+  // Audit 2026-04-11 P0 (porté de la prod le 25/09) : on recompte depuis `scores` (source de vérité)
+  // au lieu d'incrémenter progress.nb_easy (colonne absente en prod avant la migration
+  // 20260924_progress_nb_easy → PGRST204, progress jamais écrite). Ne dépend plus de l'ordre de déploiement.
+  const { data: scoreRows, error: selErr } = await adminClient.from("scores")
+    .select("resultat, source")
+    .eq("code", code).eq("chapitre", categorie);
+  if (selErr) {
+    console.error("updateConfidenceScore select error:", selErr);
+    return;
+  }
+  const relevant = (scoreRows || []).filter((s: Record<string, unknown>) => {
+    const src = String(s.source || "");
+    return src !== "BOOST" && src !== "CALIBRAGE" && src !== "LIBRE";
+  });
+  const nbExos = relevant.length;
+  const nbEasy = relevant.filter((s: Record<string, unknown>) => String(s.resultat) === "EASY").length;
+  const nbErreurs = nbExos - nbEasy;
   const score = nbExos > 0 ? Math.round((nbEasy / nbExos) * 100) : 0;
   const todayStr = todayParis();
 
-  if (existing) {
-    await adminClient.from("progress").update({
-      nb_exos: nbExos, nb_easy: nbEasy, score, derniere_pratique: todayStr,
-    }).eq("id", existing.id);
-  } else {
-    // onConflict doit correspondre à unique(code, categorie) (supabase/schema.sql) — un
-    // upsert sur une race condition (2 requêtes simultanées, aucune ne trouve `existing`)
-    // écrase l'autre au lieu de planter (pas de .catch : le builder n'est pas un throw-on-error).
-    await adminClient.from("progress").upsert({
-      code, niveau: level, categorie, nb_exos: nbExos, nb_easy: nbEasy, score, derniere_pratique: todayStr,
-    }, { onConflict: "code,categorie" });
-  }
+  // Schéma progress : unique(code, categorie). onConflict doit matcher cet index.
+  const { error: upErr } = await adminClient.from("progress").upsert({
+    code, niveau: level, categorie,
+    nb_exos: nbExos, nb_erreurs: nbErreurs, score,
+    derniere_pratique: todayStr,
+  }, { onConflict: "code,categorie" });
+  if (upErr) console.error("updateConfidenceScore upsert error:", upErr);
 }
 
 // ── SAVE_CALIBRATION_BATCH ──────────────────────────────────
@@ -640,6 +734,7 @@ async function updateConfidenceScore(
 async function saveCalibrationBatch(p: Record<string, unknown>) {
   if (!p.code || !p.scores || !Array.isArray(p.scores))
     return { status: "error", message: "code et scores requis." };
+  if (!(await mxAuth(p))) return MX_AUTH_REFUS; // Besoin API n°8
 
   const code = String(p.code);
   const name = String(p.name || "");
@@ -660,32 +755,80 @@ async function saveCalibrationBatch(p: Record<string, unknown>) {
 
   await adminClient.from("scores").insert(rows);
 
-  // Identifier le chapitre le plus faible et le set comme free_chapter
-  // (seulement si l'élève n'est pas premium et n'a pas encore de free_chapter)
+  // ── Choix du chapitre offert (free_chapter) ─────────────────
+  // Refonte 10/04/2026 (audit 2026-04-11, porté de la prod le 25/09) : scoring pondéré par importance Brevet + tie-break explicite
+  // + fallback Fonctions Affines pour élève fort (0 erreur).
+  // Seulement si l'élève n'est pas premium et n'a pas encore de free_chapter.
   let freeChapter: string | null = null;
   const { data: prof } = await adminClient.from("profiles")
     .select("premium, free_chapter").eq("code", code).maybeSingle();
 
   if (prof && !prof.premium && !prof.free_chapter) {
-    const chapErrors: Record<string, { total: number; wrong: number }> = {};
+    // Poids stratégiques Brevet (plus élevé = plus prioritaire si raté)
+    const CALIB_WEIGHTS: Record<string, number> = {
+      "fonctions_affines": 2.0,  // LE chapitre décisif Brevet
+      "pythagore":         1.6,
+      "thales":            1.6,
+      "calcul_litteral":   1.5,
+      "fractions":         1.4,
+      "proportionnalite":  1.0,
+      "puissances":        0.9,
+    };
+    // Ordre de priorité pour tie-break (1er gagne si scores égaux)
+    const CALIB_PRIORITY = [
+      "fonctions_affines", "thales", "pythagore", "calcul_litteral",
+      "fractions", "proportionnalite", "puissances",
+    ];
+    // Normaliser un nom de chapitre pour matcher avec les clés de poids
+    const normCalib = (s: string): string => {
+      const n = s.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase().replace(/_brevet$/, "").replace(/_+$/, "")
+        .replace(/_de_/g, "_").replace(/\s+/g, "_");
+      for (const k of Object.keys(CALIB_WEIGHTS)) {
+        if (n === k || n.includes(k) || k.includes(n)) return k;
+      }
+      return n;
+    };
+
+    const chapErrors: Record<string, { total: number; wrong: number; raw: string }> = {};
     for (const s of (p.scores as Record<string, unknown>[])) {
       // originalChapter contient le vrai chapitre (categorie = "CALIBRAGE" pour tous)
-      const cat = String(s.originalChapter || s.categorie || "");
-      if (!cat || cat === "CALIBRAGE") continue;
-      if (!chapErrors[cat]) chapErrors[cat] = { total: 0, wrong: 0 };
+      const rawCat = String(s.originalChapter || s.categorie || "");
+      if (!rawCat || rawCat === "CALIBRAGE") continue;
+      const cat = normCalib(rawCat);
+      if (!chapErrors[cat]) chapErrors[cat] = { total: 0, wrong: 0, raw: rawCat };
       chapErrors[cat].total++;
       if (String(s.resultat || "") !== "EASY") chapErrors[cat].wrong++;
     }
-    let weakest = "";
-    let worstRatio = -1;
+
+    // Score pondéré = wrong × poids (wrong = 0/1 avec 1 question par chapitre)
+    let bestScore = -1;
+    const tied: string[] = [];
     for (const [cat, stats] of Object.entries(chapErrors)) {
-      const ratio = stats.total > 0 ? stats.wrong / stats.total : 0;
-      if (ratio > worstRatio) { worstRatio = ratio; weakest = cat; }
+      const wrong = stats.wrong > 0 ? 1 : 0;
+      const weight = CALIB_WEIGHTS[cat] ?? 1.0;
+      const score = wrong * weight;
+      if (score > bestScore) { bestScore = score; tied.length = 0; tied.push(cat); }
+      else if (score === bestScore) { tied.push(cat); }
     }
-    if (weakest) {
-      await adminClient.from("profiles").update({ free_chapter: weakest }).eq("code", code);
-      freeChapter = weakest;
+
+    let weakestKey = "";
+    if (bestScore > 0 && tied.length > 0) {
+      // Tie-break par ordre de priorité explicite
+      for (const pKey of CALIB_PRIORITY) {
+        if (tied.includes(pKey)) { weakestKey = pKey; break; }
+      }
+      if (!weakestKey) weakestKey = tied[0];
+    } else {
+      // Fallback élève fort (0 erreur) → Fonctions Affines
+      weakestKey = "fonctions_affines";
     }
+
+    // Récupérer le nom brut original (ex: "Fonctions_Affines_Brevet") pour cohérence DB.
+    // Si l'élève fort n'a pas vu cette catégorie, on fallback sur le nom canonique *_Brevet.
+    const weakest = chapErrors[weakestKey]?.raw || "Fonctions_Affines_Brevet";
+    await adminClient.from("profiles").update({ free_chapter: weakest }).eq("code", code);
+    freeChapter = weakest;
   } else if (prof) {
     freeChapter = prof.free_chapter || null;
   }
@@ -703,6 +846,7 @@ async function saveScoresBatch(p: Record<string, unknown>) {
 
   const code = String(p.code);
   if (code.length !== 6) return { status: "error", message: "Code élève invalide." };
+  if (!(await mxAuth(p))) return MX_AUTH_REFUS; // Besoin API n°8
 
   // Single identity check for the whole batch — SELECT avec `mode`
   const { data: profile } = await adminClient.from("profiles")
@@ -741,6 +885,7 @@ async function saveScoresBatch(p: Record<string, unknown>) {
       const src = String(s.source || "");
       const cat = String(s.categorie || "");
       if (src === "BOOST") continue; // déjà gated par la vérif boost actif
+      if (src === "LIBRE") return { status: "error", message: "Entraînement libre réservé au Programme Brevet.", paywall: "programme_brevet" };
       if (!profile.free_chapter || cat !== profile.free_chapter) {
         return { status: "error", message: "Chapitre verrouillé — débloque l'accès complet." };
       }
@@ -769,47 +914,54 @@ async function saveScoresBatch(p: Record<string, unknown>) {
   }));
 
   // Batch insert with dedup (ON CONFLICT ignore)
-  await adminClient.from("scores").upsert(rows, {
+  // FIX 2026-04-11 P0 (porté de la prod le 25/09) : onConflict doit matcher l'index unique (5 cols, pas 4).
+  const { error: batchErr } = await adminClient.from("scores").upsert(rows, {
     onConflict: "code,chapitre,num_exo,date,source", ignoreDuplicates: true, // = idx_scores_dedup (schema.sql)
   });
+  if (batchErr) {
+    console.error("save_scores_batch upsert error:", batchErr);
+    return { status: "error", message: "Erreur batch scores : " + batchErr.message };
+  }
 
   // Moteur 3e : maîtrise par compétence — additif, seulement pour les exos portant item_id ou comp.
   for (const s of (p.scores as Record<string, unknown>[])) {
     if (!s.item_id && !s.comp) continue;
-    try { await mxMajDepuisScore(code, s, String(s.source || "") === "BOOST" ? "train" : "legacy"); }
+    try { await mxMajDepuisScore(code, s, ["BOOST", "LIBRE"].includes(String(s.source || "")) ? "train" : "legacy"); }
     catch (e) { console.error("[moteur] maj maîtrise save_scores_batch", e); }
   }
 
-  // Batch progress updates — group by chapitre, only for non-BOOST non-CALIBRAGE
-  const chapScores: Record<string, string[]> = {};
+  // Batch progress updates — group by chapitre, only for non-BOOST non-CALIBRAGE non-LIBRE
+  const chapCats = new Set<string>();
   let boostCount = 0;
   for (const s of (p.scores as Record<string, unknown>[])) {
     const src = String(s.source || "");
     if (src === "BOOST") { boostCount++; continue; }
-    if (src === "CALIBRAGE") continue;
+    if (src === "CALIBRAGE" || src === "LIBRE") continue;
     const cat = String(s.categorie || "");
-    if (!chapScores[cat]) chapScores[cat] = [];
-    chapScores[cat].push(String(s.resultat || "HARD"));
+    if (cat) chapCats.add(cat);
   }
 
-  // Update progress per chapter
-  for (const [cat, results] of Object.entries(chapScores)) {
-    const { data: existing } = await adminClient.from("progress")
-      .select("id, nb_exos, nb_easy").eq("code", code).eq("categorie", cat).maybeSingle();
-
-    const nbExos = (existing?.nb_exos || 0) + results.length;
-    const nbEasy = (existing?.nb_easy || 0) + results.filter(r => r === "EASY").length;
+  // Update progress per chapter — recompute from scores table (source de vérité)
+  // FIX 2026-04-11 P0 (porté de la prod le 25/09) : ne plus utiliser `progress.nb_easy` (colonne inexistante).
+  for (const cat of chapCats) {
+    const { data: scoreRows, error: selErr } = await adminClient.from("scores")
+      .select("resultat, source")
+      .eq("code", code).eq("chapitre", cat);
+    if (selErr) { console.error("batch progress select error:", selErr); continue; }
+    const rel = (scoreRows || []).filter((s: Record<string, unknown>) => {
+      const src = String(s.source || "");
+      return src !== "BOOST" && src !== "CALIBRAGE" && src !== "LIBRE";
+    });
+    const nbExos = rel.length;
+    const nbEasy = rel.filter((s: Record<string, unknown>) => String(s.resultat) === "EASY").length;
+    const nbErreurs = nbExos - nbEasy;
     const score = nbExos > 0 ? Math.round((nbEasy / nbExos) * 100) : 0;
-
-    if (existing) {
-      await adminClient.from("progress").update({
-        nb_exos: nbExos, nb_easy: nbEasy, score, derniere_pratique: todayStr,
-      }).eq("id", existing.id);
-    } else {
-      await adminClient.from("progress").insert({
-        code, niveau: level, categorie: cat, nb_exos: nbExos, nb_easy: nbEasy, score, derniere_pratique: todayStr,
-      });
-    }
+    const { error: upErr } = await adminClient.from("progress").upsert({
+      code, niveau: level, categorie: cat,
+      nb_exos: nbExos, nb_erreurs: nbErreurs, score,
+      derniere_pratique: todayStr,
+    }, { onConflict: "code,categorie" });
+    if (upErr) console.error("batch progress upsert error:", upErr);
   }
 
   // Update ExosDone in DailyBoosts if any BOOST scores
@@ -910,6 +1062,7 @@ async function generateDiagnostic(p: Record<string, unknown>) {
 // ── GET_PROGRESS ────────────────────────────────────────────
 
 async function getProgress(p: Record<string, unknown>) {
+  if (!(await mxAuth(p, { lectureAdmin: true }))) return MX_AUTH_REFUS; // Besoin API n°8
   const code = String(p.code);
   const { data } = await adminClient.from("progress").select("*").eq("code", code);
   return { status: "success", progress: data || [] };
@@ -918,6 +1071,7 @@ async function getProgress(p: Record<string, unknown>) {
 // ── CHECK_TRIAL_STATUS ──────────────────────────────────────
 
 async function checkTrialStatus(p: Record<string, unknown>) {
+  if (!(await mxAuth(p, { lectureAdmin: true }))) return MX_AUTH_REFUS; // Besoin API n°8
   const code = String(p.code);
   const { data: profile } = await adminClient.from("profiles")
     .select("premium, premium_end, free_chapter").eq("code", code).maybeSingle();
@@ -937,6 +1091,7 @@ async function checkTrialStatus(p: Record<string, unknown>) {
 
 async function saveBoost(p: Record<string, unknown>) {
   if (!p.code || !p.boost) return { status: "error", message: "code et boost requis." };
+  if (!(await mxAuth(p))) return MX_AUTH_REFUS; // Besoin API n°8
 
   const code = String(p.code);
   const todayStr = todayParis();
@@ -989,6 +1144,7 @@ function shuffleArr<T>(arr: T[]): T[] {
 async function generateAdaptiveBoost(p: Record<string, unknown>) {
   const code = String(p.code || "");
   if (code.length !== 6) return { status: "error", message: "code élève invalide." };
+  if (!(await mxAuth(p, { lectureAdmin: true }))) return MX_AUTH_REFUS; // Besoin API n°8 (écrit daily_boosts : élève ou admin)
 
   const { data: profile } = await adminClient.from("profiles")
     .select("niveau").eq("code", code).maybeSingle();
@@ -1995,6 +2151,69 @@ function mxItemPublic(it: MxItem, code: string) {
   return out;
 }
 
+// Libellés des erreurs types d'un item d'entraînement ({err_id: libelle}) pour le feedback
+// « Erreur classique : … ». L'id peut désigner une erreur d'un prérequis direct (contrat §9) :
+// on la cherche dans la compétence que porte l'id, pas forcément celle de l'item.
+function mxErrLibelles(ref: MxRef, it: { err?: Record<string, string> }): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const eid of Object.values(it.err || {})) {
+    const def = (ref.comps[String(eid).split("#")[0]]?.erreurs || []).find((e) => e.id === eid);
+    if (def) out[eid] = def.libelle;
+  }
+  return out;
+}
+
+// Maîtrise reconstruite depuis les observations d'une session (diagnostic invité : pas encore de
+// compte, donc pas de lignes `maitrise`). Même mise à jour, dans le même ordre, que la couche I/O
+// (mxAppliquerReponse) : une fois le compte créé, le rejeu donne exactement la même carte.
+function mxMaitriseDepuisObs(obs: MxObs[], date: string, base: Record<string, MxMaitrise> = {}): Record<string, MxMaitrise> {
+  const mt: Record<string, MxMaitrise> = { ...base };
+  for (const o of obs) {
+    if (o.graine) continue;
+    mt[o.comp] = mxMajMaitrise(mt[o.comp], o.comp, o.ok, o.w, o.err || null, o.date || date);
+  }
+  return mt;
+}
+
+function mxFocusTitres(ref: MxRef, focus: string[]) {
+  return focus.filter((id) => ref.comps[id]).map((id) => ({ id, titre_eleve: ref.comps[id].titre_eleve || ref.comps[id].titre,
+    niveau_origine: ref.comps[id].niveau_origine, domaine: ref.comps[id].domaine }));
+}
+
+// « Pourquoi cette séance » (carte « Ta séance du jour ») : 1 phrase déterministe, tutoiement.
+// Ordre des raisons : cause racine > erreur type déjà vue > statut (à reprendre / fragile / découverte),
+// + la révision espacée s'il y en a une. Jamais de « ton prof » : c'est l'algorithme qui choisit.
+function mxPourquoi(ref: MxRef, mt: Record<string, MxMaitrise>, focus: string[],
+  exos: { comp: string; role: string }[], zone_maitrisee = false): string {
+  const titre = (id: string) => ref.comps[id]?.titre_eleve || ref.comps[id]?.titre || id;
+  const autres = (n: number) => n > 1 ? n + " autres points" : n + " autre point";
+  const rev = exos.find((e) => e.role === "revision");
+  const finRev = rev ? " Et 1 révision de « " + titre(rev.comp) + " » pour ne pas l'oublier." : "";
+  const f = focus.find((id) => ref.comps[id]);
+  if (!f) {
+    return (zone_maitrisee ? "Ta zone de travail est acquise : " : "Rien de fragile à reprendre aujourd'hui : ") +
+      "séance d'entretien pour garder le rythme." + finRev;
+  }
+  const A = mxAnalyse(ref, mt);
+  const c = ref.comps[f];
+  let s: string;
+  if (A.causeRacine(f)) {
+    s = "On attaque « " + titre(f) + " » : c'est une notion de " + mxNiveauLabel(c.niveau_origine) +
+      " qui te freine sur " + autres(A.bloque(f).length) + " du programme.";
+  } else {
+    const vues = Object.entries(mt[f]?.erreurs_vues || {}).sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1));
+    const def = vues.length ? (ref.comps[vues[0][0].split("#")[0]]?.erreurs || []).find((e) => e.id === vues[0][0]) : null;
+    if (def) s = "On travaille « " + titre(f) + " » : tu as fait l'erreur classique « " + def.libelle + " ».";
+    else if (A.st[f] === "non_evalue") s = "On découvre « " + titre(f) + " », pas encore mesuré par ton diagnostic.";
+    else if (A.st[f] === "lacune") s = "On reprend « " + titre(f) + " » : c'est encore à construire.";
+    else if (A.st[f] === "fragile") s = "On consolide « " + titre(f) + " » : c'est presque acquis, encore fragile.";
+    else s = "On consolide « " + titre(f) + " ».";
+  }
+  const f2 = focus.find((id) => id !== f && ref.comps[id]);
+  if (f2) s += " Puis « " + titre(f2) + " ».";
+  return s + finRev;
+}
+
 // MOTEUR_PUR_FIN
 // ════════════════════════════════════════════════════════════
 
@@ -2052,8 +2271,8 @@ async function mxSauverMaitrise(code: string, m: MxMaitrise) {
 
 // Applique UNE réponse à la maîtrise globale + journalise dans reponses_items.
 async function mxAppliquerReponse(code: string, comp: string, itemId: string, ok: boolean, w: number,
-  err: string | null, extra: { contexte: string; diagnostic_id?: string | null; resultat?: string; reponse?: string; temps?: number | null; imputee?: boolean }) {
-  const date = todayParis();
+  err: string | null, extra: { contexte: string; diagnostic_id?: string | null; resultat?: string; reponse?: string; temps?: number | null; imputee?: boolean; date?: string }) {
+  const date = extra.date || todayParis();
   const { data: row } = await adminClient.from("maitrise").select("*").eq("code", code).eq("comp", comp).maybeSingle();
   const m = mxMajMaitrise(row ? mxDepuisLigne(row as Record<string, unknown>) : null, comp, ok, w, err, date);
   await mxSauverMaitrise(code, m);
@@ -2085,13 +2304,40 @@ async function mxMajDepuisScore(code: string, s: Record<string, unknown>, contex
   }
 }
 
-async function mxProfil(p: Record<string, unknown>) {
-  const code = String(p.code || "");
-  if (code.length !== 6) return { error: "Code élève invalide." };
-  const { data: profile } = await adminClient.from("profiles")
-    .select("code, prenom, niveau, email, premium, premium_end, free_chapter").eq("code", code).maybeSingle();
-  if (!profile) return { error: "Élève introuvable." };
-  if (p.email && String(p.email).toLowerCase() !== profile.email) return { error: "Identité non vérifiée." };
+// ── Sécurité des actions élève (Besoin API n°8, 25/09) ──────────────────────
+// Le code élève (6 caractères) IDENTIFIE, il n'AUTHENTIFIE pas : il circule (liens, écrans, comptes de
+// test dans le dépôt public) et se devine. Toute action qui lit ou écrit les données d'un élève exige
+// `access_token` (jeton de session renvoyé par login / register / login_token / refresh_session),
+// vérifié par auth.getUser et rattaché au profil du `code`. `lectureAdmin` : un admin authentifié
+// peut LIRE la fiche d'un autre élève (monitoring), jamais écrire à sa place (A6).
+const MX_AUTH_REFUS = { status: "error", message: "Session expirée ou invalide : reconnecte-toi.", auth_requise: true };
+// Helper UNIQUE de vérification du jeton de session (élève comme admin) : id Supabase Auth ou null.
+async function mxSessionUid(p: Record<string, unknown>): Promise<string | null> {
+  const token = String(p.access_token || "");
+  if (!token) return null;
+  const { data, error } = await adminClient.auth.getUser(token);
+  return error || !data?.user ? null : data.user.id;
+}
+async function mxAuth(p: Record<string, unknown>, opts: { lectureAdmin?: boolean } = {}):
+  Promise<{ profile: Record<string, unknown>; parAdmin: boolean } | null> {
+  const code = String(p.code || "").trim().toUpperCase();
+  if (!/^[A-Z0-9]{6}$/.test(code)) return null;
+  const uid = await mxSessionUid(p);
+  if (!uid) return null;
+  const { data: profile } = await adminClient.from("profiles").select("*").eq("code", code).maybeSingle();
+  if (!profile) return null;
+  if (profile.id === uid) return { profile: profile as Record<string, unknown>, parAdmin: false };
+  if (!opts.lectureAdmin) return null;
+  const { data: moi } = await adminClient.from("profiles").select("is_admin").eq("id", uid).maybeSingle();
+  return moi?.is_admin ? { profile: profile as Record<string, unknown>, parAdmin: true } : null;
+}
+
+async function mxProfil(p: Record<string, unknown>, opts: { lectureAdmin?: boolean } = {}) {
+  const auth = await mxAuth(p, opts);
+  if (!auth) return { error: MX_AUTH_REFUS.message, auth_requise: true };
+  const profile = auth.profile as { code: string; email: string; premium?: boolean | null; premium_end?: string | null; [k: string]: unknown };
+  const code = String(profile.code);
+  if (p.email && String(p.email).toLowerCase() !== profile.email) return { error: "Identité non vérifiée.", auth_requise: false };
   const { data: achats } = await adminClient.from("achats").select("produit")
     .or(`code.eq.${code},email.eq."${profile.email}"`);
   const droits = mxDroits(profile, (achats || []) as { produit: string }[], todayParis());
@@ -2111,17 +2357,28 @@ async function mxDernierDiag(code: string, types?: string[]) {
 }
 
 // Carte masquée selon les droits : en gratuit, seul le point faible est détaillé (reste « flouté »).
-function mxMasquerCarte(carte: Record<string, unknown> | null, acces: string) {
-  if (!carte || acces !== "free") return carte;
+// Les titres (titre_eleve, niveau_origine) restent visibles partout (Besoin API n°3) : ce ne sont pas
+// des résultats (50 §2.2 « titres lisibles ») ; il en faut pour bloque[] et « pas encore mesuré ».
+// Avec `ref` : `non_mesurees` = compétences de 3e diagnostiquables pas encore conclues (≥ 2 obs).
+function mxMasquerCarte(carte: Record<string, unknown> | null, acces: string, ref: MxRef | null = null) {
+  if (!carte) return carte;
   const pf = carte.point_faible;
-  return {
+  const out: Record<string, unknown> = acces !== "free" ? { ...carte } : {
     ...carte,
     competences: ((carte.competences || []) as Record<string, unknown>[]).map((c) => c.id === pf ? c
-      : { id: c.id, domaine: c.domaine, statut: c.statut, masque: true }),
+      : { id: c.id, domaine: c.domaine, statut: c.statut, titre_eleve: c.titre_eleve, niveau_origine: c.niveau_origine, masque: true }),
     priorites: pf ? [pf] : [],
     plan_4_semaines: ((carte.plan_4_semaines || []) as unknown[]).slice(0, 1),
     masque: true,
   };
+  if (ref) {
+    const mesurees = new Set(((carte.competences || []) as { id: string; statut: string }[])
+      .filter((c) => c.statut !== "non_evalue").map((c) => c.id));
+    out.non_mesurees = ref.ordre.filter((id) => ref.comps[id].niveau_origine === "3EME" && mxDiagAutorise(ref, id) && !mesurees.has(id))
+      .map((id) => ({ id, titre_eleve: ref.comps[id].titre_eleve || ref.comps[id].titre, domaine: ref.comps[id].domaine,
+        niveau_origine: ref.comps[id].niveau_origine }));
+  }
+  return out;
 }
 
 async function mxFinaliserDiagnostic(diag: Record<string, unknown>, etat: MxEtatDiag, ref: MxRef,
@@ -2146,12 +2403,21 @@ async function mxFinaliserDiagnostic(diag: Record<string, unknown>, etat: MxEtat
   return carte;
 }
 
+// Question envoyée au client + domaine et niveau d'origine de la compétence (Besoin API n°11 :
+// étiquettes « Données, fonctions » / « Niveau 5e » de la maquette 01). Jamais la réponse.
+function mxQuestionPublique(it: MxItem, code: string, ref: MxRef) {
+  const c = ref.comps[it.comp];
+  return { ...mxItemPublic(it, code), domaine: c?.domaine || it.comp.split(".")[0], niveau_origine: c?.niveau_origine || null };
+}
+
 // ── START_DIAGNOSTIC {code, email?, type: express|complet|mensuel} ──
 async function startDiagnostic(p: Record<string, unknown>) {
   const type = String(p.type || "express");
   if (!MX.DIAG[type]) return { status: "error", message: "Type de diagnostic inconnu." };
+  // Sans compte (ni code ni jeton de session) : diagnostic express invité (Besoin API n°1).
+  if (!p.code && !p.access_token) return await startDiagnosticInvite(p);
   const pr = await mxProfil(p);
-  if ("error" in pr) return { status: "error", message: pr.error };
+  if ("error" in pr) return { status: "error", message: pr.error, auth_requise: pr.auth_requise };
   const { profile, droits } = pr;
   if (type === "complet" && !droits.diagnostic_complet)
     return { status: "error", message: "Diagnostic complet non débloqué.", paywall: "diagnostic_complet", droits };
@@ -2190,19 +2456,21 @@ async function startDiagnostic(p: Record<string, unknown>) {
   await adminClient.from("diagnostics").update({
     etat_json: etat, ...(carte ? { statut: "termine", carte_json: carte, finished_at: new Date().toISOString() } : {}),
   }).eq("id", diag.id);
+  if (carte && etat.type === "express") await mxEmailBilanExpress(profile, String(diag.id), carte, ref);
   return {
     status: "success", diagnostic_id: diag.id, type, repris: !!enCours,
-    question: "item" in q ? mxItemPublic(q.item, code) : null,
+    question: "item" in q ? mxQuestionPublique(q.item, etat.code || code, ref) : null,
     progression: mxProgression(etat), termine: !!carte,
-    carte: mxMasquerCarte(carte, droits.acces), droits,
+    carte: mxMasquerCarte(carte, droits.acces, ref), droits,
   };
 }
 
 // ── ANSWER_DIAGNOSTIC {code, email?, diagnostic_id, item_id, reponse, temps?} ──
 // reponse vide/null = « je ne sais pas ».
 async function answerDiagnostic(p: Record<string, unknown>) {
+  if (!p.code && p.guest_token) return await answerDiagnosticInvite(p); // diagnostic invité (Besoin API n°1)
   const pr = await mxProfil(p);
-  if ("error" in pr) return { status: "error", message: pr.error };
+  if ("error" in pr) return { status: "error", message: pr.error, auth_requise: pr.auth_requise };
   const { profile, droits } = pr;
   const code = String(profile.code);
   const { data: diag } = await adminClient.from("diagnostics").select("*")
@@ -2232,13 +2500,15 @@ async function answerDiagnostic(p: Record<string, unknown>) {
   if ("fin_module" in q) await mxLogEvent(code, "module_done", { type: etat.type, module: q.fin_module });
   if (carte) await mxLogEvent(code, etat.type === "express" ? "diag_express_done" : etat.type === "complet" ? "diag_complet_done" : "rediag_done",
     { score: carte.score_global, n_questions: carte.n_questions });
+  // Bilan express au parent (P-X0, Besoin API n°7) : dès que la carte express existe ET que le compte existe.
+  if (carte && etat.type === "express") await mxEmailBilanExpress(profile, String(diag.id), carte, ref);
   // Pas de correction pendant le diagnostic (ni juste/faux, ni bonne réponse) : récapitulatif à la fin.
   return {
     status: "success",
-    question: "item" in q ? mxItemPublic(q.item, code) : null,
+    question: "item" in q ? mxQuestionPublique(q.item, etat.code || code, ref) : null,
     fin_module: "fin_module" in q ? q.fin_module + 1 : null, // n° (1-based) du module suivant
     progression: mxProgression(etat), termine: !!carte,
-    carte: mxMasquerCarte(carte, droits.acces),
+    carte: mxMasquerCarte(carte, droits.acces, ref),
     corrections: carte ? mxRecapCorrections(etat, ref) : null,
   };
 }
@@ -2252,6 +2522,266 @@ function mxRecapCorrections(etat: MxEtatDiag, ref: MxRef) {
       a: it?.a || "", steps: it?.steps || [], f: it?.f || "",
       erreur: def ? { id: def.id, libelle: def.libelle, remediation: def.remediation || null } : null };
   });
+}
+
+// ── Diagnostic express INVITÉ (Besoin API n°1) ─────────────────────────────
+// La carte partielle s'affiche AVANT la création du compte (contrat §7). Sans compte, pas de ligne
+// `profiles` : la session vit dans `diagnostics_invites` (état du moteur + carte), protégée par un
+// `guest_token` (192 bits, seul son SHA-256 est stocké) qui expire au bout de MX_INVITE_JOURS.
+// Rien n'est écrit dans maitrise / reponses_items tant que le compte n'existe pas : register
+// {diagnostic_id, guest_token} rattache la session et REJOUE les observations (mêmes calculs).
+const MX_INVITE_JOURS = 2;
+
+async function mxSha256(s: string): Promise<string> {
+  const h = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(h)).map((x) => x.toString(16).padStart(2, "0")).join("");
+}
+
+// Session invitée valide = id + jeton qui correspondent, non expirée, non rattachée. Sinon null
+// (même réponse dans tous les cas : on ne dit pas si l'id existe).
+async function mxInvite(p: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+  const id = String(p.diagnostic_id || ""), tok = String(p.guest_token || "");
+  if (!/^[0-9a-f-]{36}$/i.test(id) || !/^[0-9a-f]{48}$/.test(tok)) return null;
+  const { data } = await adminClient.from("diagnostics_invites").select("*").eq("id", id).maybeSingle();
+  if (!data || data.statut === "rattache" || data.guest_token_hash !== await mxSha256(tok)) return null;
+  if (Date.parse(String(data.expires_at)) < Date.now()) return null;
+  return data as Record<string, unknown>;
+}
+
+function mxCarteInvite(inv: Record<string, unknown>, etat: MxEtatDiag, ref: MxRef) {
+  const today = todayParis();
+  const debut = Date.parse(String(inv.started_at || new Date().toISOString()));
+  return mxCalculerCarte(ref, mxMaitriseDepuisObs(etat.obs, today), {
+    type: "express", eleve: { prenom: String(inv.prenom || ""), niveau: "3EME" }, date: today,
+    duree_min: Math.max(1, Math.round((Date.now() - debut) / 60000)),
+    n_questions: etat.obs.filter((o) => !o.graine && !o.imputee).length, obs: etat.obs,
+  });
+}
+
+// START_DIAGNOSTIC {type:'express', prenom?} sans code → {diagnostic_id, guest_token, question…}
+// START_DIAGNOSTIC {diagnostic_id, guest_token} sans code → reprise (question en attente).
+async function startDiagnosticInvite(p: Record<string, unknown>) {
+  const type = String(p.type || "express");
+  if (type !== "express") return { ...MX_AUTH_REFUS, message: "Connecte-toi pour faire ce diagnostic." };
+  const ref = await mxChargerRef();
+  if (!ref.ordre.length) return { status: "error", message: "Référentiel non importé." };
+  let inv: Record<string, unknown> | null = null;
+  let guest_token: string | null = null;
+  if (p.guest_token || p.diagnostic_id) {
+    inv = await mxInvite(p);
+    if (!inv) return { status: "error", invite_expire: true, message: "Session invitée expirée ou inconnue : recommence le diagnostic." };
+  } else {
+    guest_token = mxJeton();
+    const hash = await mxSha256(guest_token);
+    // pseudo-code élève : graine du tirage déterministe des items (hash code|item), jamais un vrai code
+    const etat0 = mxDemarrerDiag(ref, "express", "G" + hash.slice(0, 8), {});
+    const { data: ins, error } = await adminClient.from("diagnostics_invites").insert({
+      guest_token_hash: hash, type: "express", statut: "en_cours", etat_json: etat0,
+      // même whitelist que register (audit 2026-04-11 : XSS stockée) ; sinon pas de prénom
+      prenom: /^[\p{L}\p{M}\s'\-]{1,50}$/u.test(String(p.prenom || "").trim()) ? String(p.prenom).trim() : null,
+      expires_at: new Date(Date.now() + MX_INVITE_JOURS * 86400000).toISOString(),
+    }).select("*").single();
+    if (error || !ins) return { status: "error", message: "Création diagnostic impossible : " + (error?.message || "") };
+    inv = ins as Record<string, unknown>;
+    await mxLogEvent(null, "diag_express_start", { invite: true });
+  }
+  const etat = inv.etat_json as MxEtatDiag;
+  let carte = (inv.carte_json || null) as Record<string, unknown> | null;
+  const q = mxProchaineQuestion(etat, ref, []);
+  if ("fin" in q && !carte) {
+    carte = mxCarteInvite(inv, etat, ref);
+    await adminClient.from("diagnostics_invites").update({ etat_json: etat, statut: "termine", carte_json: carte,
+      finished_at: new Date().toISOString() }).eq("id", inv.id);
+  } else if (!("fin" in q)) {
+    await adminClient.from("diagnostics_invites").update({ etat_json: etat }).eq("id", inv.id);
+  }
+  return {
+    status: "success", invite: true, diagnostic_id: inv.id, ...(guest_token ? { guest_token } : {}),
+    expires_at: inv.expires_at, type: "express", repris: !guest_token,
+    question: "item" in q ? mxQuestionPublique(q.item, etat.code, ref) : null,
+    progression: mxProgression(etat), termine: !!carte,
+    carte: mxMasquerCarte(carte, "free", ref), droits: mxDroits({}, [], todayParis()),
+  };
+}
+
+// ANSWER_DIAGNOSTIC {diagnostic_id, guest_token, item_id, reponse, temps?} sans code.
+async function answerDiagnosticInvite(p: Record<string, unknown>) {
+  const inv = await mxInvite(p);
+  if (!inv) return { status: "error", invite_expire: true, message: "Session invitée expirée ou inconnue : recommence le diagnostic." };
+  if (inv.statut !== "en_cours") return { status: "error", message: "Diagnostic déjà terminé." };
+  const ref = await mxChargerRef();
+  const etat = inv.etat_json as MxEtatDiag;
+  const temps = p.temps !== undefined && p.temps !== null ? Number(p.temps) : null;
+  const res = mxEnregistrerReponse(etat, ref, String(p.item_id || ""), p.reponse, temps, todayParis());
+  if ("error" in res) return { status: "error", message: res.error };
+  const q = mxProchaineQuestion(etat, ref, []);
+  const carte = "fin" in q ? mxCarteInvite(inv, etat, ref) : null;
+  const n = etat.obs.filter((o) => !o.graine && !o.imputee).length;
+  await adminClient.from("diagnostics_invites").update({
+    etat_json: etat, n_questions: n,
+    ...(carte ? { statut: "termine", carte_json: carte, finished_at: new Date().toISOString(),
+      // le compte se crée après la carte : on laisse encore MX_INVITE_JOURS pour s'inscrire
+      expires_at: new Date(Date.now() + MX_INVITE_JOURS * 86400000).toISOString() } : {}),
+  }).eq("id", inv.id);
+  if (carte) await mxLogEvent(null, "diag_express_done", { invite: true, score: carte.score_global, n_questions: n });
+  return {
+    status: "success", invite: true,
+    question: "item" in q ? mxQuestionPublique(q.item, etat.code, ref) : null,
+    fin_module: null, progression: mxProgression(etat), termine: !!carte,
+    carte: mxMasquerCarte(carte, "free", ref),
+    corrections: carte ? mxRecapCorrections(etat, ref) : null,
+  };
+}
+
+// Appelé par register : rattache la session invitée au nouveau compte et rejoue ses observations
+// dans maitrise / reponses_items (contexte diag), puis recalcule la carte avec le vrai prénom.
+async function mxRattacherInvite(p: Record<string, unknown>, profile: Record<string, unknown>) {
+  const inv = await mxInvite(p);
+  if (!inv) return null;
+  const code = String(profile.code);
+  const ref = await mxChargerRef();
+  const etat = inv.etat_json as MxEtatDiag;
+  const termine = inv.statut === "termine";
+  const { data: diag, error } = await adminClient.from("diagnostics").insert({
+    code, type: "express", statut: "en_cours", etat_json: etat,
+    n_questions: etat.obs.filter((o) => !o.graine && !o.imputee).length, started_at: inv.started_at,
+  }).select("*").single();
+  if (error || !diag) { console.error("[invite] rattachement", error); return null; }
+  // Verrou tout de suite (un 2e register avec le même jeton ne rattache rien)
+  await adminClient.from("diagnostics_invites").update({ statut: "rattache", code, diagnostic_id: diag.id,
+    rattache_at: new Date().toISOString() }).eq("id", inv.id);
+  for (const o of etat.obs) {
+    if (o.graine) continue;
+    await mxAppliquerReponse(code, o.comp, o.item_id, o.ok, o.w, o.err || null, {
+      contexte: "diag", diagnostic_id: String(diag.id), reponse: o.reponse, temps: o.temps ?? null,
+      imputee: !!o.imputee, date: o.date,
+    });
+  }
+  let carte: Record<string, unknown> | null = null;
+  if (termine) {
+    carte = await mxFinaliserDiagnostic(diag as Record<string, unknown>, etat, ref, profile);
+    const avant = inv.carte_json as Record<string, unknown> | null;
+    if (avant?.duree_min) carte.duree_min = avant.duree_min; // durée du diagnostic, pas jusqu'à l'inscription
+    await adminClient.from("diagnostics").update({ statut: "termine", carte_json: carte,
+      finished_at: inv.finished_at || new Date().toISOString() }).eq("id", diag.id);
+  }
+  // Minimisation (RGPD) : les réponses vivent désormais dans le compte, on vide la copie invitée.
+  await adminClient.from("diagnostics_invites").update({ etat_json: null, carte_json: null, prenom: null }).eq("id", inv.id);
+  await mxLogEvent(code, "diag_invite_rattache", { termine });
+  return { diagnostic_id: String(diag.id), termine, carte, etat, ref };
+}
+
+// ── Email P-X0 « bilan express » au parent (Besoin API n°7, spec 51 §2) ─────────
+// Remplace templateJ0 pour le parent. Déclenché quand la carte express existe ET que le compte existe
+// (fin du diag avec compte, ou register qui rattache un diag invité terminé). Une seule fois par adresse
+// (dédup email_logs type D3:P-X0), jamais si l'adresse est désinscrite (UNSUB). Le lien « voir le bilan »
+// est un partage dédié (canal email_parent) ; le même jeton sert à la confirmation parentale.
+function mxEsc(s: unknown): string {
+  return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function templateBilanExpressParent(prenomBrut: string, email: string, carte: Record<string, unknown>, ref: MxRef,
+  lienBilan: string, lienConfirm: string): { subject: string; html: string } {
+  const prenom = mxEsc(prenomBrut || "votre enfant");
+  const comps = (carte.competences || []) as Record<string, unknown>[];
+  const doms = (carte.domaines || []) as { statut: string }[];
+  const nb = (st: string) => doms.filter((d) => d.statut === st).length;
+  const morceaux: string[] = [];
+  if (nb("acquis")) morceaux.push(nb("acquis") + " domaine" + (nb("acquis") > 1 ? "s" : "") + " solide" + (nb("acquis") > 1 ? "s" : ""));
+  if (nb("fragile")) morceaux.push(nb("fragile") + " fragile" + (nb("fragile") > 1 ? "s" : ""));
+  if (nb("lacune")) morceaux.push(nb("lacune") + " à travailler");
+  const resume = morceaux.length ? morceaux.join(", ") : "pas encore assez de réponses pour conclure";
+  const nMes = comps.filter((c) => c.statut !== "non_evalue" && c.niveau_origine === "3EME").length;
+  const nTot = ref.ordre.filter((id) => ref.comps[id].niveau_origine === "3EME").length;
+  const pf = comps.find((c) => c.id === carte.point_faible) || null;
+  const P = (t: string) => '<p style="color:#374151;font-size:16px;line-height:1.7;margin:0 0 14px;">' + t + "</p>";
+  const H = (t: string) => '<p style="color:#1e293b;font-size:17px;font-weight:800;line-height:1.5;margin:22px 0 10px;">' + t + "</p>";
+  let blocPf = "";
+  if (pf) {
+    const err = ((pf.erreurs || []) as { libelle_parent?: string | null }[]).find((e) => e.libelle_parent);
+    blocPf += P("Le point le plus fragile : <strong>" + mxEsc(pf.titre || pf.titre_eleve) + "</strong>." + (err ? " " + mxEsc(err.libelle_parent) + "." : ""));
+    const bl = (pf.bloque || []) as string[];
+    if (pf.cause_racine && bl.length) {
+      const b1 = ref.comps[bl[0]];
+      blocPf += P("C'est une notion dont dépend" + (bl.length > 1 ? "ent " + bl.length + " autres points" : " 1 autre point") +
+        " du programme" + (b1 ? ", dont « " + mxEsc(b1.titre) + " »" : "") + ".");
+    }
+  } else {
+    blocPf = P("Rien d'inquiétant sur cet échantillon, ce qui est une bonne nouvelle.");
+  }
+  return {
+    subject: "Le bilan maths de " + (prenomBrut || "votre enfant") + " (et une confirmation à faire)",
+    html: emailWrap(email, mxEsc(resume.charAt(0).toUpperCase() + resume.slice(1)) + ". 1 clic pour confirmer l'inscription.",
+      P("Bonjour,") +
+      P(prenom + " vient de passer le diagnostic express de maths sur Matheux et a créé son espace avec votre adresse email.") +
+      H("1. Merci de confirmer l'inscription") +
+      P(prenom + " est mineur(e) : j'ai besoin de votre accord de parent pour conserver son espace et ses résultats.") +
+      emailCTA(lienConfirm, "Je confirme l'inscription de " + prenom) +
+      '<p style="color:#6b7280;font-size:13px;line-height:1.6;margin:0 0 14px;">Sur la page de confirmation, vous pourrez aussi choisir de recevoir mes conseils et offres (facultatif). Si ce n\'est pas vous, ou si vous n\'êtes pas d\'accord, ignorez ce message.</p>' +
+      H("2. Ce que montre le diagnostic express") +
+      P("En quelques minutes, il a mesuré " + nMes + " compétence" + (nMes > 1 ? "s" : "") + " de 3e sur " + nTot + ". Résultat : " + mxEsc(resume) + ".") +
+      blocPf +
+      H("3. Et maintenant ?") +
+      P("Dès aujourd'hui, " + prenom + " a accès gratuitement à 5 exercices par jour sur ce point. 10 minutes suffisent. Aucune carte bancaire n'est demandée.") +
+      emailCTA(lienBilan, "Voir le bilan de " + prenom) +
+      P("Une question ? Répondez à cet email, c'est moi qui lis."),
+    ),
+  };
+}
+
+async function mxEmailBilanExpress(profile: Record<string, unknown>, diagId: string, carte: Record<string, unknown>, ref: MxRef) {
+  try {
+    const email = String(profile.email || "").trim().toLowerCase();
+    const code = String(profile.code || "");
+    if (!email || !code) return;
+    const type = "D3:P-X0";
+    const { data: unsub } = await adminClient.from("email_logs").select("id").eq("email", email).eq("type", "UNSUB").limit(1);
+    if (unsub && unsub.length) return;
+    const { data: deja } = await adminClient.from("email_logs").select("id").eq("email", email).eq("type", type).eq("statut", "envoyé").limit(1);
+    if (deja && deja.length) return;
+    const token = mxJeton();
+    const { error: shErr } = await adminClient.from("bilan_partages").insert({
+      token, code, diagnostic_id: diagId, type_carte: "express", canal: "email_parent",
+      expires_at: new Date(Date.now() + 30 * 86400000).toISOString(),
+    });
+    if (shErr) { console.error("[P-X0] partage", shErr); return; }
+    const lien = "https://matheux.fr/b/" + token;
+    const tpl = templateBilanExpressParent(String(profile.prenom || ""), email, carte, ref, lien + "?src=email_px0", lien + "?confirmer=1");
+    const r = await resendSend(email, tpl.subject, tpl.html);
+    await adminClient.from("email_logs").insert({
+      email, prenom: String(profile.prenom || ""), type, statut: r.ok ? "envoyé" : "erreur", details: r.error || null,
+      categorie: "T", code, created_at: new Date().toISOString(),
+    });
+    await mxLogEvent(code, "email_bilan_parent", { ok: r.ok });
+  } catch (e) { console.error("[P-X0]", e); /* jamais bloquant */ }
+}
+
+// Partage valide (page parent) : jeton hex 48, non révoqué, non expiré.
+async function mxPartageValide(token: string): Promise<Record<string, unknown> | null> {
+  if (!/^[0-9a-f]{48}$/.test(token)) return null;
+  const { data: sh } = await adminClient.from("bilan_partages").select("*").eq("token", token).maybeSingle();
+  if (!sh || sh.revoked_at || Date.parse(String(sh.expires_at)) < Date.now()) return null;
+  return sh as Record<string, unknown>;
+}
+
+// ── CONFIRM_PARENT {token, optin_marketing?, texte_version?, texte_hash?} — PUBLIC, page parent ──
+// Confirmation parentale depuis le lien du mail P-X0 (partage canal email_parent : seul le parent l'a reçu).
+async function confirmParent(p: Record<string, unknown>) {
+  const sh = await mxPartageValide(String(p.token || ""));
+  if (!sh || sh.canal !== "email_parent") return { status: "error", expire: true, message: "Lien de confirmation invalide ou expiré." };
+  const code = String(sh.code);
+  const now = new Date().toISOString();
+  const { data: prof } = await adminClient.from("profiles").select("consentement_parent_at").eq("code", code).maybeSingle();
+  const maj: Record<string, unknown> = {};
+  if (!prof?.consentement_parent_at) maj.consentement_parent_at = now;
+  if (p.optin_marketing !== undefined) { maj.optin_marketing = !!p.optin_marketing; maj.optin_marketing_at = p.optin_marketing ? now : null; }
+  if (Object.keys(maj).length) await adminClient.from("profiles").update(maj).eq("code", code);
+  await adminClient.from("consentements").insert({
+    code, produit: "compte", texte_version: String(p.texte_version || "P-X0-confirmation").slice(0, 40),
+    texte_hash: String(p.texte_hash || "").slice(0, 128), cases: p.optin_marketing ? ["optin_marketing"] : [],
+  });
+  await mxLogEvent(code, "parent_confirm", { optin: !!p.optin_marketing });
+  return { status: "success", confirme: true, optin_marketing: !!p.optin_marketing };
 }
 
 // Journal minimal du funnel (50-offre-conversion §8) : pas d'IP, pas d'email, pas d'user-agent.
@@ -2274,7 +2804,11 @@ const MX_EVENTS_CLIENT = ["paywall_view", "checkout_click", "pdf_open", "share_o
 async function logFunnelEvent(p: Record<string, unknown>) {
   const event = String(p.event || "");
   if (!MX_EVENTS_CLIENT.includes(event)) return { status: "error", message: "Événement non autorisé." };
-  const code = /^[A-Z0-9]{6}$/.test(String(p.code || "")) ? String(p.code) : null;
+  // Le code n'est retenu que s'il est prouvé (jeton de session, ou lien de partage parent) :
+  // sinon n'importe qui pourrait écrire des événements au nom d'un élève.
+  let code: string | null = null;
+  if (p.access_token && p.code) { const a = await mxAuth(p, { lectureAdmin: true }); code = a ? String(a.profile.code) : null; }
+  else if (p.token) { const sh = await mxPartageValide(String(p.token)); code = sh ? String(sh.code) : null; }
   const meta = (p.meta && typeof p.meta === "object" && JSON.stringify(p.meta).length <= 500) ? p.meta as Record<string, unknown> : {};
   await mxLogEvent(code, event, meta);
   return { status: "success" };
@@ -2284,7 +2818,7 @@ async function logFunnelEvent(p: Record<string, unknown>) {
 async function setPreferences(p: Record<string, unknown>) {
   if (!p.email) return { status: "error", message: "Email du compte requis." };
   const pr = await mxProfil(p);
-  if ("error" in pr) return { status: "error", message: pr.error };
+  if ("error" in pr) return { status: "error", message: pr.error, auth_requise: pr.auth_requise };
   const maj: Record<string, unknown> = {};
   if (p.email_eleve !== undefined) {
     const e = String(p.email_eleve || "").trim().toLowerCase();
@@ -2304,15 +2838,25 @@ async function setPreferences(p: Record<string, unknown>) {
 }
 
 // ── LOG_CONSENT {code, email?, produit, texte_version, texte_hash, cases[]} — avant redirection Stripe ──
+// Appelable par l'élève connecté (access_token) OU par la page parent avec le jeton du lien de partage
+// (le parent n'a pas de session : c'est lui qui paie depuis /b/<token>).
 async function logConsent(p: Record<string, unknown>) {
-  const pr = await mxProfil(p);
-  if ("error" in pr) return { status: "error", message: pr.error };
+  let codeEleve: string;
+  if (!p.access_token && p.token) {
+    const sh = await mxPartageValide(String(p.token));
+    if (!sh) return { status: "error", expire: true, message: "Lien expiré." };
+    codeEleve = String(sh.code);
+  } else {
+    const pr = await mxProfil(p);
+    if ("error" in pr) return { status: "error", message: pr.error, auth_requise: pr.auth_requise };
+    codeEleve = String(pr.profile.code);
+  }
   const produit = String(p.produit || "");
   if (!["diag_complet", "programme_brevet", "programme_upgrade", "compte"].includes(produit))
     return { status: "error", message: "Produit inconnu." };
   if (!p.texte_version || !p.texte_hash) return { status: "error", message: "texte_version et texte_hash requis." };
   await adminClient.from("consentements").insert({
-    code: String(pr.profile.code), produit, texte_version: String(p.texte_version).slice(0, 40),
+    code: codeEleve, produit, texte_version: String(p.texte_version).slice(0, 40),
     texte_hash: String(p.texte_hash).slice(0, 128),
     cases: Array.isArray(p.cases) ? (p.cases as unknown[]).map(String).slice(0, 10) : [],
   });
@@ -2346,7 +2890,7 @@ function mxCartePartage(carte: Record<string, unknown>) {
 // ── CREATE_SHARE {code, email?, canal?} → {token, url, expires_at} ──
 async function createShare(p: Record<string, unknown>) {
   const pr = await mxProfil(p);
-  if ("error" in pr) return { status: "error", message: pr.error };
+  if ("error" in pr) return { status: "error", message: pr.error, auth_requise: pr.auth_requise };
   const code = String(pr.profile.code);
   const diag = await mxDernierDiag(code);
   if (!diag) return { status: "error", message: "Aucun diagnostic terminé à partager." };
@@ -2354,6 +2898,8 @@ async function createShare(p: Record<string, unknown>) {
   const expires_at = new Date(Date.now() + 30 * 86400000).toISOString();
   const { error } = await adminClient.from("bilan_partages").insert({
     token, code, diagnostic_id: diag.id, type_carte: diag.type, expires_at,
+    // « email_parent » est réservé au lien du mail P-X0 (il vaut confirmation parentale) : jamais depuis l'app
+    canal: (String(p.canal || "").slice(0, 20) || null)?.replace(/^email_parent$/, "app") || null,
   });
   if (error) return { status: "error", message: "Partage impossible : " + error.message };
   await mxLogEvent(code, "share_created", { canal: String(p.canal || "").slice(0, 20) });
@@ -2363,7 +2909,7 @@ async function createShare(p: Record<string, unknown>) {
 // ── REVOKE_SHARE {code, email?, token? } — sans token : révoque tous les liens actifs de l'élève ──
 async function revokeShare(p: Record<string, unknown>) {
   const pr = await mxProfil(p);
-  if ("error" in pr) return { status: "error", message: pr.error };
+  if ("error" in pr) return { status: "error", message: pr.error, auth_requise: pr.auth_requise };
   let q = adminClient.from("bilan_partages").update({ revoked_at: new Date().toISOString() })
     .eq("code", String(pr.profile.code)).is("revoked_at", null);
   if (p.token) q = q.eq("token", String(p.token));
@@ -2399,8 +2945,8 @@ async function getBilanPartage(p: Record<string, unknown>) {
 
 // ── GET_CARTE {code, email?, diagnostic_id?} ──
 async function getCarte(p: Record<string, unknown>) {
-  const pr = await mxProfil(p);
-  if ("error" in pr) return { status: "error", message: pr.error };
+  const pr = await mxProfil(p, { lectureAdmin: true });
+  if ("error" in pr) return { status: "error", message: pr.error, auth_requise: pr.auth_requise };
   const { profile, droits } = pr;
   const code = String(profile.code);
   let diag: Record<string, unknown> | null;
@@ -2411,9 +2957,15 @@ async function getCarte(p: Record<string, unknown>) {
   } else diag = await mxDernierDiag(code);
   const { data: enCours } = await adminClient.from("diagnostics").select("id, type, etat_json")
     .eq("code", code).eq("statut", "en_cours");
+  // Besoin API n°14 : liens de partage actifs (bandeau « pas encore vue par tes parents »)
+  const { data: parts } = await adminClient.from("bilan_partages").select("token, created_at, expires_at, vues, dernier_vu_at, canal, revoked_at")
+    .eq("code", code).is("revoked_at", null).order("created_at", { ascending: false });
+  const partages = ((parts || []) as Record<string, unknown>[]).filter((x) => Date.parse(String(x.expires_at)) >= Date.now())
+    .map((x) => ({ token: x.token, created_at: x.created_at, expires_at: x.expires_at, vues: Number(x.vues) || 0,
+      dernier_vu_at: x.dernier_vu_at || null, canal: x.canal || null }));
   return {
-    status: "success", droits, streak: await mxStreakEleve(code),
-    carte: mxMasquerCarte((diag?.carte_json || null) as Record<string, unknown> | null, droits.acces),
+    status: "success", droits, streak: await mxStreakEleve(code), partages,
+    carte: mxMasquerCarte((diag?.carte_json || null) as Record<string, unknown> | null, droits.acces, await mxChargerRef()),
     diagnostic_id: diag?.id || null,
     en_cours: (enCours || []).map((d: Record<string, unknown>) => ({
       diagnostic_id: d.id, type: d.type, progression: mxProgression(d.etat_json as MxEtatDiag) })),
@@ -2421,10 +2973,23 @@ async function getCarte(p: Record<string, unknown>) {
 }
 
 // ── GET_ACCES {code, email?} ──
+// produits : prix catalogue en centimes (source unique MX_PRODUITS), avec `offre` = metadata.produit du
+// Payment Link correspondant. programme_upgrade = programme − diagnostic déduit (19 / 49 / 30 €).
+// Ce que CET élève paierait : droits.prix_cents. Les URL des Payment Links restent dans app.html (OFFRE).
+function mxCatalogue() {
+  const prog = MX_PRODUITS.programme_brevet;
+  return {
+    diagnostic_complet: { ...MX_PRODUITS.diagnostic_complet, offre: "diag_complet" },
+    programme_brevet: { ...prog, offre: "programme_brevet" },
+    programme_upgrade: { libelle: prog.libelle + " (diagnostic complet déduit)", offre: "programme_upgrade",
+      prix_cents: prog.prix_cents - (prog.deduction?.cents || 0), si: prog.deduction?.si || "diagnostic_complet" },
+  };
+}
+
 async function getAcces(p: Record<string, unknown>) {
-  const pr = await mxProfil(p);
-  if ("error" in pr) return { status: "error", message: pr.error };
-  return { status: "success", droits: pr.droits, produits: MX_PRODUITS };
+  const pr = await mxProfil(p, { lectureAdmin: true });
+  if ("error" in pr) return { status: "error", message: pr.error, auth_requise: pr.auth_requise };
+  return { status: "success", droits: pr.droits, produits: mxCatalogue() };
 }
 
 // ── GET_TRAINING {code, email?} — 5 exos du jour, idempotent (1 ligne daily_boosts / jour) ──
@@ -2432,7 +2997,7 @@ async function getAcces(p: Record<string, unknown>) {
 // source=BOOST incrémente exos_done. Chaque exo porte item_id + comp → maîtrise mise à jour.
 async function getTraining(p: Record<string, unknown>) {
   const pr = await mxProfil(p);
-  if ("error" in pr) return { status: "error", message: pr.error };
+  if ("error" in pr) return { status: "error", message: pr.error, auth_requise: pr.auth_requise };
   const { profile, droits } = pr;
   const code = String(profile.code);
   const today = todayParis();
@@ -2443,8 +3008,12 @@ async function getTraining(p: Record<string, unknown>) {
   const { data: existant } = await adminClient.from("daily_boosts").select("boost_json, exos_done")
     .eq("code", code).eq("date", today).maybeSingle();
   const streak = await mxStreakEleve(code);
+  if (p.comp) return await mxEntrainementLibre(p, code, droits, today, existant as Record<string, unknown> | null, streak);
   if (existant) {
-    return { status: "success", boost: existant.boost_json, exos_done: existant.exos_done || 0, deja: true, rediagnostic_du, streak, droits };
+    const b = existant.boost_json as Record<string, unknown>;
+    // séances créées avant les Besoins API n°2/4 : on complète à la lecture (sans réécrire la séance)
+    if (b && !b.pourquoi && Array.isArray(b.exos)) mxEnrichirBoost(b, await mxChargerRef(), await mxChargerMaitrise(code));
+    return { status: "success", boost: b, exos_done: existant.exos_done || 0, deja: true, rediagnostic_du, streak, droits };
   }
   if (!dernier) return { status: "error", message: "Fais d'abord le diagnostic express.", diagnostic_requis: true };
 
@@ -2466,12 +3035,73 @@ async function getTraining(p: Record<string, unknown>) {
       type: mxTypeItem(e.item), categorie: (ref.comps[e.item.comp].chapitres_legacy || [])[0] || e.item.comp,
     })),
   };
+  mxEnrichirBoost(boost, ref, mt);
   await adminClient.from("daily_boosts").upsert({ code, date: today, boost_json: boost, exos_done: 0 },
     { onConflict: "code,date", ignoreDuplicates: true });
   const { data: final } = await adminClient.from("daily_boosts").select("boost_json, exos_done")
     .eq("code", code).eq("date", today).maybeSingle();
   return { status: "success", boost: final?.boost_json || boost, exos_done: final?.exos_done || 0, deja: false,
     rediagnostic_du, zone_maitrisee: sel.zone_maitrisee, streak, droits };
+}
+
+// Besoins API n°2 et 4 : err_libelles par exo, focus_titres, pourquoi (phrase déterministe).
+function mxEnrichirBoost(boost: Record<string, unknown>, ref: MxRef, mt: Record<string, MxMaitrise>) {
+  const exos = (boost.exos || []) as Record<string, unknown>[];
+  for (const e of exos) if (!e.err_libelles) e.err_libelles = mxErrLibelles(ref, e as { err?: Record<string, string> });
+  const focus = ((boost.focus || []) as string[]);
+  boost.focus_titres = mxFocusTitres(ref, focus);
+  if (!boost.pourquoi) {
+    boost.pourquoi = mxPourquoi(ref, mt, focus, exos.map((e) => ({ comp: String(e.comp || ""), role: String(e.role || "") })),
+      !!boost.zone_maitrisee);
+  }
+  return boost;
+}
+
+// ── GET_TRAINING {code, access_token, comp} : entraînement libre (Besoin API n°5) ──
+// Programme Brevet uniquement. 5 items sur UNE compétence, hors quota : n'écrit PAS daily_boosts,
+// autant de séries que voulu (un item vu il y a < 3 jours n'est resservi qu'en dernier recours ; les
+// items de la séance du jour sont exclus). L'app envoie ensuite save_score avec source « LIBRE ».
+async function mxEntrainementLibre(p: Record<string, unknown>, code: string, droits: ReturnType<typeof mxDroits>,
+  today: string, existant: Record<string, unknown> | null, streak: unknown) {
+  if (!droits.entrainement_complet) {
+    return { status: "error", message: "L'entraînement libre fait partie du Programme Brevet.", paywall: "programme_brevet", droits };
+  }
+  const ref = await mxChargerRef();
+  const comp = String(p.comp || "");
+  if (!ref.comps[comp] || !(ref.itemsParComp[comp] || []).length) return { status: "error", message: "Compétence inconnue ou sans exercice." };
+  const mt = await mxChargerMaitrise(code);
+  // Plusieurs séries le même jour : « dernière réponse » = la plus récente à la seconde près (created_at), pas au jour.
+  const { data: hist } = await adminClient.from("reponses_items").select("item_id, date, ok, contexte, created_at")
+    .eq("code", code).gte("date", mxAjoutJours(today, -90)).order("created_at", { ascending: true });
+  const rows = ((hist || []) as Record<string, unknown>[]).map((h) => ({ item_id: String(h.item_id), date: String(h.date), ok: !!h.ok, contexte: String(h.contexte || "") }));
+  const dernier: Record<string, MxHist> = {};
+  for (const h of rows) dernier[h.item_id] = h;
+  const pris = new Set<string>((((existant?.boost_json as Record<string, unknown>)?.exos || []) as { item_id?: string }[])
+    .map((e) => String(e.item_id || "")).filter(Boolean));
+  const lvl = mxLvlCible(mt[comp]);
+  const items: MxItem[] = [];
+  for (const strict of [true, false]) {
+    while (items.length < MX.EXOS_PAR_JOUR) {
+      const it = mxChoisirItemTrain(ref, comp, lvl, dernier, today, code, pris, strict);
+      if (!it) break;
+      pris.add(it.id); items.push(it);
+    }
+  }
+  if (!items.length) return { status: "error", message: "Plus d'exercice disponible sur cette compétence pour l'instant." };
+  // num unique dans la journée (dédup scores code+chapitre+num_exo+date+source) : 100 + réponses du jour
+  const base = 100 + rows.filter((h) => h.date === today && h.contexte === "train").length;
+  const titre = ref.comps[comp].titre_eleve || ref.comps[comp].titre;
+  const boost: Record<string, unknown> = {
+    generatedBy: "libre", libre: true, date: today, comp, focus: [comp], zone: null,
+    banque_insuffisante: items.length < MX.EXOS_PAR_JOUR,
+    pourquoi: "Entraînement libre sur « " + titre + " » : enchaîne autant de séries que tu veux.",
+    exos: items.map((it, i) => ({
+      ...it, item_id: it.id, comp: it.comp, role: "libre", boostIdx: i, num: base + i + 1,
+      type: mxTypeItem(it), categorie: (ref.comps[it.comp].chapitres_legacy || [])[0] || it.comp,
+    })),
+  };
+  mxEnrichirBoost(boost, ref, mt);
+  return { status: "success", libre: true, boost, exos_done: 0, source_score: "LIBRE", streak, droits };
 }
 
 // ── SUBMIT_FEEDBACK ─────────────────────────────────────────
@@ -2515,13 +3145,12 @@ async function forgotPassword(p: Record<string, unknown>) {
 
 // Vérifie que l'appel vient d'un admin authentifié (jeton de session Supabase), pas d'un
 // simple `code` : le code admin est public (dépôt GitHub). Faille corrigée le 24/09.
+// Même vérification de jeton que les actions élève (mxSessionUid), + is_admin.
 async function requireAdmin(p: Record<string, unknown>): Promise<Record<string, unknown> | null> {
-  const token = String(p.access_token || "");
-  if (!token) return { status: "error", message: "Accès refusé." };
-  const { data, error } = await adminClient.auth.getUser(token);
-  if (error || !data?.user) return { status: "error", message: "Accès refusé." };
+  const uid = await mxSessionUid(p);
+  if (!uid) return { status: "error", message: "Accès refusé.", auth_requise: true };
   const { data: prof } = await adminClient.from("profiles")
-    .select("is_admin").eq("id", data.user.id).maybeSingle();
+    .select("is_admin").eq("id", uid).maybeSingle();
   return prof?.is_admin ? null : { status: "error", message: "Accès refusé." };
 }
 
@@ -2535,6 +3164,40 @@ async function getAdminOverview(p: Record<string, unknown>) {
   const { data: allProgress } = await adminClient.from("progress").select("*");
   const { data: allSuivi } = await adminClient.from("suivi").select("*");
 
+  // Monitoring du nouveau parcours (Besoin API n°10) : diagnostics, invités, achats, funnel agrégé.
+  const { data: diags } = await adminClient.from("diagnostics")
+    .select("id, code, type, statut, n_questions, started_at, finished_at, carte_json");
+  const diagnostics = ((diags || []) as Record<string, unknown>[]).map((d) => {
+    const c = (d.carte_json || null) as Record<string, unknown> | null;
+    return { id: d.id, code: d.code, type: d.type, statut: d.statut, n_questions: d.n_questions,
+      started_at: d.started_at, finished_at: d.finished_at,
+      score_global: c?.score_global ?? null, point_faible: c?.point_faible ?? null,
+      fiabilite: (c?.fiabilite as Record<string, unknown> | undefined)?.niveau ?? null };
+  });
+  const diagnostics_stats: Record<string, Record<string, number>> = {};
+  for (const d of diagnostics) {
+    const k = String(d.type), st = String(d.statut);
+    diagnostics_stats[k] ||= { en_cours: 0, termine: 0, abandonne: 0 };
+    diagnostics_stats[k][st] = (diagnostics_stats[k][st] || 0) + 1;
+  }
+  const { data: invs } = await adminClient.from("diagnostics_invites").select("statut, expires_at");
+  const invites: Record<string, number> = { en_cours: 0, termine: 0, rattache: 0, expires: 0 };
+  for (const i of (invs || []) as Record<string, unknown>[]) {
+    if (i.statut !== "rattache" && Date.parse(String(i.expires_at)) < Date.now()) invites.expires++;
+    else invites[String(i.statut)] = (invites[String(i.statut)] || 0) + 1;
+  }
+  const { data: achats } = await adminClient.from("achats").select("*").order("created_at", { ascending: false });
+  const ca_cents = ((achats || []) as Record<string, unknown>[]).filter((a) => !a.rembourse_at)
+    .reduce((t, a) => t + (Number(a.montant_cents) || 0), 0);
+  const { data: evs } = await adminClient.from("funnel_events").select("event, created_at");
+  const j7 = Date.now() - 7 * 86400000, j30 = Date.now() - 30 * 86400000;
+  const funnel: Record<string, { total: number; j7: number; j30: number }> = {};
+  for (const e of (evs || []) as Record<string, unknown>[]) {
+    const f = funnel[String(e.event)] ||= { total: 0, j7: 0, j30: 0 };
+    const t = Date.parse(String(e.created_at));
+    f.total++; if (t >= j7) f.j7++; if (t >= j30) f.j30++;
+  }
+
   return {
     status: "success",
     users: users || [],
@@ -2542,6 +3205,9 @@ async function getAdminOverview(p: Record<string, unknown>) {
     boosts: allBoosts || [],
     progress: allProgress || [],
     suivi: allSuivi || [],
+    diagnostics, diagnostics_stats, invites,
+    achats: achats || [], ca_cents,
+    funnel,
   };
 }
 
@@ -2550,7 +3216,8 @@ async function getAdminOverview(p: Record<string, unknown>) {
 async function publishAdminBoost(p: Record<string, unknown>) {
   const denied = await requireAdmin(p);
   if (denied) return denied;
-  const code = String(p.code);
+  // Audit 2026-04-11 (porté) : l'élève visé peut arriver en targetCode (le front admin envoie adminCode + targetCode)
+  const code = String(p.targetCode || p.code);
   const boostJson = p.boost;
   if (!code || !boostJson) return { status: "error", message: "code et boost requis." };
 
@@ -2577,7 +3244,7 @@ async function publishAdminBoost(p: Record<string, unknown>) {
 async function publishAdminChapter(p: Record<string, unknown>) {
   const denied = await requireAdmin(p);
   if (denied) return denied;
-  const code = String(p.code);
+  const code = String(p.targetCode || p.code);
   const chapterJson = p.chapter;
   if (!code || !chapterJson) return { status: "error", message: "code et chapter requis." };
 
@@ -2800,6 +3467,7 @@ async function generateBrevetSession(p: Record<string, unknown>) {
 // ── SAVE_BREVET_RESULT ──────────────────────────────────────
 
 async function saveBrevetResult(p: Record<string, unknown>) {
+  if (!(await mxAuth(p))) return MX_AUTH_REFUS; // Besoin API n°8
   await adminClient.from("brevet_results").insert({
     code: String(p.code || ""),
     prenom: String(p.name || ""),
@@ -3156,6 +3824,27 @@ async function sendTestEmailResend(p: Record<string, unknown>) {
   return { status: "success", sent_to: email };
 }
 
+// ── send_admin_email — envoi custom Resend (audit 2026-04-11, porté de la prod le 25/09) ──
+// Mails one-shot personnalisés (premier contact, suivi). Garde : ADMIN_ONLY (jeton de session admin),
+// et non plus adminCode (le code admin est public).
+async function sendAdminEmail(p: Record<string, unknown>) {
+  const to = String(p.to || "").trim().toLowerCase();
+  const subject = String(p.subject || "").trim();
+  const html = String(p.html || "").trim();
+  const replyTo = String(p.replyTo || "contact@matheux.fr").trim();
+  if (!to || !subject || !html) return { status: "error", message: "to, subject, html requis." };
+  const result = await resendSend(to, subject, html, replyTo);
+  // Log dans email_logs (type ADMIN pour distinguer des marketing J+N)
+  await adminClient.from("email_logs").insert({
+    email: to, prenom: "", type: "ADMIN",
+    statut: result.ok ? "envoyé" : "erreur",
+    details: result.error || subject,
+    created_at: new Date().toISOString(),
+  });
+  if (!result.ok) return { status: "error", message: "Resend: " + result.error };
+  return { status: "success", sent_to: to };
+}
+
 // ── NOOP actions (fonctionnalités secondaires, retournent success) ──
 
 async function noopAction(_p: Record<string, unknown>) {
@@ -3164,9 +3853,28 @@ async function noopAction(_p: Record<string, unknown>) {
 
 // ── DISPATCH ────────────────────────────────────────────────
 
+// ── Actions réservées à l'admin : jeton de session admin obligatoire (hotfix prod 4fc6123, 25/09) ──
+// Garde centrale dans le dispatch (même liste que la prod) : le code admin est public (dépôt GitHub) et
+// les actions d'envoi d'email seraient sinon un relais de spam depuis no-reply@matheux.fr.
+const ADMIN_ONLY = new Set([
+  "get_admin_overview", "publish_admin_boost", "publish_admin_chapter", "get_cours_admin", "save_cours",
+  "send_admin_email", "send_test_email", "send_marketing_email", "log_manual_email",
+  "send_weekly_report", "send_custom_email", "send_session_rapport",
+]);
+// cron_send_emails : pg_cron (secret CRON_SECRET, cf. migration 20260925) ou admin. Fail-closed.
+const CRON_SECRET = Deno.env.get("CRON_SECRET") || "";
+async function cronGarde(p: Record<string, unknown>) {
+  const s = String(p.cron_secret || "");
+  if (CRON_SECRET && s && _timingSafeEqualHex(s, CRON_SECRET)) return await cronSendEmails(p);
+  return (await requireAdmin(p)) || await cronSendEmails(p);
+}
+
 const ACTIONS: Record<string, (p: Record<string, unknown>) => Promise<unknown>> = {
   register,
   login,
+  login_token: loginToken,
+  refresh_session: refreshSession,
+  confirm_parent: confirmParent,
   save_score: saveScore,
   save_scores_batch: saveScoresBatch,
   save_boost: saveBoost,
@@ -3215,8 +3923,9 @@ const ACTIONS: Record<string, (p: Record<string, unknown>) => Promise<unknown>> 
   mark_all_test: noopAction,
   simulate_next_day: noopAction,
   send_test_email: sendTestEmailResend,
+  send_admin_email: sendAdminEmail,
   send_marketing_email: sendMarketingEmail,
-  cron_send_emails: cronSendEmails,
+  cron_send_emails: cronGarde,
   send_weekly_report: proxyGas,
   send_custom_email: proxyGas,
   send_session_rapport: proxyGas,
@@ -3278,6 +3987,10 @@ Deno.serve(async (req: Request) => {
     const action = String(p.action || "");
     const handler = ACTIONS[action];
     if (!handler) return json({ status: "error", message: "Action inconnue : " + action });
+    if (ADMIN_ONLY.has(action)) {
+      const denied = await requireAdmin(p);
+      if (denied) return json(denied);
+    }
 
     const result = await handler(p);
     return json(result);

@@ -467,9 +467,15 @@ export class FakeSupabase {
   }
   private async session(u: AuthUser) {
     const exp = Math.floor(Date.now() / 1000) + 3600;
-    const access_token = await signJwt({ sub: u.id, email: u.email, role: "authenticated", aud: "authenticated", exp, iat: exp - 3600 }, this.jwtSecret);
+    const access_token = await signJwt({ sub: u.id, email: u.email, role: "authenticated", aud: "authenticated", exp, iat: exp - 3600, session_id: crypto.randomUUID() }, this.jwtSecret);
     this.userTokens.add(access_token);
     return { access_token, token_type: "bearer", expires_in: 3600, expires_at: exp, refresh_token: "dev-refresh-" + u.id + "-" + crypto.randomUUID(), user: this.publicUser(u) };
+  }
+
+  /** Jeton de session d'un utilisateur (outils de dev : /dev/pay lit les droits comme l'app le ferait). */
+  async tokenFor(userId: string): Promise<string | null> {
+    const u = this.state.users.find((x) => x.id === userId);
+    return u ? (await this.session(u)).access_token : null;
   }
 
   private async auth(req: Request, url: URL): Promise<Response> {
