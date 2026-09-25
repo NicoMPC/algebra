@@ -32,19 +32,17 @@
 - Besoins API 1-12 + 14 livrés (diag invité, err_libelles, séance « pourquoi », entraînement libre, email parent P-X0 + `confirm_parent`, jetons `access_token`/`refresh_token` obligatoires sur TOUTES les actions élève, `login_token`, `refresh_session`, monitoring admin). Correctifs de l'audit prod 11/04 portés. Smoke 101/101, `deno test` 11/11, `deno check` 0 erreur. Contrats : `41-integration-log.md` § Besoins API.
 - Au déploiement : migrations `20260925_*.sql` ; secret `CRON_SECRET` (+ même valeur dans Vault `matheux_cron_secret`) sinon plus aucun email auto ; remplacer les anciens mails J+1..J+14 (29,99 €) ; `bilan.html` doit gérer `?confirmer=1` → `confirm_parent` ; besoin 13 (envoi du lien de partage par email, plafonné 3/jour) pas fait.
 
-## En cours (agent en arrière-plan, NON commité — `app.html` exclu du commit `38545ee`)
+## Fait 25/09 (app) — commit `c45c076`
 
-| Chantier | Fichiers | Comment reprendre |
-|---|---|---|
-| Intégration du nouveau parcours dans `app.html` (10 lots) | `app.html`, journal `docs/specs/41-integration-log.md` | Lire le journal → reprendre au lot suivant avec un agent `dev-ux`. Vérifier d'abord `git diff --stat app.html` et que l'app charge sans erreur console |
-
-⚠️ À la reprise : `git status` + `git diff --stat` avant tout, les agents ont pu
-s'arrêter au milieu d'un fichier. Au besoin `git checkout app.html` pour repartir de la version commitée.
+- Nouveau parcours intégré dans `app.html` (L1-L10, 13 801 → 5 753 lignes). Journal : `41-integration-log.md`.
+- Vérifié par e2e visiteur réel (landing → diag invité 15 q → carte partielle → inscription → séance → fin de séance) :
+  0 erreur console, jeton en localStorage (plus de hash), email parent dans l'outbox.
+- ⚠️ Constat : la séance du jour ne sert que 1-2 exos (banque d'entraînement trop mince) → complément banque = priorité.
 
 ## Ensuite
 
-1. Test de bout en bout du site complet en local (launcher) → donner la main à Nicolas
-2. Commit local de la phase « build »
+1. **Complément banque d'entraînement** (~300 exos, 15/compétence sur les causes racines) — bloquant pour l'expérience
+2. Nicolas teste en local (`./matheux.sh`) et valide
 3. **Créneau agenda 25/09 9h-12h** (« Matheux — gros chantiers ») :
    - complément banque ~300 exos (15/compétence sur 30 causes racines), ~0,8 M tokens
    - ✅ **Sécurité prod déployée le 25/09 ~12h** (branche locale `hotfix/securite-api`, commits `b4bcfb6` snapshot de
