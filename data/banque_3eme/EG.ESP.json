@@ -153,15 +153,128 @@
     "contexte": false
   },
   {
+    "id": "EG.ESP.01-u01",
+    "comp": "EG.ESP.01",
+    "q": "Une pyramide a une base carrée de $6$ cm de côté. Combien a-t-elle de sommets ? ___",
+    "a": "5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "4": "EG.ESP.01#faces_aretes",
+      "8": "EG.ESP.01#faces_aretes"
+    },
+    "steps": [
+      "Compte les sommets de la base carrée.",
+      "Ajoute le sommet principal, en haut : ?"
+    ],
+    "f": "Pyramide à base à $n$ côtés : $n + 1$ sommets",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ESP.01-u02",
+    "comp": "EG.ESP.01",
+    "q": "Le patron d'un cylindre de révolution est formé de :",
+    "a": "deux disques et un rectangle",
+    "type": "qcm",
+    "options": [
+      "deux disques et deux rectangles",
+      "un disque et un rectangle",
+      "deux disques et un rectangle"
+    ],
+    "err": {
+      "un disque et un rectangle": "EG.ESP.01#faces_aretes",
+      "deux disques et deux rectangles": "EG.ESP.01#faces_aretes"
+    },
+    "steps": [
+      "Un cylindre fermé (comme une boîte de conserve) a un fond et un couvercle.",
+      "La surface latérale, une fois déroulée, forme combien de rectangles ? ?"
+    ],
+    "f": "Patron du cylindre : bases + surface latérale déroulée",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ESP.01-u03",
+    "comp": "EG.ESP.01",
+    "q": "Un crayon a la forme d'un prisme droit à base hexagonale ($6$ côtés). Combien ce prisme a-t-il d'arêtes ? ___",
+    "a": "18",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "12": "EG.ESP.01#faces_aretes",
+      "8": "EG.ESP.01#faces_aretes"
+    },
+    "steps": [
+      "Chaque base hexagonale a $6$ arêtes, et il y a deux bases.",
+      "Ajoute les arêtes latérales, qui relient les deux bases : ?"
+    ],
+    "f": "Prisme à base à $n$ côtés : $3n$ arêtes",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.ESP.01-u04",
+    "comp": "EG.ESP.01",
+    "q": "Un cône de révolution a une base de rayon $3$ cm, une hauteur de $4$ cm et une génératrice de $5$ cm. Dans son patron, quel est le rayon du secteur de disque qui forme la surface latérale ? ___ cm",
+    "a": "5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "EG.ESP.01#patron_cone"
+    },
+    "steps": [
+      "Quand on enroule le secteur, son centre devient le sommet du cône et son bord arrondi devient le cercle de base.",
+      "Le rayon du secteur va donc du sommet au cercle de base : c'est quelle longueur du cône ? ?"
+    ],
+    "f": "Patron du cône : secteur de rayon $=$ génératrice",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ESP.01-u05",
+    "comp": "EG.ESP.01",
+    "q": "Sur une face d'un cube de $4$ cm d'arête, on colle une pyramide à base carrée de $4$ cm de côté, les deux carrés coïncidant exactement. Combien de faces le solide obtenu a-t-il ? ___",
+    "a": "9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "11": "EG.ESP.01#faces_aretes",
+      "10": "EG.ESP.01#faces_aretes"
+    },
+    "steps": [
+      "Le cube a $6$ faces et la pyramide $5$ faces.",
+      "Les deux carrés collés se retrouvent à l'intérieur : ils ne sont plus des faces du solide. Combien en reste-t-il ? ?"
+    ],
+    "f": "Faces visibles d'un solide composé : on retire les faces collées",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
     "id": "EG.ESP.02-u01",
     "comp": "EG.ESP.02",
     "q": "On coupe un pavé droit par un plan parallèle à l'une de ses faces. Quelle est la section ?",
     "a": "Un rectangle de mêmes dimensions que cette face",
     "type": "qcm",
     "options": [
+      "Un disque",
       "Un triangle",
-      "Un rectangle de mêmes dimensions que cette face",
-      "Un disque"
+      "Un rectangle de mêmes dimensions que cette face"
     ],
     "err": {
       "Un triangle": "EG.ESP.02#mauvaise_forme",
@@ -185,9 +298,9 @@
     "a": "Un disque de même rayon que la base",
     "type": "qcm",
     "options": [
+      "Un disque de même rayon que la base",
       "Un rectangle",
-      "Un carré",
-      "Un disque de même rayon que la base"
+      "Un carré"
     ],
     "err": {
       "Un rectangle": "EG.ESP.02#mauvaise_forme",
@@ -279,10 +392,10 @@
     "a": "Un rectangle qui n'est pas un carré",
     "type": "qcm",
     "options": [
-      "Un carré",
       "Un triangle",
       "Un rectangle qui n'est pas un carré",
-      "Un trapèze"
+      "Un trapèze",
+      "Un carré"
     ],
     "err": {
       "Un carré": "EG.ESP.02#mauvaise_forme",
@@ -294,119 +407,6 @@
       "Compare $AB$ (une arête) et $BG$ (une diagonale de la face $BCGF$) : sont-elles égales ?"
     ],
     "f": "Diagonale d'un carré de côté $c$ : $c\\sqrt{2}$",
-    "lvl": 3,
-    "usage": [
-      "train"
-    ],
-    "contexte": false
-  },
-  {
-    "id": "EG.ESP.01-u01",
-    "comp": "EG.ESP.01",
-    "q": "Une pyramide a une base carrée de $6$ cm de côté. Combien a-t-elle de sommets ? ___",
-    "a": "5",
-    "type": "fill",
-    "options": [],
-    "err": {
-      "4": "EG.ESP.01#faces_aretes",
-      "8": "EG.ESP.01#faces_aretes"
-    },
-    "steps": [
-      "Compte les sommets de la base carrée.",
-      "Ajoute le sommet principal, en haut : ?"
-    ],
-    "f": "Pyramide à base à $n$ côtés : $n + 1$ sommets",
-    "lvl": 1,
-    "usage": [
-      "train"
-    ],
-    "contexte": false
-  },
-  {
-    "id": "EG.ESP.01-u02",
-    "comp": "EG.ESP.01",
-    "q": "Le patron d'un cylindre de révolution est formé de :",
-    "a": "deux disques et un rectangle",
-    "type": "qcm",
-    "options": [
-      "un disque et un rectangle",
-      "deux disques et un rectangle",
-      "deux disques et deux rectangles"
-    ],
-    "err": {
-      "un disque et un rectangle": "EG.ESP.01#faces_aretes",
-      "deux disques et deux rectangles": "EG.ESP.01#faces_aretes"
-    },
-    "steps": [
-      "Un cylindre fermé (comme une boîte de conserve) a un fond et un couvercle.",
-      "La surface latérale, une fois déroulée, forme combien de rectangles ? ?"
-    ],
-    "f": "Patron du cylindre : bases + surface latérale déroulée",
-    "lvl": 1,
-    "usage": [
-      "train"
-    ],
-    "contexte": false
-  },
-  {
-    "id": "EG.ESP.01-u03",
-    "comp": "EG.ESP.01",
-    "q": "Un crayon a la forme d'un prisme droit à base hexagonale ($6$ côtés). Combien ce prisme a-t-il d'arêtes ? ___",
-    "a": "18",
-    "type": "fill",
-    "options": [],
-    "err": {
-      "12": "EG.ESP.01#faces_aretes",
-      "8": "EG.ESP.01#faces_aretes"
-    },
-    "steps": [
-      "Chaque base hexagonale a $6$ arêtes, et il y a deux bases.",
-      "Ajoute les arêtes latérales, qui relient les deux bases : ?"
-    ],
-    "f": "Prisme à base à $n$ côtés : $3n$ arêtes",
-    "lvl": 2,
-    "usage": [
-      "train"
-    ],
-    "contexte": true
-  },
-  {
-    "id": "EG.ESP.01-u04",
-    "comp": "EG.ESP.01",
-    "q": "Un cône de révolution a une base de rayon $3$ cm, une hauteur de $4$ cm et une génératrice de $5$ cm. Dans son patron, quel est le rayon du secteur de disque qui forme la surface latérale ? ___ cm",
-    "a": "5",
-    "type": "fill",
-    "options": [],
-    "err": {
-      "3": "EG.ESP.01#patron_cone"
-    },
-    "steps": [
-      "Quand on enroule le secteur, son centre devient le sommet du cône et son bord arrondi devient le cercle de base.",
-      "Le rayon du secteur va donc du sommet au cercle de base : c'est quelle longueur du cône ? ?"
-    ],
-    "f": "Patron du cône : secteur de rayon $=$ génératrice",
-    "lvl": 2,
-    "usage": [
-      "train"
-    ],
-    "contexte": false
-  },
-  {
-    "id": "EG.ESP.01-u05",
-    "comp": "EG.ESP.01",
-    "q": "Sur une face d'un cube de $4$ cm d'arête, on colle une pyramide à base carrée de $4$ cm de côté, les deux carrés coïncidant exactement. Combien de faces le solide obtenu a-t-il ? ___",
-    "a": "9",
-    "type": "fill",
-    "options": [],
-    "err": {
-      "11": "EG.ESP.01#faces_aretes",
-      "10": "EG.ESP.01#faces_aretes"
-    },
-    "steps": [
-      "Le cube a $6$ faces et la pyramide $5$ faces.",
-      "Les deux carrés collés se retrouvent à l'intérieur : ils ne sont plus des faces du solide. Combien en reste-t-il ? ?"
-    ],
-    "f": "Faces visibles d'un solide composé : on retire les faces collées",
     "lvl": 3,
     "usage": [
       "train"

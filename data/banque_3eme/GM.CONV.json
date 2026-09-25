@@ -489,6 +489,122 @@
     "contexte": true
   },
   {
+    "id": "GM.CONV.02-u01",
+    "comp": "GM.CONV.02",
+    "q": "Un tapis a une aire de $4~\\text{m}^2$. Quelle est son aire en $\\text{dm}^2$ ? ___ $\\text{dm}^2$",
+    "a": "400",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "40": "GM.CONV.02#comme_longueur"
+    },
+    "steps": [
+      "Un carré de $1$ m de côté mesure $10$ dm de côté : combien de $\\text{dm}^2$ contient-il ?",
+      "Multiplie $4$ par ce nombre : ?"
+    ],
+    "f": "$1~\\text{m}^2 = 100~\\text{dm}^2$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.02-u02",
+    "comp": "GM.CONV.02",
+    "q": "Une bouteille d'eau contient $1{,}5$ L. Quel est ce volume en $\\text{cm}^3$ ? ___ $\\text{cm}^3$",
+    "a": "1500",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "150": "GM.CONV.02#litre_dm3",
+      "15": "GM.CONV.02#comme_longueur"
+    },
+    "steps": [
+      "Un litre, c'est un cube de $1$ dm de côté, soit $10~\\text{cm} \\times 10~\\text{cm} \\times 10~\\text{cm}$.",
+      "Combien de $\\text{cm}^3$ dans $1$ L ? Multiplie ensuite par $1{,}5$ : ?"
+    ],
+    "f": "$1~\\text{L} = 1~\\text{dm}^3$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.02-u03",
+    "comp": "GM.CONV.02",
+    "q": "Une affiche a une aire de $5\\,000~\\text{cm}^2$. Quelle est son aire en $\\text{m}^2$ ?",
+    "a": "$0{,}5~\\text{m}^2$",
+    "type": "qcm",
+    "options": [
+      "$5~\\text{m}^2$",
+      "$50\\,000\\,000~\\text{m}^2$",
+      "$50~\\text{m}^2$",
+      "$0{,}5~\\text{m}^2$"
+    ],
+    "err": {
+      "$50~\\text{m}^2$": "GM.CONV.02#comme_longueur",
+      "$5~\\text{m}^2$": "GM.CONV.01#rapport_unites",
+      "$50\\,000\\,000~\\text{m}^2$": "GM.CONV.01#mauvais_sens"
+    },
+    "steps": [
+      "On passe d'une petite unité à une grande : le nombre doit-il grossir ou diminuer ?",
+      "Combien de $\\text{cm}^2$ dans $1~\\text{m}^2$ ? Divise $5\\,000$ par ce nombre : ?"
+    ],
+    "f": "$1~\\text{m}^2 = 10\\,000~\\text{cm}^2$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.02-u04",
+    "comp": "GM.CONV.02",
+    "q": "Une citerne de jardin contient $4\\,500$ L d'eau de pluie. Quel est ce volume en $\\text{m}^3$ ? ___ $\\text{m}^3$",
+    "a": "4,5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "45": "GM.CONV.02#comme_longueur",
+      "450": "GM.CONV.02#comme_longueur"
+    },
+    "steps": [
+      "Commence par écrire le volume en $\\text{dm}^3$ : $1$ L $= 1~\\text{dm}^3$.",
+      "Combien de $\\text{dm}^3$ dans $1~\\text{m}^3$ ? Divise par ce nombre : ?"
+    ],
+    "f": "$1~\\text{m}^3 = 1\\,000~\\text{dm}^3 = 1\\,000$ L",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.02-u05",
+    "comp": "GM.CONV.02",
+    "q": "Une piscine a la forme d'un pavé droit de $8$ m de long, $4$ m de large, remplie d'eau sur $1{,}5$ m de profondeur. Combien de litres d'eau contient-elle ? ___ L",
+    "a": "48000",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "480": "GM.CONV.02#comme_longueur",
+      "4800": "GM.CONV.02#comme_longueur",
+      "48000000": "GM.CONV.02#litre_dm3"
+    },
+    "steps": [
+      "Calcule d'abord le volume d'eau en $\\text{m}^3$ : longueur $\\times$ largeur $\\times$ profondeur.",
+      "Un $\\text{m}^3$ contient combien de litres ? Convertis : ?"
+    ],
+    "f": "$1~\\text{m}^3 = 1\\,000$ L",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
     "id": "GM.CONV.03-u01",
     "comp": "GM.CONV.03",
     "q": "Un épisode de série dure $45$ min. Écris cette durée en heures, sous forme décimale. ___ h",
@@ -648,121 +764,5 @@
       "12:30",
       "12 h 30 min"
     ]
-  },
-  {
-    "id": "GM.CONV.02-u01",
-    "comp": "GM.CONV.02",
-    "q": "Un tapis a une aire de $4~\\text{m}^2$. Quelle est son aire en $\\text{dm}^2$ ? ___ $\\text{dm}^2$",
-    "a": "400",
-    "type": "fill",
-    "options": [],
-    "err": {
-      "40": "GM.CONV.02#comme_longueur"
-    },
-    "steps": [
-      "Un carré de $1$ m de côté mesure $10$ dm de côté : combien de $\\text{dm}^2$ contient-il ?",
-      "Multiplie $4$ par ce nombre : ?"
-    ],
-    "f": "$1~\\text{m}^2 = 100~\\text{dm}^2$",
-    "lvl": 1,
-    "usage": [
-      "train"
-    ],
-    "contexte": false
-  },
-  {
-    "id": "GM.CONV.02-u02",
-    "comp": "GM.CONV.02",
-    "q": "Une bouteille d'eau contient $1{,}5$ L. Quel est ce volume en $\\text{cm}^3$ ? ___ $\\text{cm}^3$",
-    "a": "1500",
-    "type": "fill",
-    "options": [],
-    "err": {
-      "150": "GM.CONV.02#litre_dm3",
-      "15": "GM.CONV.02#comme_longueur"
-    },
-    "steps": [
-      "Un litre, c'est un cube de $1$ dm de côté, soit $10~\\text{cm} \\times 10~\\text{cm} \\times 10~\\text{cm}$.",
-      "Combien de $\\text{cm}^3$ dans $1$ L ? Multiplie ensuite par $1{,}5$ : ?"
-    ],
-    "f": "$1~\\text{L} = 1~\\text{dm}^3$",
-    "lvl": 1,
-    "usage": [
-      "train"
-    ],
-    "contexte": false
-  },
-  {
-    "id": "GM.CONV.02-u03",
-    "comp": "GM.CONV.02",
-    "q": "Une affiche a une aire de $5\\,000~\\text{cm}^2$. Quelle est son aire en $\\text{m}^2$ ?",
-    "a": "$0{,}5~\\text{m}^2$",
-    "type": "qcm",
-    "options": [
-      "$50~\\text{m}^2$",
-      "$0{,}5~\\text{m}^2$",
-      "$5~\\text{m}^2$",
-      "$50\\,000\\,000~\\text{m}^2$"
-    ],
-    "err": {
-      "$50~\\text{m}^2$": "GM.CONV.02#comme_longueur",
-      "$5~\\text{m}^2$": "GM.CONV.01#rapport_unites",
-      "$50\\,000\\,000~\\text{m}^2$": "GM.CONV.01#mauvais_sens"
-    },
-    "steps": [
-      "On passe d'une petite unité à une grande : le nombre doit-il grossir ou diminuer ?",
-      "Combien de $\\text{cm}^2$ dans $1~\\text{m}^2$ ? Divise $5\\,000$ par ce nombre : ?"
-    ],
-    "f": "$1~\\text{m}^2 = 10\\,000~\\text{cm}^2$",
-    "lvl": 2,
-    "usage": [
-      "train"
-    ],
-    "contexte": false
-  },
-  {
-    "id": "GM.CONV.02-u04",
-    "comp": "GM.CONV.02",
-    "q": "Une citerne de jardin contient $4\\,500$ L d'eau de pluie. Quel est ce volume en $\\text{m}^3$ ? ___ $\\text{m}^3$",
-    "a": "4,5",
-    "type": "fill",
-    "options": [],
-    "err": {
-      "45": "GM.CONV.02#comme_longueur",
-      "450": "GM.CONV.02#comme_longueur"
-    },
-    "steps": [
-      "Commence par écrire le volume en $\\text{dm}^3$ : $1$ L $= 1~\\text{dm}^3$.",
-      "Combien de $\\text{dm}^3$ dans $1~\\text{m}^3$ ? Divise par ce nombre : ?"
-    ],
-    "f": "$1~\\text{m}^3 = 1\\,000~\\text{dm}^3 = 1\\,000$ L",
-    "lvl": 2,
-    "usage": [
-      "train"
-    ],
-    "contexte": false
-  },
-  {
-    "id": "GM.CONV.02-u05",
-    "comp": "GM.CONV.02",
-    "q": "Une piscine a la forme d'un pavé droit de $8$ m de long, $4$ m de large, remplie d'eau sur $1{,}5$ m de profondeur. Combien de litres d'eau contient-elle ? ___ L",
-    "a": "48000",
-    "type": "fill",
-    "options": [],
-    "err": {
-      "480": "GM.CONV.02#comme_longueur",
-      "4800": "GM.CONV.02#comme_longueur",
-      "48000000": "GM.CONV.02#litre_dm3"
-    },
-    "steps": [
-      "Calcule d'abord le volume d'eau en $\\text{m}^3$ : longueur $\\times$ largeur $\\times$ profondeur.",
-      "Un $\\text{m}^3$ contient combien de litres ? Convertis : ?"
-    ],
-    "f": "$1~\\text{m}^3 = 1\\,000$ L",
-    "lvl": 3,
-    "usage": [
-      "train"
-    ],
-    "contexte": true
   }
 ]

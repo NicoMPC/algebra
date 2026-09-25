@@ -693,5 +693,563 @@
       "train"
     ],
     "contexte": false
+  },
+  {
+    "id": "AP.PROG.02-u01",
+    "comp": "AP.PROG.02",
+    "q": "Le lutin exécute ce script (orientation $90$ : vers la droite ; $0$ : vers le haut ; $180$ : vers le bas) :\naller à x: $0$ y: $0$\ns'orienter à $90$\navancer de $30$\ntourner à gauche de $90$ degrés\navancer de $20$\nQuelles sont ses coordonnées à la fin ? Écris-les sous la forme $(x ; y)$. ___",
+    "a": "(30;20)",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "(30;-20)": "AP.PROG.02#orientation",
+      "(50;0)": "AP.PROG.02#instruction_sautee",
+      "(30;0)": "AP.PROG.02#instruction_sautee"
+    },
+    "steps": [
+      "Après « avancer de $30$ » vers la droite, le lutin est en $(30 ; 0)$.",
+      "Il tourne à sa gauche : vers où regarde-t-il maintenant ? Il avance ensuite de $20$ : ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "30;20",
+      "(30,20)"
+    ]
+  },
+  {
+    "id": "AP.PROG.02-u02",
+    "comp": "AP.PROG.02",
+    "q": "Le lutin regarde vers la droite de l'écran. Il exécute « tourner à gauche de $90$ degrés », puis « avancer de $10$ ». Dans quelle direction s'est-il déplacé ?",
+    "a": "Vers le haut de l'écran",
+    "type": "qcm",
+    "options": [
+      "Vers la droite de l'écran",
+      "Vers la gauche de l'écran",
+      "Vers le haut de l'écran"
+    ],
+    "err": {
+      "Vers la gauche de l'écran": "AP.PROG.02#orientation",
+      "Vers la droite de l'écran": "AP.PROG.02#instruction_sautee"
+    },
+    "steps": [
+      "« Tourner à gauche » se fait du point de vue du lutin, pas de la feuille.",
+      "Si tu regardes vers la droite de l'écran, où est ta main gauche ? ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.02-u03",
+    "comp": "AP.PROG.02",
+    "q": "Le lutin regarde vers le bas de l'écran (orientation $180$). Il exécute « tourner à droite de $90$ degrés », puis « avancer de $10$ ». Dans quelle direction s'est-il déplacé ?",
+    "a": "Vers la gauche de l'écran",
+    "type": "qcm",
+    "options": [
+      "Vers la gauche de l'écran",
+      "Vers la droite de l'écran",
+      "Vers le bas de l'écran"
+    ],
+    "err": {
+      "Vers la droite de l'écran": "AP.PROG.02#orientation",
+      "Vers le bas de l'écran": "AP.PROG.02#instruction_sautee"
+    },
+    "steps": [
+      "Mets-toi à la place du lutin : il regarde vers le bas de l'écran, donc vers toi.",
+      "Sa droite est-elle la droite de l'écran ? ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.02-u04",
+    "comp": "AP.PROG.02",
+    "q": "Le lutin exécute ce script (orientation $90$ : vers la droite ; $0$ : vers le haut ; $180$ : vers le bas) :\naller à x: $20$ y: $10$\ns'orienter à $180$\navancer de $40$\ntourner à droite de $90$ degrés\navancer de $10$\nQuelles sont ses coordonnées à la fin ? Écris-les sous la forme $(x ; y)$. ___",
+    "a": "(10;-30)",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "(30;-30)": "AP.PROG.02#orientation",
+      "(20;-40)": "AP.PROG.02#instruction_sautee",
+      "(-30;10)": "EG.REP.01#xy_inverses"
+    },
+    "steps": [
+      "Orienté vers le bas, « avancer de $40$ » fait diminuer $y$ de $40$ : le lutin est en $(20 ; -30)$.",
+      "Regardant vers le bas, sa droite est la gauche de l'écran. Il avance de $10$ dans cette direction : ?"
+    ],
+    "f": "",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "10;-30"
+    ]
+  },
+  {
+    "id": "AP.PROG.04-u01",
+    "comp": "AP.PROG.04",
+    "q": "On exécute ce script :\nmettre $x$ à $5$\najouter $3$ à $x$\ndire $x$\nQuel nombre le lutin dit-il ? ___",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "AP.PROG.04#mettre_ajouter"
+    },
+    "steps": [
+      "« mettre $x$ à $5$ » donne à $x$ la valeur $5$.",
+      "« ajouter $3$ à $x$ » augmente la valeur actuelle de $x$ de $3$ : ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.04-u02",
+    "comp": "AP.PROG.04",
+    "q": "Dans un jeu, on exécute ce script :\nmettre score à $20$\najouter $10$ à score\najouter $-5$ à score\ndire score\nQuel nombre le lutin dit-il ? ___",
+    "a": "25",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5": "AP.PROG.04#valeur_initiale",
+      "-5": "AP.PROG.04#mettre_ajouter"
+    },
+    "steps": [
+      "Le score part de $20$, pas de $0$.",
+      "Ajoute $10$, puis ajoute $-5$ : ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "AP.PROG.04-u03",
+    "comp": "AP.PROG.04",
+    "q": "On exécute ce script :\nmettre $n$ à $2$\nmettre $n$ à $n \\times 3$\najouter $5$ à $n$\ndire $n$\nQuel nombre le lutin dit-il ? ___",
+    "a": "11",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "13": "AP.PROG.04#mettre_ajouter"
+    },
+    "steps": [
+      "« mettre $n$ à $n \\times 3$ » remplace $n$ par sa valeur actuelle multipliée par $3$ : on n'ajoute rien.",
+      "Après la deuxième ligne, $n$ vaut $6$. Ajoute ensuite $5$ : ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.04-u04",
+    "comp": "AP.PROG.04",
+    "q": "On exécute ce script :\ndemander « Choisis un nombre » et attendre\nmettre $x$ à réponse\najouter $4$ à $x$\nmettre $x$ à $x \\times x$\ndire $x$\nOn répond $3$. Quel nombre le lutin dit-il ? ___",
+    "a": "49",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "56": "AP.PROG.04#mettre_ajouter"
+    },
+    "steps": [
+      "Après « ajouter $4$ à $x$ », $x$ vaut $3 + 4$.",
+      "« mettre $x$ à $x \\times x$ » remplace $x$ par son carré : ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.04-u05",
+    "comp": "AP.PROG.04",
+    "q": "On exécute ce script :\nmettre $s$ à $1$\nrépéter $3$ fois\n  ajouter $2$ à $s$\nFin répéter\ndire $s$\nQuel nombre le lutin dit-il ? ___",
+    "a": "7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "6": "AP.PROG.04#valeur_initiale",
+      "2": "AP.PROG.04#mettre_ajouter",
+      "3": "AP.PROG.03#corps_mal_delimite",
+      "9": "AP.PROG.03#un_tour_de_trop",
+      "5": "AP.PROG.03#un_tour_de_trop"
+    },
+    "steps": [
+      "$s$ part de $1$. Le bloc « ajouter $2$ à $s$ » est exécuté à chaque tour de boucle.",
+      "Suis la valeur de $s$ tour après tour : ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.04-u06",
+    "comp": "AP.PROG.04",
+    "q": "On exécute ce script :\nmettre $a$ à $1$\nmettre $b$ à $1$\nrépéter $4$ fois\n  mettre $c$ à $a + b$\n  mettre $a$ à $b$\n  mettre $b$ à $c$\nFin répéter\ndire $b$\nQuel nombre le lutin dit-il ? ___",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5": "AP.PROG.03#un_tour_de_trop",
+      "13": "AP.PROG.03#un_tour_de_trop"
+    },
+    "steps": [
+      "Fais un tableau avec les valeurs de $a$, $b$ et $c$ après chaque tour. Après le 1er tour : $c = 2$, $a = 1$, $b = 2$.",
+      "Continue jusqu'au 4e tour, en utilisant à chaque ligne les valeurs les plus récentes : ?"
+    ],
+    "f": "",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.05-u01",
+    "comp": "AP.PROG.05",
+    "q": "On exécute ce script :\nmettre $x$ à $12$\nsi $x < 10$ alors\n  dire $x + 5$\nsinon\n  dire $x - 5$\nFin si\nQuel nombre le lutin dit-il ? ___",
+    "a": "7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "17": "AP.PROG.05#condition_inversee"
+    },
+    "steps": [
+      "Teste la condition : $12 < 10$ est-elle vraie ou fausse ?",
+      "Une seule branche est exécutée : celle qui correspond au résultat du test. Laquelle ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.05-u02",
+    "comp": "AP.PROG.05",
+    "q": "On exécute ce script :\nmettre $n$ à $4$\nsi $n > 3$ alors\n  ajouter $10$ à $n$\nsinon\n  ajouter $1$ à $n$\nFin si\ndire $n$\nQuel nombre le lutin dit-il ? ___",
+    "a": "14",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5": "AP.PROG.05#condition_inversee",
+      "15": "AP.PROG.05#deux_branches"
+    },
+    "steps": [
+      "Teste la condition : $4 > 3$ est-elle vraie ou fausse ?",
+      "On exécute uniquement la branche choisie, puis on passe après « Fin si » : ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.05-u03",
+    "comp": "AP.PROG.05",
+    "q": "Un thermostat exécute ce script :\nsi température $< 18$ alors\n  dire « Chauffage allumé »\nsinon\n  dire « Chauffage éteint »\nFin si\nIl fait $22$ °C. Que dit le lutin ?",
+    "a": "« Chauffage éteint »",
+    "type": "qcm",
+    "options": [
+      "« Chauffage éteint »",
+      "« Chauffage allumé », puis « Chauffage éteint »",
+      "« Chauffage allumé »"
+    ],
+    "err": {
+      "« Chauffage allumé »": "AP.PROG.05#condition_inversee",
+      "« Chauffage allumé », puis « Chauffage éteint »": "AP.PROG.05#deux_branches"
+    },
+    "steps": [
+      "Teste la condition avec la température : $22 < 18$ ?",
+      "Si la condition est fausse, quelle branche est exécutée, et elle seule ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "AP.PROG.05-u04",
+    "comp": "AP.PROG.05",
+    "q": "On exécute ce script ($n$ modulo $2$ est le reste de la division de $n$ par $2$) :\nmettre $n$ à $7$\nsi $n$ modulo $2 = 0$ alors\n  mettre $n$ à $n \\div 2$\nsinon\n  mettre $n$ à $3 \\times n + 1$\nFin si\ndire $n$\nQuel nombre le lutin dit-il ? ___",
+    "a": "22",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3,5": "AP.PROG.05#condition_inversee",
+      "11,5": "AP.PROG.05#deux_branches"
+    },
+    "steps": [
+      "Calcule le reste de la division de $7$ par $2$ : la condition « reste $= 0$ » est-elle vraie ?",
+      "Exécute seulement la branche qui correspond : ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.05-u05",
+    "comp": "AP.PROG.05",
+    "q": "Un site de vente en ligne exécute ce script :\nmettre prix à $40$\nsi prix $> 50$ alors\n  ajouter $-10$ à prix\nsinon\n  ajouter $5$ à prix\nFin si\ndire prix\nQuel prix le lutin dit-il ?",
+    "a": "$45$",
+    "type": "qcm",
+    "options": [
+      "$35$",
+      "$40$",
+      "$30$",
+      "$45$"
+    ],
+    "err": {
+      "$30$": "AP.PROG.05#condition_inversee",
+      "$35$": "AP.PROG.05#deux_branches",
+      "$40$": "AP.PROG.02#instruction_sautee"
+    },
+    "steps": [
+      "Teste la condition : $40 > 50$ est-elle vraie ou fausse ?",
+      "Exécute la branche qui correspond, puis le bloc « dire » : ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "AP.PROG.05-u06",
+    "comp": "AP.PROG.05",
+    "q": "On exécute ce script :\nmettre $x$ à $-3$\nsi $x < 0$ alors\n  mettre $x$ à $0 - x$\nFin si\nsi $x > 2$ alors\n  ajouter $10$ à $x$\nFin si\ndire $x$\nQuel nombre le lutin dit-il ? ___",
+    "a": "13",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-3": "AP.PROG.05#condition_inversee"
+    },
+    "steps": [
+      "Premier test : $-3 < 0$ ? Si oui, $x$ devient $0 - (-3)$.",
+      "Deuxième test, avec la nouvelle valeur de $x$ : est-elle $> 2$ ? ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.05-u07",
+    "comp": "AP.PROG.05",
+    "q": "Un cinéma calcule le tarif avec ce script :\ndemander « Quel âge as-tu ? » et attendre\nsi réponse $< 12$ alors\n  mettre tarif à $5$\nsinon\n  si réponse $< 18$ alors\n    mettre tarif à $7$\n  sinon\n    mettre tarif à $10$\n  Fin si\nFin si\ndire tarif\nLéo répond $15$. Quel tarif le lutin dit-il ? ___ €",
+    "a": "7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5": "AP.PROG.05#condition_inversee",
+      "10": "AP.PROG.05#deux_branches"
+    },
+    "steps": [
+      "Premier test : $15 < 12$ ? Selon la réponse, on va dans « alors » ou dans « sinon ».",
+      "Dans la branche choisie, fais le deuxième test : $15 < 18$ ? ?"
+    ],
+    "f": "",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "AP.PROG.06-u01",
+    "comp": "AP.PROG.06",
+    "q": "Pour tracer un carré, un lutin exécute :\nrépéter $\\text{___}$ fois\n  avancer de $60$\n  tourner à droite de $90$ degrés\nFin répéter\nQuel nombre de répétitions faut-il écrire ?",
+    "a": "4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "AP.PROG.06#repetitions"
+    },
+    "steps": [
+      "À chaque répétition, le lutin trace un côté.",
+      "Combien de côtés a un carré ? ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.06-u02",
+    "comp": "AP.PROG.06",
+    "q": "Pour tracer un octogone régulier ($8$ côtés), un lutin exécute :\nrépéter $8$ fois\n  avancer de $40$\n  tourner à gauche de $\\text{___}$ degrés\nFin répéter\nQuel angle faut-il écrire ?",
+    "a": "45",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "135": "AP.PROG.06#angle_interieur"
+    },
+    "steps": [
+      "En traçant la figure, le lutin fait un tour complet ($360°$), en $8$ virages identiques.",
+      "Divise $360°$ par le nombre de virages : ?"
+    ],
+    "f": "Angle de rotation $= \\frac{360°}{\\text{nombre de côtés}}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.06-u03",
+    "comp": "AP.PROG.06",
+    "q": "Pour tracer un pentagone régulier ($5$ côtés), un lutin exécute :\nrépéter $5$ fois\n  avancer de $50$\n  tourner à gauche de $\\text{___}$ degrés\nFin répéter\nQuel angle faut-il écrire ?",
+    "a": "72",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "108": "AP.PROG.06#angle_interieur"
+    },
+    "steps": [
+      "Le lutin fait un tour complet ($360°$) en $5$ virages identiques.",
+      "Chaque virage vaut $\\frac{360°}{5}$. Ce n'est pas l'angle intérieur du pentagone : ?"
+    ],
+    "f": "Angle de rotation $= \\frac{360°}{\\text{nombre de côtés}}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.06-u04",
+    "comp": "AP.PROG.06",
+    "q": "Un lutin exécute :\nrépéter $n$ fois\n  avancer de $20$\n  tourner à gauche de $30$ degrés\nFin répéter\nCombien de répétitions faut-il au minimum pour que la figure se ferme ? ___",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "11": "AP.PROG.06#repetitions"
+    },
+    "steps": [
+      "La figure se ferme quand le lutin a tourné en tout de $360°$.",
+      "Combien de virages de $30°$ faut-il pour faire $360°$ ? ?"
+    ],
+    "f": "Angle de rotation $= \\frac{360°}{\\text{nombre de côtés}}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.06-u05",
+    "comp": "AP.PROG.06",
+    "q": "Pour tracer un décagone régulier ($10$ côtés), quel script faut-il utiliser ?",
+    "a": "répéter $10$ fois : avancer, tourner de $36$ degrés",
+    "type": "qcm",
+    "options": [
+      "répéter $10$ fois : avancer, tourner de $36$ degrés",
+      "répéter $10$ fois : avancer, tourner de $144$ degrés",
+      "répéter $9$ fois : avancer, tourner de $36$ degrés",
+      "répéter $5$ fois : avancer, tourner de $36$ degrés"
+    ],
+    "err": {
+      "répéter $10$ fois : avancer, tourner de $144$ degrés": "AP.PROG.06#angle_interieur",
+      "répéter $9$ fois : avancer, tourner de $36$ degrés": "AP.PROG.06#repetitions",
+      "répéter $5$ fois : avancer, tourner de $36$ degrés": "AP.PROG.06#repetitions"
+    },
+    "steps": [
+      "Il faut un côté par répétition : combien de répétitions ?",
+      "Le lutin fait un tour complet en $10$ virages : combien de degrés par virage ?"
+    ],
+    "f": "Angle de rotation $= \\frac{360°}{\\text{nombre de côtés}}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.06-u06",
+    "comp": "AP.PROG.06",
+    "q": "Un lutin exécute :\nrépéter $3$ fois\n  avancer de $50$\n  tourner à gauche de $60$ degrés\nFin répéter\nQue trace-t-il ?",
+    "a": "Trois côtés d'un hexagone régulier : la figure n'est pas fermée",
+    "type": "qcm",
+    "options": [
+      "Un triangle équilatéral",
+      "Trois côtés d'un hexagone régulier : la figure n'est pas fermée",
+      "Un hexagone régulier complet"
+    ],
+    "err": {
+      "Un triangle équilatéral": "AP.PROG.06#angle_interieur",
+      "Un hexagone régulier complet": "AP.PROG.06#repetitions"
+    },
+    "steps": [
+      "Avec des virages de $60°$, combien de virages faut-il pour faire un tour complet de $360°$ ?",
+      "Le lutin ne fait que $3$ répétitions : la figure est-elle fermée ?"
+    ],
+    "f": "Angle de rotation $= \\frac{360°}{\\text{nombre de côtés}}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.06-u07",
+    "comp": "AP.PROG.06",
+    "q": "Chaque angle intérieur d'un polygone régulier mesure $140°$. Pour le tracer, un lutin exécute :\nrépéter $n$ fois\n  avancer de $30$\n  tourner à gauche de $\\text{___}$ degrés\nFin répéter\nQuel angle faut-il écrire ?",
+    "a": "40",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "140": "AP.PROG.06#angle_interieur"
+    },
+    "steps": [
+      "Le lutin ne tourne pas de l'angle intérieur : il tourne du supplément de cet angle (ce qu'il manque pour faire $180°$).",
+      "Calcule $180° - 140°$ : ?"
+    ],
+    "f": "Angle de rotation $= 180° - \\text{angle intérieur}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
   }
 ]

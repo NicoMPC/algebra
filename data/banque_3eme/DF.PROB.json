@@ -827,5 +827,185 @@
       "train"
     ],
     "contexte": true
+  },
+  {
+    "id": "DF.PROB.01-u01",
+    "comp": "DF.PROB.01",
+    "q": "On lance un dé à $12$ faces numérotées de $1$ à $12$. Combien d'issues réalisent l'événement « obtenir un multiple de $3$ » ? ___",
+    "a": "4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1": "DF.PROB.01#issue_evenement",
+      "12": "DF.PROB.01#issue_evenement"
+    },
+    "steps": [
+      "Écris la liste des issues possibles, puis entoure celles qui sont des multiples de $3$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "quatre"
+    ]
+  },
+  {
+    "id": "DF.PROB.01-u02",
+    "comp": "DF.PROB.01",
+    "q": "Une urne contient $7$ jetons verts et $3$ jetons jaunes. Noé dit : « Soit je tire vert, soit je tire jaune : j'ai une chance sur deux de tirer vert. » Qu'en penses-tu ?",
+    "a": "Il a tort : il y a $7$ chances sur $10$ de tirer vert",
+    "type": "qcm",
+    "options": [
+      "Il a raison : il y a deux couleurs possibles",
+      "Il a tort : il y a $7$ chances sur $10$ de tirer vert",
+      "Il a raison : c'est le hasard, chaque résultat a la même chance"
+    ],
+    "err": {
+      "Il a raison : il y a deux couleurs possibles": "DF.PROB.01#equiprobabilite_abusive",
+      "Il a raison : c'est le hasard, chaque résultat a la même chance": "DF.PROB.01#equiprobabilite_abusive"
+    },
+    "steps": [
+      "Les deux couleurs ont-elles autant de jetons ?",
+      "Sur les $10$ jetons, combien sont verts ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.01-u03",
+    "comp": "DF.PROB.01",
+    "q": "On tire au sort un prénom parmi les $7$ suivants : Adam, Chloé, Emma, Hugo, Inès, Lucas, Nina. Combien d'issues réalisent l'événement « le prénom commence par une voyelle » ? ___",
+    "a": "3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1": "DF.PROB.01#issue_evenement",
+      "7": "DF.PROB.01#issue_evenement"
+    },
+    "steps": [
+      "Chaque prénom est une issue. Pour chacun, regarde la première lettre : est-ce une voyelle ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "trois"
+    ]
+  },
+  {
+    "id": "DF.PROB.01-u04",
+    "comp": "DF.PROB.01",
+    "q": "On choisit au hasard un nombre entier entre $1$ et $50$ (inclus). Combien d'issues réalisent l'événement « obtenir un multiple de $6$ » ? ___",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1": "DF.PROB.01#issue_evenement",
+      "50": "DF.PROB.01#issue_evenement"
+    },
+    "steps": [
+      "Écris les multiples de $6$ : $6$, $12$, … et arrête-toi avant de dépasser $50$.",
+      "Combien en as-tu écrit ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "huit"
+    ]
+  },
+  {
+    "id": "DF.PROB.01-u05",
+    "comp": "DF.PROB.01",
+    "q": "Un sac contient $2$ billes rouges, $3$ bleues et $5$ vertes. On tire une bille et on note sa couleur. Quelle affirmation est juste ?",
+    "a": "Les issues sont rouge, bleue et verte, mais elles n'ont pas la même probabilité",
+    "type": "qcm",
+    "options": [
+      "Les issues sont rouge, bleue et verte, avec une chance sur trois chacune",
+      "Les issues sont rouge, bleue et verte, mais elles n'ont pas la même probabilité",
+      "Il n'y a qu'une seule issue : « tirer une bille de couleur »"
+    ],
+    "err": {
+      "Les issues sont rouge, bleue et verte, avec une chance sur trois chacune": "DF.PROB.01#equiprobabilite_abusive",
+      "Il n'y a qu'une seule issue : « tirer une bille de couleur »": "DF.PROB.01#issue_evenement"
+    },
+    "steps": [
+      "Quels résultats peut-on noter à l'issue du tirage ?",
+      "Y a-t-il autant de billes de chaque couleur ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.01-u06",
+    "comp": "DF.PROB.01",
+    "q": "Un match de football se termine par une victoire, un nul ou une défaite. Affirmation : « Une équipe a donc toujours une chance sur $3$ de gagner. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "DF.PROB.01#equiprobabilite_abusive"
+    },
+    "steps": [
+      "Trois résultats possibles veut-il dire trois résultats aussi probables ?",
+      "Une équipe très forte contre une équipe faible : les trois résultats ont-ils la même chance ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.01-u07",
+    "comp": "DF.PROB.01",
+    "q": "On lance un dé équilibré à $6$ faces et on note « petit » ($1$ ou $2$), « moyen » ($3$, $4$ ou $5$) ou « grand » ($6$). Sur $600$ lancers, environ combien de fois obtiendra-t-on « moyen » ? ___",
+    "a": "300",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "200": "DF.PROB.01#equiprobabilite_abusive"
+    },
+    "steps": [
+      "« Petit », « moyen » et « grand » ont-ils la même chance ? Combien de faces du dé donnent « moyen » ?",
+      "Quelle fraction des lancers donne « moyen » en moyenne ? Applique-la à $600$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "environ 300"
+    ]
   }
 ]
