@@ -813,5 +813,397 @@
       "train"
     ],
     "contexte": true
+  },
+  {
+    "id": "GM.VOL.01-u01",
+    "comp": "GM.VOL.01",
+    "q": "Une boîte d'allumettes est un pavé droit de $5$ cm de long, $4$ cm de large et $2$ cm de haut. Quel est son volume ? ___ $\\text{cm}^3$",
+    "a": "40",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "11": "GM.VOL.01#somme_dimensions"
+    },
+    "steps": [
+      "Le volume d'un pavé droit : on multiplie ses trois dimensions (on n'additionne pas).",
+      "Calcule $5 \\times 4 \\times 2$ : ?"
+    ],
+    "f": "$V = L \\times \\ell \\times h$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.VOL.01-u02",
+    "comp": "GM.VOL.01",
+    "q": "Un dé en bois est un cube de $3$ cm d'arête. Quel est son volume ?",
+    "a": "$27~\\text{cm}^3$",
+    "type": "qcm",
+    "options": [
+      "$27~\\text{cm}^2$",
+      "$9~\\text{cm}^3$",
+      "$27~\\text{cm}$",
+      "$27~\\text{cm}^3$"
+    ],
+    "err": {
+      "$27~\\text{cm}^2$": "GM.VOL.01#unite_volume",
+      "$9~\\text{cm}^3$": "GM.VOL.01#somme_dimensions",
+      "$27~\\text{cm}$": "GM.VOL.01#unite_volume"
+    },
+    "steps": [
+      "Un cube est un pavé dont les trois dimensions valent $3$ cm : on les multiplie.",
+      "Un volume s'exprime en unités « cubes ». Quel résultat, avec quelle unité ?"
+    ],
+    "f": "$V = c \\times c \\times c$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.VOL.01-u03",
+    "comp": "GM.VOL.01",
+    "q": "Une pataugeoire est un pavé droit de $2$ m de long et $1{,}5$ m de large, remplie d'eau sur $0{,}4$ m de hauteur. Quel volume d'eau contient-elle ? ___ $\\text{m}^3$",
+    "a": "1,2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3,9": "GM.VOL.01#somme_dimensions"
+    },
+    "steps": [
+      "L'eau occupe un pavé de $2$ m sur $1{,}5$ m sur $0{,}4$ m.",
+      "Calcule $2 \\times 1{,}5$, puis multiplie par $0{,}4$ : ?"
+    ],
+    "f": "$V = L \\times \\ell \\times h$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.VOL.01-u04",
+    "comp": "GM.VOL.01",
+    "q": "Une boîte à biscuits en forme de pavé droit a un volume de $120~\\text{cm}^3$. Sa longueur est $6$ cm et sa largeur $5$ cm. Quelle est sa hauteur ? ___ cm",
+    "a": "4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "109": "GM.VOL.01#somme_dimensions"
+    },
+    "steps": [
+      "$V = L \\times \\ell \\times h$ : calcule d'abord l'aire du fond $6 \\times 5$.",
+      "Quelle hauteur faut-il pour que (aire du fond) $\\times h = 120$ ? ?"
+    ],
+    "f": "$V = L \\times \\ell \\times h$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.VOL.01-u05",
+    "comp": "GM.VOL.01",
+    "q": "Un bac à sable est un pavé droit de $1{,}5$ m de long, $1$ m de large et $0{,}2$ m de profondeur. Quel volume de sable faut-il pour le remplir ?",
+    "a": "$0{,}3~\\text{m}^3$",
+    "type": "qcm",
+    "options": [
+      "$0{,}3~\\text{m}^3$",
+      "$2{,}7~\\text{m}^3$",
+      "$0{,}3~\\text{m}^2$",
+      "$0{,}3~\\text{m}$"
+    ],
+    "err": {
+      "$2{,}7~\\text{m}^3$": "GM.VOL.01#somme_dimensions",
+      "$0{,}3~\\text{m}^2$": "GM.VOL.01#unite_volume",
+      "$0{,}3~\\text{m}$": "GM.VOL.01#unite_volume"
+    },
+    "steps": [
+      "Multiplie les trois dimensions : $1{,}5 \\times 1 \\times 0{,}2$.",
+      "Le résultat est un volume : quelle unité ?"
+    ],
+    "f": "$V = L \\times \\ell \\times h$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.VOL.01-u06",
+    "comp": "GM.VOL.01",
+    "q": "Une boîte à chaussures mesure $2$ dm de long, $15$ cm de large et $10$ cm de haut. Quel est son volume en $\\text{cm}^3$ ? ___ $\\text{cm}^3$",
+    "a": "3000",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "27": "GM.VOL.01#somme_dimensions"
+    },
+    "steps": [
+      "Attention aux unités : les trois dimensions doivent être en cm. Combien de cm dans $2$ dm ?",
+      "Multiplie ensuite les trois dimensions en cm : ?"
+    ],
+    "f": "$V = L \\times \\ell \\times h$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.VOL.04-u01",
+    "comp": "GM.VOL.04",
+    "q": "Une boule de Noël a un rayon de $2$ cm. Calcule son volume, arrondi au dixième de $\\text{cm}^3$. ___ $\\text{cm}^3$",
+    "a": "33,5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "16,8": "GM.VOL.04#r_carre",
+      "25,1": "GM.VOL.04#coefficient",
+      "18,8": "GM.VOL.04#coefficient"
+    },
+    "steps": [
+      "Calcule d'abord $r^3 = 2 \\times 2 \\times 2$.",
+      "Multiplie par $\\frac{4}{3}$ et par $\\pi$ à la calculatrice, puis arrondis : ?"
+    ],
+    "f": "$V = \\frac{4}{3} \\pi r^3$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "33,51"
+    ]
+  },
+  {
+    "id": "GM.VOL.04-u02",
+    "comp": "GM.VOL.04",
+    "q": "Un ballon sonde est une boule de rayon $3$ m. Quel calcul donne son volume, en $\\text{m}^3$ ?",
+    "a": "$\\frac{4}{3} \\times \\pi \\times 3^3$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{4}{3} \\times \\pi \\times 3^2$",
+      "$\\frac{4}{3} \\times \\pi \\times 3^3$",
+      "$\\frac{3}{4} \\times \\pi \\times 3^3$",
+      "$\\pi \\times 3^3$"
+    ],
+    "err": {
+      "$\\frac{4}{3} \\times \\pi \\times 3^2$": "GM.VOL.04#r_carre",
+      "$\\frac{3}{4} \\times \\pi \\times 3^3$": "GM.VOL.04#coefficient",
+      "$\\pi \\times 3^3$": "GM.VOL.04#coefficient"
+    },
+    "steps": [
+      "Un volume fait intervenir une longueur « au cube ».",
+      "Le coefficient de la boule est-il $\\frac{4}{3}$ ou $\\frac{3}{4}$ ? ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.VOL.04-u03",
+    "comp": "GM.VOL.04",
+    "q": "Une boule de pétanque a un diamètre de $8$ cm. Calcule son volume, arrondi au $\\text{cm}^3$. ___ $\\text{cm}^3$",
+    "a": "268",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "67": "GM.VOL.04#r_carre",
+      "201": "GM.VOL.04#coefficient",
+      "151": "GM.VOL.04#coefficient"
+    },
+    "steps": [
+      "L'énoncé donne le diamètre : quel est le rayon ?",
+      "Calcule $\\frac{4}{3} \\times \\pi \\times r^3$ à la calculatrice et arrondis : ?"
+    ],
+    "f": "$V = \\frac{4}{3} \\pi r^3$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "268,1"
+    ]
+  },
+  {
+    "id": "GM.VOL.04-u04",
+    "comp": "GM.VOL.04",
+    "q": "Une cuve de gaz sphérique a un rayon de $5$ m. Quel est son volume, arrondi au $\\text{m}^3$ ?",
+    "a": "$524~\\text{m}^3$",
+    "type": "qcm",
+    "options": [
+      "$105~\\text{m}^3$",
+      "$393~\\text{m}^3$",
+      "$295~\\text{m}^3$",
+      "$524~\\text{m}^3$"
+    ],
+    "err": {
+      "$105~\\text{m}^3$": "GM.VOL.04#r_carre",
+      "$393~\\text{m}^3$": "GM.VOL.04#coefficient",
+      "$295~\\text{m}^3$": "GM.VOL.04#coefficient"
+    },
+    "steps": [
+      "Calcule d'abord $5^3$.",
+      "Multiplie par $\\frac{4}{3}$ puis par $\\pi$ et arrondis. Quel résultat ?"
+    ],
+    "f": "$V = \\frac{4}{3} \\pi r^3$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.VOL.04-u05",
+    "comp": "GM.VOL.04",
+    "q": "Un bol a la forme d'une demi-boule de rayon $6$ cm. Son volume s'écrit $k\\pi~\\text{cm}^3$. Quelle est la valeur de $k$ ? ___",
+    "a": "144",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "24": "GM.VOL.04#r_carre",
+      "108": "GM.VOL.04#coefficient",
+      "81": "GM.VOL.04#coefficient"
+    },
+    "steps": [
+      "Calcule d'abord le volume de la boule entière : $\\frac{4}{3} \\times 6^3$.",
+      "Le bol n'est qu'une moitié de boule : ?"
+    ],
+    "f": "$V_{\\text{boule}} = \\frac{4}{3} \\pi r^3$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "144π",
+      "144pi",
+      "144\\pi"
+    ]
+  },
+  {
+    "id": "GM.VOL.05-u01",
+    "comp": "GM.VOL.05",
+    "q": "Dans un cube en bois de $6$ cm d'arête, on creuse un trou en forme de cube de $2$ cm d'arête. Quel est le volume de bois restant ? ___ $\\text{cm}^3$",
+    "a": "208",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "224": "GM.VOL.05#decomposition"
+    },
+    "steps": [
+      "Volume restant $=$ volume du grand cube $-$ volume du trou.",
+      "Calcule $6^3$ et $2^3$, puis fais la différence : ?"
+    ],
+    "f": "$V_{\\text{cube}} = c^3$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.VOL.05-u02",
+    "comp": "GM.VOL.05",
+    "q": "Un escalier en béton de deux marches est formé de deux pavés droits posés au sol, l'un derrière l'autre. Marche du bas : $8$ dm de long, $3$ dm de profondeur, $1{,}5$ dm de haut. Marche du haut : $8$ dm de long, $3$ dm de profondeur, $3$ dm de haut. Quel volume de béton faut-il ? ___ $\\text{dm}^3$",
+    "a": "108",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "144": "GM.VOL.05#decomposition"
+    },
+    "steps": [
+      "Le solide n'est pas un seul pavé : calcule le volume de chaque marche séparément.",
+      "Additionne les deux volumes : ?"
+    ],
+    "f": "$V_{\\text{pavé}} = L \\times \\ell \\times h$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.VOL.05-u03",
+    "comp": "GM.VOL.05",
+    "q": "Un musée a la forme d'un pavé droit de $10$ m de long, $8$ m de large et $6$ m de haut, surmonté d'un toit en forme de pyramide de même base et de $3$ m de hauteur. Quel est le volume du bâtiment ? ___ $\\text{m}^3$",
+    "a": "560",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "720": "GM.VOL.03#oubli_tiers"
+    },
+    "steps": [
+      "Décompose : un pavé droit, puis une pyramide posée dessus.",
+      "Volume de la pyramide $= \\frac{\\text{aire de la base} \\times h}{3}$ avec $h = 3$ m. Additionne les deux volumes : ?"
+    ],
+    "f": "$V_{\\text{pyramide}} = \\frac{\\mathcal{B} \\times h}{3}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.VOL.05-u04",
+    "comp": "GM.VOL.05",
+    "q": "Une gélule est formée d'un cylindre de rayon $3$ mm et de hauteur $6$ mm, fermé à chaque bout par une demi-boule de rayon $3$ mm. Quel est son volume ?",
+    "a": "$90\\pi~\\text{mm}^3$",
+    "type": "qcm",
+    "options": [
+      "$126\\pi~\\text{mm}^3$",
+      "$72\\pi~\\text{mm}^3$",
+      "$90\\pi~\\text{mm}^3$",
+      "$66\\pi~\\text{mm}^3$"
+    ],
+    "err": {
+      "$126\\pi~\\text{mm}^3$": "GM.VOL.05#decomposition",
+      "$72\\pi~\\text{mm}^3$": "GM.VOL.05#decomposition",
+      "$66\\pi~\\text{mm}^3$": "GM.VOL.04#r_carre"
+    },
+    "steps": [
+      "Deux demi-boules de même rayon forment une boule entière.",
+      "Volume du cylindre : $\\pi \\times 3^2 \\times 6$. Volume de la boule : $\\frac{4}{3}\\pi \\times 3^3$. Total : ?"
+    ],
+    "f": "$V_{\\text{cylindre}} = \\pi r^2 h$ ; $V_{\\text{boule}} = \\frac{4}{3}\\pi r^3$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.VOL.05-u05",
+    "comp": "GM.VOL.05",
+    "q": "Une gourde est formée d'un cylindre de rayon $3$ cm surmonté d'un goulot en forme de cône de même rayon et de $4$ cm de hauteur. La gourde mesure $18$ cm de haut au total. Calcule son volume, arrondi au $\\text{cm}^3$. ___ $\\text{cm}^3$",
+    "a": "434",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "547": "GM.VOL.05#mauvaise_dimension",
+      "565": "GM.VOL.05#mauvaise_dimension"
+    },
+    "steps": [
+      "La hauteur du cylindre n'est pas $18$ cm : il faut retirer celle du cône.",
+      "Calcule $\\pi \\times 3^2 \\times h_{\\text{cylindre}}$ et $\\frac{\\pi \\times 3^2 \\times 4}{3}$, additionne, puis arrondis : ?"
+    ],
+    "f": "$V_{\\text{cylindre}} = \\pi r^2 h$ ; $V_{\\text{cône}} = \\frac{\\pi r^2 h}{3}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "433,5"
+    ]
   }
 ]

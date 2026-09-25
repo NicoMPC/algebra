@@ -559,5 +559,487 @@
       "train"
     ],
     "contexte": true
+  },
+  {
+    "id": "DF.AFF.01-u01",
+    "comp": "DF.AFF.01",
+    "q": "Laquelle de ces fonctions est linéaire ?",
+    "a": "$f(x) = -5x$",
+    "type": "qcm",
+    "options": [
+      "$f(x) = 5x + 1$",
+      "$f(x) = x^2$",
+      "$f(x) = -5x$",
+      "$f(x) = \\frac{5}{x}$"
+    ],
+    "err": {
+      "$f(x) = 5x + 1$": "DF.AFF.01#affine_proportionnel",
+      "$f(x) = x^2$": "DF.AFF.01#x2_affine",
+      "$f(x) = \\frac{5}{x}$": "DF.AFF.01#x2_affine"
+    },
+    "steps": [
+      "Une fonction linéaire s'écrit $f(x) = ax$ : un seul terme, $x$ multiplié par un nombre.",
+      "Pour chaque fonction, se présente-t-elle sous cette forme exacte, sans terme constant ?"
+    ],
+    "f": "Linéaire : $f(x) = ax$. Affine : $f(x) = ax + b$.",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.AFF.01-u02",
+    "comp": "DF.AFF.01",
+    "q": "Combien de ces fonctions sont affines : $f(x) = 5x$, $g(x) = x^2 + 1$, $h(x) = 6 - x$, $k(x) = \\frac{1}{x}$, $m(x) = 4x + 7$ ? ___",
+    "a": "3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "4": "DF.AFF.01#x2_affine",
+      "5": "DF.AFF.01#x2_affine"
+    },
+    "steps": [
+      "Une fonction affine s'écrit $ax + b$, avec $a$ et $b$ des nombres. Une fonction linéaire est-elle affine ?",
+      "$h(x) = 6 - x$ peut-elle s'écrire $ax + b$ ? Et $x^2 + 1$ ?"
+    ],
+    "f": "Affine : $f(x) = ax + b$ (linéaire si $b = 0$).",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "trois"
+    ]
+  },
+  {
+    "id": "DF.AFF.01-u03",
+    "comp": "DF.AFF.01",
+    "q": "Un plombier facture $40$ € de déplacement, puis $35$ € par heure de travail. Quel type de fonction donne le prix en fonction du nombre d'heures ?",
+    "a": "Une fonction affine qui n'est pas linéaire",
+    "type": "qcm",
+    "options": [
+      "Une fonction linéaire, car le prix augmente avec le nombre d'heures",
+      "Une fonction affine qui n'est pas linéaire",
+      "Une fonction linéaire, car on paie $35$ € par heure"
+    ],
+    "err": {
+      "Une fonction linéaire, car le prix augmente avec le nombre d'heures": "DF.PROP.01#augmentent_ensemble",
+      "Une fonction linéaire, car on paie $35$ € par heure": "DF.PROP.01#partie_fixe"
+    },
+    "steps": [
+      "Écris le prix pour $x$ heures sous la forme $a \\times x + b$.",
+      "Le nombre $b$ est-il nul ? Que se passe-t-il pour $0$ heure de travail ?"
+    ],
+    "f": "Linéaire : $f(x) = ax$. Affine : $f(x) = ax + b$.",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.AFF.01-u04",
+    "comp": "DF.AFF.01",
+    "q": "Laquelle de ces fonctions est affine ?",
+    "a": "$f(x) = \\frac{x}{4} - 1$",
+    "type": "qcm",
+    "options": [
+      "$g(x) = \\frac{4}{x} - 1$",
+      "$h(x) = x(x - 1)$",
+      "$k(x) = 4x^2 - 1$",
+      "$f(x) = \\frac{x}{4} - 1$"
+    ],
+    "err": {
+      "$g(x) = \\frac{4}{x} - 1$": "DF.AFF.01#x2_affine",
+      "$h(x) = x(x - 1)$": "DF.AFF.01#x2_affine",
+      "$k(x) = 4x^2 - 1$": "DF.AFF.01#x2_affine"
+    },
+    "steps": [
+      "$\\frac{x}{4}$ et $\\frac{4}{x}$ ne sont pas la même chose : laquelle revient à multiplier $x$ par un nombre ?",
+      "Développe $x(x - 1)$ : quel terme apparaît ?"
+    ],
+    "f": "Affine : $f(x) = ax + b$.",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.AFF.01-u05",
+    "comp": "DF.AFF.01",
+    "q": "Une fonction $f$ vérifie $f(0) = 3$, $f(1) = 5$, $f(2) = 7$ et $f(3) = 9$ (elle augmente régulièrement). Que peut-on dire de $f$ ?",
+    "a": "Elle est affine, mais pas linéaire",
+    "type": "qcm",
+    "options": [
+      "Elle est linéaire, car les valeurs augmentent régulièrement",
+      "Elle est affine, mais pas linéaire",
+      "Elle est linéaire, car $f(x)$ augmente quand $x$ augmente"
+    ],
+    "err": {
+      "Elle est linéaire, car les valeurs augmentent régulièrement": "DF.AFF.01#affine_proportionnel",
+      "Elle est linéaire, car $f(x)$ augmente quand $x$ augmente": "DF.PROP.01#augmentent_ensemble"
+    },
+    "steps": [
+      "Une fonction linéaire vérifie $f(0) = 0$. Est-ce le cas ici ?",
+      "De combien augmente $f(x)$ quand $x$ augmente de $1$ ? Écris $f(x)$ sous la forme $ax + b$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.AFF.01-u06",
+    "comp": "DF.AFF.01",
+    "q": "Trois tarifs pour $x$ séances de piscine. A : $7x$ €. B : $20 + 4x$ €. C : $50$ € quel que soit le nombre de séances. Pour quel(s) tarif(s) le prix est-il proportionnel au nombre de séances ?",
+    "a": "A seulement",
+    "type": "qcm",
+    "options": [
+      "A et B",
+      "B seulement",
+      "A seulement"
+    ],
+    "err": {
+      "A et B": "DF.AFF.01#affine_proportionnel",
+      "B seulement": "DF.PROP.01#partie_fixe"
+    },
+    "steps": [
+      "Un prix proportionnel au nombre de séances s'écrit $a \\times x$, sans partie fixe.",
+      "Pour $0$ séance, combien coûte chaque tarif ?"
+    ],
+    "f": "Proportionnalité $\\iff$ fonction linéaire $f(x) = ax$.",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.AFF.01-u07",
+    "comp": "DF.AFF.01",
+    "q": "Une fonction $f$ est linéaire et $f(3) = -12$. Quelle est l'image de $-1$ par $f$ ? ___",
+    "a": "4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1/4": "DF.FONC.01#image_antecedent",
+      "0,25": "DF.FONC.01#image_antecedent"
+    },
+    "steps": [
+      "$f$ est linéaire : $f(x) = ax$. Avec $f(3) = -12$, que vaut $a$ ?",
+      "Calcule ensuite $f(-1) = a \\times (-1)$."
+    ],
+    "f": "Linéaire : $f(x) = ax$.",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.AFF.03-u01",
+    "comp": "DF.AFF.03",
+    "q": "Une fonction affine $f$ vérifie $f(2) = 1$ et $f(6) = 13$. Calcule son coefficient $a$. ___",
+    "a": "3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1/3": "DF.AFF.03#quotient_inverse",
+      "13/6": "DF.AFF.03#y_sur_x",
+      "1/2": "DF.AFF.03#y_sur_x"
+    },
+    "steps": [
+      "Quand $x$ passe de $2$ à $6$, de combien $f(x)$ augmente-t-il ?",
+      "Divise l'écart des images par l'écart des $x$, dans cet ordre."
+    ],
+    "f": "$a = \\frac{f(x_2) - f(x_1)}{x_2 - x_1}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.AFF.03-u02",
+    "comp": "DF.AFF.03",
+    "q": "La fonction affine $g$ a pour coefficient $a = 4$ et vérifie $g(3) = 5$. Calcule $b$. ___",
+    "a": "-7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "7": "NC.REL.02#mauvais_signe"
+    },
+    "steps": [
+      "$g(x) = 4x + b$. Remplace $x$ par $3$ : $4 \\times 3 + b = 5$.",
+      "Quel nombre faut-il ajouter à $12$ pour obtenir $5$ ?"
+    ],
+    "f": "$f(x) = ax + b$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.AFF.03-u03",
+    "comp": "DF.AFF.03",
+    "q": "Un forfait téléphonique a un tarif affine : $15$ € pour $50$ minutes d'appel et $19$ € pour $100$ minutes. Quelle est l'expression du prix $P(x)$ pour $x$ minutes ?",
+    "a": "$P(x) = 0{,}08x + 11$",
+    "type": "qcm",
+    "options": [
+      "$P(x) = 0{,}08x$",
+      "$P(x) = 0{,}3x$",
+      "$P(x) = 0{,}08x + 11$",
+      "$P(x) = 11x + 0{,}08$"
+    ],
+    "err": {
+      "$P(x) = 0{,}08x$": "DF.AFF.03#b_oublie",
+      "$P(x) = 0{,}3x$": "DF.AFF.03#y_sur_x",
+      "$P(x) = 11x + 0{,}08$": "DF.AFF.02#a_b_inverses"
+    },
+    "steps": [
+      "$50$ minutes de plus coûtent combien d'euros de plus ? Déduis-en le prix d'une minute.",
+      "Remplace ensuite $x$ par $50$ dans $P(x) = ax + b$ pour trouver $b$."
+    ],
+    "f": "$a = \\frac{P(x_2) - P(x_1)}{x_2 - x_1}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.AFF.03-u04",
+    "comp": "DF.AFF.03",
+    "q": "La hauteur d'une bougie est une fonction affine du temps : $12$ cm après $1$ h, $6$ cm après $4$ h. Quel est le coefficient $a$, en cm par heure ? ___",
+    "a": "-2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2": "NC.REL.02#mauvais_signe",
+      "-0,5": "DF.AFF.03#quotient_inverse",
+      "-1/2": "DF.AFF.03#quotient_inverse",
+      "12": "DF.AFF.03#y_sur_x",
+      "1,5": "DF.AFF.03#y_sur_x"
+    },
+    "steps": [
+      "Entre $1$ h et $4$ h, combien d'heures passent ? De combien la hauteur change-t-elle (en plus ou en moins) ?",
+      "Divise la variation de hauteur par la durée."
+    ],
+    "f": "$a = \\frac{h(t_2) - h(t_1)}{t_2 - t_1}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.AFF.03-u05",
+    "comp": "DF.AFF.03",
+    "q": "La droite représentant une fonction affine $h$ passe par $A(-2 ; 7)$ et $B(3 ; -3)$. Quelle est l'expression de $h$ ?",
+    "a": "$h(x) = -2x + 3$",
+    "type": "qcm",
+    "options": [
+      "$h(x) = -\\frac{1}{2}x + 6$",
+      "$h(x) = -2x$",
+      "$h(x) = -10x - 13$",
+      "$h(x) = -2x + 3$"
+    ],
+    "err": {
+      "$h(x) = -\\frac{1}{2}x + 6$": "DF.AFF.03#quotient_inverse",
+      "$h(x) = -2x$": "DF.AFF.03#b_oublie",
+      "$h(x) = -10x - 13$": "NC.REL.02#soustraire_negatif"
+    },
+    "steps": [
+      "Calcule l'écart des ordonnées $-3 - 7$ et l'écart des abscisses $3 - (-2)$.",
+      "Une fois $a$ trouvé, utilise le point $A$ : $a \\times (-2) + b = 7$."
+    ],
+    "f": "$a = \\frac{y_B - y_A}{x_B - x_A}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.AFF.04-u01",
+    "comp": "DF.AFF.04",
+    "q": "La droite représentant $f(x) = 5x - 4$ coupe l'axe des ordonnées au point $(0 ; \\text{___})$.",
+    "a": "-4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5": "DF.AFF.02#a_b_inverses",
+      "4": "EG.REP.01#quadrant"
+    },
+    "steps": [
+      "Sur l'axe des ordonnées, l'abscisse vaut $0$. Calcule $f(0)$."
+    ],
+    "f": "$f(x) = ax + b$ : la droite passe par $(0 ; b)$.",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.AFF.04-u02",
+    "comp": "DF.AFF.04",
+    "q": "Quelle description correspond à la droite représentant $g(x) = -3x + 2$ ?",
+    "a": "Elle descend et coupe l'axe des ordonnées en $2$",
+    "type": "qcm",
+    "options": [
+      "Elle monte et coupe l'axe des ordonnées en $2$",
+      "Elle descend et coupe l'axe des abscisses en $2$",
+      "Elle descend et coupe l'axe des ordonnées en $-3$",
+      "Elle descend et coupe l'axe des ordonnées en $2$"
+    ],
+    "err": {
+      "Elle monte et coupe l'axe des ordonnées en $2$": "DF.AFF.04#pente_signe",
+      "Elle descend et coupe l'axe des abscisses en $2$": "DF.AFF.04#b_sur_abscisses",
+      "Elle descend et coupe l'axe des ordonnées en $-3$": "DF.AFF.02#a_b_inverses"
+    },
+    "steps": [
+      "Le signe du coefficient $a = -3$ indique si la droite monte ou descend.",
+      "Calcule $g(0)$ : sur quel axe se trouve le point $(0 ; g(0))$ ?"
+    ],
+    "f": "$f(x) = ax + b$ : $a$ donne la pente, la droite passe par $(0 ; b)$.",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.AFF.04-u03",
+    "comp": "DF.AFF.04",
+    "q": "La droite représentant une fonction affine passe par les points $(0 ; -1)$ et $(3 ; 5)$. Quel est son coefficient directeur ? ___",
+    "a": "2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-1": "DF.AFF.02#a_b_inverses"
+    },
+    "steps": [
+      "Quand on avance de $3$ unités vers la droite, de combien la droite monte-t-elle ?",
+      "Ramène cette montée à une seule unité vers la droite."
+    ],
+    "f": "$a = \\frac{\\text{variation de } y}{\\text{variation de } x}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.AFF.04-u04",
+    "comp": "DF.AFF.04",
+    "q": "Pour tracer la droite représentant $f(x) = 2x - 1$, Nina place deux points. Lesquels conviennent ?",
+    "a": "$(0 ; -1)$ et $(2 ; 3)$",
+    "type": "qcm",
+    "options": [
+      "$(-1 ; 0)$ et $(2 ; 3)$",
+      "$(0 ; -1)$ et $(2 ; 3)$",
+      "$(0 ; -1)$ et $(3 ; 2)$",
+      "$(0 ; 2)$ et $(1 ; 1)$"
+    ],
+    "err": {
+      "$(-1 ; 0)$ et $(2 ; 3)$": "DF.AFF.04#b_sur_abscisses",
+      "$(0 ; -1)$ et $(3 ; 2)$": "EG.REP.01#xy_inverses",
+      "$(0 ; 2)$ et $(1 ; 1)$": "DF.AFF.02#a_b_inverses"
+    },
+    "steps": [
+      "Un point $(x ; y)$ est sur la droite si $y = f(x)$. Calcule $f(0)$.",
+      "Calcule aussi $f(2)$ et $f(3)$, puis compare avec les points proposés."
+    ],
+    "f": "$M(x ; y)$ est sur la droite si $y = f(x)$.",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.AFF.04-u05",
+    "comp": "DF.AFF.04",
+    "q": "Une droite coupe l'axe des ordonnées en $4$. Quand on avance d'un carreau vers la droite, elle descend de $3$ carreaux (un carreau = une unité). Quelle fonction représente-t-elle ?",
+    "a": "$f(x) = -3x + 4$",
+    "type": "qcm",
+    "options": [
+      "$f(x) = 3x + 4$",
+      "$f(x) = -3x + 4$",
+      "$f(x) = 4x - 3$",
+      "$f(x) = -3x + 12$"
+    ],
+    "err": {
+      "$f(x) = 3x + 4$": "DF.AFF.04#pente_signe",
+      "$f(x) = 4x - 3$": "DF.AFF.02#a_b_inverses",
+      "$f(x) = -3x + 12$": "DF.AFF.04#b_sur_abscisses"
+    },
+    "steps": [
+      "L'ordonnée à l'origine $b$ se lit sur l'axe vertical.",
+      "La droite descend : le coefficient $a$ est-il positif ou négatif ? Quelle est sa valeur ?"
+    ],
+    "f": "$f(x) = ax + b$ : la droite passe par $(0 ; b)$.",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.AFF.04-u06",
+    "comp": "DF.AFF.04",
+    "q": "La droite représentant $f(x) = -2x + 6$ coupe l'axe des abscisses en un point. Quelle est l'abscisse de ce point ? ___",
+    "a": "3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "6": "DF.AFF.04#b_sur_abscisses",
+      "-3": "EG.REP.01#quadrant"
+    },
+    "steps": [
+      "Sur l'axe des abscisses, l'ordonnée vaut $0$ : résous $-2x + 6 = 0$."
+    ],
+    "f": "La droite coupe l'axe des abscisses là où $f(x) = 0$.",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.AFF.04-u07",
+    "comp": "DF.AFF.04",
+    "q": "Une droite passe par les points $(-2 ; 5)$ et $(2 ; -3)$. Quelle fonction représente-t-elle ?",
+    "a": "$f(x) = -2x + 1$",
+    "type": "qcm",
+    "options": [
+      "$f(x) = 2x + 1$",
+      "$f(x) = x - 2$",
+      "$f(x) = -0{,}5x + 0{,}5$",
+      "$f(x) = -2x + 1$"
+    ],
+    "err": {
+      "$f(x) = 2x + 1$": "DF.AFF.04#pente_signe",
+      "$f(x) = x - 2$": "DF.AFF.02#a_b_inverses",
+      "$f(x) = -0{,}5x + 0{,}5$": "EG.REP.01#xy_inverses"
+    },
+    "steps": [
+      "De $x = -2$ à $x = 2$, on avance de $4$ : de combien la droite monte-t-elle ou descend-elle ?",
+      "Déduis $a$, puis trouve $b$ en utilisant l'un des deux points."
+    ],
+    "f": "$a = \\frac{y_B - y_A}{x_B - x_A}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
   }
 ]

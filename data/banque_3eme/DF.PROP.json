@@ -794,5 +794,285 @@
       "train"
     ],
     "contexte": true
+  },
+  {
+    "id": "DF.PROP.01-u01",
+    "comp": "DF.PROP.01",
+    "q": "Laquelle de ces affirmations est vraie ?",
+    "a": "Le périmètre d'un carré est proportionnel à la longueur de son côté",
+    "type": "qcm",
+    "options": [
+      "La taille d'un enfant est proportionnelle à son âge",
+      "Le prix d'un forfait à $5$ € par mois plus $0{,}10$ € par SMS est proportionnel au nombre de SMS",
+      "L'aire d'un carré est proportionnelle à la longueur de son côté",
+      "Le périmètre d'un carré est proportionnel à la longueur de son côté"
+    ],
+    "err": {
+      "La taille d'un enfant est proportionnelle à son âge": "DF.PROP.01#augmentent_ensemble",
+      "Le prix d'un forfait à $5$ € par mois plus $0{,}10$ € par SMS est proportionnel au nombre de SMS": "DF.PROP.01#partie_fixe",
+      "L'aire d'un carré est proportionnelle à la longueur de son côté": "DF.PROP.01#augmentent_ensemble"
+    },
+    "steps": [
+      "Deux grandeurs sont proportionnelles si l'on passe de l'une à l'autre en multipliant toujours par le même nombre.",
+      "Teste l'aire : un côté de $1$ cm donne une aire de $1 \\text{ cm}^2$, un côté de $2$ cm donne $? \\text{ cm}^2$. Le coefficient est-il le même ?"
+    ],
+    "f": "$y$ est proportionnel à $x$ si $y = k \\times x$ avec $k$ fixe.",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.PROP.05-u01",
+    "comp": "DF.PROP.05",
+    "q": "Un abonnement de streaming passe de $40$ € à $46$ € par an. Quel est le pourcentage d'augmentation ?",
+    "a": "$15\\,\\%$",
+    "type": "qcm",
+    "options": [
+      "$6\\,\\%$",
+      "$15\\,\\%$",
+      "environ $13\\,\\%$",
+      "$0{,}15\\,\\%$"
+    ],
+    "err": {
+      "$6\\,\\%$": "DF.PROP.05#ecart_comme_pourcent",
+      "environ $13\\,\\%$": "DF.PROP.05#mauvaise_reference",
+      "$0{,}15\\,\\%$": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "Calcule d'abord l'augmentation en euros.",
+      "Divise cette augmentation par le prix de départ, puis écris le résultat en pourcentage."
+    ],
+    "f": "$\\text{taux} = \\frac{\\text{valeur finale} - \\text{valeur initiale}}{\\text{valeur initiale}}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.05-u02",
+    "comp": "DF.PROP.05",
+    "q": "La population d'un village passe de $1\\,250$ à $1\\,000$ habitants. Quel est le taux d'évolution ?",
+    "a": "$-20\\,\\%$",
+    "type": "qcm",
+    "options": [
+      "$-25\\,\\%$",
+      "$-250\\,\\%$",
+      "$-2\\,\\%$",
+      "$-20\\,\\%$"
+    ],
+    "err": {
+      "$-25\\,\\%$": "DF.PROP.05#mauvaise_reference",
+      "$-250\\,\\%$": "DF.PROP.05#ecart_comme_pourcent",
+      "$-2\\,\\%$": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "De combien d'habitants la population a-t-elle diminué ?",
+      "Par quelle population faut-il diviser cette baisse : celle du début ou celle de la fin ?"
+    ],
+    "f": "$\\text{taux} = \\frac{\\text{valeur finale} - \\text{valeur initiale}}{\\text{valeur initiale}}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.05-u03",
+    "comp": "DF.PROP.05",
+    "q": "Le prix d'un jeu vidéo passe de $24$ € à $30$ €, puis redescend à $24$ €. Quel est le taux d'évolution de cette baisse ?",
+    "a": "$-20\\,\\%$",
+    "type": "qcm",
+    "options": [
+      "$-20\\,\\%$",
+      "$-25\\,\\%$",
+      "$-6\\,\\%$",
+      "$-0{,}2\\,\\%$"
+    ],
+    "err": {
+      "$-25\\,\\%$": "DF.PROP.05#mauvaise_reference",
+      "$-6\\,\\%$": "DF.PROP.05#ecart_comme_pourcent",
+      "$-0{,}2\\,\\%$": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "Pour la baisse, quel est le prix de départ : $24$ € ou $30$ € ?",
+      "Divise la baisse en euros par ce prix de départ."
+    ],
+    "f": "$\\text{taux} = \\frac{\\text{valeur finale} - \\text{valeur initiale}}{\\text{valeur initiale}}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.08-u01",
+    "comp": "DF.PROP.08",
+    "q": "Pour une pâte, Inès mélange farine et sucre dans le ratio $3 : 1$. Elle prépare $400$ g de mélange. Quelle masse de farine utilise-t-elle ? ___ g",
+    "a": "300",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "200": "DF.PROP.08#partage_egal",
+      "1200": "DF.PROP.08#ratio_fraction_total"
+    },
+    "steps": [
+      "Le ratio $3 : 1$ partage le mélange en combien de parts égales en tout ?",
+      "Combien pèse une part ? Combien de parts sont de la farine ?"
+    ],
+    "f": "Ratio $a : b$ : la première quantité représente $\\frac{a}{a + b}$ du total.",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.08-u02",
+    "comp": "DF.PROP.08",
+    "q": "Deux associations se partagent $900$ € de dons dans le ratio $4 : 5$. Combien reçoit la première ?",
+    "a": "$400$ €",
+    "type": "qcm",
+    "options": [
+      "$450$ €",
+      "$720$ €",
+      "$400$ €",
+      "$225$ €"
+    ],
+    "err": {
+      "$450$ €": "DF.PROP.08#partage_egal",
+      "$720$ €": "DF.PROP.08#ratio_fraction_total",
+      "$225$ €": "NC.FRAC.04#roles_inverses"
+    },
+    "steps": [
+      "Combien y a-t-il de parts en tout ?",
+      "Calcule la valeur d'une part, puis multiplie par le nombre de parts de la première association."
+    ],
+    "f": "Ratio $a : b$ : la première quantité représente $\\frac{a}{a + b}$ du total.",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.08-u03",
+    "comp": "DF.PROP.08",
+    "q": "Dans un club, le ratio filles : garçons est $3 : 5$. Quelle fraction des membres sont des filles ? ___",
+    "a": "3/8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3/5": "DF.PROP.08#ratio_fraction_total",
+      "1/2": "DF.PROP.08#partage_egal"
+    },
+    "steps": [
+      "Sur $3 + 5$ membres, combien sont des filles ?",
+      "Écris cette part sous forme d'une fraction du total."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.08-u04",
+    "comp": "DF.PROP.08",
+    "q": "Hugo et Emma se partagent un gain dans le ratio $2 : 3$ (Hugo : $2$ parts, Emma : $3$ parts). Emma a reçu $36$ €. Combien Hugo a-t-il reçu ? ___ €",
+    "a": "24",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "54": "DF.PROP.02#croix_mal_placee",
+      "35": "DF.PROP.02#modele_additif",
+      "36": "DF.PROP.08#partage_egal"
+    },
+    "steps": [
+      "Les $3$ parts d'Emma valent $36$ €. Combien vaut une part ?",
+      "Combien de parts reçoit Hugo ?"
+    ],
+    "f": "Ratio $a : b$ : $\\frac{\\text{part 1}}{a} = \\frac{\\text{part 2}}{b}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.08-u05",
+    "comp": "DF.PROP.08",
+    "q": "Un jus est fait de mangue et d'orange dans le ratio $2 : 5$. On veut préparer $1{,}4$ L de jus. Quel volume de jus d'orange faut-il ?",
+    "a": "$1$ L",
+    "type": "qcm",
+    "options": [
+      "$0{,}7$ L",
+      "$0{,}84$ L",
+      "$0{,}28$ L",
+      "$1$ L"
+    ],
+    "err": {
+      "$0{,}7$ L": "DF.PROP.08#partage_egal",
+      "$0{,}84$ L": "DF.PROP.08#ratio_fraction_total",
+      "$0{,}28$ L": "NC.FRAC.04#roles_inverses"
+    },
+    "steps": [
+      "Le jus est partagé en $2 + 5$ parts égales. Quel volume représente une part ?",
+      "Combien de parts sont du jus d'orange ?"
+    ],
+    "f": "Ratio $a : b$ : la deuxième quantité représente $\\frac{b}{a + b}$ du total.",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.08-u06",
+    "comp": "DF.PROP.08",
+    "q": "Trois amis se partagent $84$ € dans le ratio $1 : 2 : 4$. Combien reçoit celui qui a la plus grosse part ? ___ €",
+    "a": "48",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "28": "DF.PROP.08#partage_egal",
+      "21": "NC.FRAC.04#roles_inverses"
+    },
+    "steps": [
+      "Combien y a-t-il de parts en tout ?",
+      "Calcule la valeur d'une part, puis celle de la plus grosse part."
+    ],
+    "f": "Ratio $a : b : c$ : la troisième quantité représente $\\frac{c}{a + b + c}$ du total.",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.08-u07",
+    "comp": "DF.PROP.08",
+    "q": "Dans une classe, le ratio garçons : filles est $3 : 4$. Il y a $12$ garçons. Combien y a-t-il d'élèves en tout ? ___",
+    "a": "28",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "25": "DF.PROP.02#modele_additif",
+      "24": "DF.PROP.08#partage_egal"
+    },
+    "steps": [
+      "Les $12$ garçons représentent $3$ parts. Combien d'élèves dans une part ?",
+      "Combien de parts y a-t-il en tout dans la classe ?"
+    ],
+    "f": "Ratio $a : b$ : $\\frac{\\text{part 1}}{a} = \\frac{\\text{part 2}}{b}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
   }
 ]

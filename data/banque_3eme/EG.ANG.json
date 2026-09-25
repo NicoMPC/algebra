@@ -404,5 +404,118 @@
       "train"
     ],
     "contexte": false
+  },
+  {
+    "id": "EG.ANG.02-u01",
+    "comp": "EG.ANG.02",
+    "q": "Le triangle $DEF$ est isocèle en $D$ et $\\widehat{DEF} = 65°$. Quelle est la mesure de l'angle au sommet $\\widehat{EDF}$ ? ___ °",
+    "a": "50",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "57,5": "EG.ANG.02#base_sommet"
+    },
+    "steps": [
+      "Isocèle en $D$ : les angles à la base $\\widehat{DEF}$ et $\\widehat{DFE}$ sont égaux.",
+      "Retire ces deux angles de $180°$ : ?"
+    ],
+    "f": "Somme des angles d'un triangle $= 180°$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ANG.02-u02",
+    "comp": "EG.ANG.02",
+    "q": "Le triangle $RST$ est isocèle en $R$ et l'angle au sommet $\\widehat{SRT}$ mesure $100°$. Quelle est la mesure de $\\widehat{RST}$ ? ___ °",
+    "a": "40",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "80": "EG.ANG.02#pas_de_partage"
+    },
+    "steps": [
+      "$180° - 100°$ donne la somme des deux angles à la base.",
+      "Ces deux angles sont égaux : partage cette somme : ?"
+    ],
+    "f": "Somme des angles d'un triangle $= 180°$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ANG.02-u03",
+    "comp": "EG.ANG.02",
+    "q": "Une pizza ronde est coupée en $8$ parts égales. Chaque part est vue comme un triangle isocèle dont le sommet est au centre de la pizza. Combien mesure chacun des deux autres angles de ce triangle ? ___ °",
+    "a": "67,5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "135": "EG.ANG.02#pas_de_partage",
+      "45": "EG.ANG.02#base_sommet"
+    },
+    "steps": [
+      "Les $8$ angles au centre se partagent un tour complet : calcule l'angle au sommet d'une part.",
+      "Retire-le de $180°$, puis partage entre les deux angles à la base : ?"
+    ],
+    "f": "Somme des angles d'un triangle $= 180°$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.ANG.02-u04",
+    "comp": "EG.ANG.02",
+    "q": "Une équerre a la forme d'un triangle rectangle isocèle (son angle droit mesure $90°$). Combien mesure chacun de ses deux angles aigus ? ___ °",
+    "a": "45",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "90": "EG.ANG.02#pas_de_partage"
+    },
+    "steps": [
+      "L'angle droit est l'angle au sommet : il reste $180° - 90°$ pour les deux autres.",
+      "Les deux angles aigus sont égaux : ?"
+    ],
+    "f": "Somme des angles d'un triangle $= 180°$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.ANG.02-u05",
+    "comp": "EG.ANG.02",
+    "q": "Un triangle isocèle a un angle de $40°$. On ne sait pas s'il s'agit de l'angle au sommet ou d'un angle à la base. Que peut-on dire des deux autres angles ?",
+    "a": "Deux cas possibles : $70°$ et $70°$, ou $40°$ et $100°$",
+    "type": "qcm",
+    "options": [
+      "Ils mesurent forcément $70°$ et $70°$",
+      "Deux cas possibles : $70°$ et $70°$, ou $40°$ et $140°$",
+      "Ils mesurent forcément $40°$ et $100°$",
+      "Deux cas possibles : $70°$ et $70°$, ou $40°$ et $100°$"
+    ],
+    "err": {
+      "Ils mesurent forcément $70°$ et $70°$": "EG.ANG.02#base_sommet",
+      "Ils mesurent forcément $40°$ et $100°$": "EG.ANG.02#base_sommet",
+      "Deux cas possibles : $70°$ et $70°$, ou $40°$ et $140°$": "EG.ANG.02#pas_de_partage"
+    },
+    "steps": [
+      "Cas 1 : $40°$ est l'angle au sommet. Que valent alors les angles à la base ?",
+      "Cas 2 : $40°$ est un angle à la base, donc l'autre angle à la base aussi. Que vaut l'angle au sommet ?"
+    ],
+    "f": "Somme des angles d'un triangle $= 180°$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
   }
 ]

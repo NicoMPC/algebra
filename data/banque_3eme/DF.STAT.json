@@ -932,5 +932,273 @@
       "train"
     ],
     "contexte": true
+  },
+  {
+    "id": "DF.STAT.02-u01",
+    "comp": "DF.STAT.02",
+    "q": "Un basketteur a tenté $16$ lancers francs et en a réussi $12$. Quelle est la fréquence de réussite ?",
+    "a": "$0{,}75$",
+    "type": "qcm",
+    "options": [
+      "$12$",
+      "$3$",
+      "$0{,}75$",
+      "$7{,}5\\,\\%$"
+    ],
+    "err": {
+      "$12$": "DF.STAT.02#effectif_pour_frequence",
+      "$3$": "DF.STAT.02#mauvais_total",
+      "$7{,}5\\,\\%$": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "Une fréquence, c'est l'effectif divisé par l'effectif total. Quel est l'effectif total ici ?",
+      "Calcule ce quotient et écris-le sous forme décimale."
+    ],
+    "f": "$\\text{fréquence} = \\frac{\\text{effectif}}{\\text{effectif total}}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.05-u01",
+    "comp": "DF.STAT.05",
+    "q": "Temps de trajet (en min) de $6$ élèves : $25$ ; $12$ ; $15$ ; $30$ ; $8$ ; $18$. Quelle est la médiane de cette série ? ___ min",
+    "a": "16,5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "22,5": "DF.STAT.05#serie_non_rangee",
+      "15": "DF.STAT.05#effectif_pair",
+      "18": "DF.STAT.05#effectif_pair",
+      "19": "DF.STAT.05#milieu_etendue"
+    },
+    "steps": [
+      "Range d'abord les valeurs dans l'ordre croissant.",
+      "L'effectif est pair : quelles sont les deux valeurs du milieu ?"
+    ],
+    "f": "Effectif pair : médiane = moyenne des deux valeurs centrales (série rangée).",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.STAT.05-u02",
+    "comp": "DF.STAT.05",
+    "q": "Notes (sur $10$) de $19$ élèves à un quiz. Note $3$ : $2$ élèves ; note $6$ : $2$ élèves ; note $7$ : $3$ élèves ; note $9$ : $8$ élèves ; note $10$ : $4$ élèves. Quelle est la médiane ?",
+    "a": "$9$",
+    "type": "qcm",
+    "options": [
+      "$7$",
+      "$6{,}5$",
+      "$9$",
+      "$3$"
+    ],
+    "err": {
+      "$7$": "DF.STAT.05#ignore_effectifs",
+      "$6{,}5$": "DF.STAT.05#milieu_etendue",
+      "$3$": "DF.STAT.01#valeurs_effectifs"
+    },
+    "steps": [
+      "Avec $19$ élèves, la médiane est la note de quel élève dans la série rangée ?",
+      "Cumule les effectifs : $2$, puis $2 + 2$, puis… Dans quelle note tombe cet élève ?"
+    ],
+    "f": "Effectif impair $n$ : médiane = valeur de rang $\\frac{n + 1}{2}$ (série rangée).",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.06-u01",
+    "comp": "DF.STAT.06",
+    "q": "Températures relevées à midi pendant une semaine (en °C) : $14$ ; $9$ ; $17$ ; $21$ ; $13$ ; $16$ ; $11$. Quelle est l'étendue de cette série ? ___",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "DF.STAT.06#premier_dernier",
+      "21": "DF.STAT.06#max_seul"
+    },
+    "steps": [
+      "Repère la plus grande et la plus petite valeur (pas la première et la dernière).",
+      "L'étendue est l'écart entre ces deux valeurs."
+    ],
+    "f": "$\\text{étendue} = \\text{max} - \\text{min}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "12°C",
+      "12 °C",
+      "12°"
+    ]
+  },
+  {
+    "id": "DF.STAT.06-u02",
+    "comp": "DF.STAT.06",
+    "q": "Scores de Jade à un jeu vidéo : $850$ ; $1\\,200$ ; $640$ ; $990$ ; $1\\,050$. Quelle est l'étendue de ces scores ?",
+    "a": "$560$",
+    "type": "qcm",
+    "options": [
+      "$1\\,200$",
+      "$560$",
+      "$200$",
+      "$4\\,730$"
+    ],
+    "err": {
+      "$1\\,200$": "DF.STAT.06#max_seul",
+      "$200$": "DF.STAT.06#premier_dernier",
+      "$4\\,730$": "DF.STAT.01#valeurs_effectifs"
+    },
+    "steps": [
+      "Quel est le meilleur score ? Et le moins bon ?",
+      "Calcule l'écart entre ces deux scores."
+    ],
+    "f": "$\\text{étendue} = \\text{max} - \\text{min}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.06-u03",
+    "comp": "DF.STAT.06",
+    "q": "Températures d'une nuit en montagne (en °C) : $-3$ ; $2$ ; $-7$ ; $0$ ; $4$ ; $-1$. Quelle est l'étendue de cette série ? ___",
+    "a": "11",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "4": "DF.STAT.06#max_seul",
+      "2": "DF.STAT.06#premier_dernier"
+    },
+    "steps": [
+      "La plus petite valeur est la plus basse température : laquelle ?",
+      "Calcule $\\text{max} - \\text{min}$ ; attention, soustraire un négatif revient à ajouter."
+    ],
+    "f": "$\\text{étendue} = \\text{max} - \\text{min}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "11°C",
+      "11 °C",
+      "11°"
+    ]
+  },
+  {
+    "id": "DF.STAT.06-u04",
+    "comp": "DF.STAT.06",
+    "q": "Nombre de buts marqués par match par une équipe : $1$ but lors de $3$ matchs, $2$ buts lors de $5$ matchs, $3$ buts lors de $4$ matchs, $5$ buts lors de $2$ matchs, $7$ buts lors de $1$ match. Quelle est l'étendue du nombre de buts par match ?",
+    "a": "$6$",
+    "type": "qcm",
+    "options": [
+      "$7$",
+      "$4$",
+      "$6$",
+      "$15$"
+    ],
+    "err": {
+      "$7$": "DF.STAT.06#max_seul",
+      "$4$": "DF.STAT.01#valeurs_effectifs",
+      "$15$": "DF.STAT.01#valeurs_effectifs"
+    },
+    "steps": [
+      "La série étudiée est celle des nombres de buts, pas celle des nombres de matchs.",
+      "Quel est le plus petit nombre de buts marqués en un match ? Et le plus grand ?"
+    ],
+    "f": "$\\text{étendue} = \\text{max} - \\text{min}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.06-u05",
+    "comp": "DF.STAT.06",
+    "q": "Masses de $5$ chatons (en g) : $420$ ; $515$ ; $380$ ; $460$ ; $495$. Un sixième chaton pèse $350$ g. Quelle est l'étendue de la nouvelle série ? ___ g",
+    "a": "165",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "515": "DF.STAT.06#max_seul",
+      "70": "DF.STAT.06#premier_dernier"
+    },
+    "steps": [
+      "Le sixième chaton change-t-il la plus grande ou la plus petite valeur ?",
+      "Calcule l'écart entre la nouvelle valeur minimale et la valeur maximale."
+    ],
+    "f": "$\\text{étendue} = \\text{max} - \\text{min}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.07-u01",
+    "comp": "DF.STAT.07",
+    "q": "Temps (en s) de $5$ coureurs sur $100$ m : $13$ ; $14$ ; $14$ ; $15$ ; $44$ (le dernier s'est blessé en course). La moyenne vaut $20$ s et la médiane $14$ s. Quelle affirmation est juste ?",
+    "a": "La médiane décrit mieux le temps habituel du groupe : la moyenne est tirée vers le haut par $44$ s",
+    "type": "qcm",
+    "options": [
+      "La moyenne décrit mieux le groupe, car elle utilise toutes les valeurs",
+      "Si on retire le temps de $44$ s, la médiane baisse beaucoup",
+      "La médiane décrit mieux le temps habituel du groupe : la moyenne est tirée vers le haut par $44$ s"
+    ],
+    "err": {
+      "La moyenne décrit mieux le groupe, car elle utilise toutes les valeurs": "DF.STAT.07#valeur_extreme",
+      "Si on retire le temps de $44$ s, la médiane baisse beaucoup": "DF.STAT.07#valeur_extreme"
+    },
+    "steps": [
+      "Combien de coureurs ont un temps proche de $20$ s ? Et proche de $14$ s ?",
+      "Retire le $44$ : recalcule la médiane des $4$ temps restants. Change-t-elle beaucoup ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.07-u02",
+    "comp": "DF.STAT.07",
+    "q": "Deux joueurs de fléchettes font $5$ lancers chacun. Léo : $20$ ; $20$ ; $20$ ; $20$ ; $20$. Sam : $5$ ; $50$ ; $0$ ; $25$ ; $20$. Quelle affirmation est vraie ?",
+    "a": "Même moyenne et même médiane, mais Sam est bien moins régulier (étendue $50$ contre $0$)",
+    "type": "qcm",
+    "options": [
+      "Ils ont la même moyenne, donc ils sont aussi réguliers l'un que l'autre",
+      "Même moyenne et même médiane, mais Sam est bien moins régulier (étendue $50$ contre $0$)",
+      "Sam est le meilleur, car il a réalisé le plus grand score",
+      "La médiane de Sam est $0$, car c'est la valeur du milieu de sa liste"
+    ],
+    "err": {
+      "Ils ont la même moyenne, donc ils sont aussi réguliers l'un que l'autre": "DF.STAT.07#moyenne_suffit",
+      "Sam est le meilleur, car il a réalisé le plus grand score": "DF.STAT.06#max_seul",
+      "La médiane de Sam est $0$, car c'est la valeur du milieu de sa liste": "DF.STAT.05#serie_non_rangee"
+    },
+    "steps": [
+      "Calcule la moyenne de Sam. Range ses scores pour trouver sa médiane.",
+      "Compare les étendues des deux joueurs : que mesurent-elles ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
   }
 ]

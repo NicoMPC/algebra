@@ -479,5 +479,180 @@
       "train"
     ],
     "contexte": true
+  },
+  {
+    "id": "EG.REP.03-u01",
+    "comp": "EG.REP.03",
+    "q": "Dans un repère de l'espace, le point $P$ a pour coordonnées $(3 ; 8 ; 1)$. Quelle est l'ordonnée de $P$ ? ___",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "EG.REP.03#ordre_coordonnees",
+      "1": "EG.REP.03#ordre_coordonnees"
+    },
+    "steps": [
+      "Dans l'espace, les coordonnées s'écrivent dans l'ordre : (abscisse ; ordonnée ; altitude).",
+      "Quelle est la deuxième coordonnée ? ?"
+    ],
+    "f": "$M(x ; y ; z)$ : abscisse, ordonnée, altitude",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.REP.03-u02",
+    "comp": "EG.REP.03",
+    "q": "La ville du Cap se trouve à environ $34°$ S et $18°$ E. Elle est située :",
+    "a": "au sud de l'équateur et à l'est du méridien de Greenwich",
+    "type": "qcm",
+    "options": [
+      "au nord de l'équateur et à l'est du méridien de Greenwich",
+      "au sud de l'équateur et à l'est du méridien de Greenwich",
+      "au sud de l'équateur et à l'ouest du méridien de Greenwich",
+      "à l'est de l'équateur et au sud du méridien de Greenwich"
+    ],
+    "err": {
+      "au nord de l'équateur et à l'est du méridien de Greenwich": "EG.REP.03#orientation",
+      "au sud de l'équateur et à l'ouest du méridien de Greenwich": "EG.REP.03#orientation",
+      "à l'est de l'équateur et au sud du méridien de Greenwich": "EG.REP.03#ordre_coordonnees"
+    },
+    "steps": [
+      "La latitude ($34°$ S) situe un lieu au nord ou au sud de l'équateur. La longitude ($18°$ E) le situe à l'est ou à l'ouest du méridien de Greenwich.",
+      "Que signifient les lettres S et E ? ?"
+    ],
+    "f": "Latitude : N/S de l'équateur ; longitude : E/O de Greenwich",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.REP.03-u03",
+    "comp": "EG.REP.03",
+    "q": "Dans un repère de l'espace, où se trouve le point $M(0 ; 0 ; 5)$ ?",
+    "a": "Sur l'axe des altitudes",
+    "type": "qcm",
+    "options": [
+      "Sur l'axe des abscisses",
+      "Sur l'axe des altitudes",
+      "Sur l'axe des ordonnées"
+    ],
+    "err": {
+      "Sur l'axe des abscisses": "EG.REP.03#ordre_coordonnees",
+      "Sur l'axe des ordonnées": "EG.REP.03#ordre_coordonnees"
+    },
+    "steps": [
+      "L'abscisse et l'ordonnée de $M$ sont nulles : seule sa troisième coordonnée ne l'est pas.",
+      "À quel axe correspond la troisième coordonnée ? ?"
+    ],
+    "f": "$M(x ; y ; z)$ : abscisse, ordonnée, altitude",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.REP.03-u04",
+    "comp": "EG.REP.03",
+    "q": "Un pavé droit $ABCDEFGH$ a pour face du bas $ABCD$ ; $E$ est au-dessus de $A$, $F$ au-dessus de $B$, $G$ au-dessus de $C$ et $H$ au-dessus de $D$. Dans un repère d'origine $A$, on a $B(4 ; 0 ; 0)$, $D(0 ; 3 ; 0)$ et $E(0 ; 0 ; 2)$. Quelles sont les coordonnées de $F$ ? ___",
+    "a": "(4;0;2)",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "(0;4;2)": "EG.REP.03#ordre_coordonnees",
+      "(4;2;0)": "EG.REP.03#ordre_coordonnees"
+    },
+    "steps": [
+      "$F$ est au-dessus de $B$ : il a la même abscisse et la même ordonnée que $B$.",
+      "Son altitude est celle de la face du haut, donnée par $E$. Écris $(x ; y ; z)$ : ?"
+    ],
+    "f": "$M(x ; y ; z)$ : abscisse, ordonnée, altitude",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "4;0;2",
+      "(4,0,2)"
+    ]
+  },
+  {
+    "id": "EG.REP.03-u05",
+    "comp": "EG.REP.03",
+    "q": "Voici quatre villes : Rio ($23°$ S ; $43°$ O), Tokyo ($36°$ N ; $140°$ E), Sydney ($34°$ S ; $151°$ E), New York ($41°$ N ; $74°$ O). Laquelle est à la fois dans l'hémisphère Sud et à l'ouest du méridien de Greenwich ?",
+    "a": "Rio",
+    "type": "qcm",
+    "options": [
+      "Sydney",
+      "New York",
+      "Rio",
+      "Tokyo"
+    ],
+    "err": {
+      "Sydney": "EG.REP.03#orientation",
+      "New York": "EG.REP.03#orientation",
+      "Tokyo": "EG.REP.03#orientation"
+    },
+    "steps": [
+      "Hémisphère Sud : la latitude porte la lettre S.",
+      "Ouest de Greenwich : la longitude porte la lettre O. Quelle ville réunit les deux ?"
+    ],
+    "f": "Latitude : N/S de l'équateur ; longitude : E/O de Greenwich",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.REP.03-u06",
+    "comp": "EG.REP.03",
+    "q": "Deux îles sont situées sur l'équateur : l'une à la longitude $30°$ E, l'autre à la longitude $40°$ O. Quel est l'écart entre leurs longitudes ? ___ °",
+    "a": "70",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "10": "EG.REP.03#orientation"
+    },
+    "steps": [
+      "L'une est à l'est du méridien de Greenwich, l'autre à l'ouest : elles sont de part et d'autre de ce méridien.",
+      "Pour aller de l'une à l'autre, on passe par la longitude $0°$ : ajoute les deux écarts : ?"
+    ],
+    "f": "Longitude : de $0°$ à $180°$ vers l'Est ou vers l'Ouest",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.REP.03-u07",
+    "comp": "EG.REP.03",
+    "q": "Une salle a la forme d'un pavé droit. On la repère depuis un coin $A$ du sol : l'axe des abscisses suit le mur de $8$ m, l'axe des ordonnées le mur de $5$ m, l'axe des altitudes monte le long de l'arête verticale de $3$ m. Une lampe est fixée au centre du plafond. Quelles sont ses coordonnées ? ___",
+    "a": "(4;2,5;3)",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "(2,5;4;3)": "EG.REP.03#ordre_coordonnees"
+    },
+    "steps": [
+      "Le centre du plafond est au milieu de la longueur et au milieu de la largeur.",
+      "Il est collé au plafond : quelle est son altitude ? Écris $(x ; y ; z)$ : ?"
+    ],
+    "f": "$M(x ; y ; z)$ : abscisse, ordonnée, altitude",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "4;2,5;3"
+    ]
   }
 ]

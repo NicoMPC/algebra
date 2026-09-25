@@ -470,5 +470,362 @@
       "train"
     ],
     "contexte": false
+  },
+  {
+    "id": "DF.PROB.03-u01",
+    "comp": "DF.PROB.03",
+    "q": "La probabilité qu'un bus soit en retard est $\\frac{1}{8}$. Quelle est la probabilité qu'il ne soit pas en retard ? ___",
+    "a": "7/8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1/8": "DF.PROB.03#meme_probabilite",
+      "8": "DF.PROB.03#inverse",
+      "-1/8": "DF.PROB.03#inverse"
+    },
+    "steps": [
+      "« Être en retard » et « ne pas être en retard » : ces deux événements couvrent toutes les possibilités.",
+      "Leurs probabilités ont donc une somme connue : laquelle ?"
+    ],
+    "f": "$P(\\overline{A}) = 1 - P(A)$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.03-u02",
+    "comp": "DF.PROB.03",
+    "q": "Un sac contient $4$ jetons rouges, $5$ bleus et $3$ verts. On tire un jeton au hasard. Quelle est la probabilité de ne pas tirer un jeton bleu ? (fraction) ___",
+    "a": "7/12",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5/12": "DF.PROB.03#meme_probabilite",
+      "12/5": "DF.PROB.03#inverse",
+      "7/5": "DF.PROB.02#favorables_sur_defavorables"
+    },
+    "steps": [
+      "Calcule d'abord la probabilité de tirer un jeton bleu.",
+      "Déduis-en la probabilité de l'événement contraire."
+    ],
+    "f": "$P(\\overline{A}) = 1 - P(A)$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.03-u03",
+    "comp": "DF.PROB.03",
+    "q": "Un sac contient $3$ billes noires et $7$ blanches. On ajoute $5$ billes noires. On tire une bille au hasard. Quelle est la probabilité de ne pas tirer une bille noire ?",
+    "a": "$\\frac{7}{15}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{7}{10}$",
+      "$\\frac{8}{15}$",
+      "$\\frac{7}{8}$",
+      "$\\frac{7}{15}$"
+    ],
+    "err": {
+      "$\\frac{7}{10}$": "DF.PROB.02#total_pas_a_jour",
+      "$\\frac{8}{15}$": "DF.PROB.03#meme_probabilite",
+      "$\\frac{7}{8}$": "DF.PROB.02#favorables_sur_defavorables"
+    },
+    "steps": [
+      "Combien y a-t-il de billes dans le sac après l'ajout ? Et de billes noires ?",
+      "Calcule la probabilité de tirer une noire, puis celle de l'événement contraire."
+    ],
+    "f": "$P(\\overline{A}) = 1 - P(A)$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.04-u01",
+    "comp": "DF.PROB.04",
+    "q": "Une trousse contient $5$ stylos bleus, $3$ noirs, $2$ rouges et $6$ verts. On prend un stylo au hasard. Quelle est la probabilité qu'il soit noir ou rouge ? (fraction) ___",
+    "a": "5/16",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3/128": "DF.PROB.04#multiplie_ou",
+      "6/256": "DF.PROB.04#multiplie_ou",
+      "5/32": "NC.FRAC.03#somme_directe"
+    },
+    "steps": [
+      "Combien y a-t-il de stylos en tout ?",
+      "Combien de stylos sont noirs ou rouges ? Aucun stylo n'est des deux couleurs à la fois."
+    ],
+    "f": "Si $A$ et $B$ ne peuvent pas se produire en même temps : $P(A \\text{ ou } B) = P(A) + P(B)$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.04-u02",
+    "comp": "DF.PROB.04",
+    "q": "Dans un club de $30$ élèves, $12$ font du foot et $10$ du basket, dont $4$ font les deux. On choisit un élève au hasard. Quelle est la probabilité qu'il fasse du foot ou du basket ?",
+    "a": "$\\frac{18}{30}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{22}{30}$",
+      "$\\frac{18}{30}$",
+      "$\\frac{120}{900}$",
+      "$\\frac{22}{60}$"
+    ],
+    "err": {
+      "$\\frac{22}{30}$": "DF.PROB.04#double_compte",
+      "$\\frac{120}{900}$": "DF.PROB.04#multiplie_ou",
+      "$\\frac{22}{60}$": "NC.FRAC.03#somme_directe"
+    },
+    "steps": [
+      "Les $4$ élèves qui font les deux sports sont comptés dans les $12$ ET dans les $10$.",
+      "Combien d'élèves différents font au moins un des deux sports ?"
+    ],
+    "f": "$P(A \\text{ ou } B) = P(A) + P(B) - P(A \\text{ et } B)$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.04-u03",
+    "comp": "DF.PROB.04",
+    "q": "On tire une carte parmi $10$ cartes numérotées de $1$ à $10$. Quelle est la probabilité d'obtenir un nombre inférieur à $3$ ou supérieur à $8$ ?",
+    "a": "$\\frac{4}{10}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{4}{100}$",
+      "$\\frac{4}{20}$",
+      "$\\frac{4}{10}$",
+      "$\\frac{4}{6}$"
+    ],
+    "err": {
+      "$\\frac{4}{100}$": "DF.PROB.04#multiplie_ou",
+      "$\\frac{4}{20}$": "NC.FRAC.03#somme_directe",
+      "$\\frac{4}{6}$": "DF.PROB.02#favorables_sur_defavorables"
+    },
+    "steps": [
+      "Liste les cartes inférieures à $3$, puis celles supérieures à $8$.",
+      "Combien de cartes réalisent l'un ou l'autre ? Sur combien de cartes en tout ?"
+    ],
+    "f": "Si $A$ et $B$ ne peuvent pas se produire en même temps : $P(A \\text{ ou } B) = P(A) + P(B)$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.PROB.04-u04",
+    "comp": "DF.PROB.04",
+    "q": "On choisit au hasard un nombre entier entre $1$ et $30$ (inclus). Quelle est la probabilité qu'il soit multiple de $3$ ou multiple de $5$ ? (fraction) ___",
+    "a": "7/15",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "16/30": "DF.PROB.04#double_compte",
+      "8/15": "DF.PROB.04#double_compte",
+      "60/900": "DF.PROB.04#multiplie_ou",
+      "1/15": "DF.PROB.04#multiplie_ou",
+      "16/60": "NC.FRAC.03#somme_directe",
+      "4/15": "NC.FRAC.03#somme_directe"
+    },
+    "steps": [
+      "Combien y a-t-il de multiples de $3$ ? De multiples de $5$ ?",
+      "Certains nombres sont multiples des deux : lesquels ? Ne les compte qu'une fois."
+    ],
+    "f": "$P(A \\text{ ou } B) = P(A) + P(B) - P(A \\text{ et } B)$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.PROB.05-u01",
+    "comp": "DF.PROB.05",
+    "q": "Au self, on choisit une entrée parmi $3$ et un dessert parmi $4$. Combien de menus « entrée + dessert » différents peut-on composer ? ___",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "7": "DF.PROB.05#issues_additionnees"
+    },
+    "steps": [
+      "Pour chaque entrée, combien de desserts peut-on choisir ?",
+      "Un arbre ou un tableau aide à compter : combien de branches au bout ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.05-u02",
+    "comp": "DF.PROB.05",
+    "q": "Lina prend le bus avec une probabilité de $\\frac{2}{5}$. Quand elle prend le bus, elle arrive en avance avec une probabilité de $\\frac{3}{4}$. Quelle est la probabilité qu'elle prenne le bus et arrive en avance ?",
+    "a": "$\\frac{3}{10}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{5}{9}$",
+      "$\\frac{3}{10}$",
+      "$\\frac{23}{20}$",
+      "$\\frac{8}{15}$"
+    ],
+    "err": {
+      "$\\frac{5}{9}$": "DF.PROB.05#branche_additionnee",
+      "$\\frac{23}{20}$": "DF.PROB.05#branche_additionnee",
+      "$\\frac{8}{15}$": "NC.FRAC.05#produit_en_croix"
+    },
+    "steps": [
+      "Dans l'arbre, ce résultat correspond à un chemin : « bus » puis « en avance ».",
+      "Le long d'un chemin, on multiplie les probabilités : calcule le produit des numérateurs et celui des dénominateurs."
+    ],
+    "f": "Probabilité d'un chemin = produit des probabilités sur ses branches.",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.05-u03",
+    "comp": "DF.PROB.05",
+    "q": "Une boîte contient $4$ chocolats noirs et $2$ au lait. Tom en mange deux au hasard, l'un après l'autre. Quelle est la probabilité que les deux soient au lait ? (fraction) ___",
+    "a": "1/15",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1/9": "DF.PROB.05#sans_remise_ignore",
+      "4/36": "DF.PROB.05#sans_remise_ignore",
+      "8/15": "DF.PROB.05#branche_additionnee",
+      "16/30": "DF.PROB.05#branche_additionnee"
+    },
+    "steps": [
+      "Probabilité que le premier soit au lait : $\\frac{2}{6}$. Après l'avoir mangé, combien reste-t-il de chocolats, dont combien au lait ?",
+      "Multiplie les probabilités des deux étapes."
+    ],
+    "f": "Probabilité d'un chemin = produit des probabilités sur ses branches.",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.06-u01",
+    "comp": "DF.PROB.06",
+    "q": "Une roue a deux secteurs égaux, rouge et noir. Le rouge est sorti $6$ fois de suite. Au prochain tour :",
+    "a": "le rouge et le noir ont toujours la même probabilité",
+    "type": "qcm",
+    "options": [
+      "le noir est plus probable, il doit « compenser »",
+      "le rouge est plus probable, la roue est « en série »",
+      "le rouge et le noir ont toujours la même probabilité",
+      "le rouge a une probabilité de $\\frac{6}{7}$"
+    ],
+    "err": {
+      "le noir est plus probable, il doit « compenser »": "DF.PROB.06#erreur_du_joueur",
+      "le rouge est plus probable, la roue est « en série »": "DF.PROB.06#erreur_du_joueur",
+      "le rouge a une probabilité de $\\frac{6}{7}$": "DF.PROB.06#frequence_egale_proba"
+    },
+    "steps": [
+      "La roue garde-t-elle en mémoire les tours précédents ?",
+      "Les deux secteurs ont-ils changé de taille ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.06-u02",
+    "comp": "DF.PROB.06",
+    "q": "On lance $2\\,000$ fois une punaise : elle tombe $1\\,240$ fois sur la pointe. Quelle estimation de la probabilité de « tomber sur la pointe » peut-on donner ? (nombre décimal) ___",
+    "a": "0,62",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1240": "DF.STAT.02#effectif_pour_frequence"
+    },
+    "steps": [
+      "Sur un grand nombre de lancers, la fréquence observée est une bonne estimation de la probabilité.",
+      "Calcule la fréquence : effectif divisé par nombre total de lancers."
+    ],
+    "f": "$\\text{fréquence} = \\frac{\\text{effectif}}{\\text{effectif total}}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.06-u03",
+    "comp": "DF.PROB.06",
+    "q": "Emma lance $20$ fois un dé équilibré et obtient $2$ fois le $6$. Si elle lance ce dé $6\\,000$ fois, environ combien de fois obtiendra-t-elle le $6$ ?",
+    "a": "Environ $1\\,000$ fois",
+    "type": "qcm",
+    "options": [
+      "Environ $600$ fois",
+      "Plus de $1\\,000$ fois, car le $6$ est « en retard »",
+      "Environ $1\\,000$ fois"
+    ],
+    "err": {
+      "Environ $600$ fois": "DF.PROB.06#frequence_egale_proba",
+      "Plus de $1\\,000$ fois, car le $6$ est « en retard »": "DF.PROB.06#erreur_du_joueur"
+    },
+    "steps": [
+      "$20$ lancers, est-ce assez pour que la fréquence soit proche de la probabilité ?",
+      "Quelle est la probabilité d'obtenir $6$ avec un dé équilibré ? Applique-la à $6\\,000$ lancers."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.06-u04",
+    "comp": "DF.PROB.06",
+    "q": "Pour estimer la probabilité qu'une pièce truquée tombe sur Pile, Yanis obtient $7$ Pile sur $10$ lancers et Clara $5\\,400$ Pile sur $10\\,000$ lancers. Quelle est la meilleure estimation ?",
+    "a": "$0{,}54$, car Clara a fait beaucoup plus de lancers",
+    "type": "qcm",
+    "options": [
+      "$0{,}7$, car Yanis a la plus grande proportion de Pile",
+      "$0{,}54$, car Clara a fait beaucoup plus de lancers",
+      "$5\\,400$"
+    ],
+    "err": {
+      "$0{,}7$, car Yanis a la plus grande proportion de Pile": "DF.PROB.06#frequence_egale_proba",
+      "$5\\,400$": "DF.STAT.02#effectif_pour_frequence"
+    },
+    "steps": [
+      "Plus on fait de lancers, plus la fréquence se rapproche de la probabilité.",
+      "Une probabilité est comprise entre $0$ et $1$ : calcule la fréquence de Clara."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
   }
 ]

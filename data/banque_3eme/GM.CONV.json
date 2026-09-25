@@ -487,5 +487,282 @@
       "train"
     ],
     "contexte": true
+  },
+  {
+    "id": "GM.CONV.03-u01",
+    "comp": "GM.CONV.03",
+    "q": "Un épisode de série dure $45$ min. Écris cette durée en heures, sous forme décimale. ___ h",
+    "a": "0,75",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "0,45": "GM.CONV.03#minutes_decimales"
+    },
+    "steps": [
+      "Une heure, c'est $60$ min : $45$ min, c'est quelle fraction de $60$ min ?",
+      "Calcule $45 \\div 60$ : ?"
+    ],
+    "f": "durée en h $= \\frac{\\text{nombre de minutes}}{60}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "3/4"
+    ]
+  },
+  {
+    "id": "GM.CONV.03-u02",
+    "comp": "GM.CONV.03",
+    "q": "Une randonnée dure $3$ h $20$ min. Combien de minutes cela fait-il ? ___ min",
+    "a": "200",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "192": "GM.CONV.03#minutes_decimales"
+    },
+    "steps": [
+      "Dans $1$ h, il y a $60$ min : combien de minutes dans $3$ h ?",
+      "Ajoute les $20$ min restantes : ?"
+    ],
+    "f": "$1~\\text{h} = 60~\\text{min}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.03-u03",
+    "comp": "GM.CONV.03",
+    "q": "Un trajet en bus dure $0{,}25$ h. Combien de minutes dure-t-il ? ___ min",
+    "a": "15",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "25": "GM.CONV.03#decimales_minutes"
+    },
+    "steps": [
+      "$0{,}25$ h, c'est un quart d'heure : ce n'est pas $25$ minutes.",
+      "Calcule $0{,}25 \\times 60$ : ?"
+    ],
+    "f": "minutes $=$ partie décimale $\\times 60$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.03-u04",
+    "comp": "GM.CONV.03",
+    "q": "Un film dure $1{,}75$ h. Complète : $1{,}75~\\text{h} = 1~\\text{h}$ ___ min",
+    "a": "45",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "75": "GM.CONV.03#decimales_minutes"
+    },
+    "steps": [
+      "Il reste $0{,}75$ h en plus de l'heure entière. Ce ne sont pas des minutes : il faut convertir.",
+      "Calcule $0{,}75 \\times 60$ : ?"
+    ],
+    "f": "minutes $=$ partie décimale $\\times 60$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.03-u05",
+    "comp": "GM.CONV.03",
+    "q": "Lina fait du vélo pendant $1$ h $12$ min. Écris cette durée en heures, sous forme décimale. ___ h",
+    "a": "1,2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1,12": "GM.CONV.03#minutes_decimales"
+    },
+    "steps": [
+      "$12$ min, c'est quelle fraction de $60$ min ? Calcule $12 \\div 60$.",
+      "Ajoute ce résultat à l'heure entière : ?"
+    ],
+    "f": "durée en h $= \\text{heures} + \\frac{\\text{minutes}}{60}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.03-u06",
+    "comp": "GM.CONV.03",
+    "q": "Un vol Paris-Athènes dure $3{,}4$ h. Quelle durée est égale à $3{,}4$ h ?",
+    "a": "$3$ h $24$ min",
+    "type": "qcm",
+    "options": [
+      "$3$ h $40$ min",
+      "$3$ h $4$ min",
+      "$3$ h $24$ min"
+    ],
+    "err": {
+      "$3$ h $40$ min": "GM.CONV.03#decimales_minutes",
+      "$3$ h $4$ min": "GM.CONV.03#decimales_minutes"
+    },
+    "steps": [
+      "La partie entière donne les heures. La partie décimale $0{,}4$ h est une fraction d'heure, pas un nombre de minutes.",
+      "Calcule $0{,}4 \\times 60$ : ?"
+    ],
+    "f": "minutes $=$ partie décimale $\\times 60$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.03-u07",
+    "comp": "GM.CONV.03",
+    "q": "Un train part à $9$ h $45$ min. Son trajet dure $2{,}75$ h. À quelle heure arrive-t-il ? Écris la réponse sous la forme $12\\text{h}05$. ___",
+    "a": "12h30",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "13h00": "GM.CONV.03#decimales_minutes",
+      "13h": "GM.CONV.03#decimales_minutes"
+    },
+    "steps": [
+      "Convertis d'abord la durée : $2{,}75$ h $= 2$ h et combien de minutes ? ($0{,}75 \\times 60$)",
+      "Ajoute les heures, puis les minutes à $9$ h $45$ min. Si tu dépasses $60$ min, fais une heure de plus : ?"
+    ],
+    "f": "$1~\\text{h} = 60~\\text{min}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "12h30min",
+      "12:30",
+      "12 h 30 min"
+    ]
+  },
+  {
+    "id": "GM.CONV.02-u01",
+    "comp": "GM.CONV.02",
+    "q": "Un tapis a une aire de $4~\\text{m}^2$. Quelle est son aire en $\\text{dm}^2$ ? ___ $\\text{dm}^2$",
+    "a": "400",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "40": "GM.CONV.02#comme_longueur"
+    },
+    "steps": [
+      "Un carré de $1$ m de côté mesure $10$ dm de côté : combien de $\\text{dm}^2$ contient-il ?",
+      "Multiplie $4$ par ce nombre : ?"
+    ],
+    "f": "$1~\\text{m}^2 = 100~\\text{dm}^2$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.02-u02",
+    "comp": "GM.CONV.02",
+    "q": "Une bouteille d'eau contient $1{,}5$ L. Quel est ce volume en $\\text{cm}^3$ ? ___ $\\text{cm}^3$",
+    "a": "1500",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "150": "GM.CONV.02#litre_dm3",
+      "15": "GM.CONV.02#comme_longueur"
+    },
+    "steps": [
+      "Un litre, c'est un cube de $1$ dm de côté, soit $10~\\text{cm} \\times 10~\\text{cm} \\times 10~\\text{cm}$.",
+      "Combien de $\\text{cm}^3$ dans $1$ L ? Multiplie ensuite par $1{,}5$ : ?"
+    ],
+    "f": "$1~\\text{L} = 1~\\text{dm}^3$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.02-u03",
+    "comp": "GM.CONV.02",
+    "q": "Une affiche a une aire de $5\\,000~\\text{cm}^2$. Quelle est son aire en $\\text{m}^2$ ?",
+    "a": "$0{,}5~\\text{m}^2$",
+    "type": "qcm",
+    "options": [
+      "$50~\\text{m}^2$",
+      "$0{,}5~\\text{m}^2$",
+      "$5~\\text{m}^2$",
+      "$50\\,000\\,000~\\text{m}^2$"
+    ],
+    "err": {
+      "$50~\\text{m}^2$": "GM.CONV.02#comme_longueur",
+      "$5~\\text{m}^2$": "GM.CONV.01#rapport_unites",
+      "$50\\,000\\,000~\\text{m}^2$": "GM.CONV.01#mauvais_sens"
+    },
+    "steps": [
+      "On passe d'une petite unité à une grande : le nombre doit-il grossir ou diminuer ?",
+      "Combien de $\\text{cm}^2$ dans $1~\\text{m}^2$ ? Divise $5\\,000$ par ce nombre : ?"
+    ],
+    "f": "$1~\\text{m}^2 = 10\\,000~\\text{cm}^2$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.02-u04",
+    "comp": "GM.CONV.02",
+    "q": "Une citerne de jardin contient $4\\,500$ L d'eau de pluie. Quel est ce volume en $\\text{m}^3$ ? ___ $\\text{m}^3$",
+    "a": "4,5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "45": "GM.CONV.02#comme_longueur",
+      "450": "GM.CONV.02#comme_longueur"
+    },
+    "steps": [
+      "Commence par écrire le volume en $\\text{dm}^3$ : $1$ L $= 1~\\text{dm}^3$.",
+      "Combien de $\\text{dm}^3$ dans $1~\\text{m}^3$ ? Divise par ce nombre : ?"
+    ],
+    "f": "$1~\\text{m}^3 = 1\\,000~\\text{dm}^3 = 1\\,000$ L",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.02-u05",
+    "comp": "GM.CONV.02",
+    "q": "Une piscine a la forme d'un pavé droit de $8$ m de long, $4$ m de large, remplie d'eau sur $1{,}5$ m de profondeur. Combien de litres d'eau contient-elle ? ___ L",
+    "a": "48000",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "480": "GM.CONV.02#comme_longueur",
+      "4800": "GM.CONV.02#comme_longueur",
+      "48000000": "GM.CONV.02#litre_dm3"
+    },
+    "steps": [
+      "Calcule d'abord le volume d'eau en $\\text{m}^3$ : longueur $\\times$ largeur $\\times$ profondeur.",
+      "Un $\\text{m}^3$ contient combien de litres ? Convertis : ?"
+    ],
+    "f": "$1~\\text{m}^3 = 1\\,000$ L",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
   }
 ]

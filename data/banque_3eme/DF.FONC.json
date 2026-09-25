@@ -615,5 +615,230 @@
       "train"
     ],
     "contexte": false
+  },
+  {
+    "id": "DF.FONC.03-u01",
+    "comp": "DF.FONC.03",
+    "q": "La courbe d'une fonction $f$ est formée de segments qui relient, dans l'ordre, les points $(0 ; 1)$, $(2 ; 6)$, $(4 ; 3)$ et $(6 ; 4)$. Elle n'atteint la hauteur $6$ qu'une seule fois. Quel est l'antécédent de $6$ par $f$ ? ___",
+    "a": "2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "4": "DF.FONC.03#lit_une_image"
+    },
+    "steps": [
+      "Un antécédent de $6$ se lit sur l'axe des abscisses : cherche le point de la courbe dont l'ordonnée vaut $6$.",
+      "Quelle est l'abscisse de ce point ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.03-u02",
+    "comp": "DF.FONC.03",
+    "q": "La courbe d'une fonction $g$ relie les points $(-2 ; 0)$, $(0 ; 4)$ et $(2 ; 0)$ : elle forme une bosse. Quels sont les antécédents de $0$ par $g$ ?",
+    "a": "$-2$ et $2$",
+    "type": "qcm",
+    "options": [
+      "$2$",
+      "$-2$ et $2$",
+      "$4$",
+      "$-2$"
+    ],
+    "err": {
+      "$2$": "DF.FONC.03#un_seul_antecedent",
+      "$4$": "DF.FONC.03#lit_une_image",
+      "$-2$": "DF.FONC.03#un_seul_antecedent"
+    },
+    "steps": [
+      "Cherche tous les points de la courbe dont l'ordonnée vaut $0$.",
+      "Combien y en a-t-il ? Lis l'abscisse de chacun."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.03-u03",
+    "comp": "DF.FONC.03",
+    "q": "La courbe d'une fonction $h$ est formée de segments qui relient, dans l'ordre, $(0 ; 2)$, $(4 ; 8)$, $(6 ; 2)$ et $(10 ; 8)$. Combien de nombres ont pour image $5$ par $h$ ? ___",
+    "a": "3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1": "DF.FONC.03#un_seul_antecedent"
+    },
+    "steps": [
+      "Imagine la droite horizontale d'ordonnée $5$.",
+      "Sur chacun des trois segments, la courbe passe-t-elle par la hauteur $5$ ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "trois"
+    ]
+  },
+  {
+    "id": "DF.FONC.03-u04",
+    "comp": "DF.FONC.03",
+    "q": "La courbe d'une fonction $f$ est une droite qui passe par les points $(0 ; 1)$ et $(4 ; 9)$. Quel est l'antécédent de $5$ par $f$ ? ___",
+    "a": "2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "11": "DF.FONC.03#lit_une_image"
+    },
+    "steps": [
+      "Quand $x$ augmente de $4$, de combien augmente $f(x)$ ? Et quand $x$ augmente de $1$ ?",
+      "En partant de $(0 ; 1)$, de combien faut-il avancer sur l'axe des abscisses pour atteindre la hauteur $5$ ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.03-u05",
+    "comp": "DF.FONC.03",
+    "q": "La courbe donne la température (en °C) dans une serre en fonction de l'heure. Elle relie par des segments $(0 ; 12)$, $(8 ; 6)$, $(14 ; 18)$, $(20 ; 12)$ et $(24 ; 8)$. À quelles heures la température était-elle de $12$ °C ?",
+    "a": "À $0$ h, $11$ h et $20$ h",
+    "type": "qcm",
+    "options": [
+      "Seulement à $0$ h et à $20$ h",
+      "À $0$ h, $11$ h et $20$ h",
+      "À $14$ h",
+      "Seulement à $11$ h"
+    ],
+    "err": {
+      "Seulement à $0$ h et à $20$ h": "DF.FONC.03#un_seul_antecedent",
+      "À $14$ h": "DF.FONC.03#lit_une_image",
+      "Seulement à $11$ h": "DF.FONC.03#un_seul_antecedent"
+    },
+    "steps": [
+      "Cherche tous les points de la courbe à la hauteur $12$, y compris au milieu d'un segment.",
+      "Entre $8$ h et $14$ h, la température passe de $6$ °C à $18$ °C : à quelle heure vaut-elle $12$ °C ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.FONC.03-u06",
+    "comp": "DF.FONC.03",
+    "q": "Sur un graphique, un carreau vaut $0{,}5$ unité sur l'axe des abscisses. La droite horizontale d'ordonnée $8$ coupe la courbe de $f$ en deux points, situés à $2$ carreaux et à $10$ carreaux à droite de l'axe des ordonnées. Quel est le plus grand antécédent de $8$ par $f$ ? ___",
+    "a": "5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "10": "DF.FONC.02#graduation"
+    },
+    "steps": [
+      "Les antécédents se lisent sur l'axe des abscisses. Combien vaut un carreau sur cet axe ?",
+      "Convertis $10$ carreaux en unités."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.05-u01",
+    "comp": "DF.FONC.05",
+    "q": "Une courbe donne l'altitude d'un randonneur (en m) en fonction du temps (en h). Elle relie par des segments $(0 ; 800)$, $(2 ; 1\\,400)$, $(3 ; 1\\,400)$ et $(5 ; 600)$. Pendant quelle période l'altitude diminue-t-elle ?",
+    "a": "De $3$ h à $5$ h",
+    "type": "qcm",
+    "options": [
+      "De $1\\,400$ m à $600$ m",
+      "De $3$ h à $5$ h",
+      "De $0$ h à $2$ h, car c'est là que l'altitude est la plus basse"
+    ],
+    "err": {
+      "De $1\\,400$ m à $600$ m": "DF.FONC.05#intervalle_mauvais_axe",
+      "De $0$ h à $2$ h, car c'est là que l'altitude est la plus basse": "DF.FONC.05#variations_valeurs"
+    },
+    "steps": [
+      "Une période se lit sur l'axe horizontal, celui du temps.",
+      "Sur quel segment la courbe descend-elle quand on la parcourt de gauche à droite ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.FONC.05-u02",
+    "comp": "DF.FONC.05",
+    "q": "Sur $[0 ; 8]$, la courbe d'une fonction $f$ relie par des segments $(0 ; 5)$, $(3 ; -1)$ et $(8 ; 4)$. Pour quelle valeur de $x$ le minimum de $f$ est-il atteint ? $x = $ ___",
+    "a": "3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-1": "DF.FONC.02#axes_inverses"
+    },
+    "steps": [
+      "Repère le point le plus bas de la courbe.",
+      "On demande une valeur de $x$ : lis la coordonnée de ce point sur l'axe des abscisses."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.05-u03",
+    "comp": "DF.FONC.05",
+    "q": "Une courbe donne la hauteur d'eau (en cm) dans une baignoire en fonction du temps (en min). Elle relie par des segments $(0 ; 0)$, $(10 ; 40)$, $(15 ; 40)$ et $(25 ; 0)$. Pendant quelle période la hauteur d'eau est-elle d'au moins $20$ cm ?",
+    "a": "De $5$ min à $20$ min",
+    "type": "qcm",
+    "options": [
+      "De $0$ min à $10$ min",
+      "De $20$ cm à $40$ cm",
+      "De $5$ min à $20$ min"
+    ],
+    "err": {
+      "De $0$ min à $10$ min": "DF.FONC.05#variations_valeurs",
+      "De $20$ cm à $40$ cm": "DF.FONC.05#intervalle_mauvais_axe"
+    },
+    "steps": [
+      "Trace mentalement la droite horizontale de hauteur $20$ cm : où coupe-t-elle la courbe ?",
+      "Sur le premier segment, l'eau monte de $40$ cm en $10$ min : à quel instant atteint-elle $20$ cm ? Même question sur la descente."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
   }
 ]

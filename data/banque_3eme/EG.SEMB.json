@@ -74,5 +74,146 @@
       "train"
     ],
     "contexte": false
+  },
+  {
+    "id": "EG.SEMB.01-u01",
+    "comp": "EG.SEMB.01",
+    "q": "Les triangles $ABC$ et $DEF$ sont semblables, avec $A$ associé à $D$, $B$ à $E$ et $C$ à $F$. Quel côté de $DEF$ est homologue du côté $[AC]$ ?",
+    "a": "$[DF]$",
+    "type": "qcm",
+    "options": [
+      "$[DE]$",
+      "$[DF]$",
+      "$[EF]$"
+    ],
+    "err": {
+      "$[DE]$": "EG.SEMB.01#cotes_non_homologues",
+      "$[EF]$": "EG.SEMB.01#cotes_non_homologues"
+    },
+    "steps": [
+      "Le côté $[AC]$ relie les sommets $A$ et $C$.",
+      "Quels sommets de $DEF$ sont associés à $A$ et à $C$ ? ?"
+    ],
+    "f": "Côtés homologues : ils relient des sommets associés",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.SEMB.01-u02",
+    "comp": "EG.SEMB.01",
+    "q": "Le triangle $T_1$ a pour côtés $4$ cm, $6$ cm et $7$ cm. Le triangle $T_2$, semblable à $T_1$, a pour côtés $8$ cm, $12$ cm et $14$ cm. Par combien faut-il multiplier les longueurs de $T_1$ pour obtenir celles de $T_2$ ? ___",
+    "a": "2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "EG.SEMB.01#cotes_non_homologues",
+      "1,75": "EG.SEMB.01#cotes_non_homologues"
+    },
+    "steps": [
+      "Associe le plus petit côté de $T_1$ au plus petit côté de $T_2$.",
+      "Calcule le quotient $\\frac{8}{4}$ et vérifie avec les autres côtés : ?"
+    ],
+    "f": "$k = \\frac{\\text{longueur dans } T_2}{\\text{longueur homologue dans } T_1}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.SEMB.01-u03",
+    "comp": "EG.SEMB.01",
+    "q": "Les triangles $RST$ et $UVW$ sont semblables, avec $R$ associé à $U$, $S$ à $V$ et $T$ à $W$. On a $RS = 6$ cm, $ST = 9$ cm, $RT = 12$ cm et $UV = 4$ cm. Calcule $UW$. ___ cm",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "6": "EG.SEMB.01#cotes_non_homologues"
+    },
+    "steps": [
+      "$[UV]$ est homologue de $[RS]$ : le rapport de $RST$ à $UVW$ est $\\frac{4}{6}$.",
+      "$[UW]$ est homologue de $[RT]$ : multiplie $12$ par ce rapport : ?"
+    ],
+    "f": "$\\frac{UV}{RS} = \\frac{VW}{ST} = \\frac{UW}{RT}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.SEMB.01-u04",
+    "comp": "EG.SEMB.01",
+    "q": "Parmi ces triangles, lequel est semblable au triangle de côtés $6$ cm, $8$ cm et $10$ cm ?",
+    "a": "$9$ cm, $12$ cm, $15$ cm",
+    "type": "qcm",
+    "options": [
+      "$8$ cm, $10$ cm, $12$ cm",
+      "$6$ cm, $8$ cm, $11$ cm",
+      "$9$ cm, $12$ cm, $15$ cm",
+      "$7$ cm, $9$ cm, $11$ cm"
+    ],
+    "err": {
+      "$8$ cm, $10$ cm, $12$ cm": "EG.SEMB.01#a_l_oeil",
+      "$6$ cm, $8$ cm, $11$ cm": "EG.SEMB.01#a_l_oeil",
+      "$7$ cm, $9$ cm, $11$ cm": "EG.SEMB.01#a_l_oeil"
+    },
+    "steps": [
+      "Deux triangles sont semblables si leurs côtés sont proportionnels : on multiplie toutes les longueurs par le même nombre.",
+      "Pour chaque proposition, calcule les quotients (côté $\\div$ côté homologue) : sont-ils tous égaux ?"
+    ],
+    "f": "Semblables $\\Leftrightarrow$ côtés proportionnels",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.SEMB.01-u05",
+    "comp": "EG.SEMB.01",
+    "q": "Les triangles $ABC$ et $DEF$ sont semblables, avec $A$ associé à $D$, $B$ à $E$ et $C$ à $F$. On sait que $\\widehat{A} = 35°$ et $\\widehat{B} = 75°$. Quelle est la mesure de $\\widehat{F}$ ? ___ °",
+    "a": "70",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "35": "EG.SEMB.01#cotes_non_homologues",
+      "75": "EG.SEMB.01#cotes_non_homologues",
+      "250": "EG.ANG.01#somme_360"
+    },
+    "steps": [
+      "Deux triangles semblables ont leurs angles homologues égaux. $\\widehat{F}$ est homologue de quel angle de $ABC$ ?",
+      "Calcule cet angle avec la somme des angles du triangle $ABC$ : ?"
+    ],
+    "f": "Triangles semblables : angles homologues égaux",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.SEMB.01-u06",
+    "comp": "EG.SEMB.01",
+    "q": "À la même heure, un bâton vertical de $1{,}5$ m projette une ombre de $2$ m, et un arbre projette une ombre de $12$ m. Les deux triangles (objet, ombre, rayon de soleil) sont semblables. Quelle est la hauteur de l'arbre ? ___ m",
+    "a": "9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "16": "EG.SEMB.01#cotes_non_homologues"
+    },
+    "steps": [
+      "L'ombre de l'arbre correspond à l'ombre du bâton : calcule le rapport $\\frac{12}{2}$.",
+      "La hauteur de l'arbre correspond à celle du bâton : multiplie $1{,}5$ par ce rapport : ?"
+    ],
+    "f": "Triangles semblables : longueurs homologues proportionnelles",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
   }
 ]

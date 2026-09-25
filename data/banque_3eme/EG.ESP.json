@@ -151,5 +151,266 @@
       "train"
     ],
     "contexte": false
+  },
+  {
+    "id": "EG.ESP.02-u01",
+    "comp": "EG.ESP.02",
+    "q": "On coupe un pavé droit par un plan parallèle à l'une de ses faces. Quelle est la section ?",
+    "a": "Un rectangle de mêmes dimensions que cette face",
+    "type": "qcm",
+    "options": [
+      "Un triangle",
+      "Un rectangle de mêmes dimensions que cette face",
+      "Un disque"
+    ],
+    "err": {
+      "Un triangle": "EG.ESP.02#mauvaise_forme",
+      "Un disque": "EG.ESP.02#mauvaise_forme"
+    },
+    "steps": [
+      "Pense à une tranche de pain de mie coupée parallèlement à une face.",
+      "Quelle forme a cette tranche, et est-elle plus petite que la face ? ?"
+    ],
+    "f": "Section d'un pavé parallèle à une face : rectangle identique à la face",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ESP.02-u02",
+    "comp": "EG.ESP.02",
+    "q": "On coupe un cylindre de révolution par un plan parallèle à ses bases. Quelle est la section ?",
+    "a": "Un disque de même rayon que la base",
+    "type": "qcm",
+    "options": [
+      "Un rectangle",
+      "Un carré",
+      "Un disque de même rayon que la base"
+    ],
+    "err": {
+      "Un rectangle": "EG.ESP.02#mauvaise_forme",
+      "Un carré": "EG.ESP.02#mauvaise_forme"
+    },
+    "steps": [
+      "Pense à une rondelle de saucisson coupée perpendiculairement.",
+      "Le cylindre a la même largeur sur toute sa hauteur : quelle forme et quelle taille ?"
+    ],
+    "f": "Section d'un cylindre parallèle aux bases : disque identique à la base",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ESP.02-u03",
+    "comp": "EG.ESP.02",
+    "q": "Une boule a un rayon de $10$ cm. On la coupe par un plan situé à $6$ cm de son centre. La section est un disque. Quel est son rayon ? ___ cm",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "10": "EG.ESP.02#meme_taille"
+    },
+    "steps": [
+      "Le centre de la boule, le centre de la section et un point du bord de la section forment un triangle rectangle, dont l'hypoténuse est un rayon de la boule.",
+      "Applique le théorème de Pythagore : $r^2 = 10^2 - 6^2$. Calcule $r$ : ?"
+    ],
+    "f": "$r_{\\text{section}}^2 + d^2 = R^2$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ESP.02-u04",
+    "comp": "EG.ESP.02",
+    "q": "Une pyramide régulière a une base carrée de $6$ cm de côté et une hauteur de $9$ cm. On la coupe par un plan parallèle à la base, à $3$ cm du sommet. Quelle est la section ?",
+    "a": "Un carré de $2$ cm de côté",
+    "type": "qcm",
+    "options": [
+      "Un carré de $6$ cm de côté",
+      "Un triangle",
+      "Un carré de $2$ cm de côté"
+    ],
+    "err": {
+      "Un carré de $6$ cm de côté": "EG.ESP.02#meme_taille",
+      "Un triangle": "EG.ESP.02#mauvaise_forme"
+    },
+    "steps": [
+      "La section parallèle à la base est une réduction de la base, de rapport $\\frac{3}{9}$.",
+      "Quelle forme, et quel côté ? ?"
+    ],
+    "f": "Section parallèle à la base : réduction de rapport $\\frac{\\text{distance au sommet}}{\\text{hauteur}}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ESP.02-u05",
+    "comp": "EG.ESP.02",
+    "q": "Un cône de révolution a une hauteur de $10$ cm et une base de rayon $5$ cm. On le coupe par un plan parallèle à la base, à $4$ cm du sommet. Quel est le rayon du disque obtenu ? ___ cm",
+    "a": "2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5": "EG.ESP.02#meme_taille"
+    },
+    "steps": [
+      "Le petit cône au-dessus du plan est une réduction du grand cône, de rapport $\\frac{4}{10}$.",
+      "Multiplie le rayon de la base par ce rapport : ?"
+    ],
+    "f": "Section parallèle à la base : réduction de rapport $\\frac{\\text{distance au sommet}}{\\text{hauteur}}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ESP.02-u06",
+    "comp": "EG.ESP.02",
+    "q": "Un cube $ABCDEFGH$ a pour face du bas $ABCD$ ; $E$ est au-dessus de $A$, $F$ au-dessus de $B$, $G$ au-dessus de $C$, $H$ au-dessus de $D$. On le coupe par le plan qui contient les arêtes $[AB]$ et $[HG]$. Quelle est la section ?",
+    "a": "Un rectangle qui n'est pas un carré",
+    "type": "qcm",
+    "options": [
+      "Un carré",
+      "Un triangle",
+      "Un rectangle qui n'est pas un carré",
+      "Un trapèze"
+    ],
+    "err": {
+      "Un carré": "EG.ESP.02#mauvaise_forme",
+      "Un triangle": "EG.ESP.02#mauvaise_forme",
+      "Un trapèze": "EG.ESP.02#mauvaise_forme"
+    },
+    "steps": [
+      "La section est le quadrilatère $ABGH$ : $[AB]$ et $[HG]$ sont deux arêtes parallèles de même longueur.",
+      "Compare $AB$ (une arête) et $BG$ (une diagonale de la face $BCGF$) : sont-elles égales ?"
+    ],
+    "f": "Diagonale d'un carré de côté $c$ : $c\\sqrt{2}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ESP.01-u01",
+    "comp": "EG.ESP.01",
+    "q": "Une pyramide a une base carrée de $6$ cm de côté. Combien a-t-elle de sommets ? ___",
+    "a": "5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "4": "EG.ESP.01#faces_aretes",
+      "8": "EG.ESP.01#faces_aretes"
+    },
+    "steps": [
+      "Compte les sommets de la base carrée.",
+      "Ajoute le sommet principal, en haut : ?"
+    ],
+    "f": "Pyramide à base à $n$ côtés : $n + 1$ sommets",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ESP.01-u02",
+    "comp": "EG.ESP.01",
+    "q": "Le patron d'un cylindre de révolution est formé de :",
+    "a": "deux disques et un rectangle",
+    "type": "qcm",
+    "options": [
+      "un disque et un rectangle",
+      "deux disques et un rectangle",
+      "deux disques et deux rectangles"
+    ],
+    "err": {
+      "un disque et un rectangle": "EG.ESP.01#faces_aretes",
+      "deux disques et deux rectangles": "EG.ESP.01#faces_aretes"
+    },
+    "steps": [
+      "Un cylindre fermé (comme une boîte de conserve) a un fond et un couvercle.",
+      "La surface latérale, une fois déroulée, forme combien de rectangles ? ?"
+    ],
+    "f": "Patron du cylindre : bases + surface latérale déroulée",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ESP.01-u03",
+    "comp": "EG.ESP.01",
+    "q": "Un crayon a la forme d'un prisme droit à base hexagonale ($6$ côtés). Combien ce prisme a-t-il d'arêtes ? ___",
+    "a": "18",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "12": "EG.ESP.01#faces_aretes",
+      "8": "EG.ESP.01#faces_aretes"
+    },
+    "steps": [
+      "Chaque base hexagonale a $6$ arêtes, et il y a deux bases.",
+      "Ajoute les arêtes latérales, qui relient les deux bases : ?"
+    ],
+    "f": "Prisme à base à $n$ côtés : $3n$ arêtes",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.ESP.01-u04",
+    "comp": "EG.ESP.01",
+    "q": "Un cône de révolution a une base de rayon $3$ cm, une hauteur de $4$ cm et une génératrice de $5$ cm. Dans son patron, quel est le rayon du secteur de disque qui forme la surface latérale ? ___ cm",
+    "a": "5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "EG.ESP.01#patron_cone"
+    },
+    "steps": [
+      "Quand on enroule le secteur, son centre devient le sommet du cône et son bord arrondi devient le cercle de base.",
+      "Le rayon du secteur va donc du sommet au cercle de base : c'est quelle longueur du cône ? ?"
+    ],
+    "f": "Patron du cône : secteur de rayon $=$ génératrice",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ESP.01-u05",
+    "comp": "EG.ESP.01",
+    "q": "Sur une face d'un cube de $4$ cm d'arête, on colle une pyramide à base carrée de $4$ cm de côté, les deux carrés coïncidant exactement. Combien de faces le solide obtenu a-t-il ? ___",
+    "a": "9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "11": "EG.ESP.01#faces_aretes",
+      "10": "EG.ESP.01#faces_aretes"
+    },
+    "steps": [
+      "Le cube a $6$ faces et la pyramide $5$ faces.",
+      "Les deux carrés collés se retrouvent à l'intérieur : ils ne sont plus des faces du solide. Combien en reste-t-il ? ?"
+    ],
+    "f": "Faces visibles d'un solide composé : on retire les faces collées",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
   }
 ]

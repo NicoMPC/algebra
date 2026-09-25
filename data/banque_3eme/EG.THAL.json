@@ -486,5 +486,80 @@
       "[AB]",
       "[BA]"
     ]
+  },
+  {
+    "id": "EG.THAL.03-u01",
+    "comp": "EG.THAL.03",
+    "q": "Les points $A$, $M$, $B$ sont alignés dans cet ordre, ainsi que les points $A$, $N$, $C$. On a $AM = 4$ cm, $AB = 10$ cm, $AN = 6$ cm et $AC = 15$ cm. Les droites $(MN)$ et $(BC)$ sont-elles parallèles ?",
+    "a": "Oui, car $\\frac{AM}{AB} = \\frac{AN}{AC}$ et les points sont dans le même ordre",
+    "type": "qcm",
+    "options": [
+      "Oui, car $\\frac{AM}{AB} = 0{,}4$",
+      "Non, car $\\frac{AM}{MB} \\neq \\frac{AN}{AC}$",
+      "Oui, car $\\frac{AM}{AB} = \\frac{AN}{AC}$ et les points sont dans le même ordre",
+      "Non, car $\\frac{AM}{AB} \\neq \\frac{AC}{AN}$"
+    ],
+    "err": {
+      "Oui, car $\\frac{AM}{AB} = 0{,}4$": "EG.THAL.03#un_seul_rapport",
+      "Non, car $\\frac{AM}{MB} \\neq \\frac{AN}{AC}$": "EG.THAL.01#segment_partiel",
+      "Non, car $\\frac{AM}{AB} \\neq \\frac{AC}{AN}$": "EG.THAL.01#rapports_croises"
+    },
+    "steps": [
+      "Calcule les deux rapports $\\frac{AM}{AB}$ et $\\frac{AN}{AC}$ avec les côtés entiers.",
+      "Sont-ils égaux ? Les points sont-ils dans le même ordre ? ?"
+    ],
+    "f": "Si $\\frac{AM}{AB} = \\frac{AN}{AC}$ et les points dans le même ordre, alors $(MN) \\parallel (BC)$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.THAL.03-u02",
+    "comp": "EG.THAL.03",
+    "q": "Les points $A$, $M$, $B$ sont alignés dans cet ordre, ainsi que les points $A$, $N$, $C$. On a $AM = 3$ cm, $AB = 7{,}5$ cm et $AC = 10$ cm. Quelle longueur $AN$ faut-il pour que $(MN)$ et $(BC)$ soient parallèles ? ___ cm",
+    "a": "4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "25": "EG.THAL.01#rapports_croises"
+    },
+    "steps": [
+      "Il faut que $\\frac{AN}{AC} = \\frac{AM}{AB}$ : calcule d'abord $\\frac{3}{7{,}5}$.",
+      "$AN = AC \\times$ ce rapport : ?"
+    ],
+    "f": "$(MN) \\parallel (BC)$ si $\\frac{AM}{AB} = \\frac{AN}{AC}$ (points dans le même ordre)",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.THAL.03-u03",
+    "comp": "EG.THAL.03",
+    "q": "Sur un plan de jardin, les points $S$, $E$, $F$ sont alignés dans cet ordre, ainsi que $S$, $G$, $H$. On mesure $SE = 2{,}4$ m, $SF = 6$ m, $SG = 3$ m et $SH = 7{,}6$ m. Les allées $(EG)$ et $(FH)$ sont-elles parallèles ?",
+    "a": "Non, car $\\frac{SE}{SF} \\neq \\frac{SG}{SH}$",
+    "type": "qcm",
+    "options": [
+      "Oui, car les deux rapports valent environ $0{,}4$",
+      "Non, car $\\frac{SE}{SF} \\neq \\frac{SG}{SH}$",
+      "Oui, car $\\frac{SE}{SF} = 0{,}4$"
+    ],
+    "err": {
+      "Oui, car les deux rapports valent environ $0{,}4$": "EG.THAL.03#rapports_arrondis",
+      "Oui, car $\\frac{SE}{SF} = 0{,}4$": "EG.THAL.03#un_seul_rapport"
+    },
+    "steps": [
+      "Compare les rapports exactement, sans arrondir : les produits en croix $2{,}4 \\times 7{,}6$ et $6 \\times 3$ sont-ils égaux ?",
+      "Si les rapports ne sont pas exactement égaux, que peut-on conclure ?"
+    ],
+    "f": "Réciproque de Thalès : il faut $\\frac{SE}{SF} = \\frac{SG}{SH}$ exactement",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
   }
 ]

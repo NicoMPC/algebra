@@ -519,5 +519,414 @@
       "train"
     ],
     "contexte": false
+  },
+  {
+    "id": "NC.EQUA.01-u01",
+    "comp": "NC.EQUA.01",
+    "q": "Le nombre $4$ est-il solution de l'équation $3x - 2 = x + 6$ ?",
+    "a": "Oui : les deux membres valent $10$",
+    "type": "qcm",
+    "options": [
+      "Non : $3 \\times 4 - 2 = 10$ et $10 \\neq 6$",
+      "Non : $34 - 2 = 32$ et $4 + 6 = 10$",
+      "Oui : les deux membres valent $10$",
+      "On ne peut pas savoir sans résoudre l'équation"
+    ],
+    "err": {
+      "Non : $3 \\times 4 - 2 = 10$ et $10 \\neq 6$": "NC.EQUA.01#un_seul_membre",
+      "Non : $34 - 2 = 32$ et $4 + 6 = 10$": "NC.LIT.02#juxtaposition",
+      "On ne peut pas savoir sans résoudre l'équation": "NC.EQUA.01#resout_au_lieu_tester"
+    },
+    "steps": [
+      "Remplace $x$ par $4$ dans le membre de gauche : $3 \\times 4 - 2 = ?$",
+      "Fais de même dans le membre de droite, puis compare les deux résultats."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.01-u02",
+    "comp": "NC.EQUA.01",
+    "q": "Vrai ou faux : $x = -1$ est une solution de l'équation $3x^2 + 2 = 5$.",
+    "a": "Vrai",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Faux": "NC.LIT.02#negatif_sans_parentheses"
+    },
+    "steps": [
+      "Remplace $x$ par $-1$ en gardant les parenthèses : $3 \\times (-1)^2 + 2$.",
+      "Combien vaut $(-1)^2$ ? Compare le résultat avec $5$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.01-u03",
+    "comp": "NC.EQUA.01",
+    "q": "Combien des trois nombres $-1$, $0$ et $3$ sont solutions de l'équation $x^2 = x + 2$ ? ___",
+    "a": "1",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "0": "NC.LIT.02#negatif_sans_parentheses"
+    },
+    "steps": [
+      "Teste chaque nombre : calcule $x^2$ puis $x + 2$ et compare.",
+      "Pour $-1$, attention : $(-1)^2$ est-il positif ou négatif ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.01-u04",
+    "comp": "NC.EQUA.01",
+    "q": "On teste $x = -4$ dans l'inéquation $x^2 - 10 > 3x$. Que conclut-on ?",
+    "a": "$-4$ est solution : $6 > -12$",
+    "type": "qcm",
+    "options": [
+      "$-4$ est solution, car $(-4)^2 - 10 = 6$ est positif",
+      "$-4$ n'est pas solution : $-4^2 - 10 = -26$ et $-26 < -12$",
+      "Il faut d'abord résoudre l'inéquation pour savoir",
+      "$-4$ est solution : $6 > -12$"
+    ],
+    "err": {
+      "$-4$ est solution, car $(-4)^2 - 10 = 6$ est positif": "NC.EQUA.01#un_seul_membre",
+      "$-4$ n'est pas solution : $-4^2 - 10 = -26$ et $-26 < -12$": "NC.LIT.02#negatif_sans_parentheses",
+      "Il faut d'abord résoudre l'inéquation pour savoir": "NC.EQUA.01#resout_au_lieu_tester"
+    },
+    "steps": [
+      "Calcule le membre de gauche avec des parenthèses : $(-4)^2 - 10 = ?$",
+      "Calcule le membre de droite $3 \\times (-4)$, puis vérifie si l'inégalité est vraie."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.01-u05",
+    "comp": "NC.EQUA.01",
+    "q": "Au cinéma, la formule A coûte $8x$ € pour $x$ séances et la formule B coûte $30 + 3x$ €. Kylian affirme que pour $6$ séances, les deux formules coûtent le même prix. Qu'en penses-tu ?",
+    "a": "Il a raison : $8 \\times 6 = 48$ et $30 + 3 \\times 6 = 48$",
+    "type": "qcm",
+    "options": [
+      "Il a tort : $86$ € contre $30 + 36 = 66$ €",
+      "Il a raison : $8 \\times 6 = 48$ et $30 + 3 \\times 6 = 48$",
+      "On ne peut pas le vérifier sans résoudre $8x = 30 + 3x$"
+    ],
+    "err": {
+      "Il a tort : $86$ € contre $30 + 36 = 66$ €": "NC.LIT.02#juxtaposition",
+      "On ne peut pas le vérifier sans résoudre $8x = 30 + 3x$": "NC.EQUA.01#resout_au_lieu_tester"
+    },
+    "steps": [
+      "Remplace $x$ par $6$ dans chaque formule : $8x$ signifie $8 \\times x$.",
+      "Compare les deux prix obtenus."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.EQUA.03-u01",
+    "comp": "NC.EQUA.03",
+    "q": "Location de vélo : formule A à $15 + 2x$ €, formule B à $5x - 6$ € pour $x$ heures. Pour quelle durée les deux formules coûtent-elles le même prix ? $x = $ ___ h",
+    "a": "7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-3": "NC.EQUA.03#regroupement_sans_changement",
+      "9/7": "NC.EQUA.03#regroupement_sans_changement",
+      "1/7": "NC.EQUA.02#quotient_inverse"
+    },
+    "steps": [
+      "Écris l'équation $15 + 2x = 5x - 6$. Retire $2x$ aux deux membres.",
+      "Ajoute ensuite $6$ aux deux membres, puis divise par le coefficient de $x$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.EQUA.03-u02",
+    "comp": "NC.EQUA.03",
+    "q": "Résous l'équation $1{,}5x + 4 = 3x - 5$.",
+    "a": "$x = 6$",
+    "type": "qcm",
+    "options": [
+      "$x = -2$",
+      "$x = \\frac{1}{6}$",
+      "$x = 6$",
+      "$x = \\frac{2}{3}$"
+    ],
+    "err": {
+      "$x = -2$": "NC.EQUA.03#regroupement_sans_changement",
+      "$x = \\frac{1}{6}$": "NC.EQUA.02#quotient_inverse",
+      "$x = \\frac{2}{3}$": "NC.EQUA.03#regroupement_sans_changement"
+    },
+    "steps": [
+      "Retire $1{,}5x$ aux deux membres : combien de $x$ reste-t-il à droite ?",
+      "Ajoute $5$ aux deux membres, puis divise par le coefficient de $x$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.05-u01",
+    "comp": "NC.EQUA.05",
+    "q": "La hauteur d'une balle est nulle quand $t(20 - 5t) = 0$ ($t$ en secondes). À quel instant $t$ non nul la balle retombe-t-elle au sol ? $t = $ ___ s",
+    "a": "4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "20": "NC.EQUA.05#lit_les_nombres",
+      "5": "NC.EQUA.05#lit_les_nombres",
+      "15": "NC.EQUA.02#soustrait_coef",
+      "1/4": "NC.EQUA.02#quotient_inverse"
+    },
+    "steps": [
+      "Un produit est nul si l'un de ses facteurs est nul : $t = 0$ ou $20 - 5t = 0$.",
+      "Résous $20 - 5t = 0$ : isole d'abord $5t$."
+    ],
+    "f": "$A \\times B = 0 \\iff A = 0 \\text{ ou } B = 0$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.EQUA.05-u02",
+    "comp": "NC.EQUA.05",
+    "q": "Quelles sont les solutions de l'équation $(5 - x)(4x + 1) = 0$ ?",
+    "a": "$5$ et $-\\frac{1}{4}$",
+    "type": "qcm",
+    "options": [
+      "$5$ et $-4$",
+      "$5$ et $-\\frac{1}{4}$",
+      "$-5$ et $-1$",
+      "$5$ seulement"
+    ],
+    "err": {
+      "$5$ et $-4$": "NC.EQUA.02#quotient_inverse",
+      "$-5$ et $-1$": "NC.EQUA.05#lit_les_nombres",
+      "$5$ seulement": "NC.EQUA.05#une_seule_solution"
+    },
+    "steps": [
+      "Un produit est nul si l'un des facteurs est nul : écris les deux équations.",
+      "Résous $4x + 1 = 0$ : que vaut $4x$ ? Divise ensuite par $4$."
+    ],
+    "f": "$A \\times B = 0 \\iff A = 0 \\text{ ou } B = 0$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.06-u01",
+    "comp": "NC.EQUA.06",
+    "q": "L'équation $x^2 = 49$ a deux solutions. Quelle est la solution positive ? $x = $ ___",
+    "a": "7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "24,5": "NC.EQUA.06#divise_par_2",
+      "49": "NC.RAC.01#oubli_racine"
+    },
+    "steps": [
+      "Quel nombre positif, multiplié par lui-même, donne $49$ ?"
+    ],
+    "f": "Si $a > 0$, $x^2 = a$ a deux solutions : $\\sqrt{a}$ et $-\\sqrt{a}$.",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.06-u02",
+    "comp": "NC.EQUA.06",
+    "q": "Quelles sont les solutions de l'équation $x^2 = 100$ ?",
+    "a": "$-10$ et $10$",
+    "type": "qcm",
+    "options": [
+      "$10$ seulement",
+      "$-50$ et $50$",
+      "$-10$ et $10$",
+      "$50$ seulement"
+    ],
+    "err": {
+      "$10$ seulement": "NC.EQUA.06#oubli_negative",
+      "$-50$ et $50$": "NC.EQUA.06#divise_par_2",
+      "$50$ seulement": "NC.EQUA.06#divise_par_2"
+    },
+    "steps": [
+      "Cherche un nombre positif dont le carré vaut $100$.",
+      "Un nombre négatif peut-il aussi avoir pour carré $100$ ?"
+    ],
+    "f": "Si $a > 0$, $x^2 = a$ a deux solutions : $\\sqrt{a}$ et $-\\sqrt{a}$.",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.06-u03",
+    "comp": "NC.EQUA.06",
+    "q": "Combien de solutions l'équation $x^2 = 36$ possède-t-elle ? ___",
+    "a": "2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1": "NC.EQUA.06#oubli_negative"
+    },
+    "steps": [
+      "Trouve un nombre positif dont le carré vaut $36$.",
+      "Son opposé a-t-il le même carré ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "deux"
+    ]
+  },
+  {
+    "id": "NC.EQUA.06-u04",
+    "comp": "NC.EQUA.06",
+    "q": "Résous $x^2 - 1 = 80$. Quelle est la solution négative ? $x = $ ___",
+    "a": "-9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "9": "NC.EQUA.06#oubli_negative",
+      "-40,5": "NC.EQUA.06#divise_par_2",
+      "-81": "NC.RAC.01#oubli_racine"
+    },
+    "steps": [
+      "Isole d'abord $x^2$ : ajoute $1$ aux deux membres.",
+      "Quel nombre négatif a pour carré le résultat obtenu ?"
+    ],
+    "f": "Si $a > 0$, $x^2 = a$ a deux solutions : $\\sqrt{a}$ et $-\\sqrt{a}$.",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.06-u05",
+    "comp": "NC.EQUA.06",
+    "q": "Résous $3x^2 = 75$. Quelle est la plus grande des deux solutions ? $x = $ ___",
+    "a": "5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "25": "NC.RAC.01#oubli_racine",
+      "12,5": "NC.EQUA.06#divise_par_2",
+      "72": "NC.EQUA.02#soustrait_coef"
+    },
+    "steps": [
+      "Divise les deux membres par $3$ pour isoler $x^2$.",
+      "Quel nombre positif a pour carré le résultat obtenu ?"
+    ],
+    "f": "Si $a > 0$, $x^2 = a$ a deux solutions : $\\sqrt{a}$ et $-\\sqrt{a}$.",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.06-u06",
+    "comp": "NC.EQUA.06",
+    "q": "Quelles sont les solutions de l'équation $x^2 + 16 = 0$ ?",
+    "a": "Aucune solution",
+    "type": "qcm",
+    "options": [
+      "$-4$ et $4$",
+      "Aucune solution",
+      "$-4$",
+      "$-8$ et $8$"
+    ],
+    "err": {
+      "$-4$ et $4$": "NC.EQUA.06#a_negatif",
+      "$-4$": "NC.RAC.01#racine_negative",
+      "$-8$ et $8$": "NC.EQUA.06#divise_par_2"
+    },
+    "steps": [
+      "Isole $x^2$ : que vaut-il ?",
+      "Un carré peut-il être négatif ? Teste $x = 4$ et $x = -4$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.06-u07",
+    "comp": "NC.EQUA.06",
+    "q": "Résous $2x^2 - 7 = 43$. Quelle est la solution négative ? $x = $ ___",
+    "a": "-5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5": "NC.EQUA.06#oubli_negative",
+      "-12,5": "NC.EQUA.06#divise_par_2",
+      "-25": "NC.RAC.01#oubli_racine"
+    },
+    "steps": [
+      "Ajoute $7$ aux deux membres, puis divise par $2$ : que vaut $x^2$ ?",
+      "Quel nombre négatif a ce carré ?"
+    ],
+    "f": "Si $a > 0$, $x^2 = a$ a deux solutions : $\\sqrt{a}$ et $-\\sqrt{a}$.",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
   }
 ]

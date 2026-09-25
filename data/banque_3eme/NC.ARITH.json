@@ -566,5 +566,103 @@
       "train"
     ],
     "contexte": false
+  },
+  {
+    "id": "NC.ARITH.02-u01",
+    "comp": "NC.ARITH.02",
+    "q": "Dans la liste des entiers $0$, $1$, $2$, $3$, $4$…, quel est le plus petit nombre premier ? ___",
+    "a": "2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1": "NC.ARITH.02#definition_1_2"
+    },
+    "steps": [
+      "Un nombre premier a exactement deux diviseurs distincts : $1$ et lui-même. Combien de diviseurs a le nombre $1$ ?",
+      "Teste les entiers dans l'ordre à partir de $1$ : lequel est le premier à avoir exactement deux diviseurs ?"
+    ],
+    "f": "Un nombre premier a exactement deux diviseurs : $1$ et lui-même.",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.02-u02",
+    "comp": "NC.ARITH.02",
+    "q": "Laquelle de ces affirmations est vraie ?",
+    "a": "$51$ n'est pas premier, car $51 = 3 \\times 17$",
+    "type": "qcm",
+    "options": [
+      "$51$ est premier, car il est impair",
+      "$1$ est un nombre premier",
+      "$51$ n'est pas premier, car $51 = 3 \\times 17$",
+      "$2$ n'est pas premier, car il est pair"
+    ],
+    "err": {
+      "$51$ est premier, car il est impair": "NC.ARITH.02#impair_premier",
+      "$1$ est un nombre premier": "NC.ARITH.02#definition_1_2",
+      "$2$ n'est pas premier, car il est pair": "NC.ARITH.02#definition_1_2"
+    },
+    "steps": [
+      "Additionne les chiffres de $51$ : le résultat est-il divisible par $3$ ?",
+      "Combien de diviseurs ont $1$ et $2$ ? Compare avec la définition d'un nombre premier."
+    ],
+    "f": "Un nombre premier a exactement deux diviseurs : $1$ et lui-même.",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.02-u03",
+    "comp": "NC.ARITH.02",
+    "q": "Le nombre $77$ n'est divisible ni par $2$, ni par $3$, ni par $5$. Quel est son plus petit diviseur supérieur à $1$ ? ___",
+    "a": "7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "77": "NC.ARITH.02#test_incomplet"
+    },
+    "steps": [
+      "Ne t'arrête pas à $2$, $3$ et $5$ : quel est le nombre premier suivant ?",
+      "Effectue la division de $77$ par ce nombre : tombe-t-elle juste ?"
+    ],
+    "f": "Pour tester si $n$ est premier, on essaie tous les nombres premiers $p$ tels que $p \\times p \\leq n$.",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.02-u04",
+    "comp": "NC.ARITH.02",
+    "q": "Léa affirme : « $133$ est premier, car il n'est divisible ni par $2$, ni par $3$, ni par $5$. » Qu'en penses-tu ?",
+    "a": "Elle a tort : $133 = 7 \\times 19$",
+    "type": "qcm",
+    "options": [
+      "Elle a raison : tester $2$, $3$ et $5$ suffit",
+      "Elle a raison, car $133$ est impair",
+      "Elle a tort : $133$ est divisible par $3$, car il se termine par $3$",
+      "Elle a tort : $133 = 7 \\times 19$"
+    ],
+    "err": {
+      "Elle a raison : tester $2$, $3$ et $5$ suffit": "NC.ARITH.02#test_incomplet",
+      "Elle a raison, car $133$ est impair": "NC.ARITH.02#impair_premier",
+      "Elle a tort : $133$ est divisible par $3$, car il se termine par $3$": "NC.ARITH.01#critere_dernier_chiffre"
+    },
+    "steps": [
+      "Il faut tester tous les nombres premiers jusqu'à environ $\\sqrt{133} \\approx 11{,}5$. Lesquels n'a-t-elle pas testés ?",
+      "Calcule $133 \\div 7$ : le résultat est-il entier ?"
+    ],
+    "f": "Pour tester si $n$ est premier, on essaie tous les nombres premiers $p$ tels que $p \\times p \\leq n$.",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
   }
 ]

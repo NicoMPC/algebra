@@ -150,5 +150,207 @@
       "train"
     ],
     "contexte": true
+  },
+  {
+    "id": "GM.AGR.01-u01",
+    "comp": "GM.AGR.01",
+    "q": "Un logo a une aire de $6~\\text{cm}^2$. On l'agrandit : toutes ses longueurs sont multipliées par $4$. Quelle est l'aire du nouveau logo ? ___ $\\text{cm}^2$",
+    "a": "96",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "24": "GM.AGR.01#aire_fois_k",
+      "48": "NC.PUIS.01#carre_double"
+    },
+    "steps": [
+      "Quand les longueurs sont multipliées par $k$, l'aire n'est pas multipliée par $k$.",
+      "L'aire est multipliée par $k^2 = 4^2$. Calcule : ?"
+    ],
+    "f": "Aires : $\\times k^2$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.AGR.01-u02",
+    "comp": "GM.AGR.01",
+    "q": "On réduit un plan : toutes les longueurs sont multipliées par $\\frac{1}{3}$. Que devient l'aire d'une pièce sur ce plan ?",
+    "a": "Elle est divisée par $9$",
+    "type": "qcm",
+    "options": [
+      "Elle est divisée par $3$",
+      "Elle est multipliée par $9$",
+      "Elle est divisée par $9$",
+      "Elle est divisée par $6$"
+    ],
+    "err": {
+      "Elle est divisée par $3$": "GM.AGR.01#aire_fois_k",
+      "Elle est multipliée par $9$": "GM.AGR.01#rapport_inverse",
+      "Elle est divisée par $6$": "NC.PUIS.01#carre_double"
+    },
+    "steps": [
+      "Une réduction de rapport $k$ multiplie les aires par $k^2$.",
+      "Calcule $\\left(\\frac{1}{3}\\right)^2$ : l'aire devient-elle plus grande ou plus petite ?"
+    ],
+    "f": "Aires : $\\times k^2$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.AGR.01-u03",
+    "comp": "GM.AGR.01",
+    "q": "Par une réduction, un rectangle d'aire $50~\\text{cm}^2$ devient un rectangle d'aire $2~\\text{cm}^2$. Quel est le rapport $k$ de cette réduction ? ___",
+    "a": "0,2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "0,04": "GM.AGR.01#aire_fois_k",
+      "1/25": "GM.AGR.01#aire_fois_k",
+      "5": "GM.AGR.01#rapport_inverse"
+    },
+    "steps": [
+      "Les aires sont multipliées par $k^2$ : calcule d'abord $k^2 = \\frac{2}{50}$.",
+      "$k$ est le nombre positif dont le carré vaut ce résultat : ?"
+    ],
+    "f": "Aires : $\\times k^2$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "1/5"
+    ]
+  },
+  {
+    "id": "GM.AGR.01-u04",
+    "comp": "GM.AGR.01",
+    "q": "En passant du format A4 au format A3, l'aire d'une feuille est multipliée par $2$ (même forme). Par combien sont multipliées ses longueurs ? Arrondis au centième. ___",
+    "a": "1,41",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2": "GM.AGR.01#aire_fois_k",
+      "4": "GM.AGR.01#aire_fois_k",
+      "0,71": "GM.AGR.01#rapport_inverse"
+    },
+    "steps": [
+      "Si les longueurs sont multipliées par $k$, l'aire est multipliée par $k^2$. Ici $k^2 = 2$.",
+      "Quel nombre positif a pour carré $2$ ? Arrondis au centième : ?"
+    ],
+    "f": "Aires : $\\times k^2$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "1,414",
+      "\\sqrt{2}",
+      "sqrt(2)",
+      "√2"
+    ]
+  },
+  {
+    "id": "GM.AGR.02-u01",
+    "comp": "GM.AGR.02",
+    "q": "Un aquarium est agrandi : toutes ses longueurs sont multipliées par $3$. Par combien son volume est-il multiplié ? ___",
+    "a": "27",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "GM.AGR.02#volume_fois_k",
+      "9": "GM.AGR.02#volume_fois_k"
+    },
+    "steps": [
+      "Pour un volume, on multiplie trois longueurs : chacune est multipliée par $3$.",
+      "Le volume est donc multiplié par $3 \\times 3 \\times 3$ : ?"
+    ],
+    "f": "Volumes : $\\times k^3$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.AGR.02-u02",
+    "comp": "GM.AGR.02",
+    "q": "Une maquette de voiture est à l'échelle $\\frac{1}{10}$. Le réservoir de la maquette contient $3$ L. Combien contient le réservoir de la vraie voiture ?",
+    "a": "$3\\,000$ L",
+    "type": "qcm",
+    "options": [
+      "$30$ L",
+      "$300$ L",
+      "$3\\,000$ L",
+      "$0{,}003$ L"
+    ],
+    "err": {
+      "$30$ L": "GM.AGR.02#maquette",
+      "$300$ L": "GM.AGR.02#volume_fois_k",
+      "$0{,}003$ L": "GM.AGR.01#rapport_inverse"
+    },
+    "steps": [
+      "De la maquette à la vraie voiture, les longueurs sont multipliées par $10$.",
+      "Un volume est multiplié par $10^3$. Calcule $3 \\times 10^3$ : ?"
+    ],
+    "f": "Volumes : $\\times k^3$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.AGR.02-u03",
+    "comp": "GM.AGR.02",
+    "q": "Une boule a un volume de $5~\\text{cm}^3$. On la réduit : son rayon est divisé par $2$. Quel est le volume de la petite boule ? ___ $\\text{cm}^3$",
+    "a": "0,625",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2,5": "GM.AGR.02#volume_fois_k",
+      "1,25": "GM.AGR.02#volume_fois_k"
+    },
+    "steps": [
+      "Diviser le rayon par $2$, c'est une réduction de rapport $k = \\frac{1}{2}$.",
+      "Le volume est multiplié par $k^3 = \\left(\\frac{1}{2}\\right)^3$ : calcule $5 \\times k^3$ : ?"
+    ],
+    "f": "Volumes : $\\times k^3$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "5/8"
+    ]
+  },
+  {
+    "id": "GM.AGR.02-u04",
+    "comp": "GM.AGR.02",
+    "q": "Un verre a la forme d'un cône, pointe en bas. Rempli à ras bord, il contient $16$ cL. On le remplit seulement jusqu'à la moitié de sa hauteur. Quel volume d'eau contient-il ? ___ cL",
+    "a": "2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "8": "GM.AGR.02#volume_fois_k",
+      "4": "GM.AGR.02#volume_fois_k"
+    },
+    "steps": [
+      "L'eau forme un petit cône, réduction du grand cône de rapport $k = \\frac{1}{2}$ (même sommet).",
+      "Le volume est multiplié par $k^3$ : calcule $16 \\times \\left(\\frac{1}{2}\\right)^3$ : ?"
+    ],
+    "f": "Volumes : $\\times k^3$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
   }
 ]

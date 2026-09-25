@@ -571,5 +571,168 @@
       "tangente",
       "la tangente"
     ]
+  },
+  {
+    "id": "EG.TRIG.01-u01",
+    "comp": "EG.TRIG.01",
+    "q": "Le triangle $ABC$ est rectangle en $B$. Quelle est son hypoténuse ? Écris le nom du segment avec deux lettres (par exemple $XY$). ___",
+    "a": "AC",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "AB": "EG.PYTH.01#hypotenuse_mal_identifiee",
+      "BA": "EG.PYTH.01#hypotenuse_mal_identifiee",
+      "BC": "EG.PYTH.01#hypotenuse_mal_identifiee",
+      "CB": "EG.PYTH.01#hypotenuse_mal_identifiee"
+    },
+    "steps": [
+      "L'hypoténuse est le côté opposé à l'angle droit.",
+      "L'angle droit est en $B$ : quel côté ne touche pas $B$ ? ?"
+    ],
+    "f": "Hypoténuse : côté opposé à l'angle droit",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "CA",
+      "[AC]",
+      "[CA]"
+    ]
+  },
+  {
+    "id": "EG.TRIG.01-u02",
+    "comp": "EG.TRIG.01",
+    "q": "Le triangle $EFG$ est rectangle en $F$. Quel est le côté adjacent à l'angle $\\widehat{E}$ ?",
+    "a": "$[EF]$",
+    "type": "qcm",
+    "options": [
+      "$[EG]$",
+      "$[FG]$",
+      "$[EF]$"
+    ],
+    "err": {
+      "$[EG]$": "EG.TRIG.01#adjacent_hypotenuse",
+      "$[FG]$": "EG.TRIG.01#mauvais_angle"
+    },
+    "steps": [
+      "Repère d'abord l'hypoténuse : le côté opposé à l'angle droit en $F$.",
+      "Le côté adjacent touche $\\widehat{E}$ mais n'est pas l'hypoténuse : lequel ?"
+    ],
+    "f": "Adjacent : touche l'angle, n'est pas l'hypoténuse",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.TRIG.01-u03",
+    "comp": "EG.TRIG.01",
+    "q": "Le triangle $MNP$ est rectangle en $M$. Quel est le côté opposé à l'angle $\\widehat{N}$ ? Écris le nom du segment avec deux lettres. ___",
+    "a": "MP",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "MN": "EG.TRIG.01#mauvais_angle",
+      "NM": "EG.TRIG.01#mauvais_angle"
+    },
+    "steps": [
+      "Le côté opposé à un angle est le côté qui ne touche pas son sommet.",
+      "Le sommet de l'angle est $N$ : quel côté ne passe pas par $N$ ? ?"
+    ],
+    "f": "Opposé : côté en face de l'angle",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "PM",
+      "[MP]",
+      "[PM]"
+    ]
+  },
+  {
+    "id": "EG.TRIG.01-u04",
+    "comp": "EG.TRIG.01",
+    "q": "Une échelle $[AB]$ est posée contre un mur : $A$ est le pied de l'échelle au sol, $B$ son sommet contre le mur, $C$ le pied du mur. Le triangle $ABC$ est rectangle en $C$. Par rapport à l'angle $\\widehat{BAC}$, le mur $[BC]$ est :",
+    "a": "le côté opposé",
+    "type": "qcm",
+    "options": [
+      "le côté adjacent",
+      "l'hypoténuse",
+      "le côté opposé"
+    ],
+    "err": {
+      "le côté adjacent": "EG.TRIG.01#mauvais_angle",
+      "l'hypoténuse": "EG.PYTH.01#hypotenuse_mal_identifiee"
+    },
+    "steps": [
+      "L'hypoténuse est en face de l'angle droit en $C$ : c'est l'échelle.",
+      "Le mur $[BC]$ touche-t-il le sommet $A$ de l'angle étudié ? ?"
+    ],
+    "f": "Opposé : côté en face de l'angle",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.TRIG.01-u05",
+    "comp": "EG.TRIG.01",
+    "q": "Le triangle $RST$ est rectangle en $S$. Quel est le côté adjacent à l'angle $\\widehat{T}$ ? Écris le nom du segment avec deux lettres. ___",
+    "a": "ST",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "RT": "EG.TRIG.01#adjacent_hypotenuse",
+      "TR": "EG.TRIG.01#adjacent_hypotenuse",
+      "RS": "EG.TRIG.01#mauvais_angle",
+      "SR": "EG.TRIG.01#mauvais_angle"
+    },
+    "steps": [
+      "Deux côtés touchent le sommet $T$ : l'un d'eux est l'hypoténuse (en face de l'angle droit en $S$).",
+      "Le côté adjacent est l'autre : lequel ?"
+    ],
+    "f": "Adjacent : touche l'angle, n'est pas l'hypoténuse",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "TS",
+      "[ST]",
+      "[TS]"
+    ]
+  },
+  {
+    "id": "EG.TRIG.01-u06",
+    "comp": "EG.TRIG.01",
+    "q": "Le triangle $ABC$ est rectangle en $A$. Le point $H$ est le pied de la hauteur issue de $A$ : il est sur $[BC]$ et le triangle $ABH$ est rectangle en $H$. Dans le triangle $ABH$, quel est le côté adjacent à l'angle $\\widehat{B}$ ?",
+    "a": "$[BH]$",
+    "type": "qcm",
+    "options": [
+      "$[AB]$",
+      "$[BH]$",
+      "$[AH]$"
+    ],
+    "err": {
+      "$[AB]$": "EG.TRIG.01#adjacent_hypotenuse",
+      "$[AH]$": "EG.TRIG.01#mauvais_angle"
+    },
+    "steps": [
+      "On travaille dans le triangle $ABH$, rectangle en $H$ : son hypoténuse est en face de $H$.",
+      "Parmi les côtés de $ABH$ qui touchent $B$, lequel n'est pas l'hypoténuse ?"
+    ],
+    "f": "Adjacent : touche l'angle, n'est pas l'hypoténuse",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
   }
 ]

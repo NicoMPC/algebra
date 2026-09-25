@@ -147,5 +147,177 @@
       "train"
     ],
     "contexte": true
+  },
+  {
+    "id": "GM.VIT.02-u01",
+    "comp": "GM.VIT.02",
+    "q": "Un cycliste roule à $36$ km/h. Quelle est sa vitesse en m/s ? ___ m/s",
+    "a": "10",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "36000": "GM.VIT.02#une_seule_unite",
+      "129,6": "GM.VIT.02#sens_3_6"
+    },
+    "steps": [
+      "$36$ km en $1$ h, c'est $36\\,000$ m en combien de secondes ?",
+      "Divise la distance en mètres par ce nombre de secondes : ?"
+    ],
+    "f": "$1~\\text{h} = 3\\,600~\\text{s}$ et $1~\\text{km} = 1\\,000~\\text{m}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.VIT.02-u02",
+    "comp": "GM.VIT.02",
+    "q": "Un guépard peut courir à $30$ m/s. Quelle est cette vitesse en km/h ? ___ km/h",
+    "a": "108",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "8,33": "GM.VIT.02#sens_3_6",
+      "8,3": "GM.VIT.02#sens_3_6",
+      "0,03": "GM.VIT.02#une_seule_unite",
+      "108000": "GM.VIT.02#une_seule_unite"
+    },
+    "steps": [
+      "En $1$ s, il parcourt $30$ m. Combien de mètres en $1$ h, soit $3\\,600$ s ?",
+      "Convertis ensuite ces mètres en km : ?"
+    ],
+    "f": "$1~\\text{h} = 3\\,600~\\text{s}$ et $1~\\text{km} = 1\\,000~\\text{m}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.VIT.02-u03",
+    "comp": "GM.VIT.02",
+    "q": "Pour convertir une vitesse de km/h en m/s, on :",
+    "a": "divise par $3{,}6$",
+    "type": "qcm",
+    "options": [
+      "multiplie par $3{,}6$",
+      "multiplie par $1\\,000$",
+      "divise par $3{,}6$",
+      "divise par $3\\,600$"
+    ],
+    "err": {
+      "multiplie par $3{,}6$": "GM.VIT.02#sens_3_6",
+      "multiplie par $1\\,000$": "GM.VIT.02#une_seule_unite",
+      "divise par $3\\,600$": "GM.VIT.02#une_seule_unite"
+    },
+    "steps": [
+      "Il faut convertir les deux unités : km en m (on multiplie par $1\\,000$) et h en s (on divise par $3\\,600$).",
+      "Combine les deux : $\\times 1\\,000$ puis $\\div 3\\,600$ revient à quelle opération ?"
+    ],
+    "f": "$1~\\text{km/h} = \\frac{1\\,000~\\text{m}}{3\\,600~\\text{s}}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.VIT.02-u04",
+    "comp": "GM.VIT.02",
+    "q": "Une voiture roule à $90$ km/h. Le conducteur met $1$ seconde à réagir avant de freiner. Quelle distance parcourt la voiture pendant cette seconde ? ___ m",
+    "a": "25",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "90000": "GM.VIT.02#une_seule_unite",
+      "324": "GM.VIT.02#sens_3_6"
+    },
+    "steps": [
+      "Convertis d'abord $90$ km/h en m/s.",
+      "En $1$ s, la distance parcourue vaut la vitesse en m/s : ?"
+    ],
+    "f": "$1~\\text{h} = 3\\,600~\\text{s}$ et $1~\\text{km} = 1\\,000~\\text{m}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.VIT.02-u05",
+    "comp": "GM.VIT.02",
+    "q": "Un robinet a un débit de $12$ L/min. Quel est ce débit en cL/s ? ___ cL/s",
+    "a": "20",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1200": "GM.VIT.02#une_seule_unite",
+      "0,2": "GM.VIT.02#une_seule_unite"
+    },
+    "steps": [
+      "Convertis les litres en centilitres : $12$ L $=$ ? cL.",
+      "Ce volume coule en $1$ min, soit $60$ s. Combien en $1$ s ? ?"
+    ],
+    "f": "$1~\\text{L} = 100~\\text{cL}$ et $1~\\text{min} = 60~\\text{s}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.VIT.02-u06",
+    "comp": "GM.VIT.02",
+    "q": "Un nageur avance à $2$ m/s. Quelle est sa vitesse en km/h ?",
+    "a": "$7{,}2$ km/h",
+    "type": "qcm",
+    "options": [
+      "$0{,}56$ km/h",
+      "$7{,}2$ km/h",
+      "$0{,}002$ km/h",
+      "$7\\,200$ km/h"
+    ],
+    "err": {
+      "$0{,}56$ km/h": "GM.VIT.02#sens_3_6",
+      "$0{,}002$ km/h": "GM.VIT.02#une_seule_unite",
+      "$7\\,200$ km/h": "GM.VIT.02#une_seule_unite"
+    },
+    "steps": [
+      "En $1$ h ($3\\,600$ s), combien de mètres parcourt-il ?",
+      "Convertis ce nombre de mètres en km : ?"
+    ],
+    "f": "$1~\\text{h} = 3\\,600~\\text{s}$ et $1~\\text{km} = 1\\,000~\\text{m}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.VIT.02-u07",
+    "comp": "GM.VIT.02",
+    "q": "Un sprinteur court le $100$ m en $9{,}58$ s. Quelle est sa vitesse moyenne en km/h, arrondie à l'unité ? ___ km/h",
+    "a": "38",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "GM.VIT.02#sens_3_6",
+      "2,9": "GM.VIT.02#sens_3_6"
+    },
+    "steps": [
+      "Calcule d'abord la vitesse en m/s : distance $\\div$ durée.",
+      "Passe de m/s à km/h : multiplier ou diviser par $3{,}6$ ? Puis arrondis : ?"
+    ],
+    "f": "$v = \\frac{d}{t}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "37,6",
+      "37,58"
+    ]
   }
 ]

@@ -1276,5 +1276,329 @@
       "6×x-3",
       "-3+6×x"
     ]
+  },
+  {
+    "id": "NC.LIT.08-u01",
+    "comp": "NC.LIT.08",
+    "q": "Factorise $5x^2 + x$.",
+    "a": "$x(5x + 1)$",
+    "type": "qcm",
+    "options": [
+      "$x(5x)$",
+      "$5x(x + 1)$",
+      "$x(5x + 1)$",
+      "$5(x^2 + x)$"
+    ],
+    "err": {
+      "$x(5x)$": "NC.LIT.08#oubli_du_1",
+      "$5x(x + 1)$": "NC.LIT.08#pas_un_facteur",
+      "$5(x^2 + x)$": "NC.LIT.08#pas_un_facteur"
+    },
+    "steps": [
+      "Écris chaque terme comme un produit : $5x^2 = 5x \\times x$ et $x = ? \\times x$.",
+      "Quel facteur apparaît dans les deux termes ? Que reste-t-il de chaque terme une fois ce facteur retiré ?"
+    ],
+    "f": "$ka + kb = k(a + b)$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.LIT.08-u02",
+    "comp": "NC.LIT.08",
+    "q": "Factorise au maximum $20x + 30$ : ___",
+    "a": "10(2x+3)",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2(10x+15)": "NC.LIT.08#facteur_non_maximal",
+      "5(4x+6)": "NC.LIT.08#facteur_non_maximal"
+    },
+    "steps": [
+      "Cherche le plus grand nombre qui divise à la fois $20$ et $30$.",
+      "Divise chaque terme par ce nombre : que reste-t-il dans la parenthèse ?"
+    ],
+    "f": "$ka + kb = k(a + b)$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "10(3+2x)",
+      "10×(2x+3)",
+      "(2x+3)×10",
+      "10*(2x+3)",
+      "10(2×x+3)",
+      "10×(2×x+3)"
+    ]
+  },
+  {
+    "id": "NC.LIT.09-u01",
+    "comp": "NC.LIT.09",
+    "q": "Factorise $x^2 - 64$.",
+    "a": "$(x - 8)(x + 8)$",
+    "type": "qcm",
+    "options": [
+      "$(x - 8)^2$",
+      "$(x - 32)(x + 32)$",
+      "$(x - 64)(x + 64)$",
+      "$(x - 8)(x + 8)$"
+    ],
+    "err": {
+      "$(x - 8)^2$": "NC.LIT.09#difference_en_carre",
+      "$(x - 32)(x + 32)$": "NC.RAC.01#racine_moitie",
+      "$(x - 64)(x + 64)$": "NC.LIT.09#b_pas_racine"
+    },
+    "steps": [
+      "$64$ est le carré d'un nombre : lequel ?",
+      "Utilise $a^2 - b^2$ avec $a = x$ : quelle est la valeur de $b$ ?"
+    ],
+    "f": "$a^2 - b^2 = (a - b)(a + b)$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.LIT.10-u01",
+    "comp": "NC.LIT.10",
+    "q": "Programme : « Choisis un nombre, ajoute $5$, multiplie le résultat par $2$, puis retire $10$. » Avec le nombre $x$, quel est le résultat réduit ? ___",
+    "a": "2x",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "x": "NC.LIT.01#parentheses_oubliees"
+    },
+    "steps": [
+      "« Ajoute $5$ puis multiplie le résultat par $2$ » : la somme doit être entre parenthèses. Écris $(x + 5) \\times 2$, puis retire $10$.",
+      "Développe et réduis : que deviennent les nombres sans $x$ ?"
+    ],
+    "f": "$k(a + b) = ka + kb$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "2×x",
+      "x×2"
+    ]
+  },
+  {
+    "id": "NC.LIT.10-u02",
+    "comp": "NC.LIT.10",
+    "q": "Pour prouver que $(n + 1)^2 - (n - 1)^2$ est toujours un multiple de $4$, on réduit cette expression. On obtient ___",
+    "a": "4n",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2": "NC.LIT.05#bloc_developpe"
+    },
+    "steps": [
+      "Développe chaque carré : $(n + 1)^2 = n^2 + 2n + 1$ et $(n - 1)^2 = ?$",
+      "Le signe $-$ devant le deuxième carré change le signe de chacun de ses trois termes. Réduis."
+    ],
+    "f": "$(a - b)^2 = a^2 - 2ab + b^2$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "4×n",
+      "n×4"
+    ]
+  },
+  {
+    "id": "NC.LIT.10-u03",
+    "comp": "NC.LIT.10",
+    "q": "Programme : « Choisis un nombre, multiplie-le par $4$, ajoute $6$, divise par $2$, puis retire le double du nombre de départ. » Léo trouve $3$ avec $1$, avec $5$ et avec $10$. Quelle affirmation est juste ?",
+    "a": "Avec $x$ : $\\frac{4x + 6}{2} - 2x = 2x + 3 - 2x = 3$, donc le résultat est toujours $3$",
+    "type": "qcm",
+    "options": [
+      "Trois essais qui donnent $3$ prouvent que le résultat est toujours $3$",
+      "Avec $x$ : $\\frac{4x + 6}{2} - 2x = 2x + 3 - 2x = 3$, donc le résultat est toujours $3$",
+      "Un quatrième essai avec un nombre négatif suffirait à en être sûr",
+      "Avec $x$ on trouve $\\frac{4x + 6}{2} - 2x$, et on ne peut rien conclure de plus"
+    ],
+    "err": {
+      "Trois essais qui donnent $3$ prouvent que le résultat est toujours $3$": "NC.LIT.10#exemples_suffisent",
+      "Un quatrième essai avec un nombre négatif suffirait à en être sûr": "NC.LIT.10#exemples_suffisent",
+      "Avec $x$ on trouve $\\frac{4x + 6}{2} - 2x$, et on ne peut rien conclure de plus": "NC.LIT.10#pas_de_conclusion"
+    },
+    "steps": [
+      "Des exemples, même nombreux, montrent-ils ce qui se passe pour tous les nombres ?",
+      "Écris le programme avec la lettre $x$ et simplifie : l'expression dépend-elle encore de $x$ ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.LIT.10-u04",
+    "comp": "NC.LIT.10",
+    "q": "On veut prouver que la somme de $5$ entiers consécutifs est toujours un multiple de $5$. Avec $n$, $n + 1$, $n + 2$, $n + 3$ et $n + 4$, la somme s'écrit $5 \\times (\\text{___})$.",
+    "a": "n+2",
+    "type": "fill",
+    "options": [],
+    "err": {},
+    "steps": [
+      "Additionne les cinq nombres : combien de $n$ ? Quelle est la somme des nombres sans $n$ ?",
+      "Factorise le résultat par $5$ : que reste-t-il dans la parenthèse ?"
+    ],
+    "f": "$ka + kb = k(a + b)$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "2+n",
+      "(n+2)"
+    ]
+  },
+  {
+    "id": "NC.LIT.05-u01",
+    "comp": "NC.LIT.05",
+    "q": "Supprime les parenthèses et réduis : $10 - (x + 4) = $ ___",
+    "a": "6-x",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "14-x": "NC.LIT.05#seul_premier_terme",
+      "-x+14": "NC.LIT.05#seul_premier_terme"
+    },
+    "steps": [
+      "Un signe $-$ devant une parenthèse change le signe de chaque terme à l'intérieur. Que devient $-(x + 4)$ ?",
+      "Regroupe ensuite les nombres sans $x$ : $10$ et $?$"
+    ],
+    "f": "$-(a + b) = -a - b$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "-x+6"
+    ]
+  },
+  {
+    "id": "NC.LIT.05-u02",
+    "comp": "NC.LIT.05",
+    "q": "Supprime les parenthèses : $-(-2x + 7) = $ ___",
+    "a": "2x-7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2x+7": "NC.LIT.05#seul_premier_terme",
+      "7+2x": "NC.LIT.05#seul_premier_terme"
+    },
+    "steps": [
+      "Le signe $-$ change le signe de chacun des deux termes : $-2x$ devient $?$",
+      "Et que devient $+7$ ?"
+    ],
+    "f": "$-(a + b) = -a - b$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "-7+2x",
+      "2×x-7",
+      "-7+2×x"
+    ]
+  },
+  {
+    "id": "NC.LIT.05-u03",
+    "comp": "NC.LIT.05",
+    "q": "Développe et réduis : $5x - 2(x - 3) = $ ___",
+    "a": "3x+6",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3x-6": "NC.LIT.04#signe_k_negatif",
+      "-6+3x": "NC.LIT.04#signe_k_negatif",
+      "3x-3": "NC.LIT.04#distribution_partielle",
+      "-3+3x": "NC.LIT.04#distribution_partielle"
+    },
+    "steps": [
+      "Le facteur qui multiplie la parenthèse est $-2$, signe compris. Calcule $-2 \\times x$ puis $-2 \\times (-3)$.",
+      "Regroupe ensuite les termes en $x$ : $5x$ et $?$"
+    ],
+    "f": "$k(a + b) = ka + kb$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "6+3x",
+      "3×x+6",
+      "6+3×x"
+    ]
+  },
+  {
+    "id": "NC.LIT.05-u04",
+    "comp": "NC.LIT.05",
+    "q": "Lina a un budget de $3x + 40$ euros. Elle dépense $x - 5$ euros. Ce qui lui reste s'écrit $(3x + 40) - (x - 5)$. Donne la forme réduite : ___",
+    "a": "2x+45",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2x+35": "NC.LIT.05#seul_premier_terme",
+      "35+2x": "NC.LIT.05#seul_premier_terme"
+    },
+    "steps": [
+      "Le signe $-$ devant $(x - 5)$ change le signe de chacun de ses termes : que devient $-5$ ?",
+      "Regroupe les termes en $x$, puis les nombres."
+    ],
+    "f": "$-(a - b) = -a + b$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "45+2x",
+      "2×x+45",
+      "45+2×x"
+    ]
+  },
+  {
+    "id": "NC.LIT.05-u05",
+    "comp": "NC.LIT.05",
+    "q": "Réduis $A = 2x - (x - 4) - (3 - x)$. $A = $ ___",
+    "a": "2x+1",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-7": "NC.LIT.05#seul_premier_terme",
+      "2x-7": "NC.LIT.05#seul_premier_terme",
+      "1": "NC.LIT.05#seul_premier_terme"
+    },
+    "steps": [
+      "Traite une parenthèse à la fois : que devient $-(x - 4)$ ? Et $-(3 - x)$ ?",
+      "Compte les termes en $x$ : $2x$, $-x$ et $?$ Puis les nombres."
+    ],
+    "f": "$-(a - b) = -a + b$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "1+2x",
+      "2×x+1",
+      "1+2×x"
+    ]
   }
 ]

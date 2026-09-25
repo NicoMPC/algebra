@@ -239,5 +239,191 @@
       "452,4",
       "452,39"
     ]
+  },
+  {
+    "id": "GM.AIRE.03-u01",
+    "comp": "GM.AIRE.03",
+    "q": "Un disque a un rayon de $4$ cm. Son aire s'écrit $k\\pi~\\text{cm}^2$. Quelle est la valeur de $k$ ? ___",
+    "a": "16",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "8": "GM.AIRE.03#formule_perimetre",
+      "64": "GM.AIRE.03#diametre_au_carre"
+    },
+    "steps": [
+      "L'aire d'un disque utilise le rayon, pas le diamètre, et le rayon est au carré.",
+      "Calcule $4^2$ : ?"
+    ],
+    "f": "$\\mathcal{A} = \\pi \\times r^2$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "16π",
+      "16pi",
+      "16\\pi"
+    ]
+  },
+  {
+    "id": "GM.AIRE.03-u02",
+    "comp": "GM.AIRE.03",
+    "q": "Un sous-verre rond a un diamètre de $10$ cm. Son aire s'écrit $k\\pi~\\text{cm}^2$. Quelle est la valeur de $k$ ? ___",
+    "a": "25",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "100": "GM.AIRE.03#diametre_au_carre",
+      "10": "GM.AIRE.03#formule_perimetre"
+    },
+    "steps": [
+      "L'énoncé donne le diamètre : quel est le rayon ?",
+      "Élève ce rayon au carré : ?"
+    ],
+    "f": "$\\mathcal{A} = \\pi \\times r^2$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "25π",
+      "25pi",
+      "25\\pi"
+    ]
+  },
+  {
+    "id": "GM.AIRE.03-u03",
+    "comp": "GM.AIRE.03",
+    "q": "Quelle formule donne l'aire d'un disque de rayon $r$ ?",
+    "a": "$\\pi \\times r^2$",
+    "type": "qcm",
+    "options": [
+      "$2 \\times \\pi \\times r$",
+      "$(\\pi \\times r)^2$",
+      "$\\pi \\times r^2$",
+      "$\\pi \\times 2r$"
+    ],
+    "err": {
+      "$2 \\times \\pi \\times r$": "GM.AIRE.03#formule_perimetre",
+      "$(\\pi \\times r)^2$": "GM.AIRE.03#pi_r_au_carre",
+      "$\\pi \\times 2r$": "GM.AIRE.03#pi_r_au_carre"
+    },
+    "steps": [
+      "Une aire s'exprime en unités « carrées » : le rayon doit être élevé au carré.",
+      "Dans la bonne formule, seul $r$ est au carré, pas $\\pi$. Laquelle ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.AIRE.03-u04",
+    "comp": "GM.AIRE.03",
+    "q": "Un rond-point circulaire a un rayon de $7$ m. Calcule son aire, arrondie au $\\text{m}^2$. ___ $\\text{m}^2$",
+    "a": "154",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "44": "GM.AIRE.03#formule_perimetre",
+      "616": "GM.AIRE.03#diametre_au_carre",
+      "484": "GM.AIRE.03#pi_r_au_carre"
+    },
+    "steps": [
+      "Le rayon vaut $7$ m : calcule d'abord $7^2$.",
+      "Multiplie par $\\pi$ à la calculatrice, puis arrondis à l'unité : ?"
+    ],
+    "f": "$\\mathcal{A} = \\pi \\times r^2$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "153,9",
+      "153,94"
+    ]
+  },
+  {
+    "id": "GM.AIRE.03-u05",
+    "comp": "GM.AIRE.03",
+    "q": "Une table ronde a un diamètre de $1{,}2$ m. Quelle est l'aire de son plateau, arrondie au centième ?",
+    "a": "$1{,}13~\\text{m}^2$",
+    "type": "qcm",
+    "options": [
+      "$4{,}52~\\text{m}^2$",
+      "$1{,}13~\\text{m}^2$",
+      "$3{,}77~\\text{m}^2$",
+      "$3{,}55~\\text{m}^2$"
+    ],
+    "err": {
+      "$4{,}52~\\text{m}^2$": "GM.AIRE.03#diametre_au_carre",
+      "$3{,}77~\\text{m}^2$": "GM.AIRE.03#formule_perimetre",
+      "$3{,}55~\\text{m}^2$": "GM.AIRE.03#pi_r_au_carre"
+    },
+    "steps": [
+      "Le diamètre est donné : le rayon vaut la moitié.",
+      "Calcule $\\pi \\times r^2$ à la calculatrice et arrondis au centième : ?"
+    ],
+    "f": "$\\mathcal{A} = \\pi \\times r^2$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.AIRE.03-u06",
+    "comp": "GM.AIRE.03",
+    "q": "L'aire d'un disque vaut $36\\pi~\\text{cm}^2$. Quel est son rayon ? ___ cm",
+    "a": "6",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "18": "GM.AIRE.03#formule_perimetre",
+      "3": "GM.AIRE.03#diametre_au_carre"
+    },
+    "steps": [
+      "On sait que $\\pi \\times r^2 = 36\\pi$ : que vaut $r^2$ ?",
+      "Quel nombre positif a pour carré ce résultat ? ?"
+    ],
+    "f": "$\\mathcal{A} = \\pi \\times r^2$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.AIRE.03-u07",
+    "comp": "GM.AIRE.03",
+    "q": "Une rondelle métallique est un disque de rayon $6$ mm percé d'un trou circulaire de rayon $2$ mm, au centre. L'aire de métal s'écrit $k\\pi~\\text{mm}^2$. Quelle est la valeur de $k$ ? ___",
+    "a": "32",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "8": "GM.AIRE.03#formule_perimetre",
+      "128": "GM.AIRE.03#diametre_au_carre"
+    },
+    "steps": [
+      "Aire de métal $=$ aire du grand disque $-$ aire du trou.",
+      "Calcule $6^2 - 2^2$ : ?"
+    ],
+    "f": "$\\mathcal{A} = \\pi \\times r^2$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "32π",
+      "32pi",
+      "32\\pi"
+    ]
   }
 ]
