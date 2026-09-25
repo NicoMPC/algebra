@@ -215,7 +215,7 @@ try {
   console.log("▶ sécurité des actions élève (Besoin n°8) : code seul / jeton d'un autre élève");
   const ACTIONS_ELEVE: Record<string, Record<string, unknown>> = {
     get_carte: {}, get_training: {}, get_acces: {}, start_diagnostic: { type: "express" }, answer_diagnostic: { diagnostic_id: did, item_id: "x", reponse: "1" },
-    create_share: {}, revoke_share: {}, set_preferences: { optin_marketing: true }, log_consent: { produit: "compte", texte_version: "v", texte_hash: "h" },
+    create_share: {}, revoke_share: {}, send_share_email: { to: "victime@exemple.fr" }, set_preferences: { optin_marketing: true }, log_consent: { produit: "compte", texte_version: "v", texte_hash: "h" },
     save_score: { name: "X", level: "3EME", categorie: "Fractions_Brevet", exercice_idx: 1, resultat: "EASY" },
     save_scores_batch: { scores: [{ categorie: "Fractions_Brevet", exercice_idx: 1, resultat: "EASY" }] },
     save_boost: { boost: { exos: [] } }, save_calibration_batch: { scores: [] }, get_progress: {}, check_trial_status: {},
@@ -308,6 +308,102 @@ try {
   await get("/dev/time?jours=3");
   check("guest_token expiré (+3 j) → refusé", (await api({ action: "answer_diagnostic", diagnostic_id: autreInv.diagnostic_id, guest_token: autreInv.guest_token, item_id: autreInv.question.id, reponse: "1" })).invite_expire === true);
   await get("/dev/time?reset");
+
+  console.log("▶ confirmation parentale : bilan.html?confirmer=1 (lecture seule à l'ouverture)");
+  const tomPx0 = [...Deno.readDirSync(`${DATA}/outbox`)].filter((e) => e.name.includes("tom@exemple.fr") && e.name.includes("bilan_maths")).map((e) => Deno.readTextFileSync(`${DATA}/outbox/${e.name}`))[0] || "";
+  const tomConfTok = (tomPx0.match(/\/b\/([0-9a-f]{48})\?confirmer=1/) || [])[1];
+  const ap = await api({ action: "confirm_parent", token: tomConfTok, apercu: true });
+  const profTom0 = JSON.parse((await get(`/dev/db/profiles?code=${codes.Tom}`)).body)[0];
+  check("confirm_parent {apercu} → prénom + pas encore confirmé, RIEN écrit", ap.status === "success" && ap.prenom === "Tom" && ap.deja_confirme === false && !profTom0.consentement_parent_at, { ap, c: profTom0?.consentement_parent_at });
+  check("confirm_parent jeton inconnu → expire", (await api({ action: "confirm_parent", token: "a".repeat(48), apercu: true })).expire === true);
+  check("bilan.html servi pour /b/<token>?confirmer=1 (carte de confirmation présente)", (await get(`/b/${tomConfTok}?confirmer=1`)).body.includes('id="cf-go"'));
+
+  console.log("▶ envoi du lien de partage par email (Besoin API n°13, P-SH)");
+  const shMails = (to: string) => [...Deno.readDirSync(`${DATA}/outbox`)].filter((e) => e.name.includes(to) && e.name.includes("vous_a_envoye")).length;
+  const s1 = await api({ action: "send_share_email", code: codes.Tom, access_token: tomTok, to: "mamie.tom@exemple.fr" });
+  check("send_share_email → P-SH envoyé, lien /b/ valide", s1.status === "success" && /^[0-9a-f]{48}$/.test(s1.token) && shMails("mamie.tom@exemple.fr") === 1 &&
+    (await api({ action: "get_bilan_partage", token: s1.token })).status === "success", s1);
+  const shHtml = [...Deno.readDirSync(`${DATA}/outbox`)].filter((e) => e.name.includes("mamie.tom@")).map((e) => Deno.readTextFileSync(`${DATA}/outbox/${e.name}`))[0] || "";
+  check("P-SH : vouvoiement, aucun prix, lien du partage", /Bonjour/.test(shHtml) && !/€/.test(shHtml) && shHtml.includes("/b/" + s1.token), shHtml.slice(-300));
+  const s2 = await api({ action: "send_share_email", code: codes.Tom, access_token: tomTok, to: "mamie.tom@exemple.fr" });
+  check("même adresse dans les 24 h → dédupliqué (pas de 2e mail)", s2.status === "success" && s2.deja === true && shMails("mamie.tom@exemple.fr") === 1, s2);
+  const s3 = await api({ action: "send_share_email", code: codes.Tom, access_token: tomTok }); // sans `to` : email du compte (parent)
+  const s4 = await api({ action: "send_share_email", code: codes.Tom, access_token: tomTok, to: "papi.tom@exemple.fr" });
+  const s5 = await api({ action: "send_share_email", code: codes.Tom, access_token: tomTok, to: "tata.tom@exemple.fr" });
+  check("plafond 3 envois / 24 h / élève (4e refusé, aucun mail)", s3.status === "success" && s4.status === "success" && s5.status === "error" && s5.plafond === true && shMails("tata.tom@") === 0, { s3, s4, s5 });
+  check("send_share_email adresse invalide → refusé", (await api({ action: "send_share_email", code: codes.Lina, access_token: await tokDe("lina@exemple.fr"), to: "pas-une-adresse" })).status === "error");
+  check("send_share_email sans diagnostic → refusé", (await api({ action: "send_share_email", code: codes.Lina, access_token: await tokDe("lina@exemple.fr"), to: "x@exemple.fr" })).status === "error");
+  check("send_share_email sans jeton → auth_requise", (await api({ action: "send_share_email", code: codes.Tom, to: "y@exemple.fr" })).auth_requise === true);
+
+  console.log("▶ séquence emails (51-emails) : 15 jours de cron avec /dev/time");
+  // Profil neuf : diagnostic express invité → inscription → confirmation parentale AVEC opt-in, s'entraîne J0, J1, J3, J5.
+  let gN = await api({ action: "start_diagnostic", type: "express", prenom: "Nora" });
+  const invN = { diagnostic_id: gN.diagnostic_id, guest_token: gN.guest_token };
+  for (let k = 0; gN.question && k < 40; k++) gN = await api({ action: "answer_diagnostic", ...invN, item_id: gN.question.id, reponse: k % 3 ? "" : (gN.question.options?.[0] ?? "3"), temps: 30 });
+  const emailN = `nora${Date.now()}@exemple.fr`, mdpN = await hashApp(emailN, "mdp-nora");
+  const regN = await api({ action: "register", name: "Nora", email: emailN, level: "3EME", password: mdpN, ...invN });
+  const codeN = regN.profile?.code;
+  const px0N = [...Deno.readDirSync(`${DATA}/outbox`)].filter((e) => e.name.includes(emailN)).map((e) => Deno.readTextFileSync(`${DATA}/outbox/${e.name}`))[0] || "";
+  const confN = (px0N.match(/\/b\/([0-9a-f]{48})\?confirmer=1/) || [])[1];
+  check("Nora : inscrite, P-X0 reçu, confirmation + opt-in", !!codeN && (await api({ action: "confirm_parent", token: confN, optin_marketing: true, texte_version: "t", texte_hash: "h" })).status === "success");
+  await api({ action: "set_preferences", code: codeN, email: emailN, access_token: regN.access_token, email_eleve: "nora.ado@exemple.fr" });
+  const entrainer = async (code: string, em: string, mdp: string) => {
+    const t = (await api({ action: "login", email: em, password: mdp })).access_token;
+    const tr = await api({ action: "get_training", code, email: em, access_token: t });
+    for (const e of (tr.boost?.exos || [])) await api({ action: "save_score", code, email: em, access_token: t, name: "X", level: "3EME", categorie: e.categorie, exercice_idx: e.num, resultat: "EASY", source: "BOOST", item_id: e.item_id, comp: e.comp, q: e.q, reponse: e.a, time: 40 });
+  };
+  const suivis: Record<string, string> = { Lina: codes.Lina, Tom: codes.Tom, Sarah: codes.Sarah, Nora: codeN };
+  const journal: Record<string, string[]> = { Lina: [], Tom: [], Sarah: [], Nora: [] };
+  const avant = JSON.parse((await get(`/dev/db/email_logs`)).body).length;
+  const cronRes: any[] = []; // deno-lint-ignore no-explicit-any
+  for (let jour = 0; jour <= 15; jour++) {
+    if (jour > 0) await get("/dev/time?jours=1");
+    if ([0, 1, 3, 5].includes(jour)) await entrainer(codeN, emailN, mdpN);
+    const admTok = (await api({ action: "login", email: ADMIN_EMAIL, password: await hashApp(ADMIN_EMAIL, "matheux-dev") })).access_token;
+    const cr = await api({ action: "cron_send_emails", access_token: admTok });
+    cronRes.push(cr);
+    if (cr.status !== "success") { check("cron jour " + jour, false, cr); break; }
+    for (const d of (cr.details || []) as string[]) {
+      const [code, type, , ...etat] = d.split(" ");
+      const nom = Object.keys(suivis).find((n) => suivis[n] === code);
+      if (nom) journal[nom].push(`J+${jour} ${cr.date.slice(5)} ${type}${etat.join(" ") === "envoyé" ? "" : " (" + etat.join(" ") + ")"}`);
+    }
+  }
+  await get("/dev/time?reset");
+  for (const [nom, l] of Object.entries(journal)) console.log(`     ℹ️  ${nom.padEnd(5)} : ${l.length ? l.join(" · ") : "aucun email"}`);
+  const tous = (JSON.parse((await get(`/dev/db/email_logs`)).body) as any[]).slice(avant).filter((l) => l.statut === "envoyé"); // deno-lint-ignore no-explicit-any
+  const de = (code: string) => tous.filter((l) => l.code === code);
+  const typesDe = (code: string) => de(code).map((l) => String(l.type));
+  const joursParis = (l: any) => new Date(l.created_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Paris" }); // deno-lint-ignore no-explicit-any
+  check("Lina (rien fait) : confirmation P-X0N puis rappel, aucune offre", typesDe(codes.Lina).includes("D3:P-X0N") && typesDe(codes.Lina).includes("D3:P-X0R1") && !de(codes.Lina).some((l) => l.categorie === "M"), typesDe(codes.Lina));
+  check("Tom (express, pas de confirmation, inactif) : rappel + relance d'usage P-X2b, aucune offre", typesDe(codes.Tom).includes("D3:P-X0R1") && typesDe(codes.Tom).includes("D3:P-X2b") && !de(codes.Tom).some((l) => l.categorie === "M"), typesDe(codes.Tom));
+  check("Sarah (Programme Brevet) : bilan du dimanche, aucune relance de vente", typesDe(codes.Sarah).some((t) => t.startsWith("D3:P-HEBDO:")) && !typesDe(codes.Sarah).some((t) => /P-X[123]|P-UP/.test(t)), typesDe(codes.Sarah));
+  check("Nora (opt-in, active) : P-X1, P-X2, P-X3 + A-X0 à l'ado", ["D3:P-X1", "D3:P-X2", "D3:P-X3", "D3:A-X0"].every((t) => typesDe(codeN).includes(t)), typesDe(codeN));
+  const parAdresseJour = new Map<string, number>();
+  for (const l of tous) { const k = l.email + "|" + joursParis(l); parAdresseJour.set(k, (parAdresseJour.get(k) || 0) + 1); }
+  check("jamais 2 emails de la séquence à la même adresse le même jour", [...parAdresseJour.entries()].filter(([k, n]) => n > 1 && !k.includes("tom@") && !/mamie|papi/.test(k)).length === 0, [...parAdresseJour.entries()].filter(([, n]) => n > 1));
+  const mN = de(codeN).filter((l) => l.categorie === "M").map(joursParis).sort();
+  check("commercial : au moins 72 h entre deux, 5 max", mN.length <= 5 && mN.every((d, i) => i === 0 || (Date.parse(d) - Date.parse(mN[i - 1])) / 86400000 >= 3), mN);
+  check("aucun commercial sans opt-in (Lina, Tom, Sarah, Zoé exclue)", !tous.some((l) => l.categorie === "M" && [codes.Lina, codes.Tom, codes.Sarah].includes(l.code)));
+  const htmlDe = (to: string, motif: RegExp) => [...Deno.readDirSync(`${DATA}/outbox`)].filter((e) => e.name.includes(to) && motif.test(e.name)).map((e) => Deno.readTextFileSync(`${DATA}/outbox/${e.name}`));
+  const ado = htmlDe("nora.ado@", /./);
+  check("emails ado : tutoiement, aucun prix, aucun lien de paiement", ado.length >= 1 && ado.every((h) => /Salut|Hey/.test(h) && !/€|stripe|\/b\//i.test(h)), ado.length);
+  const px1 = htmlDe(emailN, /ne_dit_pas_encore/)[0] || "";
+  check("P-X1 : vouvoiement, 19 €, garantie 30 jours, lien bilan, lien de désinscription signé", /Bonjour/.test(px1) && /19 €/.test(px1) && /30 jours/.test(px1) && /\/b\/[0-9a-f]{48}/.test(px1) && /unsubscribe\?email=[^"&]+&amp;k=[0-9a-f]{32}|unsubscribe\?email=[^"&]+&k=[0-9a-f]{32}/.test(px1), px1.slice(-500));
+  check("aucun email de la séquence ne parle de « ton prof » ni de 29,99 €", !tous.length || [...Deno.readDirSync(`${DATA}/outbox`)].every((e) => { const h = Deno.readTextFileSync(`${DATA}/outbox/${e.name}`); return !/29,99|ton prof|a analysé/i.test(h); }));
+  // Désinscription : lien signé obligatoire, puis P/M ne partent plus
+  const kN = (px1.match(/unsubscribe\?email=[^"]*?k=([0-9a-f]{32})/) || [])[1];
+  check("unsubscribe sans k valide → refusé", (await api({ action: "unsubscribe", email: emailN, k: "0".repeat(32) })).status === "error" && (await api({ action: "unsubscribe", email: emailN })).status === "error");
+  const oneClick = await fetch(`${BASE}/api?action=unsubscribe&email=${encodeURIComponent(emailN)}&k=${kN}`, { method: "POST", body: "List-Unsubscribe=One-Click" });
+  check("désinscription en 1 clic (POST List-Unsubscribe, lien signé) → OK", (await oneClick.json()).status === "success");
+  const nAvantUnsub = JSON.parse((await get(`/dev/db/email_logs?code=${codeN}`)).body).length;
+  await get("/dev/time?jours=19");
+  const admTok2 = (await api({ action: "login", email: ADMIN_EMAIL, password: await hashApp(ADMIN_EMAIL, "matheux-dev") })).access_token;
+  await api({ action: "cron_send_emails", access_token: admTok2 });
+  await get("/dev/time?reset");
+  const apresUnsub = (JSON.parse((await get(`/dev/db/email_logs?code=${codeN}`)).body) as any[]).slice(nAvantUnsub).filter((l) => l.email === emailN && l.categorie !== "T"); // deno-lint-ignore no-explicit-any
+  check("après désinscription : plus aucun email P/M au parent", apresUnsub.length === 0, apresUnsub);
+  check("page /unsubscribe servie et branchée sur l'API (plus GAS)", (await get("/unsubscribe")).body.includes("action: 'unsubscribe', email: email, k: k"));
 
   console.log("▶ horloge de dev");
   const t1 = JSON.parse((await get("/dev/time?jours=1")).body);

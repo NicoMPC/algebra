@@ -44,7 +44,11 @@
 1. **Complément banque d'entraînement** (~300 exos, 15/compétence sur les 30 causes racines, relecture
    indépendante, ~0,8 M tokens) — reporté faute de tokens. Aujourd'hui la séance ne sert que 1-2 exos.
 2. **Mise en ligne** :
-   - 3 Payment Links Stripe (19 / 49 / 30 €, `metadata.produit`, redirection `app.html?achat=<produit>`) → remplir `OFFRE` dans app.html
+   - Stripe : ✅ lien 19 € créé le 25/09 (`https://buy.stripe.com/9B66oJ3xM4rH4mc0mjb3q07`, plink_1UJcp8PwkMLpimxM2ayjh2tU,
+     metadata produit=diag_complet / offre_version=2026-09 / niveau=3EME, taxes auto OFF, TTC, redirection
+     `https://matheux.fr/app.html?achat=diag_complet&session_id={CHECKOUT_SESSION_ID}`), branché dans `OFFRE` (app.html + bilan.html).
+     ⏳ Liens 49 € (`programme_brevet`) et 30 € (`programme_upgrade`) : création bloquée pour Claude (classée transaction réelle) → Nicolas, mêmes réglages.
+     ⚠️ Vérifier que le webhook Stripe de prod pointe bien vers l'Edge Function et que `metadata` du lien est bien recopiée dans la session (1er paiement test).
    - `CRON_SECRET` (secrets Supabase + Vault `matheux_cron_secret`)
    - remplacer les anciens emails J+1..J+14 (29,99 €)
    - migrations 20260924 + 20260925, import référentiel/banque, purge anciens comptes (backup)
