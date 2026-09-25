@@ -1,5 +1,12 @@
 # Playbook — Admin & Workflow Nicolas
 
+> ## ⚠️ Refonte « Diagnostic 3e » (25/09/2026)
+> L'admin de `app.html` est un **monitoring en lecture seule** : liste des élèves, exos sur 7 jours, fiche élève = sa carte via `get_carte`
+> (`lectureAdmin`). Il n'y a plus aucune publication (boost, chapitre, brevet, révision, emails à copier). `get_admin_overview` exige
+> `access_token`. Les workflows décrits plus bas sont obsolètes.
+
+---
+
 > Domaine : tout ce qui concerne le dashboard admin, le workflow boost/chapitre, les emails parents.
 > Déclencheurs : "je vois pas un élève", "l'onglet À FAIRE est vide", "le boost se publie pas", "le mail parent part pas"
 

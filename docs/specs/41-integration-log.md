@@ -84,8 +84,8 @@
 | L6 | Accueil quotidien (4 états) + séance + fin de séance + erreur type + « ce qui a bougé » | ✅ fait |
 | L7 | Partage parent (Web Share + fallbacks, `create_share`) | ✅ fait |
 | L8 | Hub diag complet (3 modules) + carte complète + PDF (`MatheuxBilanPDF.render`) | ✅ fait |
-| L9 | Programme : « S'entraîner sur… », check-up mensuel | à faire |
-| L10 | Docs | à faire |
+| L9 | Programme : « S'entraîner sur… », check-up mensuel | ✅ fait |
+| L10 | Docs | ✅ fait (hors CLAUDE.md, voir propositions) |
 
 ## Journal par lot
 
@@ -365,3 +365,76 @@
     puisque les réponses sont au hasard) ;
   - PDF réel : **16 pages**, polices intégrées ;
   - 0 erreur console.
+
+### L9 — Programme Brevet ✅ (→ 5 848 lignes) + sessions (point bloquant coordinateur)
+
+- **« S'entraîner sur… » (E12)** :
+  - `openLibre(comp)` appelle `get_training {comp}`. La série est une clé `LIBREn` dans `LVL.cats`, même moteur `rSection` / `mark` que la séance du jour ;
+  - scores envoyés avec **`source: 'LIBRE'`, `categorie: 'LIBRE'`, `exercice_idx = exo.num`** (numéro unique fourni par le serveur, pour la dédup du jour) ;
+  - fin de série : « Série finie : n sur 5 », puis « Encore une série » / « Une autre compétence » / « Retour » ;
+  - points d'entrée : sélecteur `_choisirLibre` (priorités puis lacunes / fragiles), bouton de l'accueil, « S'entraîner » dans le détail par domaine
+    de la carte complète, « Encore une séance » en fin de séance ;
+  - sans Programme : paywall.
+- **Check-up mensuel (E13)** :
+  - bannière sur l'accueil si `get_training.rediagnostic_du`, « Reprendre » si un mensuel est en cours, sinon « Check-up dans n jours » ;
+  - `dxStartType('mensuel')` reprend le même écran E2 (titre « Check-up du mois »), avec la même fin que le complet → carte « check-up » et bloc
+    **« Depuis ta dernière carte »** (`evolution`).
+- Brevet blanc : rangée « Bientôt » (💤 v1.1, Q7).
+- **Sessions (message coordinateur, bloquant)** :
+  - `boost_v23` = **`{code, email, access_token, refresh_token}`**, sans hash ;
+  - boot par `login_token` (l'ancien format avec hash reste accepté une fois, puis migré) ;
+  - `auth_requise` → `refresh_session` puis **1 seul** nouvel essai (dans `_api` et dans le batch de scores). En cas d'échec : toast, puis `#login` ;
+  - `register` rattache la session invitée, et le `login` qui suit n'essaie plus de la rattacher une 2e fois.
+- `carte.non_mesurees` utilisé dans la carte partielle : bloc « Pas encore mesuré », avec les titres lisibles et le chip ⚪, sans flou.
+- Header : « Espace de X » masqué côté élève, puisque « Salut X » est déjà sur l'accueil.
+- Tests e2e (8790) :
+  - **Programme** : visiteur → express invité → compte → 1 exo de séance (`daily_boosts.exos_done` = 1 côté serveur, jeton OK) → paiement simulé
+    `programme_brevet` → accueil Programme (S'entraîner sur…, Brevet blanc bientôt, carte diag complet) → série libre (2 scores `LIBRE` en base) →
+    diag complet 64 q → `/dev/time?jours=31` → séance du jour du mois suivant → **check-up mensuel** → carte « Check-up · 26 oct. 2026 » ;
+  - **Sessions** : login → reload (`login_token`) → jeton corrompu → reload renouvelé → perte du jeton en cours d'usage → `refresh_session` +
+    rejeu → success. Stockage : `code, email, access_token, refresh_token` ;
+  - 0 erreur console, `fill_match_node.js` all ok.
+- Point ouvert : la série libre a servi 2 items au lieu de 5 sur la compétence choisie (banque « train » courte), comme la séance du jour (déjà signalé).
+
+### L10 — Docs ✅ (app.html final : **5 753 lignes**, contre 13 801 au départ)
+
+- En-tête « ⚠️ Refonte Diagnostic 3e » ajouté en tête de `docs/messages.md` (clés `_MSGS` actuelles, invariants H1-H8, règle « aucune incitation
+  côté ado », bio fondateur), de `docs/product.md` et des 5 playbooks. Chaque en-tête dit ce qui fait foi et ce qui, plus bas, est obsolète.
+  Je n'ai rien réécrit en profondeur.
+- `app.html` `<head>` (A1) : **`noindex`**, titre et description neutres, JSON-LD / OG « Brevet 2026 · 29,99 € · parcours vérifié chaque soir »
+  retirés. Le SEO revient à la nouvelle landing.
+- Admin : la fiche élève appelle `get_carte {code}` avec le jeton admin et **sans** l'email de l'admin (sinon « identité non vérifiée »).
+  Une carte express y est étiquetée « express ».
+- **CLAUDE.md non modifié** : c'est au chef de projet ou à Nicolas de le faire (40 §5). Les règles à réécrire :
+  - P1 : 15 q adaptatives, QCM + fill, corrigées serveur, sans correction affichée ;
+  - P2 : séance du jour `get_training` ;
+  - P3 : items atomiques ;
+  - P5 et P10 : caduques ;
+  - P9 : reprise de séance (serveur) ;
+  - P12 et G12 / G14 : 💤 ;
+  - T1-T4 : gratuit = séance sur la zone du point faible, puis 2 offres via `OFFRE`, paiement depuis la vue parent ;
+  - T2 : 3 Payment Links à créer ;
+  - M2 / M7 / M8 / G11 : remplacés par H1 / H4 ;
+  - G1, G2, G4-G7, G9, G10, G13, G15 : supprimés ; G3 / G8 : gardés, streak serveur ;
+  - **G16 : abandonné** ;
+  - A2-A5 et A7 : admin en lecture seule ;
+  - note « ghost divs z-index » : caduque ;
+  - « Pas de données sensibles dans localStorage » : respecté, `boost_v23` = jetons de session.
+
+## Résumé de l'intégration (25/09)
+
+- Lots **L1 à L10 terminés**. `app.html` passe de **13 801 à 5 753 lignes** (−58 %), vanilla, sans dépendance nouvelle.
+  `js/bilan-pdf.js` est chargé à la demande.
+- Tests :
+  - `node supabase/tests/fill_match_node.js` OK à chaque lot (`_normFill` / `_toNum` / `_matchFill` intacts) ;
+  - `./matheux.sh test` : **101 OK / 0 KO** + test navigateur OK ;
+  - scénarios e2e réels à 375 px sur backend local (express invité → carte avant compte → compte → séance → erreur type → fin de séance →
+    partage → page parent → vue parent + cases + paiement simulé → diag complet 3 modules → carte complète → PDF 16 p → Programme libre →
+    check-up à J+31 → sessions / refresh → admin) ;
+  - 0 erreur console.
+- Bug prod corrigé : `save_scores_batch` partait **sans `code`**, donc aucun score de la file n'était enregistré.
+- Reste à faire hors front :
+  - créer les 3 Payment Links (redirection `app.html?achat=<produit>`) et remplir `OFFRE.*.url` ;
+  - banque « train » trop courte : séances de 1-2 exos observées (`banque_insuffisante`) ;
+  - Besoin API n°13 (email P-SH) ;
+  - brevet blanc (v1.1).

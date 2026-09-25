@@ -1,5 +1,12 @@
 # Produit — Matheux
 
+> ## ⚠️ Refonte « Diagnostic 3e » (24-25/09/2026)
+> Le produit est désormais : **diagnostic express gratuit → carte → séance du jour (5 exos, point faible) → diagnostic complet payant
+> (19 €, PDF parent) → Programme Brevet (49 €, 19 € déduits)**. Référence : `docs/specs/00-contrat-commun.md`, `40-parcours-epuration.md`,
+> `50-offre-conversion.md`. Ce qui suit ce bloc décrit l'offre précédente (29,99 € par niveau, chapitres, boost préparé par le prof).
+
+---
+
 > Vision, cible, parcours utilisateur, workflow quotidien Nicolas.
 > Voir aussi [claude.md](claude.md) pour les règles et [roadmap.md](roadmap.md) pour les priorités.
 

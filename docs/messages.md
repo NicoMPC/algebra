@@ -1,5 +1,30 @@
 # Messages — Matheux · Voice & Tone Guide
 
+> ## ⚠️ Refonte « Diagnostic 3e » (branche `feat/diagnostic-3e`, 25/09/2026) : ce qui fait foi dans `app.html`
+>
+> Les sections ci-dessous décrivent l'**ancienne** app (XP, slots, coach marks, milestones, « ton prof prépare la suite »). Ces messages sont
+> **supprimés** du code. Le dictionnaire `_MSGS` ne contient plus que :
+> - `ok_3eme` / `ok_boost` / `ok_auto`, `ko_3eme` / `ko_boost` / `ko_auto`, `net_error` / `net_retry` / `save_offline` ;
+> - les clés 40 §2.2 : `diag_jsp_ok`, `diag_mid`, `carte_racine`, `seance_fin_parfait`, `seance_fin_ok`, `seance_fin_dur`, `err_retour`,
+>   `mod_fini`, `mod_pause`, `checkup_invite`.
+>
+> Invariants qui remplacent M2, M7, M8, G11 et G16 (40 §2.0) :
+> - **H1** : un seul bouton principal par écran ;
+> - **H2** : jamais « ton prof » (grep `prof prépare|ton prof|Nicolas prépare` = 0) ;
+> - **H3** : ⚪ « Pas vu » si n_obs < 2 ;
+> - **H4** : « demain » seulement en fin de séance et sur l'accueil « séance faite » ;
+> - **H5** : prix et liens dans la seule constante `OFFRE` ;
+> - **H6** : rien n'attend un humain ;
+> - **H7** : pas de % ni de note côté ado (statuts et mouvements) ;
+> - **H8** : 375 px, cibles ≥ 48 px.
+>
+> Côté ado, **aucune incitation à payer** (contrat §7) : le prix est cité une fois (« C'est une décision pour tes parents, pas pour toi »),
+> et le bouton dit « Montrer ma carte à mes parents ». Le discours commercial vit dans la vue parent (vouvoiement) et dans les emails.
+> Bio fondateur : « ancien ingénieur qui accompagne des élèves en maths depuis des années », jamais « prof de maths ».
+> Détail écran par écran : `docs/specs/40-parcours-epuration.md`. Journal d'intégration : `docs/specs/41-integration-log.md`.
+
+---
+
 > Document vivant. Toute modification d'un message dans le code doit être reflétée ici.
 > Référence : `_MSGS` dans `index.html` + templates email dans `backend.js`.
 > Mise à jour : 2026-03-18 — GAS @97 · Invariants figés @95

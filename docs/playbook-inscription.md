@@ -1,5 +1,17 @@
 # Playbook — Inscription → J+7
 
+> ## ⚠️ Refonte « Diagnostic 3e » (25/09/2026) — parcours actuel de `app.html`
+> - Entrée : `app.html#diag?src=…` (ou `#diag-x`), `#login`, `#reset&access_token=…` (routage `_route()`).
+> - **Diag express invité** (`start_diagnostic` sans code → `guest_token`, `mx_dx` en localStorage pour la reprise 24 h) → 15 q adaptatives,
+>   sans correction → **carte partielle avant le compte** (`dxCartePartielle` / `renderCarte`).
+> - E5 « Crée ton espace » (prénom, email d'un parent, mot de passe, case 52 §4.2) → `register {…, diagnostic_id, guest_token}` rattache le
+>   diagnostic et envoie P-X0 au parent. Puis `login` → jetons `{code, email, access_token, refresh_token}` dans `boost_v23`, sans hash.
+> - Repli si le mode invité est refusé : E5 d'abord, puis le diag avec le code.
+> - La modale d'auth ne sert plus qu'à la **connexion** et au mot de passe oublié (lien par mail, plus de code à 8 caractères).
+> - Ce qui suit ce bloc (5 questions, choix d'objectif, `save_calibration_batch`, tour guidé) est **obsolète**.
+
+---
+
 > Domaine : tout ce qui se passe entre l'arrivée sur la landing et la fin du trial.
 > Déclencheurs : "un élève peut pas s'inscrire", "le quiz marche pas", "le mail J+0 est pas parti", "le badge trial s'affiche pas"
 

@@ -1,5 +1,12 @@
 # Playbook — Chapitres & Progression
 
+> ## ⚠️ Refonte « Diagnostic 3e » (25/09/2026)
+> L'app n'affiche plus de liste de chapitres, de slots, de cours adaptatif ni d'archives : l'unité visible est la **compétence**, sur la carte.
+> Le Programme Brevet donne « S'entraîner sur… » une compétence (`get_training {comp}`, scores `source: LIBRE`). Ce playbook ne concerne plus
+> que les données legacy (`curriculum`) encore chargées au login.
+
+---
+
 > Domaine : sélection chapitre, progression 20 exos, slots, complétion, sessions retro, assignation admin.
 > Déclencheurs : "le chapitre apparaît pas", "il est bloqué à 15 exos", "les sessions retro sont fausses", "le slot reward s'affiche pas"
 

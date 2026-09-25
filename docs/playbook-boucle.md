@@ -1,5 +1,16 @@
 # Playbook — Boucle quotidienne
 
+> ## ⚠️ Refonte « Diagnostic 3e » (25/09/2026) — boucle actuelle
+> - Accueil = **« Ta séance du jour »** : `get_training`, 5 items choisis par le moteur, dispo tout de suite (G16 abandonné pour le contenu algo),
+>   avec « Pourquoi ça ? » (`boost.pourquoi`). Machine à 4 états : diag requis / prête / en cours / faite (+ zone maîtrisée).
+> - Pendant la séance : `rSection` (indices, formule, brouillon, Passer, JSP). Mauvaise réponse → **« Erreur classique : … »** (`item.err` +
+>   `err_libelles`). `save_score` porte `item_id`, `comp`, `type`, `nbOptions`, `reponse`, `err_id` : la maîtrise par compétence est mise à jour.
+> - Fin de séance : « n sur 5 du premier coup », streak (serveur), **« Ce qui a bougé aujourd'hui »** (diff des statuts de la carte avant/après).
+> - Plus d'XP, de slots, de milestones, de mode flow, de coach marks, de nudge, de timer (💤), d'overlay « série perdue ». 🎯 n/5 = exos de la séance.
+> - File de scores : `save_scores_batch` **avec `code` et `access_token` à la racine** (bug corrigé le 24/09 : le batch partait sans code).
+
+---
+
 > Domaine : login, boost du jour, exercices, XP, streak, daily goal, timer, messages, coach tips.
 > Déclencheurs : "le boost arrive pas", "les scores sont faux", "le message est bizarre", "l'XP compte pas", "le streak a reset"
 

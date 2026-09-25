@@ -1,5 +1,15 @@
 # Playbook — Paiement & Freemium
 
+> ## ⚠️ Refonte « Diagnostic 3e » (25/09/2026)
+> - Offres : constante `OFFRE` d'`app.html` (diag 19 €, programme 49 €, upgrade 30 €). Les liens Payment Links sont **à créer**, avec
+>   `metadata.produit` et une redirection `app.html?achat=<produit>`. Droits = `mxDroits` serveur (`S.droits`), sans aucune garde côté client.
+> - Paiement uniquement depuis la **vue parent** (`openParentView`, ou `bilan.html`), avec les cases 52 §2.3 enregistrées par `log_consent` avant Stripe.
+>   Côté ado, aucun bouton d'achat.
+> - Retour Stripe : `_pollAchat` interroge `get_acces` pendant 60 s, puis affiche un message par produit.
+> - L'ancien garde premium (9 modules), `_stripeUrl` par niveau et les 29,99 € sont supprimés.
+
+---
+
 > Domaine : freemium (1 chapitre gratuit), chapitres verrouillés, Stripe one-time 29,99€, activation premium auto.
 > Déclencheurs : "il peut accéder à un chapitre bloqué", "le paiement active pas le compte", "le badge free s'affiche pas"
 
