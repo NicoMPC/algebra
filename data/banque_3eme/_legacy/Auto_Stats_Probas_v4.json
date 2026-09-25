@@ -1,0 +1,933 @@
+[
+ {
+  "id": "DF.STAT.01-L004",
+  "comp": "DF.STAT.01",
+  "q": "Marius a un sac opaque contenant des jetons de couleur. Il tire un jeton au hasard. Combien y a-t-il de jetons au total dans le sac ? ___",
+  "a": "20",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "$5 + 8 + 3 + 4 = $ ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Couleur",
+    "Rouge",
+    "Bleu",
+    "Vert",
+    "Jaune"
+   ],
+   "rows": [
+    [
+     "Nombre",
+     "5",
+     "8",
+     "3",
+     "4"
+    ]
+   ],
+   "caption": "Contenu du sac de Marius"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_01",
+  "num": "1",
+  "source": "Auto_Stats_Probas_v4|AUTSP_01.1"
+ },
+ {
+  "id": "DF.PROB.02-L008",
+  "comp": "DF.PROB.02",
+  "q": "Marius a un sac opaque contenant des jetons de couleur. Il tire un jeton au hasard. Quelle est la probabilité de tirer un jeton bleu ? ___",
+  "a": "2/5",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "8/12": "DF.PROB.02#favorables_sur_defavorables",
+   "2/3": "DF.PROB.02#favorables_sur_defavorables"
+  },
+  "steps": [
+   "$8$ jetons bleus sur $20$ au total. $\\frac{8}{20}$ se simplifie par $4$ : ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Couleur",
+    "Rouge",
+    "Bleu",
+    "Vert",
+    "Jaune"
+   ],
+   "rows": [
+    [
+     "Nombre",
+     "5",
+     "8",
+     "3",
+     "4"
+    ]
+   ],
+   "caption": "Contenu du sac de Marius"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_01",
+  "num": "2",
+  "source": "Auto_Stats_Probas_v4|AUTSP_01.2"
+ },
+ {
+  "id": "DF.PROB.02-L009",
+  "comp": "DF.PROB.02",
+  "q": "Marius a un sac opaque contenant des jetons de couleur. Il tire un jeton au hasard. Quelle couleur a la plus faible probabilité d'être tirée ?",
+  "a": "Vert",
+  "type": "qcm",
+  "options": [
+   "Rouge",
+   "Vert",
+   "Jaune"
+  ],
+  "err": {},
+  "steps": [
+   "La couleur la moins représentée a la plus faible probabilité. Compare : $5$, $3$, $4$ ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Couleur",
+    "Rouge",
+    "Bleu",
+    "Vert",
+    "Jaune"
+   ],
+   "rows": [
+    [
+     "Nombre",
+     "5",
+     "8",
+     "3",
+     "4"
+    ]
+   ],
+   "caption": "Contenu du sac de Marius"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_01",
+  "num": "3",
+  "source": "Auto_Stats_Probas_v4|AUTSP_01.3"
+ },
+ {
+  "id": "DF.PROB.02-L010",
+  "comp": "DF.PROB.02",
+  "q": "Marius a un sac opaque contenant des jetons de couleur. Il tire un jeton au hasard. La probabilité de tirer un jeton rouge est $\\frac{1}{5}$.",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "$P(\\text{rouge}) = \\frac{5}{20} = \\frac{1}{4}$, pas $\\frac{1}{5}$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Couleur",
+    "Rouge",
+    "Bleu",
+    "Vert",
+    "Jaune"
+   ],
+   "rows": [
+    [
+     "Nombre",
+     "5",
+     "8",
+     "3",
+     "4"
+    ]
+   ],
+   "caption": "Contenu du sac de Marius"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_01",
+  "num": "4",
+  "source": "Auto_Stats_Probas_v4|AUTSP_01.4"
+ },
+ {
+  "id": "DF.PROB.03-L003",
+  "comp": "DF.PROB.03",
+  "q": "Marius a un sac opaque contenant des jetons de couleur. Il tire un jeton au hasard. Quelle est la probabilité de NE PAS tirer un jeton vert ?",
+  "a": "$\\frac{17}{20}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{17}{20}$",
+   "$\\frac{3}{20}$",
+   "$\\frac{7}{10}$"
+  ],
+  "err": {
+   "$\\frac{3}{20}$": "DF.PROB.03#meme_probabilite"
+  },
+  "steps": [
+   "$P(\\text{pas vert}) = 1 - P(\\text{vert}) = 1 - \\frac{3}{20} = $ ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Couleur",
+    "Rouge",
+    "Bleu",
+    "Vert",
+    "Jaune"
+   ],
+   "rows": [
+    [
+     "Nombre",
+     "5",
+     "8",
+     "3",
+     "4"
+    ]
+   ],
+   "caption": "Contenu du sac de Marius"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_01",
+  "num": "5",
+  "source": "Auto_Stats_Probas_v4|AUTSP_01.5"
+ },
+ {
+  "id": "DF.STAT.01-L005",
+  "comp": "DF.STAT.01",
+  "q": "On a demandé à $50$ élèves de 3ème quel sport ils préfèrent. Quel sport est le plus populaire ? ___",
+  "a": "Foot",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "Compare les effectifs : $20 > 15 > 10 > 5$. Le plus grand est ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Sport",
+    "Foot",
+    "Basket",
+    "Natation",
+    "Tennis"
+   ],
+   "rows": [
+    [
+     "Effectif",
+     "20",
+     "15",
+     "10",
+     "5"
+    ]
+   ],
+   "caption": "Sport préféré des élèves de 3ème"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_02",
+  "num": "1",
+  "source": "Auto_Stats_Probas_v4|AUTSP_02.1"
+ },
+ {
+  "id": "DF.STAT.02-L002",
+  "comp": "DF.STAT.02",
+  "q": "On a demandé à $50$ élèves de 3ème quel sport ils préfèrent. Quelle est la fréquence du Basket ? ___",
+  "a": "3/10",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "15": "DF.STAT.02#effectif_pour_frequence"
+  },
+  "steps": [
+   "Fréquence $= \\frac{15}{50}$. Simplifie par $5$ : ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Sport",
+    "Foot",
+    "Basket",
+    "Natation",
+    "Tennis"
+   ],
+   "rows": [
+    [
+     "Effectif",
+     "20",
+     "15",
+     "10",
+     "5"
+    ]
+   ],
+   "caption": "Sport préféré des élèves de 3ème"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_02",
+  "num": "2",
+  "source": "Auto_Stats_Probas_v4|AUTSP_02.2"
+ },
+ {
+  "id": "DF.STAT.02-L003",
+  "comp": "DF.STAT.02",
+  "comp_secondaires": [
+   "NC.FRAC.07"
+  ],
+  "q": "On a demandé à $50$ élèves de 3ème quel sport ils préfèrent. Quel pourcentage des élèves préfèrent le Foot ?",
+  "a": "40 %",
+  "type": "qcm",
+  "options": [
+   "40 %",
+   "20 %",
+   "50 %"
+  ],
+  "err": {
+   "20 %": "DF.STAT.02#effectif_pour_frequence"
+  },
+  "steps": [
+   "$\\frac{20}{50} = \\frac{40}{100}$. Donc ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Sport",
+    "Foot",
+    "Basket",
+    "Natation",
+    "Tennis"
+   ],
+   "rows": [
+    [
+     "Effectif",
+     "20",
+     "15",
+     "10",
+     "5"
+    ]
+   ],
+   "caption": "Sport préféré des élèves de 3ème"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_02",
+  "num": "3",
+  "source": "Auto_Stats_Probas_v4|AUTSP_02.3"
+ },
+ {
+  "id": "DF.STAT.02-L004",
+  "comp": "DF.STAT.02",
+  "q": "On a demandé à $50$ élèves de 3ème quel sport ils préfèrent. La Natation représente $25\\%$ des réponses.",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "$\\frac{10}{50} = \\frac{20}{100} = 20\\%$, pas $25\\%$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Sport",
+    "Foot",
+    "Basket",
+    "Natation",
+    "Tennis"
+   ],
+   "rows": [
+    [
+     "Effectif",
+     "20",
+     "15",
+     "10",
+     "5"
+    ]
+   ],
+   "caption": "Sport préféré des élèves de 3ème"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_02",
+  "num": "4",
+  "source": "Auto_Stats_Probas_v4|AUTSP_02.4"
+ },
+ {
+  "id": "DF.PROB.02-L011",
+  "comp": "DF.PROB.02",
+  "q": "On a demandé à $50$ élèves de 3ème quel sport ils préfèrent. Si on interroge un élève au hasard, quelle est la probabilité qu'il préfère le Tennis ?",
+  "a": "$\\frac{1}{10}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{1}{10}$",
+   "$\\frac{1}{5}$",
+   "$\\frac{1}{9}$"
+  ],
+  "err": {
+   "$\\frac{1}{9}$": "DF.PROB.02#favorables_sur_defavorables"
+  },
+  "steps": [
+   "$P(\\text{Tennis}) = \\frac{5}{50} = $ ? Simplifie par $5$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Sport",
+    "Foot",
+    "Basket",
+    "Natation",
+    "Tennis"
+   ],
+   "rows": [
+    [
+     "Effectif",
+     "20",
+     "15",
+     "10",
+     "5"
+    ]
+   ],
+   "caption": "Sport préféré des élèves de 3ème"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_02",
+  "num": "5",
+  "source": "Auto_Stats_Probas_v4|AUTSP_02.5"
+ },
+ {
+  "id": "DF.STAT.01-L006",
+  "comp": "DF.STAT.01",
+  "q": "Voici les notes de Jade au 2ème trimestre de maths (sur $20$). Quelle est la note la plus haute de Jade ? ___",
+  "a": "16",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "Compare toutes les notes du tableau : ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Devoir",
+    "DS1",
+    "DS2",
+    "DS3",
+    "DS4",
+    "DS5"
+   ],
+   "rows": [
+    [
+     "Note",
+     "12",
+     "8",
+     "14",
+     "16",
+     "10"
+    ]
+   ],
+   "caption": "Notes de Jade — Trimestre 2"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_03",
+  "num": "1",
+  "source": "Auto_Stats_Probas_v4|AUTSP_03.1"
+ },
+ {
+  "id": "DF.STAT.06-L002",
+  "comp": "DF.STAT.06",
+  "q": "Voici les notes de Jade au 2ème trimestre de maths (sur $20$). Quelle est l'étendue de cette série de notes ? ___",
+  "a": "8",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "16": "DF.STAT.06#max_seul",
+   "2": "DF.STAT.06#premier_dernier"
+  },
+  "steps": [
+   "Étendue $=$ note max $-$ note min $= 16 - 8 = $ ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Devoir",
+    "DS1",
+    "DS2",
+    "DS3",
+    "DS4",
+    "DS5"
+   ],
+   "rows": [
+    [
+     "Note",
+     "12",
+     "8",
+     "14",
+     "16",
+     "10"
+    ]
+   ],
+   "caption": "Notes de Jade — Trimestre 2"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_03",
+  "num": "2",
+  "source": "Auto_Stats_Probas_v4|AUTSP_03.2"
+ },
+ {
+  "id": "DF.STAT.03-L001",
+  "comp": "DF.STAT.03",
+  "q": "Voici les notes de Jade au 2ème trimestre de maths (sur $20$). Quelle est la moyenne de Jade ?",
+  "a": "12",
+  "type": "qcm",
+  "options": [
+   "12",
+   "11",
+   "13"
+  ],
+  "err": {},
+  "steps": [
+   "$\\frac{12 + 8 + 14 + 16 + 10}{5} = \\frac{60}{5} = $ ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Devoir",
+    "DS1",
+    "DS2",
+    "DS3",
+    "DS4",
+    "DS5"
+   ],
+   "rows": [
+    [
+     "Note",
+     "12",
+     "8",
+     "14",
+     "16",
+     "10"
+    ]
+   ],
+   "caption": "Notes de Jade — Trimestre 2"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_03",
+  "num": "3",
+  "source": "Auto_Stats_Probas_v4|AUTSP_03.3"
+ },
+ {
+  "id": "DF.STAT.01-L007",
+  "comp": "DF.STAT.01",
+  "q": "Voici les notes de Jade au 2ème trimestre de maths (sur $20$). Jade a eu la moyenne (≥ $10$) à tous ses devoirs.",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "DS2 $= 8 < 10$. Elle n'a pas eu la moyenne partout."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Devoir",
+    "DS1",
+    "DS2",
+    "DS3",
+    "DS4",
+    "DS5"
+   ],
+   "rows": [
+    [
+     "Note",
+     "12",
+     "8",
+     "14",
+     "16",
+     "10"
+    ]
+   ],
+   "caption": "Notes de Jade — Trimestre 2"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_03",
+  "num": "4",
+  "source": "Auto_Stats_Probas_v4|AUTSP_03.4"
+ },
+ {
+  "id": "DF.STAT.03-L002",
+  "comp": "DF.STAT.03",
+  "q": "Voici les notes de Jade au 2ème trimestre de maths (sur $20$). Si Jade obtient $18$ au DS6, quelle sera sa nouvelle moyenne ?",
+  "a": "13",
+  "type": "qcm",
+  "options": [
+   "13",
+   "14",
+   "12"
+  ],
+  "err": {},
+  "steps": [
+   "$\\frac{60 + 18}{6} = \\frac{78}{6} = $ ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Devoir",
+    "DS1",
+    "DS2",
+    "DS3",
+    "DS4",
+    "DS5"
+   ],
+   "rows": [
+    [
+     "Note",
+     "12",
+     "8",
+     "14",
+     "16",
+     "10"
+    ]
+   ],
+   "caption": "Notes de Jade — Trimestre 2"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_03",
+  "num": "5",
+  "source": "Auto_Stats_Probas_v4|AUTSP_03.5"
+ },
+ {
+  "id": "DF.STAT.01-L008",
+  "comp": "DF.STAT.01",
+  "q": "Voici les résultats de $4$ joueurs lors d'un tournoi de badminton (nombre de matchs gagnés sur $10$ matchs joués chacun). Combien de matchs ont été joués au total dans le tournoi ? ___",
+  "a": "40",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "$4$ joueurs $\\times$ $10$ matchs chacun $= $ ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Joueur",
+    "Léo",
+    "Inès",
+    "Tom",
+    "Sara"
+   ],
+   "rows": [
+    [
+     "Victoires",
+     "7",
+     "5",
+     "8",
+     "6"
+    ]
+   ],
+   "caption": "Résultats du tournoi de badminton"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_04",
+  "num": "1",
+  "source": "Auto_Stats_Probas_v4|AUTSP_04.1"
+ },
+ {
+  "id": "DF.STAT.03-L003",
+  "comp": "DF.STAT.03",
+  "q": "Voici les résultats de $4$ joueurs lors d'un tournoi de badminton (nombre de matchs gagnés sur $10$ matchs joués chacun). Quelle est la moyenne de victoires par joueur ?",
+  "a": "6,5",
+  "type": "qcm",
+  "options": [
+   "6,5",
+   "6",
+   "7"
+  ],
+  "err": {},
+  "steps": [
+   "$\\frac{7 + 5 + 8 + 6}{4} = \\frac{26}{4} = $ ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Joueur",
+    "Léo",
+    "Inès",
+    "Tom",
+    "Sara"
+   ],
+   "rows": [
+    [
+     "Victoires",
+     "7",
+     "5",
+     "8",
+     "6"
+    ]
+   ],
+   "caption": "Résultats du tournoi de badminton"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_04",
+  "num": "2",
+  "source": "Auto_Stats_Probas_v4|AUTSP_04.2"
+ },
+ {
+  "id": "DF.PROB.02-L012",
+  "comp": "DF.PROB.02",
+  "q": "Voici les résultats de $4$ joueurs lors d'un tournoi de badminton (nombre de matchs gagnés sur $10$ matchs joués chacun). Si on choisit un match de Tom au hasard, quelle est la probabilité qu'il l'ait gagné ? ___",
+  "a": "4/5",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "Tom a gagné $8$ matchs sur $10$. $\\frac{8}{10}$ simplifié par $2$ = ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Joueur",
+    "Léo",
+    "Inès",
+    "Tom",
+    "Sara"
+   ],
+   "rows": [
+    [
+     "Victoires",
+     "7",
+     "5",
+     "8",
+     "6"
+    ]
+   ],
+   "caption": "Résultats du tournoi de badminton"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_04",
+  "num": "3",
+  "source": "Auto_Stats_Probas_v4|AUTSP_04.3"
+ },
+ {
+  "id": "DF.STAT.02-L005",
+  "comp": "DF.STAT.02",
+  "q": "Voici les résultats de $4$ joueurs lors d'un tournoi de badminton (nombre de matchs gagnés sur $10$ matchs joués chacun). Quel pourcentage de ses matchs Inès a-t-elle gagnés ?",
+  "a": "50 %",
+  "type": "qcm",
+  "options": [
+   "50 %",
+   "40 %",
+   "60 %"
+  ],
+  "err": {},
+  "steps": [
+   "$\\frac{5}{10} = \\frac{50}{100} = $ ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Joueur",
+    "Léo",
+    "Inès",
+    "Tom",
+    "Sara"
+   ],
+   "rows": [
+    [
+     "Victoires",
+     "7",
+     "5",
+     "8",
+     "6"
+    ]
+   ],
+   "caption": "Résultats du tournoi de badminton"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_04",
+  "num": "4",
+  "source": "Auto_Stats_Probas_v4|AUTSP_04.4"
+ },
+ {
+  "id": "DF.STAT.02-L006",
+  "comp": "DF.STAT.02",
+  "q": "Voici les résultats de $4$ joueurs lors d'un tournoi de badminton (nombre de matchs gagnés sur $10$ matchs joués chacun). Sara a gagné plus de la moitié de ses matchs.",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "La moitié de $10$ est $5$. Sara a gagné $6 > 5$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Joueur",
+    "Léo",
+    "Inès",
+    "Tom",
+    "Sara"
+   ],
+   "rows": [
+    [
+     "Victoires",
+     "7",
+     "5",
+     "8",
+     "6"
+    ]
+   ],
+   "caption": "Résultats du tournoi de badminton"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTSP_04",
+  "num": "5",
+  "source": "Auto_Stats_Probas_v4|AUTSP_04.5"
+ }
+]

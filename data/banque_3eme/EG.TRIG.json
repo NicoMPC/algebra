@@ -1,0 +1,575 @@
+[
+  {
+    "id": "EG.TRIG.01-d01",
+    "comp": "EG.TRIG.01",
+    "q": "Le triangle $KLM$ est rectangle en $L$. Quel est le côté adjacent à l'angle $\\widehat{K}$ ?",
+    "a": "$[KL]$",
+    "type": "qcm",
+    "options": [
+      "$[KM]$",
+      "$[KL]$",
+      "$[LM]$"
+    ],
+    "err": {
+      "$[KM]$": "EG.TRIG.01#adjacent_hypotenuse",
+      "$[LM]$": "EG.TRIG.01#mauvais_angle"
+    },
+    "steps": [
+      "L'hypoténuse est le côté opposé à l'angle droit : ici, elle ne passe pas par $L$. Elle n'est jamais le côté adjacent.",
+      "Le côté adjacent à $\\widehat{K}$ touche le sommet $K$ et n'est pas l'hypoténuse. Lequel est-ce ?"
+    ],
+    "f": "Adjacent : côté de l'angle qui n'est pas l'hypoténuse",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.TRIG.01-d02",
+    "comp": "EG.TRIG.01",
+    "q": "Le triangle $PQR$ est rectangle en $R$. Quel est le côté opposé à l'angle $\\widehat{P}$ ? Écris le nom du segment avec deux lettres (par exemple $AB$). ___",
+    "a": "QR",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "PQ": "EG.TRIG.01#mauvais_angle",
+      "QP": "EG.TRIG.01#mauvais_angle",
+      "PR": "EG.TRIG.01#mauvais_angle",
+      "RP": "EG.TRIG.01#mauvais_angle"
+    },
+    "steps": [
+      "Le côté opposé à un angle est le côté qui ne touche pas son sommet.",
+      "Quel côté du triangle ne passe pas par le point $P$ ?"
+    ],
+    "f": "Opposé : côté en face de l'angle",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "RQ",
+      "[QR]",
+      "[RQ]"
+    ]
+  },
+  {
+    "id": "EG.TRIG.01-d03",
+    "comp": "EG.TRIG.01",
+    "q": "Une rampe de skate forme un triangle $ABC$ rectangle en $C$ : $[AC]$ est au sol, $[BC]$ est vertical et $[AB]$ est la rampe. On s'intéresse à l'angle $\\widehat{B}$, en haut de la rampe. Quel est le côté adjacent à $\\widehat{B}$ ?",
+    "a": "$[BC]$",
+    "type": "qcm",
+    "options": [
+      "$[AB]$",
+      "$[AC]$",
+      "$[BC]$"
+    ],
+    "err": {
+      "$[AB]$": "EG.TRIG.01#adjacent_hypotenuse",
+      "$[AC]$": "EG.TRIG.01#mauvais_angle"
+    },
+    "steps": [
+      "Commence par repérer l'hypoténuse : le côté en face de l'angle droit en $C$.",
+      "Parmi les deux côtés qui partent de $B$, lequel n'est pas l'hypoténuse ?"
+    ],
+    "f": "Adjacent : côté de l'angle qui n'est pas l'hypoténuse",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.TRIG.02-d01",
+    "comp": "EG.TRIG.02",
+    "q": "Le triangle $ABC$ est rectangle en $B$. Quelle est l'expression de $\\cos \\widehat{A}$ ?",
+    "a": "$\\frac{AB}{AC}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{BC}{AC}$",
+      "$\\frac{AC}{AB}$",
+      "$\\frac{AB}{AC}$",
+      "$\\frac{BC}{AB}$"
+    ],
+    "err": {
+      "$\\frac{BC}{AC}$": "EG.TRIG.02#mauvais_rapport",
+      "$\\frac{AC}{AB}$": "EG.TRIG.02#rapport_inverse",
+      "$\\frac{BC}{AB}$": "EG.TRIG.02#mauvais_rapport"
+    },
+    "steps": [
+      "Par rapport à $\\widehat{A}$ : l'hypoténuse est $[AC]$, le côté adjacent est $[AB]$, le côté opposé est $[BC]$.",
+      "Le cosinus fait intervenir le côté adjacent et l'hypoténuse. Lequel est au numérateur ?"
+    ],
+    "f": "$\\cos = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.TRIG.02-d02",
+    "comp": "EG.TRIG.02",
+    "q": "Le triangle $DEF$ est rectangle en $E$. On connaît $DE$ et $EF$ et on cherche la mesure de $\\widehat{D}$. Quelle relation faut-il utiliser ?",
+    "a": "$\\tan \\widehat{D} = \\frac{EF}{DE}$",
+    "type": "qcm",
+    "options": [
+      "$\\cos \\widehat{D} = \\frac{DE}{EF}$",
+      "$\\tan \\widehat{D} = \\frac{DE}{EF}$",
+      "$\\sin \\widehat{D} = \\frac{EF}{DE}$",
+      "$\\tan \\widehat{D} = \\frac{EF}{DE}$"
+    ],
+    "err": {
+      "$\\cos \\widehat{D} = \\frac{DE}{EF}$": "EG.TRIG.02#mauvais_rapport",
+      "$\\tan \\widehat{D} = \\frac{DE}{EF}$": "EG.TRIG.02#rapport_inverse",
+      "$\\sin \\widehat{D} = \\frac{EF}{DE}$": "EG.TRIG.02#mauvais_rapport"
+    },
+    "steps": [
+      "Par rapport à $\\widehat{D}$ : $[DE]$ est le côté adjacent, $[EF]$ est le côté opposé. L'hypoténuse n'est pas connue.",
+      "Quel rapport utilise l'opposé et l'adjacent, sans l'hypoténuse ? Et dans quel sens ?"
+    ],
+    "f": "$\\tan = \\frac{\\text{opposé}}{\\text{adjacent}}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.TRIG.02-d03",
+    "comp": "EG.TRIG.02",
+    "q": "Un toboggan forme un triangle $ABC$ rectangle en $C$ : la glissière $[AB]$ mesure $5$ m et le haut du toboggan est à $BC = 3$ m du sol. On veut l'angle $\\widehat{A}$ entre la glissière et le sol. Affirmation : « On peut le calculer avec $\\cos \\widehat{A} = \\frac{BC}{AB}$. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "EG.TRIG.02#mauvais_rapport"
+    },
+    "steps": [
+      "Par rapport à $\\widehat{A}$ : $[AB]$ est l'hypoténuse et $[BC]$ est le côté opposé.",
+      "Le cosinus utilise-t-il le côté opposé ? Quel rapport utilise l'opposé et l'hypoténuse ?"
+    ],
+    "f": "$\\sin = \\frac{\\text{opposé}}{\\text{hypoténuse}}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.TRIG.03-d01",
+    "comp": "EG.TRIG.03",
+    "q": "Le triangle $ABC$ est rectangle en $B$, avec $AC = 10$ cm et $\\widehat{A} = 60°$. On sait que $\\cos \\widehat{A} = \\frac{AB}{AC}$. Calcule $AB$ (arrondi au dixième si besoin). ___ cm",
+    "a": "5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "20": "EG.TRIG.03#inconnue_au_denominateur",
+      "-9,5": "EG.TRIG.03#mode_calculatrice",
+      "-9,52": "EG.TRIG.03#mode_calculatrice",
+      "5,9": "EG.TRIG.03#mode_calculatrice"
+    },
+    "steps": [
+      "On remplace : $\\cos 60° = \\frac{AB}{10}$.",
+      "$AB$ est au numérateur : $AB = 10 \\times \\cos 60°$. Ta calculatrice doit être en degrés. Combien vaut $\\cos 60°$ ?"
+    ],
+    "f": "$\\cos \\widehat{A} = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.TRIG.03-d02",
+    "comp": "EG.TRIG.03",
+    "q": "Le triangle $DEF$ est rectangle en $E$, avec $EF = 6$ cm et $\\widehat{F} = 60°$. On sait que $\\cos \\widehat{F} = \\frac{EF}{DF}$. Quelle est la longueur $DF$ ?",
+    "a": "$12$ cm",
+    "type": "qcm",
+    "options": [
+      "$3$ cm",
+      "$12$ cm",
+      "$-6{,}3$ cm",
+      "$10{,}2$ cm"
+    ],
+    "err": {
+      "$3$ cm": "EG.TRIG.03#inconnue_au_denominateur",
+      "$-6{,}3$ cm": "EG.TRIG.03#mode_calculatrice",
+      "$10{,}2$ cm": "EG.TRIG.03#mode_calculatrice"
+    },
+    "steps": [
+      "On remplace : $\\cos 60° = \\frac{6}{DF}$. Ici l'inconnue est au dénominateur.",
+      "On en déduit $DF = \\frac{6}{\\cos 60°}$ (calculatrice en degrés) $= \\;?$"
+    ],
+    "f": "$\\cos \\widehat{F} = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.TRIG.03-d03",
+    "comp": "EG.TRIG.03",
+    "q": "Le fil d'un cerf-volant est tendu et mesure $40$ m. Il fait un angle de $30°$ avec le sol horizontal. La hauteur $h$ du cerf-volant vérifie $\\sin 30° = \\frac{h}{40}$. Calcule $h$ (arrondi au dixième si besoin). ___ m",
+    "a": "20",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "80": "EG.TRIG.03#inconnue_au_denominateur",
+      "-39,5": "EG.TRIG.03#mode_calculatrice",
+      "18,2": "EG.TRIG.03#mode_calculatrice"
+    },
+    "steps": [
+      "$h$ est au numérateur : $h = 40 \\times \\sin 30°$.",
+      "Calculatrice en mode degrés : combien vaut $\\sin 30°$ ? Multiplie par $40$."
+    ],
+    "f": "$\\sin \\widehat{A} = \\frac{\\text{opposé}}{\\text{hypoténuse}}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.TRIG.04-d01",
+    "comp": "EG.TRIG.04",
+    "q": "Dans un triangle rectangle, $\\cos \\widehat{A} = 0{,}5$. Quelle est la mesure de l'angle $\\widehat{A}$ ? ___ °",
+    "a": "60",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "45": "EG.TRIG.04#angle_proportionnel",
+      "1": "EG.TRIG.04#pas_arccos",
+      "0,88": "EG.TRIG.04#pas_arccos"
+    },
+    "steps": [
+      "On connaît le cosinus, on cherche l'angle : il faut la fonction « inverse » du cosinus.",
+      "Sur la calculatrice (en degrés) : touche $\\cos^{-1}$ (ou Arccos) appliquée à $0{,}5$. Résultat : $\\;?$"
+    ],
+    "f": "$\\widehat{A} = \\cos^{-1}(0{,}5)$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.TRIG.04-d02",
+    "comp": "EG.TRIG.04",
+    "q": "Le triangle $ABC$ est rectangle en $B$, avec $AB = 4$ cm et $AC = 8$ cm. Quelle est la mesure de $\\widehat{A}$ ?",
+    "a": "$60°$",
+    "type": "qcm",
+    "options": [
+      "$45°$",
+      "$60°$",
+      "$30°$",
+      "$1°$"
+    ],
+    "err": {
+      "$45°$": "EG.TRIG.04#angle_proportionnel",
+      "$1°$": "EG.TRIG.04#pas_arccos",
+      "$30°$": "EG.TRIG.02#mauvais_rapport"
+    },
+    "steps": [
+      "$[AB]$ est adjacent à $\\widehat{A}$ et $[AC]$ est l'hypoténuse : $\\cos \\widehat{A} = \\frac{4}{8} = 0{,}5$.",
+      "Pour passer du cosinus à l'angle, on utilise $\\cos^{-1}$ : $\\widehat{A} = \\cos^{-1}(0{,}5) = \\;?$"
+    ],
+    "f": "$\\cos \\widehat{A} = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.TRIG.04-d03",
+    "comp": "EG.TRIG.04",
+    "q": "Une rampe monte de $10$ m sur une distance horizontale de $10$ m : elle fait un angle de $45°$ avec le sol. Une autre rampe monte aussi de $10$ m, mais sur $20$ m à l'horizontale. Affirmation : « Son angle avec le sol est de $22{,}5°$. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "EG.TRIG.04#angle_proportionnel"
+    },
+    "steps": [
+      "Pour la deuxième rampe : $\\tan \\widehat{A} = \\frac{10}{20} = 0{,}5$.",
+      "Calcule $\\tan^{-1}(0{,}5)$ à la calculatrice (en degrés). Obtiens-tu $22{,}5°$ ?"
+    ],
+    "f": "$\\tan \\widehat{A} = \\frac{\\text{opposé}}{\\text{adjacent}}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.TRIG.02-t01",
+    "comp": "EG.TRIG.02",
+    "q": "Le triangle $KLM$ est rectangle en $L$. Quelle est l'expression de $\\sin \\widehat{K}$ ?",
+    "a": "$\\frac{LM}{KM}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{KL}{KM}$",
+      "$\\frac{LM}{KM}$",
+      "$\\frac{KM}{LM}$",
+      "$\\frac{LM}{KL}$"
+    ],
+    "err": {
+      "$\\frac{KL}{KM}$": "EG.TRIG.02#mauvais_rapport",
+      "$\\frac{KM}{LM}$": "EG.TRIG.02#rapport_inverse",
+      "$\\frac{LM}{KL}$": "EG.TRIG.02#mauvais_rapport"
+    },
+    "steps": [
+      "L'hypoténuse est le côté face à l'angle droit : lequel ?",
+      "Quel côté est en face de l'angle $\\widehat{K}$ ? Le sinus le met en haut ou en bas ?"
+    ],
+    "f": "$\\sin = \\frac{\\text{opposé}}{\\text{hypoténuse}}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.TRIG.02-t02",
+    "comp": "EG.TRIG.02",
+    "q": "Le triangle $PQR$ est rectangle en $R$. Complète : $\\tan \\widehat{P} = \\frac{QR}{\\text{___}}$",
+    "a": "PR",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "PQ": "EG.TRIG.02#mauvais_rapport",
+      "QP": "EG.TRIG.02#mauvais_rapport"
+    },
+    "steps": [
+      "$QR$ est le côté opposé à $\\widehat{P}$.",
+      "La tangente divise l'opposé par quel côté ? Ce côté touche $P$ sans être l'hypoténuse."
+    ],
+    "f": "$\\tan = \\frac{\\text{opposé}}{\\text{adjacent}}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "RP",
+      "[PR]",
+      "[RP]"
+    ]
+  },
+  {
+    "id": "EG.TRIG.02-t03",
+    "comp": "EG.TRIG.02",
+    "q": "Dans le triangle $ABC$ rectangle en $C$, on connaît l'hypoténuse et le côté adjacent à $\\widehat{A}$. Quel rapport faut-il utiliser pour calculer $\\widehat{A}$ : cos, sin ou tan ? ___",
+    "a": "cos",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "sin": "EG.TRIG.02#mauvais_rapport",
+      "sinus": "EG.TRIG.02#mauvais_rapport",
+      "tan": "EG.TRIG.02#mauvais_rapport",
+      "tangente": "EG.TRIG.02#mauvais_rapport"
+    },
+    "steps": [
+      "Pour chaque rapport, quels côtés utilise-t-il ?",
+      "Lequel utilise exactement l'adjacent et l'hypoténuse ?"
+    ],
+    "f": "$\\cos = \\frac{\\text{adj.}}{\\text{hyp.}}$ ; $\\sin = \\frac{\\text{opp.}}{\\text{hyp.}}$ ; $\\tan = \\frac{\\text{opp.}}{\\text{adj.}}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "cosinus",
+      "le cosinus"
+    ]
+  },
+  {
+    "id": "EG.TRIG.02-t04",
+    "comp": "EG.TRIG.02",
+    "q": "Le triangle $EFG$ est rectangle en $F$. Complète : $\\cos \\widehat{E} = \\frac{\\text{___}}{EG}$",
+    "a": "EF",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "FG": "EG.TRIG.02#mauvais_rapport",
+      "GF": "EG.TRIG.02#mauvais_rapport"
+    },
+    "steps": [
+      "$EG$ est l'hypoténuse (face à l'angle droit en $F$).",
+      "Le cosinus met en haut le côté adjacent à $\\widehat{E}$ : celui qui touche $E$ et n'est pas l'hypoténuse."
+    ],
+    "f": "$\\cos = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "FE",
+      "[EF]",
+      "[FE]"
+    ]
+  },
+  {
+    "id": "EG.TRIG.02-t05",
+    "comp": "EG.TRIG.02",
+    "q": "Une échelle de $4$ m est appuyée contre un mur vertical. Son pied est posé sur le sol horizontal, à $1{,}2$ m du mur. On note $\\alpha$ l'angle entre l'échelle et le sol. Quelle relation est correcte ?",
+    "a": "$\\cos \\alpha = \\frac{1{,}2}{4}$",
+    "type": "qcm",
+    "options": [
+      "$\\sin \\alpha = \\frac{1{,}2}{4}$",
+      "$\\cos \\alpha = \\frac{4}{1{,}2}$",
+      "$\\cos \\alpha = \\frac{1{,}2}{4}$",
+      "$\\tan \\alpha = \\frac{1{,}2}{4}$"
+    ],
+    "err": {
+      "$\\sin \\alpha = \\frac{1{,}2}{4}$": "EG.TRIG.02#mauvais_rapport",
+      "$\\cos \\alpha = \\frac{4}{1{,}2}$": "EG.TRIG.02#rapport_inverse",
+      "$\\tan \\alpha = \\frac{1{,}2}{4}$": "EG.TRIG.01#adjacent_hypotenuse"
+    },
+    "steps": [
+      "Le mur, le sol et l'échelle forment un triangle rectangle : quel côté est l'hypoténuse ?",
+      "Les $1{,}2$ m au sol touchent l'angle $\\alpha$ : est-ce l'adjacent ou l'opposé ?"
+    ],
+    "f": "$\\cos = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.TRIG.02-t06",
+    "comp": "EG.TRIG.02",
+    "q": "Le triangle $RST$ est rectangle en $S$. On connaît $RS$ et $RT$, et on veut calculer l'angle $\\widehat{T}$. Quel rapport faut-il utiliser : cos, sin ou tan ? ___",
+    "a": "sin",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "cos": "EG.TRIG.01#mauvais_angle",
+      "cosinus": "EG.TRIG.01#mauvais_angle",
+      "tan": "EG.TRIG.02#mauvais_rapport",
+      "tangente": "EG.TRIG.02#mauvais_rapport"
+    },
+    "steps": [
+      "Place-toi en $T$ : $RS$ touche-t-il le sommet $T$ ?",
+      "$RS$ est donc l'adjacent ou l'opposé de $\\widehat{T}$ ? Et $RT$ ?"
+    ],
+    "f": "$\\cos = \\frac{\\text{adj.}}{\\text{hyp.}}$ ; $\\sin = \\frac{\\text{opp.}}{\\text{hyp.}}$ ; $\\tan = \\frac{\\text{opp.}}{\\text{adj.}}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "sinus",
+      "le sinus"
+    ]
+  },
+  {
+    "id": "EG.TRIG.02-t07",
+    "comp": "EG.TRIG.02",
+    "q": "Un avion décolle en ligne droite avec un angle de $15°$ par rapport au sol horizontal. Il a parcouru $2$ km sur cette ligne. Quel calcul donne son altitude, en km ?",
+    "a": "$2 \\times \\sin(15°)$",
+    "type": "qcm",
+    "options": [
+      "$2 \\times \\cos(15°)$",
+      "$2 \\times \\sin(15°)$",
+      "$2 \\times \\tan(15°)$",
+      "$\\frac{2}{\\sin(15°)}$"
+    ],
+    "err": {
+      "$2 \\times \\cos(15°)$": "EG.TRIG.02#mauvais_rapport",
+      "$2 \\times \\tan(15°)$": "EG.TRIG.01#adjacent_hypotenuse",
+      "$\\frac{2}{\\sin(15°)}$": "EG.TRIG.02#rapport_inverse"
+    },
+    "steps": [
+      "Les $2$ km parcourus sont-ils l'hypoténuse, l'adjacent ou l'opposé de l'angle de $15°$ ?",
+      "L'altitude est verticale : est-elle adjacente ou opposée à cet angle ? Quel rapport relie ces deux côtés ?"
+    ],
+    "f": "$\\sin = \\frac{\\text{opposé}}{\\text{hypoténuse}}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.TRIG.02-t08",
+    "comp": "EG.TRIG.02",
+    "q": "Le triangle $ABH$ est rectangle en $H$. On connaît $AH = 5$ cm et $\\widehat{ABH} = 40°$. On cherche la longueur $BH$. Quelle égalité faut-il utiliser ?",
+    "a": "$\\tan(40°) = \\frac{AH}{BH}$",
+    "type": "qcm",
+    "options": [
+      "$\\tan(40°) = \\frac{BH}{AH}$",
+      "$\\sin(40°) = \\frac{AH}{BH}$",
+      "$\\tan(40°) = \\frac{AH}{BH}$",
+      "$\\cos(40°) = \\frac{BH}{AH}$"
+    ],
+    "err": {
+      "$\\tan(40°) = \\frac{BH}{AH}$": "EG.TRIG.01#mauvais_angle",
+      "$\\sin(40°) = \\frac{AH}{BH}$": "EG.TRIG.01#adjacent_hypotenuse",
+      "$\\cos(40°) = \\frac{BH}{AH}$": "EG.TRIG.01#adjacent_hypotenuse"
+    },
+    "steps": [
+      "L'angle connu est en $B$. Vu de $B$, $AH$ est-il l'opposé ou l'adjacent ? Et $BH$ ?",
+      "Ni $AH$ ni $BH$ n'est l'hypoténuse : quel rapport n'utilise pas l'hypoténuse ?"
+    ],
+    "f": "$\\tan = \\frac{\\text{opposé}}{\\text{adjacent}}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.TRIG.02-t09",
+    "comp": "EG.TRIG.02",
+    "q": "Une rampe $[AB]$ relie le sol, en $A$, au haut d'un muret vertical $[BC]$ ; le triangle $ABC$ est rectangle en $C$. Au sol, $AC = 6$ m, et la hauteur du muret est $BC = 0{,}5$ m. Quel rapport faut-il utiliser pour calculer l'angle $\\widehat{BAC}$ : cos, sin ou tan ? ___",
+    "a": "tan",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "sin": "EG.TRIG.01#adjacent_hypotenuse",
+      "sinus": "EG.TRIG.01#adjacent_hypotenuse",
+      "cos": "EG.TRIG.02#mauvais_rapport",
+      "cosinus": "EG.TRIG.02#mauvais_rapport"
+    },
+    "steps": [
+      "On ne connaît pas la longueur de la rampe : l'hypoténuse est-elle connue ?",
+      "Vu de $A$, quel rôle joue $BC$ ? Et $AC$ ? Quel rapport relie ces deux côtés ?"
+    ],
+    "f": "$\\tan = \\frac{\\text{opposé}}{\\text{adjacent}}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "tangente",
+      "la tangente"
+    ]
+  }
+]

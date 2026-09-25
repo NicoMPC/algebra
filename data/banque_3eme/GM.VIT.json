@@ -1,0 +1,151 @@
+[
+  {
+    "id": "GM.VIT.01-d01",
+    "comp": "GM.VIT.01",
+    "q": "Une voiture roule à la vitesse constante de $80$ km/h pendant $3$ h. Quelle distance parcourt-elle ? ___ km",
+    "a": "240",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "26,67": "GM.VIT.01#formule_inversee",
+      "26,7": "GM.VIT.01#formule_inversee"
+    },
+    "steps": [
+      "Rouler à $80$ km/h, c'est parcourir $80$ km en $1$ heure.",
+      "Combien de kilomètres en $3$ heures ?"
+    ],
+    "f": "$d = v \\times t$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.VIT.01-d02",
+    "comp": "GM.VIT.01",
+    "q": "Un cycliste parcourt $45$ km en $1$ h $30$ min. Quelle est sa vitesse moyenne ?",
+    "a": "$30$ km/h",
+    "type": "qcm",
+    "options": [
+      "$30$ km/h",
+      "environ $34{,}6$ km/h",
+      "$67{,}5$ km/h",
+      "environ $0{,}03$ km/h"
+    ],
+    "err": {
+      "environ $34{,}6$ km/h": "GM.VIT.01#duree_non_convertie",
+      "$67{,}5$ km/h": "GM.VIT.01#formule_inversee",
+      "environ $0{,}03$ km/h": "GM.VIT.01#formule_inversee"
+    },
+    "steps": [
+      "Écris d'abord la durée en heures décimales : $1$ h $30$ min $=$ ? h.",
+      "Vitesse = distance divisée par durée : ?"
+    ],
+    "f": "$v = \\frac{d}{t}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.VIT.01-d03",
+    "comp": "GM.VIT.01",
+    "q": "Aïcha fait un aller de $60$ km à $60$ km/h, puis le retour ($60$ km) à $30$ km/h. Quelle est sa vitesse moyenne sur l'aller-retour ? ___ km/h",
+    "a": "40",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "45": "GM.VIT.01#moyenne_des_vitesses"
+    },
+    "steps": [
+      "Calcule la durée de l'aller, puis celle du retour.",
+      "Vitesse moyenne = distance totale divisée par durée totale : ?"
+    ],
+    "f": "$v_{\\text{moyenne}} = \\frac{d_{\\text{totale}}}{t_{\\text{totale}}}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.VIT.02-d01",
+    "comp": "GM.VIT.02",
+    "q": "Convertis $72$ km/h en m/s.",
+    "a": "$20$ m/s",
+    "type": "qcm",
+    "options": [
+      "$20$ m/s",
+      "$259{,}2$ m/s",
+      "$72\\,000$ m/s"
+    ],
+    "err": {
+      "$259{,}2$ m/s": "GM.VIT.02#sens_3_6",
+      "$72\\,000$ m/s": "GM.VIT.02#une_seule_unite"
+    },
+    "steps": [
+      "$72$ km/h, c'est $72\\,000$ m en $3\\,600$ s.",
+      "Combien de mètres en $1$ seconde ?"
+    ],
+    "f": "$\\text{km/h} \\xrightarrow{\\div 3{,}6} \\text{m/s}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.VIT.02-d02",
+    "comp": "GM.VIT.02",
+    "q": "Un sprinteur court à $15$ m/s. Quelle est sa vitesse en km/h ? ___ km/h",
+    "a": "54",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "4,17": "GM.VIT.02#sens_3_6",
+      "0,015": "GM.VIT.02#une_seule_unite",
+      "900": "GM.VIT.02#une_seule_unite"
+    },
+    "steps": [
+      "En $1$ h ($3\\,600$ s), combien de mètres parcourt-il ?",
+      "Convertis cette distance en km : ?"
+    ],
+    "f": "$\\text{m/s} \\xrightarrow{\\times 3{,}6} \\text{km/h}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.VIT.02-d03",
+    "comp": "GM.VIT.02",
+    "q": "Un TGV roule à $324$ km/h. Combien de mètres parcourt-il en une seconde ? ___ m",
+    "a": "90",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1166,4": "GM.VIT.02#sens_3_6",
+      "324000": "GM.VIT.02#une_seule_unite",
+      "5400": "GM.VIT.02#une_seule_unite"
+    },
+    "steps": [
+      "$324$ km/h, c'est $324\\,000$ m parcourus en $1$ h.",
+      "Combien de secondes dans $1$ h ? Divise : ?"
+    ],
+    "f": "$\\text{km/h} \\xrightarrow{\\div 3{,}6} \\text{m/s}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  }
+]

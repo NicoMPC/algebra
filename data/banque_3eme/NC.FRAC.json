@@ -1,0 +1,1130 @@
+[
+  {
+    "id": "NC.FRAC.01-d01",
+    "comp": "NC.FRAC.01",
+    "q": "Laquelle de ces comparaisons est vraie ?",
+    "a": "$\\frac{1}{4} > \\frac{1}{8}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{1}{8} > \\frac{1}{4}$",
+      "$\\frac{1}{4} > \\frac{1}{8}$",
+      "$\\frac{1}{10} > \\frac{1}{6}$",
+      "$\\frac{1}{6} > \\frac{1}{4}$"
+    ],
+    "err": {
+      "$\\frac{1}{8} > \\frac{1}{4}$": "NC.FRAC.01#grand_denominateur",
+      "$\\frac{1}{10} > \\frac{1}{6}$": "NC.FRAC.01#grand_denominateur",
+      "$\\frac{1}{6} > \\frac{1}{4}$": "NC.FRAC.01#grand_denominateur"
+    },
+    "steps": [
+      "$\\frac{1}{8}$, c'est une part quand on coupe l'unité en $8$ parts égales.",
+      "Plus on coupe un gâteau en beaucoup de parts, plus chaque part est… ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.01-d02",
+    "comp": "NC.FRAC.01",
+    "q": "Quelle est l'écriture décimale de $\\frac{3}{5}$ ?",
+    "a": "$0{,}6$",
+    "type": "qcm",
+    "options": [
+      "$3{,}5$",
+      "$0{,}6$",
+      "$0{,}35$"
+    ],
+    "err": {
+      "$3{,}5$": "NC.FRAC.01#pas_quotient",
+      "$0{,}35$": "NC.FRAC.01#pas_quotient"
+    },
+    "steps": [
+      "Une fraction est un quotient : $\\frac{3}{5} = 3 \\div 5$.",
+      "Pour t'aider, écris $\\frac{3}{5}$ avec un dénominateur $10$ : $\\frac{3}{5} = \\frac{?}{10}$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.01-d03",
+    "comp": "NC.FRAC.01",
+    "q": "On partage équitablement $3$ pizzas entre $4$ amis. Vrai ou faux : chacun reçoit $\\frac{3}{4}$ de pizza.",
+    "a": "Vrai",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Faux": "NC.FRAC.01#pas_quotient"
+    },
+    "steps": [
+      "Chacun reçoit $3 \\div 4$ pizza. Comment s'écrit ce quotient sous forme de fraction ?",
+      "Imagine : on coupe chaque pizza en $4$, chaque ami prend une part de chaque pizza. Combien de quarts a-t-il ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.FRAC.02-d01",
+    "comp": "NC.FRAC.02",
+    "q": "Quelle fraction est égale à $\\frac{2}{3}$ ?",
+    "a": "$\\frac{8}{12}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{4}{5}$",
+      "$\\frac{5}{6}$",
+      "$\\frac{8}{12}$",
+      "$\\frac{3}{4}$"
+    ],
+    "err": {
+      "$\\frac{4}{5}$": "NC.FRAC.02#ajout_meme_nombre",
+      "$\\frac{5}{6}$": "NC.FRAC.02#ajout_meme_nombre",
+      "$\\frac{3}{4}$": "NC.FRAC.02#ajout_meme_nombre"
+    },
+    "steps": [
+      "Pour obtenir une fraction égale, on multiplie (ou divise) le numérateur et le dénominateur par le même nombre.",
+      "Pour chaque proposition, cherche par quel nombre on a multiplié $2$ et $3$ : est-ce le même en haut et en bas ?"
+    ],
+    "f": "$\\frac{a}{b} = \\frac{a \\times k}{b \\times k}$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.02-d02",
+    "comp": "NC.FRAC.02",
+    "q": "Quelle est la forme irréductible de $\\frac{84}{120}$ ?",
+    "a": "$\\frac{7}{10}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{42}{60}$",
+      "$\\frac{21}{30}$",
+      "$\\frac{14}{20}$",
+      "$\\frac{7}{10}$"
+    ],
+    "err": {
+      "$\\frac{42}{60}$": "NC.FRAC.02#simplification_incomplete",
+      "$\\frac{21}{30}$": "NC.FRAC.02#simplification_incomplete",
+      "$\\frac{14}{20}$": "NC.FRAC.02#simplification_incomplete"
+    },
+    "steps": [
+      "Une fraction est irréductible quand son numérateur et son dénominateur n'ont plus aucun diviseur commun (à part $1$).",
+      "Cherche le plus grand diviseur commun de $84$ et $120$ (essaie $12$), ou continue à simplifier tant que c'est possible."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.02-d03",
+    "comp": "NC.FRAC.02",
+    "q": "Écris $\\frac{6 + 9}{6}$ sous forme de fraction irréductible.",
+    "a": "$\\frac{5}{2}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{5}{2}$",
+      "$\\frac{15}{6}$",
+      "$9$",
+      "$10$"
+    ],
+    "err": {
+      "$\\frac{15}{6}$": "NC.FRAC.02#simplification_incomplete",
+      "$9$": "NC.FRAC.02#simplifie_somme",
+      "$10$": "NC.FRAC.02#simplifie_somme"
+    },
+    "steps": [
+      "On ne peut simplifier que des facteurs, pas des termes d'une somme : calcule d'abord le numérateur.",
+      "Tu obtiens $\\frac{?}{6}$ : quel est le plus grand diviseur commun du numérateur et de $6$ ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.03-d01",
+    "comp": "NC.FRAC.03",
+    "q": "Calcule $\\frac{2}{5} + \\frac{1}{3}$ et donne le résultat sous forme de fraction. ___",
+    "a": "11/15",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3/8": "NC.FRAC.03#somme_directe",
+      "3/15": "NC.FRAC.03#numerateur_inchange",
+      "1/5": "NC.FRAC.03#numerateur_inchange"
+    },
+    "steps": [
+      "On ne peut additionner que des fractions de même dénominateur : quel dénominateur commun à $5$ et $3$ ?",
+      "$\\frac{2}{5} = \\frac{?}{15}$ et $\\frac{1}{3} = \\frac{?}{15}$ : n'oublie pas de multiplier aussi les numérateurs."
+    ],
+    "f": "$\\frac{a}{b} + \\frac{c}{d} = \\frac{a \\times d + c \\times b}{b \\times d}$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.03-d02",
+    "comp": "NC.FRAC.03",
+    "q": "Calcule $\\frac{5}{6} - \\frac{3}{4}$.",
+    "a": "$\\frac{1}{12}$",
+    "type": "qcm",
+    "options": [
+      "$1$",
+      "$\\frac{1}{12}$",
+      "$\\frac{2}{12}$",
+      "$\\frac{2}{24}$"
+    ],
+    "err": {
+      "$1$": "NC.FRAC.03#somme_directe",
+      "$\\frac{2}{12}$": "NC.FRAC.03#numerateur_inchange",
+      "$\\frac{2}{24}$": "NC.FRAC.03#numerateur_inchange"
+    },
+    "steps": [
+      "Mets d'abord les deux fractions au même dénominateur : le plus petit multiple commun de $6$ et $4$ est $12$.",
+      "$\\frac{5}{6} = \\frac{?}{12}$ et $\\frac{3}{4} = \\frac{?}{12}$ : soustrais ensuite les numérateurs."
+    ],
+    "f": "$\\frac{a}{b} - \\frac{c}{d} = \\frac{a \\times d - c \\times b}{b \\times d}$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.03-d03",
+    "comp": "NC.FRAC.03",
+    "q": "Calcule $2 + \\frac{3}{4}$ et donne le résultat sous forme d'une seule fraction. ___",
+    "a": "11/4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5/6": "NC.FRAC.03#entier_mal_ecrit",
+      "5/4": "NC.FRAC.03#entier_mal_ecrit"
+    },
+    "steps": [
+      "Écris d'abord l'entier $2$ comme une fraction de dénominateur $4$ : $2 = \\frac{?}{4}$.",
+      "Il reste à additionner deux fractions de même dénominateur."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.04-d01",
+    "comp": "NC.FRAC.04",
+    "q": "Calcule les $\\frac{3}{4}$ de $36$. ___",
+    "a": "27",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "48": "NC.FRAC.04#roles_inverses",
+      "12": "NC.FRAC.04#roles_inverses",
+      "144": "NC.FRAC.04#roles_inverses"
+    },
+    "steps": [
+      "Prendre les $\\frac{3}{4}$, c'est partager en $4$ parts égales et en prendre $3$.",
+      "Une part : $36 \\div 4 = \\,?$. Combien en prend-on ?"
+    ],
+    "f": "$\\frac{a}{b}$ de $N$ $= N \\div b \\times a$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.04-d02",
+    "comp": "NC.FRAC.04",
+    "q": "Un pull coûte $40$ €. En soldes, son prix baisse de $\\frac{1}{5}$. Quel est son nouveau prix ?",
+    "a": "$32$ €",
+    "type": "qcm",
+    "options": [
+      "$8$ €",
+      "$200$ €",
+      "$32$ €"
+    ],
+    "err": {
+      "$8$ €": "NC.FRAC.04#part_enlevee",
+      "$200$ €": "NC.FRAC.04#roles_inverses"
+    },
+    "steps": [
+      "Commence par calculer la baisse : $\\frac{1}{5}$ de $40$ € $= \\,?$",
+      "Le nouveau prix, c'est l'ancien prix moins la baisse… ou bien plus ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.FRAC.04-d03",
+    "comp": "NC.FRAC.04",
+    "q": "Un collège compte $540$ élèves ; les $\\frac{2}{9}$ sont externes. Combien d'élèves ne sont PAS externes ?",
+    "a": "$420$",
+    "type": "qcm",
+    "options": [
+      "$120$",
+      "$2430$",
+      "$270$",
+      "$420$"
+    ],
+    "err": {
+      "$120$": "NC.FRAC.04#part_enlevee",
+      "$2430$": "NC.FRAC.04#roles_inverses",
+      "$270$": "NC.FRAC.04#roles_inverses"
+    },
+    "steps": [
+      "Un neuvième des élèves : $540 \\div 9 = \\,?$. Les externes en représentent $2$.",
+      "La question porte sur les autres élèves : que faut-il faire avec le nombre d'externes ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.FRAC.05-d01",
+    "comp": "NC.FRAC.05",
+    "q": "Calcule $\\frac{2}{3} \\times \\frac{4}{5}$ et donne le résultat sous forme de fraction. ___",
+    "a": "8/15",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "10/12": "NC.FRAC.05#produit_en_croix",
+      "5/6": "NC.FRAC.05#produit_en_croix",
+      "120/15": "NC.FRAC.05#meme_denominateur"
+    },
+    "steps": [
+      "Pour multiplier deux fractions, pas besoin de dénominateur commun.",
+      "Numérateur : $2 \\times 4 = \\,?$. Dénominateur : $3 \\times 5 = \\,?$"
+    ],
+    "f": "$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{a \\times c}{b \\times d}$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.05-d02",
+    "comp": "NC.FRAC.05",
+    "q": "Léo mange les $\\frac{2}{3}$ des $\\frac{3}{8}$ d'une tarte. Quelle fraction de la tarte a-t-il mangée ?",
+    "a": "$\\frac{1}{4}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{1}{4}$",
+      "$\\frac{25}{24}$",
+      "$\\frac{7}{24}$",
+      "$\\frac{16}{9}$"
+    ],
+    "err": {
+      "$\\frac{25}{24}$": "NC.FRAC.05#de_pas_multiplier",
+      "$\\frac{7}{24}$": "NC.FRAC.05#de_pas_multiplier",
+      "$\\frac{16}{9}$": "NC.FRAC.05#produit_en_croix"
+    },
+    "steps": [
+      "« Les $\\frac{2}{3}$ de » se traduit par une multiplication : $\\frac{2}{3} \\times \\frac{3}{8}$.",
+      "Multiplie numérateurs entre eux et dénominateurs entre eux, puis simplifie."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.FRAC.05-d03",
+    "comp": "NC.FRAC.05",
+    "q": "Calcule $\\frac{2}{3} \\times \\frac{1}{4}$.",
+    "a": "$\\frac{1}{6}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{24}{12}$",
+      "$\\frac{1}{6}$",
+      "$\\frac{8}{3}$",
+      "$\\frac{11}{12}$"
+    ],
+    "err": {
+      "$\\frac{24}{12}$": "NC.FRAC.05#meme_denominateur",
+      "$\\frac{8}{3}$": "NC.FRAC.05#produit_en_croix",
+      "$\\frac{11}{12}$": "NC.FRAC.05#de_pas_multiplier"
+    },
+    "steps": [
+      "Pas de dénominateur commun pour un produit : on multiplie directement.",
+      "$\\frac{2 \\times 1}{3 \\times 4} = \\frac{?}{12}$ : peut-on simplifier ?"
+    ],
+    "f": "$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{a \\times c}{b \\times d}$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.06-d01",
+    "comp": "NC.FRAC.06",
+    "q": "Calcule $\\frac{2}{5} \\div \\frac{3}{4}$ et donne le résultat sous forme de fraction. ___",
+    "a": "8/15",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "6/20": "NC.FRAC.06#multiplie_par_fraction",
+      "3/10": "NC.FRAC.06#multiplie_par_fraction",
+      "15/8": "NC.FRAC.06#inverse_premiere"
+    },
+    "steps": [
+      "Diviser par une fraction, c'est multiplier par son inverse. Quel est l'inverse de $\\frac{3}{4}$ ?",
+      "Calcule $\\frac{2}{5} \\times \\frac{?}{?}$."
+    ],
+    "f": "$\\frac{a}{b} \\div \\frac{c}{d} = \\frac{a}{b} \\times \\frac{d}{c}$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.06-d02",
+    "comp": "NC.FRAC.06",
+    "q": "Avec $6$ L de jus, on remplit des gourdes de $\\frac{3}{4}$ L. Combien de gourdes remplit-on ?",
+    "a": "$8$",
+    "type": "qcm",
+    "options": [
+      "$4{,}5$",
+      "$\\frac{1}{8}$",
+      "$8$",
+      "Impossible : on ne peut pas obtenir plus que $6$"
+    ],
+    "err": {
+      "$4{,}5$": "NC.FRAC.06#multiplie_par_fraction",
+      "$\\frac{1}{8}$": "NC.FRAC.06#inverse_premiere",
+      "Impossible : on ne peut pas obtenir plus que $6$": "NC.FRAC.06#division_rapetisse"
+    },
+    "steps": [
+      "On cherche combien de fois $\\frac{3}{4}$ L « rentre » dans $6$ L : c'est la division $6 \\div \\frac{3}{4}$.",
+      "Diviser par $\\frac{3}{4}$ revient à multiplier par quel nombre ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.FRAC.06-d03",
+    "comp": "NC.FRAC.06",
+    "q": "Vrai ou faux : $5 \\div \\frac{1}{2}$ est plus petit que $5$.",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.FRAC.06#division_rapetisse"
+    },
+    "steps": [
+      "$5 \\div \\frac{1}{2}$ : combien de demis y a-t-il dans $5$ unités ?",
+      "Diviser par $\\frac{1}{2}$ revient à multiplier par $2$. Le résultat est-il plus petit que $5$ ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.07-d01",
+    "comp": "NC.FRAC.07",
+    "q": "Quelle est l'écriture décimale de $25$ % ?",
+    "a": "$0{,}25$",
+    "type": "qcm",
+    "options": [
+      "$0{,}025$",
+      "$2{,}5$",
+      "$0{,}25$",
+      "$25$"
+    ],
+    "err": {
+      "$0{,}025$": "NC.FRAC.07#pourcent_virgule",
+      "$2{,}5$": "NC.FRAC.07#pourcent_virgule",
+      "$25$": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "« Pour cent » veut dire « sur $100$ » : $25$ % $= \\frac{25}{100}$.",
+      "Diviser par $100$ : de combien de rangs la virgule se déplace-t-elle ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.07-d02",
+    "comp": "NC.FRAC.07",
+    "q": "Quel pourcentage est égal à $\\frac{1}{4}$ ?",
+    "a": "$25$ %",
+    "type": "qcm",
+    "options": [
+      "$14$ %",
+      "$1{,}4$ %",
+      "$0{,}25$ %",
+      "$25$ %"
+    ],
+    "err": {
+      "$14$ %": "NC.FRAC.07#juxtaposition",
+      "$1{,}4$ %": "NC.FRAC.07#juxtaposition",
+      "$0{,}25$ %": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "Un pourcentage est une fraction de dénominateur $100$ : $\\frac{1}{4} = \\frac{?}{100}$.",
+      "Quart de $100$ : $100 \\div 4 = \\,?$"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.07-d03",
+    "comp": "NC.FRAC.07",
+    "q": "Quel pourcentage est égal à $\\frac{7}{20}$ ?",
+    "a": "$35$ %",
+    "type": "qcm",
+    "options": [
+      "$0{,}35$ %",
+      "$35$ %",
+      "$3{,}5$ %",
+      "$7{,}2$ %"
+    ],
+    "err": {
+      "$0{,}35$ %": "NC.FRAC.07#pourcent_virgule",
+      "$3{,}5$ %": "NC.FRAC.07#pourcent_virgule",
+      "$7{,}2$ %": "NC.FRAC.07#juxtaposition"
+    },
+    "steps": [
+      "On veut une fraction de dénominateur $100$ : par combien multiplier $20$ pour obtenir $100$ ?",
+      "$\\frac{7}{20} = \\frac{7 \\times ?}{100}$ : le numérateur obtenu est le pourcentage."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.07-t01",
+    "comp": "NC.FRAC.07",
+    "q": "Quelle est l'écriture décimale de $\\frac{1}{5}$ ?",
+    "a": "$0{,}2$",
+    "type": "qcm",
+    "options": [
+      "$0{,}2$",
+      "$1{,}5$",
+      "$5$"
+    ],
+    "err": {
+      "$1{,}5$": "NC.FRAC.07#juxtaposition",
+      "$5$": "NC.FRAC.01#pas_quotient"
+    },
+    "steps": [
+      "Une fraction est un quotient : $\\frac{1}{5} = 1 \\div 5$.",
+      "Autre piste : $\\frac{1}{5} = \\frac{2}{10}$. Combien de dixièmes ?"
+    ],
+    "f": "$\\frac{a}{b} = a \\div b$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.07-t02",
+    "comp": "NC.FRAC.07",
+    "q": "Quel pourcentage est égal à $0{,}6$ ?",
+    "a": "$60$ %",
+    "type": "qcm",
+    "options": [
+      "$6$ %",
+      "$0{,}6$ %",
+      "$60$ %",
+      "$600$ %"
+    ],
+    "err": {
+      "$6$ %": "NC.FRAC.07#pourcent_virgule",
+      "$0{,}6$ %": "NC.FRAC.07#pourcent_virgule",
+      "$600$ %": "NC.ENT.01#nb_rangs"
+    },
+    "steps": [
+      "Un pourcentage, c'est un nombre de centièmes : écris $0{,}6$ avec deux décimales.",
+      "$0{,}6 = \\frac{?}{100}$"
+    ],
+    "f": "$x\\ \\% = \\frac{x}{100}$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.07-t03",
+    "comp": "NC.FRAC.07",
+    "q": "Quelle est l'écriture décimale de $4$ % ?",
+    "a": "$0{,}04$",
+    "type": "qcm",
+    "options": [
+      "$0{,}4$",
+      "$0{,}04$",
+      "$0{,}004$"
+    ],
+    "err": {
+      "$0{,}4$": "NC.FRAC.07#pourcent_virgule",
+      "$0{,}004$": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "$4$ %, c'est $4$ centièmes : $\\frac{4}{100}$.",
+      "Diviser $4$ par $100$ : de combien de rangs le chiffre $4$ recule-t-il ?"
+    ],
+    "f": "$x\\ \\% = \\frac{x}{100}$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.07-t04",
+    "comp": "NC.FRAC.07",
+    "q": "Complète : $\\frac{3}{4} = \\frac{\\text{___}}{100}$",
+    "a": "75",
+    "type": "fill",
+    "options": [],
+    "err": {},
+    "steps": [
+      "Par combien faut-il multiplier le dénominateur $4$ pour obtenir $100$ ?",
+      "Multiplie le numérateur $3$ par ce même nombre."
+    ],
+    "f": "$\\frac{a}{b} = \\frac{a \\times k}{b \\times k}$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.07-t05",
+    "comp": "NC.FRAC.07",
+    "q": "Jade affirme : « $\\frac{1}{4} = 1{,}4$. » A-t-elle raison ?",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.FRAC.07#juxtaposition"
+    },
+    "steps": [
+      "$\\frac{1}{4}$, c'est $1$ partagé en $4$ : le résultat est-il plus grand ou plus petit que $1$ ?",
+      "Et $1{,}4$, est-il plus grand ou plus petit que $1$ ?"
+    ],
+    "f": "$\\frac{a}{b} = a \\div b$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.07-t06",
+    "comp": "NC.FRAC.07",
+    "q": "Dans une classe, $\\frac{7}{25}$ des élèves viennent à vélo. Quel pourcentage des élèves cela représente-t-il ?",
+    "a": "$28$ %",
+    "type": "qcm",
+    "options": [
+      "$7{,}25$ %",
+      "$2{,}8$ %",
+      "$0{,}28$ %",
+      "$28$ %"
+    ],
+    "err": {
+      "$7{,}25$ %": "NC.FRAC.07#juxtaposition",
+      "$2{,}8$ %": "NC.FRAC.07#pourcent_virgule",
+      "$0{,}28$ %": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "Transforme $\\frac{7}{25}$ en une fraction de dénominateur $100$ : $25 \\times ? = 100$.",
+      "Le numérateur obtenu est le nombre de centièmes, donc le pourcentage."
+    ],
+    "f": "$x\\ \\% = \\frac{x}{100}$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.FRAC.07-t07",
+    "comp": "NC.FRAC.07",
+    "q": "Au basket, Adam réussit une proportion $0{,}05$ de ses tirs à $3$ points. Quel pourcentage cela représente-t-il ?",
+    "a": "$5$ %",
+    "type": "qcm",
+    "options": [
+      "$5$ %",
+      "$50$ %",
+      "$0{,}05$ %",
+      "$0{,}5$ %"
+    ],
+    "err": {
+      "$50$ %": "NC.FRAC.07#pourcent_virgule",
+      "$0{,}05$ %": "NC.FRAC.07#pourcent_virgule",
+      "$0{,}5$ %": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "Écris $0{,}05$ sous forme de fraction de dénominateur $100$.",
+      "Combien de centièmes y a-t-il dans $0{,}05$ ?"
+    ],
+    "f": "$x\\ \\% = \\frac{x}{100}$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.FRAC.07-t08",
+    "comp": "NC.FRAC.07",
+    "q": "Complète : $\\frac{\\text{___}}{100} = 0{,}08$",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "80": "NC.ENT.01#nb_rangs",
+      "0,8": "NC.ENT.01#nb_rangs"
+    },
+    "steps": [
+      "$\\frac{1}{100} = 0{,}01$ : combien de centièmes y a-t-il dans $0{,}08$ ?",
+      "Regarde le rang du chiffre $8$ dans $0{,}08$ : dixièmes ou centièmes ?"
+    ],
+    "f": "$\\frac{n}{100}$ : $n$ centièmes",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.07-t09",
+    "comp": "NC.FRAC.07",
+    "q": "Quelle fraction est égale à $0{,}75$ ?",
+    "a": "$\\frac{3}{4}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{7}{5}$",
+      "$\\frac{75}{10}$",
+      "$\\frac{3}{4}$"
+    ],
+    "err": {
+      "$\\frac{7}{5}$": "NC.FRAC.07#juxtaposition",
+      "$\\frac{75}{10}$": "NC.ENT.01#nb_rangs"
+    },
+    "steps": [
+      "$0{,}75$ se lit « $75$ centièmes » : écris la fraction de dénominateur $100$.",
+      "Simplifie ensuite cette fraction par $25$."
+    ],
+    "f": "$0{,}ab = \\frac{ab}{100}$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.07-t10",
+    "comp": "NC.FRAC.07",
+    "q": "Une confiture contient $45$ % de fruits. Quelle fraction irréductible du pot représentent les fruits ?",
+    "a": "$\\frac{9}{20}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{9}{2}$",
+      "$\\frac{9}{20}$",
+      "$\\frac{9}{200}$"
+    ],
+    "err": {
+      "$\\frac{9}{2}$": "NC.FRAC.07#pourcent_virgule",
+      "$\\frac{9}{200}$": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "Écris d'abord $45$ % comme une fraction de dénominateur $100$.",
+      "Simplifie : quel est le plus grand diviseur commun de $45$ et $100$ ?"
+    ],
+    "f": "$x\\ \\% = \\frac{x}{100}$",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.FRAC.07-t11",
+    "comp": "NC.FRAC.07",
+    "q": "Range du plus petit au plus grand : $\\frac{3}{8}$ ; $0{,}4$ ; $35$ %.",
+    "a": "$35\\ \\% < \\frac{3}{8} < 0{,}4$",
+    "type": "qcm",
+    "options": [
+      "$35\\ \\% < \\frac{3}{8} < 0{,}4$",
+      "$35\\ \\% < 0{,}4 < \\frac{3}{8}$",
+      "$\\frac{3}{8} < 0{,}4 < 35\\ \\%$"
+    ],
+    "err": {
+      "$35\\ \\% < 0{,}4 < \\frac{3}{8}$": "NC.FRAC.07#juxtaposition",
+      "$\\frac{3}{8} < 0{,}4 < 35\\ \\%$": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "Écris les trois nombres en écriture décimale : $\\frac{3}{8} = 3 \\div 8$.",
+      "$35$ % $= \\frac{35}{100}$ : compare ensuite les trois décimaux, rang par rang."
+    ],
+    "f": "$\\frac{a}{b} = a \\div b$",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.02-t01",
+    "comp": "NC.FRAC.02",
+    "q": "Complète : $\\frac{18}{24} = \\frac{\\text{___}}{4}$",
+    "a": "3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-2": "NC.FRAC.02#ajout_meme_nombre"
+    },
+    "steps": [
+      "Par quel nombre a-t-on divisé $24$ pour obtenir $4$ ?",
+      "Divise le numérateur $18$ par ce même nombre."
+    ],
+    "f": "$\\frac{a}{b} = \\frac{a \\div k}{b \\div k}$ (même diviseur en haut et en bas)",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.02-t02",
+    "comp": "NC.FRAC.02",
+    "q": "Pour une pâte à crêpes, Jade met $3$ verres de farine pour $5$ verres de lait. Quelle recette a exactement les mêmes proportions ?",
+    "a": "$9$ verres de farine pour $15$ verres de lait",
+    "type": "qcm",
+    "options": [
+      "$9$ verres de farine pour $15$ verres de lait",
+      "$4$ verres de farine pour $6$ verres de lait",
+      "$6$ verres de farine pour $8$ verres de lait"
+    ],
+    "err": {
+      "$4$ verres de farine pour $6$ verres de lait": "NC.FRAC.02#ajout_meme_nombre",
+      "$6$ verres de farine pour $8$ verres de lait": "NC.FRAC.02#ajout_meme_nombre"
+    },
+    "steps": [
+      "Les proportions sont les mêmes si la fraction $\\frac{\\text{farine}}{\\text{lait}}$ est égale à $\\frac{3}{5}$.",
+      "Pour chaque recette, écris la fraction $\\frac{\\text{farine}}{\\text{lait}}$ et simplifie-la si c'est possible."
+    ],
+    "f": "$\\frac{a}{b} = \\frac{a \\times k}{b \\times k}$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.FRAC.02-t03",
+    "comp": "NC.FRAC.02",
+    "q": "Par quel nombre faut-il diviser le numérateur et le dénominateur de $\\frac{30}{42}$ pour obtenir directement la fraction irréductible ? ___",
+    "a": "6",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2": "NC.FRAC.02#simplification_incomplete",
+      "3": "NC.FRAC.02#simplification_incomplete"
+    },
+    "steps": [
+      "Liste les diviseurs communs de $30$ et de $42$.",
+      "Pour arriver en une seule étape à la forme irréductible, lequel faut-il choisir ?"
+    ],
+    "f": "$\\frac{a}{b} = \\frac{a \\div k}{b \\div k}$ (même diviseur en haut et en bas)",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.02-t04",
+    "comp": "NC.FRAC.02",
+    "q": "Quelle est la forme irréductible de $\\frac{45}{60}$ ?",
+    "a": "$\\frac{3}{4}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{9}{12}$",
+      "$\\frac{15}{20}$",
+      "$\\frac{3}{4}$"
+    ],
+    "err": {
+      "$\\frac{9}{12}$": "NC.FRAC.02#simplification_incomplete",
+      "$\\frac{15}{20}$": "NC.FRAC.02#simplification_incomplete"
+    },
+    "steps": [
+      "$45$ et $60$ sont tous deux divisibles par $5$ et par $3$.",
+      "Après une simplification, vérifie : reste-t-il un diviseur commun autre que $1$ ?"
+    ],
+    "f": "$\\frac{a}{b} = \\frac{a \\div k}{b \\div k}$ (même diviseur en haut et en bas)",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.02-t05",
+    "comp": "NC.FRAC.02",
+    "q": "Adam écrit $\\frac{2 + 7}{2} = 7$ en barrant les deux $2$. A-t-il raison ?",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.FRAC.02#simplifie_somme"
+    },
+    "steps": [
+      "Calcule d'abord le numérateur $2 + 7$, puis divise par $2$.",
+      "Le $2$ du numérateur est-il un facteur ou un terme d'une somme ?"
+    ],
+    "f": "On ne simplifie que des facteurs communs",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.02-t06",
+    "comp": "NC.FRAC.02",
+    "q": "Simplifie $\\frac{3 \\times 7 + 3}{3}$ et donne le résultat entier. ___",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "10": "NC.FRAC.02#simplifie_somme"
+    },
+    "steps": [
+      "Calcule d'abord le numérateur : $3 \\times 7 + 3 = ?$",
+      "On ne peut pas barrer un $3$ qui fait partie d'une somme : divise le numérateur entier par $3$."
+    ],
+    "f": "On ne simplifie que des facteurs communs",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.01-t01",
+    "comp": "NC.FRAC.01",
+    "q": "Deux rubans de $1$ m : le premier est coupé en $6$ morceaux égaux, le second en $9$ morceaux égaux. Léo affirme : « Un morceau du second ruban est plus long, car $9 > 6$. » A-t-il raison ?",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.FRAC.01#grand_denominateur"
+    },
+    "steps": [
+      "Un morceau du premier ruban mesure $\\frac{1}{6}$ m, un morceau du second $\\frac{1}{9}$ m.",
+      "Plus on coupe un même ruban en beaucoup de morceaux, plus chaque morceau est… ?"
+    ],
+    "f": "$\\frac{a}{b} = a \\div b$ : $a$ unités partagées en $b$ parts égales",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.FRAC.01-t02",
+    "comp": "NC.FRAC.01",
+    "q": "$5$ amis se partagent équitablement $2$ pizzas. Quelle fraction de pizza reçoit chacun ? ___",
+    "a": "2/5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5/2": "NC.FRAC.01#pas_quotient",
+      "1/5": "NC.FRAC.01#pas_quotient"
+    },
+    "steps": [
+      "On partage $2$ pizzas (le tout) en $5$ parts égales : c'est la division $2 \\div 5$.",
+      "Écris ce quotient sous forme de fraction : qui va au numérateur ?"
+    ],
+    "f": "$\\frac{a}{b} = a \\div b$ : $a$ unités partagées en $b$ parts égales",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.FRAC.01-t03",
+    "comp": "NC.FRAC.01",
+    "q": "Quel nombre est égal au quotient $7 \\div 8$ ?",
+    "a": "$\\frac{7}{8}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{8}{7}$",
+      "$\\frac{7}{8}$",
+      "$7{,}8$"
+    ],
+    "err": {
+      "$\\frac{8}{7}$": "NC.FRAC.01#pas_quotient",
+      "$7{,}8$": "NC.FRAC.01#pas_quotient"
+    },
+    "steps": [
+      "Dans $a \\div b$, le nombre qu'on partage est $a$ : où se place-t-il dans la fraction ?",
+      "$7 \\div 8$ est-il plus grand ou plus petit que $1$ ?"
+    ],
+    "f": "$\\frac{a}{b} = a \\div b$ : $a$ unités partagées en $b$ parts égales",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.FRAC.01-t04",
+    "comp": "NC.FRAC.01",
+    "q": "Un sac de $3$ kg de riz est réparti équitablement dans $4$ bocaux. Quelle masse de riz, en kg, contient chaque bocal ? ___",
+    "a": "0,75",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "4/3": "NC.FRAC.01#pas_quotient"
+    },
+    "steps": [
+      "On partage $3$ kg en $4$ parts égales : écris la division correspondante.",
+      "Chaque bocal contient-il plus ou moins de $1$ kg ?"
+    ],
+    "f": "$\\frac{a}{b} = a \\div b$ : $a$ unités partagées en $b$ parts égales",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "3/4"
+    ]
+  }
+]

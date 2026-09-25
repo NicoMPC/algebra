@@ -5,6 +5,7 @@
 //  entraînement + save_score → partage parent → paiement simulé → droits premium.
 //  Usage : deno run -A dev/smoke_test.ts   (ou ./matheux.sh test)
 // ════════════════════════════════════════════════════════════
+const ADMIN_EMAIL = "admin@dev.matheux.local", ADMIN_CODE = "ADMDEV"; // admin fictif de dev/seed.ts
 const ROOT = new URL("..", import.meta.url).pathname.replace(/\/$/, "");
 const PORT = Number(Deno.env.get("SMOKE_PORT") || 8799);
 const BASE = `http://localhost:${PORT}`;
@@ -180,8 +181,8 @@ try {
   check("2e série libre : l'item répondu n'est pas resservi en premier (sauf banque d'1 item)", lib2.status === "success" && (lexos.length < 2 || lib2.boost?.exos?.[0]?.item_id !== lexos[0]?.item_id), { avant: lexos.map((e: any) => e.item_id), apres: lib2.boost?.exos?.map((e: any) => e.item_id), sl }); // deno-lint-ignore no-explicit-any
 
   console.log("▶ comptes seedés");
-  const adm = await api({ action: "login", email: "nicolas.follezou@hotmail.fr", password: await hashApp("nicolas.follezou@hotmail.fr", "matheux-dev") });
-  check("login admin KN6CFG", adm.status === "success" && adm.profile?.isAdmin === true && adm.profile?.code === "KN6CFG", adm.message);
+  const adm = await api({ action: "login", email: ADMIN_EMAIL, password: await hashApp(ADMIN_EMAIL, "matheux-dev") });
+  check("login admin de dev", adm.status === "success" && adm.profile?.isAdmin === true && adm.profile?.code === ADMIN_CODE, adm.message);
   const ov = await api({ action: "get_admin_overview", access_token: adm.access_token });
   check("get_admin_overview avec jeton de session admin", ov.status === "success");
   check("get_admin_overview : diagnostics + stats, invités, achats, funnel agrégé (Besoin n°10)", Array.isArray(ov.diagnostics) && ov.diagnostics.length > 0 &&
@@ -189,12 +190,12 @@ try {
     ov.funnel?.diag_express_done?.total >= 1, { s: ov.diagnostics_stats, i: ov.invites, f: Object.keys(ov.funnel || {}), ca: ov.ca_cents });
 
   console.log("▶ sécurité (failles corrigées le 24/09)");
-  check("get_admin_overview avec le seul code admin → refusé", (await api({ action: "get_admin_overview", code: "KN6CFG" })).status === "error");
+  check("get_admin_overview avec le seul code admin → refusé", (await api({ action: "get_admin_overview", code: ADMIN_CODE })).status === "error");
   check("publish_admin_boost sans jeton → refusé", (await api({ action: "publish_admin_boost", code: codes.Lina, boost: { exos: [] } })).status === "error");
   check("stripe_webhook via action → inconnue", /inconnue/i.test(String((await api({ action: "stripe_webhook", email, premium_end: "2099-01-01" })).message)));
   const nouveauMdp = await hashApp(email, "nouveau-mdp-dev");
   check("reset_password sans jeton → refusé", (await api({ action: "reset_password", email, password: nouveauMdp })).status === "error");
-  const eleveTok = (await api({ action: "login", email: "nicolas.follezou@hotmail.fr", password: await hashApp("nicolas.follezou@hotmail.fr", "matheux-dev") })).access_token;
+  const eleveTok = (await api({ action: "login", email: ADMIN_EMAIL, password: await hashApp(ADMIN_EMAIL, "matheux-dev") })).access_token;
   check("reset_password avec le jeton d'un autre compte → refusé", (await api({ action: "reset_password", email, access_token: eleveTok, password: nouveauMdp })).status === "error");
   check("forgot_password", (await api({ action: "forgot_password", email })).status === "success");
   const mails = [...Deno.readDirSync(`${DATA}/outbox`)].filter((e) => e.name.includes(email)).map((e) => Deno.readTextFileSync(`${DATA}/outbox/${e.name}`));
@@ -243,7 +244,7 @@ try {
   const nMails0 = [...Deno.readDirSync(`${DATA}/outbox`)].filter((e) => e.name.includes("victime")).length;
   const f3: string[] = [];
   for (const a of ADMIN_ACTIONS) {
-    for (const [nom, cred] of [["sans jeton", {}], ["code admin seul", { code: "KN6CFG", adminCode: "KN6CFG" }], ["jeton élève", { access_token: tomTok, code: codes.Tom }]] as [string, Record<string, unknown>][]) {
+    for (const [nom, cred] of [["sans jeton", {}], ["code admin seul", { code: ADMIN_CODE, adminCode: ADMIN_CODE }], ["jeton élève", { access_token: tomTok, code: codes.Tom }]] as [string, Record<string, unknown>][]) {
       const r = await api({ action: a, ...piege, ...cred });
       if (r.status !== "error") f3.push(`${a} (${nom}) → ${JSON.stringify(r).slice(0, 60)}`);
     }

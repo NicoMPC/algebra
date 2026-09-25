@@ -1,0 +1,523 @@
+[
+  {
+    "id": "NC.EQUA.01-d01",
+    "comp": "NC.EQUA.01",
+    "q": "Vrai ou faux : $2$ est une solution de l'équation $3x + 1 = x + 5$.",
+    "a": "Vrai",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Faux": "NC.EQUA.01#un_seul_membre"
+    },
+    "steps": [
+      "Remplace $x$ par $2$ dans le membre de gauche : $3 \\times 2 + 1 = \\,?$",
+      "Remplace aussi $x$ par $2$ dans le membre de droite, puis compare les deux résultats."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.01-d02",
+    "comp": "NC.EQUA.01",
+    "q": "On remplace $x$ par $-3$ dans l'équation $x^2 + 2x = 3$. Que peut-on conclure ?",
+    "a": "$-3$ est solution, car $(-3)^2 + 2 \\times (-3) = 3$",
+    "type": "qcm",
+    "options": [
+      "$-3$ n'est pas solution, car $(-3)^2 + 2 \\times (-3) \\neq 0$",
+      "$-3$ est solution, car $(-3)^2 + 2 \\times (-3) = 3$",
+      "On ne peut pas conclure sans résoudre l'équation"
+    ],
+    "err": {
+      "$-3$ n'est pas solution, car $(-3)^2 + 2 \\times (-3) \\neq 0$": "NC.EQUA.01#un_seul_membre",
+      "On ne peut pas conclure sans résoudre l'équation": "NC.EQUA.01#resout_au_lieu_tester"
+    },
+    "steps": [
+      "Calcule le membre de gauche pour $x = -3$ : $(-3)^2 + 2 \\times (-3) = \\,?$",
+      "Ce résultat, faut-il le comparer à $0$ ou au membre de droite ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.01-d03",
+    "comp": "NC.EQUA.01",
+    "q": "Maël teste $x = 5$ dans $4x - 7 = 2x + 3$. Il écrit : « $4 \\times 5 - 7 = 13$ et $13 \\neq 0$, donc $5$ n'est pas solution. » Qu'en penses-tu ?",
+    "a": "Il a tort : il faut comparer à $2 \\times 5 + 3$, qui vaut aussi $13$, donc $5$ est solution",
+    "type": "qcm",
+    "options": [
+      "Il a raison : $13$ n'est pas égal à $0$",
+      "Il a raison : $13$ n'est pas égal à $3$",
+      "Il a tort : il faut comparer à $2 \\times 5 + 3$, qui vaut aussi $13$, donc $5$ est solution",
+      "Il aurait dû résoudre l'équation : un test ne permet pas de conclure"
+    ],
+    "err": {
+      "Il a raison : $13$ n'est pas égal à $0$": "NC.EQUA.01#un_seul_membre",
+      "Il a raison : $13$ n'est pas égal à $3$": "NC.EQUA.01#un_seul_membre",
+      "Il aurait dû résoudre l'équation : un test ne permet pas de conclure": "NC.EQUA.01#resout_au_lieu_tester"
+    },
+    "steps": [
+      "Maël n'a calculé qu'un seul membre de l'équation. Lequel manque ?",
+      "Calcule $2 \\times 5 + 3$ et compare avec $13$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.02-d01",
+    "comp": "NC.EQUA.02",
+    "q": "Résous l'équation $3x = 21$. $x = $ ___",
+    "a": "7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "18": "NC.EQUA.02#soustrait_coef",
+      "1/7": "NC.EQUA.02#quotient_inverse",
+      "3/21": "NC.EQUA.02#quotient_inverse"
+    },
+    "steps": [
+      "$3x$ veut dire $3 \\times x$ : quelle opération « défait » une multiplication par $3$ ?",
+      "Divise les deux membres par le même nombre : $x = \\frac{21}{?}$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "x=7"
+    ]
+  },
+  {
+    "id": "NC.EQUA.02-d02",
+    "comp": "NC.EQUA.02",
+    "q": "Résous l'équation $3x + 7 = 22$. $x = $ ___",
+    "a": "5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "29/3": "NC.EQUA.02#changement_signe_mecanique",
+      "12": "NC.EQUA.02#soustrait_coef",
+      "1/5": "NC.EQUA.02#quotient_inverse",
+      "3/15": "NC.EQUA.02#quotient_inverse"
+    },
+    "steps": [
+      "Commence par isoler $3x$ : on retire $7$ aux deux membres. Que vaut $22 - 7$ ?",
+      "Tu obtiens $3x = \\,?$ : il reste à diviser par $3$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "x=5"
+    ]
+  },
+  {
+    "id": "NC.EQUA.02-d03",
+    "comp": "NC.EQUA.02",
+    "q": "Résous l'équation $4x + 2 = 18$.",
+    "a": "$x = 4$",
+    "type": "qcm",
+    "options": [
+      "$x = 2{,}5$",
+      "$x = 12$",
+      "$x = 5$",
+      "$x = 4$"
+    ],
+    "err": {
+      "$x = 2{,}5$": "NC.EQUA.02#mauvais_ordre",
+      "$x = 12$": "NC.EQUA.02#soustrait_coef",
+      "$x = 5$": "NC.EQUA.02#changement_signe_mecanique"
+    },
+    "steps": [
+      "Étape 1 : retire $2$ aux deux membres (et non l'ajoute). Que devient l'équation ?",
+      "Étape 2 : divise les deux membres par le coefficient de $x$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.03-d01",
+    "comp": "NC.EQUA.03",
+    "q": "Résous l'équation $5x - 3 = 2x + 9$. $x = $ ___",
+    "a": "4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "12/7": "NC.EQUA.03#regroupement_sans_changement",
+      "2": "NC.EQUA.03#regroupement_sans_changement",
+      "6/7": "NC.EQUA.03#regroupement_sans_changement"
+    },
+    "steps": [
+      "Pour regrouper les $x$ à gauche, retire $2x$ aux deux membres : $5x - 2x - 3 = 9$.",
+      "Ajoute ensuite $3$ aux deux membres, puis divise par le coefficient de $x$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "x=4"
+    ]
+  },
+  {
+    "id": "NC.EQUA.03-d02",
+    "comp": "NC.EQUA.03",
+    "q": "Résous l'équation $7x + 4 = 3x - 8$.",
+    "a": "$x = -3$",
+    "type": "qcm",
+    "options": [
+      "$x = -3$",
+      "$x = -1{,}2$",
+      "$x = -1$",
+      "$x = -2$"
+    ],
+    "err": {
+      "$x = -1{,}2$": "NC.EQUA.03#regroupement_sans_changement",
+      "$x = -1$": "NC.EQUA.03#regroupement_sans_changement",
+      "$x = -2$": "NC.EQUA.03#terme_perdu"
+    },
+    "steps": [
+      "Retire $3x$ aux deux membres, puis retire $4$ aux deux membres.",
+      "Tu dois arriver à $4x = \\,?$. Vérifie ensuite ta solution dans l'équation de départ."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.03-d03",
+    "comp": "NC.EQUA.03",
+    "q": "Résous l'équation $6 - 2x = x + 15$. $x = $ ___",
+    "a": "-3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-9": "NC.EQUA.03#regroupement_sans_changement",
+      "-7": "NC.EQUA.03#regroupement_sans_changement",
+      "-4,5": "NC.EQUA.03#terme_perdu"
+    },
+    "steps": [
+      "Retire $x$ aux deux membres pour regrouper les $x$ à gauche : $6 - 2x - x = 15$.",
+      "Retire $6$ aux deux membres, puis divise par le coefficient de $x$ (attention, il est négatif)."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "x=-3"
+    ]
+  },
+  {
+    "id": "NC.EQUA.04-d01",
+    "comp": "NC.EQUA.04",
+    "q": "Jade et Noé ont $45$ € à eux deux. Jade a $5$ € de plus que Noé. On note $x$ la somme de Noé. Quelle équation traduit la situation ?",
+    "a": "$x + (x + 5) = 45$",
+    "type": "qcm",
+    "options": [
+      "$x + (x - 5) = 45$",
+      "$x + (x + 5) = 45$",
+      "$x + 5 = 45$",
+      "$5x = 45$"
+    ],
+    "err": {
+      "$x + (x - 5) = 45$": "NC.EQUA.04#relation_inversee",
+      "$x + 5 = 45$": "NC.EQUA.04#inconnue_floue",
+      "$5x = 45$": "NC.EQUA.04#inconnue_floue"
+    },
+    "steps": [
+      "$x$ est la somme de Noé. Exprime la somme de Jade en fonction de $x$ : a-t-elle plus ou moins que Noé ?",
+      "« À eux deux » : la somme de Noé plus la somme de Jade vaut… ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.EQUA.04-d02",
+    "comp": "NC.EQUA.04",
+    "q": "Dans un problème, $x$ désigne l'âge de Lina et l'âge de son père est $3x + 4$. En résolvant l'équation, on trouve $x = 12$. Quel est l'âge du père, en années ? ___",
+    "a": "40",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "12": "NC.EQUA.04#repond_x"
+    },
+    "steps": [
+      "La question porte sur l'âge du père, pas sur celui de Lina.",
+      "Remplace $x$ par $12$ dans l'expression de l'âge du père."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.EQUA.04-d03",
+    "comp": "NC.EQUA.04",
+    "q": "$4$ places adulte et $3$ places enfant coûtent $54$ € en tout. Une place adulte coûte $3$ € de plus qu'une place enfant. On note $x$ le prix d'une place enfant. Quelle équation traduit la situation ?",
+    "a": "$4(x + 3) + 3x = 54$",
+    "type": "qcm",
+    "options": [
+      "$4x + 3(x + 3) = 54$",
+      "$4(x - 3) + 3x = 54$",
+      "$4(x + 3) + 3x = 54$",
+      "$4x + 3x = 54$"
+    ],
+    "err": {
+      "$4x + 3(x + 3) = 54$": "NC.EQUA.04#relation_inversee",
+      "$4(x - 3) + 3x = 54$": "NC.EQUA.04#relation_inversee",
+      "$4x + 3x = 54$": "NC.EQUA.04#inconnue_floue"
+    },
+    "steps": [
+      "$x$ est le prix enfant. Écris d'abord le prix d'une place adulte avec $x$.",
+      "Le coût total = $4$ fois le prix adulte + $3$ fois le prix enfant."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.EQUA.05-d01",
+    "comp": "NC.EQUA.05",
+    "q": "Quelles sont les solutions de l'équation $(x - 4)(x + 2) = 0$ ?",
+    "a": "$4$ et $-2$",
+    "type": "qcm",
+    "options": [
+      "$4$ seulement",
+      "$-4$ et $2$",
+      "$4$ et $2$",
+      "$4$ et $-2$"
+    ],
+    "err": {
+      "$4$ seulement": "NC.EQUA.05#une_seule_solution",
+      "$-4$ et $2$": "NC.EQUA.05#lit_les_nombres",
+      "$4$ et $2$": "NC.EQUA.05#lit_les_nombres"
+    },
+    "steps": [
+      "Un produit est nul si l'un au moins de ses facteurs est nul.",
+      "Résous séparément $x - 4 = 0$ et $x + 2 = 0$."
+    ],
+    "f": "$A \\times B = 0 \\iff A = 0$ ou $B = 0$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.05-d02",
+    "comp": "NC.EQUA.05",
+    "q": "L'équation $(x - 4)(2x + 6) = 0$ a deux solutions. Quelle est la solution négative ? $x = $ ___",
+    "a": "-3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-6": "NC.EQUA.05#lit_les_nombres",
+      "6": "NC.EQUA.05#lit_les_nombres",
+      "-4": "NC.EQUA.05#lit_les_nombres"
+    },
+    "steps": [
+      "Un produit est nul si l'un de ses facteurs est nul : lequel des deux facteurs donne une solution négative ?",
+      "Résous $2x + 6 = 0$ comme une équation du premier degré."
+    ],
+    "f": "$A \\times B = 0 \\iff A = 0$ ou $B = 0$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "x=-3"
+    ]
+  },
+  {
+    "id": "NC.EQUA.05-d03",
+    "comp": "NC.EQUA.05",
+    "q": "Pour résoudre $(3x + 1)(x - 7) = 0$, quelle est la bonne méthode ?",
+    "a": "Un produit est nul si l'un des facteurs est nul : $3x + 1 = 0$ ou $x - 7 = 0$",
+    "type": "qcm",
+    "options": [
+      "Un produit est nul si l'un des facteurs est nul : $3x + 1 = 0$ ou $x - 7 = 0$",
+      "Développer pour obtenir $3x^2 - 20x - 7 = 0$, puis isoler $x$",
+      "Diviser les deux membres par $(x - 7)$",
+      "Lire les nombres : les solutions sont $1$ et $7$"
+    ],
+    "err": {
+      "Développer pour obtenir $3x^2 - 20x - 7 = 0$, puis isoler $x$": "NC.EQUA.05#developpe",
+      "Diviser les deux membres par $(x - 7)$": "NC.EQUA.05#une_seule_solution",
+      "Lire les nombres : les solutions sont $1$ et $7$": "NC.EQUA.05#lit_les_nombres"
+    },
+    "steps": [
+      "L'équation est déjà écrite sous forme de produit égal à zéro : faut-il la transformer ?",
+      "Si $A \\times B = 0$, que peut-on dire de $A$ ou de $B$ ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.06-d01",
+    "comp": "NC.EQUA.06",
+    "q": "Quelles sont les solutions de l'équation $x^2 = 9$ ?",
+    "a": "$-3$ et $3$",
+    "type": "qcm",
+    "options": [
+      "$3$ seulement",
+      "$-3$ et $3$",
+      "$4{,}5$ seulement",
+      "$-4{,}5$ et $4{,}5$"
+    ],
+    "err": {
+      "$3$ seulement": "NC.EQUA.06#oubli_negative",
+      "$4{,}5$ seulement": "NC.EQUA.06#divise_par_2",
+      "$-4{,}5$ et $4{,}5$": "NC.EQUA.06#divise_par_2"
+    },
+    "steps": [
+      "On cherche les nombres dont le carré vaut $9$ : il n'y en a pas qu'un seul.",
+      "Calcule $3^2$ puis $(-3)^2$."
+    ],
+    "f": "$x^2 = a$ avec $a > 0$ $\\iff x = \\sqrt{a}$ ou $x = -\\sqrt{a}$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.EQUA.06-d02",
+    "comp": "NC.EQUA.06",
+    "q": "Combien de solutions l'équation $x^2 = -4$ possède-t-elle ? ___",
+    "a": "0",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2": "NC.EQUA.06#a_negatif"
+    },
+    "steps": [
+      "Un carré $x^2$ peut-il être négatif, quel que soit $x$ ?",
+      "Teste $x = 2$ et $x = -2$ : obtiens-tu $-4$ ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "aucune",
+      "aucune solution",
+      "pas de solution",
+      "zéro",
+      "zero",
+      "aucun",
+      "il n'y en a pas",
+      "il n'y a pas de solution"
+    ]
+  },
+  {
+    "id": "NC.EQUA.06-d03",
+    "comp": "NC.EQUA.06",
+    "q": "Quelles sont les solutions de l'équation $x^2 = 0{,}25$ ?",
+    "a": "$-0{,}5$ et $0{,}5$",
+    "type": "qcm",
+    "options": [
+      "$0{,}5$ seulement",
+      "$-0{,}125$ et $0{,}125$",
+      "$-0{,}5$ et $0{,}5$",
+      "$0{,}125$ seulement"
+    ],
+    "err": {
+      "$0{,}5$ seulement": "NC.EQUA.06#oubli_negative",
+      "$-0{,}125$ et $0{,}125$": "NC.EQUA.06#divise_par_2",
+      "$0{,}125$ seulement": "NC.EQUA.06#divise_par_2"
+    },
+    "steps": [
+      "Cherche un nombre positif dont le carré vaut $0{,}25$ : essaie $0{,}5 \\times 0{,}5$.",
+      "Un nombre négatif peut-il aussi avoir pour carré $0{,}25$ ?"
+    ],
+    "f": "$x^2 = a$ avec $a > 0$ $\\iff x = \\sqrt{a}$ ou $x = -\\sqrt{a}$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  }
+]

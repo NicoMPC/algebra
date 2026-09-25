@@ -1,0 +1,596 @@
+[
+ {
+  "id": "NC.FRAC.03-L014",
+  "comp": "NC.FRAC.03",
+  "q": "Une pizza est coupée en $8$ parts égales. Léa mange $3$ parts et ses amis mangent $2$ parts. Quelle fraction de la pizza ont-ils mangée à eux tous ?",
+  "a": "5/8",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "5/16": "NC.FRAC.03#somme_directe"
+  },
+  "steps": [
+   "Léa a mangé $\\frac{3}{8}$ de la pizza et ses amis $\\frac{2}{8}$. Le dénominateur est le même : on additionne les numérateurs.",
+   "$\\frac{3}{8}+\\frac{2}{8}=\\frac{3+2}{8}=\\frac{?}{8}$."
+  ],
+  "f": "$\\frac{a}{c}+\\frac{b}{c}=\\frac{a+b}{c}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_01",
+  "num": "1",
+  "source": "bank_5eme/Fractions|FRA5_01.1"
+ },
+ {
+  "id": "NC.FRAC.01-L001",
+  "comp": "NC.FRAC.01",
+  "q": "Quelle fraction de cette pizza reste-t-il pour le lendemain ?",
+  "a": "3/8",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "La pizza entière représente $\\frac{8}{8}$. À eux tous, ils ont mangé $\\frac{5}{8}$ (calculé à la question précédente).",
+   "Il reste $\\frac{8}{8}-\\frac{5}{8}=\\frac{8-5}{8}=\\frac{?}{8}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "depend_question_precedente": true,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_01",
+  "num": "2",
+  "source": "bank_5eme/Fractions|FRA5_01.2"
+ },
+ {
+  "id": "NC.FRAC.03-L015",
+  "comp": "NC.FRAC.03",
+  "q": "Le lendemain, Léa entame une deuxième pizza, coupée elle aussi en $8$ parts. Elle en mange $1$ part, puis son frère en mange $4$ parts. Quelle fraction de cette deuxième pizza ont-ils mangée ensemble ?",
+  "a": "$\\frac{5}{8}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{5}{8}$",
+   "$\\frac{4}{8}$",
+   "$\\frac{5}{16}$"
+  ],
+  "err": {
+   "$\\frac{5}{16}$": "NC.FRAC.03#somme_directe"
+  },
+  "steps": [
+   "Le dénominateur est identique ($8$) : on additionne seulement les numérateurs.",
+   "$\\frac{1}{8}+\\frac{4}{8}=\\frac{1+4}{8}=\\frac{?}{8}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_01",
+  "num": "3",
+  "source": "bank_5eme/Fractions|FRA5_01.3"
+ },
+ {
+  "id": "NC.FRAC.01-L002",
+  "comp": "NC.FRAC.01",
+  "q": "Sur cette deuxième pizza, quelle fraction reste-t-il après le passage de Léa et de son frère ?",
+  "a": "$\\frac{3}{8}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{5}{8}$",
+   "$\\frac{3}{8}$",
+   "$\\frac{8}{8}$"
+  ],
+  "err": {},
+  "steps": [
+   "La pizza entière représente $\\frac{8}{8}$. Léa et son frère ont mangé $\\frac{5}{8}$.",
+   "Part restante $=\\frac{8}{8}-\\frac{5}{8}=\\frac{8-5}{8}=\\frac{?}{8}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "depend_question_precedente": true,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_01",
+  "num": "4",
+  "source": "bank_5eme/Fractions|FRA5_01.4"
+ },
+ {
+  "id": "NC.FRAC.01-L003",
+  "comp": "NC.FRAC.01",
+  "q": "Léa affirme : « Sur les deux pizzas, on a toujours mangé la même fraction, $\\frac{5}{8}$ à chaque fois. »",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Pizza 1 : $\\frac{3}{8}+\\frac{2}{8}=\\frac{?}{8}$. Pizza 2 : $\\frac{1}{8}+\\frac{4}{8}=\\frac{?}{8}$.",
+   "Compare les deux résultats : sont-ils identiques ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "depend_question_precedente": true,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_01",
+  "num": "5",
+  "source": "bank_5eme/Fractions|FRA5_01.5"
+ },
+ {
+  "id": "NC.FRAC.03-L016",
+  "comp": "NC.FRAC.03",
+  "q": "Hugo mange $\\frac{1}{3}$ d'une tablette de chocolat. Sa sœur mange $\\frac{1}{6}$ de la même tablette. Quelle fraction de la tablette ont-ils mangée ensemble ?",
+  "a": "1/2",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "2/9": "NC.FRAC.03#somme_directe"
+  },
+  "steps": [
+   "$6$ est un multiple de $3$ : convertis $\\frac{1}{3}$ en sixièmes. $\\frac{1}{3}=\\frac{2}{6}$.",
+   "$\\frac{2}{6}+\\frac{1}{6}=\\frac{2+1}{6}=\\frac{?}{6}$, à simplifier."
+  ],
+  "f": "$\\frac{a}{b}=\\frac{a\\times k}{b\\times k}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_02",
+  "num": "1",
+  "source": "bank_5eme/Fractions|FRA5_02.1"
+ },
+ {
+  "id": "NC.FRAC.03-L017",
+  "comp": "NC.FRAC.03",
+  "q": "Sur une autre tablette identique, Hugo mange $\\frac{1}{4}$, puis reprend $\\frac{1}{8}$ un peu plus tard. Quelle fraction a-t-il mangée en tout ?",
+  "a": "3/8",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "2/12": "NC.FRAC.03#somme_directe"
+  },
+  "steps": [
+   "$8$ est un multiple de $4$ : $\\frac{1}{4}=\\frac{2}{8}$.",
+   "$\\frac{2}{8}+\\frac{1}{8}=\\frac{2+1}{8}=\\frac{?}{8}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_02",
+  "num": "2",
+  "source": "bank_5eme/Fractions|FRA5_02.2"
+ },
+ {
+  "id": "NC.FRAC.03-L018",
+  "comp": "NC.FRAC.03",
+  "q": "Hugo mange $\\frac{5}{6}$ d'une troisième tablette, puis en redonne $\\frac{1}{3}$ à sa sœur. Quelle fraction de la tablette lui reste-t-il ?",
+  "a": "$\\frac{1}{2}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{4}{3}$",
+   "$\\frac{1}{2}$",
+   "$\\frac{1}{3}$"
+  ],
+  "err": {
+   "$\\frac{4}{3}$": "NC.FRAC.03#somme_directe"
+  },
+  "steps": [
+   "$3$ divise $6$ : $\\frac{1}{3}=\\frac{2}{6}$.",
+   "$\\frac{5}{6}-\\frac{2}{6}=\\frac{5-2}{6}=\\frac{?}{6}$, à simplifier."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_02",
+  "num": "3",
+  "source": "bank_5eme/Fractions|FRA5_02.3"
+ },
+ {
+  "id": "NC.FRAC.03-L019",
+  "comp": "NC.FRAC.03",
+  "q": "Sur une tablette coupée en $12$ carreaux, Hugo mange $\\frac{1}{4}$ de la tablette, puis $\\frac{1}{6}$ de la même tablette. Quelle fraction a-t-il mangée en tout ?",
+  "a": "$\\frac{5}{12}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{2}{10}$",
+   "$\\frac{1}{2}$",
+   "$\\frac{5}{12}$"
+  ],
+  "err": {
+   "$\\frac{2}{10}$": "NC.FRAC.03#somme_directe"
+  },
+  "steps": [
+   "$12$ est un multiple de $4$ et de $6$ : $\\frac{1}{4}=\\frac{3}{12}$ et $\\frac{1}{6}=\\frac{2}{12}$.",
+   "$\\frac{3}{12}+\\frac{2}{12}=\\frac{3+2}{12}=\\frac{?}{12}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_02",
+  "num": "4",
+  "source": "bank_5eme/Fractions|FRA5_02.4"
+ },
+ {
+  "id": "NC.FRAC.01-L004",
+  "comp": "NC.FRAC.01",
+  "q": "Hugo affirme : « $\\frac{5}{12}$ de la tablette, c'est plus que $\\frac{1}{2}$ de la tablette. »",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Mets $\\frac{1}{2}$ au même dénominateur que $\\frac{5}{12}$ : $\\frac{1}{2}=\\frac{6}{12}$.",
+   "Compare $\\frac{5}{12}$ et $\\frac{6}{12}$ : lequel est le plus grand ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_02",
+  "num": "5",
+  "source": "bank_5eme/Fractions|FRA5_02.5"
+ },
+ {
+  "id": "NC.FRAC.05-L012",
+  "comp": "NC.FRAC.05",
+  "q": "Le potager de Noé occupe $\\frac{2}{3}$ du jardin familial. Il consacre $\\frac{1}{2}$ de cette zone aux tomates. Quelle fraction du jardin total est plantée en tomates ?",
+  "a": "1/3",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "7/6": "NC.FRAC.05#de_pas_multiplier",
+   "1/6": "NC.FRAC.05#de_pas_multiplier"
+  },
+  "steps": [
+   "Pour multiplier des fractions, on multiplie les numérateurs entre eux et les dénominateurs entre eux.",
+   "$\\frac{2}{3}\\times\\frac{1}{2}=\\frac{2\\times1}{3\\times2}=\\frac{?}{6}$, à simplifier."
+  ],
+  "f": "$\\frac{a}{b}\\times\\frac{c}{d}=\\frac{a\\times c}{b\\times d}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_03",
+  "num": "1",
+  "source": "bank_5eme/Fractions|FRA5_03.1"
+ },
+ {
+  "id": "NC.FRAC.05-L013",
+  "comp": "NC.FRAC.05",
+  "q": "Dans le potager, $\\frac{3}{4}$ de la surface est plantée. Parmi cette partie plantée, $\\frac{2}{3}$ correspond à des légumes racines (carottes, radis). Quelle fraction du potager entier est plantée en légumes racines ?",
+  "a": "1/2",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "17/12": "NC.FRAC.05#de_pas_multiplier",
+   "1/12": "NC.FRAC.05#de_pas_multiplier"
+  },
+  "steps": [
+   "$\\frac{3}{4}\\times\\frac{2}{3}=\\frac{3\\times2}{4\\times3}=\\frac{?}{12}$.",
+   "Simplifie $\\frac{6}{12}$ en divisant haut et bas par $6$ : $\\frac{?}{?}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_03",
+  "num": "2",
+  "source": "bank_5eme/Fractions|FRA5_03.2"
+ },
+ {
+  "id": "NC.FRAC.05-L014",
+  "comp": "NC.FRAC.05",
+  "q": "Une parcelle rectangulaire occupe $\\frac{4}{5}$ de la longueur du potager sur $\\frac{1}{2}$ de sa largeur. Quelle fraction de l'aire totale du potager occupe cette parcelle ?",
+  "a": "$\\frac{2}{5}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{2}{5}$",
+   "$\\frac{5}{7}$",
+   "$\\frac{4}{5}$"
+  ],
+  "err": {
+   "$\\frac{5}{7}$": "NC.FRAC.05#de_pas_multiplier"
+  },
+  "steps": [
+   "L'aire d'un rectangle se calcule en multipliant ses deux dimensions : ici $\\frac{4}{5}\\times\\frac{1}{2}$.",
+   "$\\frac{4}{5}\\times\\frac{1}{2}=\\frac{4\\times1}{5\\times2}=\\frac{?}{10}$, à simplifier."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_03",
+  "num": "3",
+  "source": "bank_5eme/Fractions|FRA5_03.3"
+ },
+ {
+  "id": "NC.FRAC.05-L015",
+  "comp": "NC.FRAC.05",
+  "q": "Noé récolte $\\frac{5}{6}$ kg de tomates. Il en donne $\\frac{3}{5}$ à sa voisine. Quelle masse de tomates a-t-il donnée (en kg) ?",
+  "a": "$\\frac{1}{2}$ kg",
+  "type": "qcm",
+  "options": [
+   "$\\frac{8}{11}$ kg",
+   "$\\frac{1}{2}$ kg",
+   "$\\frac{15}{11}$ kg"
+  ],
+  "err": {
+   "$\\frac{8}{11}$ kg": "NC.FRAC.05#de_pas_multiplier"
+  },
+  "steps": [
+   "Masse donnée $=\\frac{5}{6}\\times\\frac{3}{5}$ (une fraction d'une fraction).",
+   "$\\frac{5}{6}\\times\\frac{3}{5}=\\frac{5\\times3}{6\\times5}=\\frac{?}{30}$, à simplifier au maximum."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_03",
+  "num": "4",
+  "source": "bank_5eme/Fractions|FRA5_03.4"
+ },
+ {
+  "id": "NC.FRAC.05-L016",
+  "comp": "NC.FRAC.05",
+  "q": "Noé affirme : « Multiplier une quantité par $\\frac{1}{2}$ revient à la diviser par $2$. Ainsi, $\\frac{4}{5}$ kg de tomates multiplié par $\\frac{1}{2}$ donne $\\frac{2}{5}$ kg. »",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Calcule $\\frac{4}{5}\\times\\frac{1}{2}=\\frac{4\\times1}{5\\times2}=\\frac{?}{10}$.",
+   "Simplifie et compare avec $\\frac{2}{5}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_03",
+  "num": "5",
+  "source": "bank_5eme/Fractions|FRA5_03.5"
+ },
+ {
+  "id": "NC.FRAC.04-L010",
+  "comp": "NC.FRAC.04",
+  "q": "Emma reçoit $24$ € d'argent de poche. Elle met $\\frac{1}{3}$ de cette somme de côté pour épargner. Quelle somme épargne-t-elle (en €) ?",
+  "a": "8",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "72": "NC.FRAC.04#roles_inverses",
+   "16": "NC.FRAC.04#part_enlevee"
+  },
+  "steps": [
+   "Pour prendre une fraction d'une quantité, on multiplie la quantité par la fraction : $24\\times\\frac{1}{3}$.",
+   "$24\\times\\frac{1}{3}=\\frac{24}{3}=\\;?$ €."
+  ],
+  "f": "$\\text{quantité}\\times\\frac{a}{b}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_04",
+  "num": "1",
+  "source": "bank_5eme/Fractions|FRA5_04.1"
+ },
+ {
+  "id": "NC.FRAC.04-L011",
+  "comp": "NC.FRAC.04",
+  "q": "Il lui reste $16$ € après l'épargne. Elle dépense $\\frac{3}{4}$ de cette somme pour un livre. Combien dépense-t-elle pour le livre (en €) ?",
+  "a": "12",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "4": "NC.FRAC.04#part_enlevee"
+  },
+  "steps": [
+   "Il reste $16$ € après l'épargne. Elle en dépense $\\frac{3}{4}$ pour le livre.",
+   "$16\\times\\frac{3}{4}=\\frac{16\\times3}{4}=\\frac{48}{4}=\\;?$ €."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_04",
+  "num": "2",
+  "source": "bank_5eme/Fractions|FRA5_04.2"
+ },
+ {
+  "id": "NC.FRAC.01-L005",
+  "comp": "NC.FRAC.01",
+  "q": "Après l'achat du livre, il reste à Emma $4$ € qu'elle partage en $3$ parts égales entre elle et ses deux cousins. Quelle fraction d'euro (en €) reçoit chaque personne ?",
+  "a": "$\\frac{4}{3}$ €",
+  "type": "qcm",
+  "options": [
+   "$\\frac{3}{4}$ €",
+   "$1$ €",
+   "$\\frac{4}{3}$ €"
+  ],
+  "err": {},
+  "steps": [
+   "Diviser $4$ € en $3$ parts égales revient à calculer $4\\div3$, soit $\\frac{4}{3}$.",
+   "Sous forme de fraction (non simplifiable ici), chaque personne reçoit $\\frac{4}{?}$ €."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_04",
+  "num": "3",
+  "source": "bank_5eme/Fractions|FRA5_04.3"
+ },
+ {
+  "id": "NC.FRAC.04-L012",
+  "comp": "NC.FRAC.04",
+  "q": "Sur ses $24$ € initiaux, quelle somme représentent $\\frac{2}{3}$ de cette somme additionnés à $\\frac{1}{4}$ de cette somme ?",
+  "a": "$22$ €",
+  "type": "qcm",
+  "options": [
+   "$24$ €",
+   "$22$ €",
+   "$20$ €"
+  ],
+  "err": {},
+  "steps": [
+   "Calcule séparément : $\\frac{2}{3}$ de $24$ € $=16$ €, et $\\frac{1}{4}$ de $24$ € $=6$ €.",
+   "Additionne les deux montants : $16+6=\\;?$ €."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_04",
+  "num": "4",
+  "source": "bank_5eme/Fractions|FRA5_04.4"
+ },
+ {
+  "id": "NC.FRAC.04-L013",
+  "comp": "NC.FRAC.04",
+  "q": "Emma affirme : « Si je dépense $\\frac{2}{3}$ de mes $24$ € de départ, il me reste plus que $\\frac{1}{4}$ de mes $24$ € de départ. »",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Si elle dépense $\\frac{2}{3}$ de $24$ €, il lui reste $\\frac{1}{3}$ de $24$ €, soit $?$ €.",
+   "Compare ce reste avec $\\frac{1}{4}$ de $24$ €, soit $6$ €. Le reste est-il plus grand ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA5_04",
+  "num": "5",
+  "source": "bank_5eme/Fractions|FRA5_04.5"
+ }
+]

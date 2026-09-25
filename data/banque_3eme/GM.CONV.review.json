@@ -1,0 +1,82 @@
+{
+  "fichier": "data/banque_3eme/GM.CONV.json",
+  "relecteur": "relecteur",
+  "date": "2026-09-24",
+  "methode": "Calculs refaits à la main ; _normFill/_toNum/_matchFill extraits d'app.html (version du 24/09) et exécutés sous Node sur a, alt, clés err et variantes prévisibles.",
+  "bilan": {
+    "ok": 8,
+    "corrige": 1,
+    "rejet": 0
+  },
+  "items": [
+    {
+      "id": "GM.CONV.01-d01",
+      "verdict": "ok",
+      "notes": "3,5 × 1 000 = 3 500 ; « 3 500 m » accepté. 0,0035 = mauvais sens ; 350 et 35 = mauvais rapport."
+    },
+    {
+      "id": "GM.CONV.01-d02",
+      "verdict": "ok",
+      "notes": "250/1 000 = 0,25 kg. 250 000 = mauvais sens ; 2,5 et 25 = mauvais rapport."
+    },
+    {
+      "id": "GM.CONV.01-d03",
+      "verdict": "ok",
+      "notes": "75/100 = 0,75 L. 7 500 = mauvais sens ; 7,5 et 0,075 = mauvais rapport."
+    },
+    {
+      "id": "GM.CONV.02-d01",
+      "verdict": "ok",
+      "notes": "3 × 10 000 = 30 000 cm². 300 et 3 000 = converti comme une longueur. LaTeX \\text{cm}^2 OK."
+    },
+    {
+      "id": "GM.CONV.02-d02",
+      "verdict": "corrige",
+      "notes": "54 dm³ = 54 L (juste) MAIS la réponse est identique à la donnée : l'élève qui recopie 54 sans connaître 1 L = 1 dm³ est compté EASY, alors que c'est précisément ce que l'item doit tester. Passage par les cm³ : 18 000 cm³ = 18 dm³ = 18 L. 180 = « 1 L = 100 cm³ » (exemple exact du référentiel) ; 18 000 = « 1 cm³ = 1 L » ; 1 800 = cm³ → dm³ converti comme une longueur (÷ 10).",
+      "correction": {
+        "id": "GM.CONV.02-d02",
+        "comp": "GM.CONV.02",
+        "q": "Un aquarium a un volume de $18\\,000~\\text{cm}^3$. Combien de litres d'eau peut-il contenir ? ___ L",
+        "a": "18",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "180": "GM.CONV.02#litre_dm3",
+          "18000": "GM.CONV.02#litre_dm3",
+          "1800": "GM.CONV.02#comme_longueur"
+        },
+        "steps": [
+          "$1$ L $= 1~\\text{dm}^3$ : un cube de $1$ dm, c'est-à-dire $10$ cm, de côté.",
+          "Combien de $\\text{cm}^3$ dans $1~\\text{dm}^3$ ? Combien de fois cela dans $18\\,000~\\text{cm}^3$ ?"
+        ],
+        "f": "$1~\\text{L} = 1~\\text{dm}^3 = 1\\,000~\\text{cm}^3$",
+        "lvl": 1,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": true
+      }
+    },
+    {
+      "id": "GM.CONV.02-d03",
+      "verdict": "ok",
+      "notes": "2,5 m³ = 2 500 dm³ = 2 500 L. 25 et 250 = comme une longueur ; 2 500 000 = cm³ pris pour des litres."
+    },
+    {
+      "id": "GM.CONV.03-d01",
+      "verdict": "ok",
+      "notes": "1,5 h = 90 min. 110 = « 1 h 50 » ; 150 = 1,5 × 100."
+    },
+    {
+      "id": "GM.CONV.03-d02",
+      "verdict": "ok",
+      "notes": "2 h 15 = 2 + 15/60 = 2,25 h ; « 9/4 » accepté. 2,15 = minutes_decimales."
+    },
+    {
+      "id": "GM.CONV.03-d03",
+      "verdict": "ok",
+      "notes": "0,4 × 60 = 24 → 2 h 24 min. 2 h 40 et 2 h 4 = decimales_minutes."
+    }
+  ]
+}

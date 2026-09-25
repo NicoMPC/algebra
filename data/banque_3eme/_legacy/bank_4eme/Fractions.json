@@ -1,0 +1,602 @@
+[
+ {
+  "id": "NC.FRAC.03-L009",
+  "comp": "NC.FRAC.03",
+  "q": "Léa utilise $\\frac{1}{4}$ kg de farine complète et $\\frac{1}{2}$ kg de farine blanche. Quelle quantité totale de farine utilise-t-elle (en kg) ?",
+  "a": "3/4",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "2/6": "NC.FRAC.03#somme_directe"
+  },
+  "steps": [
+   "Les dénominateurs sont différents ($4$ et $2$). Il faut les mettre au même dénominateur avant d'additionner.",
+   "$\\frac{1}{2} = \\frac{?}{4}$. Additionne ensuite $\\frac{1}{4} + \\frac{?}{4}$."
+  ],
+  "f": "$\\frac{a}{b} + \\frac{c}{d} = \\frac{a \\times d + c \\times b}{b \\times d}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_01",
+  "num": "1",
+  "source": "bank_4eme/Fractions|FRA_01.1"
+ },
+ {
+  "id": "NC.FRAC.03-L010",
+  "comp": "NC.FRAC.03",
+  "q": "Léa avait $\\frac{5}{6}$ de paquet de pépites de chocolat et en utilise $\\frac{1}{3}$. Quelle fraction du paquet lui reste-t-il ?",
+  "a": "1/2",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "4/3": "NC.FRAC.03#somme_directe"
+  },
+  "steps": [
+   "Mets $\\frac{1}{3}$ au dénominateur $6$ : $\\frac{1}{3} = \\frac{?}{6}$.",
+   "Calcule $\\frac{5}{6} - \\frac{?}{6}$, puis simplifie le résultat si possible."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_01",
+  "num": "2",
+  "source": "bank_4eme/Fractions|FRA_01.2"
+ },
+ {
+  "id": "NC.FRAC.03-L011",
+  "comp": "NC.FRAC.03",
+  "q": "Quel est le dénominateur commun le plus simple pour additionner $\\frac{1}{3}$ et $\\frac{1}{4}$ ?",
+  "a": "$12$",
+  "type": "qcm",
+  "options": [
+   "$7$",
+   "$12$",
+   "$3$"
+  ],
+  "err": {
+   "$7$": "NC.FRAC.03#somme_directe"
+  },
+  "steps": [
+   "Cherche un nombre qui soit à la fois multiple de $3$ et multiple de $4$.",
+   "Parmi les multiples de $3$ ($3, 6, 9, 12, \\ldots$), lequel est aussi multiple de $4$ ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_01",
+  "num": "3",
+  "source": "bank_4eme/Fractions|FRA_01.3"
+ },
+ {
+  "id": "NC.FRAC.03-L012",
+  "comp": "NC.FRAC.03",
+  "q": "Léa a utilisé $\\frac{2}{5}$ de son paquet de sucre le matin et $\\frac{1}{5}$ le soir. Quelle fraction du paquet lui reste-t-il ?",
+  "a": "$\\frac{2}{5}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{1}{5}$",
+   "$\\frac{3}{5}$",
+   "$\\frac{2}{5}$"
+  ],
+  "err": {},
+  "steps": [
+   "Calcule d'abord la fraction déjà utilisée au total : $\\frac{2}{5} + \\frac{1}{5} = ?$.",
+   "Le paquet entier vaut $1 = \\frac{5}{5}$. Que reste-t-il après avoir retiré la fraction utilisée ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_01",
+  "num": "4",
+  "source": "bank_4eme/Fractions|FRA_01.4"
+ },
+ {
+  "id": "NC.FRAC.02-L004",
+  "comp": "NC.FRAC.02",
+  "q": "Léa affirme : « $\\frac{3}{4}$ est égal à $\\frac{6}{8}$. »",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Simplifie $\\frac{6}{8}$ en divisant le numérateur et le dénominateur par leur diviseur commun.",
+   "Compare la fraction simplifiée obtenue avec $\\frac{3}{4}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_01",
+  "num": "5",
+  "source": "bank_4eme/Fractions|FRA_01.5"
+ },
+ {
+  "id": "NC.FRAC.05-L005",
+  "comp": "NC.FRAC.05",
+  "q": "Noé découpe une planche de $\\frac{2}{3}$ m de long, puis n'en garde que $\\frac{1}{2}$. Quelle longueur garde-t-il (en m, sous forme de fraction) ?",
+  "a": "1/3",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "7/6": "NC.FRAC.05#de_pas_multiplier",
+   "1/6": "NC.FRAC.05#de_pas_multiplier"
+  },
+  "steps": [
+   "Pour multiplier deux fractions, on multiplie les numérateurs entre eux et les dénominateurs entre eux.",
+   "$\\frac{2}{3} \\times \\frac{1}{2} = \\frac{2 \\times 1}{3 \\times 2} = \\frac{?}{?}$, puis simplifie."
+  ],
+  "f": "$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{a \\times c}{b \\times d}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_02",
+  "num": "1",
+  "source": "bank_4eme/Fractions|FRA_02.1"
+ },
+ {
+  "id": "NC.FRAC.05-L006",
+  "comp": "NC.FRAC.05",
+  "q": "Quel est le résultat de $\\frac{3}{5} \\times \\frac{2}{3}$ ?",
+  "a": "$\\frac{2}{5}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{2}{5}$",
+   "$\\frac{5}{8}$",
+   "$\\frac{6}{8}$"
+  ],
+  "err": {
+   "$\\frac{5}{8}$": "NC.FRAC.05#de_pas_multiplier"
+  },
+  "steps": [
+   "Multiplie les numérateurs : $3 \\times 2 = ?$. Multiplie les dénominateurs : $5 \\times 3 = ?$.",
+   "Simplifie la fraction obtenue si possible."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_02",
+  "num": "2",
+  "source": "bank_4eme/Fractions|FRA_02.2"
+ },
+ {
+  "id": "NC.FRAC.05-L007",
+  "comp": "NC.FRAC.05",
+  "q": "Noé affirme : « Pour multiplier deux fractions, il faut d'abord les mettre au même dénominateur, comme pour une addition. »",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {
+   "Vrai": "NC.FRAC.05#meme_denominateur"
+  },
+  "steps": [
+   "Repense à la règle de multiplication de deux fractions : que fait-on des numérateurs et des dénominateurs ?",
+   "Cette règle nécessite-t-elle un dénominateur commun, contrairement à l'addition ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_02",
+  "num": "3",
+  "source": "bank_4eme/Fractions|FRA_02.3"
+ },
+ {
+  "id": "NC.FRAC.05-L008",
+  "comp": "NC.FRAC.05",
+  "q": "Une planche rectangulaire mesure $\\frac{3}{4}$ m de large et $\\frac{4}{5}$ m de long. Quelle est son aire (en $\\text{m}^2$, sous forme de fraction) ?",
+  "a": "3/5",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "7/9": "NC.FRAC.05#de_pas_multiplier"
+  },
+  "steps": [
+   "L'aire d'un rectangle est $\\text{largeur} \\times \\text{longueur}$ : $\\frac{3}{4} \\times \\frac{4}{5}$.",
+   "Multiplie numérateurs et dénominateurs, puis simplifie : $\\frac{12}{20} = \\frac{?}{5}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_02",
+  "num": "4",
+  "source": "bank_4eme/Fractions|FRA_02.4"
+ },
+ {
+  "id": "NC.FRAC.05-L009",
+  "comp": "NC.FRAC.05",
+  "q": "Noé multiplie $\\frac{5}{6}$ par $\\frac{3}{10}$. Quel est le résultat simplifié ?",
+  "a": "$\\frac{1}{4}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{25}{9}$",
+   "$\\frac{1}{4}$",
+   "$\\frac{8}{16}$"
+  ],
+  "err": {
+   "$\\frac{8}{16}$": "NC.FRAC.05#de_pas_multiplier",
+   "$\\frac{25}{9}$": "NC.FRAC.05#produit_en_croix"
+  },
+  "steps": [
+   "Multiplie les numérateurs : $5 \\times 3 = ?$. Multiplie les dénominateurs : $6 \\times 10 = ?$.",
+   "Simplifie la fraction $\\frac{15}{60}$ en divisant par un diviseur commun (par exemple $15$)."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_02",
+  "num": "5",
+  "source": "bank_4eme/Fractions|FRA_02.5"
+ },
+ {
+  "id": "NC.FRAC.06-L004",
+  "comp": "NC.FRAC.06",
+  "q": "Pour diviser une fraction par une autre fraction, que doit-on faire ?",
+  "a": "La multiplier par son inverse",
+  "type": "qcm",
+  "options": [
+   "L'additionner à son inverse",
+   "La mettre au même dénominateur",
+   "La multiplier par son inverse"
+  ],
+  "err": {},
+  "steps": [
+   "Diviser par une fraction revient à multiplier par son inverse (on échange numérateur et dénominateur de la fraction diviseur).",
+   "Parmi les trois propositions, laquelle décrit correctement cette règle ?"
+  ],
+  "f": "$\\frac{a}{b} \\div \\frac{c}{d} = \\frac{a}{b} \\times \\frac{d}{c}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_03",
+  "num": "1",
+  "source": "bank_4eme/Fractions|FRA_03.1"
+ },
+ {
+  "id": "NC.FRAC.06-L005",
+  "comp": "NC.FRAC.06",
+  "q": "Emma a $\\frac{3}{4}$ L de jus et remplit des verres de $\\frac{1}{8}$ L chacun. Combien de verres peut-elle remplir ?",
+  "a": "6",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "3/32": "NC.FRAC.06#multiplie_par_fraction"
+  },
+  "steps": [
+   "Diviser $\\frac{3}{4}$ par $\\frac{1}{8}$ revient à multiplier $\\frac{3}{4}$ par l'inverse de $\\frac{1}{8}$, c'est-à-dire $\\frac{8}{1}$.",
+   "$\\frac{3}{4} \\times \\frac{8}{1} = \\frac{3 \\times 8}{4} = ?$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_03",
+  "num": "2",
+  "source": "bank_4eme/Fractions|FRA_03.2"
+ },
+ {
+  "id": "NC.FRAC.06-L006",
+  "comp": "NC.FRAC.06",
+  "q": "Une bouteille contient $\\frac{5}{6}$ L de sirop. Emma la partage en portions de $\\frac{5}{12}$ L. Combien de portions obtient-elle ?",
+  "a": "2",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "25/72": "NC.FRAC.06#multiplie_par_fraction"
+  },
+  "steps": [
+   "$\\frac{5}{6} \\div \\frac{5}{12} = \\frac{5}{6} \\times \\frac{12}{5}$.",
+   "Simplifie avant de multiplier si possible, ou calcule $\\frac{5 \\times 12}{6 \\times 5} = \\frac{?}{30}$, puis simplifie."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_03",
+  "num": "3",
+  "source": "bank_4eme/Fractions|FRA_03.3"
+ },
+ {
+  "id": "NC.FRAC.06-L007",
+  "comp": "NC.FRAC.06",
+  "q": "Emma affirme : « $\\frac{1}{2} \\div \\frac{1}{4}$ est égal à $\\frac{1}{8}$. »",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {
+   "Vrai": "NC.FRAC.06#multiplie_par_fraction"
+  },
+  "steps": [
+   "Calcule $\\frac{1}{2} \\div \\frac{1}{4}$ en multipliant $\\frac{1}{2}$ par l'inverse de $\\frac{1}{4}$.",
+   "Le résultat obtenu est-il $\\frac{1}{8}$, ou un autre nombre ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_03",
+  "num": "4",
+  "source": "bank_4eme/Fractions|FRA_03.4"
+ },
+ {
+  "id": "NC.FRAC.06-L008",
+  "comp": "NC.FRAC.06",
+  "q": "Emma doit diviser $\\frac{2}{3}$ L de sirop en portions de $\\frac{1}{6}$ L. Combien de portions obtient-elle ?",
+  "a": "$4$",
+  "type": "qcm",
+  "options": [
+   "$4$",
+   "$\\frac{1}{9}$",
+   "$9$"
+  ],
+  "err": {
+   "$\\frac{1}{9}$": "NC.FRAC.06#multiplie_par_fraction"
+  },
+  "steps": [
+   "$\\frac{2}{3} \\div \\frac{1}{6} = \\frac{2}{3} \\times \\frac{6}{1}$.",
+   "Calcule $\\frac{2 \\times 6}{3} = \\frac{?}{3}$, puis simplifie."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_03",
+  "num": "5",
+  "source": "bank_4eme/Fractions|FRA_03.5"
+ },
+ {
+  "id": "NC.FRAC.03-L013",
+  "comp": "NC.FRAC.03",
+  "q": "Le budget de la classe est réparti ainsi : $\\frac{2}{5}$ pour le transport et $\\frac{1}{5}$ pour l'hébergement. Quelle fraction du budget est déjà utilisée ?",
+  "a": "3/5",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "3/10": "NC.FRAC.03#somme_directe"
+  },
+  "steps": [
+   "Les deux fractions ont déjà le même dénominateur $5$.",
+   "Additionne directement les numérateurs : $2 + 1 = ?$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_04",
+  "num": "1",
+  "source": "bank_4eme/Fractions|FRA_04.1"
+ },
+ {
+  "id": "NC.FRAC.05-L010",
+  "comp": "NC.FRAC.05",
+  "q": "Il reste donc $\\frac{2}{5}$ du budget pour les activités. Hugo utilise $\\frac{3}{4}$ de cette somme restante pour des visites. Quelle fraction du budget total cela représente-t-il ?",
+  "a": "$\\frac{3}{10}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{5}{9}$",
+   "$\\frac{3}{10}$",
+   "$\\frac{1}{2}$"
+  ],
+  "err": {
+   "$\\frac{5}{9}$": "NC.FRAC.05#de_pas_multiplier"
+  },
+  "steps": [
+   "Multiplie les deux fractions : $\\frac{2}{5} \\times \\frac{3}{4} = \\frac{2 \\times 3}{5 \\times 4} = \\frac{?}{20}$.",
+   "Simplifie la fraction obtenue."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_04",
+  "num": "2",
+  "source": "bank_4eme/Fractions|FRA_04.2"
+ },
+ {
+  "id": "NC.FRAC.06-L009",
+  "comp": "NC.FRAC.06",
+  "q": "Le budget transport ($\\frac{2}{5}$ du budget total) doit être réparti à parts égales entre $6$ bus. Quelle fraction du budget total représente un seul bus ?",
+  "a": "1/15",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "12/5": "NC.FRAC.06#multiplie_par_fraction"
+  },
+  "steps": [
+   "Répartir $\\frac{2}{5}$ entre $6$ revient à diviser cette fraction par $6$, soit à multiplier par $\\frac{1}{6}$.",
+   "$\\frac{2}{5} \\times \\frac{1}{6} = \\frac{2}{30}$. Simplifie cette fraction."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_04",
+  "num": "3",
+  "source": "bank_4eme/Fractions|FRA_04.3"
+ },
+ {
+  "id": "NC.FRAC.05-L011",
+  "comp": "NC.FRAC.05",
+  "q": "Hugo affirme : « Si on additionne, multiplie ou divise deux fractions, il faut toujours commencer par les mettre au même dénominateur. »",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {
+   "Vrai": "NC.FRAC.05#meme_denominateur"
+  },
+  "steps": [
+   "Repense à chacune des trois opérations : laquelle nécessite vraiment un dénominateur commun ?",
+   "Est-ce le cas pour les trois opérations, ou seulement pour l'addition et la soustraction ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_04",
+  "num": "4",
+  "source": "bank_4eme/Fractions|FRA_04.4"
+ },
+ {
+  "id": "NC.FRAC.04-L009",
+  "comp": "NC.FRAC.04",
+  "q": "Le budget total est de $1200$ €. Sachant que $\\frac{3}{10}$ du budget total sert aux visites (trouvé à la question précédente), quelle somme cela représente-t-il ?",
+  "a": "$360$ €",
+  "type": "qcm",
+  "options": [
+   "$400$ €",
+   "$120$ €",
+   "$360$ €"
+  ],
+  "err": {
+   "$400$ €": "NC.FRAC.04#roles_inverses"
+  },
+  "steps": [
+   "Calcule $\\frac{1}{10}$ de $1200$ : $1200 \\div 10 = ?$.",
+   "Multiplie ce résultat par $3$ pour obtenir la somme cherchée."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "FRA_04",
+  "num": "5",
+  "source": "bank_4eme/Fractions|FRA_04.5"
+ }
+]

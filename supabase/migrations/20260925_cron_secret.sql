@@ -17,9 +17,11 @@ BEGIN
   END IF;
 END $$;
 
+-- 15:00 UTC = 17h Paris en heure d'été, 16h en hiver (1 h de décalage accepté, 51-emails §4 Q5) :
+-- après les cours pour l'ado, jamais entre 20h et 8h.
 SELECT cron.schedule(
   'matheux-daily-emails',
-  '0 7 * * *',
+  '0 15 * * *',
   $$
   SELECT net.http_post(
     url := 'https://xlfzhcanzmqqlxtavzrd.supabase.co/functions/v1/api',

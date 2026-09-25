@@ -1,0 +1,107 @@
+[
+  {
+    "id": "NC.PUIS.01-d01",
+    "verdict": "ok",
+    "raison": "2⁵ = 32 ; 10 = base × exposant."
+  },
+  {
+    "id": "NC.PUIS.01-d02",
+    "verdict": "ok",
+    "raison": "Seule (−3)² = 9 est vraie (−3² = −9) ; distracteurs conformes."
+  },
+  {
+    "id": "NC.PUIS.01-d03",
+    "verdict": "ok",
+    "raison": "0,3² = 0,09 ; 0,9 et 9 rang ; 0,6 double."
+  },
+  {
+    "id": "NC.PUIS.02-d01",
+    "verdict": "ok",
+    "raison": "10⁻³ = 0,001 ; −1000, 0,0001, 0,01 cohérents. '1/1000' accepté (valeur exacte, montre la compréhension) : acceptable."
+  },
+  {
+    "id": "NC.PUIS.02-d02",
+    "verdict": "ok",
+    "raison": "0,0001 = 10⁻⁴."
+  },
+  {
+    "id": "NC.PUIS.02-d03",
+    "verdict": "ok",
+    "raison": "10⁻² = 0,01 > 0 : Faux."
+  },
+  {
+    "id": "NC.PUIS.03-d01",
+    "verdict": "ok",
+    "raison": "3+4 = 7 ; 12 = exposants multipliés."
+  },
+  {
+    "id": "NC.PUIS.03-d02",
+    "verdict": "ok",
+    "raison": "−2 − (−5) = 3 ; 10⁻⁷ (somme), 10⁻³ (signe), 10¹⁰ (produit des exposants)."
+  },
+  {
+    "id": "NC.PUIS.03-d03",
+    "verdict": "ok",
+    "raison": "4 + (−6) = −2 ; 2⁻²⁴, 4⁻², 2¹⁰ conformes."
+  },
+  {
+    "id": "NC.PUIS.04-d01",
+    "verdict": "ok",
+    "raison": "0,00008 = 8×10⁻⁵ ; 5 signe ; −4, −6 décalage. NB : « −5 » tapé avec un signe moins typographique (U+2212) serait refusé (transversal)."
+  },
+  {
+    "id": "NC.PUIS.04-d02",
+    "verdict": "ok",
+    "raison": "1,5×10⁸ ; distracteurs conformes."
+  },
+  {
+    "id": "NC.PUIS.04-d03",
+    "verdict": "ok",
+    "raison": "32 000 ; 320 000 / 3 200 décalage ; 0,00032 signe."
+  },
+  {
+    "id": "NC.PUIS.05-d01",
+    "verdict": "corrige",
+    "raison": "1,5×10⁸ est bien le plus grand, mais #compare_mantisses (comparer les premiers facteurs) prédit uniquement 9,9×10⁶ ; 7,8×10⁷ et 2×10⁷ ne sont prédits par aucune règle, tag infondé. Reformulation en comparaisons : chaque distracteur = « le plus grand premier facteur gagne », la bonne réponse contredit cette règle.",
+    "correction": {
+      "id": "NC.PUIS.05-d01",
+      "comp": "NC.PUIS.05",
+      "q": "Laquelle de ces comparaisons est vraie ?",
+      "a": "$1{,}5 \\times 10^{8} > 7{,}8 \\times 10^{7}$",
+      "type": "qcm",
+      "options": [
+        "$7{,}8 \\times 10^{7} > 1{,}5 \\times 10^{8}$",
+        "$1{,}5 \\times 10^{8} > 7{,}8 \\times 10^{7}$",
+        "$9{,}9 \\times 10^{6} > 2 \\times 10^{7}$",
+        "$9{,}9 \\times 10^{6} > 1{,}5 \\times 10^{8}$"
+      ],
+      "err": {
+        "$7{,}8 \\times 10^{7} > 1{,}5 \\times 10^{8}$": "NC.PUIS.05#compare_mantisses",
+        "$9{,}9 \\times 10^{6} > 2 \\times 10^{7}$": "NC.PUIS.05#compare_mantisses",
+        "$9{,}9 \\times 10^{6} > 1{,}5 \\times 10^{8}$": "NC.PUIS.05#compare_mantisses"
+      },
+      "steps": [
+        "En notation scientifique, on compare d'abord les puissances de $10$ : si les exposants sont différents, lequel l'emporte ?",
+        "En cas de doute, écris les nombres en écriture décimale (par exemple $2 \\times 10^{7} = 20\\,000\\,000$)."
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.PUIS.05-d02",
+    "verdict": "ok",
+    "raison": "12×10⁵ = 1,2×10⁶ ; 12×10⁵ non normalisé ; 12×10¹⁰ et 1,2×10¹¹ = exposants additionnés."
+  },
+  {
+    "id": "NC.PUIS.05-d03",
+    "verdict": "ok",
+    "raison": "15×10⁶ = 1,5×10⁷ → 7 ; 6 = non normalisé."
+  }
+]

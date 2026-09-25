@@ -1,0 +1,205 @@
+{
+  "fichier": "data/banque_3eme/EG.TRANS.json",
+  "relecteur": "relecteur",
+  "date": "2026-09-24",
+  "methode": "calculs refaits a la main ; _normFill/_toNum/_matchFill extraits d app.html et simules en Node (a, alt, variantes, cles err) ; LaTeX rendu KaTeX 0.16.9 strict (0 erreur) ; ids err verifies dans competences.json",
+  "bilan": {
+    "ok": 10,
+    "corrige": 5,
+    "rejet": 0
+  },
+  "items": [
+    {
+      "id": "EG.TRANS.01-d01",
+      "verdict": "ok",
+      "remarques": "(-3 ; -2) ; les 2 distracteurs = symetries axiales : coherents."
+    },
+    {
+      "id": "EG.TRANS.01-d02",
+      "verdict": "ok",
+      "remarques": "BB'=8 ; 4 (distance a l axe) et 2 coherents avec construction_a_l_oeil."
+    },
+    {
+      "id": "EG.TRANS.01-d03",
+      "verdict": "ok",
+      "remarques": "Seule phrase vraie : O milieu de [MM']."
+    },
+    {
+      "id": "EG.TRANS.02-d01",
+      "verdict": "ok",
+      "remarques": "1+3=4 ; -2=1-3 coherent."
+    },
+    {
+      "id": "EG.TRANS.02-d02",
+      "verdict": "corrige",
+      "remarques": "Point signale confirme. Vecteur (3 ; 1), C'=(3 ; 0) juste. Mais soustrait_vecteur (C-v) et vecteur_inverse (C+(A-B)) donnent TOUJOURS le meme point (-3 ; -2) : indiscernables sur tout item en coordonnees. Et (3 ; -2) ne correspond pas a soustrait_vecteur (qui donnerait (-3 ; -2)). Correction : (-3 ; -2) -> soustrait_vecteur ; remplacer (3 ; -2) par (4 ; 2) = C+B (ajoute les coordonnees de l image au lieu du vecteur), id a creer par le didacticien : EG.TRANS.02#ajoute_coordonnees_image. Reco didacticien : fusionner vecteur_inverse dans soustrait_vecteur.",
+      "correction": {
+        "id": "EG.TRANS.02-d02",
+        "comp": "EG.TRANS.02",
+        "q": "Dans un repère, la translation qui transforme $A(1 ; 2)$ en $B(4 ; 3)$ transforme le point $C(0 ; -1)$ en un point $C'$. Quelles sont les coordonnées de $C'$ ?",
+        "a": "$(3 ; 0)$",
+        "type": "qcm",
+        "options": [
+          "$(-3 ; -2)$",
+          "$(3 ; 0)$",
+          "$(4 ; 2)$"
+        ],
+        "err": {
+          "$(-3 ; -2)$": "EG.TRANS.02#soustrait_vecteur",
+          "$(4 ; 2)$": "EG.TRANS.02#ajoute_coordonnees_image"
+        },
+        "steps": [
+          "Pour aller de $A$ à $B$ : de combien augmente l'abscisse ? l'ordonnée ?",
+          "On applique exactement le même déplacement à $C$ : $C'(0 + \\;? ; -1 + \\;?)$"
+        ],
+        "f": "",
+        "lvl": 2,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "EG.TRANS.02-d03",
+      "verdict": "ok",
+      "remarques": "v=(4 ; -2), ordonnee 4-2=2 ; 6 = 4+2 (= soustrait_vecteur aussi, cf. fusion recommandee)."
+    },
+    {
+      "id": "EG.TRANS.03-d01",
+      "verdict": "corrige",
+      "remarques": "Juste : (0 ; 4), ordonnee 4 ; -4 = sens horaire. Mais « 0 » tagge mauvais_centre ne correspond a rien de plausible (0 = ordonnee de A non tourne, ou abscisse de l image) : un bilan parent dirait « tourne autour du mauvais point » a tort. Correction : retirer la cle \"0\".",
+      "correction": {
+        "id": "EG.TRANS.03-d01",
+        "comp": "EG.TRANS.03",
+        "q": "Dans un repère, on fait tourner le point $A(4 ; 0)$ autour de l'origine $O$ d'un quart de tour ($90°$) dans le sens inverse des aiguilles d'une montre. Quelle est l'ordonnée de son image ? ___",
+        "a": "4",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "-4": "EG.TRANS.03#sens_rotation"
+        },
+        "steps": [
+          "$A$ est sur l'axe des abscisses, à droite de $O$. Le sens inverse des aiguilles d'une montre fait monter ou descendre ?",
+          "L'image reste à $4$ unités de $O$, sur l'axe des ordonnées : en haut ou en bas ?"
+        ],
+        "f": "Rotation : $OA' = OA$",
+        "lvl": 1,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "EG.TRANS.03-d02",
+      "verdict": "ok",
+      "remarques": "BC=(2 ; 0) -> anti-horaire (0 ; 2) -> (1 ; 3) ; horaire (1 ; -1) ; centre O : (-1 ; 3). Exacts."
+    },
+    {
+      "id": "EG.TRANS.03-d03",
+      "verdict": "ok",
+      "remarques": "90°=3 graduations : 2->5 ; 11 = sens inverse."
+    },
+    {
+      "id": "EG.TRANS.04-d01",
+      "verdict": "corrige",
+      "remarques": "Juste (10 ; -10 coherent). Enonce mal forme : « de longueur ? ___ cm ». Correction de formulation.",
+      "correction": {
+        "id": "EG.TRANS.04-d01",
+        "comp": "EG.TRANS.04",
+        "q": "Une homothétie de rapport $-2$ transforme un segment de longueur $5$ cm en un segment de quelle longueur ? ___ cm",
+        "a": "10",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "-10": "EG.TRANS.04#longueur_negative"
+        },
+        "steps": [
+          "Une homothétie de rapport $k$ multiplie les longueurs par la distance à zéro de $k$.",
+          "Une longueur est toujours positive : $5 \\times 2 = \\;?$"
+        ],
+        "f": "Longueurs multipliées par $|k|$",
+        "lvl": 1,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "EG.TRANS.04-d02",
+      "verdict": "ok",
+      "remarques": "Autre cote de O, a 6 cm. Distracteurs coherents."
+    },
+    {
+      "id": "EG.TRANS.04-d03",
+      "verdict": "corrige",
+      "remarques": "Juste : 2+3x2=8 ; 12=3x4 coherent. Mauvaise reponse previsible non taggee : 6 (=3xOmegaA, oublie de repartir du centre). Correction : ajout \"6\".",
+      "correction": {
+        "id": "EG.TRANS.04-d03",
+        "comp": "EG.TRANS.04",
+        "q": "Dans un repère, une homothétie a pour centre $\\Omega(2 ; 0)$ et pour rapport $3$. Quelle est l'abscisse de l'image du point $A(4 ; 0)$ ? ___",
+        "a": "8",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "12": "EG.TRANS.04#centre_pas_origine",
+          "6": "EG.TRANS.04#centre_pas_origine"
+        },
+        "steps": [
+          "On mesure à partir du centre $\\Omega$, pas de l'origine : $A$ est à $4 - 2 = 2$ unités à droite de $\\Omega$.",
+          "L'image est $3$ fois plus loin de $\\Omega$, du même côté : son abscisse vaut $2 + 3 \\times 2 = \\;?$"
+        ],
+        "f": "$\\Omega A' = k \\times \\Omega A$",
+        "lvl": 2,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "EG.TRANS.05-d01",
+      "verdict": "ok",
+      "remarques": "Rotation conserve longueurs et angles."
+    },
+    {
+      "id": "EG.TRANS.05-d02",
+      "verdict": "corrige",
+      "remarques": "Juste : cote 6, perimetre 24 ; 12 coherent. Mais -24 est une longueur negative, pas « croit que l homothetie conserve les longueurs ». Correction : -24 -> EG.TRANS.04#longueur_negative.",
+      "correction": {
+        "id": "EG.TRANS.05-d02",
+        "comp": "EG.TRANS.05",
+        "q": "Un carré de côté $3$ cm subit une homothétie de rapport $-2$. Quel est le périmètre du carré obtenu ? ___ cm",
+        "a": "24",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "12": "EG.TRANS.05#homothetie_conserve",
+          "-24": "EG.TRANS.04#longueur_negative"
+        },
+        "steps": [
+          "Une homothétie de rapport $-2$ multiplie chaque longueur par $2$ : le nouveau côté mesure $\\;?$ cm.",
+          "Le périmètre d'un carré vaut $4 \\times$ côté."
+        ],
+        "f": "Longueurs multipliées par $|k|$",
+        "lvl": 2,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "EG.TRANS.05-d03",
+      "verdict": "ok",
+      "remarques": "Faux : angle conserve."
+    }
+  ]
+}

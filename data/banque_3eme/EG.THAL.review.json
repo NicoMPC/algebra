@@ -1,0 +1,83 @@
+{
+  "fichier": "data/banque_3eme/EG.THAL.json",
+  "relecteur": "relecteur",
+  "date": "2026-09-24",
+  "methode": "calculs refaits a la main ; _normFill/_toNum/_matchFill extraits d app.html et simules en Node (a, alt, variantes, cles err) ; LaTeX rendu KaTeX 0.16.9 strict (0 erreur) ; ids err verifies dans competences.json",
+  "bilan": {
+    "ok": 8,
+    "corrige": 1,
+    "rejet": 0
+  },
+  "items": [
+    {
+      "id": "EG.THAL.01-d01",
+      "verdict": "ok",
+      "remarques": "Egalite correcte unique. AB/AM=AN/AC (rapport renverse) tagge rapports_croises : acceptable."
+    },
+    {
+      "id": "EG.THAL.01-d02",
+      "verdict": "corrige",
+      "remarques": "Reponse Faux juste dans l intention, mais « On peut ecrire » est contestable par un bon eleve (on peut toujours ecrire une egalite, elle peut meme etre vraie par hasard). Correction : « On peut en deduire que ».",
+      "correction": {
+        "id": "EG.THAL.01-d02",
+        "comp": "EG.THAL.01",
+        "q": "Les points $A$, $E$, $B$ sont alignés, ainsi que $A$, $F$, $C$. On ne sait pas si les droites $(EF)$ et $(BC)$ sont parallèles. Affirmation : « On peut en déduire que $\\frac{AE}{AB} = \\frac{AF}{AC}$. »",
+        "a": "Faux",
+        "type": "vf",
+        "options": [
+          "Vrai",
+          "Faux"
+        ],
+        "err": {
+          "Vrai": "EG.THAL.01#sans_paralleles"
+        },
+        "steps": [
+          "Le théorème de Thalès a une hypothèse indispensable sur les droites $(EF)$ et $(BC)$ : laquelle ?",
+          "Cette hypothèse est-elle donnée ici ?"
+        ],
+        "f": "",
+        "lvl": 2,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "EG.THAL.01-d03",
+      "verdict": "ok",
+      "remarques": "RV ; alt VR/[RV]/[VR], minuscules et espaces acceptes ; UV, TV, RT, RU refuses (simule)."
+    },
+    {
+      "id": "EG.THAL.02-d01",
+      "verdict": "ok",
+      "remarques": "MN=8x3/6=4 ; 5=8-(6-3) additif, 16=8x6/3 produit en croix : coherents."
+    },
+    {
+      "id": "EG.THAL.02-d02",
+      "verdict": "ok",
+      "remarques": "4/6=5/DE -> 7,5 ; 10/3=5x4/6, 4,5=OE (mauvais segment), 7=5+2 additif : coherents. O entre A et D non ecrit explicitement mais le resultat est le meme dans les deux configurations."
+    },
+    {
+      "id": "EG.THAL.02-d03",
+      "verdict": "ok",
+      "remarques": "TU=1,2x5/2=3 ; 4,2 et 0,48 coherents."
+    },
+    {
+      "id": "EG.THAL.03-d01",
+      "verdict": "ok",
+      "remarques": "Point signale : la bonne reponse est correcte et unique. Faiblesses non bloquantes : distracteur 1 (« inferieur a 1 ») peu credible, et bonne reponse la plus longue + seule a contenir « exactement » (indice de forme). Suggestion train : raccourcir la bonne option."
+    },
+    {
+      "id": "EG.THAL.03-d02",
+      "verdict": "ok",
+      "remarques": "3x9,3=27,9 != 28 -> Faux ; 3/7~0,4286 et 4/9,3~0,4301 egaux au centieme : tag rapports_arrondis pertinent."
+    },
+    {
+      "id": "EG.THAL.03-d03",
+      "verdict": "ok",
+      "remarques": "M et B de part et d autre de A, N et C du meme cote : rapports egaux (2/5) mais droites non paralleles (verifie vectoriellement). Reponse juste."
+    }
+  ]
+}

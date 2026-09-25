@@ -1,0 +1,798 @@
+[
+  {
+    "id": "DF.PROP.01-d01",
+    "comp": "DF.PROP.01",
+    "q": "Laquelle de ces situations est une situation de proportionnalité ?",
+    "a": "Le prix payé et la masse de pommes achetées à $2{,}50$ € le kg",
+    "type": "qcm",
+    "options": [
+      "Le prix payé et la masse de pommes achetées à $2{,}50$ € le kg",
+      "La taille d'un enfant et son âge",
+      "Le prix d'une course de taxi ($4$ € de prise en charge puis $1{,}50$ € par km) et la distance",
+      "La masse d'un chiot et son âge en semaines"
+    ],
+    "err": {
+      "La taille d'un enfant et son âge": "DF.PROP.01#augmentent_ensemble",
+      "Le prix d'une course de taxi ($4$ € de prise en charge puis $1{,}50$ € par km) et la distance": "DF.PROP.01#partie_fixe",
+      "La masse d'un chiot et son âge en semaines": "DF.PROP.01#augmentent_ensemble"
+    },
+    "steps": [
+      "Pour chaque situation, demande-toi : si l'une des grandeurs double, l'autre double-t-elle aussi ?",
+      "Une partie fixe (prise en charge, abonnement) empêche-t-elle ce doublement ? Et « grandir ensemble » suffit-il ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.01-d02",
+    "comp": "DF.PROP.01",
+    "q": "Une salle de sport fait payer $10$ € d'inscription puis $3$ € par séance. Affirmation : « Le prix total est proportionnel au nombre de séances. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "DF.PROP.01#partie_fixe"
+    },
+    "steps": [
+      "Calcule le prix pour $1$ séance, puis pour $2$ séances.",
+      "Le prix pour $2$ séances est-il le double du prix pour $1$ séance ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "table": {
+      "headers": [
+        "Nombre de séances",
+        "$1$",
+        "$2$",
+        "$4$"
+      ],
+      "rows": [
+        [
+          "Prix (€)",
+          "$13$",
+          "$16$",
+          "$22$"
+        ]
+      ],
+      "caption": "Tarifs de la salle de sport"
+    },
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.01-d03",
+    "comp": "DF.PROP.01",
+    "q": "Dans lequel de ces tableaux la deuxième ligne est-elle proportionnelle à la première ?",
+    "a": "$3 \\mapsto 12$ ; $5 \\mapsto 20$ ; $8 \\mapsto 32$",
+    "type": "qcm",
+    "options": [
+      "$3 \\mapsto 12$ ; $5 \\mapsto 20$ ; $8 \\mapsto 32$",
+      "$2 \\mapsto 5$ ; $4 \\mapsto 7$ ; $6 \\mapsto 9$",
+      "$1 \\mapsto 6$ ; $2 \\mapsto 8$ ; $3 \\mapsto 10$",
+      "$2 \\mapsto 3$ ; $4 \\mapsto 6$ ; $6 \\mapsto 10$"
+    ],
+    "err": {
+      "$2 \\mapsto 5$ ; $4 \\mapsto 7$ ; $6 \\mapsto 9$": "DF.PROP.01#augmentent_ensemble",
+      "$1 \\mapsto 6$ ; $2 \\mapsto 8$ ; $3 \\mapsto 10$": "DF.PROP.01#partie_fixe",
+      "$2 \\mapsto 3$ ; $4 \\mapsto 6$ ; $6 \\mapsto 10$": "DF.PROP.01#augmentent_ensemble"
+    },
+    "steps": [
+      "Pour chaque tableau, calcule le quotient « deuxième nombre ÷ premier nombre » pour chaque couple.",
+      "Dans quel tableau ce quotient est-il toujours le même ?"
+    ],
+    "f": "$\\frac{y_1}{x_1} = \\frac{y_2}{x_2} = \\frac{y_3}{x_3}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.PROP.02-d01",
+    "comp": "DF.PROP.02",
+    "q": "$4$ kg de pommes coûtent $6$ €. Combien coûtent $10$ kg de ces pommes ? ___ €",
+    "a": "15",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "12": "DF.PROP.02#modele_additif",
+      "6,67": "DF.PROP.02#croix_mal_placee"
+    },
+    "steps": [
+      "Commence par le prix d'un seul kilogramme : $6 \\div 4 = $ ?",
+      "Multiplie ce prix par $10$ : combien obtiens-tu ?"
+    ],
+    "f": "$\\text{prix} = \\text{prix au kg} \\times \\text{masse}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.02-d02",
+    "comp": "DF.PROP.02",
+    "q": "$3$ kg de cerises coûtent $12$ €. Quel est le prix d'un kilogramme de cerises ?",
+    "a": "$4$ €",
+    "type": "qcm",
+    "options": [
+      "$4$ €",
+      "$0{,}25$ €",
+      "$9$ €",
+      "$36$ €"
+    ],
+    "err": {
+      "$0{,}25$ €": "DF.PROP.02#quotient_inverse",
+      "$9$ €": "DF.PROP.02#modele_additif",
+      "$36$ €": "DF.PROP.02#croix_mal_placee"
+    },
+    "steps": [
+      "On cherche un prix pour $1$ kg : on partage le prix total entre les kilogrammes.",
+      "Quel calcul donne des euros par kilogramme : $12 \\div 3$ ou $3 \\div 12$ ?"
+    ],
+    "f": "$\\text{prix au kg} = \\frac{\\text{prix}}{\\text{masse}}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.02-d03",
+    "comp": "DF.PROP.02",
+    "q": "Une voiture consomme $6$ L d'essence pour $100$ km. Combien consomme-t-elle pour $250$ km ? ___ L",
+    "a": "15",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "156": "DF.PROP.02#modele_additif",
+      "2,4": "DF.PROP.02#croix_mal_placee",
+      "4166,67": "DF.PROP.02#croix_mal_placee"
+    },
+    "steps": [
+      "$250$ km, c'est combien de fois $100$ km ?",
+      "La consommation est multipliée par le même nombre : $6 \\times$ ? $=$ ?"
+    ],
+    "f": "$\\frac{6}{100} = \\frac{x}{250}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.03-d01",
+    "comp": "DF.PROP.03",
+    "q": "Calcule $20\\,\\%$ de $45$. ___",
+    "a": "9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2,25": "DF.PROP.03#divise_par_taux",
+      "25": "DF.PROP.03#soustrait_taux"
+    },
+    "steps": [
+      "Prendre $20\\,\\%$, c'est multiplier par $\\frac{20}{100}$, soit $0{,}2$.",
+      "Calcule $45 \\times 0{,}2$ : combien trouves-tu ?"
+    ],
+    "f": "$p\\,\\%\\text{ de } N = \\frac{p}{100} \\times N$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.PROP.03-d02",
+    "comp": "DF.PROP.03",
+    "q": "Un collège compte $600$ élèves, dont $35\\,\\%$ sont demi-pensionnaires. Combien d'élèves sont demi-pensionnaires ?",
+    "a": "$210$",
+    "type": "qcm",
+    "options": [
+      "$210$",
+      "$565$",
+      "$35$",
+      "environ $17$"
+    ],
+    "err": {
+      "$565$": "DF.PROP.03#soustrait_taux",
+      "$35$": "DF.PROP.03#soustrait_taux",
+      "environ $17$": "DF.PROP.03#divise_par_taux"
+    },
+    "steps": [
+      "$35\\,\\%$ de $600$, c'est $\\frac{35}{100} \\times 600$.",
+      "Commence par $1\\,\\%$ de $600$, puis multiplie par $35$ : combien obtiens-tu ?"
+    ],
+    "f": "$p\\,\\%\\text{ de } N = \\frac{p}{100} \\times N$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.03-d03",
+    "comp": "DF.PROP.03",
+    "q": "Sur un trajet de $80$ km, $15\\,\\%$ se font sur autoroute. Combien de kilomètres se font sur autoroute ? ___ km",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "65": "DF.PROP.03#soustrait_taux",
+      "5,33": "DF.PROP.03#divise_par_taux"
+    },
+    "steps": [
+      "$15\\,\\%$ de $80$, c'est $\\frac{15}{100} \\times 80$.",
+      "$10\\,\\%$ de $80$ vaut $8$. Combien vaut $5\\,\\%$ ? Additionne les deux : ?"
+    ],
+    "f": "$p\\,\\%\\text{ de } N = \\frac{p}{100} \\times N$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.04-d01",
+    "comp": "DF.PROP.04",
+    "q": "Un jean à $50$ € est soldé à $-30\\,\\%$. Quel est son nouveau prix ? ___ €",
+    "a": "35",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "15": "DF.PROP.04#reduction_au_lieu_prix",
+      "65": "DF.PROP.04#coefficient_faux"
+    },
+    "steps": [
+      "Calcule d'abord le montant de la réduction : $30\\,\\%$ de $50$ €.",
+      "Le client paie le prix de départ moins la réduction : $50 - $ ? $=$ ?"
+    ],
+    "f": "$\\text{prix final} = \\text{prix} \\times \\left(1 - \\frac{t}{100}\\right)$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.04-d02",
+    "comp": "DF.PROP.04",
+    "q": "Par quel nombre faut-il multiplier un prix pour le baisser de $20\\,\\%$ ?",
+    "a": "$0{,}8$",
+    "type": "qcm",
+    "options": [
+      "$0{,}8$",
+      "$0{,}2$",
+      "$1{,}2$",
+      "$-0{,}2$"
+    ],
+    "err": {
+      "$0{,}2$": "DF.PROP.04#coefficient_faux",
+      "$1{,}2$": "DF.PROP.04#coefficient_faux",
+      "$-0{,}2$": "DF.PROP.04#coefficient_faux"
+    },
+    "steps": [
+      "Après la baisse, il reste le prix de départ ($100\\,\\%$) moins $20\\,\\%$.",
+      "Quel pourcentage reste-t-il ? Écris-le sous forme décimale."
+    ],
+    "f": "$\\text{baisse de } t\\,\\% \\iff \\times \\left(1 - \\frac{t}{100}\\right)$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.PROP.04-d03",
+    "comp": "DF.PROP.04",
+    "q": "Un loyer de $700$ € augmente de $3\\,\\%$. Quel est le nouveau loyer ? ___ €",
+    "a": "721",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "21": "DF.PROP.04#reduction_au_lieu_prix",
+      "679": "DF.PROP.04#coefficient_faux",
+      "2100": "DF.PROP.04#coefficient_faux"
+    },
+    "steps": [
+      "Une hausse de $3\\,\\%$ revient à multiplier par $1 + \\frac{3}{100}$.",
+      "Calcule $700 \\times 1{,}03$ : combien trouves-tu ?"
+    ],
+    "f": "$\\text{hausse de } t\\,\\% \\iff \\times \\left(1 + \\frac{t}{100}\\right)$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.05-d01",
+    "comp": "DF.PROP.05",
+    "q": "Le prix d'un livre passe de $20$ € à $25$ €. De quel pourcentage a-t-il augmenté ? ___ %",
+    "a": "25",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5": "DF.PROP.05#ecart_comme_pourcent",
+      "20": "DF.PROP.05#mauvaise_reference"
+    },
+    "alt": [
+      "25%",
+      "+25",
+      "+25%"
+    ],
+    "steps": [
+      "Calcule l'augmentation en euros : $25 - 20$.",
+      "Compare cette augmentation au prix de départ : $\\frac{5}{20} = $ ? Écris-le en pourcentage."
+    ],
+    "f": "$\\text{taux} = \\frac{V_{\\text{finale}} - V_{\\text{initiale}}}{V_{\\text{initiale}}} \\times 100$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.05-d02",
+    "comp": "DF.PROP.05",
+    "q": "Un casque audio passe de $80$ € à $60$ €. Quel est le taux d'évolution ?",
+    "a": "$-25\\,\\%$",
+    "type": "qcm",
+    "options": [
+      "$-25\\,\\%$",
+      "$-20\\,\\%$",
+      "environ $-33\\,\\%$"
+    ],
+    "err": {
+      "$-20\\,\\%$": "DF.PROP.05#ecart_comme_pourcent",
+      "environ $-33\\,\\%$": "DF.PROP.05#mauvaise_reference"
+    },
+    "steps": [
+      "La baisse en euros est de $80 - 60 = 20$ €.",
+      "Par quelle valeur divise-t-on : celle d'avant ou celle d'après ? Calcule ce quotient en pourcentage."
+    ],
+    "f": "$\\text{taux} = \\frac{V_{\\text{finale}} - V_{\\text{initiale}}}{V_{\\text{initiale}}} \\times 100$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.05-d03",
+    "comp": "DF.PROP.05",
+    "q": "Une chaîne vidéo passe de $200$ à $260$ abonnés. Affirmation : « Le nombre d'abonnés a augmenté de $60\\,\\%$. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "DF.PROP.05#ecart_comme_pourcent"
+    },
+    "steps": [
+      "L'augmentation est de $60$ abonnés. Mais un pourcentage compare cette augmentation à une référence.",
+      "Calcule $\\frac{60}{200}$ et écris-le en pourcentage : est-ce $60\\,\\%$ ?"
+    ],
+    "f": "$\\text{taux} = \\frac{V_{\\text{finale}} - V_{\\text{initiale}}}{V_{\\text{initiale}}} \\times 100$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.06-d01",
+    "comp": "DF.PROP.06",
+    "q": "Un article à $100$ € baisse de $20\\,\\%$, puis son nouveau prix baisse encore de $10\\,\\%$. Quel est son prix final ? ___ €",
+    "a": "72",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "70": "DF.PROP.06#taux_additionnes"
+    },
+    "steps": [
+      "Après la première baisse, le prix est $100 \\times 0{,}8$.",
+      "La deuxième baisse s'applique à ce nouveau prix : multiplie-le par $0{,}9$. Combien obtiens-tu ?"
+    ],
+    "f": "$\\text{évolutions successives : on multiplie les coefficients}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.06-d02",
+    "comp": "DF.PROP.06",
+    "q": "Après une réduction de $25\\,\\%$, un vélo coûte $300$ €. Quel était son prix avant la réduction ? ___ €",
+    "a": "400",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "375": "DF.PROP.06#inverse_par_meme_taux"
+    },
+    "steps": [
+      "Une réduction de $25\\,\\%$ revient à multiplier le prix de départ par $0{,}75$ : $P \\times 0{,}75 = 300$.",
+      "Pour retrouver $P$, quelle opération fais-tu avec $300$ et $0{,}75$ ?"
+    ],
+    "f": "$P_{\\text{départ}} = \\frac{P_{\\text{final}}}{\\text{coefficient}}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.06-d03",
+    "comp": "DF.PROP.06",
+    "q": "Un prix augmente de $10\\,\\%$, puis baisse de $10\\,\\%$. Affirmation : « Il revient exactement à son prix de départ. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "DF.PROP.06#taux_additionnes"
+    },
+    "steps": [
+      "Teste avec un prix de $100$ € : après la hausse de $10\\,\\%$, combien vaut-il ?",
+      "Applique maintenant la baisse de $10\\,\\%$ à ce nouveau prix. Retrouves-tu $100$ € ?"
+    ],
+    "f": "$\\text{évolutions successives : on multiplie les coefficients}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.PROP.07-d01",
+    "comp": "DF.PROP.07",
+    "q": "Sur un plan à l'échelle $\\frac{1}{50}$, une chambre mesure $9$ cm de long. Quelle est sa longueur réelle, en mètres ? ___ m",
+    "a": "4,5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "450": "DF.PROP.07#conversion_oubliee",
+      "0,18": "DF.PROP.07#sens_echelle"
+    },
+    "steps": [
+      "Échelle $\\frac{1}{50}$ : $1$ cm sur le plan représente $50$ cm en réalité.",
+      "Calcule la longueur réelle en cm, puis convertis-la en mètres : ?"
+    ],
+    "f": "$\\text{longueur réelle} = \\text{longueur plan} \\times \\text{dénominateur de l'échelle}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.07-d02",
+    "comp": "DF.PROP.07",
+    "q": "Sur une carte à l'échelle $\\frac{1}{25\\,000}$, deux villages sont à $8$ cm l'un de l'autre. Quelle est la distance réelle ?",
+    "a": "$2$ km",
+    "type": "qcm",
+    "options": [
+      "$2$ km",
+      "$200\\,000$ km",
+      "$0{,}000\\,32$ cm"
+    ],
+    "err": {
+      "$200\\,000$ km": "DF.PROP.07#conversion_oubliee",
+      "$0{,}000\\,32$ cm": "DF.PROP.07#sens_echelle"
+    },
+    "steps": [
+      "$1$ cm sur la carte représente $25\\,000$ cm en réalité : calcule $8 \\times 25\\,000$ (en cm).",
+      "Convertis ce résultat en km ($1$ km $= 100\\,000$ cm) : ?"
+    ],
+    "f": "$\\text{longueur réelle} = \\text{longueur carte} \\times \\text{dénominateur de l'échelle}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.07-d03",
+    "comp": "DF.PROP.07",
+    "q": "Une maquette de voiture est à l'échelle $\\frac{1}{20}$. La vraie voiture mesure $4$ m de long. Quelle est la longueur de la maquette, en cm ? ___ cm",
+    "a": "20",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "80": "DF.PROP.07#sens_echelle",
+      "8000": "DF.PROP.07#sens_echelle",
+      "0,2": "DF.PROP.07#conversion_oubliee"
+    },
+    "steps": [
+      "La maquette est plus petite que la vraie voiture : faut-il multiplier ou diviser par $20$ ?",
+      "Convertis d'abord $4$ m en cm, puis fais le calcul : ?"
+    ],
+    "f": "$\\text{longueur maquette} = \\frac{\\text{longueur réelle}}{\\text{dénominateur de l'échelle}}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.08-d01",
+    "comp": "DF.PROP.08",
+    "q": "Léna et Tom se partagent $50$ € dans le ratio $2 : 3$ (Léna reçoit $2$ parts, Tom $3$ parts). Combien reçoit Léna ? ___ €",
+    "a": "20",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "25": "DF.PROP.08#partage_egal",
+      "33,33": "DF.PROP.08#ratio_fraction_total",
+      "100/3": "DF.PROP.08#ratio_fraction_total"
+    },
+    "steps": [
+      "Combien y a-t-il de parts en tout ?",
+      "Calcule la valeur d'une part, puis multiplie par le nombre de parts de Léna : ?"
+    ],
+    "f": "$\\text{ratio } a : b \\Rightarrow \\text{parts } \\frac{a}{a+b} \\text{ et } \\frac{b}{a+b}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.08-d02",
+    "comp": "DF.PROP.08",
+    "q": "Pour obtenir un vert, on mélange de la peinture bleue et de la peinture jaune dans le ratio $1 : 4$. Quelle fraction du mélange est de la peinture bleue ?",
+    "a": "$\\frac{1}{5}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{1}{5}$",
+      "$\\frac{1}{4}$",
+      "$\\frac{1}{2}$"
+    ],
+    "err": {
+      "$\\frac{1}{4}$": "DF.PROP.08#ratio_fraction_total",
+      "$\\frac{1}{2}$": "DF.PROP.08#partage_egal"
+    },
+    "steps": [
+      "Le ratio $1 : 4$ veut dire : $1$ part de bleu pour $4$ parts de jaune.",
+      "Combien de parts contient le mélange en tout ? Quelle fraction de ce total est bleue ?"
+    ],
+    "f": "$\\text{ratio } a : b \\Rightarrow \\text{parts } \\frac{a}{a+b} \\text{ et } \\frac{b}{a+b}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.08-d03",
+    "comp": "DF.PROP.08",
+    "q": "Une boisson se prépare avec du sirop et de l'eau dans le ratio $1 : 7$. Pour préparer $400$ mL de boisson, combien faut-il de mL de sirop ? ___ mL",
+    "a": "50",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "200": "DF.PROP.08#partage_egal",
+      "57,1": "DF.PROP.08#ratio_fraction_total",
+      "57,14": "DF.PROP.08#ratio_fraction_total",
+      "400/7": "DF.PROP.08#ratio_fraction_total"
+    },
+    "steps": [
+      "Le ratio $1 : 7$ donne combien de parts en tout ?",
+      "Partage $400$ mL en ce nombre de parts égales : combien vaut la part de sirop ?"
+    ],
+    "f": "$\\text{ratio } a : b \\Rightarrow \\text{parts } \\frac{a}{a+b} \\text{ et } \\frac{b}{a+b}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.03-t01",
+    "comp": "DF.PROP.03",
+    "q": "Calcule $30\\,\\%$ de $90$. ___",
+    "a": "27",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "DF.PROP.03#divise_par_taux",
+      "60": "DF.PROP.03#soustrait_taux",
+      "2,7": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "$30\\,\\%$ de $90$, c'est $\\frac{30}{100}$ de $90$.",
+      "Commence par $10\\,\\%$ de $90$ : combien ? Puis multiplie par $3$."
+    ],
+    "f": "$p\\,\\%$ de $N = \\frac{p}{100} \\times N$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.PROP.03-t02",
+    "comp": "DF.PROP.03",
+    "q": "Un téléphone coûte $300$ €. Le vendeur accorde une remise de $5\\,\\%$. Quel est le montant de la remise ?",
+    "a": "$15$ €",
+    "type": "qcm",
+    "options": [
+      "$60$ €",
+      "$295$ €",
+      "$15$ €",
+      "$150$ €"
+    ],
+    "err": {
+      "$60$ €": "DF.PROP.03#divise_par_taux",
+      "$295$ €": "DF.PROP.03#soustrait_taux",
+      "$150$ €": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "$5\\,\\%$ s'écrit $\\frac{5}{100}$, soit $0{,}05$.",
+      "Combien vaut $1\\,\\%$ de $300$ € ? Et donc $5\\,\\%$ ?"
+    ],
+    "f": "$p\\,\\%$ de $N = \\frac{p}{100} \\times N$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.03-t03",
+    "comp": "DF.PROP.03",
+    "q": "Quel calcul donne $15\\,\\%$ de $240$ ?",
+    "a": "$0{,}15 \\times 240$",
+    "type": "qcm",
+    "options": [
+      "$240 \\div 15$",
+      "$0{,}15 \\times 240$",
+      "$240 - 15$",
+      "$1{,}5 \\times 240$"
+    ],
+    "err": {
+      "$240 \\div 15$": "DF.PROP.03#divise_par_taux",
+      "$240 - 15$": "DF.PROP.03#soustrait_taux",
+      "$1{,}5 \\times 240$": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "Un pourcentage est une fraction de dénominateur $100$ : $15\\,\\% = \\frac{15}{100}$.",
+      "Écris $\\frac{15}{100}$ en écriture décimale : combien de chiffres après la virgule ?"
+    ],
+    "f": "$p\\,\\%$ de $N = \\frac{p}{100} \\times N$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.PROP.03-t04",
+    "comp": "DF.PROP.03",
+    "q": "Un lait contient $3{,}5\\,\\%$ de matière grasse. Quelle masse de matière grasse y a-t-il dans $200$ g de ce lait ? ___ g",
+    "a": "7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "196,5": "DF.PROP.03#soustrait_taux",
+      "70": "NC.FRAC.07#pourcent_virgule",
+      "0,7": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "$3{,}5\\,\\% = \\frac{3{,}5}{100}$ : écris-le en écriture décimale.",
+      "Multiplie ce nombre par $200$ g, ou calcule d'abord $1\\,\\%$ de $200$ g."
+    ],
+    "f": "$p\\,\\%$ de $N = \\frac{p}{100} \\times N$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.03-t05",
+    "comp": "DF.PROP.03",
+    "q": "Un village compte $1\\,200$ habitants, dont $12\\,\\%$ ont moins de $10$ ans. Combien d'habitants ont moins de $10$ ans ? ___",
+    "a": "144",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "100": "DF.PROP.03#divise_par_taux",
+      "1188": "DF.PROP.03#soustrait_taux",
+      "14,4": "NC.FRAC.07#pourcent_virgule",
+      "1440": "NC.FRAC.07#pourcent_virgule"
+    },
+    "steps": [
+      "Combien vaut $1\\,\\%$ de $1\\,200$ ?",
+      "Combien valent alors $12\\,\\%$ ?"
+    ],
+    "f": "$p\\,\\%$ de $N = \\frac{p}{100} \\times N$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.03-t06",
+    "comp": "DF.PROP.03",
+    "q": "Pour un concert, $80\\,\\%$ des $2\\,000$ places ont été vendues. Combien de places restent libres ? ___",
+    "a": "400",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1920": "DF.PROP.03#soustrait_taux",
+      "25": "DF.PROP.03#divise_par_taux"
+    },
+    "steps": [
+      "Quel pourcentage des places reste libre ?",
+      "Calcule ce pourcentage de $2\\,000$."
+    ],
+    "f": "$p\\,\\%$ de $N = \\frac{p}{100} \\times N$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROP.03-t07",
+    "comp": "DF.PROP.03",
+    "q": "Un collège compte $640$ élèves. $45\\,\\%$ sont des filles, et parmi ces filles, $25\\,\\%$ font partie de la chorale. Combien de filles font partie de la chorale ? ___",
+    "a": "72",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "11,52": "DF.PROP.03#divise_par_taux",
+      "263": "DF.PROP.03#soustrait_taux"
+    },
+    "steps": [
+      "Commence par calculer le nombre de filles du collège.",
+      "Le $25\\,\\%$ s'applique au nombre de filles, pas aux $640$ élèves."
+    ],
+    "f": "$p\\,\\%$ de $N = \\frac{p}{100} \\times N$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  }
+]

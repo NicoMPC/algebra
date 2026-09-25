@@ -1,84 +1,92 @@
 // sw.js — Matheux Service Worker
-const CACHE_NAME = 'matheux-v13';
+// v14 (25/09/2026) : les pages HTML ne sont PLUS servies depuis le cache en priorité.
+//  - navigations / documents HTML → réseau d'abord (cache: 'no-store'), cache seulement hors ligne ;
+//    ainsi une ancienne landing ou une ancienne app ne peut plus être resservie après une mise en ligne.
+//  - API (Supabase, GAS, /api) et toute requête non-GET → jamais interceptées ni mises en cache.
+//  - ressources statiques du même domaine (icônes, images, js, css) → cache, rafraîchi en arrière-plan.
+//  - cross-origin (CDN, polices) → laissé au navigateur (pas de réponses opaques en cache).
+// À chaque changement de ce fichier : monter CACHE_NAME (l'activation supprime les anciens caches).
+const CACHE_NAME = 'matheux-v14';
+// Uniquement des fichiers qui existent dans le dépôt (un seul 404 ferait échouer toute l'installation).
 const CACHE_ASSETS = [
-  '/app.html',
+  '/offline.html',
   '/manifest.json',
-  '/scree.png',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
-  'https://cdn.tailwindcss.com',
-  'https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap'
+  '/icons/favicon-32.png',
+  '/assets/mark-navy.png'
 ];
 
-// Installation : cache les assets statiques
-self.addEventListener('install', function(e) {
+self.addEventListener('install', function (e) {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(CACHE_ASSETS.map(url => new Request(url, { mode: 'no-cors' })));
-    })
+    caches.open(CACHE_NAME)
+      .then(function (cache) { return cache.addAll(CACHE_ASSETS.map(function (u) { return new Request(u, { cache: 'reload' }); })); })
+      .then(function () { return self.skipWaiting(); })
   );
-  self.skipWaiting();
 });
 
-// Activation : nettoyer les anciens caches
-self.addEventListener('activate', function(e) {
+// Activation : supprime TOUS les anciens caches (dont matheux-v13 qui contenait app.html et la landing)
+self.addEventListener('activate', function (e) {
   e.waitUntil(
-    caches.keys().then(function(keys) {
-      return Promise.all(
-        keys.filter(function(k) { return k !== CACHE_NAME; })
-            .map(function(k) { return caches.delete(k); })
-      );
-    })
+    caches.keys()
+      .then(function (keys) {
+        return Promise.all(keys.filter(function (k) { return k !== CACHE_NAME; }).map(function (k) { return caches.delete(k); }));
+      })
+      .then(function () { return self.clients.claim(); })
   );
-  self.clients.claim();
 });
 
-// Fetch : Network First pour GAS (toujours frais), Cache First pour assets
-self.addEventListener('fetch', function(e) {
-  var url = e.request.url;
+function estHtml(req) {
+  if (req.mode === 'navigate' || req.destination === 'document') return true;
+  var accept = req.headers.get('accept') || '';
+  return accept.indexOf('text/html') !== -1;
+}
 
-  // GAS API → toujours réseau, jamais cache
-  if (url.includes('script.google.com')) {
+self.addEventListener('fetch', function (e) {
+  var req = e.request;
+  if (req.method !== 'GET') return; // POST (API, paiement…) : le navigateur gère, rien en cache
+  var url = new URL(req.url);
+  if (url.origin !== self.location.origin) return; // Supabase, GAS, CDN, polices : jamais interceptés
+  if (url.pathname.indexOf('/api') === 0 || url.pathname.indexOf('/dev/') === 0 || url.pathname === '/sw.js') return;
+
+  // Pages HTML : réseau d'abord, toujours frais. Cache (dernière version vue) ou offline.html si hors ligne.
+  if (estHtml(req)) {
     e.respondWith(
-      fetch(e.request).catch(function() {
-        return new Response(
-          JSON.stringify({ status: 'error', message: 'offline' }),
-          { headers: { 'Content-Type': 'application/json' } }
-        );
+      fetch(req, { cache: 'no-store' }).then(function (res) {
+        if (res.ok && res.type === 'basic' && url.pathname.indexOf('/b/') !== 0) {
+          var copie = res.clone();
+          caches.open(CACHE_NAME).then(function (c) { c.put(req, copie); });
+        }
+        return res;
+      }).catch(function () {
+        return caches.match(req).then(function (hit) { return hit || caches.match('/offline.html'); });
       })
     );
     return;
   }
 
-  // Assets statiques → Cache First avec fallback réseau
+  // Statique même domaine : cache immédiat + mise à jour en arrière-plan (stale-while-revalidate)
   e.respondWith(
-    caches.match(e.request).then(function(cached) {
-      return cached || fetch(e.request).then(function(response) {
-        // Mettre en cache les nouvelles ressources statiques
-        if (response.ok && e.request.method === 'GET') {
-          var clone = response.clone();
-          caches.open(CACHE_NAME).then(function(cache) {
-            cache.put(e.request, clone);
-          });
-        }
-        return response;
-      }).catch(function() {
-        // Offline → page offline si navigation
-        if (e.request.mode === 'navigate') {
-          return caches.match('/offline.html') || caches.match('/app.html');
-        }
+    caches.open(CACHE_NAME).then(function (cache) {
+      return cache.match(req).then(function (hit) {
+        var reseau = fetch(req).then(function (res) {
+          if (res.ok && res.type === 'basic') cache.put(req, res.clone());
+          return res;
+        });
+        if (hit) { e.waitUntil(reseau.catch(function () {})); return hit; }
+        return reseau;
       });
     })
   );
 });
 
 // Notifications push (infra prête, désactivée en prod)
-self.addEventListener('push', function(e) {
+self.addEventListener('push', function (e) {
   if (!e.data) return;
   var data = e.data.json();
   e.waitUntil(
     self.registration.showNotification(data.title || 'Matheux', {
-      body: data.body || 'Ton boost du jour t\'attend ! ⚡',
+      body: data.body || 'Tes exos du jour t\'attendent.',
       icon: '/icons/icon-192.png',
       badge: '/icons/icon-96.png',
       tag: 'matheux-boost',
@@ -87,7 +95,7 @@ self.addEventListener('push', function(e) {
   );
 });
 
-self.addEventListener('notificationclick', function(e) {
+self.addEventListener('notificationclick', function (e) {
   e.notification.close();
   e.waitUntil(clients.openWindow(e.notification.data.url || '/app.html'));
 });

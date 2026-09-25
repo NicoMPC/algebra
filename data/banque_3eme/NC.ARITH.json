@@ -1,0 +1,570 @@
+[
+  {
+    "id": "NC.ARITH.01-d01",
+    "comp": "NC.ARITH.01",
+    "q": "Lequel de ces nombres est divisible par $3$ ?",
+    "a": "$147$",
+    "type": "qcm",
+    "options": [
+      "$43$",
+      "$73$",
+      "$147$",
+      "$113$"
+    ],
+    "err": {
+      "$43$": "NC.ARITH.01#critere_dernier_chiffre",
+      "$73$": "NC.ARITH.01#critere_dernier_chiffre",
+      "$113$": "NC.ARITH.01#critere_dernier_chiffre"
+    },
+    "steps": [
+      "Le critère de divisibilité par $3$ ne regarde pas le dernier chiffre, mais la somme des chiffres.",
+      "Pour chaque nombre, calcule la somme de ses chiffres (ex. pour $43$ : $4 + 3 = \\,?$) : est-elle dans la table de $3$ ?"
+    ],
+    "f": "Divisible par $3$ $\\iff$ la somme des chiffres est divisible par $3$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.01-d02",
+    "comp": "NC.ARITH.01",
+    "q": "Vrai ou faux : $36$ est un diviseur de $4$.",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.ARITH.01#multiple_diviseur"
+    },
+    "steps": [
+      "« $a$ est un diviseur de $b$ » veut dire que $b \\div a$ tombe juste. Que vaut $4 \\div 36$ ?",
+      "Entre $4$ et $36$, lequel est dans la table de l'autre ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.01-d03",
+    "comp": "NC.ARITH.01",
+    "q": "$42$ élèves forment des équipes de $5$. Combien d'élèves restent sans équipe ? ___",
+    "a": "2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "4": "NC.ARITH.01#reste_decimal",
+      "8,4": "NC.ARITH.01#reste_decimal"
+    },
+    "steps": [
+      "C'est le reste de la division euclidienne de $42$ par $5$ : combien de fois $5$ tient-il dans $42$ ?",
+      "Calcule $5 \\times ? $ (le plus grand multiple de $5$ inférieur à $42$), puis ce qu'il manque pour arriver à $42$."
+    ],
+    "f": "$a = b \\times q + r$ avec $0 \\leq r < b$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ARITH.02-d01",
+    "comp": "NC.ARITH.02",
+    "q": "Lequel de ces nombres est premier ?",
+    "a": "$13$",
+    "type": "qcm",
+    "options": [
+      "$9$",
+      "$21$",
+      "$1$",
+      "$13$"
+    ],
+    "err": {
+      "$9$": "NC.ARITH.02#impair_premier",
+      "$21$": "NC.ARITH.02#impair_premier",
+      "$1$": "NC.ARITH.02#definition_1_2"
+    },
+    "steps": [
+      "Un nombre premier a exactement deux diviseurs : $1$ et lui-même.",
+      "Pour chaque nombre, cherche un diviseur autre que $1$ et lui-même (essaie $3$, $7$…)."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.02-d02",
+    "comp": "NC.ARITH.02",
+    "q": "Vrai ou faux : $91$ est un nombre premier.",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.ARITH.02#test_incomplet"
+    },
+    "steps": [
+      "$91$ n'est divisible ni par $2$, ni par $3$, ni par $5$. Faut-il s'arrêter là ?",
+      "Essaie la division de $91$ par $7$ : tombe-t-elle juste ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.02-d03",
+    "comp": "NC.ARITH.02",
+    "q": "Lequel de ces nombres est premier ?",
+    "a": "$2$",
+    "type": "qcm",
+    "options": [
+      "$2$",
+      "$1$",
+      "$119$",
+      "$51$"
+    ],
+    "err": {
+      "$1$": "NC.ARITH.02#definition_1_2",
+      "$119$": "NC.ARITH.02#test_incomplet",
+      "$51$": "NC.ARITH.02#impair_premier"
+    },
+    "steps": [
+      "Rappel : un nombre premier a exactement deux diviseurs distincts. Combien de diviseurs a $1$ ?",
+      "Pour $51$ et $119$, teste la division par $3$ puis par $7$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.03-d01",
+    "comp": "NC.ARITH.03",
+    "q": "Quelle est la décomposition de $126$ en produit de facteurs premiers ?",
+    "a": "$2 \\times 3^2 \\times 7$",
+    "type": "qcm",
+    "options": [
+      "$2 \\times 9 \\times 7$",
+      "$2 \\times 3^2 \\times 7$",
+      "$2 \\times 3 \\times 7$",
+      "$6 \\times 3 \\times 7$"
+    ],
+    "err": {
+      "$2 \\times 9 \\times 7$": "NC.ARITH.03#facteur_non_premier",
+      "$2 \\times 3 \\times 7$": "NC.ARITH.03#produit_faux",
+      "$6 \\times 3 \\times 7$": "NC.ARITH.03#facteur_non_premier"
+    },
+    "steps": [
+      "Tous les facteurs doivent être des nombres premiers : $6$ et $9$ le sont-ils ?",
+      "Divise $126$ successivement : $126 \\div 2 = 63$, puis $63 \\div 3 = \\,?$ … et vérifie que le produit redonne $126$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.03-d02",
+    "comp": "NC.ARITH.03",
+    "q": "On a $360 = 2^n \\times 3^2 \\times 5$. Quelle est la valeur de $n$ ? ___",
+    "a": "3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2": "NC.ARITH.03#produit_faux",
+      "4": "NC.ARITH.03#produit_faux"
+    },
+    "steps": [
+      "Calcule d'abord $3^2 \\times 5 = \\,?$",
+      "Il reste à trouver combien de fois on peut diviser $360 \\div 45$ par $2$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.03-d03",
+    "comp": "NC.ARITH.03",
+    "q": "Quelle égalité est vraie ?",
+    "a": "$2^3 \\times 5 = 40$",
+    "type": "qcm",
+    "options": [
+      "$2^3 \\times 7 = 42$",
+      "$3^2 \\times 7 = 42$",
+      "$2^3 \\times 5 = 40$",
+      "$5^2 \\times 2 = 20$"
+    ],
+    "err": {
+      "$2^3 \\times 7 = 42$": "NC.ARITH.03#exposant",
+      "$3^2 \\times 7 = 42$": "NC.ARITH.03#exposant",
+      "$5^2 \\times 2 = 20$": "NC.ARITH.03#exposant"
+    },
+    "steps": [
+      "$2^3$ ne veut pas dire $2 \\times 3$ : c'est $2$ multiplié par lui-même combien de fois ?",
+      "Calcule chaque puissance ($2^3$, $3^2$, $5^2$) avant de multiplier."
+    ],
+    "f": "$a^n = a \\times a \\times \\ldots \\times a$ ($n$ facteurs)",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.04-d01",
+    "comp": "NC.ARITH.04",
+    "q": "Quel est le plus grand diviseur commun de $12$ et $18$ ?",
+    "a": "$6$",
+    "type": "qcm",
+    "options": [
+      "$36$",
+      "$216$",
+      "$72$",
+      "$6$"
+    ],
+    "err": {
+      "$36$": "NC.ARITH.04#multiple_au_lieu_diviseur",
+      "$216$": "NC.ARITH.04#multiple_au_lieu_diviseur",
+      "$72$": "NC.ARITH.04#multiple_au_lieu_diviseur"
+    },
+    "steps": [
+      "Liste les diviseurs de $12$ : $1, 2, 3, \\,?, \\,?, 12$.",
+      "Parmi ces diviseurs, lesquels divisent aussi $18$ ? Garde le plus grand."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.04-d02",
+    "comp": "NC.ARITH.04",
+    "q": "Un fleuriste a $60$ roses et $96$ tulipes. Il veut faire le plus grand nombre possible de bouquets identiques en utilisant toutes ses fleurs. Combien de bouquets fera-t-il ? ___",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "96": "NC.ARITH.04#exposants_max",
+      "480": "NC.ARITH.04#multiple_au_lieu_diviseur",
+      "5": "NC.ARITH.04#mauvaise_quantite",
+      "8": "NC.ARITH.04#mauvaise_quantite"
+    },
+    "steps": [
+      "Le nombre de bouquets doit diviser $60$ ET $96$ : on cherche le plus grand diviseur commun.",
+      "$60 = 2^2 \\times 3 \\times 5$ et $96 = 2^5 \\times 3$. Pour un diviseur commun, quel exposant de $2$ peut-on prendre au maximum ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ARITH.04-d03",
+    "comp": "NC.ARITH.04",
+    "q": "On coupe deux rubans de $84$ cm et $126$ cm en morceaux tous de la même longueur, la plus grande possible, sans chute. Quelle est la longueur d'un morceau ?",
+    "a": "$42$ cm",
+    "type": "qcm",
+    "options": [
+      "$42$ cm",
+      "$5$ cm",
+      "$252$ cm",
+      "$10\\,584$ cm"
+    ],
+    "err": {
+      "$5$ cm": "NC.ARITH.04#mauvaise_quantite",
+      "$252$ cm": "NC.ARITH.04#multiple_au_lieu_diviseur",
+      "$10\\,584$ cm": "NC.ARITH.04#multiple_au_lieu_diviseur"
+    },
+    "steps": [
+      "Un morceau ne peut pas être plus long que le ruban : la longueur cherchée divise $84$ et $126$.",
+      "$84 = 2^2 \\times 3 \\times 7$ et $126 = 2 \\times 3^2 \\times 7$ : pour chaque facteur commun, garde le plus petit exposant."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ARITH.03-t01",
+    "comp": "NC.ARITH.03",
+    "q": "Complète la décomposition en facteurs premiers : $84 = 2^2 \\times 3 \\times \\text{___}$",
+    "a": "7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "21": "NC.ARITH.03#produit_faux"
+    },
+    "steps": [
+      "Calcule d'abord $2^2 \\times 3$.",
+      "Par quel nombre faut-il multiplier ce produit pour retrouver $84$ ? Est-il premier ?"
+    ],
+    "f": "Diviser par $2$, $3$, $5$, $7$, $11$… tant que c'est possible",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.03-t02",
+    "comp": "NC.ARITH.03",
+    "q": "Quelle est la décomposition en facteurs premiers de $60$ ?",
+    "a": "$2^2 \\times 3 \\times 5$",
+    "type": "qcm",
+    "options": [
+      "$2^2 \\times 3 \\times 5$",
+      "$4 \\times 3 \\times 5$",
+      "$2 \\times 3 \\times 5$",
+      "$2 \\times 3 \\times 10$"
+    ],
+    "err": {
+      "$4 \\times 3 \\times 5$": "NC.ARITH.03#facteur_non_premier",
+      "$2 \\times 3 \\times 5$": "NC.ARITH.03#produit_faux",
+      "$2 \\times 3 \\times 10$": "NC.ARITH.03#facteur_non_premier"
+    },
+    "steps": [
+      "Divise $60$ par $2$ autant de fois que possible, puis par $3$, puis par $5$.",
+      "Tous les facteurs doivent être premiers, et leur produit doit redonner $60$."
+    ],
+    "f": "Diviser par $2$, $3$, $5$, $7$, $11$… tant que c'est possible",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.03-t03",
+    "comp": "NC.ARITH.03",
+    "q": "Quel est le plus grand facteur premier de $150$ ? ___",
+    "a": "5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "25": "NC.ARITH.03#facteur_non_premier",
+      "75": "NC.ARITH.03#facteur_non_premier",
+      "15": "NC.ARITH.03#facteur_non_premier"
+    },
+    "steps": [
+      "Décompose $150$ : commence par le diviser par $2$, puis par $3$.",
+      "Le quotient qui reste se décompose-t-il encore ? Ne garde que des nombres premiers."
+    ],
+    "f": "Diviser par $2$, $3$, $5$, $7$, $11$… tant que c'est possible",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.03-t04",
+    "comp": "NC.ARITH.03",
+    "q": "Quelle égalité est vraie ?",
+    "a": "$2^2 \\times 3^2 = 36$",
+    "type": "qcm",
+    "options": [
+      "$2^3 \\times 3 = 18$",
+      "$3^2 \\times 5 = 30$",
+      "$2^2 \\times 3^2 = 36$",
+      "$2 \\times 5^2 = 20$"
+    ],
+    "err": {
+      "$2^3 \\times 3 = 18$": "NC.ARITH.03#exposant",
+      "$3^2 \\times 5 = 30$": "NC.ARITH.03#exposant",
+      "$2 \\times 5^2 = 20$": "NC.ARITH.03#exposant"
+    },
+    "steps": [
+      "L'exposant compte les facteurs : $3^2 = 3 \\times 3$, ce n'est pas $3 \\times 2$.",
+      "Calcule chaque membre de gauche en écrivant les puissances en entier."
+    ],
+    "f": "$a^n = a \\times a \\times \\ldots \\times a$ ($n$ facteurs)",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.03-t05",
+    "comp": "NC.ARITH.03",
+    "q": "Le code du cadenas de Lina est le nombre $2^3 \\times 3 \\times 5$. Quel est ce code ? ___",
+    "a": "120",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "90": "NC.ARITH.03#exposant",
+      "30": "NC.ARITH.03#exposant"
+    },
+    "steps": [
+      "Commence par calculer $2^3$ en écrivant le produit en entier.",
+      "Multiplie ensuite le résultat par $3$, puis par $5$."
+    ],
+    "f": "$2^3 = 2 \\times 2 \\times 2$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ARITH.03-t06",
+    "comp": "NC.ARITH.03",
+    "q": "Emma écrit $150 = 2 \\times 75$ et s'arrête là. Pourquoi sa décomposition en facteurs premiers n'est-elle pas terminée ?",
+    "a": "$75$ n'est pas un nombre premier",
+    "type": "qcm",
+    "options": [
+      "$2$ n'est pas premier car il est pair",
+      "$75$ n'est pas un nombre premier",
+      "Il faut aussi écrire le facteur $1$",
+      "Le produit $2 \\times 75$ ne fait pas $150$"
+    ],
+    "err": {
+      "$2$ n'est pas premier car il est pair": "NC.ARITH.02#definition_1_2",
+      "Il faut aussi écrire le facteur $1$": "NC.ARITH.02#definition_1_2",
+      "Le produit $2 \\times 75$ ne fait pas $150$": "NC.ARITH.03#produit_faux"
+    },
+    "steps": [
+      "Vérifie chaque facteur : a-t-il d'autres diviseurs que $1$ et lui-même ?",
+      "$75$ se termine par $5$ : que peux-tu en conclure ?"
+    ],
+    "f": "Diviser par $2$, $3$, $5$, $7$, $11$… tant que c'est possible",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.03-t07",
+    "comp": "NC.ARITH.03",
+    "q": "Quel est le plus petit facteur premier de $119$ ? ___",
+    "a": "7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "119": "NC.ARITH.02#test_incomplet",
+      "1": "NC.ARITH.02#definition_1_2"
+    },
+    "steps": [
+      "$119$ est impair : il n'est pas divisible par $2$. Teste $3$, puis $5$.",
+      "Si ni $3$ ni $5$ ne conviennent, n'abandonne pas : essaie le nombre premier suivant."
+    ],
+    "f": "Diviser par $2$, $3$, $5$, $7$, $11$… tant que c'est possible",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.03-t08",
+    "comp": "NC.ARITH.03",
+    "q": "Quelle est la décomposition en facteurs premiers de $1\\,000$ ?",
+    "a": "$2^3 \\times 5^3$",
+    "type": "qcm",
+    "options": [
+      "$10^3$",
+      "$2^3 \\times 5^2$",
+      "$8 \\times 125$",
+      "$2^3 \\times 5^3$"
+    ],
+    "err": {
+      "$10^3$": "NC.ARITH.03#facteur_non_premier",
+      "$2^3 \\times 5^2$": "NC.ARITH.03#produit_faux",
+      "$8 \\times 125$": "NC.ARITH.03#facteur_non_premier"
+    },
+    "steps": [
+      "$1\\,000 = 10 \\times 10 \\times 10$, mais $10$ n'est pas premier : décompose-le.",
+      "Compte combien de fois apparaissent $2$ et $5$ au total."
+    ],
+    "f": "Diviser par $2$, $3$, $5$, $7$, $11$… tant que c'est possible",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ARITH.03-t09",
+    "comp": "NC.ARITH.03",
+    "q": "Quel est le plus grand facteur premier de $2\\,024$ ? ___",
+    "a": "23",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "253": "NC.ARITH.03#facteur_non_premier",
+      "506": "NC.ARITH.03#facteur_non_premier",
+      "1012": "NC.ARITH.03#facteur_non_premier"
+    },
+    "steps": [
+      "Divise $2\\,024$ par $2$ tant que c'est possible.",
+      "Le quotient obtenu est impair : teste $3$, $7$, $11$… jusqu'à ce qu'il ne reste que des nombres premiers."
+    ],
+    "f": "Diviser par $2$, $3$, $5$, $7$, $11$… tant que c'est possible",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  }
+]

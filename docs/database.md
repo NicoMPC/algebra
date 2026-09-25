@@ -89,7 +89,7 @@ Sécurité API (25/09) : toute action qui lit/écrit les données d'un élève e
 
 Purge des sessions invitées non rattachées (à la main ou en cron, sans urgence) : `delete from diagnostics_invites where statut <> 'rattache' and expires_at < now() - interval '7 days';`
 
-Purge des anciens comptes (décision 24/09) : `supabase/purge_anciens_comptes.sql` (backup d'abord, épargne les admins / KN6CFG). **Ne pas exécuter sans Nicolas.**
+Purge des anciens comptes (décision 24/09) : `supabase/purge_anciens_comptes.sql` (backup d'abord, épargne tous les comptes `is_admin = true`, sans code en dur). **Ne pas exécuter sans Nicolas.**
 
 ### RLS (Row Level Security)
 - **Données élève** (profiles, scores, progress, daily_boosts, brevet_results) : `code = my_code() OR is_admin()`

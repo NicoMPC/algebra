@@ -1,0 +1,132 @@
+{
+  "fichier": "data/banque_3eme/EG.REP.json",
+  "relecteur": "relecteur",
+  "date": "2026-09-24",
+  "methode": "calculs refaits a la main ; _normFill/_toNum/_matchFill extraits d app.html et simules en Node (a, alt, variantes, cles err) ; LaTeX rendu KaTeX 0.16.9 strict (0 erreur) ; ids err verifies dans competences.json",
+  "bilan": {
+    "ok": 6,
+    "corrige": 3,
+    "rejet": 0
+  },
+  "items": [
+    {
+      "id": "EG.REP.01-d01",
+      "verdict": "ok",
+      "remarques": "Abscisse -5 ; 2 (inversion) et 5 (signe) coherents. NB app : le moins unicode \"−\" (clavier iOS/copie) n est pas normalise par _normFill -> \"−5\" refuse. Hors item, a signaler dev-ux."
+    },
+    {
+      "id": "EG.REP.01-d02",
+      "verdict": "ok",
+      "remarques": "(-3 ; 2). (2 ; -3) et (-2 ; 3) = inversions, (3 ; 2) = signe : coherents."
+    },
+    {
+      "id": "EG.REP.01-d03",
+      "verdict": "ok",
+      "remarques": "Seul (-2 ; -5) a x<0 et y<0."
+    },
+    {
+      "id": "EG.REP.02-d01",
+      "verdict": "corrige",
+      "remarques": "Math juste (5 ; 10, 3, 6 coherents) MAIS competence hors programme cycle 4 (milieu en coordonnees = 2nde). Contrat commun par.8 : usage train uniquement, jamais en diagnostic. Correction : usage [\"train\"] (renommer eventuellement l id hors serie -d).",
+      "correction": {
+        "id": "EG.REP.02-d01",
+        "comp": "EG.REP.02",
+        "q": "Dans un repère, $A(2 ; 6)$ et $B(8 ; 4)$. Quelle est l'abscisse du milieu $M$ du segment $[AB]$ ? ___",
+        "a": "5",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "10": "EG.REP.02#pas_divise_par_2",
+          "3": "EG.REP.02#difference",
+          "6": "EG.REP.02#difference"
+        },
+        "steps": [
+          "L'abscisse du milieu est la moyenne des abscisses de $A$ et $B$.",
+          "On calcule $\\frac{2 + 8}{2} = \\;?$"
+        ],
+        "f": "$x_M = \\frac{x_A + x_B}{2}$",
+        "lvl": 1,
+        "usage": [
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "EG.REP.02-d02",
+      "verdict": "corrige",
+      "remarques": "Math juste ((-1 ; 4) ; (-2 ; 8), (3 ; 3), (-6 ; -6) coherents). Hors programme : usage [\"train\"].",
+      "correction": {
+        "id": "EG.REP.02-d02",
+        "comp": "EG.REP.02",
+        "q": "Dans un repère, $A(-4 ; 1)$ et $B(2 ; 7)$. Quelles sont les coordonnées du milieu de $[AB]$ ?",
+        "a": "$(-1 ; 4)$",
+        "type": "qcm",
+        "options": [
+          "$(-2 ; 8)$",
+          "$(3 ; 3)$",
+          "$(-1 ; 4)$",
+          "$(-6 ; -6)$"
+        ],
+        "err": {
+          "$(-2 ; 8)$": "EG.REP.02#pas_divise_par_2",
+          "$(3 ; 3)$": "EG.REP.02#difference",
+          "$(-6 ; -6)$": "EG.REP.02#difference"
+        },
+        "steps": [
+          "Pour chaque coordonnée, on fait la moyenne : on additionne puis on divise par $2$.",
+          "Abscisse : $\\frac{-4 + 2}{2} = \\;?$ Ordonnée : $\\frac{1 + 7}{2} = \\;?$"
+        ],
+        "f": "$M\\left(\\frac{x_A + x_B}{2} ; \\frac{y_A + y_B}{2}\\right)$",
+        "lvl": 2,
+        "usage": [
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "EG.REP.02-d03",
+      "verdict": "corrige",
+      "remarques": "Math juste (2 ; 4, -7, 7 coherents). Hors programme : usage [\"train\"].",
+      "correction": {
+        "id": "EG.REP.02-d03",
+        "comp": "EG.REP.02",
+        "q": "Sur le plan d'un parc muni d'un repère, la fontaine est en $C(3 ; -5)$ et le kiosque en $D(-1 ; 9)$. On installe un banc au milieu de $[CD]$. Quelle est l'ordonnée du banc ? ___",
+        "a": "2",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "4": "EG.REP.02#pas_divise_par_2",
+          "-7": "EG.REP.02#difference",
+          "7": "EG.REP.02#difference"
+        },
+        "steps": [
+          "L'ordonnée du milieu est la moyenne des ordonnées de $C$ et $D$.",
+          "On calcule $\\frac{-5 + 9}{2} = \\;?$"
+        ],
+        "f": "$y_M = \\frac{y_C + y_D}{2}$",
+        "lvl": 2,
+        "usage": [
+          "train"
+        ],
+        "contexte": true
+      }
+    },
+    {
+      "id": "EG.REP.03-d01",
+      "verdict": "ok",
+      "remarques": "Altitude 7."
+    },
+    {
+      "id": "EG.REP.03-d02",
+      "verdict": "ok",
+      "remarques": "30 N / 60 E ; distracteurs ordre et orientation coherents."
+    },
+    {
+      "id": "EG.REP.03-d03",
+      "verdict": "ok",
+      "remarques": "G=(6 ; 4 ; 3). Enonce tres guidant (donne C et \"meme hauteur que E\") : teste surtout l ordre des coordonnees, ce que taggent les 3 distracteurs."
+    }
+  ]
+}

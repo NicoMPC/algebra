@@ -1,0 +1,936 @@
+[
+  {
+    "id": "DF.STAT.01-d01",
+    "comp": "DF.STAT.01",
+    "q": "On a demandé à des élèves combien ils ont de frères et sœurs (de $0$ à $3$). Combien d'élèves ont répondu ? ___",
+    "a": "25",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "6": "DF.STAT.01#valeurs_effectifs",
+      "31": "DF.STAT.01#valeurs_effectifs"
+    },
+    "steps": [
+      "La première ligne donne les réponses possibles, la deuxième le nombre d'élèves pour chaque réponse.",
+      "Additionne les nombres d'élèves de la deuxième ligne : ?"
+    ],
+    "f": "$\\text{effectif total} = \\text{somme des effectifs}$",
+    "lvl": 1,
+    "table": {
+      "headers": [
+        "Frères et sœurs",
+        "$0$",
+        "$1$",
+        "$2$",
+        "$3$"
+      ],
+      "rows": [
+        [
+          "Nombre d'élèves",
+          "$5$",
+          "$9$",
+          "$7$",
+          "$4$"
+        ]
+      ],
+      "caption": "Réponses des élèves"
+    },
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.01-d02",
+    "comp": "DF.STAT.01",
+    "q": "Dans un diagramme en barres, l'axe vertical est gradué de $5$ en $5$ : chaque trait vaut $5$ élèves de plus que le précédent. La barre « Football » arrive au $4^e$ trait au-dessus de $0$. Combien d'élèves ont choisi le football ?",
+    "a": "$20$",
+    "type": "qcm",
+    "options": [
+      "$20$",
+      "$4$",
+      "$5$",
+      "$25$"
+    ],
+    "err": {
+      "$4$": "DF.STAT.01#lecture_echelle",
+      "$5$": "DF.STAT.01#lecture_echelle",
+      "$25$": "DF.STAT.01#lecture_echelle"
+    },
+    "steps": [
+      "Le premier trait au-dessus de $0$ correspond à $5$ élèves. À combien correspond le deuxième ?",
+      "Continue jusqu'au $4^e$ trait : ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.01-d03",
+    "comp": "DF.STAT.01",
+    "q": "Voici les pointures des élèves d'une classe. Combien d'élèves chaussent du $39$ ou plus ? ___",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "79": "DF.STAT.01#valeurs_effectifs",
+      "2": "DF.STAT.01#valeurs_effectifs"
+    },
+    "steps": [
+      "« $39$ ou plus » : ce sont les colonnes $39$ et $40$.",
+      "Additionne les nombres d'élèves de ces deux colonnes : ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "table": {
+      "headers": [
+        "Pointure",
+        "$37$",
+        "$38$",
+        "$39$",
+        "$40$"
+      ],
+      "rows": [
+        [
+          "Nombre d'élèves",
+          "$4$",
+          "$8$",
+          "$6$",
+          "$2$"
+        ]
+      ],
+      "caption": "Pointures de la classe"
+    },
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.02-d01",
+    "comp": "DF.STAT.02",
+    "q": "Dans une classe de $25$ élèves, $10$ viennent à vélo. Quelle est la fréquence des élèves qui viennent à vélo, en pourcentage ? ___ %",
+    "a": "40",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "10": "DF.STAT.02#effectif_pour_frequence",
+      "66,67": "DF.STAT.02#mauvais_total",
+      "66,7": "DF.STAT.02#mauvais_total"
+    },
+    "alt": [
+      "40%"
+    ],
+    "steps": [
+      "La fréquence, c'est l'effectif de la catégorie divisé par l'effectif total : $\\frac{10}{25}$.",
+      "Transforme ce quotient en pourcentage : ?"
+    ],
+    "f": "$\\text{fréquence} = \\frac{\\text{effectif}}{\\text{effectif total}}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.02-d02",
+    "comp": "DF.STAT.02",
+    "q": "Voici comment les élèves d'une classe viennent au collège. Quelle est la fréquence des élèves qui viennent en bus ?",
+    "a": "$\\frac{12}{30}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{12}{30}$",
+      "$12$",
+      "$\\frac{12}{18}$",
+      "$\\frac{12}{25}$"
+    ],
+    "err": {
+      "$12$": "DF.STAT.02#effectif_pour_frequence",
+      "$\\frac{12}{18}$": "DF.STAT.02#mauvais_total",
+      "$\\frac{12}{25}$": "DF.STAT.02#mauvais_total"
+    },
+    "steps": [
+      "Calcule d'abord l'effectif total de la classe (toutes les catégories).",
+      "La fréquence du bus, c'est l'effectif du bus divisé par ce total : ?"
+    ],
+    "f": "$\\text{fréquence} = \\frac{\\text{effectif}}{\\text{effectif total}}$",
+    "lvl": 1,
+    "table": {
+      "headers": [
+        "Transport",
+        "Bus",
+        "Vélo",
+        "À pied",
+        "Voiture"
+      ],
+      "rows": [
+        [
+          "Nombre d'élèves",
+          "$12$",
+          "$5$",
+          "$8$",
+          "$5$"
+        ]
+      ],
+      "caption": "Moyen de transport"
+    },
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.02-d03",
+    "comp": "DF.STAT.02",
+    "q": "On lance $200$ fois une pièce et on obtient $94$ fois « Pile ». Quelle est la fréquence de « Face », en pourcentage ? ___ %",
+    "a": "53",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "106": "DF.STAT.02#effectif_pour_frequence",
+      "112,77": "DF.STAT.02#mauvais_total",
+      "112,8": "DF.STAT.02#mauvais_total"
+    },
+    "alt": [
+      "53%"
+    ],
+    "steps": [
+      "Combien de fois a-t-on obtenu « Face » ?",
+      "Divise ce nombre par le nombre total de lancers, puis écris-le en pourcentage : ?"
+    ],
+    "f": "$\\text{fréquence} = \\frac{\\text{effectif}}{\\text{effectif total}}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.03-d01",
+    "comp": "DF.STAT.03",
+    "q": "Jules a eu les notes suivantes : $12$ ; $8$ ; $15$ ; $13$. Calcule sa moyenne. ___",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "16": "DF.STAT.03#mauvais_diviseur",
+      "11,5": "DF.STAT.03#moyenne_milieu"
+    },
+    "steps": [
+      "Additionne toutes les notes : $12 + 8 + 15 + 13 = $ ?",
+      "Divise cette somme par le nombre de notes : ?"
+    ],
+    "f": "$\\text{moyenne} = \\frac{\\text{somme des valeurs}}{\\text{nombre de valeurs}}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.03-d02",
+    "comp": "DF.STAT.03",
+    "q": "On a relevé ces températures à midi pendant $5$ jours : $2$ °C ; $7$ °C ; $15$ °C ; $4$ °C ; $12$ °C. Quelle est la température moyenne ?",
+    "a": "$8$ °C",
+    "type": "qcm",
+    "options": [
+      "$8$ °C",
+      "$8{,}5$ °C",
+      "$10$ °C",
+      "$7$ °C"
+    ],
+    "err": {
+      "$8{,}5$ °C": "DF.STAT.03#moyenne_milieu",
+      "$10$ °C": "DF.STAT.03#mauvais_diviseur",
+      "$7$ °C": "DF.STAT.03#moyenne_milieu"
+    },
+    "steps": [
+      "Calcule la somme des $5$ températures.",
+      "Divise cette somme par le nombre de jours : ?"
+    ],
+    "f": "$\\text{moyenne} = \\frac{\\text{somme des valeurs}}{\\text{nombre de valeurs}}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.03-d03",
+    "comp": "DF.STAT.03",
+    "q": "Emma a $12$ de moyenne sur $4$ contrôles. Elle obtient $17$ au $5^e$ contrôle. Quelle est sa nouvelle moyenne ? ___",
+    "a": "13",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "14,5": "DF.STAT.03#nouvelle_moyenne",
+      "16,25": "DF.STAT.03#mauvais_diviseur"
+    },
+    "steps": [
+      "Avec $12$ de moyenne sur $4$ contrôles, quelle est la somme de ses $4$ premières notes ?",
+      "Ajoute la nouvelle note, puis divise par le nouveau nombre de contrôles : ?"
+    ],
+    "f": "$\\text{somme} = \\text{moyenne} \\times \\text{nombre de valeurs}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.04-d01",
+    "comp": "DF.STAT.04",
+    "q": "Voici les $3$ notes de Malo avec leurs coefficients. Calcule sa moyenne pondérée. ___",
+    "a": "13,5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "13,33": "DF.STAT.04#ignore_coefficients",
+      "13,3": "DF.STAT.04#ignore_coefficients",
+      "18": "DF.STAT.04#divise_par_nb_valeurs"
+    },
+    "steps": [
+      "Multiplie chaque note par son coefficient, puis additionne : $10 \\times 1 + 14 \\times 2 + 16 \\times 1 = $ ?",
+      "Divise par la somme des coefficients : ?"
+    ],
+    "f": "$\\bar{x} = \\frac{\\sum n_i x_i}{\\sum n_i}$",
+    "lvl": 1,
+    "table": {
+      "headers": [
+        "Contrôle",
+        "n°1",
+        "n°2",
+        "n°3"
+      ],
+      "rows": [
+        [
+          "Note",
+          "$10$",
+          "$14$",
+          "$16$"
+        ],
+        [
+          "Coefficient",
+          "$1$",
+          "$2$",
+          "$1$"
+        ]
+      ],
+      "caption": "Notes de Malo"
+    },
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.04-d02",
+    "comp": "DF.STAT.04",
+    "q": "Ce tableau donne le nombre de buts marqués par une équipe lors de ses matchs. Quel est le nombre moyen de buts par match ?",
+    "a": "$1{,}2$",
+    "type": "qcm",
+    "options": [
+      "$1{,}2$",
+      "$1{,}5$",
+      "$3$"
+    ],
+    "err": {
+      "$1{,}5$": "DF.STAT.04#ignore_coefficients",
+      "$3$": "DF.STAT.04#divise_par_nb_valeurs"
+    },
+    "steps": [
+      "Nombre total de buts : $0 \\times 2 + 1 \\times 5 + 2 \\times 2 + 3 \\times 1 = $ ?",
+      "Nombre total de matchs : additionne les effectifs. Divise ensuite : ?"
+    ],
+    "f": "$\\bar{x} = \\frac{\\sum n_i x_i}{\\sum n_i}$",
+    "lvl": 2,
+    "table": {
+      "headers": [
+        "Buts marqués",
+        "$0$",
+        "$1$",
+        "$2$",
+        "$3$"
+      ],
+      "rows": [
+        [
+          "Nombre de matchs",
+          "$2$",
+          "$5$",
+          "$2$",
+          "$1$"
+        ]
+      ],
+      "caption": "Buts par match"
+    },
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.04-d03",
+    "comp": "DF.STAT.04",
+    "q": "Au brevet blanc, Nora a $15$ en français (coefficient $3$), $9$ en maths (coefficient $3$) et $14$ en sciences (coefficient $2$). Quelle est sa moyenne pondérée ? ___",
+    "a": "12,5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "12,67": "DF.STAT.04#ignore_coefficients",
+      "12,7": "DF.STAT.04#ignore_coefficients",
+      "33,33": "DF.STAT.04#divise_par_nb_valeurs"
+    },
+    "steps": [
+      "Somme des notes multipliées par leur coefficient : $15 \\times 3 + 9 \\times 3 + 14 \\times 2 = $ ?",
+      "Somme des coefficients : $3 + 3 + 2$. Divise : ?"
+    ],
+    "f": "$\\bar{x} = \\frac{\\sum n_i x_i}{\\sum n_i}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.05-d01",
+    "comp": "DF.STAT.05",
+    "q": "Voici le nombre de pompes réalisées par $5$ élèves : $14$ ; $9$ ; $5$ ; $17$ ; $6$. Quelle est la médiane de cette série ?",
+    "a": "$9$",
+    "type": "qcm",
+    "options": [
+      "$9$",
+      "$5$",
+      "$11$"
+    ],
+    "err": {
+      "$5$": "DF.STAT.05#serie_non_rangee",
+      "$11$": "DF.STAT.05#milieu_etendue"
+    },
+    "steps": [
+      "Commence par ranger les valeurs dans l'ordre croissant.",
+      "Avec $5$ valeurs, la médiane est la valeur de rang $3$ dans la série rangée : ?"
+    ],
+    "f": "$\\text{médiane : valeur du milieu de la série rangée}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.05-d02",
+    "comp": "DF.STAT.05",
+    "q": "Voici une série rangée dans l'ordre croissant : $3$ ; $7$ ; $8$ ; $10$ ; $13$ ; $20$. Quelle est sa médiane ? ___",
+    "a": "9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "8": "DF.STAT.05#effectif_pair",
+      "10": "DF.STAT.05#effectif_pair",
+      "11,5": "DF.STAT.05#milieu_etendue"
+    },
+    "steps": [
+      "La série a $6$ valeurs (nombre pair) : il n'y a pas une seule valeur au milieu.",
+      "Prends les deux valeurs du milieu (rangs $3$ et $4$) et calcule leur moyenne : ?"
+    ],
+    "f": "$\\text{effectif pair : médiane} = \\text{moyenne des deux valeurs centrales}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.STAT.05-d03",
+    "comp": "DF.STAT.05",
+    "q": "On a demandé à $19$ familles leur nombre d'enfants. Quelle est la médiane de cette série ?",
+    "a": "$1$",
+    "type": "qcm",
+    "options": [
+      "$1$",
+      "$2$",
+      "$5$"
+    ],
+    "err": {
+      "$2$": "DF.STAT.05#ignore_effectifs",
+      "$5$": "DF.STAT.05#ignore_effectifs"
+    },
+    "steps": [
+      "Il y a $19$ valeurs : la médiane est la $10^e$ valeur quand on les range.",
+      "Compte les familles dans l'ordre : $3$ familles ont $0$ enfant, puis $8$ en ont $1$... Dans quelle colonne tombe la $10^e$ ?"
+    ],
+    "f": "$\\text{médiane : valeur du milieu de la série rangée}$",
+    "lvl": 2,
+    "table": {
+      "headers": [
+        "Nombre d'enfants",
+        "$0$",
+        "$1$",
+        "$2$",
+        "$3$",
+        "$4$"
+      ],
+      "rows": [
+        [
+          "Nombre de familles",
+          "$3$",
+          "$8$",
+          "$5$",
+          "$2$",
+          "$1$"
+        ]
+      ],
+      "caption": "Enquête auprès de $19$ familles"
+    },
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.06-d01",
+    "comp": "DF.STAT.06",
+    "q": "Voici les temps (en s) de $5$ nageurs au $50$ m : $42$ ; $38$ ; $51$ ; $45$ ; $40$. Quelle est l'étendue de cette série ? ___ s",
+    "a": "13",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2": "DF.STAT.06#premier_dernier",
+      "51": "DF.STAT.06#max_seul"
+    },
+    "steps": [
+      "L'étendue est l'écart entre la plus grande et la plus petite valeur.",
+      "Repère la plus grande valeur et la plus petite (pas la première et la dernière écrites), puis soustrais : ?"
+    ],
+    "f": "$\\text{étendue} = \\text{valeur max} - \\text{valeur min}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.06-d02",
+    "comp": "DF.STAT.06",
+    "q": "Masses de $5$ colis (en kg) : $2{,}4$ ; $3{,}1$ ; $1{,}8$ ; $2{,}9$ ; $2{,}2$. Quelle est l'étendue de cette série ?",
+    "a": "$1{,}3$ kg",
+    "type": "qcm",
+    "options": [
+      "$1{,}3$ kg",
+      "$0{,}2$ kg",
+      "$3{,}1$ kg"
+    ],
+    "err": {
+      "$0{,}2$ kg": "DF.STAT.06#premier_dernier",
+      "$3{,}1$ kg": "DF.STAT.06#max_seul"
+    },
+    "steps": [
+      "Quelle est la plus grande masse ? Et la plus petite ?",
+      "Calcule leur différence : ?"
+    ],
+    "f": "$\\text{étendue} = \\text{valeur max} - \\text{valeur min}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.06-d03",
+    "comp": "DF.STAT.06",
+    "q": "Série A : $10$ ; $12$ ; $15$. Série B : $2$ ; $10$ ; $14$. Affirmation : « La série A a la plus grande étendue, car elle contient la plus grande valeur. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "DF.STAT.06#max_seul"
+    },
+    "steps": [
+      "Calcule l'étendue de A : $15 - 10$.",
+      "Calcule l'étendue de B de la même façon, puis compare : laquelle est la plus grande ?"
+    ],
+    "f": "$\\text{étendue} = \\text{valeur max} - \\text{valeur min}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.STAT.07-d01",
+    "comp": "DF.STAT.07",
+    "q": "Deux joueurs de basket ont la même moyenne : $10$ points par match. Affirmation : « Ils sont donc forcément aussi réguliers l'un que l'autre. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "DF.STAT.07#moyenne_suffit"
+    },
+    "steps": [
+      "Imagine un joueur qui marque toujours $10$ points, et un autre qui marque $0$ puis $20$.",
+      "Leurs moyennes sont-elles égales ? Sont-ils aussi réguliers ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.07-d02",
+    "comp": "DF.STAT.07",
+    "q": "Salaires mensuels dans une petite entreprise : $1\\,800$ € ; $1\\,900$ € ; $2\\,000$ € ; $2\\,100$ € ; $12\\,000$ €. Quel indicateur représente le mieux le salaire habituel d'un employé ?",
+    "a": "La médiane, $2\\,000$ €",
+    "type": "qcm",
+    "options": [
+      "La médiane, $2\\,000$ €",
+      "La moyenne, $3\\,960$ €",
+      "Les deux, car ils sont égaux"
+    ],
+    "err": {
+      "La moyenne, $3\\,960$ €": "DF.STAT.07#valeur_extreme",
+      "Les deux, car ils sont égaux": "DF.STAT.07#valeur_extreme"
+    },
+    "steps": [
+      "Calcule la moyenne et la médiane de cette série.",
+      "Un seul salaire est très différent des autres : lequel des deux indicateurs est « tiré » vers le haut par ce salaire ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.07-d03",
+    "comp": "DF.STAT.07",
+    "q": "Deux classes ont passé le même contrôle. Classe A : moyenne $12$, étendue $2$. Classe B : moyenne $12$, étendue $14$. Quelle affirmation est vraie ?",
+    "a": "Les notes de A sont plus regroupées que celles de B",
+    "type": "qcm",
+    "options": [
+      "Les notes de A sont plus regroupées que celles de B",
+      "Les deux classes ont des résultats identiques",
+      "On ne peut rien comparer, car les moyennes sont égales"
+    ],
+    "err": {
+      "Les deux classes ont des résultats identiques": "DF.STAT.07#moyenne_suffit",
+      "On ne peut rien comparer, car les moyennes sont égales": "DF.STAT.07#moyenne_suffit"
+    },
+    "steps": [
+      "Les moyennes sont égales : elles ne disent rien sur l'écart entre les notes.",
+      "Que mesure l'étendue ? Que signifie une étendue de $2$ par rapport à une étendue de $14$ ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.01-t01",
+    "comp": "DF.STAT.01",
+    "q": "Un club de foot relève le nombre de buts marqués par match. $0$ but : $3$ matchs ; $1$ but : $5$ matchs ; $2$ buts : $4$ matchs ; $3$ buts : $2$ matchs. Combien de matchs le club a-t-il joués ? ___",
+    "a": "14",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "6": "DF.STAT.01#valeurs_effectifs",
+      "19": "DF.STAT.01#valeurs_effectifs"
+    },
+    "steps": [
+      "Ici, les valeurs sont les nombres de buts ; les effectifs sont les nombres de matchs.",
+      "On cherche un nombre de matchs : quels nombres faut-il additionner ?"
+    ],
+    "f": "Effectif total = somme des effectifs",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.01-t02",
+    "comp": "DF.STAT.01",
+    "q": "Dans un diagramme en barres, l'axe vertical est gradué de $10$ en $10$ (chaque trait vaut $10$ élèves de plus). La barre « Bus » s'arrête pile au milieu entre le $3^e$ et le $4^e$ trait au-dessus de $0$. Combien d'élèves viennent en bus ? ___",
+    "a": "35",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3,5": "DF.STAT.01#lecture_echelle"
+    },
+    "steps": [
+      "Que vaut le $3^e$ trait ? Et le $4^e$ ?",
+      "Quel nombre se trouve pile entre ces deux valeurs ?"
+    ],
+    "f": "Valeur lue = nombre de traits $\\times$ pas de la graduation",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.01-t03",
+    "comp": "DF.STAT.01",
+    "q": "Âges des joueurs d'une équipe de handball : $12$ ans : $4$ joueurs ; $13$ ans : $9$ joueurs ; $14$ ans : $7$ joueurs ; $15$ ans : $2$ joueurs. Combien de joueurs ont strictement moins de $14$ ans ? ___",
+    "a": "13",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "25": "DF.STAT.01#valeurs_effectifs"
+    },
+    "steps": [
+      "Quels âges sont strictement inférieurs à $14$ ans ?",
+      "Additionne les effectifs (nombres de joueurs) de ces âges, pas les âges eux-mêmes."
+    ],
+    "f": "Effectif d'un groupe = somme des effectifs des valeurs concernées",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.01-t04",
+    "comp": "DF.STAT.01",
+    "q": "Un diagramme en barres montre les glaces vendues un samedi. L'axe vertical est gradué de $5$ en $5$. La barre « Vanille » arrive au $3^e$ trait, « Chocolat » au $5^e$ trait et « Fraise » au $2^e$ trait au-dessus de $0$. Combien de glaces ont été vendues en tout ? ___",
+    "a": "50",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "10": "DF.STAT.01#lecture_echelle"
+    },
+    "steps": [
+      "Chaque trait vaut $5$ glaces : combien de glaces à la vanille ?",
+      "Fais de même pour chaque parfum, puis additionne."
+    ],
+    "f": "Effectif total = somme des effectifs",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.03-t01",
+    "comp": "DF.STAT.03",
+    "q": "Sami note son temps de trajet (en min) pendant $5$ jours : $17$ ; $22$ ; $15$ ; $25$ ; $30$. Quel est son temps moyen ? ___ min",
+    "a": "21,8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "22,5": "DF.STAT.03#moyenne_milieu",
+      "22": "DF.STAT.03#moyenne_milieu",
+      "27,25": "DF.STAT.03#mauvais_diviseur"
+    },
+    "steps": [
+      "Additionne tous les temps.",
+      "Divise cette somme par le nombre de jours."
+    ],
+    "f": "$\\text{moyenne} = \\frac{\\text{somme des valeurs}}{\\text{nombre de valeurs}}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.03-t02",
+    "comp": "DF.STAT.03",
+    "q": "Une équipe de basket marque $64$, $78$, $71$ et $83$ points lors de ses $4$ derniers matchs. Quel est le nombre moyen de points par match ?",
+    "a": "$74$",
+    "type": "qcm",
+    "options": [
+      "$73{,}5$",
+      "$74$",
+      "$74{,}5$",
+      "$59{,}2$"
+    ],
+    "err": {
+      "$73{,}5$": "DF.STAT.03#moyenne_milieu",
+      "$74{,}5$": "DF.STAT.03#moyenne_milieu",
+      "$59{,}2$": "DF.STAT.03#mauvais_diviseur"
+    },
+    "steps": [
+      "Calcule la somme des points des $4$ matchs.",
+      "Par combien faut-il diviser cette somme ?"
+    ],
+    "f": "$\\text{moyenne} = \\frac{\\text{somme des valeurs}}{\\text{nombre de valeurs}}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.03-t03",
+    "comp": "DF.STAT.03",
+    "q": "Un livreur transporte $4$ colis de masses $2{,}5$ kg ; $1{,}2$ kg ; $3$ kg et $4{,}5$ kg. Quelle est la masse moyenne d'un colis ? ___ kg",
+    "a": "2,8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2,85": "DF.STAT.03#moyenne_milieu",
+      "2,75": "DF.STAT.03#moyenne_milieu"
+    },
+    "steps": [
+      "Additionne les masses des $4$ colis.",
+      "Divise par le nombre de colis."
+    ],
+    "f": "$\\text{moyenne} = \\frac{\\text{somme des valeurs}}{\\text{nombre de valeurs}}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.03-t04",
+    "comp": "DF.STAT.03",
+    "q": "Au basket, Tom a marqué aux $5$ manches d'un tournoi : $4$ ; $0$ ; $8$ ; $3$ ; $7$ paniers. Quel est son nombre moyen de paniers par manche ? ___",
+    "a": "4,4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5,5": "DF.STAT.03#mauvais_diviseur",
+      "4": "DF.STAT.03#moyenne_milieu"
+    },
+    "steps": [
+      "Une manche à $0$ panier compte quand même : combien de manches en tout ?",
+      "Divise la somme des paniers par ce nombre."
+    ],
+    "f": "$\\text{moyenne} = \\frac{\\text{somme des valeurs}}{\\text{nombre de valeurs}}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.03-t05",
+    "comp": "DF.STAT.03",
+    "q": "Nina a $11$ de moyenne sur $3$ contrôles. Elle obtient $15$ au $4^e$ contrôle. Quelle est sa nouvelle moyenne ? ___",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "13": "DF.STAT.03#nouvelle_moyenne",
+      "16": "DF.STAT.03#mauvais_diviseur"
+    },
+    "steps": [
+      "Quelle est la somme de ses $3$ premières notes ?",
+      "Ajoute la nouvelle note, puis divise par le nouveau nombre de contrôles."
+    ],
+    "f": "$\\text{somme} = \\text{moyenne} \\times \\text{nombre de valeurs}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.03-t06",
+    "comp": "DF.STAT.03",
+    "q": "Quel calcul donne la moyenne des trois nombres $12$, $15$ et $9$ ?",
+    "a": "$(12 + 15 + 9) \\div 3$",
+    "type": "qcm",
+    "options": [
+      "$12 + 15 + 9 \\div 3$",
+      "$(12 + 15 + 9) \\div 3$",
+      "$(12 + 9) \\div 2$",
+      "$(12 + 15 + 9) \\div 2$"
+    ],
+    "err": {
+      "$12 + 15 + 9 \\div 3$": "NC.PRIO.01#trait_fraction",
+      "$(12 + 9) \\div 2$": "DF.STAT.03#moyenne_milieu",
+      "$(12 + 15 + 9) \\div 2$": "DF.STAT.03#mauvais_diviseur"
+    },
+    "steps": [
+      "On divise toute la somme, pas seulement le dernier nombre : que faut-il ajouter à l'écriture ?",
+      "Combien y a-t-il de valeurs ?"
+    ],
+    "f": "$\\text{moyenne} = \\frac{\\text{somme des valeurs}}{\\text{nombre de valeurs}}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.STAT.03-t07",
+    "comp": "DF.STAT.03",
+    "q": "La moyenne de $4$ lancers de poids de Karim est de $11$ m. Il réussit ensuite deux lancers de $16$ m et $18$ m. Quelle est sa moyenne sur les $6$ lancers ? ___ m",
+    "a": "13",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "15": "DF.STAT.03#nouvelle_moyenne",
+      "14": "DF.STAT.03#nouvelle_moyenne",
+      "19,5": "DF.STAT.03#mauvais_diviseur"
+    },
+    "steps": [
+      "Quelle distance totale correspond aux $4$ premiers lancers ?",
+      "Ajoute les deux nouveaux lancers et divise par le nombre total de lancers."
+    ],
+    "f": "$\\text{somme} = \\text{moyenne} \\times \\text{nombre de valeurs}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.STAT.03-t08",
+    "comp": "DF.STAT.03",
+    "q": "Léna veut $13$ de moyenne sur $4$ notes. Elle a déjà $12$, $16$ et $10$. Quelle note doit-elle obtenir au $4^e$ devoir ? ___",
+    "a": "14",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1": "DF.STAT.03#mauvais_diviseur"
+    },
+    "steps": [
+      "Pour avoir $13$ de moyenne sur $4$ notes, quelle doit être la somme des $4$ notes ?",
+      "Il manque combien de points par rapport à la somme des $3$ notes déjà obtenues ?"
+    ],
+    "f": "$\\text{somme} = \\text{moyenne} \\times \\text{nombre de valeurs}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  }
+]

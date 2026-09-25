@@ -1,0 +1,155 @@
+[
+  {
+    "id": "EG.ESP.01-d01",
+    "comp": "EG.ESP.01",
+    "q": "Un dé à jouer a la forme d'un cube à $6$ faces. Combien ce cube a-t-il d'arêtes ? ___",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "6": "EG.ESP.01#faces_aretes",
+      "8": "EG.ESP.01#faces_aretes"
+    },
+    "steps": [
+      "Une arête est un segment où deux faces se rejoignent. Compte d'abord celles de la face du dessus.",
+      "Il y a $4$ arêtes en haut, $4$ en bas… et combien de verticales ?"
+    ],
+    "f": "Cube : $6$ faces, $8$ sommets",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.ESP.01-d02",
+    "comp": "EG.ESP.01",
+    "q": "Combien de faces a un prisme droit dont les bases sont des triangles ?",
+    "a": "$5$",
+    "type": "qcm",
+    "options": [
+      "$6$",
+      "$5$",
+      "$9$",
+      "$3$"
+    ],
+    "err": {
+      "$6$": "EG.ESP.01#faces_aretes",
+      "$9$": "EG.ESP.01#faces_aretes",
+      "$3$": "EG.ESP.01#faces_aretes"
+    },
+    "steps": [
+      "Un prisme a deux bases (ici deux triangles) et des faces latérales rectangulaires.",
+      "Il y a une face latérale par côté de la base. Combien au total avec les deux bases ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ESP.01-d03",
+    "comp": "EG.ESP.01",
+    "q": "Maé fabrique un chapeau pointu en forme de cône. Le patron du cône est formé d'un disque (la base) de rayon $3$ cm et d'une portion de disque (la surface latérale). Affirmation : « La portion de disque a forcément aussi un rayon de $3$ cm. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "EG.ESP.01#patron_cone"
+    },
+    "steps": [
+      "Quand on referme la portion de disque, son rayon devient le segment qui va du sommet du cône au bord de la base.",
+      "Ce segment (la génératrice) est-il égal au rayon de la base, ou plus long ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.ESP.02-d01",
+    "comp": "EG.ESP.02",
+    "q": "On coupe un cylindre de révolution par un plan parallèle à son axe. Quelle est la forme de la section ?",
+    "a": "Un rectangle",
+    "type": "qcm",
+    "options": [
+      "Un disque",
+      "Un rectangle",
+      "Un triangle"
+    ],
+    "err": {
+      "Un disque": "EG.ESP.02#mauvaise_forme",
+      "Un triangle": "EG.ESP.02#mauvaise_forme"
+    },
+    "steps": [
+      "Pense à une bûche que l'on fend dans le sens de la longueur, et non en rondelles.",
+      "La section a deux côtés parallèles à l'axe et deux côtés qui sont des cordes des disques de base : quelle figure ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ESP.02-d02",
+    "comp": "EG.ESP.02",
+    "q": "Une boule a un rayon de $5$ cm. On la coupe par un plan situé à $3$ cm de son centre. Quelle est la section obtenue ?",
+    "a": "Un disque de rayon inférieur à $5$ cm",
+    "type": "qcm",
+    "options": [
+      "Un disque de rayon $5$ cm",
+      "Un disque de rayon inférieur à $5$ cm",
+      "Un carré"
+    ],
+    "err": {
+      "Un disque de rayon $5$ cm": "EG.ESP.02#meme_taille",
+      "Un carré": "EG.ESP.02#mauvaise_forme"
+    },
+    "steps": [
+      "Toute section plane d'une boule a la même forme : laquelle ?",
+      "Le plus grand disque s'obtient en coupant par le centre. Ici, le plan passe-t-il par le centre ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.ESP.02-d03",
+    "comp": "EG.ESP.02",
+    "q": "Un cône de révolution a une hauteur de $12$ cm et une base de rayon $6$ cm. On le coupe par un plan parallèle à la base, à $6$ cm du sommet (à mi-hauteur). Quel est le rayon du disque obtenu ? ___ cm",
+    "a": "3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "6": "EG.ESP.02#meme_taille"
+    },
+    "steps": [
+      "La section est une réduction de la base : plus on s'approche du sommet, plus le disque est petit.",
+      "Le plan est à mi-hauteur depuis le sommet : le rayon est réduit dans le même rapport $\\frac{6}{12}$. Rayon $= 6 \\times \\frac{6}{12} = \\;?$"
+    ],
+    "f": "Réduction de rapport $k = \\frac{\\text{distance au sommet}}{\\text{hauteur}}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  }
+]

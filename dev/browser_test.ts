@@ -5,6 +5,7 @@
 //  Usage : deno run -A dev/browser_test.ts   (CHROME=/chemin/chrome pour changer de navigateur)
 //  Capture : /tmp/matheux-browser-test.png (ou $BROWSER_SHOT)
 // ════════════════════════════════════════════════════════════
+/// <reference lib="dom" />
 import puppeteer from "npm:puppeteer-core@23.11.1";
 
 const ROOT = new URL("..", import.meta.url).pathname.replace(/\/$/, "");
@@ -23,6 +24,8 @@ for (let i = 0; i < 60; i++) { try { if ((await fetch(`${BASE}/dev/health`)).ok)
 const erreurs: string[] = [];
 const questions: string[] = [];
 let ok = false;
+// deno-lint-ignore no-explicit-any
+let sw: any = null;
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, args: ["--no-sandbox", "--disable-gpu", `--user-data-dir=${DATA}/chrome`] });
 try {
   const page = await browser.newPage();
@@ -63,6 +66,32 @@ try {
     });
   }
   await page.screenshot({ path: SHOT, fullPage: false });
+
+  // ── Service worker réel (sw.js, servi par /sw.js?reel=1) : install OK, anciens caches supprimés,
+  //    pages HTML en réseau d'abord (jamais une vieille landing servie depuis le cache).
+  const p2 = await browser.newPage();
+  await p2.goto(BASE + "/offline.html", { waitUntil: "load" });
+  sw = await p2.evaluate(async () => {
+    await caches.open("matheux-v13").then((c) => c.put("/", new Response("VIEILLE LANDING", { headers: { "Content-Type": "text/html" } })));
+    const reg = await navigator.serviceWorker.register("/sw.js?reel=1", { scope: "/" });
+    const w = reg.installing || reg.waiting || reg.active;
+    const etat = await new Promise<string>((res) => {
+      if (!w) return res("aucun worker");
+      if (w.state === "activated") return res("activated");
+      w.addEventListener("statechange", () => { if (w.state === "activated" || w.state === "redundant") res(w.state); });
+      setTimeout(() => res("timeout:" + w.state), 10000);
+    });
+    const keys = await caches.keys();
+    const n = keys.includes("matheux-v14") ? (await (await caches.open("matheux-v14")).keys()).length : 0;
+    // piège : une vieille landing dans le cache courant ne doit PAS être servie (réseau d'abord)
+    await (await caches.open("matheux-v14")).put("/", new Response("VIEILLE LANDING", { headers: { "Content-Type": "text/html" } }));
+    return { etat, keys, n };
+  });
+  await p2.reload({ waitUntil: "load" }); // la page est maintenant contrôlée par le SW
+  const controle = await p2.evaluate(() => !!navigator.serviceWorker.controller);
+  const r = await p2.goto(BASE + "/", { waitUntil: "load" });
+  const landing = await p2.evaluate(() => document.body.innerText.slice(0, 200));
+  sw = { ...sw, controle, landingStatus: r?.status(), vieille: /VIEILLE LANDING/.test(landing) };
 } finally {
   await browser.close();
   srv.kill("SIGTERM"); await srv.status;
@@ -72,5 +101,8 @@ const bruit = (e: string) => /favicon|googletagmanager|google-analytics|fonts\.g
 const vraies = erreurs.filter((e) => !bruit(e));
 console.log(ok ? "  ✅ 1re question du diagnostic affichée" : "  ❌ aucune question du diagnostic affichée (questions reçues : " + questions.length + ")");
 console.log(vraies.length ? "  ❌ erreurs :\n     " + vraies.join("\n     ") : "  ✅ aucune erreur console / JS");
+const swOk = sw && sw.etat === "activated" && !sw.keys.includes("matheux-v13") && sw.keys.includes("matheux-v14") && sw.n >= 6 && sw.controle && sw.landingStatus === 200 && !sw.vieille;
+console.log(swOk ? `  ✅ sw.js : install + activation OK (${sw.n} ressources en cache), ancien cache v13 supprimé, landing servie par le réseau`
+  : "  ❌ sw.js : " + JSON.stringify(sw));
 console.log("  capture : " + SHOT);
-Deno.exit(ok && !vraies.length ? 0 : 1);
+Deno.exit(ok && !vraies.length && swOk ? 0 : 1);

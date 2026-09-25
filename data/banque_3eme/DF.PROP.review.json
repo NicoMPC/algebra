@@ -1,0 +1,156 @@
+{
+  "fichier": "data/banque_3eme/DF.PROP.json",
+  "relecteur": "relecteur",
+  "date": "2026-09-24",
+  "methode": "Calculs refaits à la main ; _normFill/_toNum/_matchFill extraits d'app.html (version du 24/09) et exécutés sous Node sur a, alt, clés err et variantes prévisibles.",
+  "bilan": {
+    "ok": 23,
+    "corrige": 1,
+    "rejet": 0
+  },
+  "items": [
+    {
+      "id": "DF.PROP.01-d01",
+      "verdict": "ok",
+      "notes": "Seule la situation « prix/masse à 2,50 €/kg » est proportionnelle. Distracteurs cohérents avec augmentent_ensemble et partie_fixe. f vide (autorisé)."
+    },
+    {
+      "id": "DF.PROP.01-d02",
+      "verdict": "ok",
+      "notes": "13/16/22 : 16 ≠ 2×13 → Faux. Le tableau rend la conclusion accessible sans calcul caché. Caption rendue par rMath (conteneur app-c)."
+    },
+    {
+      "id": "DF.PROP.01-d03",
+      "verdict": "ok",
+      "notes": "Seul 3→12, 5→20, 8→32 a un quotient constant (4). Remarque : le 4e tableau (2→3, 4→6, 6→10) piège l'élève qui ne vérifie que les 2 premiers couples ; le tag augmentent_ensemble est acceptable faute d'erreur plus précise au référentiel."
+    },
+    {
+      "id": "DF.PROP.02-d01",
+      "verdict": "ok",
+      "notes": "6/4×10 = 15. 12 = modèle additif (+2 → +6) ; 6,67 = 4×10/6 (produit en croix mal placé). Formes « 15 € », « 15€ » acceptées (simulé)."
+    },
+    {
+      "id": "DF.PROP.02-d02",
+      "verdict": "ok",
+      "notes": "12/3 = 4 €. 0,25 = 3/12 (quotient inverse) ; 9 = 12−3 (additif) ; 36 = 12×3 (croix mal placée, acceptable)."
+    },
+    {
+      "id": "DF.PROP.02-d03",
+      "verdict": "ok",
+      "notes": "6×2,5 = 15 L. 156 = 6+150 (additif) ; 2,4 = 6×100/250 et 4166,67 = 250×100/6 (croix mal placée)."
+    },
+    {
+      "id": "DF.PROP.03-d01",
+      "verdict": "ok",
+      "notes": "0,2×45 = 9. 2,25 = 45/20 ; 25 = 45−20. Conformes au référentiel."
+    },
+    {
+      "id": "DF.PROP.03-d02",
+      "verdict": "ok",
+      "notes": "Point prioritaire vérifié : 0,35×600 = 210. 565 = 600−35 (soustrait_taux, exactement l'exemple du référentiel) ; environ 17 = 600/35 ≈ 17,1 (divise_par_taux). « 35 » est aussi tagué soustrait_taux : c'est « prendre le taux pour la quantité », ce qui correspond au titre du libellé (« traite le pourcentage comme une quantité ») mais pas à son exemple (45 − 20). Acceptable ; si le didacticien veut distinguer ce cas, il faudra créer une erreur « recopie_taux »."
+    },
+    {
+      "id": "DF.PROP.03-d03",
+      "verdict": "ok",
+      "notes": "0,15×80 = 12. 65 = 80−15 ; 5,33 = 80/15. Le step 2 décompose (10 % + 5 %) sans donner le total."
+    },
+    {
+      "id": "DF.PROP.04-d01",
+      "verdict": "ok",
+      "notes": "50×0,7 = 35. 15 = montant de la remise ; 65 = 50×1,3 (mauvais coefficient)."
+    },
+    {
+      "id": "DF.PROP.04-d02",
+      "verdict": "ok",
+      "notes": "Baisse de 20 % ↔ ×0,8. 0,2 ; 1,2 ; −0,2 : tous « coefficient faux », cohérents."
+    },
+    {
+      "id": "DF.PROP.04-d03",
+      "verdict": "ok",
+      "notes": "700×1,03 = 721. 21 = hausse seule ; 679 = ×0,97 ; 2100 = ×3."
+    },
+    {
+      "id": "DF.PROP.05-d01",
+      "verdict": "ok",
+      "notes": "(25−20)/20 = 25 %. 5 = écart ; 20 = 5/25. « 25 », « 25 % », « +25 % » passent (simulé). Limite _matchFill (hors item) : l'alt « X% » fait passer aussi le décimal/la fraction (ex. 0,25 ou 1/4 pour une case « ___ % » attendant 25). Correctif à faire dans _matchFill, pas dans l'item."
+    },
+    {
+      "id": "DF.PROP.05-d02",
+      "verdict": "ok",
+      "notes": "(60−80)/80 = −25 %. −20 % = écart en € ; ≈ −33 % = 20/60 (valeur finale en référence)."
+    },
+    {
+      "id": "DF.PROP.05-d03",
+      "verdict": "ok",
+      "notes": "60/200 = 30 % ≠ 60 % → Faux. Vrai = écart pris comme pourcentage."
+    },
+    {
+      "id": "DF.PROP.06-d01",
+      "verdict": "ok",
+      "notes": "100×0,8×0,9 = 72. 70 = taux additionnés."
+    },
+    {
+      "id": "DF.PROP.06-d02",
+      "verdict": "ok",
+      "notes": "Point prioritaire vérifié : P×0,75 = 300 → P = 400. 375 = 300×1,25 = exactement inverse_par_meme_taux. Réponse unique. (225 = 300×0,75 est une autre erreur prévisible, non tagable avec le référentiel actuel : elle sera notée échec sans étiquette, ce qui est sans danger.)"
+    },
+    {
+      "id": "DF.PROP.06-d03",
+      "verdict": "ok",
+      "notes": "100 → 110 → 99 ≠ 100 → Faux. Vrai = +10 % −10 % = 0 (taux additionnés)."
+    },
+    {
+      "id": "DF.PROP.07-d01",
+      "verdict": "corrige",
+      "notes": "Calcul juste (4,5 cm × 100 = 450 cm = 4,5 m) MAIS la réponse attendue (4,5) est numériquement identique à la donnée (4,5 cm) : un élève qui recopie le nombre sans rien comprendre à l'échelle est compté EASY. Diagnostic faussé. Échelle 1/50 et longueur 9 cm → 450 cm = 4,5 m, donnée ≠ réponse ; 450 = conversion oubliée ; 0,18 = 9/50 (mauvais sens).",
+      "correction": {
+        "id": "DF.PROP.07-d01",
+        "comp": "DF.PROP.07",
+        "q": "Sur un plan à l'échelle $\\frac{1}{50}$, une chambre mesure $9$ cm de long. Quelle est sa longueur réelle, en mètres ? ___ m",
+        "a": "4,5",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "450": "DF.PROP.07#conversion_oubliee",
+          "0,18": "DF.PROP.07#sens_echelle"
+        },
+        "steps": [
+          "Échelle $\\frac{1}{50}$ : $1$ cm sur le plan représente $50$ cm en réalité.",
+          "Calcule la longueur réelle en cm, puis convertis-la en mètres : ?"
+        ],
+        "f": "$\\text{longueur réelle} = \\text{longueur plan} \\times \\text{dénominateur de l'échelle}$",
+        "lvl": 1,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": true
+      }
+    },
+    {
+      "id": "DF.PROP.07-d02",
+      "verdict": "ok",
+      "notes": "8×25 000 = 200 000 cm = 2 km. 200 000 km = conversion oubliée ; 0,000 32 cm = 8/25 000 (mauvais sens)."
+    },
+    {
+      "id": "DF.PROP.07-d03",
+      "verdict": "ok",
+      "notes": "400 cm / 20 = 20 cm. 8000 = 400×20 (mauvais sens) ; 0,2 = 4/20 en m non converti ; 80 = 4×20 (mauvais sens, sans conversion) : tag sens_echelle acceptable."
+    },
+    {
+      "id": "DF.PROP.08-d01",
+      "verdict": "ok",
+      "notes": "50/5×2 = 20. 25 = partage égal ; 33,33 et 100/3 = 2/3 de 50. (30 = part de Tom, non tagué : sans danger.)"
+    },
+    {
+      "id": "DF.PROP.08-d02",
+      "verdict": "ok",
+      "notes": "1/(1+4) = 1/5. 1/4 = ratio lu comme fraction ; 1/2 = partage égal."
+    },
+    {
+      "id": "DF.PROP.08-d03",
+      "verdict": "ok",
+      "notes": "400/8 = 50 mL. 200 = partage égal ; 400/7 ≈ 57,14 = ratio lu comme fraction du total."
+    }
+  ]
+}

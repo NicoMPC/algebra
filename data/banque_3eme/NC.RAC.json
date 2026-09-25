@@ -1,0 +1,594 @@
+[
+  {
+    "id": "NC.RAC.01-d01",
+    "comp": "NC.RAC.01",
+    "q": "Calcule $\\sqrt{64}$. ___",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "32": "NC.RAC.01#racine_moitie",
+      "-8": "NC.RAC.01#racine_negative"
+    },
+    "steps": [
+      "$\\sqrt{64}$ est le nombre positif dont le carré vaut $64$.",
+      "Quel nombre multiplié par lui-même donne $64$ ?"
+    ],
+    "f": "$\\sqrt{a} = b$ signifie $b \\geq 0$ et $b^2 = a$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.01-d02",
+    "comp": "NC.RAC.01",
+    "q": "Dans un triangle rectangle, on a obtenu $AC^2 = 25$ (en $\\text{cm}^2$). Quelle est la longueur $AC$ ?",
+    "a": "$5$ cm",
+    "type": "qcm",
+    "options": [
+      "$25$ cm",
+      "$5$ cm",
+      "$12{,}5$ cm"
+    ],
+    "err": {
+      "$25$ cm": "NC.RAC.01#oubli_racine",
+      "$12{,}5$ cm": "NC.RAC.01#racine_moitie"
+    },
+    "steps": [
+      "On connaît le carré de la longueur : il faut « remonter » à la longueur elle-même.",
+      "Quel nombre positif a pour carré $25$ ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.01-d03",
+    "comp": "NC.RAC.01",
+    "q": "Vrai ou faux : $\\sqrt{-9} = -3$.",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.RAC.01#racine_negative"
+    },
+    "steps": [
+      "Calcule $(-3)^2$ : obtiens-tu $-9$ ?",
+      "Un carré peut-il être négatif ? Alors la racine carrée d'un nombre négatif existe-t-elle ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.02-d01",
+    "comp": "NC.RAC.02",
+    "q": "Laquelle de ces égalités est vraie ?",
+    "a": "$\\sqrt{9} + \\sqrt{16} = 7$",
+    "type": "qcm",
+    "options": [
+      "$\\sqrt{9} + \\sqrt{16} = \\sqrt{25}$",
+      "$\\sqrt{9} + \\sqrt{16} = 7$",
+      "$\\sqrt{36} + \\sqrt{64} = \\sqrt{100}$",
+      "$\\sqrt{16} - \\sqrt{9} = \\sqrt{7}$"
+    ],
+    "err": {
+      "$\\sqrt{9} + \\sqrt{16} = \\sqrt{25}$": "NC.RAC.02#somme_racines",
+      "$\\sqrt{36} + \\sqrt{64} = \\sqrt{100}$": "NC.RAC.02#somme_racines",
+      "$\\sqrt{16} - \\sqrt{9} = \\sqrt{7}$": "NC.RAC.02#somme_racines"
+    },
+    "steps": [
+      "La racine carrée ne se « distribue » pas sur une addition : calcule chaque racine séparément.",
+      "Par exemple $\\sqrt{9} = \\,?$ et $\\sqrt{16} = \\,?$ : que vaut leur somme ? Et $\\sqrt{25}$ ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.02-d02",
+    "comp": "NC.RAC.02",
+    "q": "Calcule $\\sqrt{8} \\times \\sqrt{2}$. ___",
+    "a": "4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "\\sqrt{10}": "NC.RAC.02#produit_additionne",
+      "√10": "NC.RAC.02#produit_additionne",
+      "10": "NC.RAC.02#produit_additionne"
+    },
+    "steps": [
+      "Pour un produit de racines : $\\sqrt{a} \\times \\sqrt{b} = \\sqrt{a \\times b}$.",
+      "Calcule $8 \\times 2$, puis la racine carrée de ce nombre."
+    ],
+    "f": "$\\sqrt{a} \\times \\sqrt{b} = \\sqrt{a \\times b}$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.02-d03",
+    "comp": "NC.RAC.02",
+    "q": "Calcule $\\sqrt{7} \\times \\sqrt{7}$.",
+    "a": "$7$",
+    "type": "qcm",
+    "options": [
+      "$\\sqrt{14}$",
+      "$2\\sqrt{7}$",
+      "$49$",
+      "$7$"
+    ],
+    "err": {
+      "$\\sqrt{14}$": "NC.RAC.02#produit_additionne",
+      "$2\\sqrt{7}$": "NC.RAC.02#racine_fois_racine",
+      "$49$": "NC.RAC.02#racine_fois_racine"
+    },
+    "steps": [
+      "Par définition, $\\sqrt{7}$ est le nombre positif dont le carré vaut… ?",
+      "$\\sqrt{7} \\times \\sqrt{7} = (\\sqrt{7})^2$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.03-d01",
+    "comp": "NC.RAC.03",
+    "q": "Écris $\\sqrt{50}$ sous la forme $a\\sqrt{b}$ avec $b$ le plus petit possible.",
+    "a": "$5\\sqrt{2}$",
+    "type": "qcm",
+    "options": [
+      "$5\\sqrt{2}$",
+      "$25\\sqrt{2}$",
+      "$2\\sqrt{25}$",
+      "$10\\sqrt{5}$"
+    ],
+    "err": {
+      "$25\\sqrt{2}$": "NC.RAC.03#facteur_non_carre",
+      "$2\\sqrt{25}$": "NC.RAC.03#facteur_non_carre",
+      "$10\\sqrt{5}$": "NC.RAC.03#facteur_non_carre"
+    },
+    "steps": [
+      "Cherche un carré parfait qui divise $50$ : $50 = ? \\times 2$.",
+      "$\\sqrt{25 \\times 2} = \\sqrt{25} \\times \\sqrt{2}$ : que vaut $\\sqrt{25}$ ?"
+    ],
+    "f": "$\\sqrt{a^2 \\times b} = a\\sqrt{b}$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.03-d02",
+    "comp": "NC.RAC.03",
+    "q": "Écris $\\sqrt{72}$ sous la forme $a\\sqrt{b}$ avec $b$ le plus petit possible.",
+    "a": "$6\\sqrt{2}$",
+    "type": "qcm",
+    "options": [
+      "$2\\sqrt{18}$",
+      "$6\\sqrt{2}$",
+      "$3\\sqrt{8}$",
+      "$36\\sqrt{2}$"
+    ],
+    "err": {
+      "$2\\sqrt{18}$": "NC.RAC.03#simplification_partielle",
+      "$3\\sqrt{8}$": "NC.RAC.03#simplification_partielle",
+      "$36\\sqrt{2}$": "NC.RAC.03#facteur_non_carre"
+    },
+    "steps": [
+      "Cherche le plus grand carré parfait qui divise $72$ (essaie $4$, $9$, $16$, $36$).",
+      "Une fois écrit $a\\sqrt{b}$, vérifie que $b$ ne contient plus de carré parfait."
+    ],
+    "f": "$\\sqrt{a^2 \\times b} = a\\sqrt{b}$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.03-d03",
+    "comp": "NC.RAC.03",
+    "q": "On écrit $\\sqrt{48} = a\\sqrt{3}$ avec $a$ entier. Quelle est la valeur de $a$ ? ___",
+    "a": "4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "16": "NC.RAC.03#facteur_non_carre",
+      "2": "NC.RAC.03#simplification_partielle"
+    },
+    "steps": [
+      "Écris $48$ comme un carré parfait multiplié par $3$ : $48 = ? \\times 3$.",
+      "Ce carré parfait sort de la racine sous forme de sa racine carrée."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.04-d01",
+    "comp": "NC.RAC.04",
+    "q": "Réduis $2\\sqrt{3} + 5\\sqrt{3} + \\sqrt{2}$.",
+    "a": "$7\\sqrt{3} + \\sqrt{2}$",
+    "type": "qcm",
+    "options": [
+      "$8\\sqrt{8}$",
+      "$8\\sqrt{3}$",
+      "$7\\sqrt{3} + \\sqrt{2}$",
+      "$8\\sqrt{5}$"
+    ],
+    "err": {
+      "$8\\sqrt{8}$": "NC.RAC.04#radicaux_differents",
+      "$8\\sqrt{3}$": "NC.RAC.04#radicaux_differents",
+      "$8\\sqrt{5}$": "NC.RAC.04#radicaux_differents"
+    },
+    "steps": [
+      "On ne peut regrouper que des termes avec la même racine, comme on regroupe des $x$ entre eux.",
+      "$2\\sqrt{3} + 5\\sqrt{3} = (2 + 5)\\sqrt{3}$. Peut-on ajouter $\\sqrt{2}$ à ce résultat ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.04-d02",
+    "comp": "NC.RAC.04",
+    "q": "On développe $(2 + \\sqrt{3})^2$ et on obtient $a + b\\sqrt{3}$. Quelle est la valeur de $b$ ? ___",
+    "a": "4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "0": "NC.RAC.04#double_produit",
+      "2": "NC.RAC.04#double_produit"
+    },
+    "steps": [
+      "Utilise l'identité $(a + b)^2 = a^2 + 2ab + b^2$ avec $a = 2$ et $b = \\sqrt{3}$.",
+      "Le terme en $\\sqrt{3}$ vient du double produit $2 \\times 2 \\times \\sqrt{3}$."
+    ],
+    "f": "$(a + b)^2 = a^2 + 2ab + b^2$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.04-d03",
+    "comp": "NC.RAC.04",
+    "q": "Écris $\\frac{6}{\\sqrt{3}}$ sans racine au dénominateur.",
+    "a": "$2\\sqrt{3}$",
+    "type": "qcm",
+    "options": [
+      "$2$",
+      "$2\\sqrt{3}$",
+      "$6\\sqrt{3}$"
+    ],
+    "err": {
+      "$2$": "NC.RAC.04#rationalisation_partielle",
+      "$6\\sqrt{3}$": "NC.RAC.04#rationalisation_partielle"
+    },
+    "steps": [
+      "On multiplie le numérateur ET le dénominateur par $\\sqrt{3}$ pour ne pas changer la valeur.",
+      "$\\frac{6 \\times \\sqrt{3}}{\\sqrt{3} \\times \\sqrt{3}} = \\frac{6\\sqrt{3}}{?}$, puis simplifie."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.01-t01",
+    "comp": "NC.RAC.01",
+    "q": "Calcule $\\sqrt{81}$. ___",
+    "a": "9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "40,5": "NC.RAC.01#racine_moitie"
+    },
+    "steps": [
+      "Cherche le nombre positif qui, multiplié par lui-même, donne $81$.",
+      "Récite la table : $8 \\times 8 = 64$, et le suivant ?"
+    ],
+    "f": "$\\sqrt{a}$ est le nombre positif dont le carré vaut $a$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.01-t02",
+    "comp": "NC.RAC.01",
+    "q": "Complète : $\\sqrt{\\text{___}} = 7$",
+    "a": "49",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "14": "NC.RAC.01#racine_moitie"
+    },
+    "steps": [
+      "Le nombre sous la racine est celui dont la racine carrée vaut $7$.",
+      "Quel nombre obtiens-tu en calculant $7 \\times 7$ ?"
+    ],
+    "f": "$\\sqrt{a}$ est le nombre positif dont le carré vaut $a$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.01-t03",
+    "comp": "NC.RAC.01",
+    "q": "Un jardin carré a une aire de $36\\ \\text{m}^2$. Quelle est la longueur de son côté ?",
+    "a": "$6$ m",
+    "type": "qcm",
+    "options": [
+      "$6$ m",
+      "$18$ m",
+      "$36$ m"
+    ],
+    "err": {
+      "$18$ m": "NC.RAC.01#racine_moitie",
+      "$36$ m": "NC.RAC.01#oubli_racine"
+    },
+    "steps": [
+      "L'aire d'un carré de côté $c$ vaut $c \\times c$.",
+      "Quel nombre, multiplié par lui-même, donne $36$ ?"
+    ],
+    "f": "$\\mathcal{A} = c^2$ donc $c = \\sqrt{\\mathcal{A}}$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.RAC.01-t04",
+    "comp": "NC.RAC.01",
+    "q": "Vrai ou faux : $\\sqrt{100} = 50$.",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.RAC.01#racine_moitie"
+    },
+    "steps": [
+      "Calcule $50 \\times 50$ : obtiens-tu $100$ ?",
+      "Quel nombre, multiplié par lui-même, donne vraiment $100$ ?"
+    ],
+    "f": "$\\sqrt{a}$ est le nombre positif dont le carré vaut $a$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.01-t05",
+    "comp": "NC.RAC.01",
+    "q": "Calcule $\\sqrt{1{,}44}$. ___",
+    "a": "1,2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "0,72": "NC.RAC.01#racine_moitie",
+      "0,12": "NC.PUIS.01#carre_decimal",
+      "12": "NC.PUIS.01#carre_decimal"
+    },
+    "steps": [
+      "Commence par $\\sqrt{144}$ : quel entier au carré donne $144$ ?",
+      "$1{,}44$ a deux décimales ; un nombre à une décimale, au carré, en a combien ?"
+    ],
+    "f": "$\\sqrt{a}$ est le nombre positif dont le carré vaut $a$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.01-t06",
+    "comp": "NC.RAC.01",
+    "q": "Pour vérifier qu'un cadre est bien d'équerre, Hugo trouve $d^2 = 169$ pour sa diagonale (en $\\text{dm}^2$). Combien mesure la diagonale ?",
+    "a": "$13$ dm",
+    "type": "qcm",
+    "options": [
+      "$169$ dm",
+      "$84{,}5$ dm",
+      "$13$ dm"
+    ],
+    "err": {
+      "$169$ dm": "NC.RAC.01#oubli_racine",
+      "$84{,}5$ dm": "NC.RAC.01#racine_moitie"
+    },
+    "steps": [
+      "$169$ est le carré de la diagonale, pas la diagonale : il reste une étape.",
+      "Quel entier, multiplié par lui-même, donne $169$ ?"
+    ],
+    "f": "$\\sqrt{a}$ est le nombre positif dont le carré vaut $a$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.RAC.01-t07",
+    "comp": "NC.RAC.01",
+    "q": "Complète avec deux entiers consécutifs : $\\text{___} < \\sqrt{50} < 8$",
+    "a": "7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "25": "NC.RAC.01#racine_moitie"
+    },
+    "steps": [
+      "Liste les carrés parfaits autour de $50$ : $6^2$, $7^2$, $8^2$…",
+      "Entre quels carrés parfaits consécutifs se trouve $50$ ?"
+    ],
+    "f": "$\\sqrt{a}$ est le nombre positif dont le carré vaut $a$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.01-t08",
+    "comp": "NC.RAC.01",
+    "q": "Quelle égalité est vraie ?",
+    "a": "$\\sqrt{(-5)^2} = 5$",
+    "type": "qcm",
+    "options": [
+      "$\\sqrt{-25} = -5$",
+      "$\\sqrt{(-5)^2} = 5$",
+      "$\\sqrt{25} = 12{,}5$",
+      "$\\sqrt{25} = -5$"
+    ],
+    "err": {
+      "$\\sqrt{-25} = -5$": "NC.RAC.01#racine_negative",
+      "$\\sqrt{25} = 12{,}5$": "NC.RAC.01#racine_moitie",
+      "$\\sqrt{25} = -5$": "NC.RAC.01#racine_negative"
+    },
+    "steps": [
+      "Une racine carrée n'existe que pour un nombre positif ou nul, et elle est toujours positive.",
+      "Calcule d'abord $(-5)^2$ : quel est son signe ?"
+    ],
+    "f": "$\\sqrt{a}$ est le nombre positif dont le carré vaut $a$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.01-t09",
+    "comp": "NC.RAC.01",
+    "q": "Un tableau carré a une aire de $2{,}25\\ \\text{m}^2$. Quelle est la longueur de son côté, en m ? ___",
+    "a": "1,5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1,125": "NC.RAC.01#racine_moitie",
+      "2,25": "NC.RAC.01#oubli_racine",
+      "0,15": "NC.PUIS.01#carre_decimal"
+    },
+    "steps": [
+      "Le côté $c$ vérifie $c \\times c = 2{,}25$.",
+      "Pense à $\\sqrt{225}$, puis replace la virgule : le côté a une seule décimale."
+    ],
+    "f": "$\\mathcal{A} = c^2$ donc $c = \\sqrt{\\mathcal{A}}$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.RAC.01-t10",
+    "comp": "NC.RAC.01",
+    "q": "Trouve le nombre positif $x$ tel que $x^2 = 0{,}09$. ___",
+    "a": "0,3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "0,03": "NC.PUIS.01#carre_decimal",
+      "0,045": "NC.RAC.01#racine_moitie",
+      "0,09": "NC.RAC.01#oubli_racine"
+    },
+    "steps": [
+      "$x$ est la racine carrée de $0{,}09$ : pense à $\\sqrt{9}$.",
+      "$0{,}09$ a deux décimales : combien en a $x$ ? Vérifie en calculant $x \\times x$."
+    ],
+    "f": "$\\sqrt{a}$ est le nombre positif dont le carré vaut $a$",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.RAC.01-t11",
+    "comp": "NC.RAC.01",
+    "q": "Un carré a la même aire qu'un rectangle de $8$ cm sur $18$ cm. Quelle est la longueur du côté du carré, en cm ? ___",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "72": "NC.RAC.01#racine_moitie",
+      "144": "NC.RAC.01#oubli_racine"
+    },
+    "steps": [
+      "Calcule d'abord l'aire du rectangle.",
+      "Le côté du carré est le nombre positif dont le carré vaut cette aire."
+    ],
+    "f": "$\\mathcal{A}_{\\text{carré}} = c^2$",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  }
+]

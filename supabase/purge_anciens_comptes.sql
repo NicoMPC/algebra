@@ -1,7 +1,7 @@
 -- ════════════════════════════════════════════════════════════
 --  PURGE DES ANCIENS COMPTES ÉLÈVES — décision Nicolas du 24/09/2026 (contrat §7)
 --  ⛔ NE PAS EXÉCUTER sans Nicolas, au moment du déploiement de la refonte, APRÈS la migration
---     20260924_diagnostic_3e.sql. Épargne tous les admins (dont KN6CFG).
+--     20260924_diagnostic_3e.sql. Épargne tous les comptes `is_admin = true` (aucun code ni email en dur).
 --
 --  Étape 0 (hors SQL, recommandée) : export complet chiffré de la base avant tout :
 --     pg_dump "$SUPABASE_DB_URL" --no-owner -Fc -f backup_matheux_20260924.dump
@@ -18,8 +18,8 @@ begin;
 -- ── 0. Garde-fou : l'admin doit exister, sinon on arrête tout ──
 do $$
 begin
-  if not exists (select 1 from public.profiles where code = 'KN6CFG' and is_admin) then
-    raise exception 'Compte admin KN6CFG introuvable ou non admin — purge annulée';
+  if not exists (select 1 from public.profiles where is_admin) then
+    raise exception 'Aucun compte admin (is_admin = true) — purge annulée';
   end if;
 end $$;
 
@@ -41,7 +41,7 @@ create table backup_20260924.auth_users     as select id, email, created_at, las
 
 -- ── 2. Périmètre : tous les profils non admin ──
 create temporary table purge_cible on commit drop as
-  select id, code, email from public.profiles where not is_admin and code <> 'KN6CFG';
+  select id, code, email from public.profiles where not coalesce(is_admin, false);
 
 -- Aperçu à relire avant COMMIT
 select (select count(*) from purge_cible) as profils_a_supprimer,

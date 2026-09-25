@@ -1,0 +1,294 @@
+[
+  {
+    "id": "NC.EQUA.01-d01",
+    "verdict": "ok",
+    "raison": "3×2+1 = 7 = 2+5 : Vrai ; Faux = un seul membre calculé."
+  },
+  {
+    "id": "NC.EQUA.01-d02",
+    "verdict": "corrige",
+    "raison": "La bonne option est identifiable sans rien savoir (seule formulation « raisonnable », la plus longue), et le 4e distracteur (« vérifier que le résultat est positif ») est absurde donc éliminé d'office : l'item mesure une connaissance déclarative, pas la compétence « tester ». (−3)² + 2×(−3) = 3 ✓. Reformulation en vrai test : l'élève doit juger une conclusion chiffrée.",
+    "correction": {
+      "id": "NC.EQUA.01-d02",
+      "comp": "NC.EQUA.01",
+      "q": "On remplace $x$ par $-3$ dans l'équation $x^2 + 2x = 3$. Que peut-on conclure ?",
+      "a": "$-3$ est solution, car $(-3)^2 + 2 \\times (-3) = 3$",
+      "type": "qcm",
+      "options": [
+        "$-3$ n'est pas solution, car $(-3)^2 + 2 \\times (-3) \\neq 0$",
+        "$-3$ est solution, car $(-3)^2 + 2 \\times (-3) = 3$",
+        "On ne peut pas conclure sans résoudre l'équation"
+      ],
+      "err": {
+        "$-3$ n'est pas solution, car $(-3)^2 + 2 \\times (-3) \\neq 0$": "NC.EQUA.01#un_seul_membre",
+        "On ne peut pas conclure sans résoudre l'équation": "NC.EQUA.01#resout_au_lieu_tester"
+      },
+      "steps": [
+        "Calcule le membre de gauche pour $x = -3$ : $(-3)^2 + 2 \\times (-3) = \\,?$",
+        "Ce résultat, faut-il le comparer à $0$ ou au membre de droite ?"
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 2,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.EQUA.01-d03",
+    "verdict": "ok",
+    "raison": "4×5−7 = 13 = 2×5+3 : 5 est solution. « 13 ≠ 0 » et « 13 ≠ 3 » = un seul membre ; « résoudre » = #resout_au_lieu_tester. Légère prime à l'option longue, acceptable car l'élève doit refaire 2×5+3."
+  },
+  {
+    "id": "NC.EQUA.02-d01",
+    "verdict": "corrige",
+    "raison": "3x = 21 → 7 ; 18 soustrait ; 1/7 et 3/21 quotient inversé. Ajout d'alt pour la saisie « x = … » (très prévisible malgré le « $x = $ » affiché) : sans alt, _matchFill('x=7','7') = false → faux négatif. Simulé : l'alt ne fait passer aucune autre réponse.",
+    "correction": {
+      "id": "NC.EQUA.02-d01",
+      "comp": "NC.EQUA.02",
+      "q": "Résous l'équation $3x = 21$. $x = $ ___",
+      "a": "7",
+      "type": "fill",
+      "options": [],
+      "err": {
+        "18": "NC.EQUA.02#soustrait_coef",
+        "1/7": "NC.EQUA.02#quotient_inverse",
+        "3/21": "NC.EQUA.02#quotient_inverse"
+      },
+      "steps": [
+        "$3x$ veut dire $3 \\times x$ : quelle opération « défait » une multiplication par $3$ ?",
+        "Divise les deux membres par le même nombre : $x = \\frac{21}{?}$."
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false,
+      "alt": [
+        "x=7"
+      ]
+    }
+  },
+  {
+    "id": "NC.EQUA.02-d02",
+    "verdict": "corrige",
+    "raison": "3x = 15 → 5 ; 29/3 (3x = 29), 12 (15−3), 1/5 et 3/15 conformes. Ajout d'alt pour la saisie « x = … » (très prévisible malgré le « $x = $ » affiché) : sans alt, _matchFill('x=7','7') = false → faux négatif. Simulé : l'alt ne fait passer aucune autre réponse.",
+    "correction": {
+      "id": "NC.EQUA.02-d02",
+      "comp": "NC.EQUA.02",
+      "q": "Résous l'équation $3x + 7 = 22$. $x = $ ___",
+      "a": "5",
+      "type": "fill",
+      "options": [],
+      "err": {
+        "29/3": "NC.EQUA.02#changement_signe_mecanique",
+        "12": "NC.EQUA.02#soustrait_coef",
+        "1/5": "NC.EQUA.02#quotient_inverse",
+        "3/15": "NC.EQUA.02#quotient_inverse"
+      },
+      "steps": [
+        "Commence par isoler $3x$ : on retire $7$ aux deux membres. Que vaut $22 - 7$ ?",
+        "Tu obtiens $3x = \\,?$ : il reste à diviser par $3$."
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 2,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false,
+      "alt": [
+        "x=5"
+      ]
+    }
+  },
+  {
+    "id": "NC.EQUA.02-d03",
+    "verdict": "ok",
+    "raison": "4x = 16 → 4 ; 2,5 (x+2 = 4,5), 12 (16−4), 5 (4x = 20)."
+  },
+  {
+    "id": "NC.EQUA.03-d01",
+    "verdict": "corrige",
+    "raison": "3x = 12 → 4 ; 12/7 (7x = 12), 2 (3x = 6), 6/7 (7x = 6) = regroupement sans changement de signe. Ajout d'alt pour la saisie « x = … » (très prévisible malgré le « $x = $ » affiché) : sans alt, _matchFill('x=7','7') = false → faux négatif. Simulé : l'alt ne fait passer aucune autre réponse.",
+    "correction": {
+      "id": "NC.EQUA.03-d01",
+      "comp": "NC.EQUA.03",
+      "q": "Résous l'équation $5x - 3 = 2x + 9$. $x = $ ___",
+      "a": "4",
+      "type": "fill",
+      "options": [],
+      "err": {
+        "12/7": "NC.EQUA.03#regroupement_sans_changement",
+        "2": "NC.EQUA.03#regroupement_sans_changement",
+        "6/7": "NC.EQUA.03#regroupement_sans_changement"
+      },
+      "steps": [
+        "Pour regrouper les $x$ à gauche, retire $2x$ aux deux membres : $5x - 2x - 3 = 9$.",
+        "Ajoute ensuite $3$ aux deux membres, puis divise par le coefficient de $x$."
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false,
+      "alt": [
+        "x=4"
+      ]
+    }
+  },
+  {
+    "id": "NC.EQUA.03-d02",
+    "verdict": "ok",
+    "raison": "4x = −12 → −3 ; −1,2 (10x = −12), −1 (4x = −4), −2 (4x = −8, terme perdu)."
+  },
+  {
+    "id": "NC.EQUA.03-d03",
+    "verdict": "corrige",
+    "raison": "−3x = 9 → −3 ; −9 (−x = 9), −7 (−3x = 21), −4,5 (−2x = 9, x perdu). Ajout d'alt pour la saisie « x = … » (très prévisible malgré le « $x = $ » affiché) : sans alt, _matchFill('x=7','7') = false → faux négatif. Simulé : l'alt ne fait passer aucune autre réponse.",
+    "correction": {
+      "id": "NC.EQUA.03-d03",
+      "comp": "NC.EQUA.03",
+      "q": "Résous l'équation $6 - 2x = x + 15$. $x = $ ___",
+      "a": "-3",
+      "type": "fill",
+      "options": [],
+      "err": {
+        "-9": "NC.EQUA.03#regroupement_sans_changement",
+        "-7": "NC.EQUA.03#regroupement_sans_changement",
+        "-4,5": "NC.EQUA.03#terme_perdu"
+      },
+      "steps": [
+        "Retire $x$ aux deux membres pour regrouper les $x$ à gauche : $6 - 2x - x = 15$.",
+        "Retire $6$ aux deux membres, puis divise par le coefficient de $x$ (attention, il est négatif)."
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 2,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false,
+      "alt": [
+        "x=-3"
+      ]
+    }
+  },
+  {
+    "id": "NC.EQUA.04-d01",
+    "verdict": "ok",
+    "raison": "2x + 5 = 45 → x = 20 (entier). x+(x−5) = relation inversée ✓. x+5 = 45 et 5x = 45 tagués #inconnue_floue : le libellé interne (« ne dit pas ce que représente x ») colle mal puisque x est imposé, mais le libellé parent « Ne sait pas par où commencer un problème » est juste pour une mise en équation incohérente. Mapping accepté ; suggestion au didacticien : ajouter une erreur type « oublie une des quantités » à NC.EQUA.04."
+  },
+  {
+    "id": "NC.EQUA.04-d02",
+    "verdict": "ok",
+    "raison": "3×12 + 4 = 40 ; 12 = répond x."
+  },
+  {
+    "id": "NC.EQUA.04-d03",
+    "verdict": "ok",
+    "raison": "4(x+3) + 3x = 54 ⇔ 7x = 42 → x = 6 (entier) ; 4x + 3(x+3) et 4(x−3) + 3x = relation inversée ; 4x + 3x = 54 (écart de 3 € ignoré) → #inconnue_floue (libellé parent acceptable)."
+  },
+  {
+    "id": "NC.EQUA.05-d01",
+    "verdict": "ok",
+    "raison": "4 et −2 ; « 4 seulement », « −4 et 2 », « 4 et 2 » conformes."
+  },
+  {
+    "id": "NC.EQUA.05-d02",
+    "verdict": "corrige",
+    "raison": "2x + 6 = 0 → −3 ; −6, 6, −4 = lecture des nombres. Ajout d'alt pour la saisie « x = … » (très prévisible malgré le « $x = $ » affiché) : sans alt, _matchFill('x=7','7') = false → faux négatif. Simulé : l'alt ne fait passer aucune autre réponse.",
+    "correction": {
+      "id": "NC.EQUA.05-d02",
+      "comp": "NC.EQUA.05",
+      "q": "L'équation $(x - 4)(2x + 6) = 0$ a deux solutions. Quelle est la solution négative ? $x = $ ___",
+      "a": "-3",
+      "type": "fill",
+      "options": [],
+      "err": {
+        "-6": "NC.EQUA.05#lit_les_nombres",
+        "6": "NC.EQUA.05#lit_les_nombres",
+        "-4": "NC.EQUA.05#lit_les_nombres"
+      },
+      "steps": [
+        "Un produit est nul si l'un de ses facteurs est nul : lequel des deux facteurs donne une solution négative ?",
+        "Résous $2x + 6 = 0$ comme une équation du premier degré."
+      ],
+      "f": "$A \\times B = 0 \\iff A = 0$ ou $B = 0$",
+      "f_disabled": false,
+      "lvl": 2,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false,
+      "alt": [
+        "x=-3"
+      ]
+    }
+  },
+  {
+    "id": "NC.EQUA.05-d03",
+    "verdict": "ok",
+    "raison": "(3x+1)(x−7) = 3x² − 20x − 7 vérifié ; « diviser par (x−7) » perd la solution 7 (#une_seule_solution) ; « 1 et 7 » lecture des nombres."
+  },
+  {
+    "id": "NC.EQUA.06-d01",
+    "verdict": "ok",
+    "raison": "±3 ; « 3 seulement » oubli ; ±4,5 et 4,5 = divise par 2."
+  },
+  {
+    "id": "NC.EQUA.06-d02",
+    "verdict": "corrige",
+    "raison": "Réponse 0 juste (un carré n'est jamais négatif). Simulé : '0', 'aucune', 'Aucune', 'aucune solution', 'zéro' passent ; 'pas de solution' (formulation très fréquente) est REFUSÉE → faux négatif. Élargir alt. Aucune réponse fausse ne passe ('2', '-2 et 2' refusés ; '2' tagué #a_negatif).",
+    "correction": {
+      "id": "NC.EQUA.06-d02",
+      "comp": "NC.EQUA.06",
+      "q": "Combien de solutions l'équation $x^2 = -4$ possède-t-elle ? ___",
+      "a": "0",
+      "type": "fill",
+      "options": [],
+      "err": {
+        "2": "NC.EQUA.06#a_negatif"
+      },
+      "steps": [
+        "Un carré $x^2$ peut-il être négatif, quel que soit $x$ ?",
+        "Teste $x = 2$ et $x = -2$ : obtiens-tu $-4$ ?"
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 2,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false,
+      "alt": [
+        "aucune",
+        "aucune solution",
+        "pas de solution",
+        "zéro",
+        "zero",
+        "aucun",
+        "il n'y en a pas",
+        "il n'y a pas de solution"
+      ]
+    }
+  },
+  {
+    "id": "NC.EQUA.06-d03",
+    "verdict": "ok",
+    "raison": "±0,5 ; 0,125 = divise par 2."
+  }
+]

@@ -1,0 +1,60 @@
+[
+  {
+    "id": "NC.INEQ.01-d01",
+    "verdict": "ok",
+    "raison": "−2x < 6 ⇔ x > −3 ; x < −3 sens non changé ; x = −3 une valeur ; x ≥ −3 borne. Le « < » dans les options est suivi d'un espace : sans risque pour l'injection HTML."
+  },
+  {
+    "id": "NC.INEQ.01-d02",
+    "verdict": "ok",
+    "raison": "3x ≥ 12 ⇔ x ≥ 4 ; x > 4 borne ; x = 4 une valeur. x ≤ 4 = sens changé en divisant par un POSITIF : le libellé interne (#sens_negatif « ne change pas le sens… par un négatif ») ne colle pas mot à mot, mais le libellé parent « Ignore la règle du changement de sens » reste vrai. Accepté."
+  },
+  {
+    "id": "NC.INEQ.01-d03",
+    "verdict": "ok",
+    "raison": "−4x ≥ 12 ⇔ x ≤ −3 : Faux ; Vrai = sens non changé."
+  },
+  {
+    "id": "NC.INEQ.02-d01",
+    "verdict": "corrige",
+    "raison": "n ≤ 120 ✓. Mais '120 ≤ n' est la même inégalité que 'n ≥ 120' : deux distracteurs équivalents (éliminables ensemble), et un élève qui traduit bien mais lit mal « 120 ≤ n » serait tagué #au_moins_au_plus à tort (compétence de lecture différente). Retirer '120 ≤ n' (QCM à 3 options).",
+    "correction": {
+      "id": "NC.INEQ.02-d01",
+      "comp": "NC.INEQ.02",
+      "q": "Dans une salle de concert, le nombre $n$ de spectateurs ne doit pas dépasser $120$. Quelle inégalité traduit cette contrainte ?",
+      "a": "$n \\leq 120$",
+      "type": "qcm",
+      "options": [
+        "$n \\geq 120$",
+        "$n \\leq 120$",
+        "$n > 120$"
+      ],
+      "err": {
+        "$n \\geq 120$": "NC.INEQ.02#au_moins_au_plus",
+        "$n > 120$": "NC.INEQ.02#au_moins_au_plus"
+      },
+      "steps": [
+        "« Ne pas dépasser $120$ » : $120$ spectateurs, c'est autorisé ? Et $121$ ?",
+        "$n$ doit donc être inférieur ou supérieur à $120$ ?"
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": true
+    }
+  },
+  {
+    "id": "NC.INEQ.02-d02",
+    "verdict": "ok",
+    "raison": "25/2,3 = 10,869… ; 10 cahiers (23 €), 11 coûtent 25,30 €. 11 = arrondi au plus proche ; 10,87 = contexte entier ignoré (libellé parent « Arrondit sans tenir compte du contexte » : juste)."
+  },
+  {
+    "id": "NC.INEQ.02-d03",
+    "verdict": "ok",
+    "raison": "n ≥ 31,3 → 32 ; 31 et 31,3 = contexte ignoré. Contexte un peu mince (on donne directement n ≥ 31,3) mais l'item cible bien l'interprétation entière."
+  }
+]

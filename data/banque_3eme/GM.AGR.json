@@ -1,0 +1,154 @@
+[
+  {
+    "id": "GM.AGR.01-d01",
+    "comp": "GM.AGR.01",
+    "q": "Un rectangle a une aire de $5~\\text{cm}^2$. On l'agrandit : toutes ses longueurs sont multipliées par $3$. Quelle est sa nouvelle aire, en $\\text{cm}^2$ ? ___",
+    "a": "45",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "15": "GM.AGR.01#aire_fois_k",
+      "5/9": "GM.AGR.01#rapport_inverse"
+    },
+    "steps": [
+      "Si les longueurs sont multipliées par $k$, l'aire est multipliée par $k^2$.",
+      "Ici $k = 3$ : par combien l'aire est-elle multipliée ? Calcule : ?"
+    ],
+    "f": "$\\text{longueurs} \\times k \\Rightarrow \\text{aires} \\times k^2$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.AGR.01-d02",
+    "comp": "GM.AGR.01",
+    "q": "On réduit une photo : toutes ses longueurs sont multipliées par $\\frac{1}{2}$. Que devient son aire ?",
+    "a": "Elle est divisée par $4$",
+    "type": "qcm",
+    "options": [
+      "Elle est divisée par $4$",
+      "Elle est divisée par $2$",
+      "Elle est multipliée par $4$",
+      "Elle est multipliée par $2$"
+    ],
+    "err": {
+      "Elle est divisée par $2$": "GM.AGR.01#aire_fois_k",
+      "Elle est multipliée par $4$": "GM.AGR.01#rapport_inverse",
+      "Elle est multipliée par $2$": "GM.AGR.01#rapport_inverse"
+    },
+    "steps": [
+      "Si les longueurs sont multipliées par $k$, l'aire est multipliée par $k^2$.",
+      "Calcule $\\left(\\frac{1}{2}\\right)^2$ : l'aire devient-elle plus grande ou plus petite ?"
+    ],
+    "f": "$\\text{longueurs} \\times k \\Rightarrow \\text{aires} \\times k^2$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.AGR.01-d03",
+    "comp": "GM.AGR.01",
+    "q": "Un triangle a des côtés de $3$ cm, $4$ cm et $5$ cm, et une aire de $6~\\text{cm}^2$. On l'agrandit pour que son plus petit côté mesure $6$ cm. Quelle est l'aire du triangle agrandi, en $\\text{cm}^2$ ? ___",
+    "a": "24",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "12": "GM.AGR.01#aire_fois_k",
+      "1,5": "GM.AGR.01#rapport_inverse"
+    },
+    "steps": [
+      "Trouve d'abord le coefficient d'agrandissement $k$ : le côté de $3$ cm devient $6$ cm.",
+      "L'aire est multipliée par $k^2$ : calcule $6 \\times k^2$ : ?"
+    ],
+    "f": "$\\text{longueurs} \\times k \\Rightarrow \\text{aires} \\times k^2$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.AGR.02-d01",
+    "comp": "GM.AGR.02",
+    "q": "Un cube a un volume de $8~\\text{cm}^3$. On l'agrandit : ses arêtes sont multipliées par $2$. Quel est le volume du nouveau cube, en $\\text{cm}^3$ ? ___",
+    "a": "64",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "16": "GM.AGR.02#volume_fois_k",
+      "32": "GM.AGR.02#volume_fois_k"
+    },
+    "steps": [
+      "Si les longueurs sont multipliées par $k$, le volume est multiplié par $k^3$.",
+      "Calcule $2^3$, puis multiplie le volume : ?"
+    ],
+    "f": "$\\text{longueurs} \\times k \\Rightarrow \\text{volumes} \\times k^3$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.AGR.02-d02",
+    "comp": "GM.AGR.02",
+    "q": "Une maquette de bateau est à l'échelle $\\frac{1}{50}$. Par rapport au vrai bateau, le volume de la maquette est :",
+    "a": "$125\\,000$ fois plus petit",
+    "type": "qcm",
+    "options": [
+      "$125\\,000$ fois plus petit",
+      "$50$ fois plus petit",
+      "$2\\,500$ fois plus petit",
+      "$150$ fois plus petit"
+    ],
+    "err": {
+      "$50$ fois plus petit": "GM.AGR.02#maquette",
+      "$2\\,500$ fois plus petit": "GM.AGR.02#volume_fois_k",
+      "$150$ fois plus petit": "GM.AGR.02#volume_fois_k"
+    },
+    "steps": [
+      "Les longueurs de la maquette sont $50$ fois plus petites.",
+      "Pour un volume, le coefficient est élevé au cube : calcule $50^3$."
+    ],
+    "f": "$\\text{longueurs} \\times k \\Rightarrow \\text{volumes} \\times k^3$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.AGR.02-d03",
+    "comp": "GM.AGR.02",
+    "q": "Une boule de pétanque a un rayon $2$ fois plus grand que celui d'une bille. Affirmation : « Son volume est $4$ fois plus grand que celui de la bille. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "GM.AGR.02#volume_fois_k"
+    },
+    "steps": [
+      "La boule est un agrandissement de la bille de rapport $k = 2$.",
+      "Pour un volume, on multiplie par $k^3$ et non par $k^2$ : combien vaut $2^3$ ?"
+    ],
+    "f": "$\\text{longueurs} \\times k \\Rightarrow \\text{volumes} \\times k^3$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  }
+]

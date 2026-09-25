@@ -1,0 +1,217 @@
+[
+  {
+    "id": "NC.PRIO.01-d01",
+    "comp": "NC.PRIO.01",
+    "q": "Calcule $2 + 3 \\times 4$. ___",
+    "a": "14",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "20": "NC.PRIO.01#gauche_droite"
+    },
+    "steps": [
+      "Dans une expression sans parenthèses, quelle opération passe avant l'addition ?",
+      "Calcule d'abord $3 \\times 4 = \\,?$, puis ajoute $2$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PRIO.01-d02",
+    "comp": "NC.PRIO.01",
+    "q": "Calcule $\\frac{18 - 6}{3}$. ___",
+    "a": "4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "16": "NC.PRIO.01#trait_fraction"
+    },
+    "steps": [
+      "Le trait de fraction agit comme des parenthèses : $\\frac{18 - 6}{3} = (18 - 6) \\div 3$.",
+      "Calcule d'abord le numérateur $18 - 6 = \\,?$, puis divise par $3$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PRIO.01-d03",
+    "comp": "NC.PRIO.01",
+    "q": "Calcule $5 + 3 \\times 2^2$.",
+    "a": "$17$",
+    "type": "qcm",
+    "options": [
+      "$41$",
+      "$17$",
+      "$32$",
+      "$256$"
+    ],
+    "err": {
+      "$41$": "NC.PRIO.01#puissance_priorite",
+      "$32$": "NC.PRIO.01#gauche_droite",
+      "$256$": "NC.PRIO.01#gauche_droite"
+    },
+    "steps": [
+      "Ordre des priorités : puissances, puis multiplications, puis additions.",
+      "Le carré ne porte que sur le $2$ : $2^2 = \\,?$. Ensuite $3 \\times ?$, et enfin on ajoute $5$."
+    ],
+    "f": "Priorités : parenthèses, puissances, $\\times$ et $\\div$, puis $+$ et $-$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PRIO.01-t01",
+    "comp": "NC.PRIO.01",
+    "q": "Calcule $20 - 4 \\times 3$. ___",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "48": "NC.PRIO.01#gauche_droite"
+    },
+    "steps": [
+      "Repère la multiplication : elle passe avant la soustraction.",
+      "Calcule $4 \\times 3$, puis enlève ce résultat à $20$."
+    ],
+    "f": "Ordre : parenthèses, puissances, $\\times$ et $\\div$, puis $+$ et $-$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PRIO.01-t02",
+    "comp": "NC.PRIO.01",
+    "q": "Calcule $2 \\times 5^2$. ___",
+    "a": "50",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "100": "NC.PRIO.01#puissance_priorite"
+    },
+    "steps": [
+      "La puissance ne porte que sur le nombre juste en dessous : ici $5$.",
+      "Calcule $5^2$ d'abord, puis multiplie par $2$."
+    ],
+    "f": "Ordre : parenthèses, puissances, $\\times$ et $\\div$, puis $+$ et $-$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PRIO.01-t03",
+    "comp": "NC.PRIO.01",
+    "q": "Pour payer un pop-corn à $6$ € et $3$ places à $9$ €, Noé tape $6 + 3 \\times 9$ sur sa calculatrice. Quel montant, en €, doit-il payer ? ___",
+    "a": "33",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "81": "NC.PRIO.01#gauche_droite"
+    },
+    "steps": [
+      "Combien coûtent les $3$ places ?",
+      "Ajoute ensuite le prix du pop-corn."
+    ],
+    "f": "Ordre : parenthèses, puissances, $\\times$ et $\\div$, puis $+$ et $-$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.PRIO.01-t04",
+    "comp": "NC.PRIO.01",
+    "q": "Calcule $\\frac{4 + 8}{2 + 4}$.",
+    "a": "$2$",
+    "type": "qcm",
+    "options": [
+      "$2$",
+      "$12$",
+      "$10$"
+    ],
+    "err": {
+      "$12$": "NC.PRIO.01#trait_fraction",
+      "$10$": "NC.PRIO.01#trait_fraction"
+    },
+    "steps": [
+      "Le trait de fraction joue le rôle de parenthèses : $(4 + 8) \\div (2 + 4)$.",
+      "Calcule le numérateur et le dénominateur séparément avant de diviser."
+    ],
+    "f": "Ordre : parenthèses, puissances, $\\times$ et $\\div$, puis $+$ et $-$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PRIO.01-t05",
+    "comp": "NC.PRIO.01",
+    "q": "Calcule $50 - 2 \\times 3^2$. ___",
+    "a": "32",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "14": "NC.PRIO.01#puissance_priorite",
+      "432": "NC.PRIO.01#gauche_droite"
+    },
+    "steps": [
+      "Commence par la puissance : que vaut $3^2$ ?",
+      "Fais ensuite la multiplication, et la soustraction en dernier."
+    ],
+    "f": "Ordre : parenthèses, puissances, $\\times$ et $\\div$, puis $+$ et $-$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PRIO.01-t06",
+    "comp": "NC.PRIO.01",
+    "q": "Calcule $\\frac{3 \\times 4^2 - 8}{2 \\times 5}$. ___",
+    "a": "4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "13,6": "NC.PRIO.01#puissance_priorite",
+      "28": "NC.PRIO.01#trait_fraction"
+    },
+    "steps": [
+      "Calcule le numérateur en entier : puissance, puis produit, puis soustraction.",
+      "Calcule le dénominateur, puis divise le numérateur par le dénominateur."
+    ],
+    "f": "Ordre : parenthèses, puissances, $\\times$ et $\\div$, puis $+$ et $-$",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  }
+]

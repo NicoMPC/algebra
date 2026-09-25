@@ -1,0 +1,164 @@
+[
+  {
+    "id": "NC.INEQ.01-d01",
+    "comp": "NC.INEQ.01",
+    "q": "Résous l'inéquation $-2x < 6$.",
+    "a": "$x > -3$",
+    "type": "qcm",
+    "options": [
+      "$x < -3$",
+      "$x = -3$",
+      "$x \\geq -3$",
+      "$x > -3$"
+    ],
+    "err": {
+      "$x < -3$": "NC.INEQ.01#sens_negatif",
+      "$x = -3$": "NC.INEQ.01#une_seule_valeur",
+      "$x \\geq -3$": "NC.INEQ.01#strict_large"
+    },
+    "steps": [
+      "Pour isoler $x$, on divise les deux membres par $-2$.",
+      "Que devient le sens d'une inégalité quand on divise par un nombre négatif ? Teste avec $x = 0$ pour vérifier."
+    ],
+    "f": "Diviser par un négatif change le sens de l'inégalité",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.INEQ.01-d02",
+    "comp": "NC.INEQ.01",
+    "q": "Résous l'inéquation $3x - 5 \\geq 7$.",
+    "a": "$x \\geq 4$",
+    "type": "qcm",
+    "options": [
+      "$x \\geq 4$",
+      "$x > 4$",
+      "$x = 4$",
+      "$x \\leq 4$"
+    ],
+    "err": {
+      "$x > 4$": "NC.INEQ.01#strict_large",
+      "$x = 4$": "NC.INEQ.01#une_seule_valeur",
+      "$x \\leq 4$": "NC.INEQ.01#sens_negatif"
+    },
+    "steps": [
+      "Ajoute $5$ aux deux membres, puis divise par $3$ (un nombre positif : le sens change-t-il ?).",
+      "$4$ vérifie-t-il l'inéquation ? Teste : $3 \\times 4 - 5 \\geq 7$ ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.INEQ.01-d03",
+    "comp": "NC.INEQ.01",
+    "q": "Vrai ou faux : les solutions de $-4x \\geq 12$ sont les nombres $x$ tels que $x \\geq -3$.",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.INEQ.01#sens_negatif"
+    },
+    "steps": [
+      "Teste $x = 0$ : a-t-on $-4 \\times 0 \\geq 12$ ? Or $0 \\geq -3$.",
+      "Pour isoler $x$ on divise par $-4$, un nombre négatif : que devient le sens de l'inégalité ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.INEQ.02-d01",
+    "comp": "NC.INEQ.02",
+    "q": "Dans une salle de concert, le nombre $n$ de spectateurs ne doit pas dépasser $120$. Quelle inégalité traduit cette contrainte ?",
+    "a": "$n \\leq 120$",
+    "type": "qcm",
+    "options": [
+      "$n \\geq 120$",
+      "$n \\leq 120$",
+      "$n > 120$"
+    ],
+    "err": {
+      "$n \\geq 120$": "NC.INEQ.02#au_moins_au_plus",
+      "$n > 120$": "NC.INEQ.02#au_moins_au_plus"
+    },
+    "steps": [
+      "« Ne pas dépasser $120$ » : $120$ spectateurs, c'est autorisé ? Et $121$ ?",
+      "$n$ doit donc être inférieur ou supérieur à $120$ ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.INEQ.02-d02",
+    "comp": "NC.INEQ.02",
+    "q": "Avec $25$ €, Sami achète des cahiers à $2{,}30$ € l'un. On note $n$ le nombre de cahiers : $2{,}3n \\leq 25$, soit $n \\leq 10{,}87$ environ. Combien de cahiers peut-il acheter au maximum ? ___",
+    "a": "10",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "11": "NC.INEQ.02#arrondi_proche",
+      "10,87": "NC.INEQ.02#arrondi_proche"
+    },
+    "steps": [
+      "$n$ est un nombre entier de cahiers et doit vérifier $n \\leq 10{,}87$.",
+      "Si tu arrondis à l'entier le plus proche, vérifie : combien coûtent ces cahiers ? Est-ce au plus $25$ € ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.INEQ.02-d03",
+    "comp": "NC.INEQ.02",
+    "q": "Un club vend des gâteaux pour financer un voyage. La résolution du problème donne $n \\geq 31{,}3$ environ, où $n$ est le nombre de gâteaux à vendre. Combien de gâteaux doit-il vendre au minimum ? ___",
+    "a": "32",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "31": "NC.INEQ.02#arrondi_proche",
+      "31,3": "NC.INEQ.02#arrondi_proche"
+    },
+    "steps": [
+      "$n$ est un nombre entier et doit être supérieur ou égal à $31{,}3$.",
+      "$31$ est-il supérieur ou égal à $31{,}3$ ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  }
+]

@@ -1,0 +1,238 @@
+{
+  "fichier": "data/banque_3eme/DF.FONC.json",
+  "relecteur": "relecteur",
+  "date": "2026-09-24",
+  "methode": "Calculs refaits à la main ; _normFill/_toNum/_matchFill extraits d'app.html (version du 24/09) et exécutés sous Node sur a, alt, clés err et variantes prévisibles.",
+  "bilan": {
+    "ok": 10,
+    "corrige": 5,
+    "rejet": 0
+  },
+  "items": [
+    {
+      "id": "DF.FONC.01-d01",
+      "verdict": "ok",
+      "notes": "f(5)=12 : image de 5 = 12. Les 3 distracteurs sont bien notation_produit / image_antecedent (« un antécédent de 5 est 12 » ⇔ f(12)=5, faux)."
+    },
+    {
+      "id": "DF.FONC.01-d02",
+      "verdict": "ok",
+      "notes": "5×3−7 = 8. 2 = solution de 5x−7 = 3 (image/antécédent confondus)."
+    },
+    {
+      "id": "DF.FONC.01-d03",
+      "verdict": "corrige",
+      "notes": "Image de 2 = 1 (juste). −1 = antécédent de 2 (f(−1)=2) : bien image_antecedent. En revanche « 6 » (= f(1), ou la valeur x = 6 de la 1re ligne) ne correspond à aucune confusion image/antécédent : c'est une erreur de colonne. L'étiqueter image_antecedent écrirait une fausse erreur dans le bilan. On retire la clé.",
+      "correction": {
+        "id": "DF.FONC.01-d03",
+        "comp": "DF.FONC.01",
+        "q": "Voici un tableau de valeurs d'une fonction $f$. Quelle est l'image de $2$ par $f$ ? ___",
+        "a": "1",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "-1": "DF.FONC.01#image_antecedent"
+        },
+        "steps": [
+          "Dans le tableau, repère la colonne où $x = 2$ (première ligne).",
+          "Quelle valeur est écrite sous $2$, sur la ligne $f(x)$ ?"
+        ],
+        "f": "$\\text{image de } a : \\text{valeur de } f(x) \\text{ sous } x = a$",
+        "lvl": 2,
+        "table": {
+          "headers": [
+            "$x$",
+            "$-1$",
+            "$1$",
+            "$2$",
+            "$6$"
+          ],
+          "rows": [
+            [
+              "$f(x)$",
+              "$2$",
+              "$6$",
+              "$1$",
+              "$-3$"
+            ]
+          ],
+          "caption": "Tableau de valeurs de $f$"
+        },
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "DF.FONC.02-d01",
+      "verdict": "ok",
+      "notes": "Point d'abscisse 4 : (4 ; 2) → 2. 5 = abscisse du point d'ordonnée 4 (axes inversés). Description non ambiguë (une fonction n'a qu'une image)."
+    },
+    {
+      "id": "DF.FONC.02-d02",
+      "verdict": "ok",
+      "notes": "3 carreaux × 5 = 15. 3 = graduation lue comme 1. Description textuelle non ambiguë. Limite assumée : sans dessin, l'erreur de graduation est désamorcée par l'énoncé qui rappelle l'échelle ; l'item mesure surtout le calcul carreaux × pas."
+    },
+    {
+      "id": "DF.FONC.02-d03",
+      "verdict": "ok",
+      "notes": "4 × 0,5 = 2 s → t = 2 ; 3 × 2 = 6 m. 3 m = carreaux comptés comme unités ; 1,5 m = pas horizontal appliqué à la verticale ; 4 m = lecture sur l'axe horizontal (axes inversés). Non ambigu."
+    },
+    {
+      "id": "DF.FONC.03-d01",
+      "verdict": "ok",
+      "notes": "Seul point à la hauteur 2 : (3 ; 2), l'énoncé garantit l'unicité → 3. 4 = f(2) (image lue)."
+    },
+    {
+      "id": "DF.FONC.03-d02",
+      "verdict": "ok",
+      "notes": "Courbe décroissante sur [0 ; 2] puis croissante : hauteur 5 atteinte exactement en x = 0 et x = 4. Distracteurs : un seul antécédent (×2), 10 = g(5) (image lue). Non ambigu."
+    },
+    {
+      "id": "DF.FONC.03-d03",
+      "verdict": "ok",
+      "notes": "Seul point à la hauteur 7 : (2 ; 7) → 3 n'est pas antécédent de 7 → Faux. Vrai = lecture de (7 ; 3) à l'envers."
+    },
+    {
+      "id": "DF.FONC.04-d01",
+      "verdict": "corrige",
+      "notes": "2x+3 = 11 → x = 4. 25 = f(11). Réponse juste ; mais « x = 4 », forme très probable après résolution d'équation, est refusée par _matchFill (simulé). Ajout d'alt.",
+      "correction": {
+        "id": "DF.FONC.04-d01",
+        "comp": "DF.FONC.04",
+        "q": "Soit $f(x) = 2x + 3$. Détermine l'antécédent de $11$ par $f$. ___",
+        "a": "4",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "25": "DF.FONC.04#calcule_image"
+        },
+        "steps": [
+          "On cherche $x$ tel que $f(x) = 11$, c'est-à-dire $2x + 3 = 11$.",
+          "Isole $2x$, puis $x$ : ?"
+        ],
+        "f": "$\\text{antécédent de } k : \\text{on résout } f(x) = k$",
+        "lvl": 1,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false,
+        "alt": [
+          "x=4"
+        ]
+      }
+    },
+    {
+      "id": "DF.FONC.04-d02",
+      "verdict": "corrige",
+      "notes": "Point prioritaire. x² − 9 = 0 ⇔ x = −3 ou 3 : réponse juste et unique, distracteurs conformes. MAIS l'item repose entièrement sur NC.EQUA.06 (« résoudre x² = a », 3e), qui n'est PAS prérequis de DF.FONC.04 au référentiel (prérequis : DF.FONC.01, NC.EQUA.02). Un échec serait imputé à DF.FONC.04 sans que le moteur puisse remonter vers la vraie cause. Acceptable UNIQUEMENT si le référentiel ajoute NC.EQUA.06 aux prérequis de DF.FONC.04 (l'erreur antecedent_negatif_oublie du référentiel présuppose déjà ce lien). Item inchangé ; correctif au référentiel (didacticien). On ne peut pas simplement le retirer du diag : DF.FONC.04 tomberait à 2 items diag et n'aurait plus qu'une erreur type couverte (check_banque bloquant).",
+      "correction": {
+        "id": "DF.FONC.04-d02",
+        "comp": "DF.FONC.04",
+        "q": "Soit $h(x) = x^2 - 9$. Quels sont les antécédents de $0$ par $h$ ?",
+        "a": "$-3$ et $3$",
+        "type": "qcm",
+        "options": [
+          "$-3$ et $3$",
+          "$3$ seulement",
+          "$-3$ seulement",
+          "$-9$"
+        ],
+        "err": {
+          "$3$ seulement": "DF.FONC.04#antecedent_negatif_oublie",
+          "$-3$ seulement": "DF.FONC.04#antecedent_negatif_oublie",
+          "$-9$": "DF.FONC.04#calcule_image"
+        },
+        "steps": [
+          "On résout $x^2 - 9 = 0$, c'est-à-dire $x^2 = 9$.",
+          "Combien de nombres ont un carré égal à $9$ ? Pense aussi aux nombres négatifs."
+        ],
+        "f": "$x^2 = a \\ (a > 0) \\iff x = \\sqrt{a} \\text{ ou } x = -\\sqrt{a}$",
+        "lvl": 2,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false
+      },
+      "correction_referentiel": "Ajouter NC.EQUA.06 à DF.FONC.04.prerequis dans data/referentiel_3eme/competences.json (didacticien)."
+    },
+    {
+      "id": "DF.FONC.04-d03",
+      "verdict": "corrige",
+      "notes": "4x − 6 = 30 → x = 9. 114 = g(30). Juste ; ajout de l'alt « x = 9 » (même raison que d01).",
+      "correction": {
+        "id": "DF.FONC.04-d03",
+        "comp": "DF.FONC.04",
+        "q": "Soit $g(x) = 4x - 6$. Quel nombre a pour image $30$ par $g$ ? ___",
+        "a": "9",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "114": "DF.FONC.04#calcule_image"
+        },
+        "steps": [
+          "On cherche $x$ tel que $g(x) = 30$ : écris l'équation $4x - 6 = 30$.",
+          "Ajoute $6$ aux deux membres, puis divise par $4$ : ?"
+        ],
+        "f": "$\\text{antécédent de } k : \\text{on résout } g(x) = k$",
+        "lvl": 2,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false,
+        "alt": [
+          "x=9"
+        ]
+      }
+    },
+    {
+      "id": "DF.FONC.05-d01",
+      "verdict": "ok",
+      "notes": "Températures 12→15→19→21 puis 18→14 : hausse de 8 h à 14 h. « De 12 °C à 21 °C » = intervalle lu sur l'axe des valeurs ; « De 12 h à 16 h » = heures où les valeurs sont les plus hautes (19 ; 21 ; 18) : conforme à variations_valeurs. Tableau non ambigu (segments annoncés)."
+    },
+    {
+      "id": "DF.FONC.05-d02",
+      "verdict": "corrige",
+      "notes": "Point prioritaire. Réponse juste (palier horizontal d'une courbe vitesse-temps = vitesse constante). Mais le distracteur « Il est à l'arrêt » est tagué variations_valeurs (« confond “augmente” et “valeurs grandes” ») : ce n'est pas cette erreur (c'est une confusion vitesse/position). Dans le bilan, l'exemple contredirait le libellé. On le remplace par « Il accélère » : le palier est la vitesse la plus haute du trajet, donc l'élève qui confond « valeurs grandes » et « ça augmente » répond qu'il accélère, exactement variations_valeurs. Steps ajustés pour ne pas viser le distracteur supprimé.",
+      "correction": {
+        "id": "DF.FONC.05-d02",
+        "comp": "DF.FONC.05",
+        "q": "Un graphique donne la vitesse d'un cycliste en fonction du temps. La courbe monte, puis reste horizontale pendant $10$ minutes, puis redescend. Que fait le cycliste pendant ces $10$ minutes ?",
+        "a": "Il roule à vitesse constante",
+        "type": "qcm",
+        "options": [
+          "Il roule à vitesse constante",
+          "Il roule sur une route plate",
+          "Il accélère",
+          "Il monte une côte"
+        ],
+        "err": {
+          "Il roule sur une route plate": "DF.FONC.05#courbe_dessin",
+          "Il accélère": "DF.FONC.05#variations_valeurs",
+          "Il monte une côte": "DF.FONC.05#courbe_dessin"
+        },
+        "steps": [
+          "Le graphique montre la vitesse, pas le paysage : une partie horizontale veut dire que la vitesse ne change pas.",
+          "Pendant ces $10$ minutes, la vitesse augmente-t-elle, diminue-t-elle, ou reste-t-elle la même ?"
+        ],
+        "f": "",
+        "lvl": 2,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": true
+      }
+    },
+    {
+      "id": "DF.FONC.05-d03",
+      "verdict": "ok",
+      "notes": "Point le plus haut : (3 ; 6) → maximum 6. 3 = abscisse du maximum ; 10 = borne de l'axe horizontal : confusion d'axe, tag intervalle_mauvais_axe acceptable. Description non ambiguë (monte puis descend)."
+    }
+  ]
+}

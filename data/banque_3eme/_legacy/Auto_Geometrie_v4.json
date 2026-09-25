@@ -1,0 +1,601 @@
+[
+ {
+  "id": "EG.REP.01-L001",
+  "comp": "EG.REP.01",
+  "q": "Le parc d'attractions \"AquaFun\" est représenté sur un plan muni d'un repère orthonormé. L'entrée est à l'origine $O(0\\,;\\,0)$. Le manège est au point $M(4\\,;\\,3)$, la grande roue au point $G(-2\\,;\\,6)$ et le toboggan au point $T(4\\,;\\,-1)$. Quelle est l'abscisse du point $M$ (le manège) ?",
+  "a": "4",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "3": "EG.REP.01#xy_inverses"
+  },
+  "steps": [
+   "Les coordonnées de $M$ sont $(4\\,;\\,3)$. L'abscisse est la première valeur."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "figure_desc": "Repère orthonormé (O, i, j) avec axes gradués de -3 à 6 en x et -2 à 7 en y. Points placés : O(0;0) avec label \"Entrée\", M(4;3) avec label \"Manège\", G(-2;6) avec label \"Grande roue\", T(4;-1) avec label \"Toboggan\". Grille en pointillés. Unité : 1 carreau = 1.",
+  "parapluie_id": "AUTOGEO_01",
+  "num": "1",
+  "source": "Auto_Geometrie_v4|AUTOGEO_01.1"
+ },
+ {
+  "id": "EG.REP.01-L002",
+  "comp": "EG.REP.01",
+  "q": "Le parc d'attractions \"AquaFun\" est représenté sur un plan muni d'un repère orthonormé. L'entrée est à l'origine $O(0\\,;\\,0)$. Le manège est au point $M(4\\,;\\,3)$, la grande roue au point $G(-2\\,;\\,6)$ et le toboggan au point $T(4\\,;\\,-1)$. Quel point a pour ordonnée $-1$ ?",
+  "a": "T",
+  "type": "qcm",
+  "options": [
+   "T",
+   "G",
+   "M"
+  ],
+  "err": {},
+  "steps": [
+   "$T(4\\,;\\,-1)$ : l'ordonnée (deuxième coordonnée) est bien $-1$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "figure_desc": "Repère orthonormé (O, i, j) avec axes gradués de -3 à 6 en x et -2 à 7 en y. Points placés : O(0;0) avec label \"Entrée\", M(4;3) avec label \"Manège\", G(-2;6) avec label \"Grande roue\", T(4;-1) avec label \"Toboggan\". Grille en pointillés. Unité : 1 carreau = 1.",
+  "parapluie_id": "AUTOGEO_01",
+  "num": "2",
+  "source": "Auto_Geometrie_v4|AUTOGEO_01.2"
+ },
+ {
+  "id": "EG.REP.02-L001",
+  "comp": "EG.REP.02",
+  "q": "Le parc d'attractions \"AquaFun\" est représenté sur un plan muni d'un repère orthonormé. L'entrée est à l'origine $O(0\\,;\\,0)$. Le manège est au point $M(4\\,;\\,3)$, la grande roue au point $G(-2\\,;\\,6)$ et le toboggan au point $T(4\\,;\\,-1)$. Le milieu du segment $[OT]$ a pour coordonnées $(2\\,;\\,0{,}5)$.",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Milieu de $[OT]$ : $\\left(\\frac{0+4}{2}\\,;\\,\\frac{0+(-1)}{2}\\right) = (2\\,;\\,?)$.",
+   "$\\frac{-1}{2} = -0{,}5$, pas $0{,}5$."
+  ],
+  "f": "$I\\left(\\frac{x_A+x_B}{2}\\,;\\,\\frac{y_A+y_B}{2}\\right)$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "figure_desc": "Repère orthonormé (O, i, j) avec axes gradués de -3 à 6 en x et -2 à 7 en y. Points placés : O(0;0) avec label \"Entrée\", M(4;3) avec label \"Manège\", G(-2;6) avec label \"Grande roue\", T(4;-1) avec label \"Toboggan\". Grille en pointillés. Unité : 1 carreau = 1.",
+  "parapluie_id": "AUTOGEO_01",
+  "num": "3",
+  "source": "Auto_Geometrie_v4|AUTOGEO_01.3"
+ },
+ {
+  "id": "EG.REP.02-L002",
+  "comp": "EG.REP.02",
+  "q": "Le parc d'attractions \"AquaFun\" est représenté sur un plan muni d'un repère orthonormé. L'entrée est à l'origine $O(0\\,;\\,0)$. Le manège est au point $M(4\\,;\\,3)$, la grande roue au point $G(-2\\,;\\,6)$ et le toboggan au point $T(4\\,;\\,-1)$. Quelles sont les coordonnées du milieu $I$ du segment $[MG]$ ?",
+  "a": "(1;4,5)",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "(2;9)": "EG.REP.02#pas_divise_par_2",
+   "(3;-1,5)": "EG.REP.02#difference"
+  },
+  "steps": [
+   "$I = \\left(\\frac{4+(-2)}{2}\\,;\\,\\frac{3+6}{2}\\right) = \\left(\\frac{?}{2}\\,;\\,\\frac{?}{2}\\right)$.",
+   "Simplifie chaque fraction pour trouver les coordonnées de $I$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "figure_desc": "Repère orthonormé (O, i, j) avec axes gradués de -3 à 6 en x et -2 à 7 en y. Points placés : O(0;0) avec label \"Entrée\", M(4;3) avec label \"Manège\", G(-2;6) avec label \"Grande roue\", T(4;-1) avec label \"Toboggan\". Grille en pointillés. Unité : 1 carreau = 1.",
+  "parapluie_id": "AUTOGEO_01",
+  "num": "4",
+  "source": "Auto_Geometrie_v4|AUTOGEO_01.4"
+ },
+ {
+  "id": "EG.REP.02-L003",
+  "comp": "EG.REP.02",
+  "q": "Le parc d'attractions \"AquaFun\" est représenté sur un plan muni d'un repère orthonormé. L'entrée est à l'origine $O(0\\,;\\,0)$. Le manège est au point $M(4\\,;\\,3)$, la grande roue au point $G(-2\\,;\\,6)$ et le toboggan au point $T(4\\,;\\,-1)$. On place un kiosque au point $K$ tel que $I(1\\,;\\,4{,}5)$ soit le milieu de $[OK]$. Quelle est l'abscisse de $K$ ?",
+  "a": "2",
+  "type": "qcm",
+  "options": [
+   "2",
+   "0,5",
+   "1"
+  ],
+  "err": {},
+  "steps": [
+   "Si $I$ est milieu de $[OK]$ : $x_I = \\frac{x_O + x_K}{2}$, donc $1 = \\frac{0 + x_K}{2}$.",
+   "$x_K = 2 \\times 1 = \\,?$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "figure_desc": "Repère orthonormé (O, i, j) avec axes gradués de -3 à 6 en x et -2 à 7 en y. Points placés : O(0;0) avec label \"Entrée\", M(4;3) avec label \"Manège\", G(-2;6) avec label \"Grande roue\", T(4;-1) avec label \"Toboggan\". Grille en pointillés. Unité : 1 carreau = 1.",
+  "parapluie_id": "AUTOGEO_01",
+  "num": "5",
+  "source": "Auto_Geometrie_v4|AUTOGEO_01.5"
+ },
+ {
+  "id": "EG.ANG.01-L001",
+  "comp": "EG.ANG.01",
+  "q": "Dans un triangle, la somme des angles vaut ___ degrés.",
+  "a": "180",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "360": "EG.ANG.01#somme_360"
+  },
+  "steps": [
+   "Propriété fondamentale : la somme des angles d'un triangle est toujours $180°$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "figure_desc": "Losange ABCD, A en haut, B à droite, C en bas, D à gauche. Diagonale [AC] tracée (verticale). Angle BAC marqué = 50°. Angle droit codé à l'intersection des diagonales (point O). Labels A, B, C, D aux sommets.",
+  "parapluie_id": "AUTOGEO_02",
+  "num": "1",
+  "source": "Auto_Geometrie_v4|AUTOGEO_02.1"
+ },
+ {
+  "id": "EG.ANG.01-L002",
+  "comp": "EG.ANG.01",
+  "q": "Le triangle $OAB$ est rectangle en $O$ (intersection des diagonales). L'angle $\\widehat{BAO} = 50°$. Combien vaut l'angle $\\widehat{ABO}$ ?",
+  "a": "40",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "130": "EG.ANG.01#angle_droit_oublie",
+   "220": "EG.ANG.01#somme_360"
+  },
+  "steps": [
+   "Triangle rectangle en $O$ : $90° + 50° + \\widehat{ABO} = 180°$.",
+   "$\\widehat{ABO} = 180° - 90° - 50° = \\,?$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "figure_desc": "Losange ABCD, A en haut, B à droite, C en bas, D à gauche. Diagonale [AC] tracée (verticale). Angle BAC marqué = 50°. Angle droit codé à l'intersection des diagonales (point O). Labels A, B, C, D aux sommets.",
+  "parapluie_id": "AUTOGEO_02",
+  "num": "2",
+  "source": "Auto_Geometrie_v4|AUTOGEO_02.2"
+ },
+ {
+  "id": "EG.ANG.03-L001",
+  "comp": "EG.ANG.03",
+  "q": "Deux angles sont complémentaires quand leur somme vaut $90°$. Les angles $50°$ et $40°$ sont complémentaires.",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "$50° + 40° = 90°$. Complémentaires = somme $90°$. Vérifie si c'est le cas."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "figure_desc": "Losange ABCD, A en haut, B à droite, C en bas, D à gauche. Diagonale [AC] tracée (verticale). Angle BAC marqué = 50°. Angle droit codé à l'intersection des diagonales (point O). Labels A, B, C, D aux sommets.",
+  "parapluie_id": "AUTOGEO_02",
+  "num": "3",
+  "source": "Auto_Geometrie_v4|AUTOGEO_02.3"
+ },
+ {
+  "id": "EG.ANG.03-L002",
+  "comp": "EG.ANG.03",
+  "q": "Jade trace une tige qui prolonge le côté $[AB]$ au-delà de $B$. L'angle entre cette tige et le côté $[BC]$ est supplémentaire à l'angle $\\widehat{ABC}$. Si $\\widehat{ABC} = 80°$, combien vaut cet angle extérieur ?",
+  "a": "100",
+  "type": "qcm",
+  "options": [
+   "100",
+   "80",
+   "120"
+  ],
+  "err": {},
+  "steps": [
+   "Angles supplémentaires : leur somme vaut $180°$.",
+   "$180° - 80° = \\,?$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "figure_desc": "Losange ABCD, A en haut, B à droite, C en bas, D à gauche. Diagonale [AC] tracée (verticale). Angle BAC marqué = 50°. Angle droit codé à l'intersection des diagonales (point O). Labels A, B, C, D aux sommets.",
+  "parapluie_id": "AUTOGEO_02",
+  "num": "4",
+  "source": "Auto_Geometrie_v4|AUTOGEO_02.4"
+ },
+ {
+  "id": "EG.ANG.02-L001",
+  "comp": "EG.ANG.02",
+  "q": "Un triangle isocèle a un angle au sommet de $36°$. Combien vaut chacun des deux angles de la base ?",
+  "a": "72",
+  "type": "qcm",
+  "options": [
+   "72",
+   "144",
+   "54"
+  ],
+  "err": {
+   "144": "EG.ANG.02#pas_de_partage"
+  },
+  "steps": [
+   "Les deux angles de la base sont égaux. Leur somme vaut $180° - 36° = ?$.",
+   "Chaque angle de la base vaut la moitié de cette somme."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "figure_desc": "Losange ABCD, A en haut, B à droite, C en bas, D à gauche. Diagonale [AC] tracée (verticale). Angle BAC marqué = 50°. Angle droit codé à l'intersection des diagonales (point O). Labels A, B, C, D aux sommets.",
+  "parapluie_id": "AUTOGEO_02",
+  "num": "5",
+  "source": "Auto_Geometrie_v4|AUTOGEO_02.5"
+ },
+ {
+  "id": "EG.PYTH.02-L007",
+  "comp": "EG.PYTH.02",
+  "q": "L'échelle mesure $5$ m et le pied est à $3$ m du mur. À quelle hauteur l'échelle touche-t-elle le mur ? Le triangle est rectangle au pied du mur.",
+  "a": "4",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "sqrt(34)": "EG.PYTH.02#additionne_au_lieu_soustraire"
+  },
+  "steps": [
+   "Triangle rectangle : $AB^2 + 3^2 = 5^2$, donc $AB^2 = 25 - 9 = ?$.",
+   "$AB = \\sqrt{?}$"
+  ],
+  "f": "$a^2 + b^2 = c^2$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "figure_desc": "Triangle rectangle ABC. A = sommet du mur (en haut), B = pied du mur (angle droit codé), C = pied de l'échelle (au sol, à 3 m de B). [AC] = échelle = 5 m. [BC] = 3 m au sol. [AB] = ? (hauteur). Angle droit codé en B. À droite : poteau vertical MN (M en haut, N au sol). Ombre [NP] au sol = 8 m. Droite du soleil de M à P. MN = ? (à trouver). Un petit poteau de 1{,}5 m avec ombre de 2 m à côté (config Thalès).",
+  "parapluie_id": "AUTOGEO_03",
+  "num": "1",
+  "source": "Auto_Geometrie_v4|AUTOGEO_03.1"
+ },
+ {
+  "id": "EG.PYTH.03-L005",
+  "comp": "EG.PYTH.03",
+  "q": "Un triangle a pour côtés $6$ cm, $8$ cm et $10$ cm. Ce triangle est-il rectangle ?",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "$6^2 + 8^2 = 36 + 64 = 100$ et $10^2 = 100$.",
+   "L'égalité de Pythagore est-elle vérifiée ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "figure_desc": "Triangle rectangle ABC. A = sommet du mur (en haut), B = pied du mur (angle droit codé), C = pied de l'échelle (au sol, à 3 m de B). [AC] = échelle = 5 m. [BC] = 3 m au sol. [AB] = ? (hauteur). Angle droit codé en B. À droite : poteau vertical MN (M en haut, N au sol). Ombre [NP] au sol = 8 m. Droite du soleil de M à P. MN = ? (à trouver). Un petit poteau de 1{,}5 m avec ombre de 2 m à côté (config Thalès).",
+  "parapluie_id": "AUTOGEO_03",
+  "num": "2",
+  "source": "Auto_Geometrie_v4|AUTOGEO_03.2"
+ },
+ {
+  "id": "EG.THAL.02-L009",
+  "comp": "EG.THAL.02",
+  "q": "Un poteau de $1{,}5$ m projette une ombre de $2$ m. Un arbre voisin projette une ombre de $8$ m. Par le théorème de Thalès (rayons du soleil parallèles), quelle est la hauteur de l'arbre ?",
+  "a": "6",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "7,5": "EG.THAL.02#additif"
+  },
+  "steps": [
+   "Thalès : $\\frac{\\text{hauteur arbre}}{\\text{hauteur poteau}} = \\frac{\\text{ombre arbre}}{\\text{ombre poteau}}$.",
+   "$\\frac{h}{1{,}5} = \\frac{8}{2} = 4$, donc $h = 1{,}5 \\times ? = \\,?$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "figure_desc": "Triangle rectangle ABC. A = sommet du mur (en haut), B = pied du mur (angle droit codé), C = pied de l'échelle (au sol, à 3 m de B). [AC] = échelle = 5 m. [BC] = 3 m au sol. [AB] = ? (hauteur). Angle droit codé en B. À droite : poteau vertical MN (M en haut, N au sol). Ombre [NP] au sol = 8 m. Droite du soleil de M à P. MN = ? (à trouver). Un petit poteau de 1{,}5 m avec ombre de 2 m à côté (config Thalès).",
+  "parapluie_id": "AUTOGEO_03",
+  "num": "3",
+  "source": "Auto_Geometrie_v4|AUTOGEO_03.3"
+ },
+ {
+  "id": "EG.PYTH.01-L011",
+  "comp": "EG.PYTH.01",
+  "q": "Hugo déplace l'échelle. Le pied est maintenant à $5$ m du mur et l'échelle touche le mur à $12$ m de hauteur. Quelle est la longueur de cette échelle ?",
+  "a": "13",
+  "type": "qcm",
+  "options": [
+   "13",
+   "17",
+   "15"
+  ],
+  "err": {
+   "17": "EG.PYTH.01#somme_cotes"
+  },
+  "steps": [
+   "Triangle rectangle : $c^2 = 5^2 + 12^2 = 25 + 144 = ?$.",
+   "$c = \\sqrt{?}$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "figure_desc": "Triangle rectangle ABC. A = sommet du mur (en haut), B = pied du mur (angle droit codé), C = pied de l'échelle (au sol, à 3 m de B). [AC] = échelle = 5 m. [BC] = 3 m au sol. [AB] = ? (hauteur). Angle droit codé en B. À droite : poteau vertical MN (M en haut, N au sol). Ombre [NP] au sol = 8 m. Droite du soleil de M à P. MN = ? (à trouver). Un petit poteau de 1{,}5 m avec ombre de 2 m à côté (config Thalès).",
+  "parapluie_id": "AUTOGEO_03",
+  "num": "4",
+  "source": "Auto_Geometrie_v4|AUTOGEO_03.4"
+ },
+ {
+  "id": "EG.THAL.02-L010",
+  "comp": "EG.THAL.02",
+  "q": "Un piquet de $2$ m projette une ombre de $3$ m. À côté, une antenne projette une ombre de $12$ m. Quelle est la hauteur de l'antenne ?",
+  "a": "8",
+  "type": "qcm",
+  "options": [
+   "8",
+   "6",
+   "9"
+  ],
+  "err": {},
+  "steps": [
+   "$\\frac{h}{2} = \\frac{12}{3} = ?$.",
+   "$h = 2 \\times ? = \\,?$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "figure_desc": "Triangle rectangle ABC. A = sommet du mur (en haut), B = pied du mur (angle droit codé), C = pied de l'échelle (au sol, à 3 m de B). [AC] = échelle = 5 m. [BC] = 3 m au sol. [AB] = ? (hauteur). Angle droit codé en B. À droite : poteau vertical MN (M en haut, N au sol). Ombre [NP] au sol = 8 m. Droite du soleil de M à P. MN = ? (à trouver). Un petit poteau de 1{,}5 m avec ombre de 2 m à côté (config Thalès).",
+  "parapluie_id": "AUTOGEO_03",
+  "num": "5",
+  "source": "Auto_Geometrie_v4|AUTOGEO_03.5"
+ },
+ {
+  "id": "GM.CONV.02-L002",
+  "comp": "GM.CONV.02",
+  "q": "Combien de cm$^3$ y a-t-il dans $1$ L ?",
+  "a": "1000",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "100": "GM.CONV.02#litre_dm3"
+  },
+  "steps": [
+   "$1$ L $= 1$ dm$^3$. Et $1$ dm$^3 = 10 \\times 10 \\times 10 = ?$ cm$^3$."
+  ],
+  "f": "$1\\text{ L} = 1\\text{ dm}^3 = 1000\\text{ cm}^3$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTOGEO_04",
+  "num": "1",
+  "source": "Auto_Geometrie_v4|AUTOGEO_04.1"
+ },
+ {
+  "id": "GM.VOL.01-L001",
+  "comp": "GM.VOL.01",
+  "q": "Une boîte de céréales est un pavé droit de $20$ cm $\\times$ $8$ cm $\\times$ $30$ cm. Son volume est de :",
+  "a": "$4800$ cm$^3$",
+  "type": "qcm",
+  "options": [
+   "$4800$ cm$^3$",
+   "$4800$ cm$^2$",
+   "$480$ cm$^3$"
+  ],
+  "err": {
+   "$4800$ cm$^2$": "GM.VOL.01#unite_volume"
+  },
+  "steps": [
+   "$V = L \\times l \\times h = 20 \\times 8 \\times 30 = ?$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTOGEO_04",
+  "num": "2",
+  "source": "Auto_Geometrie_v4|AUTOGEO_04.2"
+ },
+ {
+  "id": "GM.VOL.02-L004",
+  "comp": "GM.VOL.02",
+  "q": "Une boîte de conserve est un cylindre de rayon $4$ cm et de hauteur $10$ cm. Son volume vaut $160\\pi$ cm$^3$.",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "$V = \\pi \\times r^2 \\times h = \\pi \\times 4^2 \\times 10 = \\pi \\times ?$.",
+   "Compare avec $160\\pi$."
+  ],
+  "f": "$V_{\\text{cylindre}} = \\pi \\times r^2 \\times h$",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTOGEO_04",
+  "num": "3",
+  "source": "Auto_Geometrie_v4|AUTOGEO_04.3"
+ },
+ {
+  "id": "GM.VOL.03-L003",
+  "comp": "GM.VOL.03",
+  "q": "Un cône de glace a un rayon de $3$ cm et une hauteur de $12$ cm. Quel est son volume ?",
+  "a": "$36\\pi$",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "108π": "GM.VOL.03#oubli_tiers"
+  },
+  "steps": [
+   "$V = \\frac{1}{3} \\times \\pi \\times r^2 \\times h = \\frac{1}{3} \\times \\pi \\times 9 \\times 12$.",
+   "$= \\frac{1}{3} \\times \\pi \\times ? = ?\\pi$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTOGEO_04",
+  "num": "4",
+  "source": "Auto_Geometrie_v4|AUTOGEO_04.4"
+ },
+ {
+  "id": "GM.VOL.04-L002",
+  "comp": "GM.VOL.04",
+  "q": "Un ballon (sphère) a un rayon de $3$ cm. Quel est son volume ?",
+  "a": "$36\\pi$ cm$^3$",
+  "type": "qcm",
+  "options": [
+   "$36\\pi$ cm$^3$",
+   "$27\\pi$ cm$^3$",
+   "$108\\pi$ cm$^3$"
+  ],
+  "err": {
+   "$27\\pi$ cm$^3$": "GM.VOL.04#coefficient"
+  },
+  "steps": [
+   "$V = \\frac{4}{3} \\times \\pi \\times r^3 = \\frac{4}{3} \\times \\pi \\times 27$.",
+   "$= \\frac{?}{3} \\pi = ?\\pi$"
+  ],
+  "f": "$V_{\\text{sphere}} = \\frac{4}{3}\\pi r^3$",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "AUTOGEO_04",
+  "num": "5",
+  "source": "Auto_Geometrie_v4|AUTOGEO_04.5"
+ }
+]

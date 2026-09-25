@@ -1,0 +1,253 @@
+{
+  "fichier": "data/banque_3eme/AP.PROG.json",
+  "relecteur": "relecteur",
+  "date": "2026-09-24",
+  "methode": "calculs refaits a la main ; _normFill/_toNum/_matchFill extraits d app.html et simules en Node (a, alt, variantes, cles err) ; LaTeX rendu KaTeX 0.16.9 strict (0 erreur) ; ids err verifies dans competences.json",
+  "bilan": {
+    "ok": 12,
+    "corrige": 6,
+    "rejet": 0
+  },
+  "items": [
+    {
+      "id": "AP.PROG.01-d01",
+      "verdict": "ok",
+      "remarques": "(2+4)x3=18 ; 6=2x3 (repart du depart) coherent."
+    },
+    {
+      "id": "AP.PROG.01-d02",
+      "verdict": "ok",
+      "remarques": "Seule redaction correcte unique."
+    },
+    {
+      "id": "AP.PROG.01-d03",
+      "verdict": "ok",
+      "remarques": "(-6+10)^2=16 ; 9=3^2, 169=(3+10)^2 : repart du depart, coherents. (256 = erreur de signe NC.REL possible, non taggee, facultatif.)"
+    },
+    {
+      "id": "AP.PROG.02-d01",
+      "verdict": "ok",
+      "remarques": "Face au Sud, sa droite = Ouest -> (-1 ; 0). (1 ; 0) orientation feuille, (0 ; -1) DROITE sautee : exacts."
+    },
+    {
+      "id": "AP.PROG.02-d02",
+      "verdict": "ok",
+      "remarques": "Face au Sud, gauche = Est -> (2 ; 0), abscisse 2 ; -2 et 0 exacts."
+    },
+    {
+      "id": "AP.PROG.02-d03",
+      "verdict": "ok",
+      "remarques": "Execute a la main : (0;1) N -> E -> (2;1) -> S -> (2;0). (3;1) = 2e DROITE lue « droite de la feuille », (2;1) dernier AVANCER saute, (1;3) 1er DROITE saute : exacts."
+    },
+    {
+      "id": "AP.PROG.03-d01",
+      "verdict": "corrige",
+      "remarques": "Juste avec indentation : 3x2=6 ; 2, 8, 4 coherents. Sans indentation visible (\\n rendus mais espaces perdus), le corps de la boucle est ambigu : la bonne reponse change selon la lecture. Correction : ajout d une ligne « Fin répéter » (equivalent texte de la machoire Scratch), robuste meme si l indentation est perdue. A integrer aussi a la convention Scratch. (Lecture 1 AVANCER dans la boucle -> 4.)",
+      "correction": {
+        "id": "AP.PROG.03-d01",
+        "comp": "AP.PROG.03",
+        "q": "Un robot est sur la case $(0 ; 0)$ et regarde vers le haut. Il exécute :\nRépéter $3$ fois :\n  AVANCER\n  AVANCER\nFin répéter\nChaque AVANCER le fait monter d'une case. Quelle est son ordonnée à la fin ? ___",
+        "a": "6",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "2": "AP.PROG.03#corps_mal_delimite",
+          "8": "AP.PROG.03#un_tour_de_trop",
+          "4": "AP.PROG.03#un_tour_de_trop"
+        },
+        "steps": [
+          "Le contenu de la boucle, ce sont les deux AVANCER décalés sous « Répéter ».",
+          "Ce contenu est exécuté $3$ fois : combien d'AVANCER au total ?"
+        ],
+        "f": "",
+        "lvl": 1,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "AP.PROG.03-d02",
+      "verdict": "corrige",
+      "remarques": "Juste avec indentation : (0;3), E, (1;3). (1;-1) = tout dans la boucle (verifie pas a pas), (1;4)/(1;2) = tour de trop/manquant. Sans indentation visible (\\n rendus mais espaces perdus), le corps de la boucle est ambigu : la bonne reponse change selon la lecture. Correction : ajout d une ligne « Fin répéter » (equivalent texte de la machoire Scratch), robuste meme si l indentation est perdue. A integrer aussi a la convention Scratch.",
+      "correction": {
+        "id": "AP.PROG.03-d02",
+        "comp": "AP.PROG.03",
+        "q": "Un robot est sur la case $(0 ; 0)$ d'une grille. AVANCER : il avance d'une case devant lui. DROITE ou GAUCHE : il tourne d'un quart de tour sur place, de son point de vue. Il regarde vers le Nord (vers le haut) et exécute :\nRépéter $3$ fois :\n  AVANCER\nFin répéter\nDROITE\nAVANCER\nSur quelle case arrive-t-il ?",
+        "a": "$(1 ; 3)$",
+        "type": "qcm",
+        "options": [
+          "$(1 ; -1)$",
+          "$(1 ; 3)$",
+          "$(1 ; 4)$",
+          "$(1 ; 2)$"
+        ],
+        "err": {
+          "$(1 ; -1)$": "AP.PROG.03#corps_mal_delimite",
+          "$(1 ; 4)$": "AP.PROG.03#un_tour_de_trop",
+          "$(1 ; 2)$": "AP.PROG.03#un_tour_de_trop"
+        },
+        "steps": [
+          "Seul l'AVANCER décalé sous « Répéter » est dans la boucle. DROITE et le dernier AVANCER sont exécutés une seule fois, après.",
+          "Après la boucle, où est le robot ? Il tourne ensuite vers l'Est et avance d'une case."
+        ],
+        "f": "",
+        "lvl": 2,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "AP.PROG.03-d03",
+      "verdict": "corrige",
+      "remarques": "Juste avec indentation : 4x2+1=9 ; 3, 12, 11, 7 coherents. Sans indentation visible (\\n rendus mais espaces perdus), le corps de la boucle est ambigu : la bonne reponse change selon la lecture. Correction : ajout d une ligne « Fin répéter » (equivalent texte de la machoire Scratch), robuste meme si l indentation est perdue. A integrer aussi a la convention Scratch. (Lecture « AVANCER final dans la boucle » -> 12, qui deviendrait une « erreur » injuste.)",
+      "correction": {
+        "id": "AP.PROG.03-d03",
+        "comp": "AP.PROG.03",
+        "q": "Un robot part de la case $(0 ; 0)$ et exécute :\nRépéter $4$ fois :\n  AVANCER\n  AVANCER\n  DROITE\nFin répéter\nAVANCER\nCombien de fois exécute-t-il l'instruction AVANCER en tout ? ___",
+        "a": "9",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "3": "AP.PROG.03#corps_mal_delimite",
+          "12": "AP.PROG.03#corps_mal_delimite",
+          "11": "AP.PROG.03#un_tour_de_trop",
+          "7": "AP.PROG.03#un_tour_de_trop"
+        },
+        "steps": [
+          "Dans la boucle, il y a $2$ AVANCER, et la boucle tourne $4$ fois.",
+          "Le dernier AVANCER, non décalé, est après la boucle : il n'est exécuté qu'une fois. Total : $\\;?$"
+        ],
+        "f": "",
+        "lvl": 2,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "AP.PROG.04-d01",
+      "verdict": "corrige",
+      "remarques": "Juste : 3+4=7, x2=14. Mais la notation « n <- n + 4 » (affectation fleche) n est pas celle du college ni du Brevet (blocs Scratch « mettre n a », « ajouter a ») : un eleve peut echouer sur la notation, pas sur la competence. Correction : blocs Scratch. 8 garde valeur_initiale (n pris a 0) ; ajout 21 = « mettre n a n x 2 » lu comme un ajout (7+14), mettre_ajouter.",
+      "correction": {
+        "id": "AP.PROG.04-d01",
+        "comp": "AP.PROG.04",
+        "q": "On exécute le script suivant :\nmettre $n$ à $3$\najouter $4$ à $n$\nmettre $n$ à $n \\times 2$\ndire $n$\nQuel nombre s'affiche ? ___",
+        "a": "14",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "8": "AP.PROG.04#valeur_initiale",
+          "21": "AP.PROG.04#mettre_ajouter"
+        },
+        "steps": [
+          "Au départ, $n$ vaut $3$. « ajouter $4$ à $n$ » remplace $n$ par sa valeur actuelle plus $4$.",
+          "Après la deuxième ligne, $n = 7$. « mettre $n$ à $n \\times 2$ » remplace $n$ par : $\\;?$"
+        ],
+        "f": "",
+        "lvl": 1,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "AP.PROG.04-d02",
+      "verdict": "corrige",
+      "remarques": "Juste : a=7, b=7 ; 10 = b+a (mettre lu comme ajouter), 3 = a pris a 0 : coherents. Meme probleme de notation fleche : correction en blocs Scratch, err inchangees.",
+      "correction": {
+        "id": "AP.PROG.04-d02",
+        "comp": "AP.PROG.04",
+        "q": "On exécute le script suivant :\nmettre $a$ à $4$\nmettre $b$ à $3$\najouter $b$ à $a$\nmettre $b$ à $a$\ndire $b$\nQuel nombre s'affiche ?",
+        "a": "$7$",
+        "type": "qcm",
+        "options": [
+          "$10$",
+          "$7$",
+          "$3$"
+        ],
+        "err": {
+          "$10$": "AP.PROG.04#mettre_ajouter",
+          "$3$": "AP.PROG.04#valeur_initiale"
+        },
+        "steps": [
+          "Après la troisième ligne, $a$ vaut $4 + 3 = 7$.",
+          "« mettre $b$ à $a$ » met dans $b$ la valeur actuelle de $a$ (on remplace, on n'ajoute pas). Que vaut $b$ ?"
+        ],
+        "f": "",
+        "lvl": 2,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "AP.PROG.04-d03",
+      "verdict": "corrige",
+      "remarques": "Juste : 10,15,20,0,5 ; 25 = remise a 0 lue comme « ajouter 0 » : coherent. Notation fleche remplacee par blocs Scratch.",
+      "correction": {
+        "id": "AP.PROG.04-d03",
+        "comp": "AP.PROG.04",
+        "q": "Dans un jeu, le script commence par « mettre score à $10$ ». Chaque pièce attrapée exécute « ajouter $5$ à score ». Toucher un ennemi exécute « mettre score à $0$ ». Le joueur attrape une pièce, une pièce, touche un ennemi, puis attrape une pièce. Quel est le score final ? ___",
+        "a": "5",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "25": "AP.PROG.04#mettre_ajouter"
+        },
+        "steps": [
+          "Suis la valeur de score : $10$, puis $15$, puis $20$…",
+          "« mettre score à $0$ » remplace la valeur par $0$. Que vaut le score après la dernière pièce ?"
+        ],
+        "f": "",
+        "lvl": 2,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": true
+      }
+    },
+    {
+      "id": "AP.PROG.05-d01",
+      "verdict": "ok",
+      "remarques": "7>10 faux -> 17 ; -3 = branche inverse. Une instruction par branche + mot « Sinon » : non ambigu meme sans indentation."
+    },
+    {
+      "id": "AP.PROG.05-d02",
+      "verdict": "ok",
+      "remarques": "8<5 faux -> 4 ; 24 condition inversee, 20=24-4 et 12=(8-4)x3 deux branches : exacts. « Afficher x » dans ou hors du Sinon donne 4 dans les deux cas : pas d ambiguite de resultat (ajouter « Fin si » par convention reste souhaitable)."
+    },
+    {
+      "id": "AP.PROG.05-d03",
+      "verdict": "ok",
+      "remarques": "14<12 faux -> 10 ; 6 et 16 coherents ; « 10 € » accepte. Meme remarque « Fin si » facultative."
+    },
+    {
+      "id": "AP.PROG.06-d01",
+      "verdict": "ok",
+      "remarques": "360/3=120 ; 60 angle interieur. Rien apres la boucle : non ambigu sans indentation. « 120° » accepte."
+    },
+    {
+      "id": "AP.PROG.06-d02",
+      "verdict": "ok",
+      "remarques": "n=6, a=60 ; 120 (angle interieur hexagone), 5 et 4 coherents."
+    },
+    {
+      "id": "AP.PROG.06-d03",
+      "verdict": "ok",
+      "remarques": "360/40=9 (polygone a 9 cotes, ferme au 9e tour, pas avant) ; 8 et 4 coherents."
+    }
+  ]
+}

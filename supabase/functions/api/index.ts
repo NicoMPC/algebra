@@ -2214,6 +2214,121 @@ function mxPourquoi(ref: MxRef, mt: Record<string, MxMaitrise>, focus: string[],
   return s + finRev;
 }
 
+// ── Séquence emails « diagnostic 3e » (docs/specs/51-emails.md) : planificateur PUR ──
+// Entrée : un résumé de l'état de l'élève (dates d'événements, jours d'entraînement, emails déjà
+// partis). Sortie : les emails dus AUJOURD'HUI (au plus 1 au parent, 1 à l'ado), plafonds appliqués.
+// Désinscription (UNSUB), dédup finale et envoi : couche I/O (mxEnvoyerEmail). Testé sans base
+// (supabase/tests/emails_test.ts : simulation d'élèves fictifs sur plusieurs semaines).
+type MxEmailCat = "T" | "P" | "M";
+type MxEmailDest = "parent" | "ado";
+type MxEmailLog = { type: string; cat: string | null; date: string; dest: MxEmailDest };
+type MxEmailEtat = {
+  today: string;                  // AAAA-MM-JJ (Paris)
+  inscription: string;            // profiles.date_inscription
+  express_at: string | null;      // 1er diagnostic express terminé (E1)
+  complet_at: string | null;      // diagnostic complet terminé = bilan PDF prêt (E4)
+  achat_diag_at: string | null;   // achat diagnostic complet (E3)
+  programme_at: string | null;    // achat Programme Brevet (E6)
+  complet_modules_faits: number;  // modules du diagnostic complet déjà faits (0-3)
+  consentement: boolean;          // confirmation parentale reçue
+  optin: boolean;                 // opt-in marketing du parent (case non cochée par défaut)
+  email_eleve: boolean;           // adresse ado renseignée
+  pf_fragile: boolean;            // la carte express a un point fragile ou en lacune
+  jours_actifs: string[];         // dates distinctes avec au moins 1 exo d'entraînement
+  rediag_du: boolean;             // re-diagnostic mensuel dû (programme)
+  logs: MxEmailLog[];             // emails déjà ENVOYÉS (statut « envoyé »)
+};
+type MxEmailPlan = { type: string; dest: MxEmailDest; cat: MxEmailCat };
+
+const MX_EMAIL = {
+  M_ECART_JOURS: 3,          // 1 email commercial par 72 h maximum
+  M_MAX_30J: 5,              // 5 emails commerciaux maximum sur 30 jours glissants
+  CONVERSION_MAX_JOURS: 30,  // relances de conversion (non-acheteurs) : 30 premiers jours seulement
+  ADO_MAX_7J: 3,             // ado : 3 emails pédagogiques par semaine, jamais 2 le même jour
+  // Aucun email commercial entre le 15 mai et le 31 août (stress du Brevet, puis vacances) : 50 §7
+  M_PAUSE_DEBUT: "05-15", M_PAUSE_FIN: "08-31",
+};
+
+function mxSemaineIso(date: string): string {
+  const d = new Date(date.slice(0, 10) + "T00:00:00Z");
+  const jour = (d.getUTCDay() + 6) % 7; // lundi = 0
+  d.setUTCDate(d.getUTCDate() - jour + 3); // jeudi de la semaine
+  const an = d.getUTCFullYear();
+  const s1 = new Date(Date.UTC(an, 0, 4));
+  const n = 1 + Math.round(((d.getTime() - s1.getTime()) / 86400000 - 3 + ((s1.getUTCDay() + 6) % 7)) / 7);
+  return an + "-W" + String(n).padStart(2, "0");
+}
+
+function mxPlanEmails(e: MxEmailEtat): MxEmailPlan[] {
+  const t = e.today;
+  const j = (d: string | null) => (d ? mxJoursEntre(d, t) : -1);
+  const dans = (d: string | null, a: number, b: number) => { const n = j(d); return d !== null && n >= a && n <= b; };
+  const envoye = (type: string) => e.logs.some((l) => l.type === "D3:" + type);
+  const dateLog = (type: string) => e.logs.filter((l) => l.type === "D3:" + type).map((l) => l.date).sort()[0] || null;
+  const actifsDepuis = (d: string | null) => d ? e.jours_actifs.filter((x) => x >= d && x <= t).length : 0;
+  const actifAuj = e.jours_actifs.includes(t);
+  const dow = new Date(t + "T12:00:00Z").getUTCDay(); // 0 = dimanche, 6 = samedi
+  const achatAt = [e.achat_diag_at, e.programme_at].filter(Boolean).sort()[0] || null; // diag complet débloqué
+  const achat = !!achatAt;
+  const prog = !!e.programme_at;
+
+  // Candidats, par ordre de priorité (T puis P puis M) — un seul part par destinataire et par jour.
+  const cands: MxEmailPlan[] = [];
+  const add = (type: string, dest: MxEmailDest, cat: MxEmailCat, ok: boolean) => { if (ok && !envoye(type)) cands.push({ type, dest, cat }); };
+
+  if (dow === 6) {
+    // Samedi : rien, sauf le re-diagnostic du mois (1er samedi) pour l'ado du programme
+    if (t.slice(8, 10) <= "07") add("A-MENS:" + t.slice(0, 7), "ado", "P", prog && e.rediag_du && e.email_eleve && e.consentement);
+  } else if (dow === 0) {
+    // Dimanche : bilan hebdo du programme seulement (suspendu après 2 semaines sans entraînement)
+    const actifs14 = e.jours_actifs.filter((x) => j(x) >= 0 && j(x) < 14).length;
+    add("P-HEBDO:" + mxSemaineIso(t), "parent", "P", prog && j(e.programme_at) >= 3 && actifs14 > 0);
+  } else {
+    // ── Parent, transactionnel : confirmation parentale (sans diagnostic : P-X0N ; rappels R1, R2) ──
+    add("P-X0N", "parent", "T", !e.express_at && !e.consentement && dans(e.inscription, 1, 29) && !envoye("P-X0"));
+    const premier = [dateLog("P-X0"), dateLog("P-X0N")].filter(Boolean).sort()[0] || null;
+    add("P-X0R1", "parent", "T", !e.consentement && premier !== null && j(premier) >= 3 && j(e.inscription) <= 19);
+    add("P-X0R2", "parent", "T", !e.consentement && envoye("P-X0R1") && j(dateLog("P-X0R1")) >= 3 && dans(e.inscription, 20, 29));
+    // ── Parent, pédagogique ──
+    add("P-X2b", "parent", "P", !achat && dans(e.express_at, 6, 11) && actifsDepuis(e.express_at) <= 1 && !envoye("P-X2"));
+    add("P-MOD", "parent", "P", achat && !e.complet_at && dans(achatAt, 5, 9));
+    add("P-UP2b", "parent", "P", !!e.complet_at && !prog && dans(e.complet_at, 10, 15) && actifsDepuis(e.complet_at) < 3 && !envoye("P-UP2"));
+    // ── Parent, commercial (opt-in obligatoire) ──
+    if (e.optin) {
+      const conv = !achat && !!e.express_at && j(e.inscription) <= MX_EMAIL.CONVERSION_MAX_JOURS;
+      add("P-X1", "parent", "M", conv && e.pf_fragile && dans(e.express_at, 2, 5));
+      add("P-X2", "parent", "M", conv && dans(e.express_at, 6, 11) && actifsDepuis(e.express_at) >= 2 && !envoye("P-X2b"));
+      add("P-X3", "parent", "M", conv && dans(e.express_at, 13, 20) && (envoye("P-X1") || envoye("P-X2")));
+      add("P-UP1", "parent", "M", !!e.complet_at && !prog && dans(e.complet_at, 3, 6));
+      add("P-UP2", "parent", "M", !!e.complet_at && !prog && dans(e.complet_at, 10, 15) && actifsDepuis(e.complet_at) >= 3 && !envoye("P-UP2b"));
+    }
+    // ── Ado (pédagogique uniquement, jamais de prix), seulement après l'accord du parent ──
+    if (e.email_eleve && e.consentement) {
+      add("A-X0", "ado", "P", !!e.express_at && dans(e.express_at, 0, 13));
+      const ax0 = dateLog("A-X0");
+      add("A-X1", "ado", "P", ax0 !== null && ax0 < t && dans(e.express_at, 1, 2) && e.jours_actifs.length === 0 && !actifAuj);
+      add("A-MOD", "ado", "P", achat && !e.complet_at && dans(achatAt, 2, 4) && !actifAuj);
+    }
+  }
+
+  // ── Plafonds ──
+  const mm = t.slice(5, 10);
+  const pauseM = mm >= MX_EMAIL.M_PAUSE_DEBUT && mm <= MX_EMAIL.M_PAUSE_FIN;
+  const logsP = e.logs.filter((l) => l.dest === "parent"), logsA = e.logs.filter((l) => l.dest === "ado");
+  const mRecents = logsP.filter((l) => l.cat === "M" && j(l.date) >= 0);
+  const mBloque = pauseM || mRecents.some((l) => j(l.date) < MX_EMAIL.M_ECART_JOURS) ||
+    mRecents.filter((l) => j(l.date) < 30).length >= MX_EMAIL.M_MAX_30J;
+  const parentAujourdhui = logsP.some((l) => l.date === t); // jamais 2 emails au parent le même jour
+  const adoAujourdhui = logsA.some((l) => l.date === t);
+  const ado7j = logsA.filter((l) => j(l.date) >= 0 && j(l.date) < 7).length;
+  const out: MxEmailPlan[] = [];
+  const parent = cands.find((c) => c.dest === "parent" && !(c.cat === "M" && mBloque));
+  if (parent && !parentAujourdhui) out.push(parent);
+  const ado = cands.find((c) => c.dest === "ado");
+  if (ado && !adoAujourdhui && ado7j < MX_EMAIL.ADO_MAX_7J) out.push(ado);
+  return out;
+}
+
 // MOTEUR_PUR_FIN
 // ════════════════════════════════════════════════════════════
 
@@ -2457,6 +2572,7 @@ async function startDiagnostic(p: Record<string, unknown>) {
     etat_json: etat, ...(carte ? { statut: "termine", carte_json: carte, finished_at: new Date().toISOString() } : {}),
   }).eq("id", diag.id);
   if (carte && etat.type === "express") await mxEmailBilanExpress(profile, String(diag.id), carte, ref);
+  if (carte && etat.type === "complet") await mxEmailsBilanComplet(profile, String(diag.id), carte, ref);
   return {
     status: "success", diagnostic_id: diag.id, type, repris: !!enCours,
     question: "item" in q ? mxQuestionPublique(q.item, etat.code || code, ref) : null,
@@ -2502,6 +2618,8 @@ async function answerDiagnostic(p: Record<string, unknown>) {
     { score: carte.score_global, n_questions: carte.n_questions });
   // Bilan express au parent (P-X0, Besoin API n°7) : dès que la carte express existe ET que le compte existe.
   if (carte && etat.type === "express") await mxEmailBilanExpress(profile, String(diag.id), carte, ref);
+  // Bilan complet prêt (P-PDF parent, A-PDF ado) : lien vers la page bilan, PDF téléchargeable dans l'app.
+  if (carte && etat.type === "complet") await mxEmailsBilanComplet(profile, String(diag.id), carte as Record<string, unknown>, ref);
   // Pas de correction pendant le diagnostic (ni juste/faux, ni bonne réponse) : récapitulatif à la fin.
   return {
     status: "success",
@@ -2725,6 +2843,7 @@ function templateBilanExpressParent(prenomBrut: string, email: string, carte: Re
       P("Dès aujourd'hui, " + prenom + " a accès gratuitement à 5 exercices par jour sur ce point. 10 minutes suffisent. Aucune carte bancaire n'est demandée.") +
       emailCTA(lienBilan, "Voir le bilan de " + prenom) +
       P("Une question ? Répondez à cet email, c'est moi qui lis."),
+      { origine: MX_ORIGINE_PARENT(prenomBrut || "votre enfant") }, // T : pas de lien de désinscription (51 §5)
     ),
   };
 }
@@ -2764,14 +2883,18 @@ async function mxPartageValide(token: string): Promise<Record<string, unknown> |
   return sh as Record<string, unknown>;
 }
 
-// ── CONFIRM_PARENT {token, optin_marketing?, texte_version?, texte_hash?} — PUBLIC, page parent ──
-// Confirmation parentale depuis le lien du mail P-X0 (partage canal email_parent : seul le parent l'a reçu).
+// ── CONFIRM_PARENT {token, optin_marketing?, texte_version?, texte_hash?, apercu?} — PUBLIC, page parent ──
+// Confirmation parentale depuis le lien du mail P-X0 / P-X0N / rappel (partage canal email_parent : seul le
+// parent l'a reçu). `apercu: true` = lecture seule (prénom, déjà confirmé ?) pour afficher la page
+// bilan.html?confirmer=1 : rien n'est écrit à l'ouverture, seul le clic du parent confirme.
 async function confirmParent(p: Record<string, unknown>) {
   const sh = await mxPartageValide(String(p.token || ""));
   if (!sh || sh.canal !== "email_parent") return { status: "error", expire: true, message: "Lien de confirmation invalide ou expiré." };
   const code = String(sh.code);
   const now = new Date().toISOString();
-  const { data: prof } = await adminClient.from("profiles").select("consentement_parent_at").eq("code", code).maybeSingle();
+  const { data: prof } = await adminClient.from("profiles").select("prenom, consentement_parent_at, optin_marketing").eq("code", code).maybeSingle();
+  if (!prof) return { status: "error", expire: true, message: "Lien de confirmation invalide ou expiré." };
+  if (p.apercu) return { status: "success", apercu: true, prenom: prof.prenom || "", deja_confirme: !!prof.consentement_parent_at, optin_marketing: !!prof.optin_marketing };
   const maj: Record<string, unknown> = {};
   if (!prof?.consentement_parent_at) maj.consentement_parent_at = now;
   if (p.optin_marketing !== undefined) { maj.optin_marketing = !!p.optin_marketing; maj.optin_marketing_at = p.optin_marketing ? now : null; }
@@ -2781,7 +2904,7 @@ async function confirmParent(p: Record<string, unknown>) {
     texte_hash: String(p.texte_hash || "").slice(0, 128), cases: p.optin_marketing ? ["optin_marketing"] : [],
   });
   await mxLogEvent(code, "parent_confirm", { optin: !!p.optin_marketing });
-  return { status: "success", confirme: true, optin_marketing: !!p.optin_marketing };
+  return { status: "success", confirme: true, deja_confirme: !!prof.consentement_parent_at, prenom: prof.prenom || "", optin_marketing: !!p.optin_marketing };
 }
 
 // Journal minimal du funnel (50-offre-conversion §8) : pas d'IP, pas d'email, pas d'user-agent.
@@ -3313,6 +3436,7 @@ async function stripeWebhook(p: Record<string, unknown>) {
       await adminClient.from("achats").insert(achat);
     }
     await mxLogEvent(prof?.code || null, "purchase", { produit: offre, montant: achat.montant_cents });
+    await mxEmailsAchat(prof?.code || null, email, produit, offre, achat.montant_cents, achat.stripe_session_id);
     if (produit === "diagnostic_complet") return { status: "success", produit };
   }
 
@@ -3330,6 +3454,12 @@ async function stripeWebhook(p: Record<string, unknown>) {
 async function unsubscribeEmail(p: Record<string, unknown>) {
   const email = String(p.email || "").trim().toLowerCase();
   if (!email) return { status: "error", message: "email requis." };
+  // Lien signé (k = HMAC de l'adresse, cf. mxUnsubK) : sinon n'importe qui désinscrirait n'importe qui.
+  const k = String(p.k || "");
+  if (!/^[0-9a-f]{32}$/.test(k) || !_timingSafeEqualHex(k, await mxUnsubK(email)))
+    return { status: "error", message: "Lien de désinscription invalide. Utilisez le lien présent en bas de l'email, ou écrivez à contact@matheux.fr." };
+  const { data: deja } = await adminClient.from("email_logs").select("id").eq("email", email).eq("type", "UNSUB").limit(1);
+  if (deja && deja.length) return { status: "success", deja: true };
 
   // Log dans emails (legacy) + email_logs (nouveau — check par sendMarketingEmail)
   await adminClient.from("emails").insert({
@@ -3495,14 +3625,15 @@ async function proxyGas(p: Record<string, unknown>) {
 
 // ── RESEND — envoi d'emails ────────────────────────────────
 
-async function resendSend(to: string, subject: string, html: string, replyTo = "contact@matheux.fr"): Promise<{ ok: boolean; error?: string }> {
+async function resendSend(to: string, subject: string, html: string, replyTo = "contact@matheux.fr",
+  headers?: Record<string, string>): Promise<{ ok: boolean; error?: string }> {
   try {
     const resp = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         from: "Matheux <no-reply@matheux.fr>",
-        to, subject, html, reply_to: replyTo,
+        to, subject, html, reply_to: replyTo, ...(headers ? { headers } : {}),
       }),
     });
     if (!resp.ok) {
@@ -3520,11 +3651,19 @@ async function resendSend(to: string, subject: string, html: string, replyTo = "
 
 const FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif";
 
-function emailWrap(email: string, preheader: string, body: string): string {
-  const unsubLink = "https://matheux.fr/unsubscribe?email=" + encodeURIComponent(email);
+// opts.unsubUrl : lien de désinscription signé (emails P et M) ; absent = pas de lien (transactionnel).
+// opts.origine : « Vous recevez cet email car… » (51 §5). opts.signature : parent (défaut) ou ado.
+function emailWrap(_email: string, preheader: string, body: string,
+  opts: { unsubUrl?: string | null; origine?: string; signature?: "parent" | "ado" } = {}): string {
+  const sign = opts.signature === "ado"
+    ? '<p style="color:#1e293b;font-size:15px;font-weight:700;margin:16px 0 2px;">Nicolas, de Matheux</p>'
+    : '<p style="color:#1e293b;font-size:15px;font-weight:700;margin:16px 0 2px;">Nicolas</p>' +
+      '<p style="color:#6b7280;font-size:13px;margin:0;">Fondateur de Matheux</p>';
+  const pied = (opts.origine ? mxEsc(opts.origine) + " " : "") +
+    (opts.unsubUrl ? '<a href="' + opts.unsubUrl + '" style="color:#9ca3af;text-decoration:underline;">Se désinscrire</a>' : "");
   return (
     // Preheader invisible (preview Gmail/Outlook)
-    '<span style="display:none;font-size:0;color:transparent;max-height:0;overflow:hidden;">' + preheader + '\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0</span>' +
+    '<span style="display:none;font-size:0;color:transparent;max-height:0;overflow:hidden;">' + preheader + '                    </span>' +
     // Wrapper centré (Outlook-safe)
     '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f9fafb;"><tr><td align="center" style="padding:24px 0;">' +
     '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" style="max-width:520px;width:100%;font-family:' + FONT + ';">' +
@@ -3535,13 +3674,10 @@ function emailWrap(email: string, preheader: string, body: string): string {
     // Body
     '<tr><td style="background:#ffffff;padding:24px 28px 32px;">' + body + '</td></tr>' +
     // Signature
-    '<tr><td style="background:#ffffff;padding:0 28px 24px;border-top:1px solid #e5e7eb;">' +
-    '<p style="color:#1e293b;font-size:15px;font-weight:700;margin:16px 0 2px;">Nicolas</p>' +
-    '<p style="color:#6b7280;font-size:13px;margin:0;">Fondateur de Matheux</p>' +
-    '</td></tr>' +
-    // Footer désinscription
+    '<tr><td style="background:#ffffff;padding:0 28px 24px;border-top:1px solid #e5e7eb;">' + sign + '</td></tr>' +
+    // Pied : origine + désinscription
     '<tr><td style="padding:16px 28px;text-align:center;background:#f9fafb;">' +
-    '<p style="font-size:11px;color:#9ca3af;margin:0;">Matheux · 100 % pédagogique, 0 % pression · <a href="' + unsubLink + '" style="color:#9ca3af;text-decoration:underline;">Se désinscrire</a></p>' +
+    '<p style="font-size:11px;color:#9ca3af;margin:0;line-height:1.6;">Matheux · matheux.fr' + (pied ? " · " + pied : "") + '</p>' +
     '</td></tr>' +
     '</table></td></tr></table>'
   );
@@ -3558,270 +3694,617 @@ function emailCTA(href: string, label: string, gradient = false): string {
   );
 }
 
-// Un Payment Link Stripe par niveau (29,99€, accès non expirant) — cf. metadata.niveau
-// configuré sur chaque lien, lu par le webhook (stripeWebhook ci-dessous).
-const STRIPE_LINKS_PAR_NIVEAU: Record<string, string> = {
-  "6EME": "https://buy.stripe.com/14A8wRgky4rHf0Q3yvb3q03",
-  "5EME": "https://buy.stripe.com/00waEZ0lA6zP1a0glhb3q04",
-  "4EME": "https://buy.stripe.com/6oU4gBgkybU9g4Uglhb3q05",
-  "3EME": "https://buy.stripe.com/3cI9AVd8maQ51a05GDb3q06",
-};
-function stripeUrlForNiveau(niveau: string): string {
-  return STRIPE_LINKS_PAR_NIVEAU[niveau] || STRIPE_LINKS_PAR_NIVEAU["3EME"];
-}
-function niveauLabel(niveau: string): string {
-  const labels: Record<string, string> = { "6EME": "6ème", "5EME": "5ème", "4EME": "4ème", "3EME": "3ème", "1ERE": "1ère" };
-  return labels[niveau] || "sa classe";
-}
+// ════════════════════════════════════════════════════════════
+// SÉQUENCE EMAILS « DIAGNOSTIC 3E » (docs/specs/51-emails.md) — remplace J+1/J+3/J+7/J+14 (29,99 €)
+//  - Parent (profiles.email) : vouvoiement, SEUL destinataire d'offres (19 € / 49 €, garantie 30 j),
+//    commercial (M) seulement avec opt-in, 1 par 72 h, 5 par 30 jours, relances de conversion
+//    jusqu'à J+13 après le diagnostic express (P-X3 = dernier), rien entre le 15 mai et le 31 août.
+//  - Ado (profiles.email_eleve, après accord du parent) : tutoiement, pédagogique, JAMAIS de prix.
+//  - T (transactionnel) ignore la désinscription ; P et M la respectent (par adresse).
+//  - Types `D3:…` dans email_logs (dédup (email, type, envoyé)), colonne categorie T/P/M, colonne code.
+//  - Aucun chiffre inventé : tout nombre vient de la carte, de reponses_items, de maitrise ou de MX_PRODUITS.
+//    Aucune phrase ne prétend qu'un humain « analyse » : l'algorithme analyse, Nicolas lit les réponses.
+// ════════════════════════════════════════════════════════════
 
-function emailHighlight(text: string): string {
-  return (
-    '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:20px 0;"><tr>' +
-    '<td style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:8px;padding:16px 20px;text-align:center;">' +
-    '<p style="color:#1E40AF;font-size:15px;font-weight:800;margin:0;">' + text + '</p>' +
-    '</td></tr></table>'
-  );
+const MX_SITE = "https://matheux.fr";
+const UNSUB_SECRET = Deno.env.get("UNSUB_SECRET") || SUPABASE_SERVICE_KEY || "";
+
+// Lien de désinscription signé : k = HMAC(email) — sans k valide, personne ne peut désinscrire quelqu'un d'autre.
+async function mxUnsubK(email: string): Promise<string> {
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode("unsub:" + UNSUB_SECRET), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(email.trim().toLowerCase()));
+  return _hexOfBuf(sig).slice(0, 32);
 }
-
-// ── J+0 : Welcome ──────────────────────────────────────────
-
-function templateJ0(prenom: string, email: string): { subject: string; html: string } {
+async function mxUnsubLiens(email: string) {
+  const e = encodeURIComponent(email.trim().toLowerCase()), k = await mxUnsubK(email);
   return {
-    subject: prenom + " est inscrit — ses premiers exos arrivent demain",
-    html: emailWrap(email, "5 exercices sur mesure, 10 minutes, adaptés à son niveau.",
-      '<p style="color:#1e293b;font-size:20px;font-weight:800;line-height:1.4;margin:0 0 20px;">' + prenom + ' est inscrit. Demain matin, 5\u00a0exercices sur mesure l\u2019attendent.</p>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.8;margin:0 0 24px;">Bonjour,</p>' +
-      '<p style="color:#1e293b;font-size:16px;line-height:1.8;font-weight:700;margin:0 0 12px;">Concrètement, voilà comment ça fonctionne :</p>' +
-      '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;"><tr><td style="padding:12px 16px;background:#f8fafc;border-left:3px solid #1E40AF;border-radius:0 6px 6px 0;">' +
-      '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">' +
-      '<tr><td style="padding:4px 0;color:#374151;font-size:15px;line-height:1.8;"><strong style="color:#1E40AF;">1.</strong> Chaque jour, <strong>5 exercices ciblés</strong> sur ses lacunes</td></tr>' +
-      '<tr><td style="padding:4px 0;color:#374151;font-size:15px;line-height:1.8;"><strong style="color:#1E40AF;">2.</strong> <strong>10 minutes</strong> suffisent — pas de surcharge</td></tr>' +
-      '<tr><td style="padding:4px 0;color:#374151;font-size:15px;line-height:1.8;"><strong style="color:#1E40AF;">3.</strong> Le parcours <strong>s\u2019adapte</strong> automatiquement à ses réponses</td></tr>' +
-      '</table></td></tr></table>' +
-      '<p style="color:#1e293b;font-size:16px;line-height:1.8;font-weight:700;margin:0 0 12px;">Ce que vous allez observer :</p>' +
-      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 6px;">✔️ Il sait mieux par où commencer</p>' +
-      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 6px;">✔️ Il travaille régulièrement, sans qu\u2019on le pousse</p>' +
-      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 24px;">✔️ Et surtout… <strong>il reprend confiance</strong></p>' +
-      emailHighlight("Dès demain matin, son premier boost sur mesure l\u2019attend.") +
-      '<p style="color:#374151;font-size:15px;line-height:1.7;margin:0 0 8px;">Chaque semaine, vous recevrez un <strong>bilan clair</strong> : ce qui est acquis, ce qui bloque, et ce qui progresse.</p>' +
-      emailCTA("https://matheux.fr/app.html", "Ouvrir Matheux →") +
-      '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">J\u2019ai créé Matheux après des années à donner des cours de maths. Le même constat revenait : les élèves comprennent en cours, mais ne s\u2019entraînent pas assez entre les séances.</p>' +
-      '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0 0 10px;">Le problème n\u2019est presque jamais la compréhension. <strong>C\u2019est la pratique.</strong></p>' +
-      '<p style="color:#374151;font-size:14px;line-height:1.8;margin:0;">Une question ? <strong>Répondez à cet email</strong>, je lis tout personnellement.</p>'
-    ),
+    page: MX_SITE + "/unsubscribe?email=" + e + "&k=" + k,
+    // One-click (RFC 8058) : POST direct sur l'API (cf. Deno.serve, ?action=unsubscribe)
+    oneClick: SUPABASE_URL.replace(/\/$/, "") + "/functions/v1/api?action=unsubscribe&email=" + e + "&k=" + k,
   };
 }
 
-// ── J+1 : "Son boost est prêt" ─────────────────────────────
+function mxDateParis(iso: unknown): string {
+  return new Date(String(iso)).toLocaleDateString("sv-SE", { timeZone: "Europe/Paris" });
+}
+function mxDateFr(d: string, annee = true): string {
+  return new Date(d.slice(0, 10) + "T12:00:00Z").toLocaleDateString("fr-FR",
+    annee ? { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Paris" } : { day: "numeric", month: "long", timeZone: "Europe/Paris" });
+}
+function mxEuros(cents: number): string { return (cents / 100).toFixed(2).replace(".", ",") + " €"; }
+function mxEurosCourt(cents: number): string { return cents % 100 ? mxEuros(cents) : (cents / 100) + " €"; }
+function mxArrondi5(x: number): number { return Math.round(x * 20) * 5; }
 
-function templateJ1(prenom: string, email: string): { subject: string; html: string } {
-  return {
-    subject: "Le premier boost de " + prenom + " est prêt 🎯",
-    html: emailWrap(email, "5 exercices ciblés, 10 minutes — c'est parti.",
-      '<p style="color:#1e293b;font-size:20px;font-weight:800;line-height:1.4;margin:0 0 20px;">Le premier boost de ' + prenom + ' est prêt.</p>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.8;margin:0 0 16px;">Bonjour,</p>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.8;margin:0 0 16px;">5 exercices ciblés sur les résultats de son diagnostic l\'attendent. C\'est court (10 minutes), adapté à son niveau, et ça commence à combler ses lacunes dès aujourd\'hui.</p>' +
-      emailHighlight("🎯 5 exercices · 10 minutes · adapté à " + prenom) +
-      emailCTA("https://matheux.fr/app.html", "Commencer le boost →") +
-      '<p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0;">Un petit rituel quotidien vaut mieux qu\'une grosse session de temps en temps. 😉</p>'
-    ),
-  };
+const EP = (t: string) => '<p style="color:#374151;font-size:16px;line-height:1.7;margin:0 0 14px;">' + t + "</p>";
+const EH = (t: string) => '<p style="color:#1e293b;font-size:17px;font-weight:800;line-height:1.5;margin:22px 0 10px;">' + t + "</p>";
+const ES = (t: string) => '<p style="color:#6b7280;font-size:13px;line-height:1.6;margin:0 0 14px;">' + t + "</p>";
+const EL = (items: string[]) => '<ul style="color:#374151;font-size:16px;line-height:1.7;margin:0 0 14px;padding-left:22px;">' + items.map((i) => "<li>" + i + "</li>").join("") + "</ul>";
+
+// Résumé d'une carte : « 2 domaines solides, 1 fragile… », compétences de 3e mesurées / total.
+function mxResumeCarte(carte: Record<string, unknown>, ref: MxRef) {
+  const comps = (carte.competences || []) as Record<string, unknown>[];
+  const doms = (carte.domaines || []) as { statut: string }[];
+  const nb = (st: string) => doms.filter((d) => d.statut === st).length;
+  const m: string[] = [];
+  if (nb("acquis")) m.push(nb("acquis") + " domaine" + (nb("acquis") > 1 ? "s" : "") + " solide" + (nb("acquis") > 1 ? "s" : ""));
+  if (nb("fragile")) m.push(nb("fragile") + " fragile" + (nb("fragile") > 1 ? "s" : ""));
+  if (nb("lacune")) m.push(nb("lacune") + " à travailler");
+  const nMes = comps.filter((c) => c.statut !== "non_evalue" && c.niveau_origine === "3EME").length;
+  const nTot = ref.ordre.filter((id) => ref.comps[id].niveau_origine === "3EME" && mxDiagAutorise(ref, id)).length;
+  const pf = comps.find((c) => c.id === carte.point_faible) || null;
+  const pfFragile = !!pf && (pf.statut === "lacune" || pf.statut === "fragile");
+  return { resume: m.join(", "), nMes, nTot, pf: pfFragile ? pf : null };
 }
 
-// ── J+3 : Check-in engagement ───────────────────────────────
-
-function templateJ3(prenom: string, email: string, objectif: string): { subject: string; html: string } {
-  const variants: Record<string, string> = {
-    lacunes: "Les premiers exercices permettent de cibler précisément ce qui bloque " + prenom + " — pas les difficultés supposées, les vraies. C'est là que le diagnostic devient utile.",
-    chapitre_jour: "La régularité, c'est la clé. Un chapitre par jour, 10 minutes — si " + prenom + " tient ce rythme cette semaine, les résultats suivront.",
-    brevet: "Le brevet, ça se prépare dans la durée. Ces premiers jours posent les bases — les exercices style brevet arrivent au fur et à mesure de la progression.",
-    toutes_matieres: prenom + " a accès à l'intégralité du programme. L'important à ce stade : trouver un rythme et rester régulier, même 10 minutes par jour.",
-  };
-  return {
-    subject: "Comment ça se passe pour " + prenom + " ? 💪",
-    html: emailWrap(email, "3 jours déjà — un petit point sur la progression.",
-      '<h1 style="color:#1e293b;font-size:22px;font-weight:800;margin:0 0 20px;">3 jours déjà !</h1>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Bonjour,</p>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Cela fait 3 jours que ' + prenom + ' a rejoint Matheux.</p>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">' + (variants[objectif] || variants.lacunes) + '</p>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 0;"><strong>Petit rappel :</strong> le boost quotidien (5 exercices, ~10 minutes) est la clé. Régulier vaut mieux qu\'intense.</p>' +
-      emailCTA("https://matheux.fr/app.html", "Voir sa progression →") +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">N\'hésitez pas à me faire un retour — un simple "ça va bien" ou "on galère sur les fractions" suffit. Je lis tous les messages.</p>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0;">Bon courage,</p>'
-    ),
-  };
-}
-
-// ── J+7 : Bilan semaine 1 + soft conversion ─────────────────
-
-function templateJ7(prenom: string, email: string, objectif: string, niveau: string): { subject: string; html: string } {
-  const variants: Record<string, string> = {
-    lacunes: '<li>Identifié ses lacunes précises — pas celles de sa classe, les siennes</li><li>Travaillé sur des exercices vraiment ciblés</li><li>Posé les bases d\'un rattrapage durable</li>',
-    chapitre_jour: '<li>Établi une routine quotidienne de travail</li><li>Progressé chapitre par chapitre à son rythme</li><li>Prouvé qu\'il pouvait tenir sur la durée</li>',
-    brevet: '<li>Fait ses premiers exercices style brevet</li><li>Identifié les chapitres à travailler en priorité</li><li>Posé des bases solides pour la préparation</li>',
-    toutes_matieres: '<li>Exploré plusieurs chapitres du programme</li><li>Repéré ses points forts et ses axes de travail</li><li>Pris ses premières marques sur Matheux</li>',
-  };
-  return {
-    subject: "Bilan de la semaine de " + prenom + " ⭐",
-    html: emailWrap(email, "Une semaine avec Matheux — voici le bilan.",
-      '<h1 style="color:#1e293b;font-size:22px;font-weight:800;margin:0 0 20px;">Une semaine avec Matheux !</h1>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Bonjour,</p>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">La première semaine de ' + prenom + ' sur Matheux touche à sa fin. Le simple fait de commencer, c\'est déjà 90 % du travail.</p>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 8px;">En une semaine, ' + prenom + ' a :</p>' +
-      '<ul style="color:#374151;font-size:16px;line-height:1.8;padding-left:20px;margin:0 0 16px;">' +
-      (variants[objectif] || variants.lacunes) + '</ul>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 0;">' + prenom + ' a accès à <strong>1 chapitre complet gratuit</strong> + ses boosts quotidiens. Pour débloquer tout le programme de ' + niveauLabel(niveau) + ', c\'est <strong>29,99 € en une fois</strong> — pas d\'abonnement, accès non expirant.</p>' +
-      emailCTA(stripeUrlForNiveau(niveau), "Débloquer tous les chapitres →", true) +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Si vous avez des questions avant de décider, répondez à cet email — je suis là.</p>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0;">Merci pour votre confiance,</p>'
-    ),
-  };
-}
-
-// ── J+14 : Conversion nudge (freemium → premium) ───────────
-
-function templateJ14(prenom: string, email: string, niveau: string): { subject: string; html: string } {
-  return {
-    subject: prenom + " progresse — et si on passait à la vitesse supérieure ?",
-    html: emailWrap(email, "2 semaines déjà — il est temps de passer aux choses sérieuses.",
-      '<h1 style="color:#1e293b;font-size:22px;font-weight:800;margin:0 0 20px;">2 semaines déjà 🎉</h1>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Bonjour,</p>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">' + prenom + ' utilise Matheux depuis 2 semaines. Peu d\'élèves tiennent aussi longtemps — c\'est un vrai signal de motivation.</p>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 16px;">Aujourd\'hui, ' + prenom + ' travaille sur <strong>1 chapitre gratuit</strong>. Mais le programme de ' + niveauLabel(niveau) + ' en compte plus d\'une dizaine.</p>' +
-      '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 20px;"><tr><td style="background:#f8fafc;border-left:3px solid #1E40AF;border-radius:0 6px 6px 0;padding:16px 20px;">' +
-      '<p style="color:#1e293b;font-size:15px;line-height:1.8;margin:0 0 6px;"><strong>Avec l\'accès complet :</strong></p>' +
-      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 4px;">✅ Tous les chapitres du programme</p>' +
-      (niveau === "3EME"
-        ? '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 4px;">✅ Exercices style Brevet</p>'
-        : '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 4px;">✅ Exercices ciblés sur ses erreurs</p>') +
-      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0 0 4px;">✅ Parcours adapté à ses lacunes</p>' +
-      '<p style="color:#374151;font-size:15px;line-height:1.8;margin:0;">✅ Accès non expirant</p>' +
-      '</td></tr></table>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 0;"><strong>29,99 € en une fois</strong> — pas d\'abonnement, pas de renouvellement, pas de surprise.</p>' +
-      emailCTA(stripeUrlForNiveau(niveau), "Débloquer tout le programme →", true) +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 12px;">Pas de pression — ' + prenom + ' garde son chapitre gratuit et ses boosts dans tous les cas. Mais plus tôt ' + prenom + ' comble ses lacunes, plus vite ça devient un réflexe.</p>' +
-      '<p style="color:#374151;font-size:16px;line-height:1.6;margin:0;">Une question ? Répondez directement à cet email.</p>'
-    ),
-  };
-}
-
-// ── Action send_email — envoi via Resend ────────────────────
-
-async function sendMarketingEmail(p: Record<string, unknown>) {
-  const email = String(p.email || "").trim().toLowerCase();
-  const prenom = String(p.name || p.prenom || "").trim();
-  const day = Number(p.day ?? 0);
-  const objectif = String(p.objectif || "lacunes").trim();
-  const niveau = String(p.niveau || p.level || "3EME").trim().toUpperCase();
-
-  if (!email || !prenom) return { status: "error", message: "email et name requis." };
-
-  // Check désinscription
-  const { data: unsub } = await adminClient.from("email_logs")
-    .select("id").eq("email", email).eq("type", "UNSUB").limit(1);
-  if (unsub && unsub.length > 0) return { status: "success", message: "Utilisateur désinscrit." };
-
-  // Dédup
-  const { data: already } = await adminClient.from("email_logs")
-    .select("id").eq("email", email).eq("type", "J+" + day).eq("statut", "envoyé").limit(1);
-  if (already && already.length > 0) return { status: "success", message: "J+" + day + " déjà envoyé." };
-
-  // Template
-  let tpl: { subject: string; html: string };
-  if (day === 0) tpl = templateJ0(prenom, email);
-  else if (day === 1) tpl = templateJ1(prenom, email);
-  else if (day === 3) tpl = templateJ3(prenom, email, objectif);
-  else if (day === 7) tpl = templateJ7(prenom, email, objectif, niveau);
-  else if (day === 14) tpl = templateJ14(prenom, email, niveau);
-  else return { status: "error", message: "Jour invalide : " + day + ". Valeurs acceptées : 0, 1, 3, 7, 14." };
-
-  const result = await resendSend(email, tpl.subject, tpl.html);
-
-  // Log
-  await adminClient.from("email_logs").insert({
-    email, prenom, type: "J+" + day,
-    statut: result.ok ? "envoyé" : "erreur",
-    details: result.error || null,
-    created_at: new Date().toISOString(),
+// Lien vers la page parent (bilan.html) : réutilise un lien « email_parent » actif (≥ 3 jours de validité
+// restante, même diagnostic), sinon en crée un (30 jours). Le canal email_parent vaut aussi lien de confirmation.
+async function mxLienParent(code: string, diagId: string | null, typeCarte: string | null): Promise<string> {
+  const { data: liens } = await adminClient.from("bilan_partages").select("token, diagnostic_id, expires_at")
+    .eq("code", code).eq("canal", "email_parent").is("revoked_at", null)
+    .gt("expires_at", new Date(Date.now() + 3 * 86400000).toISOString()).order("created_at", { ascending: false }).limit(5);
+  const l = (liens || []).find((x: Record<string, unknown>) => (x.diagnostic_id || null) === diagId);
+  if (l) return MX_SITE + "/b/" + l.token;
+  const token = mxJeton();
+  await adminClient.from("bilan_partages").insert({
+    token, code, diagnostic_id: diagId, type_carte: typeCarte, canal: "email_parent",
+    expires_at: new Date(Date.now() + 30 * 86400000).toISOString(),
   });
-
-  if (!result.ok) return { status: "error", message: "Resend: " + result.error };
-  return { status: "success" };
+  return MX_SITE + "/b/" + token;
 }
 
-// ── Action cron_send_emails — à appeler 1×/jour (9h) ────────
-// Scanne tous les élèves, calcule J+N depuis inscription, envoie si pas déjà fait
+// Envoi unique : désinscription (P, M, ou respecterUnsub), dédup (email, type, envoyé), en-têtes
+// List-Unsubscribe (P, M), journal email_logs (categorie + code). Jamais bloquant.
+async function mxEnvoyerEmail(o: {
+  to: string; type: string; cat: MxEmailCat; code: string | null; prenom: string; dest: MxEmailDest;
+  subject: string; preheader: string; body: string; origine: string; respecterUnsub?: boolean; sansDedup?: boolean;
+}): Promise<{ ok: boolean; raison?: string }> {
+  const to = o.to.trim().toLowerCase();
+  if (!to) return { ok: false, raison: "pas d'adresse" };
+  if (o.cat !== "T" || o.respecterUnsub) {
+    const { data: unsub } = await adminClient.from("email_logs").select("id").eq("email", to).eq("type", "UNSUB").limit(1);
+    if (unsub && unsub.length) return { ok: false, raison: "désinscrit" };
+  }
+  if (!o.sansDedup) {
+    const { data: deja } = await adminClient.from("email_logs").select("id").eq("email", to).eq("type", o.type).eq("statut", "envoyé").limit(1);
+    if (deja && deja.length) return { ok: false, raison: "déjà envoyé" };
+  }
+  let unsubUrl: string | null = null, headers: Record<string, string> | undefined;
+  if (o.cat !== "T") {
+    const l = await mxUnsubLiens(to);
+    unsubUrl = l.page;
+    headers = { "List-Unsubscribe": "<" + l.oneClick + ">, <mailto:contact@matheux.fr?subject=desinscription>", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" };
+  }
+  const html = emailWrap(to, o.preheader, o.body, { unsubUrl, origine: o.origine, signature: o.dest === "ado" ? "ado" : "parent" });
+  const r = await resendSend(to, o.subject, html, "contact@matheux.fr", headers);
+  await adminClient.from("email_logs").insert({
+    email: to, prenom: o.prenom, type: o.type, statut: r.ok ? "envoyé" : "erreur", details: r.error || null,
+    categorie: o.cat, code: o.code, created_at: new Date().toISOString(),
+  });
+  return r.ok ? { ok: true } : { ok: false, raison: "erreur Resend : " + r.error };
+}
 
-async function cronSendEmails(_p: Record<string, unknown>) {
-  const today = todayParis();
-  const todayDate = new Date(today + "T00:00:00Z");
+// ── Contexte d'un élève pour la séquence (1 profil = quelques requêtes ; on vise 10 élèves, pas 10 000) ──
+type MxEmailCtx = {
+  profile: Record<string, unknown>; ref: MxRef; today: string; etat: MxEmailEtat;
+  prenom: string; email: string; emailEleve: string;
+  express: Record<string, unknown> | null; complet: Record<string, unknown> | null; dernierBilan: Record<string, unknown> | null;
+  train: { date: string; comp: string }[]; maitrise: Record<string, MxMaitrise>; acces: string;
+};
 
-  // Tous les profils non-admin, non-test
-  const { data: profiles } = await adminClient.from("profiles")
-    .select("code, prenom, email, date_inscription, objectif, premium, niveau")
-    .eq("is_admin", false)
-    .eq("is_test", false);
+async function mxEmailContexte(profile: Record<string, unknown>, ref: MxRef, today: string): Promise<MxEmailCtx> {
+  const code = String(profile.code);
+  const email = String(profile.email || "").trim().toLowerCase();
+  const emailEleve = String(profile.email_eleve || "").trim().toLowerCase();
+  const { data: achatsR } = await adminClient.from("achats").select("produit, created_at, rembourse_at").eq("code", code);
+  const achats = ((achatsR || []) as Record<string, unknown>[]).filter((a) => !a.rembourse_at);
+  const premier = (produit: string) => achats.filter((a) => a.produit === produit).map((a) => mxDateParis(a.created_at)).sort()[0] || null;
+  const { data: diagsR } = await adminClient.from("diagnostics").select("id, type, statut, carte_json, etat_json, finished_at").eq("code", code);
+  const diags = (diagsR || []) as Record<string, unknown>[];
+  const termines = (t: string[]) => diags.filter((d) => d.statut === "termine" && t.includes(String(d.type)) && d.carte_json)
+    .sort((a, b) => String(a.finished_at) < String(b.finished_at) ? -1 : 1);
+  const exp = termines(["express"]), cmp = termines(["complet"]), bilans = termines(["complet", "mensuel"]);
+  const enCours = diags.find((d) => d.type === "complet" && d.statut === "en_cours");
+  const { data: trainR } = await adminClient.from("reponses_items").select("date, comp").eq("code", code).eq("contexte", "train");
+  const train = ((trainR || []) as Record<string, unknown>[]).map((r) => ({ date: String(r.date).slice(0, 10), comp: String(r.comp) }));
+  const adresses = [email, emailEleve].filter(Boolean);
+  const { data: logsR } = adresses.length
+    ? await adminClient.from("email_logs").select("email, type, categorie, created_at").in("email", adresses).eq("statut", "envoyé").like("type", "D3:%")
+    : { data: [] };
+  const logs: MxEmailLog[] = ((logsR || []) as Record<string, unknown>[]).map((l) => ({
+    type: String(l.type), cat: (l.categorie as string) || null, date: mxDateParis(l.created_at),
+    dest: String(l.email) === email ? "parent" : "ado",
+  }));
+  const droits = mxDroits(profile, achats as { produit: string }[], today);
+  let programme_at = premier("programme_brevet");
+  if (!programme_at && droits.acces === "programme_brevet") programme_at = String(profile.date_inscription || today).slice(0, 10); // premium legacy
+  const express = exp.length ? exp[exp.length - 1] : null;
+  const carteExp = (express?.carte_json || null) as Record<string, unknown> | null;
+  const pfExp = carteExp ? ((carteExp.competences || []) as Record<string, unknown>[]).find((c) => c.id === carteExp.point_faible) : null;
+  const dernierBilan = bilans.length ? bilans[bilans.length - 1] : null;
+  const etat: MxEmailEtat = {
+    today, inscription: String(profile.date_inscription || today).slice(0, 10),
+    express_at: exp.length ? mxDateParis(exp[0].finished_at) : null,
+    complet_at: cmp.length ? mxDateParis(cmp[0].finished_at) : null,
+    achat_diag_at: premier("diagnostic_complet"), programme_at,
+    complet_modules_faits: enCours ? Number((enCours.etat_json as MxEtatDiag)?.module || 0) : 0,
+    consentement: !!profile.consentement_parent_at, optin: !!profile.optin_marketing, email_eleve: !!emailEleve,
+    pf_fragile: !!pfExp && (pfExp.statut === "lacune" || pfExp.statut === "fragile"),
+    jours_actifs: [...new Set(train.map((r) => r.date))].sort(),
+    rediag_du: mxRediagDu(dernierBilan ? mxDateParis(dernierBilan.finished_at) : null, today, droits.acces),
+    logs,
+  };
+  return {
+    profile, ref, today, etat, prenom: String(profile.prenom || ""), email, emailEleve,
+    express, complet: cmp.length ? cmp[cmp.length - 1] : null, dernierBilan, train,
+    maitrise: await mxChargerMaitrise(code), acces: droits.acces,
+  };
+}
 
-  if (!profiles || profiles.length === 0) return { status: "success", sent: 0 };
+// Évolution de la maîtrise d'une compétence depuis une carte (en %, arrondie à 5) — null si pas assez d'exos.
+function mxEvolution(c: MxEmailCtx, carte: Record<string, unknown> | null, comp: string, depuis: string) {
+  const avant = ((carte?.competences || []) as Record<string, unknown>[]).find((x) => x.id === comp);
+  const nExos = c.train.filter((r) => r.comp === comp && r.date >= depuis).length;
+  const m = c.maitrise[comp];
+  if (!avant || typeof avant.maitrise !== "number" || !m || nExos < 3) return { nExos, progres: false, avant: 0, apres: 0 };
+  const a = mxArrondi5(Number(avant.maitrise)), b = mxArrondi5(m.maitrise);
+  return { nExos, progres: b >= a + 10, avant: a, apres: b };
+}
 
-  const SEQUENCE = [1, 3, 7, 14]; // jours après inscription
-  let sent = 0;
-  const errors: string[] = [];
+const MX_ORIGINE_PARENT = (p: string) => "Vous recevez cet email car " + p + " utilise Matheux avec votre adresse.";
+const MX_ORIGINE_ADO = "Tu reçois cet email car tu as donné ton adresse dans ton espace Matheux.";
 
-  for (const p of profiles) {
-    if (!p.email || !p.date_inscription) continue;
+// Contenu d'un email de la séquence (cron). null = données insuffisantes → l'email ne part pas.
+async function mxContenuD3(type: string, c: MxEmailCtx): Promise<{ subject: string; preheader: string; body: string } | null> {
+  const base = type.split(":")[0];
+  const code = String(c.profile.code);
+  const P = mxEsc(c.prenom || "votre enfant"), Pa = mxEsc(c.prenom || "toi");
+  const app = (src: string) => MX_SITE + "/app.html?src=email_" + src;
+  const prix = MX_PRODUITS.diagnostic_complet.prix_cents, prixProg = MX_PRODUITS.programme_brevet.prix_cents;
+  const prixUp = prixProg - (MX_PRODUITS.programme_brevet.deduction?.cents || 0);
+  const carteExp = (c.express?.carte_json || null) as Record<string, unknown> | null;
+  const carteCmp = (c.complet?.carte_json || null) as Record<string, unknown> | null;
+  const rs = carteExp ? mxResumeCarte(carteExp, c.ref) : null;
+  const pfId = rs?.pf ? String(rs.pf.id) : null;
+  const pfParent = pfId ? mxEsc(c.ref.comps[pfId]?.titre || rs!.pf!.titre_eleve) : "";
+  const pfEleve = pfId ? mxEsc(c.ref.comps[pfId]?.titre_eleve || c.ref.comps[pfId]?.titre || "") : "";
+  const lienBilan = async (d: Record<string, unknown> | null) => d ? await mxLienParent(code, String(d.id), String(d.type)) : null;
+  const expAt = c.etat.express_at || c.today;
+  const actifs = (depuis: string) => c.etat.jours_actifs.filter((x) => x >= depuis).length;
+  const exosDepuis = (depuis: string) => c.train.filter((r) => r.date >= depuis).length;
+  const nModules = MX.DIAG.complet.modules.length, faits = c.etat.complet_modules_faits, restants = Math.max(1, nModules - faits);
 
-    const inscDate = new Date(p.date_inscription + "T00:00:00Z");
-    const diffDays = Math.floor((todayDate.getTime() - inscDate.getTime()) / (1000 * 60 * 60 * 24));
-
-    for (const day of SEQUENCE) {
-      // Catch-up safe : si le cron saute un jour, on rattrape.
-      // La dédup est assurée côté sendMarketingEmail via email_logs.
-      if (diffDays < day) continue;
-
-      // Skip conversion emails (J+7, J+14) si déjà premium
-      if ((day === 7 || day === 14) && p.premium) continue;
-
-      const result = await sendMarketingEmail({
-        email: p.email,
-        name: p.prenom,
-        day,
-        objectif: p.objectif || "lacunes",
-        niveau: p.niveau,
-      });
-
-      if (result && (result as Record<string, unknown>).status === "success") {
-        sent++;
-      } else {
-        errors.push(p.code + "/J+" + day + ": " + JSON.stringify(result));
+  switch (base) {
+    case "P-X0N": {
+      const l = await mxLienParent(code, null, null);
+      return {
+        subject: "L'espace maths de " + (c.prenom || "votre enfant") + " : une confirmation à faire",
+        preheader: "1 clic pour confirmer l'inscription de " + P + ".",
+        body: EP("Bonjour,") +
+          EP(P + " a créé son espace sur Matheux, un entraînement en maths pour la 3e, avec votre adresse email.") +
+          EP(P + " est mineur(e) : j'ai besoin de votre accord de parent pour conserver son espace.") +
+          emailCTA(l + "?confirmer=1", "Je confirme l'inscription de " + P) +
+          ES("Sur la page de confirmation, vous pourrez aussi choisir de recevoir mes conseils et offres (facultatif). Si ce n'est pas vous, ou si vous n'êtes pas d'accord, ignorez ce message.") +
+          EP("Le diagnostic express de " + P + " n'est pas encore fait. C'est lui qui repère le point à travailler en premier, et il prend quelques minutes.") +
+          EP("Une question ? Répondez à cet email, c'est moi qui lis."),
+      };
+    }
+    case "P-X0R1": case "P-X0R2": {
+      const l = await mxLienParent(code, c.express ? String(c.express.id) : null, c.express ? "express" : null);
+      return {
+        subject: "Rappel : l'espace maths de " + (c.prenom || "votre enfant") + " attend votre accord",
+        preheader: "1 clic pour confirmer l'inscription.",
+        body: EP("Bonjour,") +
+          EP(P + " a créé son espace sur Matheux avec votre adresse email. " + P + " est mineur(e) : j'ai besoin de votre accord de parent pour conserver son espace et ses résultats.") +
+          emailCTA(l + "?confirmer=1", "Je confirme l'inscription de " + P) +
+          ES("Si ce n'est pas vous, ou si vous n'êtes pas d'accord, ignorez ce message."),
+      };
+    }
+    case "P-X1": {
+      if (!rs || !rs.pf) return null;
+      const l = await lienBilan(c.express);
+      const reste = Math.max(0, rs.nTot - rs.nMes);
+      return {
+        subject: "Ce que le diagnostic express ne dit pas encore sur " + (c.prenom || "votre enfant"),
+        preheader: reste + " compétences de 3e restent à mesurer.",
+        body: EP("Bonjour,") +
+          EP("Le diagnostic express de " + P + " a mesuré " + rs.nMes + " compétence" + (rs.nMes > 1 ? "s" : "") + " de 3e sur " + rs.nTot +
+            ". Il a trouvé un point fragile, <strong>" + pfParent + "</strong>, mais il ne dit pas encore deux choses importantes :") +
+          EL(["<strong>où en sont les " + reste + " autres compétences</strong> du programme de 3e ;",
+            "<strong>d'où vient la difficulté.</strong> En 3e, un blocage vient souvent d'une notion de 5e ou de 4e jamais consolidée. Tant qu'on ne l'a pas trouvée, on révise au mauvais endroit."]) +
+          EP("C'est le rôle du <strong>diagnostic complet</strong> : environ 40 minutes pour " + P + ", en " + nModules + " parties. Pour vous, un <strong>bilan PDF</strong> : les compétences acquises, fragiles et à travailler, les causes, les erreurs types avec ses propres réponses, et un plan de 4 semaines.") +
+          EP("<strong>" + mxEurosCourt(prix) + ", une seule fois.</strong> <strong>Garantie 30 jours</strong> : si le bilan ne vous est pas utile, je vous rembourse sur simple email.") +
+          emailCTA(l!, "Voir le diagnostic complet — " + mxEurosCourt(prix)) +
+          EP("Et si vous ne souhaitez rien acheter : " + P + " garde ses 5 exercices gratuits par jour, sans limite de durée."),
+      };
+    }
+    case "P-X2": {
+      const l = await lienBilan(c.express);
+      if (!l) return null;
+      const n = exosDepuis(expAt), jA = actifs(expAt);
+      const ev = pfId ? mxEvolution(c, carteExp, pfId, expAt) : null;
+      const ligneEv = !pfId ? [] : [ev && ev.progres
+        ? "Sur <strong>" + pfParent + "</strong> : sa maîtrise estimée est passée de " + ev.avant + " % à " + ev.apres + " %."
+        : "Sur <strong>" + pfParent + "</strong> : pas encore de progrès net. C'est normal sur une notion ancienne : il faut en général plusieurs semaines de régularité."];
+      return {
+        subject: "La première semaine de " + (c.prenom || "votre enfant") + " en maths",
+        preheader: n + " exercice" + (n > 1 ? "s" : "") + ", " + jA + " jour" + (jA > 1 ? "s" : "") + " d'entraînement.",
+        body: EP("Bonjour,") +
+          EP("Voici la semaine de " + P + " sur Matheux, en chiffres :") +
+          EL(["<strong>" + n + " exercice" + (n > 1 ? "s" : "") + "</strong> faits, sur <strong>" + jA + " jour" + (jA > 1 ? "s" : "") + "</strong>", ...ligneEv]) +
+          EP("Mon conseil à ce stade : laisser " + P + " continuer au même rythme. La régularité compte plus que la durée.") +
+          EP("Si vous voulez aller plus loin, le <strong>diagnostic complet</strong> (" + mxEurosCourt(prix) + ") cartographie tout le programme et donne un plan de travail pour les 4 prochaines semaines. S'il ne vous est pas utile, il est remboursé pendant 30 jours.") +
+          emailCTA(l, "Voir le diagnostic complet"),
+      };
+    }
+    case "P-X2b": case "P-UP2b": {
+      return {
+        subject: (c.prenom || "Votre enfant") + " n'a pas encore repris ses exercices",
+        preheader: "10 minutes suffisent pour relancer.",
+        body: EP("Bonjour,") +
+          EP((base === "P-X2b" ? P + " a fait le diagnostic il y a une semaine" : P + " a terminé son diagnostic complet il y a 10 jours") +
+            ", mais l'entraînement n'a pas encore vraiment démarré. C'est très fréquent, et ça se relance facilement.") +
+          EP("Une idée simple : proposer à " + P + " de faire les 5 exercices du jour <strong>à côté de vous</strong>, juste une fois. Ça prend une dizaine de minutes, et le plus dur, c'est le premier.") +
+          emailCTA(app(base), "Ouvrir Matheux") +
+          EP("Si quelque chose bloque (un bug, un exercice incompréhensible), répondez-moi : je corrige."),
+      };
+    }
+    case "P-X3": {
+      const l = await lienBilan(c.express);
+      if (!l) return null;
+      const raisons = ["Le prix", "Pas le temps", "Mon enfant n'accroche pas", "On a déjà un prof", "Autre"];
+      const liensR = raisons.map((r) => '<a href="mailto:contact@matheux.fr?subject=' + encodeURIComponent("Matheux : " + r) + '" style="color:#1E40AF;">' + mxEsc(r) + "</a>").join(" · ");
+      return {
+        subject: "Je ne vous relancerai plus sur le diagnostic",
+        preheader: "Une dernière info, et une question.",
+        body: EP("Bonjour,") +
+          EP("C'est mon dernier message sur le diagnostic complet de " + P + ". Promis, je ne vous relancerai plus à ce sujet.") +
+          EP("Pour résumer : <strong>" + mxEurosCourt(prix) + "</strong> une fois, environ 40 minutes pour " + P + ", un bilan PDF avec un plan de 4 semaines, et remboursé pendant 30 jours s'il ne vous sert pas. Si vous passez un jour au Programme Brevet, ces " + mxEurosCourt(prix) + " seront déduits.") +
+          emailCTA(l, "Diagnostic complet — " + mxEurosCourt(prix)) +
+          EP("Dans tous les cas, " + P + " garde son entraînement gratuit.") +
+          EP("<strong>Une question, si vous avez 5 secondes</strong> : qu'est-ce qui vous a retenu ? Un clic ouvre un email, il suffit de l'envoyer.") +
+          EP(liensR) +
+          EP("Merci d'avoir essayé Matheux."),
+      };
+    }
+    case "P-MOD": {
+      return {
+        subject: "Le diagnostic de " + (c.prenom || "votre enfant") + " est à " + faits + "/" + nModules,
+        preheader: "Il reste " + restants + " partie" + (restants > 1 ? "s" : "") + " d'environ 15 minutes.",
+        body: EP("Bonjour,") +
+          EP("Le diagnostic complet de " + P + " en est à " + faits + " partie" + (faits > 1 ? "s" : "") + " sur " + nModules + ". Il reste " + restants +
+            " partie" + (restants > 1 ? "s" : "") + " d'environ 15 minutes, et le bilan arrive dès la fin.") +
+          emailCTA(app("P-MOD"), "Ouvrir Matheux") +
+          EP("Si quelque chose bloque, répondez-moi. Et si finalement ce n'est pas le moment, je peux vous rembourser : il suffit de me le demander."),
+      };
+    }
+    case "P-UP1": {
+      if (!carteCmp) return null;
+      const l = await lienBilan(c.complet);
+      const plan = ((carteCmp.plan_4_semaines || []) as { semaine: number; objectif?: string }[])[0];
+      return {
+        subject: "Comment utiliser le plan de 4 semaines de " + (c.prenom || "votre enfant"),
+        preheader: "Même sans rien acheter de plus.",
+        body: EP("Bonjour,") +
+          EP("Le bilan de " + P + " contient un plan de 4 semaines. Voici comment l'utiliser :") +
+          EL([...(plan?.objectif ? ["<strong>Semaine 1</strong> : " + mxEsc(plan.objectif) + ". Les 5 exercices gratuits du jour sont déjà réglés dessus."] : []),
+            "<strong>Ensuite</strong> : suivez l'ordre du plan. Il commence par les causes, parce que c'est ce qui débloque le reste.",
+            "<strong>Le bon rythme</strong> : 5 jours sur 7, 10 minutes. Pas plus."]) +
+          EP("Le <strong>Programme Brevet</strong> permet de travailler tout le plan en même temps (entraînement illimité), avec un nouveau diagnostic chaque mois pour voir la progression. Comme vous avez déjà le diagnostic, il vous coûte <strong>" +
+            mxEurosCourt(prixUp) + "</strong> au lieu de " + mxEurosCourt(prixProg) + ", et cette déduction n'a pas de date limite.") +
+          emailCTA(l!, "Voir le Programme Brevet — " + mxEurosCourt(prixUp)),
+      };
+    }
+    case "P-UP2": {
+      if (!carteCmp || !c.etat.complet_at) return null;
+      const l = await lienBilan(c.complet);
+      const prio = String(((carteCmp.priorites || []) as string[])[0] || "");
+      if (!prio || !c.ref.comps[prio]) return null;
+      const titre = mxEsc(c.ref.comps[prio].titre);
+      const ev = mxEvolution(c, carteCmp, prio, c.etat.complet_at);
+      return {
+        subject: (c.prenom || "Votre enfant") + " sur « " + c.ref.comps[prio].titre + " » : où on en est",
+        preheader: ev.nExos + " exercice" + (ev.nExos > 1 ? "s" : "") + " sur sa priorité n° 1.",
+        body: EP("Bonjour,") +
+          EP("Depuis son diagnostic complet, " + P + " a fait " + ev.nExos + " exercice" + (ev.nExos > 1 ? "s" : "") + " sur sa priorité n° 1, <strong>" + titre + "</strong>.") +
+          EP(ev.progres ? "Sa maîtrise estimée de ce point est passée de " + ev.avant + " % à " + ev.apres + " %."
+            : "Pas encore de progrès net : c'est souvent une notion ancienne, et il faut plusieurs semaines de régularité.") +
+          EP("Le <strong>Programme Brevet</strong> ouvre l'entraînement sur toute la carte et refait le point chaque mois : " + mxEurosCourt(prixUp) + ", diagnostic déduit.") +
+          emailCTA(l!, "Voir le Programme Brevet"),
+      };
+    }
+    case "P-HEBDO": {
+      const d7 = mxAjoutJours(c.today, -6);
+      const n = c.train.filter((r) => r.date >= d7).length, jA = c.etat.jours_actifs.filter((x) => x >= d7).length;
+      const carte = (c.dernierBilan?.carte_json || carteExp) as Record<string, unknown> | null;
+      const prio = String(((carte?.priorites || []) as string[])[0] || "");
+      const rediag = c.dernierBilan ? mxAjoutJours(mxDateParis(c.dernierBilan.finished_at), MX.REDIAG_JOURS) : null;
+      const lignes = n === 0 ? ["Pas d'entraînement cette semaine. Ça arrive. Le plus simple pour reprendre : 5 exercices, 10 minutes."] : [
+        "<strong>" + n + " exercice" + (n > 1 ? "s" : "") + "</strong> sur <strong>" + jA + " jour" + (jA > 1 ? "s" : "") + "</strong>",
+        ...(prio && c.ref.comps[prio] ? ["Priorité du moment : " + mxEsc(c.ref.comps[prio].titre)] : []),
+        ...(rediag ? ["Prochain diagnostic du mois : " + (rediag <= c.today ? "disponible dès maintenant" : "à partir du " + mxDateFr(rediag, false))] : []),
+      ];
+      return {
+        subject: "La semaine de " + (c.prenom || "votre enfant") + " : " + n + " exercice" + (n > 1 ? "s" : ""),
+        preheader: jA + " jour" + (jA > 1 ? "s" : "") + " d'entraînement cette semaine.",
+        body: EP("Bonjour,") + EL(lignes) + emailCTA(app("P-HEBDO"), "Ouvrir Matheux"),
+      };
+    }
+    case "A-X0": {
+      if (!pfEleve) {
+        return { subject: "Ta carte de maths est prête, " + (c.prenom || ""), preheader: "Et tes 5 exos du jour.",
+          body: EP("Salut " + Pa + ",") + EP("Ta carte est prête. 5 exos t'attendent, 10 minutes, avec des indices si tu bloques.") + emailCTA(app("A-X0"), "Faire mes 5 exos") + EP("À tout de suite 🎯") };
       }
+      const bl = ((rs!.pf!.bloque || []) as string[]).map((id) => c.ref.comps[id]).filter(Boolean)[0];
+      return {
+        subject: "Ta carte de maths est prête, " + (c.prenom || ""),
+        preheader: "Ton point à travailler, et tes 5 exos du jour.",
+        body: EP("Salut " + Pa + ",") +
+          EP("Ta carte est prête. Ton point à travailler : <strong>" + pfEleve + "</strong>.") +
+          (rs!.pf!.cause_racine && bl ? EP("Et c'est un point clé : quand il est solide, « " + mxEsc(bl.titre_eleve || bl.titre) + " » devient beaucoup plus facile.") : "") +
+          EP("5 exos t'attendent dessus. 10 minutes, des indices si tu bloques.") +
+          emailCTA(app("A-X0"), "Faire mes 5 exos") + EP("À tout de suite 🎯"),
+      };
+    }
+    case "A-X1": {
+      return {
+        subject: "5 exos, 10 minutes, et c'est fini",
+        preheader: pfEleve ? "Sur " + pfEleve + ", pile ce qu'il te faut." : "Pile ce qu'il te faut.",
+        body: EP("Hey " + Pa + ",") +
+          EP("Tes 5 exos" + (pfEleve ? " sur <strong>" + pfEleve + "</strong>" : "") + " sont prêts. Commence par le premier, tu verras bien.") +
+          emailCTA(app("A-X1"), "C'est parti"),
+      };
+    }
+    case "A-MOD": {
+      return {
+        subject: "Il te reste " + restants + " partie" + (restants > 1 ? "s" : "") + " sur " + nModules,
+        preheader: "Environ 15 minutes, et ta carte complète s'affiche.",
+        body: EP("Salut " + Pa + ",") +
+          EP("Tu en es à " + faits + "/" + nModules + ". La prochaine partie prend environ 15 minutes, et ensuite ta carte complète s'affiche.") +
+          emailCTA(app("A-MOD"), "Reprendre"),
+      };
+    }
+    case "A-MENS": {
+      return {
+        subject: "Diagnostic du mois : ta carte va-t-elle virer au vert ?",
+        preheader: "Environ 15 minutes pour voir ce qui a bougé.",
+        body: EP("Salut " + Pa + ",") + EP("C'est l'heure de ton diagnostic du mois : environ 15 minutes, et tu vois ce qui a bougé depuis le dernier.") +
+          emailCTA(app("A-MENS"), "Faire mon diagnostic du mois"),
+      };
     }
   }
-
-  return { status: "success", sent, errors: errors.length > 0 ? errors : undefined };
+  return null;
 }
 
-// ── Action send_test_email — test admin ─────────────────────
+async function mxEnvoyerPlan(e: MxEmailPlan, c: MxEmailCtx): Promise<{ ok: boolean; raison?: string }> {
+  const to = e.dest === "parent" ? c.email : c.emailEleve;
+  const contenu = await mxContenuD3(e.type, c);
+  if (!contenu) return { ok: false, raison: "données insuffisantes" };
+  return await mxEnvoyerEmail({
+    to, type: "D3:" + e.type, cat: e.cat, code: String(c.profile.code), prenom: c.prenom, dest: e.dest, ...contenu,
+    origine: e.dest === "parent" ? MX_ORIGINE_PARENT(c.prenom || "votre enfant") : MX_ORIGINE_ADO,
+  });
+}
 
+// ── Emails d'événement (immédiats) : achat, fin du diagnostic complet ──
+// P-ACH1 / P-ACH2 : confirmation sur support durable (obligation légale, 52 §2) → au PAYEUR (email Stripe).
+async function mxEmailsAchat(code: string | null, emailPayeur: string, produit: string, offre: string, montantCents: number | null, sessionId: string | null) {
+  try {
+    if (!code) return;
+    const { data: profile } = await adminClient.from("profiles").select("*").eq("code", code).maybeSingle();
+    if (!profile) return;
+    const prenom = String(profile.prenom || ""), P = mxEsc(prenom || "votre enfant");
+    const diag = produit === "diagnostic_complet";
+    const today = todayParis();
+    const { data: cons } = await adminClient.from("consentements").select("texte_version, created_at")
+      .eq("code", code).in("produit", diag ? ["diag_complet"] : ["programme_brevet", "programme_upgrade"])
+      .order("created_at", { ascending: false }).limit(1);
+    const cs = (cons || [])[0] as Record<string, unknown> | undefined;
+    const quand = cs ? "le " + mxDateFr(mxDateParis(cs.created_at)) + " à " +
+      new Date(String(cs.created_at)).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Paris" }) : "";
+    const montant = montantCents ?? (diag ? MX_PRODUITS.diagnostic_complet.prix_cents : offre === "programme_upgrade"
+      ? MX_PRODUITS.programme_brevet.prix_cents - (MX_PRODUITS.programme_brevet.deduction?.cents || 0) : MX_PRODUITS.programme_brevet.prix_cents);
+    const libelle = diag ? "diagnostic complet de maths (3e)" : "Programme Brevet maths (3e)";
+    const ref = sessionId ? " (réf. " + mxEsc(sessionId.slice(-8)) + ")" : "";
+    const legal = diag
+      ? "<strong>Informations légales</strong> : lors de votre commande" + (quand ? ", " + quand + "," : "") + " vous avez demandé l'accès immédiat au diagnostic et reconnu qu'en conséquence vous perdiez votre droit de rétractation de 14 jours dès le début du diagnostic. Cela ne change rien à la garantie de 30 jours ci-dessus."
+      : "<strong>Informations légales</strong> : vous disposez de 14 jours pour vous rétracter ; si " + P + " a commencé à utiliser le programme à votre demande, un montant proportionnel pourra être retenu. En pratique, la garantie de 30 jours ci-dessus vous rembourse intégralement.";
+    const corps = EP("Bonjour,") +
+      EP("Merci. Votre paiement de <strong>" + mxEuros(montant) + "</strong> pour le <strong>" + libelle + "</strong> de " + P + " est bien reçu" + ref + ", le " + mxDateFr(today) + ".") +
+      (diag
+        ? EH("Comment ça se passe") + EL([P + " ouvre Matheux : le diagnostic complet l'attend, en " + MX.DIAG.complet.modules.length + " parties d'environ 15 minutes.",
+          "On peut s'arrêter entre deux parties et reprendre plus tard.", "À la fin, vous recevez un email avec le lien vers le bilan."])
+        : EH("Ce qui est inclus") + EL(["Le diagnostic complet et son bilan PDF", "L'entraînement sans limite sur toute la carte", "Un nouveau diagnostic chaque mois pour mesurer la progression", "Un point chaque dimanche par email"])) +
+      emailCTA(MX_SITE + "/app.html?src=email_" + (diag ? "P-ACH1" : "P-ACH2"), "Ouvrir Matheux") +
+      EP("<strong>Garantie 30 jours</strong> : jusqu'au " + mxDateFr(mxAjoutJours(today, 30)) + ", un simple email à contact@matheux.fr suffit pour être remboursé intégralement.") +
+      ES(legal + " CGV applicables : " + MX_SITE + "/cgv.html" + (cs?.texte_version ? " (version " + mxEsc(cs.texte_version) + ")" : "") +
+        ". Vendeur : Nicolas Follezou, EI, SIRET 837 763 713 00059. TVA non applicable, art. 293 B du CGI.");
+    await mxEnvoyerEmail({
+      to: emailPayeur, type: diag ? "D3:P-ACH1" : "D3:P-ACH2", cat: "T", code, prenom, dest: "parent",
+      subject: "Confirmation : " + (diag ? "diagnostic complet" : "Programme Brevet") + " de " + (prenom || "votre enfant"),
+      preheader: diag ? "Voici comment ça se passe." : "Tout est débloqué.", body: corps,
+      origine: "Vous recevez cet email car vous avez effectué un achat sur Matheux.",
+    });
+    const eleve = String(profile.email_eleve || "").trim();
+    if (eleve && profile.consentement_parent_at) {
+      await mxEnvoyerEmail({
+        to: eleve, type: diag ? "D3:A-ACH1" : "D3:A-ACH2", cat: "P", code, prenom, dest: "ado",
+        subject: diag ? "Ton diagnostic complet est débloqué" : "Bienvenue dans le Programme Brevet",
+        preheader: diag ? "3 parties d'environ 15 minutes." : "Toute ta carte est débloquée.",
+        body: EP("Salut " + mxEsc(prenom || "toi") + ",") +
+          EP(diag ? "Ton diagnostic complet est prêt : " + MX.DIAG.complet.modules.length + " parties d'environ 15 minutes, tu peux faire une pause entre chaque. À la fin, tu verras ta carte en entier."
+            : "Tout est débloqué : ta carte entière, sans limite d'exos. Chaque mois, un nouveau diagnostic te montre ce qui a bougé.") +
+          emailCTA(MX_SITE + "/app.html?src=email_" + (diag ? "A-ACH1" : "A-ACH2"), diag ? "Commencer la partie 1" : "Ouvrir Matheux"),
+        origine: MX_ORIGINE_ADO,
+      });
+    }
+  } catch (e) { console.error("[P-ACH]", e); /* jamais bloquant */ }
+}
+
+// P-PDF (T) + A-PDF (P) : diagnostic complet terminé. Le PDF est généré dans l'app (bouton « Ton bilan PDF »).
+async function mxEmailsBilanComplet(profile: Record<string, unknown>, diagId: string, carte: Record<string, unknown>, ref: MxRef) {
+  try {
+    const code = String(profile.code || ""), email = String(profile.email || "");
+    if (!code || !email) return;
+    const prenom = String(profile.prenom || ""), P = mxEsc(prenom || "votre enfant");
+    const titre = (id: string, eleve = false) => mxEsc((eleve ? ref.comps[id]?.titre_eleve : ref.comps[id]?.titre) || ref.comps[id]?.titre || id);
+    const forts = ((carte.points_forts || []) as string[]).slice(0, 2);
+    const prio = String(((carte.priorites || []) as string[])[0] || "");
+    const cp = ((carte.competences || []) as Record<string, unknown>[]).find((x) => x.id === prio);
+    const nb = cp?.cause_racine ? ((cp.bloque || []) as unknown[]).length : 0;
+    const lien = await mxLienParent(code, diagId, "complet");
+    const nq = Number(carte.n_questions) || 0, dm = Number(carte.duree_min) || 0;
+    const lignes = [
+      ...(forts.length ? ["Points forts : " + forts.map((f) => titre(f)).join(" ; ")] : []),
+      ...(prio ? ["Priorité n° 1 : <strong>" + titre(prio) + "</strong>" + (nb ? " (elle sert de base à " + nb + " autre" + (nb > 1 ? "s points" : " point") + " du programme)" : "")] : []),
+      "Le plan des 4 prochaines semaines est dans le bilan PDF.",
+    ];
+    await mxEnvoyerEmail({
+      to: email, type: "D3:P-PDF", cat: "T", code, prenom, dest: "parent",
+      subject: "Le bilan maths de " + (prenom || "votre enfant") + " est prêt",
+      preheader: "Les points forts, la priorité n° 1, et un plan de 4 semaines.",
+      body: EP("Bonjour,") +
+        EP(P + " a terminé son diagnostic complet" + (dm || nq ? " (" + [dm ? dm + " minutes" : "", nq ? nq + " questions" : ""].filter(Boolean).join(", ") + ")" : "") + ". Voici son bilan :") +
+        emailCTA(lien + "?src=email_P-PDF", "Voir le bilan de " + P) +
+        EH("L'essentiel") + EL(lignes) +
+        EP("Le bilan PDF complet se télécharge depuis l'espace Matheux de " + P + " (sur sa carte, bouton « Ton bilan PDF »).") +
+        EP("Mon conseil : prenez 5 minutes pour lire la page 1 avec " + P + ". Ce sont souvent des découvertes pour les deux."),
+      origine: MX_ORIGINE_PARENT(prenom || "votre enfant"),
+    });
+    const eleve = String(profile.email_eleve || "").trim();
+    if (eleve && profile.consentement_parent_at) {
+      await mxEnvoyerEmail({
+        to: eleve, type: "D3:A-PDF", cat: "P", code, prenom, dest: "ado",
+        subject: "Ta carte complète est là, " + (prenom || ""),
+        preheader: "Tes points forts et ta priorité n° 1.",
+        body: EP("Salut " + mxEsc(prenom || "toi") + ",") +
+          EP("Tu as tout fini, bravo 👏 Ta carte est complète." + (forts.length ? " Tes points forts : " + forts.map((f) => titre(f, true)).join(" ; ") + "." : "")) +
+          (prio ? EP("Ta priorité n° 1 : <strong>" + titre(prio, true) + "</strong>, et tes exos du jour sont déjà dessus.") : "") +
+          emailCTA(MX_SITE + "/app.html?src=email_A-PDF", "Voir ma carte"),
+        origine: MX_ORIGINE_ADO,
+      });
+    }
+  } catch (e) { console.error("[P-PDF]", e); /* jamais bloquant */ }
+}
+
+// ── SEND_SHARE_EMAIL {code, access_token, to?} (Besoin API n°13) → P-SH au parent ──
+// L'ado envoie le lien de sa carte par email. Adresse libre → risque de relais de spam : 3 envois par
+// 24 h et par élève (tentatives comprises), 1 seul envoi à la même adresse par 24 h (dédup), contenu figé,
+// aucun prix, adresse désinscrite respectée. `to` absent = email du compte (le parent).
+const MX_SHARE_MAX_24H = 3;
+async function sendShareEmail(p: Record<string, unknown>) {
+  const pr = await mxProfil(p);
+  if ("error" in pr) return { status: "error", message: pr.error, auth_requise: pr.auth_requise };
+  const profile = pr.profile as Record<string, unknown>;
+  const code = String(profile.code);
+  const to = String(p.to || profile.email || "").trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(to) || to.length > 120) return { status: "error", message: "Adresse email invalide." };
+  const depuis = new Date(Date.now() - 86400000).toISOString();
+  const { data: recents } = await adminClient.from("email_logs").select("email, type, statut, created_at")
+    .eq("code", code).like("type", "D3:P-SH:%").gte("created_at", depuis);
+  const r24 = (recents || []) as Record<string, unknown>[];
+  if (r24.some((l) => l.email === to && l.statut === "envoyé")) return { status: "success", deja: true, message: "Ta carte a déjà été envoyée à cette adresse aujourd'hui." };
+  if (r24.length >= MX_SHARE_MAX_24H) return { status: "error", plafond: true, message: "Tu as déjà envoyé ta carte " + MX_SHARE_MAX_24H + " fois aujourd'hui. Réessaie demain." };
+  const diag = await mxDernierDiag(code);
+  if (!diag) return { status: "error", message: "Aucun diagnostic terminé à partager." };
+  const token = mxJeton();
+  const expires_at = new Date(Date.now() + 30 * 86400000).toISOString();
+  const { error } = await adminClient.from("bilan_partages").insert({ token, code, diagnostic_id: diag.id, type_carte: diag.type, expires_at, canal: "email" });
+  if (error) return { status: "error", message: "Partage impossible : " + error.message };
+  const prenom = String(profile.prenom || ""), P = mxEsc(prenom || "votre enfant");
+  const { data: px0 } = await adminClient.from("email_logs").select("id").eq("email", to).eq("type", "D3:P-X0").eq("statut", "envoyé").gte("created_at", depuis).limit(1);
+  const court = !!(px0 && px0.length);
+  const r = await mxEnvoyerEmail({
+    to, type: "D3:P-SH:" + token, cat: "T", code, prenom, dest: "parent", respecterUnsub: true,
+    subject: (prenom || "Votre enfant") + " vous a envoyé son bilan de maths",
+    preheader: "Sa carte : ce qui va, ce qui coince.",
+    body: EP("Bonjour,") +
+      EP(P + " a souhaité vous montrer son bilan de maths, fait sur Matheux.") +
+      emailCTA(MX_SITE + "/b/" + token + "?src=email_P-SH", "Voir le bilan de " + P) +
+      EP("Le lien est personnel et valable jusqu'au " + mxDateFr(mxDateParis(expires_at)) + ". " + P + " peut le désactiver à tout moment.") +
+      (court ? "" : EP("Matheux est un entraînement en maths pour la 3e. Le diagnostic repère les notions fragiles, y compris celles des années précédentes.")) +
+      ES("Vous n'êtes pas le parent de " + P + " ? Ignorez simplement ce message."),
+    origine: "Vous recevez cet email car " + (prenom || "un élève") + " a demandé à vous transmettre son bilan.",
+  });
+  await mxLogEvent(code, "share_created", { canal: "email", envoye: r.ok });
+  if (!r.ok) return { status: "error", message: r.raison === "désinscrit" ? "Cette adresse ne reçoit plus d'emails de Matheux." : "L'email n'a pas pu partir. Réessaie plus tard." };
+  return { status: "success", token, url: MX_SITE + "/b/" + token, expires_at, to };
+}
+
+// ── Action send_marketing_email {code, type} (admin) — envoie UN email de la séquence à un élève,
+//    avec les mêmes garde-fous que le cron (désinscription, opt-in via le plan, dédup). ──
+async function sendMarketingEmail(p: Record<string, unknown>) {
+  const code = String(p.code_eleve || p.targetCode || "").toUpperCase();
+  const type = String(p.type || "").replace(/^D3:/, "");
+  const { data: profile } = await adminClient.from("profiles").select("*").eq("code", code).maybeSingle();
+  if (!profile) return { status: "error", message: "code_eleve inconnu." };
+  const c = await mxEmailContexte(profile as Record<string, unknown>, await mxChargerRef(), todayParis());
+  const plan = mxPlanEmails(c.etat).find((e) => e.type === type);
+  if (!plan) return { status: "error", message: "Email " + type + " pas dû aujourd'hui pour cet élève (plan : " + mxPlanEmails(c.etat).map((e) => e.type).join(", ") + ")." };
+  const r = await mxEnvoyerPlan(plan, c);
+  return r.ok ? { status: "success", type: plan.type } : { status: "error", message: r.raison };
+}
+
+// ── Action cron_send_emails — 1×/jour à 17h Paris (pg_cron, cf. migration 20260925_cron_secret.sql) ──
+// Pour chaque élève : état → mxPlanEmails (ce qui est dû aujourd'hui, plafonds compris) → envoi.
+async function cronSendEmails(_p: Record<string, unknown>) {
+  const today = todayParis();
+  const { data: profiles } = await adminClient.from("profiles").select("*").eq("is_admin", false).eq("is_test", false);
+  if (!profiles || profiles.length === 0) return { status: "success", sent: 0, details: [] };
+  const ref = await mxChargerRef();
+  let sent = 0;
+  const details: string[] = [], errors: string[] = [];
+  for (const prof of profiles as Record<string, unknown>[]) {
+    if (!prof.email) continue;
+    try {
+      const c = await mxEmailContexte(prof, ref, today);
+      for (const e of mxPlanEmails(c.etat)) {
+        const r = await mxEnvoyerPlan(e, c);
+        if (r.ok) sent++;
+        details.push(prof.code + " " + e.type + " → " + (r.ok ? "envoyé" : r.raison));
+      }
+    } catch (err) {
+      errors.push(prof.code + " : " + String(err));
+    }
+  }
+  return { status: "success", date: today, sent, details, errors: errors.length > 0 ? errors : undefined };
+}
+
+// ── Action send_test_email {targetEmail, type, code_eleve} (admin) — aperçu d'un email de la séquence
+//    rendu avec les données d'un vrai élève, envoyé à targetEmail. Pas de dédup, pas de journal élève. ──
 async function sendTestEmailResend(p: Record<string, unknown>) {
   const email = String(p.targetEmail || "").trim();
-  const prenom = String(p.targetPrenom || "Nicolas").trim();
-  const day = Number(p.day ?? 0);
-  const niveau = String(p.niveau || p.level || "3EME").trim().toUpperCase();
-  if (!email) return { status: "error", message: "targetEmail requis." };
-
-  // Bypass dédup pour tests : on envoie directement
-  let tpl: { subject: string; html: string };
-  if (day === 0) tpl = templateJ0(prenom, email);
-  else if (day === 1) tpl = templateJ1(prenom, email);
-  else if (day === 3) tpl = templateJ3(prenom, email, "lacunes");
-  else if (day === 7) tpl = templateJ7(prenom, email, "lacunes", niveau);
-  else if (day === 14) tpl = templateJ14(prenom, email, niveau);
-  else return { status: "error", message: "Jour invalide : " + day };
-
-  const result = await resendSend(email, tpl.subject, tpl.html);
+  const type = String(p.type || "").replace(/^D3:/, "");
+  const code = String(p.code_eleve || p.targetCode || "").toUpperCase();
+  if (!email || !type || !code) return { status: "error", message: "targetEmail, type et code_eleve requis." };
+  const { data: profile } = await adminClient.from("profiles").select("*").eq("code", code).maybeSingle();
+  if (!profile) return { status: "error", message: "code_eleve inconnu." };
+  const c = await mxEmailContexte(profile as Record<string, unknown>, await mxChargerRef(), todayParis());
+  const contenu = await mxContenuD3(type, c);
+  if (!contenu) return { status: "error", message: "Type inconnu ou données insuffisantes : " + type };
+  const html = emailWrap(email, contenu.preheader, contenu.body, { origine: "[TEST] " + type, signature: type.startsWith("A-") ? "ado" : "parent" });
+  const result = await resendSend(email, "[TEST] " + contenu.subject, html);
   if (!result.ok) return { status: "error", message: "Resend: " + result.error };
-  return { status: "success", sent_to: email };
+  return { status: "success", sent_to: email, type };
 }
 
 // ── send_admin_email — envoi custom Resend (audit 2026-04-11, porté de la prod le 25/09) ──
@@ -3911,6 +4394,7 @@ const ACTIONS: Record<string, (p: Record<string, unknown>) => Promise<unknown>> 
   log_consent: logConsent,
   log_funnel_event: logFunnelEvent,
   create_share: createShare,
+  send_share_email: sendShareEmail,
   revoke_share: revokeShare,
   get_bilan_partage: getBilanPartage,
   // Noop — fonctionnalités secondaires qui ne cassent pas le parcours
@@ -3951,6 +4435,11 @@ Deno.serve(async (req: Request) => {
   if (req.method !== "POST") return json({ status: "error", message: "POST uniquement" }, 405);
 
   try {
+    // Désinscription en 1 clic (RFC 8058, en-tête List-Unsubscribe-Post) : POST sans JSON, paramètres dans l'URL.
+    const u = new URL(req.url);
+    if (u.searchParams.get("action") === "unsubscribe") {
+      return json(await unsubscribeEmail({ email: u.searchParams.get("email") || "", k: u.searchParams.get("k") || "" }));
+    }
     const raw = await req.text();
     const p = JSON.parse(raw);
 

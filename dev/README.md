@@ -21,7 +21,7 @@ Mot de passe pour tous les comptes : **`matheux-dev`**. Les codes restent les m�
 
 | Qui | Email | Code | État |
 |---|---|---|---|
-| Nicolas (admin) | nicolas.follezou@hotmail.fr | KN6CFG | admin, triple-clic sur le logo |
+| Admin de dev | admin@dev.matheux.local | ADMDEV | admin (`is_admin`), triple-clic sur le logo |
 | Lina | lina@exemple.fr | MDX7DK | vient de s'inscrire, rien fait |
 | Tom | tom@exemple.fr | AQPTSK | diagnostic express fait hier en invité puis rattaché à l'inscription, accès gratuit |
 | Sarah | sarah@exemple.fr | 6LDHJ5 | Programme Brevet payé, diag complet, 10 jours d'entraînement (streak 10) |

@@ -1,0 +1,1019 @@
+[
+ {
+  "id": "DF.STAT.01-L001",
+  "comp": "DF.STAT.01",
+  "q": "Léa a un sac opaque contenant $4$ billes rouges, $6$ billes bleues et $2$ billes vertes. Elle tire une bille au hasard. Combien y a-t-il de billes au total dans le sac ? ___",
+  "a": "12",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "On additionne toutes les billes : $4 + 6 + 2 = $ ?",
+   "Il y a $12$ billes en tout."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Couleur",
+    "Rouge",
+    "Bleue",
+    "Verte"
+   ],
+   "rows": [
+    [
+     "Nombre",
+     "4",
+     "6",
+     "2"
+    ]
+   ],
+   "caption": "Contenu du sac de Léa"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_01",
+  "num": "1",
+  "source": "Probabilites_Brevet_v4|PROB_01.1"
+ },
+ {
+  "id": "DF.PROB.02-L001",
+  "comp": "DF.PROB.02",
+  "q": "Léa a un sac opaque contenant $4$ billes rouges, $6$ billes bleues et $2$ billes vertes. Elle tire une bille au hasard. Quelle est la probabilité de tirer une bille bleue ?",
+  "a": "$\\frac{1}{2}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{1}{2}$",
+   "$6$",
+   "$\\frac{1}{6}$"
+  ],
+  "err": {
+   "$6$": "DF.PROB.02#superieure_a_1"
+  },
+  "steps": [
+   "Il y a $6$ billes bleues sur $12$ billes au total.",
+   "$P(\\text{bleue}) = \\frac{6}{12}$. On simplifie par $6$ : $\\frac{6}{12} = $ ?"
+  ],
+  "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Couleur",
+    "Rouge",
+    "Bleue",
+    "Verte"
+   ],
+   "rows": [
+    [
+     "Nombre",
+     "4",
+     "6",
+     "2"
+    ]
+   ],
+   "caption": "Contenu du sac de Léa"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_01",
+  "num": "2",
+  "source": "Probabilites_Brevet_v4|PROB_01.2"
+ },
+ {
+  "id": "DF.PROB.02-L002",
+  "comp": "DF.PROB.02",
+  "q": "Léa a un sac opaque contenant $4$ billes rouges, $6$ billes bleues et $2$ billes vertes. Elle tire une bille au hasard. La probabilité de tirer une bille verte est $\\frac{1}{4}$.",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Il y a $2$ billes vertes et $12$ billes au total.",
+   "$P(\\text{verte}) = \\frac{2}{12} = \\frac{1}{6}$, pas $\\frac{1}{4}$.",
+   "Que peut-on conclure ?"
+  ],
+  "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Couleur",
+    "Rouge",
+    "Bleue",
+    "Verte"
+   ],
+   "rows": [
+    [
+     "Nombre",
+     "4",
+     "6",
+     "2"
+    ]
+   ],
+   "caption": "Contenu du sac de Léa"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_01",
+  "num": "3",
+  "source": "Probabilites_Brevet_v4|PROB_01.3"
+ },
+ {
+  "id": "DF.PROB.02-L003",
+  "comp": "DF.PROB.02",
+  "q": "Léa a un sac opaque contenant $4$ billes rouges, $6$ billes bleues et $2$ billes vertes. Elle tire une bille au hasard. Quelle est la probabilité de tirer une bille rouge ? ___",
+  "a": "1/3",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "4/8": "DF.PROB.02#favorables_sur_defavorables",
+   "1/2": "DF.PROB.02#favorables_sur_defavorables"
+  },
+  "steps": [
+   "Il y a $4$ billes rouges sur $12$ au total.",
+   "$P(\\text{rouge}) = \\frac{4}{12}$. On simplifie par $4$ : $\\frac{4}{12} = $ ?"
+  ],
+  "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Couleur",
+    "Rouge",
+    "Bleue",
+    "Verte"
+   ],
+   "rows": [
+    [
+     "Nombre",
+     "4",
+     "6",
+     "2"
+    ]
+   ],
+   "caption": "Contenu du sac de Léa"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_01",
+  "num": "4",
+  "source": "Probabilites_Brevet_v4|PROB_01.4"
+ },
+ {
+  "id": "DF.PROB.02-L004",
+  "comp": "DF.PROB.02",
+  "q": "Léa a un sac opaque contenant $4$ billes rouges, $6$ billes bleues et $2$ billes vertes. Elle tire une bille au hasard. Léa ajoute $3$ billes jaunes dans le sac. Quelle est maintenant la probabilité de tirer une bille rouge ?",
+  "a": "$\\frac{4}{15}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{4}{15}$",
+   "$\\frac{1}{3}$",
+   "$\\frac{4}{11}$"
+  ],
+  "err": {
+   "$\\frac{1}{3}$": "DF.PROB.02#total_pas_a_jour",
+   "$\\frac{4}{11}$": "DF.PROB.02#favorables_sur_defavorables"
+  },
+  "steps": [
+   "Nouveau total : $12 + 3 = 15$ billes. Le nombre de billes rouges n'a pas changé : $4$.",
+   "$P(\\text{rouge}) = \\frac{4}{15}$.",
+   "$\\frac{4}{12} = \\frac{1}{3}$ c'était la probabilité AVANT d'ajouter les billes jaunes. Attention au nouveau total."
+  ],
+  "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Couleur",
+    "Rouge",
+    "Bleue",
+    "Verte"
+   ],
+   "rows": [
+    [
+     "Nombre",
+     "4",
+     "6",
+     "2"
+    ]
+   ],
+   "caption": "Contenu du sac de Léa"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_01",
+  "num": "5",
+  "source": "Probabilites_Brevet_v4|PROB_01.5"
+ },
+ {
+  "id": "DF.PROB.02-L005",
+  "comp": "DF.PROB.02",
+  "q": "Pour la fête du collège, on organise une loterie. Une roue est divisée en $20$ secteurs identiques : $8$ rouges (perdu), $7$ jaunes (un bonbon), $3$ bleus (un stylo) et $2$ dorés (un livre). On fait tourner la roue une fois. Quelle est la probabilité de tomber sur un secteur jaune ? ___",
+  "a": "7/20",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "7/13": "DF.PROB.02#favorables_sur_defavorables"
+  },
+  "steps": [
+   "Il y a $7$ secteurs jaunes sur $20$ secteurs au total.",
+   "$P(\\text{jaune}) = \\frac{7}{20}$. Cette fraction est-elle simplifiable ?"
+  ],
+  "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Couleur",
+    "Rouge",
+    "Jaune",
+    "Bleu",
+    "Doré"
+   ],
+   "rows": [
+    [
+     "Secteurs",
+     "8",
+     "7",
+     "3",
+     "2"
+    ],
+    [
+     "Lot",
+     "Perdu",
+     "Bonbon",
+     "Stylo",
+     "Livre"
+    ]
+   ],
+   "caption": "Répartition des secteurs de la roue"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_02",
+  "num": "1",
+  "source": "Probabilites_Brevet_v4|PROB_02.1"
+ },
+ {
+  "id": "DF.PROB.04-L001",
+  "comp": "DF.PROB.04",
+  "q": "Pour la fête du collège, on organise une loterie. Une roue est divisée en $20$ secteurs identiques : $8$ rouges (perdu), $7$ jaunes (un bonbon), $3$ bleus (un stylo) et $2$ dorés (un livre). On fait tourner la roue une fois. Quelle est la probabilité de gagner un lot (n'importe lequel) ?",
+  "a": "$\\frac{3}{5}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{3}{5}$",
+   "$\\frac{21}{4000}$",
+   "$\\frac{2}{5}$"
+  ],
+  "err": {
+   "$\\frac{21}{4000}$": "DF.PROB.04#multiplie_ou"
+  },
+  "steps": [
+   "Gagner = tomber sur jaune, bleu ou doré : $7 + 3 + 2 = 12$ secteurs favorables.",
+   "$P(\\text{gagner}) = \\frac{12}{20}$. On simplifie par $4$ : $\\frac{12}{20} = $ ?"
+  ],
+  "f": "$P(A \\cup B) = P(A) + P(B)$ si $A$ et $B$ incompatibles",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Couleur",
+    "Rouge",
+    "Jaune",
+    "Bleu",
+    "Doré"
+   ],
+   "rows": [
+    [
+     "Secteurs",
+     "8",
+     "7",
+     "3",
+     "2"
+    ],
+    [
+     "Lot",
+     "Perdu",
+     "Bonbon",
+     "Stylo",
+     "Livre"
+    ]
+   ],
+   "caption": "Répartition des secteurs de la roue"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_02",
+  "num": "2",
+  "source": "Probabilites_Brevet_v4|PROB_02.2"
+ },
+ {
+  "id": "DF.PROB.03-L001",
+  "comp": "DF.PROB.03",
+  "q": "Pour la fête du collège, on organise une loterie. Une roue est divisée en $20$ secteurs identiques : $8$ rouges (perdu), $7$ jaunes (un bonbon), $3$ bleus (un stylo) et $2$ dorés (un livre). On fait tourner la roue une fois. La probabilité de perdre est $\\frac{2}{5}$.",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "$P(\\text{perdre}) = 1 - P(\\text{gagner}) = 1 - \\frac{3}{5} = \\frac{2}{5}$.",
+   "Ou directement : $\\frac{8}{20} = \\frac{2}{5}$.",
+   "C'est bien $\\frac{2}{5}$. Que peut-on conclure ?"
+  ],
+  "f": "$P(\\bar{A}) = 1 - P(A)$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Couleur",
+    "Rouge",
+    "Jaune",
+    "Bleu",
+    "Doré"
+   ],
+   "rows": [
+    [
+     "Secteurs",
+     "8",
+     "7",
+     "3",
+     "2"
+    ],
+    [
+     "Lot",
+     "Perdu",
+     "Bonbon",
+     "Stylo",
+     "Livre"
+    ]
+   ],
+   "caption": "Répartition des secteurs de la roue"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_02",
+  "num": "3",
+  "source": "Probabilites_Brevet_v4|PROB_02.3"
+ },
+ {
+  "id": "DF.PROB.04-L002",
+  "comp": "DF.PROB.04",
+  "q": "Pour la fête du collège, on organise une loterie. Une roue est divisée en $20$ secteurs identiques : $8$ rouges (perdu), $7$ jaunes (un bonbon), $3$ bleus (un stylo) et $2$ dorés (un livre). On fait tourner la roue une fois. Quelle est la probabilité de gagner un stylo ou un livre ?",
+  "a": "$\\frac{1}{4}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{1}{4}$",
+   "$\\frac{3}{200}$",
+   "$\\frac{3}{20}$"
+  ],
+  "err": {
+   "$\\frac{3}{200}$": "DF.PROB.04#multiplie_ou"
+  },
+  "steps": [
+   "Stylo : $3$ secteurs. Livre : $2$ secteurs. Ces événements sont incompatibles.",
+   "$P(\\text{stylo ou livre}) = \\frac{3}{20} + \\frac{2}{20} = \\frac{5}{20}$. On simplifie : $\\frac{5}{20} = $ ?",
+   "Attention : $\\frac{5}{20} = \\frac{1}{4}$, pas $\\frac{3}{20}$ (qui est « stylo seul »)."
+  ],
+  "f": "$P(A \\cup B) = P(A) + P(B)$ si $A$ et $B$ incompatibles",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Couleur",
+    "Rouge",
+    "Jaune",
+    "Bleu",
+    "Doré"
+   ],
+   "rows": [
+    [
+     "Secteurs",
+     "8",
+     "7",
+     "3",
+     "2"
+    ],
+    [
+     "Lot",
+     "Perdu",
+     "Bonbon",
+     "Stylo",
+     "Livre"
+    ]
+   ],
+   "caption": "Répartition des secteurs de la roue"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_02",
+  "num": "4",
+  "source": "Probabilites_Brevet_v4|PROB_02.4"
+ },
+ {
+  "id": "DF.PROB.06-L001",
+  "comp": "DF.PROB.06",
+  "q": "Pour la fête du collège, on organise une loterie. Une roue est divisée en $20$ secteurs identiques : $8$ rouges (perdu), $7$ jaunes (un bonbon), $3$ bleus (un stylo) et $2$ dorés (un livre). On fait tourner la roue une fois. Sacha joue $5$ fois et ne gagne rien. Il dit : « La prochaine fois, j'ai forcément plus de chances de gagner. » A-t-il raison ? ___",
+  "a": "Non",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "Oui": "DF.PROB.06#erreur_du_joueur"
+  },
+  "steps": [
+   "Chaque tour de roue est indépendant des précédents.",
+   "La probabilité de gagner reste $\\frac{3}{5}$ à chaque tour, quel que soit le résultat des tours précédents.",
+   "C'est une erreur fréquente : croire que « ça doit finir par tomber »."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Couleur",
+    "Rouge",
+    "Jaune",
+    "Bleu",
+    "Doré"
+   ],
+   "rows": [
+    [
+     "Secteurs",
+     "8",
+     "7",
+     "3",
+     "2"
+    ],
+    [
+     "Lot",
+     "Perdu",
+     "Bonbon",
+     "Stylo",
+     "Livre"
+    ]
+   ],
+   "caption": "Répartition des secteurs de la roue"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_02",
+  "num": "5",
+  "source": "Probabilites_Brevet_v4|PROB_02.5"
+ },
+ {
+  "id": "DF.PROB.05-L001",
+  "comp": "DF.PROB.05",
+  "q": "La cantine du collège propose un « menu surprise ». L'entrée est choisie au hasard parmi : Salade (S), Soupe (O), Crudités (C). Le dessert est choisi au hasard parmi : Fruit (F), Yaourt (Y). Chaque combinaison est équiprobable. Combien de menus différents sont possibles au total ? ___",
+  "a": "6",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "5": "DF.PROB.05#issues_additionnees"
+  },
+  "steps": [
+   "Il y a $3$ choix d'entrée et $2$ choix de dessert.",
+   "Nombre total de menus : $3 \\times 2 = $ ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "",
+    "Fruit (F)",
+    "Yaourt (Y)"
+   ],
+   "rows": [
+    [
+     "Salade (S)",
+     "S-F",
+     "S-Y"
+    ],
+    [
+     "Soupe (O)",
+     "O-F",
+     "O-Y"
+    ],
+    [
+     "Crudités (C)",
+     "C-F",
+     "C-Y"
+    ]
+   ],
+   "caption": "Tableau à double entrée des menus possibles"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_03",
+  "num": "1",
+  "source": "Probabilites_Brevet_v4|PROB_03.1"
+ },
+ {
+  "id": "DF.PROB.05-L002",
+  "comp": "DF.PROB.05",
+  "q": "La cantine du collège propose un « menu surprise ». L'entrée est choisie au hasard parmi : Salade (S), Soupe (O), Crudités (C). Le dessert est choisi au hasard parmi : Fruit (F), Yaourt (Y). Chaque combinaison est équiprobable. Quelle est la probabilité d'avoir le menu « Salade + Yaourt » ?",
+  "a": "$\\frac{1}{6}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{1}{6}$",
+   "$\\frac{1}{3}$",
+   "$\\frac{1}{2}$"
+  ],
+  "err": {},
+  "steps": [
+   "Il y a $1$ seul menu « S-Y » parmi $6$ menus possibles.",
+   "$P(\\text{S-Y}) = \\frac{1}{6}$.",
+   "$\\frac{1}{3}$ serait la probabilité de la salade seule, $\\frac{1}{2}$ celle du yaourt seul."
+  ],
+  "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "",
+    "Fruit (F)",
+    "Yaourt (Y)"
+   ],
+   "rows": [
+    [
+     "Salade (S)",
+     "S-F",
+     "S-Y"
+    ],
+    [
+     "Soupe (O)",
+     "O-F",
+     "O-Y"
+    ],
+    [
+     "Crudités (C)",
+     "C-F",
+     "C-Y"
+    ]
+   ],
+   "caption": "Tableau à double entrée des menus possibles"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_03",
+  "num": "2",
+  "source": "Probabilites_Brevet_v4|PROB_03.2"
+ },
+ {
+  "id": "DF.PROB.02-L006",
+  "comp": "DF.PROB.02",
+  "q": "La cantine du collège propose un « menu surprise ». L'entrée est choisie au hasard parmi : Salade (S), Soupe (O), Crudités (C). Le dessert est choisi au hasard parmi : Fruit (F), Yaourt (Y). Chaque combinaison est équiprobable. La probabilité d'avoir un fruit en dessert est $\\frac{1}{3}$.",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Les menus avec un fruit sont : S-F, O-F, C-F, soit $3$ menus sur $6$.",
+   "$P(\\text{fruit}) = \\frac{3}{6} = \\frac{1}{2}$, pas $\\frac{1}{3}$.",
+   "$\\frac{1}{3}$ c'est la probabilité d'une entrée précise, pas du dessert."
+  ],
+  "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "",
+    "Fruit (F)",
+    "Yaourt (Y)"
+   ],
+   "rows": [
+    [
+     "Salade (S)",
+     "S-F",
+     "S-Y"
+    ],
+    [
+     "Soupe (O)",
+     "O-F",
+     "O-Y"
+    ],
+    [
+     "Crudités (C)",
+     "C-F",
+     "C-Y"
+    ]
+   ],
+   "caption": "Tableau à double entrée des menus possibles"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_03",
+  "num": "3",
+  "source": "Probabilites_Brevet_v4|PROB_03.3"
+ },
+ {
+  "id": "DF.PROB.03-L002",
+  "comp": "DF.PROB.03",
+  "q": "La cantine du collège propose un « menu surprise ». L'entrée est choisie au hasard parmi : Salade (S), Soupe (O), Crudités (C). Le dessert est choisi au hasard parmi : Fruit (F), Yaourt (Y). Chaque combinaison est équiprobable. Quelle est la probabilité de ne pas avoir de soupe en entrée ? ___",
+  "a": "2/3",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "1/3": "DF.PROB.03#meme_probabilite"
+  },
+  "steps": [
+   "Les menus sans soupe : S-F, S-Y, C-F, C-Y, soit $4$ menus sur $6$.",
+   "$P(\\text{pas soupe}) = \\frac{4}{6}$. On simplifie : $\\frac{4}{6} = $ ?",
+   "Autre méthode : $P(\\text{pas soupe}) = 1 - P(\\text{soupe}) = 1 - \\frac{1}{3} = \\frac{2}{3}$."
+  ],
+  "f": "$P(\\bar{A}) = 1 - P(A)$",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "",
+    "Fruit (F)",
+    "Yaourt (Y)"
+   ],
+   "rows": [
+    [
+     "Salade (S)",
+     "S-F",
+     "S-Y"
+    ],
+    [
+     "Soupe (O)",
+     "O-F",
+     "O-Y"
+    ],
+    [
+     "Crudités (C)",
+     "C-F",
+     "C-Y"
+    ]
+   ],
+   "caption": "Tableau à double entrée des menus possibles"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_03",
+  "num": "4",
+  "source": "Probabilites_Brevet_v4|PROB_03.4"
+ },
+ {
+  "id": "DF.PROB.05-L003",
+  "comp": "DF.PROB.05",
+  "q": "La cantine du collège propose un « menu surprise ». L'entrée est choisie au hasard parmi : Salade (S), Soupe (O), Crudités (C). Le dessert est choisi au hasard parmi : Fruit (F), Yaourt (Y). Chaque combinaison est équiprobable. Emma veut une salade ou des crudités en entrée, avec un yaourt en dessert. Quelle est la probabilité qu'elle obtienne ce qu'elle veut ?",
+  "a": "$\\frac{1}{3}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{1}{3}$",
+   "$\\frac{7}{6}$",
+   "$\\frac{2}{3}$"
+  ],
+  "err": {
+   "$\\frac{7}{6}$": "DF.PROB.05#branche_additionnee"
+  },
+  "steps": [
+   "Les menus qui conviennent : S-Y et C-Y, soit $2$ menus favorables sur $6$.",
+   "$P = \\frac{2}{6}$. On simplifie : $\\frac{2}{6} = $ ?",
+   "$\\frac{2}{3}$ serait « salade ou crudités » sans condition sur le dessert. Attention à bien croiser les deux critères."
+  ],
+  "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "",
+    "Fruit (F)",
+    "Yaourt (Y)"
+   ],
+   "rows": [
+    [
+     "Salade (S)",
+     "S-F",
+     "S-Y"
+    ],
+    [
+     "Soupe (O)",
+     "O-F",
+     "O-Y"
+    ],
+    [
+     "Crudités (C)",
+     "C-F",
+     "C-Y"
+    ]
+   ],
+   "caption": "Tableau à double entrée des menus possibles"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_03",
+  "num": "5",
+  "source": "Probabilites_Brevet_v4|PROB_03.5"
+ },
+ {
+  "id": "DF.PROB.04-L003",
+  "comp": "DF.PROB.04",
+  "q": "Le club de handball organise une tombola. $200$ billets sont vendus. Il y a $10$ lots : $1$ vélo (billet n°42), $4$ places de cinéma et $5$ porte-clés. Après la tombola, le club a aussi noté les résultats de $50$ lancers francs lors d'un concours : $32$ ont été réussis. Quelle est la probabilité de gagner un lot (n'importe lequel) avec un billet ? ___",
+  "a": "1/20",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "Il y a $10$ billets gagnants sur $200$ billets au total.",
+   "$P(\\text{gagner}) = \\frac{10}{200}$. On simplifie par $10$ : $\\frac{10}{200} = $ ?"
+  ],
+  "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Lot",
+    "Vélo",
+    "Cinéma",
+    "Porte-clés",
+    "Rien"
+   ],
+   "rows": [
+    [
+     "Nombre de billets",
+     "1",
+     "4",
+     "5",
+     "190"
+    ]
+   ],
+   "caption": "Répartition des lots de la tombola (200 billets)"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_04",
+  "num": "1",
+  "source": "Probabilites_Brevet_v4|PROB_04.1"
+ },
+ {
+  "id": "DF.STAT.02-L001",
+  "comp": "DF.STAT.02",
+  "q": "Le club de handball organise une tombola. $200$ billets sont vendus. Il y a $10$ lots : $1$ vélo (billet n°42), $4$ places de cinéma et $5$ porte-clés. Après la tombola, le club a aussi noté les résultats de $50$ lancers francs lors d'un concours : $32$ ont été réussis. Quelle est la fréquence de réussite des lancers francs lors du concours ?",
+  "a": "$0{,}64$",
+  "type": "qcm",
+  "options": [
+   "$0{,}64$",
+   "$32$",
+   "$0{,}32$"
+  ],
+  "err": {
+   "$32$": "DF.STAT.02#effectif_pour_frequence"
+  },
+  "steps": [
+   "Fréquence = $\\frac{\\text{nombre de réussites}}{\\text{nombre total de lancers}} = \\frac{32}{50}$.",
+   "$\\frac{32}{50} = \\frac{64}{100} = $ ?"
+  ],
+  "f": "$f = \\frac{\\text{effectif}}{\\text{effectif total}}$",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Lot",
+    "Vélo",
+    "Cinéma",
+    "Porte-clés",
+    "Rien"
+   ],
+   "rows": [
+    [
+     "Nombre de billets",
+     "1",
+     "4",
+     "5",
+     "190"
+    ]
+   ],
+   "caption": "Répartition des lots de la tombola (200 billets)"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_04",
+  "num": "2",
+  "source": "Probabilites_Brevet_v4|PROB_04.2"
+ },
+ {
+  "id": "DF.PROB.02-L007",
+  "comp": "DF.PROB.02",
+  "q": "Le club de handball organise une tombola. $200$ billets sont vendus. Il y a $10$ lots : $1$ vélo (billet n°42), $4$ places de cinéma et $5$ porte-clés. Après la tombola, le club a aussi noté les résultats de $50$ lancers francs lors d'un concours : $32$ ont été réussis. Si on achète un billet, la probabilité de gagner le vélo est $\\frac{1}{200}$.",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Il y a $1$ seul billet gagnant le vélo sur $200$ billets.",
+   "$P(\\text{vélo}) = \\frac{1}{200}$.",
+   "C'est bien correct."
+  ],
+  "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Lot",
+    "Vélo",
+    "Cinéma",
+    "Porte-clés",
+    "Rien"
+   ],
+   "rows": [
+    [
+     "Nombre de billets",
+     "1",
+     "4",
+     "5",
+     "190"
+    ]
+   ],
+   "caption": "Répartition des lots de la tombola (200 billets)"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_04",
+  "num": "3",
+  "source": "Probabilites_Brevet_v4|PROB_04.3"
+ },
+ {
+  "id": "DF.PROB.06-L002",
+  "comp": "DF.PROB.06",
+  "q": "Le club de handball organise une tombola. $200$ billets sont vendus. Il y a $10$ lots : $1$ vélo (billet n°42), $4$ places de cinéma et $5$ porte-clés. Après la tombola, le club a aussi noté les résultats de $50$ lancers francs lors d'un concours : $32$ ont été réussis. Le club organise un nouveau concours de lancers francs. En se basant sur la fréquence observée, combien de réussites peut-on estimer sur $150$ lancers ? ___",
+  "a": "96",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "La fréquence observée est $0{,}64$. On estime les réussites par $150 \\times 0{,}64$.",
+   "$150 \\times 0{,}64 = $ ?",
+   "La fréquence observée sert d'estimation de la probabilité quand le nombre d'expériences est grand."
+  ],
+  "f": "$\\text{Estimation} = n \\times f$",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Lot",
+    "Vélo",
+    "Cinéma",
+    "Porte-clés",
+    "Rien"
+   ],
+   "rows": [
+    [
+     "Nombre de billets",
+     "1",
+     "4",
+     "5",
+     "190"
+    ]
+   ],
+   "caption": "Répartition des lots de la tombola (200 billets)"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_04",
+  "num": "4",
+  "source": "Probabilites_Brevet_v4|PROB_04.4"
+ },
+ {
+  "id": "DF.PROB.06-L003",
+  "comp": "DF.PROB.06",
+  "q": "Le club de handball organise une tombola. $200$ billets sont vendus. Il y a $10$ lots : $1$ vélo (billet n°42), $4$ places de cinéma et $5$ porte-clés. Après la tombola, le club a aussi noté les résultats de $50$ lancers francs lors d'un concours : $32$ ont été réussis. On simule $500$ tombolas sur ordinateur et on observe $24$ gains. Vers quelle valeur la fréquence de gain se rapproche-t-elle quand on augmente le nombre de simulations ?",
+  "a": "$\\frac{1}{20}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{1}{20}$",
+   "$\\frac{24}{500}$",
+   "$\\frac{1}{10}$"
+  ],
+  "err": {
+   "$\\frac{24}{500}$": "DF.PROB.06#frequence_egale_proba"
+  },
+  "steps": [
+   "La fréquence observée est $\\frac{24}{500} = 0{,}048$, proche de $\\frac{1}{20} = 0{,}05$.",
+   "Quand le nombre de simulations augmente, la fréquence se stabilise vers la probabilité théorique.",
+   "$\\frac{24}{500}$ est la fréquence observée (elle varie). La probabilité théorique $\\frac{1}{20}$ est la valeur limite."
+  ],
+  "f": "$\\text{Quand } n \\text{ est grand, } f \\approx P$",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Lot",
+    "Vélo",
+    "Cinéma",
+    "Porte-clés",
+    "Rien"
+   ],
+   "rows": [
+    [
+     "Nombre de billets",
+     "1",
+     "4",
+     "5",
+     "190"
+    ]
+   ],
+   "caption": "Répartition des lots de la tombola (200 billets)"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PROB_04",
+  "num": "5",
+  "source": "Probabilites_Brevet_v4|PROB_04.5"
+ }
+]

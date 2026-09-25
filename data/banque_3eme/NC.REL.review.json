@@ -1,0 +1,158 @@
+[
+  {
+    "id": "NC.REL.01-d01",
+    "verdict": "corrige",
+    "raison": "La règle erronée #distance_zero (comparer les valeurs absolues) prédit uniquement −12 ; −7 et −10 ne sont prédits par aucune règle, leur tag est infondé. Reformulation en comparaisons où chaque distracteur est exactement l'application de #distance_zero et la bonne réponse la contredit.",
+    "correction": {
+      "id": "NC.REL.01-d01",
+      "comp": "NC.REL.01",
+      "q": "Laquelle de ces comparaisons est vraie ?",
+      "a": "$-3 > -12$",
+      "type": "qcm",
+      "options": [
+        "$-12 > -3$",
+        "$-3 > -12$",
+        "$-7 > -3$",
+        "$-10 > -7$"
+      ],
+      "err": {
+        "$-12 > -3$": "NC.REL.01#distance_zero",
+        "$-7 > -3$": "NC.REL.01#distance_zero",
+        "$-10 > -7$": "NC.REL.01#distance_zero"
+      },
+      "steps": [
+        "Place ces nombres sur une droite graduée : le plus grand est le plus à droite.",
+        "Entre deux nombres négatifs, celui qui est le plus proche de zéro est-il le plus grand ou le plus petit ?"
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.REL.01-d02",
+    "verdict": "ok",
+    "raison": "−2 − 3 = −5 ; 1 = déplacement vers la droite (#graduation). NB transversal : un « − » typographique (U+2212) n'est pas normalisé par _normFill."
+  },
+  {
+    "id": "NC.REL.01-d03",
+    "verdict": "ok",
+    "raison": "−2,5 < −2,1 vrai ; Faux = comparaison des valeurs absolues."
+  },
+  {
+    "id": "NC.REL.02-d01",
+    "verdict": "ok",
+    "raison": "−15 ; 15 = règle du produit appliquée à la somme."
+  },
+  {
+    "id": "NC.REL.02-d02",
+    "verdict": "corrige",
+    "raison": "4−(−2)=6. 2 (=4−2) est bien #soustraire_negatif et −6 #mauvais_signe. −2 n'est produit par aucune erreur type identifiable (ni 4−2, ni 4+2 avec mauvais signe) : tag #soustraire_negatif infondé. Retirer −2 (QCM à 3 options).",
+    "correction": {
+      "id": "NC.REL.02-d02",
+      "comp": "NC.REL.02",
+      "q": "Calcule $4 - (-2)$.",
+      "a": "$6$",
+      "type": "qcm",
+      "options": [
+        "$2$",
+        "$-6$",
+        "$6$"
+      ],
+      "err": {
+        "$2$": "NC.REL.02#soustraire_negatif",
+        "$-6$": "NC.REL.02#mauvais_signe"
+      },
+      "steps": [
+        "Soustraire un nombre, c'est ajouter son opposé. Quel est l'opposé de $-2$ ?",
+        "On calcule donc $4 + \\,?$"
+      ],
+      "f": "$a - b = a + (-b)$",
+      "f_disabled": false,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.REL.02-d03",
+    "verdict": "corrige",
+    "raison": "−2+7−4=1 ✓ ; −13 (=−2−7−4) #soustraire_negatif ✓ ; −1 #mauvais_signe ✓. 9 n'est pas le résultat de #regle_produit : appliquer la règle du produit à −2+(−4) donne 6, puis 6+7 = 13. Remplacer 9 par 13.",
+    "correction": {
+      "id": "NC.REL.02-d03",
+      "comp": "NC.REL.02",
+      "q": "Calcule $-2 - (-7) + (-4)$.",
+      "a": "$1$",
+      "type": "qcm",
+      "options": [
+        "$1$",
+        "$-13$",
+        "$13$",
+        "$-1$"
+      ],
+      "err": {
+        "$-13$": "NC.REL.02#soustraire_negatif",
+        "$13$": "NC.REL.02#regle_produit",
+        "$-1$": "NC.REL.02#mauvais_signe"
+      },
+      "steps": [
+        "Transforme la soustraction : $-(-7)$ devient $+\\,?$",
+        "Tu obtiens $-2 + 7 + (-4)$ : regroupe d'abord $-2$ et $-4$, puis ajoute $7$."
+      ],
+      "f": "$a - b = a + (-b)$",
+      "f_disabled": false,
+      "lvl": 2,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.REL.03-d01",
+    "verdict": "corrige",
+    "raison": "12 ✓, −12 #moins_par_moins ✓. −7 = somme (−3)+(−4) : c'est une confusion d'opération, pas #regle_addition (« signe du plus grand », qui donnerait −12 ici). Retirer la clé −7 de err (réponse sans erreur type).",
+    "correction": {
+      "id": "NC.REL.03-d01",
+      "comp": "NC.REL.03",
+      "q": "Calcule $(-3) \\times (-4)$. ___",
+      "a": "12",
+      "type": "fill",
+      "options": [],
+      "err": {
+        "-12": "NC.REL.03#moins_par_moins"
+      },
+      "steps": [
+        "On multiplie d'abord les distances à zéro : $3 \\times 4 = \\,?$",
+        "Le produit de deux nombres de même signe est-il positif ou négatif ?"
+      ],
+      "f": "Produit : même signe $\\to$ positif, signes contraires $\\to$ négatif",
+      "f_disabled": false,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.REL.03-d02",
+    "verdict": "ok",
+    "raison": "Seul (−3)×(−4) est positif ; les 3 distracteurs sont exactement « signe du plus grand en valeur absolue » (#regle_addition)."
+  },
+  {
+    "id": "NC.REL.03-d03",
+    "verdict": "ok",
+    "raison": "48÷6=8 positif ; −8 = moins par moins."
+  }
+]

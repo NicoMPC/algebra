@@ -1,0 +1,102 @@
+{
+  "fichier": "data/banque_3eme/EG.TRIG.json",
+  "relecteur": "relecteur",
+  "date": "2026-09-24",
+  "methode": "calculs refaits a la main ; _normFill/_toNum/_matchFill extraits d app.html et simules en Node (a, alt, variantes, cles err) ; LaTeX rendu KaTeX 0.16.9 strict (0 erreur) ; ids err verifies dans competences.json",
+  "bilan": {
+    "ok": 11,
+    "corrige": 1,
+    "rejet": 0
+  },
+  "items": [
+    {
+      "id": "EG.TRIG.01-d01",
+      "verdict": "ok",
+      "remarques": "[KL]. 3 options = 3 cotes."
+    },
+    {
+      "id": "EG.TRIG.01-d02",
+      "verdict": "ok",
+      "remarques": "QR ; alt et casse OK ; PQ/PR refuses. (QR) refuse : coherent avec la consigne « deux lettres »."
+    },
+    {
+      "id": "EG.TRIG.01-d03",
+      "verdict": "ok",
+      "remarques": "Adjacent a B : [BC]."
+    },
+    {
+      "id": "EG.TRIG.02-d01",
+      "verdict": "ok",
+      "remarques": "cos A = AB/AC ; sin, inverse, tan : coherents."
+    },
+    {
+      "id": "EG.TRIG.02-d02",
+      "verdict": "ok",
+      "remarques": "tan D = EF/DE ; distracteurs coherents."
+    },
+    {
+      "id": "EG.TRIG.02-d03",
+      "verdict": "ok",
+      "remarques": "BC oppose a A : c est un sinus -> Faux."
+    },
+    {
+      "id": "EG.TRIG.03-d01",
+      "verdict": "ok",
+      "remarques": "Point signale : 10cos60=5. Radians : 10cos(60 rad)=-9,52 ; grades : 10cos(54°)=5,88 -> 5,9 ; 20=10/cos60. Tous exacts. Suppose une calculatrice (cos 60 non exigible de memoire) : voir question Nicolas."
+    },
+    {
+      "id": "EG.TRIG.03-d02",
+      "verdict": "ok",
+      "remarques": "Point signale : DF=6/0,5=12 ; 3=6x0,5 ; radians 6/cos(60 rad)=-6,30 ; grades 6/cos(54°)=10,21. Exacts."
+    },
+    {
+      "id": "EG.TRIG.03-d03",
+      "verdict": "ok",
+      "remarques": "Point signale : 40sin30=20 ; 80=40/0,5 ; radians 40sin(30 rad)=-39,5 ; grades 40sin(27°)=18,2. Exacts."
+    },
+    {
+      "id": "EG.TRIG.04-d01",
+      "verdict": "ok",
+      "remarques": "Point signale : arccos 0,5=60. pas_arccos : cos(0,5°)=0,99996 -> « 1 », cos(0,5 rad)=0,88 : exacts. 45 (moitie de 90) coherent avec angle_proportionnel. 60° accepte."
+    },
+    {
+      "id": "EG.TRIG.04-d02",
+      "verdict": "corrige",
+      "remarques": "Juste (cos A=4/8, 60°). QCM a 3 options alors qu un distracteur naturel existe : 30° (sinus au lieu du cosinus, arcsin 0,5). Correction : 4e option 30° -> EG.TRIG.02#mauvais_rapport.",
+      "correction": {
+        "id": "EG.TRIG.04-d02",
+        "comp": "EG.TRIG.04",
+        "q": "Le triangle $ABC$ est rectangle en $B$, avec $AB = 4$ cm et $AC = 8$ cm. Quelle est la mesure de $\\widehat{A}$ ?",
+        "a": "$60°$",
+        "type": "qcm",
+        "options": [
+          "$45°$",
+          "$60°$",
+          "$30°$",
+          "$1°$"
+        ],
+        "err": {
+          "$45°$": "EG.TRIG.04#angle_proportionnel",
+          "$1°$": "EG.TRIG.04#pas_arccos",
+          "$30°$": "EG.TRIG.02#mauvais_rapport"
+        },
+        "steps": [
+          "$[AB]$ est adjacent à $\\widehat{A}$ et $[AC]$ est l'hypoténuse : $\\cos \\widehat{A} = \\frac{4}{8} = 0{,}5$.",
+          "Pour passer du cosinus à l'angle, on utilise $\\cos^{-1}$ : $\\widehat{A} = \\cos^{-1}(0{,}5) = \\;?$"
+        ],
+        "f": "$\\cos \\widehat{A} = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+        "lvl": 2,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "EG.TRIG.04-d03",
+      "verdict": "ok",
+      "remarques": "arctan 0,5=26,57° != 22,5 -> Faux."
+    }
+  ]
+}

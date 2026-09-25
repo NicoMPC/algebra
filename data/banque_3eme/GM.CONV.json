@@ -1,0 +1,491 @@
+[
+  {
+    "id": "GM.CONV.01-d01",
+    "comp": "GM.CONV.01",
+    "q": "Convertis $3{,}5$ km en mètres. ___ m",
+    "a": "3500",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "0,0035": "GM.CONV.01#mauvais_sens",
+      "350": "GM.CONV.01#rapport_unites",
+      "35": "GM.CONV.01#rapport_unites"
+    },
+    "steps": [
+      "Rappel : $1$ km $= 1\\,000$ m.",
+      "Un mètre est plus petit qu'un kilomètre : le nombre de mètres doit-il être plus grand ou plus petit que $3{,}5$ ? Calcule : ?"
+    ],
+    "f": "$1 \\text{ km} = 1\\,000 \\text{ m}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.01-d02",
+    "comp": "GM.CONV.01",
+    "q": "Une recette demande $250$ g de farine. Combien cela fait-il en kilogrammes ?",
+    "a": "$0{,}25$ kg",
+    "type": "qcm",
+    "options": [
+      "$0{,}25$ kg",
+      "$250\\,000$ kg",
+      "$2{,}5$ kg",
+      "$25$ kg"
+    ],
+    "err": {
+      "$250\\,000$ kg": "GM.CONV.01#mauvais_sens",
+      "$2{,}5$ kg": "GM.CONV.01#rapport_unites",
+      "$25$ kg": "GM.CONV.01#rapport_unites"
+    },
+    "steps": [
+      "Rappel : $1$ kg $= 1\\,000$ g.",
+      "Le kilogramme est plus grand que le gramme : faut-il multiplier ou diviser $250$ par $1\\,000$ ?"
+    ],
+    "f": "$1 \\text{ kg} = 1\\,000 \\text{ g}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.CONV.01-d03",
+    "comp": "GM.CONV.01",
+    "q": "Une bouteille contient $75$ cL de jus. Combien de litres cela représente-t-il ? ___ L",
+    "a": "0,75",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "7500": "GM.CONV.01#mauvais_sens",
+      "7,5": "GM.CONV.01#rapport_unites",
+      "0,075": "GM.CONV.01#rapport_unites"
+    },
+    "steps": [
+      "Rappel : $1$ L $= 100$ cL.",
+      "Le litre est plus grand que le centilitre : combien de litres font $75$ cL ?"
+    ],
+    "f": "$1 \\text{ L} = 100 \\text{ cL}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.CONV.02-d01",
+    "comp": "GM.CONV.02",
+    "q": "Convertis $3~\\text{m}^2$ en $\\text{cm}^2$.",
+    "a": "$30\\,000~\\text{cm}^2$",
+    "type": "qcm",
+    "options": [
+      "$30\\,000~\\text{cm}^2$",
+      "$300~\\text{cm}^2$",
+      "$3\\,000~\\text{cm}^2$"
+    ],
+    "err": {
+      "$300~\\text{cm}^2$": "GM.CONV.02#comme_longueur",
+      "$3\\,000~\\text{cm}^2$": "GM.CONV.02#comme_longueur"
+    },
+    "steps": [
+      "$1$ m $= 100$ cm, donc un carré de $1$ m de côté mesure $100$ cm sur $100$ cm.",
+      "Combien de $\\text{cm}^2$ dans $1~\\text{m}^2$ ? Multiplie ensuite par $3$."
+    ],
+    "f": "$1~\\text{m}^2 = 100 \\times 100~\\text{cm}^2$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.02-d02",
+    "comp": "GM.CONV.02",
+    "q": "Un aquarium a un volume de $18\\,000~\\text{cm}^3$. Combien de litres d'eau peut-il contenir ? ___ L",
+    "a": "18",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "180": "GM.CONV.02#litre_dm3",
+      "18000": "GM.CONV.02#litre_dm3",
+      "1800": "GM.CONV.02#comme_longueur"
+    },
+    "steps": [
+      "$1$ L $= 1~\\text{dm}^3$ : un cube de $1$ dm, c'est-à-dire $10$ cm, de côté.",
+      "Combien de $\\text{cm}^3$ dans $1~\\text{dm}^3$ ? Combien de fois cela dans $18\\,000~\\text{cm}^3$ ?"
+    ],
+    "f": "$1~\\text{L} = 1~\\text{dm}^3 = 1\\,000~\\text{cm}^3$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.CONV.02-d03",
+    "comp": "GM.CONV.02",
+    "q": "Une cuve a un volume de $2{,}5~\\text{m}^3$. Combien de litres contient-elle ? ___ L",
+    "a": "2500",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "25": "GM.CONV.02#comme_longueur",
+      "250": "GM.CONV.02#comme_longueur",
+      "2500000": "GM.CONV.02#litre_dm3"
+    },
+    "steps": [
+      "$1~\\text{m}^3 = 1\\,000~\\text{dm}^3$ (un cube de $10$ dm de côté).",
+      "Et $1~\\text{dm}^3$ correspond à combien de litres ? Conclus : ?"
+    ],
+    "f": "$1~\\text{m}^3 = 1\\,000~\\text{dm}^3 = 1\\,000~\\text{L}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.CONV.03-d01",
+    "comp": "GM.CONV.03",
+    "q": "Convertis $1{,}5$ h en minutes. ___ min",
+    "a": "90",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "110": "GM.CONV.03#decimales_minutes",
+      "150": "GM.CONV.03#decimales_minutes"
+    },
+    "steps": [
+      "$1$ h $= 60$ min. Et $0{,}5$ h, c'est la moitié d'une heure.",
+      "Combien de minutes font $1$ h plus une demi-heure ?"
+    ],
+    "f": "$1 \\text{ h} = 60 \\text{ min}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.03-d02",
+    "comp": "GM.CONV.03",
+    "q": "Écris $2$ h $15$ min en heures, sous forme décimale. ___ h",
+    "a": "2,25",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2,15": "GM.CONV.03#minutes_decimales"
+    },
+    "steps": [
+      "$15$ min, c'est quelle fraction d'une heure de $60$ min ?",
+      "Écris cette fraction sous forme décimale, puis ajoute $2$ : ?"
+    ],
+    "f": "$n \\text{ min} = \\frac{n}{60} \\text{ h}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.03-d03",
+    "comp": "GM.CONV.03",
+    "q": "Un film dure $2{,}4$ h. Quelle est sa durée en heures et minutes ?",
+    "a": "$2$ h $24$ min",
+    "type": "qcm",
+    "options": [
+      "$2$ h $24$ min",
+      "$2$ h $40$ min",
+      "$2$ h $4$ min"
+    ],
+    "err": {
+      "$2$ h $40$ min": "GM.CONV.03#decimales_minutes",
+      "$2$ h $4$ min": "GM.CONV.03#decimales_minutes"
+    },
+    "steps": [
+      "$2{,}4$ h, c'est $2$ h plus $0{,}4$ h.",
+      "$0{,}4$ h $= 0{,}4 \\times 60$ min $=$ ?"
+    ],
+    "f": "$1 \\text{ h} = 60 \\text{ min}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.CONV.01-t01",
+    "comp": "GM.CONV.01",
+    "q": "Convertis $4{,}2$ m en centimètres. ___ cm",
+    "a": "420",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "42": "GM.CONV.01#rapport_unites",
+      "4200": "GM.CONV.01#rapport_unites",
+      "0,042": "GM.CONV.01#mauvais_sens",
+      "4,200": "NC.ENT.01#ajoute_zero"
+    },
+    "steps": [
+      "Combien de centimètres y a-t-il dans $1$ m ?",
+      "On passe à une unité plus petite : le nombre obtenu doit-il être plus grand ou plus petit ?"
+    ],
+    "f": "$1~\\text{m} = 100~\\text{cm}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.CONV.01-t02",
+    "comp": "GM.CONV.01",
+    "q": "Un sac de pommes de terre pèse $2{,}5$ kg. Combien pèse-t-il en grammes ? ___ g",
+    "a": "2500",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "250": "GM.CONV.01#rapport_unites",
+      "25": "GM.CONV.01#rapport_unites",
+      "0,0025": "GM.CONV.01#mauvais_sens",
+      "2,500": "NC.ENT.01#ajoute_zero"
+    },
+    "steps": [
+      "Combien de grammes y a-t-il dans $1$ kg ?",
+      "Multiplier par $1\\,000$ décale la virgule de combien de rangs ?"
+    ],
+    "f": "$1~\\text{kg} = 1\\,000~\\text{g}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.CONV.01-t03",
+    "comp": "GM.CONV.01",
+    "q": "Un tour de piste d'athlétisme mesure $400$ m. Combien cela fait-il en kilomètres ?",
+    "a": "$0{,}4$ km",
+    "type": "qcm",
+    "options": [
+      "$400\\,000$ km",
+      "$0{,}4$ km",
+      "$4$ km",
+      "$0{,}04$ km"
+    ],
+    "err": {
+      "$400\\,000$ km": "GM.CONV.01#mauvais_sens",
+      "$4$ km": "GM.CONV.01#rapport_unites",
+      "$0{,}04$ km": "GM.CONV.01#rapport_unites"
+    },
+    "steps": [
+      "Combien de mètres dans $1$ km ?",
+      "On passe à une unité plus grande : le nombre de kilomètres est-il plus grand ou plus petit que $400$ ?"
+    ],
+    "f": "$1~\\text{km} = 1\\,000~\\text{m}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.CONV.01-t04",
+    "comp": "GM.CONV.01",
+    "q": "Une gourde contient $1{,}5$ L d'eau. Combien de centilitres cela fait-il ? ___ cL",
+    "a": "150",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "15": "GM.CONV.01#rapport_unites",
+      "1500": "GM.CONV.01#rapport_unites",
+      "0,015": "GM.CONV.01#mauvais_sens"
+    },
+    "steps": [
+      "Combien de centilitres dans $1$ L ?",
+      "L'unité devient plus petite : le nombre doit grandir."
+    ],
+    "f": "$1~\\text{L} = 100~\\text{cL}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.CONV.01-t05",
+    "comp": "GM.CONV.01",
+    "q": "Un comprimé contient $500$ mg de principe actif. Combien cela fait-il en grammes ? ___ g",
+    "a": "0,5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "500000": "GM.CONV.01#mauvais_sens",
+      "5": "GM.CONV.01#rapport_unites",
+      "0,05": "GM.CONV.01#rapport_unites",
+      "50": "GM.CONV.01#rapport_unites"
+    },
+    "steps": [
+      "Combien de milligrammes dans $1$ g ?",
+      "On passe à une unité plus grande : on multiplie ou on divise par ce nombre ?"
+    ],
+    "f": "$1~\\text{g} = 1\\,000~\\text{mg}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.CONV.01-t06",
+    "comp": "GM.CONV.01",
+    "q": "Une fourmi mesure $8$ mm. Quelle est sa longueur en centimètres ? ___ cm",
+    "a": "0,8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "80": "GM.CONV.01#mauvais_sens",
+      "0,08": "GM.CONV.01#rapport_unites",
+      "0,008": "GM.CONV.01#rapport_unites"
+    },
+    "steps": [
+      "Combien de millimètres dans $1$ cm ?",
+      "Le centimètre est plus grand que le millimètre : le nombre doit-il grandir ou diminuer ?"
+    ],
+    "f": "$1~\\text{cm} = 10~\\text{mm}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.CONV.01-t07",
+    "comp": "GM.CONV.01",
+    "q": "Une bouteille de sirop contient $0{,}35$ L. Combien cela fait-il en millilitres ?",
+    "a": "$350$ mL",
+    "type": "qcm",
+    "options": [
+      "$35$ mL",
+      "$3\\,500$ mL",
+      "$350$ mL",
+      "$0{,}000\\,35$ mL"
+    ],
+    "err": {
+      "$35$ mL": "GM.CONV.01#rapport_unites",
+      "$3\\,500$ mL": "GM.CONV.01#rapport_unites",
+      "$0{,}000\\,35$ mL": "GM.CONV.01#mauvais_sens"
+    },
+    "steps": [
+      "Combien de millilitres dans $1$ L ?",
+      "Multiplier par $1\\,000$ : de combien de rangs se décale la virgule ?"
+    ],
+    "f": "$1~\\text{L} = 1\\,000~\\text{mL}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.CONV.01-t08",
+    "comp": "GM.CONV.01",
+    "q": "Un marathon mesure $42{,}195$ km. Combien de mètres cela représente-t-il ? ___ m",
+    "a": "42195",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "4219,5": "GM.CONV.01#rapport_unites",
+      "421,95": "GM.CONV.01#rapport_unites",
+      "0,042195": "GM.CONV.01#mauvais_sens",
+      "421950": "NC.ENT.01#nb_rangs"
+    },
+    "steps": [
+      "Combien de mètres dans $1$ km ?",
+      "Décale la virgule du bon nombre de rangs vers la droite : combien de chiffres après la virgule y a-t-il ici ?"
+    ],
+    "f": "$1~\\text{km} = 1\\,000~\\text{m}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.CONV.01-t09",
+    "comp": "GM.CONV.01",
+    "q": "Une recette demande $0{,}6$ kg de sucre. Lila a un paquet de $750$ g. Combien de grammes de sucre lui reste-t-il après la recette ? ___ g",
+    "a": "150",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "690": "GM.CONV.01#rapport_unites",
+      "744": "GM.CONV.01#rapport_unites"
+    },
+    "steps": [
+      "Avant de soustraire, les deux masses doivent être dans la même unité.",
+      "Combien de grammes font $0{,}6$ kg ?"
+    ],
+    "f": "$1~\\text{kg} = 1\\,000~\\text{g}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.CONV.01-t10",
+    "comp": "GM.CONV.01",
+    "q": "On coupe une ficelle de $3$ m en morceaux de $25$ cm. Combien de morceaux obtient-on ? ___",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1,2": "GM.CONV.01#rapport_unites",
+      "120": "GM.CONV.01#rapport_unites"
+    },
+    "steps": [
+      "Exprime d'abord la longueur de la ficelle en centimètres.",
+      "Combien de fois $25$ cm tiennent-ils dans cette longueur ?"
+    ],
+    "f": "$1~\\text{m} = 100~\\text{cm}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.CONV.01-t11",
+    "comp": "GM.CONV.01",
+    "q": "Un robinet fuit de $15$ mL par minute. Combien de litres d'eau perd-il en une heure ? ___ L",
+    "a": "0,9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "9": "GM.CONV.01#rapport_unites",
+      "90": "GM.CONV.01#rapport_unites",
+      "900000": "GM.CONV.01#mauvais_sens"
+    },
+    "steps": [
+      "Combien de millilitres s'écoulent en $60$ minutes ?",
+      "Convertis ce volume en litres : $1$ L contient combien de mL ?"
+    ],
+    "f": "$1~\\text{L} = 1\\,000~\\text{mL}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  }
+]

@@ -1,0 +1,4046 @@
+[
+  {
+    "id": "NC.ENT.01",
+    "domaine": "NC",
+    "theme": "ENT",
+    "titre": "Multiplier ou diviser un décimal par 10, 100, 1000, 0,1, 0,01",
+    "titre_eleve": "Multiplier ou diviser par 10, 100, 0,1…",
+    "niveau_origine": "6EME",
+    "prerequis": [],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Auto_Calcul",
+      "Puissances_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.ENT.01#ajoute_zero",
+        "libelle": "Ajoute un zéro au lieu de décaler la virgule (2,5 × 10 = 2,50)",
+        "libelle_parent": "Applique « on ajoute un zéro » même aux nombres à virgule",
+        "remediation": "Tableau de numération : chaque chiffre change de rang, c'est la position qui bouge"
+      },
+      {
+        "id": "NC.ENT.01#multiplier_agrandit",
+        "libelle": "Pense que multiplier agrandit toujours (20 × 0,1 = 200)",
+        "libelle_parent": "Croit qu'une multiplication donne toujours un résultat plus grand",
+        "remediation": "Multiplier par 0,1, c'est prendre le dixième : comparer 20 × 0,1 et 20 ÷ 10"
+      },
+      {
+        "id": "NC.ENT.01#nb_rangs",
+        "libelle": "Décale la virgule d'un mauvais nombre de rangs (3,5 × 1000 = 350)",
+        "libelle_parent": "Se trompe dans le nombre de rangs à décaler",
+        "remediation": "Autant de rangs que de zéros dans 10, 100, 1000 ; vérifier l'ordre de grandeur"
+      }
+    ]
+  },
+  {
+    "id": "NC.ENT.02",
+    "domaine": "NC",
+    "theme": "ENT",
+    "titre": "Comparer et ranger des nombres décimaux",
+    "titre_eleve": "Comparer des nombres à virgule",
+    "niveau_origine": "6EME",
+    "prerequis": [],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Auto_Calcul",
+      "Puissances_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.ENT.02#plus_de_chiffres",
+        "libelle": "Croit que le décimal qui a le plus de chiffres après la virgule est le plus grand (2,15 > 2,5)",
+        "libelle_parent": "Lit la partie après la virgule comme un nombre entier",
+        "remediation": "Comparer rang par rang (dixièmes d'abord) ; compléter par des zéros : 2,50 contre 2,15"
+      },
+      {
+        "id": "NC.ENT.02#plus_court_plus_grand",
+        "libelle": "Croit que le nombre le plus court est le plus grand car « les centièmes sont plus petits que les dixièmes » (2,3 > 2,35)",
+        "libelle_parent": "Applique une règle inverse, tout aussi fausse",
+        "remediation": "Placer les nombres sur une droite graduée au centième"
+      }
+    ]
+  },
+  {
+    "id": "NC.ENT.03",
+    "domaine": "NC",
+    "theme": "ENT",
+    "titre": "Arrondir un nombre ou donner une valeur approchée à la précision demandée",
+    "titre_eleve": "Arrondir au dixième, au centième…",
+    "niveau_origine": "6EME",
+    "prerequis": [
+      "NC.ENT.02"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Pythagore_Brevet",
+      "Trigonometrie_Brevet",
+      "Geometrie_Espace_Brevet",
+      "Statistiques_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.ENT.03#troncature",
+        "libelle": "Tronque au lieu d'arrondir (7,86 → 7,8 au dixième)",
+        "libelle_parent": "Coupe le nombre au lieu de l'arrondir",
+        "remediation": "Regarder le chiffre suivant : 5 ou plus → on augmente le dernier chiffre gardé"
+      },
+      {
+        "id": "NC.ENT.03#mauvais_rang",
+        "libelle": "Arrondit au mauvais rang (confond dixième et dizaine, ou dixième et centième)",
+        "libelle_parent": "Confond les noms des rangs (dixième, centième…)",
+        "remediation": "Revoir le vocabulaire des rangs sur un tableau de numération"
+      },
+      {
+        "id": "NC.ENT.03#arrondi_intermediaire",
+        "libelle": "Arrondit un résultat intermédiaire puis cumule l'erreur",
+        "libelle_parent": "Arrondit trop tôt, ce qui fausse le résultat final",
+        "remediation": "Garder la valeur exacte (ou la mémoire de la calculatrice) jusqu'au bout, arrondir seulement à la fin"
+      }
+    ]
+  },
+  {
+    "id": "NC.PRIO.01",
+    "domaine": "NC",
+    "theme": "PRIO",
+    "titre": "Calculer une expression numérique en respectant les priorités opératoires",
+    "titre_eleve": "Calculer dans le bon ordre (priorités)",
+    "niveau_origine": "5EME",
+    "prerequis": [],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Auto_Calcul",
+      "Calcul_Litteral_Brevet",
+      "Scratch_Brevet",
+      "Equations_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.PRIO.01#gauche_droite",
+        "libelle": "Calcule de gauche à droite sans priorité (2 + 3 × 4 = 20)",
+        "libelle_parent": "Calcule dans l'ordre de lecture",
+        "remediation": "Souligner d'abord les produits et quotients, les calculer, puis additionner"
+      },
+      {
+        "id": "NC.PRIO.01#trait_fraction",
+        "libelle": "Ne traite pas le trait de fraction comme une parenthèse ((8 + 4)/2 calculé 8 + 4/2)",
+        "libelle_parent": "Ne voit pas qu'un trait de fraction regroupe tout le numérateur",
+        "remediation": "Réécrire avec des parenthèses : (8 + 4) ÷ 2"
+      },
+      {
+        "id": "NC.PRIO.01#puissance_priorite",
+        "libelle": "Applique le carré au produit entier (3 × 2² = 36)",
+        "libelle_parent": "Ne sait pas que la puissance se calcule avant la multiplication",
+        "remediation": "Ordre : parenthèses, puissances, × et ÷, puis + et −"
+      }
+    ]
+  },
+  {
+    "id": "NC.REL.01",
+    "domaine": "NC",
+    "theme": "REL",
+    "titre": "Repérer, comparer et ranger des nombres relatifs",
+    "titre_eleve": "Comparer des nombres négatifs",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "NC.ENT.02"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Auto_Geometrie",
+      "Inequations_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.REL.01#distance_zero",
+        "libelle": "Compare les négatifs comme des positifs (−7 > −3)",
+        "libelle_parent": "Oublie que plus un négatif est loin de zéro, plus il est petit",
+        "remediation": "Droite graduée et contexte des températures : −7 °C est plus froid que −3 °C"
+      },
+      {
+        "id": "NC.REL.01#graduation",
+        "libelle": "Lit mal une graduation à gauche de zéro (compte dans le mauvais sens)",
+        "libelle_parent": "Se perd sur la partie négative d'un axe",
+        "remediation": "Repérer 0 puis compter les pas vers la gauche"
+      }
+    ]
+  },
+  {
+    "id": "NC.REL.02",
+    "domaine": "NC",
+    "theme": "REL",
+    "titre": "Additionner et soustraire des nombres relatifs",
+    "titre_eleve": "Additionner et soustraire des nombres négatifs",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "NC.REL.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Auto_Calcul",
+      "Calcul_Litteral_Brevet",
+      "Equations_Brevet",
+      "Scratch_Brevet",
+      "Fonctions_Affines_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.REL.02#regle_produit",
+        "libelle": "Applique la règle des signes du produit à l'addition (−3 + (−5) = 8)",
+        "libelle_parent": "Mélange les règles de l'addition et de la multiplication",
+        "remediation": "Modèle gains/dettes : deux dettes s'ajoutent en une dette plus grande"
+      },
+      {
+        "id": "NC.REL.02#soustraire_negatif",
+        "libelle": "Soustrait un négatif comme un positif (4 − (−2) = 2)",
+        "libelle_parent": "Ne transforme pas « enlever une dette » en gain",
+        "remediation": "Soustraire, c'est ajouter l'opposé : 4 − (−2) = 4 + 2"
+      },
+      {
+        "id": "NC.REL.02#mauvais_signe",
+        "libelle": "Trouve le bon écart mais le mauvais signe (−8 + 3 = 5)",
+        "libelle_parent": "Trouve la bonne distance mais se trompe de signe",
+        "remediation": "Le résultat prend le signe du nombre le plus éloigné de zéro"
+      }
+    ]
+  },
+  {
+    "id": "NC.REL.03",
+    "domaine": "NC",
+    "theme": "REL",
+    "titre": "Multiplier et diviser des nombres relatifs",
+    "titre_eleve": "Multiplier des nombres négatifs (règle des signes)",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.REL.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Auto_Litteral",
+      "Calcul_Litteral_Brevet",
+      "Equations_Brevet",
+      "Fonctions_Affines_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.REL.03#moins_par_moins",
+        "libelle": "Pense que « moins par moins » donne moins ((−3) × (−4) = −12)",
+        "libelle_parent": "N'applique pas la règle des signes du produit",
+        "remediation": "Compter les facteurs négatifs : nombre pair → résultat positif"
+      },
+      {
+        "id": "NC.REL.03#regle_addition",
+        "libelle": "Applique la règle de l'addition au produit ((−3) × 5 = 15, « signe du plus grand »)",
+        "libelle_parent": "Confond les règles de l'addition et du produit",
+        "remediation": "Séparer : d'abord le signe (règle du produit), ensuite la valeur"
+      }
+    ]
+  },
+  {
+    "id": "NC.ARITH.01",
+    "domaine": "NC",
+    "theme": "ARITH",
+    "titre": "Reconnaître multiples et diviseurs (critères de divisibilité, division euclidienne)",
+    "titre_eleve": "Multiples, diviseurs et critères de divisibilité",
+    "niveau_origine": "5EME",
+    "prerequis": [],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Arithmetique_Brevet",
+      "Auto_Calcul"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.ARITH.01#critere_dernier_chiffre",
+        "libelle": "Applique le critère de 3 ou 9 au dernier chiffre (« 23 est divisible par 3 car il finit par 3 »)",
+        "libelle_parent": "Utilise la mauvaise règle de divisibilité",
+        "remediation": "Par 3 et 9 : somme des chiffres ; par 2, 5, 10 : dernier chiffre ; par 4 : deux derniers chiffres"
+      },
+      {
+        "id": "NC.ARITH.01#multiple_diviseur",
+        "libelle": "Inverse « multiple » et « diviseur » (dit que 36 est un diviseur de 4)",
+        "libelle_parent": "Confond les mots multiple et diviseur",
+        "remediation": "Phrase modèle : 36 = 4 × 9, donc 36 est un multiple de 4 et 4 est un diviseur de 36"
+      },
+      {
+        "id": "NC.ARITH.01#reste_decimal",
+        "libelle": "Prend la partie décimale du quotient pour le reste (42 ÷ 5 = 8,4 → reste 4)",
+        "libelle_parent": "Confond division décimale et division euclidienne",
+        "remediation": "Écrire 42 = 5 × 8 + 2 : le reste est toujours plus petit que le diviseur"
+      }
+    ]
+  },
+  {
+    "id": "NC.ARITH.02",
+    "domaine": "NC",
+    "theme": "ARITH",
+    "titre": "Reconnaître un nombre premier",
+    "titre_eleve": "Savoir si un nombre est premier",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "NC.ARITH.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Arithmetique_Brevet",
+      "Auto_Calcul"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.ARITH.02#impair_premier",
+        "libelle": "Croit que tout nombre impair est premier (9, 21, 119)",
+        "libelle_parent": "Assimile « impair » et « premier »",
+        "remediation": "Tester la division par 3, 7, 11… : 21 = 3 × 7"
+      },
+      {
+        "id": "NC.ARITH.02#definition_1_2",
+        "libelle": "Considère 1 comme premier, ou 2 comme non premier parce qu'il est pair",
+        "libelle_parent": "Ne connaît pas la définition exacte",
+        "remediation": "Premier = exactement deux diviseurs distincts : 1 et lui-même"
+      },
+      {
+        "id": "NC.ARITH.02#test_incomplet",
+        "libelle": "Arrête le test après 2, 3 et 5 (déclare 91 ou 119 premier)",
+        "libelle_parent": "Ne teste pas assez de diviseurs",
+        "remediation": "Tester tous les nombres premiers jusqu'à √n (119 = 7 × 17)"
+      }
+    ]
+  },
+  {
+    "id": "NC.ARITH.03",
+    "domaine": "NC",
+    "theme": "ARITH",
+    "titre": "Décomposer un entier en produit de facteurs premiers",
+    "titre_eleve": "Décomposer un nombre en facteurs premiers",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.ARITH.02",
+      "NC.PUIS.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Arithmetique_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.ARITH.03#facteur_non_premier",
+        "libelle": "Laisse un facteur non premier (126 = 2 × 9 × 7)",
+        "libelle_parent": "S'arrête avant la fin de la décomposition",
+        "remediation": "Vérifier que chaque facteur est premier ; continuer tant qu'un facteur se décompose"
+      },
+      {
+        "id": "NC.ARITH.03#produit_faux",
+        "libelle": "Écrit une décomposition dont le produit ne redonne pas le nombre",
+        "libelle_parent": "Ne contrôle pas son résultat",
+        "remediation": "Toujours recalculer le produit pour vérifier"
+      },
+      {
+        "id": "NC.ARITH.03#exposant",
+        "libelle": "Confond 2³ et 2 × 3 dans l'écriture avec puissances",
+        "libelle_parent": "Mélange puissance et multiplication",
+        "remediation": "2³ = 2 × 2 × 2 : l'exposant compte les facteurs"
+      }
+    ]
+  },
+  {
+    "id": "NC.ARITH.04",
+    "domaine": "NC",
+    "theme": "ARITH",
+    "titre": "Utiliser les diviseurs communs (plus grand diviseur commun) pour résoudre un problème de partage",
+    "titre_eleve": "Problèmes de partage en paquets identiques",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.ARITH.01",
+      "NC.ARITH.03"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Arithmetique_Brevet",
+      "Auto_Calcul"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.ARITH.04#multiple_au_lieu_diviseur",
+        "libelle": "Cherche un multiple commun (ou multiplie les nombres) au lieu d'un diviseur commun",
+        "libelle_parent": "Confond « partager en paquets » et « trouver un multiple commun »",
+        "remediation": "Partage exact → chaque nombre de paquets doit diviser les deux quantités"
+      },
+      {
+        "id": "NC.ARITH.04#exposants_max",
+        "libelle": "Prend les exposants les plus grands dans les décompositions (2⁵ × 3 pour 60 et 96)",
+        "libelle_parent": "Applique la règle à l'envers",
+        "remediation": "Un diviseur commun ne peut pas contenir plus de facteurs que chacun des nombres : exposant minimal"
+      },
+      {
+        "id": "NC.ARITH.04#mauvaise_quantite",
+        "libelle": "Donne le nombre de paquets alors qu'on demande le contenu d'un paquet (ou l'inverse)",
+        "libelle_parent": "Répond à une autre question que celle posée",
+        "remediation": "Relire la question et écrire la phrase réponse avec l'unité (bouquets, tulipes par bouquet)"
+      }
+    ]
+  },
+  {
+    "id": "NC.FRAC.01",
+    "domaine": "NC",
+    "theme": "FRAC",
+    "titre": "Comprendre une fraction comme partage et comme quotient",
+    "titre_eleve": "Comprendre ce qu'est une fraction",
+    "niveau_origine": "6EME",
+    "prerequis": [],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Fractions_Brevet",
+      "Auto_Calcul"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.FRAC.01#grand_denominateur",
+        "libelle": "Croit que 1/8 > 1/4 parce que 8 > 4",
+        "libelle_parent": "Pense que plus le nombre du bas est grand, plus la part est grande",
+        "remediation": "Partager une pizza en 4 puis en 8 : les parts rapetissent"
+      },
+      {
+        "id": "NC.FRAC.01#pas_quotient",
+        "libelle": "Ne relie pas a/b à a ÷ b (ne sait pas que 3/4 = 0,75)",
+        "libelle_parent": "Ne fait pas le lien entre fraction et division",
+        "remediation": "Poser 3 ÷ 4 et placer 3/4 sur une droite graduée"
+      }
+    ]
+  },
+  {
+    "id": "NC.FRAC.02",
+    "domaine": "NC",
+    "theme": "FRAC",
+    "titre": "Reconnaître des fractions égales, simplifier une fraction, la rendre irréductible",
+    "titre_eleve": "Simplifier une fraction",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "NC.FRAC.01",
+      "NC.ARITH.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Fractions_Brevet",
+      "Arithmetique_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.FRAC.02#ajout_meme_nombre",
+        "libelle": "Ajoute le même nombre en haut et en bas (2/3 = 4/5)",
+        "libelle_parent": "Croit qu'on peut ajouter le même nombre au numérateur et au dénominateur",
+        "remediation": "Seules × et ÷ conservent la fraction : comparer 1/2 et 2/3 sur un dessin"
+      },
+      {
+        "id": "NC.FRAC.02#simplification_incomplete",
+        "libelle": "S'arrête avant la forme irréductible (84/120 = 42/60)",
+        "libelle_parent": "Ne va pas au bout de la simplification",
+        "remediation": "Vérifier qu'il n'y a plus de diviseur commun ; s'aider de la décomposition en facteurs premiers"
+      },
+      {
+        "id": "NC.FRAC.02#simplifie_somme",
+        "libelle": "Simplifie des termes d'une somme ((3 + 5)/3 = 5)",
+        "libelle_parent": "Barre des nombres qui ne sont pas des facteurs",
+        "remediation": "On ne simplifie que des facteurs communs, jamais des termes"
+      }
+    ]
+  },
+  {
+    "id": "NC.FRAC.03",
+    "domaine": "NC",
+    "theme": "FRAC",
+    "titre": "Additionner et soustraire des fractions (dénominateurs différents)",
+    "titre_eleve": "Additionner des fractions qui n'ont pas le même dénominateur",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.FRAC.02",
+      "NC.ARITH.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Fractions_Brevet",
+      "Auto_Calcul"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.FRAC.03#somme_directe",
+        "libelle": "Additionne numérateurs et dénominateurs entre eux (1/3 + 1/4 = 2/7)",
+        "libelle_parent": "Applique une règle intuitive mais fausse sur les fractions",
+        "remediation": "Revenir au sens : 1/3 et 1/4 ne sont pas des parts de même taille"
+      },
+      {
+        "id": "NC.FRAC.03#numerateur_inchange",
+        "libelle": "Met au même dénominateur sans multiplier le numérateur (1/3 + 1/4 = 1/12 + 1/12)",
+        "libelle_parent": "Change le dénominateur sans compenser le numérateur",
+        "remediation": "Ce qu'on fait en bas, on le fait en haut : 1/3 = 4/12"
+      },
+      {
+        "id": "NC.FRAC.03#entier_mal_ecrit",
+        "libelle": "Ajoute un entier au numérateur et au dénominateur (1 + 2/5 = 3/6)",
+        "libelle_parent": "Ne sait pas écrire un entier sous forme de fraction",
+        "remediation": "Écrire 1 = 5/5 avant d'additionner"
+      }
+    ]
+  },
+  {
+    "id": "NC.FRAC.04",
+    "domaine": "NC",
+    "theme": "FRAC",
+    "titre": "Calculer une fraction d'une quantité",
+    "titre_eleve": "Calculer une fraction d'un nombre (les 3/4 de 80)",
+    "niveau_origine": "6EME",
+    "prerequis": [
+      "NC.FRAC.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Fractions_Brevet",
+      "Auto_Calcul",
+      "Inequations_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.FRAC.04#roles_inverses",
+        "libelle": "Divise par le numérateur ou multiplie par le dénominateur (3/8 de 32 = 32 ÷ 3)",
+        "libelle_parent": "Inverse les rôles des deux nombres de la fraction",
+        "remediation": "3/8 de 32 : on partage en 8 (32 ÷ 8 = 4) puis on prend 3 parts"
+      },
+      {
+        "id": "NC.FRAC.04#part_enlevee",
+        "libelle": "Confond la part enlevée et la part restante (réduction de 1/5 → paie 1/5 du prix)",
+        "libelle_parent": "Répond la part retirée au lieu de ce qui reste",
+        "remediation": "Schéma en barre : la part enlevée et la part qui reste"
+      }
+    ]
+  },
+  {
+    "id": "NC.FRAC.05",
+    "domaine": "NC",
+    "theme": "FRAC",
+    "titre": "Multiplier des fractions (y compris « fraction d'une fraction »)",
+    "titre_eleve": "Multiplier des fractions",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.FRAC.02",
+      "NC.FRAC.04"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Fractions_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.FRAC.05#meme_denominateur",
+        "libelle": "Met au même dénominateur puis ne multiplie que les numérateurs (2/3 × 1/4 = 8/12 × 3/12 = 24/12)",
+        "libelle_parent": "Mélange la règle de l'addition et celle du produit",
+        "remediation": "Produit : numérateurs ensemble, dénominateurs ensemble — pas besoin de même dénominateur"
+      },
+      {
+        "id": "NC.FRAC.05#de_pas_multiplier",
+        "libelle": "Additionne ou soustrait pour « les 2/3 de ses 3/8 » (3/8 − 2/3)",
+        "libelle_parent": "Ne reconnaît pas que « fraction de » signifie multiplier",
+        "remediation": "« de » = « × » : 2/3 de 3/8 = 2/3 × 3/8"
+      },
+      {
+        "id": "NC.FRAC.05#produit_en_croix",
+        "libelle": "Multiplie en croix (2/3 × 1/4 = 8/3)",
+        "libelle_parent": "Utilise le produit en croix hors de son contexte",
+        "remediation": "Le produit en croix sert à comparer ou résoudre une égalité, pas à multiplier"
+      }
+    ]
+  },
+  {
+    "id": "NC.FRAC.06",
+    "domaine": "NC",
+    "theme": "FRAC",
+    "titre": "Diviser par une fraction",
+    "titre_eleve": "Diviser par une fraction",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.FRAC.05"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Fractions_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.FRAC.06#multiplie_par_fraction",
+        "libelle": "Multiplie par la fraction au lieu de son inverse (÷ 3/4 → × 3/4)",
+        "libelle_parent": "Ne sait pas que diviser par une fraction revient à multiplier par son inverse",
+        "remediation": "Diviser par 1/2, c'est chercher combien de moitiés : 3 ÷ 1/2 = 6"
+      },
+      {
+        "id": "NC.FRAC.06#inverse_premiere",
+        "libelle": "Inverse la première fraction au lieu de la seconde",
+        "libelle_parent": "Inverse la mauvaise fraction",
+        "remediation": "On inverse le diviseur (la fraction qui suit ÷)"
+      },
+      {
+        "id": "NC.FRAC.06#division_rapetisse",
+        "libelle": "Rejette un quotient plus grand que le dividende (600 ÷ 3/4 = 800 jugé impossible)",
+        "libelle_parent": "Croit qu'une division donne toujours un résultat plus petit",
+        "remediation": "Estimer : combien de 3/4 dans 600 ? forcément plus de 600"
+      }
+    ]
+  },
+  {
+    "id": "NC.FRAC.07",
+    "domaine": "NC",
+    "theme": "FRAC",
+    "titre": "Passer d'une écriture à une autre : fraction, décimal, pourcentage",
+    "titre_eleve": "Passer d'une fraction à un décimal ou un pourcentage",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "NC.FRAC.01",
+      "NC.ENT.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Auto_Calcul",
+      "Proportionnalite_Brevet",
+      "Probabilites_Brevet",
+      "Auto_Stats_Probas"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.FRAC.07#pourcent_virgule",
+        "libelle": "Place mal la virgule (25 % = 0,025 ; 3 % = 0,3)",
+        "libelle_parent": "Se trompe en passant du pourcentage au nombre décimal",
+        "remediation": "x % = x/100 : diviser par 100 décale de deux rangs"
+      },
+      {
+        "id": "NC.FRAC.07#juxtaposition",
+        "libelle": "Lit 1/4 comme 1,4 ou 3/5 comme 3,5",
+        "libelle_parent": "Traduit la fraction en collant les chiffres",
+        "remediation": "a/b = a ÷ b ; connaître par cœur 1/2, 1/4, 3/4, 1/5, 1/10"
+      }
+    ]
+  },
+  {
+    "id": "NC.PUIS.01",
+    "domaine": "NC",
+    "theme": "PUIS",
+    "titre": "Calculer le carré, le cube ou une puissance d'un nombre (y compris négatif ou décimal)",
+    "titre_eleve": "Calculer un carré, un cube",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.REL.03",
+      "NC.PRIO.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Auto_Calcul",
+      "Pythagore_Brevet",
+      "Puissances_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.PUIS.01#carre_double",
+        "libelle": "Confond carré et double (9² = 18 ; 4,8² = 9,6)",
+        "libelle_parent": "Multiplie par 2 au lieu de multiplier le nombre par lui-même",
+        "remediation": "a² = a × a : c'est l'aire d'un carré de côté a"
+      },
+      {
+        "id": "NC.PUIS.01#carre_negatif",
+        "libelle": "Écrit (−3)² = −9 ou confond (−3)² et −3²",
+        "libelle_parent": "Ne tient pas compte des parenthèses autour d'un nombre négatif",
+        "remediation": "(−3)² = (−3) × (−3) = 9 alors que −3² = −(3²) = −9"
+      },
+      {
+        "id": "NC.PUIS.01#base_fois_exposant",
+        "libelle": "Multiplie la base par l'exposant (2³ = 6 ; 10⁵ = 50)",
+        "libelle_parent": "Confond puissance et multiplication",
+        "remediation": "Écrire le produit en entier : 2³ = 2 × 2 × 2"
+      },
+      {
+        "id": "NC.PUIS.01#carre_decimal",
+        "libelle": "Se trompe de rang sur le carré d'un décimal (0,3² = 0,9)",
+        "libelle_parent": "Oublie que les décimales s'ajoutent quand on multiplie",
+        "remediation": "0,3 × 0,3 = 0,09 : 1 décimale + 1 décimale = 2 décimales"
+      }
+    ]
+  },
+  {
+    "id": "NC.PUIS.02",
+    "domaine": "NC",
+    "theme": "PUIS",
+    "titre": "Comprendre les puissances de 10 d'exposant positif ou négatif",
+    "titre_eleve": "Les puissances de 10 (10³, 10⁻²…)",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.ENT.01",
+      "NC.PUIS.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Puissances_Brevet",
+      "Auto_Calcul"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.PUIS.02#exposant_negatif_negatif",
+        "libelle": "Croit que 10⁻³ est un nombre négatif (10⁻³ = −1000)",
+        "libelle_parent": "Pense qu'un exposant négatif rend le nombre négatif",
+        "remediation": "10⁻³ = 1/10³ = 0,001 : un nombre positif très petit"
+      },
+      {
+        "id": "NC.PUIS.02#nombre_zeros",
+        "libelle": "Compte mal les zéros (10⁻³ = 0,0001 ; 10⁵ = 10 000)",
+        "libelle_parent": "Se trompe dans le nombre de zéros",
+        "remediation": "10ⁿ : n zéros après le 1 ; 10⁻ⁿ : le 1 est au n-ième rang après la virgule"
+      }
+    ]
+  },
+  {
+    "id": "NC.PUIS.03",
+    "domaine": "NC",
+    "theme": "PUIS",
+    "titre": "Utiliser les règles de calcul sur les puissances (produit, quotient, puissance de puissance)",
+    "titre_eleve": "Règles de calcul sur les puissances",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.PUIS.01",
+      "NC.PUIS.02",
+      "NC.REL.02"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Puissances_Brevet",
+      "Auto_Calcul"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.PUIS.03#produit_exposants_multiplies",
+        "libelle": "Multiplie les exposants dans un produit (2³ × 2⁴ = 2¹²)",
+        "libelle_parent": "Confond les règles de calcul des puissances",
+        "remediation": "Écrire en extension : 3 facteurs puis 4 facteurs = 7 facteurs"
+      },
+      {
+        "id": "NC.PUIS.03#signe_exposants",
+        "libelle": "Se trompe de signe avec des exposants négatifs (10⁻²/10⁻⁵ = 10⁻⁷)",
+        "libelle_parent": "Perd le signe en soustrayant des exposants négatifs",
+        "remediation": "−2 − (−5) = +3 : c'est la règle des relatifs"
+      },
+      {
+        "id": "NC.PUIS.03#bases_multipliees",
+        "libelle": "Multiplie aussi les bases (2³ × 2⁴ = 4⁷)",
+        "libelle_parent": "Applique la règle sur la base au lieu de l'exposant",
+        "remediation": "La base ne change pas ; seul l'exposant compte les facteurs"
+      },
+      {
+        "id": "NC.PUIS.03#regle_sur_somme",
+        "libelle": "Applique les règles à une somme ou différence (2²⁰ − 2¹⁷ = 2³)",
+        "libelle_parent": "Croit que les règles des puissances valent pour + et −",
+        "remediation": "Les règles valent pour × et ÷ seulement : factoriser 2¹⁷ × (2³ − 1)"
+      }
+    ]
+  },
+  {
+    "id": "NC.PUIS.04",
+    "domaine": "NC",
+    "theme": "PUIS",
+    "titre": "Écrire un nombre en notation scientifique (et revenir à l'écriture décimale)",
+    "titre_eleve": "Écrire un nombre en notation scientifique",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.PUIS.02",
+      "NC.ENT.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Puissances_Brevet",
+      "Auto_Calcul"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.PUIS.04#mantisse_hors_intervalle",
+        "libelle": "Laisse un premier facteur hors de [1 ; 10[ (80 × 10⁻⁶ ; 0,5 × 10³)",
+        "libelle_parent": "Ne respecte pas la forme a × 10ⁿ avec 1 ≤ a < 10",
+        "remediation": "Vérifier : un seul chiffre non nul avant la virgule"
+      },
+      {
+        "id": "NC.PUIS.04#signe_exposant",
+        "libelle": "Se trompe de signe d'exposant (0,00008 = 8 × 10⁵)",
+        "libelle_parent": "Inverse très grands et très petits nombres",
+        "remediation": "Nombre plus petit que 1 → exposant négatif ; contrôler en réécrivant le nombre"
+      },
+      {
+        "id": "NC.PUIS.04#decalage",
+        "libelle": "Décale d'un rang de trop ou de moins (150 000 000 = 1,5 × 10⁹)",
+        "libelle_parent": "Compte mal les rangs",
+        "remediation": "Compter les déplacements de la virgule, puis vérifier en redéveloppant"
+      }
+    ]
+  },
+  {
+    "id": "NC.PUIS.05",
+    "domaine": "NC",
+    "theme": "PUIS",
+    "titre": "Calculer et comparer des nombres en notation scientifique",
+    "titre_eleve": "Calculer et comparer en notation scientifique",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.PUIS.04",
+      "NC.PUIS.03",
+      "NC.ENT.02"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Puissances_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.PUIS.05#compare_mantisses",
+        "libelle": "Compare seulement les premiers facteurs (7,8 × 10⁷ > 1,5 × 10⁸ car 7,8 > 1,5)",
+        "libelle_parent": "Ne regarde pas d'abord la puissance de 10",
+        "remediation": "Comparer d'abord les exposants, puis les premiers facteurs si les exposants sont égaux"
+      },
+      {
+        "id": "NC.PUIS.05#somme_exposants",
+        "libelle": "Additionne deux écritures scientifiques en additionnant les exposants",
+        "libelle_parent": "Applique la règle du produit à une somme",
+        "remediation": "Pour additionner, mettre à la même puissance de 10 puis factoriser"
+      },
+      {
+        "id": "NC.PUIS.05#non_normalise",
+        "libelle": "Ne remet pas le résultat en notation scientifique (0,5 × 10⁶)",
+        "libelle_parent": "S'arrête avant la forme finale",
+        "remediation": "Réajuster : 0,5 × 10⁶ = 5 × 10⁵"
+      }
+    ]
+  },
+  {
+    "id": "NC.RAC.01",
+    "domaine": "NC",
+    "theme": "RAC",
+    "titre": "Connaître la racine carrée d'un nombre positif (carrés parfaits, définition)",
+    "titre_eleve": "La racine carrée (√64, √144…)",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.PUIS.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Auto_Calcul",
+      "Racines_Carrees_Brevet",
+      "Pythagore_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.RAC.01#racine_moitie",
+        "libelle": "Divise par 2 au lieu de prendre la racine (√64 = 32)",
+        "libelle_parent": "Confond racine carrée et moitié",
+        "remediation": "√64 est le nombre positif qui, multiplié par lui-même, donne 64 : 8 × 8"
+      },
+      {
+        "id": "NC.RAC.01#oubli_racine",
+        "libelle": "Oublie de prendre la racine à la fin (AC² = 25 donc AC = 25)",
+        "libelle_parent": "S'arrête au carré de la longueur",
+        "remediation": "Toujours finir par « AC = √… » et vérifier que la longueur est vraisemblable"
+      },
+      {
+        "id": "NC.RAC.01#racine_negative",
+        "libelle": "Pense que √(−9) = −3 ou qu'une racine carrée peut être négative",
+        "libelle_parent": "Ne sait pas qu'une racine carrée est toujours positive",
+        "remediation": "√a n'existe que si a ≥ 0 et c'est toujours un nombre positif"
+      }
+    ]
+  },
+  {
+    "id": "NC.RAC.02",
+    "domaine": "NC",
+    "theme": "RAC",
+    "titre": "Calculer un produit ou un quotient de racines carrées (et savoir que √ ne se distribue pas sur +)",
+    "titre_eleve": "Multiplier des racines carrées",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.RAC.01"
+    ],
+    "poids_brevet": 1,
+    "chapitres_legacy": [
+      "Racines_Carrees_Brevet",
+      "Auto_Calcul"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.RAC.02#somme_racines",
+        "libelle": "Croit que √a + √b = √(a + b) (√9 + √16 = √25)",
+        "libelle_parent": "Étend à la somme une règle qui ne vaut que pour le produit",
+        "remediation": "Contre-exemple : √9 + √16 = 3 + 4 = 7, alors que √25 = 5"
+      },
+      {
+        "id": "NC.RAC.02#produit_additionne",
+        "libelle": "Additionne sous la racine au lieu de multiplier (√8 × √2 = √10)",
+        "libelle_parent": "Confond produit et somme sous la racine",
+        "remediation": "√a × √b = √(a × b) : √8 × √2 = √16 = 4"
+      },
+      {
+        "id": "NC.RAC.02#racine_fois_racine",
+        "libelle": "Ne sait pas que √a × √a = a (écrit 2√2 ou √4 non simplifié pour √2 × √2)",
+        "libelle_parent": "Ne simplifie pas un produit d'une racine par elle-même",
+        "remediation": "√2 × √2 = 2 par définition de la racine carrée"
+      }
+    ]
+  },
+  {
+    "id": "NC.RAC.03",
+    "domaine": "NC",
+    "theme": "RAC",
+    "titre": "Simplifier une racine carrée (écrire sous la forme a√b)",
+    "titre_eleve": "Simplifier une racine carrée (√50 = 5√2)",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.RAC.02",
+      "NC.ARITH.03"
+    ],
+    "poids_brevet": 1,
+    "chapitres_legacy": [
+      "Racines_Carrees_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.RAC.03#facteur_non_carre",
+        "libelle": "Sort de la racine un facteur qui n'est pas un carré parfait (√50 = 25√2 ou 2√25 laissé)",
+        "libelle_parent": "Ne repère pas le carré parfait caché dans le nombre",
+        "remediation": "Chercher le plus grand carré parfait qui divise : 50 = 25 × 2 → √50 = 5√2"
+      },
+      {
+        "id": "NC.RAC.03#simplification_partielle",
+        "libelle": "S'arrête en cours de route (√72 = 2√18)",
+        "libelle_parent": "Ne simplifie pas jusqu'au bout",
+        "remediation": "Continuer tant que le nombre sous la racine a un facteur carré"
+      }
+    ],
+    "diag": false
+  },
+  {
+    "id": "NC.RAC.04",
+    "domaine": "NC",
+    "theme": "RAC",
+    "titre": "Réduire ou développer une expression avec des racines carrées, rationaliser un dénominateur",
+    "titre_eleve": "Calculer avec des racines carrées",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.RAC.03",
+      "NC.LIT.07"
+    ],
+    "poids_brevet": 1,
+    "chapitres_legacy": [
+      "Racines_Carrees_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.RAC.04#radicaux_differents",
+        "libelle": "Additionne des radicaux différents (3√8 + √18 = 4√26)",
+        "libelle_parent": "Additionne des racines qui ne sont pas « de la même famille »",
+        "remediation": "Simplifier d'abord pour faire apparaître le même radical : 6√2 + 3√2 = 9√2"
+      },
+      {
+        "id": "NC.RAC.04#double_produit",
+        "libelle": "Oublie le double produit ((2 + √3)² = 4 + 3)",
+        "libelle_parent": "Même erreur que (a + b)² = a² + b²",
+        "remediation": "Réappliquer l'identité (a + b)² = a² + 2ab + b²"
+      },
+      {
+        "id": "NC.RAC.04#rationalisation_partielle",
+        "libelle": "Multiplie seulement le dénominateur par √a pour rationaliser",
+        "libelle_parent": "Change la valeur de la fraction sans s'en rendre compte",
+        "remediation": "Multiplier le numérateur ET le dénominateur par le même nombre"
+      }
+    ],
+    "diag": false
+  },
+  {
+    "id": "NC.LIT.01",
+    "domaine": "NC",
+    "theme": "LIT",
+    "titre": "Produire une expression littérale qui traduit une situation ou un programme de calcul",
+    "titre_eleve": "Traduire une situation avec des lettres",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "NC.PRIO.01",
+      "AP.PROG.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Equations_Brevet",
+      "Scratch_Brevet",
+      "Calcul_Litteral_Brevet",
+      "Inequations_Brevet",
+      "Fonctions_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.LIT.01#parentheses_oubliees",
+        "libelle": "Oublie les parenthèses (« ajoute 3 puis multiplie par 2 » → x + 3 × 2)",
+        "libelle_parent": "Traduit mot à mot sans tenir compte de l'ordre des étapes",
+        "remediation": "Tester l'expression avec un nombre et comparer au programme"
+      },
+      {
+        "id": "NC.LIT.01#lettre_etiquette",
+        "libelle": "Utilise la lettre comme une étiquette (« 3p » = 3 pommes) plutôt que comme un nombre",
+        "libelle_parent": "Voit la lettre comme une abréviation, pas comme un nombre inconnu",
+        "remediation": "Remplacer la lettre par plusieurs valeurs pour voir qu'elle représente un nombre"
+      },
+      {
+        "id": "NC.LIT.01#ordre_inverse",
+        "libelle": "Inverse l'ordre d'une soustraction (« 7 de moins que x » → 7 − x)",
+        "libelle_parent": "Inverse les termes",
+        "remediation": "Vérifier avec un exemple chiffré"
+      },
+      {
+        "id": "NC.LIT.01#de_moins_plus",
+        "libelle": "Traduit « de moins » ou « moins que » par une addition",
+        "libelle_parent": "Confond les tournures « de plus » / « de moins » en passant du texte au calcul",
+        "remediation": "Tester avec des nombres simples : « 3 de moins que 10 », c'est 7 ou 13 ?"
+      }
+    ]
+  },
+  {
+    "id": "NC.LIT.02",
+    "domaine": "NC",
+    "theme": "LIT",
+    "titre": "Calculer la valeur d'une expression littérale pour une valeur donnée",
+    "titre_eleve": "Remplacer une lettre par un nombre",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.LIT.01",
+      "NC.PRIO.01",
+      "NC.REL.03"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Auto_Litteral",
+      "Fonctions_Brevet",
+      "Calcul_Litteral_Brevet",
+      "Scratch_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.LIT.02#juxtaposition",
+        "libelle": "Remplace x par 5 dans 3x et lit 35",
+        "libelle_parent": "Colle le nombre à côté au lieu de multiplier",
+        "remediation": "Réécrire les × cachés : 3x = 3 × x = 3 × 5"
+      },
+      {
+        "id": "NC.LIT.02#negatif_sans_parentheses",
+        "libelle": "Pour x = −2, calcule x² = −4",
+        "libelle_parent": "Oublie les parenthèses autour d'un nombre négatif",
+        "remediation": "Toujours remplacer entre parenthèses : (−2)² = 4"
+      },
+      {
+        "id": "NC.LIT.02#priorite_puissance",
+        "libelle": "Calcule m × v² comme (m × v)²",
+        "libelle_parent": "Oublie que la puissance ne porte que sur une lettre",
+        "remediation": "Puissance d'abord, sur la seule lettre concernée"
+      }
+    ]
+  },
+  {
+    "id": "NC.LIT.03",
+    "domaine": "NC",
+    "theme": "LIT",
+    "titre": "Réduire une expression littérale",
+    "titre_eleve": "Réduire une expression (2x + 3x…)",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.LIT.01",
+      "NC.REL.02"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Calcul_Litteral_Brevet",
+      "Auto_Litteral",
+      "Equations_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.LIT.03#x_plus_x",
+        "libelle": "Écrit x + x = x² ou x × x = 2x",
+        "libelle_parent": "Confond somme et produit d'une même lettre",
+        "remediation": "Tester avec x = 3 : x + x = 6 = 2x ; x × x = 9 = x²"
+      },
+      {
+        "id": "NC.LIT.03#termes_non_semblables",
+        "libelle": "Additionne des termes non semblables (3x + 2 = 5x ; x² + x = x³)",
+        "libelle_parent": "Regroupe des termes de nature différente",
+        "remediation": "On n'additionne que des objets de même famille : des x avec des x, des x² avec des x²"
+      },
+      {
+        "id": "NC.LIT.03#signe_detache",
+        "libelle": "Détache le signe moins de son terme en regroupant",
+        "libelle_parent": "Perd un signe en réorganisant",
+        "remediation": "Entourer chaque terme avec son signe avant de regrouper"
+      }
+    ]
+  },
+  {
+    "id": "NC.LIT.04",
+    "domaine": "NC",
+    "theme": "LIT",
+    "titre": "Développer avec la simple distributivité k(a + b)",
+    "titre_eleve": "Développer k(a + b)",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.LIT.03",
+      "NC.REL.03"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Calcul_Litteral_Brevet",
+      "Auto_Litteral",
+      "Equations_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.LIT.04#distribution_partielle",
+        "libelle": "Ne multiplie que le premier terme (4(x + 3) = 4x + 3)",
+        "libelle_parent": "Oublie de multiplier le second terme",
+        "remediation": "Flèches de distribution : le facteur multiplie chaque terme"
+      },
+      {
+        "id": "NC.LIT.04#signe_k_negatif",
+        "libelle": "Perd un signe avec un facteur négatif (−2(3x − 4) = −6x − 8)",
+        "libelle_parent": "Se trompe dans les signes quand le facteur est négatif",
+        "remediation": "(−2) × (−4) = +8 : appliquer la règle des signes terme à terme"
+      }
+    ]
+  },
+  {
+    "id": "NC.LIT.05",
+    "domaine": "NC",
+    "theme": "LIT",
+    "titre": "Supprimer des parenthèses précédées d'un signe moins",
+    "titre_eleve": "Enlever des parenthèses précédées d'un signe −",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.LIT.04",
+      "NC.REL.02"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Calcul_Litteral_Brevet",
+      "Scratch_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.LIT.05#seul_premier_terme",
+        "libelle": "Ne change que le signe du premier terme (−(x − 3) = −x − 3)",
+        "libelle_parent": "Oublie de changer tous les signes",
+        "remediation": "−(…) = −1 × (…) : on distribue −1 à chaque terme"
+      },
+      {
+        "id": "NC.LIT.05#bloc_developpe",
+        "libelle": "Dans A − (développement), ne distribue pas le moins sur tout le bloc ((x + 4)² − (x − 3)²)",
+        "libelle_parent": "Perd le signe devant un bloc développé",
+        "remediation": "Garder les parenthèses après avoir développé, puis distribuer le moins"
+      }
+    ]
+  },
+  {
+    "id": "NC.LIT.06",
+    "domaine": "NC",
+    "theme": "LIT",
+    "titre": "Développer avec la double distributivité (a + b)(c + d)",
+    "titre_eleve": "Développer (a + b)(c + d)",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.LIT.04"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Calcul_Litteral_Brevet",
+      "Auto_Litteral",
+      "Equations_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.LIT.06#produits_manquants",
+        "libelle": "N'effectue que 2 produits sur 4 ((x + 2)(x + 3) = x² + 6)",
+        "libelle_parent": "Multiplie seulement les premiers et les derniers termes",
+        "remediation": "Tableau ou 4 flèches : chaque terme du premier facteur par chaque terme du second"
+      },
+      {
+        "id": "NC.LIT.06#signes",
+        "libelle": "Se trompe de signe sur un produit ((x − 3)(x − 2) → −6)",
+        "libelle_parent": "Se trompe de signe dans un des produits",
+        "remediation": "Écrire chaque produit avec son signe avant de réduire"
+      },
+      {
+        "id": "NC.LIT.06#reduction_finale",
+        "libelle": "Ne réduit pas, ou réduit mal, les termes en x à la fin",
+        "libelle_parent": "Oublie la dernière étape",
+        "remediation": "Surligner les termes semblables avant de réduire"
+      }
+    ]
+  },
+  {
+    "id": "NC.LIT.07",
+    "domaine": "NC",
+    "theme": "LIT",
+    "titre": "Développer à l'aide des identités remarquables",
+    "titre_eleve": "Développer (a + b)², (a − b)², (a + b)(a − b)",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.LIT.06",
+      "NC.PUIS.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Calcul_Litteral_Brevet",
+      "Auto_Litteral",
+      "Racines_Carrees_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.LIT.07#carre_somme",
+        "libelle": "Écrit (a + b)² = a² + b² (oubli du double produit)",
+        "libelle_parent": "Croit que le carré d'une somme est la somme des carrés",
+        "remediation": "Contre-exemple : (1 + 2)² = 9 ≠ 5 ; aire d'un carré découpé en 4 morceaux"
+      },
+      {
+        "id": "NC.LIT.07#coef_non_carre",
+        "libelle": "N'élève pas le coefficient au carré ((3x − 2)² = 3x² − …)",
+        "libelle_parent": "N'élève au carré que la lettre",
+        "remediation": "(3x)² = 3x × 3x = 9x²"
+      },
+      {
+        "id": "NC.LIT.07#difference_carre",
+        "libelle": "Écrit (x − 3)² = x² − 9",
+        "libelle_parent": "Confond (a − b)² et a² − b²",
+        "remediation": "(x − 3)² = (x − 3)(x − 3) : faire les 4 produits"
+      }
+    ]
+  },
+  {
+    "id": "NC.LIT.08",
+    "domaine": "NC",
+    "theme": "LIT",
+    "titre": "Factoriser par un facteur commun",
+    "titre_eleve": "Factoriser (mettre en facteur)",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.LIT.04",
+      "NC.ARITH.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Calcul_Litteral_Brevet",
+      "Auto_Litteral"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.LIT.08#facteur_non_maximal",
+        "libelle": "Ne met pas en facteur le plus grand facteur commun (6x + 18 = 2(3x + 9))",
+        "libelle_parent": "Factorise seulement en partie",
+        "remediation": "Chercher le plus grand diviseur commun des coefficients et la plus grande puissance de x commune"
+      },
+      {
+        "id": "NC.LIT.08#oubli_du_1",
+        "libelle": "Oublie le 1 quand un terme est entièrement mis en facteur (x² + x = x(x))",
+        "libelle_parent": "Fait disparaître un terme",
+        "remediation": "Vérifier en redéveloppant : x(x + 1) = x² + x"
+      },
+      {
+        "id": "NC.LIT.08#pas_un_facteur",
+        "libelle": "Met en facteur un nombre qui n'est pas facteur de tous les termes",
+        "libelle_parent": "Confond facteur et terme",
+        "remediation": "Contrôler systématiquement par développement"
+      }
+    ]
+  },
+  {
+    "id": "NC.LIT.09",
+    "domaine": "NC",
+    "theme": "LIT",
+    "titre": "Factoriser à l'aide d'une identité remarquable (a² − b², a² ± 2ab + b²)",
+    "titre_eleve": "Factoriser avec une identité remarquable",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.LIT.07",
+      "NC.RAC.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Calcul_Litteral_Brevet",
+      "Auto_Litteral",
+      "Equations_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.LIT.09#difference_en_carre",
+        "libelle": "Factorise x² − 16 en (x − 4)²",
+        "libelle_parent": "Confond a² − b² et (a − b)²",
+        "remediation": "a² − b² = (a − b)(a + b) ; redévelopper pour vérifier"
+      },
+      {
+        "id": "NC.LIT.09#b_pas_racine",
+        "libelle": "Prend b = 16 au lieu de 4 (x² − 16 = (x − 16)(x + 16))",
+        "libelle_parent": "N'identifie pas b comme la racine du nombre",
+        "remediation": "Écrire d'abord 16 = 4² pour faire apparaître a² − b²"
+      },
+      {
+        "id": "NC.LIT.09#somme_de_carres",
+        "libelle": "Factorise x² + 9 en (x + 3)(x − 3)",
+        "libelle_parent": "Applique l'identité à une somme de carrés",
+        "remediation": "Regarder le signe : a² + b² ne se factorise pas ainsi ; vérifier en développant"
+      }
+    ]
+  },
+  {
+    "id": "NC.LIT.10",
+    "domaine": "NC",
+    "theme": "LIT",
+    "titre": "Prouver un résultat général à l'aide du calcul littéral",
+    "titre_eleve": "Démontrer avec x (« quel que soit le nombre… »)",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.LIT.01",
+      "NC.LIT.05",
+      "NC.LIT.06"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Scratch_Brevet",
+      "Calcul_Litteral_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.LIT.10#exemples_suffisent",
+        "libelle": "Croit que quelques exemples numériques suffisent à prouver",
+        "libelle_parent": "Confond vérifier sur des exemples et démontrer",
+        "remediation": "Un exemple peut prouver que c'est faux, jamais que c'est toujours vrai : passer par x"
+      },
+      {
+        "id": "NC.LIT.10#pas_de_conclusion",
+        "libelle": "Développe correctement mais ne conclut pas (ne relie pas 2(x + 1) à « pair »)",
+        "libelle_parent": "Ne fait pas le lien entre l'expression obtenue et la propriété demandée",
+        "remediation": "Terminer par une phrase : « 2 × (…) est un multiple de 2, donc c'est pair »"
+      }
+    ]
+  },
+  {
+    "id": "NC.EQUA.01",
+    "domaine": "NC",
+    "theme": "EQUA",
+    "titre": "Tester si un nombre est solution d'une équation ou d'une inéquation",
+    "titre_eleve": "Vérifier si un nombre est solution",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.LIT.02"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Equations_Brevet",
+      "Auto_Litteral",
+      "Inequations_Brevet",
+      "Scratch_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.EQUA.01#un_seul_membre",
+        "libelle": "Calcule un seul membre et conclut",
+        "libelle_parent": "Ne vérifie pas l'égalité des deux côtés",
+        "remediation": "Calculer séparément le membre de gauche et celui de droite, puis comparer"
+      },
+      {
+        "id": "NC.EQUA.01#resout_au_lieu_tester",
+        "libelle": "Se lance dans une résolution au lieu de simplement remplacer",
+        "libelle_parent": "Ne sait pas qu'on peut vérifier directement une proposition",
+        "remediation": "Tester = remplacer x par la valeur ; c'est aussi le réflexe de vérification"
+      }
+    ]
+  },
+  {
+    "id": "NC.EQUA.02",
+    "domaine": "NC",
+    "theme": "EQUA",
+    "titre": "Résoudre une équation du type ax + b = c",
+    "titre_eleve": "Résoudre une équation simple (3x + 7 = 22)",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.EQUA.01",
+      "NC.LIT.03",
+      "NC.REL.02",
+      "NC.REL.03",
+      "NC.FRAC.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Equations_Brevet",
+      "Auto_Litteral",
+      "Fonctions_Affines_Brevet",
+      "Fonctions_Brevet",
+      "Inequations_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.EQUA.02#soustrait_coef",
+        "libelle": "Soustrait le coefficient au lieu de diviser (3x = 21 → x = 18)",
+        "libelle_parent": "Utilise la mauvaise opération inverse",
+        "remediation": "3x signifie 3 × x : l'inverse de « × 3 » est « ÷ 3 »"
+      },
+      {
+        "id": "NC.EQUA.02#mauvais_ordre",
+        "libelle": "Divise avant d'avoir retiré la constante (2x + 1 = 9 → x + 1 = 4,5)",
+        "libelle_parent": "Défait les opérations dans le mauvais ordre",
+        "remediation": "Modèle de la balance : enlever d'abord le +1 des deux côtés, puis diviser par 2"
+      },
+      {
+        "id": "NC.EQUA.02#changement_signe_mecanique",
+        "libelle": "Se trompe en « passant de l'autre côté » (3x + 7 = 22 → 3x = 29)",
+        "libelle_parent": "Applique une règle mécanique « on change de signe » sans la comprendre",
+        "remediation": "Faire la même opération des deux côtés et l'écrire : −7 de chaque côté"
+      },
+      {
+        "id": "NC.EQUA.02#quotient_inverse",
+        "libelle": "Divise dans le mauvais sens (3x = 15 → x = 3/15)",
+        "libelle_parent": "Inverse numérateur et dénominateur",
+        "remediation": "x = 15 ÷ 3 ; vérifier en remplaçant"
+      }
+    ]
+  },
+  {
+    "id": "NC.EQUA.03",
+    "domaine": "NC",
+    "theme": "EQUA",
+    "titre": "Résoudre une équation du type ax + b = cx + d",
+    "titre_eleve": "Résoudre une équation avec des x des deux côtés",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.EQUA.02"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Equations_Brevet",
+      "Auto_Litteral",
+      "Fonctions_Affines_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.EQUA.03#regroupement_sans_changement",
+        "libelle": "Regroupe les x en gardant le signe d'origine (5x − 3 = 2x + 9 → 7x = 12)",
+        "libelle_parent": "Déplace des termes sans faire l'opération inverse",
+        "remediation": "Soustraire 2x des deux côtés et écrire l'étape"
+      },
+      {
+        "id": "NC.EQUA.03#terme_perdu",
+        "libelle": "Perd l'inconnue ou la constante en cours de route",
+        "libelle_parent": "Oublie un terme en recopiant",
+        "remediation": "Recopier toute l'équation à chaque étape"
+      }
+    ]
+  },
+  {
+    "id": "NC.EQUA.04",
+    "domaine": "NC",
+    "theme": "EQUA",
+    "titre": "Mettre un problème en équation et interpréter la solution",
+    "titre_eleve": "Mettre un problème en équation",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.LIT.01",
+      "NC.EQUA.02"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Equations_Brevet",
+      "Fonctions_Affines_Brevet",
+      "Fonctions_Brevet",
+      "Proportionnalite_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.EQUA.04#inconnue_floue",
+        "libelle": "Ne dit pas ce que représente x ou choisit une inconnue qui complique tout",
+        "libelle_parent": "Ne sait pas par où commencer un problème",
+        "remediation": "Écrire « Soit x = … » en toutes lettres, avec l'unité"
+      },
+      {
+        "id": "NC.EQUA.04#relation_inversee",
+        "libelle": "Inverse une relation (« Jade donne 5 € de plus que Noé » → Noé = x + 5 quand x est Jade)",
+        "libelle_parent": "Inverse le lien entre les quantités",
+        "remediation": "Tester avec un nombre : si Noé donne 10, Jade donne 15"
+      },
+      {
+        "id": "NC.EQUA.04#repond_x",
+        "libelle": "Donne x comme réponse finale alors que la question porte sur une autre quantité",
+        "libelle_parent": "S'arrête à x sans répondre à la question posée",
+        "remediation": "Relire la question, calculer la grandeur demandée, faire une phrase réponse"
+      },
+      {
+        "id": "NC.EQUA.04#oubli_quantite",
+        "libelle": "Oublie une des quantités de l'énoncé en mettant le problème en équation",
+        "libelle_parent": "Traduit l'énoncé en équation mais laisse de côté une information",
+        "remediation": "Lister toutes les quantités de l'énoncé avant d'écrire l'équation, puis vérifier que chacune apparaît"
+      }
+    ]
+  },
+  {
+    "id": "NC.EQUA.05",
+    "domaine": "NC",
+    "theme": "EQUA",
+    "titre": "Résoudre une équation produit nul",
+    "titre_eleve": "Résoudre (x − 4)(2x + 6) = 0",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.EQUA.02",
+      "NC.LIT.08"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Equations_Brevet",
+      "Calcul_Litteral_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.EQUA.05#une_seule_solution",
+        "libelle": "Ne donne qu'une solution",
+        "libelle_parent": "Oublie qu'un produit est nul si l'UN des facteurs est nul",
+        "remediation": "Écrire « A = 0 ou B = 0 » puis résoudre les deux"
+      },
+      {
+        "id": "NC.EQUA.05#lit_les_nombres",
+        "libelle": "Lit les nombres dans les parenthèses sans résoudre ((x − 4)(2x + 6) = 0 → 4 et 6)",
+        "libelle_parent": "Répond « à l'œil » sans résoudre",
+        "remediation": "Résoudre 2x + 6 = 0 → x = −3 ; vérifier en remplaçant"
+      },
+      {
+        "id": "NC.EQUA.05#developpe",
+        "libelle": "Développe au lieu d'utiliser la propriété du produit nul et reste bloqué",
+        "libelle_parent": "Ne reconnaît pas la forme produit",
+        "remediation": "Produit = 0 : surtout ne pas développer"
+      }
+    ]
+  },
+  {
+    "id": "NC.EQUA.06",
+    "domaine": "NC",
+    "theme": "EQUA",
+    "titre": "Résoudre une équation du type x² = a",
+    "titre_eleve": "Résoudre x² = 9",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.RAC.01",
+      "NC.EQUA.02"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Equations_Brevet",
+      "Pythagore_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.EQUA.06#oubli_negative",
+        "libelle": "Ne donne que x = 3 pour x² = 9",
+        "libelle_parent": "Oublie la solution négative",
+        "remediation": "(−3)² = 9 aussi : deux solutions quand a > 0"
+      },
+      {
+        "id": "NC.EQUA.06#divise_par_2",
+        "libelle": "Divise par 2 (x² = 16 → x = 8)",
+        "libelle_parent": "Confond carré et double",
+        "remediation": "Revenir à la définition de la racine carrée"
+      },
+      {
+        "id": "NC.EQUA.06#a_negatif",
+        "libelle": "Donne des solutions à x² = −4",
+        "libelle_parent": "Ne voit pas qu'un carré est toujours positif",
+        "remediation": "Un carré est ≥ 0 : pas de solution si a < 0"
+      }
+    ]
+  },
+  {
+    "id": "NC.INEQ.01",
+    "domaine": "NC",
+    "theme": "INEQ",
+    "titre": "Résoudre une inéquation du premier degré",
+    "titre_eleve": "Résoudre une inéquation (2x − 3 < 7)",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.EQUA.02",
+      "NC.REL.01"
+    ],
+    "poids_brevet": 1,
+    "chapitres_legacy": [
+      "Inequations_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.INEQ.01#sens_negatif",
+        "libelle": "Ne change pas le sens en divisant par un négatif (−2x < 6 → x < −3)",
+        "libelle_parent": "Ignore la règle du changement de sens",
+        "remediation": "Tester une valeur : x = 0 vérifie-t-il l'inéquation de départ ?"
+      },
+      {
+        "id": "NC.INEQ.01#une_seule_valeur",
+        "libelle": "Remplace l'inéquation par une égalité et donne une seule valeur",
+        "libelle_parent": "Ne comprend pas qu'il y a un ensemble de solutions",
+        "remediation": "Représenter les solutions sur une droite graduée"
+      },
+      {
+        "id": "NC.INEQ.01#strict_large",
+        "libelle": "Inclut ou exclut la borne à tort (confond < et ≤)",
+        "libelle_parent": "Confond « inférieur » et « inférieur ou égal »",
+        "remediation": "Tester la borne elle-même ; crochet ouvert ou fermé"
+      }
+    ]
+  },
+  {
+    "id": "NC.INEQ.02",
+    "domaine": "NC",
+    "theme": "INEQ",
+    "titre": "Traduire une contrainte (budget, seuil) par une inéquation et interpréter la solution entière",
+    "titre_eleve": "Problèmes de seuil (« au maximum », « au moins »)",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.INEQ.01",
+      "NC.EQUA.04",
+      "NC.ENT.03"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Inequations_Brevet",
+      "Fonctions_Brevet",
+      "Fonctions_Affines_Brevet",
+      "Proportionnalite_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "NC.INEQ.02#arrondi_proche",
+        "libelle": "Arrondit à l'entier le plus proche au lieu de celui qui respecte la contrainte (10,1 → 11 cahiers « au maximum »)",
+        "libelle_parent": "Arrondit sans tenir compte du contexte",
+        "remediation": "« Au maximum » → entier inférieur ; « au minimum » → entier supérieur ; vérifier la réponse"
+      },
+      {
+        "id": "NC.INEQ.02#au_moins_au_plus",
+        "libelle": "Traduit « au moins » par ≤ ou « ne pas dépasser » par ≥",
+        "libelle_parent": "Confond « au moins » et « au plus »",
+        "remediation": "Reformuler : « au moins 100 » = 100 ou plus → ≥ 100"
+      }
+    ]
+  },
+  {
+    "id": "DF.PROP.01",
+    "domaine": "DF",
+    "theme": "PROP",
+    "titre": "Reconnaître une situation de proportionnalité",
+    "titre_eleve": "Reconnaître une situation proportionnelle",
+    "niveau_origine": "5EME",
+    "prerequis": [],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Proportionnalite_Brevet",
+      "Fonctions_Affines_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.PROP.01#augmentent_ensemble",
+        "libelle": "Pense « proportionnel » dès que les deux grandeurs augmentent ensemble (âge et taille)",
+        "libelle_parent": "Confond « augmente en même temps » et « proportionnel »",
+        "remediation": "Tester le doublement : 2 fois plus d'un côté → 2 fois plus de l'autre ? coefficient constant ?"
+      },
+      {
+        "id": "DF.PROP.01#partie_fixe",
+        "libelle": "Considère comme proportionnel un tarif avec une partie fixe (abonnement + prix par séance)",
+        "libelle_parent": "Ne voit pas le rôle d'une somme fixe",
+        "remediation": "Pour 0 unité, est-ce qu'on paie 0 € ? Sinon ce n'est pas proportionnel"
+      }
+    ]
+  },
+  {
+    "id": "DF.PROP.02",
+    "domaine": "DF",
+    "theme": "PROP",
+    "titre": "Calculer une quatrième proportionnelle (retour à l'unité, coefficient, produit en croix)",
+    "titre_eleve": "Calculer une valeur dans une situation proportionnelle",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "DF.PROP.01",
+      "NC.FRAC.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Proportionnalite_Brevet",
+      "Auto_Calcul",
+      "Fractions_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.PROP.02#modele_additif",
+        "libelle": "Raisonne en ajoutant la même différence (4 kg → 6 €, donc 10 kg → 12 €)",
+        "libelle_parent": "Ajoute au lieu de multiplier",
+        "remediation": "Retour à l'unité : 1 kg coûte 6 ÷ 4 = 1,50 €"
+      },
+      {
+        "id": "DF.PROP.02#croix_mal_placee",
+        "libelle": "Place mal les valeurs dans le produit en croix",
+        "libelle_parent": "Applique une technique sans savoir ce qu'elle calcule",
+        "remediation": "Tableau avec les unités en tête de ligne ; vérifier l'ordre de grandeur"
+      },
+      {
+        "id": "DF.PROP.02#quotient_inverse",
+        "libelle": "Divise dans le mauvais sens pour un prix unitaire (kg ÷ € au lieu de € ÷ kg)",
+        "libelle_parent": "Inverse le quotient",
+        "remediation": "L'unité guide le calcul : prix au kilo = € ÷ kg"
+      }
+    ]
+  },
+  {
+    "id": "DF.PROP.03",
+    "domaine": "DF",
+    "theme": "PROP",
+    "titre": "Appliquer un pourcentage (calculer x % d'une quantité)",
+    "titre_eleve": "Calculer un pourcentage d'un nombre",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "DF.PROP.02",
+      "NC.FRAC.07"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Proportionnalite_Brevet",
+      "Auto_Calcul",
+      "Fractions_Brevet",
+      "Auto_Stats_Probas"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.PROP.03#divise_par_taux",
+        "libelle": "Divise par le taux (20 % de 45 = 45 ÷ 20)",
+        "libelle_parent": "Ne sait pas traduire « % de » en calcul",
+        "remediation": "20 % de 45 = 20/100 × 45 ; repères : 10 %, 25 %, 50 %"
+      },
+      {
+        "id": "DF.PROP.03#soustrait_taux",
+        "libelle": "Traite le pourcentage comme une quantité (20 % de 45 → 45 − 20)",
+        "libelle_parent": "Confond pourcentage et valeur",
+        "remediation": "Un pourcentage est une fraction : 20 % de 45 = 9"
+      }
+    ]
+  },
+  {
+    "id": "DF.PROP.04",
+    "domaine": "DF",
+    "theme": "PROP",
+    "titre": "Appliquer une augmentation ou une réduction en pourcentage (coefficient multiplicateur)",
+    "titre_eleve": "Calculer un prix après une réduction ou une hausse",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "DF.PROP.03"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Proportionnalite_Brevet",
+      "Auto_Calcul",
+      "Fractions_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.PROP.04#reduction_au_lieu_prix",
+        "libelle": "Donne le montant de la réduction au lieu du prix final",
+        "libelle_parent": "S'arrête à mi-chemin",
+        "remediation": "Schéma : prix initial = réduction + prix payé"
+      },
+      {
+        "id": "DF.PROP.04#coefficient_faux",
+        "libelle": "Utilise × 0,2 au lieu de × 0,8 pour une baisse de 20 %",
+        "libelle_parent": "Confond taux et coefficient multiplicateur",
+        "remediation": "Baisse de t % → × (1 − t/100) ; hausse de t % → × (1 + t/100)"
+      }
+    ]
+  },
+  {
+    "id": "DF.PROP.05",
+    "domaine": "DF",
+    "theme": "PROP",
+    "titre": "Calculer un taux d'évolution en pourcentage",
+    "titre_eleve": "Calculer un pourcentage d'augmentation ou de baisse",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "DF.PROP.03",
+      "NC.FRAC.07"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Proportionnalite_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.PROP.05#mauvaise_reference",
+        "libelle": "Divise par la valeur finale au lieu de la valeur initiale (120 → 150 : 30/150 = 20 %)",
+        "libelle_parent": "Se trompe de valeur de référence",
+        "remediation": "Évolution = (arrivée − départ) ÷ départ"
+      },
+      {
+        "id": "DF.PROP.05#ecart_comme_pourcent",
+        "libelle": "Donne l'écart en euros comme un pourcentage (+30 € → +30 %)",
+        "libelle_parent": "Confond écart en valeur et pourcentage",
+        "remediation": "Rapporter l'écart à la valeur de départ"
+      }
+    ]
+  },
+  {
+    "id": "DF.PROP.06",
+    "domaine": "DF",
+    "theme": "PROP",
+    "titre": "Enchaîner ou inverser des évolutions en pourcentage",
+    "titre_eleve": "Réductions successives, retrouver un prix de départ",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "DF.PROP.04"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Proportionnalite_Brevet",
+      "Fractions_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.PROP.06#taux_additionnes",
+        "libelle": "Additionne les taux successifs (−20 % puis −10 % = −30 %)",
+        "libelle_parent": "Croit que des pourcentages successifs s'additionnent",
+        "remediation": "Multiplier les coefficients : 0,8 × 0,9 = 0,72 → −28 %"
+      },
+      {
+        "id": "DF.PROP.06#inverse_par_meme_taux",
+        "libelle": "Retrouve le prix initial en ajoutant le même pourcentage (56 € après −30 % → 56 × 1,3)",
+        "libelle_parent": "Croit qu'une hausse de 30 % annule une baisse de 30 %",
+        "remediation": "Prix initial × 0,7 = 56 → diviser par 0,7"
+      }
+    ]
+  },
+  {
+    "id": "DF.PROP.07",
+    "domaine": "DF",
+    "theme": "PROP",
+    "titre": "Utiliser une échelle (plan, carte, maquette)",
+    "titre_eleve": "Utiliser une échelle",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "DF.PROP.02",
+      "GM.CONV.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Proportionnalite_Brevet",
+      "Thales_Brevet",
+      "Geometrie_Espace_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.PROP.07#conversion_oubliee",
+        "libelle": "Oublie de convertir (5,5 cm au 1/1 000 000 → 5 500 000 km)",
+        "libelle_parent": "Ne gère pas les unités dans un calcul d'échelle",
+        "remediation": "Calculer dans l'unité du plan, puis convertir à la fin"
+      },
+      {
+        "id": "DF.PROP.07#sens_echelle",
+        "libelle": "Divise au lieu de multiplier (ou l'inverse) pour passer du plan au réel",
+        "libelle_parent": "Inverse le sens de l'échelle",
+        "remediation": "1/20 : 1 cm sur la maquette = 20 cm en vrai ; le réel est plus grand"
+      }
+    ]
+  },
+  {
+    "id": "DF.PROP.08",
+    "domaine": "DF",
+    "theme": "PROP",
+    "titre": "Partager une quantité selon un ratio donné",
+    "titre_eleve": "Partager selon un ratio (2 : 3)",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "DF.PROP.02",
+      "NC.FRAC.04"
+    ],
+    "poids_brevet": 1,
+    "chapitres_legacy": [],
+    "erreurs": [
+      {
+        "id": "DF.PROP.08#ratio_fraction_total",
+        "libelle": "Interprète le ratio 2 : 3 comme « 2/3 du total » au lieu de 2/5",
+        "libelle_parent": "Confond ratio et fraction du total",
+        "remediation": "Ratio 2 : 3 → 5 parts en tout, dont 2 pour l'un et 3 pour l'autre"
+      },
+      {
+        "id": "DF.PROP.08#partage_egal",
+        "libelle": "Partage en parts égales en ignorant le ratio",
+        "libelle_parent": "Ne prend pas en compte le ratio",
+        "remediation": "Schéma en barres : dessiner 2 cases et 3 cases"
+      }
+    ]
+  },
+  {
+    "id": "DF.FONC.01",
+    "domaine": "DF",
+    "theme": "FONC",
+    "titre": "Calculer l'image d'un nombre par une fonction donnée par une formule ou un tableau",
+    "titre_eleve": "Calculer une image f(x)",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "NC.LIT.02"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Fonctions_Brevet",
+      "Fonctions_Affines_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.FONC.01#notation_produit",
+        "libelle": "Lit f(5) comme « f × 5 »",
+        "libelle_parent": "Ne comprend pas la notation f(x)",
+        "remediation": "f(5) = ce que la « machine » f donne quand on y entre 5"
+      },
+      {
+        "id": "DF.FONC.01#image_antecedent",
+        "libelle": "Répond l'antécédent quand on demande l'image",
+        "libelle_parent": "Confond image et antécédent",
+        "remediation": "Image = sortie, antécédent = entrée ; schéma de la machine"
+      }
+    ]
+  },
+  {
+    "id": "DF.FONC.02",
+    "domaine": "DF",
+    "theme": "FONC",
+    "titre": "Lire une image sur une représentation graphique",
+    "titre_eleve": "Lire une image sur un graphique",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "EG.REP.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Fonctions_Brevet",
+      "Fonctions_Affines_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.FONC.02#axes_inverses",
+        "libelle": "Part de l'axe des ordonnées au lieu de l'axe des abscisses",
+        "libelle_parent": "Confond abscisse et ordonnée",
+        "remediation": "Partir de x sur l'axe horizontal, monter jusqu'à la courbe, lire sur l'axe vertical"
+      },
+      {
+        "id": "DF.FONC.02#graduation",
+        "libelle": "Lit mal la graduation (suppose 1 carreau = 1 unité)",
+        "libelle_parent": "Ne regarde pas l'échelle des axes",
+        "remediation": "Repérer la valeur d'un carreau avant toute lecture"
+      }
+    ]
+  },
+  {
+    "id": "DF.FONC.03",
+    "domaine": "DF",
+    "theme": "FONC",
+    "titre": "Lire un ou des antécédents sur une représentation graphique",
+    "titre_eleve": "Lire un antécédent sur un graphique",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "DF.FONC.02"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Fonctions_Brevet",
+      "Fonctions_Affines_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.FONC.03#un_seul_antecedent",
+        "libelle": "Ne donne qu'un antécédent alors qu'il y en a plusieurs",
+        "libelle_parent": "Pense qu'il n'y a qu'une seule réponse",
+        "remediation": "Tracer la droite horizontale y = k et relever toutes les intersections"
+      },
+      {
+        "id": "DF.FONC.03#lit_une_image",
+        "libelle": "Lit une image au lieu d'un antécédent",
+        "libelle_parent": "Confond les deux questions",
+        "remediation": "Antécédent : on part de l'axe vertical"
+      }
+    ]
+  },
+  {
+    "id": "DF.FONC.04",
+    "domaine": "DF",
+    "theme": "FONC",
+    "titre": "Déterminer un antécédent par le calcul (résoudre f(x) = k)",
+    "titre_eleve": "Trouver un antécédent par le calcul",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "DF.FONC.01",
+      "NC.EQUA.02",
+      "NC.EQUA.06"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Fonctions_Brevet",
+      "Fonctions_Affines_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.FONC.04#calcule_image",
+        "libelle": "Calcule f(27) au lieu de résoudre f(x) = 27",
+        "libelle_parent": "Remplace x par la valeur donnée au lieu de chercher x",
+        "remediation": "Écrire l'équation f(x) = 27, puis la résoudre"
+      },
+      {
+        "id": "DF.FONC.04#antecedent_negatif_oublie",
+        "libelle": "Pour h(x) = x² − 9, ne donne que 3 comme antécédent de 0",
+        "libelle_parent": "Oublie les antécédents négatifs",
+        "remediation": "Tester −3 : (−3)² − 9 = 0"
+      }
+    ]
+  },
+  {
+    "id": "DF.FONC.05",
+    "domaine": "DF",
+    "theme": "FONC",
+    "titre": "Interpréter une courbe : variations, maximum, intervalle où une condition est vérifiée",
+    "titre_eleve": "Interpréter un graphique (augmente, maximum…)",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "DF.FONC.02",
+      "DF.FONC.03"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Fonctions_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.FONC.05#variations_valeurs",
+        "libelle": "Confond « la fonction augmente » et « les valeurs sont grandes »",
+        "libelle_parent": "Confond sens de variation et valeur",
+        "remediation": "Croissante = la courbe monte quand on va vers la droite"
+      },
+      {
+        "id": "DF.FONC.05#intervalle_mauvais_axe",
+        "libelle": "Donne l'intervalle sur l'axe vertical au lieu de l'axe horizontal",
+        "libelle_parent": "Répond avec les mauvaises valeurs",
+        "remediation": "Un intervalle de temps se lit sur l'axe horizontal"
+      },
+      {
+        "id": "DF.FONC.05#courbe_dessin",
+        "libelle": "Interprète la courbe comme un dessin de la situation (une bosse = une colline)",
+        "libelle_parent": "Voit le graphique comme une image de la réalité",
+        "remediation": "Relire ce que représente chaque axe avant d'interpréter"
+      }
+    ]
+  },
+  {
+    "id": "DF.AFF.01",
+    "domaine": "DF",
+    "theme": "AFF",
+    "titre": "Reconnaître une fonction linéaire ou affine (et le lien linéaire ↔ proportionnalité)",
+    "titre_eleve": "Reconnaître une fonction affine ou linéaire",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "DF.PROP.01",
+      "DF.FONC.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Fonctions_Affines_Brevet",
+      "Fonctions_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.AFF.01#x2_affine",
+        "libelle": "Considère f(x) = x² + 1 ou f(x) = 3/x comme affine",
+        "libelle_parent": "Pense qu'il suffit d'un x et d'un nombre",
+        "remediation": "Forme ax + b : x apparaît seulement à la puissance 1"
+      },
+      {
+        "id": "DF.AFF.01#affine_proportionnel",
+        "libelle": "Pense qu'une fonction affine avec b ≠ 0 traduit une situation de proportionnalité",
+        "libelle_parent": "Confond affine et linéaire",
+        "remediation": "Linéaire ↔ proportionnel ↔ droite passant par l'origine"
+      }
+    ]
+  },
+  {
+    "id": "DF.AFF.02",
+    "domaine": "DF",
+    "theme": "AFF",
+    "titre": "Interpréter les coefficients a et b d'une fonction affine dans une situation",
+    "titre_eleve": "Comprendre a et b (prix par unité, partie fixe)",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "DF.AFF.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Fonctions_Affines_Brevet",
+      "Fonctions_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.AFF.02#a_b_inverses",
+        "libelle": "Inverse les rôles de a et b (dans 0,15x + 12, prend 12 pour le prix par minute)",
+        "libelle_parent": "Confond partie fixe et partie variable",
+        "remediation": "b = valeur pour x = 0 (le forfait) ; a = ce qui s'ajoute à chaque unité"
+      },
+      {
+        "id": "DF.AFF.02#a_par_position",
+        "libelle": "Pense que a est toujours le premier nombre écrit (dans 12 + 0,15x, a = 12)",
+        "libelle_parent": "Lit l'expression par position et non par rôle",
+        "remediation": "a est le nombre qui multiplie x"
+      }
+    ]
+  },
+  {
+    "id": "DF.AFF.03",
+    "domaine": "DF",
+    "theme": "AFF",
+    "titre": "Déterminer l'expression d'une fonction affine à partir de deux valeurs ou d'un graphique",
+    "titre_eleve": "Trouver l'expression d'une fonction affine",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "DF.AFF.02",
+      "NC.REL.02",
+      "NC.FRAC.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Fonctions_Affines_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.AFF.03#quotient_inverse",
+        "libelle": "Calcule Δx/Δy au lieu de Δy/Δx",
+        "libelle_parent": "Inverse le calcul du coefficient directeur",
+        "remediation": "a = variation des images ÷ variation des antécédents : « de combien on monte quand on avance de 1 »"
+      },
+      {
+        "id": "DF.AFF.03#y_sur_x",
+        "libelle": "Calcule a = y/x avec un seul point (11/4 pour B(4 ; 11))",
+        "libelle_parent": "Applique la méthode d'une fonction linéaire à une fonction affine",
+        "remediation": "Utiliser deux points : a = (11 − 3) ÷ (4 − 0)"
+      },
+      {
+        "id": "DF.AFF.03#b_oublie",
+        "libelle": "Trouve a mais oublie de déterminer b",
+        "libelle_parent": "Laisse l'expression incomplète",
+        "remediation": "Remplacer les coordonnées d'un point dans y = ax + b pour trouver b"
+      }
+    ]
+  },
+  {
+    "id": "DF.AFF.04",
+    "domaine": "DF",
+    "theme": "AFF",
+    "titre": "Représenter graphiquement une fonction affine et lire a et b sur la droite",
+    "titre_eleve": "Tracer et lire une droite",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "DF.AFF.02",
+      "EG.REP.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Fonctions_Affines_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.AFF.04#b_sur_abscisses",
+        "libelle": "Place l'ordonnée à l'origine sur l'axe des abscisses",
+        "libelle_parent": "Confond les deux axes",
+        "remediation": "b se lit sur l'axe vertical, là où x = 0"
+      },
+      {
+        "id": "DF.AFF.04#pente_signe",
+        "libelle": "Trace une droite qui monte alors que a est négatif",
+        "libelle_parent": "Ne relie pas le signe de a au sens de la droite",
+        "remediation": "a < 0 : la droite descend ; a > 0 : elle monte"
+      }
+    ]
+  },
+  {
+    "id": "DF.AFF.05",
+    "domaine": "DF",
+    "theme": "AFF",
+    "titre": "Comparer deux fonctions affines ou deux offres (point d'intersection, résolution)",
+    "titre_eleve": "Comparer deux tarifs ou deux fonctions",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "DF.AFF.02",
+      "NC.EQUA.03",
+      "DF.FONC.02"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Fonctions_Affines_Brevet",
+      "Proportionnalite_Brevet",
+      "Fonctions_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.AFF.05#generalise_un_cas",
+        "libelle": "Compare sur une seule valeur et généralise (« B est toujours plus cher »)",
+        "libelle_parent": "Généralise à partir d'un seul cas",
+        "remediation": "Chercher le point d'intersection : avant et après, l'ordre s'inverse"
+      },
+      {
+        "id": "DF.AFF.05#intersection_mauvaise_coord",
+        "libelle": "Donne l'ordonnée de l'intersection quand on demande le nombre de minutes",
+        "libelle_parent": "Confond les deux coordonnées du point d'intersection",
+        "remediation": "Relire ce que la question demande et son unité"
+      }
+    ]
+  },
+  {
+    "id": "DF.STAT.01",
+    "domaine": "DF",
+    "theme": "STAT",
+    "titre": "Lire et exploiter un tableau ou un diagramme (effectifs, effectif total)",
+    "titre_eleve": "Lire un tableau ou un diagramme",
+    "niveau_origine": "6EME",
+    "prerequis": [],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Statistiques_Brevet",
+      "Auto_Stats_Probas",
+      "Probabilites_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.STAT.01#valeurs_effectifs",
+        "libelle": "Confond valeurs et effectifs (additionne les valeurs pour obtenir l'effectif total)",
+        "libelle_parent": "Mélange « ce qu'on mesure » et « combien de fois »",
+        "remediation": "Légender les lignes « valeurs » et « effectifs » avant de calculer"
+      },
+      {
+        "id": "DF.STAT.01#lecture_echelle",
+        "libelle": "Lit mal un diagramme en barres dont la graduation n'est pas de 1",
+        "libelle_parent": "Ne vérifie pas la graduation",
+        "remediation": "Lire la valeur d'une graduation d'abord"
+      }
+    ]
+  },
+  {
+    "id": "DF.STAT.02",
+    "domaine": "DF",
+    "theme": "STAT",
+    "titre": "Calculer une fréquence (fraction, décimal, pourcentage)",
+    "titre_eleve": "Calculer une fréquence",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "DF.STAT.01",
+      "NC.FRAC.07"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Auto_Stats_Probas",
+      "Statistiques_Brevet",
+      "Probabilites_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.STAT.02#effectif_pour_frequence",
+        "libelle": "Donne l'effectif au lieu de la fréquence",
+        "libelle_parent": "Confond « combien » et « quelle proportion »",
+        "remediation": "Fréquence = effectif ÷ effectif total"
+      },
+      {
+        "id": "DF.STAT.02#mauvais_total",
+        "libelle": "Divise par un effectif partiel au lieu de l'effectif total",
+        "libelle_parent": "Se trompe de dénominateur",
+        "remediation": "Le total = somme de tous les effectifs"
+      }
+    ]
+  },
+  {
+    "id": "DF.STAT.03",
+    "domaine": "DF",
+    "theme": "STAT",
+    "titre": "Calculer une moyenne simple",
+    "titre_eleve": "Calculer une moyenne",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "NC.PRIO.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Statistiques_Brevet",
+      "Auto_Stats_Probas"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.STAT.03#mauvais_diviseur",
+        "libelle": "Divise la somme par un mauvais nombre (oublie une valeur, divise par la plus grande)",
+        "libelle_parent": "Ne compte pas correctement les valeurs",
+        "remediation": "Cocher les valeurs en les comptant"
+      },
+      {
+        "id": "DF.STAT.03#moyenne_milieu",
+        "libelle": "Prend la valeur du milieu ou (min + max)/2 comme moyenne",
+        "libelle_parent": "Confond moyenne, médiane et milieu",
+        "remediation": "Moyenne = on met tout en commun puis on partage également"
+      },
+      {
+        "id": "DF.STAT.03#nouvelle_moyenne",
+        "libelle": "Calcule une nouvelle moyenne par (ancienne moyenne + nouvelle note)/2",
+        "libelle_parent": "Ne tient pas compte du nombre de notes déjà obtenues",
+        "remediation": "Recalculer la somme totale et diviser par le nouveau nombre de notes"
+      }
+    ]
+  },
+  {
+    "id": "DF.STAT.04",
+    "domaine": "DF",
+    "theme": "STAT",
+    "titre": "Calculer une moyenne pondérée (coefficients ou effectifs)",
+    "titre_eleve": "Calculer une moyenne avec coefficients",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "DF.STAT.03",
+      "DF.STAT.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Statistiques_Brevet",
+      "Auto_Stats_Probas"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.STAT.04#ignore_coefficients",
+        "libelle": "Fait la moyenne simple en ignorant les coefficients ou les effectifs",
+        "libelle_parent": "Ne tient pas compte du poids de chaque valeur",
+        "remediation": "Chaque note compte autant de fois que son coefficient"
+      },
+      {
+        "id": "DF.STAT.04#divise_par_nb_valeurs",
+        "libelle": "Divise par le nombre de valeurs au lieu de la somme des coefficients",
+        "libelle_parent": "Se trompe de diviseur",
+        "remediation": "Diviser par la somme des coefficients (ou l'effectif total)"
+      }
+    ]
+  },
+  {
+    "id": "DF.STAT.05",
+    "domaine": "DF",
+    "theme": "STAT",
+    "titre": "Déterminer une médiane",
+    "titre_eleve": "Trouver la médiane",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "DF.STAT.01",
+      "NC.ENT.02"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Statistiques_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.STAT.05#serie_non_rangee",
+        "libelle": "Prend la valeur du milieu sans ranger la série",
+        "libelle_parent": "Oublie de ranger les valeurs",
+        "remediation": "Toujours ranger dans l'ordre croissant d'abord"
+      },
+      {
+        "id": "DF.STAT.05#effectif_pair",
+        "libelle": "Se trompe de rang quand l'effectif est pair",
+        "libelle_parent": "Ne sait pas traiter un nombre pair de valeurs",
+        "remediation": "Effectif pair : prendre la moyenne des deux valeurs centrales"
+      },
+      {
+        "id": "DF.STAT.05#milieu_etendue",
+        "libelle": "Prend le milieu entre la plus petite et la plus grande valeur",
+        "libelle_parent": "Confond médiane et milieu des valeurs extrêmes",
+        "remediation": "La médiane partage l'effectif en deux, pas l'intervalle des valeurs"
+      },
+      {
+        "id": "DF.STAT.05#ignore_effectifs",
+        "libelle": "Dans un tableau d'effectifs, prend la valeur du milieu de la ligne des valeurs",
+        "libelle_parent": "Ignore les effectifs",
+        "remediation": "Utiliser les effectifs cumulés pour trouver la valeur de rang n/2"
+      }
+    ]
+  },
+  {
+    "id": "DF.STAT.06",
+    "domaine": "DF",
+    "theme": "STAT",
+    "titre": "Calculer l'étendue d'une série",
+    "titre_eleve": "Calculer l'étendue",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "DF.STAT.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Statistiques_Brevet",
+      "Auto_Stats_Probas"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.STAT.06#premier_dernier",
+        "libelle": "Fait la différence entre la première et la dernière valeur de la liste non rangée",
+        "libelle_parent": "Ne cherche pas le minimum et le maximum",
+        "remediation": "Étendue = plus grande valeur − plus petite valeur"
+      },
+      {
+        "id": "DF.STAT.06#max_seul",
+        "libelle": "Donne la plus grande valeur",
+        "libelle_parent": "Confond étendue et maximum",
+        "remediation": "L'étendue est un écart : c'est une différence"
+      }
+    ]
+  },
+  {
+    "id": "DF.STAT.07",
+    "domaine": "DF",
+    "theme": "STAT",
+    "titre": "Comparer et interpréter des séries (indicateurs de position et de dispersion)",
+    "titre_eleve": "Comparer deux séries de données",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "DF.STAT.03",
+      "DF.STAT.04",
+      "DF.STAT.05",
+      "DF.STAT.06"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Statistiques_Brevet",
+      "Auto_Stats_Probas"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.STAT.07#moyenne_suffit",
+        "libelle": "Conclut que deux séries de même moyenne sont semblables",
+        "libelle_parent": "Ne regarde qu'un seul indicateur",
+        "remediation": "Comparer aussi la dispersion (étendue)"
+      },
+      {
+        "id": "DF.STAT.07#valeur_extreme",
+        "libelle": "Ne voit pas qu'une valeur extrême tire la moyenne mais pas la médiane",
+        "libelle_parent": "Ignore l'effet des valeurs extrêmes",
+        "remediation": "Exemple des salaires : ajouter un très haut salaire et recalculer moyenne et médiane"
+      },
+      {
+        "id": "DF.STAT.07#boite_effectif",
+        "libelle": "Lit la longueur de la boîte d'un diagramme en boîte comme un effectif",
+        "libelle_parent": "Interprète mal un indicateur de dispersion",
+        "remediation": "La boîte contient la moitié centrale des valeurs (de Q1 à Q3)"
+      }
+    ]
+  },
+  {
+    "id": "DF.PROB.01",
+    "domaine": "DF",
+    "theme": "PROB",
+    "titre": "Identifier les issues et les événements d'une expérience aléatoire",
+    "titre_eleve": "Issues et événements",
+    "niveau_origine": "5EME",
+    "prerequis": [],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Probabilites_Brevet",
+      "Auto_Stats_Probas"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.PROB.01#equiprobabilite_abusive",
+        "libelle": "Croit que toutes les issues sont équiprobables (« gagner ou perdre : une chance sur deux »)",
+        "libelle_parent": "Pense que deux issues possibles = 50/50",
+        "remediation": "Lister les issues élémentaires réellement équiprobables (somme de 2 dés)"
+      },
+      {
+        "id": "DF.PROB.01#issue_evenement",
+        "libelle": "Confond une issue et un événement",
+        "libelle_parent": "Mélange le vocabulaire",
+        "remediation": "Événement = ensemble d'issues (« obtenir un nombre pair » = {2 ; 4 ; 6})"
+      }
+    ]
+  },
+  {
+    "id": "DF.PROB.02",
+    "domaine": "DF",
+    "theme": "PROB",
+    "titre": "Calculer une probabilité dans une situation d'équiprobabilité",
+    "titre_eleve": "Calculer une probabilité simple",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "DF.PROB.01",
+      "NC.FRAC.01",
+      "DF.STAT.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Probabilites_Brevet",
+      "Auto_Stats_Probas"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.PROB.02#favorables_sur_defavorables",
+        "libelle": "Calcule favorables ÷ défavorables (3 rouges, 5 bleues → 3/5)",
+        "libelle_parent": "Divise par les autres cas au lieu du total",
+        "remediation": "Probabilité = cas favorables ÷ nombre total de cas"
+      },
+      {
+        "id": "DF.PROB.02#superieure_a_1",
+        "libelle": "Donne une probabilité supérieure à 1 ou un nombre de cas",
+        "libelle_parent": "Ne connaît pas l'échelle des probabilités",
+        "remediation": "Une probabilité est toujours entre 0 et 1"
+      },
+      {
+        "id": "DF.PROB.02#total_pas_a_jour",
+        "libelle": "Ne met pas à jour le total après ajout ou retrait de billes",
+        "libelle_parent": "Oublie que le total change",
+        "remediation": "Recompter le total après chaque modification"
+      }
+    ]
+  },
+  {
+    "id": "DF.PROB.03",
+    "domaine": "DF",
+    "theme": "PROB",
+    "titre": "Utiliser l'événement contraire",
+    "titre_eleve": "Probabilité de l'événement contraire",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "DF.PROB.02"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Probabilites_Brevet",
+      "Auto_Stats_Probas"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.PROB.03#meme_probabilite",
+        "libelle": "Donne la même probabilité pour l'événement contraire",
+        "libelle_parent": "Ne voit pas le lien entre p et 1 − p",
+        "remediation": "p(non A) = 1 − p(A)"
+      },
+      {
+        "id": "DF.PROB.03#inverse",
+        "libelle": "Prend l'inverse (1/p) ou l'opposé (−p)",
+        "libelle_parent": "Confond « contraire » et « inverse »",
+        "remediation": "La somme des probabilités de A et de non A vaut 1"
+      }
+    ]
+  },
+  {
+    "id": "DF.PROB.04",
+    "domaine": "DF",
+    "theme": "PROB",
+    "titre": "Calculer la probabilité d'un événement formé de plusieurs issues (« A ou B »)",
+    "titre_eleve": "Probabilité de « A ou B »",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "DF.PROB.02",
+      "NC.FRAC.03"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Probabilites_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.PROB.04#multiplie_ou",
+        "libelle": "Multiplie les probabilités pour « A ou B »",
+        "libelle_parent": "Confond « ou » et « et »",
+        "remediation": "Événements incompatibles : « ou » → on additionne"
+      },
+      {
+        "id": "DF.PROB.04#double_compte",
+        "libelle": "Compte deux fois des issues communes",
+        "libelle_parent": "Additionne des événements qui se recouvrent",
+        "remediation": "Lister les issues favorables sans répétition"
+      }
+    ]
+  },
+  {
+    "id": "DF.PROB.05",
+    "domaine": "DF",
+    "theme": "PROB",
+    "titre": "Déterminer une probabilité dans une expérience à deux épreuves (arbre, tableau)",
+    "titre_eleve": "Probabilités avec deux tirages (arbre, tableau)",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "DF.PROB.02",
+      "DF.PROB.04",
+      "NC.FRAC.05"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Probabilites_Brevet",
+      "Auto_Stats_Probas"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.PROB.05#issues_additionnees",
+        "libelle": "Additionne les nombres d'issues des deux épreuves (dé + pièce : 6 + 2 = 8)",
+        "libelle_parent": "Dénombre mal les issues combinées",
+        "remediation": "Arbre ou tableau à double entrée : 6 × 2 = 12 cases"
+      },
+      {
+        "id": "DF.PROB.05#branche_additionnee",
+        "libelle": "Additionne les probabilités le long d'une branche",
+        "libelle_parent": "Confond « et » et « ou »",
+        "remediation": "Le long d'une branche, on multiplie ; entre branches, on additionne"
+      },
+      {
+        "id": "DF.PROB.05#sans_remise_ignore",
+        "libelle": "Ne tient pas compte d'un tirage sans remise pour la deuxième épreuve",
+        "libelle_parent": "Oublie l'effet du premier tirage",
+        "remediation": "Mettre à jour le contenu du sac sur l'arbre"
+      }
+    ]
+  },
+  {
+    "id": "DF.PROB.06",
+    "domaine": "DF",
+    "theme": "PROB",
+    "titre": "Distinguer fréquence observée et probabilité (hasard sans mémoire, loi des grands nombres)",
+    "titre_eleve": "Fréquence et probabilité",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "DF.PROB.02",
+      "DF.STAT.02"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Probabilites_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "DF.PROB.06#erreur_du_joueur",
+        "libelle": "Croit qu'après plusieurs pertes, gagner devient plus probable",
+        "libelle_parent": "Pense que le hasard « compense »",
+        "remediation": "Chaque tirage est indépendant : le dé n'a pas de mémoire"
+      },
+      {
+        "id": "DF.PROB.06#frequence_egale_proba",
+        "libelle": "Croit que la fréquence observée sur peu d'essais est égale à la probabilité",
+        "libelle_parent": "Confond résultat observé et chance théorique",
+        "remediation": "Simuler : la fréquence se rapproche de la probabilité quand le nombre d'essais augmente"
+      }
+    ]
+  },
+  {
+    "id": "GM.CONV.01",
+    "domaine": "GM",
+    "theme": "CONV",
+    "titre": "Convertir des longueurs, des masses et des contenances",
+    "titre_eleve": "Convertir des longueurs, masses, litres",
+    "niveau_origine": "6EME",
+    "prerequis": [
+      "NC.ENT.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Auto_Calcul",
+      "Proportionnalite_Brevet",
+      "Trigonometrie_Brevet",
+      "Geometrie_Espace_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "GM.CONV.01#mauvais_sens",
+        "libelle": "Convertit dans le mauvais sens (3,5 km = 0,0035 m)",
+        "libelle_parent": "Multiplie au lieu de diviser (ou l'inverse)",
+        "remediation": "Unité plus petite → nombre plus grand ; tableau de conversion"
+      },
+      {
+        "id": "GM.CONV.01#rapport_unites",
+        "libelle": "Décale d'un mauvais nombre de rangs (km → m : × 100)",
+        "libelle_parent": "Ne connaît pas les rapports entre unités",
+        "remediation": "Tableau k h da (unité) d c m : 3 rangs entre km et m"
+      }
+    ]
+  },
+  {
+    "id": "GM.CONV.02",
+    "domaine": "GM",
+    "theme": "CONV",
+    "titre": "Convertir des aires et des volumes (y compris 1 L = 1 dm³)",
+    "titre_eleve": "Convertir des aires et des volumes",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "GM.CONV.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Auto_Geometrie",
+      "Geometrie_Espace_Brevet",
+      "Thales_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "GM.CONV.02#comme_longueur",
+        "libelle": "Convertit une aire ou un volume comme une longueur (1 m² = 100 cm²)",
+        "libelle_parent": "Oublie que les aires se convertissent par 100 et les volumes par 1000",
+        "remediation": "Dessiner 1 m² en cm² : 100 × 100 = 10 000 petits carrés"
+      },
+      {
+        "id": "GM.CONV.02#litre_dm3",
+        "libelle": "Ne connaît pas 1 L = 1 dm³ = 1000 cm³ (écrit 1 L = 100 cm³)",
+        "libelle_parent": "Ignore le lien entre litres et volumes",
+        "remediation": "Un cube de 10 cm de côté contient exactement 1 L"
+      }
+    ]
+  },
+  {
+    "id": "GM.CONV.03",
+    "domaine": "GM",
+    "theme": "CONV",
+    "titre": "Convertir des durées (heures-minutes ↔ écriture décimale)",
+    "titre_eleve": "Convertir des durées (1 h 30 = 1,5 h)",
+    "niveau_origine": "6EME",
+    "prerequis": [
+      "NC.FRAC.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Proportionnalite_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "GM.CONV.03#minutes_decimales",
+        "libelle": "Écrit 1 h 30 min = 1,30 h (ou 3 h 20 min = 3,2 h)",
+        "libelle_parent": "Confond les minutes avec les centièmes d'heure",
+        "remediation": "1 h = 60 min : 30 min = 30/60 h = 0,5 h"
+      },
+      {
+        "id": "GM.CONV.03#decimales_minutes",
+        "libelle": "Convertit 1,5 h en 1 h 50 min",
+        "libelle_parent": "Même confusion dans l'autre sens",
+        "remediation": "0,5 h = 0,5 × 60 min = 30 min"
+      }
+    ]
+  },
+  {
+    "id": "GM.AIRE.01",
+    "domaine": "GM",
+    "theme": "AIRE",
+    "titre": "Calculer le périmètre d'un polygone ou d'un cercle",
+    "titre_eleve": "Calculer un périmètre",
+    "niveau_origine": "6EME",
+    "prerequis": [],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Geometrie_Espace_Brevet",
+      "Pythagore_Brevet",
+      "Equations_Brevet",
+      "Auto_Litteral"
+    ],
+    "erreurs": [
+      {
+        "id": "GM.AIRE.01#perimetre_aire",
+        "libelle": "Confond périmètre et aire (multiplie les côtés)",
+        "libelle_parent": "Mélange contour et surface",
+        "remediation": "Périmètre = longueur du contour (faire le tour avec une ficelle)"
+      },
+      {
+        "id": "GM.AIRE.01#rayon_diametre",
+        "libelle": "Utilise le rayon à la place du diamètre (P = π × r)",
+        "libelle_parent": "Confond rayon et diamètre",
+        "remediation": "P = 2 × π × r = π × d"
+      },
+      {
+        "id": "GM.AIRE.01#cotes_oublies",
+        "libelle": "Oublie des côtés (rectangle : L + l)",
+        "libelle_parent": "Ne compte pas tous les côtés",
+        "remediation": "Faire le tour de la figure en marquant chaque côté"
+      }
+    ]
+  },
+  {
+    "id": "GM.AIRE.02",
+    "domaine": "GM",
+    "theme": "AIRE",
+    "titre": "Calculer l'aire d'un rectangle, d'un triangle, d'une figure composée ou d'une surface latérale",
+    "titre_eleve": "Calculer une aire (rectangle, triangle)",
+    "niveau_origine": "6EME",
+    "prerequis": [
+      "GM.AIRE.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Pythagore_Brevet",
+      "Equations_Brevet",
+      "Auto_Litteral",
+      "Calcul_Litteral_Brevet",
+      "Geometrie_Espace_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "GM.AIRE.02#triangle_sans_moitie",
+        "libelle": "Oublie de diviser par 2 pour l'aire d'un triangle",
+        "libelle_parent": "Applique la formule du rectangle au triangle",
+        "remediation": "Un triangle est la moitié du rectangle qui l'entoure"
+      },
+      {
+        "id": "GM.AIRE.02#hauteur_oblique",
+        "libelle": "Prend un côté oblique comme hauteur",
+        "libelle_parent": "Ne repère pas la hauteur",
+        "remediation": "La hauteur est perpendiculaire à la base ; dans un triangle rectangle ce sont les côtés de l'angle droit"
+      },
+      {
+        "id": "GM.AIRE.02#unite_aire",
+        "libelle": "Donne une aire en cm au lieu de cm²",
+        "libelle_parent": "Oublie l'unité d'aire",
+        "remediation": "Une aire se compte en carrés : cm², m²"
+      }
+    ]
+  },
+  {
+    "id": "GM.AIRE.03",
+    "domaine": "GM",
+    "theme": "AIRE",
+    "titre": "Calculer l'aire d'un disque",
+    "titre_eleve": "Calculer l'aire d'un disque",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "GM.AIRE.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Geometrie_Espace_Brevet",
+      "Auto_Geometrie"
+    ],
+    "erreurs": [
+      {
+        "id": "GM.AIRE.03#formule_perimetre",
+        "libelle": "Confond aire et périmètre du disque (2πr au lieu de πr²)",
+        "libelle_parent": "Mélange les formules du cercle",
+        "remediation": "Aire : r² (unité²) ; périmètre : 2r (unité simple)"
+      },
+      {
+        "id": "GM.AIRE.03#diametre_au_carre",
+        "libelle": "Élève le diamètre au carré au lieu du rayon",
+        "libelle_parent": "Utilise le diamètre dans la formule",
+        "remediation": "Toujours repasser par le rayon"
+      },
+      {
+        "id": "GM.AIRE.03#pi_r_au_carre",
+        "libelle": "Calcule (πr)² ou π × 2r",
+        "libelle_parent": "Applique mal la priorité du carré",
+        "remediation": "Seul r est au carré : π × r × r"
+      }
+    ]
+  },
+  {
+    "id": "GM.VOL.01",
+    "domaine": "GM",
+    "theme": "VOL",
+    "titre": "Calculer le volume d'un pavé droit",
+    "titre_eleve": "Volume d'un pavé (boîte)",
+    "niveau_origine": "6EME",
+    "prerequis": [
+      "GM.AIRE.02"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Auto_Geometrie",
+      "Geometrie_Espace_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "GM.VOL.01#somme_dimensions",
+        "libelle": "Additionne les dimensions au lieu de les multiplier",
+        "libelle_parent": "Confond volume et longueur totale des arêtes",
+        "remediation": "Volume = nombre de petits cubes : L × l × h"
+      },
+      {
+        "id": "GM.VOL.01#unite_volume",
+        "libelle": "Donne le résultat en cm² ou en cm",
+        "libelle_parent": "Oublie l'unité de volume",
+        "remediation": "Trois dimensions → cm³"
+      }
+    ]
+  },
+  {
+    "id": "GM.VOL.02",
+    "domaine": "GM",
+    "theme": "VOL",
+    "titre": "Calculer le volume d'un prisme droit ou d'un cylindre",
+    "titre_eleve": "Volume d'un cylindre ou d'un prisme",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "GM.VOL.01",
+      "GM.AIRE.03"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Geometrie_Espace_Brevet",
+      "Auto_Geometrie"
+    ],
+    "erreurs": [
+      {
+        "id": "GM.VOL.02#diametre",
+        "libelle": "Utilise le diamètre au lieu du rayon",
+        "libelle_parent": "Confond rayon et diamètre",
+        "remediation": "V = π × r² × h : repérer r sur la figure"
+      },
+      {
+        "id": "GM.VOL.02#perimetre_base",
+        "libelle": "Multiplie le périmètre de la base par la hauteur",
+        "libelle_parent": "Confond aire de la base et périmètre",
+        "remediation": "V = aire de la base × hauteur"
+      },
+      {
+        "id": "GM.VOL.02#carre_mal_place",
+        "libelle": "Élève la hauteur au carré ou calcule π × r × h",
+        "libelle_parent": "Place mal le carré dans la formule",
+        "remediation": "Seul le rayon est au carré"
+      }
+    ]
+  },
+  {
+    "id": "GM.VOL.03",
+    "domaine": "GM",
+    "theme": "VOL",
+    "titre": "Calculer le volume d'une pyramide ou d'un cône",
+    "titre_eleve": "Volume d'un cône ou d'une pyramide",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "GM.VOL.02"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Geometrie_Espace_Brevet",
+      "Auto_Geometrie"
+    ],
+    "erreurs": [
+      {
+        "id": "GM.VOL.03#oubli_tiers",
+        "libelle": "Oublie de diviser par 3",
+        "libelle_parent": "Applique au cône la formule du cylindre",
+        "remediation": "Un cône remplit 1/3 du cylindre de même base et même hauteur (expérience du remplissage)"
+      },
+      {
+        "id": "GM.VOL.03#generatrice_hauteur",
+        "libelle": "Utilise la génératrice au lieu de la hauteur",
+        "libelle_parent": "Confond génératrice et hauteur",
+        "remediation": "La hauteur est perpendiculaire à la base ; la génératrice est oblique (Pythagore les relie)"
+      }
+    ]
+  },
+  {
+    "id": "GM.VOL.04",
+    "domaine": "GM",
+    "theme": "VOL",
+    "titre": "Calculer le volume d'une boule",
+    "titre_eleve": "Volume d'une boule",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "GM.VOL.03",
+      "NC.PUIS.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Geometrie_Espace_Brevet",
+      "Auto_Geometrie"
+    ],
+    "erreurs": [
+      {
+        "id": "GM.VOL.04#r_carre",
+        "libelle": "Utilise r² au lieu de r³",
+        "libelle_parent": "Mélange les formules de l'aire et du volume de la sphère",
+        "remediation": "Un volume a 3 dimensions → r³"
+      },
+      {
+        "id": "GM.VOL.04#coefficient",
+        "libelle": "Oublie ou inverse le coefficient 4/3 (écrit 3/4 × π × r³)",
+        "libelle_parent": "Formule mal mémorisée",
+        "remediation": "V = 4/3 × π × r³ ; contrôle : la boule est plus petite que le cube de côté 2r"
+      }
+    ]
+  },
+  {
+    "id": "GM.VOL.05",
+    "domaine": "GM",
+    "theme": "VOL",
+    "titre": "Calculer le volume d'un solide composé",
+    "titre_eleve": "Volume d'un solide composé (cylindre + cône…)",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "GM.VOL.02",
+      "GM.VOL.03",
+      "GM.VOL.04",
+      "GM.CONV.02"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Geometrie_Espace_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "GM.VOL.05#decomposition",
+        "libelle": "Ne décompose pas le solide ou compte deux fois une partie",
+        "libelle_parent": "Ne sait pas découper un solide complexe",
+        "remediation": "Colorier chaque solide simple sur le schéma"
+      },
+      {
+        "id": "GM.VOL.05#mauvaise_dimension",
+        "libelle": "Réutilise la mauvaise mesure (hauteur totale au lieu de celle du cône)",
+        "libelle_parent": "Se trompe de mesure pour chaque partie",
+        "remediation": "Annoter chaque partie avec ses propres dimensions"
+      }
+    ]
+  },
+  {
+    "id": "GM.VIT.01",
+    "domaine": "GM",
+    "theme": "VIT",
+    "titre": "Calculer une vitesse moyenne, une distance ou une durée",
+    "titre_eleve": "Vitesse, distance, durée",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "DF.PROP.02",
+      "GM.CONV.03"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Proportionnalite_Brevet",
+      "Auto_Litteral"
+    ],
+    "erreurs": [
+      {
+        "id": "GM.VIT.01#formule_inversee",
+        "libelle": "Calcule v = t ÷ d ou d = v ÷ t",
+        "libelle_parent": "Mélange les rôles dans la formule",
+        "remediation": "L'unité donne la formule : km/h = km ÷ h"
+      },
+      {
+        "id": "GM.VIT.01#moyenne_des_vitesses",
+        "libelle": "Fait la moyenne des vitesses de deux tronçons",
+        "libelle_parent": "Pense que la vitesse moyenne est la moyenne des vitesses",
+        "remediation": "Vitesse moyenne = distance totale ÷ durée totale"
+      },
+      {
+        "id": "GM.VIT.01#duree_non_convertie",
+        "libelle": "Utilise 3,20 h pour 3 h 20 min",
+        "libelle_parent": "Ne convertit pas la durée en heures décimales",
+        "remediation": "Convertir la durée d'abord : 20 min = 1/3 h"
+      }
+    ]
+  },
+  {
+    "id": "GM.VIT.02",
+    "domaine": "GM",
+    "theme": "VIT",
+    "titre": "Convertir une grandeur composée (km/h ↔ m/s, débit…)",
+    "titre_eleve": "Convertir des km/h en m/s",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "GM.VIT.01",
+      "GM.CONV.01"
+    ],
+    "poids_brevet": 1,
+    "chapitres_legacy": [],
+    "erreurs": [
+      {
+        "id": "GM.VIT.02#une_seule_unite",
+        "libelle": "Ne convertit qu'une des deux unités (90 km/h = 90 000 m/s)",
+        "libelle_parent": "Oublie qu'il y a deux unités à convertir",
+        "remediation": "Convertir séparément le haut (km → m) et le bas (h → s)"
+      },
+      {
+        "id": "GM.VIT.02#sens_3_6",
+        "libelle": "Multiplie par 3,6 au lieu de diviser pour passer en m/s",
+        "libelle_parent": "Applique le raccourci dans le mauvais sens",
+        "remediation": "Une voiture à 90 km/h fait 25 m par seconde : le nombre en m/s est plus petit"
+      }
+    ]
+  },
+  {
+    "id": "GM.AGR.01",
+    "domaine": "GM",
+    "theme": "AGR",
+    "titre": "Utiliser l'effet d'un agrandissement ou d'une réduction sur les longueurs et les aires (k, k²)",
+    "titre_eleve": "Agrandissement : effet sur les longueurs et les aires",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "DF.PROP.07",
+      "NC.PUIS.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Thales_Brevet",
+      "Transformations_Brevet",
+      "Geometrie_Espace_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "GM.AGR.01#aire_fois_k",
+        "libelle": "Multiplie l'aire par k au lieu de k²",
+        "libelle_parent": "Pense que toutes les grandeurs sont multipliées par k",
+        "remediation": "Carré de côté 1 agrandi × 2 : on voit apparaître 4 carrés"
+      },
+      {
+        "id": "GM.AGR.01#rapport_inverse",
+        "libelle": "Utilise 1/k au lieu de k (réduction prise pour agrandissement)",
+        "libelle_parent": "Inverse le rapport",
+        "remediation": "Rapport = longueur de l'image ÷ longueur d'origine"
+      }
+    ]
+  },
+  {
+    "id": "GM.AGR.02",
+    "domaine": "GM",
+    "theme": "AGR",
+    "titre": "Utiliser l'effet d'un agrandissement ou d'une réduction sur les volumes (k³)",
+    "titre_eleve": "Agrandissement : effet sur les volumes",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "GM.AGR.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Geometrie_Espace_Brevet",
+      "Thales_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "GM.AGR.02#volume_fois_k",
+        "libelle": "Multiplie le volume par k ou k² au lieu de k³",
+        "libelle_parent": "N'applique pas la bonne puissance",
+        "remediation": "Cube de côté 1 agrandi × 2 : 8 petits cubes"
+      },
+      {
+        "id": "GM.AGR.02#maquette",
+        "libelle": "Pense qu'une maquette au 1/50 a un volume 50 fois plus petit",
+        "libelle_parent": "Même erreur en réduction",
+        "remediation": "Volume divisé par 50³ = 125 000"
+      }
+    ]
+  },
+  {
+    "id": "EG.REP.01",
+    "domaine": "EG",
+    "theme": "REP",
+    "titre": "Lire et placer des points dans un repère du plan (coordonnées relatives)",
+    "titre_eleve": "Se repérer dans un repère (abscisse, ordonnée)",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "NC.REL.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Auto_Geometrie",
+      "Transformations_Brevet",
+      "Fonctions_Brevet",
+      "Fonctions_Affines_Brevet",
+      "Scratch_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.REP.01#xy_inverses",
+        "libelle": "Inverse abscisse et ordonnée ((3 ; 5) placé en (5 ; 3))",
+        "libelle_parent": "Ne sait pas dans quel ordre lire les coordonnées",
+        "remediation": "« On avance avant de monter » : abscisse d'abord"
+      },
+      {
+        "id": "EG.REP.01#quadrant",
+        "libelle": "Place mal un point à coordonnée négative",
+        "libelle_parent": "Se perd dans les zones négatives du repère",
+        "remediation": "Voir chaque axe comme une droite graduée avec ses négatifs"
+      }
+    ]
+  },
+  {
+    "id": "EG.REP.02",
+    "domaine": "EG",
+    "theme": "REP",
+    "titre": "Calculer les coordonnées du milieu d'un segment",
+    "titre_eleve": "Coordonnées du milieu d'un segment",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "EG.REP.01",
+      "NC.REL.02"
+    ],
+    "poids_brevet": 1,
+    "chapitres_legacy": [
+      "Auto_Geometrie"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.REP.02#pas_divise_par_2",
+        "libelle": "Additionne les coordonnées sans diviser par 2",
+        "libelle_parent": "Oublie la division par 2",
+        "remediation": "Le milieu est la moyenne des coordonnées"
+      },
+      {
+        "id": "EG.REP.02#difference",
+        "libelle": "Soustrait les coordonnées au lieu de les additionner",
+        "libelle_parent": "Confond milieu et écart entre les points",
+        "remediation": "Le milieu est « entre » les deux : faire la moyenne"
+      }
+    ],
+    "diag": false
+  },
+  {
+    "id": "EG.REP.03",
+    "domaine": "EG",
+    "theme": "REP",
+    "titre": "Se repérer dans un pavé droit ou sur une sphère (latitude, longitude)",
+    "titre_eleve": "Se repérer dans l'espace et sur le globe",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "EG.REP.01"
+    ],
+    "poids_brevet": 1,
+    "chapitres_legacy": [],
+    "erreurs": [
+      {
+        "id": "EG.REP.03#ordre_coordonnees",
+        "libelle": "Inverse l'ordre des coordonnées (abscisse, ordonnée, altitude) ou latitude et longitude",
+        "libelle_parent": "Mélange l'ordre conventionnel",
+        "remediation": "Rappeler l'ordre des coordonnées ; manipuler un globe"
+      },
+      {
+        "id": "EG.REP.03#orientation",
+        "libelle": "Confond Nord/Sud ou Est/Ouest",
+        "libelle_parent": "Se trompe d'orientation",
+        "remediation": "Repérer d'abord l'équateur et le méridien de Greenwich"
+      }
+    ]
+  },
+  {
+    "id": "EG.ANG.01",
+    "domaine": "EG",
+    "theme": "ANG",
+    "titre": "Utiliser la somme des angles d'un triangle",
+    "titre_eleve": "Somme des angles d'un triangle (180°)",
+    "niveau_origine": "5EME",
+    "prerequis": [],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Auto_Geometrie",
+      "Trigonometrie_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.ANG.01#somme_360",
+        "libelle": "Croit que la somme des angles d'un triangle vaut 360°",
+        "libelle_parent": "Confond avec le quadrilatère ou le tour complet",
+        "remediation": "Découper et recoller les 3 angles : on obtient un angle plat"
+      },
+      {
+        "id": "EG.ANG.01#angle_droit_oublie",
+        "libelle": "Oublie l'angle droit codé dans un triangle rectangle (180 − 50 = 130)",
+        "libelle_parent": "Ne prend pas en compte l'angle codé",
+        "remediation": "Écrire les trois angles avant de calculer"
+      }
+    ]
+  },
+  {
+    "id": "EG.ANG.02",
+    "domaine": "EG",
+    "theme": "ANG",
+    "titre": "Utiliser les propriétés des angles des triangles isocèles et équilatéraux",
+    "titre_eleve": "Angles d'un triangle isocèle ou équilatéral",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "EG.ANG.01"
+    ],
+    "poids_brevet": 1,
+    "chapitres_legacy": [
+      "Auto_Geometrie"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.ANG.02#base_sommet",
+        "libelle": "Confond angle au sommet et angles à la base d'un triangle isocèle",
+        "libelle_parent": "Ne sait pas quels angles sont égaux",
+        "remediation": "Les angles égaux sont ceux posés sur la base"
+      },
+      {
+        "id": "EG.ANG.02#pas_de_partage",
+        "libelle": "Oublie de partager le reste entre les deux angles (180 − 36 = 144 donné)",
+        "libelle_parent": "S'arrête à mi-chemin",
+        "remediation": "Deux angles égaux se partagent le reste : 144 ÷ 2"
+      }
+    ]
+  },
+  {
+    "id": "EG.ANG.03",
+    "domaine": "EG",
+    "theme": "ANG",
+    "titre": "Utiliser les angles complémentaires, supplémentaires, opposés par le sommet, alternes-internes",
+    "titre_eleve": "Angles complémentaires, supplémentaires, alternes-internes",
+    "niveau_origine": "5EME",
+    "prerequis": [],
+    "poids_brevet": 1,
+    "chapitres_legacy": [
+      "Auto_Geometrie"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.ANG.03#complementaire_supplementaire",
+        "libelle": "Confond complémentaires (90°) et supplémentaires (180°)",
+        "libelle_parent": "Mélange les deux définitions",
+        "remediation": "Supplémentaires → angle plat (180°) ; complémentaires → angle droit (90°)"
+      },
+      {
+        "id": "EG.ANG.03#alternes_sans_paralleles",
+        "libelle": "Affirme l'égalité d'angles alternes-internes sans droites parallèles",
+        "libelle_parent": "Applique une propriété sans vérifier ses conditions",
+        "remediation": "Vérifier d'abord l'hypothèse de parallélisme"
+      }
+    ]
+  },
+  {
+    "id": "EG.PYTH.01",
+    "domaine": "EG",
+    "theme": "PYTH",
+    "titre": "Calculer la longueur de l'hypoténuse avec le théorème de Pythagore",
+    "titre_eleve": "Pythagore : calculer le grand côté (hypoténuse)",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.PUIS.01",
+      "NC.RAC.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Pythagore_Brevet",
+      "Auto_Geometrie",
+      "Trigonometrie_Brevet",
+      "Geometrie_Espace_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.PYTH.01#somme_cotes",
+        "libelle": "Additionne les côtés (3 + 4 = 7) au lieu de leurs carrés",
+        "libelle_parent": "N'utilise pas les carrés",
+        "remediation": "Pythagore porte sur les aires des carrés construits sur les côtés"
+      },
+      {
+        "id": "EG.PYTH.01#racine_distribuee",
+        "libelle": "Écrit √(a² + b²) = a + b",
+        "libelle_parent": "Distribue la racine sur la somme",
+        "remediation": "Calculer d'abord la somme des carrés, puis la racine du total"
+      },
+      {
+        "id": "EG.PYTH.01#hypotenuse_mal_identifiee",
+        "libelle": "Ne repère pas l'hypoténuse (côté opposé à l'angle droit)",
+        "libelle_parent": "Ne sait pas quel côté est le plus long",
+        "remediation": "Hypoténuse : en face de l'angle droit, c'est le plus long côté"
+      },
+      {
+        "id": "EG.PYTH.01#oubli_racine",
+        "libelle": "Oublie la racine carrée finale (AC = 25 au lieu de 5)",
+        "libelle_parent": "S'arrête au carré de la longueur",
+        "remediation": "Contrôle : l'hypoténuse est plus longue que chaque côté mais plus courte que leur somme"
+      }
+    ]
+  },
+  {
+    "id": "EG.PYTH.02",
+    "domaine": "EG",
+    "theme": "PYTH",
+    "titre": "Calculer la longueur d'un côté de l'angle droit avec le théorème de Pythagore",
+    "titre_eleve": "Pythagore : calculer un petit côté",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "EG.PYTH.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Pythagore_Brevet",
+      "Auto_Geometrie"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.PYTH.02#additionne_au_lieu_soustraire",
+        "libelle": "Additionne les carrés au lieu de soustraire (c² = 13² + 5²)",
+        "libelle_parent": "Applique la formule sans identifier l'hypoténuse",
+        "remediation": "L'inconnue est un petit côté : c² = hypoténuse² − autre côté²"
+      },
+      {
+        "id": "EG.PYTH.02#soustraction_inversee",
+        "libelle": "Soustrait dans le mauvais ordre (5² − 13²) et obtient un nombre négatif",
+        "libelle_parent": "Ne s'interroge pas sur un résultat impossible",
+        "remediation": "Un côté de l'angle droit est toujours plus court que l'hypoténuse"
+      }
+    ]
+  },
+  {
+    "id": "EG.PYTH.03",
+    "domaine": "EG",
+    "theme": "PYTH",
+    "titre": "Démontrer qu'un triangle est ou n'est pas rectangle (réciproque et contraposée de Pythagore)",
+    "titre_eleve": "Prouver qu'un triangle est rectangle (ou pas)",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "EG.PYTH.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Pythagore_Brevet",
+      "Auto_Geometrie"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.PYTH.03#plus_grand_cote",
+        "libelle": "Ne compare pas le carré du plus grand côté à la somme des deux autres",
+        "libelle_parent": "Ne sélectionne pas le plus grand côté",
+        "remediation": "Calculer séparément : (plus grand côté)² d'un côté, somme des deux autres carrés de l'autre"
+      },
+      {
+        "id": "EG.PYTH.03#theoreme_direct",
+        "libelle": "Utilise le théorème direct pour conclure qu'un triangle est rectangle",
+        "libelle_parent": "Confond le théorème et sa réciproque",
+        "remediation": "On ne sait pas encore s'il est rectangle : on compare deux calculs puis on conclut"
+      },
+      {
+        "id": "EG.PYTH.03#presque_egal",
+        "libelle": "Conclut « rectangle » quand les deux nombres sont proches (289 et 324)",
+        "libelle_parent": "Accepte une égalité approximative",
+        "remediation": "Égalité exacte obligatoire ; sinon le triangle n'est pas rectangle"
+      }
+    ]
+  },
+  {
+    "id": "EG.THAL.01",
+    "domaine": "EG",
+    "theme": "THAL",
+    "titre": "Reconnaître une configuration de Thalès et écrire l'égalité des rapports",
+    "titre_eleve": "Thalès : repérer la figure et écrire les rapports",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "NC.FRAC.02",
+      "DF.PROP.02"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Thales_Brevet",
+      "Auto_Geometrie"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.THAL.01#rapports_croises",
+        "libelle": "Associe des côtés qui ne se correspondent pas (AM/AB = AN/NC)",
+        "libelle_parent": "Mélange les longueurs des deux triangles",
+        "remediation": "Colorier petit et grand triangle ; écrire toujours petit/grand dans le même ordre"
+      },
+      {
+        "id": "EG.THAL.01#segment_partiel",
+        "libelle": "Utilise MB au lieu de AB (un morceau du côté au lieu du côté entier)",
+        "libelle_parent": "Prend un morceau de segment au lieu du côté du grand triangle",
+        "remediation": "Les rapports comparent des côtés de triangles partant du sommet commun"
+      },
+      {
+        "id": "EG.THAL.01#sans_paralleles",
+        "libelle": "Applique Thalès sans vérifier que les droites sont parallèles",
+        "libelle_parent": "Oublie la condition du théorème",
+        "remediation": "Écrire l'hypothèse : (MN) // (BC)"
+      }
+    ]
+  },
+  {
+    "id": "EG.THAL.02",
+    "domaine": "EG",
+    "theme": "THAL",
+    "titre": "Calculer une longueur avec le théorème de Thalès (triangles emboîtés ou papillon)",
+    "titre_eleve": "Thalès : calculer une longueur",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "EG.THAL.01",
+      "DF.PROP.02"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Thales_Brevet",
+      "Auto_Geometrie"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.THAL.02#produit_croix",
+        "libelle": "Isole mal l'inconnue dans l'égalité de rapports",
+        "libelle_parent": "Se trompe dans le produit en croix final",
+        "remediation": "a/b = c/x ⇒ x = b × c ÷ a ; vérifier l'ordre de grandeur"
+      },
+      {
+        "id": "EG.THAL.02#papillon",
+        "libelle": "En configuration papillon, associe les mauvais segments de part et d'autre du point O",
+        "libelle_parent": "Ne repère pas les segments correspondants",
+        "remediation": "Faire tourner le petit triangle : chaque sommet a son correspondant"
+      },
+      {
+        "id": "EG.THAL.02#additif",
+        "libelle": "Raisonne en ajoutant une même longueur au lieu de multiplier",
+        "libelle_parent": "Pense qu'agrandir = ajouter",
+        "remediation": "Agrandir, c'est multiplier toutes les longueurs par le même nombre"
+      }
+    ]
+  },
+  {
+    "id": "EG.THAL.03",
+    "domaine": "EG",
+    "theme": "THAL",
+    "titre": "Démontrer que deux droites sont ou ne sont pas parallèles (réciproque de Thalès)",
+    "titre_eleve": "Prouver que deux droites sont parallèles (ou pas)",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "EG.THAL.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Thales_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.THAL.03#ordre_points",
+        "libelle": "Ne vérifie pas que les points sont alignés dans le même ordre",
+        "libelle_parent": "Oublie une condition de la réciproque",
+        "remediation": "Condition : A, M, B et A, N, C alignés dans le même ordre"
+      },
+      {
+        "id": "EG.THAL.03#rapports_arrondis",
+        "libelle": "Compare des rapports arrondis et conclut à l'égalité",
+        "libelle_parent": "Conclut sur des valeurs approchées",
+        "remediation": "Comparer les fractions exactes (produit en croix)"
+      },
+      {
+        "id": "EG.THAL.03#un_seul_rapport",
+        "libelle": "Calcule un seul rapport et conclut",
+        "libelle_parent": "Ne compare pas deux rapports",
+        "remediation": "Il faut calculer deux rapports puis les comparer"
+      }
+    ]
+  },
+  {
+    "id": "EG.SEMB.01",
+    "domaine": "EG",
+    "theme": "SEMB",
+    "titre": "Reconnaître et utiliser des triangles semblables",
+    "titre_eleve": "Triangles semblables",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "EG.THAL.01",
+      "EG.ANG.01"
+    ],
+    "poids_brevet": 1,
+    "chapitres_legacy": [
+      "Thales_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.SEMB.01#a_l_oeil",
+        "libelle": "Juge deux triangles semblables « à l'œil »",
+        "libelle_parent": "Se fie à l'apparence",
+        "remediation": "Critères : deux angles égaux, ou côtés proportionnels"
+      },
+      {
+        "id": "EG.SEMB.01#cotes_non_homologues",
+        "libelle": "Associe des côtés non homologues pour calculer le rapport",
+        "libelle_parent": "Mélange les côtés correspondants",
+        "remediation": "Côtés homologues : opposés aux angles égaux"
+      }
+    ]
+  },
+  {
+    "id": "EG.TRIG.01",
+    "domaine": "EG",
+    "theme": "TRIG",
+    "titre": "Nommer le côté adjacent, le côté opposé et l'hypoténuse relativement à un angle",
+    "titre_eleve": "Trigo : repérer adjacent, opposé, hypoténuse",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "EG.PYTH.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Trigonometrie_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.TRIG.01#adjacent_hypotenuse",
+        "libelle": "Prend l'hypoténuse pour le côté adjacent",
+        "libelle_parent": "Ne distingue pas les deux côtés qui touchent l'angle",
+        "remediation": "Adjacent = touche l'angle ET n'est pas l'hypoténuse"
+      },
+      {
+        "id": "EG.TRIG.01#mauvais_angle",
+        "libelle": "Nomme les côtés par rapport à l'angle droit ou au mauvais angle",
+        "libelle_parent": "Ne se place pas au bon angle",
+        "remediation": "Colorier l'angle de travail, puis nommer les côtés"
+      }
+    ]
+  },
+  {
+    "id": "EG.TRIG.02",
+    "domaine": "EG",
+    "theme": "TRIG",
+    "titre": "Choisir le rapport trigonométrique adapté (cosinus, sinus, tangente)",
+    "titre_eleve": "Trigo : choisir cos, sin ou tan",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "EG.TRIG.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Trigonometrie_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.TRIG.02#mauvais_rapport",
+        "libelle": "Choisit cos au lieu de tan (ou un autre mauvais rapport)",
+        "libelle_parent": "Ne relie pas les côtés connus au bon rapport",
+        "remediation": "SOH CAH TOA : cocher les deux côtés en jeu, puis choisir"
+      },
+      {
+        "id": "EG.TRIG.02#rapport_inverse",
+        "libelle": "Écrit cos = hypoténuse ÷ adjacent",
+        "libelle_parent": "Inverse le rapport",
+        "remediation": "Un cosinus ou un sinus est toujours ≤ 1 : l'hypoténuse est en bas"
+      }
+    ]
+  },
+  {
+    "id": "EG.TRIG.03",
+    "domaine": "EG",
+    "theme": "TRIG",
+    "titre": "Calculer une longueur avec la trigonométrie",
+    "titre_eleve": "Trigo : calculer une longueur",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "EG.TRIG.02",
+      "NC.EQUA.02",
+      "NC.ENT.03"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Trigonometrie_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.TRIG.03#inconnue_au_denominateur",
+        "libelle": "Isole mal l'inconnue quand elle est au dénominateur (x = cos × adj au lieu de adj ÷ cos)",
+        "libelle_parent": "Ne sait pas résoudre a/x = b",
+        "remediation": "Revenir à l'égalité de fractions : cos = adj/x ⇒ x = adj ÷ cos"
+      },
+      {
+        "id": "EG.TRIG.03#mode_calculatrice",
+        "libelle": "Calculatrice en radians ou en grades",
+        "libelle_parent": "Mauvais réglage de la calculatrice",
+        "remediation": "Vérifier : cos(60) doit afficher 0,5"
+      }
+    ]
+  },
+  {
+    "id": "EG.TRIG.04",
+    "domaine": "EG",
+    "theme": "TRIG",
+    "titre": "Calculer la mesure d'un angle avec la trigonométrie",
+    "titre_eleve": "Trigo : calculer un angle",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "EG.TRIG.02"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Trigonometrie_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.TRIG.04#pas_arccos",
+        "libelle": "Utilise cos au lieu de cos⁻¹ (Arccos) pour retrouver l'angle",
+        "libelle_parent": "Confond la fonction et sa réciproque",
+        "remediation": "On connaît le cosinus, on cherche l'angle : touche cos⁻¹"
+      },
+      {
+        "id": "EG.TRIG.04#angle_proportionnel",
+        "libelle": "Pense que l'angle est proportionnel aux longueurs (distance doublée → angle divisé par 2)",
+        "libelle_parent": "Applique la proportionnalité à tort",
+        "remediation": "Tester à la calculatrice : tan⁻¹(1) = 45°, tan⁻¹(0,5) ≈ 27°"
+      }
+    ]
+  },
+  {
+    "id": "EG.TRANS.01",
+    "domaine": "EG",
+    "theme": "TRANS",
+    "titre": "Construire ou reconnaître l'image d'une figure par une symétrie axiale ou centrale",
+    "titre_eleve": "Symétries (axiale et centrale)",
+    "niveau_origine": "5EME",
+    "prerequis": [],
+    "poids_brevet": 1,
+    "chapitres_legacy": [
+      "Transformations_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.TRANS.01#axiale_centrale",
+        "libelle": "Confond symétrie axiale et symétrie centrale",
+        "libelle_parent": "Mélange les deux symétries",
+        "remediation": "Axiale = pliage ; centrale = demi-tour"
+      },
+      {
+        "id": "EG.TRANS.01#construction_a_l_oeil",
+        "libelle": "Place le symétrique sans respecter l'égalité des distances ou la perpendicularité",
+        "libelle_parent": "Construit à l'œil",
+        "remediation": "Utiliser équerre et compas"
+      }
+    ]
+  },
+  {
+    "id": "EG.TRANS.02",
+    "domaine": "EG",
+    "theme": "TRANS",
+    "titre": "Déterminer l'image d'un point ou d'une figure par une translation",
+    "titre_eleve": "Translation (glissement)",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "EG.REP.01",
+      "NC.REL.02"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Transformations_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.TRANS.02#soustrait_vecteur",
+        "libelle": "Soustrait les coordonnées du vecteur au lieu de les ajouter (ou applique le vecteur dans le mauvais sens)",
+        "libelle_parent": "Se trompe de sens de déplacement",
+        "remediation": "Translation = glissement : on ajoute le déplacement"
+      },
+      {
+        "id": "EG.TRANS.02#ajoute_coordonnees_image",
+        "libelle": "Ajoute les coordonnées du point image connu au vecteur au lieu de les soustraire pour retrouver l'antécédent",
+        "libelle_parent": "Applique la translation dans le mauvais sens quand on cherche le point de départ",
+        "remediation": "Se demander : je pars de quel point, j'arrive à quel point ? Faire un schéma avec la flèche du vecteur"
+      }
+    ]
+  },
+  {
+    "id": "EG.TRANS.03",
+    "domaine": "EG",
+    "theme": "TRANS",
+    "titre": "Déterminer l'image d'un point ou d'une figure par une rotation",
+    "titre_eleve": "Rotation",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "EG.TRANS.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Transformations_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.TRANS.03#sens_rotation",
+        "libelle": "Tourne dans le mauvais sens (horaire / anti-horaire)",
+        "libelle_parent": "Confond les sens de rotation",
+        "remediation": "Anti-horaire = sens inverse des aiguilles d'une montre ; faire le geste"
+      },
+      {
+        "id": "EG.TRANS.03#mauvais_centre",
+        "libelle": "Tourne autour du mauvais point",
+        "libelle_parent": "Ne repère pas le centre",
+        "remediation": "Le centre est le seul point qui ne bouge pas : tracer l'arc au compas"
+      }
+    ]
+  },
+  {
+    "id": "EG.TRANS.04",
+    "domaine": "EG",
+    "theme": "TRANS",
+    "titre": "Déterminer l'image par une homothétie (rapport positif ou négatif)",
+    "titre_eleve": "Homothétie (agrandir ou réduire depuis un point)",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "EG.TRANS.01",
+      "DF.PROP.02",
+      "NC.REL.03"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Transformations_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.TRANS.04#rapport_negatif",
+        "libelle": "Ignore le signe d'un rapport négatif (place l'image du même côté du centre)",
+        "libelle_parent": "Ne comprend pas le rôle du signe",
+        "remediation": "k < 0 : l'image est de l'autre côté du centre"
+      },
+      {
+        "id": "EG.TRANS.04#longueur_negative",
+        "libelle": "Donne une longueur négative (5 × (−2) = −10 cm)",
+        "libelle_parent": "Applique le signe à une longueur",
+        "remediation": "Les longueurs sont multipliées par la valeur sans signe de k"
+      },
+      {
+        "id": "EG.TRANS.04#centre_pas_origine",
+        "libelle": "Multiplie les coordonnées par k alors que le centre n'est pas l'origine",
+        "libelle_parent": "Applique une recette hors de son cadre",
+        "remediation": "Mesurer depuis le centre, pas depuis l'origine du repère"
+      }
+    ]
+  },
+  {
+    "id": "EG.TRANS.05",
+    "domaine": "EG",
+    "theme": "TRANS",
+    "titre": "Connaître les propriétés conservées par les transformations",
+    "titre_eleve": "Ce que conservent les transformations",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "EG.TRANS.02",
+      "EG.TRANS.03",
+      "EG.TRANS.04"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Transformations_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.TRANS.05#homothetie_conserve",
+        "libelle": "Croit qu'une homothétie conserve les longueurs",
+        "libelle_parent": "Confond agrandissement et déplacement",
+        "remediation": "Seules symétries, translations et rotations conservent les longueurs"
+      },
+      {
+        "id": "EG.TRANS.05#rotation_deforme",
+        "libelle": "Pense qu'une rotation change la forme ou les angles",
+        "libelle_parent": "Ne voit pas qu'une rotation est un simple déplacement",
+        "remediation": "Décalquer la figure et faire tourner le calque"
+      }
+    ]
+  },
+  {
+    "id": "EG.ESP.01",
+    "domaine": "EG",
+    "theme": "ESP",
+    "titre": "Reconnaître un solide et son patron",
+    "titre_eleve": "Solides et patrons",
+    "niveau_origine": "6EME",
+    "prerequis": [],
+    "poids_brevet": 1,
+    "chapitres_legacy": [
+      "Geometrie_Espace_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.ESP.01#patron_cone",
+        "libelle": "Pense que le secteur du patron du cône a le même rayon que la base",
+        "libelle_parent": "Ne relie pas les éléments du patron au solide",
+        "remediation": "Rayon du secteur = génératrice ; longueur de l'arc = périmètre de la base"
+      },
+      {
+        "id": "EG.ESP.01#faces_aretes",
+        "libelle": "Compte mal les faces, les arêtes ou les sommets",
+        "libelle_parent": "Ne visualise pas le solide",
+        "remediation": "Manipuler un solide réel ou un logiciel 3D"
+      }
+    ]
+  },
+  {
+    "id": "EG.ESP.02",
+    "domaine": "EG",
+    "theme": "ESP",
+    "titre": "Déterminer la nature d'une section plane (pavé, cylindre, cône, sphère)",
+    "titre_eleve": "Sections de solides",
+    "niveau_origine": "3EME",
+    "prerequis": [
+      "EG.ESP.01"
+    ],
+    "poids_brevet": 1,
+    "chapitres_legacy": [
+      "Geometrie_Espace_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "EG.ESP.02#meme_taille",
+        "libelle": "Pense que la section d'un cône ou d'une boule parallèle à la base a toujours la même taille",
+        "libelle_parent": "Ne visualise pas la réduction",
+        "remediation": "Découper un cône en pâte à modeler à plusieurs hauteurs"
+      },
+      {
+        "id": "EG.ESP.02#mauvaise_forme",
+        "libelle": "Se trompe de forme (cercle au lieu de rectangle pour un cylindre coupé verticalement)",
+        "libelle_parent": "Ne visualise pas le plan de coupe",
+        "remediation": "Dessiner le plan de coupe en perspective"
+      }
+    ]
+  },
+  {
+    "id": "AP.PROG.01",
+    "domaine": "AP",
+    "theme": "PROG",
+    "titre": "Exécuter un programme de calcul pour un nombre donné",
+    "titre_eleve": "Faire tourner un programme de calcul",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "NC.PRIO.01"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Scratch_Brevet",
+      "Equations_Brevet",
+      "Calcul_Litteral_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "AP.PROG.01#repart_du_depart",
+        "libelle": "Applique chaque étape au nombre de départ au lieu du résultat précédent",
+        "libelle_parent": "Perd le fil des résultats intermédiaires",
+        "remediation": "Écrire le résultat de chaque étape sur une nouvelle ligne"
+      },
+      {
+        "id": "AP.PROG.01#chaine_egalites",
+        "libelle": "Écrit une chaîne d'égalités fausse (4 × 3 = 12 + 5 = 17)",
+        "libelle_parent": "Utilise « = » pour dire « et ensuite »",
+        "remediation": "Chaque égalité doit être vraie : écrire les étapes séparément"
+      }
+    ]
+  },
+  {
+    "id": "AP.PROG.02",
+    "domaine": "AP",
+    "theme": "PROG",
+    "titre": "Lire un script : suite d'instructions et déplacements (orientation, coordonnées)",
+    "titre_eleve": "Lire un script Scratch (déplacements)",
+    "niveau_origine": "5EME",
+    "prerequis": [
+      "EG.REP.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Scratch_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "AP.PROG.02#orientation",
+        "libelle": "Tourne à droite ou à gauche par rapport à la feuille et non au lutin",
+        "libelle_parent": "Ne prend pas le point de vue du personnage",
+        "remediation": "Mimer le déplacement ; dessiner une flèche d'orientation à chaque étape"
+      },
+      {
+        "id": "AP.PROG.02#instruction_sautee",
+        "libelle": "Saute une instruction ou exécute les blocs dans le désordre",
+        "libelle_parent": "Ne suit pas le programme pas à pas",
+        "remediation": "Pointer chaque bloc au fur et à mesure"
+      }
+    ]
+  },
+  {
+    "id": "AP.PROG.03",
+    "domaine": "AP",
+    "theme": "PROG",
+    "titre": "Comprendre une boucle « répéter n fois »",
+    "titre_eleve": "Les boucles (répéter)",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "AP.PROG.02"
+    ],
+    "poids_brevet": 3,
+    "chapitres_legacy": [
+      "Scratch_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "AP.PROG.03#corps_mal_delimite",
+        "libelle": "Exécute une seule fois le contenu, ou répète aussi les blocs situés après la boucle",
+        "libelle_parent": "Ne délimite pas ce qui est dans la boucle",
+        "remediation": "Entourer le contenu de la boucle ; tableau tour par tour"
+      },
+      {
+        "id": "AP.PROG.03#un_tour_de_trop",
+        "libelle": "Se trompe d'un tour (n + 1 ou n − 1 répétitions)",
+        "libelle_parent": "Compte mal les répétitions",
+        "remediation": "Tableau avec une ligne par tour"
+      }
+    ]
+  },
+  {
+    "id": "AP.PROG.04",
+    "domaine": "AP",
+    "theme": "PROG",
+    "titre": "Suivre l'évolution d'une variable dans un script",
+    "titre_eleve": "Suivre une variable",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "AP.PROG.03",
+      "NC.LIT.01"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Scratch_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "AP.PROG.04#mettre_ajouter",
+        "libelle": "Confond « mettre n à 2 » et « ajouter 2 à n »",
+        "libelle_parent": "Confond affectation et ajout",
+        "remediation": "Tableau d'état : valeur avant / après chaque bloc"
+      },
+      {
+        "id": "AP.PROG.04#valeur_initiale",
+        "libelle": "Oublie la valeur initiale de la variable",
+        "libelle_parent": "Ne tient pas compte de l'initialisation",
+        "remediation": "Commencer le tableau par la valeur de départ"
+      }
+    ]
+  },
+  {
+    "id": "AP.PROG.05",
+    "domaine": "AP",
+    "theme": "PROG",
+    "titre": "Comprendre une instruction conditionnelle (si… alors… sinon)",
+    "titre_eleve": "Les conditions (si… alors… sinon)",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "AP.PROG.02"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [],
+    "erreurs": [
+      {
+        "id": "AP.PROG.05#deux_branches",
+        "libelle": "Exécute les deux branches du « si… sinon »",
+        "libelle_parent": "Ne comprend pas que les deux cas s'excluent",
+        "remediation": "Tester la condition : vraie → « alors » ; fausse → « sinon », jamais les deux"
+      },
+      {
+        "id": "AP.PROG.05#condition_inversee",
+        "libelle": "Évalue la condition à l'envers (> au lieu de <)",
+        "libelle_parent": "Se trompe sur le symbole",
+        "remediation": "Lire la condition à voix haute avec la valeur de la variable"
+      }
+    ]
+  },
+  {
+    "id": "AP.PROG.06",
+    "domaine": "AP",
+    "theme": "PROG",
+    "titre": "Déterminer l'angle de rotation et le nombre de répétitions pour tracer un polygone régulier",
+    "titre_eleve": "Tracer un polygone avec un script",
+    "niveau_origine": "4EME",
+    "prerequis": [
+      "AP.PROG.03",
+      "EG.ANG.01",
+      "EG.ANG.02",
+      "EG.ANG.03"
+    ],
+    "poids_brevet": 2,
+    "chapitres_legacy": [
+      "Scratch_Brevet"
+    ],
+    "erreurs": [
+      {
+        "id": "AP.PROG.06#angle_interieur",
+        "libelle": "Utilise l'angle intérieur (60° pour un triangle équilatéral) au lieu de l'angle dont tourne le lutin (120°)",
+        "libelle_parent": "Confond l'angle de la figure et l'angle de rotation",
+        "remediation": "Le lutin fait un tour complet : il tourne de 360° ÷ nombre de côtés"
+      },
+      {
+        "id": "AP.PROG.06#repetitions",
+        "libelle": "Ne met pas assez de répétitions pour fermer la figure",
+        "libelle_parent": "Ne relie pas nombre de côtés et répétitions",
+        "remediation": "Nombre de répétitions = nombre de côtés"
+      }
+    ]
+  }
+]

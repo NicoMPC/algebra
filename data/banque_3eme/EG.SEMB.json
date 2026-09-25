@@ -1,0 +1,78 @@
+[
+  {
+    "id": "EG.SEMB.01-d01",
+    "comp": "EG.SEMB.01",
+    "q": "Les triangles $RST$ et $UVW$ sont semblables, avec $R$ associé à $U$, $S$ à $V$ et $T$ à $W$. Quel côté de $UVW$ est homologue du côté $[ST]$ ?",
+    "a": "$[VW]$",
+    "type": "qcm",
+    "options": [
+      "$[UV]$",
+      "$[VW]$",
+      "$[UW]$"
+    ],
+    "err": {
+      "$[UV]$": "EG.SEMB.01#cotes_non_homologues",
+      "$[UW]$": "EG.SEMB.01#cotes_non_homologues"
+    },
+    "steps": [
+      "Le côté $[ST]$ relie les sommets $S$ et $T$.",
+      "À quels sommets de $UVW$ sont associés $S$ et $T$ ? Le côté homologue les relie."
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.SEMB.01-d02",
+    "comp": "EG.SEMB.01",
+    "q": "Les triangles $RST$ et $UVW$ sont semblables, avec $R$ associé à $U$, $S$ à $V$ et $T$ à $W$. On a $RS = 4$ cm, $ST = 6$ cm et $UV = 10$ cm. Calcule $VW$. ___ cm",
+    "a": "15",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "6,67": "EG.SEMB.01#cotes_non_homologues",
+      "6,7": "EG.SEMB.01#cotes_non_homologues",
+      "20/3": "EG.SEMB.01#cotes_non_homologues"
+    },
+    "steps": [
+      "$[RS]$ et $[UV]$ sont homologues : le coefficient d'agrandissement est $\\frac{UV}{RS} = \\frac{10}{4}$.",
+      "$[VW]$ est l'homologue de $[ST]$ : $VW = 6 \\times \\frac{10}{4} = \\;?$"
+    ],
+    "f": "$k = \\frac{\\text{côté de } UVW}{\\text{côté homologue de } RST}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.SEMB.01-d03",
+    "comp": "EG.SEMB.01",
+    "q": "Le triangle $T_1$ a pour côtés $3$ cm, $4$ cm et $5$ cm. Le triangle $T_2$ a pour côtés $6$ cm, $8$ cm et $11$ cm. Ils ont presque la même forme. Affirmation : « $T_1$ et $T_2$ sont semblables. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "EG.SEMB.01#a_l_oeil"
+    },
+    "steps": [
+      "Deux triangles sont semblables si les longueurs de l'un s'obtiennent en multipliant celles de l'autre par un même nombre.",
+      "Calcule $\\frac{6}{3}$, $\\frac{8}{4}$ et $\\frac{11}{5}$ : sont-ils tous égaux ?"
+    ],
+    "f": "Semblables $\\Leftrightarrow$ côtés proportionnels",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  }
+]

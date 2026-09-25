@@ -1,0 +1,145 @@
+[
+  {
+    "id": "NC.RAC.01-d01",
+    "verdict": "ok",
+    "raison": "√64 = 8 ; 32 moitié ; −8 racine négative."
+  },
+  {
+    "id": "NC.RAC.01-d02",
+    "verdict": "corrige",
+    "raison": "AC = 5 cm ; 25 (#oubli_racine) et 12,5 (#racine_moitie) justes. 625 = 25² : l'élève élève au carré au lieu de prendre la racine ; ce n'est pas « oublie de prendre la racine à la fin », tag infondé. Retirer 625 (QCM à 3 options).",
+    "correction": {
+      "id": "NC.RAC.01-d02",
+      "comp": "NC.RAC.01",
+      "q": "Dans un triangle rectangle, on a obtenu $AC^2 = 25$ (en $\\text{cm}^2$). Quelle est la longueur $AC$ ?",
+      "a": "$5$ cm",
+      "type": "qcm",
+      "options": [
+        "$25$ cm",
+        "$5$ cm",
+        "$12{,}5$ cm"
+      ],
+      "err": {
+        "$25$ cm": "NC.RAC.01#oubli_racine",
+        "$12{,}5$ cm": "NC.RAC.01#racine_moitie"
+      },
+      "steps": [
+        "On connaît le carré de la longueur : il faut « remonter » à la longueur elle-même.",
+        "Quel nombre positif a pour carré $25$ ?"
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 2,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.RAC.01-d03",
+    "verdict": "ok",
+    "raison": "√(−9) n'existe pas : Faux."
+  },
+  {
+    "id": "NC.RAC.02-d01",
+    "verdict": "corrige",
+    "raison": "7 ✓. Deux distracteurs égaux (5 et √25) : un élève rusé les élimine ensemble, ce qui affaiblit la détection. 25 (= 9 + 16, racines oubliées) n'est pas #somme_racines. Reformulation en égalités où chaque distracteur applique exactement √a ± √b = √(a ± b).",
+    "correction": {
+      "id": "NC.RAC.02-d01",
+      "comp": "NC.RAC.02",
+      "q": "Laquelle de ces égalités est vraie ?",
+      "a": "$\\sqrt{9} + \\sqrt{16} = 7$",
+      "type": "qcm",
+      "options": [
+        "$\\sqrt{9} + \\sqrt{16} = \\sqrt{25}$",
+        "$\\sqrt{9} + \\sqrt{16} = 7$",
+        "$\\sqrt{36} + \\sqrt{64} = \\sqrt{100}$",
+        "$\\sqrt{16} - \\sqrt{9} = \\sqrt{7}$"
+      ],
+      "err": {
+        "$\\sqrt{9} + \\sqrt{16} = \\sqrt{25}$": "NC.RAC.02#somme_racines",
+        "$\\sqrt{36} + \\sqrt{64} = \\sqrt{100}$": "NC.RAC.02#somme_racines",
+        "$\\sqrt{16} - \\sqrt{9} = \\sqrt{7}$": "NC.RAC.02#somme_racines"
+      },
+      "steps": [
+        "La racine carrée ne se « distribue » pas sur une addition : calcule chaque racine séparément.",
+        "Par exemple $\\sqrt{9} = \\,?$ et $\\sqrt{16} = \\,?$ : que vaut leur somme ? Et $\\sqrt{25}$ ?"
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.RAC.02-d02",
+    "verdict": "corrige",
+    "raison": "√16 = 4 ✓. La clé d'erreur '\\sqrt{10}' ne se normalise qu'en 'sqrt(10)' : l'élève qui tape « √10 » (clavier) n'est pas tagué. Ajouter les clés '√10' et 'sqrt(10)'.",
+    "correction": {
+      "id": "NC.RAC.02-d02",
+      "comp": "NC.RAC.02",
+      "q": "Calcule $\\sqrt{8} \\times \\sqrt{2}$. ___",
+      "a": "4",
+      "type": "fill",
+      "options": [],
+      "err": {
+        "\\sqrt{10}": "NC.RAC.02#produit_additionne",
+        "√10": "NC.RAC.02#produit_additionne",
+        "10": "NC.RAC.02#produit_additionne"
+      },
+      "steps": [
+        "Pour un produit de racines : $\\sqrt{a} \\times \\sqrt{b} = \\sqrt{a \\times b}$.",
+        "Calcule $8 \\times 2$, puis la racine carrée de ce nombre."
+      ],
+      "f": "$\\sqrt{a} \\times \\sqrt{b} = \\sqrt{a \\times b}$",
+      "f_disabled": false,
+      "lvl": 2,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.RAC.02-d03",
+    "verdict": "ok",
+    "raison": "√7 × √7 = 7 ; √14, 2√7, 49 conformes."
+  },
+  {
+    "id": "NC.RAC.03-d01",
+    "verdict": "ok",
+    "raison": "√50 = 5√2 ; 25√2, 2√25, 10√5 = facteur non carré sorti."
+  },
+  {
+    "id": "NC.RAC.03-d02",
+    "verdict": "ok",
+    "raison": "√72 = 6√2 ; 2√18, 3√8 partiels ; 36√2 non carré."
+  },
+  {
+    "id": "NC.RAC.03-d03",
+    "verdict": "ok",
+    "raison": "48 = 16×3 → a = 4 ; 16 (non pris en racine) ; 2 (partiel 4×12)."
+  },
+  {
+    "id": "NC.RAC.04-d01",
+    "verdict": "ok",
+    "raison": "7√3 + √2 ; 8√8, 8√3, 8√5 = radicaux différents additionnés."
+  },
+  {
+    "id": "NC.RAC.04-d02",
+    "verdict": "ok",
+    "raison": "(2+√3)² = 7 + 4√3 → b = 4 ; 0 et 2 = double produit oublié / sans le facteur 2."
+  },
+  {
+    "id": "NC.RAC.04-d03",
+    "verdict": "ok",
+    "raison": "6/√3 = 6√3/3 = 2√3. QCM à 3 options acceptable : 2 (= 6/3, seul le dénominateur multiplié) et 6√3 (seul le numérateur) sont exactement #rationalisation_partielle ; pas de 4e distracteur honnête sans sortir de la compétence. ALERTE niveau : la rationalisation n'est pas au programme du cycle 4 (programme 2020) ni au Brevet — à arbitrer (voir REVIEW_NC.md)."
+  }
+]

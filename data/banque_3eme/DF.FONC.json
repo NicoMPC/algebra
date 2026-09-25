@@ -1,0 +1,619 @@
+[
+  {
+    "id": "DF.FONC.01-d01",
+    "comp": "DF.FONC.01",
+    "q": "Que signifie l'écriture $f(5) = 12$ ?",
+    "a": "L'image de $5$ par $f$ est $12$",
+    "type": "qcm",
+    "options": [
+      "L'image de $5$ par $f$ est $12$",
+      "$f \\times 5 = 12$",
+      "L'image de $12$ par $f$ est $5$",
+      "Un antécédent de $5$ par $f$ est $12$"
+    ],
+    "err": {
+      "$f \\times 5 = 12$": "DF.FONC.01#notation_produit",
+      "L'image de $12$ par $f$ est $5$": "DF.FONC.01#image_antecedent",
+      "Un antécédent de $5$ par $f$ est $12$": "DF.FONC.01#image_antecedent"
+    },
+    "steps": [
+      "Dans $f(5)$, le nombre entre parenthèses est celui qu'on donne à la fonction.",
+      "Le résultat obtenu s'appelle l'image. Quel nombre est donné, lequel est obtenu ?"
+    ],
+    "f": "$f(x) = y \\iff y \\text{ est l'image de } x$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.01-d02",
+    "comp": "DF.FONC.01",
+    "q": "Soit la fonction $f(x) = 5x - 7$. Calcule l'image de $3$ par $f$. ___",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2": "DF.FONC.01#image_antecedent"
+    },
+    "steps": [
+      "L'image de $3$, c'est $f(3)$ : remplace $x$ par $3$ dans $5x - 7$.",
+      "Calcule $5 \\times 3 - 7$ : ?"
+    ],
+    "f": "$f(a) : \\text{on remplace } x \\text{ par } a$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.01-d03",
+    "comp": "DF.FONC.01",
+    "q": "Voici un tableau de valeurs d'une fonction $f$. Quelle est l'image de $2$ par $f$ ? ___",
+    "a": "1",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-1": "DF.FONC.01#image_antecedent"
+    },
+    "steps": [
+      "Dans le tableau, repère la colonne où $x = 2$ (première ligne).",
+      "Quelle valeur est écrite sous $2$, sur la ligne $f(x)$ ?"
+    ],
+    "f": "$\\text{image de } a : \\text{valeur de } f(x) \\text{ sous } x = a$",
+    "lvl": 2,
+    "table": {
+      "headers": [
+        "$x$",
+        "$-1$",
+        "$1$",
+        "$2$",
+        "$6$"
+      ],
+      "rows": [
+        [
+          "$f(x)$",
+          "$2$",
+          "$6$",
+          "$1$",
+          "$-3$"
+        ]
+      ],
+      "caption": "Tableau de valeurs de $f$"
+    },
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.02-d01",
+    "comp": "DF.FONC.02",
+    "q": "La courbe d'une fonction $f$ passe par les points $(0 ; 3)$, $(4 ; 2)$ et $(5 ; 4)$. Quelle est l'image de $4$ par $f$ ? ___",
+    "a": "2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5": "DF.FONC.02#axes_inverses"
+    },
+    "steps": [
+      "Un point de la courbe s'écrit $(x ; f(x))$ : l'abscisse d'abord, l'ordonnée ensuite.",
+      "Cherche le point dont l'abscisse vaut $4$. Quelle est son ordonnée ?"
+    ],
+    "f": "$M(x ; y) \\in \\mathcal{C}_f \\iff y = f(x)$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.02-d02",
+    "comp": "DF.FONC.02",
+    "q": "Sur le graphique d'une fonction $f$, l'axe des abscisses est gradué de $1$ en $1$ et l'axe des ordonnées de $5$ en $5$ (un carreau vertical $= 5$ unités). Le point de la courbe d'abscisse $2$ est situé $3$ carreaux au-dessus de l'axe des abscisses. Quelle est l'image de $2$ par $f$ ? ___",
+    "a": "15",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "DF.FONC.02#graduation"
+    },
+    "steps": [
+      "L'image de $2$ se lit sur l'axe vertical, à la hauteur du point d'abscisse $2$.",
+      "Un carreau vertical vaut $5$ unités : que valent $3$ carreaux ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.02-d03",
+    "comp": "DF.FONC.02",
+    "q": "Un graphique donne la hauteur $h(t)$ d'un ballon (en m) en fonction du temps $t$ (en s). Axe horizontal : un carreau $= 0{,}5$ s. Axe vertical : un carreau $= 2$ m. Le point de la courbe situé $4$ carreaux à droite de l'origine est $3$ carreaux au-dessus de l'axe horizontal. Que vaut $h(2)$ ?",
+    "a": "$6$ m",
+    "type": "qcm",
+    "options": [
+      "$6$ m",
+      "$3$ m",
+      "$1{,}5$ m",
+      "$4$ m"
+    ],
+    "err": {
+      "$3$ m": "DF.FONC.02#graduation",
+      "$1{,}5$ m": "DF.FONC.02#graduation",
+      "$4$ m": "DF.FONC.02#axes_inverses"
+    },
+    "steps": [
+      "Vérifie d'abord que le point $4$ carreaux à droite correspond bien à $t = 2$ s : $4 \\times 0{,}5 = $ ?",
+      "Lis ensuite sa hauteur : $3$ carreaux verticaux de $2$ m chacun, cela fait ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.FONC.03-d01",
+    "comp": "DF.FONC.03",
+    "q": "La courbe d'une fonction $f$ passe par les points $(1 ; 5)$, $(2 ; 4)$, $(3 ; 2)$ et $(5 ; 6)$. Elle n'atteint la hauteur $2$ qu'une seule fois. Quel est l'antécédent de $2$ par $f$ ? ___",
+    "a": "3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "4": "DF.FONC.03#lit_une_image"
+    },
+    "steps": [
+      "Un antécédent de $2$ est une abscisse $x$ telle que $f(x) = 2$.",
+      "Cherche le point dont l'ordonnée vaut $2$ : quelle est son abscisse ?"
+    ],
+    "f": "$f(x) = k \\iff x \\text{ est un antécédent de } k$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.03-d02",
+    "comp": "DF.FONC.03",
+    "q": "La courbe d'une fonction $g$ a la forme d'un « U ». Elle passe par $(0 ; 5)$, $(1 ; 2)$, $(2 ; 1)$, $(3 ; 2)$, $(4 ; 5)$ et $(5 ; 10)$ : elle descend jusqu'à $x = 2$, puis remonte. Quels sont les antécédents de $5$ par $g$ ?",
+    "a": "$0$ et $4$",
+    "type": "qcm",
+    "options": [
+      "$0$ et $4$",
+      "$0$ seulement",
+      "$4$ seulement",
+      "$10$"
+    ],
+    "err": {
+      "$0$ seulement": "DF.FONC.03#un_seul_antecedent",
+      "$4$ seulement": "DF.FONC.03#un_seul_antecedent",
+      "$10$": "DF.FONC.03#lit_une_image"
+    },
+    "steps": [
+      "On cherche toutes les abscisses $x$ pour lesquelles la courbe est à la hauteur $5$.",
+      "La courbe descend puis remonte : combien de fois passe-t-elle à la hauteur $5$ ?"
+    ],
+    "f": "$g(x) = k \\iff x \\text{ est un antécédent de } k$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.03-d03",
+    "comp": "DF.FONC.03",
+    "q": "La courbe d'une fonction $h$ n'atteint la hauteur $7$ qu'en un seul point, $(2 ; 7)$. Elle passe aussi par $(7 ; 3)$. Affirmation : « $3$ est un antécédent de $7$ par $h$. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "DF.FONC.03#lit_une_image"
+    },
+    "steps": [
+      "« $3$ est un antécédent de $7$ » voudrait dire $h(3) = 7$, donc le point $(3 ; 7)$ serait sur la courbe.",
+      "Quel est le seul point de la courbe à la hauteur $7$ ? Son abscisse est-elle $3$ ?"
+    ],
+    "f": "$h(x) = k \\iff x \\text{ est un antécédent de } k$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.04-d01",
+    "comp": "DF.FONC.04",
+    "q": "Soit $f(x) = 2x + 3$. Détermine l'antécédent de $11$ par $f$. ___",
+    "a": "4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "25": "DF.FONC.04#calcule_image"
+    },
+    "steps": [
+      "On cherche $x$ tel que $f(x) = 11$, c'est-à-dire $2x + 3 = 11$.",
+      "Isole $2x$, puis $x$ : ?"
+    ],
+    "f": "$\\text{antécédent de } k : \\text{on résout } f(x) = k$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "x=4"
+    ]
+  },
+  {
+    "id": "DF.FONC.04-d02",
+    "comp": "DF.FONC.04",
+    "q": "Soit $h(x) = x^2 - 9$. Quels sont les antécédents de $0$ par $h$ ?",
+    "a": "$-3$ et $3$",
+    "type": "qcm",
+    "options": [
+      "$-3$ et $3$",
+      "$3$ seulement",
+      "$-3$ seulement",
+      "$-9$"
+    ],
+    "err": {
+      "$3$ seulement": "DF.FONC.04#antecedent_negatif_oublie",
+      "$-3$ seulement": "DF.FONC.04#antecedent_negatif_oublie",
+      "$-9$": "DF.FONC.04#calcule_image"
+    },
+    "steps": [
+      "On résout $x^2 - 9 = 0$, c'est-à-dire $x^2 = 9$.",
+      "Combien de nombres ont un carré égal à $9$ ? Pense aussi aux nombres négatifs."
+    ],
+    "f": "$x^2 = a \\ (a > 0) \\iff x = \\sqrt{a} \\text{ ou } x = -\\sqrt{a}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.04-d03",
+    "comp": "DF.FONC.04",
+    "q": "Soit $g(x) = 4x - 6$. Quel nombre a pour image $30$ par $g$ ? ___",
+    "a": "9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "114": "DF.FONC.04#calcule_image"
+    },
+    "steps": [
+      "On cherche $x$ tel que $g(x) = 30$ : écris l'équation $4x - 6 = 30$.",
+      "Ajoute $6$ aux deux membres, puis divise par $4$ : ?"
+    ],
+    "f": "$\\text{antécédent de } k : \\text{on résout } g(x) = k$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "x=9"
+    ]
+  },
+  {
+    "id": "DF.FONC.05-d01",
+    "comp": "DF.FONC.05",
+    "q": "Le tableau donne les températures relevées au cours d'une journée. Sur la courbe, ces points sont reliés par des segments. Pendant quelle période la température augmente-t-elle ?",
+    "a": "De $8$ h à $14$ h",
+    "type": "qcm",
+    "options": [
+      "De $8$ h à $14$ h",
+      "De $12$ °C à $21$ °C",
+      "De $12$ h à $16$ h"
+    ],
+    "err": {
+      "De $12$ °C à $21$ °C": "DF.FONC.05#intervalle_mauvais_axe",
+      "De $12$ h à $16$ h": "DF.FONC.05#variations_valeurs"
+    },
+    "steps": [
+      "« Augmenter » : quand on avance dans le temps, la température monte-t-elle ?",
+      "La réponse est une période, donc lue sur la ligne des heures. Jusqu'à quelle heure la température monte-t-elle ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "table": {
+      "headers": [
+        "Heure",
+        "$8$ h",
+        "$10$ h",
+        "$12$ h",
+        "$14$ h",
+        "$16$ h",
+        "$18$ h"
+      ],
+      "rows": [
+        [
+          "Température (°C)",
+          "$12$",
+          "$15$",
+          "$19$",
+          "$21$",
+          "$18$",
+          "$14$"
+        ]
+      ],
+      "caption": "Températures relevées"
+    },
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.FONC.05-d02",
+    "comp": "DF.FONC.05",
+    "q": "Un graphique donne la vitesse d'un cycliste en fonction du temps. La courbe monte, puis reste horizontale pendant $10$ minutes, puis redescend. Que fait le cycliste pendant ces $10$ minutes ?",
+    "a": "Il roule à vitesse constante",
+    "type": "qcm",
+    "options": [
+      "Il roule à vitesse constante",
+      "Il roule sur une route plate",
+      "Il accélère",
+      "Il monte une côte"
+    ],
+    "err": {
+      "Il roule sur une route plate": "DF.FONC.05#courbe_dessin",
+      "Il accélère": "DF.FONC.05#variations_valeurs",
+      "Il monte une côte": "DF.FONC.05#courbe_dessin"
+    },
+    "steps": [
+      "Le graphique montre la vitesse, pas le paysage : une partie horizontale veut dire que la vitesse ne change pas.",
+      "Pendant ces $10$ minutes, la vitesse augmente-t-elle, diminue-t-elle, ou reste-t-elle la même ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.FONC.05-d03",
+    "comp": "DF.FONC.05",
+    "q": "Une fonction $f$ est définie pour $x$ entre $0$ et $10$. Sa courbe part de $(0 ; 1)$, monte jusqu'au point $(3 ; 6)$, puis descend jusqu'à $(10 ; 2)$. Quel est le maximum de $f$ ? ___",
+    "a": "6",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "DF.FONC.05#intervalle_mauvais_axe",
+      "10": "DF.FONC.05#intervalle_mauvais_axe"
+    },
+    "steps": [
+      "Le maximum est la plus grande valeur prise par $f(x)$, c'est-à-dire la plus grande hauteur de la courbe.",
+      "Quel point est le plus haut ? Lis sa valeur sur l'axe vertical : ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.02-t01",
+    "comp": "DF.FONC.02",
+    "q": "La courbe d'une fonction $f$ passe par les points $(-3 ; 4)$, $(2 ; 6)$ et $(4 ; -1)$. Quelle est l'image de $4$ par $f$ ? ___",
+    "a": "-1",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-3": "DF.FONC.02#axes_inverses",
+      "1": "EG.REP.01#quadrant"
+    },
+    "steps": [
+      "L'image de $4$ se lit sur le point de la courbe dont l'abscisse vaut $4$.",
+      "Quel point a $4$ comme premier nombre ? Son ordonnée est l'image."
+    ],
+    "f": "$f(x)$ = ordonnée du point de la courbe d'abscisse $x$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.02-t02",
+    "comp": "DF.FONC.02",
+    "q": "Sur la courbe d'une fonction $g$, le point d'abscisse $3$ est à la hauteur $8$. Quelle écriture est correcte ?",
+    "a": "$g(3) = 8$",
+    "type": "qcm",
+    "options": [
+      "$g(8) = 3$",
+      "$g(3) = 8$",
+      "$3$ est l'image de $8$ par $g$",
+      "$8$ est un antécédent de $3$ par $g$"
+    ],
+    "err": {
+      "$g(8) = 3$": "DF.FONC.02#axes_inverses",
+      "$3$ est l'image de $8$ par $g$": "DF.FONC.02#axes_inverses",
+      "$8$ est un antécédent de $3$ par $g$": "DF.FONC.02#axes_inverses"
+    },
+    "steps": [
+      "On part d'une abscisse (axe horizontal) et on lit la hauteur (axe vertical).",
+      "Dans $g(x) = y$, où se place l'abscisse, où se place la hauteur ?"
+    ],
+    "f": "$g(\\text{abscisse}) = \\text{ordonnée}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.02-t03",
+    "comp": "DF.FONC.02",
+    "q": "Sur la courbe d'une fonction $f$, le point d'abscisse $0$ est sur l'axe des ordonnées, à la hauteur $-3$. Que vaut $f(0)$ ? ___",
+    "a": "-3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "EG.REP.01#quadrant",
+      "0": "DF.FONC.02#axes_inverses"
+    },
+    "steps": [
+      "$f(0)$ est l'ordonnée du point de la courbe d'abscisse $0$.",
+      "Ce point est-il au-dessus ou en dessous de l'axe horizontal ?"
+    ],
+    "f": "$f(x)$ = ordonnée du point de la courbe d'abscisse $x$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.02-t04",
+    "comp": "DF.FONC.02",
+    "q": "Un graphique donne la température $T(t)$ (en °C) d'un congélateur en fonction du temps $t$ (en min). Un carreau horizontal $= 10$ min, un carreau vertical $= 2$ °C. Le point de la courbe situé $3$ carreaux à droite de l'origine est $4$ carreaux sous l'axe horizontal. Que vaut $T(30)$ ? ___ °C",
+    "a": "-8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-4": "DF.FONC.02#graduation",
+      "8": "EG.REP.01#quadrant"
+    },
+    "steps": [
+      "$3$ carreaux à droite correspondent bien à $t = 30$ min.",
+      "Chaque carreau vertical vaut $2$ °C : combien valent $4$ carreaux, et sous l'axe, quel signe ?"
+    ],
+    "f": "Valeur lue = nombre de carreaux $\\times$ valeur d'un carreau",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.FONC.02-t05",
+    "comp": "DF.FONC.02",
+    "q": "La courbe d'une fonction $f$ passe par les points $(-1 ; 3)$, $(0 ; 1)$, $(2 ; -1)$ et $(3 ; 2)$. Quelle est l'image de $-1$ par $f$ ? ___",
+    "a": "3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2": "DF.FONC.02#axes_inverses",
+      "-3": "EG.REP.01#quadrant"
+    },
+    "steps": [
+      "Cherche le point de la courbe dont l'abscisse (premier nombre) vaut $-1$.",
+      "L'image est la deuxième coordonnée de ce point."
+    ],
+    "f": "$f(x)$ = ordonnée du point de la courbe d'abscisse $x$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.FONC.02-t06",
+    "comp": "DF.FONC.02",
+    "q": "Un graphique donne la distance $d(t)$ (en km) parcourue par une randonneuse en fonction du temps $t$ (en h). Un carreau horizontal $= 1$ h, un carreau vertical $= 0{,}5$ km. À $t = 2$ h, la courbe est $7$ carreaux au-dessus de l'axe horizontal. Combien de kilomètres a-t-elle parcourus ?",
+    "a": "$3{,}5$ km",
+    "type": "qcm",
+    "options": [
+      "$7$ km",
+      "$3{,}5$ km",
+      "$14$ km",
+      "$2$ km"
+    ],
+    "err": {
+      "$7$ km": "DF.FONC.02#graduation",
+      "$14$ km": "DF.FONC.02#graduation",
+      "$2$ km": "DF.FONC.02#axes_inverses"
+    },
+    "steps": [
+      "La distance se lit sur l'axe vertical : combien de carreaux ?",
+      "Un carreau vaut $0{,}5$ km, pas $1$ km : que valent $7$ carreaux ?"
+    ],
+    "f": "Valeur lue = nombre de carreaux $\\times$ valeur d'un carreau",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.FONC.02-t07",
+    "comp": "DF.FONC.02",
+    "q": "Un graphique donne la hauteur d'eau $h(t)$ (en cm) dans une baignoire selon le temps $t$ (en min). Un carreau horizontal $= 2$ min, un carreau vertical $= 5$ cm. La courbe passe par le point situé $4$ carreaux à droite et $6$ carreaux au-dessus de l'origine. Quelle est l'image de $8$ par $h$ ? ___",
+    "a": "30",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "6": "DF.FONC.02#graduation",
+      "12": "DF.FONC.02#graduation",
+      "20": "DF.FONC.02#axes_inverses"
+    },
+    "steps": [
+      "Vérifie d'abord que ce point a bien pour abscisse $8$ min.",
+      "Lis ensuite sa hauteur en tenant compte de la valeur d'un carreau vertical."
+    ],
+    "f": "Valeur lue = nombre de carreaux $\\times$ valeur d'un carreau",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.FONC.02-t08",
+    "comp": "DF.FONC.02",
+    "q": "Sur le graphique d'une fonction $f$, un carreau horizontal vaut $2$ unités et un carreau vertical vaut $1$ unité. Le point $A$ de la courbe est $3$ carreaux à gauche de l'axe des ordonnées et $2$ carreaux sous l'axe des abscisses. Quelle égalité est vraie ?",
+    "a": "$f(-6) = -2$",
+    "type": "qcm",
+    "options": [
+      "$f(-3) = -2$",
+      "$f(-2) = -6$",
+      "$f(-6) = -2$",
+      "$f(6) = 2$"
+    ],
+    "err": {
+      "$f(-3) = -2$": "DF.FONC.02#graduation",
+      "$f(-2) = -6$": "DF.FONC.02#axes_inverses",
+      "$f(6) = 2$": "EG.REP.01#quadrant"
+    },
+    "steps": [
+      "Calcule l'abscisse de $A$ : $3$ carreaux de $2$ unités, à gauche de l'origine.",
+      "Calcule l'ordonnée de $A$, puis écris $f(\\text{abscisse}) = \\text{ordonnée}$."
+    ],
+    "f": "$f(x)$ = ordonnée du point de la courbe d'abscisse $x$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  }
+]

@@ -1,0 +1,541 @@
+[
+  {
+    "id": "NC.PUIS.01-d01",
+    "comp": "NC.PUIS.01",
+    "q": "Calcule $2^5$. ___",
+    "a": "32",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "10": "NC.PUIS.01#base_fois_exposant"
+    },
+    "steps": [
+      "$2^5$ veut dire : $2$ multiplié par lui-même, avec $5$ facteurs.",
+      "$2 \\times 2 = 4$, puis $4 \\times 2 = 8$… continue jusqu'à avoir $5$ facteurs."
+    ],
+    "f": "$a^n = \\underbrace{a \\times a \\times \\ldots \\times a}_{n \\text{ facteurs}}$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.01-d02",
+    "comp": "NC.PUIS.01",
+    "q": "Quelle égalité est vraie ?",
+    "a": "$(-3)^2 = 9$",
+    "type": "qcm",
+    "options": [
+      "$(-3)^2 = 9$",
+      "$(-3)^2 = -9$",
+      "$-3^2 = 9$",
+      "$(-3)^2 = -6$"
+    ],
+    "err": {
+      "$(-3)^2 = -9$": "NC.PUIS.01#carre_negatif",
+      "$-3^2 = 9$": "NC.PUIS.01#carre_negatif",
+      "$(-3)^2 = -6$": "NC.PUIS.01#carre_double"
+    },
+    "steps": [
+      "$(-3)^2 = (-3) \\times (-3)$ : quel est le signe d'un produit de deux négatifs ?",
+      "Dans $-3^2$, sans parenthèses, le carré ne porte que sur le $3$ : $-3^2 = -(3 \\times 3)$."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.01-d03",
+    "comp": "NC.PUIS.01",
+    "q": "Calcule $0{,}3^2$.",
+    "a": "$0{,}09$",
+    "type": "qcm",
+    "options": [
+      "$0{,}9$",
+      "$0{,}09$",
+      "$0{,}6$",
+      "$9$"
+    ],
+    "err": {
+      "$0{,}9$": "NC.PUIS.01#carre_decimal",
+      "$0{,}6$": "NC.PUIS.01#carre_double",
+      "$9$": "NC.PUIS.01#carre_decimal"
+    },
+    "steps": [
+      "$0{,}3^2 = 0{,}3 \\times 0{,}3$ : ce n'est pas $0{,}3 \\times 2$.",
+      "$3 \\times 3 = 9$ ; combien de chiffres après la virgule dans le produit de deux nombres à $1$ décimale ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.02-d01",
+    "comp": "NC.PUIS.02",
+    "q": "Écris $10^{-3}$ en écriture décimale. ___",
+    "a": "0,001",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-1000": "NC.PUIS.02#exposant_negatif_negatif",
+      "0,0001": "NC.PUIS.02#nombre_zeros",
+      "0,01": "NC.PUIS.02#nombre_zeros"
+    },
+    "steps": [
+      "$10^{-3} = \\frac{1}{10^3}$ : c'est un nombre positif, plus petit que $1$.",
+      "$\\frac{1}{1000}$ : combien de chiffres après la virgule, et où se place le $1$ ?"
+    ],
+    "f": "$10^{-n} = \\frac{1}{10^n}$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.02-d02",
+    "comp": "NC.PUIS.02",
+    "q": "Quelle écriture est égale à $0{,}0001$ ?",
+    "a": "$10^{-4}$",
+    "type": "qcm",
+    "options": [
+      "$10^{-3}$",
+      "$10^{-5}$",
+      "$10^{-4}$",
+      "$-10^{4}$"
+    ],
+    "err": {
+      "$10^{-3}$": "NC.PUIS.02#nombre_zeros",
+      "$10^{-5}$": "NC.PUIS.02#nombre_zeros",
+      "$-10^{4}$": "NC.PUIS.02#exposant_negatif_negatif"
+    },
+    "steps": [
+      "$0{,}0001$ est positif et plus petit que $1$ : l'exposant de $10$ est négatif, mais le nombre ne l'est pas.",
+      "Compte à quel rang après la virgule se trouve le chiffre $1$."
+    ],
+    "f": "$10^{-n} = 0{,}0\\ldots01$ avec le $1$ au $n^e$ rang après la virgule",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.02-d03",
+    "comp": "NC.PUIS.02",
+    "q": "Vrai ou faux : $10^{-2}$ est un nombre négatif.",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.PUIS.02#exposant_negatif_negatif"
+    },
+    "steps": [
+      "$10^{-2} = \\frac{1}{10^2}$ : écris-le sous forme de fraction, puis de décimal.",
+      "Une fraction dont le numérateur et le dénominateur sont positifs peut-elle être négative ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.03-d01",
+    "comp": "NC.PUIS.03",
+    "q": "On a $2^3 \\times 2^4 = 2^n$. Quelle est la valeur de $n$ ? ___",
+    "a": "7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "12": "NC.PUIS.03#produit_exposants_multiplies"
+    },
+    "steps": [
+      "$2^3 \\times 2^4 = (2 \\times 2 \\times 2) \\times (2 \\times 2 \\times 2 \\times 2)$.",
+      "Compte le nombre total de facteurs $2$."
+    ],
+    "f": "$a^m \\times a^p = a^{m+p}$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.03-d02",
+    "comp": "NC.PUIS.03",
+    "q": "Simplifie $\\frac{10^{-2}}{10^{-5}}$.",
+    "a": "$10^{3}$",
+    "type": "qcm",
+    "options": [
+      "$10^{-7}$",
+      "$10^{-3}$",
+      "$10^{10}$",
+      "$10^{3}$"
+    ],
+    "err": {
+      "$10^{-7}$": "NC.PUIS.03#signe_exposants",
+      "$10^{-3}$": "NC.PUIS.03#signe_exposants",
+      "$10^{10}$": "NC.PUIS.03#produit_exposants_multiplies"
+    },
+    "steps": [
+      "Pour un quotient de puissances de même base, on soustrait les exposants : exposant du haut moins exposant du bas.",
+      "Calcule $-2 - (-5)$ avec soin : soustraire un négatif, c'est ajouter… ?"
+    ],
+    "f": "$\\frac{a^m}{a^p} = a^{m-p}$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.03-d03",
+    "comp": "NC.PUIS.03",
+    "q": "Simplifie $2^4 \\times 2^{-6}$.",
+    "a": "$2^{-2}$",
+    "type": "qcm",
+    "options": [
+      "$2^{-2}$",
+      "$2^{-24}$",
+      "$4^{-2}$",
+      "$2^{10}$"
+    ],
+    "err": {
+      "$2^{-24}$": "NC.PUIS.03#produit_exposants_multiplies",
+      "$4^{-2}$": "NC.PUIS.03#bases_multipliees",
+      "$2^{10}$": "NC.PUIS.03#signe_exposants"
+    },
+    "steps": [
+      "Même base $2$ : la base ne change pas, on ne travaille que sur les exposants.",
+      "Pour un produit, on additionne les exposants : $4 + (-6) = \\,?$"
+    ],
+    "f": "$a^m \\times a^p = a^{m+p}$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.04-d01",
+    "comp": "NC.PUIS.04",
+    "q": "On écrit $0{,}00008 = 8 \\times 10^{n}$. Quelle est la valeur de $n$ ? ___",
+    "a": "-5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5": "NC.PUIS.04#signe_exposant",
+      "-4": "NC.PUIS.04#decalage",
+      "-6": "NC.PUIS.04#decalage"
+    },
+    "steps": [
+      "$0{,}00008$ est plus petit que $1$ : l'exposant $n$ est-il positif ou négatif ?",
+      "De combien de rangs faut-il déplacer la virgule pour passer de $0{,}00008$ à $8$ ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.04-d02",
+    "comp": "NC.PUIS.04",
+    "q": "La Terre est à environ $150\\,000\\,000$ km du Soleil. Quelle est la notation scientifique de ce nombre ?",
+    "a": "$1{,}5 \\times 10^{8}$",
+    "type": "qcm",
+    "options": [
+      "$1{,}5 \\times 10^{9}$",
+      "$1{,}5 \\times 10^{8}$",
+      "$15 \\times 10^{7}$",
+      "$1{,}5 \\times 10^{-8}$"
+    ],
+    "err": {
+      "$1{,}5 \\times 10^{9}$": "NC.PUIS.04#decalage",
+      "$15 \\times 10^{7}$": "NC.PUIS.04#mantisse_hors_intervalle",
+      "$1{,}5 \\times 10^{-8}$": "NC.PUIS.04#signe_exposant"
+    },
+    "steps": [
+      "En notation scientifique, le premier facteur est compris entre $1$ (inclus) et $10$ (exclu).",
+      "Pour passer de $150\\,000\\,000$ à $1{,}5$, de combien de rangs recule la virgule ?"
+    ],
+    "f": "$a \\times 10^n$ avec $1 \\leq a < 10$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.PUIS.04-d03",
+    "comp": "NC.PUIS.04",
+    "q": "Quelle est l'écriture décimale de $3{,}2 \\times 10^{4}$ ?",
+    "a": "$32\\,000$",
+    "type": "qcm",
+    "options": [
+      "$320\\,000$",
+      "$3\\,200$",
+      "$32\\,000$",
+      "$0{,}00032$"
+    ],
+    "err": {
+      "$320\\,000$": "NC.PUIS.04#decalage",
+      "$3\\,200$": "NC.PUIS.04#decalage",
+      "$0{,}00032$": "NC.PUIS.04#signe_exposant"
+    },
+    "steps": [
+      "Multiplier par $10^4$, c'est multiplier par $10\\,000$ : le nombre devient plus grand.",
+      "La virgule de $3{,}2$ avance de combien de rangs vers la droite ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.05-d01",
+    "comp": "NC.PUIS.05",
+    "q": "Laquelle de ces comparaisons est vraie ?",
+    "a": "$1{,}5 \\times 10^{8} > 7{,}8 \\times 10^{7}$",
+    "type": "qcm",
+    "options": [
+      "$7{,}8 \\times 10^{7} > 1{,}5 \\times 10^{8}$",
+      "$1{,}5 \\times 10^{8} > 7{,}8 \\times 10^{7}$",
+      "$9{,}9 \\times 10^{6} > 2 \\times 10^{7}$",
+      "$9{,}9 \\times 10^{6} > 1{,}5 \\times 10^{8}$"
+    ],
+    "err": {
+      "$7{,}8 \\times 10^{7} > 1{,}5 \\times 10^{8}$": "NC.PUIS.05#compare_mantisses",
+      "$9{,}9 \\times 10^{6} > 2 \\times 10^{7}$": "NC.PUIS.05#compare_mantisses",
+      "$9{,}9 \\times 10^{6} > 1{,}5 \\times 10^{8}$": "NC.PUIS.05#compare_mantisses"
+    },
+    "steps": [
+      "En notation scientifique, on compare d'abord les puissances de $10$ : si les exposants sont différents, lequel l'emporte ?",
+      "En cas de doute, écris les nombres en écriture décimale (par exemple $2 \\times 10^{7} = 20\\,000\\,000$)."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.05-d02",
+    "comp": "NC.PUIS.05",
+    "q": "Calcule $7 \\times 10^{5} + 5 \\times 10^{5}$ et donne le résultat en notation scientifique.",
+    "a": "$1{,}2 \\times 10^{6}$",
+    "type": "qcm",
+    "options": [
+      "$1{,}2 \\times 10^{6}$",
+      "$12 \\times 10^{5}$",
+      "$12 \\times 10^{10}$",
+      "$1{,}2 \\times 10^{11}$"
+    ],
+    "err": {
+      "$12 \\times 10^{5}$": "NC.PUIS.05#non_normalise",
+      "$12 \\times 10^{10}$": "NC.PUIS.05#somme_exposants",
+      "$1{,}2 \\times 10^{11}$": "NC.PUIS.05#somme_exposants"
+    },
+    "steps": [
+      "Les deux termes ont la même puissance $10^5$ : on peut la mettre en facteur, $(7 + 5) \\times 10^5$.",
+      "Le résultat est-il bien en notation scientifique ? Le premier facteur doit être entre $1$ et $10$."
+    ],
+    "f": "$a \\times 10^n$ avec $1 \\leq a < 10$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.05-d03",
+    "comp": "NC.PUIS.05",
+    "q": "On a $(3 \\times 10^{4}) \\times (5 \\times 10^{2}) = 1{,}5 \\times 10^{n}$. Quelle est la valeur de $n$ ? ___",
+    "a": "7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "6": "NC.PUIS.05#non_normalise"
+    },
+    "steps": [
+      "Regroupe : $(3 \\times 5) \\times (10^4 \\times 10^2) = 15 \\times 10^{?}$.",
+      "$15$ n'est pas entre $1$ et $10$ : écris $15 = 1{,}5 \\times 10$, que devient l'exposant ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.02-t01",
+    "comp": "NC.PUIS.02",
+    "q": "Écris $10^4$ en écriture décimale. ___",
+    "a": "10000",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "40": "NC.PUIS.01#base_fois_exposant",
+      "1000": "NC.PUIS.02#nombre_zeros",
+      "100000": "NC.PUIS.02#nombre_zeros"
+    },
+    "steps": [
+      "$10^4 = 10 \\times 10 \\times 10 \\times 10$ : ce n'est pas $10 \\times 4$.",
+      "Chaque facteur $10$ ajoute un zéro : combien de zéros au total ?"
+    ],
+    "f": "$10^n$ : un $1$ suivi de $n$ zéros ; $10^{-n} = \\frac{1}{10^n}$ : le $1$ est au $n$-ième rang après la virgule",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.02-t02",
+    "comp": "NC.PUIS.02",
+    "q": "Un virus mesure environ $10^{-7}$ m. Quelle est l'écriture décimale de cette longueur ?",
+    "a": "$0{,}000\\,000\\,1$ m",
+    "type": "qcm",
+    "options": [
+      "$0{,}000\\,000\\,1$ m",
+      "$-10\\,000\\,000$ m",
+      "$0{,}000\\,000\\,01$ m",
+      "$0{,}000\\,001$ m"
+    ],
+    "err": {
+      "$-10\\,000\\,000$ m": "NC.PUIS.02#exposant_negatif_negatif",
+      "$0{,}000\\,000\\,01$ m": "NC.PUIS.02#nombre_zeros",
+      "$0{,}000\\,001$ m": "NC.PUIS.02#nombre_zeros"
+    },
+    "steps": [
+      "Un exposant négatif ne rend pas le nombre négatif : $10^{-7} = \\frac{1}{10^7}$.",
+      "Dans $10^{-7}$, le chiffre $1$ est au combien-tième rang après la virgule ?"
+    ],
+    "f": "$10^n$ : un $1$ suivi de $n$ zéros ; $10^{-n} = \\frac{1}{10^n}$ : le $1$ est au $n$-ième rang après la virgule",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.PUIS.02-t03",
+    "comp": "NC.PUIS.02",
+    "q": "Complète : $0{,}000\\,01 = 10^{\\text{___}}$",
+    "a": "-5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-4": "NC.PUIS.02#nombre_zeros",
+      "5": "NC.PUIS.02#exposant_negatif_negatif"
+    },
+    "steps": [
+      "Repère le rang du chiffre $1$ après la virgule dans $0{,}000\\,01$.",
+      "Un nombre plus petit que $1$ s'écrit $10^{n}$ avec un exposant de quel signe ?"
+    ],
+    "f": "$10^n$ : un $1$ suivi de $n$ zéros ; $10^{-n} = \\frac{1}{10^n}$ : le $1$ est au $n$-ième rang après la virgule",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.PUIS.01-t01",
+    "comp": "NC.PUIS.01",
+    "q": "Un carreau carré mesure $1{,}2$ m de côté. Quelle est son aire, en $\\text{m}^2$ ? ___",
+    "a": "1,44",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2,4": "NC.PUIS.01#carre_double",
+      "14,4": "NC.PUIS.01#carre_decimal",
+      "0,144": "NC.PUIS.01#carre_decimal"
+    },
+    "steps": [
+      "L'aire d'un carré de côté $c$ vaut $c \\times c$, pas $2 \\times c$.",
+      "Calcule $12 \\times 12$, puis place la virgule : $1$ décimale $+ 1$ décimale $=$ ? décimales."
+    ],
+    "f": "$\\mathcal{A} = c^2 = c \\times c$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.PUIS.01-t02",
+    "comp": "NC.PUIS.01",
+    "q": "Calcule $-4^2 + (-3)^2$. ___",
+    "a": "-7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "25": "NC.PUIS.01#carre_negatif",
+      "-25": "NC.PUIS.01#carre_negatif",
+      "-14": "NC.PUIS.01#carre_double"
+    },
+    "steps": [
+      "Dans $-4^2$, le carré porte seulement sur $4$ ; dans $(-3)^2$, il porte sur $-3$ tout entier.",
+      "Calcule chaque terme avec son signe, puis additionne."
+    ],
+    "f": "$-a^2 = -(a^2)$ ; $(-a)^2 = a^2$",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  }
+]

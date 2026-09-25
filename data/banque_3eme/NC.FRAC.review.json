@@ -1,0 +1,253 @@
+[
+  {
+    "id": "NC.FRAC.01-d01",
+    "verdict": "corrige",
+    "raison": "#grand_denominateur prédit uniquement 1/10 (plus grand dénominateur) ; 1/8 et 1/6 ne sont prédits par aucune règle, tag infondé. Reformulation en comparaisons : chaque distracteur applique exactement « grand dénominateur = grande fraction ».",
+    "correction": {
+      "id": "NC.FRAC.01-d01",
+      "comp": "NC.FRAC.01",
+      "q": "Laquelle de ces comparaisons est vraie ?",
+      "a": "$\\frac{1}{4} > \\frac{1}{8}$",
+      "type": "qcm",
+      "options": [
+        "$\\frac{1}{8} > \\frac{1}{4}$",
+        "$\\frac{1}{4} > \\frac{1}{8}$",
+        "$\\frac{1}{10} > \\frac{1}{6}$",
+        "$\\frac{1}{6} > \\frac{1}{4}$"
+      ],
+      "err": {
+        "$\\frac{1}{8} > \\frac{1}{4}$": "NC.FRAC.01#grand_denominateur",
+        "$\\frac{1}{10} > \\frac{1}{6}$": "NC.FRAC.01#grand_denominateur",
+        "$\\frac{1}{6} > \\frac{1}{4}$": "NC.FRAC.01#grand_denominateur"
+      },
+      "steps": [
+        "$\\frac{1}{8}$, c'est une part quand on coupe l'unité en $8$ parts égales.",
+        "Plus on coupe un gâteau en beaucoup de parts, plus chaque part est… ?"
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.FRAC.01-d02",
+    "verdict": "corrige",
+    "raison": "GRAVE : en fill, _matchFill('3/5','0,6') = true (et '60%' aussi) : l'élève qui recopie la fraction sans la convertir est compté juste — exactement l'élève #pas_quotient visé. Par ailleurs l'indice 2 (« 3/5 = 6/10, combien de dixièmes ? ») donne la réponse. Passage en QCM.",
+    "correction": {
+      "id": "NC.FRAC.01-d02",
+      "comp": "NC.FRAC.01",
+      "q": "Quelle est l'écriture décimale de $\\frac{3}{5}$ ?",
+      "a": "$0{,}6$",
+      "type": "qcm",
+      "options": [
+        "$3{,}5$",
+        "$0{,}6$",
+        "$0{,}35$"
+      ],
+      "err": {
+        "$3{,}5$": "NC.FRAC.01#pas_quotient",
+        "$0{,}35$": "NC.FRAC.01#pas_quotient"
+      },
+      "steps": [
+        "Une fraction est un quotient : $\\frac{3}{5} = 3 \\div 5$.",
+        "Pour t'aider, écris $\\frac{3}{5}$ avec un dénominateur $10$ : $\\frac{3}{5} = \\frac{?}{10}$."
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.FRAC.01-d03",
+    "verdict": "ok",
+    "raison": "3÷4 = 3/4 : Vrai ; Faux = #pas_quotient."
+  },
+  {
+    "id": "NC.FRAC.02-d01",
+    "verdict": "ok",
+    "raison": "8/12 = 2/3 ; 4/5 (+2), 5/6 (+3), 3/4 (+1) sont tous exactement #ajout_meme_nombre : plusieurs distracteurs sur la même erreur justifiés."
+  },
+  {
+    "id": "NC.FRAC.02-d02",
+    "verdict": "ok",
+    "raison": "PGCD 12 → 7/10 ; 42/60 (÷2), 21/30 (÷4), 14/20 (÷6) sont tous des simplifications incomplètes : multi-distracteurs justifiés."
+  },
+  {
+    "id": "NC.FRAC.02-d03",
+    "verdict": "ok",
+    "raison": "15/6 = 5/2 ; 15/6 incomplète ; 9 et 10 = simplification du 6 dans la somme."
+  },
+  {
+    "id": "NC.FRAC.03-d01",
+    "verdict": "ok",
+    "raison": "6/15 + 5/15 = 11/15 ; 3/8, 3/15, 1/5 cohérents. 22/30 accepté (numérique), OK."
+  },
+  {
+    "id": "NC.FRAC.03-d02",
+    "verdict": "ok",
+    "raison": "10/12 − 9/12 = 1/12 ; 1 = (5−3)/(6−4) ; 2/12 et 2/24 = numérateurs non multipliés."
+  },
+  {
+    "id": "NC.FRAC.03-d03",
+    "verdict": "ok",
+    "raison": "8/4 + 3/4 = 11/4 ; 5/6 et 5/4 = entier mal écrit. 2,75 accepté numériquement (valeur juste), acceptable."
+  },
+  {
+    "id": "NC.FRAC.04-d01",
+    "verdict": "ok",
+    "raison": "36÷4×3 = 27 ; 48, 12, 144 = rôles inversés."
+  },
+  {
+    "id": "NC.FRAC.04-d02",
+    "verdict": "corrige",
+    "raison": "40 − 8 = 32 ; 8 (#part_enlevee) et 200 (40×5, #roles_inverses) justes. 48 = 40 + 8 : c'est une hausse au lieu d'une baisse, pas « confond part enlevée et part restante » ; tag infondé. Retirer 48 (QCM à 3 options).",
+    "correction": {
+      "id": "NC.FRAC.04-d02",
+      "comp": "NC.FRAC.04",
+      "q": "Un pull coûte $40$ €. En soldes, son prix baisse de $\\frac{1}{5}$. Quel est son nouveau prix ?",
+      "a": "$32$ €",
+      "type": "qcm",
+      "options": [
+        "$8$ €",
+        "$200$ €",
+        "$32$ €"
+      ],
+      "err": {
+        "$8$ €": "NC.FRAC.04#part_enlevee",
+        "$200$ €": "NC.FRAC.04#roles_inverses"
+      },
+      "steps": [
+        "Commence par calculer la baisse : $\\frac{1}{5}$ de $40$ € $= \\,?$",
+        "Le nouveau prix, c'est l'ancien prix moins la baisse… ou bien plus ?"
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": true
+    }
+  },
+  {
+    "id": "NC.FRAC.04-d03",
+    "verdict": "ok",
+    "raison": "540×7/9 = 420 ; 120 = externes ; 2430 = 540÷2×9 ; 270 = 540÷2."
+  },
+  {
+    "id": "NC.FRAC.05-d01",
+    "verdict": "ok",
+    "raison": "8/15 ; 10/12 et 5/6 = produit en croix ; 120/15 = même dénominateur puis produit des numérateurs."
+  },
+  {
+    "id": "NC.FRAC.05-d02",
+    "verdict": "ok",
+    "raison": "6/24 = 1/4 ; 25/24 (somme), 7/24 (différence), 16/9 (croix)."
+  },
+  {
+    "id": "NC.FRAC.05-d03",
+    "verdict": "ok",
+    "raison": "2/12 = 1/6 ; 24/12, 8/3, 11/12 (somme au lieu du produit, rattaché à #de_pas_multiplier : acceptable)."
+  },
+  {
+    "id": "NC.FRAC.06-d01",
+    "verdict": "ok",
+    "raison": "2/5 × 4/3 = 8/15 ; 6/20 et 3/10 = multiplie par 3/4 ; 15/8 = inverse la première."
+  },
+  {
+    "id": "NC.FRAC.06-d02",
+    "verdict": "ok",
+    "raison": "6 ÷ 3/4 = 8 ; 4,5 = 6×3/4 ; 1/8 = 1/6 × 3/4 ; « impossible » = #division_rapetisse."
+  },
+  {
+    "id": "NC.FRAC.06-d03",
+    "verdict": "ok",
+    "raison": "5 ÷ 1/2 = 10 > 5 : Faux."
+  },
+  {
+    "id": "NC.FRAC.07-d01",
+    "verdict": "corrige",
+    "raison": "GRAVE : en fill, _matchFill('25%','0,25') = true (et '1/4' aussi) : l'élève qui recopie « 25 % » sans convertir est compté juste. Passage en QCM.",
+    "correction": {
+      "id": "NC.FRAC.07-d01",
+      "comp": "NC.FRAC.07",
+      "q": "Quelle est l'écriture décimale de $25$ % ?",
+      "a": "$0{,}25$",
+      "type": "qcm",
+      "options": [
+        "$0{,}025$",
+        "$2{,}5$",
+        "$0{,}25$",
+        "$25$"
+      ],
+      "err": {
+        "$0{,}025$": "NC.FRAC.07#pourcent_virgule",
+        "$2{,}5$": "NC.FRAC.07#pourcent_virgule",
+        "$25$": "NC.FRAC.07#pourcent_virgule"
+      },
+      "steps": [
+        "« Pour cent » veut dire « sur $100$ » : $25$ % $= \\frac{25}{100}$.",
+        "Diviser par $100$ : de combien de rangs la virgule se déplace-t-elle ?"
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.FRAC.07-d02",
+    "verdict": "ok",
+    "raison": "1/4 = 25 % ; 14 % et 1,4 % juxtaposition ; 0,25 % virgule."
+  },
+  {
+    "id": "NC.FRAC.07-d03",
+    "verdict": "corrige",
+    "raison": "GRAVE (faux négatif) : la réponse attendue est '35' mais l'élève qui tape « 35 % » (très fréquent) est compté FAUX (_matchFill('35%','35') = false, _toNum('35%') = 0,35). On ne peut pas ajouter alt '35%' : l'alt ferait alors passer '0,35' (égalité numérique 0,35 côté serveur mxEgal). Passage en QCM. '72' (juxtaposition) remplacé par 7,2 % (7/20 lu 7,20).",
+    "correction": {
+      "id": "NC.FRAC.07-d03",
+      "comp": "NC.FRAC.07",
+      "q": "Quel pourcentage est égal à $\\frac{7}{20}$ ?",
+      "a": "$35$ %",
+      "type": "qcm",
+      "options": [
+        "$0{,}35$ %",
+        "$35$ %",
+        "$3{,}5$ %",
+        "$7{,}2$ %"
+      ],
+      "err": {
+        "$0{,}35$ %": "NC.FRAC.07#pourcent_virgule",
+        "$3{,}5$ %": "NC.FRAC.07#pourcent_virgule",
+        "$7{,}2$ %": "NC.FRAC.07#juxtaposition"
+      },
+      "steps": [
+        "On veut une fraction de dénominateur $100$ : par combien multiplier $20$ pour obtenir $100$ ?",
+        "$\\frac{7}{20} = \\frac{7 \\times ?}{100}$ : le numérateur obtenu est le pourcentage."
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 2,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  }
+]

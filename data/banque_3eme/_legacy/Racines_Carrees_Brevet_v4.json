@@ -1,0 +1,583 @@
+[
+ {
+  "id": "NC.RAC.03-L001",
+  "comp": "NC.RAC.03",
+  "q": "Simplifie $\\sqrt{50}$.",
+  "a": "5sqrt(2)",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "25sqrt(2)": "NC.RAC.03#facteur_non_carre"
+  },
+  "steps": [
+   "Décompose $50$ en produit d'un carré parfait et d'un autre facteur : $50 = 25 \\times ?$.",
+   "$\\sqrt{50} = \\sqrt{25 \\times ?} = \\sqrt{25} \\times \\sqrt{?}$.",
+   "$\\sqrt{25} = \\;?$, donc $\\sqrt{50} = ? \\times \\sqrt{?}$."
+  ],
+  "f": "$\\sqrt{a \\times b} = \\sqrt{a} \\times \\sqrt{b}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_01",
+  "num": "1",
+  "source": "Racines_Carrees_Brevet_v4|RAC_01.1"
+ },
+ {
+  "id": "NC.RAC.03-L002",
+  "comp": "NC.RAC.03",
+  "q": "Simplifie $\\sqrt{72}$.",
+  "a": "6sqrt(2)",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "2sqrt(18)": "NC.RAC.03#simplification_partielle",
+   "3sqrt(8)": "NC.RAC.03#simplification_partielle"
+  },
+  "steps": [
+   "Cherche le plus grand carré parfait qui divise $72$ : $72 = 36 \\times ?$.",
+   "$\\sqrt{72} = \\sqrt{36} \\times \\sqrt{?}$.",
+   "$\\sqrt{36} = \\;?$, donc $\\sqrt{72} = ? \\times \\sqrt{?}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_01",
+  "num": "2",
+  "source": "Racines_Carrees_Brevet_v4|RAC_01.2"
+ },
+ {
+  "id": "NC.RAC.03-L003",
+  "comp": "NC.RAC.03",
+  "q": "Quelle est la forme simplifiée de $\\sqrt{98}$ ?",
+  "a": "$7\\sqrt{2}$",
+  "type": "qcm",
+  "options": [
+   "$7\\sqrt{2}$",
+   "$14\\sqrt{2}$",
+   "$\\sqrt{49} + \\sqrt{2}$"
+  ],
+  "err": {},
+  "steps": [
+   "Décompose : $98 = 49 \\times ?$.",
+   "$\\sqrt{98} = \\sqrt{49} \\times \\sqrt{?} = ? \\times \\sqrt{?}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_01",
+  "num": "3",
+  "source": "Racines_Carrees_Brevet_v4|RAC_01.3"
+ },
+ {
+  "id": "NC.RAC.03-L004",
+  "comp": "NC.RAC.03",
+  "comp_secondaires": [
+   "NC.RAC.01"
+  ],
+  "q": "Une parcelle carrée a une aire de $200$ m². Quelle est la longueur exacte de son côté ?",
+  "a": "$10\\sqrt{2}$ m",
+  "type": "qcm",
+  "options": [
+   "$10\\sqrt{2}$ m",
+   "$\\sqrt{100} + \\sqrt{2}$ m",
+   "$20\\sqrt{2}$ m"
+  ],
+  "err": {},
+  "steps": [
+   "Le côté d'un carré d'aire $A$ mesure $\\sqrt{A}$. Ici $\\sqrt{200}$.",
+   "$200 = 100 \\times ?$. Donc $\\sqrt{200} = \\sqrt{100} \\times \\sqrt{?}$.",
+   "$\\sqrt{100} = \\;?$, donc le côté = $? \\times \\sqrt{?}$ m."
+  ],
+  "f": "$\\text{côté} = \\sqrt{\\text{aire}}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_01",
+  "num": "4",
+  "source": "Racines_Carrees_Brevet_v4|RAC_01.4"
+ },
+ {
+  "id": "NC.RAC.02-L001",
+  "comp": "NC.RAC.02",
+  "q": "Calcule $\\sqrt{3} \\times \\sqrt{12}$.",
+  "a": "6",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "sqrt(15)": "NC.RAC.02#produit_additionne"
+  },
+  "steps": [
+   "On utilise la règle : $\\sqrt{a} \\times \\sqrt{b} = \\sqrt{a \\times b}$.",
+   "$\\sqrt{3} \\times \\sqrt{12} = \\sqrt{3 \\times 12} = \\sqrt{?}$.",
+   "$\\sqrt{?} = \\;?$."
+  ],
+  "f": "$\\sqrt{a} \\times \\sqrt{b} = \\sqrt{a \\times b}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_02",
+  "num": "1",
+  "source": "Racines_Carrees_Brevet_v4|RAC_02.1"
+ },
+ {
+  "id": "NC.RAC.02-L002",
+  "comp": "NC.RAC.02",
+  "q": "Simplifie $\\sqrt{5} \\times \\sqrt{20}$.",
+  "a": "10",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "sqrt(25)": "NC.RAC.02#produit_additionne",
+   "5": "NC.RAC.02#produit_additionne"
+  },
+  "steps": [
+   "$\\sqrt{5} \\times \\sqrt{20} = \\sqrt{5 \\times 20} = \\sqrt{?}$.",
+   "$\\sqrt{?} = \\;?$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_02",
+  "num": "2",
+  "source": "Racines_Carrees_Brevet_v4|RAC_02.2"
+ },
+ {
+  "id": "NC.RAC.02-L003",
+  "comp": "NC.RAC.02",
+  "q": "Quelle est la forme simplifiée de $\\sqrt{\\dfrac{48}{3}}$ ?",
+  "a": "$4$",
+  "type": "qcm",
+  "options": [
+   "$4$",
+   "$4\\sqrt{3}$",
+   "$\\sqrt{16} \\times \\sqrt{3}$"
+  ],
+  "err": {},
+  "steps": [
+   "Simplifie d'abord la fraction sous la racine : $\\dfrac{48}{3} = ?$.",
+   "$\\sqrt{?} = \\;?$."
+  ],
+  "f": "$\\sqrt{\\dfrac{a}{b}} = \\dfrac{\\sqrt{a}}{\\sqrt{b}}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_02",
+  "num": "3",
+  "source": "Racines_Carrees_Brevet_v4|RAC_02.3"
+ },
+ {
+  "id": "NC.RAC.04-L001",
+  "comp": "NC.RAC.04",
+  "q": "Développe et simplifie $\\sqrt{2}(3 + \\sqrt{2})$.",
+  "a": "$3\\sqrt{2} + 2$",
+  "type": "qcm",
+  "options": [
+   "$3\\sqrt{2} + 2$",
+   "$3\\sqrt{2} + \\sqrt{4}$",
+   "$5\\sqrt{2}$"
+  ],
+  "err": {
+   "$5\\sqrt{2}$": "NC.RAC.04#radicaux_differents"
+  },
+  "steps": [
+   "Distribue : $\\sqrt{2} \\times 3 + \\sqrt{2} \\times \\sqrt{2}$.",
+   "$\\sqrt{2} \\times 3 = ?$ et $\\sqrt{2} \\times \\sqrt{2} = ?$.",
+   "Résultat : $? + ?$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_02",
+  "num": "4",
+  "source": "Racines_Carrees_Brevet_v4|RAC_02.4"
+ },
+ {
+  "id": "NC.RAC.02-L004",
+  "comp": "NC.RAC.02",
+  "q": "Fatima affirme : « $\\sqrt{8} \\times \\sqrt{2} = \\sqrt{10}$ ».",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {
+   "Vrai": "NC.RAC.02#produit_additionne"
+  },
+  "steps": [
+   "$\\sqrt{8} \\times \\sqrt{2} = \\sqrt{8 \\times 2} = \\sqrt{?}$.",
+   "$\\sqrt{?} = \\;?$ — compare avec $\\sqrt{10} \\approx 3{,}16$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_02",
+  "num": "5",
+  "source": "Racines_Carrees_Brevet_v4|RAC_02.5"
+ },
+ {
+  "id": "NC.RAC.04-L002",
+  "comp": "NC.RAC.04",
+  "q": "Rationalise le dénominateur de $\\dfrac{1}{\\sqrt{3}}$.",
+  "a": "sqrt(3)/3",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "On multiplie le numérateur et le dénominateur par $\\sqrt{3}$.",
+   "$\\dfrac{1}{\\sqrt{3}} \\times \\dfrac{\\sqrt{3}}{\\sqrt{3}} = \\dfrac{\\sqrt{3}}{?}$.",
+   "$\\sqrt{3} \\times \\sqrt{3} = ?$."
+  ],
+  "f": "$\\dfrac{a}{\\sqrt{b}} = \\dfrac{a\\sqrt{b}}{b}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_03",
+  "num": "1",
+  "source": "Racines_Carrees_Brevet_v4|RAC_03.1"
+ },
+ {
+  "id": "NC.RAC.04-L003",
+  "comp": "NC.RAC.04",
+  "q": "Rationalise $\\dfrac{6}{\\sqrt{2}}$.",
+  "a": "3sqrt(2)",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "Multiplie haut et bas par $\\sqrt{2}$ : $\\dfrac{6\\sqrt{2}}{\\sqrt{2} \\times \\sqrt{2}} = \\dfrac{6\\sqrt{2}}{?}$.",
+   "Simplifie : $\\dfrac{6\\sqrt{2}}{?} = ? \\times \\sqrt{2}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_03",
+  "num": "2",
+  "source": "Racines_Carrees_Brevet_v4|RAC_03.2"
+ },
+ {
+  "id": "NC.RAC.04-L004",
+  "comp": "NC.RAC.04",
+  "q": "Quelle est la forme rationalisée de $\\dfrac{4}{\\sqrt{5}}$ ?",
+  "a": "$\\dfrac{4\\sqrt{5}}{5}$",
+  "type": "qcm",
+  "options": [
+   "$\\dfrac{4\\sqrt{5}}{5}$",
+   "$\\dfrac{4}{5}$",
+   "$\\dfrac{\\sqrt{20}}{\\sqrt{5}}$"
+  ],
+  "err": {
+   "$\\dfrac{4}{5}$": "NC.RAC.04#rationalisation_partielle"
+  },
+  "steps": [
+   "Multiplie par $\\dfrac{\\sqrt{5}}{\\sqrt{5}}$ : $\\dfrac{4 \\times \\sqrt{5}}{\\sqrt{5} \\times \\sqrt{5}}$.",
+   "$\\sqrt{5} \\times \\sqrt{5} = ?$, donc le résultat est $\\dfrac{4\\sqrt{5}}{?}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_03",
+  "num": "3",
+  "source": "Racines_Carrees_Brevet_v4|RAC_03.3"
+ },
+ {
+  "id": "NC.RAC.04-L005",
+  "comp": "NC.RAC.04",
+  "q": "Simplifie $\\dfrac{10}{\\sqrt{50}}$.",
+  "a": "$\\sqrt{2}$",
+  "type": "qcm",
+  "options": [
+   "$\\sqrt{2}$",
+   "$\\dfrac{\\sqrt{2}}{5}$",
+   "$\\dfrac{1}{5}$"
+  ],
+  "err": {
+   "$\\dfrac{1}{5}$": "NC.RAC.04#rationalisation_partielle"
+  },
+  "steps": [
+   "Simplifie d'abord $\\sqrt{50} = 5\\sqrt{2}$.",
+   "$\\dfrac{10}{5\\sqrt{2}} = \\dfrac{?}{\\sqrt{2}}$.",
+   "Rationalise : $\\dfrac{? \\times \\sqrt{2}}{\\sqrt{2} \\times \\sqrt{2}} = \\dfrac{?\\sqrt{2}}{?} = \\sqrt{?}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_03",
+  "num": "4",
+  "source": "Racines_Carrees_Brevet_v4|RAC_03.4"
+ },
+ {
+  "id": "NC.RAC.02-L005",
+  "comp": "NC.RAC.02",
+  "q": "Léa affirme : « $\\dfrac{\\sqrt{2}}{\\sqrt{8}} = \\dfrac{1}{2}$ ».",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "$\\dfrac{\\sqrt{2}}{\\sqrt{8}} = \\sqrt{\\dfrac{2}{8}} = \\sqrt{?}$.",
+   "$\\sqrt{\\dfrac{1}{?}} = \\dfrac{1}{\\sqrt{?}} = \\dfrac{1}{?}$ — vérifie."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_03",
+  "num": "5",
+  "source": "Racines_Carrees_Brevet_v4|RAC_03.5"
+ },
+ {
+  "id": "NC.RAC.04-L006",
+  "comp": "NC.RAC.04",
+  "q": "Simplifie $3\\sqrt{8} + \\sqrt{18}$.",
+  "a": "9sqrt(2)",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "4sqrt(26)": "NC.RAC.04#radicaux_differents"
+  },
+  "steps": [
+   "Simplifie chaque terme : $\\sqrt{8} = 2\\sqrt{2}$ et $\\sqrt{18} = 3\\sqrt{2}$.",
+   "$3 \\times 2\\sqrt{2} + 3\\sqrt{2} = ?\\sqrt{2} + ?\\sqrt{2}$.",
+   "Additionne : $(? + ?)\\sqrt{2} = ?\\sqrt{2}$."
+  ],
+  "f": "$\\sqrt{a \\times b} = \\sqrt{a} \\times \\sqrt{b}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_04",
+  "num": "1",
+  "source": "Racines_Carrees_Brevet_v4|RAC_04.1"
+ },
+ {
+  "id": "NC.RAC.04-L007",
+  "comp": "NC.RAC.04",
+  "comp_secondaires": [
+   "NC.LIT.07"
+  ],
+  "q": "Développe $(2 + \\sqrt{3})^2$.",
+  "a": "$7 + 4\\sqrt{3}$",
+  "type": "qcm",
+  "options": [
+   "$7 + 4\\sqrt{3}$",
+   "$4 + 3$",
+   "$7 + 2\\sqrt{3}$"
+  ],
+  "err": {
+   "$4 + 3$": "NC.RAC.04#double_produit",
+   "$7 + 2\\sqrt{3}$": "NC.RAC.04#double_produit"
+  },
+  "steps": [
+   "Identité remarquable : $(a+b)^2 = a^2 + 2ab + b^2$.",
+   "$2^2 + 2 \\times 2 \\times \\sqrt{3} + (\\sqrt{3})^2 = 4 + ?\\sqrt{3} + ?$.",
+   "Regroupe : $? + ?\\sqrt{3}$."
+  ],
+  "f": "$(a+b)^2 = a^2 + 2ab + b^2$",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_04",
+  "num": "2",
+  "source": "Racines_Carrees_Brevet_v4|RAC_04.2"
+ },
+ {
+  "id": "NC.RAC.04-L008",
+  "comp": "NC.RAC.04",
+  "comp_secondaires": [
+   "NC.LIT.07"
+  ],
+  "q": "Développe et simplifie $(\\sqrt{5} - 1)(\\sqrt{5} + 1)$.",
+  "a": "4",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "Identité remarquable : $(a-b)(a+b) = a^2 - b^2$.",
+   "$(\\sqrt{5})^2 - 1^2 = ? - ? = ?$."
+  ],
+  "f": "$(a-b)(a+b) = a^2 - b^2$",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_04",
+  "num": "3",
+  "source": "Racines_Carrees_Brevet_v4|RAC_04.3"
+ },
+ {
+  "id": "NC.RAC.04-L009",
+  "comp": "NC.RAC.04",
+  "q": "Factorise $5\\sqrt{3} + \\sqrt{75}$.",
+  "a": "$10\\sqrt{3}$",
+  "type": "qcm",
+  "options": [
+   "$10\\sqrt{3}$",
+   "$5\\sqrt{78}$",
+   "$\\sqrt{225}$"
+  ],
+  "err": {
+   "$5\\sqrt{78}$": "NC.RAC.04#radicaux_differents"
+  },
+  "steps": [
+   "Simplifie $\\sqrt{75}$ : $75 = 25 \\times 3$, donc $\\sqrt{75} = ?\\sqrt{3}$.",
+   "$5\\sqrt{3} + ?\\sqrt{3} = (5 + ?)\\sqrt{3} = ?\\sqrt{3}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_04",
+  "num": "4",
+  "source": "Racines_Carrees_Brevet_v4|RAC_04.4"
+ },
+ {
+  "id": "NC.RAC.04-L010",
+  "comp": "NC.RAC.04",
+  "comp_secondaires": [
+   "NC.LIT.07"
+  ],
+  "q": "Nadia affirme : « $(3 - \\sqrt{2})(3 + \\sqrt{2}) = 7$ ».",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Identité remarquable $(a-b)(a+b) = a^2 - b^2$.",
+   "$3^2 - (\\sqrt{2})^2 = 9 - ? = ?$ — compare avec $7$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "RAC_04",
+  "num": "5",
+  "source": "Racines_Carrees_Brevet_v4|RAC_04.5"
+ }
+]

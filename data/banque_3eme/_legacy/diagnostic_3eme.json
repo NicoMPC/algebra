@@ -1,0 +1,1426 @@
+[
+ {
+  "id": "NC.ARITH.04-L010",
+  "comp": "NC.ARITH.04",
+  "q": "Quel est le plus grand diviseur commun de $60$ et $96$ ?",
+  "a": "$12$",
+  "type": "qcm",
+  "options": [
+   "$12$",
+   "$6$",
+   "$24$"
+  ],
+  "err": {},
+  "steps": [
+   "On décompose : $60 = 2^2 \\times 3 \\times 5$ et $96 = 2^5 \\times 3$.",
+   "Le PGCD prend le minimum de chaque exposant commun : $2^2 \\times 3^1$.",
+   "$4 \\times 3 = ?$."
+  ],
+  "f": "",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|0"
+ },
+ {
+  "id": "NC.ARITH.02-L003",
+  "comp": "NC.ARITH.02",
+  "q": "$119$ est un nombre premier.",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {
+   "Vrai": "NC.ARITH.02#test_incomplet"
+  },
+  "steps": [
+   "On teste les diviseurs premiers : $2, 3, 5, 7, 11$...",
+   "$119 \\div 7 = 17$ : la division tombe juste."
+  ],
+  "f": "",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|1"
+ },
+ {
+  "id": "NC.ARITH.04-L011",
+  "comp": "NC.ARITH.04",
+  "q": "On veut répartir $108$ billes et $144$ cartes en paquets identiques (même nombre de billes, même nombre de cartes). Quel est le nombre maximal de paquets ?",
+  "a": "$36$",
+  "type": "qcm",
+  "options": [
+   "$36$",
+   "$12$",
+   "$18$"
+  ],
+  "err": {},
+  "steps": [
+   "Le nombre maximal de paquets est le PGCD de $108$ et $144$.",
+   "$108 = 2^2 \\times 3^3$ et $144 = 2^4 \\times 3^2$. PGCD $= 2^2 \\times 3^2$.",
+   "$4 \\times 9 = ?$."
+  ],
+  "f": "",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|2"
+ },
+ {
+  "id": "NC.FRAC.03-L008",
+  "comp": "NC.FRAC.03",
+  "q": "Calcule $\\frac{5}{6} - \\frac{3}{4}$.",
+  "a": "$\\frac{1}{12}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{1}{12}$",
+   "$\\frac{2}{2}$",
+   "$\\frac{1}{6}$"
+  ],
+  "err": {
+   "$\\frac{2}{2}$": "NC.FRAC.03#somme_directe"
+  },
+  "steps": [
+   "Dénominateur commun de $6$ et $4$ : c'est $12$.",
+   "$\\frac{5}{6} = \\frac{10}{12}$ et $\\frac{3}{4} = \\frac{9}{12}$.",
+   "$\\frac{10}{12} - \\frac{9}{12} = \\frac{?}{12}$."
+  ],
+  "f": "$\\frac{a}{b} - \\frac{c}{d} = \\frac{a \\times d - c \\times b}{b \\times d}$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|3"
+ },
+ {
+  "id": "NC.FRAC.04-L008",
+  "comp": "NC.FRAC.04",
+  "q": "Dans une classe de $32$ élèves, les $\\frac{3}{8}$ pratiquent un sport. Combien d'élèves sportifs ?",
+  "a": "12",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "On calcule $\\frac{3}{8}$ de $32$ : $\\frac{3}{8} \\times 32 = \\frac{3 \\times 32}{8}$.",
+   "$\\frac{96}{8} = ?$."
+  ],
+  "f": "",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|4"
+ },
+ {
+  "id": "NC.PUIS.03-L007",
+  "comp": "NC.PUIS.03",
+  "q": "Simplifie $10^3 \\times 10^{-5}$.",
+  "a": "$10^{-2}$",
+  "type": "qcm",
+  "options": [
+   "$10^{-2}$",
+   "$10^{-15}$",
+   "$10^8$"
+  ],
+  "err": {
+   "$10^{-15}$": "NC.PUIS.03#produit_exposants_multiplies",
+   "$10^8$": "NC.PUIS.03#signe_exposants"
+  },
+  "steps": [
+   "Quand on multiplie des puissances de même base, on additionne les exposants.",
+   "$10^{3+(-5)} = 10^{?}$."
+  ],
+  "f": "$a^m \\times a^n = a^{m+n}$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|6"
+ },
+ {
+  "id": "NC.PUIS.04-L007",
+  "comp": "NC.PUIS.04",
+  "q": "La distance Terre-Soleil est d'environ $150\\,000\\,000$ km. En notation scientifique, cela s'écrit $1{,}5 \\times 10^n$. Que vaut $n$ ?",
+  "a": "8",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "7": "NC.PUIS.04#decalage",
+   "9": "NC.PUIS.04#decalage"
+  },
+  "steps": [
+   "On compte le nombre de rangs pour passer de $1{,}5$ à $150\\,000\\,000$.",
+   "La virgule se déplace de $?$ rangs vers la droite."
+  ],
+  "f": "$a \\times 10^n \\text{ avec } 1 \\leq a < 10$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|7"
+ },
+ {
+  "id": "NC.PUIS.05-L009",
+  "comp": "NC.PUIS.05",
+  "q": "Calcule $\\frac{3 \\times 10^4}{6 \\times 10^{-2}}$ et donne le résultat en notation scientifique.",
+  "a": "$5 \\times 10^5$",
+  "type": "qcm",
+  "options": [
+   "$5 \\times 10^5$",
+   "$0{,}5 \\times 10^6$",
+   "$5 \\times 10^2$"
+  ],
+  "err": {
+   "$0{,}5 \\times 10^6$": "NC.PUIS.05#non_normalise"
+  },
+  "steps": [
+   "On sépare les coefficients et les puissances : $\\frac{3}{6} \\times \\frac{10^4}{10^{-2}}$.",
+   "$\\frac{3}{6} = 0{,}5$ et $10^{4-(-2)} = 10^6$.",
+   "$0{,}5 \\times 10^6 = ? \\times 10^?$ en notation scientifique."
+  ],
+  "f": "$\\frac{a^m}{a^n} = a^{m-n}$",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|8"
+ },
+ {
+  "id": "NC.RAC.03-L005",
+  "comp": "NC.RAC.03",
+  "q": "Simplifie $\\sqrt{75}$.",
+  "a": "$5\\sqrt{3}$",
+  "type": "qcm",
+  "options": [
+   "$5\\sqrt{3}$",
+   "$3\\sqrt{5}$",
+   "$25\\sqrt{3}$"
+  ],
+  "err": {
+   "$25\\sqrt{3}$": "NC.RAC.03#facteur_non_carre"
+  },
+  "steps": [
+   "On cherche le plus grand carré parfait qui divise $75$ : $75 = 25 \\times 3$.",
+   "$\\sqrt{75} = \\sqrt{25} \\times \\sqrt{3} = ?\\sqrt{3}$."
+  ],
+  "f": "$\\sqrt{a \\times b} = \\sqrt{a} \\times \\sqrt{b}$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|9"
+ },
+ {
+  "id": "NC.RAC.02-L007",
+  "comp": "NC.RAC.02",
+  "q": "$\\sqrt{9 \\times 16} = \\sqrt{9} \\times \\sqrt{16}$.",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "La propriété $\\sqrt{a \\times b} = \\sqrt{a} \\times \\sqrt{b}$ est valable pour $a \\geq 0$ et $b \\geq 0$.",
+   "Vérifions : $\\sqrt{144} = 12$ et $3 \\times 4 = 12$. Les deux sont-ils égaux ?"
+  ],
+  "f": "$\\sqrt{a \\times b} = \\sqrt{a} \\times \\sqrt{b}$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|10"
+ },
+ {
+  "id": "NC.RAC.02-L008",
+  "comp": "NC.RAC.02",
+  "q": "Calcule $3\\sqrt{2} \\times 4\\sqrt{2}$.",
+  "a": "$24$",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "12sqrt(4)": "NC.RAC.02#racine_fois_racine"
+  },
+  "steps": [
+   "On multiplie les coefficients : $3 \\times 4 = 12$.",
+   "On multiplie les racines : $\\sqrt{2} \\times \\sqrt{2} = 2$.",
+   "$12 \\times 2 = ?$."
+  ],
+  "f": "$\\sqrt{a} \\times \\sqrt{a} = a$",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|11"
+ },
+ {
+  "id": "DF.PROP.04-L005",
+  "comp": "DF.PROP.04",
+  "q": "Un pantalon affiché à $65$ euros est soldé à $-20\\%$. Quel est le prix soldé en euros ?",
+  "a": "52",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "13": "DF.PROP.04#reduction_au_lieu_prix"
+  },
+  "steps": [
+   "La réduction vaut $65 \\times \\frac{20}{100} = 13$ euros.",
+   "Le prix soldé est $65 - 13 = ?$ euros."
+  ],
+  "f": "",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|12"
+ },
+ {
+  "id": "DF.PROP.02-L007",
+  "comp": "DF.PROP.02",
+  "q": "$4$ kg de pommes coûtent $6$ euros. Combien coûtent $10$ kg ?",
+  "a": "$15$ euros",
+  "type": "qcm",
+  "options": [
+   "$15$ euros",
+   "$12$ euros",
+   "$24$ euros"
+  ],
+  "err": {
+   "$12$ euros": "DF.PROP.02#modele_additif"
+  },
+  "steps": [
+   "Le prix est proportionnel à la masse. Le prix au kg est $\\frac{6}{4} = 1{,}5$ euros.",
+   "Pour $10$ kg : $10 \\times 1{,}5 = ?$ euros."
+  ],
+  "f": "",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|13"
+ },
+ {
+  "id": "DF.PROP.05-L003",
+  "comp": "DF.PROP.05",
+  "q": "Un article passe de $120$ euros à $150$ euros. Quel est le pourcentage d'augmentation ?",
+  "a": "$25\\%$",
+  "type": "qcm",
+  "options": [
+   "$25\\%$",
+   "$20\\%$",
+   "$30\\%$"
+  ],
+  "err": {
+   "$20\\%$": "DF.PROP.05#mauvaise_reference",
+   "$30\\%$": "DF.PROP.05#ecart_comme_pourcent"
+  },
+  "steps": [
+   "L'augmentation est $150 - 120 = 30$ euros.",
+   "Le taux est $\\frac{30}{120} = \\frac{1}{4} = 0{,}25$.",
+   "$0{,}25 \\times 100 = ?\\%$."
+  ],
+  "f": "$\\text{taux} = \\frac{\\text{variation}}{\\text{valeur initiale}}$",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|14"
+ },
+ {
+  "id": "NC.LIT.04-L009",
+  "comp": "NC.LIT.04",
+  "q": "Développe $3(2x - 5)$.",
+  "a": "$6x - 15$",
+  "type": "qcm",
+  "options": [
+   "$6x - 15$",
+   "$6x - 5$",
+   "$5x - 15$"
+  ],
+  "err": {
+   "$6x - 5$": "NC.LIT.04#distribution_partielle"
+  },
+  "steps": [
+   "On distribue le $3$ sur chaque terme de la parenthèse.",
+   "$3 \\times 2x = 6x$ et $3 \\times (-5) = ?$.",
+   "On obtient $6x - ?$."
+  ],
+  "f": "$k(a + b) = ka + kb$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|15"
+ },
+ {
+  "id": "NC.LIT.08-L005",
+  "comp": "NC.LIT.08",
+  "q": "Factorise $4x + 12$.",
+  "a": "$4(x + 3)$",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "2(2x+6)": "NC.LIT.08#facteur_non_maximal"
+  },
+  "steps": [
+   "Quel est le plus grand facteur commun de $4x$ et $12$ ?",
+   "On met $4$ en facteur : $4 \\times x + 4 \\times ? = 4(x + ?)$.",
+   "Complète le terme manquant."
+  ],
+  "f": "$ka + kb = k(a + b)$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|16"
+ },
+ {
+  "id": "NC.LIT.07-L009",
+  "comp": "NC.LIT.07",
+  "q": "$(x + 3)^2 = x^2 + 6x + 9$.",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "L'identité remarquable $(a+b)^2 = a^2 + 2ab + b^2$.",
+   "Ici $a = x$ et $b = 3$, donc $2ab = 2 \\times x \\times 3 = ?$.",
+   "Compare avec le terme du milieu proposé."
+  ],
+  "f": "$(a + b)^2 = a^2 + 2ab + b^2$",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|17"
+ },
+ {
+  "id": "NC.EQUA.02-L008",
+  "comp": "NC.EQUA.02",
+  "q": "Résous $3x + 7 = 22$.",
+  "a": "$x = 5$",
+  "type": "qcm",
+  "options": [
+   "$x = 5$",
+   "$x = 3$",
+   "$x = 7$"
+  ],
+  "err": {},
+  "steps": [
+   "On isole le terme en $x$ : $3x = 22 - 7$.",
+   "$3x = 15$, donc $x = \\frac{15}{?}$.",
+   "Divise pour trouver la valeur de $x$."
+  ],
+  "f": "$ax + b = c \\Rightarrow x = \\frac{c - b}{a}$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|18"
+ },
+ {
+  "id": "NC.EQUA.02-L009",
+  "comp": "NC.EQUA.02",
+  "comp_secondaires": [
+   "NC.EQUA.04"
+  ],
+  "q": "Un nombre augmenté de $8$ donne $35$. Quel est ce nombre ?",
+  "a": "27",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "43": "NC.EQUA.02#changement_signe_mecanique"
+  },
+  "steps": [
+   "On appelle $x$ le nombre cherché. L'équation est $x + 8 = ?$.",
+   "On résout : $x = 35 - ?$.",
+   "Calcule la soustraction."
+  ],
+  "f": "$x + b = c \\Rightarrow x = c - b$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|19"
+ },
+ {
+  "id": "NC.EQUA.05-L005",
+  "comp": "NC.EQUA.05",
+  "q": "Résous $(x - 4)(2x + 6) = 0$.",
+  "a": "$x = 4$ ou $x = -3$",
+  "type": "qcm",
+  "options": [
+   "$x = 4$ ou $x = -3$",
+   "$x = -4$ ou $x = 3$",
+   "$x = 4$ ou $x = 3$"
+  ],
+  "err": {},
+  "steps": [
+   "Un produit est nul si l'un de ses facteurs est nul.",
+   "$x - 4 = 0 \\Rightarrow x = ?$ et $2x + 6 = 0 \\Rightarrow 2x = -6 \\Rightarrow x = ?$.",
+   "Il y a deux solutions."
+  ],
+  "f": "$A \\times B = 0 \\Rightarrow A = 0$ ou $B = 0$",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|20"
+ },
+ {
+  "id": "NC.INEQ.01-L006",
+  "comp": "NC.INEQ.01",
+  "q": "Résous $2x - 3 < 7$.",
+  "a": "$x < 5$",
+  "type": "qcm",
+  "options": [
+   "$x < 5$",
+   "$x > 5$",
+   "$x < 2$"
+  ],
+  "err": {},
+  "steps": [
+   "On isole $2x$ : $2x < 7 + 3$.",
+   "$2x < 10$, donc $x < \\frac{10}{?}$.",
+   "Divise par $2$ (positif, le sens ne change pas)."
+  ],
+  "f": "$ax + b < c \\Rightarrow x < \\frac{c - b}{a}$ (si $a > 0$)",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|21"
+ },
+ {
+  "id": "NC.INEQ.01-L007",
+  "comp": "NC.INEQ.01",
+  "q": "L'ensemble des solutions de $x \\geq -2$ est représenté par une demi-droite partant de $-2$ vers la droite (inclus).",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "$x \\geq -2$ signifie que $x$ peut valoir $-2$ ou plus.",
+   "Sur une droite graduée, on part de $-2$ et on va vers les nombres plus grands.",
+   "Le crochet est fermé en $-2$ car $-2$ est inclus. Vrai ou faux ?"
+  ],
+  "f": "$x \\geq a$ : demi-droite $[a ; +\\infty[$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|22"
+ },
+ {
+  "id": "NC.INEQ.02-L015",
+  "comp": "NC.INEQ.02",
+  "q": "Un cinéma propose des places a $8$ euros. Avec un budget de $50$ euros, combien de places peut-on acheter au maximum ?",
+  "a": "6",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "On cherche $n$ tel que $8n \\leq 50$.",
+   "$n \\leq \\frac{50}{8} = ?$ (calcule la division).",
+   "$n$ doit etre un nombre entier. Quel est le plus grand entier qui convient ?"
+  ],
+  "f": "$8n \\leq 50 \\Rightarrow n \\leq 6{,}25$",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|23"
+ },
+ {
+  "id": "EG.PYTH.01-L012",
+  "comp": "EG.PYTH.01",
+  "q": "Dans un triangle rectangle, les deux côtés de l'angle droit mesurent $6$ cm et $8$ cm. Quelle est la longueur de l'hypoténuse ?",
+  "a": "$10$ cm",
+  "type": "qcm",
+  "options": [
+   "$10$ cm",
+   "$14$ cm",
+   "$\\sqrt{48}$ cm"
+  ],
+  "err": {
+   "$14$ cm": "EG.PYTH.01#somme_cotes"
+  },
+  "steps": [
+   "On applique le théorème de Pythagore : $h^2 = 6^2 + 8^2$.",
+   "$h^2 = 36 + 64 = 100$.",
+   "$h = \\sqrt{?}$"
+  ],
+  "f": "$\\text{hyp}^2 = a^2 + b^2$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|24"
+ },
+ {
+  "id": "EG.PYTH.02-L008",
+  "comp": "EG.PYTH.02",
+  "q": "Un triangle rectangle a une hypoténuse de $13$ cm et un côté de $5$ cm. Quelle est la longueur du troisième côté ?",
+  "a": "12",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "sqrt(194)": "EG.PYTH.02#additionne_au_lieu_soustraire"
+  },
+  "steps": [
+   "On isole le côté inconnu : $c^2 = 13^2 - 5^2$.",
+   "$c^2 = 169 - 25 = 144$.",
+   "$c = \\sqrt{?}$"
+  ],
+  "f": "$c^2 = \\text{hyp}^2 - a^2$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|25"
+ },
+ {
+  "id": "EG.PYTH.03-L006",
+  "comp": "EG.PYTH.03",
+  "q": "Un triangle a des côtés de $9$ cm, $12$ cm et $15$ cm. Est-il rectangle ?",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "On vérifie si $15^2 = 9^2 + 12^2$ (réciproque de Pythagore).",
+   "$225 = 81 + 144 = 225$.",
+   "L'égalité est vérifiée, donc le triangle est… ?"
+  ],
+  "f": "$\\text{Si } a^2 + b^2 = c^2 \\text{, le triangle est rectangle}$",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|26"
+ },
+ {
+  "id": "EG.THAL.02-L011",
+  "comp": "EG.THAL.02",
+  "q": "Dans un triangle $ABC$, $M \\in [AB]$ et $N \\in [AC]$ avec $(MN) \\parallel (BC)$. On a $AM = 4$ cm, $AB = 10$ cm et $BC = 15$ cm. Quelle est la longueur de $MN$ ?",
+  "a": "$6$ cm",
+  "type": "qcm",
+  "options": [
+   "$6$ cm",
+   "$8$ cm",
+   "$7{,}5$ cm"
+  ],
+  "err": {},
+  "steps": [
+   "Par le théorème de Thalès : $\\frac{AM}{AB} = \\frac{MN}{BC}$.",
+   "$\\frac{4}{10} = \\frac{MN}{15}$.",
+   "$MN = 15 \\times \\frac{4}{?}$"
+  ],
+  "f": "$\\frac{AM}{AB} = \\frac{AN}{AC} = \\frac{MN}{BC}$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|27"
+ },
+ {
+  "id": "EG.THAL.02-L012",
+  "comp": "EG.THAL.02",
+  "q": "Deux droites sécantes sont coupées par deux parallèles. On a $\\frac{OA}{OB} = \\frac{3}{5}$ et $OB = 10$ cm. Combien mesure $OA$ ?",
+  "a": "6",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "On utilise le rapport donné : $\\frac{OA}{10} = \\frac{3}{5}$.",
+   "$OA = 10 \\times \\frac{3}{5}$.",
+   "$OA = ?$ cm"
+  ],
+  "f": "$\\frac{OA}{OB} = \\frac{OC}{OD}$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|28"
+ },
+ {
+  "id": "EG.THAL.03-L004",
+  "comp": "EG.THAL.03",
+  "q": "Configuration papillon : deux droites se coupent en $O$. On a $OA = 3$, $OB = 6$, $OC = 4$, $OD = 8$. Les droites $(AC)$ et $(BD)$ sont-elles parallèles ?",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "On compare les rapports : $\\frac{OA}{OB} = \\frac{3}{6} = \\frac{1}{2}$ et $\\frac{OC}{OD} = \\frac{4}{8} = \\frac{1}{2}$.",
+   "Les rapports sont égaux et les points sont de part et d'autre de $O$.",
+   "Par la réciproque de Thalès, les droites sont… ?"
+  ],
+  "f": "$\\text{Si } \\frac{OA}{OB} = \\frac{OC}{OD} \\text{ alors } (AC) \\parallel (BD)$",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|29"
+ },
+ {
+  "id": "EG.TRIG.02-L003",
+  "comp": "EG.TRIG.02",
+  "q": "Dans un triangle rectangle, l'angle $\\widehat{A} = 35°$, le côté adjacent mesure $10$ cm. Quel calcul donne le côté opposé ?",
+  "a": "$10 \\times \\tan(35°)$",
+  "type": "qcm",
+  "options": [
+   "$10 \\times \\tan(35°)$",
+   "$10 \\times \\cos(35°)$",
+   "$\\frac{10}{\\sin(35°)}$"
+  ],
+  "err": {
+   "$10 \\times \\cos(35°)$": "EG.TRIG.02#mauvais_rapport",
+   "$\\frac{10}{\\sin(35°)}$": "EG.TRIG.02#mauvais_rapport"
+  },
+  "steps": [
+   "On connaît l'angle, le côté adjacent, et on cherche le côté opposé.",
+   "Le rapport opposé/adjacent correspond à… ?",
+   "$\\tan(\\widehat{A}) = \\frac{\\text{opposé}}{\\text{adjacent}}$, donc opposé $= \\text{adjacent} \\times \\tan(?)$"
+  ],
+  "f": "$\\tan(\\widehat{A}) = \\frac{\\text{opposé}}{\\text{adjacent}}$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|30"
+ },
+ {
+  "id": "EG.TRIG.03-L010",
+  "comp": "EG.TRIG.03",
+  "q": "Triangle rectangle : hypoténuse $= 20$ cm, $\\cos(\\widehat{B}) = 0{,}6$. Quelle est la longueur du côté adjacent à $\\widehat{B}$ ?",
+  "a": "12",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "33,3": "EG.TRIG.03#inconnue_au_denominateur"
+  },
+  "steps": [
+   "$\\cos(\\widehat{B}) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$.",
+   "Donc adjacent $= 20 \\times 0{,}6$.",
+   "Adjacent $= ?$ cm"
+  ],
+  "f": "$\\cos(\\widehat{A}) = \\frac{\\text{adjacent}}{\\text{hypoténuse}}$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|31"
+ },
+ {
+  "id": "EG.TRIG.04-L008",
+  "comp": "EG.TRIG.04",
+  "q": "Dans un triangle rectangle, le côté opposé à l'angle $\\widehat{C}$ mesure $7$ cm et l'hypoténuse mesure $14$ cm. Que vaut $\\widehat{C}$ ?",
+  "a": "$30°$",
+  "type": "qcm",
+  "options": [
+   "$30°$",
+   "$45°$",
+   "$60°$"
+  ],
+  "err": {},
+  "steps": [
+   "$\\sin(\\widehat{C}) = \\frac{\\text{opposé}}{\\text{hypoténuse}} = \\frac{7}{14} = 0{,}5$.",
+   "On cherche l'angle dont le sinus vaut $0{,}5$.",
+   "$\\widehat{C} = ?°$"
+  ],
+  "f": "$\\sin(\\widehat{A}) = \\frac{\\text{opposé}}{\\text{hypoténuse}}$",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|32"
+ },
+ {
+  "id": "EG.TRANS.02-L005",
+  "comp": "EG.TRANS.02",
+  "q": "Le point $A(2\\,;\\,3)$ est translaté par le vecteur $\\vec{u}(4\\,;\\,-1)$. Quelles sont les coordonnées de l'image $A'$ ?",
+  "a": "$(6\\,;\\,2)$",
+  "type": "qcm",
+  "options": [
+   "$(6\\,;\\,2)$",
+   "$(6\\,;\\,4)$",
+   "$(-2\\,;\\,4)$"
+  ],
+  "err": {
+   "$(-2\\,;\\,4)$": "EG.TRANS.02#soustrait_vecteur"
+  },
+  "steps": [
+   "Translation : on ajoute les composantes du vecteur aux coordonnées du point.",
+   "$x' = 2 + 4 = 6$ et $y' = 3 + (-1) = ?$.",
+   "$A' = (? \\,;\\, ?)$"
+  ],
+  "f": "$A'(x + a\\,;\\, y + b)$ pour $\\vec{u}(a\\,;\\,b)$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|33"
+ },
+ {
+  "id": "EG.TRANS.05-L004",
+  "comp": "EG.TRANS.05",
+  "q": "Un triangle est l'image d'un autre par une rotation de centre $O$ et d'angle $90°$ dans le sens horaire. Les longueurs sont-elles conservées ?",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "La rotation est une transformation du plan qui conserve les distances.",
+   "L'image a la même forme et les mêmes dimensions que l'original.",
+   "Les longueurs sont donc… ?"
+  ],
+  "f": "$\\text{La rotation conserve les longueurs et les angles}$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|34"
+ },
+ {
+  "id": "EG.TRANS.04-L005",
+  "comp": "EG.TRANS.04",
+  "q": "Un segment $[AB]$ de longueur $5$ cm subit une homothétie de centre $O$ et de rapport $k = -2$. Quelle est la longueur de $[A'B']$ ?",
+  "a": "10",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "-10": "EG.TRANS.04#longueur_negative"
+  },
+  "steps": [
+   "L'homothétie multiplie les longueurs par $|k|$.",
+   "$A'B' = |{-2}| \\times 5$.",
+   "$A'B' = ?$ cm"
+  ],
+  "f": "$A'B' = |k| \\times AB$",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|35"
+ },
+ {
+  "id": "GM.VOL.02-L005",
+  "comp": "GM.VOL.02",
+  "q": "Un cylindre a un rayon de $3$ cm et une hauteur de $10$ cm. Quel est son volume ? (Arrondir à l'unité)",
+  "a": "$283$ cm³",
+  "type": "qcm",
+  "options": [
+   "$283$ cm³",
+   "$1131$ cm³",
+   "$188$ cm³"
+  ],
+  "err": {
+   "$188$ cm³": "GM.VOL.02#perimetre_base",
+   "$1131$ cm³": "GM.VOL.02#diametre"
+  },
+  "steps": [
+   "$V = \\pi \\times r^2 \\times h = \\pi \\times 3^2 \\times 10$.",
+   "$V = 90\\pi \\approx 282{,}7$.",
+   "Arrondi à l'unité : $V \\approx ?$ cm³"
+  ],
+  "f": "$V_{\\text{cylindre}} = \\pi \\times r^2 \\times h$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|36"
+ },
+ {
+  "id": "EG.ESP.01-L002",
+  "comp": "EG.ESP.01",
+  "q": "Le patron d'un cône de révolution est composé d'un disque et d'un secteur de disque. Le rayon du disque de base est $4$ cm. Quel est ce disque dans le patron ?",
+  "a": "Le petit disque de rayon $4$ cm",
+  "type": "qcm",
+  "options": [
+   "Le petit disque de rayon $4$ cm",
+   "Le grand secteur circulaire",
+   "Un rectangle de largeur $4$ cm"
+  ],
+  "err": {},
+  "steps": [
+   "Le patron d'un cône comporte deux parties : la base et la surface latérale.",
+   "La base est un disque de rayon égal au rayon de la base du cône.",
+   "La surface latérale se déplie en un secteur de… ?"
+  ],
+  "f": "$\\text{Patron cône = 1 disque (base) + 1 secteur (face latérale)}$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|37"
+ },
+ {
+  "id": "GM.AGR.02-L003",
+  "comp": "GM.AGR.02",
+  "q": "Une boule de rayon $6$ cm est agrandie par un coefficient $k = 2$. Par combien son volume est-il multiplié ?",
+  "a": "8",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "2": "GM.AGR.02#volume_fois_k",
+   "4": "GM.AGR.02#volume_fois_k"
+  },
+  "steps": [
+   "Quand on agrandit par un coefficient $k$, les volumes sont multipliés par $k^3$.",
+   "$k^3 = 2^3 = ?$.",
+   "Le volume est donc multiplié par… ?"
+  ],
+  "f": "$V' = k^3 \\times V$",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|38"
+ },
+ {
+  "id": "DF.FONC.01-L012",
+  "comp": "DF.FONC.01",
+  "q": "On donne $f(x) = 3x + 1$. Calcule $f(5)$.",
+  "a": "$16$",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "L'image de $5$ par $f$, c'est $f(5)$. On remplace $x$ par $5$.",
+   "$f(5) = 3 \\times 5 + 1 = 15 + 1 = \\;?$."
+  ],
+  "f": "$f(x) = 3x + 1$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|39"
+ },
+ {
+  "id": "DF.FONC.02-L004",
+  "comp": "DF.FONC.02",
+  "q": "Sur le graphique d'une fonction $f$, le point $(3 ; 7)$ est sur la courbe. Quelle est l'image de $3$ par $f$ ?",
+  "a": "$7$",
+  "type": "qcm",
+  "options": [
+   "$7$",
+   "$3$",
+   "$10$"
+  ],
+  "err": {},
+  "steps": [
+   "Si le point $(3 ; 7)$ est sur la courbe, cela signifie que $f(3) = 7$.",
+   "L'image de $3$ par $f$ est donc $?$."
+  ],
+  "f": "",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|40"
+ },
+ {
+  "id": "DF.FONC.04-L008",
+  "comp": "DF.FONC.04",
+  "q": "Soit $h(x) = x^2 - 9$. Un antécédent de $0$ par $h$ est $x = 3$.",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Un antécédent de $0$, c'est un nombre $x$ tel que $h(x) = 0$.",
+   "On vérifie : $h(3) = 3^2 - 9 = 9 - 9 = \\;?$. Est-ce bien $0$ ?"
+  ],
+  "f": "$h(x) = x^2 - 9$",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|41"
+ },
+ {
+  "id": "DF.FONC.01-L013",
+  "comp": "DF.FONC.01",
+  "q": "Soit $f(x) = -2x + 5$. Calcule $f(3)$.",
+  "a": "$-1$",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "On remplace $x$ par $3$ dans $f(x) = -2x + 5$.",
+   "$f(3) = -2 \\times 3 + 5 = -6 + 5 = \\;?$."
+  ],
+  "f": "$f(x) = ax + b$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|42"
+ },
+ {
+  "id": "DF.AFF.03-L002",
+  "comp": "DF.AFF.03",
+  "q": "Une droite passe par $A(0 ; 3)$ et $B(4 ; 11)$. Quel est son coefficient directeur ?",
+  "a": "$2$",
+  "type": "qcm",
+  "options": [
+   "$2$",
+   "$4$",
+   "$8$"
+  ],
+  "err": {},
+  "steps": [
+   "Le coefficient directeur se calcule : $a = \\frac{y_B - y_A}{x_B - x_A}$.",
+   "$a = \\frac{11 - 3}{4 - 0} = \\frac{8}{4} = \\;?$."
+  ],
+  "f": "$a = \\frac{\\Delta y}{\\Delta x}$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|43"
+ },
+ {
+  "id": "DF.AFF.05-L009",
+  "comp": "DF.AFF.05",
+  "q": "La droite $d$ a pour équation $y = 3x - 2$ et la droite $d'$ a pour équation $y = -x + 6$. Elles se coupent en $x = 2$.",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Au point d'intersection, les deux fonctions sont égales : $3x - 2 = -x + 6$.",
+   "$3x + x = 6 + 2$, soit $4x = 8$, donc $x = \\;?$. Est-ce bien $2$ ?"
+  ],
+  "f": "$f(x) = g(x) \\Rightarrow$ intersection",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|44"
+ },
+ {
+  "id": "DF.STAT.03-L004",
+  "comp": "DF.STAT.03",
+  "q": "Les notes d'un élève sont : $8$, $12$, $14$, $10$, $6$. Quelle est sa moyenne ?",
+  "a": "$10$",
+  "type": "qcm",
+  "options": [
+   "$10$",
+   "$12$",
+   "$9$"
+  ],
+  "err": {},
+  "steps": [
+   "Additionne toutes les notes : $8 + 12 + 14 + 10 + 6 = ?$.",
+   "La somme vaut $50$. Combien de notes y a-t-il ?",
+   "Moyenne $= \\frac{50}{?}$."
+  ],
+  "f": "$\\text{Moyenne} = \\frac{\\text{somme des valeurs}}{\\text{nombre de valeurs}}$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|45"
+ },
+ {
+  "id": "DF.STAT.05-L005",
+  "comp": "DF.STAT.05",
+  "q": "Voici une série ordonnée de $7$ valeurs : $3$, $5$, $7$, $9$, $11$, $13$, $15$. Quelle est la médiane ?",
+  "a": "$9$",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "La série est déjà rangée dans l'ordre croissant.",
+   "Il y a $7$ valeurs, donc la médiane est la valeur en position $\\frac{7+1}{2} = ?$.",
+   "C'est la $4$ème valeur de la série."
+  ],
+  "f": "$\\text{Médiane} = \\text{valeur en position } \\frac{n+1}{2} \\text{ (si } n \\text{ impair)}$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|46"
+ },
+ {
+  "id": "DF.PROB.02-L013",
+  "comp": "DF.PROB.02",
+  "q": "Un sac contient $3$ boules rouges et $5$ boules bleues. On tire une boule au hasard. Quelle est la probabilité de tirer une boule rouge ?",
+  "a": "$\\frac{3}{8}$",
+  "type": "qcm",
+  "options": [
+   "$\\frac{3}{8}$",
+   "$\\frac{3}{5}$",
+   "$\\frac{5}{8}$"
+  ],
+  "err": {
+   "$\\frac{3}{5}$": "DF.PROB.02#favorables_sur_defavorables"
+  },
+  "steps": [
+   "Combien de boules au total ? $3 + 5 = ?$.",
+   "La probabilité est le rapport entre cas favorables et cas possibles.",
+   "$P(\\text{rouge}) = \\frac{?}{8}$."
+  ],
+  "f": "$P(A) = \\frac{\\text{nombre de cas favorables}}{\\text{nombre de cas possibles}}$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|48"
+ },
+ {
+  "id": "DF.PROB.03-L004",
+  "comp": "DF.PROB.03",
+  "q": "La probabilité qu'il pleuve demain est $0{,}3$. Quelle est la probabilité qu'il ne pleuve pas ?",
+  "a": "$0{,}7$",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "0,3": "DF.PROB.03#meme_probabilite"
+  },
+  "steps": [
+   "La somme des probabilités d'un événement et de son contraire vaut toujours $1$.",
+   "$P(\\overline{A}) = 1 - P(A)$.",
+   "$P(\\text{pas de pluie}) = 1 - 0{,}3 = ?$."
+  ],
+  "f": "$P(\\overline{A}) = 1 - P(A)$",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|49"
+ },
+ {
+  "id": "DF.PROB.05-L004",
+  "comp": "DF.PROB.05",
+  "q": "On lance un dé équilibré puis on tire une carte (rouge ou noire). Combien d'issues possibles y a-t-il ?",
+  "a": "$12$",
+  "type": "qcm",
+  "options": [
+   "$12$",
+   "$8$",
+   "$6$"
+  ],
+  "err": {
+   "$8$": "DF.PROB.05#issues_additionnees"
+  },
+  "steps": [
+   "Le dé a $6$ faces. La carte a $2$ possibilités.",
+   "Pour une expérience à deux épreuves, on multiplie les nombres d'issues.",
+   "Nombre total d'issues $= 6 \\times ? = ?$."
+  ],
+  "f": "$\\text{Issues totales} = n_1 \\times n_2$",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|50"
+ },
+ {
+  "id": "AP.PROG.01-L009",
+  "comp": "AP.PROG.01",
+  "q": "Un programme de calcul dit : « Prends un nombre, multiplie-le par $3$, puis ajoute $5$ ». Pour le nombre $4$, quel résultat obtient-on ?",
+  "a": "$17$",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "On part de $4$. Première étape : $4 \\times 3 = ?$.",
+   "Deuxième étape : on ajoute $5$ au résultat.",
+   "$12 + 5 = ?$."
+  ],
+  "f": "",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|51"
+ },
+ {
+  "id": "NC.LIT.01-L005",
+  "comp": "NC.LIT.01",
+  "q": "Un programme de calcul dit : « Prends un nombre $x$, multiplie par $2$, soustrais $7$ ». Quelle expression littérale donne le résultat ?",
+  "a": "$2x - 7$",
+  "type": "qcm",
+  "options": [
+   "$2x - 7$",
+   "$2(x - 7)$",
+   "$7 - 2x$"
+  ],
+  "err": {
+   "$7 - 2x$": "NC.LIT.01#ordre_inverse"
+  },
+  "steps": [
+   "On part de $x$. On multiplie par $2$ : on obtient $2x$.",
+   "Puis on soustrait $7$ à ce résultat.",
+   "L'expression est $2x - ?$."
+  ],
+  "f": "",
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|52"
+ },
+ {
+  "id": "AP.PROG.04-L001",
+  "comp": "AP.PROG.04",
+  "q": "Un script Scratch initialise une variable $n$ à $1$ puis répète $4$ fois : « remplacer $n$ par $n \\times 2$ ». Quelle est la valeur finale de $n$ ?",
+  "a": "$16$",
+  "type": "qcm",
+  "options": [
+   "$16$",
+   "$8$",
+   "$32$"
+  ],
+  "err": {},
+  "steps": [
+   "Au départ $n = 1$. Après la 1ère répétition : $n = 1 \\times 2 = 2$.",
+   "Après la 2ème : $n = 4$. Après la 3ème : $n = ?$.",
+   "Après la 4ème répétition : $n = 8 \\times 2 = ?$."
+  ],
+  "f": "",
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "source": "diagnostic_3eme|53"
+ }
+]

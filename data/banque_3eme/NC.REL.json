@@ -1,0 +1,621 @@
+[
+  {
+    "id": "NC.REL.01-d01",
+    "comp": "NC.REL.01",
+    "q": "Laquelle de ces comparaisons est vraie ?",
+    "a": "$-3 > -12$",
+    "type": "qcm",
+    "options": [
+      "$-12 > -3$",
+      "$-3 > -12$",
+      "$-7 > -3$",
+      "$-10 > -7$"
+    ],
+    "err": {
+      "$-12 > -3$": "NC.REL.01#distance_zero",
+      "$-7 > -3$": "NC.REL.01#distance_zero",
+      "$-10 > -7$": "NC.REL.01#distance_zero"
+    },
+    "steps": [
+      "Place ces nombres sur une droite graduée : le plus grand est le plus à droite.",
+      "Entre deux nombres négatifs, celui qui est le plus proche de zéro est-il le plus grand ou le plus petit ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.01-d02",
+    "comp": "NC.REL.01",
+    "q": "Sur une droite graduée de $1$ en $1$, le point $A$ est placé $3$ graduations à gauche du point d'abscisse $-2$. Quelle est l'abscisse de $A$ ? ___",
+    "a": "-5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1": "NC.REL.01#graduation"
+    },
+    "steps": [
+      "Aller vers la gauche, c'est aller vers des nombres de plus en plus petits.",
+      "Pars de $-2$ et recule de $1$ trois fois : $-2 \\to -3 \\to \\,? \\to \\,?$"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.01-d03",
+    "comp": "NC.REL.01",
+    "q": "Vrai ou faux : $-2{,}5 < -2{,}1$.",
+    "a": "Vrai",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Faux": "NC.REL.01#distance_zero"
+    },
+    "steps": [
+      "Sur la droite graduée, lequel des deux est le plus éloigné de zéro, vers la gauche ?",
+      "Le nombre le plus à gauche est le plus petit : lequel est-ce ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.02-d01",
+    "comp": "NC.REL.02",
+    "q": "Calcule $-6 + (-9)$. ___",
+    "a": "-15",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "15": "NC.REL.02#regle_produit"
+    },
+    "steps": [
+      "On ajoute deux nombres négatifs : on s'enfonce encore plus sous zéro.",
+      "Les deux nombres ont le même signe : on additionne leurs distances à zéro $6 + 9 = \\,?$ et on garde quel signe ?"
+    ],
+    "f": "Même signe : on additionne les distances à zéro et on garde le signe",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.02-d02",
+    "comp": "NC.REL.02",
+    "q": "Calcule $4 - (-2)$.",
+    "a": "$6$",
+    "type": "qcm",
+    "options": [
+      "$2$",
+      "$-6$",
+      "$6$"
+    ],
+    "err": {
+      "$2$": "NC.REL.02#soustraire_negatif",
+      "$-6$": "NC.REL.02#mauvais_signe"
+    },
+    "steps": [
+      "Soustraire un nombre, c'est ajouter son opposé. Quel est l'opposé de $-2$ ?",
+      "On calcule donc $4 + \\,?$"
+    ],
+    "f": "$a - b = a + (-b)$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.02-d03",
+    "comp": "NC.REL.02",
+    "q": "Calcule $-2 - (-7) + (-4)$.",
+    "a": "$1$",
+    "type": "qcm",
+    "options": [
+      "$1$",
+      "$-13$",
+      "$13$",
+      "$-1$"
+    ],
+    "err": {
+      "$-13$": "NC.REL.02#soustraire_negatif",
+      "$13$": "NC.REL.02#regle_produit",
+      "$-1$": "NC.REL.02#mauvais_signe"
+    },
+    "steps": [
+      "Transforme la soustraction : $-(-7)$ devient $+\\,?$",
+      "Tu obtiens $-2 + 7 + (-4)$ : regroupe d'abord $-2$ et $-4$, puis ajoute $7$."
+    ],
+    "f": "$a - b = a + (-b)$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.03-d01",
+    "comp": "NC.REL.03",
+    "q": "Calcule $(-3) \\times (-4)$. ___",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-12": "NC.REL.03#moins_par_moins"
+    },
+    "steps": [
+      "On multiplie d'abord les distances à zéro : $3 \\times 4 = \\,?$",
+      "Le produit de deux nombres de même signe est-il positif ou négatif ?"
+    ],
+    "f": "Produit : même signe $\\to$ positif, signes contraires $\\to$ négatif",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.03-d02",
+    "comp": "NC.REL.03",
+    "q": "Parmi ces produits, lequel est positif ?",
+    "a": "$(-3) \\times (-4)$",
+    "type": "qcm",
+    "options": [
+      "$(-2) \\times 7$",
+      "$(-3) \\times (-4)$",
+      "$(-3) \\times 4$",
+      "$(-1) \\times 10$"
+    ],
+    "err": {
+      "$(-2) \\times 7$": "NC.REL.03#regle_addition",
+      "$(-3) \\times 4$": "NC.REL.03#regle_addition",
+      "$(-1) \\times 10$": "NC.REL.03#regle_addition"
+    },
+    "steps": [
+      "Pour le signe d'un produit, on ne regarde pas quel nombre est « le plus grand ».",
+      "Compte les facteurs négatifs dans chaque produit : un produit de deux facteurs est positif quand ils ont… ?"
+    ],
+    "f": "Produit : même signe $\\to$ positif, signes contraires $\\to$ négatif",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.03-d03",
+    "comp": "NC.REL.03",
+    "q": "Calcule $(-48) \\div (-6)$. ___",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-8": "NC.REL.03#moins_par_moins"
+    },
+    "steps": [
+      "Divise d'abord les distances à zéro : $48 \\div 6 = \\,?$",
+      "La règle des signes de la division est la même que celle du produit : deux négatifs donnent… ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.01-t01",
+    "comp": "NC.REL.01",
+    "q": "À Chamonix, il fait $-4$ °C à $7$ h et $-9$ °C à $23$ h. Quelle est la température la plus basse, en °C ? ___",
+    "a": "-9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-4": "NC.REL.01#distance_zero"
+    },
+    "steps": [
+      "Imagine un thermomètre : lequel de ces deux nombres est le plus bas sur la graduation ?",
+      "Plus un nombre négatif est loin de $0$, plus il fait ?"
+    ],
+    "f": "Entre deux nombres négatifs, le plus petit est le plus éloigné de $0$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "-9 °C"
+    ]
+  },
+  {
+    "id": "NC.REL.01-t02",
+    "comp": "NC.REL.01",
+    "q": "Sur une droite graduée de $1$ en $1$, quelle est l'abscisse du point situé $4$ graduations à droite du point d'abscisse $-7$ ? ___",
+    "a": "-3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-11": "NC.REL.01#graduation",
+      "3": "NC.REL.01#graduation"
+    },
+    "steps": [
+      "Aller vers la droite, c'est aller vers les nombres plus grands : on se rapproche de $0$.",
+      "Compte les pas un par un à partir de $-7$ : $-6$, puis ?"
+    ],
+    "f": "À droite sur l'axe = plus grand",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.01-t03",
+    "comp": "NC.REL.01",
+    "q": "Laquelle de ces comparaisons est vraie ?",
+    "a": "$-15 < -6$",
+    "type": "qcm",
+    "options": [
+      "$-15 < -6$",
+      "$-2 < -11$",
+      "$-4 > -1$"
+    ],
+    "err": {
+      "$-2 < -11$": "NC.REL.01#distance_zero",
+      "$-4 > -1$": "NC.REL.01#distance_zero"
+    },
+    "steps": [
+      "Place les nombres sur une droite graduée : les négatifs sont à gauche de $0$.",
+      "Le plus à gauche est le plus petit : lequel est le plus loin de $0$ ?"
+    ],
+    "f": "Entre deux nombres négatifs, le plus petit est le plus éloigné de $0$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.01-t04",
+    "comp": "NC.REL.01",
+    "q": "Range dans l'ordre croissant : $-2$ ; $5$ ; $-7$ ; $0$.",
+    "a": "$-7 < -2 < 0 < 5$",
+    "type": "qcm",
+    "options": [
+      "$-2 < -7 < 0 < 5$",
+      "$0 < -2 < 5 < -7$",
+      "$-7 < -2 < 0 < 5$"
+    ],
+    "err": {
+      "$-2 < -7 < 0 < 5$": "NC.REL.01#distance_zero",
+      "$0 < -2 < 5 < -7$": "NC.REL.01#distance_zero"
+    },
+    "steps": [
+      "Commence par les négatifs : ils sont tous plus petits que $0$.",
+      "Parmi $-2$ et $-7$, lequel est le plus loin à gauche de $0$ ?"
+    ],
+    "f": "Entre deux nombres négatifs, le plus petit est le plus éloigné de $0$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.01-t05",
+    "comp": "NC.REL.01",
+    "q": "Sur une droite graduée de $0{,}5$ en $0{,}5$, le point $M$ est placé $3$ graduations à gauche de $0$. Quelle est l'abscisse de $M$ ? ___",
+    "a": "-1,5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1,5": "NC.REL.01#graduation",
+      "-3": "NC.REL.01#graduation"
+    },
+    "steps": [
+      "Une graduation ne vaut pas $1$ ici : elle vaut $0{,}5$.",
+      "À gauche de $0$, les abscisses sont-elles positives ou négatives ?"
+    ],
+    "f": "À gauche de $0$ : abscisse négative",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.01-t06",
+    "comp": "NC.REL.01",
+    "q": "En plongée, Léa est à $-3{,}5$ m, Noé à $-12$ m et Sarah à $-7{,}25$ m. Quelle est l'altitude de celui ou celle qui est le plus près de la surface, en m ? ___",
+    "a": "-3,5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-12": "NC.REL.01#distance_zero"
+    },
+    "steps": [
+      "La surface est à l'altitude $0$ : cherche le nombre le plus proche de $0$.",
+      "Parmi des négatifs, le plus proche de $0$ est-il le plus grand ou le plus petit ?"
+    ],
+    "f": "Entre deux nombres négatifs, le plus petit est le plus éloigné de $0$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.REL.01-t07",
+    "comp": "NC.REL.01",
+    "q": "Karim affirme : « $-10$ est plus grand que $-1$, car $10$ est plus grand que $1$. » A-t-il raison ?",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.REL.01#distance_zero"
+    },
+    "steps": [
+      "Pense aux températures : fait-il plus froid à $-10$ °C ou à $-1$ °C ?",
+      "Sur une droite graduée, lequel des deux est le plus à gauche ?"
+    ],
+    "f": "Entre deux nombres négatifs, le plus petit est le plus éloigné de $0$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.01-t08",
+    "comp": "NC.REL.01",
+    "q": "Quel est le plus petit nombre entier strictement supérieur à $-3{,}5$ ? ___",
+    "a": "-3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-4": "NC.REL.01#distance_zero"
+    },
+    "steps": [
+      "Place $-3{,}5$ sur une droite graduée : entre quels entiers se trouve-t-il ?",
+      "« Supérieur », c'est à droite sur l'axe : quel est le premier entier à droite de $-3{,}5$ ?"
+    ],
+    "f": "Entre deux nombres négatifs, le plus petit est le plus éloigné de $0$",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.01-t09",
+    "comp": "NC.REL.01",
+    "q": "Laquelle de ces comparaisons est vraie ?",
+    "a": "$-3{,}2 < -3{,}15$",
+    "type": "qcm",
+    "options": [
+      "$-0{,}5 < -0{,}8$",
+      "$-3{,}2 < -3{,}15$",
+      "$-4{,}09 < -4{,}1$"
+    ],
+    "err": {
+      "$-0{,}5 < -0{,}8$": "NC.REL.01#distance_zero",
+      "$-4{,}09 < -4{,}1$": "NC.ENT.02#plus_de_chiffres"
+    },
+    "steps": [
+      "Compare d'abord les distances à $0$ : $3{,}2$ et $3{,}15$ (écris $3{,}20$).",
+      "Pour des négatifs, le plus éloigné de $0$ est-il le plus grand ou le plus petit ?"
+    ],
+    "f": "Entre deux nombres négatifs, le plus petit est le plus éloigné de $0$",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.03-t01",
+    "comp": "NC.REL.03",
+    "q": "Calcule $(-6) \\times 7$. ___",
+    "a": "-42",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "42": "NC.REL.03#regle_addition"
+    },
+    "steps": [
+      "Commence par le signe : les deux facteurs ont-ils le même signe ?",
+      "Calcule ensuite $6 \\times 7$ et place le signe devant."
+    ],
+    "f": "Produit ou quotient : signes identiques $\\to +$ ; signes contraires $\\to -$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.03-t02",
+    "comp": "NC.REL.03",
+    "q": "Calcule $72 \\div (-8)$. ___",
+    "a": "-9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "9": "NC.REL.03#regle_addition"
+    },
+    "steps": [
+      "Pour le signe, peu importe lequel des deux nombres est le plus grand : regarde seulement s'ils ont le même signe.",
+      "Calcule ensuite $72 \\div 8$."
+    ],
+    "f": "Produit ou quotient : signes identiques $\\to +$ ; signes contraires $\\to -$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.03-t03",
+    "comp": "NC.REL.03",
+    "q": "Calcule $(-5) \\times (-9)$. ___",
+    "a": "45",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-45": "NC.REL.03#moins_par_moins"
+    },
+    "steps": [
+      "Combien de facteurs négatifs y a-t-il dans ce produit ?",
+      "Un nombre pair de facteurs négatifs donne un produit de quel signe ?"
+    ],
+    "f": "Produit ou quotient : signes identiques $\\to +$ ; signes contraires $\\to -$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.03-t04",
+    "comp": "NC.REL.03",
+    "q": "Lequel de ces calculs donne $-24$ ?",
+    "a": "$(-4) \\times 6$",
+    "type": "qcm",
+    "options": [
+      "$(-4) \\times 6$",
+      "$(-4) \\times (-6)$",
+      "$(-2) \\times (-12)$"
+    ],
+    "err": {
+      "$(-4) \\times (-6)$": "NC.REL.03#moins_par_moins",
+      "$(-2) \\times (-12)$": "NC.REL.03#moins_par_moins"
+    },
+    "steps": [
+      "Pour chaque calcul, détermine d'abord le signe du résultat.",
+      "Deux facteurs négatifs : le produit est-il positif ou négatif ?"
+    ],
+    "f": "Produit ou quotient : signes identiques $\\to +$ ; signes contraires $\\to -$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.03-t05",
+    "comp": "NC.REL.03",
+    "q": "Complète : $(-7) \\times \\text{___} = 56$",
+    "a": "-8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "8": "NC.REL.03#regle_addition"
+    },
+    "steps": [
+      "$56$ est positif : le facteur manquant doit-il avoir le même signe que $-7$ ou le signe contraire ?",
+      "Quel nombre, multiplié par $7$, donne $56$ ?"
+    ],
+    "f": "Produit ou quotient : signes identiques $\\to +$ ; signes contraires $\\to -$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.03-t06",
+    "comp": "NC.REL.03",
+    "q": "Inès affirme : « $(-12) \\div (-4) = -3$. » A-t-elle raison ?",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.REL.03#moins_par_moins"
+    },
+    "steps": [
+      "Le dividende et le diviseur ont-ils le même signe ?",
+      "Même signe : le quotient est-il positif ou négatif ?"
+    ],
+    "f": "Produit ou quotient : signes identiques $\\to +$ ; signes contraires $\\to -$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.REL.03-t07",
+    "comp": "NC.REL.03",
+    "q": "Calcule $(-2{,}5) \\times 4 \\times (-0{,}2)$. ___",
+    "a": "2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-2": "NC.REL.03#moins_par_moins"
+    },
+    "steps": [
+      "Compte les facteurs négatifs pour trouver le signe du résultat.",
+      "Calcule ensuite $2{,}5 \\times 4$, puis multiplie par $0{,}2$."
+    ],
+    "f": "Produit ou quotient : signes identiques $\\to +$ ; signes contraires $\\to -$",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  }
+]

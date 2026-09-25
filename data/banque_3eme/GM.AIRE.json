@@ -1,0 +1,243 @@
+[
+  {
+    "id": "GM.AIRE.01-d01",
+    "comp": "GM.AIRE.01",
+    "q": "Un jardin rectangulaire mesure $8$ m de long et $5$ m de large. Quel est son périmètre ? ___ m",
+    "a": "26",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "40": "GM.AIRE.01#perimetre_aire",
+      "13": "GM.AIRE.01#cotes_oublies"
+    },
+    "steps": [
+      "Le périmètre est la longueur du tour : un rectangle a $4$ côtés.",
+      "Additionne les $4$ côtés : $8 + 5 + 8 + 5 = $ ?"
+    ],
+    "f": "$P_{\\text{rectangle}} = 2 \\times (L + \\ell)$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.AIRE.01-d02",
+    "comp": "GM.AIRE.01",
+    "q": "Un cercle a un rayon de $4$ cm. Quel est son périmètre ?",
+    "a": "$8\\pi$ cm",
+    "type": "qcm",
+    "options": [
+      "$8\\pi$ cm",
+      "$4\\pi$ cm",
+      "$16\\pi$ cm"
+    ],
+    "err": {
+      "$4\\pi$ cm": "GM.AIRE.01#rayon_diametre",
+      "$16\\pi$ cm": "GM.AIRE.01#perimetre_aire"
+    },
+    "steps": [
+      "Le périmètre d'un cercle vaut $\\pi$ fois le diamètre.",
+      "Quel est le diamètre si le rayon mesure $4$ cm ? Conclus."
+    ],
+    "f": "$P = 2\\pi r = \\pi d$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.AIRE.01-d03",
+    "comp": "GM.AIRE.01",
+    "q": "Un terrain triangulaire a des côtés de $12$ m, $9$ m et $15$ m. On veut l'entourer d'une clôture. Quelle longueur de clôture faut-il ? ___ m",
+    "a": "36",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "54": "GM.AIRE.01#perimetre_aire",
+      "21": "GM.AIRE.01#cotes_oublies",
+      "27": "GM.AIRE.01#cotes_oublies"
+    },
+    "steps": [
+      "La clôture fait le tour du terrain : c'est un périmètre.",
+      "Combien de côtés a le triangle ? Additionne-les tous : ?"
+    ],
+    "f": "$P = \\text{somme des longueurs des côtés}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.AIRE.02-d01",
+    "comp": "GM.AIRE.02",
+    "q": "Un triangle a une base de $10$ cm et une hauteur (relative à cette base) de $6$ cm. Quelle est son aire, en $\\text{cm}^2$ ? ___",
+    "a": "30",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "60": "GM.AIRE.02#triangle_sans_moitie"
+    },
+    "steps": [
+      "Un triangle, c'est la moitié d'un rectangle de mêmes base et hauteur.",
+      "Calcule $10 \\times 6$, puis prends-en la moitié : ?"
+    ],
+    "f": "$\\mathcal{A}_{\\text{triangle}} = \\frac{b \\times h}{2}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.AIRE.02-d02",
+    "comp": "GM.AIRE.02",
+    "q": "Un tapis rectangulaire mesure $7$ dm sur $4$ dm. Quelle est son aire ?",
+    "a": "$28~\\text{dm}^2$",
+    "type": "qcm",
+    "options": [
+      "$28~\\text{dm}^2$",
+      "$28$ dm",
+      "$28~\\text{dm}^3$"
+    ],
+    "err": {
+      "$28$ dm": "GM.AIRE.02#unite_aire",
+      "$28~\\text{dm}^3$": "GM.AIRE.02#unite_aire"
+    },
+    "steps": [
+      "L'aire d'un rectangle se calcule avec longueur fois largeur.",
+      "Une aire s'exprime dans une unité « au carré » : laquelle ici ?"
+    ],
+    "f": "$\\mathcal{A}_{\\text{rectangle}} = L \\times \\ell$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "GM.AIRE.02-d03",
+    "comp": "GM.AIRE.02",
+    "q": "Dans le triangle $ABC$, la base $BC$ mesure $8$ cm, le côté $AB$ mesure $5$ cm et la hauteur issue de $A$ (perpendiculaire à $BC$) mesure $4$ cm. Quelle est l'aire du triangle $ABC$ ?",
+    "a": "$16~\\text{cm}^2$",
+    "type": "qcm",
+    "options": [
+      "$16~\\text{cm}^2$",
+      "$20~\\text{cm}^2$",
+      "$32~\\text{cm}^2$",
+      "$40~\\text{cm}^2$"
+    ],
+    "err": {
+      "$20~\\text{cm}^2$": "GM.AIRE.02#hauteur_oblique",
+      "$32~\\text{cm}^2$": "GM.AIRE.02#triangle_sans_moitie",
+      "$40~\\text{cm}^2$": "GM.AIRE.02#hauteur_oblique"
+    },
+    "steps": [
+      "La hauteur est le segment perpendiculaire à la base : ce n'est pas le côté $AB$.",
+      "Calcule $\\frac{8 \\times 4}{2}$ : ?"
+    ],
+    "f": "$\\mathcal{A}_{\\text{triangle}} = \\frac{b \\times h}{2}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.AIRE.03-d01",
+    "comp": "GM.AIRE.03",
+    "q": "Quelle est l'aire d'un disque de rayon $5$ cm ?",
+    "a": "$25\\pi~\\text{cm}^2$",
+    "type": "qcm",
+    "options": [
+      "$25\\pi~\\text{cm}^2$",
+      "$10\\pi~\\text{cm}^2$",
+      "$25\\pi^2~\\text{cm}^2$",
+      "$100\\pi~\\text{cm}^2$"
+    ],
+    "err": {
+      "$10\\pi~\\text{cm}^2$": "GM.AIRE.03#formule_perimetre",
+      "$25\\pi^2~\\text{cm}^2$": "GM.AIRE.03#pi_r_au_carre",
+      "$100\\pi~\\text{cm}^2$": "GM.AIRE.03#diametre_au_carre"
+    },
+    "steps": [
+      "L'aire d'un disque s'obtient avec $\\pi$ et le carré du rayon.",
+      "Calcule $5^2$, puis multiplie par $\\pi$ : ?"
+    ],
+    "f": "$\\mathcal{A} = \\pi r^2$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "GM.AIRE.03-d02",
+    "comp": "GM.AIRE.03",
+    "q": "Un disque a un diamètre de $6$ cm. Son aire s'écrit $k\\pi~\\text{cm}^2$. Quelle est la valeur de $k$ ? ___",
+    "a": "9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "36": "GM.AIRE.03#diametre_au_carre",
+      "6": "GM.AIRE.03#formule_perimetre"
+    },
+    "steps": [
+      "La formule de l'aire utilise le rayon, pas le diamètre. Quel est le rayon ?",
+      "Élève ce rayon au carré : ?"
+    ],
+    "f": "$\\mathcal{A} = \\pi r^2$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "9π",
+      "9pi",
+      "9\\pi"
+    ]
+  },
+  {
+    "id": "GM.AIRE.03-d03",
+    "comp": "GM.AIRE.03",
+    "q": "Une pizza ronde a un rayon de $12$ cm. Calcule son aire, arrondie à l'unité, en prenant $\\pi \\approx 3{,}14$. (en $\\text{cm}^2$) ___",
+    "a": "452",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "75": "GM.AIRE.03#formule_perimetre",
+      "75,36": "GM.AIRE.03#formule_perimetre",
+      "1809": "GM.AIRE.03#diametre_au_carre",
+      "1810": "GM.AIRE.03#diametre_au_carre",
+      "1420": "GM.AIRE.03#pi_r_au_carre",
+      "1421": "GM.AIRE.03#pi_r_au_carre"
+    },
+    "steps": [
+      "Calcule d'abord le carré du rayon : $12^2 = $ ?",
+      "Multiplie par $3{,}14$, puis arrondis à l'unité : ?"
+    ],
+    "f": "$\\mathcal{A} = \\pi r^2$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "452,16",
+      "452,4",
+      "452,39"
+    ]
+  }
+]

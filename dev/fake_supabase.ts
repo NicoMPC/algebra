@@ -253,7 +253,7 @@ function sortRows(t: Table, rows: Row[], order: string | null) {
 export class FakeSupabase {
   state: DbState = { tables: {}, seq: {}, users: [] };
   userTokens = new Set<string>();
-  private saveTimer: number | null = null;
+  private saveTimer: ReturnType<typeof setTimeout> | null = null;
   log: (m: string) => void = (m) => console.log(m);
   onEmail: (to: string, subject: string, html: string) => Promise<void> = async () => {};
 

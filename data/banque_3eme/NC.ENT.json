@@ -1,0 +1,1138 @@
+[
+  {
+    "id": "NC.ENT.01-d01",
+    "comp": "NC.ENT.01",
+    "q": "Calcule $3{,}7 \\times 100$. ___",
+    "a": "370",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3,700": "NC.ENT.01#ajoute_zero",
+      "37": "NC.ENT.01#nb_rangs",
+      "3700": "NC.ENT.01#nb_rangs"
+    },
+    "steps": [
+      "Multiplier par $100$, c'est rendre le nombre $100$ fois plus grand : chaque chiffre avance de combien de rangs ?",
+      "Le chiffre $3$ (unités) devient le chiffre des ? , et le $7$ (dixièmes) devient celui des ?"
+    ],
+    "f": "$\\times 100$ : chaque chiffre avance de $2$ rangs",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.01-d02",
+    "comp": "NC.ENT.01",
+    "q": "Calcule $45 \\times 0{,}1$.",
+    "a": "$4{,}5$",
+    "type": "qcm",
+    "options": [
+      "$4{,}5$",
+      "$450$",
+      "$0{,}45$",
+      "$0{,}045$"
+    ],
+    "err": {
+      "$450$": "NC.ENT.01#multiplier_agrandit",
+      "$0{,}45$": "NC.ENT.01#nb_rangs",
+      "$0{,}045$": "NC.ENT.01#nb_rangs"
+    },
+    "steps": [
+      "Multiplier par $0{,}1$, c'est prendre le dixième : le résultat est-il plus grand ou plus petit que $45$ ?",
+      "Prendre le dixième revient à diviser par $10$ : de combien de rangs chaque chiffre recule-t-il ?"
+    ],
+    "f": "$\\times 0{,}1$ revient à $\\div 10$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.01-d03",
+    "comp": "NC.ENT.01",
+    "q": "Un grain de riz pèse $0{,}02$ g. Quelle est la masse, en grammes, de $1000$ grains ? ___",
+    "a": "20",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "0,02000": "NC.ENT.01#ajoute_zero",
+      "2": "NC.ENT.01#nb_rangs",
+      "200": "NC.ENT.01#nb_rangs"
+    },
+    "steps": [
+      "On calcule $0{,}02 \\times 1000$ : chaque chiffre avance de combien de rangs ?",
+      "Le chiffre $2$ est au rang des centièmes. Après $3$ rangs vers la gauche, il est au rang des ?"
+    ],
+    "f": "$\\times 1000$ : chaque chiffre avance de $3$ rangs",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.02-d01",
+    "comp": "NC.ENT.02",
+    "q": "Quel est le plus grand de ces nombres ?",
+    "a": "$2{,}75$",
+    "type": "qcm",
+    "options": [
+      "$2{,}7$",
+      "$2{,}75$",
+      "$2{,}705$"
+    ],
+    "err": {
+      "$2{,}7$": "NC.ENT.02#plus_court_plus_grand",
+      "$2{,}705$": "NC.ENT.02#plus_de_chiffres"
+    },
+    "steps": [
+      "Les trois nombres ont la même partie entière et le même chiffre des dixièmes : quel chiffre faut-il comparer ensuite ?",
+      "Écris-les tous avec $3$ décimales (par exemple $2{,}7 = 2{,}700$), puis compare."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.02-d02",
+    "comp": "NC.ENT.02",
+    "q": "Quel est le plus petit de ces nombres ?",
+    "a": "$3{,}05$",
+    "type": "qcm",
+    "options": [
+      "$3{,}1$",
+      "$3{,}05$",
+      "$3{,}405$"
+    ],
+    "err": {
+      "$3{,}1$": "NC.ENT.02#plus_de_chiffres",
+      "$3{,}405$": "NC.ENT.02#plus_court_plus_grand"
+    },
+    "steps": [
+      "Même partie entière : regarde le chiffre des dixièmes de chacun.",
+      "Écris-les tous avec $3$ décimales (par exemple $3{,}7 = 3{,}700$), puis compare."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.02-d03",
+    "comp": "NC.ENT.02",
+    "q": "Léa affirme : « $12{,}7$ est plus petit que $12{,}65$, car $65$ est plus grand que $7$. » A-t-elle raison ?",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.ENT.02#plus_de_chiffres"
+    },
+    "steps": [
+      "Le $7$ de $12{,}7$ représente $7$ dixièmes. Combien de dixièmes y a-t-il dans $12{,}65$ ?",
+      "Écris $12{,}7$ avec deux décimales, puis compare les deux nombres chiffre par chiffre."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.03-d01",
+    "comp": "NC.ENT.03",
+    "q": "Arrondis $7{,}86$ au dixième. ___",
+    "a": "7,9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "7,8": "NC.ENT.03#troncature",
+      "8": "NC.ENT.03#mauvais_rang",
+      "10": "NC.ENT.03#mauvais_rang"
+    },
+    "steps": [
+      "Le chiffre des dixièmes de $7{,}86$ est $8$ : le nombre est entre $7{,}8$ et $7{,}9$.",
+      "Regarde le chiffre juste après (centièmes) : est-il supérieur ou égal à $5$ ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.03-d02",
+    "comp": "NC.ENT.03",
+    "q": "Arrondis $14{,}358$ au centième.",
+    "a": "$14{,}36$",
+    "type": "qcm",
+    "options": [
+      "$14{,}35$",
+      "$14{,}4$",
+      "$14{,}3$",
+      "$14{,}36$"
+    ],
+    "err": {
+      "$14{,}35$": "NC.ENT.03#troncature",
+      "$14{,}4$": "NC.ENT.03#mauvais_rang",
+      "$14{,}3$": "NC.ENT.03#mauvais_rang"
+    },
+    "steps": [
+      "Le centième, c'est le $2^e$ chiffre après la virgule : $14{,}358$ est entre $14{,}35$ et ?",
+      "Le chiffre suivant (millièmes) est $8$ : on arrondit vers le haut ou vers le bas ?"
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.03-d03",
+    "comp": "NC.ENT.03",
+    "q": "Un fromage coûte $2{,}46$ € le kg. Nina en achète $3$ kg. Quel est le prix payé, arrondi au dixième d'euro ?",
+    "a": "$7{,}4$ €",
+    "type": "qcm",
+    "options": [
+      "$7{,}4$ €",
+      "$7{,}5$ €",
+      "$7{,}3$ €",
+      "$7$ €"
+    ],
+    "err": {
+      "$7{,}5$ €": "NC.ENT.03#arrondi_intermediaire",
+      "$7{,}3$ €": "NC.ENT.03#troncature",
+      "$7$ €": "NC.ENT.03#mauvais_rang"
+    },
+    "steps": [
+      "Calcule d'abord le prix exact $3 \\times 2{,}46$, sans rien arrondir avant.",
+      "Le résultat exact a deux décimales : regarde le chiffre des centièmes pour arrondir au dixième."
+    ],
+    "f": "",
+    "f_disabled": true,
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.01-t01",
+    "comp": "NC.ENT.01",
+    "q": "Un ticket de bus coûte $1{,}6$ €. Combien coûtent $10$ tickets, en euros ? ___",
+    "a": "16",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1,60": "NC.ENT.01#ajoute_zero",
+      "160": "NC.ENT.01#nb_rangs"
+    },
+    "steps": [
+      "Multiplier par $10$ : chaque chiffre avance d'un rang vers la gauche, la virgule ne « reçoit » pas un zéro.",
+      "Le $1$ des unités devient le chiffre des ?, et le $6$ des dixièmes devient celui des ?"
+    ],
+    "f": "$\\times 10$ : chaque chiffre avance d'un rang",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.01-t02",
+    "comp": "NC.ENT.01",
+    "q": "Calcule $52 \\div 100$. ___",
+    "a": "0,52",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5,2": "NC.ENT.01#nb_rangs",
+      "0,052": "NC.ENT.01#nb_rangs",
+      "5200": "NC.ENT.01#multiplier_agrandit"
+    },
+    "steps": [
+      "Diviser par $100$ rend le nombre $100$ fois plus petit : chaque chiffre recule de combien de rangs ?",
+      "Le $5$ des dizaines devient le chiffre des ?"
+    ],
+    "f": "$\\div 100$ : chaque chiffre recule de $2$ rangs",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.01-t03",
+    "comp": "NC.ENT.01",
+    "q": "Calcule $0{,}8 \\times 1000$. ___",
+    "a": "800",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "0,8000": "NC.ENT.01#ajoute_zero",
+      "80": "NC.ENT.01#nb_rangs",
+      "8000": "NC.ENT.01#nb_rangs"
+    },
+    "steps": [
+      "$1000$ a trois zéros : de combien de rangs chaque chiffre avance-t-il ?",
+      "Le $8$ est le chiffre des dixièmes : après ce décalage, il devient le chiffre des ?"
+    ],
+    "f": "$\\times 1000$ : chaque chiffre avance de $3$ rangs",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.01-t04",
+    "comp": "NC.ENT.01",
+    "q": "Calcule $36 \\times 0{,}1$.",
+    "a": "$3{,}6$",
+    "type": "qcm",
+    "options": [
+      "$3{,}6$",
+      "$360$",
+      "$0{,}36$"
+    ],
+    "err": {
+      "$360$": "NC.ENT.01#multiplier_agrandit",
+      "$0{,}36$": "NC.ENT.01#nb_rangs"
+    },
+    "steps": [
+      "Multiplier par $0{,}1$, c'est prendre le dixième du nombre : le résultat est-il plus grand ou plus petit que $36$ ?",
+      "Prendre le dixième revient à diviser par ?"
+    ],
+    "f": "$\\times 0{,}1$ revient à $\\div 10$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.01-t05",
+    "comp": "NC.ENT.01",
+    "q": "Un paquet de $100$ feuilles pèse $450$ g. Quelle est la masse d'une feuille, en grammes ? ___",
+    "a": "4,5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "45": "NC.ENT.01#nb_rangs",
+      "0,45": "NC.ENT.01#nb_rangs",
+      "45000": "NC.ENT.01#multiplier_agrandit"
+    },
+    "steps": [
+      "Pour une seule feuille, on partage la masse du paquet en $100$ : quelle opération fais-tu sur $450$ ?",
+      "Diviser par $100$ : chaque chiffre recule de ? rangs."
+    ],
+    "f": "$\\div 100$ : chaque chiffre recule de $2$ rangs",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.01-t06",
+    "comp": "NC.ENT.01",
+    "q": "Complète : $4{,}7 \\times \\text{___} = 470$",
+    "a": "100",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "10": "NC.ENT.01#nb_rangs",
+      "1000": "NC.ENT.01#nb_rangs"
+    },
+    "steps": [
+      "Compare $4{,}7$ et $470$ : le chiffre $4$ est passé des unités aux ?",
+      "De combien de rangs a-t-il avancé ? Cela correspond à multiplier par $1$ suivi de combien de zéros ?"
+    ],
+    "f": "$\\times 10^n$ : chaque chiffre avance de $n$ rangs",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.01-t07",
+    "comp": "NC.ENT.01",
+    "q": "Par quel nombre faut-il multiplier $250$ pour obtenir $2{,}5$ ?",
+    "a": "$0{,}01$",
+    "type": "qcm",
+    "options": [
+      "$0{,}1$",
+      "$100$",
+      "$0{,}01$",
+      "$0{,}001$"
+    ],
+    "err": {
+      "$0{,}1$": "NC.ENT.01#nb_rangs",
+      "$100$": "NC.ENT.01#multiplier_agrandit",
+      "$0{,}001$": "NC.ENT.01#nb_rangs"
+    },
+    "steps": [
+      "$2{,}5$ est plus petit que $250$ : faut-il multiplier par un nombre plus grand ou plus petit que $1$ ?",
+      "Le $2$ passe des centaines aux unités : il recule de combien de rangs ?"
+    ],
+    "f": "$\\times 0{,}1$ : recule d'$1$ rang ; $\\times 0{,}01$ : recule de $2$ rangs",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.01-t08",
+    "comp": "NC.ENT.01",
+    "q": "Un rouleau de $1000$ étiquettes coûte $12$ €. Quel est le prix d'une étiquette, en euros ? ___",
+    "a": "0,012",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "0,12": "NC.ENT.01#nb_rangs",
+      "0,0012": "NC.ENT.01#nb_rangs",
+      "1,2": "NC.ENT.01#nb_rangs",
+      "12000": "NC.ENT.01#multiplier_agrandit"
+    },
+    "steps": [
+      "Le prix d'une étiquette, c'est $12$ € partagés en $1000$ : chaque chiffre recule de ? rangs.",
+      "Écris $12$ comme $12{,}000$ puis déplace les chiffres : le $1$ des dizaines devient le chiffre des ?"
+    ],
+    "f": "$\\div 1000$ : chaque chiffre recule de $3$ rangs",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.01-t09",
+    "comp": "NC.ENT.01",
+    "q": "Calcule $73 \\times 0{,}01$. ___",
+    "a": "0,73",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "7300": "NC.ENT.01#multiplier_agrandit",
+      "7,3": "NC.ENT.01#nb_rangs",
+      "0,073": "NC.ENT.01#nb_rangs"
+    },
+    "steps": [
+      "Multiplier par $0{,}01$, c'est prendre le centième : le résultat est-il plus grand ou plus petit que $73$ ?",
+      "Prendre le centième revient à diviser par ? : de combien de rangs reculent les chiffres ?"
+    ],
+    "f": "$\\times 0{,}01$ revient à $\\div 100$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.01-t10",
+    "comp": "NC.ENT.01",
+    "q": "Tom affirme : « $8 \\times 0{,}1$ est plus grand que $8$, car une multiplication agrandit toujours. » A-t-il raison ?",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.ENT.01#multiplier_agrandit"
+    },
+    "steps": [
+      "Multiplier par $0{,}1$, c'est prendre le ? de $8$.",
+      "Calcule ce dixième et compare-le à $8$ : est-il plus grand ?"
+    ],
+    "f": "$\\times 0{,}1$ revient à $\\div 10$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.01-t11",
+    "comp": "NC.ENT.01",
+    "q": "Une imprimante 3D dépose une couche de $0{,}04$ mm d'épaisseur. Quelle hauteur, en mm, atteignent $1000$ couches ? ___",
+    "a": "40",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "0,04000": "NC.ENT.01#ajoute_zero",
+      "4": "NC.ENT.01#nb_rangs",
+      "400": "NC.ENT.01#nb_rangs"
+    },
+    "steps": [
+      "Il faut calculer $0{,}04 \\times 1000$ : chaque chiffre avance de ? rangs.",
+      "Le $4$ est le chiffre des centièmes : après $3$ rangs vers la gauche, il devient le chiffre des ?"
+    ],
+    "f": "$\\times 1000$ : chaque chiffre avance de $3$ rangs",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.01-t12",
+    "comp": "NC.ENT.01",
+    "q": "Laquelle de ces égalités est vraie ?",
+    "a": "$0{,}6 \\times 100 = 60$",
+    "type": "qcm",
+    "options": [
+      "$0{,}6 \\times 10 = 0{,}60$",
+      "$0{,}6 \\times 100 = 60$",
+      "$60 \\times 0{,}1 = 600$",
+      "$6 \\times 1000 = 600$"
+    ],
+    "err": {
+      "$0{,}6 \\times 10 = 0{,}60$": "NC.ENT.01#ajoute_zero",
+      "$60 \\times 0{,}1 = 600$": "NC.ENT.01#multiplier_agrandit",
+      "$6 \\times 1000 = 600$": "NC.ENT.01#nb_rangs"
+    },
+    "steps": [
+      "Pour chaque égalité, demande-toi d'abord si le résultat doit être plus grand ou plus petit que le nombre de départ.",
+      "Puis compte les rangs : $\\times 10$ fait avancer d'$1$ rang, $\\times 100$ de $2$, $\\times 1000$ de ? ; $\\times 0{,}1$ fait reculer d'$1$ rang."
+    ],
+    "f": "$\\times 10^n$ : avance de $n$ rangs ; $\\times 0{,}1$ : recule d'$1$ rang",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.02-t01",
+    "comp": "NC.ENT.02",
+    "q": "Au $100$ m, Inès court en $13{,}8$ s et Jade en $13{,}75$ s. Quel est le temps le plus court, en secondes ? ___",
+    "a": "13,75",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "13,8": "NC.ENT.02#plus_de_chiffres"
+    },
+    "steps": [
+      "Les unités sont égales : compare les chiffres des dixièmes de $13{,}8$ et de $13{,}75$.",
+      "Tu peux écrire $13{,}8$ avec deux décimales : $13{,}8 = 13{,}8\\,?$ Lequel est le plus petit ?"
+    ],
+    "f": "Compare d'abord les unités, puis les dixièmes, puis les centièmes : le premier rang qui diffère décide.",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.02-t02",
+    "comp": "NC.ENT.02",
+    "q": "Complète avec $<$ ou $>$ : $2{,}3 \\; \\text{___} \\; 2{,}35$",
+    "a": "<",
+    "type": "fill",
+    "options": [],
+    "err": {
+      ">": "NC.ENT.02#plus_court_plus_grand"
+    },
+    "steps": [
+      "Écris les deux nombres avec le même nombre de décimales : $2{,}3 = 2{,}3\\,?$",
+      "Compare maintenant les centièmes."
+    ],
+    "f": "Compare d'abord les unités, puis les dixièmes, puis les centièmes : le premier rang qui diffère décide.",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.02-t03",
+    "comp": "NC.ENT.02",
+    "q": "Laquelle de ces comparaisons est vraie ?",
+    "a": "$7{,}05 < 7{,}50$",
+    "type": "qcm",
+    "options": [
+      "$7{,}05 < 7{,}50$",
+      "$7{,}3 < 7{,}25$",
+      "$7{,}4 > 7{,}45$"
+    ],
+    "err": {
+      "$7{,}3 < 7{,}25$": "NC.ENT.02#plus_de_chiffres",
+      "$7{,}4 > 7{,}45$": "NC.ENT.02#plus_court_plus_grand"
+    },
+    "steps": [
+      "Pour chaque comparaison, complète par des zéros pour avoir autant de décimales des deux côtés.",
+      "Compare ensuite rang par rang, en commençant par les dixièmes."
+    ],
+    "f": "Compare d'abord les unités, puis les dixièmes, puis les centièmes : le premier rang qui diffère décide.",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.02-t04",
+    "comp": "NC.ENT.02",
+    "q": "Au marché, les pommes coûtent $2{,}9$ € le kg et les poires $2{,}85$ € le kg. Quel est le prix le plus élevé, en € ? ___",
+    "a": "2,9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2,85": "NC.ENT.02#plus_de_chiffres"
+    },
+    "steps": [
+      "Les unités sont égales : quel est le chiffre des dixièmes de chaque prix ?",
+      "$2{,}9$ €, c'est $2$ € et combien de centimes ?"
+    ],
+    "f": "Compare d'abord les unités, puis les dixièmes, puis les centièmes : le premier rang qui diffère décide.",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.02-t05",
+    "comp": "NC.ENT.02",
+    "q": "Complète avec $<$ ou $>$ : $0{,}6 \\; \\text{___} \\; 0{,}58$",
+    "a": ">",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "<": "NC.ENT.02#plus_de_chiffres"
+    },
+    "steps": [
+      "Écris $0{,}6$ avec deux décimales pour le comparer à $0{,}58$.",
+      "Compare les dixièmes : $6$ dixièmes contre combien ?"
+    ],
+    "f": "Compare d'abord les unités, puis les dixièmes, puis les centièmes : le premier rang qui diffère décide.",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.02-t06",
+    "comp": "NC.ENT.02",
+    "q": "Range dans l'ordre croissant : $3{,}4$ ; $3{,}45$ ; $3{,}405$.",
+    "a": "$3{,}4 < 3{,}405 < 3{,}45$",
+    "type": "qcm",
+    "options": [
+      "$3{,}4 < 3{,}405 < 3{,}45$",
+      "$3{,}405 < 3{,}45 < 3{,}4$",
+      "$3{,}4 < 3{,}45 < 3{,}405$"
+    ],
+    "err": {
+      "$3{,}4 < 3{,}45 < 3{,}405$": "NC.ENT.02#plus_de_chiffres",
+      "$3{,}405 < 3{,}45 < 3{,}4$": "NC.ENT.02#plus_court_plus_grand"
+    },
+    "steps": [
+      "Écris les trois nombres avec trois décimales : $3{,}4 = 3{,}4\\,?\\,?$ et $3{,}45 = 3{,}45\\,?$",
+      "Compare-les maintenant comme des millièmes."
+    ],
+    "f": "Compare d'abord les unités, puis les dixièmes, puis les centièmes : le premier rang qui diffère décide.",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.02-t07",
+    "comp": "NC.ENT.02",
+    "q": "Au saut en longueur, Lucas saute $4{,}8$ m, Adam $4{,}75$ m et Noé $4{,}09$ m. Combien d'entre eux ont sauté plus de $4{,}5$ m ? ___",
+    "a": "2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "NC.ENT.02#plus_de_chiffres",
+      "1": "NC.ENT.02#plus_court_plus_grand"
+    },
+    "steps": [
+      "Compare chaque saut à $4{,}5$ en regardant d'abord le chiffre des dixièmes.",
+      "$4{,}09$ : combien de dixièmes ? Est-ce plus ou moins que $5$ dixièmes ?"
+    ],
+    "f": "Compare d'abord les unités, puis les dixièmes, puis les centièmes : le premier rang qui diffère décide.",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.02-t08",
+    "comp": "NC.ENT.02",
+    "q": "Emma affirme : « $5{,}125$ est plus grand que $5{,}2$, car il a plus de chiffres après la virgule. » A-t-elle raison ?",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.ENT.02#plus_de_chiffres"
+    },
+    "steps": [
+      "Écris $5{,}2$ avec trois décimales pour le comparer à $5{,}125$.",
+      "Compare les dixièmes des deux nombres : lequel en a le plus ?"
+    ],
+    "f": "Compare d'abord les unités, puis les dixièmes, puis les centièmes : le premier rang qui diffère décide.",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.02-t09",
+    "comp": "NC.ENT.02",
+    "q": "Trois sachets de riz pèsent $0{,}7$ kg, $0{,}65$ kg et $0{,}705$ kg. Quelle est la masse du plus lourd, en kg ? ___",
+    "a": "0,705",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "0,7": "NC.ENT.02#plus_court_plus_grand"
+    },
+    "steps": [
+      "Écris les trois masses avec trois décimales (en millièmes de kg, c'est-à-dire en grammes).",
+      "$0{,}7$ kg, c'est combien de grammes ? Et $0{,}705$ kg ?"
+    ],
+    "f": "Compare d'abord les unités, puis les dixièmes, puis les centièmes : le premier rang qui diffère décide.",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.02-t10",
+    "comp": "NC.ENT.02",
+    "q": "Laquelle de ces comparaisons est vraie ?",
+    "a": "$12{,}40 > 12{,}04$",
+    "type": "qcm",
+    "options": [
+      "$12{,}4 < 12{,}36$",
+      "$12{,}5 > 12{,}57$",
+      "$12{,}40 > 12{,}04$",
+      "$12{,}09 > 12{,}9$"
+    ],
+    "err": {
+      "$12{,}4 < 12{,}36$": "NC.ENT.02#plus_de_chiffres",
+      "$12{,}5 > 12{,}57$": "NC.ENT.02#plus_court_plus_grand",
+      "$12{,}09 > 12{,}9$": "NC.ENT.02#plus_de_chiffres"
+    },
+    "steps": [
+      "Complète par des zéros pour que les deux nombres aient autant de décimales.",
+      "Compare les dixièmes, puis les centièmes si besoin."
+    ],
+    "f": "Compare d'abord les unités, puis les dixièmes, puis les centièmes : le premier rang qui diffère décide.",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.02-t11",
+    "comp": "NC.ENT.02",
+    "q": "En slalom, quatre skieurs réalisent $52{,}3$ s, $52{,}25$ s, $52{,}305$ s et $52{,}4$ s. Quel est le meilleur temps (le plus court), en s ? ___",
+    "a": "52,25",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "52,3": "NC.ENT.02#plus_de_chiffres",
+      "52,305": "NC.ENT.02#plus_court_plus_grand",
+      "52,4": "NC.ENT.02#plus_de_chiffres"
+    },
+    "steps": [
+      "Les parties entières sont toutes égales : écris les quatre temps avec trois décimales.",
+      "Compare les dixièmes : lesquels ont seulement $2$ dixièmes ?"
+    ],
+    "f": "Compare d'abord les unités, puis les dixièmes, puis les centièmes : le premier rang qui diffère décide.",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.02-t12",
+    "comp": "NC.ENT.02",
+    "q": "Range dans l'ordre décroissant : $0{,}5$ ; $0{,}45$ ; $0{,}405$ ; $0{,}54$.",
+    "a": "$0{,}54 > 0{,}5 > 0{,}45 > 0{,}405$",
+    "type": "qcm",
+    "options": [
+      "$0{,}5 > 0{,}54 > 0{,}45 > 0{,}405$",
+      "$0{,}54 > 0{,}5 > 0{,}45 > 0{,}405$",
+      "$0{,}405 > 0{,}54 > 0{,}45 > 0{,}5$"
+    ],
+    "err": {
+      "$0{,}405 > 0{,}54 > 0{,}45 > 0{,}5$": "NC.ENT.02#plus_de_chiffres",
+      "$0{,}5 > 0{,}54 > 0{,}45 > 0{,}405$": "NC.ENT.02#plus_court_plus_grand"
+    },
+    "steps": [
+      "Écris les quatre nombres avec trois décimales.",
+      "Compare les dixièmes : lesquels en ont $5$ ? Départage-les ensuite avec les centièmes."
+    ],
+    "f": "Compare d'abord les unités, puis les dixièmes, puis les centièmes : le premier rang qui diffère décide.",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.03-t01",
+    "comp": "NC.ENT.03",
+    "q": "Arrondis $5{,}47$ au dixième. ___",
+    "a": "5,5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5,4": "NC.ENT.03#troncature",
+      "5": "NC.ENT.03#mauvais_rang"
+    },
+    "steps": [
+      "Le dixième, c'est le $1^{\\text{er}}$ chiffre après la virgule : ici $4$.",
+      "Regarde le chiffre juste après (les centièmes) : est-il inférieur à $5$ ou non ?"
+    ],
+    "f": "Chiffre juste après le rang demandé : $0$ à $4$ → on garde ; $5$ à $9$ → on augmente de $1$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.03-t02",
+    "comp": "NC.ENT.03",
+    "q": "Arrondis $12{,}387$ au centième. ___",
+    "a": "12,39",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "12,38": "NC.ENT.03#troncature",
+      "12,4": "NC.ENT.03#mauvais_rang"
+    },
+    "steps": [
+      "Le centième est le $2^{\\text{e}}$ chiffre après la virgule : repère-le.",
+      "Le chiffre suivant (les millièmes) vaut $7$ : que fais-tu du chiffre des centièmes ?"
+    ],
+    "f": "Chiffre juste après le rang demandé : $0$ à $4$ → on garde ; $5$ à $9$ → on augmente de $1$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.03-t03",
+    "comp": "NC.ENT.03",
+    "q": "Une randonnée mesure $8{,}72$ km. Arrondie à l'unité, cela fait :",
+    "a": "$9$ km",
+    "type": "qcm",
+    "options": [
+      "$8$ km",
+      "$8{,}7$ km",
+      "$10$ km",
+      "$9$ km"
+    ],
+    "err": {
+      "$8$ km": "NC.ENT.03#troncature",
+      "$8{,}7$ km": "NC.ENT.03#mauvais_rang",
+      "$10$ km": "NC.ENT.03#mauvais_rang"
+    },
+    "steps": [
+      "Arrondir à l'unité, c'est ne garder aucun chiffre après la virgule, en choisissant l'entier le plus proche.",
+      "Regarde le chiffre des dixièmes pour décider."
+    ],
+    "f": "Chiffre juste après le rang demandé : $0$ à $4$ → on garde ; $5$ à $9$ → on augmente de $1$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.03-t04",
+    "comp": "NC.ENT.03",
+    "q": "Le nombre $\\pi$ vaut environ $3{,}14159$. Arrondis-le au millième. ___",
+    "a": "3,142",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3,141": "NC.ENT.03#troncature",
+      "3,14": "NC.ENT.03#mauvais_rang",
+      "3,1416": "NC.ENT.03#mauvais_rang"
+    },
+    "steps": [
+      "Le millième est le $3^{\\text{e}}$ chiffre après la virgule.",
+      "Le chiffre qui le suit vaut $5$ : on garde ou on augmente ?"
+    ],
+    "f": "Chiffre juste après le rang demandé : $0$ à $4$ → on garde ; $5$ à $9$ → on augmente de $1$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.03-t05",
+    "comp": "NC.ENT.03",
+    "q": "Un cycliste a parcouru $267{,}3$ km cette semaine. Arrondis cette distance à la dizaine de km.",
+    "a": "$270$ km",
+    "type": "qcm",
+    "options": [
+      "$270$ km",
+      "$260$ km",
+      "$267$ km",
+      "$300$ km"
+    ],
+    "err": {
+      "$260$ km": "NC.ENT.03#troncature",
+      "$267$ km": "NC.ENT.03#mauvais_rang",
+      "$300$ km": "NC.ENT.03#mauvais_rang"
+    },
+    "steps": [
+      "La dizaine, c'est le chiffre juste avant les unités : ici $6$.",
+      "Le chiffre des unités vaut $7$ : garde-t-on le chiffre des dizaines tel quel, ou l'augmente-t-on ?"
+    ],
+    "f": "Chiffre juste après le rang demandé : $0$ à $4$ → on garde ; $5$ à $9$ → on augmente de $1$",
+    "f_disabled": false,
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.03-t06",
+    "comp": "NC.ENT.03",
+    "q": "Arrondis $4{,}96$ au dixième. ___",
+    "a": "5,0",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "4,9": "NC.ENT.03#troncature"
+    },
+    "steps": [
+      "Le chiffre des centièmes vaut $6$ : il faut augmenter le chiffre des dixièmes de $1$.",
+      "Mais le chiffre des dixièmes est $9$ : que devient $4{,}9 + 0{,}1$ ?"
+    ],
+    "f": "Chiffre juste après le rang demandé : $0$ à $4$ → on garde ; $5$ à $9$ → on augmente de $1$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.03-t07",
+    "comp": "NC.ENT.03",
+    "q": "Un carré a une aire de $20\\ \\text{cm}^2$ : son côté mesure $\\sqrt{20} \\approx 4{,}4721$ cm. Arrondi au millimètre, il mesure :",
+    "a": "$4{,}5$ cm",
+    "type": "qcm",
+    "options": [
+      "$4{,}4$ cm",
+      "$4{,}47$ cm",
+      "$4{,}5$ cm",
+      "$4$ cm"
+    ],
+    "err": {
+      "$4{,}4$ cm": "NC.ENT.03#troncature",
+      "$4{,}47$ cm": "NC.ENT.03#mauvais_rang",
+      "$4$ cm": "NC.ENT.03#mauvais_rang"
+    },
+    "steps": [
+      "$1$ mm $= 0{,}1$ cm : arrondir au millimètre, c'est arrondir au ? de cm.",
+      "Regarde le chiffre des centièmes de $4{,}4721$."
+    ],
+    "f": "Chiffre juste après le rang demandé : $0$ à $4$ → on garde ; $5$ à $9$ → on augmente de $1$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.03-t08",
+    "comp": "NC.ENT.03",
+    "q": "Un tapis mesure $2{,}46$ m sur $3{,}14$ m. Calcule son aire, arrondie au dixième de $\\text{m}^2$. ___",
+    "a": "7,7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "7,8": "NC.ENT.03#arrondi_intermediaire",
+      "7,72": "NC.ENT.03#mauvais_rang"
+    },
+    "steps": [
+      "Calcule d'abord le produit exact $2{,}46 \\times 3{,}14$, sans arrondir les longueurs.",
+      "Le résultat a quatre décimales : arrondis-le seulement à la fin, au dixième."
+    ],
+    "f": "$\\mathcal{A} = L \\times \\ell$, arrondi à la fin seulement",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.03-t09",
+    "comp": "NC.ENT.03",
+    "q": "Donne la valeur approchée de $\\frac{2}{3}$ arrondie au dixième. ___",
+    "a": "0,7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "0,6": "NC.ENT.03#troncature",
+      "0,67": "NC.ENT.03#mauvais_rang"
+    },
+    "steps": [
+      "$\\frac{2}{3} = 2 \\div 3$ : pose la division jusqu'aux centièmes.",
+      "Le chiffre des centièmes vaut $6$ : que fais-tu du chiffre des dixièmes ?"
+    ],
+    "f": "Chiffre juste après le rang demandé : $0$ à $4$ → on garde ; $5$ à $9$ → on augmente de $1$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.03-t10",
+    "comp": "NC.ENT.03",
+    "q": "Nathan affirme : « $6{,}149$ arrondi au dixième donne $6{,}2$, car $6{,}149 \\approx 6{,}15 \\approx 6{,}2$. » A-t-il raison ?",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "NC.ENT.03#arrondi_intermediaire"
+    },
+    "steps": [
+      "Pour arrondir au dixième, un seul chiffre compte : celui des centièmes de $6{,}149$.",
+      "Ce chiffre est-il inférieur à $5$ ? Que devient alors le chiffre des dixièmes ?"
+    ],
+    "f": "Chiffre juste après le rang demandé : $0$ à $4$ → on garde ; $5$ à $9$ → on augmente de $1$",
+    "f_disabled": false,
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "NC.ENT.03-t11",
+    "comp": "NC.ENT.03",
+    "q": "Karim fait un plein de $43{,}7$ L d'essence à $1{,}859$ € le litre. Quel prix paie-t-il, arrondi au centime ? ___",
+    "a": "81,24",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "81,28": "NC.ENT.03#arrondi_intermediaire",
+      "81,23": "NC.ENT.03#troncature",
+      "81,2": "NC.ENT.03#mauvais_rang"
+    },
+    "steps": [
+      "Calcule le prix exact $43{,}7 \\times 1{,}859$ sans arrondir le prix du litre.",
+      "Un centime $= 0{,}01$ € : regarde le chiffre des millièmes du résultat exact."
+    ],
+    "f": "Prix $=$ quantité $\\times$ prix unitaire, arrondi à la fin",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "NC.ENT.03-t12",
+    "comp": "NC.ENT.03",
+    "q": "Arrondis $9{,}995$ au centième. ___",
+    "a": "10,00",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "9,99": "NC.ENT.03#troncature"
+    },
+    "steps": [
+      "Le chiffre des millièmes vaut $5$ : il faut augmenter le chiffre des centièmes de $1$.",
+      "Les centièmes et les dixièmes valent $9$ : fais la retenue jusqu'au bout, que devient $9{,}99 + 0{,}01$ ?"
+    ],
+    "f": "Chiffre juste après le rang demandé : $0$ à $4$ → on garde ; $5$ à $9$ → on augmente de $1$",
+    "f_disabled": false,
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  }
+]

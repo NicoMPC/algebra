@@ -1,0 +1,697 @@
+[
+  {
+    "id": "AP.PROG.01-d01",
+    "comp": "AP.PROG.01",
+    "q": "Voici un programme de calcul :\n• Choisir un nombre\n• Ajouter $4$\n• Multiplier le résultat par $3$\n• Afficher le résultat\nOn choisit $2$. Quel résultat s'affiche ? ___",
+    "a": "18",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "6": "AP.PROG.01#repart_du_depart"
+    },
+    "steps": [
+      "Chaque étape s'applique au résultat de l'étape précédente, pas au nombre de départ.",
+      "$2 + 4 = 6$, puis on multiplie ce résultat par $3$ : $\\;?$"
+    ],
+    "f": "$(x + 4) \\times 3$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.01-d02",
+    "comp": "AP.PROG.01",
+    "q": "Programme :\n• Choisir un nombre\n• Le multiplier par $2$\n• Ajouter $7$\nOn choisit $5$. Quelle rédaction du calcul est correcte ?",
+    "a": "$5 \\times 2 = 10$, puis $10 + 7 = 17$",
+    "type": "qcm",
+    "options": [
+      "$5 \\times 2 = 10 + 7 = 17$",
+      "$5 \\times 2 = 10$, puis $10 + 7 = 17$",
+      "$5 \\times 2 = 10$, puis $5 + 7 = 12$"
+    ],
+    "err": {
+      "$5 \\times 2 = 10 + 7 = 17$": "AP.PROG.01#chaine_egalites",
+      "$5 \\times 2 = 10$, puis $5 + 7 = 12$": "AP.PROG.01#repart_du_depart"
+    },
+    "steps": [
+      "Un signe $=$ veut dire que les deux côtés ont la même valeur. Est-ce que $5 \\times 2$ vaut $10 + 7$ ?",
+      "La deuxième étape doit partir du résultat de la première."
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.01-d03",
+    "comp": "AP.PROG.01",
+    "q": "Programme :\n• Choisir un nombre\n• Le multiplier par $-2$\n• Ajouter $10$\n• Élever le résultat au carré\nOn choisit $3$. Quel résultat s'affiche ? ___",
+    "a": "16",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "9": "AP.PROG.01#repart_du_depart",
+      "169": "AP.PROG.01#repart_du_depart"
+    },
+    "steps": [
+      "Première étape : $3 \\times (-2) = -6$.",
+      "On ajoute $10$ à ce résultat, puis on élève au carré ce que l'on vient d'obtenir : $\\;?$"
+    ],
+    "f": "$(-2x + 10)^2$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.02-d01",
+    "comp": "AP.PROG.02",
+    "q": "Un robot est sur la case $(0 ; 0)$ d'une grille. AVANCER : il avance d'une case devant lui. DROITE ou GAUCHE : il tourne d'un quart de tour sur place, de son point de vue. Il regarde vers le Sud (vers le bas de la grille) et exécute : DROITE, AVANCER. Sur quelle case arrive-t-il ?",
+    "a": "$(-1 ; 0)$",
+    "type": "qcm",
+    "options": [
+      "$(1 ; 0)$",
+      "$(-1 ; 0)$",
+      "$(0 ; -1)$"
+    ],
+    "err": {
+      "$(1 ; 0)$": "AP.PROG.02#orientation",
+      "$(0 ; -1)$": "AP.PROG.02#instruction_sautee"
+    },
+    "steps": [
+      "Mets-toi à la place du robot qui regarde vers le bas de la grille : sa droite est-elle la droite de la feuille ?",
+      "Après DROITE, il regarde vers l'Ouest ou vers l'Est ? Il avance ensuite d'une case."
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.02-d02",
+    "comp": "AP.PROG.02",
+    "q": "Un robot est sur la case $(0 ; 0)$ d'une grille. AVANCER : il avance d'une case devant lui. DROITE ou GAUCHE : il tourne d'un quart de tour sur place, de son point de vue. Il regarde vers le Sud (vers le bas de la grille) et exécute : GAUCHE, AVANCER, AVANCER. Quelle est l'abscisse de la case d'arrivée ? ___",
+    "a": "2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-2": "AP.PROG.02#orientation",
+      "0": "AP.PROG.02#instruction_sautee"
+    },
+    "steps": [
+      "Tourné vers le bas de la grille, la gauche du robot est-elle la gauche de la feuille ?",
+      "Une fois tourné, il avance de $2$ cases : vers les abscisses positives ou négatives ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.02-d03",
+    "comp": "AP.PROG.02",
+    "q": "Un robot est sur la case $(0 ; 0)$ d'une grille. AVANCER : il avance d'une case devant lui. DROITE ou GAUCHE : il tourne d'un quart de tour sur place, de son point de vue. Il regarde vers le Nord (vers le haut) et exécute : AVANCER, DROITE, AVANCER, AVANCER, DROITE, AVANCER. Sur quelle case arrive-t-il ?",
+    "a": "$(2 ; 0)$",
+    "type": "qcm",
+    "options": [
+      "$(3 ; 1)$",
+      "$(2 ; 0)$",
+      "$(2 ; 1)$",
+      "$(1 ; 3)$"
+    ],
+    "err": {
+      "$(3 ; 1)$": "AP.PROG.02#orientation",
+      "$(2 ; 1)$": "AP.PROG.02#instruction_sautee",
+      "$(1 ; 3)$": "AP.PROG.02#instruction_sautee"
+    },
+    "steps": [
+      "Suis les instructions une par une en notant la case et la direction : après AVANCER, DROITE, AVANCER, AVANCER, il est en $(2 ; 1)$ et regarde vers l'Est.",
+      "Regardant vers l'Est, sa droite est-elle vers le haut ou vers le bas de la grille ? Il avance ensuite d'une case."
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.03-d01",
+    "comp": "AP.PROG.03",
+    "q": "Un robot est sur la case $(0 ; 0)$ et regarde vers le haut. Il exécute :\nRépéter $3$ fois :\n  AVANCER\n  AVANCER\nFin répéter\nChaque AVANCER le fait monter d'une case. Quelle est son ordonnée à la fin ? ___",
+    "a": "6",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2": "AP.PROG.03#corps_mal_delimite",
+      "8": "AP.PROG.03#un_tour_de_trop",
+      "4": "AP.PROG.03#un_tour_de_trop"
+    },
+    "steps": [
+      "Le contenu de la boucle, ce sont les deux AVANCER décalés sous « Répéter ».",
+      "Ce contenu est exécuté $3$ fois : combien d'AVANCER au total ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.03-d02",
+    "comp": "AP.PROG.03",
+    "q": "Un robot est sur la case $(0 ; 0)$ d'une grille. AVANCER : il avance d'une case devant lui. DROITE ou GAUCHE : il tourne d'un quart de tour sur place, de son point de vue. Il regarde vers le Nord (vers le haut) et exécute :\nRépéter $3$ fois :\n  AVANCER\nFin répéter\nDROITE\nAVANCER\nSur quelle case arrive-t-il ?",
+    "a": "$(1 ; 3)$",
+    "type": "qcm",
+    "options": [
+      "$(1 ; -1)$",
+      "$(1 ; 3)$",
+      "$(1 ; 4)$",
+      "$(1 ; 2)$"
+    ],
+    "err": {
+      "$(1 ; -1)$": "AP.PROG.03#corps_mal_delimite",
+      "$(1 ; 4)$": "AP.PROG.03#un_tour_de_trop",
+      "$(1 ; 2)$": "AP.PROG.03#un_tour_de_trop"
+    },
+    "steps": [
+      "Seul l'AVANCER décalé sous « Répéter » est dans la boucle. DROITE et le dernier AVANCER sont exécutés une seule fois, après.",
+      "Après la boucle, où est le robot ? Il tourne ensuite vers l'Est et avance d'une case."
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.03-d03",
+    "comp": "AP.PROG.03",
+    "q": "Un robot part de la case $(0 ; 0)$ et exécute :\nRépéter $4$ fois :\n  AVANCER\n  AVANCER\n  DROITE\nFin répéter\nAVANCER\nCombien de fois exécute-t-il l'instruction AVANCER en tout ? ___",
+    "a": "9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "AP.PROG.03#corps_mal_delimite",
+      "12": "AP.PROG.03#corps_mal_delimite",
+      "11": "AP.PROG.03#un_tour_de_trop",
+      "7": "AP.PROG.03#un_tour_de_trop"
+    },
+    "steps": [
+      "Dans la boucle, il y a $2$ AVANCER, et la boucle tourne $4$ fois.",
+      "Le dernier AVANCER, non décalé, est après la boucle : il n'est exécuté qu'une fois. Total : $\\;?$"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.04-d01",
+    "comp": "AP.PROG.04",
+    "q": "On exécute le script suivant :\nmettre $n$ à $3$\najouter $4$ à $n$\nmettre $n$ à $n \\times 2$\ndire $n$\nQuel nombre s'affiche ? ___",
+    "a": "14",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "8": "AP.PROG.04#valeur_initiale",
+      "21": "AP.PROG.04#mettre_ajouter"
+    },
+    "steps": [
+      "Au départ, $n$ vaut $3$. « ajouter $4$ à $n$ » remplace $n$ par sa valeur actuelle plus $4$.",
+      "Après la deuxième ligne, $n = 7$. « mettre $n$ à $n \\times 2$ » remplace $n$ par : $\\;?$"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.04-d02",
+    "comp": "AP.PROG.04",
+    "q": "On exécute le script suivant :\nmettre $a$ à $4$\nmettre $b$ à $3$\najouter $b$ à $a$\nmettre $b$ à $a$\ndire $b$\nQuel nombre s'affiche ?",
+    "a": "$7$",
+    "type": "qcm",
+    "options": [
+      "$10$",
+      "$7$",
+      "$3$"
+    ],
+    "err": {
+      "$10$": "AP.PROG.04#mettre_ajouter",
+      "$3$": "AP.PROG.04#valeur_initiale"
+    },
+    "steps": [
+      "Après la troisième ligne, $a$ vaut $4 + 3 = 7$.",
+      "« mettre $b$ à $a$ » met dans $b$ la valeur actuelle de $a$ (on remplace, on n'ajoute pas). Que vaut $b$ ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.04-d03",
+    "comp": "AP.PROG.04",
+    "q": "Dans un jeu, le script commence par « mettre score à $10$ ». Chaque pièce attrapée exécute « ajouter $5$ à score ». Toucher un ennemi exécute « mettre score à $0$ ». Le joueur attrape une pièce, une pièce, touche un ennemi, puis attrape une pièce. Quel est le score final ? ___",
+    "a": "5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "25": "AP.PROG.04#mettre_ajouter"
+    },
+    "steps": [
+      "Suis la valeur de score : $10$, puis $15$, puis $20$…",
+      "« mettre score à $0$ » remplace la valeur par $0$. Que vaut le score après la dernière pièce ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "AP.PROG.05-d01",
+    "comp": "AP.PROG.05",
+    "q": "Voici un script :\nChoisir un nombre $x$\nSi $x > 10$ alors :\n  Afficher $x - 10$\nSinon :\n  Afficher $x + 10$\nOn choisit $x = 7$. Quel nombre s'affiche ? ___",
+    "a": "17",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-3": "AP.PROG.05#condition_inversee"
+    },
+    "steps": [
+      "On teste la condition : $7 > 10$ est-elle vraie ou fausse ?",
+      "Une seule branche est exécutée : celle qui correspond au résultat du test. Laquelle ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.05-d02",
+    "comp": "AP.PROG.05",
+    "q": "Voici un script :\nChoisir un nombre $x$\nSi $x < 5$ alors :\n  $x \\leftarrow x \\times 3$\nSinon :\n  $x \\leftarrow x - 4$\nAfficher $x$\nOn choisit $x = 8$. Quel nombre s'affiche ?",
+    "a": "$4$",
+    "type": "qcm",
+    "options": [
+      "$24$",
+      "$4$",
+      "$20$",
+      "$12$"
+    ],
+    "err": {
+      "$24$": "AP.PROG.05#condition_inversee",
+      "$20$": "AP.PROG.05#deux_branches",
+      "$12$": "AP.PROG.05#deux_branches"
+    },
+    "steps": [
+      "$8 < 5$ est-elle vraie ou fausse ?",
+      "On exécute uniquement la branche correspondante, puis on affiche $x$."
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.05-d03",
+    "comp": "AP.PROG.05",
+    "q": "Au cinéma, un script calcule le prix d'une place :\nSi $\\text{âge} < 12$ alors :\n  $\\text{prix} \\leftarrow 6$\nSinon :\n  $\\text{prix} \\leftarrow 10$\nAfficher $\\text{prix}$\nQuel prix s'affiche pour Yanis, qui a $14$ ans ? ___ €",
+    "a": "10",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "6": "AP.PROG.05#condition_inversee",
+      "16": "AP.PROG.05#deux_branches"
+    },
+    "steps": [
+      "On remplace l'âge par $14$ : la condition $14 < 12$ est-elle vraie ?",
+      "Une seule branche s'exécute, et le prix n'est affecté qu'une fois."
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "AP.PROG.06-d01",
+    "comp": "AP.PROG.06",
+    "q": "Un lutin doit tracer un triangle équilatéral avec le script :\nRépéter $3$ fois :\n  Avancer de $80$ pas\n  Tourner à gauche de $\\text{___}$ degrés\nQuel angle faut-il écrire ?",
+    "a": "120",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "60": "AP.PROG.06#angle_interieur"
+    },
+    "steps": [
+      "Le lutin fait un tour complet ($360°$) en traçant le triangle, en $3$ virages identiques.",
+      "Chaque virage vaut donc $\\frac{360°}{3} = \\;?$ L'angle de virage n'est pas l'angle intérieur du triangle."
+    ],
+    "f": "Angle de virage $= \\frac{360°}{\\text{nombre de côtés}}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.06-d02",
+    "comp": "AP.PROG.06",
+    "q": "Un lutin doit tracer un hexagone régulier ($6$ côtés) avec le script :\nRépéter $n$ fois :\n  Avancer de $50$ pas\n  Tourner à gauche de $a$ degrés\nQuelles valeurs faut-il choisir ?",
+    "a": "$n = 6$ et $a = 60$",
+    "type": "qcm",
+    "options": [
+      "$n = 6$ et $a = 120$",
+      "$n = 6$ et $a = 60$",
+      "$n = 5$ et $a = 60$",
+      "$n = 4$ et $a = 60$"
+    ],
+    "err": {
+      "$n = 6$ et $a = 120$": "AP.PROG.06#angle_interieur",
+      "$n = 5$ et $a = 60$": "AP.PROG.06#repetitions",
+      "$n = 4$ et $a = 60$": "AP.PROG.06#repetitions"
+    },
+    "steps": [
+      "Il faut un passage dans la boucle par côté tracé.",
+      "Le lutin fait un tour complet en $6$ virages identiques : chaque virage vaut $\\frac{360°}{6} = \\;?$"
+    ],
+    "f": "Angle de virage $= \\frac{360°}{\\text{nombre de côtés}}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.06-d03",
+    "comp": "AP.PROG.06",
+    "q": "Un lutin exécute le script :\nRépéter $n$ fois :\n  Avancer de $30$ pas\n  Tourner à gauche de $40$ degrés\nCombien de répétitions faut-il au minimum pour que la figure tracée soit fermée ? $n =$ ___",
+    "a": "9",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "8": "AP.PROG.06#repetitions",
+      "4": "AP.PROG.06#repetitions"
+    },
+    "steps": [
+      "La figure est fermée quand le lutin a tourné d'un tour complet, soit $360°$ au total.",
+      "Combien de virages de $40°$ faut-il pour faire $360°$ ?"
+    ],
+    "f": "$n \\times \\text{angle de virage} = 360°$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.03-t01",
+    "comp": "AP.PROG.03",
+    "q": "Voici un script Scratch :\nmettre $n$ à $0$\nrépéter $5$ fois\n  ajouter $3$ à $n$\nFin répéter\ndire $n$\nQuel nombre le lutin dit-il ? ___",
+    "a": "15",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3": "AP.PROG.03#corps_mal_delimite",
+      "18": "AP.PROG.03#un_tour_de_trop",
+      "12": "AP.PROG.03#un_tour_de_trop"
+    },
+    "steps": [
+      "Le bloc « ajouter $3$ à $n$ » est dans la boucle : combien de fois est-il exécuté ?",
+      "$n$ part de $0$ : que vaut-il après tous ces ajouts ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.03-t02",
+    "comp": "AP.PROG.03",
+    "q": "Voici un script Scratch :\nstylo en position d'écriture\nrépéter $4$ fois\n  avancer de $10$ pas\n  tourner à droite de $90$ degrés\nFin répéter\nCombien de pas le lutin avance-t-il en tout ? ___",
+    "a": "40",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "10": "AP.PROG.03#corps_mal_delimite",
+      "50": "AP.PROG.03#un_tour_de_trop",
+      "30": "AP.PROG.03#un_tour_de_trop"
+    },
+    "steps": [
+      "À chaque tour de boucle, de combien de pas le lutin avance-t-il ?",
+      "Combien de tours la boucle fait-elle ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.03-t03",
+    "comp": "AP.PROG.03",
+    "q": "Voici un script Scratch :\njouer le son Miaou\nrépéter $3$ fois\n  jouer le son Miaou\nFin répéter\njouer le son Miaou\nCombien de fois le son Miaou est-il joué en tout ?",
+    "a": "$5$",
+    "type": "qcm",
+    "options": [
+      "$7$",
+      "$3$",
+      "$5$",
+      "$6$"
+    ],
+    "err": {
+      "$7$": "AP.PROG.03#corps_mal_delimite",
+      "$3$": "AP.PROG.02#instruction_sautee",
+      "$6$": "AP.PROG.03#un_tour_de_trop"
+    },
+    "steps": [
+      "Seul le bloc décalé entre « répéter » et « Fin répéter » est répété.",
+      "Compte le bloc avant la boucle, ceux de la boucle, puis celui d'après."
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.03-t04",
+    "comp": "AP.PROG.03",
+    "q": "Voici un script Scratch :\nmettre $\\text{compteur}$ à $5$\nrépéter $10$ fois\n  ajouter $2$ à $\\text{compteur}$\nFin répéter\ndire $\\text{compteur}$\nQuel nombre le lutin dit-il ? ___",
+    "a": "25",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "7": "AP.PROG.03#corps_mal_delimite",
+      "27": "AP.PROG.03#un_tour_de_trop",
+      "23": "AP.PROG.03#un_tour_de_trop"
+    },
+    "steps": [
+      "Combien la boucle ajoute-t-elle en tout au compteur ?",
+      "N'oublie pas la valeur de départ du compteur."
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.03-t05",
+    "comp": "AP.PROG.03",
+    "q": "Voici un script Scratch :\nmettre $x$ à $1$\nrépéter $3$ fois\n  mettre $x$ à $x \\times 2$\nFin répéter\najouter $5$ à $x$\ndire $x$\nQuel nombre le lutin dit-il ? ___",
+    "a": "13",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "7": "AP.PROG.03#corps_mal_delimite",
+      "43": "AP.PROG.03#corps_mal_delimite",
+      "21": "AP.PROG.03#un_tour_de_trop",
+      "9": "AP.PROG.03#un_tour_de_trop"
+    },
+    "steps": [
+      "Le bloc « ajouter $5$ à $x$ » est après « Fin répéter » : combien de fois est-il exécuté ?",
+      "Suis la valeur de $x$ tour après tour : $1$, puis… ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.03-t06",
+    "comp": "AP.PROG.03",
+    "q": "Le lutin est au point d'abscisse $x = 0$. Il exécute :\nrépéter $4$ fois\n  ajouter $20$ à $x$\nFin répéter\najouter $-30$ à $x$\nQuelle est son abscisse à la fin ?",
+    "a": "$50$",
+    "type": "qcm",
+    "options": [
+      "$-10$",
+      "$50$",
+      "$-40$",
+      "$70$"
+    ],
+    "err": {
+      "$-10$": "AP.PROG.03#corps_mal_delimite",
+      "$-40$": "AP.PROG.03#corps_mal_delimite",
+      "$70$": "AP.PROG.03#un_tour_de_trop"
+    },
+    "steps": [
+      "Combien de fois le bloc « ajouter $20$ à $x$ » est-il exécuté ?",
+      "Le bloc « ajouter $-30$ à $x$ » est-il dans la boucle ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.03-t07",
+    "comp": "AP.PROG.03",
+    "q": "Un lutin dessine un escalier avec ce script :\nrépéter $5$ fois\n  avancer de $20$ pas\n  tourner à gauche de $90$ degrés\n  avancer de $20$ pas\n  tourner à droite de $90$ degrés\nFin répéter\nCombien de pas le lutin avance-t-il en tout ? ___",
+    "a": "200",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "40": "AP.PROG.03#corps_mal_delimite",
+      "240": "AP.PROG.03#un_tour_de_trop",
+      "160": "AP.PROG.03#un_tour_de_trop",
+      "100": "AP.PROG.02#instruction_sautee"
+    },
+    "steps": [
+      "Combien de pas le lutin fait-il pendant un seul tour de boucle ? Il y a deux blocs « avancer ».",
+      "Multiplie par le nombre de tours."
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "AP.PROG.03-t08",
+    "comp": "AP.PROG.03",
+    "q": "Un lutin part de l'abscisse $x = -200$. Il exécute :\nrépéter $k$ fois\n  ajouter $50$ à $x$\nFin répéter\nQuelle valeur de $k$ faut-il choisir pour qu'il arrive exactement en $x = 100$ ? $k =$ ___",
+    "a": "6",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "7": "AP.PROG.03#un_tour_de_trop",
+      "5": "AP.PROG.03#un_tour_de_trop"
+    },
+    "steps": [
+      "Quelle distance le lutin doit-il parcourir de $-200$ à $100$ ?",
+      "Chaque tour de boucle le fait avancer de $50$ : combien de tours faut-il ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.03-t09",
+    "comp": "AP.PROG.03",
+    "q": "Voici un script Scratch :\nmettre $n$ à $0$\nmettre $s$ à $0$\nrépéter $4$ fois\n  ajouter $1$ à $n$\n  ajouter $n$ à $s$\nFin répéter\ndire $s$\nQuel nombre le lutin dit-il ? ___",
+    "a": "10",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1": "AP.PROG.03#corps_mal_delimite",
+      "15": "AP.PROG.03#un_tour_de_trop",
+      "6": "AP.PROG.03#un_tour_de_trop"
+    },
+    "steps": [
+      "Fais un tableau avec les valeurs de $n$ et de $s$ à la fin de chaque tour.",
+      "Au $1^{er}$ tour, $n$ devient $1$ et $s$ devient $1$. Et au $2^e$ tour ?"
+    ],
+    "f": "",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "AP.PROG.03-t10",
+    "comp": "AP.PROG.03",
+    "q": "Le lutin est au point $(0 ; 0)$. Il exécute :\nrépéter $3$ fois\n  ajouter $10$ à $x$\nFin répéter\nrépéter $2$ fois\n  ajouter $-15$ à $y$\nFin répéter\nQuelles sont ses coordonnées à la fin ?",
+    "a": "$(30 ; -30)$",
+    "type": "qcm",
+    "options": [
+      "$(10 ; -15)$",
+      "$(40 ; -45)$",
+      "$(30 ; -30)$",
+      "$(30 ; -45)$"
+    ],
+    "err": {
+      "$(10 ; -15)$": "AP.PROG.03#corps_mal_delimite",
+      "$(40 ; -45)$": "AP.PROG.03#un_tour_de_trop",
+      "$(30 ; -45)$": "AP.PROG.03#un_tour_de_trop"
+    },
+    "steps": [
+      "Chaque boucle a son propre nombre de tours : combien pour $x$, combien pour $y$ ?",
+      "Calcule séparément le déplacement total sur $x$, puis sur $y$."
+    ],
+    "f": "",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  }
+]

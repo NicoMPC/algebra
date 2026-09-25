@@ -1,0 +1,592 @@
+[
+ {
+  "id": "NC.PUIS.01-L004",
+  "comp": "NC.PUIS.01",
+  "q": "Léo part d'une seule bactérie. Après $3$ heures, combien de bactéries y a-t-il ?",
+  "a": "8",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "6": "NC.PUIS.01#base_fois_exposant"
+  },
+  "steps": [
+   "Chaque heure, le nombre de bactéries est multiplié par $2$. Après $3$ heures, on multiplie $3$ fois par $2$ : cela s'écrit $2^3$.",
+   "$2^3 = 2 \\times 2 \\times 2 = ?$"
+  ],
+  "f": "$a^n = a \\times a \\times \\ldots \\times a$ ($n$ facteurs)",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_01",
+  "num": "1",
+  "source": "bank_4eme/Puissances|PUI_01.1"
+ },
+ {
+  "id": "NC.PUIS.01-L005",
+  "comp": "NC.PUIS.01",
+  "q": "En partant toujours d'une seule bactérie, combien y en a-t-il après $5$ heures ?",
+  "a": "32",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "10": "NC.PUIS.01#base_fois_exposant"
+  },
+  "steps": [
+   "Après $5$ heures, on multiplie $5$ fois par $2$ : $2^5$.",
+   "$2^5 = 2 \\times 2 \\times 2 \\times 2 \\times 2 = ?$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_01",
+  "num": "2",
+  "source": "bank_4eme/Puissances|PUI_01.2"
+ },
+ {
+  "id": "NC.PUIS.01-L006",
+  "comp": "NC.PUIS.01",
+  "q": "Quelle écriture correspond à $3 \\times 3 \\times 3 \\times 3$ ?",
+  "a": "$3^4$",
+  "type": "qcm",
+  "options": [
+   "$4^3$",
+   "$3^4$",
+   "$3 \\times 4$"
+  ],
+  "err": {
+   "$3 \\times 4$": "NC.PUIS.01#base_fois_exposant"
+  },
+  "steps": [
+   "On compte le nombre de fois où le $3$ apparaît comme facteur : c'est l'exposant de la puissance.",
+   "Le $3$ est répété $4$ fois, donc l'écriture est $3^{?}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_01",
+  "num": "3",
+  "source": "bank_4eme/Puissances|PUI_01.3"
+ },
+ {
+  "id": "NC.PUIS.01-L007",
+  "comp": "NC.PUIS.01",
+  "q": "Quelle expression représente le nombre de bactéries après $t$ heures, en partant d'une seule ?",
+  "a": "$2^t$",
+  "type": "qcm",
+  "options": [
+   "$2 \\times t$",
+   "$t^2$",
+   "$2^t$"
+  ],
+  "err": {
+   "$2 \\times t$": "NC.PUIS.01#base_fois_exposant"
+  },
+  "steps": [
+   "On répète la multiplication par $2$, une fois par heure écoulée : le nombre d'heures $t$ devient l'exposant.",
+   "Le nombre de bactéries après $t$ heures s'écrit $2^{?}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_01",
+  "num": "4",
+  "source": "bank_4eme/Puissances|PUI_01.4"
+ },
+ {
+  "id": "NC.PUIS.01-L008",
+  "comp": "NC.PUIS.01",
+  "q": "Léo affirme : « $2^3$ est égal à $3^2$. »",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Calcule $2^3 = 2 \\times 2 \\times 2 = ?$ et $3^2 = 3 \\times 3 = ?$.",
+   "Compare les deux résultats obtenus : sont-ils égaux ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_01",
+  "num": "5",
+  "source": "bank_4eme/Puissances|PUI_01.5"
+ },
+ {
+  "id": "NC.PUIS.03-L008",
+  "comp": "NC.PUIS.03",
+  "q": "Simplifie $2^3 \\times 2^4$ en écrivant le résultat sous la forme $2^{?}$. Quel est cet exposant ?",
+  "a": "7",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "12": "NC.PUIS.03#produit_exposants_multiplies"
+  },
+  "steps": [
+   "Les deux puissances ont la même base $2$. Pour multiplier des puissances de même base, on additionne les exposants.",
+   "$2^3 \\times 2^4 = 2^{3+4} = 2^{?}$"
+  ],
+  "f": "$a^m \\times a^n = a^{m+n}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_02",
+  "num": "1",
+  "source": "bank_4eme/Puissances|PUI_02.1"
+ },
+ {
+  "id": "NC.PUIS.03-L009",
+  "comp": "NC.PUIS.03",
+  "q": "Simplifie $\\dfrac{2^6}{2^2}$ sous forme d'une puissance de $2$.",
+  "a": "$2^4$",
+  "type": "qcm",
+  "options": [
+   "$2^4$",
+   "$2^8$",
+   "$2^3$"
+  ],
+  "err": {},
+  "steps": [
+   "Même base $2$ : pour diviser des puissances de même base, on soustrait les exposants.",
+   "$\\dfrac{2^6}{2^2} = 2^{6-2} = 2^{?}$"
+  ],
+  "f": "$\\dfrac{a^m}{a^n} = a^{m-n}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_02",
+  "num": "2",
+  "source": "bank_4eme/Puissances|PUI_02.2"
+ },
+ {
+  "id": "NC.PUIS.03-L010",
+  "comp": "NC.PUIS.03",
+  "q": "Emma affirme : « $\\left(2^3\\right)^2 = 2^6$. »",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Calcule $2^3 = ?$, puis élève ce résultat au carré : $\\left(2^3\\right)^2 = ?^2$.",
+   "Compare avec $2^6$. Les deux résultats sont-ils égaux ?"
+  ],
+  "f": "$(a^m)^n = a^{m \\times n}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_02",
+  "num": "3",
+  "source": "bank_4eme/Puissances|PUI_02.3"
+ },
+ {
+  "id": "NC.PUIS.03-L011",
+  "comp": "NC.PUIS.03",
+  "q": "Une puce récente réalise $2^{10}$ opérations par seconde. Une puce plus ancienne en réalise $2^{10} \\div 2^{3}$. Donne l'exposant de la puissance de $2$ qui représente le nombre d'opérations de l'ancienne puce.",
+  "a": "7",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "Même base : on soustrait les exposants. $2^{10} \\div 2^3 = 2^{10-3}$.",
+   "Calcule l'exposant : $10 - 3 = ?$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_02",
+  "num": "4",
+  "source": "bank_4eme/Puissances|PUI_02.4"
+ },
+ {
+  "id": "NC.PUIS.03-L012",
+  "comp": "NC.PUIS.03",
+  "q": "Une entreprise de stockage double sa capacité chaque année. Elle part de $2^5$ Go. Après $3$ années supplémentaires, quelle puissance de $2$ représente sa capacité (en Go) ?",
+  "a": "$2^8$",
+  "type": "qcm",
+  "options": [
+   "$2^{15}$",
+   "$2^8$",
+   "$2^{5}$"
+  ],
+  "err": {
+   "$2^{15}$": "NC.PUIS.03#produit_exposants_multiplies"
+  },
+  "steps": [
+   "Chaque année, la capacité est multipliée par $2$. Après $3$ années de plus, elle est multipliée par $2^3$.",
+   "Même base : $2^5 \\times 2^3 = 2^{5+3} = 2^{?}$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_02",
+  "num": "5",
+  "source": "bank_4eme/Puissances|PUI_02.5"
+ },
+ {
+  "id": "NC.PUIS.02-L005",
+  "comp": "NC.PUIS.02",
+  "q": "Quelle est la valeur de $10^0$ ?",
+  "a": "$1$",
+  "type": "qcm",
+  "options": [
+   "$0$",
+   "$10$",
+   "$1$"
+  ],
+  "err": {},
+  "steps": [
+   "Une puissance d'exposant $0$ vaut toujours la même chose, quelle que soit la base (non nulle).",
+   "Applique cette règle à la base $10$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_03",
+  "num": "1",
+  "source": "bank_4eme/Puissances|PUI_03.1"
+ },
+ {
+  "id": "NC.PUIS.02-L006",
+  "comp": "NC.PUIS.02",
+  "q": "Écris $10^{-2}$ sous forme d'un nombre décimal.",
+  "a": "0,01",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "-100": "NC.PUIS.02#exposant_negatif_negatif",
+   "0,001": "NC.PUIS.02#nombre_zeros"
+  },
+  "steps": [
+   "La règle des exposants négatifs : $10^{-2} = \\dfrac{1}{10^{2}}$.",
+   "Calcule $10^2 = ?$, puis écris $\\dfrac{1}{?}$ sous forme décimale."
+  ],
+  "f": "$a^{-n} = \\dfrac{1}{a^n}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_03",
+  "num": "2",
+  "source": "bank_4eme/Puissances|PUI_03.2"
+ },
+ {
+  "id": "NC.PUIS.03-L013",
+  "comp": "NC.PUIS.03",
+  "q": "Une nanoparticule mesure $10^{-9}$ m (soit $1$ nanomètre). Combien de nanoparticules alignées bout à bout faut-il pour atteindre $10^{-6}$ m (soit $1$ micromètre) ?",
+  "a": "1000",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "0,001": "NC.PUIS.03#signe_exposants"
+  },
+  "steps": [
+   "$10^{-6} \\div 10^{-9}$ : même base, on soustrait les exposants (attention aux signes négatifs) : $-6 - (-9) = ?$",
+   "Le résultat est $10^{?}$. Calcule sa valeur : c'est le nombre de nanoparticules cherché."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_03",
+  "num": "3",
+  "source": "bank_4eme/Puissances|PUI_03.3"
+ },
+ {
+  "id": "NC.PUIS.02-L007",
+  "comp": "NC.PUIS.02",
+  "q": "Adam affirme : « $10^{-3}$ est plus grand que $10^{-5}$. »",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Écris les deux nombres sous forme décimale : $10^{-3} = ?$ et $10^{-5} = ?$",
+   "Plus l'exposant négatif est grand en valeur absolue, plus le nombre est petit. Lequel des deux est le plus grand ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_03",
+  "num": "4",
+  "source": "bank_4eme/Puissances|PUI_03.4"
+ },
+ {
+  "id": "NC.PUIS.02-L008",
+  "comp": "NC.PUIS.02",
+  "q": "Quelle écriture est équivalente à $\\dfrac{1}{10^{4}}$ ?",
+  "a": "$10^{-4}$",
+  "type": "qcm",
+  "options": [
+   "$10^{-4}$",
+   "$10^{4}$",
+   "$-10^{4}$"
+  ],
+  "err": {
+   "$-10^{4}$": "NC.PUIS.02#exposant_negatif_negatif"
+  },
+  "steps": [
+   "La règle générale : $\\dfrac{1}{a^n} = a^{-n}$.",
+   "Applique-la avec $a=10$ et $n=4$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_03",
+  "num": "5",
+  "source": "bank_4eme/Puissances|PUI_03.5"
+ },
+ {
+  "id": "NC.PUIS.02-L009",
+  "comp": "NC.PUIS.02",
+  "q": "La distance Terre-Soleil est d'environ $1{,}5 \\times 10^{8}$ km. Le nombre $10^{8}$ écrit en entier est un $1$ suivi de combien de zéros ?",
+  "a": "8",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "7": "NC.PUIS.02#nombre_zeros",
+   "9": "NC.PUIS.02#nombre_zeros"
+  },
+  "steps": [
+   "$10^{n}$ s'écrit avec un $1$ suivi de $n$ zéros.",
+   "Ici, quel est l'exposant $n$ ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_04",
+  "num": "1",
+  "source": "bank_4eme/Puissances|PUI_04.1"
+ },
+ {
+  "id": "NC.PUIS.03-L014",
+  "comp": "NC.PUIS.03",
+  "q": "Une étoile est $10^{3}$ fois plus loin que le Soleil. Si le Soleil est à $10^{8}$ km, à quelle distance (en puissance de $10$) se trouve l'étoile ?",
+  "a": "$10^{11}$",
+  "type": "qcm",
+  "options": [
+   "$10^{5}$",
+   "$10^{11}$",
+   "$10^{24}$"
+  ],
+  "err": {
+   "$10^{24}$": "NC.PUIS.03#produit_exposants_multiplies"
+  },
+  "steps": [
+   "Même base $10$ : pour multiplier des puissances de même base, on additionne les exposants.",
+   "$10^{8} \\times 10^{3} = 10^{8+3} = 10^{?}$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_04",
+  "num": "2",
+  "source": "bank_4eme/Puissances|PUI_04.2"
+ },
+ {
+  "id": "NC.PUIS.03-L015",
+  "comp": "NC.PUIS.03",
+  "q": "Un virus mesure $10^{-7}$ m et une bactérie mesure $10^{-5}$ m. Combien de fois la bactérie est-elle plus grande que le virus ?",
+  "a": "100",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "0,01": "NC.PUIS.03#signe_exposants"
+  },
+  "steps": [
+   "Le rapport des tailles est $\\dfrac{10^{-5}}{10^{-7}} = 10^{-5-(-7)} = 10^{?}$",
+   "Calcule la valeur de la puissance de $10$ trouvée à l'étape précédente."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_04",
+  "num": "3",
+  "source": "bank_4eme/Puissances|PUI_04.3"
+ },
+ {
+  "id": "NC.PUIS.03-L016",
+  "comp": "NC.PUIS.03",
+  "q": "Inès affirme : « $\\left(10^{2}\\right)^{3}$ est égal à $10^{5}$. »",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Règle : $(a^m)^n = a^{m \\times n}$. Ici $m=2$ et $n=3$.",
+   "Calcule $2 \\times 3 = ?$ et compare l'exposant obtenu avec $5$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_04",
+  "num": "4",
+  "source": "bank_4eme/Puissances|PUI_04.4"
+ },
+ {
+  "id": "NC.PUIS.03-L017",
+  "comp": "NC.PUIS.03",
+  "q": "Le volume de la Terre est environ $10^{21}\\ \\text{m}^3$ et celui du Soleil environ $10^{27}\\ \\text{m}^3$. Combien de fois le Soleil est-il plus volumineux que la Terre (en puissance de $10$) ?",
+  "a": "$10^{6}$",
+  "type": "qcm",
+  "options": [
+   "$10^{48}$",
+   "$10^{7}$",
+   "$10^{6}$"
+  ],
+  "err": {},
+  "steps": [
+   "Même base $10$ : pour diviser, on soustrait les exposants : $27 - 21 = ?$",
+   "Le résultat est $10^{?}$."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PUI_04",
+  "num": "5",
+  "source": "bank_4eme/Puissances|PUI_04.5"
+ }
+]

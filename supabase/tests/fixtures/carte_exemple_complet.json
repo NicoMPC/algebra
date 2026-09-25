@@ -1,0 +1,770 @@
+{
+ "eleve": {
+  "prenom": "Léa",
+  "niveau": "3EME"
+ },
+ "type": "complet",
+ "date": "2026-10-01",
+ "duree_min": null,
+ "n_questions": 64,
+ "score_global": 67,
+ "phrase_cle": "Le blocage principal vient d'une notion de 5e : « Additionner et soustraire des nombres négatifs ». Elle freine 11 autres compétences : c'est par là qu'on commence.",
+ "domaines": [
+  {
+   "code": "NC",
+   "libelle": "Nombres et calculs",
+   "maitrise": 0.5,
+   "statut": "fragile",
+   "n_comp": 45,
+   "n_evalues": 15,
+   "n_lacunes": 6
+  },
+  {
+   "code": "DF",
+   "libelle": "Organisation et gestion de données, fonctions",
+   "maitrise": 0.79,
+   "statut": "acquis",
+   "n_comp": 31,
+   "n_evalues": 6,
+   "n_lacunes": 1
+  },
+  {
+   "code": "GM",
+   "libelle": "Grandeurs et mesures",
+   "maitrise": 1,
+   "statut": "acquis",
+   "n_comp": 15,
+   "n_evalues": 1,
+   "n_lacunes": 0
+  },
+  {
+   "code": "EG",
+   "libelle": "Espace et géométrie",
+   "maitrise": 0.63,
+   "statut": "fragile",
+   "n_comp": 24,
+   "n_evalues": 7,
+   "n_lacunes": 3
+  },
+  {
+   "code": "AP",
+   "libelle": "Algorithmique et programmation",
+   "maitrise": 1,
+   "statut": "acquis",
+   "n_comp": 6,
+   "n_evalues": 1,
+   "n_lacunes": 0
+  }
+ ],
+ "competences": [
+  {
+   "id": "AP.PROG.03",
+   "titre": "Comprendre une boucle « répéter n fois »",
+   "titre_eleve": "Les boucles (répéter)",
+   "domaine": "AP",
+   "niveau_origine": "4EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "DF.AFF.02",
+   "titre": "Interpréter les coefficients a et b d'une fonction affine dans une situation",
+   "titre_eleve": "Comprendre a et b (prix par unité, partie fixe)",
+   "domaine": "DF",
+   "niveau_origine": "3EME",
+   "statut": "fragile",
+   "maitrise": 0.66,
+   "n_obs": 4,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "DF.AFF.05",
+   "titre": "Comparer deux fonctions affines ou deux offres (point d'intersection, résolution)",
+   "titre_eleve": "Comparer deux tarifs ou deux fonctions",
+   "domaine": "DF",
+   "niveau_origine": "3EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "DF.FONC.01",
+   "titre": "Calculer l'image d'un nombre par une fonction donnée par une formule ou un tableau",
+   "titre_eleve": "Calculer une image f(x)",
+   "domaine": "DF",
+   "niveau_origine": "3EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "DF.FONC.02",
+   "titre": "Lire une image sur une représentation graphique",
+   "titre_eleve": "Lire une image sur un graphique",
+   "domaine": "DF",
+   "niveau_origine": "3EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "DF.FONC.03",
+   "titre": "Lire un ou des antécédents sur une représentation graphique",
+   "titre_eleve": "Lire un antécédent sur un graphique",
+   "domaine": "DF",
+   "niveau_origine": "3EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "DF.FONC.04",
+   "titre": "Déterminer un antécédent par le calcul (résoudre f(x) = k)",
+   "titre_eleve": "Trouver un antécédent par le calcul",
+   "domaine": "DF",
+   "niveau_origine": "3EME",
+   "statut": "lacune",
+   "maitrise": 0.21,
+   "n_obs": 3,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": [
+    {
+     "id": "DF.FONC.04#calcule_image",
+     "libelle": "Calcule f(27) au lieu de résoudre f(x) = 27",
+     "libelle_parent": "Remplace x par la valeur donnée au lieu de chercher x",
+     "remediation": "Écrire l'équation f(x) = 27, puis la résoudre",
+     "n": 2,
+     "exemple": {
+      "q": "QCM DF.FONC.04-003",
+      "reponse_eleve": "E3",
+      "a": "R3"
+     }
+    }
+   ]
+  },
+  {
+   "id": "EG.REP.01",
+   "titre": "Lire et placer des points dans un repère du plan (coordonnées relatives)",
+   "titre_eleve": "Se repérer dans un repère (abscisse, ordonnée)",
+   "domaine": "EG",
+   "niveau_origine": "5EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "EG.THAL.02",
+   "titre": "Calculer une longueur avec le théorème de Thalès (triangles emboîtés ou papillon)",
+   "titre_eleve": "Thalès : calculer une longueur",
+   "domaine": "EG",
+   "niveau_origine": "3EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "EG.TRANS.02",
+   "titre": "Déterminer l'image d'un point ou d'une figure par une translation",
+   "titre_eleve": "Translation (glissement)",
+   "domaine": "EG",
+   "niveau_origine": "4EME",
+   "statut": "lacune",
+   "maitrise": 0.38,
+   "n_obs": 3,
+   "cause_racine": true,
+   "racine_profonde": false,
+   "bloque": [
+    "EG.TRANS.05"
+   ],
+   "erreurs": [
+    {
+     "id": "EG.TRANS.02#soustrait_vecteur",
+     "libelle": "Soustrait les coordonnées du vecteur au lieu de les ajouter (ou applique le vecteur dans le mauvais sens)",
+     "libelle_parent": "Se trompe de sens de déplacement",
+     "remediation": "Translation = glissement : on ajoute le déplacement",
+     "n": 1,
+     "exemple": {
+      "q": "Calcule EG.TRANS.02-001 ___",
+      "reponse_eleve": "4/9",
+      "a": "11/7"
+     }
+    }
+   ]
+  },
+  {
+   "id": "EG.TRANS.03",
+   "titre": "Déterminer l'image d'un point ou d'une figure par une rotation",
+   "titre_eleve": "Rotation",
+   "domaine": "EG",
+   "niveau_origine": "4EME",
+   "statut": "non_evalue",
+   "maitrise": 0.67,
+   "n_obs": 1,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "EG.TRANS.05",
+   "titre": "Connaître les propriétés conservées par les transformations",
+   "titre_eleve": "Ce que conservent les transformations",
+   "domaine": "EG",
+   "niveau_origine": "3EME",
+   "statut": "lacune",
+   "maitrise": 0.38,
+   "n_obs": 3,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "EG.TRIG.01",
+   "titre": "Nommer le côté adjacent, le côté opposé et l'hypoténuse relativement à un angle",
+   "titre_eleve": "Trigo : repérer adjacent, opposé, hypoténuse",
+   "domaine": "EG",
+   "niveau_origine": "3EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "EG.TRIG.02",
+   "titre": "Choisir le rapport trigonométrique adapté (cosinus, sinus, tangente)",
+   "titre_eleve": "Trigo : choisir cos, sin ou tan",
+   "domaine": "EG",
+   "niveau_origine": "3EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "EG.TRIG.03",
+   "titre": "Calculer une longueur avec la trigonométrie",
+   "titre_eleve": "Trigo : calculer une longueur",
+   "domaine": "EG",
+   "niveau_origine": "3EME",
+   "statut": "lacune",
+   "maitrise": 0.21,
+   "n_obs": 3,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": [
+    {
+     "id": "EG.TRIG.03#inconnue_au_denominateur",
+     "libelle": "Isole mal l'inconnue quand elle est au dénominateur (x = cos × adj au lieu de adj ÷ cos)",
+     "libelle_parent": "Ne sait pas résoudre a/x = b",
+     "remediation": "Revenir à l'égalité de fractions : cos = adj/x ⇒ x = adj ÷ cos",
+     "n": 2,
+     "exemple": {
+      "q": "QCM EG.TRIG.03-003",
+      "reponse_eleve": "E3",
+      "a": "R3"
+     }
+    }
+   ]
+  },
+  {
+   "id": "GM.VOL.05",
+   "titre": "Calculer le volume d'un solide composé",
+   "titre_eleve": "Volume d'un solide composé (cylindre + cône…)",
+   "domaine": "GM",
+   "niveau_origine": "3EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "NC.ENT.03",
+   "titre": "Arrondir un nombre ou donner une valeur approchée à la précision demandée",
+   "titre_eleve": "Arrondir au dixième, au centième…",
+   "domaine": "NC",
+   "niveau_origine": "6EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "NC.EQUA.01",
+   "titre": "Tester si un nombre est solution d'une équation ou d'une inéquation",
+   "titre_eleve": "Vérifier si un nombre est solution",
+   "domaine": "NC",
+   "niveau_origine": "4EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "NC.EQUA.02",
+   "titre": "Résoudre une équation du type ax + b = c",
+   "titre_eleve": "Résoudre une équation simple (3x + 7 = 22)",
+   "domaine": "NC",
+   "niveau_origine": "4EME",
+   "statut": "lacune",
+   "maitrise": 0.32,
+   "n_obs": 4,
+   "cause_racine": true,
+   "racine_profonde": false,
+   "bloque": [
+    "EG.TRIG.03",
+    "NC.EQUA.04",
+    "DF.FONC.04",
+    "NC.EQUA.06"
+   ],
+   "erreurs": [
+    {
+     "id": "NC.EQUA.02#soustrait_coef",
+     "libelle": "Soustrait le coefficient au lieu de diviser (3x = 21 → x = 18)",
+     "libelle_parent": "Utilise la mauvaise opération inverse",
+     "remediation": "3x signifie 3 × x : l'inverse de « × 3 » est « ÷ 3 »",
+     "n": 2,
+     "exemple": {
+      "q": "QCM NC.EQUA.02-000",
+      "reponse_eleve": "E0",
+      "a": "R0"
+     }
+    }
+   ]
+  },
+  {
+   "id": "NC.EQUA.04",
+   "titre": "Mettre un problème en équation et interpréter la solution",
+   "titre_eleve": "Mettre un problème en équation",
+   "domaine": "NC",
+   "niveau_origine": "3EME",
+   "statut": "fragile",
+   "maitrise": 0.4,
+   "n_obs": 3,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": [
+    {
+     "id": "NC.EQUA.04#inconnue_floue",
+     "libelle": "Ne dit pas ce que représente x ou choisit une inconnue qui complique tout",
+     "libelle_parent": "Ne sait pas par où commencer un problème",
+     "remediation": "Écrire « Soit x = … » en toutes lettres, avec l'unité",
+     "n": 2,
+     "exemple": {
+      "q": "QCM NC.EQUA.04-003",
+      "reponse_eleve": "E3",
+      "a": "R3"
+     }
+    }
+   ]
+  },
+  {
+   "id": "NC.EQUA.06",
+   "titre": "Résoudre une équation du type x² = a",
+   "titre_eleve": "Résoudre x² = 9",
+   "domaine": "NC",
+   "niveau_origine": "3EME",
+   "statut": "lacune",
+   "maitrise": 0.21,
+   "n_obs": 3,
+   "cause_racine": true,
+   "racine_profonde": false,
+   "bloque": [
+    "DF.FONC.04"
+   ],
+   "erreurs": [
+    {
+     "id": "NC.EQUA.06#oubli_negative",
+     "libelle": "Ne donne que x = 3 pour x² = 9",
+     "libelle_parent": "Oublie la solution négative",
+     "remediation": "(−3)² = 9 aussi : deux solutions quand a > 0",
+     "n": 3,
+     "exemple": {
+      "q": "QCM NC.EQUA.06-003",
+      "reponse_eleve": "E3",
+      "a": "R3"
+     }
+    }
+   ]
+  },
+  {
+   "id": "NC.FRAC.01",
+   "titre": "Comprendre une fraction comme partage et comme quotient",
+   "titre_eleve": "Comprendre ce qu'est une fraction",
+   "domaine": "NC",
+   "niveau_origine": "6EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "NC.LIT.01",
+   "titre": "Produire une expression littérale qui traduit une situation ou un programme de calcul",
+   "titre_eleve": "Traduire une situation avec des lettres",
+   "domaine": "NC",
+   "niveau_origine": "5EME",
+   "statut": "fragile",
+   "maitrise": 0.66,
+   "n_obs": 4,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [
+    "NC.EQUA.02",
+    "NC.EQUA.04",
+    "NC.LIT.03",
+    "NC.LIT.04",
+    "NC.LIT.10"
+   ],
+   "erreurs": [
+    {
+     "id": "NC.LIT.01#parentheses_oubliees",
+     "libelle": "Oublie les parenthèses (« ajoute 3 puis multiplie par 2 » → x + 3 × 2)",
+     "libelle_parent": "Traduit mot à mot sans tenir compte de l'ordre des étapes",
+     "remediation": "Tester l'expression avec un nombre et comparer au programme",
+     "n": 1,
+     "exemple": {
+      "q": "Calcule NC.LIT.01-001 ___",
+      "reponse_eleve": "4/9",
+      "a": "11/7"
+     }
+    }
+   ]
+  },
+  {
+   "id": "NC.LIT.03",
+   "titre": "Réduire une expression littérale",
+   "titre_eleve": "Réduire une expression (2x + 3x…)",
+   "domaine": "NC",
+   "niveau_origine": "4EME",
+   "statut": "lacune",
+   "maitrise": 0.21,
+   "n_obs": 3,
+   "cause_racine": true,
+   "racine_profonde": false,
+   "bloque": [
+    "EG.TRIG.03",
+    "NC.EQUA.02",
+    "NC.EQUA.04",
+    "NC.LIT.04",
+    "DF.FONC.04",
+    "NC.EQUA.06",
+    "NC.LIT.05"
+   ],
+   "erreurs": [
+    {
+     "id": "NC.LIT.03#x_plus_x",
+     "libelle": "Écrit x + x = x² ou x × x = 2x",
+     "libelle_parent": "Confond somme et produit d'une même lettre",
+     "remediation": "Tester avec x = 3 : x + x = 6 = 2x ; x × x = 9 = x²",
+     "n": 3,
+     "exemple": {
+      "q": "QCM NC.LIT.03-006",
+      "reponse_eleve": "E6",
+      "a": "R6"
+     }
+    }
+   ]
+  },
+  {
+   "id": "NC.LIT.04",
+   "titre": "Développer avec la simple distributivité k(a + b)",
+   "titre_eleve": "Développer k(a + b)",
+   "domaine": "NC",
+   "niveau_origine": "4EME",
+   "statut": "lacune",
+   "maitrise": 0.18,
+   "n_obs": 4,
+   "cause_racine": true,
+   "racine_profonde": false,
+   "bloque": [
+    "NC.LIT.10",
+    "NC.LIT.05"
+   ],
+   "erreurs": [
+    {
+     "id": "NC.LIT.04#distribution_partielle",
+     "libelle": "Ne multiplie que le premier terme (4(x + 3) = 4x + 3)",
+     "libelle_parent": "Oublie de multiplier le second terme",
+     "remediation": "Flèches de distribution : le facteur multiplie chaque terme",
+     "n": 3,
+     "exemple": {
+      "q": "QCM NC.LIT.04-006",
+      "reponse_eleve": "E6",
+      "a": "R6"
+     }
+    }
+   ]
+  },
+  {
+   "id": "NC.LIT.05",
+   "titre": "Supprimer des parenthèses précédées d'un signe moins",
+   "titre_eleve": "Enlever des parenthèses précédées d'un signe −",
+   "domaine": "NC",
+   "niveau_origine": "4EME",
+   "statut": "lacune",
+   "maitrise": 0.21,
+   "n_obs": 3,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [
+    "NC.LIT.10"
+   ],
+   "erreurs": [
+    {
+     "id": "NC.LIT.05#seul_premier_terme",
+     "libelle": "Ne change que le signe du premier terme (−(x − 3) = −x − 3)",
+     "libelle_parent": "Oublie de changer tous les signes",
+     "remediation": "−(…) = −1 × (…) : on distribue −1 à chaque terme",
+     "n": 2,
+     "exemple": {
+      "q": "QCM NC.LIT.05-006",
+      "reponse_eleve": "E6",
+      "a": "R6"
+     }
+    }
+   ]
+  },
+  {
+   "id": "NC.LIT.06",
+   "titre": "Développer avec la double distributivité (a + b)(c + d)",
+   "titre_eleve": "Développer (a + b)(c + d)",
+   "domaine": "NC",
+   "niveau_origine": "4EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "NC.LIT.10",
+   "titre": "Prouver un résultat général à l'aide du calcul littéral",
+   "titre_eleve": "Démontrer avec x (« quel que soit le nombre… »)",
+   "domaine": "NC",
+   "niveau_origine": "3EME",
+   "statut": "fragile",
+   "maitrise": 0.57,
+   "n_obs": 3,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": [
+    {
+     "id": "NC.LIT.10#exemples_suffisent",
+     "libelle": "Croit que quelques exemples numériques suffisent à prouver",
+     "libelle_parent": "Confond vérifier sur des exemples et démontrer",
+     "remediation": "Un exemple peut prouver que c'est faux, jamais que c'est toujours vrai : passer par x",
+     "n": 1,
+     "exemple": {
+      "q": "Calcule NC.LIT.10-008 ___",
+      "reponse_eleve": "11/9",
+      "a": "18/7"
+     }
+    }
+   ]
+  },
+  {
+   "id": "NC.RAC.01",
+   "titre": "Connaître la racine carrée d'un nombre positif (carrés parfaits, définition)",
+   "titre_eleve": "La racine carrée (√64, √144…)",
+   "domaine": "NC",
+   "niveau_origine": "4EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "NC.REL.02",
+   "titre": "Additionner et soustraire des nombres relatifs",
+   "titre_eleve": "Additionner et soustraire des nombres négatifs",
+   "domaine": "NC",
+   "niveau_origine": "5EME",
+   "statut": "lacune",
+   "maitrise": 0.21,
+   "n_obs": 3,
+   "cause_racine": true,
+   "racine_profonde": true,
+   "bloque": [
+    "EG.TRIG.03",
+    "NC.EQUA.02",
+    "NC.EQUA.04",
+    "NC.LIT.03",
+    "NC.LIT.04",
+    "NC.LIT.10",
+    "DF.FONC.04",
+    "EG.TRANS.02",
+    "EG.TRANS.05",
+    "NC.EQUA.06",
+    "NC.LIT.05"
+   ],
+   "erreurs": [
+    {
+     "id": "NC.REL.02#regle_produit",
+     "libelle": "Applique la règle des signes du produit à l'addition (−3 + (−5) = 8)",
+     "libelle_parent": "Mélange les règles de l'addition et de la multiplication",
+     "remediation": "Modèle gains/dettes : deux dettes s'ajoutent en une dette plus grande",
+     "n": 1,
+     "exemple": {
+      "q": "Calcule NC.REL.02-007 ___",
+      "reponse_eleve": "10/9",
+      "a": "17/7"
+     }
+    }
+   ]
+  },
+  {
+   "id": "NC.REL.03",
+   "titre": "Multiplier et diviser des nombres relatifs",
+   "titre_eleve": "Multiplier des nombres négatifs (règle des signes)",
+   "domaine": "NC",
+   "niveau_origine": "4EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  }
+ ],
+ "priorites": [
+  "NC.REL.02",
+  "NC.LIT.03",
+  "NC.EQUA.02",
+  "NC.LIT.04",
+  "NC.EQUA.06",
+  "EG.TRANS.02",
+  "EG.TRIG.03",
+  "NC.EQUA.04",
+  "DF.FONC.04",
+  "NC.LIT.05",
+  "NC.LIT.10",
+  "EG.TRANS.05",
+  "DF.AFF.02",
+  "NC.LIT.01"
+ ],
+ "point_faible": "NC.REL.02",
+ "plan_4_semaines": [
+  {
+   "semaine": 1,
+   "focus": [
+    "NC.REL.02",
+    "NC.LIT.03"
+   ],
+   "objectif": "Reconstruire la base : Additionner et soustraire des nombres négatifs ; Réduire une expression (2x + 3x…)"
+  },
+  {
+   "semaine": 2,
+   "focus": [
+    "NC.EQUA.02",
+    "NC.LIT.04"
+   ],
+   "objectif": "Reconstruire la base : Résoudre une équation simple (3x + 7 = 22) ; Développer k(a + b)"
+  },
+  {
+   "semaine": 3,
+   "focus": [
+    "NC.EQUA.06",
+    "EG.TRANS.02"
+   ],
+   "objectif": "Reconstruire la base : Résoudre x² = 9 ; Translation (glissement)"
+  },
+  {
+   "semaine": 4,
+   "focus": [
+    "EG.TRIG.03",
+    "NC.EQUA.04",
+    "DF.FONC.04"
+   ],
+   "objectif": "Travailler : Trigo : calculer une longueur ; Mettre un problème en équation ; Trouver un antécédent par le calcul"
+  }
+ ],
+ "points_forts": [
+  "DF.AFF.05",
+  "DF.FONC.01",
+  "DF.FONC.02",
+  "DF.FONC.03",
+  "EG.THAL.02"
+ ],
+ "message_parent": "Léa est à l'aise sur : Comparer deux tarifs ou deux fonctions ; Calculer une image f(x). Priorité n°1 : Additionner et soustraire des nombres négatifs — une notion de 5e qui freine 11 autres compétences du programme. Le plan : 5 exercices ciblés par jour, environ 10 minutes.",
+ "fiabilite": {
+  "niveau": "bonne",
+  "reponses_rapides": 0,
+  "inversions": 0.03
+ },
+ "zone_gratuite": [
+  "NC.REL.02",
+  "EG.TRIG.03",
+  "NC.EQUA.02",
+  "NC.EQUA.04",
+  "NC.LIT.03",
+  "NC.LIT.04",
+  "NC.LIT.10",
+  "DF.FONC.04",
+  "EG.TRANS.02",
+  "EG.TRANS.05",
+  "NC.EQUA.06",
+  "NC.LIT.05"
+ ]
+}

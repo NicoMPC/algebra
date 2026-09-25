@@ -1,0 +1,103 @@
+[
+  {
+    "id": "NC.ENT.01-d01",
+    "verdict": "ok",
+    "raison": "3,7×100=370. 37 et 3700 = décalage de 1 et 3 rangs ; 3,700 = ajout de zéro. Formes 370 / 370,0 acceptées."
+  },
+  {
+    "id": "NC.ENT.01-d02",
+    "verdict": "ok",
+    "raison": "45×0,1=4,5 ; 450 (agrandit), 0,45 et 0,045 (rangs) cohérents."
+  },
+  {
+    "id": "NC.ENT.01-d03",
+    "verdict": "ok",
+    "raison": "0,02×1000=20 ; \"20 g\" accepté (unité tolérée). 2 et 200 = mauvais nombre de rangs."
+  },
+  {
+    "id": "NC.ENT.02-d01",
+    "verdict": "corrige",
+    "raison": "Seul 2,125 est prédit par #plus_de_chiffres (le plus de décimales). 2,09 (moins de décimales que 2,125) n'est expliqué par aucune erreur type : l'annoncer au parent serait faux. De plus la bonne réponse 2,5 est aussi celle que donne la règle erronée #plus_court_plus_grand (le plus court) : un élève qui a cette erreur réussit l'item (faux positif). Correction : bonne réponse ni la plus courte ni la plus longue, 1 distracteur par règle erronée.",
+    "correction": {
+      "id": "NC.ENT.02-d01",
+      "comp": "NC.ENT.02",
+      "q": "Quel est le plus grand de ces nombres ?",
+      "a": "$2{,}75$",
+      "type": "qcm",
+      "options": [
+        "$2{,}7$",
+        "$2{,}75$",
+        "$2{,}705$"
+      ],
+      "err": {
+        "$2{,}7$": "NC.ENT.02#plus_court_plus_grand",
+        "$2{,}705$": "NC.ENT.02#plus_de_chiffres"
+      },
+      "steps": [
+        "Les trois nombres ont la même partie entière et le même chiffre des dixièmes : quel chiffre faut-il comparer ensuite ?",
+        "Écris-les tous avec $3$ décimales (par exemple $2{,}7 = 2{,}700$), puis compare."
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.ENT.02-d02",
+    "verdict": "corrige",
+    "raison": "3,1 est bien prédit par #plus_de_chiffres (le plus court = le plus petit) et 3,405 par #plus_court_plus_grand (le plus long = le plus petit). 3,4 n'est prédit par aucune des deux règles (même longueur que 3,1, plus grand) : son tag #plus_de_chiffres est infondé. Correction : retirer 3,4 (QCM à 3 options).",
+    "correction": {
+      "id": "NC.ENT.02-d02",
+      "comp": "NC.ENT.02",
+      "q": "Quel est le plus petit de ces nombres ?",
+      "a": "$3{,}05$",
+      "type": "qcm",
+      "options": [
+        "$3{,}1$",
+        "$3{,}05$",
+        "$3{,}405$"
+      ],
+      "err": {
+        "$3{,}1$": "NC.ENT.02#plus_de_chiffres",
+        "$3{,}405$": "NC.ENT.02#plus_court_plus_grand"
+      },
+      "steps": [
+        "Même partie entière : regarde le chiffre des dixièmes de chacun.",
+        "Écris-les tous avec $3$ décimales (par exemple $3{,}7 = 3{,}700$), puis compare."
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.ENT.02-d03",
+    "verdict": "ok",
+    "raison": "12,70 > 12,65 : Faux. Vrai = lecture de la partie décimale comme un entier (65 > 7)."
+  },
+  {
+    "id": "NC.ENT.03-d01",
+    "verdict": "ok",
+    "raison": "7,86 → 7,9. 7,8 troncature ; 8 et 10 mauvais rang. 7,90 accepté."
+  },
+  {
+    "id": "NC.ENT.03-d02",
+    "verdict": "ok",
+    "raison": "14,358 → 14,36 ; distracteurs conformes."
+  },
+  {
+    "id": "NC.ENT.03-d03",
+    "verdict": "ok",
+    "raison": "3×2,46=7,38 → 7,4 ; 7,5 = arrondi de 2,46 à 2,5 avant ×3 (#arrondi_intermediaire) ; 7,3 troncature ; 7 mauvais rang. Prérequis caché léger (multiplication d'un décimal), acceptable en lvl 2."
+  }
+]

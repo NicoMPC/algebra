@@ -1,0 +1,474 @@
+[
+  {
+    "id": "DF.PROB.01-d01",
+    "comp": "DF.PROB.01",
+    "q": "On tire une carte au hasard parmi six cartes numérotées $2$ ; $3$ ; $5$ ; $8$ ; $9$ ; $12$. Combien d'issues réalisent l'événement « obtenir un nombre pair » ? ___",
+    "a": "3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1": "DF.PROB.01#issue_evenement",
+      "6": "DF.PROB.01#issue_evenement"
+    },
+    "steps": [
+      "Une issue, c'est un résultat possible : ici, un numéro de carte.",
+      "Parmi les six numéros, lesquels sont pairs ? Compte-les : ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.01-d02",
+    "comp": "DF.PROB.01",
+    "q": "Une roue a $3$ secteurs : un rouge qui occupe la moitié de la roue, un bleu et un vert qui occupent chacun un quart. Affirmation : « Il y a $3$ couleurs, donc chaque couleur a une chance sur trois de sortir. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "DF.PROB.01#equiprobabilite_abusive"
+    },
+    "steps": [
+      "Les trois secteurs ont-ils la même taille ?",
+      "La couleur qui occupe la moitié de la roue a-t-elle autant de chances de sortir que les autres ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.01-d03",
+    "comp": "DF.PROB.01",
+    "q": "Un sac contient $6$ billes numérotées de $1$ à $6$ : les billes $1$ à $5$ sont rouges, la bille $6$ est bleue. On tire une bille au hasard et on note son numéro. Quelle affirmation est correcte ?",
+    "a": "Tirer une bille rouge est plus probable que tirer une bille bleue",
+    "type": "qcm",
+    "options": [
+      "Tirer une bille rouge est plus probable que tirer une bille bleue",
+      "Il y a $2$ couleurs, donc chaque couleur a une chance sur deux de sortir",
+      "« Tirer une bille rouge » ne correspond qu'à une seule issue",
+      "Il n'y a que $2$ issues possibles : rouge ou bleu"
+    ],
+    "err": {
+      "Il y a $2$ couleurs, donc chaque couleur a une chance sur deux de sortir": "DF.PROB.01#equiprobabilite_abusive",
+      "« Tirer une bille rouge » ne correspond qu'à une seule issue": "DF.PROB.01#issue_evenement",
+      "Il n'y a que $2$ issues possibles : rouge ou bleu": "DF.PROB.01#issue_evenement"
+    },
+    "steps": [
+      "Une issue, c'est un résultat possible : ici, le numéro de la bille tirée. Combien y en a-t-il ?",
+      "Combien d'issues réalisent « tirer une bille rouge » ? Et « tirer une bille bleue » ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.02-d01",
+    "comp": "DF.PROB.02",
+    "q": "Un sac contient $3$ billes rouges et $5$ billes bleues. On tire une bille au hasard. Quelle est la probabilité d'obtenir une bille rouge ?",
+    "a": "$\\frac{3}{8}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{3}{8}$",
+      "$\\frac{3}{5}$",
+      "$3$",
+      "$\\frac{8}{3}$"
+    ],
+    "err": {
+      "$\\frac{3}{5}$": "DF.PROB.02#favorables_sur_defavorables",
+      "$3$": "DF.PROB.02#superieure_a_1",
+      "$\\frac{8}{3}$": "DF.PROB.02#superieure_a_1"
+    },
+    "steps": [
+      "Combien y a-t-il de billes en tout dans le sac ?",
+      "Probabilité = nombre de billes rouges divisé par le nombre total de billes : ?"
+    ],
+    "f": "$P = \\frac{\\text{nombre d'issues favorables}}{\\text{nombre total d'issues}}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.02-d02",
+    "comp": "DF.PROB.02",
+    "q": "Une urne contient $4$ boules vertes et $6$ boules jaunes. On ajoute $2$ boules vertes. On tire ensuite une boule au hasard. Quelle est la probabilité de tirer une boule verte ? ___",
+    "a": "1/2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "6/10": "DF.PROB.02#total_pas_a_jour",
+      "4/10": "DF.PROB.02#total_pas_a_jour",
+      "1": "DF.PROB.02#favorables_sur_defavorables",
+      "6": "DF.PROB.02#superieure_a_1"
+    },
+    "steps": [
+      "Après l'ajout, combien y a-t-il de boules vertes ? Et de boules en tout ?",
+      "Divise le nombre de vertes par le nouveau total : ?"
+    ],
+    "f": "$P = \\frac{\\text{nombre d'issues favorables}}{\\text{nombre total d'issues}}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.02-d03",
+    "comp": "DF.PROB.02",
+    "q": "Dans une classe de $28$ élèves, $12$ font du sport en club. On choisit un élève au hasard. Quelle est la probabilité qu'il fasse du sport en club ? Donne une fraction. ___",
+    "a": "3/7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "12/16": "DF.PROB.02#favorables_sur_defavorables",
+      "12": "DF.PROB.02#superieure_a_1",
+      "28/12": "DF.PROB.02#superieure_a_1"
+    },
+    "steps": [
+      "Chaque élève a la même chance d'être choisi : il y a $28$ issues.",
+      "Combien d'issues sont favorables ? Écris la fraction, puis simplifie-la si tu peux : ?"
+    ],
+    "f": "$P = \\frac{\\text{nombre d'issues favorables}}{\\text{nombre total d'issues}}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.03-d01",
+    "comp": "DF.PROB.03",
+    "q": "La probabilité qu'il pleuve demain est $0{,}3$. Quelle est la probabilité qu'il ne pleuve pas demain ? ___",
+    "a": "0,7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "0,3": "DF.PROB.03#meme_probabilite",
+      "-0,3": "DF.PROB.03#inverse",
+      "10/3": "DF.PROB.03#inverse"
+    },
+    "steps": [
+      "« Il pleut » et « il ne pleut pas » : l'un des deux arrive forcément. Leurs probabilités ont une somme de $1$.",
+      "Calcule $1 - 0{,}3$ : ?"
+    ],
+    "f": "$P(\\overline{A}) = 1 - P(A)$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.03-d02",
+    "comp": "DF.PROB.03",
+    "q": "La probabilité de gagner à un jeu est $\\frac{2}{9}$. Quelle est la probabilité de ne pas gagner ?",
+    "a": "$\\frac{7}{9}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{7}{9}$",
+      "$\\frac{2}{9}$",
+      "$\\frac{9}{2}$",
+      "$-\\frac{2}{9}$"
+    ],
+    "err": {
+      "$\\frac{2}{9}$": "DF.PROB.03#meme_probabilite",
+      "$\\frac{9}{2}$": "DF.PROB.03#inverse",
+      "$-\\frac{2}{9}$": "DF.PROB.03#inverse"
+    },
+    "steps": [
+      "« Gagner » et « ne pas gagner » sont contraires : leurs probabilités ont une somme de $1$.",
+      "Calcule $1 - \\frac{2}{9}$, en écrivant $1 = \\frac{9}{9}$ : ?"
+    ],
+    "f": "$P(\\overline{A}) = 1 - P(A)$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.PROB.03-d03",
+    "comp": "DF.PROB.03",
+    "q": "Dans une loterie, la probabilité de gagner un lot est de $15\\,\\%$. Quelle est la probabilité, en pourcentage, de ne rien gagner ? ___ %",
+    "a": "85",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "15": "DF.PROB.03#meme_probabilite",
+      "-15": "DF.PROB.03#inverse"
+    },
+    "alt": [
+      "85%"
+    ],
+    "steps": [
+      "Gagner un lot ou ne rien gagner : l'un des deux arrive forcément. Le total fait $100\\,\\%$.",
+      "Calcule $100 - 15$ : ?"
+    ],
+    "f": "$P(\\overline{A}) = 1 - P(A)$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.04-d01",
+    "comp": "DF.PROB.04",
+    "q": "Une roue est partagée en $10$ secteurs identiques : $2$ rouges, $3$ bleus et $5$ verts. Quelle est la probabilité d'obtenir rouge ou bleu ? ___",
+    "a": "1/2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "6/100": "DF.PROB.04#multiplie_ou",
+      "0,06": "DF.PROB.04#multiplie_ou"
+    },
+    "alt": [
+      "5/10",
+      "0,5"
+    ],
+    "steps": [
+      "$P(\\text{rouge}) = \\frac{2}{10}$ et $P(\\text{bleu}) = \\frac{3}{10}$. Un secteur ne peut pas être rouge et bleu à la fois.",
+      "Pour « rouge ou bleu », on regroupe les secteurs : combien sont rouges ou bleus sur $10$ ?"
+    ],
+    "f": "$A \\text{ et } B \\text{ incompatibles} : P(A \\text{ ou } B) = P(A) + P(B)$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.04-d02",
+    "comp": "DF.PROB.04",
+    "q": "On choisit au hasard un nombre entier entre $1$ et $20$ (inclus). Quelle est la probabilité qu'il soit pair ou multiple de $5$ ?",
+    "a": "$\\frac{12}{20}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{12}{20}$",
+      "$\\frac{14}{20}$",
+      "$\\frac{1}{10}$"
+    ],
+    "err": {
+      "$\\frac{14}{20}$": "DF.PROB.04#double_compte",
+      "$\\frac{1}{10}$": "DF.PROB.04#multiplie_ou"
+    },
+    "steps": [
+      "Liste les nombres pairs, puis les multiples de $5$.",
+      "Certains nombres sont dans les deux listes : ne les compte qu'une fois. Combien de nombres conviennent ?"
+    ],
+    "f": "$P(A \\text{ ou } B) = P(A) + P(B) - P(A \\text{ et } B)$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.PROB.04-d03",
+    "comp": "DF.PROB.04",
+    "q": "On lance un dé équilibré à $6$ faces. Affirmation : « La probabilité d'obtenir $1$ ou $2$ est $\\frac{1}{6} \\times \\frac{1}{6} = \\frac{1}{36}$. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "DF.PROB.04#multiplie_ou"
+    },
+    "steps": [
+      "Combien de faces sur $6$ donnent « $1$ ou $2$ » ?",
+      "Obtenir « $1$ ou $2$ » est-il plus probable ou moins probable qu'obtenir seulement $1$ ?"
+    ],
+    "f": "$A \\text{ et } B \\text{ incompatibles} : P(A \\text{ ou } B) = P(A) + P(B)$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.PROB.05-d01",
+    "comp": "DF.PROB.05",
+    "q": "On lance une pièce, puis un dé à $6$ faces. Combien y a-t-il d'issues possibles pour cette expérience ? ___",
+    "a": "12",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "8": "DF.PROB.05#issues_additionnees"
+    },
+    "steps": [
+      "Une issue est un couple, par exemple (Pile ; $3$).",
+      "Pour chacun des $2$ résultats de la pièce, combien de résultats pour le dé ? Combien de couples en tout ?"
+    ],
+    "f": "$\\text{nombre d'issues} = n_1 \\times n_2$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.PROB.05-d02",
+    "comp": "DF.PROB.05",
+    "q": "Un sac contient $3$ billes rouges et $2$ billes bleues. On tire une bille, on ne la remet pas, puis on tire une deuxième bille. Quelle est la probabilité d'obtenir deux billes rouges ?",
+    "a": "$\\frac{3}{10}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{3}{10}$",
+      "$\\frac{9}{25}$",
+      "$\\frac{11}{10}$",
+      "$\\frac{6}{5}$"
+    ],
+    "err": {
+      "$\\frac{9}{25}$": "DF.PROB.05#sans_remise_ignore",
+      "$\\frac{11}{10}$": "DF.PROB.05#branche_additionnee",
+      "$\\frac{6}{5}$": "DF.PROB.05#branche_additionnee"
+    },
+    "steps": [
+      "Au premier tirage, $P(\\text{rouge}) = \\frac{3}{5}$. Que reste-t-il dans le sac après avoir tiré une rouge ?",
+      "Sur un arbre, on multiplie les probabilités le long d'une branche : $\\frac{3}{5} \\times$ ? $=$ ?"
+    ],
+    "f": "$P(\\text{chemin}) = \\text{produit des probabilités de la branche}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.05-d03",
+    "comp": "DF.PROB.05",
+    "q": "À chaque tour d'une roue, la probabilité de gagner est $0{,}2$. On fait tourner la roue deux fois. Quelle est la probabilité de gagner les deux fois ? ___",
+    "a": "0,04",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "0,4": "DF.PROB.05#branche_additionnee"
+    },
+    "alt": [
+      "1/25",
+      "4/100",
+      "4%"
+    ],
+    "steps": [
+      "Dessine un arbre à deux niveaux : la branche « gagné puis gagné » porte $0{,}2$ puis $0{,}2$.",
+      "Le long d'une branche, faut-il additionner ou multiplier ? Calcule : ?"
+    ],
+    "f": "$P(\\text{chemin}) = \\text{produit des probabilités de la branche}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.06-d01",
+    "comp": "DF.PROB.06",
+    "q": "Une pièce équilibrée est tombée $5$ fois de suite sur « Pile ». On la lance une $6^e$ fois. La probabilité d'obtenir « Face » est :",
+    "a": "égale à $\\frac{1}{2}$",
+    "type": "qcm",
+    "options": [
+      "égale à $\\frac{1}{2}$",
+      "plus grande que $\\frac{1}{2}$",
+      "égale à $1$",
+      "égale à $0$, car « Face » n'est jamais sorti"
+    ],
+    "err": {
+      "plus grande que $\\frac{1}{2}$": "DF.PROB.06#erreur_du_joueur",
+      "égale à $1$": "DF.PROB.06#erreur_du_joueur",
+      "égale à $0$, car « Face » n'est jamais sorti": "DF.PROB.06#frequence_egale_proba"
+    },
+    "steps": [
+      "La pièce se souvient-elle des lancers précédents ?",
+      "Pour une pièce équilibrée, combien vaut la probabilité de « Face » à chaque lancer ?"
+    ],
+    "f": "",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "DF.PROB.06-d02",
+    "comp": "DF.PROB.06",
+    "q": "On lance $10$ fois un dé équilibré et on obtient $4$ fois le $6$. Affirmation : « La probabilité d'obtenir $6$ avec ce dé est donc $\\frac{4}{10}$. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "DF.PROB.06#frequence_egale_proba"
+    },
+    "steps": [
+      "$\\frac{4}{10}$ est une fréquence observée sur seulement $10$ lancers.",
+      "Pour un dé équilibré, quelle est la probabilité d'obtenir $6$ ? Change-t-elle selon les lancers faits ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "DF.PROB.06-d03",
+    "comp": "DF.PROB.06",
+    "q": "On lance un dé équilibré plusieurs fois et on calcule la fréquence d'apparition du $6$. Dans quel cas cette fréquence sera-t-elle probablement la plus proche de $\\frac{1}{6}$ ?",
+    "a": "Avec $6\\,000$ lancers",
+    "type": "qcm",
+    "options": [
+      "Avec $6\\,000$ lancers",
+      "Avec $6$ lancers",
+      "Peu importe : la fréquence est toujours égale à $\\frac{1}{6}$"
+    ],
+    "err": {
+      "Avec $6$ lancers": "DF.PROB.06#frequence_egale_proba",
+      "Peu importe : la fréquence est toujours égale à $\\frac{1}{6}$": "DF.PROB.06#frequence_egale_proba"
+    },
+    "steps": [
+      "Sur peu de lancers, la fréquence peut beaucoup varier à cause du hasard.",
+      "Plus on fait de lancers, que devient la fréquence observée ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  }
+]

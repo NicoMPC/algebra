@@ -17,7 +17,7 @@ type Deps = {
 };
 
 export const COMPTES = {
-  admin: { code: "KN6CFG", prenom: "Nicolas", email: "nicolas.follezou@hotmail.fr", mdp: "matheux-dev" },
+  admin: { code: "ADMDEV", prenom: "Admin", email: "admin@dev.matheux.local", mdp: "matheux-dev" },
   neuf: { prenom: "Lina", email: "lina@exemple.fr", mdp: "matheux-dev" },
   express: { prenom: "Tom", email: "tom@exemple.fr", mdp: "matheux-dev" },
   programme: { prenom: "Sarah", email: "sarah@exemple.fr", mdp: "matheux-dev" },
@@ -165,7 +165,7 @@ async function seedInner(d: Deps) {
   await importReferentiel(d);
   await importLegacy(d);
 
-  // Admin (compte existant en prod, recréé ici avec un mot de passe de DEV)
+  // Admin de DEV (fictif : aucune donnée de la prod ; la prod repère l'admin par is_admin)
   const a = COMPTES.admin;
   d.setOffsetDays(-30);
   const au = await d.fake.createUser(a.email, await hashApp(a.email, a.mdp));

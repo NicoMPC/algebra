@@ -1,0 +1,122 @@
+[
+  {
+    "id": "NC.ARITH.01-d01",
+    "verdict": "corrige",
+    "raison": "147 (somme 12) seul divisible par 3 ; 43, 73, 113 finissent par 3 → #critere_dernier_chiffre, bien construit. Mais l'indice 2 prend 147 comme exemple (« 1+4+7 = ? ») : il désigne la bonne option. Changer l'exemple.",
+    "correction": {
+      "id": "NC.ARITH.01-d01",
+      "comp": "NC.ARITH.01",
+      "q": "Lequel de ces nombres est divisible par $3$ ?",
+      "a": "$147$",
+      "type": "qcm",
+      "options": [
+        "$43$",
+        "$73$",
+        "$147$",
+        "$113$"
+      ],
+      "err": {
+        "$43$": "NC.ARITH.01#critere_dernier_chiffre",
+        "$73$": "NC.ARITH.01#critere_dernier_chiffre",
+        "$113$": "NC.ARITH.01#critere_dernier_chiffre"
+      },
+      "steps": [
+        "Le critère de divisibilité par $3$ ne regarde pas le dernier chiffre, mais la somme des chiffres.",
+        "Pour chaque nombre, calcule la somme de ses chiffres (ex. pour $43$ : $4 + 3 = \\,?$) : est-elle dans la table de $3$ ?"
+      ],
+      "f": "Divisible par $3$ $\\iff$ la somme des chiffres est divisible par $3$",
+      "f_disabled": false,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.ARITH.01-d02",
+    "verdict": "ok",
+    "raison": "4÷36 ne tombe pas juste : Faux ; Vrai = inversion multiple/diviseur."
+  },
+  {
+    "id": "NC.ARITH.01-d03",
+    "verdict": "ok",
+    "raison": "42 = 5×8 + 2 → 2. 4 et 8,4 = lecture du quotient décimal 8,4 (#reste_decimal). 8 (quotient) non tagué, acceptable."
+  },
+  {
+    "id": "NC.ARITH.02-d01",
+    "verdict": "ok",
+    "raison": "13 premier ; 9, 21 impairs composés ; 1 non premier."
+  },
+  {
+    "id": "NC.ARITH.02-d02",
+    "verdict": "ok",
+    "raison": "91 = 7×13 : Faux ; Vrai = test arrêté à 5."
+  },
+  {
+    "id": "NC.ARITH.02-d03",
+    "verdict": "ok",
+    "raison": "2 premier ; 1 (définition), 119 = 7×17 (test incomplet), 51 = 3×17 (impair)."
+  },
+  {
+    "id": "NC.ARITH.03-d01",
+    "verdict": "ok",
+    "raison": "126 = 2×3²×7 ; 2×9×7 et 6×3×7 facteur non premier ; 2×3×7 = 42 produit faux."
+  },
+  {
+    "id": "NC.ARITH.03-d02",
+    "verdict": "ok",
+    "raison": "360/45 = 8 = 2³ → n = 3 ; 2 et 4 donnent 180 / 720."
+  },
+  {
+    "id": "NC.ARITH.03-d03",
+    "verdict": "ok",
+    "raison": "2³×5 = 40 seule vraie ; les trois autres sont vraies seulement si a^n est lu a×n (42, 42, 20)."
+  },
+  {
+    "id": "NC.ARITH.04-d01",
+    "verdict": "corrige",
+    "raison": "PGCD(12;18) = 6 ; 36, 216, 72 = multiples communs, tags justes. L'indice 1 (« un diviseur de 12 est ≤ 12 : lesquelles peuvent convenir ? ») élimine d'un coup les 3 distracteurs et donne la réponse. Remplacer.",
+    "correction": {
+      "id": "NC.ARITH.04-d01",
+      "comp": "NC.ARITH.04",
+      "q": "Quel est le plus grand diviseur commun de $12$ et $18$ ?",
+      "a": "$6$",
+      "type": "qcm",
+      "options": [
+        "$36$",
+        "$216$",
+        "$72$",
+        "$6$"
+      ],
+      "err": {
+        "$36$": "NC.ARITH.04#multiple_au_lieu_diviseur",
+        "$216$": "NC.ARITH.04#multiple_au_lieu_diviseur",
+        "$72$": "NC.ARITH.04#multiple_au_lieu_diviseur"
+      },
+      "steps": [
+        "Liste les diviseurs de $12$ : $1, 2, 3, \\,?, \\,?, 12$.",
+        "Parmi ces diviseurs, lesquels divisent aussi $18$ ? Garde le plus grand."
+      ],
+      "f": "",
+      "f_disabled": true,
+      "lvl": 1,
+      "usage": [
+        "diag",
+        "train"
+      ],
+      "contexte": false
+    }
+  },
+  {
+    "id": "NC.ARITH.04-d02",
+    "verdict": "ok",
+    "raison": "PGCD(60;96) = 12 bouquets ; 96 = 2⁵×3 (exposants max) ; 480 = PPCM ; 5 et 8 = contenu d'un bouquet."
+  },
+  {
+    "id": "NC.ARITH.04-d03",
+    "verdict": "ok",
+    "raison": "PGCD(84;126) = 42 ; 5 = nombre de morceaux ; 252 = PPCM ; 10 584 = produit."
+  }
+]

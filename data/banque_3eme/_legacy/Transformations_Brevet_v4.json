@@ -1,0 +1,555 @@
+[
+ {
+  "id": "EG.TRANS.02-L001",
+  "comp": "EG.TRANS.02",
+  "q": "Quel est l'abscisse de l'image $A'$ de $A$ par la translation de vecteur $\\vec{u}(4 ; -1)$ ?",
+  "a": "6",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "-2": "EG.TRANS.02#soustrait_vecteur"
+  },
+  "steps": [
+   "Pour trouver l'abscisse de $A'$, on ajoute la composante horizontale du vecteur à l'abscisse de $A$.",
+   "$x_{A'} = x_A + 4 = 2 + 4 = $ ?"
+  ],
+  "f": "$x_{A'} = x_A + a$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_01_grille.svg",
+  "figure_desc": "Repère orthonormé (O ; i, j) avec grille quadrillée de 0 à 8 en x et -1 à 6 en y. Point A placé en (2 ; 3) avec label A. Vecteur u représenté par une flèche depuis A, composantes (+4 ; -1). Point image A' en (6 ; 2) avec label A' et un ? à côté. Flèche rouge du vecteur u. Axes gradués, origine O marquée.",
+  "parapluie_id": "TRANSF_01",
+  "num": "1",
+  "source": "Transformations_Brevet_v4|TRANSF_01.1"
+ },
+ {
+  "id": "EG.TRANS.02-L002",
+  "comp": "EG.TRANS.02",
+  "q": "Quelles sont les coordonnées complètes de $A'$, image de $A(2 ; 3)$ par la translation de vecteur $\\vec{u}(4 ; -1)$ ?",
+  "a": "$(6 ; 2)$",
+  "type": "qcm",
+  "options": [
+   "$(6 ; 2)$",
+   "$(6 ; 4)$",
+   "$(-2 ; 4)$"
+  ],
+  "err": {
+   "$(-2 ; 4)$": "EG.TRANS.02#soustrait_vecteur"
+  },
+  "steps": [
+   "On applique la formule pour chaque coordonnée : $x_{A'} = x_A + a$ et $y_{A'} = y_A + b$.",
+   "$x_{A'} = 2 + 4 = 6$ et $y_{A'} = 3 + (-1) = $ ?",
+   "Les coordonnées sont $(6 ; ?)$."
+  ],
+  "f": "$A'(x_A + a \\; ; \\; y_A + b)$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_01_grille.svg",
+  "figure_desc": "Repère orthonormé (O ; i, j) avec grille quadrillée de 0 à 8 en x et -1 à 6 en y. Point A placé en (2 ; 3) avec label A. Vecteur u représenté par une flèche depuis A, composantes (+4 ; -1). Point image A' en (6 ; 2) avec label A' et un ? à côté. Flèche rouge du vecteur u. Axes gradués, origine O marquée.",
+  "parapluie_id": "TRANSF_01",
+  "num": "2",
+  "source": "Transformations_Brevet_v4|TRANSF_01.2"
+ },
+ {
+  "id": "EG.TRANS.05-L001",
+  "comp": "EG.TRANS.05",
+  "q": "Dans une translation, la figure et son image sont superposables (même forme, mêmes dimensions).",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "La translation est un « glissement » : chaque point se déplace de la même distance, dans la même direction.",
+   "Aucune déformation, aucun changement de taille. Que peut-on en conclure ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_01_grille.svg",
+  "figure_desc": "Repère orthonormé (O ; i, j) avec grille quadrillée de 0 à 8 en x et -1 à 6 en y. Point A placé en (2 ; 3) avec label A. Vecteur u représenté par une flèche depuis A, composantes (+4 ; -1). Point image A' en (6 ; 2) avec label A' et un ? à côté. Flèche rouge du vecteur u. Axes gradués, origine O marquée.",
+  "parapluie_id": "TRANSF_01",
+  "num": "3",
+  "source": "Transformations_Brevet_v4|TRANSF_01.3"
+ },
+ {
+  "id": "EG.TRANS.02-L003",
+  "comp": "EG.TRANS.02",
+  "q": "Pixel est maintenant en $B(5 ; 1)$. Après une translation, il arrive en $B'(1 ; 4)$. Quel est le vecteur de cette translation ?",
+  "a": "$\\vec{v}(-4 ; 3)$",
+  "type": "qcm",
+  "options": [
+   "$\\vec{v}(-4 ; 3)$",
+   "$\\vec{v}(4 ; -3)$",
+   "$\\vec{v}(6 ; 5)$"
+  ],
+  "err": {
+   "$\\vec{v}(4 ; -3)$": "EG.TRANS.02#soustrait_vecteur"
+  },
+  "steps": [
+   "Le vecteur de translation $\\vec{v}$ a pour composantes $x_{B'} - x_B$ et $y_{B'} - y_B$.",
+   "$x_v = 1 - 5 = -4$ et $y_v = 4 - 1 = $ ?",
+   "Le vecteur est $\\vec{v}(? \\; ; \\; ?)$."
+  ],
+  "f": "$\\vec{v}(x_{B'} - x_B \\; ; \\; y_{B'} - y_B)$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_01_grille.svg",
+  "figure_desc": "Repère orthonormé (O ; i, j) avec grille quadrillée de 0 à 8 en x et -1 à 6 en y. Point A placé en (2 ; 3) avec label A. Vecteur u représenté par une flèche depuis A, composantes (+4 ; -1). Point image A' en (6 ; 2) avec label A' et un ? à côté. Flèche rouge du vecteur u. Axes gradués, origine O marquée.",
+  "parapluie_id": "TRANSF_01",
+  "num": "4",
+  "source": "Transformations_Brevet_v4|TRANSF_01.4"
+ },
+ {
+  "id": "EG.TRANS.05-L002",
+  "comp": "EG.TRANS.05",
+  "q": "On applique la translation de vecteur $\\vec{u}(4 ; -1)$ au segment $[AC]$ avec $C(2 ; 5)$. Quelle est la longueur de l'image $[A'C']$ sachant que $AC = 2$ unités ?",
+  "a": "2",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "La translation conserve les longueurs : chaque point se déplace de la même manière.",
+   "Donc $A'C' = AC = $ ? unités."
+  ],
+  "f": "$A'C' = AC$ (conservation des longueurs)",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_01_grille.svg",
+  "figure_desc": "Repère orthonormé (O ; i, j) avec grille quadrillée de 0 à 8 en x et -1 à 6 en y. Point A placé en (2 ; 3) avec label A. Vecteur u représenté par une flèche depuis A, composantes (+4 ; -1). Point image A' en (6 ; 2) avec label A' et un ? à côté. Flèche rouge du vecteur u. Axes gradués, origine O marquée.",
+  "parapluie_id": "TRANSF_01",
+  "num": "5",
+  "source": "Transformations_Brevet_v4|TRANSF_01.5"
+ },
+ {
+  "id": "EG.TRANS.03-L001",
+  "comp": "EG.TRANS.03",
+  "q": "Le siège $A$ subit une rotation de centre $O$ et d'angle $90°$ dans le sens anti-horaire. Quelle est la distance $OA'$ entre le centre et l'image $A'$ ?",
+  "a": "3",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "Une rotation conserve les distances au centre : le point image reste sur le même cercle.",
+   "$OA' = OA = $ ? m."
+  ],
+  "f": "$OA' = OA$ (conservation des distances)",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_02_roue.svg",
+  "figure_desc": "Cercle de centre O et rayon 3 cm (représentant 3 m). Point A placé sur le cercle à droite (position 0°). Point A' image par rotation de 90° dans le sens anti-horaire, placé en haut du cercle. Arc de cercle fléché de A vers A' (sens anti-horaire) avec annotation 90°. Axe horizontal et vertical en pointillé passant par O. Labels O (centre), A, A'. Annotation rayon OA = 3 m.",
+  "parapluie_id": "TRANSF_02",
+  "num": "1",
+  "source": "Transformations_Brevet_v4|TRANSF_02.1"
+ },
+ {
+  "id": "EG.TRANS.03-L002",
+  "comp": "EG.TRANS.03",
+  "q": "Après une rotation de $180°$ autour de $O$, le siège $A$ arrive en $A'$. Où se situe $A'$ par rapport à $O$ et $A$ ?",
+  "a": "$A'$ est le symétrique de $A$ par rapport à $O$",
+  "type": "qcm",
+  "options": [
+   "$A'$ est le symétrique de $A$ par rapport à $O$",
+   "$A'$ est confondu avec $A$",
+   "$A'$ est au-dessus de $O$"
+  ],
+  "err": {},
+  "steps": [
+   "Une rotation de $180°$ envoie chaque point de l'autre côté du centre, à la même distance.",
+   "C'est exactement la définition d'une symétrie centrale de centre $O$. Que peut-on en conclure ?"
+  ],
+  "f": "Rotation de $180°$ = symétrie centrale",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_02_roue.svg",
+  "figure_desc": "Cercle de centre O et rayon 3 cm (représentant 3 m). Point A placé sur le cercle à droite (position 0°). Point A' image par rotation de 90° dans le sens anti-horaire, placé en haut du cercle. Arc de cercle fléché de A vers A' (sens anti-horaire) avec annotation 90°. Axe horizontal et vertical en pointillé passant par O. Labels O (centre), A, A'. Annotation rayon OA = 3 m.",
+  "parapluie_id": "TRANSF_02",
+  "num": "2",
+  "source": "Transformations_Brevet_v4|TRANSF_02.2"
+ },
+ {
+  "id": "EG.TRANS.03-L003",
+  "comp": "EG.TRANS.03",
+  "q": "Une rotation de $360°$ ramène chaque point à sa position initiale.",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Après un tour complet ($360°$), le point a parcouru tout le cercle et revient à son point de départ.",
+   "Donc $A' = A$. Que peut-on en conclure ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_02_roue.svg",
+  "figure_desc": "Cercle de centre O et rayon 3 cm (représentant 3 m). Point A placé sur le cercle à droite (position 0°). Point A' image par rotation de 90° dans le sens anti-horaire, placé en haut du cercle. Arc de cercle fléché de A vers A' (sens anti-horaire) avec annotation 90°. Axe horizontal et vertical en pointillé passant par O. Labels O (centre), A, A'. Annotation rayon OA = 3 m.",
+  "parapluie_id": "TRANSF_02",
+  "num": "3",
+  "source": "Transformations_Brevet_v4|TRANSF_02.3"
+ },
+ {
+  "id": "EG.TRANS.03-L004",
+  "comp": "EG.TRANS.03",
+  "q": "Un engrenage fait tourner la roue de $90°$ dans le sens horaire, puis de $90°$ dans le sens anti-horaire. Quel est l'angle total de rotation effectué ?",
+  "a": "$0°$",
+  "type": "qcm",
+  "options": [
+   "$0°$",
+   "$180°$",
+   "$90°$"
+  ],
+  "err": {},
+  "steps": [
+   "La première rotation déplace de $+90°$ (horaire), la seconde de $-90°$ (anti-horaire).",
+   "$90° - 90° = $ ? La roue revient à sa position initiale.",
+   "L'angle résultant est ? degrés."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_02_roue.svg",
+  "figure_desc": "Cercle de centre O et rayon 3 cm (représentant 3 m). Point A placé sur le cercle à droite (position 0°). Point A' image par rotation de 90° dans le sens anti-horaire, placé en haut du cercle. Arc de cercle fléché de A vers A' (sens anti-horaire) avec annotation 90°. Axe horizontal et vertical en pointillé passant par O. Labels O (centre), A, A'. Annotation rayon OA = 3 m.",
+  "parapluie_id": "TRANSF_02",
+  "num": "4",
+  "source": "Transformations_Brevet_v4|TRANSF_02.4"
+ },
+ {
+  "id": "EG.TRANS.03-L005",
+  "comp": "EG.TRANS.03",
+  "comp_secondaires": [
+   "EG.REP.01"
+  ],
+  "q": "Le point $A(3 ; 0)$ subit une rotation de centre $O(0 ; 0)$ et d'angle $90°$ dans le sens anti-horaire. Quelles sont les coordonnées de $A'$ ?",
+  "a": "$(0 ; 3)$",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "(0 ; -3)": "EG.TRANS.03#sens_rotation"
+  },
+  "steps": [
+   "Une rotation de $90°$ anti-horaire transforme $(x ; y)$ en $(-y ; x)$.",
+   "Pour $A(3 ; 0)$ : $x_{A'} = -0 = 0$ et $y_{A'} = 3$. Donc $A' = $ ?",
+   "$A'(0 ; 3)$."
+  ],
+  "f": "Rotation $90°$ anti-horaire : $(x ; y) \\to (-y ; x)$",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_02_roue.svg",
+  "figure_desc": "Cercle de centre O et rayon 3 cm (représentant 3 m). Point A placé sur le cercle à droite (position 0°). Point A' image par rotation de 90° dans le sens anti-horaire, placé en haut du cercle. Arc de cercle fléché de A vers A' (sens anti-horaire) avec annotation 90°. Axe horizontal et vertical en pointillé passant par O. Labels O (centre), A, A'. Annotation rayon OA = 3 m.",
+  "parapluie_id": "TRANSF_02",
+  "num": "5",
+  "source": "Transformations_Brevet_v4|TRANSF_02.5"
+ },
+ {
+  "id": "EG.TRANS.04-L001",
+  "comp": "EG.TRANS.04",
+  "q": "Le photographe applique une homothétie de centre $O(0 ; 0)$ et de rapport $k = 2$. Quelles sont les coordonnées de $A'$, image de $A(2 ; 1)$ ?",
+  "a": "$(4 ; 2)$",
+  "type": "qcm",
+  "options": [
+   "$(4 ; 2)$",
+   "$(4 ; 1)$",
+   "$(2 ; 2)$"
+  ],
+  "err": {},
+  "steps": [
+   "Dans une homothétie de centre $O(0;0)$ et de rapport $k$, l'image d'un point $(x ; y)$ est $(k \\times x ; k \\times y)$.",
+   "$x_{A'} = 2 \\times 2 = 4$ et $y_{A'} = 2 \\times 1 = $ ?",
+   "$A'(4 ; ?)$."
+  ],
+  "f": "$A'(k \\times x_A \\; ; \\; k \\times y_A)$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_03_photo.svg",
+  "figure_desc": "Repère orthonormé (O ; i, j) avec grille de 0 à 10 en x et 0 à 8 en y. Triangle ABC : A(2;1), B(4;1), C(3;3) tracé en bleu. Triangle image A'B'C' : A'(4;2), B'(8;2), C'(6;6) tracé en rouge pointillé. Centre O marqué à l'origine. Segments [OA] et [OA'] en pointillé gris pour montrer l'alignement. Labels A, B, C (bleu) et A', B', C' (rouge). Annotation k = 2.",
+  "parapluie_id": "TRANSF_03",
+  "num": "1",
+  "source": "Transformations_Brevet_v4|TRANSF_03.1"
+ },
+ {
+  "id": "EG.TRANS.04-L002",
+  "comp": "EG.TRANS.04",
+  "q": "Quelles sont les coordonnées de $C'$, image de $C(3 ; 3)$ par la même homothétie de rapport $k = 2$ ?",
+  "a": "(6 ; 6)",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "On applique la même formule : $C'(k \\times x_C \\; ; \\; k \\times y_C)$.",
+   "$x_{C'} = 2 \\times 3 = 6$ et $y_{C'} = 2 \\times 3 = $ ?",
+   "$C'(? \\; ; \\; ?)$."
+  ],
+  "f": "$C'(k \\times x_C \\; ; \\; k \\times y_C)$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_03_photo.svg",
+  "figure_desc": "Repère orthonormé (O ; i, j) avec grille de 0 à 10 en x et 0 à 8 en y. Triangle ABC : A(2;1), B(4;1), C(3;3) tracé en bleu. Triangle image A'B'C' : A'(4;2), B'(8;2), C'(6;6) tracé en rouge pointillé. Centre O marqué à l'origine. Segments [OA] et [OA'] en pointillé gris pour montrer l'alignement. Labels A, B, C (bleu) et A', B', C' (rouge). Annotation k = 2.",
+  "parapluie_id": "TRANSF_03",
+  "num": "2",
+  "source": "Transformations_Brevet_v4|TRANSF_03.2"
+ },
+ {
+  "id": "EG.TRANS.04-L003",
+  "comp": "EG.TRANS.04",
+  "q": "Le côté $AB$ mesure $2$ unités. Après l'homothétie de rapport $k = 2$, le côté $A'B'$ mesure ___ unités.",
+  "a": "4",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "Dans une homothétie de rapport $k$, les longueurs sont multipliées par $|k|$.",
+   "$A'B' = |k| \\times AB = 2 \\times 2 = $ ?"
+  ],
+  "f": "$A'B' = |k| \\times AB$",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_03_photo.svg",
+  "figure_desc": "Repère orthonormé (O ; i, j) avec grille de 0 à 10 en x et 0 à 8 en y. Triangle ABC : A(2;1), B(4;1), C(3;3) tracé en bleu. Triangle image A'B'C' : A'(4;2), B'(8;2), C'(6;6) tracé en rouge pointillé. Centre O marqué à l'origine. Segments [OA] et [OA'] en pointillé gris pour montrer l'alignement. Labels A, B, C (bleu) et A', B', C' (rouge). Annotation k = 2.",
+  "parapluie_id": "TRANSF_03",
+  "num": "3",
+  "source": "Transformations_Brevet_v4|TRANSF_03.3"
+ },
+ {
+  "id": "GM.AGR.01-L003",
+  "comp": "GM.AGR.01",
+  "q": "L'aire du triangle $ABC$ est $2$ unités d'aire. Quelle est l'aire du triangle $A'B'C'$ après l'homothétie de rapport $k = 2$ ?",
+  "a": "$8$ unités d'aire",
+  "type": "qcm",
+  "options": [
+   "$8$ unités d'aire",
+   "$4$ unités d'aire",
+   "$16$ unités d'aire"
+  ],
+  "err": {
+   "$4$ unités d'aire": "GM.AGR.01#aire_fois_k"
+  },
+  "steps": [
+   "Dans une homothétie de rapport $k$, les aires sont multipliées par $k^2$.",
+   "Aire$(A'B'C') = k^2 \\times$ Aire$(ABC) = 2^2 \\times 2 = 4 \\times 2 = $ ?",
+   "L'aire est multipliée par $4$, pas par $2$ !"
+  ],
+  "f": "$\\text{Aire}' = k^2 \\times \\text{Aire}$",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_03_photo.svg",
+  "figure_desc": "Repère orthonormé (O ; i, j) avec grille de 0 à 10 en x et 0 à 8 en y. Triangle ABC : A(2;1), B(4;1), C(3;3) tracé en bleu. Triangle image A'B'C' : A'(4;2), B'(8;2), C'(6;6) tracé en rouge pointillé. Centre O marqué à l'origine. Segments [OA] et [OA'] en pointillé gris pour montrer l'alignement. Labels A, B, C (bleu) et A', B', C' (rouge). Annotation k = 2.",
+  "parapluie_id": "TRANSF_03",
+  "num": "4",
+  "source": "Transformations_Brevet_v4|TRANSF_03.4"
+ },
+ {
+  "id": "EG.TRANS.02-L004",
+  "comp": "EG.TRANS.02",
+  "q": "L'artiste translate le losange $ABCD$ par le vecteur $\\vec{u}(4 ; 0)$. Quelles sont les coordonnées de $B'$, image de $B(2 ; 1)$ ?",
+  "a": "$(6 ; 1)$",
+  "type": "qcm",
+  "options": [
+   "$(6 ; 1)$",
+   "$(2 ; 5)$",
+   "$(6 ; -1)$"
+  ],
+  "err": {},
+  "steps": [
+   "On ajoute les composantes du vecteur aux coordonnées de $B$.",
+   "$x_{B'} = 2 + 4 = 6$ et $y_{B'} = 1 + 0 = $ ?",
+   "$B'(? \\; ; \\; ?)$."
+  ],
+  "f": "$B'(x_B + a \\; ; \\; y_B + b)$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_04_pavage.svg",
+  "figure_desc": "Repère orthonormé avec grille de -2 à 10 en x et -3 à 5 en y. Losange ABCD en bleu : A(0;0), B(2;1), C(4;0), D(2;-1). Image par translation de vecteur (4;0) : losange A'B'C'D' en vert : A'(4;0), B'(6;1), C'(8;0), D'(6;-1). Image par rotation 180° centre C : losange en orange. Labels A, B, C, D. Vecteur de translation représenté par flèche.",
+  "parapluie_id": "TRANSF_04",
+  "num": "1",
+  "source": "Transformations_Brevet_v4|TRANSF_04.1"
+ },
+ {
+  "id": "EG.TRANS.03-L006",
+  "comp": "EG.TRANS.03",
+  "comp_secondaires": [
+   "EG.TRANS.01"
+  ],
+  "q": "L'artiste applique une rotation de $180°$ de centre $C(4 ; 0)$ au point $A(0 ; 0)$. Quelles sont les coordonnées de l'image $A''$ ?",
+  "a": "(8 ; 0)",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "Une rotation de $180°$ de centre $C$ envoie $A$ au symétrique de $A$ par rapport à $C$.",
+   "Les coordonnées du symétrique : $x_{A''} = 2 \\times x_C - x_A = 2 \\times 4 - 0 = 8$ et $y_{A''} = 2 \\times y_C - y_A = 2 \\times 0 - 0 = $ ?",
+   "$A''(? \\; ; \\; ?)$."
+  ],
+  "f": "Symétrique de $M$ par rapport à $I$ : $(2x_I - x_M \\; ; \\; 2y_I - y_M)$",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_04_pavage.svg",
+  "figure_desc": "Repère orthonormé avec grille de -2 à 10 en x et -3 à 5 en y. Losange ABCD en bleu : A(0;0), B(2;1), C(4;0), D(2;-1). Image par translation de vecteur (4;0) : losange A'B'C'D' en vert : A'(4;0), B'(6;1), C'(8;0), D'(6;-1). Image par rotation 180° centre C : losange en orange. Labels A, B, C, D. Vecteur de translation représenté par flèche.",
+  "parapluie_id": "TRANSF_04",
+  "num": "2",
+  "source": "Transformations_Brevet_v4|TRANSF_04.2"
+ },
+ {
+  "id": "EG.TRANS.05-L003",
+  "comp": "EG.TRANS.05",
+  "q": "L'artiste observe que le motif translaté par $\\vec{u}(4 ; 0)$ a exactement la même forme et les mêmes dimensions que le motif original. Cela est dû au fait que la translation conserve les longueurs et les angles.",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "La translation est une isométrie : elle conserve les distances entre les points et les mesures d'angles.",
+   "Le losange image est donc superposable à l'original. Que peut-on en conclure ?"
+  ],
+  "f": "Translation, rotation, symétrie = isométries (conservent distances et angles)",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_04_pavage.svg",
+  "figure_desc": "Repère orthonormé avec grille de -2 à 10 en x et -3 à 5 en y. Losange ABCD en bleu : A(0;0), B(2;1), C(4;0), D(2;-1). Image par translation de vecteur (4;0) : losange A'B'C'D' en vert : A'(4;0), B'(6;1), C'(8;0), D'(6;-1). Image par rotation 180° centre C : losange en orange. Labels A, B, C, D. Vecteur de translation représenté par flèche.",
+  "parapluie_id": "TRANSF_04",
+  "num": "3",
+  "source": "Transformations_Brevet_v4|TRANSF_04.3"
+ },
+ {
+  "id": "EG.TRANS.04-L004",
+  "comp": "EG.TRANS.04",
+  "q": "L'artiste applique une homothétie de centre $A(0 ; 0)$ et de rapport $k = \\frac{1}{2}$ au losange $ABCD$. Quelles sont les coordonnées de l'image $C'$ de $C(4 ; 0)$ ?",
+  "a": "$(2 ; 0)$",
+  "type": "qcm",
+  "options": [
+   "$(2 ; 0)$",
+   "$(8 ; 0)$",
+   "$(4 ; 0)$"
+  ],
+  "err": {},
+  "steps": [
+   "Homothétie de centre $A(0;0)$ : l'image de $(x;y)$ est $(k \\times x ; k \\times y)$.",
+   "$x_{C'} = \\frac{1}{2} \\times 4 = 2$ et $y_{C'} = \\frac{1}{2} \\times 0 = $ ?",
+   "$C'(? \\; ; \\; ?)$."
+  ],
+  "f": "$C'(k \\times x_C \\; ; \\; k \\times y_C)$ (centre à l'origine)",
+  "f_disabled": false,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": "TRANSF_04_pavage.svg",
+  "figure_desc": "Repère orthonormé avec grille de -2 à 10 en x et -3 à 5 en y. Losange ABCD en bleu : A(0;0), B(2;1), C(4;0), D(2;-1). Image par translation de vecteur (4;0) : losange A'B'C'D' en vert : A'(4;0), B'(6;1), C'(8;0), D'(6;-1). Image par rotation 180° centre C : losange en orange. Labels A, B, C, D. Vecteur de translation représenté par flèche.",
+  "parapluie_id": "TRANSF_04",
+  "num": "4",
+  "source": "Transformations_Brevet_v4|TRANSF_04.4"
+ }
+]

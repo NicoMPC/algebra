@@ -1,0 +1,237 @@
+[
+  {
+    "id": "EG.PYTH.01-d01",
+    "comp": "EG.PYTH.01",
+    "q": "Le triangle $ABC$ est rectangle en $B$, avec $AB = 6$ cm et $BC = 8$ cm. Calcule la longueur $AC$. ___ cm",
+    "a": "10",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "14": "EG.PYTH.01#somme_cotes",
+      "100": "EG.PYTH.01#oubli_racine"
+    },
+    "steps": [
+      "L'hypoténuse est le côté opposé à l'angle droit : ici $[AC]$. On écrit $AC^2 = AB^2 + BC^2$.",
+      "$AC^2 = 6^2 + 8^2 = 36 + 64 = \\;?$",
+      "On connaît $AC^2$ ; pour trouver $AC$, on prend la racine carrée : $AC = \\sqrt{?}$"
+    ],
+    "f": "$AC^2 = AB^2 + BC^2$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.PYTH.01-d02",
+    "comp": "EG.PYTH.01",
+    "q": "Le triangle $EFG$ est rectangle en $F$, avec $EF = 5$ cm et $FG = 12$ cm. Quelle est la longueur $EG$ ?",
+    "a": "$13$ cm",
+    "type": "qcm",
+    "options": [
+      "$17$ cm",
+      "$169$ cm",
+      "$13$ cm",
+      "$\\sqrt{119}$ cm"
+    ],
+    "err": {
+      "$17$ cm": "EG.PYTH.01#somme_cotes",
+      "$169$ cm": "EG.PYTH.01#oubli_racine",
+      "$\\sqrt{119}$ cm": "EG.PYTH.01#hypotenuse_mal_identifiee"
+    },
+    "steps": [
+      "L'angle droit est en $F$ : l'hypoténuse est le côté qui ne passe pas par $F$.",
+      "$EG^2 = 5^2 + 12^2 = 25 + 144 = \\;?$ Puis $EG = \\sqrt{?}$"
+    ],
+    "f": "$EG^2 = EF^2 + FG^2$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.PYTH.01-d03",
+    "comp": "EG.PYTH.01",
+    "q": "Un portail rectangulaire mesure $2$ m de large et $1{,}5$ m de haut. On le renforce avec une barre en diagonale. Quelle est la longueur de la barre ? ___ m",
+    "a": "2,5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3,5": "EG.PYTH.01#somme_cotes",
+      "6,25": "EG.PYTH.01#oubli_racine"
+    },
+    "steps": [
+      "La largeur, la hauteur et la diagonale forment un triangle rectangle : la diagonale est l'hypoténuse.",
+      "$d^2 = 2^2 + 1{,}5^2 = 4 + 2{,}25 = \\;?$",
+      "Il reste à prendre la racine carrée de ce résultat : $d = \\sqrt{?}$"
+    ],
+    "f": "$d^2 = L^2 + \\ell^2$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.PYTH.02-d01",
+    "comp": "EG.PYTH.02",
+    "q": "Le triangle $ABC$ est rectangle en $A$. L'hypoténuse mesure $BC = 10$ cm et $AB = 6$ cm. Calcule $AC$. ___ cm",
+    "a": "8",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "11,7": "EG.PYTH.02#additionne_au_lieu_soustraire",
+      "11,66": "EG.PYTH.02#additionne_au_lieu_soustraire",
+      "136": "EG.PYTH.02#additionne_au_lieu_soustraire",
+      "64": "EG.PYTH.01#oubli_racine"
+    },
+    "steps": [
+      "On écrit Pythagore avec l'hypoténuse seule d'un côté : $BC^2 = AB^2 + AC^2$.",
+      "Donc $AC^2 = BC^2 - AB^2 = 100 - 36 = \\;?$",
+      "Puis $AC = \\sqrt{?}$"
+    ],
+    "f": "$BC^2 = AB^2 + AC^2$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.PYTH.02-d02",
+    "comp": "EG.PYTH.02",
+    "q": "Un câble de $17$ m relie le haut d'un mât vertical à un point du sol situé à $8$ m du pied du mât. Le sol est horizontal. Quelle est la hauteur du mât ?",
+    "a": "$15$ m",
+    "type": "qcm",
+    "options": [
+      "$\\sqrt{353}$ m",
+      "$15$ m",
+      "Impossible : $8^2 - 17^2$ est négatif"
+    ],
+    "err": {
+      "$\\sqrt{353}$ m": "EG.PYTH.02#additionne_au_lieu_soustraire",
+      "Impossible : $8^2 - 17^2$ est négatif": "EG.PYTH.02#soustraction_inversee"
+    },
+    "steps": [
+      "Le câble est l'hypoténuse ($17$ m). Le mât et la distance au sol sont les côtés de l'angle droit.",
+      "$h^2 = 17^2 - 8^2 = 289 - 64 = \\;?$ Puis $h = \\sqrt{?}$"
+    ],
+    "f": "$h^2 = \\text{hypoténuse}^2 - \\text{côté}^2$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.PYTH.02-d03",
+    "comp": "EG.PYTH.02",
+    "q": "Un écran rectangulaire a une diagonale de $25$ pouces et une hauteur de $7$ pouces. Quelle est sa largeur ? ___ pouces",
+    "a": "24",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "25,96": "EG.PYTH.02#additionne_au_lieu_soustraire",
+      "26": "EG.PYTH.02#additionne_au_lieu_soustraire",
+      "674": "EG.PYTH.02#additionne_au_lieu_soustraire",
+      "576": "EG.PYTH.01#oubli_racine"
+    },
+    "steps": [
+      "La diagonale est l'hypoténuse du triangle rectangle formé avec la hauteur et la largeur.",
+      "$\\ell^2 = 25^2 - 7^2 = 625 - 49 = \\;?$",
+      "Puis $\\ell = \\sqrt{?}$"
+    ],
+    "f": "$d^2 = L^2 + \\ell^2$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.PYTH.03-d01",
+    "comp": "EG.PYTH.03",
+    "q": "Un triangle $ABC$ a pour côtés $AB = 12$ cm, $BC = 13$ cm et $AC = 5$ cm. Pour savoir s'il est rectangle, quelle égalité faut-il tester ?",
+    "a": "$BC^2 = AB^2 + AC^2$",
+    "type": "qcm",
+    "options": [
+      "$AB^2 = BC^2 + AC^2$",
+      "$BC^2 = AB^2 + AC^2$",
+      "$AC^2 = AB^2 + BC^2$"
+    ],
+    "err": {
+      "$AB^2 = BC^2 + AC^2$": "EG.PYTH.03#plus_grand_cote",
+      "$AC^2 = AB^2 + BC^2$": "EG.PYTH.03#plus_grand_cote"
+    },
+    "steps": [
+      "Si le triangle est rectangle, son hypoténuse est son plus grand côté. Lequel est-ce ici ?",
+      "On compare le carré de ce côté à la somme des carrés des deux autres."
+    ],
+    "f": "Réciproque : si $\\text{plus grand côté}^2 = \\text{somme des carrés des deux autres}$, alors rectangle",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.PYTH.03-d02",
+    "comp": "EG.PYTH.03",
+    "q": "Un triangle a pour côtés $8$ cm, $15$ cm et $16$ cm. Affirmation : « Ce triangle est rectangle. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "EG.PYTH.03#presque_egal"
+    },
+    "steps": [
+      "Le plus grand côté mesure $16$ cm : on calcule $16^2$ d'un côté, $8^2 + 15^2$ de l'autre.",
+      "$16^2 = 256$ et $8^2 + 15^2 = 64 + 225 = \\;?$ Les deux nombres sont-ils exactement égaux ?"
+    ],
+    "f": "Rectangle $\\Leftrightarrow$ $\\text{plus grand côté}^2 = \\text{somme des deux autres carrés}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.PYTH.03-d03",
+    "comp": "EG.PYTH.03",
+    "q": "Lina veut prouver que le triangle $KLM$, avec $KL = 9$ cm, $LM = 12$ cm et $KM = 15$ cm, est rectangle. Quelle rédaction est correcte ?",
+    "a": "$KM^2 = 225$ et $KL^2 + LM^2 = 225$ : l'égalité est vraie, donc d'après la réciproque du théorème de Pythagore, $KLM$ est rectangle en $L$.",
+    "type": "qcm",
+    "options": [
+      "D'après le théorème de Pythagore, $KM^2 = KL^2 + LM^2$, donc $KLM$ est rectangle.",
+      "$KM^2 = 225$ et $KL^2 + LM^2 = 225$ : l'égalité est vraie, donc d'après la réciproque du théorème de Pythagore, $KLM$ est rectangle en $L$.",
+      "$KL^2 = 81$ et $LM^2 + KM^2 = 369$ : pas d'égalité, donc $KLM$ n'est pas rectangle."
+    ],
+    "err": {
+      "D'après le théorème de Pythagore, $KM^2 = KL^2 + LM^2$, donc $KLM$ est rectangle.": "EG.PYTH.03#theoreme_direct",
+      "$KL^2 = 81$ et $LM^2 + KM^2 = 369$ : pas d'égalité, donc $KLM$ n'est pas rectangle.": "EG.PYTH.03#plus_grand_cote"
+    },
+    "steps": [
+      "Le théorème de Pythagore part d'un triangle déjà rectangle. Pour prouver qu'il l'est, lequel des deux théorèmes faut-il ?",
+      "Et quel côté doit-on isoler : le plus grand ou un autre ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  }
+]

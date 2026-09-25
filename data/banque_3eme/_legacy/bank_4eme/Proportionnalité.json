@@ -1,0 +1,623 @@
+[
+ {
+  "id": "DF.PROP.02-L008",
+  "comp": "DF.PROP.02",
+  "q": "Le tableau donne le prix des pommes vendues par Inès selon la masse achetée. Quel est le prix pour $6$ kg (en €) ?",
+  "a": "15",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "9": "DF.PROP.02#modele_additif"
+  },
+  "steps": [
+   "Calcule le coefficient de proportionnalité à partir d'une colonne connue : $5 \\div 2 = ?$ (prix par kg).",
+   "Multiplie ce coefficient par $6$ pour trouver le prix demandé."
+  ],
+  "f": "$\\text{coefficient} = \\dfrac{\\text{prix}}{\\text{masse}}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": {
+   "headers": [
+    "Masse (kg)",
+    "2",
+    "4",
+    "6",
+    "8"
+   ],
+   "rows": [
+    [
+     "Prix (€)",
+     "5",
+     "10",
+     "?",
+     "20"
+    ]
+   ],
+   "caption": "Prix des pommes selon la masse achetée"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_01",
+  "num": "1",
+  "source": "bank_4eme/Proportionnalité|PRO_01.1"
+ },
+ {
+  "id": "DF.PROP.02-L009",
+  "comp": "DF.PROP.02",
+  "q": "Inès tient un stand de fruits au marché du samedi. Elle vend des pommes au poids et doit vérifier si le prix payé est proportionnel à la masse achetée. D'après le tableau précédent, quel est le prix d'un seul kilogramme de pommes (en €) ?",
+  "a": "2,5",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "0,4": "DF.PROP.02#quotient_inverse"
+  },
+  "steps": [
+   "Utilise une colonne du tableau, par exemple $2$ kg pour $5$ €.",
+   "Divise le prix par la masse : $5 \\div 2 = ?$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": true,
+  "table": {
+   "headers": [
+    "Masse (kg)",
+    "2",
+    "4",
+    "6",
+    "8"
+   ],
+   "rows": [
+    [
+     "Prix (€)",
+     "5",
+     "10",
+     "?",
+     "20"
+    ]
+   ],
+   "caption": "Prix des pommes selon la masse achetée"
+  },
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_01",
+  "num": "2",
+  "source": "bank_4eme/Proportionnalité|PRO_01.2"
+ },
+ {
+  "id": "DF.PROP.01-L002",
+  "comp": "DF.PROP.01",
+  "q": "Comment reconnaît-on qu'un tableau est un tableau de proportionnalité ?",
+  "a": "Le rapport (quotient) entre les deux lignes est constant pour chaque colonne",
+  "type": "qcm",
+  "options": [
+   "Les valeurs de chaque ligne augmentent",
+   "Le rapport (quotient) entre les deux lignes est constant pour chaque colonne",
+   "La somme des deux lignes est constante"
+  ],
+  "err": {
+   "Les valeurs de chaque ligne augmentent": "DF.PROP.01#augmentent_ensemble"
+  },
+  "steps": [
+   "Repense à la définition d'un tableau de proportionnalité vue en cours.",
+   "Laquelle des trois propositions correspond exactement à cette définition ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_01",
+  "num": "3",
+  "source": "bank_4eme/Proportionnalité|PRO_01.3"
+ },
+ {
+  "id": "DF.PROP.02-L010",
+  "comp": "DF.PROP.02",
+  "q": "Inès vend aussi des poires : $3$ kg coûtent $9$ €. Combien coûtent $5$ kg de poires ?",
+  "a": "$15$ €",
+  "type": "qcm",
+  "options": [
+   "$12$ €",
+   "$18$ €",
+   "$15$ €"
+  ],
+  "err": {},
+  "steps": [
+   "Calcule le prix d'un kg de poires : $9 \\div 3 = ?$ €.",
+   "Multiplie ce prix par $5$ kg."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_01",
+  "num": "4",
+  "source": "bank_4eme/Proportionnalité|PRO_01.4"
+ },
+ {
+  "id": "DF.PROP.01-L003",
+  "comp": "DF.PROP.01",
+  "q": "Inès affirme : « Un marchand qui offre $1$ kg gratuit pour $5$ kg achetés propose un prix proportionnel à la masse achetée. »",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Dans une situation de proportionnalité, doubler la masse achetée double toujours le prix payé.",
+   "Si on offre un kg gratuit pour $5$ achetés, doubler la quantité achetée double-t-il exactement le prix payé ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_01",
+  "num": "5",
+  "source": "bank_4eme/Proportionnalité|PRO_01.5"
+ },
+ {
+  "id": "DF.PROP.07-L006",
+  "comp": "DF.PROP.07",
+  "q": "Sur une carte à l'échelle $1/1000$, une distance mesure $4$ cm. Quelle est la distance réelle correspondante, en m ?",
+  "a": "40",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "4000": "DF.PROP.07#conversion_oubliee",
+   "0,004": "DF.PROP.07#sens_echelle"
+  },
+  "steps": [
+   "L'échelle $1/1000$ signifie que $1$ cm sur la carte correspond à $1000$ cm dans la réalité.",
+   "Distance réelle $= 4 \\times 1000 = ?$ cm, à convertir ensuite en mètres."
+  ],
+  "f": "$\\text{distance réelle} = \\text{distance sur la carte} \\div \\text{échelle}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_02",
+  "num": "1",
+  "source": "bank_4eme/Proportionnalité|PRO_02.1"
+ },
+ {
+  "id": "DF.PROP.07-L007",
+  "comp": "DF.PROP.07",
+  "q": "Sur cette même carte (échelle $1/1000$), quelle distance sur la carte correspond à $250$ m dans la réalité ?",
+  "a": "$25$ cm",
+  "type": "qcm",
+  "options": [
+   "$25$ cm",
+   "$2{,}5$ cm",
+   "$250$ cm"
+  ],
+  "err": {},
+  "steps": [
+   "Convertis $250$ m en cm : $250 \\times 100 = ?$ cm.",
+   "Divise cette distance réelle par $1000$ (l'échelle) pour trouver la distance sur la carte."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_02",
+  "num": "2",
+  "source": "bank_4eme/Proportionnalité|PRO_02.2"
+ },
+ {
+  "id": "DF.PROP.07-L008",
+  "comp": "DF.PROP.07",
+  "q": "Lucas affirme : « Sur une carte à l'échelle $1/25000$, $1$ cm représente $250$ m dans la réalité. »",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Calcule la distance réelle représentée par $1$ cm : $1 \\times 25000 = ?$ cm.",
+   "Convertis ce résultat en mètres et compare-le avec $250$ m."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_02",
+  "num": "3",
+  "source": "bank_4eme/Proportionnalité|PRO_02.3"
+ },
+ {
+  "id": "DF.PROP.07-L009",
+  "comp": "DF.PROP.07",
+  "q": "Le trésor est situé à $3{,}5$ km dans la réalité. Sur une carte à l'échelle $1/50000$, à quelle distance (en cm) doit-il apparaître sur la carte ?",
+  "a": "7",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "Convertis $3{,}5$ km en cm : $3{,}5 \\times 100000 = ?$ cm.",
+   "Divise cette distance réelle par $50000$ (l'échelle) pour obtenir la distance sur la carte."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_02",
+  "num": "4",
+  "source": "bank_4eme/Proportionnalité|PRO_02.4"
+ },
+ {
+  "id": "DF.PROP.07-L010",
+  "comp": "DF.PROP.07",
+  "q": "Lucas mesure deux points sur sa carte (échelle $1/20000$) séparés de $8$ cm. Quelle est la distance réelle entre ces points, en km ?",
+  "a": "$1{,}6$ km",
+  "type": "qcm",
+  "options": [
+   "$16$ km",
+   "$1{,}6$ km",
+   "$0{,}16$ km"
+  ],
+  "err": {},
+  "steps": [
+   "Distance réelle en cm $= 8 \\times 20000 = ?$ cm.",
+   "Convertis ce résultat en km, sachant que $1$ km $= 100000$ cm."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_02",
+  "num": "5",
+  "source": "bank_4eme/Proportionnalité|PRO_02.5"
+ },
+ {
+  "id": "DF.PROP.04-L006",
+  "comp": "DF.PROP.04",
+  "q": "Un pull coûte $40$ € avant une réduction de $25\\%$. Quelle expression permet de calculer directement le prix soldé ?",
+  "a": "$40 \\times (1-0{,}25)$",
+  "type": "qcm",
+  "options": [
+   "$40 \\times 0{,}25$",
+   "$40 + 0{,}25$",
+   "$40 \\times (1-0{,}25)$"
+  ],
+  "err": {
+   "$40 \\times 0{,}25$": "DF.PROP.04#coefficient_faux"
+  },
+  "steps": [
+   "Une réduction de $25\\%$ signifie qu'il reste $100\\% - 25\\% = 75\\%$ du prix initial, soit un coefficient de $0{,}75$.",
+   "Quelle expression correspond à \"prix initial multiplié par ce coefficient\" ?"
+  ],
+  "f": "$\\text{prix final} = \\text{prix initial} \\times (1 \\pm \\frac{t}{100})$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_03",
+  "num": "1",
+  "source": "bank_4eme/Proportionnalité|PRO_03.1"
+ },
+ {
+  "id": "DF.PROP.04-L007",
+  "comp": "DF.PROP.04",
+  "q": "Calcule le prix soldé du pull de $40$ € avec une réduction de $25\\%$ (en €).",
+  "a": "30",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "10": "DF.PROP.04#reduction_au_lieu_prix"
+  },
+  "steps": [
+   "Le coefficient multiplicateur pour une réduction de $25\\%$ est $1 - 0{,}25 = 0{,}75$.",
+   "$40 \\times 0{,}75 = ?$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_03",
+  "num": "2",
+  "source": "bank_4eme/Proportionnalité|PRO_03.2"
+ },
+ {
+  "id": "DF.PROP.06-L004",
+  "comp": "DF.PROP.06",
+  "q": "Un jean coûte $60$ € après une hausse de $20\\%$ par rapport à son prix d'origine. Quel était le prix d'origine (en €) ?",
+  "a": "50",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "48": "DF.PROP.06#inverse_par_meme_taux"
+  },
+  "steps": [
+   "Le coefficient multiplicateur pour une hausse de $20\\%$ est $1{,}2$. Le prix final $60$ € $=$ prix initial $\\times 1{,}2$.",
+   "Pour retrouver le prix initial, divise : $60 \\div 1{,}2 = ?$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_03",
+  "num": "3",
+  "source": "bank_4eme/Proportionnalité|PRO_03.3"
+ },
+ {
+  "id": "DF.PROP.06-L005",
+  "comp": "DF.PROP.06",
+  "q": "Jade affirme : « Une réduction de $10\\%$ suivie d'une réduction de $10\\%$ revient au même qu'une réduction unique de $20\\%$. »",
+  "a": "Faux",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {
+   "Vrai": "DF.PROP.06#taux_additionnes"
+  },
+  "steps": [
+   "Prends un prix de départ de $100$ € et applique deux fois une réduction de $10\\%$ : $100 \\times 0{,}9 \\times 0{,}9 = ?$ €.",
+   "Compare ce résultat avec une réduction unique de $20\\%$ : $100 \\times 0{,}8 = ?$ €. Les deux résultats sont-ils égaux ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_03",
+  "num": "4",
+  "source": "bank_4eme/Proportionnalité|PRO_03.4"
+ },
+ {
+  "id": "DF.PROP.05-L004",
+  "comp": "DF.PROP.05",
+  "q": "Une robe coûtait $80$ € et coûte maintenant $68$ €. Quel est le pourcentage de réduction appliqué ?",
+  "a": "$15\\%$",
+  "type": "qcm",
+  "options": [
+   "$15\\%$",
+   "$12\\%$",
+   "$8\\%$"
+  ],
+  "err": {
+   "$12\\%$": "DF.PROP.05#ecart_comme_pourcent"
+  },
+  "steps": [
+   "Calcule la baisse en euros : $80 - 68 = ?$ €.",
+   "Exprime cette baisse en pourcentage du prix initial : $\\dfrac{?}{80} \\times 100 = \\;?\\%$"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_03",
+  "num": "5",
+  "source": "bank_4eme/Proportionnalité|PRO_03.5"
+ },
+ {
+  "id": "GM.VIT.01-L005",
+  "comp": "GM.VIT.01",
+  "q": "Le train parcourt $240$ km en $2$ heures. Quelle est sa vitesse moyenne (en km/h) ?",
+  "a": "120",
+  "type": "fill",
+  "options": [],
+  "err": {},
+  "steps": [
+   "La vitesse moyenne est le quotient de la distance parcourue par la durée du trajet.",
+   "$v = \\dfrac{240}{2} = ?$ km/h"
+  ],
+  "f": "$v = \\dfrac{d}{t}$",
+  "f_disabled": false,
+  "lvl": 1,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_04",
+  "num": "1",
+  "source": "bank_4eme/Proportionnalité|PRO_04.1"
+ },
+ {
+  "id": "GM.VIT.01-L006",
+  "comp": "GM.VIT.01",
+  "q": "À cette même vitesse ($120$ km/h), combien de temps (en h) faut-il pour parcourir $300$ km ?",
+  "a": "$2{,}5$ h",
+  "type": "qcm",
+  "options": [
+   "$3$ h",
+   "$2{,}5$ h",
+   "$2$ h"
+  ],
+  "err": {},
+  "steps": [
+   "Utilise la relation $t = \\dfrac{d}{v}$ avec $d = 300$ km et $v = 120$ km/h.",
+   "$t = \\dfrac{300}{120} = ?$ h"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_04",
+  "num": "2",
+  "source": "bank_4eme/Proportionnalité|PRO_04.2"
+ },
+ {
+  "id": "GM.VIT.01-L007",
+  "comp": "GM.VIT.01",
+  "q": "Adam roule maintenant à $90$ km/h pendant $1$ h $30$ min. Quelle distance parcourt-il (en km) ?",
+  "a": "135",
+  "type": "fill",
+  "options": [],
+  "err": {
+   "117": "GM.VIT.01#duree_non_convertie"
+  },
+  "steps": [
+   "Convertis $1$ h $30$ min en heures décimales : $1$ h $30$ min $= 1{,}5$ h.",
+   "Distance $= v \\times t = 90 \\times 1{,}5 = ?$ km"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_04",
+  "num": "3",
+  "source": "bank_4eme/Proportionnalité|PRO_04.3"
+ },
+ {
+  "id": "GM.VIT.01-L008",
+  "comp": "GM.VIT.01",
+  "q": "Adam affirme : « Si je double ma vitesse moyenne, je mets deux fois moins de temps pour parcourir la même distance. »",
+  "a": "Vrai",
+  "type": "vf",
+  "options": [
+   "Vrai",
+   "Faux"
+  ],
+  "err": {},
+  "steps": [
+   "Pour une distance fixée $d$, le temps est $t = \\dfrac{d}{v}$. Si $v$ double, que devient $\\dfrac{d}{v}$ ?",
+   "Le temps est-il alors divisé par deux ?"
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_04",
+  "num": "4",
+  "source": "bank_4eme/Proportionnalité|PRO_04.4"
+ },
+ {
+  "id": "GM.VIT.01-L009",
+  "comp": "GM.VIT.01",
+  "q": "Le trajet total d'Adam fait $450$ km. Il roule à $100$ km/h pendant les $2$ premières heures, puis termine le trajet à $125$ km/h. Combien de temps met-il pour la deuxième partie du trajet (en h) ?",
+  "a": "$2$ h",
+  "type": "qcm",
+  "options": [
+   "$3{,}6$ h",
+   "$2{,}5$ h",
+   "$2$ h"
+  ],
+  "err": {},
+  "steps": [
+   "Calcule la distance parcourue pendant les $2$ premières heures : $100 \\times 2 = ?$ km.",
+   "La distance restante est $450 - ? = \\;?$ km. Divise-la par $125$ km/h pour trouver le temps."
+  ],
+  "f": "",
+  "f_disabled": true,
+  "lvl": 2,
+  "usage": [
+   "train"
+  ],
+  "contexte": false,
+  "table": null,
+  "draw": null,
+  "figure": null,
+  "parapluie_id": "PRO_04",
+  "num": "5",
+  "source": "bank_4eme/Proportionnalité|PRO_04.5"
+ }
+]

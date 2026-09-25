@@ -115,6 +115,10 @@ footer a{color:var(--sub)}
 .state{text-align:center;padding:28px 16px}
 .state h1{font-size:1.25rem;margin-bottom:8px}
 .state p{color:var(--sub);font-size:.9rem;margin-bottom:18px}
+.cf{border:1.5px solid var(--blue);margin-bottom:12px}
+.cf label{display:flex;gap:10px;align-items:flex-start;font-size:.86rem;color:var(--text);margin-top:14px;cursor:pointer}
+.cf input[type=checkbox]{width:20px;height:20px;flex-shrink:0;margin:1px 0 0;accent-color:var(--blue)}
+.cf .err{color:#BE123C;font-size:.84rem;margin-top:10px}
 .merci{background:var(--acql);border:1px solid #A7F3D0;color:#065F46;border-radius:var(--r);padding:12px 14px;font-size:.88rem;margin-bottom:12px}
 </style>
 </head>
@@ -124,6 +128,32 @@ footer a{color:var(--sub)}
     <a class="logo" href="/"><img src="/assets/mark-navy.png" alt="" width="24" height="24">Matheux</a>
     <span class="chip" id="chip"></span>
   </div>
+
+  <!-- Confirmation parentale (lien du mail P-X0 : ?confirmer=1). Indépendante de l'affichage du bilan. -->
+  <section id="cf" class="card cf" hidden aria-labelledby="cf-t">
+    <div id="cf-form">
+      <div class="label">Confirmation parentale</div>
+      <h1 id="cf-t" style="margin-top:6px">Confirmer l'inscription <span id="cf-de">de votre enfant</span></h1>
+      <p class="sub" id="cf-txt">Votre enfant est mineur(e) : votre accord est nécessaire pour conserver son espace Matheux et ses résultats de diagnostic.</p>
+      <label><input type="checkbox" id="cf-optin"><span id="cf-optin-txt">Je souhaite recevoir par email des conseils et les offres Matheux pour accompagner mon enfant (5 emails par mois au maximum, désinscription en 1 clic). Facultatif.</span></label>
+      <button class="btn btn-ac" type="button" id="cf-go" style="margin-top:16px">Je confirme l'inscription</button>
+      <p class="err" id="cf-err" role="alert" hidden></p>
+      <p class="small" style="margin-top:10px">Si vous n'êtes pas le parent, ou si vous n'êtes pas d'accord, fermez simplement cette page.</p>
+    </div>
+    <div id="cf-ok" hidden role="status">
+      <div class="done" style="margin-top:0">✓ <span id="cf-ok-t">Merci, l'inscription est confirmée.</span></div>
+      <p class="info" id="cf-ok-txt"></p>
+    </div>
+    <div id="cf-exp" hidden>
+      <h1>Ce lien de confirmation n'est plus valide</h1>
+      <p class="sub">Il a expiré ou a été désactivé. Écrivez-moi à <a href="mailto:contact@matheux.fr">contact@matheux.fr</a> et je vous en renvoie un.</p>
+    </div>
+    <div id="cf-net" hidden>
+      <h1>La confirmation n'a pas pu être chargée</h1>
+      <p class="sub">La connexion a échoué. Vérifiez votre réseau puis réessayez.</p>
+      <button class="btn btn-ac" type="button" id="cf-retry" style="margin-top:14px">Réessayer</button>
+    </div>
+  </section>
 
   <!-- État : chargement -->
   <section id="st-load" class="card" aria-busy="true" aria-label="Chargement du bilan">
@@ -225,7 +255,7 @@ footer a{color:var(--sub)}
      ces valeurs ne servent que de secours. Liens Stripe : à renseigner par Nicolas quand les
      Payment Links existent (tant qu'ils sont vides, le paiement affiche un message « bientôt »). */
   var OFFRE = {
-    diag:      { produit: 'diag_complet',      libelle: 'Diagnostic complet', prix: 19, lien: '' },
+    diag:      { produit: 'diag_complet',      libelle: 'Diagnostic complet', prix: 19, lien: 'https://buy.stripe.com/9B66oJ3xM4rH4mc0mjb3q07' },
     programme: { produit: 'programme_brevet',  libelle: 'Programme Brevet',   prix: 49, lien: '' },
     upgrade:   { produit: 'programme_upgrade', libelle: 'Programme Brevet',   prix: 30, lien: '' },
     textes_version: 'bilan-2026-09-24'
@@ -290,8 +320,53 @@ footer a{color:var(--sub)}
     if (!/^[0-9a-f]{48}$/i.test(TOKEN)) { show('st-exp'); return; }
     api({ action: 'get_bilan_partage', token: TOKEN.toLowerCase() }).then(function (r) {
       if (r && r.status === 'success' && r.carte) { DATA = r; render(); return; }
+      if (CONFIRMER) { show('none'); return; } // lien de confirmation sans bilan (diagnostic pas encore fait)
       show('st-exp');
-    }).catch(function () { show('st-net'); });
+    }).catch(function () { show(CONFIRMER ? 'none' : 'st-net'); });
+  }
+
+  /* ── Confirmation parentale (?confirmer=1, lien du mail P-X0 / rappel) ──
+     Rien n'est enregistré à l'ouverture de la page (un antivirus de messagerie qui « visite » le lien
+     ne doit pas confirmer à la place du parent) : l'accord est donné par le clic, horodaté côté serveur. */
+  var CONFIRMER = qs.get('confirmer') === '1';
+  function cfEtat(id) { ['cf-form', 'cf-ok', 'cf-exp', 'cf-net'].forEach(function (s) { $(s).hidden = s !== id; }); $('cf').hidden = false; }
+  function cfOk(r, prenom) {
+    $('cf-ok-t').textContent = r && r.deja_confirme ? 'L\'inscription ' + de(prenom) + ' est déjà confirmée. Merci.' : 'Merci, l\'inscription ' + de(prenom) + ' est confirmée.';
+    $('cf-ok-txt').textContent = (r && r.optin_marketing
+      ? 'Vous recevrez aussi mes conseils et offres (5 par mois au maximum). Chaque email contient un lien de désinscription.'
+      : 'Vous ne recevrez que les emails liés au service (bilans, confirmations). Aucune offre commerciale.') +
+      ' Le bilan ' + de(prenom) + ' s\'affiche ci-dessous dès qu\'un diagnostic est terminé.';
+    cfEtat('cf-ok');
+  }
+  function cfCharger() {
+    if (!/^[0-9a-f]{48}$/i.test(TOKEN)) { cfEtat('cf-exp'); return; }
+    api({ action: 'confirm_parent', token: TOKEN.toLowerCase(), apercu: true }).then(function (r) {
+      if (!r || r.status !== 'success') { cfEtat('cf-exp'); return; }
+      var prenom = r.prenom || 'votre enfant';
+      $('cf-de').textContent = de(prenom);
+      $('cf-txt').textContent = prenom + ' est mineur(e) : votre accord est nécessaire pour conserver son espace Matheux et ses résultats de diagnostic.';
+      $('cf-optin-txt').textContent = 'Je souhaite recevoir par email des conseils et les offres Matheux pour accompagner ' + prenom + ' (5 emails par mois au maximum, désinscription en 1 clic). Facultatif.';
+      $('cf-go').textContent = 'Je confirme l\'inscription ' + de(prenom);
+      $('cf-go').setAttribute('data-prenom-cf', prenom);
+      if (r.deja_confirme) { cfOk(r, prenom); return; }
+      cfEtat('cf-form');
+    }).catch(function () { cfEtat('cf-net'); });
+  }
+  function cfConfirmer() {
+    var go = $('cf-go'), err = $('cf-err'), prenom = go.getAttribute('data-prenom-cf') || 'votre enfant', label = go.textContent;
+    var optin = $('cf-optin').checked;
+    err.hidden = true; go.disabled = true; go.textContent = 'Un instant…';
+    sha256($('cf-txt').textContent + '\n' + $('cf-optin-txt').textContent).then(function (h) {
+      return api({ action: 'confirm_parent', token: TOKEN.toLowerCase(), optin_marketing: optin, texte_version: 'confirm-2026-09-25', texte_hash: h });
+    }).then(function (r) {
+      if (r && r.status === 'success') { cfOk(r, prenom); return; }
+      if (r && r.expire) { cfEtat('cf-exp'); return; }
+      throw new Error('confirm');
+    }).catch(function () {
+      go.disabled = false; go.textContent = label;
+      err.textContent = 'La confirmation n\'a pas pu être enregistrée. Vérifiez votre réseau puis réessayez.';
+      err.hidden = false;
+    });
   }
 
   /* ── Rendu du bilan ── */
@@ -529,6 +604,9 @@ footer a{color:var(--sub)}
   }
 
   $('retry').addEventListener('click', load);
+  $('cf-go').addEventListener('click', cfConfirmer);
+  $('cf-retry').addEventListener('click', cfCharger);
+  if (CONFIRMER) cfCharger();
   $('btn-apercu').addEventListener('click', apercu);
   load();
 })();

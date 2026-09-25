@@ -1,0 +1,118 @@
+{
+  "fichier": "data/banque_3eme/DF.STAT.json",
+  "relecteur": "relecteur",
+  "date": "2026-09-24",
+  "methode": "Calculs refaits à la main ; _normFill/_toNum/_matchFill extraits d'app.html (version du 24/09) et exécutés sous Node sur a, alt, clés err et variantes prévisibles.",
+  "bilan": {
+    "ok": 21,
+    "corrige": 0,
+    "rejet": 0
+  },
+  "items": [
+    {
+      "id": "DF.STAT.01-d01",
+      "verdict": "ok",
+      "notes": "5+9+7+4 = 25. 6 = 0+1+2+3 (valeurs additionnées) ; 31 = valeurs + effectifs."
+    },
+    {
+      "id": "DF.STAT.01-d02",
+      "verdict": "ok",
+      "notes": "Point graphe prioritaire. 4e trait à 5 par trait → 20. Description non ambiguë (« au-dessus de 0 », pas de 5 explicite). 4 = 1 trait = 1 ; 5 = pas de graduation ; 25 = décalage d'un trait : lecture_echelle cohérente. Limite assumée : l'énoncé rappelant le pas, l'erreur d'échelle est moins probable que sur un vrai diagramme ; l'item sous-détecte, mais ne produit pas de faux diagnostic."
+    },
+    {
+      "id": "DF.STAT.01-d03",
+      "verdict": "ok",
+      "notes": "Pointures 39 et 40 : 6 + 2 = 8. 79 = 39 + 40 ; 2 = nombre de colonnes (valeurs comptées au lieu des effectifs)."
+    },
+    {
+      "id": "DF.STAT.02-d01",
+      "verdict": "ok",
+      "notes": "10/25 = 40 %. 10 = effectif ; 66,67 = 10/15. Limite _matchFill (hors item) : l'alt « X% » fait passer aussi le décimal/la fraction (ex. 0,25 ou 1/4 pour une case « ___ % » attendant 25). Correctif à faire dans _matchFill, pas dans l'item."
+    },
+    {
+      "id": "DF.STAT.02-d02",
+      "verdict": "ok",
+      "notes": "Total 30 → 12/30. 12 = effectif ; 12/18 = bus / autres ; 12/25 = total partiel (voiture oubliée)."
+    },
+    {
+      "id": "DF.STAT.02-d03",
+      "verdict": "ok",
+      "notes": "Face = 106 → 106/200 = 53 %. 106 = effectif ; 112,77 = 106/94. (47 = fréquence de Pile, non tagué : sans danger.) Limite _matchFill (hors item) : l'alt « X% » fait passer aussi le décimal/la fraction (ex. 0,25 ou 1/4 pour une case « ___ % » attendant 25). Correctif à faire dans _matchFill, pas dans l'item."
+    },
+    {
+      "id": "DF.STAT.03-d01",
+      "verdict": "ok",
+      "notes": "48/4 = 12. 16 = 48/3 ; 11,5 = (8+15)/2."
+    },
+    {
+      "id": "DF.STAT.03-d02",
+      "verdict": "ok",
+      "notes": "40/5 = 8. 8,5 = (2+15)/2 ; 10 = 40/4 ; 7 = médiane (valeur du milieu)."
+    },
+    {
+      "id": "DF.STAT.03-d03",
+      "verdict": "ok",
+      "notes": "12×4 + 17 = 65 ; 65/5 = 13. 14,5 = (12+17)/2 ; 16,25 = 65/4."
+    },
+    {
+      "id": "DF.STAT.04-d01",
+      "verdict": "ok",
+      "notes": "(10 + 28 + 16)/4 = 13,5. 13,33 = 40/3 ; 18 = 54/3."
+    },
+    {
+      "id": "DF.STAT.04-d02",
+      "verdict": "ok",
+      "notes": "12 buts / 10 matchs = 1,2. 1,5 = moyenne des valeurs ; 3 = 12/4."
+    },
+    {
+      "id": "DF.STAT.04-d03",
+      "verdict": "ok",
+      "notes": "(45 + 27 + 28)/8 = 12,5. 12,67 = 38/3 ; 33,33 = 100/3."
+    },
+    {
+      "id": "DF.STAT.05-d01",
+      "verdict": "ok",
+      "notes": "Rangée : 5 ; 6 ; 9 ; 14 ; 17 → 9. 5 = milieu non rangé ; 11 = (5+17)/2."
+    },
+    {
+      "id": "DF.STAT.05-d02",
+      "verdict": "ok",
+      "notes": "(8+10)/2 = 9 (convention collège : moyenne des deux valeurs centrales). 8 et 10 = mauvais rang ; 11,5 = milieu de l'étendue."
+    },
+    {
+      "id": "DF.STAT.05-d03",
+      "verdict": "ok",
+      "notes": "19 valeurs → 10e ; cumul 3, 11 → 1. 2 = milieu de la ligne des valeurs ; 5 = milieu de la ligne des effectifs : ignore_effectifs cohérent."
+    },
+    {
+      "id": "DF.STAT.06-d01",
+      "verdict": "ok",
+      "notes": "51 − 38 = 13 ; « 13 s » accepté. 2 = 42 − 40 (premier/dernier) ; 51 = max seul."
+    },
+    {
+      "id": "DF.STAT.06-d02",
+      "verdict": "ok",
+      "notes": "3,1 − 1,8 = 1,3. 0,2 = 2,4 − 2,2 ; 3,1 = max."
+    },
+    {
+      "id": "DF.STAT.06-d03",
+      "verdict": "ok",
+      "notes": "Étendue A = 5, B = 12 → Faux. Prémisse vraie (15 > 14), seule la conclusion est fausse : bon piège max_seul."
+    },
+    {
+      "id": "DF.STAT.07-d01",
+      "verdict": "ok",
+      "notes": "Même moyenne n'implique pas même régularité → Faux."
+    },
+    {
+      "id": "DF.STAT.07-d02",
+      "verdict": "ok",
+      "notes": "Somme 19 800 → moyenne 3 960 ; médiane 2 000. La valeur extrême tire la moyenne."
+    },
+    {
+      "id": "DF.STAT.07-d03",
+      "verdict": "ok",
+      "notes": "Étendue 2 contre 14 : les notes de A sont plus regroupées. Distracteurs = moyenne_suffit."
+    }
+  ]
+}

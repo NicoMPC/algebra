@@ -1,0 +1,118 @@
+{
+  "fichier": "data/banque_3eme/GM.AIRE.json",
+  "relecteur": "relecteur",
+  "date": "2026-09-24",
+  "methode": "Calculs refaits à la main ; _normFill/_toNum/_matchFill extraits d'app.html (version du 24/09) et exécutés sous Node sur a, alt, clés err et variantes prévisibles.",
+  "bilan": {
+    "ok": 7,
+    "corrige": 2,
+    "rejet": 0
+  },
+  "items": [
+    {
+      "id": "GM.AIRE.01-d01",
+      "verdict": "ok",
+      "notes": "2 × (8+5) = 26. 40 = aire ; 13 = deux côtés oubliés."
+    },
+    {
+      "id": "GM.AIRE.01-d02",
+      "verdict": "ok",
+      "notes": "2π × 4 = 8π. 4π = πr ; 16π = πr² (aire)."
+    },
+    {
+      "id": "GM.AIRE.01-d03",
+      "verdict": "ok",
+      "notes": "12 + 9 + 15 = 36. 54 = aire du triangle rectangle 9-12-15 ; 21 et 27 = côté oublié."
+    },
+    {
+      "id": "GM.AIRE.02-d01",
+      "verdict": "ok",
+      "notes": "10 × 6 / 2 = 30 ; « 30 cm² » accepté. 60 = moitié oubliée."
+    },
+    {
+      "id": "GM.AIRE.02-d02",
+      "verdict": "ok",
+      "notes": "28 dm². 28 dm et 28 dm³ = unite_aire."
+    },
+    {
+      "id": "GM.AIRE.02-d03",
+      "verdict": "ok",
+      "notes": "8 × 4 / 2 = 16. Figure cohérente (BH = 3, AB = 5). 20 = 8×5/2 (côté oblique) ; 32 = moitié oubliée ; 40 = les deux."
+    },
+    {
+      "id": "GM.AIRE.03-d01",
+      "verdict": "ok",
+      "notes": "π × 25. 10π = 2πr ; 25π² = (πr)² ; 100π = π d²."
+    },
+    {
+      "id": "GM.AIRE.03-d02",
+      "verdict": "corrige",
+      "notes": "r = 3 → k = 9. 36 = d² ; 6 = 2πr → 6π. Juste ; mais « 9π » (forme naturelle puisque l'énoncé écrit kπ) est refusé par _matchFill (simulé). Ajout d'alt.",
+      "correction": {
+        "id": "GM.AIRE.03-d02",
+        "comp": "GM.AIRE.03",
+        "q": "Un disque a un diamètre de $6$ cm. Son aire s'écrit $k\\pi~\\text{cm}^2$. Quelle est la valeur de $k$ ? ___",
+        "a": "9",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "36": "GM.AIRE.03#diametre_au_carre",
+          "6": "GM.AIRE.03#formule_perimetre"
+        },
+        "steps": [
+          "La formule de l'aire utilise le rayon, pas le diamètre. Quel est le rayon ?",
+          "Élève ce rayon au carré : ?"
+        ],
+        "f": "$\\mathcal{A} = \\pi r^2$",
+        "lvl": 1,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false,
+        "alt": [
+          "9π",
+          "9pi",
+          "9\\pi"
+        ]
+      }
+    },
+    {
+      "id": "GM.AIRE.03-d03",
+      "verdict": "corrige",
+      "notes": "Point prioritaire (arrondi π). 3,14 × 225 = 706,5 pile : l'arrondi à l'unité (707) dépend alors de la convention sur le chiffre 5 ; un élève qui tronque (706) ou qui ne met pas d'arrondi (706,5) est refusé et déclaré en lacune sur l'aire du disque alors que la compétence est acquise. Avec r = 12 : 3,14 × 144 = 452,16 → 452 ; avec π calculatrice 452,39 → 452, même arrondi, sans valeur « 5 » à la limite. On accepte aussi les valeurs non arrondies (la compétence testée est l'aire, pas l'arrondi). Erreurs recalculées : 2 × 3,14 × 12 = 75,36 ; 3,14 × 24² = 1 808,64 (1 810 avec π calculatrice) ; (3,14 × 12)² = 1 419,78 (1 421 avec π calculatrice).",
+      "correction": {
+        "id": "GM.AIRE.03-d03",
+        "comp": "GM.AIRE.03",
+        "q": "Une pizza ronde a un rayon de $12$ cm. Calcule son aire, arrondie à l'unité, en prenant $\\pi \\approx 3{,}14$. (en $\\text{cm}^2$) ___",
+        "a": "452",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "75": "GM.AIRE.03#formule_perimetre",
+          "75,36": "GM.AIRE.03#formule_perimetre",
+          "1809": "GM.AIRE.03#diametre_au_carre",
+          "1810": "GM.AIRE.03#diametre_au_carre",
+          "1420": "GM.AIRE.03#pi_r_au_carre",
+          "1421": "GM.AIRE.03#pi_r_au_carre"
+        },
+        "steps": [
+          "Calcule d'abord le carré du rayon : $12^2 = $ ?",
+          "Multiplie par $3{,}14$, puis arrondis à l'unité : ?"
+        ],
+        "f": "$\\mathcal{A} = \\pi r^2$",
+        "lvl": 2,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": true,
+        "alt": [
+          "452,16",
+          "452,4",
+          "452,39"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "fichier": "data/banque_3eme/EG.ESP.json",
+  "relecteur": "relecteur",
+  "date": "2026-09-24",
+  "methode": "calculs refaits a la main ; _normFill/_toNum/_matchFill extraits d app.html et simules en Node (a, alt, variantes, cles err) ; LaTeX rendu KaTeX 0.16.9 strict (0 erreur) ; ids err verifies dans competences.json",
+  "bilan": {
+    "ok": 6,
+    "corrige": 0,
+    "rejet": 0
+  },
+  "items": [
+    {
+      "id": "EG.ESP.01-d01",
+      "verdict": "ok",
+      "remarques": "Cube : 12 aretes ; 6 (faces) et 8 (sommets) coherents."
+    },
+    {
+      "id": "EG.ESP.01-d02",
+      "verdict": "ok",
+      "remarques": "Prisme a base triangulaire : 2+3=5 faces ; 6 (reflexe cube), 9 (aretes), 3 (faces laterales seules) coherents."
+    },
+    {
+      "id": "EG.ESP.01-d03",
+      "verdict": "ok",
+      "remarques": "Faux : le rayon du secteur est la generatrice, strictement plus longue que le rayon de base (hauteur > 0)."
+    },
+    {
+      "id": "EG.ESP.02-d01",
+      "verdict": "ok",
+      "remarques": "Rectangle. QCM a 3 options : aucune 4e forme naturelle, acceptable."
+    },
+    {
+      "id": "EG.ESP.02-d02",
+      "verdict": "ok",
+      "remarques": "Section = disque de rayon sqrt(25-9)=4 < 5. 3 options acceptable."
+    },
+    {
+      "id": "EG.ESP.02-d03",
+      "verdict": "ok",
+      "remarques": "Reduction k=6/12 : rayon 3. err 6 coherent. Programme 3e (sections de cone)."
+    }
+  ]
+}

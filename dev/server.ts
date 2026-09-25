@@ -275,6 +275,10 @@ Deno.serve({ port: PORT, hostname: "127.0.0.1", onListen: () => {
       return res;
     }
     if (url.pathname.startsWith("/dev")) return await devRoute(req, url);
+    // Vrai service worker (sinon neutralisé) : /sw.js?reel=1, utilisé par dev/browser_test.ts pour tester l'install
+    if (url.pathname === "/sw.js" && url.searchParams.get("reel") === "1") {
+      return new Response(await Deno.readFile(`${ROOT}/sw.js`), { headers: { "Content-Type": MIME.js, "Cache-Control": "no-store" } });
+    }
     return await serveStatic(url.pathname);
   } catch (e) {
     console.error("[dev] erreur", e);

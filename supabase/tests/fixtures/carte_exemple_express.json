@@ -1,0 +1,251 @@
+{
+ "eleve": {
+  "prenom": "Léa",
+  "niveau": "3EME"
+ },
+ "type": "express",
+ "date": "2026-10-01",
+ "duree_min": null,
+ "n_questions": 15,
+ "score_global": 59,
+ "phrase_cle": "Le blocage principal vient d'une notion de 4e : « Résoudre une équation simple (3x + 7 = 22) ». Elle freine 2 autres compétences : c'est par là qu'on commence.",
+ "domaines": [
+  {
+   "code": "NC",
+   "libelle": "Nombres et calculs",
+   "maitrise": 0.44,
+   "statut": "fragile",
+   "n_comp": 45,
+   "n_evalues": 3,
+   "n_lacunes": 1
+  },
+  {
+   "code": "DF",
+   "libelle": "Organisation et gestion de données, fonctions",
+   "maitrise": 1,
+   "statut": "acquis",
+   "n_comp": 31,
+   "n_evalues": 1,
+   "n_lacunes": 0
+  },
+  {
+   "code": "GM",
+   "libelle": "Grandeurs et mesures",
+   "maitrise": 1,
+   "statut": "acquis",
+   "n_comp": 15,
+   "n_evalues": 1,
+   "n_lacunes": 0
+  },
+  {
+   "code": "EG",
+   "libelle": "Espace et géométrie",
+   "maitrise": 0,
+   "statut": "lacune",
+   "n_comp": 24,
+   "n_evalues": 1,
+   "n_lacunes": 1
+  },
+  {
+   "code": "AP",
+   "libelle": "Algorithmique et programmation",
+   "maitrise": 1,
+   "statut": "acquis",
+   "n_comp": 6,
+   "n_evalues": 1,
+   "n_lacunes": 0
+  }
+ ],
+ "competences": [
+  {
+   "id": "AP.PROG.03",
+   "titre": "Comprendre une boucle « répéter n fois »",
+   "titre_eleve": "Les boucles (répéter)",
+   "domaine": "AP",
+   "niveau_origine": "4EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "DF.AFF.05",
+   "titre": "Comparer deux fonctions affines ou deux offres (point d'intersection, résolution)",
+   "titre_eleve": "Comparer deux tarifs ou deux fonctions",
+   "domaine": "DF",
+   "niveau_origine": "3EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "EG.TRIG.03",
+   "titre": "Calculer une longueur avec la trigonométrie",
+   "titre_eleve": "Trigo : calculer une longueur",
+   "domaine": "EG",
+   "niveau_origine": "3EME",
+   "statut": "lacune",
+   "maitrise": 0.26,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": [
+    {
+     "id": "EG.TRIG.03#inconnue_au_denominateur",
+     "libelle": "Isole mal l'inconnue quand elle est au dénominateur (x = cos × adj au lieu de adj ÷ cos)",
+     "libelle_parent": "Ne sait pas résoudre a/x = b",
+     "remediation": "Revenir à l'égalité de fractions : cos = adj/x ⇒ x = adj ÷ cos",
+     "n": 1,
+     "exemple": {
+      "q": "Calcule EG.TRIG.03-008 ___",
+      "reponse_eleve": "11/9",
+      "a": "18/7"
+     }
+    }
+   ]
+  },
+  {
+   "id": "GM.VOL.05",
+   "titre": "Calculer le volume d'un solide composé",
+   "titre_eleve": "Volume d'un solide composé (cylindre + cône…)",
+   "domaine": "GM",
+   "niveau_origine": "3EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  },
+  {
+   "id": "NC.EQUA.02",
+   "titre": "Résoudre une équation du type ax + b = c",
+   "titre_eleve": "Résoudre une équation simple (3x + 7 = 22)",
+   "domaine": "NC",
+   "niveau_origine": "4EME",
+   "statut": "lacune",
+   "maitrise": 0.38,
+   "n_obs": 3,
+   "cause_racine": true,
+   "racine_profonde": true,
+   "bloque": [
+    "EG.TRIG.03",
+    "NC.EQUA.04"
+   ],
+   "erreurs": [
+    {
+     "id": "NC.EQUA.02#soustrait_coef",
+     "libelle": "Soustrait le coefficient au lieu de diviser (3x = 21 → x = 18)",
+     "libelle_parent": "Utilise la mauvaise opération inverse",
+     "remediation": "3x signifie 3 × x : l'inverse de « × 3 » est « ÷ 3 »",
+     "n": 1,
+     "exemple": {
+      "q": "QCM NC.EQUA.02-006",
+      "reponse_eleve": "E6",
+      "a": "R6"
+     }
+    }
+   ]
+  },
+  {
+   "id": "NC.EQUA.04",
+   "titre": "Mettre un problème en équation et interpréter la solution",
+   "titre_eleve": "Mettre un problème en équation",
+   "domaine": "NC",
+   "niveau_origine": "3EME",
+   "statut": "fragile",
+   "maitrise": 0.51,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": [
+    {
+     "id": "NC.EQUA.04#inconnue_floue",
+     "libelle": "Ne dit pas ce que représente x ou choisit une inconnue qui complique tout",
+     "libelle_parent": "Ne sait pas par où commencer un problème",
+     "remediation": "Écrire « Soit x = … » en toutes lettres, avec l'unité",
+     "n": 1,
+     "exemple": {
+      "q": "Calcule NC.EQUA.04-002 ___",
+      "reponse_eleve": "5/9",
+      "a": "12/7"
+     }
+    }
+   ]
+  },
+  {
+   "id": "NC.FRAC.01",
+   "titre": "Comprendre une fraction comme partage et comme quotient",
+   "titre_eleve": "Comprendre ce qu'est une fraction",
+   "domaine": "NC",
+   "niveau_origine": "6EME",
+   "statut": "acquis",
+   "maitrise": 0.74,
+   "n_obs": 2,
+   "cause_racine": false,
+   "racine_profonde": false,
+   "bloque": [],
+   "erreurs": []
+  }
+ ],
+ "priorites": [
+  "NC.EQUA.02",
+  "EG.TRIG.03",
+  "NC.EQUA.04"
+ ],
+ "point_faible": "NC.EQUA.02",
+ "plan_4_semaines": [
+  {
+   "semaine": 1,
+   "focus": [
+    "NC.EQUA.02",
+    "EG.TRIG.03"
+   ],
+   "objectif": "Reconstruire la base : Résoudre une équation simple (3x + 7 = 22) ; Trigo : calculer une longueur"
+  },
+  {
+   "semaine": 2,
+   "focus": [
+    "NC.EQUA.04"
+   ],
+   "objectif": "Travailler : Mettre un problème en équation"
+  },
+  {
+   "semaine": 3,
+   "focus": [],
+   "objectif": "Entretenir les acquis (révisions espacées) et s'entraîner sur des sujets type Brevet"
+  },
+  {
+   "semaine": 4,
+   "focus": [],
+   "objectif": "Entretenir les acquis (révisions espacées) et s'entraîner sur des sujets type Brevet"
+  }
+ ],
+ "points_forts": [
+  "DF.AFF.05",
+  "GM.VOL.05",
+  "AP.PROG.03",
+  "NC.FRAC.01"
+ ],
+ "message_parent": "Léa est à l'aise sur : Comparer deux tarifs ou deux fonctions ; Volume d'un solide composé (cylindre + cône…). Priorité n°1 : Résoudre une équation simple (3x + 7 = 22) — une notion de 4e qui freine 2 autres compétences du programme. Le plan : 5 exercices ciblés par jour, environ 10 minutes.",
+ "fiabilite": {
+  "niveau": "bonne",
+  "reponses_rapides": 0,
+  "inversions": 0
+ },
+ "zone_gratuite": [
+  "NC.EQUA.02",
+  "EG.TRIG.03",
+  "NC.EQUA.04"
+ ]
+}

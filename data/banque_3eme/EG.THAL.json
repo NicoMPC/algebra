@@ -1,0 +1,490 @@
+[
+  {
+    "id": "EG.THAL.01-d01",
+    "comp": "EG.THAL.01",
+    "q": "Les points $A$, $M$, $B$ sont alignés dans cet ordre, ainsi que $A$, $N$, $C$, et les droites $(MN)$ et $(BC)$ sont parallèles. Quelle égalité est correcte ?",
+    "a": "$\\frac{AM}{AB} = \\frac{AN}{AC} = \\frac{MN}{BC}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{AM}{MB} = \\frac{AN}{NC} = \\frac{MN}{BC}$",
+      "$\\frac{AM}{AB} = \\frac{AN}{AC} = \\frac{MN}{BC}$",
+      "$\\frac{AM}{AC} = \\frac{AN}{AB} = \\frac{MN}{BC}$",
+      "$\\frac{AB}{AM} = \\frac{AN}{AC} = \\frac{MN}{BC}$"
+    ],
+    "err": {
+      "$\\frac{AM}{MB} = \\frac{AN}{NC} = \\frac{MN}{BC}$": "EG.THAL.01#segment_partiel",
+      "$\\frac{AM}{AC} = \\frac{AN}{AB} = \\frac{MN}{BC}$": "EG.THAL.01#rapports_croises",
+      "$\\frac{AB}{AM} = \\frac{AN}{AC} = \\frac{MN}{BC}$": "EG.THAL.01#rapports_croises"
+    },
+    "steps": [
+      "Il y a un petit triangle $AMN$ et un grand triangle $ABC$ : on associe chaque côté du petit à son côté correspondant du grand.",
+      "Chaque rapport s'écrit $\\frac{\\text{côté du petit}}{\\text{côté du grand}}$, toujours dans le même sens. Quel côté du grand correspond à $[AM]$ ?"
+    ],
+    "f": "Rapports égaux : $\\frac{\\text{côté du petit triangle}}{\\text{côté homologue du grand}}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.THAL.01-d02",
+    "comp": "EG.THAL.01",
+    "q": "Les points $A$, $E$, $B$ sont alignés, ainsi que $A$, $F$, $C$. On ne sait pas si les droites $(EF)$ et $(BC)$ sont parallèles. Affirmation : « On peut en déduire que $\\frac{AE}{AB} = \\frac{AF}{AC}$. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "EG.THAL.01#sans_paralleles"
+    },
+    "steps": [
+      "Le théorème de Thalès a une hypothèse indispensable sur les droites $(EF)$ et $(BC)$ : laquelle ?",
+      "Cette hypothèse est-elle donnée ici ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.THAL.01-d03",
+    "comp": "EG.THAL.01",
+    "q": "Les points $R$, $S$, $T$ sont alignés dans cet ordre, ainsi que $R$, $U$, $V$, et $(SU)$ est parallèle à $(TV)$. Complète l'égalité : $\\frac{RS}{RT} = \\frac{RU}{\\text{___}}$",
+    "a": "RV",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "UV": "EG.THAL.01#segment_partiel",
+      "VU": "EG.THAL.01#segment_partiel",
+      "TV": "EG.THAL.01#rapports_croises"
+    },
+    "steps": [
+      "Le petit triangle est $RSU$, le grand est $RTV$.",
+      "$[RU]$ est un côté du petit triangle : quel est le côté du grand triangle sur la même droite, qui part aussi de $R$ ?"
+    ],
+    "f": "$\\frac{RS}{RT} = \\frac{RU}{RV} = \\frac{SU}{TV}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "VR",
+      "[RV]",
+      "[VR]"
+    ]
+  },
+  {
+    "id": "EG.THAL.02-d01",
+    "comp": "EG.THAL.02",
+    "q": "Les points $A$, $M$, $B$ sont alignés dans cet ordre, ainsi que $A$, $N$, $C$, et les droites $(MN)$ et $(BC)$ sont parallèles. On a $AM = 3$ cm, $AB = 6$ cm et $BC = 8$ cm. Calcule $MN$. ___ cm",
+    "a": "4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5": "EG.THAL.02#additif",
+      "16": "EG.THAL.02#produit_croix"
+    },
+    "steps": [
+      "D'après Thalès : $\\frac{AM}{AB} = \\frac{MN}{BC}$, soit $\\frac{3}{6} = \\frac{MN}{8}$.",
+      "Le grand triangle est un agrandissement du petit : $MN = 8 \\times \\frac{3}{6} = \\;?$"
+    ],
+    "f": "$\\frac{AM}{AB} = \\frac{MN}{BC}$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.THAL.02-d02",
+    "comp": "EG.THAL.02",
+    "q": "Les droites $(AD)$ et $(BE)$ se coupent en $O$ ; $A$, $O$, $D$ sont alignés et $B$, $O$, $E$ aussi. Les droites $(AB)$ et $(DE)$ sont parallèles. On a $OA = 4$ cm, $OB = 3$ cm, $OD = 6$ cm et $AB = 5$ cm. Quelle est la longueur $DE$ ?",
+    "a": "$7{,}5$ cm",
+    "type": "qcm",
+    "options": [
+      "$\\frac{10}{3}$ cm",
+      "$4{,}5$ cm",
+      "$7{,}5$ cm",
+      "$7$ cm"
+    ],
+    "err": {
+      "$\\frac{10}{3}$ cm": "EG.THAL.02#produit_croix",
+      "$4{,}5$ cm": "EG.THAL.02#papillon",
+      "$7$ cm": "EG.THAL.02#additif"
+    },
+    "steps": [
+      "Configuration papillon : le triangle $OAB$ correspond au triangle $ODE$ ($A$ avec $D$, $B$ avec $E$).",
+      "$\\frac{OA}{OD} = \\frac{AB}{DE}$, soit $\\frac{4}{6} = \\frac{5}{DE}$. Donc $DE = \\frac{5 \\times 6}{4} = \\;?$"
+    ],
+    "f": "$\\frac{OA}{OD} = \\frac{OB}{OE} = \\frac{AB}{DE}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.THAL.02-d03",
+    "comp": "EG.THAL.02",
+    "q": "Sur le plan d'un toboggan, les points $S$, $P$, $T$ sont alignés dans cet ordre, ainsi que $S$, $Q$, $U$, et les barres $(PQ)$ et $(TU)$ sont parallèles. On a $SP = 2$ m, $ST = 5$ m et $PQ = 1{,}2$ m. Calcule $TU$. ___ m",
+    "a": "3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "4,2": "EG.THAL.02#additif",
+      "0,48": "EG.THAL.02#produit_croix"
+    },
+    "steps": [
+      "D'après Thalès : $\\frac{SP}{ST} = \\frac{PQ}{TU}$, soit $\\frac{2}{5} = \\frac{1{,}2}{TU}$.",
+      "$TU$ est au dénominateur : $TU = \\frac{1{,}2 \\times 5}{2} = \\;?$"
+    ],
+    "f": "$\\frac{SP}{ST} = \\frac{PQ}{TU}$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.THAL.03-d01",
+    "comp": "EG.THAL.03",
+    "q": "Les points $A$, $M$, $B$ sont alignés, ainsi que $A$, $N$, $C$. Pour prouver que $(MN)$ et $(BC)$ sont parallèles, quelle méthode est correcte ?",
+    "a": "Vérifier que $\\frac{AM}{AB} = \\frac{AN}{AC}$ exactement et que les points sont dans le même ordre",
+    "type": "qcm",
+    "options": [
+      "Calculer seulement $\\frac{AM}{AB}$ : s'il est inférieur à $1$, les droites sont parallèles",
+      "Vérifier que $\\frac{AM}{AB} = \\frac{AN}{AC}$ exactement et que les points sont dans le même ordre",
+      "Vérifier que $\\frac{AM}{AB} = \\frac{AN}{AC}$, peu importe l'ordre des points",
+      "Vérifier que $\\frac{AM}{AB}$ et $\\frac{AN}{AC}$ sont égaux une fois arrondis à l'unité"
+    ],
+    "err": {
+      "Calculer seulement $\\frac{AM}{AB}$ : s'il est inférieur à $1$, les droites sont parallèles": "EG.THAL.03#un_seul_rapport",
+      "Vérifier que $\\frac{AM}{AB} = \\frac{AN}{AC}$, peu importe l'ordre des points": "EG.THAL.03#ordre_points",
+      "Vérifier que $\\frac{AM}{AB}$ et $\\frac{AN}{AC}$ sont égaux une fois arrondis à l'unité": "EG.THAL.03#rapports_arrondis"
+    },
+    "steps": [
+      "La réciproque de Thalès compare deux rapports : un sur chaque droite passant par $A$.",
+      "Elle a aussi une condition sur la position des points : laquelle ?"
+    ],
+    "f": "Si $\\frac{AM}{AB} = \\frac{AN}{AC}$ et points dans le même ordre, alors $(MN) \\parallel (BC)$",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.THAL.03-d02",
+    "comp": "EG.THAL.03",
+    "q": "Les points $R$, $E$, $F$ sont alignés dans cet ordre, ainsi que $R$, $G$, $H$. On a $RE = 3$ cm, $RF = 7$ cm, $RG = 4$ cm et $RH = 9{,}3$ cm. Affirmation : « Les droites $(EG)$ et $(FH)$ sont parallèles. »",
+    "a": "Faux",
+    "type": "vf",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "err": {
+      "Vrai": "EG.THAL.03#rapports_arrondis"
+    },
+    "steps": [
+      "On compare $\\frac{RE}{RF} = \\frac{3}{7}$ et $\\frac{RG}{RH} = \\frac{4}{9{,}3}$, sans arrondir.",
+      "Produits en croix : $3 \\times 9{,}3 = \\;?$ et $7 \\times 4 = \\;?$ Sont-ils exactement égaux ?"
+    ],
+    "f": "Parallèles si $\\frac{RE}{RF} = \\frac{RG}{RH}$ exactement (même ordre)",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.THAL.03-d03",
+    "comp": "EG.THAL.03",
+    "q": "Les points $M$, $A$, $B$ sont alignés dans cet ordre ($A$ est entre $M$ et $B$). Les points $A$, $N$, $C$ sont alignés dans cet ordre ($N$ est entre $A$ et $C$). On a $AM = 2$ cm, $AB = 5$ cm, $AN = 2$ cm et $AC = 5$ cm. Les droites $(MN)$ et $(BC)$ sont-elles parallèles ?",
+    "a": "Non, car les points ne sont pas dans le même ordre",
+    "type": "qcm",
+    "options": [
+      "Oui, car $\\frac{AM}{AB} = \\frac{AN}{AC}$",
+      "Non, car les points ne sont pas dans le même ordre",
+      "Oui, car $\\frac{AM}{AB} = 0{,}4$"
+    ],
+    "err": {
+      "Oui, car $\\frac{AM}{AB} = \\frac{AN}{AC}$": "EG.THAL.03#ordre_points",
+      "Oui, car $\\frac{AM}{AB} = 0{,}4$": "EG.THAL.03#un_seul_rapport"
+    },
+    "steps": [
+      "Les rapports $\\frac{AM}{AB}$ et $\\frac{AN}{AC}$ sont bien égaux. Mais la réciproque de Thalès demande une autre condition.",
+      "$M$ est-il du même côté de $A$ que $B$ ? Et $N$ par rapport à $C$ ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.THAL.01-t01",
+    "comp": "EG.THAL.01",
+    "q": "Les points $A$, $D$, $B$ sont alignés dans cet ordre, ainsi que $A$, $E$, $C$, et les droites $(DE)$ et $(BC)$ sont parallèles. Complète : $\\frac{AD}{AB} = \\frac{\\text{___}}{BC}$",
+    "a": "DE",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "AE": "EG.THAL.01#rapports_croises",
+      "AC": "EG.THAL.01#rapports_croises",
+      "DB": "EG.THAL.01#segment_partiel"
+    },
+    "steps": [
+      "Le petit triangle est $ADE$, le grand est $ABC$.",
+      "$BC$ est un côté du grand triangle : quel côté du petit triangle lui correspond ?"
+    ],
+    "f": "Si $(MN) \\parallel (BC)$ : $\\frac{AM}{AB} = \\frac{AN}{AC} = \\frac{MN}{BC}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "ED",
+      "[DE]",
+      "[ED]"
+    ]
+  },
+  {
+    "id": "EG.THAL.01-t02",
+    "comp": "EG.THAL.01",
+    "q": "Les points $M$, $A$, $R$ sont alignés dans cet ordre, ainsi que $M$, $B$, $S$, et les droites $(AB)$ et $(RS)$ sont parallèles. Quelle égalité est correcte ?",
+    "a": "$\\frac{MA}{MR} = \\frac{MB}{MS} = \\frac{AB}{RS}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{MA}{AR} = \\frac{MB}{BS} = \\frac{AB}{RS}$",
+      "$\\frac{MA}{MR} = \\frac{MB}{MS} = \\frac{AB}{RS}$",
+      "$\\frac{MA}{MS} = \\frac{MB}{MR} = \\frac{AB}{RS}$",
+      "$\\frac{MA}{MR} = \\frac{MS}{MB} = \\frac{AB}{RS}$"
+    ],
+    "err": {
+      "$\\frac{MA}{AR} = \\frac{MB}{BS} = \\frac{AB}{RS}$": "EG.THAL.01#segment_partiel",
+      "$\\frac{MA}{MS} = \\frac{MB}{MR} = \\frac{AB}{RS}$": "EG.THAL.01#rapports_croises",
+      "$\\frac{MA}{MR} = \\frac{MS}{MB} = \\frac{AB}{RS}$": "EG.THAL.01#rapports_croises"
+    },
+    "steps": [
+      "Le sommet commun est $M$ : le petit triangle est $MAB$, le grand $MRS$.",
+      "Chaque rapport doit être « côté du petit triangle » sur « côté correspondant du grand », toujours dans le même sens."
+    ],
+    "f": "Si $(MN) \\parallel (BC)$ : $\\frac{AM}{AB} = \\frac{AN}{AC} = \\frac{MN}{BC}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.THAL.01-t03",
+    "comp": "EG.THAL.01",
+    "q": "Dans le triangle $ABC$, le point $M$ est sur $[AB]$ et le point $N$ sur $[AC]$. Que faut-il savoir pour pouvoir écrire $\\frac{AM}{AB} = \\frac{AN}{AC}$ avec le théorème de Thalès ?",
+    "a": "Que les droites $(MN)$ et $(BC)$ sont parallèles",
+    "type": "qcm",
+    "options": [
+      "Que $AM = AN$",
+      "Que les droites $(MN)$ et $(BC)$ sont parallèles",
+      "Que $M$ est le milieu de $[AB]$",
+      "Que le triangle $ABC$ est rectangle"
+    ],
+    "err": {
+      "Que $AM = AN$": "EG.THAL.01#sans_paralleles",
+      "Que $M$ est le milieu de $[AB]$": "EG.THAL.01#sans_paralleles",
+      "Que le triangle $ABC$ est rectangle": "EG.THAL.01#sans_paralleles"
+    },
+    "steps": [
+      "Rappelle l'hypothèse du théorème de Thalès : quelles droites doivent avoir une propriété particulière ?",
+      "Cette hypothèse concerne le côté $[MN]$ et le côté $[BC]$."
+    ],
+    "f": "Si $(MN) \\parallel (BC)$ : $\\frac{AM}{AB} = \\frac{AN}{AC} = \\frac{MN}{BC}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.THAL.01-t04",
+    "comp": "EG.THAL.01",
+    "q": "Dans le triangle $EFG$, le point $H$ est sur $[EF]$ et le point $K$ sur $[EG]$, avec $(HK)$ parallèle à $(FG)$. Complète : $\\frac{EH}{\\text{___}} = \\frac{EK}{EG}$",
+    "a": "EF",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "HF": "EG.THAL.01#segment_partiel",
+      "FH": "EG.THAL.01#segment_partiel",
+      "FG": "EG.THAL.01#rapports_croises"
+    },
+    "steps": [
+      "$EH$ est un morceau du côté $[EF]$ du grand triangle.",
+      "Au dénominateur, on met le côté entier du grand triangle, pas le morceau restant."
+    ],
+    "f": "Si $(MN) \\parallel (BC)$ : $\\frac{AM}{AB} = \\frac{AN}{AC} = \\frac{MN}{BC}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "FE",
+      "[EF]",
+      "[FE]"
+    ]
+  },
+  {
+    "id": "EG.THAL.01-t05",
+    "comp": "EG.THAL.01",
+    "q": "Les points $A$, $C$, $E$ sont alignés dans cet ordre, ainsi que $B$, $C$, $D$. Les droites $(AB)$ et $(DE)$ sont parallèles. Quelle égalité est correcte ?",
+    "a": "$\\frac{CA}{CE} = \\frac{CB}{CD} = \\frac{AB}{ED}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{CA}{AE} = \\frac{CB}{BD} = \\frac{AB}{ED}$",
+      "$\\frac{CA}{CD} = \\frac{CB}{CE} = \\frac{AB}{ED}$",
+      "$\\frac{CA}{CE} = \\frac{CB}{CD} = \\frac{AB}{ED}$",
+      "$\\frac{CE}{CA} = \\frac{CB}{CD} = \\frac{AB}{ED}$"
+    ],
+    "err": {
+      "$\\frac{CA}{AE} = \\frac{CB}{BD} = \\frac{AB}{ED}$": "EG.THAL.01#segment_partiel",
+      "$\\frac{CA}{CD} = \\frac{CB}{CE} = \\frac{AB}{ED}$": "EG.THAL.01#rapports_croises",
+      "$\\frac{CE}{CA} = \\frac{CB}{CD} = \\frac{AB}{ED}$": "EG.THAL.01#rapports_croises"
+    },
+    "steps": [
+      "C'est une configuration « papillon » : les deux triangles $CAB$ et $CED$ ont le sommet $C$ en commun.",
+      "$A$ correspond à $E$ et $B$ à $D$ : écris chaque rapport dans le même sens (triangle $CAB$ en haut)."
+    ],
+    "f": "Papillon, $(AB) \\parallel (DE)$ : $\\frac{CA}{CE} = \\frac{CB}{CD} = \\frac{AB}{ED}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.THAL.01-t06",
+    "comp": "EG.THAL.01",
+    "q": "Les points $A$, $M$, $B$ sont alignés dans cet ordre, ainsi que $A$, $N$, $C$, et $(MN)$ est parallèle à $(BC)$. On sait que $AM = 3$ cm et $MB = 2$ cm. Quelle est la valeur du rapport $\\frac{AM}{AB}$ ? ___",
+    "a": "3/5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "3/2": "EG.THAL.01#segment_partiel",
+      "1,5": "EG.THAL.01#segment_partiel",
+      "5/3": "EG.THAL.01#rapports_croises"
+    },
+    "steps": [
+      "$AB$ n'est pas donné : il est formé de $[AM]$ et de $[MB]$.",
+      "Calcule $AB$, puis écris le rapport."
+    ],
+    "f": "$AB = AM + MB$ quand $M \\in [AB]$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.THAL.01-t07",
+    "comp": "EG.THAL.01",
+    "q": "Les points $B$, $A$, $D$ sont alignés dans cet ordre, ainsi que $C$, $A$, $E$, et $(BC)$ est parallèle à $(DE)$. Complète : $\\frac{AB}{AD} = \\frac{AC}{\\text{___}}$",
+    "a": "AE",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "CE": "EG.THAL.01#segment_partiel",
+      "EC": "EG.THAL.01#segment_partiel",
+      "DE": "EG.THAL.01#rapports_croises",
+      "ED": "EG.THAL.01#rapports_croises"
+    },
+    "steps": [
+      "Configuration papillon de sommet $A$ : les triangles sont $ABC$ et $ADE$.",
+      "$C$ correspond à quel point du triangle $ADE$ ? Le rapport part toujours de $A$."
+    ],
+    "f": "Papillon, $(BC) \\parallel (DE)$ : $\\frac{AB}{AD} = \\frac{AC}{AE} = \\frac{BC}{DE}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false,
+    "alt": [
+      "EA",
+      "[AE]",
+      "[EA]"
+    ]
+  },
+  {
+    "id": "EG.THAL.01-t08",
+    "comp": "EG.THAL.01",
+    "q": "Dans le triangle $PQR$, $S$ est sur $[PQ]$ et $T$ sur $[PR]$, avec $(ST)$ parallèle à $(QR)$. On a $PS = 4$ cm, $SQ = 6$ cm, $PT = 5$ cm et $ST = 3$ cm. Quelle égalité permet de calculer $QR$ ?",
+    "a": "$\\frac{4}{10} = \\frac{3}{QR}$",
+    "type": "qcm",
+    "options": [
+      "$\\frac{4}{6} = \\frac{3}{QR}$",
+      "$\\frac{4}{10} = \\frac{3}{QR}$",
+      "$\\frac{4}{10} = \\frac{QR}{3}$",
+      "$\\frac{4}{5} = \\frac{3}{QR}$"
+    ],
+    "err": {
+      "$\\frac{4}{6} = \\frac{3}{QR}$": "EG.THAL.01#segment_partiel",
+      "$\\frac{4}{10} = \\frac{QR}{3}$": "EG.THAL.01#rapports_croises",
+      "$\\frac{4}{5} = \\frac{3}{QR}$": "EG.THAL.01#rapports_croises"
+    },
+    "steps": [
+      "Écris d'abord l'égalité avec les lettres : $\\frac{PS}{PQ} = \\frac{ST}{QR}$.",
+      "Que vaut $PQ$ ? Remplace ensuite chaque longueur connue."
+    ],
+    "f": "Si $(ST) \\parallel (QR)$ : $\\frac{PS}{PQ} = \\frac{PT}{PR} = \\frac{ST}{QR}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.THAL.01-t09",
+    "comp": "EG.THAL.01",
+    "q": "Pour mesurer un arbre, Inès plante un bâton vertical. Au sol, le bout de l'ombre $A$, le pied du bâton $C$ et le pied de l'arbre $B$ sont alignés dans cet ordre. Le haut du bâton $D$ et le haut de l'arbre $E$ sont alignés avec $A$. Le bâton $[CD]$ et l'arbre $[BE]$ sont parallèles. Complète : $\\frac{CD}{BE} = \\frac{AC}{\\text{___}}$",
+    "a": "AB",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "CB": "EG.THAL.01#segment_partiel",
+      "BC": "EG.THAL.01#segment_partiel",
+      "AE": "EG.THAL.01#rapports_croises",
+      "EA": "EG.THAL.01#rapports_croises"
+    },
+    "steps": [
+      "Le petit triangle est $ACD$ (bâton), le grand est $ABE$ (arbre).",
+      "$AC$ est un côté du petit triangle posé au sol : quel côté du grand triangle lui correspond ?"
+    ],
+    "f": "Si $(CD) \\parallel (BE)$ : $\\frac{AC}{AB} = \\frac{AD}{AE} = \\frac{CD}{BE}$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true,
+    "alt": [
+      "BA",
+      "[AB]",
+      "[BA]"
+    ]
+  }
+]

@@ -1,0 +1,483 @@
+[
+  {
+    "id": "EG.REP.01-d01",
+    "comp": "EG.REP.01",
+    "q": "Dans un repère, le point $B$ a pour coordonnées $(-5 ; 2)$. Quelle est l'abscisse de $B$ ? ___",
+    "a": "-5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "2": "EG.REP.01#xy_inverses",
+      "5": "EG.REP.01#quadrant"
+    },
+    "steps": [
+      "Dans un couple $(x ; y)$, quel nombre vient en premier : l'abscisse ou l'ordonnée ?",
+      "L'abscisse est donc le premier nombre de $(-5 ; 2)$, avec son signe : $\\;?$"
+    ],
+    "f": "$M(x ; y)$ : $x$ = abscisse, $y$ = ordonnée",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.REP.01-d02",
+    "comp": "EG.REP.01",
+    "q": "Depuis l'origine d'un repère, Hugo se déplace de $3$ unités vers la gauche, puis de $2$ unités vers le haut. Quelles sont les coordonnées du point atteint ?",
+    "a": "$(-3 ; 2)$",
+    "type": "qcm",
+    "options": [
+      "$(-3 ; 2)$",
+      "$(2 ; -3)$",
+      "$(3 ; 2)$",
+      "$(-2 ; 3)$"
+    ],
+    "err": {
+      "$(2 ; -3)$": "EG.REP.01#xy_inverses",
+      "$(3 ; 2)$": "EG.REP.01#quadrant",
+      "$(-2 ; 3)$": "EG.REP.01#xy_inverses"
+    },
+    "steps": [
+      "Le déplacement horizontal donne l'abscisse, le déplacement vertical donne l'ordonnée.",
+      "Aller vers la gauche, c'est une abscisse positive ou négative ? Et vers le haut ?"
+    ],
+    "f": "$M(x ; y)$ : $x$ horizontal, $y$ vertical",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.REP.01-d03",
+    "comp": "EG.REP.01",
+    "q": "Parmi ces points, lequel est situé sous l'axe des abscisses et à gauche de l'axe des ordonnées ?",
+    "a": "$(-2 ; -5)$",
+    "type": "qcm",
+    "options": [
+      "$(2 ; -5)$",
+      "$(-2 ; -5)$",
+      "$(-2 ; 5)$",
+      "$(5 ; -2)$"
+    ],
+    "err": {
+      "$(2 ; -5)$": "EG.REP.01#quadrant",
+      "$(-2 ; 5)$": "EG.REP.01#quadrant",
+      "$(5 ; -2)$": "EG.REP.01#quadrant"
+    },
+    "steps": [
+      "À gauche de l'axe des ordonnées : quel est le signe de l'abscisse ?",
+      "Sous l'axe des abscisses : quel est le signe de l'ordonnée ? Cherche le point qui a ces deux signes."
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.REP.02-d01",
+    "comp": "EG.REP.02",
+    "q": "Dans un repère, $A(2 ; 6)$ et $B(8 ; 4)$. Quelle est l'abscisse du milieu $M$ du segment $[AB]$ ? ___",
+    "a": "5",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "10": "EG.REP.02#pas_divise_par_2",
+      "3": "EG.REP.02#difference",
+      "6": "EG.REP.02#difference"
+    },
+    "steps": [
+      "L'abscisse du milieu est la moyenne des abscisses de $A$ et $B$.",
+      "On calcule $\\frac{2 + 8}{2} = \\;?$"
+    ],
+    "f": "$x_M = \\frac{x_A + x_B}{2}$",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.REP.02-d02",
+    "comp": "EG.REP.02",
+    "q": "Dans un repère, $A(-4 ; 1)$ et $B(2 ; 7)$. Quelles sont les coordonnées du milieu de $[AB]$ ?",
+    "a": "$(-1 ; 4)$",
+    "type": "qcm",
+    "options": [
+      "$(-2 ; 8)$",
+      "$(3 ; 3)$",
+      "$(-1 ; 4)$",
+      "$(-6 ; -6)$"
+    ],
+    "err": {
+      "$(-2 ; 8)$": "EG.REP.02#pas_divise_par_2",
+      "$(3 ; 3)$": "EG.REP.02#difference",
+      "$(-6 ; -6)$": "EG.REP.02#difference"
+    },
+    "steps": [
+      "Pour chaque coordonnée, on fait la moyenne : on additionne puis on divise par $2$.",
+      "Abscisse : $\\frac{-4 + 2}{2} = \\;?$ Ordonnée : $\\frac{1 + 7}{2} = \\;?$"
+    ],
+    "f": "$M\\left(\\frac{x_A + x_B}{2} ; \\frac{y_A + y_B}{2}\\right)$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.REP.02-d03",
+    "comp": "EG.REP.02",
+    "q": "Sur le plan d'un parc muni d'un repère, la fontaine est en $C(3 ; -5)$ et le kiosque en $D(-1 ; 9)$. On installe un banc au milieu de $[CD]$. Quelle est l'ordonnée du banc ? ___",
+    "a": "2",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "4": "EG.REP.02#pas_divise_par_2",
+      "-7": "EG.REP.02#difference",
+      "7": "EG.REP.02#difference"
+    },
+    "steps": [
+      "L'ordonnée du milieu est la moyenne des ordonnées de $C$ et $D$.",
+      "On calcule $\\frac{-5 + 9}{2} = \\;?$"
+    ],
+    "f": "$y_M = \\frac{y_C + y_D}{2}$",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.REP.03-d01",
+    "comp": "EG.REP.03",
+    "q": "Dans un repère de l'espace, le point $M$ a pour coordonnées $(5 ; 2 ; 7)$. Quelle est l'altitude de $M$ ? ___",
+    "a": "7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "5": "EG.REP.03#ordre_coordonnees",
+      "2": "EG.REP.03#ordre_coordonnees"
+    },
+    "steps": [
+      "Dans l'espace, un point a trois coordonnées : abscisse, ordonnée, altitude, dans cet ordre.",
+      "L'altitude est donc la coordonnée en quelle position dans $(5 ; 2 ; 7)$ ?"
+    ],
+    "f": "$M(x ; y ; z)$ : $z$ = altitude",
+    "lvl": 1,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.REP.03-d02",
+    "comp": "EG.REP.03",
+    "q": "Un bateau se trouve à $30°$ au nord de l'équateur et à $60°$ à l'est du méridien de Greenwich. Quelles sont ses coordonnées géographiques ?",
+    "a": "Latitude $30°$ N, longitude $60°$ E",
+    "type": "qcm",
+    "options": [
+      "Latitude $60°$ N, longitude $30°$ E",
+      "Latitude $30°$ N, longitude $60°$ E",
+      "Latitude $30°$ S, longitude $60°$ E",
+      "Latitude $30°$ N, longitude $60°$ O"
+    ],
+    "err": {
+      "Latitude $60°$ N, longitude $30°$ E": "EG.REP.03#ordre_coordonnees",
+      "Latitude $30°$ S, longitude $60°$ E": "EG.REP.03#orientation",
+      "Latitude $30°$ N, longitude $60°$ O": "EG.REP.03#orientation"
+    },
+    "steps": [
+      "La latitude se mesure par rapport à l'équateur (Nord ou Sud). La longitude, par rapport au méridien de Greenwich (Est ou Ouest).",
+      "Ici, quel angle se mesure depuis l'équateur, et de quel côté ? Et depuis Greenwich ?"
+    ],
+    "f": "",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.REP.03-d03",
+    "comp": "EG.REP.03",
+    "q": "Un pavé droit $ABCDEFGH$ est placé dans un repère de l'espace d'origine $A$, avec $B(6 ; 0 ; 0)$, $D(0 ; 4 ; 0)$ et $E(0 ; 0 ; 3)$. Le sommet $C$ est en $(6 ; 4 ; 0)$ et $G$ est situé à la verticale de $C$, à la même hauteur que $E$. Quelles sont les coordonnées de $G$ ?",
+    "a": "$(6 ; 4 ; 3)$",
+    "type": "qcm",
+    "options": [
+      "$(3 ; 4 ; 6)$",
+      "$(6 ; 4 ; 3)$",
+      "$(4 ; 6 ; 3)$",
+      "$(6 ; 3 ; 4)$"
+    ],
+    "err": {
+      "$(3 ; 4 ; 6)$": "EG.REP.03#ordre_coordonnees",
+      "$(4 ; 6 ; 3)$": "EG.REP.03#ordre_coordonnees",
+      "$(6 ; 3 ; 4)$": "EG.REP.03#ordre_coordonnees"
+    },
+    "steps": [
+      "$G$ est juste au-dessus de $C$ : son abscisse et son ordonnée sont celles de $C$.",
+      "Sa hauteur est celle de $E$ : quelle est la troisième coordonnée de $E$ ? Range ensuite dans l'ordre (abscisse ; ordonnée ; altitude)."
+    ],
+    "f": "$M(x ; y ; z)$",
+    "lvl": 2,
+    "usage": [
+      "diag",
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.REP.01-t01",
+    "comp": "EG.REP.01",
+    "q": "Dans un repère, le point $K$ a pour coordonnées $(7 ; -3)$. Quelle est l'ordonnée de $K$ ? ___",
+    "a": "-3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "7": "EG.REP.01#xy_inverses",
+      "3": "EG.REP.01#quadrant"
+    },
+    "steps": [
+      "Dans $(x ; y)$, quel nombre vient en second ?",
+      "L'ordonnée se lit sur l'axe vertical : garde bien son signe."
+    ],
+    "f": "$(x ; y)$ : $x$ = abscisse (horizontal), $y$ = ordonnée (vertical)",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.REP.01-t02",
+    "comp": "EG.REP.01",
+    "q": "Sur le plan quadrillé d'une ville, la boulangerie est à $4$ unités à droite de l'origine et $1$ unité en dessous. Quelles sont ses coordonnées ?",
+    "a": "$(4 ; -1)$",
+    "type": "qcm",
+    "options": [
+      "$(-1 ; 4)$",
+      "$(4 ; -1)$",
+      "$(4 ; 1)$",
+      "$(-4 ; -1)$"
+    ],
+    "err": {
+      "$(-1 ; 4)$": "EG.REP.01#xy_inverses",
+      "$(4 ; 1)$": "EG.REP.01#quadrant",
+      "$(-4 ; -1)$": "EG.REP.01#quadrant"
+    },
+    "steps": [
+      "Le déplacement horizontal donne l'abscisse, écrite en premier.",
+      "Aller vers le bas, c'est une ordonnée positive ou négative ?"
+    ],
+    "f": "$(x ; y)$ : $x$ = abscisse (horizontal), $y$ = ordonnée (vertical)",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.REP.01-t03",
+    "comp": "EG.REP.01",
+    "q": "À la bataille navale sur un repère, Léo part de l'origine pour atteindre la case $(-2 ; 5)$. Quel déplacement horizontal doit-il faire ?",
+    "a": "$2$ unités vers la gauche",
+    "type": "qcm",
+    "options": [
+      "$2$ unités vers la droite",
+      "$2$ unités vers la gauche",
+      "$5$ unités vers la droite",
+      "$5$ unités vers le haut"
+    ],
+    "err": {
+      "$2$ unités vers la droite": "EG.REP.01#quadrant",
+      "$5$ unités vers la droite": "EG.REP.01#xy_inverses",
+      "$5$ unités vers le haut": "EG.REP.01#xy_inverses"
+    },
+    "steps": [
+      "Le déplacement horizontal correspond à l'abscisse : lequel des deux nombres ?",
+      "Une abscisse négative, c'est à droite ou à gauche de l'origine ?"
+    ],
+    "f": "$(x ; y)$ : $x$ = abscisse (horizontal), $y$ = ordonnée (vertical)",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.REP.01-t04",
+    "comp": "EG.REP.01",
+    "q": "Le point $C$ est sur l'axe des abscisses, $4$ unités à gauche de l'origine. Quelle est l'abscisse de $C$ ? ___",
+    "a": "-4",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "4": "EG.REP.01#quadrant",
+      "0": "EG.REP.01#xy_inverses"
+    },
+    "steps": [
+      "Sur l'axe des abscisses, on se déplace horizontalement.",
+      "À gauche de l'origine, les abscisses sont-elles positives ou négatives ?"
+    ],
+    "f": "$(x ; y)$ : $x$ = abscisse (horizontal), $y$ = ordonnée (vertical)",
+    "lvl": 1,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.REP.01-t05",
+    "comp": "EG.REP.01",
+    "q": "Un drone est au point $(2 ; 3)$. Il se déplace de $5$ unités vers la gauche. Quelle est sa nouvelle abscisse ? ___",
+    "a": "-3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "7": "NC.REL.01#graduation",
+      "3": "EG.REP.01#quadrant",
+      "2": "EG.REP.01#xy_inverses"
+    },
+    "steps": [
+      "Un déplacement vers la gauche change l'abscisse ou l'ordonnée ?",
+      "Part de $2$ sur l'axe horizontal et recule de $5$ : tu passes de l'autre côté de zéro."
+    ],
+    "f": "Vers la gauche : on soustrait à l'abscisse",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.REP.01-t06",
+    "comp": "EG.REP.01",
+    "q": "Sur le plan d'un parc (unité : $100$ m), le kiosque est en $A(-3 ; 2)$ et la fontaine en $B(4 ; 2)$. Combien d'unités les séparent ? ___",
+    "a": "7",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "1": "EG.REP.01#quadrant"
+    },
+    "steps": [
+      "Les deux points ont la même ordonnée : ils sont sur une même ligne horizontale.",
+      "Compte les unités de $-3$ jusqu'à $0$, puis de $0$ jusqu'à $4$."
+    ],
+    "f": "Même ordonnée : distance = écart entre les abscisses",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.REP.01-t07",
+    "comp": "EG.REP.01",
+    "q": "Un point $P$ a une abscisse négative et une ordonnée positive. Où est-il situé par rapport à l'origine ?",
+    "a": "En haut à gauche",
+    "type": "qcm",
+    "options": [
+      "En haut à gauche",
+      "En bas à droite",
+      "En haut à droite",
+      "En bas à gauche"
+    ],
+    "err": {
+      "En bas à droite": "EG.REP.01#xy_inverses",
+      "En haut à droite": "EG.REP.01#quadrant",
+      "En bas à gauche": "EG.REP.01#quadrant"
+    },
+    "steps": [
+      "L'abscisse indique la position gauche/droite, l'ordonnée la position haut/bas.",
+      "Négatif sur l'axe horizontal : quel côté ? Positif sur l'axe vertical : quel côté ?"
+    ],
+    "f": "$x < 0$ : à gauche ; $y > 0$ : en haut",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.REP.01-t08",
+    "comp": "EG.REP.01",
+    "q": "Le point $A$ a pour coordonnées $(-1 ; 4)$. On le déplace de $3$ unités vers le bas. Quelle est sa nouvelle ordonnée ? ___",
+    "a": "1",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "7": "NC.REL.01#graduation",
+      "4": "EG.REP.01#xy_inverses"
+    },
+    "steps": [
+      "Un déplacement vers le bas change l'abscisse ou l'ordonnée ?",
+      "Vers le bas, on ajoute ou on retire $3$ à l'ordonnée ?"
+    ],
+    "f": "Vers le bas : on soustrait à l'ordonnée",
+    "lvl": 2,
+    "usage": [
+      "train"
+    ],
+    "contexte": false
+  },
+  {
+    "id": "EG.REP.01-t09",
+    "comp": "EG.REP.01",
+    "q": "Un robot aspirateur part de l'origine d'un repère. Il va de $4$ unités vers la gauche, puis de $6$ vers le bas, puis de $7$ vers la droite. Quelle est son abscisse à l'arrivée ? ___",
+    "a": "3",
+    "type": "fill",
+    "options": [],
+    "err": {
+      "-3": "NC.REL.01#graduation",
+      "11": "EG.REP.01#quadrant",
+      "-6": "EG.REP.01#xy_inverses"
+    },
+    "steps": [
+      "Seuls les déplacements horizontaux changent l'abscisse : lesquels ?",
+      "Après $4$ vers la gauche, l'abscisse vaut $-4$. Que devient-elle après $7$ vers la droite ?"
+    ],
+    "f": "Droite : $+$ sur l'abscisse ; gauche : $-$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  },
+  {
+    "id": "EG.REP.01-t10",
+    "comp": "EG.REP.01",
+    "q": "Sur une carte au trésor en repère, le puits est en $P(1 ; -2)$. Le trésor est $3$ unités à gauche du puits et $4$ unités au-dessus. Quelles sont les coordonnées du trésor ?",
+    "a": "$(-2 ; 2)$",
+    "type": "qcm",
+    "options": [
+      "$(2 ; -2)$",
+      "$(4 ; 2)$",
+      "$(-2 ; 2)$",
+      "$(-2 ; 6)$"
+    ],
+    "err": {
+      "$(2 ; -2)$": "EG.REP.01#xy_inverses",
+      "$(4 ; 2)$": "NC.REL.01#graduation",
+      "$(-2 ; 6)$": "EG.REP.01#quadrant"
+    },
+    "steps": [
+      "Pars de l'abscisse du puits, $1$, et va de $3$ unités vers la gauche.",
+      "Pars de l'ordonnée $-2$ et monte de $4$ : tu traverses zéro."
+    ],
+    "f": "Gauche : $-$ sur $x$ ; haut : $+$ sur $y$",
+    "lvl": 3,
+    "usage": [
+      "train"
+    ],
+    "contexte": true
+  }
+]

@@ -38,8 +38,8 @@
     <!-- État 1 : confirmation -->
     <div id="confirm-view" class="card">
       <h1>Se désinscrire des emails</h1>
-      <p>Vous ne recevrez plus les emails de suivi de Matheux (bilans, rappels, conseils).</p>
-      <p>Votre compte reste actif — seuls les emails marketing s'arrêtent.</p>
+      <p>Vous ne recevrez plus les rappels, conseils et offres de Matheux à cette adresse.</p>
+      <p>Le compte reste actif. Seuls les emails indispensables continuent (confirmation d'achat, bilan demandé).</p>
       <div id="email-show" class="email-display"></div>
       <br><br>
       <button onclick="doUnsub()" class="btn btn-unsub" id="btn-unsub">Confirmer la désinscription</button>
@@ -52,7 +52,7 @@
     <div id="success-view" class="card success">
       <div style="font-size:2.5rem;margin-bottom:.75rem">✅</div>
       <h1>C'est fait.</h1>
-      <p>Vous ne recevrez plus d'emails marketing de Matheux.</p>
+      <p>Vous ne recevrez plus de rappels, conseils ni offres de Matheux à cette adresse.</p>
       <p style="color:#6b7280;font-size:.85rem">Si c'est une erreur, contactez-nous à <a href="mailto:contact@matheux.fr" style="color:#4338ca">contact@matheux.fr</a></p>
       <br>
       <a href="/" class="btn btn-back">Retour sur Matheux</a>
@@ -62,9 +62,12 @@
   <footer>© 2026 Matheux · Nicolas Follezou · contact@matheux.fr</footer>
 
   <script>
-    var GAS_URL = 'https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec';
+    // API Supabase (la désinscription est lue dans email_logs avant chaque envoi) ; lien signé : email + k
+    var API_URL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? location.origin + '/api'
+      : 'https://xlfzhcanzmqqlxtavzrd.supabase.co/functions/v1/api';
     var params = new URLSearchParams(window.location.search);
     var email = params.get('email') || '';
+    var k = params.get('k') || '';
 
     // Afficher l'email
     var show = document.getElementById('email-show');
@@ -86,9 +89,9 @@
       ld.style.display = 'inline';
       err.style.display = 'none';
 
-      fetch(GAS_URL, {
+      fetch(API_URL, {
         method: 'POST',
-        body: JSON.stringify({ action: 'unsubscribe', email: email })
+        body: JSON.stringify({ action: 'unsubscribe', email: email, k: k })
       })
       .then(function(r) { return r.json(); })
       .then(function(d) {

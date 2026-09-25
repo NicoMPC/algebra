@@ -1,0 +1,110 @@
+{
+  "fichier": "data/banque_3eme/EG.PYTH.json",
+  "relecteur": "relecteur",
+  "date": "2026-09-24",
+  "methode": "calculs refaits a la main ; _normFill/_toNum/_matchFill extraits d app.html et simules en Node (a, alt, variantes, cles err) ; LaTeX rendu KaTeX 0.16.9 strict (0 erreur) ; ids err verifies dans competences.json",
+  "bilan": {
+    "ok": 7,
+    "corrige": 2,
+    "rejet": 0
+  },
+  "items": [
+    {
+      "id": "EG.PYTH.01-d01",
+      "verdict": "ok",
+      "remarques": "sqrt(36+64)=10 ; 14 et 100 coherents."
+    },
+    {
+      "id": "EG.PYTH.01-d02",
+      "verdict": "ok",
+      "remarques": "sqrt(169)=13 ; 17, 169, sqrt(144-25)=sqrt(119) (12 pris pour l hypotenuse) coherents."
+    },
+    {
+      "id": "EG.PYTH.01-d03",
+      "verdict": "ok",
+      "remarques": "sqrt(4+2,25)=2,5 ; 3,5 et 6,25 coherents. Accepte 2.5 / 2,50 / 5/2 / 2,5 m (simule)."
+    },
+    {
+      "id": "EG.PYTH.02-d01",
+      "verdict": "corrige",
+      "remarques": "Juste : sqrt(100-36)=8 ; 11,7/11,66/136 = carres additionnes. Mauvaise reponse previsible non taggee : 64 (oubli de la racine). Correction : ajout err \"64\".",
+      "correction": {
+        "id": "EG.PYTH.02-d01",
+        "comp": "EG.PYTH.02",
+        "q": "Le triangle $ABC$ est rectangle en $A$. L'hypoténuse mesure $BC = 10$ cm et $AB = 6$ cm. Calcule $AC$. ___ cm",
+        "a": "8",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "11,7": "EG.PYTH.02#additionne_au_lieu_soustraire",
+          "11,66": "EG.PYTH.02#additionne_au_lieu_soustraire",
+          "136": "EG.PYTH.02#additionne_au_lieu_soustraire",
+          "64": "EG.PYTH.01#oubli_racine"
+        },
+        "steps": [
+          "On écrit Pythagore avec l'hypoténuse seule d'un côté : $BC^2 = AB^2 + AC^2$.",
+          "Donc $AC^2 = BC^2 - AB^2 = 100 - 36 = \\;?$",
+          "Puis $AC = \\sqrt{?}$"
+        ],
+        "f": "$BC^2 = AB^2 + AC^2$",
+        "lvl": 1,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": false
+      }
+    },
+    {
+      "id": "EG.PYTH.02-d02",
+      "verdict": "ok",
+      "remarques": "sqrt(289-64)=15 ; sqrt(353) et \"Impossible\" coherents. 3 options acceptable."
+    },
+    {
+      "id": "EG.PYTH.02-d03",
+      "verdict": "corrige",
+      "remarques": "Juste : sqrt(625-49)=24 ; 25,96=sqrt(674), 26, 674 coherents. Ajout de la mauvaise reponse previsible 576 (oubli de la racine).",
+      "correction": {
+        "id": "EG.PYTH.02-d03",
+        "comp": "EG.PYTH.02",
+        "q": "Un écran rectangulaire a une diagonale de $25$ pouces et une hauteur de $7$ pouces. Quelle est sa largeur ? ___ pouces",
+        "a": "24",
+        "type": "fill",
+        "options": [],
+        "err": {
+          "25,96": "EG.PYTH.02#additionne_au_lieu_soustraire",
+          "26": "EG.PYTH.02#additionne_au_lieu_soustraire",
+          "674": "EG.PYTH.02#additionne_au_lieu_soustraire",
+          "576": "EG.PYTH.01#oubli_racine"
+        },
+        "steps": [
+          "La diagonale est l'hypoténuse du triangle rectangle formé avec la hauteur et la largeur.",
+          "$\\ell^2 = 25^2 - 7^2 = 625 - 49 = \\;?$",
+          "Puis $\\ell = \\sqrt{?}$"
+        ],
+        "f": "$d^2 = L^2 + \\ell^2$",
+        "lvl": 2,
+        "usage": [
+          "diag",
+          "train"
+        ],
+        "contexte": true
+      }
+    },
+    {
+      "id": "EG.PYTH.03-d01",
+      "verdict": "ok",
+      "remarques": "Plus grand cote BC=13 ; 144+25=169. 3 options = 3 choix possibles."
+    },
+    {
+      "id": "EG.PYTH.03-d02",
+      "verdict": "ok",
+      "remarques": "16^2=256, 64+225=289 -> Faux. Tag presque_egal defendable (le vrai triplet est 8-15-17)."
+    },
+    {
+      "id": "EG.PYTH.03-d03",
+      "verdict": "ok",
+      "remarques": "81+144=225=15^2, rectangle en L (oppose a KM). Distracteur 3 : 144+225=369 exact."
+    }
+  ]
+}
