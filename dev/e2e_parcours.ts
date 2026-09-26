@@ -2,6 +2,7 @@
 // séance du jour → fin de séance. Vérifie surtout que la séance sert 5 exos quel que soit le point faible.
 // Lancer (serveur de dev déjà démarré) : deno run -A dev/e2e_parcours.ts [BASE] [N]
 //   BASE par défaut http://localhost:8787 · N = nombre de parcours (reset de la base entre chaque)
+/// <reference lib="dom" />
 import puppeteer from "npm:puppeteer-core@23.11.1";
 
 const BASE = Deno.args[0] || "http://localhost:8787";

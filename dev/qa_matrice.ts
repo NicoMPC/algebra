@@ -287,7 +287,7 @@ try {
   });
   await cas("gratuit · zone maîtrisée → « point faible réglé », sans prix", async (n) => {
     const e = await inscrit("Lou"); await seance(e);
-    const v = await appDe(e, "", { intercepte: (j, a) => a === "get_training" && j.boost ? { ...j, zone_maitrisee: true, boost: { ...j.boost, zone_maitrisee: true } } : null });
+    const v = await appDe(e, "", { intercepte: (j: J, a: string) => a === "get_training" && j.boost ? { ...j, zone_maitrisee: true, boost: { ...j.boost, zone_maitrisee: true } } : null });
     attendu(n, /point faible est réglé/i.test(v.texte), "message zone maîtrisée absent");
     controlesAdo(v, n);
     return v;
@@ -602,6 +602,10 @@ try {
       const m = src.match(/prix: ?(\d+)/g) || [];
       attendu(n, m.join() === "prix: 19,prix: 49,prix: 30", `${nom} OFFRE : ${m.join()}`);
       if (/29,99|29\.99/.test(src)) n.push(nom + " : ancien prix 29,99 €");
+      // promesses non tenues (alignement légal du 26/09) : pas de re-test offert, brevets blancs pas encore là
+      if (/re-?test/i.test(src)) n.push(nom + " : promet un re-test");
+      const bb = src.match(/[^.'<]{0,60}brevets? blancs?[^.'<]{0,60}/gi) || [];
+      for (const x of bb) if (!/arrive|en cours d|v1\.1|💤|passé ce|">Brevet blanc$|date_brevet/i.test(x.trim())) n.push(nom + " : brevet blanc présenté comme disponible : " + x.trim());
     }
     const mails = [...Deno.readDirSync(`${DATA}/outbox`)].map((e) => Deno.readTextFileSync(`${DATA}/outbox/${e.name}`)).join("\n");
     const prixMails = [...new Set((mails.match(/\b\d{2}(?:,\d{2})? ?€/g) || []).map((x) => x.replace(/\s/, " ")))];

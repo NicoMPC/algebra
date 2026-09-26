@@ -2,7 +2,7 @@
 # Matheux — lanceur local (backend en mémoire, rien ne part en prod)
 #   ./matheux.sh          lance le serveur http://localhost:8787 et ouvre le navigateur
 #   ./matheux.sh reset    remet la base de dev à l'état initial (comptes de test, référentiel)
-#   ./matheux.sh test     lance les tests (smoke test API + test navigateur + parcours visiteur si le serveur tourne)
+#   ./matheux.sh test     lance les tests (smoke test API + test navigateur + matrice QA + parcours visiteur si le serveur tourne)
 set -euo pipefail
 DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
 cd "$DIR"
@@ -24,6 +24,8 @@ case "${1:-}" in
   test)
     "$DENO" run -A dev/smoke_test.ts
     "$DENO" run -A dev/browser_test.ts
+    echo "▶ matrice QA persona × moment (serveur isolé, ~4 min, docs/specs/80-qa-matrice.md)"
+    "$DENO" run -A dev/qa_matrice.ts
     echo "▶ parcours visiteur (le serveur doit tourner : ./matheux.sh dans un autre terminal)"
     if en_route; then "$DENO" run -A dev/e2e_parcours.ts "$URL" 3; else echo "  (ignoré : serveur non lancé)"; fi ;;
   ""|serve)

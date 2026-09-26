@@ -3053,7 +3053,7 @@ function _paywallProgrammeAdo(src) {
 }
 
 // ── Vue parent sur le même appareil (50 §2.4) — vouvoiement, factuel, cases 52 §2.3 capturées avant Stripe ──
-var CONSENT_VERSION = '2026-09-24';
+var CONSENT_VERSION = '2026-09-26'; // textes légaux du 26/09 (commit b3b660a)
 function openParentView(src) {
   _funnel('paywall_view', { vue: 'parent', src: src || '' });
   var prenom = _esc(S.prof ? S.prof.name : 'votre enfant');
@@ -3065,10 +3065,10 @@ function openParentView(src) {
       'Vous recevez un bilan PDF : les 5 domaines, les compétences acquises, fragiles et en lacune, les causes racines, les erreurs types ' +
       'avec les réponses de ' + prenom + ' en exemple, et un plan de travail de 4 semaines.</p>' +
       _offreParent('diag', 'Diagnostic complet', 'Paiement unique · accès immédiat', true) +
-      _offreParent('prog', 'Programme Brevet, diagnostic inclus', 'Entraînement illimité sur toute la carte, un re-diagnostic chaque mois, des brevets blancs (bientôt). ' +
+      _offreParent('prog', 'Programme Brevet, diagnostic inclus', 'Entraînement illimité sur toute la carte, un re-diagnostic chaque mois, des brevets blancs (ils arrivent en cours d\'année). ' +
         'Si vous commencez par le diagnostic, les ' + _eur(OFFRE.diag.prix) + ' seront déduits : vous ne payez jamais deux fois.', false);
   } else {
-    html += '<p class="mx-sub" style="margin-top:6px">Entraînement illimité sur toute la carte de ' + prenom + ', un re-diagnostic chaque mois pour voir la progression, des brevets blancs (bientôt).</p>' +
+    html += '<p class="mx-sub" style="margin-top:6px">Entraînement illimité sur toute la carte de ' + prenom + ', un re-diagnostic chaque mois pour voir la progression, des brevets blancs (ils arrivent en cours d\'année).</p>' +
       _offreParent('upgrade', 'Programme Brevet', 'Les ' + _eur(OFFRE.diag.prix) + ' du diagnostic sont déduits.', true);
   }
   html += '<p class="mx-small" style="margin-top:12px">Paiement unique, pas d\'abonnement, accès sans date de fin. Garantie ' + OFFRE.garantie_jours +
@@ -3960,7 +3960,7 @@ function _homeExtras() {
       if (dj > 0) h += '<p class="mx-small text-center">🗓️ Check-up dans ' + dj + ' jour' + (dj > 1 ? 's' : '') + ' : on verra ce qui a changé.</p>';
     }
     h += '<button class="mx-btn mx-btn-g" onclick="openLibre()">🎯 S\'entraîner sur…</button>';
-    h += '<div class="mx-lockrow" style="cursor:default"><span style="font-size:1.2rem">📝</span><span style="flex:1"><b style="font-size:.85rem">Brevet blanc</b><br><span class="mx-small">Bientôt : un sujet complet, corrigé compétence par compétence.</span></span></div>';
+    h += '<div class="mx-lockrow" style="cursor:default"><span style="font-size:1.2rem">📝</span><span style="flex:1"><b style="font-size:.85rem">Brevet blanc</b><br><span class="mx-small">Arrive en cours d\'année : un sujet complet de Brevet.</span></span></div>';
   }
   if (_can('diag_complet') && !_complet() || _enCours('complet')) {
     var ec = _enCours('complet'), pr = ec && ec.progression;

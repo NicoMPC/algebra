@@ -261,7 +261,7 @@ footer a{color:var(--sub)}
     diag:      { produit: 'diag_complet',      libelle: 'Diagnostic complet', prix: 19, lien: 'https://buy.stripe.com/9B66oJ3xM4rH4mc0mjb3q07' },
     programme: { produit: 'programme_brevet',  libelle: 'Programme Brevet',   prix: 49, lien: '' },
     upgrade:   { produit: 'programme_upgrade', libelle: 'Programme Brevet',   prix: 30, lien: '' },
-    textes_version: 'bilan-2026-09-24'
+    textes_version: 'bilan-2026-09-26'
   };
 
   var SU = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? location.origin + '/api'
@@ -479,7 +479,7 @@ footer a{color:var(--sub)}
   }
   function renderOffres() {
     var acces = DATA.acces || 'free', c = DATA.carte, h = '';
-    var progTxt = 'Entraînement illimité sur toute la carte, un nouveau diagnostic chaque mois pour mesurer la progression, des brevets blancs et un bilan chaque semaine. Paiement unique, accès jusqu\'au Brevet et au-delà.';
+    var progTxt = 'Entraînement illimité sur toute la carte, un nouveau diagnostic chaque mois pour mesurer la progression, un bilan chaque semaine, et des brevets blancs (ils arrivent en cours d\'année). Paiement unique, accès jusqu\'au Brevet et au-delà.';
     if (acces === 'programme_brevet') {
       h = '<div class="done">✓ Programme Brevet actif pour ' + esc(c.eleve && c.eleve.prenom) + '</div>' +
         '<p class="info">Tout est débloqué. Le bilan PDF complet est disponible dans l\'espace de votre enfant.</p>';
@@ -516,7 +516,7 @@ footer a{color:var(--sub)}
     var p = (DATA.carte.eleve && DATA.carte.eleve.prenom) || 'mon enfant', montant = prix(key).toFixed(2).replace('.', ',') + ' €';
     var info = key === 'diag'
       ? 'Diagnostic complet de maths 3e : environ 40 minutes en 3 parties, bilan PDF et carte complète dans l\'application.'
-      : 'Programme Brevet maths 3e : diagnostic complet, entraînement illimité sur toute la carte, re-diagnostic mensuel, brevets blancs, bilan hebdomadaire.';
+      : 'Programme Brevet maths 3e : diagnostic complet, entraînement illimité sur toute la carte, re-diagnostic mensuel, bilan hebdomadaire ; brevets blancs en cours d\'année.';
     info += ' Accessible sur navigateur récent (ordinateur, tablette, téléphone). Prix : ' + montant + ' TTC, paiement unique (TVA non applicable, art. 293 B du CGI). Vendeur : Nicolas Follezou EI. Garantie légale de conformité applicable. Garantie commerciale « satisfait ou remboursé » 30 jours.';
     var a = 'J\'ai lu et j\'accepte les Conditions générales de vente. Je suis majeur(e) et je suis le représentant légal ' + de(p) + ', ou j\'agis avec son accord.';
     var b = key === 'diag'
