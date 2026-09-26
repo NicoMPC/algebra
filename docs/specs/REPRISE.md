@@ -1,6 +1,6 @@
 # Point de reprise — Refonte « Diagnostic 3e »
 
-> Mis à jour le 26/09/2026 13h. À lire EN PREMIER à la reprise, avec `docs/specs/00-contrat-commun.md`
+> Mis à jour le 26/09/2026 14h. À lire EN PREMIER à la reprise, avec `docs/specs/00-contrat-commun.md`
 > (contrat + décisions de Nicolas §7-9). Branche : `feat/diagnostic-3e` (locale, jamais pushée).
 > Relancer la conversation : « Matheux — Conversation Claude.desktop ». Tester en local : `./matheux.sh`.
 
@@ -32,6 +32,18 @@ Le nouveau site (landing, diagnostic, carte, séance adaptative, page parent, PD
 - **Stripe** : lien 19 € créé (`https://buy.stripe.com/9B66oJ3xM4rH4mc0mjb3q07`, metadata produit=diag_complet,
   offre_version=2026-09, niveau=3EME, taxes auto OFF, redirection `app.html?achat=diag_complet&session_id=…`),
   branché dans `OFFRE` (app.html + bilan.html).
+
+## 🚀 Bascule du 26/09 (Nicolas : « push immédiat, l'ancien site et l'ancienne base osef »)
+
+- ✅ Sauvegarde complète de la prod (16 tables + auth.users) : `~/Bureau/projets/matheux-backup-prod-2026-09-26/` (hors git, privé).
+- ✅ Migrations appliquées en prod : `20260924_diagnostic_3e`, `20260924_progress_nb_easy`, `20260925_invites_securite`, `20260925_cron_secret`.
+- ✅ Secrets `CRON_SECRET` + `UNSUB_SECRET` créés (+ Vault `matheux_cron_secret`) ; cron `matheux-daily-emails` actif 15:00 UTC.
+- ✅ Import prod : 121 compétences, 1 598 items (354 diag).
+- ✅ Nouvelle API déployée et vérifiée (diag invité OK, actions protégées refusées sans jeton).
+- ⛔ Bloqué pour Claude → Nicolas : push `feat/diagnostic-3e` → `main` (mise en ligne du site) ; purge des anciens
+  comptes (script prêt : `~/Bureau/projets/matheux-backup-prod-2026-09-26/purge_anciens_comptes_COMMIT.sql`,
+  testé à blanc : il reste 1 admin, 0 score). ⚠️ Tant que `main` n'est pas poussé, l'ANCIEN site en ligne parle à la
+  NOUVELLE API et ne fonctionne plus (jetons exigés).
 
 ## ⏭️ Reste à faire, par priorité
 
