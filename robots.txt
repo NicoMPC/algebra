@@ -1,7 +1,12 @@
+# matheux.fr — les pages non indexables (app, bilan parent, 404…) portent une balise
+# <meta name="robots" content="noindex">. On ne les bloque PAS ici : un Disallow empêcherait
+# Google de lire ce noindex, et une URL très liée (/app.html#diag-…) pourrait alors être
+# indexée « sans contenu ». Les icônes restent crawlables (favicon dans les résultats Google).
 User-agent: *
 Allow: /
-Disallow: /app.html
-Disallow: /icons/
 Disallow: /node_modules/
+Disallow: /docs/
+Disallow: /dev/
+Disallow: /supabase/
 
 Sitemap: https://matheux.fr/sitemap.xml

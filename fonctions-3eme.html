@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fonctions 3e : image, antécédent, lecture graphique | Matheux</title>
+<meta name="description" content="Fonctions en 3e : notation f(x), calculer une image, trouver un antécédent par le calcul ou sur un graphique, lire un tableau de valeurs. Exercices corrigés.">
+<link rel="canonical" href="https://matheux.fr/fonctions-3eme.html">
+<meta name="theme-color" content="#0F172A">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Matheux">
+<meta property="og:url" content="https://matheux.fr/fonctions-3eme.html">
+<meta property="og:title" content="Fonctions 3e : image, antécédent, lecture graphique">
+<meta property="og:description" content="Fonctions en 3e : notation f(x), calculer une image, trouver un antécédent par le calcul ou sur un graphique, lire un tableau de valeurs. Exercices corrigés.">
+<meta property="og:image" content="https://matheux.fr/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&family=Syne:wght@800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/seo.css">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Accueil",
+     "item": "https://matheux.fr/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Maths 3e",
+     "item": "https://matheux.fr/exercices-maths-3eme.html"
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "name": "Fonctions",
+     "item": "https://matheux.fr/fonctions-3eme.html"
+    }
+   ]
+  },
+  {
+   "@type": "LearningResource",
+   "@id": "https://matheux.fr/fonctions-3eme.html#ressource",
+   "name": "Fonctions en 3e : image, antécédent et lecture graphique",
+   "description": "Fonctions en 3e : notation f(x), calculer une image, trouver un antécédent par le calcul ou sur un graphique, lire un tableau de valeurs. Exercices corrigés.",
+   "url": "https://matheux.fr/fonctions-3eme.html",
+   "inLanguage": "fr-FR",
+   "educationalLevel": "3e (collège, cycle 4)",
+   "learningResourceType": [
+    "Cours",
+    "Exercices corrigés"
+   ],
+   "teaches": [
+    "Notation f(x)",
+    "Calculer une image",
+    "Lire une image et un antécédent sur un graphique",
+    "Déterminer un antécédent par le calcul",
+    "Lire un tableau de valeurs"
+   ],
+   "isAccessibleForFree": true,
+   "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "student"
+   },
+   "author": {
+    "@type": "Person",
+    "name": "Nicolas Follezou",
+    "description": "Ancien ingénieur, accompagne des élèves en maths (soutien scolaire) depuis des années"
+   },
+   "publisher": {
+    "@type": "Organization",
+    "name": "Matheux",
+    "url": "https://matheux.fr/",
+    "logo": "https://matheux.fr/icons/icon-512.png"
+   },
+   "dateModified": "2026-09-26"
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Quelle est la différence entre image et antécédent ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "L’image est le nombre qui sort de la fonction, l’antécédent est le nombre qui y entre. Si f(4) = 10, alors 10 est l’image de 4 et 4 est un antécédent de 10."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Un nombre peut-il avoir plusieurs images ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Non. Par une fonction, chaque nombre a une seule image. En revanche, un nombre peut avoir plusieurs antécédents, ou aucun. Par exemple, pour f(x) = x², le nombre 9 a deux antécédents (3 et −3) et le nombre −1 n’en a aucun."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Comment trouver un antécédent sur un graphique ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Place le nombre sur l’axe vertical, trace une droite horizontale à cette hauteur, et relève l’abscisse de chaque point où elle coupe la courbe. Chaque abscisse est un antécédent."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Quelle est la différence avec une fonction affine ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Une fonction affine est un cas particulier de fonction, de la forme f(x) = ax + b, dont la courbe est une droite. Le vocabulaire image et antécédent s’applique de la même façon."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+<header class="hdr">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Matheux, accueil"><img src="/assets/mark-white.png" alt="" width="29" height="24">Matheux</a>
+    <nav aria-label="Navigation principale">
+      <a class="l hide-xs" href="/exercices-maths-3eme.html">Notions 3e</a>
+      <a class="btn btn-cta btn-sm" href="/app.html#diag-seo_fonctions">Diagnostic gratuit</a>
+    </nav>
+  </div>
+</header>
+<main id="contenu">
+<div class="hero">
+  <div class="wrap narrow">
+    <nav class="crumbs" aria-label="Fil d’Ariane"><ol><li><a href="/">Accueil</a></li><li><a href="/exercices-maths-3eme.html">Maths 3e</a></li><li aria-current="page">Fonctions</li></ol></nav>
+    <p class="eyebrow">Maths 3e · Organisation et gestion de données, fonctions</p>
+    <h1>Fonctions en 3e&nbsp;: image et antécédent, enfin clairs</h1>
+    <p class="lead">Une fonction est une machine&nbsp;: on y entre un nombre, elle en ressort un autre. Tout le chapitre repose sur une seule distinction, entre l’entrée et la sortie. Une fois qu’elle est claire, les questions du Brevet deviennent mécaniques.</p>
+    <a class="btn btn-cta" href="/app.html#diag-seo_fonctions">Tester mon niveau gratuitement →</a>
+    <p class="micro">~8 min · 15 questions · sans carte bancaire</p>
+  </div>
+</div>
+<div class="wrap narrow art">
+<p class="updated">Mis à jour le 26 septembre 2026 · par Nicolas Follezou, fondateur de Matheux</p>
+<nav class="toc" aria-label="Sommaire"><p>Sommaire</p><ol><li><a href="#essentiel">Image et antécédent</a></li><li><a href="#formule">Avec une formule</a></li><li><a href="#tableau">Avec un tableau</a></li><li><a href="#graphique">Sur un graphique</a></li><li><a href="#erreurs">Erreurs fréquentes</a></li><li><a href="#faq">Questions fréquentes</a></li></ol></nav>
+
+<section id="essentiel"><h2>Image et antécédent&nbsp;: la seule chose à comprendre</h2>
+<div class="key"><p class="t">Vocabulaire</p><ul>
+<li><span class="m">f(3) = 2</span> se lit «&nbsp;f de 3 égale 2&nbsp;».</li>
+<li><strong>2 est l’image de 3</strong> par <span class="m">f</span>&nbsp;: c’est la <strong>sortie</strong>.</li>
+<li><strong>3 est un antécédent de 2</strong> par <span class="m">f</span>&nbsp;: c’est l’<strong>entrée</strong>.</li>
+</ul></div>
+<p>Un nombre a <strong>une seule image</strong>. En revanche, un nombre peut avoir <strong>plusieurs antécédents</strong>, ou aucun. C’est pour cela qu’on dit «&nbsp;<em>l’</em>image&nbsp;» mais «&nbsp;<em>un</em> antécédent&nbsp;».</p>
+<p>Attention, <span class="m">f(5)</span> n’est pas «&nbsp;f fois 5&nbsp;». C’est ce que la machine <span class="m">f</span> donne quand on y entre 5.</p>
+</section>
+
+<section id="formule"><h2>Avec une formule&nbsp;: calculer</h2>
+<p>Pour une <strong>image</strong>, on remplace <span class="m">x</span> par le nombre, entre parenthèses, puis on calcule. Pour un <strong>antécédent</strong>, on écrit l’équation <span class="m">f(x) = k</span> et on la résout.</p>
+<div class="ex"><h3>Exercice 1&nbsp;: calculer une image</h3>
+<div class="q"><p>Soit <span class="m">f(x) = x² − 2x − 1</span>. Calculer <span class="m">f(3)</span> et <span class="m">f(−2)</span>.</p></div>
+<div class="s"><span class="lbl">Correction</span>
+<p><span class="m">f(3)</span> <span class="m">= 3² − 2 × 3 − 1</span> <span class="m">= 9 − 6 − 1</span> <span class="m">= 2</span>. L’image de 3 est 2.</p>
+<p><span class="m">f(−2)</span> <span class="m">= (−2)² − 2 × (−2) − 1</span> <span class="m">= 4 + 4 − 1</span> <span class="m">= 7</span>. Les parenthèses autour de −2 évitent l’erreur <span class="m">−2² = −4</span>.</p>
+</div></div>
+<div class="ex"><h3>Exercice 2&nbsp;: antécédent par le calcul</h3>
+<div class="q"><p>Soit <span class="m">g(x) = 3x − 7</span>. Déterminer l’antécédent de 11 par <span class="m">g</span>. Puis, pour <span class="m">h(x) = x² − 9</span>, déterminer les antécédents de 0.</p></div>
+<div class="s"><span class="lbl">Correction</span>
+<p>On résout <span class="m">3x − 7 = 11</span>&nbsp;: <span class="m">3x = 18</span>, donc <span class="m">x = 6</span>. Vérification&nbsp;: <span class="m">g(6) = 18 − 7 = 11</span> ✓. L’antécédent de 11 est 6.</p>
+<p>On résout <span class="m">x² − 9 = 0</span>, soit <span class="m">x² = 9</span>&nbsp;: <span class="m">x = 3</span> ou <span class="m">x = −3</span>. <strong>0 a deux antécédents&nbsp;: 3 et −3.</strong> (Voir <a href="/equations-3eme.html#carre">équation x² = a</a>.)</p>
+</div></div>
+</section>
+
+<section id="tableau"><h2>Avec un tableau de valeurs&nbsp;: lire</h2>
+<div class="scroll"><table class="t"><caption class="note" style="caption-side:bottom;text-align:left;padding-top:.3rem">Tableau de valeurs d’une fonction k</caption>
+<tr><th scope="row"><span class="m">x</span></th><td>−1</td><td>0</td><td>2</td><td>5</td></tr>
+<tr><th scope="row"><span class="m">k(x)</span></th><td>4</td><td>1</td><td>−5</td><td>1</td></tr></table></div>
+<p>La première ligne contient les entrées, la seconde les sorties. L’image de 2 est −5&nbsp;: on part de 2 sur la ligne du haut. Les antécédents de 1 sont 0 et 5&nbsp;: on part de 1 sur la ligne du bas, et on relève <strong>toutes</strong> les colonnes où il apparaît.</p>
+</section>
+
+<section id="graphique"><h2>Sur un graphique&nbsp;: lire sur les bons axes</h2>
+<svg viewBox="0 0 248 350" width="100%" style="max-width:248px;display:block;margin:0 auto 1rem;background:#fff;border:1px solid #E2E8F0;border-radius:12px" role="img" aria-label="Courbe de la fonction f(x) = x² − 2x − 1 pour x entre −2 et 4. Elle passe par les points (−1&nbsp;; 2), (1&nbsp;; −2) et (3&nbsp;; 2)."><line x1="22" y1="328" x2="22" y2="22" stroke="#E2E8F0" stroke-width="1"/><line x1="56" y1="328" x2="56" y2="22" stroke="#E2E8F0" stroke-width="1"/><line x1="90" y1="328" x2="90" y2="22" stroke="#E2E8F0" stroke-width="1"/><line x1="124" y1="328" x2="124" y2="22" stroke="#E2E8F0" stroke-width="1"/><line x1="158" y1="328" x2="158" y2="22" stroke="#E2E8F0" stroke-width="1"/><line x1="192" y1="328" x2="192" y2="22" stroke="#E2E8F0" stroke-width="1"/><line x1="226" y1="328" x2="226" y2="22" stroke="#E2E8F0" stroke-width="1"/><line x1="22" y1="328" x2="226" y2="328" stroke="#E2E8F0" stroke-width="1"/><line x1="22" y1="294" x2="226" y2="294" stroke="#E2E8F0" stroke-width="1"/><line x1="22" y1="260" x2="226" y2="260" stroke="#E2E8F0" stroke-width="1"/><line x1="22" y1="226" x2="226" y2="226" stroke="#E2E8F0" stroke-width="1"/><line x1="22" y1="192" x2="226" y2="192" stroke="#E2E8F0" stroke-width="1"/><line x1="22" y1="158" x2="226" y2="158" stroke="#E2E8F0" stroke-width="1"/><line x1="22" y1="124" x2="226" y2="124" stroke="#E2E8F0" stroke-width="1"/><line x1="22" y1="90" x2="226" y2="90" stroke="#E2E8F0" stroke-width="1"/><line x1="22" y1="56" x2="226" y2="56" stroke="#E2E8F0" stroke-width="1"/><line x1="22" y1="22" x2="226" y2="22" stroke="#E2E8F0" stroke-width="1"/><line x1="22" y1="260" x2="226" y2="260" stroke="#475569" stroke-width="1.5"/><line x1="90" y1="328" x2="90" y2="22" stroke="#475569" stroke-width="1.5"/><text x="121" y="275" font-size="12" fill="#475569" paint-order="stroke" stroke="#fff" stroke-width="3">1</text><text x="78" y="230" font-size="12" fill="#475569" paint-order="stroke" stroke="#fff" stroke-width="3">1</text><text x="78" y="275" font-size="12" fill="#475569" paint-order="stroke" stroke="#fff" stroke-width="3">0</text><path d="M192 260 V192 H90" fill="none" stroke="#1E40AF" stroke-width="1.5" stroke-dasharray="4 3"/><polyline points="22.0,22.0 23.0,28.1 24.0,34.1 25.1,40.1 26.1,46.0 27.1,51.8 28.1,57.6 29.1,63.3 30.2,69.0 31.2,74.6 32.2,80.1 33.2,85.6 34.2,91.0 35.3,96.4 36.3,101.7 37.3,106.9 38.3,112.1 39.3,117.2 40.4,122.2 41.4,127.2 42.4,132.2 43.4,137.0 44.4,141.8 45.5,146.6 46.5,151.3 47.5,155.9 48.5,160.4 49.5,164.9 50.6,169.4 51.6,173.7 52.6,178.1 53.6,182.3 54.6,186.5 55.7,190.6 56.7,194.7 57.7,198.7 58.7,202.7 59.7,206.5 60.8,210.4 61.8,214.1 62.8,217.8 63.8,221.5 64.8,225.1 65.9,228.6 66.9,232.0 67.9,235.4 68.9,238.8 69.9,242.0 71.0,245.3 72.0,248.4 73.0,251.5 74.0,254.5 75.0,257.5 76.1,260.4 77.1,263.3 78.1,266.0 79.1,268.8 80.1,271.4 81.2,274.0 82.2,276.6 83.2,279.0 84.2,281.5 85.2,283.8 86.3,286.1 87.3,288.3 88.3,290.5 89.3,292.6 90.3,294.7 91.4,296.7 92.4,298.6 93.4,300.5 94.4,302.3 95.4,304.0 96.5,305.7 97.5,307.3 98.5,308.9 99.5,310.4 100.5,311.8 101.6,313.2 102.6,314.5 103.6,315.8 104.6,317.0 105.6,318.1 106.7,319.2 107.7,320.2 108.7,321.1 109.7,322.0 110.7,322.8 111.8,323.6 112.8,324.3 113.8,324.9 114.8,325.5 115.8,326.0 116.9,326.5 117.9,326.9 118.9,327.2 119.9,327.5 120.9,327.7 122.0,327.9 123.0,328.0 124.0,328.0 125.0,328.0 126.0,327.9 127.1,327.7 128.1,327.5 129.1,327.2 130.1,326.9 131.1,326.5 132.2,326.0 133.2,325.5 134.2,324.9 135.2,324.3 136.2,323.6 137.3,322.8 138.3,322.0 139.3,321.1 140.3,320.2 141.3,319.2 142.4,318.1 143.4,317.0 144.4,315.8 145.4,314.5 146.4,313.2 147.5,311.8 148.5,310.4 149.5,308.9 150.5,307.3 151.5,305.7 152.6,304.0 153.6,302.3 154.6,300.5 155.6,298.6 156.6,296.7 157.7,294.7 158.7,292.6 159.7,290.5 160.7,288.3 161.7,286.1 162.8,283.8 163.8,281.5 164.8,279.0 165.8,276.6 166.8,274.0 167.9,271.4 168.9,268.8 169.9,266.0 170.9,263.3 171.9,260.4 173.0,257.5 174.0,254.5 175.0,251.5 176.0,248.4 177.0,245.3 178.1,242.0 179.1,238.8 180.1,235.4 181.1,232.0 182.1,228.6 183.2,225.1 184.2,221.5 185.2,217.8 186.2,214.1 187.2,210.4 188.3,206.5 189.3,202.7 190.3,198.7 191.3,194.7 192.3,190.6 193.4,186.5 194.4,182.3 195.4,178.1 196.4,173.7 197.4,169.4 198.5,164.9 199.5,160.4 200.5,155.9 201.5,151.3 202.5,146.6 203.6,141.8 204.6,137.0 205.6,132.2 206.6,127.2 207.6,122.2 208.7,117.2 209.7,112.1 210.7,106.9 211.7,101.7 212.7,96.4 213.8,91.0 214.8,85.6 215.8,80.1 216.8,74.6 217.8,69.0 218.9,63.3 219.9,57.6 220.9,51.8 221.9,46.0 222.9,40.1 224.0,34.1 225.0,28.1 226.0,22.0" fill="none" stroke="#059669" stroke-width="2.5"/><circle cx="192" cy="192" r="4" fill="#1E40AF"/><text x="199" y="185" font-size="13" font-weight="700" fill="#0F172A" paint-order="stroke" stroke="#fff" stroke-width="4">A(3&nbsp;; 2)</text><circle cx="56" cy="192" r="4" fill="#1E40AF"/><text x="63" y="185" font-size="13" font-weight="700" fill="#0F172A" paint-order="stroke" stroke="#fff" stroke-width="4">B(−1&nbsp;; 2)</text></svg>
+<p class="note" style="text-align:center">Courbe de <span class="m">f(x) = x² − 2x − 1</span>. Un carreau = 1 unité.</p>
+<ul>
+<li><strong>Image de 3</strong>&nbsp;: on part de 3 sur l’axe horizontal (abscisses), on monte jusqu’à la courbe (point A), puis on lit sur l’axe vertical&nbsp;: <span class="m">f(3) = 2</span>.</li>
+<li><strong>Antécédents de 2</strong>&nbsp;: on part de 2 sur l’axe vertical (ordonnées), on trace la droite horizontale <span class="m">y = 2</span> et on relève <strong>tous</strong> les points d’intersection&nbsp;: A et B. Les antécédents de 2 sont 3 et −1.</li>
+</ul>
+<p>Avant toute lecture, vérifie la graduation&nbsp;: un carreau ne vaut pas toujours 1. Une lecture graphique donne souvent une valeur approchée. Si l’énoncé donne la formule, le calcul permet de confirmer&nbsp;: <span class="m">f(−1) = 1 + 2 − 1 = 2</span> ✓.</p>
+</section>
+
+<div class="cta-box"><h2>Et toi, où tu en es&nbsp;?</h2><p>Le diagnostic Matheux teste tes compétences de 3e et remonte aux notions des années précédentes quand c’est là que ça coince. Tu obtiens ta carte de compétences, puis 5 exercices par jour sur tes vrais points faibles.</p><a class="btn btn-cta" href="/app.html#diag-seo_fonctions">Faire le diagnostic gratuit →</a><p class="micro">~8 min · 15 questions · sans carte bancaire</p></div>
+
+<section id="erreurs"><h2>Les erreurs les plus fréquentes</h2>
+<ul class="errs">
+<li><span class="e">Lire <span class="m">f(5)</span> comme «&nbsp;f × 5&nbsp;»</span><span class="c"><span class="m">f(5)</span> est la sortie quand on entre 5 dans la machine <span class="m">f</span>.</span></li>
+<li><span class="e">Répondre l’antécédent quand on demande l’image</span><span class="c">Image = sortie, antécédent = entrée. Écris «&nbsp;<span class="m">f(… ) = …</span>&nbsp;» et place chaque nombre.</span></li>
+<li><span class="e">Partir de l’axe vertical pour lire une image</span><span class="c">Image&nbsp;: on part de l’axe horizontal. Antécédent&nbsp;: on part de l’axe vertical.</span></li>
+<li><span class="e">Ne donner qu’un antécédent</span><span class="c">Trace la droite horizontale en entier et relève toutes les intersections.</span></li>
+<li><span class="e">Calculer <span class="m">g(27)</span> au lieu de résoudre <span class="m">g(x) = 27</span></span><span class="c">«&nbsp;Antécédent de 27&nbsp;»&nbsp;: 27 est la sortie. On écrit l’équation <span class="m">g(x) = 27</span>.</span></li>
+<li><span class="e">Supposer qu’un carreau vaut 1</span><span class="c">Repère la valeur d’une graduation avant de lire quoi que ce soit.</span></li>
+</ul>
+</section>
+
+<section id="faq"><h2>Questions fréquentes</h2><details><summary>Quelle est la différence entre image et antécédent&nbsp;?</summary><div><p>L’image est le nombre qui sort de la fonction, l’antécédent est le nombre qui y entre. Si f(4) = 10, alors 10 est l’image de 4 et 4 est un antécédent de 10.</p></div></details><details><summary>Un nombre peut-il avoir plusieurs images&nbsp;?</summary><div><p>Non. Par une fonction, chaque nombre a une seule image. En revanche, un nombre peut avoir plusieurs antécédents, ou aucun. Par exemple, pour f(x) = x², le nombre 9 a deux antécédents (3 et −3) et le nombre −1 n’en a aucun.</p></div></details><details><summary>Comment trouver un antécédent sur un graphique&nbsp;?</summary><div><p>Place le nombre sur l’axe vertical, trace une droite horizontale à cette hauteur, et relève l’abscisse de chaque point où elle coupe la courbe. Chaque abscisse est un antécédent.</p></div></details><details><summary>Quelle est la différence avec une fonction affine&nbsp;?</summary><div><p>Une fonction affine est un cas particulier de fonction, de la forme f(x) = ax + b, dont la courbe est une droite. Le vocabulaire image et antécédent s’applique de la même façon.</p></div></details></section>
+<section id="aussi"><h2>À réviser aussi</h2><ul class="pills"><li><a href="/fonction-affine-3eme.html">Fonction affine et linéaire</a></li><li><a href="/equations-3eme.html">Équations</a></li><li><a href="/statistiques-brevet.html">Statistiques</a></li><li><a href="/calcul-litteral-3eme.html">Calcul littéral</a></li><li><a href="/exercices-maths-3eme-brevet.html">Brevet de maths 2027 : exercices type</a></li></ul></section>
+</div>
+</main>
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-g">
+      <div>
+        <a class="brand" href="/"><img src="/assets/mark-white.png" alt="" width="29" height="24">Matheux</a>
+        <p style="margin-top:.7rem">Diagnostic et entraînement en maths pour la 3e, conçus par un ancien ingénieur qui accompagne des élèves en maths depuis des années.<br><a href="mailto:contact@matheux.fr">contact@matheux.fr</a></p>
+      </div>
+      <nav aria-label="Notions de 3e"><h2>Notions de 3e</h2><ul><li><a href="/calcul-litteral-3eme.html">Calcul littéral</a></li><li><a href="/equations-3eme.html">Équations</a></li><li><a href="/fonctions-3eme.html">Fonctions</a></li><li><a href="/fonction-affine-3eme.html">Fonction affine et linéaire</a></li><li><a href="/puissances-3eme.html">Puissances</a></li><li><a href="/racine-carree-3eme.html">Racine carrée</a></li><li><a href="/arithmetique-3eme.html">Arithmétique</a></li><li><a href="/fractions-brevet.html">Fractions</a></li><li><a href="/pythagore-brevet.html">Théorème de Pythagore</a></li><li><a href="/thales-brevet.html">Théorème de Thalès</a></li><li><a href="/trigonometrie-3eme.html">Trigonométrie</a></li><li><a href="/probabilites-brevet.html">Probabilités</a></li><li><a href="/statistiques-brevet.html">Statistiques</a></li></ul></nav>
+      <nav aria-label="Brevet"><h2>Brevet</h2><ul><li><a href="/exercices-maths-3eme.html">Toutes les notions de 3e</a></li><li><a href="/exercices-maths-3eme-brevet.html">Brevet de maths 2027 : exercices type</a></li><li><a href="/comment-reviser-brevet-maths.html">Comment réviser le Brevet de maths</a></li><li><a href="/difficultes-maths-3eme.html">Parents : difficultés en maths en 3e</a></li><li><a href="/app.html#login">Connexion</a></li></ul></nav>
+      <nav aria-label="Informations légales"><h2>Légal</h2><ul><li><a href="/mentions-legales.html">Mentions légales</a></li><li><a href="/cgu.html">CGU</a></li><li><a href="/cgv.html">CGV</a></li><li><a href="/politique-confidentialite.html">Confidentialité</a></li><li><a href="/politique-cookies.html">Cookies</a></li></ul></nav>
+    </div>
+    <div class="copy">© 2026 Matheux · Nicolas Follezou · Fait en France</div>
+  </div>
+</footer>
+</body>
+</html>

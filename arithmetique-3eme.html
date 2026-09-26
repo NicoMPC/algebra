@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arithmétique 3e : nombres premiers, décomposition | Matheux</title>
+<meta name="description" content="Arithmétique en 3e : diviseurs, critères de divisibilité, nombres premiers, décomposition en facteurs premiers, problèmes de partage. Exercices corrigés.">
+<link rel="canonical" href="https://matheux.fr/arithmetique-3eme.html">
+<meta name="theme-color" content="#0F172A">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Matheux">
+<meta property="og:url" content="https://matheux.fr/arithmetique-3eme.html">
+<meta property="og:title" content="Arithmétique 3e : nombres premiers, décomposition">
+<meta property="og:description" content="Arithmétique en 3e : diviseurs, critères de divisibilité, nombres premiers, décomposition en facteurs premiers, problèmes de partage. Exercices corrigés.">
+<meta property="og:image" content="https://matheux.fr/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&family=Syne:wght@800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/seo.css">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Accueil",
+     "item": "https://matheux.fr/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Maths 3e",
+     "item": "https://matheux.fr/exercices-maths-3eme.html"
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "name": "Arithmétique",
+     "item": "https://matheux.fr/arithmetique-3eme.html"
+    }
+   ]
+  },
+  {
+   "@type": "LearningResource",
+   "@id": "https://matheux.fr/arithmetique-3eme.html#ressource",
+   "name": "Arithmétique en 3e : nombres premiers et décomposition en facteurs premiers",
+   "description": "Arithmétique en 3e : diviseurs, critères de divisibilité, nombres premiers, décomposition en facteurs premiers, problèmes de partage. Exercices corrigés.",
+   "url": "https://matheux.fr/arithmetique-3eme.html",
+   "inLanguage": "fr-FR",
+   "educationalLevel": "3e (collège, cycle 4)",
+   "learningResourceType": [
+    "Cours",
+    "Exercices corrigés"
+   ],
+   "teaches": [
+    "Multiples et diviseurs",
+    "Critères de divisibilité",
+    "Division euclidienne",
+    "Reconnaître un nombre premier",
+    "Décomposer un entier en facteurs premiers",
+    "Résoudre un problème de partage avec les diviseurs communs"
+   ],
+   "isAccessibleForFree": true,
+   "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "student"
+   },
+   "author": {
+    "@type": "Person",
+    "name": "Nicolas Follezou",
+    "description": "Ancien ingénieur, accompagne des élèves en maths (soutien scolaire) depuis des années"
+   },
+   "publisher": {
+    "@type": "Organization",
+    "name": "Matheux",
+    "url": "https://matheux.fr/",
+    "logo": "https://matheux.fr/icons/icon-512.png"
+   },
+   "dateModified": "2026-09-26"
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Le nombre 1 est-il un nombre premier ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Non. Un nombre premier a exactement deux diviseurs distincts, 1 et lui-même. Le nombre 1 n’a qu’un seul diviseur, lui-même. Le plus petit nombre premier est 2."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Comment savoir rapidement si un nombre est premier ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Essaie de le diviser par 2, 3, 5, 7, 11, 13… Tu peux t’arrêter dès que le carré du diviseur testé dépasse le nombre. Par exemple, pour 97, on s’arrête après 7 car 11² = 121 est plus grand que 97."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "À quoi sert la décomposition en facteurs premiers ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "À trouver les diviseurs communs de deux nombres, donc à résoudre des problèmes de partage équitable, et à simplifier une fraction jusqu’à la forme irréductible."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Qu’est-ce que le PGCD ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "C’est le plus grand diviseur commun à deux nombres. Pour 60 et 96, c’est 12. On l’obtient en multipliant les facteurs premiers communs aux deux décompositions, chacun avec son plus petit exposant."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+<header class="hdr">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Matheux, accueil"><img src="/assets/mark-white.png" alt="" width="29" height="24">Matheux</a>
+    <nav aria-label="Navigation principale">
+      <a class="l hide-xs" href="/exercices-maths-3eme.html">Notions 3e</a>
+      <a class="btn btn-cta btn-sm" href="/app.html#diag-seo_arithmetique">Diagnostic gratuit</a>
+    </nav>
+  </div>
+</header>
+<main id="contenu">
+<div class="hero">
+  <div class="wrap narrow">
+    <nav class="crumbs" aria-label="Fil d’Ariane"><ol><li><a href="/">Accueil</a></li><li><a href="/exercices-maths-3eme.html">Maths 3e</a></li><li aria-current="page">Arithmétique</li></ol></nav>
+    <p class="eyebrow">Maths 3e · Nombres et calculs</p>
+    <h1>Arithmétique en 3e&nbsp;: nombres premiers et décomposition</h1>
+    <p class="lead">Multiples, diviseurs, nombres premiers&nbsp;: l’arithmétique paraît simple, mais au Brevet elle sert à résoudre de vrais problèmes de partage et à simplifier des fractions. La méthode tient en une idée&nbsp;: décomposer en facteurs premiers.</p>
+    <a class="btn btn-cta" href="/app.html#diag-seo_arithmetique">Tester mon niveau gratuitement →</a>
+    <p class="micro">~8 min · 15 questions · sans carte bancaire</p>
+  </div>
+</div>
+<div class="wrap narrow art">
+<p class="updated">Mis à jour le 26 septembre 2026 · par Nicolas Follezou, fondateur de Matheux</p>
+<nav class="toc" aria-label="Sommaire"><p>Sommaire</p><ol><li><a href="#bases">Multiples et diviseurs</a></li><li><a href="#premiers">Nombres premiers</a></li><li><a href="#decomposer">Décomposer en facteurs premiers</a></li><li><a href="#exemples">Exercices corrigés</a></li><li><a href="#erreurs">Erreurs fréquentes</a></li><li><a href="#faq">Questions fréquentes</a></li></ol></nav>
+
+<section id="bases"><h2>Multiples, diviseurs et division euclidienne</h2>
+<p><span class="m">36 = 4 × 9</span>&nbsp;: on dit que 36 est un <strong>multiple</strong> de 4, et que 4 est un <strong>diviseur</strong> de 36. La phrase modèle évite de confondre les deux mots.</p>
+<div class="key"><p class="t">Critères de divisibilité</p><ul>
+<li>par 2&nbsp;: le dernier chiffre est pair&nbsp;; par 5&nbsp;: il finit par 0 ou 5&nbsp;; par 10&nbsp;: il finit par 0&nbsp;;</li>
+<li>par 3&nbsp;: la <strong>somme des chiffres</strong> est divisible par 3&nbsp;; par 9&nbsp;: elle est divisible par 9&nbsp;;</li>
+<li>par 4&nbsp;: le nombre formé par les deux derniers chiffres est divisible par 4.</li>
+</ul></div>
+<p>La <strong>division euclidienne</strong> de <span class="m">a</span> par <span class="m">b</span> s’écrit <span class="m">a = b × q + r</span> avec <span class="m">0 ≤ r < b</span>. Exemple&nbsp;: <span class="m">42 = 5 × 8 + 2</span>. Le quotient est 8 et le reste est 2. Le reste n’est pas la partie décimale de <span class="m">42 ÷ 5 = 8,4</span>.</p>
+</section>
+
+<section id="premiers"><h2>Nombres premiers</h2>
+<div class="key"><p class="t">Définition</p><p>Un nombre premier a <strong>exactement deux diviseurs</strong> distincts&nbsp;: 1 et lui-même. Les nombres premiers inférieurs à 50 sont&nbsp;: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47.</p></div>
+<ul>
+<li>1 n’est pas premier&nbsp;: il n’a qu’un seul diviseur.</li>
+<li>2 est premier, et c’est le seul nombre premier pair.</li>
+<li>Un nombre impair n’est pas forcément premier&nbsp;: <span class="m">21 = 3 × 7</span>, <span class="m">91 = 7 × 13</span>.</li>
+</ul>
+<p>Pour tester si <span class="m">n</span> est premier, on essaie de le diviser par les nombres premiers 2, 3, 5, 7, 11… jusqu’à ce que leur carré dépasse <span class="m">n</span>. Si aucune division ne tombe juste, <span class="m">n</span> est premier.</p>
+</section>
+
+<section id="decomposer"><h2>Décomposer en produit de facteurs premiers</h2>
+<p>Tout entier supérieur ou égal à 2 s’écrit comme un produit de nombres premiers, et cette écriture est unique (à l’ordre près). On divise successivement par 2, puis 3, puis 5… tant que c’est possible.</p>
+<p><span class="m">360</span> <span class="m">= 2 × 180</span> <span class="m">= 2 × 2 × 90</span> <span class="m">= 2 × 2 × 2 × 45</span> <span class="m">= 2 × 2 × 2 × 3 × 3 × 5</span>, donc <strong><span class="m">360 = 2³ × 3² × 5</span></strong>. On vérifie en recalculant&nbsp;: <span class="m">8 × 9 × 5 = 360</span> ✓.</p>
+<p>La décomposition sert à trouver des diviseurs communs et à <strong>simplifier une fraction</strong> jusqu’à la forme irréductible (voir <a href="/fractions-brevet.html">fractions</a>).</p>
+</section>
+
+<section id="exemples"><h2>Exercices corrigés</h2>
+<div class="ex"><h3>Exercice 1&nbsp;: premier ou pas&nbsp;?</h3>
+<div class="q"><p>Les nombres 97 et 119 sont-ils premiers&nbsp;?</p></div>
+<div class="s"><span class="lbl">Correction</span>
+<p>97&nbsp;: il n’est divisible ni par 2, ni par 3 (somme des chiffres 16), ni par 5, ni par 7 (<span class="m">7 × 13 = 91</span>, <span class="m">7 × 14 = 98</span>). Comme <span class="m">11² = 121 > 97</span>, on peut s’arrêter&nbsp;: <strong>97 est premier</strong>.</p>
+<p>119&nbsp;: pas divisible par 2, 3 ou 5, mais <span class="m">119 = 7 × 17</span>. <strong>119 n’est pas premier.</strong></p>
+</div></div>
+
+<div class="ex"><h3>Exercice 2&nbsp;: simplifier une fraction</h3>
+<div class="q"><p>Rendre irréductible la fraction <span class="fr"><span>84</span><span>120</span></span>.</p></div>
+<div class="s"><span class="lbl">Correction</span>
+<p><span class="m">84 = 2² × 3 × 7</span> et <span class="m">120 = 2³ × 3 × 5</span>. Les facteurs communs sont <span class="m">2² × 3 = 12</span>.</p>
+<p><span class="fr"><span>84</span><span>120</span></span><span class="m"> = </span><span class="fr"><span>12 × 7</span><span>12 × 10</span></span><span class="m"> = </span><strong><span class="fr"><span>7</span><span>10</span></span></strong>. 7 et 10 n’ont plus de diviseur commun autre que 1.</p>
+</div></div>
+
+<div class="ex"><h3>Exercice 3&nbsp;: problème de partage (type Brevet)</h3>
+<div class="q"><p>Un fleuriste a 60 tulipes et 96 roses. Il veut composer le plus grand nombre possible de bouquets identiques, en utilisant toutes les fleurs. Combien de bouquets peut-il faire, et que contient chaque bouquet&nbsp;?</p></div>
+<div class="s"><span class="lbl">Correction</span>
+<p>Le nombre de bouquets doit diviser 60 <strong>et</strong> 96&nbsp;: on cherche le plus grand diviseur commun.</p>
+<p><span class="m">60 = 2² × 3 × 5</span> et <span class="m">96 = 2⁵ × 3</span>. On garde les facteurs communs avec le plus petit exposant&nbsp;: <span class="m">2² × 3 = 12</span>.</p>
+<p><strong>Il peut faire 12 bouquets</strong>, contenant chacun <span class="m">60 ÷ 12 = 5</span> tulipes et <span class="m">96 ÷ 12 = 8</span> roses.</p>
+</div></div>
+</section>
+
+<div class="cta-box"><h2>Et toi, où tu en es&nbsp;?</h2><p>Le diagnostic Matheux teste tes compétences de 3e et remonte aux notions des années précédentes quand c’est là que ça coince. Tu obtiens ta carte de compétences, puis 5 exercices par jour sur tes vrais points faibles.</p><a class="btn btn-cta" href="/app.html#diag-seo_arithmetique">Faire le diagnostic gratuit →</a><p class="micro">~8 min · 15 questions · sans carte bancaire</p></div>
+
+<section id="erreurs"><h2>Les erreurs les plus fréquentes</h2>
+<ul class="errs">
+<li><span class="e">«&nbsp;23 est divisible par 3 car il finit par 3&nbsp;»</span><span class="c">Par 3 et par 9, on regarde la somme des chiffres&nbsp;: <span class="m">2 + 3 = 5</span>, donc non.</span></li>
+<li><span class="e">«&nbsp;36 est un diviseur de 4&nbsp;»</span><span class="c"><span class="m">36 = 4 × 9</span>&nbsp;: 36 est un multiple de 4, et 4 est un diviseur de 36.</span></li>
+<li><span class="e"><span class="m">42 ÷ 5 = 8,4</span>, donc le reste est 4</span><span class="c"><span class="m">42 = 5 × 8 + 2</span>&nbsp;: le reste est 2, toujours plus petit que le diviseur.</span></li>
+<li><span class="e">«&nbsp;1 est premier&nbsp;»</span><span class="c">Un nombre premier a exactement deux diviseurs. 1 n’en a qu’un.</span></li>
+<li><span class="e">Arrêter le test après 2, 3 et 5 (et déclarer 91 premier)</span><span class="c">Continuer avec 7, 11, 13…&nbsp;: <span class="m">91 = 7 × 13</span>.</span></li>
+<li><span class="e"><span class="m">126 = 2 × 9 × 7</span></span><span class="c">9 n’est pas premier&nbsp;: <span class="m">126 = 2 × 3² × 7</span>.</span></li>
+<li><span class="e">Prendre les plus grands exposants pour un diviseur commun</span><span class="c">Un diviseur commun ne peut pas avoir plus de facteurs que chacun des nombres&nbsp;: on prend le plus petit exposant.</span></li>
+<li><span class="e">Donner le nombre de fleurs par bouquet quand on demande le nombre de bouquets</span><span class="c">Relire la question et répondre par une phrase avec l’unité.</span></li>
+</ul>
+</section>
+
+<section id="faq"><h2>Questions fréquentes</h2><details><summary>Le nombre 1 est-il un nombre premier&nbsp;?</summary><div><p>Non. Un nombre premier a exactement deux diviseurs distincts, 1 et lui-même. Le nombre 1 n’a qu’un seul diviseur, lui-même. Le plus petit nombre premier est 2.</p></div></details><details><summary>Comment savoir rapidement si un nombre est premier&nbsp;?</summary><div><p>Essaie de le diviser par 2, 3, 5, 7, 11, 13… Tu peux t’arrêter dès que le carré du diviseur testé dépasse le nombre. Par exemple, pour 97, on s’arrête après 7 car 11² = 121 est plus grand que 97.</p></div></details><details><summary>À quoi sert la décomposition en facteurs premiers&nbsp;?</summary><div><p>À trouver les diviseurs communs de deux nombres, donc à résoudre des problèmes de partage équitable, et à simplifier une fraction jusqu’à la forme irréductible.</p></div></details><details><summary>Qu’est-ce que le PGCD&nbsp;?</summary><div><p>C’est le plus grand diviseur commun à deux nombres. Pour 60 et 96, c’est 12. On l’obtient en multipliant les facteurs premiers communs aux deux décompositions, chacun avec son plus petit exposant.</p></div></details></section>
+<section id="aussi"><h2>À réviser aussi</h2><ul class="pills"><li><a href="/fractions-brevet.html">Fractions</a></li><li><a href="/puissances-3eme.html">Puissances</a></li><li><a href="/calcul-litteral-3eme.html">Calcul littéral</a></li><li><a href="/probabilites-brevet.html">Probabilités</a></li><li><a href="/exercices-maths-3eme-brevet.html">Brevet de maths 2027 : exercices type</a></li></ul></section>
+</div>
+</main>
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-g">
+      <div>
+        <a class="brand" href="/"><img src="/assets/mark-white.png" alt="" width="29" height="24">Matheux</a>
+        <p style="margin-top:.7rem">Diagnostic et entraînement en maths pour la 3e, conçus par un ancien ingénieur qui accompagne des élèves en maths depuis des années.<br><a href="mailto:contact@matheux.fr">contact@matheux.fr</a></p>
+      </div>
+      <nav aria-label="Notions de 3e"><h2>Notions de 3e</h2><ul><li><a href="/calcul-litteral-3eme.html">Calcul littéral</a></li><li><a href="/equations-3eme.html">Équations</a></li><li><a href="/fonctions-3eme.html">Fonctions</a></li><li><a href="/fonction-affine-3eme.html">Fonction affine et linéaire</a></li><li><a href="/puissances-3eme.html">Puissances</a></li><li><a href="/racine-carree-3eme.html">Racine carrée</a></li><li><a href="/arithmetique-3eme.html">Arithmétique</a></li><li><a href="/fractions-brevet.html">Fractions</a></li><li><a href="/pythagore-brevet.html">Théorème de Pythagore</a></li><li><a href="/thales-brevet.html">Théorème de Thalès</a></li><li><a href="/trigonometrie-3eme.html">Trigonométrie</a></li><li><a href="/probabilites-brevet.html">Probabilités</a></li><li><a href="/statistiques-brevet.html">Statistiques</a></li></ul></nav>
+      <nav aria-label="Brevet"><h2>Brevet</h2><ul><li><a href="/exercices-maths-3eme.html">Toutes les notions de 3e</a></li><li><a href="/exercices-maths-3eme-brevet.html">Brevet de maths 2027 : exercices type</a></li><li><a href="/comment-reviser-brevet-maths.html">Comment réviser le Brevet de maths</a></li><li><a href="/difficultes-maths-3eme.html">Parents : difficultés en maths en 3e</a></li><li><a href="/app.html#login">Connexion</a></li></ul></nav>
+      <nav aria-label="Informations légales"><h2>Légal</h2><ul><li><a href="/mentions-legales.html">Mentions légales</a></li><li><a href="/cgu.html">CGU</a></li><li><a href="/cgv.html">CGV</a></li><li><a href="/politique-confidentialite.html">Confidentialité</a></li><li><a href="/politique-cookies.html">Cookies</a></li></ul></nav>
+    </div>
+    <div class="copy">© 2026 Matheux · Nicolas Follezou · Fait en France</div>
+  </div>
+</footer>
+</body>
+</html>
