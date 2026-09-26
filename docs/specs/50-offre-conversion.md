@@ -448,7 +448,7 @@ Microcopies :
 
 > **Qui est derrière Matheux ?**
 > Je m'appelle Nicolas Follezou. Ancien ingénieur, j'accompagne depuis des années des dizaines d'élèves en soutien scolaire de maths, et le même constat revenait sans cesse : un élève « nul en maths » ne l'est presque jamais. Il bute sur 2 ou 3 notions, souvent vues des années plus tôt, et tout le reste s'écroule par-dessus. Matheux sert à trouver ces notions-là, puis à les retravailler un peu chaque jour.
-> Matheux est un petit projet indépendant. Si vous m'écrivez, c'est moi qui réponds : contact@matheux.fr.
+> Une question ? Écrivez-moi, c'est moi qui réponds : contact@matheux.fr.
 
 ✅ Parcours validé par Nicolas le 24/09 : ancien ingénieur, accompagne depuis des années des dizaines d'élèves en soutien scolaire maths. **Ne jamais écrire « prof de maths ».** **Pas de photo stock** : une vraie photo, ou pas de photo.
 
