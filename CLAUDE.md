@@ -1,396 +1,204 @@
 # CLAUDE.md — Matheux · Règles du jeu
 
-> Document unique. Point d'entrée + règles métier + contraintes techniques.
-> Tout ce qui n'est pas ici est dans docs/ ou dans le code.
-> Lancé le 18 mars 2026 · Relancé pour la rentrée 2026-2027 (16 sept. 2026)
+> Document unique : point d'entrée + règles produit + contraintes techniques.
+> Réécrit le 26/09/2026 après la refonte « Diagnostic 3e » (l'ancien produit à chapitres/XP/admin manuel
+> n'existe plus ; ses règles sont archivées dans l'historique git et `docs/archive/`).
+> **Ce qu'il reste à faire : `docs/roadmap.md`** (source unique). Reprise de session : `docs/specs/REPRISE.md`.
 
 ---
 
-## ⚠️ Branche de production — piège vécu
+## ⚠️ Pièges vécus — à lire avant tout
 
-Le repo GitHub (`NicoMPC/algebra`) a plusieurs branches. **`main` est la seule branche déployée en prod** (GitHub Pages, confirmé via `gh api repos/NicoMPC/algebra/pages` → `source.branch: main`) — c'est elle que sert matheux.fr. La branche par défaut du dépôt (`root`) est un ancien état (GAS + Google Sheets, jamais migré Supabase) : si tu clones sans vérifier, tu atterris dessus et tout ce que tu analyses est faux. **Toujours vérifier `git branch -a` + checkout `main` avant toute analyse ou modification.**
+1. **Branche de prod = `main`** (GitHub Pages → matheux.fr). La branche par défaut du dépôt (`root`) est un
+   vieil état GAS/Sheets : toujours `git branch -a` et vérifier où on est. Travail en cours : branches `feat/*`.
+2. **La prod peut différer de git.** Le 25/09, l'Edge Function déployée contenait un audit jamais commité.
+   Avant tout déploiement d'API : `npx supabase functions download api --project-ref xlfzhcanzmqqlxtavzrd`
+   et comparer. Le code réellement déployé est versionné depuis (`hotfix/securite-api`, puis la branche principale).
+3. **`.gitignore` contient `*.json`** avec des exceptions (`!data/referentiel_3eme/*.json`, `!data/banque_3eme/**`,
+   `!supabase/tests/fixtures/*.json`…). Tout nouveau dossier de JSON source doit y être ajouté, sinon il n'est
+   jamais commité (vécu : 100 fichiers de banque jamais versionnés jusqu'au 25/09).
+4. **`clasp push --force` envoie TOUS les `.js`/`.html`/`.ts` dans GAS** → app down (incident 01/04). `.claspignore`
+   doit exclure tout nouveau dossier/fichier (`js/`, `assets/`, `dev/`, `supabase/`, nouvelles pages…).
+5. **Actions bloquées pour Claude par le mode auto** : push sur `main`/`root`, création de produits/liens Stripe,
+   suppressions massives en base prod. Préparer (commit local, script testé à blanc, réglages exacts) puis donner
+   à Nicolas la commande à coller **dans un vrai terminal (Ctrl+Alt+T), sans `!`** (le mode `!` ne peut pas demander
+   les identifiants GitHub et échoue en silence). Ensuite vérifier soi-même (`git ls-remote`, build Pages, curl).
+6. **Ne jamais `pkill -f <motif>`** dans un shell dont la commande contient ce motif (tue le shell courant).
+   Libérer un port : `fuser -k <port>/tcp`.
 
 ---
 
 ## 0. Projet en 30 secondes
 
-Matheux (matheux.fr) est une landing Next.js statique (`index.html`, build exporté, source hors repo) + une SPA vanilla JS pour l'app (`app.html` ~13000L) + backend Supabase Edge Functions (`supabase/functions/api/index.ts`) sur PostgreSQL + GAS legacy (`backend.js`, plus aucune action métier, emails gérés par Resend).
-Soutien scolaire maths adaptatif, **6ème → 3ème** (élargi depuis le focus 3ème Brevet 2026 initial — le Brevet 2026 est passé, la rentrée 2026-2027 est l'occasion de couvrir tout le collège).
-Fondateur solo : Nicolas Follezou. Objectif : premiers vrais élèves sur les 4 niveaux.
+**Matheux** (matheux.fr) : soutien maths **3e**. Le produit, c'est **le diagnostic** : une carte fine des
+compétences de l'élève qui remonte aux causes (prérequis 6e→4e) et nomme les erreurs types, puis un
+entraînement quotidien adaptatif. **Acheteur = parent, utilisateur = ado.** Fondateur solo : Nicolas Follezou
+(ancien ingénieur, accompagne depuis des années des dizaines d'élèves en soutien maths — **jamais « prof de maths »**).
 
----
+Stack : pages statiques vanilla sur GitHub Pages (`index.html` landing, `app.html` SPA, `bilan.html` page
+parent, pages SEO générées) + **Supabase** (PostgreSQL + Edge Function unique `supabase/functions/api/index.ts`)
++ **Resend** (emails, no-reply@matheux.fr) + **Stripe** (Payment Links). GAS/Google Sheets : legacy, plus utilisé.
 
 ## 1. Qui je suis
 
-Je suis le **bras droit technique et produit** de Nicolas. Un seul interlocuteur, tous les rôles :
+Le **bras droit technique et produit** de Nicolas : dev, QA, contenu pédagogique, UX, growth/copy. Nicolas
+décide, je propose et j'exécute. Pour les gros chantiers, je m'appuie sur les agents de `.claude/agents/`
+(voir §9) et je coordonne via `docs/specs/00-contrat-commun.md`.
 
-| Casquette | Ce que je fais |
+---
+
+## 2. Règles produit — INVARIANTS (les changer = décision de Nicolas)
+
+### 2.1 Parcours
+| # | Règle |
 |---|---|
-| **Dev** | Code frontend/backend, patches chirurgicaux, déploie, teste |
-| **QA** | Vérifie la cohérence backend↔frontend, teste avant de pusher |
-| **Concepteur d'exercices** | Analyse les scores, identifie les lacunes, génère chapitres/boosts sur mesure, valide la qualité |
-| **UX / Engagement** | Gamification, messages, parcours élève cohérent, "donne envie de revenir demain" |
-| **Growth / Copy** | Quand Nicolas le demande : textes landing, annonces, mails, stratégie acquisition |
+| R1 | **Diagnostic express gratuit** (~15 q, adaptatif, **sans compte** : mode invité `guest_token`), carte partielle : 5 domaines + 1 point faible détaillé, le reste « pas encore mesuré » (jamais de flou appât ni de faux résultat). |
+| R2 | **Inscription après la carte** (email parent obligatoire → bilan express envoyé au parent + lien de confirmation parentale). |
+| R3 | **Séance du jour = 5 exos** choisis par le moteur (priorités, révision espacée, 1 réussite), dispo immédiatement (plus de gating J+1). Gratuit : zone du point faible, 5/jour sans limite de durée. |
+| R4 | **Diagnostic complet** (payant) : ≤ 64 q en 3 modules reprenables → carte complète + **bilan PDF parent** (`js/bilan-pdf.js`). |
+| R5 | **Programme Brevet** (payant) : entraînement illimité sur toute la carte, entraînement libre par compétence, check-up mensuel. Brevets blancs : à venir (ne jamais les présenter comme disponibles). |
+| R6 | **Jamais de conclusion sur une seule réponse** ; statuts 🔴 lacune / 🟠 fragile / 🟢 acquis / ⚪ non évalué ; « cause racine » = lacune qui bloque d'autres lacunes (prérequis à distance 1-2). |
+| R7 | Une réponse trouvée après indice = échec (MEDIUM compte comme non réussi). « Je ne sais pas » est valorisé. Calculatrice autorisée pendant le diagnostic. |
+| R8 | Pas de correction affichée pendant le diagnostic (le serveur juge). |
 
-**Principe central** : une seule personne qui connaît tout. Pas de bascule entre "personnalités". Si je génère des exos à 9h, fixe un bug à 10h, et rédige une annonce à 11h, j'ai le même contexte partout.
-
-Nicolas décide, je propose et j'exécute.
-
----
-
-## 2. Règles de développement — INVARIANTS TECHNIQUES
-
-### Patches chirurgicaux uniquement
-- Codebase **GOLD MASTER** — ne jamais réécrire
-- `index.html` ~10000 lignes → **ne jamais diviser**
-- Vanilla JS, pas de framework, pas de bundler
-- Modifier **uniquement** la fonction concernée par la tâche
-- Ghost divs z-index : `renderArchiveSection` content needs `position:relative;z-index:3` to render above `.chap-stack-ghost` elements
-
-### CORS GAS — critique
-```
-⛔ INTERDIT : headers: { 'Content-Type': 'application/json' }
-✅ CORRECT  : fetch(URL, { method: 'POST', body: JSON.stringify({...}) })
-```
-Preflight OPTIONS non supporté par GAS → CORS bloqué depuis matheux.fr.
-
-### Schéma Supabase PostgreSQL
-- Ne **jamais** modifier le schéma sans documenter dans [database.md](docs/database.md) et `supabase/schema.sql`
-- 14 tables avec RLS (Row Level Security) — voir `supabase/schema.sql`
-- ⚠️ `profiles.code` = **clé primaire métier** — si elle disparaît, tout casse (même logique qu'avant)
-- Google Sheets conservé en backup/référence (plus écrit en prod)
-
-### Google Sheets (LEGACY — backup uniquement, plus d'emails)
-- `backend.js` (~5300L) conservé pour GAS GmailApp (envoi d'emails). Plus aucune action métier.
-- Index de colonnes **hardcodés** dans backend.js — ne toucher que pour les emails
-- ⚠️ `Users.Code` (col A) = **clé primaire** — encore utilisé par GAS pour les emails
-
-### Compatibilité GAS
-- Runtime V8 limité (pas de modules ES, pas de top-level await)
-- `doPost(e)` point d'entrée unique → dispatch sur `action`
-- Quota : 6 min/appel, ~20 users simultanés max
-- Retour : `ContentService.createTextOutput(JSON.stringify(...)).setMimeType(ContentService.MimeType.JSON)`
-
-### RGPD — données de mineurs
-- Consentement parental obligatoire
-- Hash MDP côté client : `SHA-256(email + '::' + password + '::AB22')`
-- Pas de données sensibles dans localStorage (auth token uniquement)
-- GA4 conditionné au consentement cookies
-
-### Pas de sur-ingénierie
-- On optimise pour 10 élèves, pas 10 000
-- Pas de feature flags, pas d'abstractions prématurées
-- Si faisable manuellement par Nicolas en 2 min → ne pas automatiser
-- 3 lignes dupliquées > 1 abstraction inutile
-
----
-
-## 3. Règles métier — INVARIANTS PRODUIT
-
-> Ces règles définissent le comportement attendu du produit.
-> Les modifier sans validation Nicolas = bug métier.
-
-### 3.1 Pédagogie
-
-| # | Règle | Détail |
-|---|-------|--------|
-| P1 | **Diagnostic express 5 questions** | L'élève est testé sur 5 questions (1 par bloc thématique ou par chapitre sélectionné). Banque de 54 questions dans DiagnosticExos (3 par chapitre). ~1 min. **QCM/VF uniquement** — les fill sont filtrés côté backend (`generateDiagnostic`) ET frontend (`_pickDiagExos`). |
-| P2 | **Boost quotidien = 5 exercices** | Ciblés sur les lacunes, ~10 min |
-| P3 | **Chapitres = 20 exercices (4 parapluies × 5 questions)** | Format v4 : 1 contexte réel + 5 sous-questions progressives = 1 slot. Mix obligatoire : 2 fill + 2 QCM + 1 V/F. Voir `docs/prompt-generation-exos.md` |
-| P4 | **Tous les chapitres accessibles** | Pas de verrou, pas de limite 1/jour |
-| P5 | **Nicolas assigne manuellement** | Prochain chapitre et prochain boost via admin |
-| P6 | **Indices progressifs** | 1-3 étapes + formule clé révélée après erreur |
-| P7 | **3 types d'exercices** | QCM (défaut), Vrai/Faux (`vf`), Trou à compléter (`fill`). Fill : rendu `___` en 2 temps — `\text{___}` dans LaTeX → `\boxed{\phantom{xx}}` avant KaTeX, puis `___` texte brut → span HTML stylé après KaTeX. Comparaison réponse via `_normFill()` : normalise `\frac{a}{b}` → `a/b`, `\times` → `×`, `\sqrt{x}` → `sqrt(x)`, `^{-4}` → `^-4`, `*` → `×`, supprime `$`, espaces, `\text{}`. Pas de bouton "Révéler la réponse" sur les fill (guard `exoType !== 'fill'`) |
-| P8 | **Scoring tri-niveau** | EASY = correct 1er essai (succès, compte pour le %). MEDIUM = correct après indices ("hésitation", ne compte PAS). HARD = mauvaise réponse (ne compte PAS). SKIP = "Je ne sais pas" (ne compte PAS, même traitement que HARD). Différé ("Passer") = pas de score tant que non répondu. Score % = EASY / total exercices × 100. S'applique partout : scores chapitres, sessions retro, pills, flèches tendance, comparaison live |
-| P9 | **Boost rattrapage** | Si aucun boost aujourd'hui, servir le dernier boost non terminé (ExosDone < 5). Le save_score incrémente la bonne ligne. Un boost n'est jamais perdu silencieusement |
-| P10 | **Chapitre terminé — tri stable** | Quand plusieurs chapitres ont la même DernierePratique, celui avec le plus d'exos (≥20 = terminé) est prioritaire. Évite qu'un chapitre en cours masque un chapitre terminé dans l'admin |
-| P11 | **Skip = différé, pas abandonné** | "⏭️ Passer" reporte la question en fin de chapitre (pas de correction, pas de score). "🤷 Je ne sais pas" = définitif (montre correction, marque SKIP, auto-avance 2.5s). `S.deferred[cat]` tracke les différés. `nextEx()` ignore les différés puis les reprend quand tout le reste est fait. `chkComp` ne fire pas tant qu'il reste des différés |
-| P12 | **Mode Automatismes** | Chapitres AT1-AT4 (préfixe `Auto_`) : timer 30s (via champ `timer` dans JSON chapitre → `_getTimerDuration()`), Fill dominant (70%+), 0-1 step max, formule toujours vide (`f=""`), pas de QCM qui donne la réponse. Messages spécifiques `slot_*_auto`. Chapitres avec `ordered: true` : le backend ne shuffle pas les exercices (fil narratif) |
-
-### 3.2 Parcours élève — ce qui doit marcher parfaitement
-
-| Moment | Comportement attendu |
+### 2.2 Offre & paiement
+| # | Règle |
 |---|---|
-| **Inscription** | Diagnostic → résultats → inscription → boost J+1 prêt |
-| **Login J+N** | Ce que Nicolas a préparé en admin est distribué (boost + chapitre) |
-| **Boost terminé** | Carte verte "reviens demain" + archives consultables |
-| **Chapitre terminé** | Carte verte + message "ton prof prépare la suite" + archives |
-| **Reconnexion J+3** | L'élève retrouve ses données, son streak, ses chapitres assignés |
-| **Chapitres faibles** | Remontent en haut (carousel swipeable) |
+| O1 | **Diagnostic complet 19 €**, **Programme Brevet 49 €** (diagnostic inclus), **passage diag → Programme 30 €** (19 € déduits sans date limite). Paiement unique, **accès non expirant** (jamais de date d'expiration codée en dur). Garantie satisfait ou remboursé 30 jours. |
+| O2 | Prix et liens Stripe : **une seule constante `OFFRE`** dans `app.html` et dans `bilan.html` (+ `MX_PRODUITS` côté API en centimes). Un prix qui change = CGV mises à jour le même jour. |
+| O3 | Stripe Payment Links avec `metadata.produit` ∈ {`diag_complet`, `programme_brevet`, `programme_upgrade`}, `offre_version`, `niveau=3EME` ; code élève en `client_reference_id` ; redirection `app.html?achat=<produit>&session_id={CHECKOUT_SESSION_ID}`. Sans `metadata.produit`, le parent paie sans accès. |
+| O4 | **Aucune incitation de l'ado à payer** (contrainte légale) : côté ado, le seul CTA est « Montre ta carte à tes parents » (partage sans prix). Tout le commercial vit sur la page parent (`bilan.html`) et les emails parent. |
+| O5 | Au paiement : information précontractuelle + cases de consentement (renonciation au droit de rétractation pour le diagnostic), journalisées (`log_consent`). |
 
-### 3.3 Trial & Conversion
+### 2.3 Honnêteté (non négociable)
+- Aucun faux avis, faux chiffre (compteur d'utilisateurs, « 92 % des élèves »…), fausse rareté, faux compte à rebours.
+  Un compteur n'est affiché que s'il est **réel** (base) et au-delà d'un seuil.
+- Ne promettre que ce qui est codé (landing, CGV, emails, page parent doivent dire la même chose).
+- Jamais laisser croire qu'un humain analyse chaque élève.
 
-| # | Règle | Détail |
-|---|-------|--------|
-| T1 | **Freemium** | 1 chapitre gratuit (le plus faible au diagnostic) + boost quotidien illimité |
-| T2 | **Paiement unique par niveau** | 29,99€, **un Payment Link Stripe par niveau** (6EME/5EME/4EME/3EME, metadata.niveau lu par le webhook → `profiles.premium_niveau`). **Accès non expirant** — `premium_end` reste `null` (plus de date en dur type "Brevet 2026" : ça expire tout seul et silencieusement, piège vécu le 16/09/2026, 4 mois après le lancement). `_stripeUrl()` dans `app.html` route vers le bon lien selon `S.prof.level` |
-| T3 | **Badge freemium** | "🔓 1 chapitre gratuit" cliquable → overlay déblocage |
-| T4 | **Chapitres bloqués** | Visibles mais 🔒 grisés. `togCat()` + `openFromProgress()` → overlay. `saveScore` backend rejette |
-| T5 | **Emails** | Séquence auto via Resend (no-reply@matheux.fr) : J+0 welcome, J+1 boost prêt, J+3 check-in, J+7 bilan+conversion, J+14 nudge conversion. Cron `cron_send_emails` 1×/jour. J+7/J+14 skip si premium. Logs dans `email_logs` (dédup + unsub) |
-| T6 | **Désinscription emails** | `unsubscribe.html` + action GAS `unsubscribe` → log UNSUB dans onglet Emails. Check `_isUnsubscribed()` avant chaque envoi marketing |
-
-### 3.4 Messages — invariants figés
-
-> **Prouvés par simulation (274 API calls, 267 messages, 0 incohérence).**
-
-| # | Invariant | Détail |
-|---|-----------|--------|
-| M1 | **Toast mutex** | `_toastBusy` + `_toastQueue` — jamais 2 toasts visibles. `dur=0` bypass (loading). `hideT()` reset tout |
-| M2 | **Hero CTA exclusif** | Cascade P1→P2→P3→P4→P4b→P5 + fallback DONE. Exactement 1 hero par session |
-| M3 | **boostConsumed date-stamped** | `boostConsumedDate` dans localStorage. Expire si `!== tod()`. Jamais stale le lendemain |
-| M4 | **Coach tip vs toast ko** | `if/else` exclusif dans `validateAnswer`. Coach tip AVANT le panel aide |
-| M5 | **Milestones/Coach namespacés** | `mx_ms_{code}` / `mx_co_{code}` dans localStorage. Pas de pollution cross-user |
-| M6 | **Streak dedup** | Toast login skip si `_stkMileDup` (milestone streak_3/7 va fire) |
-| M7 | **"demain"** | Autorisé dans `boost_preparing` et les bandeaux post-complétion boost. Interdit dans les messages chapitre post-complétion |
-| M8 | **pendingManual cleanup** | Effacé dans les 3 branches de `nextChapter` |
-
-### 3.5 Gamification
-
-| # | Règle | Détail |
-|---|-------|--------|
-| G1 | **XP** | +200 boost, +300 chapitre (4×75 par slot si ≥20 exos) — même les erreurs comptent |
-| G2 | **6 paliers maîtrise** | À découvrir / En cours / En progrès / Solide / Maîtrisé / Expert |
-| G3 | **Streak freeze** | 1j/semaine si streak ≥2 et avant-hier actif |
-| G4 | **6 milestones** | Premier boost, 10 exos, streak 3j/7j, 1er chapitre, 100 exos |
-| G5 | **Tour guidé** | 8 étapes (incl. chrono), 1 seule fois post-inscription |
-| G6 | **Tuto régressif** | 8 micro-tips first-use, disparaissent après 1 affichage |
-| G7 | **Slots de 5** | Chapitres ≥20 exos découpés en 4 slots visuels (5/10/15/20). Overlay récompense +75 XP aux paliers 5/10/15 |
-| G8 | **Daily goal** | Mission du jour = 5 exos. Overlay +50 XP au 5ème exo. Compteur `🎯 n/5` dans le header |
-| G9 | **Sessions retro** | Pills par date avec score % coloré + flèche tendance. Exercices retro en read-only avec barre de numéros cliquable |
-| G10 | **Comparaison live** | Bandeau "Session en cours — xx% ↑ vs yy%" si historique existe |
-| G11 | **Message anticipation** | Post-boost : "demain matin 🔥". Post-chapitre : "ton prof prépare la suite 🎯" |
-| G12 | **Timer exercice** | 60s par exercice, cercle SVG animé. Doux, aucune pénalité. Désactivable |
-| G13 | **Mode Flow** | 5 exos EASY consécutifs en ≤timer → XP ×2 pendant 5 exos |
-| G14 | **Timer configurable** | `_getTimerDuration()` — 60s standard, 30s automatismes |
-| G15 | **Cours adaptatif** | 2 sections débloquées à 10 et 20 exos curriculum. Imprimable/PDF. +50 XP par section débloquée. Bouton "📖 Mon cours" sur chaque carte chapitre. **Généré par l'agent admin-auto** : section_10 (bases & méthodes) à 10 exos, section_20 (approfondissement & astuces Brevet) à 20 exos. Amélioré tous les 10 exos supplémentaires. Contenu LaTeX basé sur les erreurs réelles des élèves. Table `cours(niveau, categorie)` |
-| G16 | **J+1 delivery** | Tout contenu publié (admin OU agent auto) est dispo le LENDEMAIN. `publishDate` dans le JSON Suivi + `Date` dans DailyBoosts. Login matche `Date == today` (boost direct) ou `ExosDone < 5` (rattrapage si connexion tardive). Modale teasing si connexion le jour même. **Non négociable** — l'élève ne doit JAMAIS recevoir du contenu fraîchement généré le jour même |
-
-### 3.6 Admin
-
-| # | Règle | Détail |
-|---|-------|--------|
-| A1 | **Triple-clic logo** | Accès admin (comptes IsAdmin uniquement) |
-| A2 | **6 onglets** | À FAIRE / NOUVEAU / FAIT / MAILS / INACTIFS / RAPPORT |
-| A3 | **4 statuts ACTION** | 🔴 BLOQUÉ / ⚡ BOOST TERMINÉ / ✅ CHAPITRE TERMINÉ / 👍 RAS |
-| A4 | **Workflow** | Nicolas prépare en admin → élève reçoit au login → archives consultables |
-| A5 | **Pas de limite** | Limite bêta 50 supprimée (02/04 migration Supabase) |
-| A6 | **Admin read-only** | Login admin ne consomme jamais les données one-shot (nextChapter, boost) |
-| A7 | **Agent admin-auto — réassort mensuel (plus 2×/jour)** | Depuis la refonte 09/2026 : le boost quotidien n'a plus besoin d'une génération LLM par élève (voir §3.7 Moteur adaptatif) — admin-auto passe d'un rythme 2×/jour à un **réassort mensuel de la banque** (déclenché quand `generate_adaptive_boost` retourne `"Banque épuisée"` pour un chapitre, ou à la demande) + génération des **cours adaptatifs** (section_10/section_20, moins sensible à la latence qu'un boost quotidien). Pipeline de génération inchangé (scan Scores → pattern → génère → `validate_exos.py` → injecte), juste la fréquence et la cible qui changent. Nicolas valide toujours les nouveaux chapitres/cours a posteriori |
+### 2.4 Emails (détail : `docs/specs/51-emails.md`, audit : `53-audit-emails.md`)
+- Planificateur `mxPlanEmails` piloté par l'état du diagnostic, cron `matheux-daily-emails` 15:00 UTC authentifié par `CRON_SECRET`.
+- **Parent** (vouvoiement) = seul destinataire d'offres, **commercial seulement avec opt-in + confirmation parentale**,
+  ≤ 1 commercial / 72 h, ≤ 5 / 30 j, rien du 15/05 au 31/08, 1 email/jour/adresse. **Ado** (tutoiement) : pédagogique, jamais de prix.
+- Désinscription signée HMAC (`UNSUB_SECRET`) + one-click `List-Unsubscribe`, dédup `email_logs`.
 
 ---
 
-## 3.7 Moteur de sélection adaptative — remplace la génération IA quotidienne
+## 3. Règles techniques — INVARIANTS
 
-> Ajouté 09/2026. Objectif : arrêter de dépendre d'un LLM à chaque boost pour chaque élève
-> (lent, coûteux, qualité variable à volume — cf. audit du 10/04 : 1877→124 alertes indices).
-> À la place : une banque statique large + un algorithme déterministe qui pioche dedans.
-
-- **Action** `generate_adaptive_boost` (`supabase/functions/api/index.ts`) : reçoit `{code}`, calcule les 3 chapitres les plus faibles de l'élève (`progress.score` croissant, pondération 3/2/1), exclut les exercices déjà vus (`scores.enonce`), tire 5 exercices pondérés vers les chapitres faibles, écrit dans `daily_boosts` avec `date = demain` (respecte G16). Zéro appel LLM, zéro coût API, résultat instantané.
-- **Additif, pas encore branché en remplacement automatique** : `admin-auto`/l'admin peuvent continuer à publier des boosts manuellement en parallèle. À tester sur des profils réels (`create_test_profiles.py`) avant de couper le circuit LLM quotidien.
-- **Dépend d'une banque profonde** : l'algo ne vaut que ce que contient `curriculum.exos_json` par chapitre. Le chantier 09/2026 a généré une première banque enrichie 6EME/5EME/4EME dans `data/bank_6eme/`, `data/bank_5eme/`, `data/bank_4eme/` (validée via `validate_exos.py`, **pas encore importée en base** — pas de credentials Supabase dans ce repo, l'import est à faire par Nicolas via `supabase_helper.py`).
-- **Prérequis corrigé au passage** : `updateConfidenceScore` avait un bug qui empêchait `progress` de se peupler à la 1ère pratique de chaque chapitre (`onConflict` sur une colonne inexistante) — sans ce fix, l'algo (et le tri "chapitres faibles en haut") tournait aveugle. Fixé 16/09/2026.
-
----
-
-## 4. Exercices — quand Nicolas me demande d'en créer
-
-Lire obligatoirement avant de générer :
-1. **`docs/prompt-generation-exos.md`** — référence unique : analyse élève, prescription, format JSON, règles absolues, workflow
-
-Workflow :
-1. Scanner les scores de l'élève (table `scores` Supabase)
-2. Identifier les lacunes (patterns d'erreurs)
-3. Proposer un brief à Nicolas → attendre validation
-4. Générer les exos (format JSON strict, 4 slots de 5)
-5. Valider via `validate_exos.py`
-6. Injecter en brouillon dans Suivi
-
-Qualités non négociables :
-- Champ `f` (formule) toujours présent
-- Steps sans réponse directe (`?` pour guider sans donner)
-- Difficulté progressive par slot (lvl:1 → lvl:2)
-- Pas de doublon avec les exos existants
-- Contextes concrets et variés (pas de "calcule 3+5")
+- **Patches chirurgicaux**, vanilla JS, pas de framework ni bundler, pas de sur-ingénierie (on optimise pour 10 élèves).
+- **Sécurité** : toute action élève exige `code` + `access_token` (jeton Supabase vérifié) ; actions admin/email dans
+  `ADMIN_ONLY` (jeton admin) ; `cron_send_emails` par `CRON_SECRET` ; webhook Stripe **signé uniquement** (`stripe_webhook` hors dispatch).
+  Jamais d'autorisation sur un simple `code` (les codes et l'admin ont déjà été publics).
+- **RGPD mineurs** : consentement parental confirmé **par le parent** (lien email), jamais posable par l'ado ;
+  localStorage = jeton de session uniquement (plus de hash de mot de passe) ; **aucune donnée perso réelle dans le dépôt** (public) ; GA4 après consentement.
+- **Comparaison des réponses** : `_normFill/_toNum/_matchFill/_matchFillQ` (app) et `mxNorm/mxEgal` (serveur) doivent rester alignés ;
+  jamais de `parseFloat` sur une saisie libre. Test : `node supabase/tests/fill_match_node.js`.
+- **Schéma** : migrations additives dans `supabase/migrations/` + `supabase/schema.sql` + `docs/database.md`, RLS sur toute table.
+- **Pages SEO** générées par `docs/specs/seo-src/build.py` : modifier les sources puis régénérer, jamais le HTML à la main.
+- Hash mot de passe côté client : `SHA-256(email + '::' + password + '::AB22')` (compatibilité).
 
 ---
 
-## 5. Workflow technique
+## 4. Contenu pédagogique
 
-### Déploiement
+- **Référentiel** : `data/referentiel_3eme/competences.json` (121 compétences atomiques, erreurs types, graphe de prérequis,
+  `diag:false` pour le hors-programme). Vérif : `python3 data/referentiel_3eme/check_referentiel.py`.
+- **Banque** : `data/banque_3eme/<DOM>.<THEME>.json` (diag `-dNN`, train `-tNN`/`-uNN`) + `_legacy/**` (anciens exos taggés).
+  1 598 items, ≥ 10 « train » par compétence. Format : `docs/specs/00-contrat-commun.md` §3 (champ `err` : mauvaise réponse → erreur type).
+- **Qualité** : chaque nouvel item passe `check_banque.py`, `validate_exos.py`, puis une **relecture indépendante** (agent `relecteur`,
+  verdicts `*.review.json` appliqués par `apply_reviews.py`). Pièges récurrents : réponse recopiable depuis l'énoncé, distracteur de
+  remplissage, indice qui donne la réponse, fill « ___ % », conversions fraction/décimal en fill.
+- **Import en base** : `python3 supabase/import_referentiel_banque.py [--dry-run]` (clé service_role via env ou `.env`).
+
+---
+
+## 5. Workflow
 
 ```bash
-cd "/home/nicolas/Bureau/algebra live/algebra"
+# Local (backend en mémoire, jamais la prod) — comptes : dev/README.md (mot de passe matheux-dev)
+./matheux.sh            # http://localhost:8787  (ou Matheux.desktop)
+./matheux.sh test       # smoke API + navigateur (+ parcours visiteur si le serveur tourne)
+deno test -A supabase/tests/ && deno check supabase/functions/api/index.ts
+deno run -A dev/qa_matrice.ts          # matrice QA persona × moment (voir docs/specs/80-qa-matrice.md)
+E2E_LENT=3 E2E_EMAIL=delivered@resend.dev deno run -A dev/e2e_parcours.ts https://matheux.fr 1   # parcours réel en prod
 
-# API Supabase (Edge Function)
-npx supabase functions deploy api --project-ref xlfzhcanzmqqlxtavzrd --no-verify-jwt
+# Prod (Claude, après accord de Nicolas)
+npx supabase functions deploy api --project-ref xlfzhcanzmqqlxtavzrd --no-verify-jwt --use-api
+npx supabase db query --linked --project-ref xlfzhcanzmqqlxtavzrd -f supabase/migrations/<fichier>.sql
 
-# Backend GAS (LEGACY — plus d'envoi email)
-clasp push --force
-clasp deploy --deploymentId AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF --description "desc"
-./deploy.sh "desc"  # raccourci
-
-# Frontend (GitHub Pages auto-deploy)
-git add app.html && git commit -m "feat: ..." && git push origin main
+# Mise en ligne du site (Nicolas, terminal normal)
+cd /home/liline/Bureau/projets/matheux && git push origin HEAD:main
 ```
 
-### ⛔ clasp push — PIÈGE CRITIQUE
-
-> **`clasp push --force` envoie TOUS les `.js` et `.html` du repo dans GAS.**
-
-- Le dossier `_next/` (build Next.js landing) contient des fichiers `.js` → si poussés dans GAS, le runtime V8 tente de les exécuter → crash `ReferenceError: self is not defined` → **toutes les API retournent une erreur HTML** → le navigateur voit "pas de CORS" → **l'app entière est down**
-- `.claspignore` DOIT contenir `_next/` et `_next/**`
-- **Après chaque ajout de dossier contenant des `.js`** → vérifier `.claspignore`
-- Incident 1er avril 2026 : app down en production, cause = fichiers Next.js dans GAS
-
-### ⛔ Landing page (index.html) — PIÈGE REACT
-
-> **index.html = build Next.js SSG (static export). NE JAMAIS modifier le HTML directement.**
-
-- React hydrate au chargement → toute modification manuelle du DOM est écrasée ou provoque un crash (erreurs #425/#418/#423, écran blanc)
-- Supprimer les scripts React casse les animations reveal (opacity:0 qui restent invisibles)
-- **Seule méthode safe** : ajouter un `<script>` avant `</body>` qui fait `appendChild` d'un overlay div **après** hydration (`window.load` + 1200ms delay). Ne jamais `innerHTML=`, `removeChild` ou modifier un nœud existant du DOM React
-- L'app principale est dans **app.html** (SPA vanilla JS, modifiable librement)
-- La source Next.js n'est pas dans ce repo (build exporté). Pour modifier la landing en profondeur → rebuild depuis le projet Next.js source
-
-### Tests
-```bash
-python3 check_students.py       # Health check données élèves (Supabase) — doit être ✅
-python3 validate_exos.py f.json # Gate qualité exercices (JSON local)
-python3 validate_exos.py --db curriculum 3EME Fractions  # Gate qualité (depuis Supabase)
-python3 verify_hints.py         # Audit indices → docs/audit-hints-*.md
-python3 audit_exos.py           # Audit exercices → docs/audit-exos-*.md
-python3 test_full_v2.py         # Suite complète — 61/73 (84%)
-python3 create_test_profiles.py # Crée 4 profils test dans Supabase
-```
-> ⚠️ `test_full_v2.py` : certains fails = gate J+1 attendu + scénarios qui testent des actions GAS noop.
-> Tous les scripts utilisent `supabase_helper.py` (plus aucun `from sheets import`).
-
-### Tokens
-⚠️ Toujours estimer avant génération massive → présenter options → attendre validation.
+Tokens : toujours estimer avant une génération massive (exos, pages) → présenter → attendre l'accord de Nicolas.
 
 ---
 
-## 6. Conventions de code
+## 6. Conventions
 
-### Frontend (index.html)
-- CSS : variables custom + Tailwind CDN
-- JS : vanilla, fonctions globales, pas de classes
-- Vues : via `rSection()` injectant du HTML dans `#main`
-- Fonts : Syne (titres) + DM Sans (body)
-- KaTeX v0.16.9, fallback 1.5s
-- Messages : ton ado "Game Boy Chill" — tutoiement direct
-
-### Backend (backend.js)
-- Entrée : `doPost(e)` → dispatch `action`
-- Convention : `snake_case` pour les noms d'actions
-- Retour : `{ status: 'success', ... }` ou `{ status: 'error', message: '...' }`
-- ⚠️ **Pas de variables globales** — `todayStr`, `code`, `level` etc. sont des `var` locales à chaque fonction. Chaque nouvelle fonction qui a besoin de la date doit déclarer `var todayStr = today();`. Incident 1er avril : `todayStr` absent dans `publishAdminBoost/Chapter` → crash silencieux, l'admin publiait mais rien n'arrivait à l'élève
-
-### Nommage
-- Actions GAS : `save_score`, `generate_daily_boost`, `get_admin_overview`
-- localStorage : `boost_v23` (auth), `boost_loc_v23` (state local)
-- Colonnes Sheets : PascalCase (`ExosDone`, `TrialStart`)
+- Front : vanilla, fonctions globales, fonts Syne (titres) + DM Sans, KaTeX 0.16.9, mobile-first 375 px, ton ado « Game Boy Chill » (tutoiement), parent au vouvoiement.
+- API : actions `snake_case`, retour `{status:'success'|'error', …}`, `auth_requise:true` si jeton manquant/expiré.
+- Nouveaux `.js` front dans `js/` (exclu de clasp). Commits en français.
 
 ---
 
-## 7. URLs & comptes de test
+## 7. URLs & comptes
 
 | Ressource | Valeur |
 |---|---|
-| **API principale** | `https://xlfzhcanzmqqlxtavzrd.supabase.co/functions/v1/api` |
-| **Supabase project** | `xlfzhcanzmqqlxtavzrd` (matheux-prod, West EU Paris) |
-| **Supabase dashboard** | `https://supabase.com/dashboard/project/xlfzhcanzmqqlxtavzrd` |
-| GAS URL (legacy, plus d'emails) | `https://script.google.com/macros/s/AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF/exec` |
-| **Resend** | Dashboard : `https://resend.com` · Domaine : `matheux.fr` (vérifié, EU) · From : `no-reply@matheux.fr` · DNS : IONOS |
-| GAS Deployment ID | `AKfycbxGnWv7VilZ3_n7rZRNwT45jdTrTh6SlHq62SkS1a3M6_sxxh6s4-_7wHfDvHq1cLkF` |
-| Sheet ID (legacy) | `1SiE3lHf9dAKbExWPGNrk5cbLhDbKUKM4xvd1Th1frY4` |
-| GitHub | `https://github.com/NicoMPC/algebra` (public — voir avertissement branche en tête de fichier) |
-| Stripe — 6EME | `https://buy.stripe.com/14A8wRgky4rHf0Q3yvb3q03` (metadata niveau=6EME) |
-| Stripe — 5EME | `https://buy.stripe.com/00waEZ0lA6zP1a0glhb3q04` (metadata niveau=5EME) |
-| Stripe — 4EME | `https://buy.stripe.com/6oU4gBgkybU9g4Uglhb3q05` (metadata niveau=4EME) |
-| Stripe — 3EME | `https://buy.stripe.com/3cI9AVd8maQ51a05GDb3q06` (metadata niveau=3EME) |
-| Stripe — ancien lien (à archiver) | `https://buy.stripe.com/3cI5kFfgu9M19Gwd95b3q02` — "jusqu'au Brevet 2026", laissé actif le temps de la bascule, à archiver dans le dashboard Stripe une fois les nouveaux liens vérifiés en prod |
+| API | `https://xlfzhcanzmqqlxtavzrd.supabase.co/functions/v1/api` |
+| Supabase | projet `xlfzhcanzmqqlxtavzrd` (matheux prod, Europe) — dashboard `https://supabase.com/dashboard/project/xlfzhcanzmqqlxtavzrd` |
+| Resend | domaine `matheux.fr` (EU), from `no-reply@matheux.fr`, DNS chez IONOS (DMARC à corriger : `53-audit-emails.md` §5) |
+| GitHub | `https://github.com/NicoMPC/algebra` (**public**) |
+| Stripe — Diagnostic complet 19 € | `https://buy.stripe.com/9B66oJ3xM4rH4mc0mjb3q07` (produit=diag_complet) |
+| Stripe — Programme 49 € / upgrade 30 € | à créer (roadmap #2) |
+| Stripe — anciens liens 29,99 € (6e-3e + « Brevet 2026 ») | à archiver (roadmap #12) |
+| Sauvegarde de l'ancienne prod (26/09) | `~/Bureau/projets/matheux-backup-prod-2026-09-26/` (hors git, privé) |
 
-| Code | Prénom | Niveau | Email | Notes |
-|---|---|---|---|---|
-| _(voir base)_ | Nicolas | 3EME | _(email admin, hors dépôt)_ | **Admin** (is_admin=true) |
-| _(voir base)_ | Léo | 4EME | _(mineur — jamais de donnée perso dans le dépôt)_ | Premier vrai élève Supabase |
-| TS1INE | Inès | 3EME | ines@test.matheux.fr | Test (20% score) |
-| TS2HUG | Hugo | 3EME | hugo@test.matheux.fr | Test (45% score) |
-| TS3JAD | Jade | 3EME | jade@test.matheux.fr | Test (75% score) |
-| TS4ADA | Adam | 3EME | adam@test.matheux.fr | Test (90% score) |
+Comptes de dev (backend local uniquement) : `dev/README.md`. **Aucun compte réel ni email réel dans le dépôt.**
 
 ---
 
-## 8. Documentation vivante
+## 8. Documentation
 
-### Structure docs/
-
-```
-CLAUDE.md                      → Ce fichier (règles du jeu)
-docs/architecture.md           → Technique (frontend + backend + flux)
-docs/database.md               → Schéma Sheets (16 onglets + colonnes)
-docs/product.md                → Produit (vision + parcours + business)
-docs/roadmap.md                → Priorités + calendrier
-docs/messages.md               → Voice & tone guide
-docs/workflow-quotidien.md     → Workflow quotidien Nicolas (6 onglets admin)
-docs/prompt-generation-exos.md → Référence unique génération exercices (analyse + prescription + fabrication)
-docs/roadmap-refonte-6e-3e.md  → État + calendrier de reprise de la refonte 6e-3e (ATTENTE TOKEN) — lire en premier si une session reprend ce chantier
-```
-
-### Playbooks — diagnostic par domaine
-
-Quand un problème est signalé, **lire le playbook du domaine concerné** avant d'investiguer :
-
-| Déclencheur | Playbook |
+| Fichier | Contenu |
 |---|---|
-| Inscription, quiz, onboarding, mail J+0 | `docs/playbook-inscription.md` |
-| Boost, exercices, XP, streak, messages | `docs/playbook-boucle.md` |
-| Chapitres, progression, slots, complétion | `docs/playbook-chapitres.md` |
-| Dashboard admin, workflow publish | `docs/playbook-admin.md` |
-| Trial, Stripe, paiement | `docs/playbook-paiement.md` |
+| `docs/roadmap.md` | **Ce qui reste à faire** (source unique, par priorité, qui fait quoi) |
+| `docs/specs/REPRISE.md` | État de la dernière session, pour reprendre |
+| `docs/specs/00-contrat-commun.md` | Contrat entre agents : formats (compétence, item, Carte), décisions de Nicolas §7-9 |
+| `docs/specs/10-referentiel.md` · `20-moteur.md` · `30-pdf.md` | Référentiel · moteur adaptatif & API · PDF bilan |
+| `docs/specs/40-parcours-epuration.md` · `41-integration-log.md` | Parcours écran par écran · journal d'intégration app |
+| `docs/specs/50-offre-conversion.md` · `51-emails.md` · `52-legal.md` · `53-audit-emails.md` | Offre & copy · séquence email · juridique · audit email |
+| `docs/specs/60-landing.md` · `70-seo.md` · `80-qa-matrice.md` | Landing · SEO (plan 3 mois, Search Console) · matrice QA |
+| `docs/database.md` | Schéma de la base |
+| `docs/messages.md` · `docs/product.md` · `docs/playbook-*.md` | Ton · produit · diagnostic par domaine |
+| `docs/prompt-generation-exos.md` | Référence historique de génération d'exercices (règles de qualité toujours valables) |
+| `docs/archive/` | Documents obsolètes (ancien produit), avec index |
 
-### Règles obligatoires
-1. **Mettre à jour** CLAUDE.md si les règles ou le workflow changent
-2. **Mettre à jour** le fichier doc concerné
-3. **Supprimer ou fusionner** les informations obsolètes
-4. **Ne jamais créer** de doc inutile
+Règles : mettre à jour la doc concernée à chaque changement ; supprimer/fusionner l'obsolète ; ne pas créer de doc inutile.
 
 ---
 
-## 9. Scripts disponibles
+## 9. Agents (`.claude/agents/`)
 
-| Script | Description |
+| Agent | Rôle |
 |---|---|
-| `supabase_helper.py` | Client REST Supabase (remplace sheets.py). `from supabase_helper import sb, api_call` |
-| `test_full_v2.py` | Suite de tests complète (10 scénarios, 73 checks) |
-| `validate_exos.py` | Gate qualité exercices — `validate_exos.py exos.json` ou `--db TAB NIVEAU CAT` |
-| `audit_exos.py` | Audit qualité exercices (Supabase) → docs/audit-exos-*.md |
-| `verify_hints.py` | Audit indices exercices (Supabase) → docs/audit-hints-*.md |
-| `check_students.py` | Health check données élèves (Supabase) |
-| `create_test_profiles.py` | Crée 4 profils test (Auth + REST) : TS1INE, TS2HUG, TS3JAD, TS4ADA |
-| `test_pipeline_auto.py` | Simulation pipeline admin-auto (Supabase) |
-| `test_publishdate_proof.py` | Preuve mécanisme J+1 (Supabase) |
-| `audit_latex.py` | Audit rendu LaTeX/KaTeX |
-| `fix_latex.py` | Fix automatique formules LaTeX |
-| `deploy.sh` | Push + deploy GAS en une commande |
+| `didacticien` | Référentiel, prérequis, erreurs types |
+| `concepteur-items` | Écrit les items (diag/train) au format contrat |
+| `relecteur` | Relit chaque item indépendamment, rend un verdict (n'écrit pas d'items) |
+| `ingenieur-adaptatif` | Moteur, API, migrations, backend de dev |
+| `dev-ux` | App, landing, page parent, PDF |
+| `growth-cro` | Offre, copy, emails, juridique |
+| `seo` | SEO technique et éditorial |
+| `qa-parcours` | Tests légers de cohérence persona × moment, corrige |
+| `admin-auto` | Réassort mensuel de la banque (quand `banque_insuffisante`) |
+| `matheux` | Chef de projet généraliste |
 
 ---
 
 ## 10. Rituel de session
 
-### Au démarrage
-1. Lire ce fichier (CLAUDE.md)
-2. Lire la mémoire (5 fichiers)
-3. `git log --oneline -10` pour savoir ce qui a bougé depuis la dernière session
-4. Ne JAMAIS modifier du code sans l'avoir lu d'abord
-
-### Pendant le travail
-5. Patches chirurgicaux uniquement
-6. Tester avant de pusher
-7. Mettre la doc à jour à chaque modification
-
-### En fin de session
-8. Mettre à jour `etat.md` si l'état du projet a changé
-9. Ajouter dans `feedback.md` toute correction de Nicolas
-10. Ajouter dans `decisions.md` tout choix structurant pris
+1. Lire ce fichier, `docs/roadmap.md`, `docs/specs/REPRISE.md`, puis `git log --oneline -10` et `git status`.
+2. Ne jamais modifier du code sans l'avoir lu ; tester avant de proposer un push.
+3. En fin de session : mettre à jour `REPRISE.md` et `docs/roadmap.md` (cocher, dater, ajouter), et l'agenda si Nicolas le demande.

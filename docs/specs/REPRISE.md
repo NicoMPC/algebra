@@ -3,6 +3,7 @@
 > Mis à jour le 26/09/2026 14h30. À lire EN PREMIER à la reprise, avec `docs/specs/00-contrat-commun.md`
 > (contrat + décisions de Nicolas §7-9). Branche : `feat/diagnostic-3e` (locale, jamais pushée).
 > Relancer la conversation : « Matheux — Conversation Claude.desktop ». Tester en local : `./matheux.sh`.
+> **Liste des tâches restantes : `docs/roadmap.md`** (source unique ; la section « Reste à faire » ci-dessous est l'historique de session).
 
 ## État en une phrase
 
