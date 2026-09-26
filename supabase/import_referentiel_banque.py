@@ -6,7 +6,7 @@ import_referentiel_banque.py — Charge le référentiel de compétences et la b
 Sources (par défaut) :
   - data/referentiel_3eme/competences.json
   - data/banque_3eme/<DOM>.<THEME>.json      (items diag + train)
-  - data/banque_3eme/_legacy/*.json          (sous-questions v4 taggées, source/parapluie_id/num)
+  - data/banque_3eme/_legacy/**/*.json (dont bank_6eme/5eme/4eme)         (sous-questions v4 taggées, source/parapluie_id/num)
 
 Usage :
   python3 supabase/import_referentiel_banque.py --dry-run            # valide tout, n'écrit rien (aucun credential requis)
@@ -73,7 +73,7 @@ def valider_referentiel(comps, erreurs):
 def charger_items(dossier):
     re_banque = re.compile(r"^(NC|DF|GM|EG|AP)\.[A-Z]{2,5}\.json$")  # exclut *.review.json (verdicts relecteur)
     fichiers = sorted(f for f in glob.glob(os.path.join(dossier, "*.json")) if re_banque.match(os.path.basename(f)))
-    fichiers += sorted(f for f in glob.glob(os.path.join(dossier, "_legacy", "*.json")) if ".review" not in f)
+    fichiers += sorted(f for f in glob.glob(os.path.join(dossier, "_legacy", "**", "*.json"), recursive=True) if ".review" not in f)
     items = []
     for f in fichiers:
         data = charger_json(f)
