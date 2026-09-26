@@ -30,6 +30,9 @@
     th { background: #eef2ff; color: #312e81; padding: .6rem .75rem; text-align: left; font-weight: 700; }
     td { padding: .6rem .75rem; border-bottom: 1px solid #e2e8f0; color: #334155; vertical-align: top; }
     tr:last-child td { border-bottom: none; }
+    .tbl { overflow-x: auto; margin: 1rem 0; }
+    .tbl table { margin: 0; min-width: 520px; }
+    td { vertical-align: top; }
   </style>
 </head>
 <body>
@@ -42,77 +45,83 @@
   <h1>Politique cookies et stockage local</h1>
 
   <div class="ok-box">
-    <p>✅ Matheux n'utilise aucun cookie publicitaire ni de ciblage. Google Analytics 4 (mesure d'audience) est chargé <strong>uniquement après votre consentement explicite</strong> via la bannière.</p>
+    <p>Matheux n'utilise aucun cookie publicitaire ni de ciblage. Google Analytics (mesure d'audience) est chargé <strong>uniquement après votre accord</strong>, donné via le bandeau. Refuser est aussi simple qu'accepter.</p>
   </div>
 
   <h2>Qu'est-ce qu'un cookie ?</h2>
-  <p>Un cookie est un petit fichier texte déposé sur votre navigateur lors de la visite d'un site. Matheux utilise principalement le <strong>localStorage</strong> (stockage local du navigateur), qui fonctionne de manière similaire aux cookies mais n'est jamais transmis automatiquement au serveur.</p>
+  <p>Un cookie est un petit fichier déposé sur votre navigateur lors de la visite d'un site. Matheux utilise surtout le <strong>stockage local</strong> du navigateur (localStorage), qui reste sur votre appareil et n'est pas transmis automatiquement au serveur.</p>
 
-  <h2>Stockage utilisé par Matheux</h2>
-  <table>
+  <h2>Stockage nécessaire au fonctionnement (sans consentement)</h2>
+  <p>Ces éléments sont indispensables au service demandé. Ils ne servent pas à vous suivre.</p>
+  <div class="tbl"><table>
     <tr><th>Clé</th><th>Contenu</th><th>Finalité</th><th>Durée</th></tr>
-    <tr>
-      <td><code>boost_v23</code></td>
-      <td>Email + hash mot de passe</td>
-      <td>Maintenir la session de connexion</td>
-      <td>Jusqu'à déconnexion</td>
-    </tr>
-    <tr>
-      <td><code>boost_loc_v23</code></td>
-      <td>Streak local, date dernière connexion</td>
-      <td>Affichage du compteur de jours consécutifs</td>
-      <td>Permanente (local)</td>
-    </tr>
-    <tr>
-      <td><code>done_v23</code></td>
-      <td>Chapitres terminés, boost consommé</td>
-      <td>Éviter les rechargements inutiles</td>
-      <td>Permanente (local)</td>
-    </tr>
-    <tr>
-      <td><code>mx_cookie_consent</code></td>
-      <td>"accepted" ou "refused"</td>
-      <td>Mémoriser votre choix de consentement analytics</td>
-      <td>Permanente (local)</td>
-    </tr>
-  </table>
+    <tr><td><code>boost_v23</code></td><td>Identifiant du compte, email, jetons de connexion (jamais le mot de passe)</td><td>Garder la session ouverte</td><td>Jusqu'à la déconnexion</td></tr>
+    <tr><td><code>guestDiag</code></td><td>Identifiant temporaire du diagnostic fait sans compte</td><td>Reprendre le diagnostic, le rattacher au compte</td><td>Effacé à la création du compte</td></tr>
+    <tr><td><code>done_v23</code>, <code>mx_deferred_…</code></td><td>État d'avancement local (exercices faits, questions passées)</td><td>Éviter les rechargements, reprendre où l'élève s'est arrêté</td><td>Sur l'appareil</td></tr>
+    <tr><td><code>sq</code></td><td>Réponses en attente d'envoi</td><td>Ne rien perdre en cas de coupure réseau</td><td>Effacé après envoi</td></tr>
+    <tr><td><code>draft_…</code></td><td>Brouillon de l'élève</td><td>Garder le brouillon d'un exercice</td><td>Sur l'appareil</td></tr>
+    <tr><td><code>app_night</code>, <code>mx_pwa_logins</code></td><td>Préférence d'affichage, nombre de connexions sur l'appareil</td><td>Mode sombre, proposition d'installer l'application</td><td>Sur l'appareil</td></tr>
+    <tr><td><code>mx_cookie_consent</code></td><td>« accepted » ou « refused »</td><td>Mémoriser votre choix sur la mesure d'audience</td><td>Jusqu'à ce que vous le modifiiez</td></tr>
+    <tr><td><code>mx_notrack</code></td><td>Indicateur d'exclusion</td><td>Exclure un appareil de la mesure d'audience</td><td>Sur l'appareil</td></tr>
+  </table></div>
 
-  <h2>Cookies tiers</h2>
-  <p>Matheux charge les ressources suivantes depuis des CDN :</p>
+  <h2>Mesure d'audience (Google Analytics, avec consentement)</h2>
+  <p>Si vous l'acceptez, Matheux charge <strong>Google Analytics 4</strong> pour mesurer l'audience (pages vues, étapes du parcours). Les adresses IP sont anonymisées. Aucun usage publicitaire n'en est fait.</p>
+  <div class="tbl"><table>
+    <tr><th>Outil</th><th>Cookies</th><th>Fournisseur</th><th>Durée</th></tr>
+    <tr><td>Google Analytics 4 (<code>G-7R2DW4585Y</code>)</td><td><code>_ga</code>, <code>_ga_…</code></td><td>Google (États-Unis), transfert encadré par le cadre de protection des données UE–États-Unis</td><td>13 mois au maximum</td></tr>
+  </table></div>
+  <p>Si vous refusez, Google Analytics n'est pas chargé : aucun cookie Google Analytics n'est déposé et aucune donnée n'est transmise à Google pour la mesure d'audience.</p>
+
+  <h2>Ressources externes</h2>
+  <p>Pour afficher les pages, Matheux charge des ressources depuis des serveurs tiers. Comme pour tout chargement web, votre adresse IP leur est transmise techniquement ; ils ne déposent pas de cookie publicitaire.</p>
   <ul>
-    <li><strong>Google Fonts</strong> (fonts.googleapis.com) — polices de caractères. Google peut déposer des cookies de performance. Données anonymisées.</li>
-    <li><strong>MathJax CDN</strong> (cdn.jsdelivr.net) — rendu des formules mathématiques. Pas de cookie déposé.</li>
-    <li><strong>Tailwind CSS CDN</strong> (cdn.tailwindcss.com) — framework CSS. Pas de cookie déposé.</li>
+    <li><strong>Google Fonts</strong> (fonts.googleapis.com, fonts.gstatic.com) : polices de caractères.</li>
+    <li><strong>jsDelivr</strong> (cdn.jsdelivr.net) : KaTeX, pour afficher les formules mathématiques.</li>
+    <li><strong>Tailwind CSS</strong> (cdn.tailwindcss.com) : mise en forme de l'application.</li>
   </ul>
-  <p>Aucun cookie publicitaire, de ciblage ou de tracking comportemental n'est utilisé.</p>
 
-  <h2>Cookies analytics (Google Analytics 4)</h2>
-  <p>Matheux utilise <strong>Google Analytics 4</strong> pour mesurer l'audience (pages vues, sessions, taux de conversion). Ce service est chargé <strong>uniquement si vous acceptez</strong> la bannière de consentement.</p>
-  <table>
-    <tr><th>Outil</th><th>Finalité</th><th>Sous-traitant</th><th>Transfert hors UE</th></tr>
-    <tr>
-      <td>Google Analytics 4</td>
-      <td>Mesure d'audience (anonymisée)</td>
-      <td>Google LLC (USA)</td>
-      <td>Oui — Clauses contractuelles standard UE</td>
-    </tr>
-  </table>
-  <p>Measurement ID : <code>G-7R2DW4585Y</code>. Les IPs sont anonymisées (<code>anonymize_ip: true</code>). Vous pouvez refuser à tout moment via la bannière ou en supprimant <code>mx_cookie_consent</code> depuis le localStorage.</p>
-  <p>Si vous refusez, aucun cookie Google Analytics n'est déposé et aucune donnée n'est transmise à Google.</p>
-
-  <h2>Gestion de vos préférences</h2>
-  <p>Vous pouvez supprimer les données de stockage local à tout moment depuis les paramètres de votre navigateur :</p>
-  <ul>
-    <li><strong>Chrome</strong> : Paramètres → Confidentialité → Effacer les données de navigation</li>
-    <li><strong>Firefox</strong> : Paramètres → Vie privée → Effacer les données</li>
-    <li><strong>Safari</strong> : Préférences → Confidentialité → Gérer les données du site</li>
-  </ul>
-  <p>⚠️ La suppression du localStorage déconnecte votre compte. Vos données de progression restent sauvegardées côté serveur et sont récupérées à la prochaine connexion.</p>
+  <h2>Modifier votre choix</h2>
+  <p>Vous pouvez changer d'avis à tout moment : ici, ou via le lien « Cookies » en bas de la page d'accueil.</p>
+  <p id="ck-state" style="font-weight:600"></p>
+  <p>
+    <button type="button" id="ck-refuse" style="padding:.5rem 1rem;border:1.5px solid #c7d2fe;border-radius:8px;background:#fff;color:#312e81;font:inherit;font-weight:600;cursor:pointer;margin:0 .5rem .5rem 0">Refuser la mesure d'audience</button>
+    <button type="button" id="ck-accept" style="padding:.5rem 1rem;border:none;border-radius:8px;background:#4338ca;color:#fff;font:inherit;font-weight:600;cursor:pointer;margin:0 .5rem .5rem 0">Accepter la mesure d'audience</button>
+  </p>
+  <p>Vous pouvez aussi effacer le stockage local depuis les paramètres de votre navigateur (rubrique confidentialité ou données de navigation). Cela déconnecte votre compte, mais la progression reste sauvegardée sur nos serveurs et revient à la prochaine connexion.</p>
 
   <h2>Contact</h2>
-  <p>Pour toute question : <a href="mailto:contact@matheux.fr">contact@matheux.fr</a></p>
+  <p>Pour toute question : <a href="mailto:contact@matheux.fr">contact@matheux.fr</a>. Voir aussi la <a href="politique-confidentialite.html">politique de confidentialité</a>.</p>
 
-  <p style="margin-top:2rem;color:#94a3b8;font-size:.82rem;">Dernière mise à jour : 13 mars 2026</p>
+  <p style="margin-top:2rem;color:#94a3b8;font-size:.82rem;">Dernière mise à jour : 26 septembre 2026</p>
 </div>
+<script>
+(function () {
+  var K = 'mx_cookie_consent', st = document.getElementById('ck-state');
+  function get() { try { return localStorage.getItem(K); } catch (e) { return null; } }
+  function show() {
+    var v = get();
+    st.textContent = v === 'accepted' ? 'Votre choix actuel : mesure d’audience acceptée.'
+      : v === 'refused' ? 'Votre choix actuel : mesure d’audience refusée.'
+      : 'Vous n’avez pas encore fait de choix.';
+  }
+  function set(v) {
+    try { localStorage.setItem(K, v); } catch (e) {}
+    if (v === 'refused') {
+      // Efface les cookies Google Analytics déjà déposés (domaine courant et parent)
+      document.cookie.split(';').forEach(function (c) {
+        var n = c.split('=')[0].trim();
+        if (/^_ga/.test(n)) ['', '; domain=' + location.hostname, '; domain=.' + location.hostname.replace(/^www\./, '')].forEach(function (d) {
+          document.cookie = n + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' + d;
+        });
+      });
+    }
+    show();
+  }
+  document.getElementById('ck-refuse').addEventListener('click', function () { set('refused'); });
+  document.getElementById('ck-accept').addEventListener('click', function () { set('accepted'); });
+  show();
+})();
+</script>
 </body>
 </html>

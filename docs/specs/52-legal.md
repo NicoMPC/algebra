@@ -9,6 +9,51 @@
 
 ---
 
+## ✅ Appliqué le 26/09
+
+Réécrits (version du 26/09/2026, charte, `<head>` et meta SEO conservés) : `cgv.html`, `cgu.html`,
+`politique-confidentialite.html`, `politique-cookies.html`, `mentions-legales.html`. En ligne dès que `main` est poussé.
+
+**Ce qui est en ligne après push**
+- **CGV** : offres réelles (gratuit : express + 5 exos/jour ; Diagnostic complet 19 € ; Programme Brevet 49 € ou 30 € après diagnostic, déduction sans date limite), paiement unique, accès sans date de fin + clause d'arrêt du service (préavis 3 mois, remboursement au prorata jusqu'au 30/06 pour le Programme), commande par un majeur représentant légal, cases non pré-cochées horodatées, rétractation §2 (renonciation L221-28 13° pour le diagnostic, 14 j + prorata L221-25 pour le Programme), formulaire type, garantie 30 jours sans justification, garantie légale de conformité, nature du diagnostic. **Retirés** : 29,99 € « jusqu'au Brevet 2026 », ancien lien Stripe, médiateur CNPM, plateforme RLL (fermée), tribunal de La Rochelle (remplacé par la règle de compétence du consommateur), « auto-entrepreneur » → « EI ».
+- **CGU** : bandeau et art. 2 bis (contractant = représentant légal, confirmation par le lien email, l'achat vaut confirmation, rien d'envoyé à l'ado ni de commercial au parent avant confirmation), art. 4 bis nature du diagnostic, art. 4 ter partage du bilan (champs réellement affichés par `mxCartePartage`, lien 30 j révocable), art. 8 suppression, clause de juridiction retirée.
+- **Confidentialité** : version courte ado, tableau données/finalités/bases/durées, profilage pédagogique, partage du bilan, emails (5 M/30 j max, `M_MAX_30J`), sous-traitants réels (Supabase UE, Resend UE, Stripe responsable distinct, GitHub Pages, GA4 après consentement). **Google Sheets retiré.**
+- **Cookies** : clés localStorage réelles (`boost_v23` = jetons, plus le hash du MDP ; `guestDiag`, `sq`, `draft_…`, `mx_deferred_…`, `app_night`, `mx_pwa_logins`, `mx_notrack`), KaTeX (et non MathJax), cookies `_ga` 13 mois, boutons « Accepter / Refuser » sur la page (refus = efface les cookies `_ga`).
+- **Mentions** : EI, TVA 293 B, hébergeurs GitHub Pages (pages) + Supabase (données), description de l'offre à jour, clause d'exonération générale retirée.
+- **Choix prudents** : la limite « 1 remboursement par foyer » (`50` §1.4) n'est **pas** dans les CGV : la landing, `bilan.html` et les emails disent « sans justification », une restriction absente de la publicité serait contestable. Pas d'engagement de délai de réponse aux réclamations. Pas de « suppression automatique » écrite (rien n'est codé) : les durées sont affichées comme des engagements.
+
+**🔴 Engagements écrits mais NON codés (à tenir par Nicolas, à la main ou par un cron)**
+| Engagement affiché | Première échéance réelle | Où |
+|---|---|---|
+| Compte non confirmé par un parent supprimé à J+30 | ~24/10/2026 (comptes repartis de zéro le 24/09) | CGU 2 bis, 8 ; confidentialité §2 |
+| Session de diagnostic invité (`diagnostics_invites`) supprimée ≤ 30 j si pas de compte | ~24/10/2026 | confidentialité §2 |
+| Compte supprimé 12 mois après la dernière connexion | 09/2027 | CGU 8 ; confidentialité (ado + §2) |
+| `email_logs` 3 ans, `funnel_events` 13 mois | 10/2027 et au-delà | confidentialité §2 |
+| Re-test de suivi à ~4 semaines inclus dans le Diagnostic complet | ~4 semaines après la 1re vente | CGV art. 2 (repris de la landing « 1 re-test offert à 4 semaines ») : **rien de codé côté droits** (`mxDroits` réserve le re-diagnostic au Programme). Coder ou retirer de la landing **et** des CGV. |
+| Brevets blancs du Programme | à la 1re vente du Programme | CGV art. 2 : « mis à disposition progressivement ». La landing dit « Brevets blancs corrigés » sans réserve, l'app dit « (bientôt) ». |
+
+**⚠️ À faire relire par un juriste (formulation la plus prudente retenue)**
+1. Qualification diagnostic = contenu numérique (renonciation L221-28 13°) vs Programme = service (L221-25) ; case B obligatoire sans option « accès différé ».
+2. Contractant = représentant légal pour tous les âges ; l'achat par un majeur déclarant vaut confirmation parentale.
+3. Garantie légale de conformité numérique : numéros L224-25-12 et s., encadré éventuel, durée (2 ans ponctuel / durée de fourniture continue) non écrite faute de certitude.
+4. Clause d'arrêt du service avec prorata (engagement volontaire, reco `§❓6` non encore validée par Nicolas : à confirmer ou retirer).
+5. Clause de compétence consommateur (R631-3 C. conso) ; formulaire type de rétractation (annexe R221-1).
+6. Transferts hors UE : Supabase Inc. et Resend (sociétés US, données en UE), GitHub, Google : DPF/CCT à vérifier pour chacun, DPA à télécharger/signer.
+7. Base « intérêt légitime / obligation légale » du journal des emails et durées (3 ans, relation + 5 ans, 10 ans).
+8. Soft opt-in non utilisé (opt-in exigé même des clients) : conservé, plus prudent.
+
+**TODO identité / conformité (hors pages, pour Nicolas)**
+- **Médiateur** : aucun cité (décision 24/09). Commentaire `<!-- TODO médiateur : obligation légale L612-1, à souscrire -->` dans `cgv.html` art. 11. Risque : amende administrative.
+- SIRET et adresse : repris tels quels des anciennes mentions (837 763 713 00059, L'Houmeau). Vérifier qu'ils sont toujours actifs (INSEE) et que l'activité déclarée couvre la vente en ligne.
+- Mentions : adresse postale et téléphone de Supabase, Inc. et téléphone de GitHub non indiqués (LCEN art. 6 demande nom, adresse, téléphone de l'hébergeur) : à compléter depuis leurs pages légales.
+- Région Supabase « Paris » reprise de CLAUDE.md §7 : à confirmer dans le dashboard.
+- Facture / note obligatoire ≥ 25 € (§11) : activer la facture sur les Payment Links, sinon la CGV promet « sur simple demande » seulement.
+- Seuil de franchise TVA 2026 à vérifier.
+- IA : la politique affirme que la sélection des exercices est déterministe (vrai, `generate_adaptive_boost` / moteur 3e). Si admin-auto (Claude) lit des réponses d'élèves nominatives, **pseudonymiser** ou déclarer Anthropic comme sous-traitant.
+- Côté code (autres agents, pas touché ici) : `CONSENT_VERSION = '2026-09-24'` dans `app.html` → passer à `2026-09-26` pour que P-ACH cite la bonne version des CGV ; archiver la version datée des CGV (`cgv-2026-09-26.html`) quand elle change ; landing « Hébergement dans l'Union européenne » : vrai pour les données, pas pour les pages (GitHub Pages, US). `premium.html` ne contient plus le badge « Droit de rétractation 14 jours » (vérifié). La validité du choix cookies n'expire jamais (`mx_cookie_consent`) : la CNIL recommande de redemander après ~6 mois.
+
+---
+
 ## 0. Points bloquants avant de vendre la nouvelle offre
 
 | # | Bloquant | Pourquoi | Où |

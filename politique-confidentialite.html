@@ -30,6 +30,9 @@
     th { background: #eef2ff; color: #312e81; padding: .6rem .75rem; text-align: left; font-weight: 700; }
     td { padding: .6rem .75rem; border-bottom: 1px solid #e2e8f0; color: #334155; }
     tr:last-child td { border-bottom: none; }
+    .tbl { overflow-x: auto; margin: 1rem 0; }
+    .tbl table { margin: 0; min-width: 520px; }
+    td { vertical-align: top; }
   </style>
 </head>
 <body>
@@ -42,76 +45,90 @@
   <h1>Politique de confidentialité</h1>
 
   <div class="mineurs">
-    <p>⚠️ Ce service est utilisé par des élèves mineurs. Nous appliquons un niveau de protection renforcé conformément au RGPD et aux recommandations de la CNIL pour les données de mineurs.</p>
+    <p>Ce service est utilisé par des élèves mineurs. Nous appliquons un niveau de protection renforcé, conformément au RGPD et aux recommandations de la CNIL sur les données des mineurs.</p>
   </div>
 
+  <h2>En bref, pour toi</h2>
+  <ul>
+    <li>On garde ton prénom, ta classe et tes réponses aux exercices. Pas ton nom de famille, pas ta photo, pas ta position.</li>
+    <li>Ça sert à une seule chose : te proposer les bons exercices et te montrer ta progression.</li>
+    <li>On ne vend rien de toi à personne, et on ne te montre pas de pub.</li>
+    <li>Ton parent confirme ton inscription. Il voit ton bilan si tu le lui envoies, ou s'il achète le diagnostic complet.</li>
+    <li>Tu peux demander à tout effacer, quand tu veux : <a href="mailto:contact@matheux.fr">contact@matheux.fr</a>.</li>
+    <li>Si tu ne te connectes pas pendant un an, ton compte est effacé.</li>
+  </ul>
+
   <h2>1. Responsable du traitement</h2>
-  <p><strong>Nicolas Follezou</strong> — Auto-entrepreneur, SIRET 837 763 713 00059<br>
+  <p><strong>Nicolas Follezou</strong>, entrepreneur individuel (EI), SIRET 837 763 713 00059<br>
   30 rue Lucie Aubrac, 17137 L'Houmeau<br>
-  Email DPO : <a href="mailto:contact@matheux.fr">contact@matheux.fr</a></p>
+  Contact données personnelles : <a href="mailto:contact@matheux.fr">contact@matheux.fr</a></p>
 
-  <h2>2. Données collectées</h2>
-  <table>
-    <tr><th>Donnée</th><th>Finalité</th><th>Durée de conservation</th></tr>
-    <tr><td>Prénom</td><td>Personnalisation du service</td><td>Durée du compte + 1 an</td></tr>
-    <tr><td>Email</td><td>Authentification, notifications</td><td>Durée du compte + 1 an</td></tr>
-    <tr><td>Niveau scolaire</td><td>Adaptation pédagogique</td><td>Durée du compte</td></tr>
-    <tr><td>Scores et résultats d'exercices</td><td>Diagnostic, personnalisation, suivi de progression</td><td>Durée du compte + 1 an</td></tr>
-    <tr><td>Données de connexion (horodatage)</td><td>Calcul streak, détection inactivité</td><td>6 mois glissants</td></tr>
-    <tr><td>Hash du mot de passe (SHA-256)</td><td>Authentification</td><td>Durée du compte</td></tr>
-  </table>
-  <p><strong>Aucune donnée sensible</strong> (données biométriques, données de santé, orientation sexuelle, opinions politiques) n'est collectée.</p>
+  <h2>2. Données, finalités, bases légales et durées</h2>
+  <div class="tbl"><table>
+    <tr><th>Données</th><th>Finalité</th><th>Base légale</th><th>Durée de conservation</th></tr>
+    <tr><td>Prénom et classe de l'élève</td><td>Faire fonctionner le compte</td><td>Contrat (CGU)</td><td>Tant que le compte est utilisé, supprimées 12 mois après la dernière connexion</td></tr>
+    <tr><td>Email du parent ou représentant légal, mot de passe (jamais stocké en clair)</td><td>Connexion, confirmation de l'inscription, emails de service</td><td>Contrat</td><td>Idem</td></tr>
+    <tr><td>Email de l'élève (facultatif)</td><td>Rappels d'entraînement, sans publicité</td><td>Consentement du représentant légal</td><td>Jusqu'au retrait de l'autorisation ou la suppression du compte. Non conservé si le parent ne l'autorise pas.</td></tr>
+    <tr><td>Réponses aux questions, niveau de maîtrise par compétence, cartes, bilans</td><td>Diagnostic, entraînement adapté, suivi de progression</td><td>Contrat</td><td>Idem compte</td></tr>
+    <tr><td>Diagnostic express fait sans compte (réponses, prénom s'il est saisi)</td><td>Afficher la carte, la rattacher au compte s'il est créé</td><td>Contrat (mesures précontractuelles)</td><td>Session utilisable 2 jours, supprimée au plus tard 30 jours après si aucun compte n'est créé</td></tr>
+    <tr><td>Compte dont l'inscription n'a pas été confirmée par un parent</td><td>—</td><td>—</td><td>Supprimé 30 jours après l'inscription</td></tr>
+    <tr><td>Emails de conseils et d'offres au parent</td><td>Information commerciale</td><td>Consentement (case non cochée par défaut)</td><td>Jusqu'au retrait du consentement</td></tr>
+    <tr><td>Journal des emails envoyés, liste de désinscription</td><td>Preuve d'envoi, respect de votre opposition</td><td>Intérêt légitime / obligation légale</td><td>3 ans après le dernier contact ; la désinscription (adresse seule) est conservée pour rester respectée</td></tr>
+    <tr><td>Paiement : email du payeur, montant, date, référence Stripe</td><td>Accès, remboursements, comptabilité</td><td>Obligation légale / contrat</td><td>10 ans</td></tr>
+    <tr><td>Preuves d'acceptation (CGV, demande d'accès immédiat, accord parental, consentement aux emails)</td><td>Preuve</td><td>Obligation légale / intérêt légitime</td><td>Durée de la relation + 5 ans</td></tr>
+    <tr><td>Statistiques d'usage internes (étapes du parcours, sans adresse IP, sans email)</td><td>Améliorer le service</td><td>Intérêt légitime</td><td>13 mois</td></tr>
+    <tr><td>Mesure d'audience Google Analytics</td><td>Statistiques de visite</td><td>Consentement (bandeau cookies)</td><td>Voir la <a href="politique-cookies.html">politique cookies</a></td></tr>
+  </table></div>
+  <p>Une demande de suppression est traitée sans délai, et au plus tard sous 30 jours, sauvegardes techniques comprises. <strong>Aucune donnée sensible</strong> (santé, données biométriques, opinions…) n'est collectée. Seul le prénom de l'élève est demandé, jamais son nom de famille.</p>
 
-  <h2>3. Base légale des traitements</h2>
+  <h2>3. Élèves mineurs et accord parental</h2>
   <ul>
-    <li><strong>Exécution contractuelle</strong> : traitement des données nécessaires à la fourniture du service (exercices, progression, boost quotidien)</li>
-    <li><strong>Consentement</strong> : pour les mineurs, consentement du responsable légal requis lors de l'inscription</li>
-    <li><strong>Intérêt légitime</strong> : amélioration du service pédagogique (analyses agrégées et anonymisées)</li>
+    <li>Le contrat d'utilisation est conclu avec le représentant légal. L'inscription est confirmée par le parent, grâce au lien reçu par email (voir les <a href="cgu.html">CGU</a>, article 2 bis).</li>
+    <li>Avant cette confirmation, aucun email n'est envoyé à l'élève et aucun email commercial n'est envoyé au parent.</li>
+    <li>Seul le parent peut accepter les emails de conseils et d'offres, et autoriser les rappels envoyés à l'élève.</li>
+    <li>L'élève ne reçoit jamais de publicité ni de prix, ni dans l'application ni par email.</li>
+    <li>Aucune donnée d'élève n'est utilisée à des fins publicitaires ni transmise à des tiers à des fins commerciales.</li>
   </ul>
 
-  <h2>4. Protection des données des mineurs</h2>
-  <p>Conformément à l'article 8 du RGPD et aux lignes directrices de la CNIL :</p>
+  <h2>4. Diagnostic et profilage pédagogique</h2>
+  <p>À partir des réponses de l'élève, un algorithme estime son niveau de maîtrise de chaque compétence de mathématiques, repère des erreurs types et remonte aux notions des années précédentes quand un blocage en vient. Le résultat est une carte des compétences et un plan de travail. Ce traitement sert uniquement à choisir les exercices et à informer l'élève et sa famille. <strong>Il ne produit aucun effet juridique</strong> : pas de note officielle, pas de décision d'orientation. Une compétence n'est jamais déclarée en lacune sur la base d'une seule réponse. Le choix des exercices du jour est fait par un algorithme déterministe, sans intelligence artificielle générative.</p>
+
+  <h2>5. Partage du bilan</h2>
+  <p>L'élève peut créer un lien personnel pour montrer sa carte à ses parents. La page affiche son prénom, la date du diagnostic, son score global, la synthèse par domaine, ses points forts et ses priorités. Elle n'affiche ni ses réponses détaillées, ni son adresse email. Le lien est aléatoire, non référencé par les moteurs de recherche, <strong>expire après 30 jours</strong> et peut être désactivé à tout moment par l'élève. Toute personne qui possède le lien peut voir la page. Le nombre de consultations du lien est enregistré pour que l'élève sache si son bilan a été vu.</p>
+
+  <h2>6. Emails</h2>
   <ul>
-    <li>Le consentement d'un responsable légal est requis pour les élèves de moins de 15 ans</li>
-    <li>Aucune donnée d'élève mineur n'est utilisée à des fins publicitaires</li>
-    <li>Aucun profil comportemental n'est transmis à des tiers</li>
-    <li>Les données sont stockées sur des serveurs Google (Google Sheets / Apps Script) soumis au RGPD via les clauses contractuelles types de l'UE</li>
-    <li>Le prénom seul est collecté (pas le nom de famille)</li>
+    <li><strong>Emails de service</strong> (confirmation d'inscription, carte du diagnostic, confirmation d'achat, bilan PDF, bilan hebdomadaire du Programme) : envoyés au parent, nécessaires au service.</li>
+    <li><strong>Emails de conseils et d'offres</strong> : uniquement si le parent l'a accepté, 5 par mois au maximum, désinscription en 1 clic dans chaque email.</li>
+    <li><strong>Rappels d'entraînement à l'élève</strong> : uniquement si le parent l'a autorisé, jamais de publicité ni de prix.</li>
   </ul>
 
-  <h2>5. Destinataires des données</h2>
-  <p>Les données sont traitées par :</p>
-  <ul>
-    <li><strong>Nicolas Follezou</strong> (responsable du traitement) — accès complet dans le cadre du suivi pédagogique</li>
-    <li><strong>Google LLC</strong> (sous-traitant) — stockage via Google Sheets et Apps Script, soumis aux clauses contractuelles types UE</li>
-  </ul>
-  <p><strong>Aucune donnée n'est vendue ni cédée à des tiers.</strong></p>
+  <h2>7. Destinataires et sous-traitants</h2>
+  <p>Les données sont accessibles à <strong>Nicolas Follezou</strong>, pour le fonctionnement du service et le support, et traitées pour son compte par les prestataires suivants :</p>
+  <div class="tbl"><table>
+    <tr><th>Prestataire</th><th>Rôle</th><th>Localisation</th></tr>
+    <tr><td>Supabase</td><td>Base de données, authentification, serveur de l'application</td><td>Données hébergées dans l'Union européenne (région Paris). Société établie aux États-Unis.</td></tr>
+    <tr><td>Resend</td><td>Envoi des emails</td><td>Envoi depuis l'Union européenne (Irlande). Société établie aux États-Unis.</td></tr>
+    <tr><td>Stripe</td><td>Paiement</td><td>Stripe Payments Europe (Irlande). Stripe agit en responsable de traitement distinct pour les données de paiement.</td></tr>
+    <tr><td>GitHub (GitHub Pages)</td><td>Hébergement des pages du site (journaux techniques, dont l'adresse IP)</td><td>États-Unis</td></tr>
+    <tr><td>Google (Analytics)</td><td>Mesure d'audience, <strong>uniquement après votre consentement</strong></td><td>États-Unis</td></tr>
+  </table></div>
+  <p>Lorsque des données peuvent être transférées hors de l'Union européenne, ce transfert est encadré par une décision d'adéquation de la Commission européenne (cadre de protection des données UE–États-Unis) ou par ses clauses contractuelles types. <strong>Aucune donnée n'est vendue ni cédée à des tiers.</strong></p>
 
-  <h2>6. Cookies et stockage local</h2>
-  <p>Matheux utilise le <strong>localStorage</strong> du navigateur pour maintenir la session de l'utilisateur. Aucun cookie tiers n'est déposé. Voir notre <a href="politique-cookies.html">Politique cookies</a>.</p>
+  <h2>8. Stockage local et cookies</h2>
+  <p>Matheux utilise le stockage local du navigateur pour garder la session ouverte et le fonctionnement de l'application. Google Analytics n'est chargé qu'après votre accord. Voir la <a href="politique-cookies.html">politique cookies</a>.</p>
 
-  <h2>7. Transfert hors UE</h2>
-  <p>Les données sont stockées sur les serveurs de Google (infrastructure mondiale). Google s'engage contractuellement au respect du RGPD via les clauses contractuelles types (CCT) approuvées par la Commission européenne.</p>
+  <h2>9. Vos droits</h2>
+  <p>Vous disposez des droits suivants, à exercer à <a href="mailto:contact@matheux.fr">contact@matheux.fr</a> : accès, rectification, effacement, opposition, limitation, portabilité, et retrait de votre consentement à tout moment. <strong>L'élève peut exercer ces droits lui-même</strong>, tout comme son représentant légal. Les données collectées pendant l'enfance bénéficient d'un droit à l'effacement renforcé.</p>
+  <p>Réponse sous 30 jours maximum. Si la réponse ne vous satisfait pas, vous pouvez saisir la <a href="https://www.cnil.fr" target="_blank" rel="noopener">CNIL</a>.</p>
 
-  <h2>8. Vos droits</h2>
-  <p>Conformément au RGPD, vous disposez des droits suivants, exercables à <a href="mailto:contact@matheux.fr">contact@matheux.fr</a> :</p>
-  <ul>
-    <li><strong>Droit d'accès</strong> : obtenir une copie de vos données</li>
-    <li><strong>Droit de rectification</strong> : corriger des données inexactes</li>
-    <li><strong>Droit à l'effacement</strong> ("droit à l'oubli") : supprimer votre compte et toutes les données associées</li>
-    <li><strong>Droit d'opposition</strong> : vous opposer à certains traitements</li>
-    <li><strong>Droit à la portabilité</strong> : recevoir vos données dans un format structuré</li>
-    <li><strong>Droit de limitation</strong> : demander la suspension temporaire d'un traitement</li>
-  </ul>
-  <p>Délai de réponse : 30 jours maximum. En cas de réponse insatisfaisante, vous pouvez saisir la <a href="https://www.cnil.fr" target="_blank">CNIL</a>.</p>
+  <h2>10. Sécurité</h2>
+  <p>Les communications sont chiffrées (HTTPS). Les mots de passe ne sont jamais stockés en clair. Les liens de partage et de confirmation sont aléatoires et non devinables. L'accès aux données est limité au responsable du traitement.</p>
 
-  <h2>9. Sécurité</h2>
-  <p>Les mots de passe sont hashés côté client (SHA-256 + sel) avant transmission. Les communications sont chiffrées via HTTPS. L'accès aux données est restreint au seul responsable du traitement.</p>
+  <h2>11. Contact</h2>
+  <p>Pour toute question relative à vos données : <a href="mailto:contact@matheux.fr">contact@matheux.fr</a></p>
 
-  <h2>10. Contact DPO</h2>
-  <p>Pour toute question relative à la protection de vos données : <a href="mailto:contact@matheux.fr">contact@matheux.fr</a></p>
-
-  <p style="margin-top:2rem;color:#94a3b8;font-size:.82rem;">Dernière mise à jour : 12 mars 2026</p>
+  <p style="margin-top:2rem;color:#94a3b8;font-size:.82rem;">Dernière mise à jour : 26 septembre 2026</p>
 </div>
 </body>
 </html>
