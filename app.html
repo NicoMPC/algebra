@@ -3308,7 +3308,7 @@ function _toNum(s) {
   var frac = v.match(/^(-?[\d.]+)\/(-?[\d.]+)$/);
   if (frac && parseFloat(frac[2]) !== 0) return parseFloat(frac[1]) / parseFloat(frac[2]);
   // Nombre simple — chaîne entièrement numérique uniquement (parseFloat("4x+3") = 4 validait des réponses fausses)
-  v = v.replace(/(mm|cm|dm|km|m|g|kg|l|cl|ml|s|min|h|€|°)(²|³|\^2|\^3)?$/, '');
+  v = v.replace(/(mm|cm|dm|km|m|g|kg|l|cl|ml|s|min|h|€|°)(²|³|\^2|\^3)?(\/(mm|cm|dm|km|m|g|kg|l|cl|ml|s|min|h))?$/, '');
   if (!/^-?(\d+\.?\d*|\.\d+)$/.test(v)) return null;
   var n = parseFloat(v);
   return isNaN(n) ? null : n;

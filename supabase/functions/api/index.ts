@@ -1390,7 +1390,7 @@ function mxNum(s: unknown): number | null {
   if (pct) return parseFloat(pct[1]) / 100;
   const frac = v.match(new RegExp("^(" + MX_NOMBRE + ")/(" + MX_NOMBRE + ")$"));
   if (frac) return parseFloat(frac[2]) !== 0 ? parseFloat(frac[1]) / parseFloat(frac[2]) : null;
-  const sansUnite = v.replace(/(mm|cm|dm|km|m|g|kg|l|cl|ml|s|min|h|€|°)(²|³|\^2|\^3)?$/, "");
+  const sansUnite = v.replace(/(mm|cm|dm|km|m|g|kg|l|cl|ml|s|min|h|€|°)(²|³|\^2|\^3)?(\/(mm|cm|dm|km|m|g|kg|l|cl|ml|s|min|h))?$/, "");
   return new RegExp("^" + MX_NOMBRE + "$").test(sansUnite) ? parseFloat(sansUnite) : null;
 }
 

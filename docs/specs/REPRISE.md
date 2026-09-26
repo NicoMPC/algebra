@@ -1,6 +1,6 @@
 # Point de reprise — Refonte « Diagnostic 3e »
 
-> Mis à jour le 26/09/2026 12h. À lire EN PREMIER à la reprise, avec `docs/specs/00-contrat-commun.md`
+> Mis à jour le 26/09/2026 13h. À lire EN PREMIER à la reprise, avec `docs/specs/00-contrat-commun.md`
 > (contrat + décisions de Nicolas §7-9). Branche : `feat/diagnostic-3e` (locale, jamais pushée).
 > Relancer la conversation : « Matheux — Conversation Claude.desktop ». Tester en local : `./matheux.sh`.
 
@@ -13,8 +13,8 @@ Le nouveau site (landing, diagnostic, carte, séance adaptative, page parent, PD
 
 - **Référentiel 3e** : 121 compétences, ~300 erreurs types, graphe de prérequis (`data/referentiel_3eme/`).
 - **Banque** (`data/banque_3eme/`, `check_banque.py` ✅) : 363 items diag (relus) + 779 legacy taggés + 227 items
-  train 1er complément (`-tNN`, relus) + 229 items train 2e complément (`-uNN`, relecture en cours →
-  `*.u-review.json`, à appliquer avec le même code que `apply_reviews.py --train` en adaptant le suffixe).
+  train 1er complément (`-tNN`, relus) + 229 items train 2e complément (`-uNN`, relus : 222 ok, 7 corrigés).
+  Toutes les compétences diagnosticables ont ≥ 10 items d'entraînement.
   ⚠️ `.gitignore` masquait `*.json` : corrigé le 25/09, la banque est enfin versionnée.
 - **Moteur adaptatif + API** (`supabase/functions/api/index.ts`) : diag express invité / complet / mensuel, carte,
   séance du jour « Pourquoi ça ? », entraînement libre, partage parent (lien + email), consentements, jetons de
@@ -22,8 +22,10 @@ Le nouveau site (landing, diagnostic, carte, séance adaptative, page parent, PD
 - **App** (`app.html` 13 801 → ~5 750 lignes), **landing** vanilla (`index.html`), **page parent** `bilan.html`,
   **PDF** `js/bilan-pdf.js`, `sw.js` v14, 404 vanilla, pages SEO recâblées.
 - **Tests** : `./matheux.sh test` (smoke 126/126 + navigateur), `deno test -A supabase/tests/` 21/21,
-  `node supabase/tests/fill_match_node.js`. E2E visiteur : `/tmp/matheux-e2e/parcours.js` (harnais
-  `/tmp/matheux-devux/e2e.js`, backend isolé port 8797 — libérer le port avec `fuser -k 8797/tcp`, jamais `pkill -f`).
+  `node supabase/tests/fill_match_node.js`. E2E visiteur : `deno run -A dev/e2e_parcours.ts <BASE> <N>`
+  (aussi lancé par `./matheux.sh test` si le serveur tourne) — 5/5 parcours OK le 26/09 : **5 exos par séance**.
+  Backend isolé : `DEV_DATA_DIR=… deno run … dev/server.ts serve --port 8797` ; libérer le port avec
+  `fuser -k 8797/tcp`, jamais `pkill -f` (tue le shell courant).
 - **Prod** : sécurité API déployée le 25/09 (branche `hotfix/securite-api` poussée : snapshot de la prod
   réellement déployée — audit 11/04 jamais commité — + garde `ADMIN_ONLY`). RGPD : données perso retirées de
   `main`/`root` et de matheux.fr/CLAUDE.md (restent dans l'historique git).
@@ -33,8 +35,7 @@ Le nouveau site (landing, diagnostic, carte, séance adaptative, page parent, PD
 
 ## ⏭️ Reste à faire, par priorité
 
-1. **Claude** — appliquer les relectures du 2e complément, puis e2e visiteur ×3 : la séance doit servir 5 exos
-   quel que soit le point faible (constat du 25/09 : 2 exos quand il tombait hors des compétences complétées).
+1. ✅ Banque complète et relue ; e2e 5/5 (5 exos par séance). Unités composées (`m/s`, `km/h`) acceptées.
 2. **Nicolas** — Stripe : créer les liens 49 € (`programme_brevet`) et 30 € (`programme_upgrade`), mêmes réglages
    que le 19 € (ponctuel, TTC = Oui, taxes auto décochées, metadata produit/offre_version=2026-09/niveau=3EME,
    redirection `https://matheux.fr/app.html?achat=<produit>&session_id={CHECKOUT_SESSION_ID}`). Création bloquée
