@@ -7,11 +7,12 @@ import puppeteer from "npm:puppeteer-core@23.11.1";
 const BASE = Deno.args[0] || "http://localhost:8787";
 const N = Number(Deno.args[1] || 3);
 const CHROME = Deno.env.get("CHROME") || "/usr/bin/google-chrome";
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const LENT = Number(Deno.env.get("E2E_LENT") || 1); // ×3 contre la prod (latence réseau)
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms * LENT));
 let ko = 0;
 
 for (let run = 1; run <= N; run++) {
-  await fetch(BASE + "/dev/reset", { method: "POST" });
+  if (/localhost|127\.0\.0\.1/.test(BASE)) await fetch(BASE + "/dev/reset", { method: "POST" });
   const b = await puppeteer.launch({ executablePath: CHROME, headless: true, args: ["--no-sandbox", "--disable-gpu"] });
   const p = await b.newPage();
   await p.setViewport({ width: 375, height: 800 });
@@ -42,7 +43,7 @@ for (let run = 1; run <= N; run++) {
     }
     await sleep(1200);
     await clic("entraîner gratuitement"); await sleep(800);
-    await p.type("#rg-name", "Zoé"); await p.type("#rg-email", `parent.run${run}@exemple.fr`); await p.type("#rg-pass", "motdepasse1");
+    await p.type("#rg-name", "Zoé"); await p.type("#rg-email", Deno.env.get("E2E_EMAIL") || `parent.run${run}@exemple.fr`); await p.type("#rg-pass", "motdepasse1");
     await p.click("#rg-ok"); await p.click("#rg-btn"); await sleep(3500);
     const accueil = await p.evaluate(() => document.body.innerText.replace(/\n+/g, " | "));
     const m = accueil.match(/TA SÉANCE DU JOUR \| ([^|]+)\| (\d+) exos?/);

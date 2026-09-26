@@ -1,6 +1,6 @@
 # Point de reprise — Refonte « Diagnostic 3e »
 
-> Mis à jour le 26/09/2026 14h. À lire EN PREMIER à la reprise, avec `docs/specs/00-contrat-commun.md`
+> Mis à jour le 26/09/2026 14h30. À lire EN PREMIER à la reprise, avec `docs/specs/00-contrat-commun.md`
 > (contrat + décisions de Nicolas §7-9). Branche : `feat/diagnostic-3e` (locale, jamais pushée).
 > Relancer la conversation : « Matheux — Conversation Claude.desktop ». Tester en local : `./matheux.sh`.
 
@@ -40,10 +40,12 @@ Le nouveau site (landing, diagnostic, carte, séance adaptative, page parent, PD
 - ✅ Secrets `CRON_SECRET` + `UNSUB_SECRET` créés (+ Vault `matheux_cron_secret`) ; cron `matheux-daily-emails` actif 15:00 UTC.
 - ✅ Import prod : 121 compétences, 1 598 items (354 diag).
 - ✅ Nouvelle API déployée et vérifiée (diag invité OK, actions protégées refusées sans jeton).
-- ⛔ Bloqué pour Claude → Nicolas : push `feat/diagnostic-3e` → `main` (mise en ligne du site) ; purge des anciens
+- ✅ **Nouveau site EN LIGNE** : `main` = `3318655` poussé par Nicolas, GitHub Pages publié, e2e réel sur matheux.fr OK
+  (`E2E_LENT=3 E2E_EMAIL=delivered@resend.dev deno run -A dev/e2e_parcours.ts https://matheux.fr 1` : 15 q, 5 exos,
+  email parent P-X0 envoyé). Un compte de test « Zoé » (delivered@resend.dev) existe en prod → supprimé par la purge.
+- ⛔ Bloqué pour Claude → Nicolas : purge des anciens
   comptes (script prêt : `~/Bureau/projets/matheux-backup-prod-2026-09-26/purge_anciens_comptes_COMMIT.sql`,
-  testé à blanc : il reste 1 admin, 0 score). ⚠️ Tant que `main` n'est pas poussé, l'ANCIEN site en ligne parle à la
-  NOUVELLE API et ne fonctionne plus (jetons exigés).
+  testé à blanc : il reste 1 admin, 0 score).
 
 ## ⏭️ Reste à faire, par priorité
 
