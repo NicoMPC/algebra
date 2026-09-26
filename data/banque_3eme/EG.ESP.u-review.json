@@ -1,0 +1,79 @@
+[
+ {
+  "id": "EG.ESP.01-u01",
+  "verdict": "ok",
+  "raison": "4 + 1 = 5 sommets. 4 et 8 = faces_aretes. Le 6 cm est une donnée inutile, sans effet."
+ },
+ {
+  "id": "EG.ESP.01-u02",
+  "verdict": "ok",
+  "raison": "Deux disques et un rectangle. Les deux autres = faces_aretes. 3 options assumé."
+ },
+ {
+  "id": "EG.ESP.01-u03",
+  "verdict": "ok",
+  "raison": "Prisme hexagonal : 3 × 6 = 18 arêtes. 12 = bases seules, 8 = nombre de faces (faces_aretes)."
+ },
+ {
+  "id": "EG.ESP.01-u04",
+  "verdict": "ok",
+  "raison": "Rayon du secteur = génératrice = 5 (réponse donnée par construction, l'élève doit choisir entre 3, 4 et 5 : c'est la compétence, assumé). 3 = patron_cone. 4 (hauteur) refusé, non tagué."
+ },
+ {
+  "id": "EG.ESP.01-u05",
+  "verdict": "corrige",
+  "raison": "6 + 5 − 2 = 9 faces ; 11 et 10 = faces_aretes. Mais « pyramide à base carrée » sans « régulière » : si le sommet de la pyramide est à l'aplomb d'un côté de la face collée, une face triangulaire est coplanaire avec une face du cube et fusionne avec elle (8 faces). Préciser « régulière » rend la configuration non ambiguë.",
+  "correction": {
+   "id": "EG.ESP.01-u05",
+   "comp": "EG.ESP.01",
+   "q": "Sur une face d'un cube de $4$ cm d'arête, on colle une pyramide régulière à base carrée de $4$ cm de côté, les deux carrés coïncidant exactement. Combien de faces le solide obtenu a-t-il ? ___",
+   "a": "9",
+   "type": "fill",
+   "options": [],
+   "err": {
+    "11": "EG.ESP.01#faces_aretes",
+    "10": "EG.ESP.01#faces_aretes"
+   },
+   "steps": [
+    "Le cube a $6$ faces et la pyramide $5$ faces.",
+    "Les deux carrés collés se retrouvent à l'intérieur : ils ne sont plus des faces du solide. Combien en reste-t-il ? ?"
+   ],
+   "f": "Faces visibles d'un solide composé : on retire les faces collées",
+   "lvl": 3,
+   "usage": [
+    "train"
+   ],
+   "contexte": false
+  }
+ },
+ {
+  "id": "EG.ESP.02-u01",
+  "verdict": "ok",
+  "raison": "Rectangle identique à la face. Disque, triangle = mauvaise_forme."
+ },
+ {
+  "id": "EG.ESP.02-u02",
+  "verdict": "ok",
+  "raison": "Disque de même rayon. Rectangle, carré = mauvaise_forme."
+ },
+ {
+  "id": "EG.ESP.02-u03",
+  "verdict": "ok",
+  "raison": "√(10² − 6²) = 8. 10 = meme_taille ; 6 et 64 refusés. Remarque : mobilise Pythagore, qui n'est pas prérequis déclaré d'EG.ESP.02 ; item train uniquement et exercice classique de 3e : acceptable."
+ },
+ {
+  "id": "EG.ESP.02-u04",
+  "verdict": "ok",
+  "raison": "Rapport 3/9 : carré de 6/3 = 2 cm. Carré de 6 cm = meme_taille, triangle = mauvaise_forme."
+ },
+ {
+  "id": "EG.ESP.02-u05",
+  "verdict": "ok",
+  "raison": "5 × 4/10 = 2 cm. 5 = meme_taille."
+ },
+ {
+  "id": "EG.ESP.02-u06",
+  "verdict": "ok",
+  "raison": "Plan (AB, HG) : section ABGH, AB = c, BG = c√2 (diagonale de BCGF), angles droits → rectangle non carré. Sommets décrits sans figure : non ambigu. lvl 3 justifié."
+ }
+]

@@ -9,9 +9,10 @@ args = sys.argv[1:]
 # ⚠️ Ne pas ré-appliquer les *.review.json déjà appliqués : des corrections manuelles ont été faites
 # ensuite (fusion EG.TRANS.02#vecteur_inverse, usage train des compétences hors programme).
 TRAIN = '--train' in args
-doms = [a for a in args if a != '--train']
-for rp in sorted(glob.glob('*.train-review.json') if TRAIN else [f for f in glob.glob('*.review.json') if not f.endswith('.train-review.json')]):
-    src = rp.replace('.train-review.json', '.json').replace('.review.json', '.json')
+U = '--u' in args  # relectures du 2e complément (*.u-review.json)
+doms = [a for a in args if a not in ('--train', '--u')]
+for rp in sorted(glob.glob('*.u-review.json') if U else glob.glob('*.train-review.json') if TRAIN else [f for f in glob.glob('*.review.json') if not f.endswith('.train-review.json')]):
+    src = rp.replace('.u-review.json', '.json').replace('.train-review.json', '.json').replace('.review.json', '.json')
     if doms and src.split('.')[0] not in doms:
         continue
     R = json.load(open(rp)); R = R['items'] if isinstance(R, dict) else R

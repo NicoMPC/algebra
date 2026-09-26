@@ -1,0 +1,52 @@
+[
+ {
+  "id": "DF.STAT.02-u01",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.STAT.05-u01",
+  "verdict": "ok",
+  "raison": "Série rangée 8 ; 12 ; 15 ; 18 ; 25 ; 30 → (15 + 18)/2 = 16,5 juste ; « 16.5 », « 33/2 », « 16,5 min » acceptés, 16 refusé. err 22,5 (milieu non rangé), 15/18 (rang pair), 19 (milieu de l'étendue) recalculés."
+ },
+ {
+  "id": "DF.STAT.05-u02",
+  "verdict": "ok",
+  "raison": "Effectif 19, rang 10 ; cumuls 2, 4, 7, 15 → 9 juste. 7 = milieu des valeurs (ignore_effectifs), 6,5 = (3 + 10)/2, 3 = effectif de la colonne du milieu (STAT.01#valeurs_effectifs, prérequis direct) cohérents."
+ },
+ {
+  "id": "DF.STAT.06-u01",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.STAT.06-u02",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.STAT.06-u03",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.STAT.06-u04",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.STAT.06-u05",
+  "verdict": "ok",
+  "raison": "Nouveau min 350, max 515 → 165 juste. err 70 = 420 − 350 (premier − dernier de la liste complétée) cohérent. « 135 » (ancienne étendue) prévisible mais sans id adapté : pas de clé, acceptable."
+ },
+ {
+  "id": "DF.STAT.07-u01",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.STAT.07-u02",
+  "verdict": "ok",
+  "raison": "Sam : moyenne 20, médiane 20 (0 ; 5 ; 20 ; 25 ; 50), étendue 50 : juste. « Médiane 0 » = milieu de la liste non rangée → STAT.05#serie_non_rangee (prérequis direct). « Plus grand score » → STAT.06#max_seul : rattachement un peu lâche mais admissible."
+ }
+]

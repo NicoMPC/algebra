@@ -1,0 +1,72 @@
+[
+ {
+  "id": "DF.FONC.03-u01",
+  "verdict": "ok",
+  "raison": "Antécédent de 6 = 2 juste ; recopie de l'abscisse (point (2 ; 6)) assumée : c'est la lecture attendue. err 4 = f(6) → lit_une_image conforme."
+ },
+ {
+  "id": "DF.FONC.03-u02",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.FONC.03-u03",
+  "verdict": "corrige",
+  "raison": "3 antécédents de 5 juste (un par segment). Mais le step 2 annonce « chacun des trois segments » et la réponse à sa question est « oui » partout : il donne la réponse. Reformulation qui fait compter sans annoncer le total.",
+  "correction": {
+   "id": "DF.FONC.03-u03",
+   "comp": "DF.FONC.03",
+   "q": "La courbe d'une fonction $h$ est formée de segments qui relient, dans l'ordre, $(0 ; 2)$, $(4 ; 8)$, $(6 ; 2)$ et $(10 ; 8)$. Combien de nombres ont pour image $5$ par $h$ ? ___",
+   "a": "3",
+   "type": "fill",
+   "options": [],
+   "err": {
+    "1": "DF.FONC.03#un_seul_antecedent"
+   },
+   "steps": [
+    "Imagine la droite horizontale d'ordonnée $5$.",
+    "Parcours la courbe de gauche à droite : chaque fois qu'elle passe de moins de $5$ à plus de $5$ (ou l'inverse), c'est un antécédent. Combien de passages comptes-tu ?"
+   ],
+   "f": "",
+   "f_disabled": true,
+   "lvl": 2,
+   "usage": [
+    "train"
+   ],
+   "contexte": false,
+   "alt": [
+    "trois"
+   ]
+  }
+ },
+ {
+  "id": "DF.FONC.03-u04",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.FONC.03-u05",
+  "verdict": "ok",
+  "raison": "12 °C à 0 h, 11 h (6 + 2×3 sur [8 ; 14]) et 20 h : juste et complet. « 14 h » = image de 12 (f(12) = 14) → lit_une_image, bien pensé."
+ },
+ {
+  "id": "DF.FONC.03-u06",
+  "verdict": "ok",
+  "raison": "10 × 0,5 = 5 juste. Le « 5 » signalé en recopie vient du LaTeX de $0{,}5$ : non recopiable. err 10 → DF.FONC.02#graduation (prérequis direct)."
+ },
+ {
+  "id": "DF.FONC.05-u01",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.FONC.05-u02",
+  "verdict": "ok",
+  "raison": "Minimum en x = 3 juste ; recopie de l'abscisse du point (3 ; −1) assumée (lecture attendue). err −1 → axes_inverses conforme."
+ },
+ {
+  "id": "DF.FONC.05-u03",
+  "verdict": "ok",
+  "raison": "≥ 20 cm de 5 min (montée 4 cm/min) à 20 min (descente 4 cm/min) : juste. 3 options assumées."
+ }
+]

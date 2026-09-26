@@ -1,0 +1,143 @@
+[
+ {
+  "id": "AP.PROG.02-u01",
+  "verdict": "ok",
+  "raison": "(0;0) → avancer 30 vers la droite → (30;0) → tourner à gauche : orientation 0 (haut) → (30;20). (30;−20) = gauche/droite de la feuille, (50;0) = virage sauté, (30;0) = dernier bloc sauté. Formes (30 ; 20), (30,20) acceptées ; (20;30) refusé."
+ },
+ {
+  "id": "AP.PROG.02-u02",
+  "verdict": "ok",
+  "raison": "Regarde à droite, tourne à gauche → vers le haut. Gauche = orientation (sens de la feuille), droite = virage sauté. 3 options (3 directions possibles hors bas) assumé."
+ },
+ {
+  "id": "AP.PROG.02-u03",
+  "verdict": "ok",
+  "raison": "Orientation 180, tourner à droite de 90 → 270 = gauche de l'écran. Droite = orientation, bas = virage sauté. Exact."
+ },
+ {
+  "id": "AP.PROG.02-u04",
+  "verdict": "ok",
+  "raison": "(20;10) → bas 40 → (20;−30) → droite du lutin = gauche de l'écran → (10;−30). (30;−30) = orientation, (20;−40) = virage sauté, (−30;10) = EG.REP.01#xy_inverses (prérequis direct). Exécuté pas à pas : exact."
+ },
+ {
+  "id": "AP.PROG.04-u01",
+  "verdict": "ok",
+  "raison": "5 + 3 = 8. 3 = « ajouter » lu comme « mettre »."
+ },
+ {
+  "id": "AP.PROG.04-u02",
+  "verdict": "ok",
+  "raison": "20 + 10 − 5 = 25. 5 = départ à 0 (valeur_initiale), −5 = dernier « ajouter » lu comme « mettre »."
+ },
+ {
+  "id": "AP.PROG.04-u03",
+  "verdict": "ok",
+  "raison": "2 → 6 → 11. 13 = « mettre n à n×3 » lu comme ajout (2 + 6 + 5). Le step 2 donne la valeur intermédiaire 6, pas la réponse : acceptable."
+ },
+ {
+  "id": "AP.PROG.04-u04",
+  "verdict": "ok",
+  "raison": "x = 3 → 7 → 49. 56 = 7 + 49 (mettre lu comme ajouter). Exact."
+ },
+ {
+  "id": "AP.PROG.04-u05",
+  "verdict": "ok",
+  "raison": "1 + 3 × 2 = 7. 6 = départ 0, 2 = « mettre » à chaque tour, 3 = corps exécuté une fois (AP.PROG.03, prérequis direct), 9 / 5 = ±1 tour. Toutes vérifiées."
+ },
+ {
+  "id": "AP.PROG.04-u06",
+  "verdict": "ok",
+  "raison": "Tours : (a,b) = (1,2), (2,3), (3,5), (5,8) → dit 8. 5 = 3 tours, 13 = 5 tours (AP.PROG.03#un_tour_de_trop, prérequis direct). Exact ; lvl 3 justifié."
+ },
+ {
+  "id": "AP.PROG.05-u01",
+  "verdict": "ok",
+  "raison": "12 < 10 faux → 12 − 5 = 7. 17 = condition inversée."
+ },
+ {
+  "id": "AP.PROG.05-u02",
+  "verdict": "ok",
+  "raison": "4 > 3 vrai → 14. 5 = sinon, 15 = les deux branches."
+ },
+ {
+  "id": "AP.PROG.05-u03",
+  "verdict": "ok",
+  "raison": "22 < 18 faux → « Chauffage éteint ». Allumé = condition inversée, les deux = deux_branches. Exact."
+ },
+ {
+  "id": "AP.PROG.05-u04",
+  "verdict": "ok",
+  "raison": "7 modulo 2 = 1 → sinon → 22. 3,5 = alors, 11,5 = alors puis sinon (3 × 3,5 + 1). Exact."
+ },
+ {
+  "id": "AP.PROG.05-u05",
+  "verdict": "ok",
+  "raison": "40 > 50 faux → 45. 30 = alors, 35 = les deux, 40 = aucune branche (AP.PROG.02#instruction_sautee, prérequis direct). Exact."
+ },
+ {
+  "id": "AP.PROG.05-u06",
+  "verdict": "ok",
+  "raison": "−3 < 0 → x = 3 ; 3 > 2 → 13. −3 = premier test inversé (et donc second faux). Exact."
+ },
+ {
+  "id": "AP.PROG.05-u07",
+  "verdict": "corrige",
+  "raison": "15 ≥ 12 → sinon ; 15 < 18 → tarif 7 (réponse = une valeur du script, assumé : il faut choisir parmi 5/7/10). 5 = premier test inversé, exact. Mais 10 est obtenu AUSSI en inversant seulement le second test (15 < 18 lu faux) : pour un âge de la tranche du milieu, deux_branches et condition_inversee donnent toujours 10. Étiqueter 10 « deux_branches » ferait écrire au bilan une erreur qui n'est peut-être pas la bonne. Correction : retirer la clé 10 (mauvaise réponse non taguée, comme les autres cas indiscernables de ce lot).",
+  "correction": {
+   "id": "AP.PROG.05-u07",
+   "comp": "AP.PROG.05",
+   "q": "Un cinéma calcule le tarif avec ce script :\ndemander « Quel âge as-tu ? » et attendre\nsi réponse $< 12$ alors\n  mettre tarif à $5$\nsinon\n  si réponse $< 18$ alors\n    mettre tarif à $7$\n  sinon\n    mettre tarif à $10$\n  Fin si\nFin si\ndire tarif\nLéo répond $15$. Quel tarif le lutin dit-il ? ___ €",
+   "a": "7",
+   "type": "fill",
+   "options": [],
+   "err": {
+    "5": "AP.PROG.05#condition_inversee"
+   },
+   "steps": [
+    "Premier test : $15 < 12$ ? Selon la réponse, on va dans « alors » ou dans « sinon ».",
+    "Dans la branche choisie, fais le deuxième test : $15 < 18$ ? ?"
+   ],
+   "f": "",
+   "lvl": 3,
+   "usage": [
+    "train"
+   ],
+   "contexte": true
+  }
+ },
+ {
+  "id": "AP.PROG.06-u01",
+  "verdict": "ok",
+  "raison": "Carré : 4 répétitions. 3 = repetitions."
+ },
+ {
+  "id": "AP.PROG.06-u02",
+  "verdict": "ok",
+  "raison": "360 / 8 = 45. 135 = angle intérieur."
+ },
+ {
+  "id": "AP.PROG.06-u03",
+  "verdict": "ok",
+  "raison": "360 / 5 = 72. 108 = angle intérieur. Le step 2 écrit 360°/5 : très guidant, mais le calcul reste à faire (lvl 1)."
+ },
+ {
+  "id": "AP.PROG.06-u04",
+  "verdict": "ok",
+  "raison": "360 / 30 = 12. 11 = repetitions."
+ },
+ {
+  "id": "AP.PROG.06-u05",
+  "verdict": "ok",
+  "raison": "10 fois, 36°. 144° = angle intérieur ; 9 et 5 répétitions = repetitions (5 × 36 = 180, figure non fermée). Exact."
+ },
+ {
+  "id": "AP.PROG.06-u06",
+  "verdict": "ok",
+  "raison": "3 × 60 = 180° : trois côtés d'hexagone, non fermé. Triangle = angle_interieur (60° pris pour l'angle intérieur), hexagone complet = repetitions. Exact."
+ },
+ {
+  "id": "AP.PROG.06-u07",
+  "verdict": "ok",
+  "raison": "180 − 140 = 40 (polygone à 9 côtés). 140 = angle_interieur. Exact."
+ }
+]

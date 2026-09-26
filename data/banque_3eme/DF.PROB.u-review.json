@@ -1,0 +1,159 @@
+[
+ {
+  "id": "DF.PROB.03-u01",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.PROB.03-u02",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.PROB.03-u03",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.PROB.04-u01",
+  "verdict": "corrige",
+  "raison": "5/16 juste, mais il y a 5 stylos bleus sur 16 : un élève qui calcule P(bleu) (mauvaise couleur lue) obtient exactement la bonne réponse, et l'item le compte réussi. Correction minimale : 4 bleus et 7 verts (total 16 inchangé, err inchangées, P(bleu) = 4/16, P(vert) = 7/16 ≠ 5/16).",
+  "correction": {
+   "id": "DF.PROB.04-u01",
+   "comp": "DF.PROB.04",
+   "q": "Une trousse contient $4$ stylos bleus, $3$ noirs, $2$ rouges et $7$ verts. On prend un stylo au hasard. Quelle est la probabilité qu'il soit noir ou rouge ? (fraction) ___",
+   "a": "5/16",
+   "type": "fill",
+   "options": [],
+   "err": {
+    "3/128": "DF.PROB.04#multiplie_ou",
+    "6/256": "DF.PROB.04#multiplie_ou",
+    "5/32": "NC.FRAC.03#somme_directe"
+   },
+   "steps": [
+    "Combien y a-t-il de stylos en tout ?",
+    "Combien de stylos sont noirs ou rouges ? Aucun stylo n'est des deux couleurs à la fois."
+   ],
+   "f": "Si $A$ et $B$ ne peuvent pas se produire en même temps : $P(A \\text{ ou } B) = P(A) + P(B)$",
+   "lvl": 1,
+   "usage": [
+    "train"
+   ],
+   "contexte": true
+  }
+ },
+ {
+  "id": "DF.PROB.04-u02",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.PROB.04-u03",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.PROB.04-u04",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.PROB.05-u01",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.PROB.05-u02",
+  "verdict": "ok",
+  "raison": "2/5 × 3/4 = 3/10 juste. 23/20 = somme le long de la branche ; 5/9 = (2+3)/(5+4), plutôt une somme directe, mais FRAC.03 n'est pas prérequis direct de PROB.05 → branche_additionnee acceptable. 8/15 = produit en croix (FRAC.05 direct)."
+ },
+ {
+  "id": "DF.PROB.05-u03",
+  "verdict": "ok",
+  "raison": "2/6 × 1/5 = 1/15 juste. 1/9 = (2/6)² (avec remise), 8/15 = 2/6 + 1/5 recalculés."
+ },
+ {
+  "id": "DF.PROB.06-u01",
+  "verdict": "corrige",
+  "raison": "Réponse juste, mais le distracteur « probabilité de 6/7 » ne correspond à aucune fréquence observée (6 rouges sur 6 tours → 1) : l'erreur annoncée frequence_egale_proba n'est pas reconnaissable. Remplacé par la fréquence réellement observée.",
+  "correction": {
+   "id": "DF.PROB.06-u01",
+   "comp": "DF.PROB.06",
+   "q": "Une roue a deux secteurs égaux, rouge et noir. Le rouge est sorti $6$ fois de suite. Au prochain tour :",
+   "a": "le rouge et le noir ont toujours la même probabilité",
+   "type": "qcm",
+   "options": [
+    "le noir est plus probable, il doit « compenser »",
+    "le rouge est plus probable, la roue est « en série »",
+    "le rouge et le noir ont toujours la même probabilité",
+    "le rouge a une probabilité de $1$, puisqu'il est sorti à chaque fois"
+   ],
+   "err": {
+    "le noir est plus probable, il doit « compenser »": "DF.PROB.06#erreur_du_joueur",
+    "le rouge est plus probable, la roue est « en série »": "DF.PROB.06#erreur_du_joueur",
+    "le rouge a une probabilité de $1$, puisqu'il est sorti à chaque fois": "DF.PROB.06#frequence_egale_proba"
+   },
+   "steps": [
+    "La roue garde-t-elle en mémoire les tours précédents ?",
+    "Les deux secteurs ont-ils changé de taille ?"
+   ],
+   "f": "",
+   "f_disabled": true,
+   "lvl": 1,
+   "usage": [
+    "train"
+   ],
+   "contexte": true
+  }
+ },
+ {
+  "id": "DF.PROB.06-u02",
+  "verdict": "ok",
+  "raison": "1 240/2 000 = 0,62 juste ; « 62 % », « 31/50 », « 0.62 » acceptés (app et serveur), 1240 refusé (err)."
+ },
+ {
+  "id": "DF.PROB.06-u03",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.PROB.06-u04",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.PROB.01-u01",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.PROB.01-u02",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.PROB.01-u03",
+  "verdict": "ok",
+  "raison": "Adam, Emma, Inès → 3 juste (H de Hugo = consonne)."
+ },
+ {
+  "id": "DF.PROB.01-u04",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.PROB.01-u05",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.PROB.01-u06",
+  "verdict": "ok",
+  "raison": "Calcul refait, réponse unique, formes acceptées app/serveur, err conformes."
+ },
+ {
+  "id": "DF.PROB.01-u07",
+  "verdict": "ok",
+  "raison": "3/6 × 600 = 300 juste, err 200 (équiprobabilité des 3 catégories) conforme. Le calcul relève aussi de PROB.02, mais l'erreur visée est bien PROB.01 : tag admissible en lvl 3."
+ }
+]

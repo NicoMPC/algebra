@@ -1,0 +1,70 @@
+[
+ {
+  "id": "GM.AGR.01-u01",
+  "verdict": "ok",
+  "raison": "6 × 4² = 96. 24 = ×k, 48 = 6 × (4 × 2) (NC.PUIS.01#carre_double, prérequis direct)."
+ },
+ {
+  "id": "GM.AGR.01-u02",
+  "verdict": "ok",
+  "raison": "(1/3)² = 1/9 → divisée par 9. ×9 = rapport_inverse, ÷3 = aire_fois_k, ÷6 = carre_double. Exact."
+ },
+ {
+  "id": "GM.AGR.01-u03",
+  "verdict": "ok",
+  "raison": "k² = 2/50 = 0,04 → k = 0,2 (1/5 accepté). 0,04 et 1/25 = k² pris pour k (aire_fois_k), 5 = rapport_inverse. 25 refusé."
+ },
+ {
+  "id": "GM.AGR.01-u04",
+  "verdict": "ok",
+  "raison": "k² = 2 → k = √2 ≈ 1,414 → 1,41 ; √2, sqrt(2) acceptés, 1,4 et 1,42 refusés. 2 = aire_fois_k, 0,71 = 1/√2 (rapport_inverse). La clé 4 (= 2², l'élève élève le rapport des aires au carré) ne colle qu'approximativement à aire_fois_k ; défendable, pas d'id plus juste au référentiel."
+ },
+ {
+  "id": "GM.AGR.02-u01",
+  "verdict": "ok",
+  "raison": "3³ = 27. 3 et 9 = volume_fois_k."
+ },
+ {
+  "id": "GM.AGR.02-u02",
+  "verdict": "corrige",
+  "raison": "Math juste (3 × 10³ = 3000 L ; 30 L = maquette, 300 L = ×k², 0,003 L = rapport_inverse, GM.AGR.01 prérequis direct), mais contexte irréaliste : un réservoir de voiture de 3000 L (réel ≈ 50 L), et 3 L dans une maquette au 1/10 (≈ 45 cm). Un élève qui a le sens des grandeurs peut douter de sa bonne réponse. Correction : même calcul sur un camion-citerne (citerne de 3 m³ plausible).",
+  "correction": {
+   "id": "GM.AGR.02-u02",
+   "comp": "GM.AGR.02",
+   "q": "Une maquette de camion-citerne est à l'échelle $\\frac{1}{10}$. La citerne de la maquette contient $3$ L. Combien contient la citerne du vrai camion ?",
+   "a": "$3\\,000$ L",
+   "type": "qcm",
+   "options": [
+    "$0{,}003$ L",
+    "$30$ L",
+    "$300$ L",
+    "$3\\,000$ L"
+   ],
+   "err": {
+    "$30$ L": "GM.AGR.02#maquette",
+    "$300$ L": "GM.AGR.02#volume_fois_k",
+    "$0{,}003$ L": "GM.AGR.01#rapport_inverse"
+   },
+   "steps": [
+    "De la maquette au vrai camion, les longueurs sont multipliées par $10$.",
+    "Un volume est multiplié par $10^3$. Calcule $3 \\times 10^3$ : ?"
+   ],
+   "f": "Volumes : $\\times k^3$",
+   "lvl": 2,
+   "usage": [
+    "train"
+   ],
+   "contexte": true
+  }
+ },
+ {
+  "id": "GM.AGR.02-u03",
+  "verdict": "ok",
+  "raison": "5 × (1/2)³ = 0,625 (5/8 accepté). 2,5 (÷2) et 1,25 (÷4) = volume_fois_k."
+ },
+ {
+  "id": "GM.AGR.02-u04",
+  "verdict": "ok",
+  "raison": "Cône pointe en bas, eau jusqu'à mi-hauteur = petit cône de même sommet, k = 1/2 : 16/8 = 2 cL. 8 et 4 = volume_fois_k. Configuration claire."
+ }
+]
