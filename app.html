@@ -2993,7 +2993,7 @@ async function refreshDroits() {
 // ── Paywall (E8) — côté ADO : aucune incitation à faire payer (contrat §7, 50 §2.3, 52 §6) ──
 function openPaywall(src) {
   if (_can('programme')) return;
-  if (_can('diag_complet')) { openParentView(src); return; } // l'ado n'a rien à acheter : seul le parent voit l'upsell
+  if (_can('diag_complet')) { _paywallProgrammeAdo(src); return; } // upsell Programme : côté ado, sans bouton d'achat (contrat §7)
   _funnel('paywall_view', { vue: 'ado', src: src || '' });
   var carte = S.carte || null;
   var nMes = 0, nTot = 0;
@@ -3010,6 +3010,24 @@ function openPaywall(src) {
     '<div class="mx-note" style="margin-top:14px">Le diagnostic complet est payant (' + _eur(_prix('diag')) + '). C\'est une décision pour tes parents, pas pour toi. ' +
     'Si tu veux, envoie-leur ta carte : ils verront exactement ce que tu vois, et ce que contient le complet.</div>' +
     '<button class="mx-btn mx-btn-p" style="margin-top:14px" onclick="closeSheet()">Continuer gratuitement → mes 5 exos du jour</button>' +
+    '<button class="mx-btn mx-btn-g" style="margin-top:8px" onclick="closeSheet();openShare(\'paywall\')">📨 Montrer ma carte à mes parents</button>' +
+    '<div class="text-center" style="margin-top:6px"><button class="mx-link" onclick="openParentView(\'paywall\')">Je suis le parent</button></div>';
+  openSheet(html);
+}
+
+// Diagnostic complet déjà payé : ce que le Programme ajoute, prix cité une fois, l'achat reste dans la vue parent
+function _paywallProgrammeAdo(src) {
+  _funnel('paywall_view', { vue: 'ado', src: src || '', offre: 'programme_upgrade' });
+  var html = '<div class="mx-eyebrow">Diagnostic complet ✓</div>' +
+    '<div class="mx-h1" style="margin-top:4px">Ce que le Programme Brevet ajoute</div>' +
+    '<ul style="margin:12px 0 0;padding:0;list-style:none;font-size:.88rem;line-height:1.5">' +
+    ['L\'entraînement sur <b>toute</b> ta carte, pas seulement la semaine 1 du plan',
+     'Autant de séries que tu veux, sur la compétence de ton choix',
+     'Un check-up chaque mois pour voir ce qui a bougé'].map(function(t) {
+      return '<li style="display:flex;gap:8px;margin-top:6px"><span style="color:var(--acq);font-weight:800">✓</span><span>' + t + '</span></li>'; }).join('') + '</ul>' +
+    '<div class="mx-note" style="margin-top:14px">Le Programme est payant (' + _eur(_prix('upgrade')) + ', le diagnostic déjà payé est déduit). C\'est une décision pour tes parents, pas pour toi. ' +
+    'Ton entraînement du jour continue sans rien changer.</div>' +
+    '<button class="mx-btn mx-btn-p" style="margin-top:14px" onclick="closeSheet()">Continuer → mes 5 exos du jour</button>' +
     '<button class="mx-btn mx-btn-g" style="margin-top:8px" onclick="closeSheet();openShare(\'paywall\')">📨 Montrer ma carte à mes parents</button>' +
     '<div class="text-center" style="margin-top:6px"><button class="mx-link" onclick="openParentView(\'paywall\')">Je suis le parent</button></div>';
   openSheet(html);
@@ -3717,8 +3735,12 @@ function renderSeanceFin() {
   }
   var suite = _can('programme')
     ? '<button class="mx-btn mx-btn-g" onclick="dismissBoostInsight();openLibre()">🎯 Encore une séance</button>'
-    : '<div class="mx-card"><div class="mx-h2">T\'as envie de continuer ?</div><p class="mx-small" style="margin-top:2px">Le gratuit, c\'est 5 exos par jour sur ton point faible. Le reste de ta carte n\'est pas encore mesuré.</p>' +
-      '<button class="mx-btn mx-btn-g" style="margin-top:10px" onclick="openPaywall(\'fin_seance\')">Voir ce qui est inclus</button></div>';
+    : '<div class="mx-card"><div class="mx-h2">T\'as envie de continuer ?</div><p class="mx-small" style="margin-top:2px">' +
+      (_complet() ? 'Ta séance du jour travaille le début de ton plan, 5 exos par jour. Le Programme Brevet ouvre toute ta carte.'
+        : _can('diag_complet') ? 'Ta séance du jour, c\'est 5 exos sur ton point faible. Ton diagnostic complet t\'attend pour mesurer tout le reste.'
+        : 'Le gratuit, c\'est 5 exos par jour sur ton point faible. Le reste de ta carte n\'est pas encore mesuré.') + '</p>' +
+      (_can('diag_complet') && !_complet() ? '<button class="mx-btn mx-btn-g" style="margin-top:10px" onclick="dismissBoostInsight();openDiagHub()">Mon diagnostic complet →</button></div>'
+        : '<button class="mx-btn mx-btn-g" style="margin-top:10px" onclick="openPaywall(\'fin_seance\')">Voir ce qui est inclus</button></div>');
   c.innerHTML = '<div class="mx-stack afu">' +
     '<div class="mx-hero mx-hero-done"><div class="mx-eyebrow">Séance faite ✓</div>' +
     '<div class="mx-h1" style="margin-top:4px">' + d.easy + ' sur ' + d.total + ' du premier coup.</div>' +
