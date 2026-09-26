@@ -51,6 +51,7 @@ function invariants(nom: string, logs: any[], e: Eleve) {
   for (let i = 1; i < m.length; i++) assert(jours(m[i - 1].date, m[i].date) >= 3, nom + " : 2 commerciaux à moins de 72 h");
   for (const l of m) assert(m.filter((x) => jours(x.date, l.date) >= 0 && jours(x.date, l.date) < 30).length <= 5, nom + " : plus de 5 commerciaux en 30 jours");
   if (!e.optin) assert(m.length === 0, nom + " : commercial sans opt-in " + JSON.stringify(m));
+  if (e.consent === null || e.consent === undefined) assert(m.length === 0, nom + " : commercial sans confirmation parentale");
   assert(ado.every((l) => l.cat === "P"), nom + " : email non pédagogique à l'ado");
   if (!e.emailEleve || e.consent === null || e.consent === undefined) assert(ado.length === 0, nom + " : email ado sans adresse ou sans accord parental");
   for (const l of ado) assert(ado.filter((x) => jours(x.date, l.date) >= 0 && jours(x.date, l.date) < 7).length <= 3, nom + " : plus de 3 emails ado en 7 jours");
@@ -62,6 +63,8 @@ function invariants(nom: string, logs: any[], e: Eleve) {
   if (achat.length) {
     const kA = Math.min(...achat);
     assert(!logs.some((l) => /^D3:P-X[123]$/.test(l.type) && l.k >= kA), nom + " : relance de conversion après un achat");
+    assert(!logs.some((l) => /^D3:P-X0(N|R1|R2)$/.test(l.type) && l.k >= kA), nom + " : rappel de confirmation après un achat");
+    assert(!logs.some((l) => l.type === "D3:A-X0" && l.k >= kA), nom + " : « ta carte est prête » après un achat");
   }
   const x3 = logs.find((l) => l.type === "D3:P-X3");
   if (x3) assert(!logs.some((l) => /^D3:P-X[12]$/.test(l.type) && l.k > x3.k), nom + " : relance de conversion après P-X3");
@@ -161,4 +164,43 @@ Deno.test("fuzz : 300 élèves fictifs aléatoires, invariants toujours vrais", 
     };
     invariants("fuzz#" + i + " " + JSON.stringify(e), simuler(e, 45), e);
   }
+});
+
+// ── Audit 53 (26/09) : règles ajoutées après simulation de 30 jours sur 4 profils ──
+Deno.test("acheteur jamais confirmé : aucun rappel « votre accord » après l'achat", () => {
+  const e: Eleve = { debut: LUNDI, express: 0, programme: 1, complet: 2, actifs: [2, 3, 4, 8, 9] };
+  const logs = simuler(e, 30);
+  invariants("acheteur non confirmé", logs, e);
+  assert(!logs.some((l) => /^D3:P-X0(N|R1|R2)$/.test(l.type)), "rappel de confirmation après achat : " + types(logs));
+  const avant: Eleve = { debut: LUNDI, express: 0, achatDiag: 10 };
+  const la = simuler(avant, 30);
+  assert(la.some((l) => l.type === "D3:P-X0R1" && l.k < 10) && !la.some((l) => /^D3:P-X0R/.test(l.type) && l.k >= 10), "R1 avant l'achat, plus rien après : " + types(la));
+});
+
+Deno.test("opt-in sans confirmation parentale (posé depuis la session ado) : aucun commercial", () => {
+  const e: Eleve = { debut: LUNDI, express: 0, actifs: [0, 1, 2, 3] };
+  const logs: any[] = [];
+  for (let k = 0; k <= 20; k++) {
+    const today = add(LUNDI, k);
+    const etat = { today, inscription: LUNDI, express_at: LUNDI, complet_at: null, achat_diag_at: null, programme_at: null,
+      complet_modules_faits: 0, consentement: false, optin: true, email_eleve: false, pf_fragile: true,
+      jours_actifs: (e.actifs || []).map((a) => add(LUNDI, a)), rediag_du: false, logs };
+    for (const p of M.mxPlanEmails(etat)) logs.push({ type: "D3:" + p.type, cat: p.cat, date: today, dest: p.dest, k });
+  }
+  assert(!logs.some((l) => l.cat === "M"), "commercial sans confirmation : " + types(logs));
+});
+
+Deno.test("ado : « ta carte est prête » jamais après un achat, ni au-delà de 3 jours", () => {
+  const achat: Eleve = { debut: "2026-10-03", express: 0, consent: 0, achatDiag: 1, emailEleve: true }; // samedi : A-X0 aurait glissé au lundi
+  assert(!simuler(achat).some((l) => l.type === "D3:A-X0"), types(simuler(achat)));
+  const tard: Eleve = { debut: LUNDI, express: 0, consent: 6, emailEleve: true };
+  assert(!simuler(tard).some((l) => l.type === "D3:A-X0"), "A-X0 12 jours après : " + types(simuler(tard)));
+});
+
+Deno.test("élision du prénom : d'Alice, de Léo, d'Hugo, de Yanis", () => {
+  // mxDe est dans la couche I/O (hors bloc pur) : on l'extrait du source et on retire l'annotation de type.
+  const src2 = src.slice(src.indexOf("function mxDe("), src.indexOf("const MX_ORIGINE_PARENT")).replace("(nom: string): string", "(nom)");
+  const mxDe = new Function(src2 + "; return mxDe;")();
+  const cas: [string, string][] = [["Alice", "d'Alice"], ["Léo", "de Léo"], ["Hugo", "d'Hugo"], ["Inès", "d'Inès"], ["Yanis", "de Yanis"], ["Yves", "d'Yves"], ["votre enfant", "de votre enfant"], ["Émile", "d'Émile"]];
+  for (const [n, att] of cas) assert(mxDe(n) === att, n + " → " + mxDe(n));
 });
