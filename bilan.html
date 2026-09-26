@@ -117,6 +117,7 @@ footer a{color:var(--sub)}
 .state p{color:var(--sub);font-size:.9rem;margin-bottom:18px}
 .cf{border:1.5px solid var(--blue);margin-bottom:12px}
 .cf label{display:flex;gap:10px;align-items:flex-start;font-size:.86rem;color:var(--text);margin-top:14px;cursor:pointer}
+.cf .cf-inp{display:block;width:100%;box-sizing:border-box;margin:8px 0 0 30px;max-width:calc(100% - 30px);padding:10px 12px;border:1px solid var(--line,#d6dbe4);border-radius:10px;font:inherit;font-size:.9rem}
 .cf input[type=checkbox]{width:20px;height:20px;flex-shrink:0;margin:1px 0 0;accent-color:var(--blue)}
 .cf .err{color:#BE123C;font-size:.84rem;margin-top:10px}
 .merci{background:var(--acql);border:1px solid #A7F3D0;color:#065F46;border-radius:var(--r);padding:12px 14px;font-size:.88rem;margin-bottom:12px}
@@ -136,6 +137,8 @@ footer a{color:var(--sub)}
       <h1 id="cf-t" style="margin-top:6px">Confirmer l'inscription <span id="cf-de">de votre enfant</span></h1>
       <p class="sub" id="cf-txt">Votre enfant est mineur(e) : votre accord est nécessaire pour conserver son espace Matheux et ses résultats de diagnostic.</p>
       <label><input type="checkbox" id="cf-optin"><span id="cf-optin-txt">Je souhaite recevoir par email des conseils et les offres Matheux pour accompagner mon enfant (5 emails par mois au maximum, désinscription en 1 clic). Facultatif.</span></label>
+      <label><input type="checkbox" id="cf-eleve"><span id="cf-eleve-txt">J'autorise Matheux à envoyer à mon enfant des rappels d'entraînement par email (jamais de publicité, jamais de prix). Facultatif.</span></label>
+      <input type="email" id="cf-eleve-email" class="cf-inp" placeholder="Adresse email de votre enfant (facultatif)" autocomplete="off" hidden>
       <button class="btn btn-ac" type="button" id="cf-go" style="margin-top:16px">Je confirme l'inscription</button>
       <p class="err" id="cf-err" role="alert" hidden></p>
       <p class="small" style="margin-top:10px">Si vous n'êtes pas le parent, ou si vous n'êtes pas d'accord, fermez simplement cette page.</p>
@@ -267,6 +270,12 @@ footer a{color:var(--sub)}
   var qs = new URLSearchParams(location.search);
   // ?t=<token> (redirection de 404.html sur GitHub Pages) ou /b/<token> (réécriture serveur, ex. dev/server.ts)
   var TOKEN = qs.get('t') || decodeURIComponent((location.pathname.match(/^\/b\/([^/]+)\/?$/) || [])[1] || '');
+  // Clic depuis un email (?src=email_<type>) → funnel_events « email_click », sans cookie (53 §4 P1)
+  (function () {
+    var src = qs.get('src') || '';
+    if (!/^email_[\w-]{1,40}$/.test(src)) return;
+    try { fetch(SU, { method: 'POST', body: JSON.stringify({ action: 'log_funnel_event', event: 'email_click', token: /^[0-9a-f]{48}$/i.test(TOKEN) ? TOKEN.toLowerCase() : undefined, meta: { src: src, page: 'bilan' } }) }).catch(function () {}); } catch (e) {}
+  })();
   var DATA = null; // réponse get_bilan_partage
 
   function $(id) { return document.getElementById(id); }
@@ -335,6 +344,7 @@ footer a{color:var(--sub)}
     $('cf-ok-txt').textContent = (r && r.optin_marketing
       ? 'Vous recevrez aussi mes conseils et offres (5 par mois au maximum). Chaque email contient un lien de désinscription.'
       : 'Vous ne recevrez que les emails liés au service (bilans, confirmations). Aucune offre commerciale.') +
+      (r && r.emails_eleve ? ' ' + prenom + ' recevra aussi ses rappels d\'entraînement par email.' : '') +
       ' Le bilan ' + de(prenom) + ' s\'affiche ci-dessous dès qu\'un diagnostic est terminé.';
     cfEtat('cf-ok');
   }
@@ -346,6 +356,11 @@ footer a{color:var(--sub)}
       $('cf-de').textContent = de(prenom);
       $('cf-txt').textContent = prenom + ' est mineur(e) : votre accord est nécessaire pour conserver son espace Matheux et ses résultats de diagnostic.';
       $('cf-optin-txt').textContent = 'Je souhaite recevoir par email des conseils et les offres Matheux pour accompagner ' + prenom + ' (5 emails par mois au maximum, désinscription en 1 clic). Facultatif.';
+      // Emails à l'ado (52 §4.2) : adresse saisie par l'ado à l'inscription (masquée), sinon le parent peut l'indiquer
+      $('cf-eleve-txt').textContent = 'J\'autorise Matheux à envoyer à ' + prenom + (r.email_eleve_masque ? ', sur l\'adresse ' + r.email_eleve_masque + ',' : '') +
+        ' des rappels d\'entraînement par email (jamais de publicité, jamais de prix). Facultatif.';
+      $('cf-eleve').setAttribute('data-masque', r.email_eleve_masque || '');
+      $('cf-eleve').onchange = function () { $('cf-eleve-email').hidden = !this.checked || !!r.email_eleve_masque; };
       $('cf-go').textContent = 'Je confirme l\'inscription ' + de(prenom);
       $('cf-go').setAttribute('data-prenom-cf', prenom);
       if (r.deja_confirme) { cfOk(r, prenom); return; }
@@ -354,13 +369,17 @@ footer a{color:var(--sub)}
   }
   function cfConfirmer() {
     var go = $('cf-go'), err = $('cf-err'), prenom = go.getAttribute('data-prenom-cf') || 'votre enfant', label = go.textContent;
-    var optin = $('cf-optin').checked;
+    var optin = $('cf-optin').checked, eleve = $('cf-eleve').checked, emEleve = ($('cf-eleve-email').value || '').trim();
+    if (eleve && !$('cf-eleve').getAttribute('data-masque') && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emEleve)) {
+      err.textContent = 'Indiquez l\'adresse email de votre enfant, ou décochez la case.'; err.hidden = false; return;
+    }
     err.hidden = true; go.disabled = true; go.textContent = 'Un instant…';
-    sha256($('cf-txt').textContent + '\n' + $('cf-optin-txt').textContent).then(function (h) {
-      return api({ action: 'confirm_parent', token: TOKEN.toLowerCase(), optin_marketing: optin, texte_version: 'confirm-2026-09-25', texte_hash: h });
+    sha256($('cf-txt').textContent + '\n' + $('cf-optin-txt').textContent + '\n' + $('cf-eleve-txt').textContent).then(function (h) {
+      return api({ action: 'confirm_parent', token: TOKEN.toLowerCase(), optin_marketing: optin, autoriser_eleve: eleve, email_eleve: eleve ? emEleve : '', texte_version: 'confirm-2026-09-26', texte_hash: h });
     }).then(function (r) {
       if (r && r.status === 'success') { cfOk(r, prenom); return; }
       if (r && r.expire) { cfEtat('cf-exp'); return; }
+      if (r && r.message) { go.disabled = false; go.textContent = label; err.textContent = r.message; err.hidden = false; return; }
       throw new Error('confirm');
     }).catch(function () {
       go.disabled = false; go.textContent = label;

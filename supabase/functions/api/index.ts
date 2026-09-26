@@ -2895,19 +2895,32 @@ async function confirmParent(p: Record<string, unknown>) {
   if (!sh || sh.canal !== "email_parent") return { status: "error", expire: true, message: "Lien de confirmation invalide ou expiré." };
   const code = String(sh.code);
   const now = new Date().toISOString();
-  const { data: prof } = await adminClient.from("profiles").select("prenom, consentement_parent_at, optin_marketing").eq("code", code).maybeSingle();
+  const { data: prof } = await adminClient.from("profiles").select("prenom, email, consentement_parent_at, optin_marketing, email_eleve").eq("code", code).maybeSingle();
   if (!prof) return { status: "error", expire: true, message: "Lien de confirmation invalide ou expiré." };
-  if (p.apercu) return { status: "success", apercu: true, prenom: prof.prenom || "", deja_confirme: !!prof.consentement_parent_at, optin_marketing: !!prof.optin_marketing };
+  // Adresse ado saisie à l'inscription : montrée masquée au parent, qui l'autorise (case 52 §4.2) ou non
+  const ee = String(prof.email_eleve || "");
+  const masque = ee ? ee.replace(/^(.)[^@]*(@.*)$/, "$1•••$2") : "";
+  if (p.apercu) return { status: "success", apercu: true, prenom: prof.prenom || "", deja_confirme: !!prof.consentement_parent_at, optin_marketing: !!prof.optin_marketing, email_eleve_masque: masque };
   const maj: Record<string, unknown> = {};
   if (!prof?.consentement_parent_at) maj.consentement_parent_at = now;
   if (p.optin_marketing !== undefined) { maj.optin_marketing = !!p.optin_marketing; maj.optin_marketing_at = p.optin_marketing ? now : null; }
+  let emailsEleve = false;
+  if (p.autoriser_eleve !== undefined) {
+    const saisi = String(p.email_eleve || "").trim().toLowerCase();
+    if (saisi && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(saisi)) return { status: "error", message: "L'adresse email de votre enfant semble invalide." };
+    if (saisi && saisi === String(prof.email || "").toLowerCase()) return { status: "error", message: "C'est votre propre adresse : indiquez celle de votre enfant, ou laissez vide." };
+    const adresse = saisi || ee;
+    emailsEleve = !!p.autoriser_eleve && !!adresse;
+    maj.email_eleve = emailsEleve ? adresse : null; // pas d'autorisation = on ne garde pas l'adresse de l'ado
+  }
   if (Object.keys(maj).length) await adminClient.from("profiles").update(maj).eq("code", code);
   await adminClient.from("consentements").insert({
     code, produit: "compte", texte_version: String(p.texte_version || "P-X0-confirmation").slice(0, 40),
-    texte_hash: String(p.texte_hash || "").slice(0, 128), cases: p.optin_marketing ? ["optin_marketing"] : [],
+    texte_hash: String(p.texte_hash || "").slice(0, 128),
+    cases: [...(p.optin_marketing ? ["optin_marketing"] : []), ...(emailsEleve ? ["emails_eleve"] : [])],
   });
-  await mxLogEvent(code, "parent_confirm", { optin: !!p.optin_marketing });
-  return { status: "success", confirme: true, deja_confirme: !!prof.consentement_parent_at, prenom: prof.prenom || "", optin_marketing: !!p.optin_marketing };
+  await mxLogEvent(code, "parent_confirm", { optin: !!p.optin_marketing, emails_eleve: emailsEleve });
+  return { status: "success", confirme: true, deja_confirme: !!prof.consentement_parent_at, prenom: prof.prenom || "", optin_marketing: !!p.optin_marketing, emails_eleve: emailsEleve };
 }
 
 // Journal minimal du funnel (50-offre-conversion §8) : pas d'IP, pas d'email, pas d'user-agent.
@@ -2926,7 +2939,7 @@ async function mxStreakEleve(code: string) {
 }
 
 // ── LOG_FUNNEL_EVENT {code?, event, meta?} — événements côté client (liste fermée) ──
-const MX_EVENTS_CLIENT = ["paywall_view", "checkout_click", "pdf_open", "share_opened_app"];
+const MX_EVENTS_CLIENT = ["paywall_view", "checkout_click", "pdf_open", "share_opened_app", "email_click"];
 async function logFunnelEvent(p: Record<string, unknown>) {
   const event = String(p.event || "");
   if (!MX_EVENTS_CLIENT.includes(event)) return { status: "error", message: "Événement non autorisé." };
@@ -2936,28 +2949,38 @@ async function logFunnelEvent(p: Record<string, unknown>) {
   if (p.access_token && p.code) { const a = await mxAuth(p, { lectureAdmin: true }); code = a ? String(a.profile.code) : null; }
   else if (p.token) { const sh = await mxPartageValide(String(p.token)); code = sh ? String(sh.code) : null; }
   const meta = (p.meta && typeof p.meta === "object" && JSON.stringify(p.meta).length <= 500) ? p.meta as Record<string, unknown> : {};
+  // Clic depuis un email (?src=email_<type> sur les liens des templates) : src en liste fermée de forme
+  if (event === "email_click" && !/^email_[\w-]{1,40}$/.test(String(meta.src || ""))) return { status: "error", message: "src invalide." };
   await mxLogEvent(code, event, meta);
   return { status: "success" };
 }
 
-// ── SET_PREFERENCES {code, email, email_eleve?, optin_marketing?, date_brevet_blanc?, consentement_parent?} ──
+// ── SET_PREFERENCES {code, email, email_eleve?, optin_marketing: false?, date_brevet_blanc?} ── (jamais d'accord parental ici)
 async function setPreferences(p: Record<string, unknown>) {
   if (!p.email) return { status: "error", message: "Email du compte requis." };
   const pr = await mxProfil(p);
   if ("error" in pr) return { status: "error", message: pr.error, auth_requise: pr.auth_requise };
+  // Accord parental et opt-in commercial : SEUL le parent les pose, par confirm_parent (lien reçu par email).
+  // L'élève connecté ne peut que RETIRER l'opt-in (optin_marketing: false). Test d'attaque : dev/smoke_test.ts
+  if (p.consentement_parent !== undefined || p.optin_marketing === true)
+    return { status: "error", refuse: true, message: "Seul ton parent peut donner cet accord, depuis le lien reçu par email." };
   const maj: Record<string, unknown> = {};
   if (p.email_eleve !== undefined) {
     const e = String(p.email_eleve || "").trim().toLowerCase();
     if (e && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)) return { status: "error", message: "Email élève invalide." };
+    if (e && e === String(pr.profile.email || "").toLowerCase()) return { status: "error", message: "C'est l'email de ton parent : mets le tien, ou laisse vide." };
+    // Ajout d'une adresse ado : seulement avant la confirmation parentale (le parent la valide ou la retire sur
+    // bilan.html?confirmer=1, 52 §4.2). Après, c'est le parent qui décide ; l'élève peut toujours la retirer.
+    const { data: cp } = await adminClient.from("profiles").select("consentement_parent_at").eq("code", String(pr.profile.code)).maybeSingle();
+    if (e && cp?.consentement_parent_at) return { status: "error", message: "Ton parent a déjà confirmé ton inscription : demande-lui d'ajouter ton email." };
     maj.email_eleve = e || null;
   }
-  if (p.optin_marketing !== undefined) { maj.optin_marketing = !!p.optin_marketing; maj.optin_marketing_at = p.optin_marketing ? new Date().toISOString() : null; }
+  if (p.optin_marketing === false) { maj.optin_marketing = false; maj.optin_marketing_at = null; }
   if (p.date_brevet_blanc !== undefined) {
     const d = String(p.date_brevet_blanc || "");
     if (d && !/^\d{4}-\d{2}-\d{2}$/.test(d)) return { status: "error", message: "Date invalide (AAAA-MM-JJ)." };
     maj.date_brevet_blanc = d || null;
   }
-  if (p.consentement_parent === true) maj.consentement_parent_at = new Date().toISOString();
   if (!Object.keys(maj).length) return { status: "error", message: "Rien à mettre à jour." };
   await adminClient.from("profiles").update(maj).eq("code", String(pr.profile.code));
   return { status: "success" };

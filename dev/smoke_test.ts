@@ -345,8 +345,21 @@ try {
   const codeN = regN.profile?.code;
   const px0N = [...Deno.readDirSync(`${DATA}/outbox`)].filter((e) => e.name.includes(emailN)).map((e) => Deno.readTextFileSync(`${DATA}/outbox/${e.name}`))[0] || "";
   const confN = (px0N.match(/\/b\/([0-9a-f]{48})\?confirmer=1/) || [])[1];
-  check("Nora : inscrite, P-X0 reçu, confirmation + opt-in", !!codeN && (await api({ action: "confirm_parent", token: confN, optin_marketing: true, texte_version: "t", texte_hash: "h" })).status === "success");
-  await api({ action: "set_preferences", code: codeN, email: emailN, access_token: regN.access_token, email_eleve: "nora.ado@exemple.fr" });
+  const AN = { code: codeN, email: emailN, access_token: regN.access_token };
+  // P0 (53 §4) : l'ado ne peut PAS poser lui-même l'accord parental ni l'opt-in commercial
+  const att1 = await api({ action: "set_preferences", ...AN, consentement_parent: true });
+  const att2 = await api({ action: "set_preferences", ...AN, optin_marketing: true });
+  const profN0 = JSON.parse((await get(`/dev/db/profiles?code=${codeN}`)).body)[0];
+  check("attaque : set_preferences {consentement_parent / optin_marketing: true} par l'ado → refusé, rien écrit",
+    att1.status === "error" && att2.status === "error" && !profN0.consentement_parent_at && !profN0.optin_marketing, { att1, att2, c: profN0.consentement_parent_at, o: profN0.optin_marketing });
+  check("set_preferences {optin_marketing: false} (retrait) reste possible", (await api({ action: "set_preferences", ...AN, optin_marketing: false })).status === "success");
+  // Email ado : saisi à l'inscription (avant confirmation), autorisé par le parent sur la page de confirmation (52 §4.2)
+  check("set_preferences {email_eleve} avant confirmation", (await api({ action: "set_preferences", ...AN, email_eleve: "nora.ado@exemple.fr" })).status === "success");
+  check("email_eleve = email du parent → refusé", (await api({ action: "set_preferences", ...AN, email_eleve: emailN })).status === "error");
+  const apN = await api({ action: "confirm_parent", token: confN, apercu: true });
+  check("confirm_parent {apercu} → adresse ado masquée", apN.email_eleve_masque === "n•••@exemple.fr", apN);
+  check("Nora : inscrite, P-X0 reçu, confirmation + opt-in + emails ado autorisés", !!codeN && (await api({ action: "confirm_parent", token: confN, optin_marketing: true, autoriser_eleve: true, texte_version: "t", texte_hash: "h" })).emails_eleve === true);
+  check("après confirmation, l'ado ne peut plus changer d'adresse seul", (await api({ action: "set_preferences", ...AN, email_eleve: "autre@exemple.fr" })).status === "error");
   const entrainer = async (code: string, em: string, mdp: string) => {
     const t = (await api({ action: "login", email: em, password: mdp })).access_token;
     const tr = await api({ action: "get_training", code, email: em, access_token: t });

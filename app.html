@@ -1747,6 +1747,8 @@ LO.forEach(function(k) { LVL[k] = { cats: {}, names: {}, icons: {}, meta: {} }; 
 // UTILS
 // ══════════════════════════════════════════════════════════════
 function tod() {
+  // Jour « Paris », comme le serveur (todayParis) : sinon la séance du jour et l'historique divergent hors fuseau Paris (DOM-TOM, étranger)
+  try { var p = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Paris' }); if (/^\d{4}-\d{2}-\d{2}$/.test(p)) return p; } catch(e) {}
   var d = new Date();
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
@@ -2163,6 +2165,9 @@ async function submitResetPassword() {
   var pass  = ((document.getElementById('forgot-newpass') || {}).value || '').trim();
   if (!email) { showT('Email requis', 2500, '⚠️'); return; }
   if (pass.length < 6) { showT('Mot de passe : 6 caractères minimum', 2500, '⚠️'); return; }
+  var emailEleve = ((document.getElementById('rg-email-eleve') || {}).value || '').trim().toLowerCase();
+  if (emailEleve && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailEleve)) { showT('Ton email semble invalide (ou laisse vide)', 2500, '⚠️'); return; }
+  if (emailEleve && emailEleve === email) { showT('Ça, c\'est l\'email de ton parent : mets le tien, ou laisse vide', 3000, '⚠️'); return; }
   var rTxt = document.getElementById('forgot-reset-txt'), rLd = document.getElementById('forgot-reset-ld');
   if (rTxt) rTxt.classList.add('hidden'); if (rLd) rLd.classList.remove('hidden');
   var h = await h256(pass, email);
@@ -2411,7 +2416,10 @@ function dxRegister(intent) {
     '<input id="rg-name" class="mx-inp" placeholder="Ton prénom" autocomplete="given-name" maxlength="50">' +
     '<div><label class="mx-small" for="rg-email" style="font-weight:700">Email d\'un parent (on lui envoie ta carte)</label>' +
     '<input id="rg-email" type="email" class="mx-inp" style="margin-top:4px" placeholder="parent@exemple.fr" autocomplete="email"></div>' +
-    '<input id="rg-pass" type="password" class="mx-inp" placeholder="Choisis un mot de passe (6 caractères min.)" autocomplete="new-password"></div>' +
+    '<input id="rg-pass" type="password" class="mx-inp" placeholder="Choisis un mot de passe (6 caractères min.)" autocomplete="new-password">' +
+    '<div><label class="mx-small" for="rg-email-eleve" style="font-weight:700">Ton email à toi (facultatif)</label>' +
+    '<input id="rg-email-eleve" type="email" class="mx-inp" style="margin-top:4px" placeholder="toi@exemple.fr" autocomplete="off">' +
+    '<p class="mx-small" style="margin-top:2px">Pour tes rappels d\'entraînement, jamais de pub. On ne t\'écrit que si ton parent est d\'accord.</p></div></div>' +
     '<label class="flex gap-2 items-start" style="margin-top:12px;font-size:.76rem;color:var(--mx-text-sub)"><input type="checkbox" id="rg-ok" style="margin-top:3px;width:16px;height:16px;flex-shrink:0">' +
     '<span>J\'accepte les <a href="cgu.html" target="_blank" style="text-decoration:underline">CGU</a> et j\'ai lu la <a href="politique-confidentialite.html" target="_blank" style="text-decoration:underline">politique de confidentialité</a>. ' +
     'L\'email indiqué est celui d\'un de mes parents : il recevra un message pour confirmer mon inscription.</span></label>' +
@@ -2425,6 +2433,9 @@ async function dxRegisterGo() {
   if (!name) { showT('Ton prénom 😊', 2000, '⚠️'); return; }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { showT('Email du parent invalide', 2500, '⚠️'); return; }
   if (pass.length < 6) { showT('Mot de passe : 6 caractères minimum', 2500, '⚠️'); return; }
+  var emailEleve = ((document.getElementById('rg-email-eleve') || {}).value || '').trim().toLowerCase();
+  if (emailEleve && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailEleve)) { showT('Ton email semble invalide (ou laisse vide)', 2500, '⚠️'); return; }
+  if (emailEleve && emailEleve === email) { showT('Ça, c\'est l\'email de ton parent : mets le tien, ou laisse vide', 3000, '⚠️'); return; }
   if (!document.getElementById('rg-ok').checked) { showT('Coche la case pour continuer', 2500, '☑️'); return; }
   var btn = document.getElementById('rg-btn'); btn.disabled = true; btn.textContent = 'Création de ton espace…';
   var h = await h256(pass, email);
@@ -2446,6 +2457,7 @@ async function dxRegisterGo() {
   _saveSession(email, d);
   closeSheet();
   _track('signup', {});
+  if (emailEleve && r.status === 'success') { S.token = d.access_token || S.token; S.prof = d.profile; try { await _api('set_preferences', { email_eleve: emailEleve }); } catch(e) {} }
   var intent = DX && DX.intent;
   initApp(d, true);
   if (intent === 'diag') {            // repli « compte d'abord » : le diag commence maintenant avec le code
@@ -2768,6 +2780,13 @@ document.addEventListener('DOMContentLoaded', function() {
   var _stripeReturn = _qs.get('payment') === 'success' || !!_qs.get('achat');
   var _achat = _qs.get('achat') || '';
   if (_stripeReturn) history.replaceState(null, '', window.location.pathname + window.location.hash);
+  // Clic depuis un email (?src=email_<type>) → funnel_events « email_click », sans cookie (53 §4 P1).
+  // 3 s après le boot : le code n'est rattaché que si la session est prouvée (jeton), sinon événement anonyme.
+  var _srcMail = /^email_[\w-]{1,40}$/.test(_qs.get('src') || '') ? _qs.get('src') : '';
+  if (_srcMail) setTimeout(function() {
+    if (S.prof && S.token) _funnel('email_click', { src: _srcMail, page: 'app' });
+    else fetch(SU, { method:'POST', body: JSON.stringify({ action:'log_funnel_event', event:'email_click', meta: { src: _srcMail, page: 'app' } }) }).catch(function(){});
+  }, 3000);
 
   var s = localStorage.getItem(SK);
   var routed = _route();

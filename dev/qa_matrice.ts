@@ -35,7 +35,8 @@ async function hash(email: string, mdp: string) {
   const h = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(email.toLowerCase() + "::" + mdp + "::AB22"));
   return Array.from(new Uint8Array(h)).map((x) => x.toString(16).padStart(2, "0")).join("");
 }
-const temps = async (j: number) => { await dev("/dev/time?reset"); if (j) await dev(`/dev/time?jours=${j}`); };
+let decalage = 0; // jours : le navigateur suit l'horloge du serveur de dev
+const temps = async (j: number) => { await dev("/dev/time?reset"); if (j) await dev(`/dev/time?jours=${j}`); decalage = j; };
 
 // ── personas (états construits par l'API, comme la prod les produirait) ──
 type Eleve = { code: string; email: string; access_token: string; refresh_token: string; prenom: string };
@@ -102,6 +103,11 @@ async function ouvrir(url: string, ls: Record<string, string> = {}, opts: { atte
       req.respond({ status: 200, contentType: "application/json", body: JSON.stringify(j) });
     });
   }
+  if (decalage) await page.evaluateOnNewDocument((ms: number) => {
+    const R = Date; // deno-lint-ignore no-explicit-any
+    class D extends R { constructor(...a: any[]) { if (a.length) super(...(a as [any])); else super(R.now() + ms); } static override now() { return R.now() + ms; } }
+    (globalThis as any).Date = D; // deno-lint-ignore no-explicit-any
+  }, decalage * 86400000);
   await page.goto(BASE + "/offline.html", { waitUntil: "load" });
   await page.evaluate((ls) => { localStorage.clear(); localStorage.setItem("mx_cookie_consent", "refused"); for (const [k, v] of Object.entries(ls)) localStorage.setItem(k, v); }, ls);
   await page.goto(BASE + url, { waitUntil: "networkidle2" });
@@ -224,7 +230,7 @@ try {
     const v = await appDe(e);
     attendu(n, /Séance faite/i.test(v.texte), "état « séance faite » absent");
     attendu(n, !v.boutons.some((b) => /C'est parti|Continue, encore/i.test(b)), "bouton « C'est parti » alors que la séance est faite");
-    attendu(n, /🎯 ?5\/5|5\/5/i.test(v.texte), "mission du jour pas à 5/5");
+    attendu(n, /🎯[\s|]*5[\s|]*\/[\s|]*5/.test(v.texte), "mission du jour pas à 5/5 : " + (v.texte.match(/🎯[^|]*/) || [""])[0]);
     controlesAdo(v, n);
     return v;
   });
@@ -450,7 +456,7 @@ try {
     const v = await ouvrir(`/b/${t}`, {}, { attente: 2500 });
     attendu(n, /bilan maths de Léa/i.test(v.texte), "titre parent absent");
     attendu(n, /19 €/i.test(v.texte) && /49 €/i.test(v.texte), "prix 19/49 absents");
-    const tu = v.texte.replace(/[«"][^»"]*[»"]/g, "").match(/.{30}\b(tu|ton|tes|toi)\b.{30}/i);
+    const tu = v.texte.replace(/[«"][^»"]*[»"]/g, "").match(/.{0,30}(?<=[\s|(])(tu|ton|tes|toi)\b.{0,30}/i);
     attendu(n, !tu, "tutoiement sur la page parent : " + (tu && tu[0]));
     if (v.errs.length) n.push("erreurs : " + v.errs.join(" ; "));
     await clic(v, "Voir un aperçu du bilan PDF", 4000);
@@ -491,6 +497,65 @@ try {
     attendu(n, /paiement est enregistré/i.test(v.texte), "bandeau merci absent");
     if (v.errs.length) n.push("erreurs : " + v.errs.join(" ; "));
     return v;
+  });
+
+  // ── Emails ado (email_eleve) et mesure des clics email (53 §4) ──
+  await cas("inscription UI avec « ton email » → parent l'autorise sur ?confirmer=1", async (n) => {
+    const v = await ouvrir("/app.html#diag", {}, { attente: 1200 });
+    await clic(v, "lancer|commencer");
+    for (let i = 0; i < 25; i++) {
+      if (!(await v.page.$("#dx-val"))) break;
+      await v.page.evaluate(() => { const o = document.querySelector(".dx-opt") as HTMLElement; if (o) o.click(); else { const f = document.getElementById("dx-fill") as HTMLInputElement; if (f) { f.value = "12"; f.dispatchEvent(new Event("input", { bubbles: true })); } } });
+      await v.page.evaluate(() => (document.getElementById("dx-val") as HTMLButtonElement)?.click()); await sleep(600);
+    }
+    await sleep(1800); await clic(v, "entraîner gratuitement", 800);
+    const em = `parent.ui${Date.now()}@exemple.fr`;
+    await v.page.type("#rg-name", "Mila"); await v.page.type("#rg-email", em); await v.page.type("#rg-pass", "motdepasse1");
+    attendu(n, !!(await v.page.$("#rg-email-eleve")), "champ « Ton email (facultatif) » absent");
+    await v.page.type("#rg-email-eleve", "mila.ado@exemple.fr");
+    await v.page.click("#rg-ok"); await v.page.click("#rg-btn"); await sleep(3500); await lire(v);
+    controlesAdo(v, n);
+    const prof = (await dev(`/dev/db/profiles?email=${encodeURIComponent(em)}`) as unknown as J[])[0] || {};
+    attendu(n, prof.email_eleve === "mila.ado@exemple.fr", "email_eleve non enregistré : " + prof.email_eleve);
+    const px0 = [...Deno.readDirSync(`${DATA}/outbox`)].filter((e) => e.name.includes(em)).map((e) => Deno.readTextFileSync(`${DATA}/outbox/${e.name}`)).join("");
+    const tok = (px0.match(/\/b\/([0-9a-f]{48})\?confirmer=1/) || [])[1];
+    attendu(n, !!tok, "P-X0 sans lien de confirmation");
+    const w = await ouvrir(`/b/${tok}?confirmer=1`, {}, { attente: 2000 });
+    attendu(n, /m•••@exemple\.fr/.test(w.texte), "case « emails à l'ado » sans l'adresse masquée");
+    await w.page.click("#cf-eleve"); await w.page.click("#cf-go"); await sleep(2000); await lire(w);
+    attendu(n, /rappels d'entraînement/.test(w.texte) && /confirmée/i.test(w.texte), "confirmation : pas de mention des rappels ado");
+    const prof2 = (await dev(`/dev/db/profiles?email=${encodeURIComponent(em)}`) as unknown as J[])[0] || {};
+    attendu(n, !!prof2.consentement_parent_at && prof2.email_eleve === "mila.ado@exemple.fr", "après confirmation : consentement/email_eleve incohérents");
+    if (w.errs.length) n.push("erreurs page parent : " + w.errs.join(" ; "));
+    return [v, w];
+  });
+  await cas("?confirmer=1 sans cocher la case ado → adresse ado effacée", async (n) => {
+    const e = await inscrit("Ana", false);
+    await api({ action: "set_preferences", ...A(e), email: e.email, email_eleve: "ana.ado@exemple.fr" });
+    await diag(e, "express");
+    const px0 = [...Deno.readDirSync(`${DATA}/outbox`)].filter((x) => x.name.includes(e.email)).map((x) => Deno.readTextFileSync(`${DATA}/outbox/${x.name}`)).join("");
+    const tok = (px0.match(/\/b\/([0-9a-f]{48})\?confirmer=1/) || [])[1];
+    const w = await ouvrir(`/b/${tok}?confirmer=1`, {}, { attente: 2000 });
+    await w.page.click("#cf-go"); await sleep(2000);
+    const prof = (await dev(`/dev/db/profiles?code=${e.code}`) as unknown as J[])[0] || {};
+    attendu(n, !!prof.consentement_parent_at && !prof.email_eleve, "adresse ado gardée sans autorisation du parent : " + prof.email_eleve);
+    if (w.errs.length) n.push("erreurs : " + w.errs.join(" ; "));
+    return w;
+  });
+  await cas("clic email ?src=email_* → funnel_events email_click (app connecté + bilan)", async (n) => {
+    const v = await appDe(lea, "?src=email_P-X1", { attente: 4000 });
+    const t = await partage(lea);
+    const w = await ouvrir(`/b/${t}?src=email_P-X0`, {}, { attente: 2000 });
+    const x = await ouvrir(`/app.html?src=email_A-X0`, {}, { attente: 4000 });
+    const ev = (await dev(`/dev/db/funnel_events?event=email_click&limit=5000`) as unknown as J[]);
+    const de = (src: string) => ev.filter((r) => r.meta?.src === src);
+    attendu(n, de("email_P-X1").some((r) => r.code === lea.code), "app connecté : email_click absent ou sans code");
+    attendu(n, de("email_P-X0").some((r) => r.code === lea.code), "bilan : email_click absent ou sans code");
+    attendu(n, de("email_A-X0").length === 1 && !de("email_A-X0")[0].code, "app anonyme : email_click absent (ou code non prouvé)");
+    const bad = await api({ action: "log_funnel_event", event: "email_click", meta: { src: "<script>" } });
+    attendu(n, bad.status === "error", "src arbitraire accepté");
+    controlesAdo(v, n);
+    return [v, w, x];
   });
 
   // ── Admin ──
