@@ -1,6 +1,6 @@
 # Point de reprise — Refonte « Diagnostic 3e »
 
-> Mis à jour le 26/09/2026 14h30. À lire EN PREMIER à la reprise, avec `docs/specs/00-contrat-commun.md`
+> Mis à jour le 27/09/2026 9h.
 > (contrat + décisions de Nicolas §7-9). Branche : `feat/diagnostic-3e` (locale, jamais pushée).
 > Relancer la conversation : « Matheux — Conversation Claude.desktop ». Tester en local : `./matheux.sh`.
 > **Liste des tâches restantes : `docs/roadmap.md`** (source unique ; la section « Reste à faire » ci-dessous est l'historique de session).
@@ -33,6 +33,11 @@ Le nouveau site (landing, diagnostic, carte, séance adaptative, page parent, PD
 - **Stripe** : lien 19 € créé (`https://buy.stripe.com/9B66oJ3xM4rH4mc0mjb3q07`, metadata produit=diag_complet,
   offre_version=2026-09, niveau=3EME, taxes auto OFF, redirection `app.html?achat=diag_complet&session_id=…`),
   branché dans `OFFRE` (app.html + bilan.html).
+
+## 27/09 matin
+
+- Branche `feat/diagnostic-3e` en avance sur `main` (en ligne = `ef9ccdb`) : SEO, emails, légal, QA, docs. Tests : smoke 132/132,
+  deno 25/25, matrice QA 37/37, `deno check` 0. **API à redéployer juste après le push** (pas de migration). Voir `docs/roadmap.md` #1-1b.
 
 ## 🚀 Bascule du 26/09 (Nicolas : « push immédiat, l'ancien site et l'ancienne base osef »)
 
